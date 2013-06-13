@@ -1,0 +1,6 @@
+{"mass_range" : [0,15],
+"temp_range" : [0,400],
+"outcome_range" : [0,4],
+"time_range" : [0,350],
+"pH_range" : [-1,16],
+"ref_range" : [0,8]}

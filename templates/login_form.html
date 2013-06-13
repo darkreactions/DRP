@@ -1,0 +1,20 @@
+{# User Login Form #}
+	
+<form action="/user_login/" method="post" name="login" id="popupScreenForm">
+<p>Log In</p>
+	{% csrf_token %}
+	
+		<label for="username">Username:</label>
+		<input type="text" name="username" value="" id="id_username">
+		<br />
+		<label for="password">Password:</label>
+		<input type="password" name="password" value="" id="id_password">
+		<br />
+		<input type="submit" value="Log In" class="form_button"/>
+</form>
+
+	{% if login_fail %}
+	<div class="error_one_line">
+		Sorry, that's invalid login info. 
+	</div> <br />
+	{% endif %}
