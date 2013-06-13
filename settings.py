@@ -22,6 +22,8 @@ STATICFILES_FINDERS = (
 
 SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
+SITE_ID = 1 ###C
+
 INSTALLED_APPS = (
 	'django.contrib.admin',
 	'django.contrib.contenttypes',
@@ -50,6 +52,7 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.common.CommonMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -69,4 +72,4 @@ TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),)
 ROOT_URLCONF = 'urls'
 
 #Apply a user-profile to users: ###C
-AUTH_PROFILE_MODULE = 'Lab_Member'
+AUTH_PROFILE_MODULE = 'formsite.Lab_Member'

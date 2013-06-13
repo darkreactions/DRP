@@ -1,5 +1,7 @@
 from django.conf.urls.defaults import *
 from formsite.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Uncomment the next two lines to enable the admin: ###C
 from django.contrib import admin
@@ -24,4 +26,7 @@ urlpatterns = patterns('',
     url(r'^user_logout/$', user_logout), #Log Out
 	#Enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    
+    #Send the favicon.ico:
+    url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.STATIC_URL+'favicon.ico'}),
 )

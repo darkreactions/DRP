@@ -58,7 +58,6 @@ def data_view(request, num = current_page): #If no data is entered, stay on the 
 		num = int(num) #Convert the unicode page number to an integer for comparison.
 		assert 0 < num <= total_pages
 	except:
-		print "Can't go there!"
 		num = total_pages
 	
 	#Update current_page if it was changed.
@@ -175,11 +174,14 @@ def upload_data(request):
 		}
 			
 	u = request.user
-	if request.method=="POST" and u.is_authenticated():
+	added_quantity=0###
+	error_quantity=0###
+	
+	if request.method=="POST" and request.FILES and u.is_authenticated():
 		uploaded_file = request.FILES["file"]
+		if len(uploaded_file) == 0:
+			return HttpResponse("No data selected!")
 		try:
-			added_quantity=0###
-			error_quantity=0###
 			blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data. ###
 			unknown_label = "UNKNOWN" #Label that blacklist values receive.
 			
@@ -299,9 +301,9 @@ def upload_data(request):
 		except Exception as e:
 			print "ERROR:", e
 	
-	print "{} entries added.".format(added_quantity)
-	print  "{} entries failed validation.".format(error_quantity)
-	return HttpResponseRedirect("/data_view/")
+	message = "{} entries added.".format(added_quantity)
+	message += "\n{} entries failed validation.".format(error_quantity)
+	return HttpResponse(message)
 
 def download_CSV(request):
 	u = request.user

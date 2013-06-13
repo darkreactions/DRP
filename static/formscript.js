@@ -544,7 +544,7 @@ $(document).on("submit", "#popupScreenForm", function() { //###Not generalized t
 		}
 	});
 	
-	return false; //Do not continue or else the form will post. 
+	return false; //Do not continue or else the form will post again. 
 });
 
 $(document).on("submit", "#dataEntryForm", function() { //###Not generalized to all popups.

@@ -1,5 +1,5 @@
 application: dark-reactions-alpha
-version: 1
+version: 1.01
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -26,9 +26,11 @@ handlers:
   static_dir: django/contrib/admin/media
   expiration: '0'
 
+- url: /favicon.ico
+  static_dir: static/favicon.ico
+
 - url: /static
   static_dir: static
-
 
 - url: /.*
   script: djangoappengine.main.application
