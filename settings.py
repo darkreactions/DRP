@@ -5,14 +5,20 @@ from djangoappengine.settings_base import *
 
 import os
 
+#Necessary for admin.
+SITE_ID = 1
+
+#Change to "False" to see standard errors:
+DEBUG = False
+
 # Activate django-dbindexer for the default database
 DATABASES['native'] = DATABASES['default']
 DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native'}
 AUTOLOAD_SITECONF = 'indexes'
 
-STATIC_ROOT = (os.path.join(os.path.dirname(__file__)))
+BASE_DIR = (os.path.join(os.path.dirname(__file__)))
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(os.path.dirname(__file__), 'static'),)
+STATIC_ROOT = BASE_DIR + STATIC_URL
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -22,7 +28,6 @@ STATICFILES_FINDERS = (
 
 SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
-SITE_ID = 1 ###C
 
 INSTALLED_APPS = (
 	'django.contrib.admin',

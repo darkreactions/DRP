@@ -503,4 +503,10 @@ def user_login(request):
 def user_logout(request):
 	auth.logout(request)
 	return HttpResponse("Logged Out!")
-    
+
+#Error Messages:
+def display_404_error(request):
+	return render(request, '404_error.html')
+	
+def display_500_error(request):
+	return render(request, '500_error.html')

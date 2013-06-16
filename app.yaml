@@ -1,11 +1,16 @@
-application: dark-reactions-alpha
-version: 1.01
+application: darkreactionsproject
+version: 0-01
 runtime: python27
 api_version: 1
 threadsafe: yes
 
 builtins:
 - remote_api: on
+
+admin_console:
+  pages:
+  - name: Django Admin
+    url: /admin/
 
 inbound_services:
 - warmup
@@ -24,6 +29,10 @@ handlers:
 
 - url: /media/admin
   static_dir: django/contrib/admin/media
+  expiration: '0'
+  
+- url: /static/admin
+  static_dir: static/admin
   expiration: '0'
 
 - url: /favicon.ico
