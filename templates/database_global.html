@@ -1,0 +1,122 @@
+<html>
+
+	<head>
+		<title>
+			Dark Reactions Project
+		</title>
+		
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/database.css" />
+
+	</head>
+	<body> 
+
+	<!-- OUTSIDE OF PANELS -->
+		<!-- USER CONTAINER -->
+	<div id="userInfo">
+		<div id = "userInfo_inner">
+		{% if user.is_authenticated %}
+			Hello, {{ user.first_name }}. <br />
+			<a id="userLogOut"> (Log Out) </a>
+		{% else %}
+			Welcome! <br />
+			<a id="userLogIn" class="userAuthLink">Log In</a> 
+			/ 
+			<a id="userRegister" class="userAuthLink">Register</a>
+		{% endif %}
+		</div>
+	</div>
+		
+		<!-- POPUP CONTAINER -->
+	<div id="popupGlobal" >
+		<div id="popupContainer"  class="genericContainer">
+			<div id="popupContainer_inner"  class="genericContainer_inner">
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+				EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT EXAMPLE TEXT <br/>
+			</div>
+		</div>
+		<div id="mask">
+		</div>
+	</div>
+	
+	
+	<!-- DATABASE MENU -->
+	<div id="leftPanel">
+		<div id="dbMenuContainer" class="genericContainer">
+			<div class="dbMenuButton genericButton popupActivator" title="Add new data." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
+				id="dbMenu_addNew"> </div>
+			<div class="dbMenuButton genericButton" title="Delete selection." style="background-image: url({{ STATIC_URL }}/icons/delete.png);"
+				id="dbMenu_delete"></div>
+			<div class="dbMenuButton genericButton" title="Duplicate selection." style="background-image: url({{ STATIC_URL }}/icons/duplicate.png);"
+				id="dbMenu_duplicate"></div>
+			<div class="dbMenuButton genericButton" title="Select page." style="background-image: url({{ STATIC_URL }}/icons/selectPage.png);"
+				id="dbMenu_selectPage"></div>
+			<div class="dbMenuButton genericButton" title="Select all data." style="background-image: url({{ STATIC_URL }}/icons/selectAll.png);"
+				id="dbMenu_selectAll"></div>
+			<div class="dbMenuButton genericButton popupActivator" title="Upload CSV to database." style="background-image: url({{ STATIC_URL }}/icons/upload.png);"
+				id="dbMenu_uploadCSV"></div>
+			<div class="dbMenuButton genericButton popupActivator" title="Download database CSV." style="background-image: url({{ STATIC_URL }}/icons/download.png);"
+				id="dbMenu_downloadCSV"></div>
+		</div>
+	</div>
+	
+	<!-- DATABASE MENU -->
+	<div id="rightPanel">
+		<div id="topPanel">
+			<div id="siteLogo" style="background-image: url({{ STATIC_URL }}/images/mainLogo.png);">
+			</div>
+			
+			<div id="navMenu">
+				<a href="/data_view/" class="navLink" >Database</a>
+				<a href="/data_view/" class="navLink">Predictions</a>
+			</div>
+		</div>
+		
+		<div id="centerPanel">
+			<div id="dataContainer" class="genericContainer">
+				<!-- DATA VIEW -->
+				<div id="dataContainer_inner">
+					{% include "database_cell.html" %}
+				</div>
+				
+				<!-- PAGE INFORMATION -->
+				<div id="pagesContainer">
+					{% include "page_cell.html" %}
+				</div>
+
+			</div>
+
+		</div>
+		
+	<div id="bottomPanel">
+		<div id="copyrightContainer">
+			Haverford College &copy;{% now "Y" %}
+		</div>
+	</div>
+	
+	</div>
+	
+	</body>
+	
+	<!-- SCRIPTS -->
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.9.0.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-ui-1.10.3.custom.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery_csrf.js"></script>
+
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/data_validation_client.js" ></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/database.js" ></script>
+
+	
+</html>

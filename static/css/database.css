@@ -1,35 +1,349 @@
-body {
-	text-align:center;
-	font-family:arial;
-}
-
-#body_container {
-	min-width:615px;
-	max-width:1150px;
-	text-align:left;
-	margin: 0px auto;
-	display:inline-block;
-	top:0px;
-}
-
-#body_container2 {
-	min-width:615;
-	max-width:1050px;
-	text-align:left;
-	margin: 0px auto;
-	display:inline-block;
-}
-
-#data_container {
-	min-width:615px;
-	max-width:1050px;
+/* ###############   BUTTONS   ###################################### */
+.dbMenuButton {
+	height:50px;
+	width:50px;
+	
+	background-repeat:no-repeat;
+	background-position:center;
+	margin:15px;
 	padding:5px;
-	border:2px black solid;
-	border-radius:10px;
-	background-color:#418FDC;
-	text-align:left;
+	
+	background-color:white;
+	border-radius:15px;
+	border: 3px solid black;
 }
 
+.genericButton:hover {
+	background-color:#FFD92E;
+}
+
+/* ###############   PANELS   ################################### */
+#leftPanel {
+	height:100%;
+	width:100px;
+	
+	position:fixed;
+	margin-top:15px;
+	left:0px;
+}
+
+#rightPanel {
+	margin-left:130px;
+	height:100%;
+}
+
+#topPanel {
+	height:100px;
+	position:relative; /* Required for children to position. */
+	border-bottom:2px solid black;
+	min-width:500px;
+}
+
+#centerPanel {
+	height:80%;
+	min-height:510px;
+	min-width:600px;
+	position:relative;
+	border-bottom:2px solid black;
+}
+
+#bottomPanel {
+
+}
+
+/* ###############   UNIVERSAL   ################################### */
+a {
+	text-decoration:none;
+	cursor:pointer;
+}
+
+a:hover {
+	font-style:oblique;
+	background-color:#FFD92E;
+	border-radius:25px;
+}
+
+body {
+	font-family:helvetica;
+	min-width:600px;
+}
+
+input[type=text] {
+	border:2px solid black;
+	padding:2px;
+}
+
+input[type=button] {
+	border:2px solid black;
+	font-weight:bold;
+	border-top-right-radius:10px;
+}
+
+input:hover {
+	background-color:#FFD92E;
+}
+
+/* ###############   CONTAINERS   ################################### */
+.genericContainer {
+	background-color:#A1C5E2;
+	border-radius:15px;
+	border: 2px solid black;
+}
+
+.genericContainer_inner {
+	background-color:white;
+	border-radius:10px;
+	padding:10px;
+}
+
+#dbMenuContainer {
+	border-top-left-radius:0px;
+	border-bottom-left-radius:0px;
+}
+
+#dataContainer {
+	top:10px;
+	bottom:10px;
+	width:100%;
+	position:absolute;
+	
+	border-top-right-radius:0px;
+	border-bottom-right-radius:0px;
+}
+
+#dataContainer_inner {
+	margin:10px;
+	margin-right:0px;
+	overflow:auto;
+	border-top-right-radius:0px;
+	border-bottom-right-radius:0px;
+}
+
+#pagesContainer {
+	position:absolute;
+	width:100%;
+	height:50px;
+	bottom:0px;
+	background-color:#5087B3;
+	padding-top:5px;
+	border-top:2px black solid;
+	border-radius:inherit;
+	border-top-left-radius:0px;
+	text-align:center;
+}
+
+#copyrightContainer {
+	font-size:12px;
+	font-style:oblique;
+	padding:5px;
+	text-align:center;
+}
+/* ################### POPUP STYLES ################################# */
+#popupGlobal {
+	display:none;
+	position:absolute;
+	top:50%;
+	left:0px;
+	width:100%;
+	height:1px;
+	text-align:center;
+	z-index:101;
+	padding:40px;
+
+}
+
+#popupContainer {
+	position:relative;	
+	height:auto;
+	width:300px;
+	z-index:101;
+	margin-left:-150px;
+}
+
+#popupContainer_inner {
+	margin:10px;
+}
+
+#mask {
+	position:fixed;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	background-color:black;
+	opacity:0.3;
+	z-index:100;
+}
+/* ###############   SUBGROUPS   #################################### */
+#topPanel div {
+	display:inline-block;
+	padding:10px;
+}
+
+.pagesInfo {
+	font-weight:bold;
+	display:inline-block;
+	font-size:14px;
+	color:white;
+}
+
+/* ###############   TEXT   ######################################### */
+.navLink {
+	font-size:24px;
+	font-weight:bold;
+	color:black;
+	margin:10px;
+}
+
+.pageLink {
+	background-color:#3B5D77;
+	padding-left:3px;
+	padding-right:3px;
+	border-radius:15px;
+}
+
+.pageLink:hover {
+	color:#3B5D77;
+	padding-left:3px;
+	padding-right:3px;
+}
+
+#pageLinkCurrent {
+	border:2px solid #304B60;
+}
+
+/* ###############   SPECIFIC ELEMENTS   ############################ */
+#siteLogo {
+	height:80px;
+	width:200px;
+	background-repeat:no-repeat;
+	background-size:contain;
+}
+
+#navMenu {
+	position:absolute;
+	bottom:5px;
+	left:200px;
+}
+
+#userInfo {
+	z-index:5;
+	background-color:#A1C5E2;
+	border-bottom-left-radius:15px;
+	border: 2px solid black;
+	position:absolute;
+	right:0px;
+	top:0px;
+	
+	text-align:center;
+	padding:5px;
+	min-width:100px;
+}
+
+#userInfo_inner {
+	font-size:14px;
+	padding:8px;
+	margin-left:15px;
+	background-color:white;
+	border-radius:5px;
+	border-bottom-left-radius:15px;
+}
+
+/* ###############   DATA STYLE   ################################### */
+.dataGroup {
+	margin-top:8px;
+	margin-bottom:15px;
+	position:relative;
+	border-left:2px solid black;
+	border-top:2px solid black;
+	width:95%;
+}
+
+.dataGroup:hover {
+	background-color:#F1FF8C;
+	cursor:pointer;
+}
+
+.dataSelected {
+	background-color:#FFE944;
+}
+
+.dataSelected .dataIndex:after {
+	content: "\2713 "
+}
+
+.dataIndex {
+	font-size:12px;
+	font-style:oblique;
+	font-weight:bold;
+	position:absolute;
+	right:-7px;
+	top:-8px;
+	
+	border-radius:15px;
+	border-top-right-radius:0px;
+	border-bottom-left-radius:0px;
+	border:2px black solid;
+	background-color:yellow;
+	padding-left:15px;
+	padding-right:8px;
+	
+}
+
+.dataField {
+	font-style:oblique;
+	display: inline-block;
+	padding:2px;
+	border-radius:5px;
+	font-size:15px;
+}
+
+.dataField:after {
+	font-style:oblique;
+	font-weight:bold;
+}
+.dataField:before {
+	font-style:oblique;
+	font-weight:bold;
+	font-size:14px;
+}
+
+		/* ############### :AFTER STYLE ############################# */
+.type_temp:after { content: "\2103"; }
+.type_time:after { content: " Hours"; }
+.type_unit:after { content: ")"; }
+.type_notes:empty:after { content:"(None)"; }
+
+		/* ############### :BEFORE STYLE ############################# */
+.type_reactant:not(:first-child):before { content: "+ "; }
+.type_quantity:before { content: "("; }
+.type_slow_cool:before { content: "Slow Cooled: "; }
+.type_leak:before { content: "Leak: "; }
+.type_pH:before { content: "pH: "; }
+.type_purity:before { content: "Purity: "; }
+.type_outcome:before { content: "Outcome: "; }
+.type_notes:before { content: "Notes: "; }
+.type_ref:before { content: "Reference: "; }
+.type_user:before { 
+	content:"Last Modified by "; 
+	font-style:oblique;
+	font-weight:bold;
+}
+
+		/* ################ .TYPE STYLE ############################# */
+.type_reactant { 
+	font-weight:bold;
+	font-style:none; 
+}
+
+.type_user {
+	font-size:14px;
+	opacity:0.5;
+	position:absolute;
+	right:0px;
+}
+
+/*
 #error_container {
 	text-align:center;
 	min-width:170px;
@@ -64,8 +378,12 @@ body {
 	font-size:14px;
 	font-weight:normal;
 }
+*/
 
+/*
 .error_one_line { /* Used to display errors in one line.*/
+
+/*
 	background-color:#EEA5A5;
 	border: 2px black solid;
 	border-radius:10px;
@@ -76,8 +394,9 @@ body {
 	
 	margin:5px;
 	padding:5px;
-}
+*/
 
+/*
 .popup_button{
 	display:inline-block;
 	border:2px solid black;
@@ -148,12 +467,15 @@ p {
 	border-right:2px black solid;
 	border-bottom:2px black solid;
 	border-top-left-radius:8px; /*Make sure this looks nice ###*/
+/*
 	border-bottom-right-radius:10px;
 	display:inline-block;
 	position:relative;
 	left:-40px;
 }
+*/
 
+/*
 .data {
 	font-size:16px;
 	display:inline;
@@ -168,7 +490,9 @@ p {
 } 
 
 #editInPlace { /*### Perhaps use the autogrow jQuery plugin */
+/*
 	background-color:white;
+
 	border-radius:15px;
 	border: 2px black solid ;
 	outline:0px;
@@ -192,27 +516,29 @@ p {
 	opacity:1;
 	cursor:pointer;
 }
+*/
 
-#page_link_container {
+/*
+#pageLink_container {
 	text-align:center;
 	font-size: 18px;
 	font-weight:bold;
 }
 
-#page_link_container {
+#pageLink_container {
 	color:black;
 	text-decoration:none;
 }
-.page_link {
+.pageLink {
 	color:white;
 }
-.page_link:hover {
+.pageLink:hover {
 	color:#FFE05B;
 	font-style:oblique;
 	cursor:pointer;
 }
 
-.page_link_current {
+.pageLinkCurrent {
 	font-size:20px;
 	font-style:oblique;
 	padding:5px;
@@ -246,7 +572,9 @@ p {
 	font-family:arial;
 	font-style:oblique;
 }
+*/
 
+/*
 #loadingScreen {
 	position:fixed;
 	left:40%;
@@ -286,8 +614,11 @@ p {
 	font-family:arial;
 	text-align:center;
 }
+*/
 
+/*
 #uploadCSVChoose_hidden {/*###Make pretty*/
+/*
 	opacity:0;
 	width:inherit;
 	height:inherit;
@@ -296,8 +627,12 @@ p {
 	left:63px;
 	top:37px;
 }
+*/
 
+/*
 #uploadCSVChoose_display {/*###Make pretty*/
+*/
+/*
 	width:180px;
 	height:25px;
 	margin:5px;
@@ -373,8 +708,11 @@ p {
 .sub_data:hover {
 	cursor:pointer;
 }
+*/
+*/
 
 /* DATA FORMATTING */
+/*
 .type_temp:after {
 	content: "\2103";
 	font-weight:bold;
@@ -487,24 +825,35 @@ p {
 	font-weight:bold;
 	font-style:oblique;
 }
+*/
 
 
 /* FORM STYLE */
 
+/*
 .form_checkbox { /*### */
 }
+/*
 .form_checkbox:checked {
 }
+*/
 
+/*
 #dataEntryForm { /* The form container */
+/*
 	background-color:#418FDC;
+*/
+/*
 	border:2px black solid;
 	border-radius:10px;
 	font-family:arial;
 	text-align:center;
 	padding:5px;
 }
+*/
+*/
 
+/*
 .field_wrapper {
 	padding:10px;
 	background-color:#75ADE6;
@@ -544,8 +893,10 @@ p {
 	padding-left:0px;
 	width:60px;
 }
+*/
 
 /* Assorted Labels */
+/*
 form div label {
 	font-weight:bold;
 	font-size:16px;
@@ -588,13 +939,17 @@ td label {
 	border-radius:15px;
 	
 }
+*/
 /* Should be last to overwrite other styles */
+/*
 .invalid_data {
 	border-color:red;
 	background-color:#F2BABA;
 }
+*/
 
 /* USER CONTAINER STYLE */
+/*
 .popup_screen {
 	background-color:#418FDC;
 	display:none;
@@ -613,6 +968,7 @@ td label {
 
 
 #user_container {/*###Make pretty*/
+/*
 	width:180px;
 	height:35px;
 	margin:5px;
@@ -624,7 +980,7 @@ td label {
 	right:0px;
 }
 
-#popupContainer {
+#popupGlobal {
 	background:rgba(64, 64, 64, 0.9);
 	margin:10%;
 	width:80%;
@@ -654,8 +1010,10 @@ a:hover {
 	border-radius:15px;
 	font-style:oblique;
 }
+*/
 
 /* Popup Form Style */
+/*
 .popup_screen div form input {
 	background-color:#EFEFA9;
 	display:inline-block;
@@ -693,3 +1051,4 @@ table {
 	font-style:oblique;
 	padding:5px;
 }
+*/

@@ -33,6 +33,11 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: formsite_data
+  properties:
+  - name: __key__
+    direction: desc
+
 - kind: formsite_lab_group
   properties:
   - name: __key__

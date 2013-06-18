@@ -1,57 +1,3 @@
-//jQuery CSRF Verification a la Django
-// Copied from: https://docs.djangoproject.com/en/1.3/ref/contrib/csrf/#ajax
-$(document).ajaxSend(function(event, xhr, settings) {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    function sameOrigin(url) {
-        // url could be relative or scheme relative or absolute
-        var host = document.location.host; // host + port
-        var protocol = document.location.protocol;
-        var sr_origin = '//' + host;
-        var origin = protocol + sr_origin;
-        // Allow absolute or scheme relative URLs to same origin
-        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-            // or any other URL that isn't scheme relative or absolute i.e relative.
-            !(/^(\/\/|http:|https:).*/.test(url));
-    }
-    function safeMethod(method) {
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-    }
-});
-
-//jQuery is beautiful
-$(document).ready(function() {
-	
-//||||||||| Variable Setup: |||||||||||||||||||||||||||||||||||||||||
-var totalDataSize = parseInt($("#total_pages").attr("total_data_size")); //size of all data (ie, number of entries)  
-var selectedData = Array();
-var selectedDataSize = 0;
-var changesMade = {
-	del:[],
-	edit:[],
-	dupl:[],
-	add:[],
-	};
-
-
 //All range attributes can be modified CLIENT-SIDE by changing these ranges.
 //Note: ranges were arbitrarily chosen for unit protection and should
 //	be adjusted. 	
@@ -170,108 +116,6 @@ function displayErrorMessage(message) {
 }
 
 //||||||||| Data Manipulation (Buttons): |||||||||||||||||||||||||||||||
-//Select Data One by One
-$(document).on("click", ".data_group", function() {
-	//$(".sub_data").click(function() {
-		//event.stopPropagation(); //###
-	//});
-	
-	$(this).toggleClass("selected");
-	
-	//Get Index of Selected Data by Number
-	var dataID = parseInt($(this).children().html());
-	
-	var indexOfData = selectedData.indexOf(dataID);
-	if (indexOfData >= 0) { //Data is already selected (thus, deselect)
-		selectedData.splice(indexOfData,1);	
-		selectedDataSize -= 1;
-	} else { //Select data
-		selectedData.push(dataID);
-		selectedData.sort(sortNumbers); //###Necessary? Probably
-		selectedDataSize += 1;
-	}
-});
-
-//Select Page Button
-$("#selectPage").click(function() { 
-	var selectedOnPage = [];
-	
-	$(".data_index").each(function() {
-		var dataID = parseInt($(this).html());
-		if (selectedData.indexOf(dataID) == -1){ //If the item is not in the list yet.
-			$(this).parent().addClass("selected");
-			selectedData.push(dataID);
-			selectedData.sort(sortNumbers); //###Necessary? Probably
-			selectedDataSize += 1;
-		} else {
-			//Count the element as selected.
-			selectedOnPage.push(dataID)
-		} 
-	}); 
-	
-	//If all elements were already selected, deselect them. (ie, "toggle")
-	if (selectedOnPage.length == $("#total_pages").attr("data_per_page")){
-		for (i in selectedOnPage) {
-			dataID = selectedOnPage[i];
-			var indexOfData = selectedData.indexOf(dataID);
-			selectedData.splice(indexOfData,1);	
-			selectedDataSize -= 1;
-		}
-		$(".data_group").each(function() {
-			$(this).removeClass("selected");
-		});
-	}
-	//Refresh the selection visually.
-	refreshDataContainer();
-	
-});
-
-//Select All Button
-$("#selectAll").click(function() { 
-	if (selectedDataSize === totalDataSize) {
-		selectedData = [];
-		selectedDataSize = 0;
-		$(".data_group").removeClass("selected");
-	} else {
-		selectedData = [] //Don't double-select any data.
-		//Select all data entries by index id.
-		for(i = 1; i <= totalDataSize; i++) { 
-			selectedData.push(i);
-		}
-		selectedData.sort(sortNumbers);
-		selectedDataSize = totalDataSize;
-		$(".data_group").addClass("selected");
-	}
-});
-
-//Duplicate Button
-$("#duplicateData").click(function() {  
-	//Assume data that is selected is already correct.
-	for (var i = 0; i < selectedDataSize; i++) {
-		changesMade.dupl.push(selectedData[i]);
-	}
-	totalDataSize = $(".data_group").length;
-	$(".data_group").removeClass("selected");
-	
-	//Upload updated data
-	updateData();
-});
-
-//Delete Button
-$("#deleteData").click(function() {  
-	for (var i = 0; i < selectedDataSize; i++) {
-		var dataID = "#g_" + selectedData[i];
-		changesMade.del.push(selectedData[i]);
-		$(dataID).remove()
-	}
-	totalDataSize = $(".data_group").length;
-	selectedData = [];
-	selectedDataSize = 0;
-	$(".data_group").removeClass("selected");
-	
-	//Upload updated data
-	updateData();
-});
 
 //DEV button ###
 $("#REFRESH").click(function() {
@@ -520,7 +364,7 @@ $(".userAuthLink").click( function() {
 		"top":"0px",
 		"left":"0px",
 		"display":"block"});
-	$("#popupContainer").show();
+	$("#popupGlobal").show();
 });
 
 $("#userLogOut").click( function() {
@@ -580,7 +424,7 @@ $(document).on("click", "#popup_toggle", function() { //###Not generalized to al
 
 $(document).on("click", "#popup_close", function() {
 	var popupScreen = $(this).parent();
-	if (popupScreen.parent().attr("id") == "popupContainer") {
+	if (popupScreen.parent().attr("id") == "popupGlobal") {
 		popupScreen.parent().animate({
 			height:"toggle",
 			opacity:"toggle",

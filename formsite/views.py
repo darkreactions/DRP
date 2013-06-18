@@ -15,7 +15,7 @@ import datetime
 
 #Setup Variables
 current_page = 1 #1-based index.
-data_per_page = 8
+data_per_page = 100
 
 #Helper Function that returns all data of a specific lab group.
 def get_saved_data(lab_group):
@@ -69,16 +69,16 @@ def data_view(request, num = current_page): #If no data is entered, stay on the 
 	index_range = range(start_index+1, end_index+1) #1-based index for visuals
 
 	data_package = zip(saved_data[start_index:end_index], index_range)
-	page_links = get_page_links(current_page, total_pages, data_per_page)
+	pageLinks = get_pageLinks(current_page, total_pages, data_per_page)
 	page_package = {
 		"current_page":current_page,
-		"page_links":page_links,
+		"pageLinks":pageLinks,
 		"total_pages":total_pages,
 		"data_per_page":data_per_page,
 		}
 		
 	
-	return render(request, 'form_template.html', {
+	return render(request, 'database_global.html', {
 		"form": data_form,
 		"data_on_page": data_package, #Includes data indexes
 		"page_package": page_package, #Includes data indexes
@@ -88,35 +88,35 @@ def data_view(request, num = current_page): #If no data is entered, stay on the 
 
 #Helper function that returns a list of page numbers/ellipses.
 #	Note: All vars relate to "_page" (eg, "current_page")
-def get_page_links(current, total, data_per):
+def get_pageLinks(current, total, data_per):
 	#Setup Variables
 	current_radius = 4 #Number of links to display "around" current.
 	
 	#Always display the first page.
-	page_links = {1} #Use a set to remove any duplicates. 
+	pageLinks = {1} #Use a set to remove any duplicates. 
 	
 	if total > 1:
 		for i in range(current-current_radius, current+current_radius+1):
-			if (i > 1) and (i < total): page_links.add(i)
+			if (i > 1) and (i < total): pageLinks.add(i)
 			
 		#Always display the last page if applicable.
-		page_links.add(total)
+		pageLinks.add(total)
 		
-	#Convert page_links to an ordered list.
-	page_links = list(page_links)
-	page_links.sort()
+	#Convert pageLinks to an ordered list.
+	pageLinks = list(pageLinks)
+	pageLinks.sort()
 	
-	if len(page_links) >= 2:
+	if len(pageLinks) >= 2:
 		i=0
-		while i < len(page_links):
+		while i < len(pageLinks):
 			try:
-				if page_links[i+1]-page_links[i] > 1:
-					page_links.insert(i+1,"...")
+				if pageLinks[i+1]-pageLinks[i] > 1:
+					pageLinks.insert(i+1,"...")
 					i+=1 #Extra addition to account for new "..." element.
 			except:
 				pass #At the last element of the list or an error, just skip.
 			i += 1
-	return page_links
+	return pageLinks
 
 #Helper function that returns a related data entry field ("reactant 1 name" --> "reactant_1")
 def get_related_field(heading):
@@ -301,6 +301,9 @@ def upload_data(request):
 		except Exception as e:
 			print "ERROR:", e
 	
+	#Bulk Upload?
+	
+	
 	message = "{} entries added.".format(added_quantity)
 	message += "\n{} entries failed validation.".format(error_quantity)
 	return HttpResponse(message)
@@ -370,10 +373,10 @@ def data_transmit(request, num):
 			index_range = range(start_index+1, end_index+1) #1-based index for visuals
 
 			data_package = zip(saved_data[start_index:end_index], index_range)
-			page_links = get_page_links(current_page, total_pages, data_per_page)
+			pageLinks = get_pageLinks(current_page, total_pages, data_per_page)
 			page_package = {
 				"current_page":current_page,
-				"page_links":page_links,
+				"pageLinks":pageLinks,
 				"total_pages":total_pages,
 				"data_per_page":data_per_page,
 				}

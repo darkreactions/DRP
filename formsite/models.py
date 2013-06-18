@@ -104,13 +104,13 @@ class Data(models.Model):
 	quantity_3 = models.CharField("Quantity 3", max_length=35)
 	unit_3 = models.CharField("Unit 3", max_length=30)
 	
-	reactant_4 = models.CharField("Reactant 4", max_length=400)
-	quantity_4 = models.CharField("Quantity 4", max_length=45)
-	unit_4 = models.CharField("Unit 4", max_length=40)
+	reactant_4 = models.CharField("Reactant 4", max_length=400, blank=True)
+	quantity_4 = models.CharField("Quantity 4", max_length=45, blank=True)
+	unit_4 = models.CharField("Unit 4", max_length=40, blank=True)
 	
-	reactant_5 = models.CharField("Reactant 5", max_length=500)
-	quantity_5 = models.CharField("Quantity 5", max_length=55)
-	unit_5 = models.CharField("Unit 5", max_length=50)
+	reactant_5 = models.CharField("Reactant 5", max_length=500, blank=True)
+	quantity_5 = models.CharField("Quantity 5", max_length=55, blank=True)
+	unit_5 = models.CharField("Unit 5", max_length=50, blank=True)
 	
 	ref = models.CharField("Reference", max_length=25)
 	temp = models.CharField("Temperature", max_length=10)
@@ -123,14 +123,14 @@ class Data(models.Model):
 	outcome = models.CharField("Outcome", max_length=1)
 	purity = models.CharField("Purity", max_length=1)
 	
-	notes = models.CharField("Notes", max_length=200)
+	notes = models.CharField("Notes", max_length=200, blank=True)
 	
 	#User-related Fields
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
 	
 	def __unicode__(self):
-		return "{} -- (LAB: {})".format(self.id, self.lab_group.lab_title)
+		return "{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 	
 #Add specified entries to a datum. Assume fields are present, safe, and clean.###
 def create_data_entry(user, **kwargs):
