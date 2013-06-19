@@ -6,6 +6,10 @@ function sortNumbers(smallNum,bigNum) {
 	return smallNum - bigNum;
 }
 
+//Refresh screen.
+function refreshScreen() {
+	window.setTimeout('location.reload()', 300); //###Will this work under heavy load?
+}
 
 //############ Variable Setup: #########################################
 var selectedData = Array();
@@ -19,19 +23,55 @@ var changesMade = {
 //############ Popup Management: #######################################
 //Activate specified popup:
 $(document).on("click", ".popupActivator", function() {
+	//Display a loading message if the request takes a visible amount of time.
+	$("#popupContainer_inner").html("<center>Loading. Please wait.</center>");
+	activatorID = $(this).attr("id");
 	switch ($(this).attr("id")) {
 		case "dbMenu_addNew":
-			$("#popupContainer").attr("for", "dbMenu_addNew");
+			$("#popupContainer").attr("for", activatorID);
 			$.get("/data_form/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
 		case "dbMenu_uploadCSV":
+			$("#popupContainer").attr("for", activatorID);
+			$.get("/upload_CSV/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
+		case "userLogin":
+			$("#popupContainer").attr("for", activatorID);
+			$.get("/user_login/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
+		case "registrationPrompt": //###REPLACE WITH DROP-DOWN PRELOADED?
+			$("#popupContainer").attr("for", activatorID);
+			$.get("/registration_prompt/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
+		case "userRegistration":
+			$("#popupContainer").attr("for", activatorID);
+			$.get("/user_registration/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
+		case "labRegistration":
+			$("#popupContainer").attr("for", activatorID);
+			$.get("/user_registration/", function(response) {
+				$("#labRegistration").html(response);
+			});
+			break;
+		case "dbMenu_downloadCSV"://###
 			$("#popupContainer_inner").html("DIFF!");
 			break;
+		default: 
+			return false; //If a popup is not recognized, don't l
 	}
 	
 	$("#popupGlobal").fadeIn("fast");
+	
 });
 
 // Fade the popup when the mask is clicked.
@@ -39,7 +79,7 @@ $(document).on("click", "#mask", function() {
 	$("#popupGlobal").fadeOut("fast");
 });
 
-
+//Close popups on close-button click.
 $(document).on("click", ".closeButton", function() {
 	//Close the global container if the main container is closed.
 	if ($(this).parent().attr("id")=="popupContainer") {
@@ -49,6 +89,14 @@ $(document).on("click", ".closeButton", function() {
 	}
 });
 
+//Show the CSV title to be displayed on the visible element.
+$(document).on("change", "#uploadCSV_hiddenInput", function() {
+	if (!$("#uploadCSV_hiddenInput").val()) {
+		$("#uploadCSV_display").children("div").html("None Selected");
+	} else {
+		$("#uploadCSV_display").children("div").html($(this).val().split('\\').pop());
+	}
+});
 
 //############ Form Interactions: ######################################
 $(document).on("submit", "form", function() {
@@ -57,6 +105,16 @@ $(document).on("submit", "form", function() {
 		//Recreate the popup window with the server response.
 		$("#popupContainer_inner").html(response);
 		$(".subPopup").draggable();
+		
+		//Show the ribbon message if applicable.
+		if ($(".ribbonMessage").length) {
+			$(".ribbonMessage").fadeOut("slow")
+		};
+		
+		//Reload the screen if applicable.
+		if ($(".reloadActivator").length) {
+			refreshScreen();
+		};
 	});
 	
 	return false; //Do not continue or else the form will post again. 
@@ -151,6 +209,15 @@ $("#dbMenu_delete").click(function() {
 	
 	//Upload updated data
 	//updateData(); ###
+});
+
+//############ User Authentication: #########################################
+$("#userLogOut").click( function() {
+	//Send the log-out signal.
+	$.get("/user_logout/", function(formHTML) {});
+	
+	//Reload the screen to verify log-out.
+	refreshScreen()
 });
 
 //######################################################################

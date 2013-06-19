@@ -12,19 +12,22 @@ handler404 = 'formsite.views.display_404_error'
 
 urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
-	#Example URL:
-    ###('^$', 'django.views.generic.simple.direct_to_template',{'template':'home.html'}),
+		#Database
     (r'^$', database),
     (r'^database/$', database), #Encompassing data view.
     (r'^data_form/$', data_form), #Encompassing data view.
-    (r'^upload_data/$', upload_data),
+    (r'^upload_CSV/$', upload_CSV),
+		#Authentication
+    (r'^user_logout/$', user_logout), #Log Out
+    (r'^user_login/$', user_login), #Log In
+    (r'^registration_prompt/$', registration_prompt), #Redirects to correct registration choice.
+    (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
+    (r'^user_registration/$', user_registration), #Create User
+    #
     (r'^download_CSV/$', download_CSV),
     (r'^data_transmit/$', data_transmit), #Better Page Switch###
     (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Better Page Switch###
     (r'^data_update/$', data_update), #Update Information
-    (r'^user_registration/$', user_registration), #Create User
-    (r'^user_login/$', user_login), #Log In
-    (r'^user_logout/$', user_logout), #Log Out
 	#Enable the admin:
     (r'^admin/', include(admin.site.urls)),
     

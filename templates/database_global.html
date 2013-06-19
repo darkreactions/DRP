@@ -19,9 +19,9 @@
 			<a id="userLogOut"> (Log Out) </a>
 		{% else %}
 			Welcome! <br />
-			<a id="userLogIn" class="userAuthLink">Log In</a> 
+			<a id="userLogin" class="userAuthLink popupActivator">Log In</a> 
 			/ 
-			<a id="userRegister" class="userAuthLink">Register</a>
+			<a id="registrationPrompt" class="userAuthLink popupActivator">Register</a>
 		{% endif %}
 		</div>
 	</div>
@@ -58,15 +58,15 @@
 		</div>
 	</div>
 	
-	<!-- DATABASE MENU -->
+	<!-- NAVIGATION MENU -->
 	<div id="rightPanel">
 		<div id="topPanel">
 			<div id="siteLogo" style="background-image: url({{ STATIC_URL }}/images/mainLogo.png);">
 			</div>
 			
 			<div id="navMenu">
-				<a href="/data_view/" class="navLink" >Database</a>
-				<a href="/data_view/" class="navLink">Predictions</a>
+				<a href="/database/" class="navLink" >Database</a>
+				<a href="/predictions/" class="navLink">Predictions</a>
 			</div>
 		</div>
 		

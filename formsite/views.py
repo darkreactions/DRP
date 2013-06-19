@@ -21,19 +21,24 @@ class Controller(object):
 		self.current_page = 1
 		self.total_pages = 1
 		self.saved_data = []
+	
 	def change_page(self, page):
 		if (self.total_pages > page > 0):
 			self.current_page = page
+	
 	def update_total_pages(self):
 		self.total_pages = int(1 + (len(self.saved_data)-1)/self.data_per_page)
 		if (self.total_pages < 1): self.total_pages = 1
+	
 	#Returns all data that belongs to a specific lab group.
 	def refresh_saved_data(self,lab_group):
 		self.saved_data = Data.objects.filter(lab_group=lab_group)
+		
 	def get_saved_data(self, lab_group):
 		if self.saved_data == []:
 			self.refresh_saved_data(lab_group)
 		return self.saved_data
+	
 	#Helper function that returns a list of page numbers/ellipses.
 	#	Note: All vars relate to "_page" (eg, "current_page")
 	def get_pageLinks(self):
@@ -96,24 +101,35 @@ def database(request, control = control):
 	})
 
 
-#Send/receive the data-entry form
+#Send/receive the data-entry form:
 def data_form(request): #If no data is entered, stay on the current page.
 	u = request.user
+	success = False
 	if request.method == 'POST' and u.is_authenticated(): 
 		#Bind the user's data and verify that it is legit.
 		form = DataEntryForm(user=u, data=request.POST)
 		if form.is_valid():
 			#If all data is valid, save the entry (and the submitter)
 			form.save()
+			success = True
 	else:
 		#Submit a blank form if one was not just submitted.
 		form = DataEntryForm()
 	
 	return render(request, 'data_form.html', {
 		"form": form,
+		"success": success,
 	})
 
-######################  Core Views  ####################################
+#Send/receive the upload-CSV form:
+def upload_CSV(request):
+	u = request.user
+	if request.method == 'POST' and u.is_authenticated(): 
+		return upload_data(request)
+	else:
+		return render(request, 'upload_form.html')
+	
+######################  Helper Functions ###############################
 
 #Helper function that returns a related data entry field ("reactant 1 name" --> "reactant_1")
 def get_related_field(heading):
@@ -161,7 +177,8 @@ def get_related_field(heading):
 		raise Exception("TRANSLATION ERROR: No relation found for {}.".format(heading))###Possible Raise?
 	return related_field
 		
-def upload_data(request):
+def upload_data(redirected_request):
+	request = redirected_request #Request should be redirected from the upload view. 
 	true_fields = get_data_field_names()
 	not_required = { ###Auto-generate?
 			"reactant_3", "quantity_3", "unit_3", 
@@ -445,57 +462,20 @@ def data_update(request):
 				print "ERROR ADDING FILES"
 	return HttpResponse("SUCCESS");
 
-###Register Lab too
-def user_registration(request):
-	if request.method == "POST":
-		uform = UserForm(data = request.POST)
-		pform = UserProfileForm(data = request.POST)
-		if uform.is_valid() and pform.is_valid():
-			#Check that the access_code query for the Lab_Group is correct. 
-			q_lab_group = pform.cleaned_data["lab_group"] 
-			access_code = Lab_Group.objects.filter(lab_title=q_lab_group)[0].access_code
-			
-			if pform.cleaned_data["access_code"] == access_code:
-				#Create the user to be associated with the profile.
-				new_user = uform.save()
-				
-				#Save the profile
-				profile = pform.save(commit = False)
-				#Assign the user to the profile
-				profile.user = new_user
-				profile.save()
-				
-				new_user = auth.authenticate(username = request.POST["username"],
-					password = request.POST["password"])
-				auth.login(request, new_user)
-				reload_timer = "<div class=\"reload_timer\"></div>"
-				return HttpResponse("Registration Successful!"+reload_timer)###Auto-Login?
-			else:
-				return HttpResponse("Invalid Access Code!")
-	else:
-		uform = UserForm()
-		pform = UserProfileForm()
-	return render(request, "registration_form.html", {
-		"uform": uform,
-		"pform": pform,
-	})
-
+######################  User Auth ######################################
 def user_login(request):
+	login_fail = False #The user hasn't logged in yet...
+	
 	if request.method == "POST":
 		username = request.POST.get("username", "")
 		password = request.POST.get("password", "")
-	
 		user = auth.authenticate(username=username, password=password)
-		
 		if user is not None and user.is_active:
 			auth.login(request, user)
-			#Send the signal to reload the page.
-			reload_timer = "<div class=\"reload_timer\"></div>"
-			return HttpResponse("Logged in successfully!"+reload_timer)
+			
+			return HttpResponse("Logged in successfully! <div class=reloadActivator></div>"); #Only the reloadActivator is "required" here.
 		else:
 			login_fail = True #The login info is not correct.
-	else:
-		login_fail = False #The user hasn't logged in yet.
 	return render(request, "login_form.html", {
 		"login_fail": login_fail,
 	})
@@ -504,7 +484,53 @@ def user_logout(request):
 	auth.logout(request)
 	return HttpResponse("Logged Out!")
 
-#Error Messages:
+#Redirects user to the appropriate registration screen.
+def registration_prompt(request):
+	#Needed to properly render template.
+	return render(request, "registration_cell.html", {})
+
+def user_registration(request):
+	if request.method == "POST":
+		form = [UserForm(data = request.POST), UserProfileForm(data = request.POST)]
+		if form[0].is_valid() and form[1].is_valid():
+			#Check that the access_code query for the Lab_Group is correct. 
+			lab_group = form[1].cleaned_data["lab_group"] 
+			access_code = Lab_Group.objects.filter(lab_title=lab_group)[0].access_code
+			
+			if form[1].cleaned_data["access_code"] == access_code:
+				#Create the user to be associated with the profile.
+				new_user = form[0].save()
+				#Save the profile
+				profile = form[1].save(commit = False)
+				#Assign the user to the profile
+				profile.user = new_user
+				profile.save()
+				#Politely log the user in!
+				new_user = auth.authenticate(username = request.POST["username"],
+					password = request.POST["password"])
+				auth.login(request, new_user)
+				reload_timer = "<div class=reloadActivator></div>"
+				return HttpResponse("Registration Successful!"+reload_timer)
+			else:
+				return HttpResponse("Invalid Access Code!")
+	else:
+		form = [UserForm(), UserProfileForm()]
+	return render(request, "user_registration_form.html", {
+		"user_form": form[0],
+		"profile_form": form[1],
+	})
+	
+def lab_registration(request):
+	if request.method=="POST":
+		pass
+	else:
+		####form = LabForm()
+		pass
+	return render(request, "lab_registration_form.html", {
+		###"lab_form": form,
+	})	
+
+######################  Error Messages  ################################
 def display_404_error(request):
 	return render(request, '404_error.html')
 	

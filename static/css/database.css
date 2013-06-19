@@ -23,6 +23,7 @@
 	background-color:white;
 	font-size:12px;
 	font-weight:bold;
+	text-align:center;
 	
 	width:15px;
 	height:15px;
@@ -74,6 +75,7 @@
 a {
 	text-decoration:none;
 	cursor:pointer;
+	color:8CFDFF;
 }
 
 a:hover {
@@ -82,13 +84,30 @@ a:hover {
 	border-radius:25px;
 }
 
+p {
+	text-align:center;
+}
+
+table {
+	color:inherit;
+	margin: 0 auto;
+}
+
 body {
 	font-family:helvetica;
 	min-width:600px;
 	overflow:hidden;
+	background-color:#E8F4FF;
 }
 
 input[type=text] {
+	border:2px solid black;
+	border-radius:5px;
+	padding:2px;
+	padding-left:5px;
+}
+
+input[type=password] {
 	border:2px solid black;
 	border-radius:5px;
 	padding:2px;
@@ -148,6 +167,8 @@ input:focus {
 	
 	border-top-right-radius:0px;
 	border-bottom-right-radius:0px;
+	margin-left:-20px;
+	margin-right:20px;
 }
 
 #dataContainer_inner {
@@ -201,6 +222,9 @@ input:focus {
 	border-left: 2px black solid;
 	border-radius:25px;
 	padding:15px;
+	
+	color:#FFE98F;
+	font-style:oblique;
 }
 
 #mask {
@@ -222,6 +246,38 @@ input:focus {
 	min-width:570px;
 }
 
+#popupContainer[for="dbMenu_uploadCSV"] {
+	text-align:center;
+	top:50px;
+	left:30%;
+	width:40%;
+	min-width:300px;
+}
+
+#popupContainer[for="userLogin"] {
+	text-align:center;
+	top:50px;
+	left:30%;
+	width:40%;
+	min-width:300px;
+}
+
+#popupContainer[for="registrationPrompt"] {
+	text-align:center;
+	top:50px;
+	left:30%;
+	width:40%;
+	min-width:300px;
+}
+
+#popupContainer[for="userRegistration"] {
+	text-align:center;
+	top:50px;
+	left:20%;
+	width:60%;
+	min-width:400px;
+}
+
 .subPopup { /* Right now, just used for errors. */
 	position:absolute;
 	background-color: #FFD6D6;
@@ -230,13 +286,8 @@ input:focus {
 	width:550px;
 	z-index:103;
 	padding-bottom:5px;
-}
-
-.subPopup > h1 {
-	margin:5px;
-	text-align:left;
-	padding-left:20px;
-	font-style:oblique;
+	
+	color:black;
 }
 
 /* ###############   SUBGROUPS   #################################### */
@@ -253,7 +304,21 @@ input:focus {
 }
 
 /* ###############   TEXT   ######################################### */
+#popupContainer_inner > h1 {
+	margin:5px;
+	text-align:center;
+	font-style:oblique;
+	color:white;
+}
+.subPopup > h1 {
+	margin:5px;
+	text-align:left;
+	padding-left:20px;
+	font-style:oblique;
+}
+
 .navLink {
+	font-family:Times;
 	font-size:24px;
 	font-weight:bold;
 	color:black;
@@ -276,6 +341,11 @@ input:focus {
 #pageLinkCurrent {
 	border:2px solid #304B60;
 }
+
+.userAuthLink {
+	color:black;
+}
+
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
 #siteLogo {
@@ -313,6 +383,52 @@ input:focus {
 	background-color:white;
 	border-radius:5px;
 	border-bottom-left-radius:15px;
+}
+
+
+#uploadCSV_display {
+	position:relative;
+	padding:5px;
+	background-color:#EFEFA9;
+	border:2px black solid;
+	border-radius:5px;
+}
+
+#uploadCSV_display:hover {
+	background-color: #FFE05B;
+}
+
+#uploadCSV_hiddenInput {
+	position:absolute;
+	top:0px; /*Should be equal to container padding.*/
+	left:0px;
+	width:100%;
+	height:100%;
+	border-radius:inherit;
+	opacity:0;
+}
+
+.ribbonMessage {
+	font-size:18px;
+	position:absolute;
+	width:100%;
+	top:40%;
+	left:0px;
+	text-align:center;
+	
+	background-color:red;
+	border-top:2px solid black;
+	border-bottom:3px solid black;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+.reloadActivator {
+	height:1px;
+	width:1px;
+	position:absolute;
+	top:0px;
+	left:0px;
 }
 
 /* ###############   DATA STYLE   ################################### */
@@ -410,18 +526,20 @@ input:focus {
 }
 
 /* #################### FORM STYLE ################################# */
-.field_wrapper {
+.fieldWrapper {
 	padding:5px;
-	background-color:#75ADE6;
 	border: 2px black solid;
 	border-radius:10px;
 	margin:5px;
 	display: inline-block;
 	text-align:left;
 	min-width:100px;
+
+	background-color:#75ADE6;
+	color:black;
 }
 
-.reaction_wrapper {
+.reactionWrapper {
 	background:rgba(64, 64, 64, 0.3);
 	font-style:oblique;
 	display:inline-block;

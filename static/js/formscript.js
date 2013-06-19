@@ -314,7 +314,7 @@ function quickValidation(field, dirty_datum) { //(Mainly ported from validation.
 	}	
 }
 
-$(".field_wrapper input").blur(function() {
+$(".fieldWrapper input").blur(function() {
 	//Prepare Variables
 	var dataIsValid = true; //Boolean that changes in regard to data tests.
 	var dirtyField = $(this).attr("id").substr(3);
@@ -350,7 +350,7 @@ $(".userAuthLink").click( function() {
 			$("#id_username").focus(); //###Should just be "first visible input"
 		});
 	} //Get the Log-In form if it is requested.
-	else if ($(this).attr("id") == "userLogIn") {
+	else if ($(this).attr("id") == "userLogin") {
 		$.get("/user_login/", function(formHTML) {
 			$("#userForm").html(formHTML);
 			$("#id_username").focus(); //###Should just be "first visible input"
@@ -372,7 +372,7 @@ $("#userLogOut").click( function() {
 	$.get("/user_logout/", function(formHTML) {});
 	
 	//Reload the screen to verify log-out.
-	refreshScreen()
+	//refreshScreen()
 });
 
 //||||||||| Upon Form Submissions: ||||||||||||||||||||||||||||||||||||
