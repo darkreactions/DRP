@@ -1,10 +1,11 @@
 /* ###############   BUTTONS   ###################################### */
 .dbMenuButton {
-	height:50px;
-	width:50px;
+	height:40px;
+	width:40px;
 	
 	background-repeat:no-repeat;
 	background-position:center;
+	background-size:80%;
 	margin:15px;
 	padding:5px;
 	
@@ -15,6 +16,24 @@
 
 .genericButton:hover {
 	background-color:#FFD92E;
+	cursor:pointer;
+}
+
+.closeButton {
+	background-color:white;
+	font-size:12px;
+	font-weight:bold;
+	
+	width:15px;
+	height:15px;
+	border:2px solid black;
+	border-top-right-radius:10px;
+	border-bottom-left-radius:10px;
+	padding:2px;
+	
+	position:absolute;
+	top:10px;
+	right:10px;
 }
 
 /* ###############   PANELS   ################################### */
@@ -66,11 +85,14 @@ a:hover {
 body {
 	font-family:helvetica;
 	min-width:600px;
+	overflow:hidden;
 }
 
 input[type=text] {
 	border:2px solid black;
+	border-radius:5px;
 	padding:2px;
+	padding-left:5px;
 }
 
 input[type=button] {
@@ -79,7 +101,23 @@ input[type=button] {
 	border-top-right-radius:10px;
 }
 
+input[type=submit] {
+	border:2px solid black;
+	font-weight:bold;
+	border-top-right-radius:10px;
+}
+
+select {
+	border:2px solid black;
+	font-weight:bold;
+	border-top-right-radius:10px;
+}
+
 input:hover {
+	background-color:#FFF1B5;
+}
+
+input:focus {
 	background-color:#FFD92E;
 }
 
@@ -106,17 +144,20 @@ input:hover {
 	bottom:10px;
 	width:100%;
 	position:absolute;
+	padding-bottom:70px;
 	
 	border-top-right-radius:0px;
 	border-bottom-right-radius:0px;
 }
 
 #dataContainer_inner {
+	position:relative;
 	margin:10px;
 	margin-right:0px;
-	overflow:auto;
 	border-top-right-radius:0px;
 	border-bottom-right-radius:0px;
+	height:100%;
+	overflow:auto;
 }
 
 #pagesContainer {
@@ -142,26 +183,24 @@ input:hover {
 #popupGlobal {
 	display:none;
 	position:absolute;
-	top:50%;
-	left:0px;
-	width:100%;
-	height:1px;
-	text-align:center;
 	z-index:101;
-	padding:40px;
-
+	width:100%;
 }
 
 #popupContainer {
 	position:relative;	
 	height:auto;
-	width:300px;
+	width:auto;
 	z-index:101;
-	margin-left:-150px;
 }
 
 #popupContainer_inner {
+	background-color:#355A77;
 	margin:10px;
+	border-top: 2px black solid;
+	border-left: 2px black solid;
+	border-radius:25px;
+	padding:15px;
 }
 
 #mask {
@@ -174,6 +213,32 @@ input:hover {
 	opacity:0.3;
 	z-index:100;
 }
+		/* ############### SPECIFIC POPUPS ########################## */
+#popupContainer[for="dbMenu_addNew"] {
+	text-align:center;
+	top:50px;
+	left:10%;
+	width:80%;
+	min-width:570px;
+}
+
+.subPopup { /* Right now, just used for errors. */
+	position:absolute;
+	background-color: #FFD6D6;
+	border:4px solid #B20200;
+	border-radius:15px;
+	width:550px;
+	z-index:103;
+	padding-bottom:5px;
+}
+
+.subPopup > h1 {
+	margin:5px;
+	text-align:left;
+	padding-left:20px;
+	font-style:oblique;
+}
+
 /* ###############   SUBGROUPS   #################################### */
 #topPanel div {
 	display:inline-block;
@@ -216,13 +281,14 @@ input:hover {
 #siteLogo {
 	height:80px;
 	width:200px;
+	margin-left:-30px;
 	background-repeat:no-repeat;
 	background-size:contain;
 }
 
 #navMenu {
 	position:absolute;
-	bottom:5px;
+	bottom:0px;
 	left:200px;
 }
 
@@ -343,81 +409,64 @@ input:hover {
 	right:0px;
 }
 
-/*
-#error_container {
-	text-align:center;
-	min-width:170px;
-	top:20%;
-	left:10%;
-	right:10%;
-}
-
-#error_container {
-	text-align:center;
-	min-width:170px;
-}
-
-
-.error {
-	padding:10px;
-	background-color:#EEA5A5;
+/* #################### FORM STYLE ################################# */
+.field_wrapper {
+	padding:5px;
+	background-color:#75ADE6;
 	border: 2px black solid;
 	border-radius:10px;
 	margin:5px;
 	display: inline-block;
 	text-align:left;
-	min-width:75px;
-	max-width:150px;
+	min-width:100px;
 }
 
-.errorlist{
-	list-style-type:none;
-	color:red;
-	margin:0px;
-	padding-left:0px;
-	font-size:14px;
-	font-weight:normal;
-}
-*/
-
-/*
-.error_one_line { /* Used to display errors in one line.*/
-
-/*
-	background-color:#EEA5A5;
-	border: 2px black solid;
-	border-radius:10px;
+.reaction_wrapper {
+	background:rgba(64, 64, 64, 0.3);
+	font-style:oblique;
 	display:inline-block;
-	
-	font-weight:bold;
-	color:red;
-	
-	margin:5px;
+	border-radius:15px;
+}
+
+.form_text_short {
+	width:65px;
+}
+.form_text_long {
+	width:250px;
+}
+
+
+		/* #################### ERROR STYLE ######################### */
+.error {
+	display:inline-block;
+	background-color: #F7605B;
+	border: 2px solid #B35350;
+	margin:2px;
 	padding:5px;
-*/
+	border-radius:15px;
+	border-top-right-radius:0px;
+}
 
-/*
-.popup_button{
+.error_label {
+	text-align:left;
+	font-weight:bold;
+	font-style:oblique;
+	cursor:pointer;
+}
+.error_label:hover {
+	color:#FFE949;
+}
+
+.error_message {
 	display:inline-block;
-	border:2px solid black;
-	border-radius:5px;
-	font-size:12px;
-	color:black;
-	width:16px;
-	height:14px;
-	text-align:center;
-	background-color:#FFEFA8;
-	
-	position:absolute;
-	right:5px;
-	top:5px;
-	
+	font-style:oblique;
 }
 .popup_button:hover{
 	background-color:#FFD92E;
 	cursor:pointer;
 }
 
+/*
 #popup_toggle {
 	right:30px;
 }
@@ -459,7 +508,9 @@ p {
 .data_group:hover {	
 	background-color:#FFEA8F;
 }
+*/
 
+/*
 .data_index {
 	background-color:#A9CCEF;
 	padding:5px;
@@ -467,6 +518,7 @@ p {
 	border-right:2px black solid;
 	border-bottom:2px black solid;
 	border-top-left-radius:8px; /*Make sure this looks nice ###*/
+*/
 /*
 	border-bottom-right-radius:10px;
 	display:inline-block;
@@ -854,17 +906,6 @@ p {
 */
 
 /*
-.field_wrapper {
-	padding:10px;
-	background-color:#75ADE6;
-	border: 2px black solid;
-	border-radius:10px;
-	margin:5px;
-	display: inline-block;
-	text-align:left;
-	min-width:100px;
-}
-
 .form_text {
 	background-color:#EFEFA9;
 	display:inline-block;
@@ -932,12 +973,7 @@ td label {
 	background-color:#FFE05B;
 }
 
-.reaction_wrapper {
-	background:rgba(64, 64, 64, 0.3);
-	font-style:oblique;
-	display:inline-block;
-	border-radius:15px;
-	
+
 }
 */
 /* Should be last to overwrite other styles */
@@ -1011,44 +1047,9 @@ a:hover {
 	font-style:oblique;
 }
 */
-
-/* Popup Form Style */
 /*
-.popup_screen div form input {
-	background-color:#EFEFA9;
-	display:inline-block;
-	padding:5px;
-	border: 2px black solid;
-	border-radius:5px;
-}
-
-.popup_screen div form:active {
-	background-color:#black;
-	display:inline-block;
-	padding:5px;
-	border: 2px black solid;
-	border-radius:5px;
-}
-
-.popup_screen div form input:hover {
-	background-color:#FFEA8F;
-}
-
-tr td {
-	width:120px
-}
-
-table {
-	margin:0 auto;
-}
-
 .reload_timer {
 	display:none;
 }
-
-#copyright_container {
-	font-size:12px;
-	font-style:oblique;
-	padding:5px;
-}
 */
+

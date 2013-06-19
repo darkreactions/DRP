@@ -13,110 +13,107 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import auth
 import datetime
 
-#Setup Variables
-current_page = 1 #1-based index.
-data_per_page = 100
-
-#Helper Function that returns all data of a specific lab group.
-def get_saved_data(lab_group):
-	return Data.objects.filter(lab_group=lab_group)
-
-def data_view(request, num = current_page): #If no data is entered, stay on the current page.
-	#Call the global variables.
-	global data_per_page
-	global current_page
-	
-	#Make sure the user is logged in before they see the form.
-	if request.user.is_authenticated():
-		#Get the Lab_Group data if the user is logged in.
-		u = request.user
-		saved_data = get_saved_data(u.get_profile().lab_group)
+######################  Controller  ####################################
+class Controller(object):
+	def __init__(self):
+		self.data_per_page = 100 #Change to set different numbers of data per page.
+		self.current_radius = 4 #Max number of links to display "around" current link.
+		self.current_page = 1
+		self.total_pages = 1
+		self.saved_data = []
+	def change_page(self, page):
+		if (self.total_pages > page > 0):
+			self.current_page = page
+	def update_total_pages(self):
+		self.total_pages = int(1 + (len(self.saved_data)-1)/self.data_per_page)
+		if (self.total_pages < 1): self.total_pages = 1
+	#Returns all data that belongs to a specific lab group.
+	def refresh_saved_data(self,lab_group):
+		self.saved_data = Data.objects.filter(lab_group=lab_group)
+	def get_saved_data(self, lab_group):
+		if self.saved_data == []:
+			self.refresh_saved_data(lab_group)
+		return self.saved_data
+	#Helper function that returns a list of page numbers/ellipses.
+	#	Note: All vars relate to "_page" (eg, "current_page")
+	def get_pageLinks(self):
+		#Always display the first page.
+		pageLinks = {1} #Use a set to remove any duplicates. 
 		
-		# If the form has been submitted.
-		if request.method == 'POST': 
-			#Bind the user's data and verify that it is legit.
-			data_form = DataEntryForm(user=u, data=request.POST)
-			if data_form.is_valid():
-				#If all data is valid, save the entry (and the submitter)
-				data_form.save()
-		else:
-			#Submit a blank form if one was not just submitted.
-			data_form = DataEntryForm()
-	else:
-		#If the user is not logged in. ###
-		saved_data = []
-		data_form = DataEntryForm()
-	
-	#Calculate the number of possible pages.
-	total_pages = int(1 + (len(saved_data)-1)/data_per_page) ###
-	if (total_pages < 1): total_pages = 1
-	
-	###if (request.method == 'POST'): #Jump to the new data if relevant.
-		###if form.is_valid(): num = total_pages 
+		if self.total_pages > 1:
+			for i in range(self.current - self.current_radius, self.current + self.current_radius+1):
+				if (1 < i < self.total_pages): pageLinks.add(i)
+				
+			#Always display the last page if applicable.
+			pageLinks.add(self.total_pages)
+			
+		#Convert pageLinks to an ordered list.
+		pageLinks = list(pageLinks)
+		pageLinks.sort()
+		
+		if len(pageLinks) >= 2:
+			i=0
+			while i < len(pageLinks):
+				try:
+					if pageLinks[i+1]-pageLinks[i] > 1: #If a gap exists between two numbers, add an ellipsis. 
+						pageLinks.insert(i+1,"...")
+						i+=1 #Extra addition to account for new "..." element.
+				except:
+					pass #At the last element of the list or an error, just skip.
+				i += 1
+		return pageLinks
+#Create the settings controller.
+control = Controller()	
 
-	try:
-		num = int(num) #Convert the unicode page number to an integer for comparison.
-		assert 0 < num <= total_pages
-	except:
-		num = total_pages
-	
-	#Update current_page if it was changed.
-	current_page = num
+######################  Core Views  ####################################
+def database(request, control = control):
+	#Get all saved data if it exists.
+	if request.user.is_authenticated():
+		u = request.user
+		saved_data = control.get_saved_data(u.get_profile().lab_group)
+	else:
+		saved_data = [] #Don't query the database if U is not logged in.
 	
 	#Only send the data on the requested page. Note that Lab_Group.saved_data is a 0-based index.
-	start_index = (current_page-1)*data_per_page 
-	end_index = (current_page)*data_per_page
+	start_index = (control.current_page-1)*control.data_per_page 
+	end_index = (control.current_page)*control.data_per_page
 	index_range = range(start_index+1, end_index+1) #1-based index for visuals
+	pageLinks = control.get_pageLinks()
 
-	data_package = zip(saved_data[start_index:end_index], index_range)
-	pageLinks = get_pageLinks(current_page, total_pages, data_per_page)
+	#Prepare packages.
+	data_package = zip(control.saved_data[start_index:end_index], index_range)
 	page_package = {
-		"current_page":current_page,
+		"current_page":control.current_page,
+		"total_pages":control.total_pages,
+		"data_per_page":control.data_per_page,
 		"pageLinks":pageLinks,
-		"total_pages":total_pages,
-		"data_per_page":data_per_page,
 		}
-		
-	
+			
 	return render(request, 'database_global.html', {
-		"form": data_form,
-		"data_on_page": data_package, #Includes data indexes
-		"page_package": page_package, #Includes data indexes
+		"data_on_page": data_package, #Includes data and data_indexes.
+		"page_package": page_package, 
 		"total_data_size": len(saved_data),
-		#"user_package": user_package
 	})
 
-#Helper function that returns a list of page numbers/ellipses.
-#	Note: All vars relate to "_page" (eg, "current_page")
-def get_pageLinks(current, total, data_per):
-	#Setup Variables
-	current_radius = 4 #Number of links to display "around" current.
+
+#Send/receive the data-entry form
+def data_form(request): #If no data is entered, stay on the current page.
+	u = request.user
+	if request.method == 'POST' and u.is_authenticated(): 
+		#Bind the user's data and verify that it is legit.
+		form = DataEntryForm(user=u, data=request.POST)
+		if form.is_valid():
+			#If all data is valid, save the entry (and the submitter)
+			form.save()
+	else:
+		#Submit a blank form if one was not just submitted.
+		form = DataEntryForm()
 	
-	#Always display the first page.
-	pageLinks = {1} #Use a set to remove any duplicates. 
-	
-	if total > 1:
-		for i in range(current-current_radius, current+current_radius+1):
-			if (i > 1) and (i < total): pageLinks.add(i)
-			
-		#Always display the last page if applicable.
-		pageLinks.add(total)
-		
-	#Convert pageLinks to an ordered list.
-	pageLinks = list(pageLinks)
-	pageLinks.sort()
-	
-	if len(pageLinks) >= 2:
-		i=0
-		while i < len(pageLinks):
-			try:
-				if pageLinks[i+1]-pageLinks[i] > 1:
-					pageLinks.insert(i+1,"...")
-					i+=1 #Extra addition to account for new "..." element.
-			except:
-				pass #At the last element of the list or an error, just skip.
-			i += 1
-	return pageLinks
+	return render(request, 'data_form.html', {
+		"form": form,
+	})
+
+######################  Core Views  ####################################
 
 #Helper function that returns a related data entry field ("reactant 1 name" --> "reactant_1")
 def get_related_field(heading):

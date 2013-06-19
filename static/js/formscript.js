@@ -376,20 +376,7 @@ $("#userLogOut").click( function() {
 });
 
 //||||||||| Upon Form Submissions: ||||||||||||||||||||||||||||||||||||
-$(document).on("submit", "#popupScreenForm", function() { //###Not generalized to all popups.
-	var form = $(this); //Keep a reference to the form inside the POST request.
-	$.post($(form).attr("action"), $(form).serialize(), function(response) {
-		//Recreate the popup window with the server response.
-		$(form).parent().html(response);
-		
-		//Reload the screen to reveal log-in to user.
-		if ($(".reload_timer").length){
-			refreshScreen(true) //"true" implies "without the loading screen."
-		}
-	});
-	
-	return false; //Do not continue or else the form will post again. 
-});
+
 
 $(document).on("submit", "#dataEntryForm", function() { //###Not generalized to all popups.
 	var form = $(this); //Keep a reference to the form inside the POST request.

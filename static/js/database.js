@@ -16,15 +16,53 @@ var changesMade = {
 	add:[],
 	};
 	
-//############ Data Selection: #########################################
-//Activate Popup:
+//############ Popup Management: #######################################
+//Activate specified popup:
 $(document).on("click", ".popupActivator", function() {
+	switch ($(this).attr("id")) {
+		case "dbMenu_addNew":
+			$("#popupContainer").attr("for", "dbMenu_addNew");
+			$.get("/data_form/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
+		case "dbMenu_uploadCSV":
+			$("#popupContainer_inner").html("DIFF!");
+			break;
+	}
+	
 	$("#popupGlobal").fadeIn("fast");
 });
 
+// Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
 	$("#popupGlobal").fadeOut("fast");
 });
+
+
+$(document).on("click", ".closeButton", function() {
+	//Close the global container if the main container is closed.
+	if ($(this).parent().attr("id")=="popupContainer") {
+		$(this).parent().parent().fadeOut("fast"); 
+	} else {
+		$(this).parent().fadeOut("fast");
+	}
+});
+
+
+//############ Form Interactions: ######################################
+$(document).on("submit", "form", function() {
+	var form = $(this); //Keep a reference to the form inside the POST request.
+	$.post($(form).attr("action"), $(form).serialize(), function(response) {
+		//Recreate the popup window with the server response.
+		$("#popupContainer_inner").html(response);
+		$(".subPopup").draggable();
+	});
+	
+	return false; //Do not continue or else the form will post again. 
+});
+
+
 
 //############ Data Selection: #########################################
 //Click Group to Select:

@@ -217,10 +217,10 @@ class DataEntryForm(ModelForm):
 	unit_5 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
 		attrs={'class':'form_text form_drop_down',
 		"title":"Is the quantity a mass or volume?"}))
-	ref = CharField(widget=TextInput(
+	ref = CharField(label="Ref.", widget=TextInput(
 		attrs={'class':'form_text form_text_short',
 		"title":"The lab notebook and page number where the data can be found."}))
-	temp = CharField(widget=TextInput(
+	temp = CharField(label="Temp.", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Celsius',
 		"title":"The temperature at which the reaction took place."}))
 	time = CharField(widget=TextInput(

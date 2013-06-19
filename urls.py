@@ -7,8 +7,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 admin.autodiscover()
 
-
-
 handler500 = 'formsite.views.display_500_error'
 handler404 = 'formsite.views.display_404_error'
 
@@ -16,9 +14,9 @@ urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
 	#Example URL:
     ###('^$', 'django.views.generic.simple.direct_to_template',{'template':'home.html'}),
-    (r'^$', data_view),
-    (r'^data_view/$', data_view), #Default Page View
-    (r'^data_view/(?P<num>\d+)/$', data_view), #Page Switch
+    (r'^$', database),
+    (r'^database/$', database), #Encompassing data view.
+    (r'^data_form/$', data_form), #Encompassing data view.
     (r'^upload_data/$', upload_data),
     (r'^download_CSV/$', download_CSV),
     (r'^data_transmit/$', data_transmit), #Better Page Switch###
@@ -31,5 +29,5 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     
     #Send the favicon.ico:
-    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.STATIC_URL+'favicon.ico'}),
+    (r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.STATIC_URL+'/favicon.ico'}),
 )
