@@ -15,6 +15,7 @@ urlpatterns = patterns('',
 		#Database
     (r'^$', database),
     (r'^database/$', database), #Encompassing data view.
+    (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Used for changing pages.
     (r'^data_form/$', data_form), #Encompassing data view.
     (r'^upload_CSV/$', upload_CSV),
 		#Authentication
@@ -23,11 +24,9 @@ urlpatterns = patterns('',
     (r'^registration_prompt/$', registration_prompt), #Redirects to correct registration choice.
     (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
     (r'^user_registration/$', user_registration), #Create User
-    #
-    (r'^download_CSV/$', download_CSV),
-    (r'^data_transmit/$', data_transmit), #Better Page Switch###
-    (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Better Page Switch###
+		#Change Page
     (r'^data_update/$', data_update), #Update Information
+	(r'^download_CSV/$', download_CSV),
 	#Enable the admin:
     (r'^admin/', include(admin.site.urls)),
     

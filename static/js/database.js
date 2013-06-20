@@ -1,5 +1,6 @@
 $(document).ready(function() {
-	
+//############ Post-load Setup: #########################################
+
 //############ Dependent Functions: ####################################
 //Sort from greatest to least.
 function sortNumbers(smallNum,bigNum) {
@@ -7,9 +8,50 @@ function sortNumbers(smallNum,bigNum) {
 }
 
 //Refresh screen.
-function refreshScreen() {
-	window.setTimeout('location.reload()', 300); //###Will this work under heavy load?
+function refreshScreen(rememberPage) {
+	rememberPage = rememberPage !== undefined ? rememberPage : true
+	if (rememberPage) { 
+		setPageCookie(); 
+	}
+	window.setTimeout('location.reload()', 300);
 }
+
+//Set the current_page cookie.
+function setPageCookie() {
+	$.cookie("current_page", $("#pagesCurrent").html().trim(),
+		{expires: 7}); //Set cookie to expire after one week.
+}
+
+//Refresh the data container classes. (NOTE: Does not perform server request for new data.)
+function restyleData() {
+	//Fade out units if the amount is also faded out.
+	$(".type_unit").each(function() {
+		if ($(this).prev().is(":empty")) {
+			$(this).css({"opacity":"0.3"});
+		}
+	});
+	//Keep selected data highlighted even if on page changes.
+	$(".dataIndex").each(function() {
+		dataID = Number($(this).html().trim())
+		if (selectedData.indexOf(dataID) != -1) {
+			$(this).parent().addClass("dataSelected");
+		}
+	});
+}
+
+function showRibbon(message, color, location) {
+	//Default location is the dataContainer.
+	location = location !== undefined ? location : "#dataContainer"
+	
+	$(location).append(
+		"<div class=ribbonMessage style=\"background-color:" + color + 
+			";\">" + message + "</div>"
+	);
+	setTimeout(function() {
+		$(".ribbonMessage").fadeOut(1000);
+	},500);
+}
+
 
 //############ Variable Setup: #########################################
 var selectedData = Array();
@@ -77,6 +119,12 @@ $(document).on("click", ".popupActivator", function() {
 // Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
 	$("#popupGlobal").fadeOut("fast");
+	
+	//Reload the screen if requested.
+	if ($(".reloadActivator").length) {
+		refreshScreen();
+		$(".reloadActivator").remove();
+	};
 });
 
 //Close popups on close-button click.
@@ -107,14 +155,16 @@ $(document).on("submit", "form", function() {
 		$(".subPopup").draggable();
 		
 		//Show the ribbon message if applicable.
-		if ($(".ribbonMessage").length) {
-			$(".ribbonMessage").fadeOut("slow")
-		};
+		if ($(".successActivator").length) {
+			showRibbon("Data added!", "green", "#popupContainer_inner");
+			$(".successActivator").remove();
+		}
 		
-		//Reload the screen if applicable.
+		//Reload the page if applicable.
 		if ($(".reloadActivator").length) {
-			refreshScreen();
-		};
+			refreshScreen(false); //Do not remember the log-in page.
+		}
+		
 	});
 	
 	return false; //Do not continue or else the form will post again. 
@@ -192,7 +242,8 @@ $("#dbMenu_duplicate").click(function() {
 	for (var i in selectedData) {
 		changesMade.dupl.push(selectedData[i]);
 	}
-	//Keep data selected.
+	
+	showRibbon("Selection duplicated!", "green");
 	
 	//Upload updated data
 	//updateData();###
@@ -207,18 +258,61 @@ $("#dbMenu_delete").click(function() {
 	}
 	selectedData = [];
 	
+	showRibbon("Selection deleted!", "red");
+	
 	//Upload updated data
 	//updateData(); ###
 });
 
-//############ User Authentication: #########################################
+//############ User Authentication: ####################################
 $("#userLogOut").click( function() {
 	//Send the log-out signal.
-	$.get("/user_logout/", function(formHTML) {});
+	$.get("/user_logout/", function() {});
 	
 	//Reload the screen to verify log-out.
 	refreshScreen()
 });
+
+//############## Change Pages: #########################################
+$(document).on("click", "#pagesInputButton", function() {
+	var pageLink = $("#pagesInputText").val().trim();
+	
+	if (pageLink == $("#pageLinkCurrent").html().trim()) {
+		showRibbon("Already here!", "green");
+		return false //Don't do anything else if page already is active.
+	} else if ($.isNumeric(pageLink)
+		&& parseInt(pageLink) <= parseInt($("#pagesTotal").html().trim())
+		&& parseInt(pageLink) > 0) {
+		//Create a CSRF Token for Django authorization.
+		var csrftoken = $.cookie("csrftoken");
+		
+		//Request the information about a page.
+		pageDestination = "/data_transmit/" + pageLink;
+		$.get(pageDestination, function(dataResponse) {
+			var newDataContainer = dataResponse;
+			$("#dataContainer").html(newDataContainer);
+			restyleData();
+		});
+	} else {
+		showRibbon("Page does not exist", "red");
+	}
+});
+
+$(document).on("click", ".pageLink", function() {
+	//If a valid page link has been clicked.
+	var pageLink = $(this).html().trim();
+	//If the link is a number (not an ellipsis) and not the current page:
+	if ($.isNumeric(pageLink) && pageLink != $("#pageLinkCurrent").html().trim()) {
+		//Request the information about a page.
+		pageDestination = "/data_transmit/" + pageLink;
+		$.get(pageDestination, function(dataResponse) {
+			var newDataContainer = dataResponse;
+			$("#dataContainer").html(newDataContainer);
+			restyleData();
+		});
+	}
+});
+
 
 //######################################################################
 //alert("All loaded!");//###

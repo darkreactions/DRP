@@ -17,12 +17,6 @@ var mLConversions = { //Must be strings to avoid simplification by Javascript.
 	"H2O":"1.000", 
 }
 
-//||||||||| Helper Functions: |||||||||||||||||||||||||||||||||||||||||
-//Sort from greatest to least.
-function sortNumbers(smallNum,bigNum) {
-	return smallNum - bigNum;
-}
-
 //Prepare Edit Package for Server (Step 1 of verification)
 function submitEditToServer(element) {
 	var newValue = element.val();
@@ -137,61 +131,6 @@ $("#downloadPrompt").click(function() {
 	//Download the saved data as a CSV.
 	location.replace("/download_CSV/");
 });	
-
-// |||||||||||||||  CSV Upload: |||||||||||||||||||||||||||||||||||||||||
-//Show the CSV Upload Screen
-$("#uploadPrompt").click(function() {
-	$("#uploadCSVScreen").css({"left":"30%", "top":"40%"});
-	$("#uploadCSVScreen").show();
-	$("#uploadCSVScreen").draggable();
-});
-
-$("#uploadCSVSubmit").click(function() {
-	$("#CSVForm").append("<br />Working, please wait.");
-});
-
-//Cancel (hide) the form ###
-$("#uploadCSVCancel").click(function() {
-	$("#uploadCSVScreen").hide();
-});
-
-//Change the text in the display.
-$("#uploadCSVChoose_hidden").change(function() {
-	$("#uploadCSVWords").html($(this).val().split('\\').pop());
-});
-
-// ||||||||||||||  Change Pages: ||||||||||||||||||||||||||||||||||||||||
-$(document).on("click", "#page_change_button", function() {
-	//If a destination has been answered, send a data request.
-	if (String($("#page_change_text").val()).trim()) {
-		//Create a CSRF Token for Django authorization.
-		var csrftoken = $.cookie("csrftoken");
-		
-		//Request the information about a page.
-		pageDestination = "/data_transmit/"+String($("#page_change_text").val()).trim();
-		$.get(pageDestination, function(dataResponse) {
-			var newDataContainer = dataResponse;
-			$("#data_container").html(newDataContainer);
-		refreshDataContainer();
-		});
-	}
-});
-
-$(document).on("click", ".page_link", function() {
-	//If a valid page link has been clicked.
-	if ($.isNumeric($(this).html().trim())) {
-		
-		//Request the information about a page.
-		pageDestination = "/data_transmit/"+String($(this).html()).trim();
-		$.get(pageDestination, function(dataResponse) {
-			var newDataContainer = dataResponse;
-			$("#data_container").html(newDataContainer);
-		refreshDataContainer();
-		});
-	}
-});
-
-
 
 //||||||||| Data Manipulation (Other): ||||||||||||||||||||||||||||||
 
@@ -341,88 +280,10 @@ $(".fieldWrapper input").blur(function() {
 	}
 });
 
-//||||||||| User Authentication: ||||||||||||||||||||||||||||||||||||
-$(".userAuthLink").click( function() {
-	//Get the Registration form from the server if it is requested.
-	if ($(this).attr("id") == "userRegister") {
-		$.get("/user_registration/", function(formHTML) {
-			$("#userForm").html(formHTML);
-			$("#id_username").focus(); //###Should just be "first visible input"
-		});
-	} //Get the Log-In form if it is requested.
-	else if ($(this).attr("id") == "userLogin") {
-		$.get("/user_login/", function(formHTML) {
-			$("#userForm").html(formHTML);
-			$("#id_username").focus(); //###Should just be "first visible input"
-		});
-	}
-	
-	
-	//Show and center the userAuthScreen.
-	$("#userAuthScreen").css({
-		"margin":"0px auto",
-		"top":"0px",
-		"left":"0px",
-		"display":"block"});
-	$("#popupGlobal").show();
-});
 
-$("#userLogOut").click( function() {
-	//Send the log-out signal.
-	$.get("/user_logout/", function(formHTML) {});
-	
-	//Reload the screen to verify log-out.
-	//refreshScreen()
-});
 
 //||||||||| Upon Form Submissions: ||||||||||||||||||||||||||||||||||||
 
-
-$(document).on("submit", "#dataEntryForm", function() { //###Not generalized to all popups.
-	var form = $(this); //Keep a reference to the form inside the POST request.
-	//$.post($(form).attr("action"), $(form).serialize(), function(response) {
-		//Recreate the popup window with the server response.
-		//alert(response);
-	//});
-	//alert("yes!");
-	//return false; //Do not continue or else the form will post. 
-});
-
-//||||||||| Upon Page Load: ||||||||||||||||||||||||||||||||||||
-
-//Load the error log if values were not valid server-side.
-if (!$("#error_container_text").html().trim()=="") {
-	$("#error_container").css({
-		"margin":"0px auto",
-		"position":"fixed",
-		"top":"30%",
-		"display":"block"});
-		
-	$("#error_container").show();
-	$("#error_container").draggable();
-}
-
-$(document).on("click", "#popup_toggle", function() { //###Not generalized to all popups.
-	$("#error_container_text").animate({
-		height:"toggle",
-		opacity:"toggle",
-		},500, function(){});
-});
-
-$(document).on("click", "#popup_close", function() {
-	var popupScreen = $(this).parent();
-	if (popupScreen.parent().attr("id") == "popupGlobal") {
-		popupScreen.parent().animate({
-			height:"toggle",
-			opacity:"toggle",
-			},500, function(){});
-	} else {
-		popupScreen.animate({
-			height:"toggle",
-			opacity:"toggle",
-			},500, function(){});
-	}
-});
 
 refreshDataContainer();
 

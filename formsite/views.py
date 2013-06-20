@@ -1,97 +1,102 @@
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.template.loader import get_template
-from django.template import Context
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
-from django.utils import simplejson
+from django.contrib import auth
 from models import *
-from django import forms
-from django.views.decorators.csrf import csrf_exempt
 from validation import *
+
 import csv
 import string
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import auth
 import datetime
 
-######################  Controller  ####################################
+######################  Static  ########################################
 class Controller(object):
 	def __init__(self):
-		self.data_per_page = 100 #Change to set different numbers of data per page.
+		self.data_per_page = 40 #Change to set different numbers of data per page.
 		self.current_radius = 4 #Max number of links to display "around" current link.
-		self.current_page = 1
-		self.total_pages = 1
-		self.saved_data = []
 	
-	def change_page(self, page):
-		if (self.total_pages > page > 0):
-			self.current_page = page
-	
-	def update_total_pages(self):
-		self.total_pages = int(1 + (len(self.saved_data)-1)/self.data_per_page)
-		if (self.total_pages < 1): self.total_pages = 1
-	
-	#Returns all data that belongs to a specific lab group.
-	def refresh_saved_data(self,lab_group):
-		self.saved_data = Data.objects.filter(lab_group=lab_group)
-		
-	def get_saved_data(self, lab_group):
-		if self.saved_data == []:
-			self.refresh_saved_data(lab_group)
-		return self.saved_data
-	
-	#Helper function that returns a list of page numbers/ellipses.
-	#	Note: All vars relate to "_page" (eg, "current_page")
-	def get_pageLinks(self):
-		#Always display the first page.
-		pageLinks = {1} #Use a set to remove any duplicates. 
-		
-		if self.total_pages > 1:
-			for i in range(self.current - self.current_radius, self.current + self.current_radius+1):
-				if (1 < i < self.total_pages): pageLinks.add(i)
-				
-			#Always display the last page if applicable.
-			pageLinks.add(self.total_pages)
-			
-		#Convert pageLinks to an ordered list.
-		pageLinks = list(pageLinks)
-		pageLinks.sort()
-		
-		if len(pageLinks) >= 2:
-			i=0
-			while i < len(pageLinks):
-				try:
-					if pageLinks[i+1]-pageLinks[i] > 1: #If a gap exists between two numbers, add an ellipsis. 
-						pageLinks.insert(i+1,"...")
-						i+=1 #Extra addition to account for new "..." element.
-				except:
-					pass #At the last element of the list or an error, just skip.
-				i += 1
-		return pageLinks
-#Create the settings controller.
 control = Controller()	
+
+######################  Session Info  ####################################
+#Returns all data that belongs to a specific lab group.
+def get_saved_data(lab_group):
+	return Data.objects.filter(lab_group=lab_group)
+
+def get_total_pages(total_data_size):
+	total_pages = int(1 + (total_data_size-1)/control.data_per_page)
+	if (total_pages < 1): total_pages = 1
+	return total_pages
+		
+def get_page_links(current, total_pages):
+	#Always display the first page.
+	page_links = {1} #Use a set to remove any duplicates. 
+	
+	if total_pages > 1:
+		for i in range(current - control.current_radius, current + control.current_radius+1):
+			if (1 < i < total_pages): page_links.add(i)
+			
+		#Always display the last page if applicable.
+		page_links.add(total_pages)
+		
+	#Convert page_links to an ordered list.
+	page_links = list(page_links)
+	page_links.sort()
+	
+	if len(page_links) >= 2:
+		i=0
+		while i < len(page_links):
+			try:
+				if page_links[i+1]-page_links[i] > 1: #If a gap exists between two numbers, add an ellipsis. 
+					page_links.insert(i+1,"...")
+					i+=1 #Extra addition to account for new "..." element.
+			except:
+				pass #At the last element of the list or an error, just skip.
+			i += 1
+	return page_links
+	
+#Used to get dump of up-to-date session information. 
+def get_fresh_session_info(current, lab_group):
+	session = {}
+	session["saved_data"] = get_saved_data(lab_group)
+	session["total_pages"] = get_total_pages(len(session["saved_data"]))
+	session["page_links"] = get_page_links(current, session["total_pages"])
+	return session
+	
 
 ######################  Core Views  ####################################
 def database(request, control = control):
 	#Get all saved data if it exists.
 	if request.user.is_authenticated():
 		u = request.user
-		saved_data = control.get_saved_data(u.get_profile().lab_group)
+		
+		#Get the user's current page.
+		try:
+			current_page = int(request.COOKIES.get("current_page"))
+		except:
+			current_page = 1 #Start on the last/latest page.
+		
+		session = get_fresh_session_info(current_page, u.get_profile().lab_group)
+		saved_data = session["saved_data"]
+		total_pages = session["total_pages"]
+		page_links = session["page_links"]
+		
 	else:
 		saved_data = [] #Don't query the database if U is not logged in.
+		total_pages = 1
+		page_links = [1]
+		current_page = 1
 	
 	#Only send the data on the requested page. Note that Lab_Group.saved_data is a 0-based index.
-	start_index = (control.current_page-1)*control.data_per_page 
-	end_index = (control.current_page)*control.data_per_page
+	start_index = (current_page-1)*control.data_per_page 
+	end_index = (current_page)*control.data_per_page
 	index_range = range(start_index+1, end_index+1) #1-based index for visuals
-	pageLinks = control.get_pageLinks()
 
 	#Prepare packages.
-	data_package = zip(control.saved_data[start_index:end_index], index_range)
+	data_package = zip(saved_data[start_index:end_index], index_range)
 	page_package = {
-		"current_page":control.current_page,
-		"total_pages":control.total_pages,
+		"current_page":current_page,
+		"total_pages":total_pages,
 		"data_per_page":control.data_per_page,
-		"pageLinks":pageLinks,
+		"page_links":page_links,
 		}
 			
 	return render(request, 'database_global.html', {
@@ -315,8 +320,7 @@ def upload_data(redirected_request):
 		except Exception as e:
 			print "ERROR:", e
 	
-	#Bulk Upload?
-	
+	###Bulk Upload?
 	
 	message = "{} entries added.".format(added_quantity)
 	message += "\n{} entries failed validation.".format(error_quantity)
@@ -357,55 +361,54 @@ def download_CSV(request):
 				errors_total += 1
 				print "ERROR AT:\n", entry###
 		print "Total errors: {}".format(errors_total)
-	return CSV_file #ie, return HttpResponse(content_type="text/csv")
+		return CSV_file #ie, return HttpResponse(content_type="text/csv")
+	else:
+		return HttpResponse("Please sign in to download data.")
 	
-def data_transmit(request, num):
-	global data_per_page
+
+######################  Change Page ####################################
+def data_transmit(request, num = 0, control=control):
 	try:
 		if request.method == "GET" and request.user.is_authenticated():
-			#Get the Lab_Group data if the user is logged in.
+			#Get the request information.
 			u = request.user
-			saved_data = get_saved_data(u.get_profile().lab_group)
+			requested_page = int(num)
+				
+			#Get the necessary data for a page change.
+			session = get_fresh_session_info(requested_page, u.get_profile().lab_group)
+			saved_data = session["saved_data"]
+			total_pages = session["total_pages"]
+			page_links = session["page_links"]
 			
-			total_data_size = len(saved_data)
-			total_pages = int(1 + (total_data_size-1)/data_per_page) ###
-			if (total_pages < 1): total_pages = 1
+			#If the page does not exist, raise a 404. 
 			try:
-				#current_page == num 
-				num = int(num) #Convert the unicode page number to an integer for comparison.
-				assert 0 < num <= total_pages
+				assert 0 < requested_page <= total_pages
 			except:
-				print "Can't go there!"
-				num = total_pages
-			
-			#Update current_page if it was changed.
-			current_page = num
-			
+				raise Http404
+		
 			#Only send the data on the requested page. Note that Lab_Group.saved_data is a 0-based index.
-			start_index = (current_page-1)*data_per_page 
-			end_index = (current_page)*data_per_page
+			start_index = (requested_page-1)*control.data_per_page 
+			end_index = (requested_page)*control.data_per_page
 			index_range = range(start_index+1, end_index+1) #1-based index for visuals
-
+		
+			#Prepare packages.
 			data_package = zip(saved_data[start_index:end_index], index_range)
-			pageLinks = get_pageLinks(current_page, total_pages, data_per_page)
 			page_package = {
-				"current_page":current_page,
-				"pageLinks":pageLinks,
+				"current_page":requested_page,
 				"total_pages":total_pages,
-				"data_per_page":data_per_page,
+				"data_per_page":control.data_per_page,
+				"page_links":page_links,
 				}
-			
-			return render(request, 'data_body_template.html', {
+				
+			return render(request, 'data_and_page_container.html', {
 				"data_on_page": data_package, #Includes data indexes
 				"page_package": page_package, #Includes page links
-				"total_data_size": total_data_size,
+				"total_data_size": len(saved_data),
 			})
-		
-		
 		else:
-			raise Exception
+			return HttpResponse("<p>Please log in to view your data.</p>")
 	except:	
-		return HttpResponse("Woopsie!... Something went wrong.")
+		return HttpResponse("<p>Woopsie!... Something went wrong.</p>")
 
 def data_update(request):
 	u = request.user

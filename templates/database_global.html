@@ -6,7 +6,7 @@
 		</title>
 		
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/database.css" />
-
+	
 	</head>
 	<body> 
 
@@ -16,7 +16,7 @@
 		<div id = "userInfo_inner">
 		{% if user.is_authenticated %}
 			Hello, {{ user.first_name }}. <br />
-			<a id="userLogOut"> (Log Out) </a>
+			<a id="userLogOut" class="userAuthLink"> (Log Out) </a>
 		{% else %}
 			Welcome! <br />
 			<a id="userLogin" class="userAuthLink popupActivator">Log In</a> 
@@ -72,18 +72,8 @@
 		
 		<div id="centerPanel">
 			<div id="dataContainer" class="genericContainer">
-				<!-- DATA VIEW -->
-				<div id="dataContainer_inner">
-					{% include "database_cell.html" %}
-				</div>
-				
-				<!-- PAGE INFORMATION -->
-				<div id="pagesContainer">
-					{% include "page_cell.html" %}
-				</div>
-
+				{% include "data_and_page_container.html" %}
 			</div>
-
 		</div>
 		
 	<div id="bottomPanel">
@@ -97,7 +87,7 @@
 	</body>
 	
 	<!-- SCRIPTS -->
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.9.0.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-ui-1.10.3.custom.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery_csrf.js"></script>

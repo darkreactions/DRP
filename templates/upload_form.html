@@ -1,0 +1,15 @@
+<h1>Upload CSV:</h1>
+<form id="CSVForm" method="POST" enctype="multipart/form-data"
+	action="/upload_CSV/">
+	{% csrf_token %}
+	<div id = "uploadCSV_display">
+	<div>None Selected</div>
+	<input name="file" id = "uploadCSV_hiddenInput" type="file" 
+	accept=".csv" value="Upload CSV" class="form_button"/>
+	</div>
+	{% if user.is_authenticated %}
+		<input name="submit" id = "uploadCSVSubmit" type="submit" value="Upload" class="form_button"/>
+	{% else %}
+		<p> Please sign in to submit data. </p>
+	{% endif %}	
+</form>

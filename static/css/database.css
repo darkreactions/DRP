@@ -309,6 +309,7 @@ input:focus {
 	text-align:center;
 	font-style:oblique;
 	color:white;
+	border-bottom:2px solid white;
 }
 .subPopup > h1 {
 	margin:5px;
@@ -389,9 +390,12 @@ input:focus {
 #uploadCSV_display {
 	position:relative;
 	padding:5px;
-	background-color:#EFEFA9;
 	border:2px black solid;
 	border-radius:5px;
+	background-color:#EFEFA9;
+	
+	color:black;
+	font-size:14px;
 }
 
 #uploadCSV_display:hover {
@@ -416,7 +420,9 @@ input:focus {
 	left:0px;
 	text-align:center;
 	
-	background-color:red;
+	background-color:white;
+	color:black;
+	
 	border-top:2px solid black;
 	border-bottom:3px solid black;
 	padding-top:5px;
@@ -424,6 +430,14 @@ input:focus {
 }
 
 .reloadActivator {
+	height:1px;
+	width:1px;
+	position:absolute;
+	top:0px;
+	left:0px;
+}
+
+.successActivator {
 	height:1px;
 	width:1px;
 	position:absolute;
@@ -583,208 +597,6 @@ input:focus {
 	background-color:#FFD92E;
 	cursor:pointer;
 }
-
-/*
-#popup_toggle {
-	right:30px;
-}
-
-h1 {
-	font-family:arial;
-	font-size:32px;
-	text-align:center;
-	
-	background-color:#FFE05B;
-	border: 5px #454545 solid;
-	border-style:outset;
-	border-radius:20px;
-	
-	padding:10px;
-	margin:15px;
-	margin-bottom:-20px;
-	width:200px;
-	height:45px;
-}
-p {
-	font-family:arial;
-	font-size:20px;
-	text-align:center;
-	margin:0px;
-	
-}
-
-
-.data_group {	
-	background-color:#A9EFEF;
-	border:2px black solid;
-	border-radius:10px;
-	margin:10px;
-	max-height:200px;
-	padding-left:40px;
-}
-
-.data_group:hover {	
-	background-color:#FFEA8F;
-}
-*/
-
-/*
-.data_index {
-	background-color:#A9CCEF;
-	padding:5px;
-	font-size:20px;
-	border-right:2px black solid;
-	border-bottom:2px black solid;
-	border-top-left-radius:8px; /*Make sure this looks nice ###*/
-*/
-/*
-	border-bottom-right-radius:10px;
-	display:inline-block;
-	position:relative;
-	left:-40px;
-}
-*/
-
-/*
-.data {
-	font-size:16px;
-	display:inline;
-	word-wrap:break-word;
-}
-
-#emptyDataMessage {
-	margin:5px;
-	text-align:center;
-	color:white;
-	font-weight:bold;
-} 
-
-#editInPlace { /*### Perhaps use the autogrow jQuery plugin */
-/*
-	background-color:white;
-
-	border-radius:15px;
-	border: 2px black solid ;
-	outline:0px;
-	padding-right:5px;
-	padding-left:5px;
-}
-
-#enterButton {
-	background-color:black;
-	border-radius:15px;
-	border: 2px black red ;
-	color:white;
-	font-size:10px;
-	font-style:oblique;
-	display:inline-block;
-	opacity:0.5;
-	padding:5px;
-	text-align:center;
-}
-#enterButton:hover {
-	opacity:1;
-	cursor:pointer;
-}
-*/
-
-/*
-#pageLink_container {
-	text-align:center;
-	font-size: 18px;
-	font-weight:bold;
-}
-
-#pageLink_container {
-	color:black;
-	text-decoration:none;
-}
-.pageLink {
-	color:white;
-}
-.pageLink:hover {
-	color:#FFE05B;
-	font-style:oblique;
-	cursor:pointer;
-}
-
-.pageLinkCurrent {
-	font-size:20px;
-	font-style:oblique;
-	padding:5px;
-}
-
-#current_page {
-	display:inline-block;
-}
-
-#total_pages {
-	display:inline-block;
-
-}
-
-#page_change_text {
-	background-color:#EFEFA9;
-	display:inline-block;
-	margin-left:10px;
-	padding:5px;
-	border: 2px black solid;
-	border-radius:5px;
-	width:60px;
-}
-
-#page_change_button {
-	background-color:#EFEFA9;
-	border: 2px #454545 solid;
-	border-style:outset;
-	border-radius:20px;
-	margin:5px;
-	font-family:arial;
-	font-style:oblique;
-}
-*/
-
-/*
-#loadingScreen {
-	position:fixed;
-	left:40%;
-	right:40%;
-	top:40%;
-	background-color:white;
-	display:none;
-	
-	border:4px black solid;
-	border-radius:15px;
-	padding:10px;
-	
-	font-weight:bold;
-	font-size:20px;
-}
-
-#successScreen {
-	position:fixed;
-	left:40%;
-	right:40%;
-	top:40%;
-	background-color:white;
-	display:none;
-	
-	border:4px black solid;
-	border-radius:15px;
-	padding:10px;
-	
-	font-weight:bold;
-	font-size:20px;
-}
-
-#CSVForm {
-	background-color:#75ADE6;
-	border:2px black solid;
-	border-radius:10px;
-	font-family:arial;
-	text-align:center;
-}
-*/
 
 /*
 #uploadCSVChoose_hidden {/*###Make pretty*/
