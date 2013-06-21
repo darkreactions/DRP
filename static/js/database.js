@@ -9,6 +9,7 @@ var changesMade = {
 	};
 	
 //############ Post-load Setup: #########################################
+restyleData() //Style the data according to what it contains.
 
 //############ Dependent Functions: ####################################
 //Sort from greatest to least.
@@ -34,8 +35,8 @@ function setPageCookie() {
 //Refresh the data container classes. (NOTE: Does not perform server request for new data.)
 function restyleData() {
 	//Fade out units if the amount is also faded out.
-	$(".type_unit").each(function() {
-		if ($(this).prev().is(":empty")) {
+	$(".type_notes").each(function() {
+		if ($(this).is(":empty")) {
 			$(this).css({"opacity":"0.3"});
 		}
 	});
@@ -54,17 +55,38 @@ function showRibbon(message, color, location, timeout) {
 	//Assume that the ribbon should time out.
 	timeout = timeout !== undefined ? timeout : true
 	
+	//Remove any extra 
+	$(".ribbonMessage").remove();
+	
 	$(location).append(
 		"<div class=ribbonMessage style=\"background-color:" + color + 
 			";\">" + message + "</div>"
 	);
-	
 	if (timeout) {
 		setTimeout(function() {
-			$(".ribbonMessage").fadeOut(1000);
+			$(location + " .ribbonMessage").fadeOut(1000);
 		},500);
 	}
 }
+
+function createPopupConfirmation(message) {
+	$("body").append("<div class=popupConfirmation title=Confirm:>"+
+		message+"</div>");
+}
+
+function adaptSize(element) {
+	var numChars = $(element).val().length;
+	var maxWidth = $(element).css("max-width") !== "none" ? parseInt($(element).css("max-width")) : 100;
+	var proposedWidth = ((numChars*6)+35)
+	if (proposedWidth < maxWidth) {
+		var newWidth = proposedWidth;
+	} else {
+		var newWidth = maxWidth;
+	}
+	$(element).animate({
+		"width": newWidth,
+	}, 50);
+};
 
 //############ Server Transactions: #########################################
 //Record a change if the data is valid.
@@ -97,7 +119,7 @@ function changeElement(element) { //"element" is the temporary input field.
 }
 
 function submitChanges() {
-	if (changesMade.del.length > 10 || changesMade.dupl > 10) {
+	if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
 		showRibbon("Working. This may take a moment.", "orange","body", false);
 	}
 
@@ -119,51 +141,51 @@ function submitChanges() {
 $(document).on("click", ".popupActivator", function() {
 	//Display a loading message if the request takes a visible amount of time.
 	$("#popupContainer_inner").html("<center>Loading. Please wait.</center>");
+	
+	//Load the activator CSS.
 	activatorID = $(this).attr("id");
+	$("#popupContainer").attr("for", activatorID);
+	
 	switch ($(this).attr("id")) {
 		case "dbMenu_addNew":
-			$("#popupContainer").attr("for", activatorID);
 			$.get("/data_form/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
 		case "dbMenu_uploadCSV":
-			$("#popupContainer").attr("for", activatorID);
 			$.get("/upload_CSV/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
 		case "userLogin":
-			$("#popupContainer").attr("for", activatorID);
 			$.get("/user_login/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
-		case "registrationPrompt": //###REPLACE WITH DROP-DOWN PRELOADED?
-			$("#popupContainer").attr("for", activatorID);
+		case "registrationPrompt": //###REPLACE WITH PRELOADED DROP-DOWN MENU?
 			$.get("/registration_prompt/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
 		case "userRegistration":
-			$("#popupContainer").attr("for", activatorID);
 			$.get("/user_registration/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
 		case "labRegistration":
-			$("#popupContainer").attr("for", activatorID);
 			$.get("/user_registration/", function(response) {
 				$("#labRegistration").html(response);
+				
 			});
 			break;
-		case "dbMenu_downloadCSV"://###
-			$("#popupContainer_inner").html("DIFF!");
+		case "dbMenu_downloadCSV"://###Replace with cute form?
+			$("#popupContainer_inner").html("CSV downloading!");
+			//Download the saved data as a CSV.
+			location.replace("/download_CSV/");
 			break;
 		default: 
-			return false; //If a popup is not recognized, don't l
+			return false; //If a popup is not recognized, don't load anything.
 	}
-	
 	$("#popupGlobal").fadeIn("fast");
 	
 });
@@ -312,20 +334,94 @@ $("#dbMenu_duplicate").click(function() {
 });
 
 //Delete Button
+//Ask for confirmations for deletions.
 $("#dbMenu_delete").click(function() { 
 	if (selectedData.length) { 
-		for (var i in selectedData) {
-			changesMade.del.push(selectedData[i]);
-			//Immediately delete the data from the client's view ("#g_x" represents group ID).
-			$("#g_"+String(selectedData[i])).remove()
-		}
-		selectedData = [];
-		
-		showRibbon("Selection deleted!", "green");
-		
-		//Upload updated data
-		submitChanges();
+		//Delete any extra popup confirmations that exist.
+		$(".popupConfirmation").remove();
+		createPopupConfirmation("Really delete the " + selectedData.length + " selected data?");
+		$(".popupConfirmation").dialog({
+			resizable: false,
+			closeOnEscape: false, // ###Temporary fix?
+			height: 150,
+			modal: true,
+			buttons: {
+				"Delete Selection": function() {
+					for (var i in selectedData) {
+						changesMade.del.push(selectedData[i]);
+						//Immediately delete the data from the client's view ("#g_x" represents group ID).
+						$("#g_"+String(selectedData[i])).remove()
+					}
+					selectedData = [];
+					
+					showRibbon("Selection deleted!", "green");
+					
+					//Upload updated data
+					submitChanges();
+				},
+				"No": function() {
+					$(this).dialog("close");
+					$(this).remove();
+				}
+			}
+		});
 	}
+});
+
+//############ Edit Data: ###########################@##################
+//Initiate edit session.
+$(document).on("click", ".editable", function() {
+	$(".editable").css("opacity",1);
+	
+	if ($(this).children(".editConfirm").length == 0 ) {
+		var oldVal = String($(this).html());
+		var editAs = $(this).attr("editAs");
+		$(this).html("<input class=\"editField\" type=\"" + editAs
+			+ "\" title=\"Enter the new value.\" oldVal=\""+ oldVal
+			+ "\" value=\"" + oldVal + "\" />"
+			+ "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
+			);
+		adaptSize($(this).children(".editField"));
+		$(this).children(".editField").focus();
+	}
+	return false; //Don't continue on to select the data.
+});
+
+//Confirm edit with button press.
+$(document).on("click", ".editConfirm", function() {
+	//Validate data and revert to old value if new value is invalid.
+	var editFieldSibling = $(this).siblings(".editField")
+	var newValue = $(editFieldSibling).val();
+	var oldValue = $(editFieldSibling).attr("oldVal");
+	if ((true) && (newValue != oldValue)) {
+		//Find the fieldChanged.
+		var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
+		if ($.isNumeric(fieldChanged[2])) { 
+			fieldChanged = fieldChanged[1].substr(5) + "_" + fieldChanged[2];
+		} else {
+			fieldChanged = fieldChanged[1].substr(5);
+		}
+		
+		//Submit the new value to the server. 
+		changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
+			$(this).parent().parent().siblings(".dataIndex").html().trim(),
+			fieldChanged,
+			newValue
+			]);
+		
+		//Immediately change the visual for the user.
+		$(this).parent().html(newValue);
+	} else {
+		$(this).parent().html(oldValue);
+	}
+	restyleData();
+	//submitChanges();
+	return false; //Don't re-edit the data (since ".editable" was clicked again).
+});
+
+//Make edit text fields auto-size while typing.
+$(document).on("keyup", ".editField", function() {
+	adaptSize($(this));
 });
 
 //############ User Authentication: ####################################
@@ -379,5 +475,4 @@ $(document).on("click", ".pageLink", function() {
 
 
 //######################################################################
-//alert("All loaded!");//###
 });

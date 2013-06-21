@@ -146,10 +146,6 @@ def create_data_entry(user, **kwargs): ###Not re-read yet.
 		fields_left = get_data_field_names()
 		for field_pair in field_vals:
 			fields_left.remove(field_pair[0])
-		print "{} {}".format(len(field_vals),len(get_data_field_names()))
-		print fields_left
-		print "<br/>"
-		
 		assert len(field_vals) == len(get_data_field_names()) ###SLOW?
 
 		#Set the non-user field values.

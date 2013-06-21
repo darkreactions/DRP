@@ -80,6 +80,8 @@ def database(request, control = control):
 		total_pages = session["total_pages"]
 		page_links = session["page_links"]
 		
+		if current_page > total_pages: current_page = total_pages #In case pages of data are deleted.
+		
 	else:
 		saved_data = [] #Don't query the database if U is not logged in.
 		total_pages = 1
@@ -202,8 +204,9 @@ def upload_data(request): ###Not re-read.
 		error_log = ""
 		
 		try:
-			blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data. ###
+			blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data.
 			unknown_label = "?" #The label that blacklist values will inherit.
+			not_required_label = "" #The label that auto-added values will inherit.
 			
 			#Attempt to validate the headings of the uploaded doc.
 			headings_valid = False
@@ -220,14 +223,12 @@ def upload_data(request): ###Not re-read.
 						#If unit columns were not supplied, add them after each mass.
 						set_user_fields = set(user_fields)
 						auto_added_fields = set()
-						for i in range(1,6): #Since only 5 reactants supported...###
+						recheck_fields = set()
+						for i in range(1,6): #Since only 5 reactants supported...
 							if not "unit_{}".format(i) in set_user_fields:
 								user_fields.insert(
 									user_fields.index("quantity_{}".format(i))+1,
-									"unit_{}".format(i)
-									)
-									###Check if mass is last field (fence-post?).
-									###Should be fine, but check anyway. ; )
+										"unit_{}".format(i))
 								auto_added_fields.add("unit_{}".format(i))
 								
 						#Assert that there are no duplicates in the list
@@ -247,7 +248,6 @@ def upload_data(request): ###Not re-read.
 				try:
 					#Create new object that will receive the uploaded data.
 					entry_fields = {}
-					
 					#Access the data from the uploaded file.
 					i = 0 # data_group index (gets a datum)
 					j = 0 # user_fields index. (gets a field)
@@ -255,19 +255,20 @@ def upload_data(request): ###Not re-read.
 						#Required since data and fields may be disjunct from missing units.
 						datum = data_group[i]
 						field = user_fields[j]
-					
 						if field in auto_added_fields: 
 							#Skip the field if it was auto-added because
 							#	no data is present in the generated column.
 							j += 1
-							if field[:-2]=="quantity":
-								auto_add
+							try:
+								entry_fields[field] #Check if the field exists already.
+							except:
+								entry_fields[field] = not_required_label
 							continue
 						try:
-							#If the datum isn't helpful, don't remember it.###
+							#If the datum isn't helpful, don't remember it.
 							if datum in blacklist: 
 								if field in not_required:
-									datum = "" #Mark the field as a blank (make unknown data uniform).
+									datum = not_required_label
 								else:
 									datum = unknown_label ###Take this value or no?
 							else:
@@ -315,26 +316,27 @@ def upload_data(request): ###Not re-read.
 							raise Exception("Entry could not be added!")
 					
 					#Add the new entry to the database. ###SLOWWwwwww...
-					print "1"###
-					print entry_fields
-					print "<br />"
 					create_data_entry(u, **entry_fields)
-					added_quantity += 1###
+					added_quantity += 1
 				except Exception as e:
 					error_log += "ERROR:",e,"\n",data_group,"at",field,"({})<br/>".format(datum)
-					error_quantity +=1###
+					error_quantity +=1
 					
 		except Exception as e:
-			print "Data could not be uploaded."
+			error_log += "<li>{}</li>".format(e.message)
 	
 	###Bulk Upload Instead?
+	###Template?
 		message = "<h1>Results:</h1>".format(added_quantity)
 		message += "Added: {}<br/>".format(added_quantity)
 		message += "Failed: {}".format(error_quantity)
 		message += "<h1>Error Log: </h1>{}".format(error_log)
+		message += "<a href=\"/database/\">Return to Database</a>"
 		return HttpResponse(message)
-	else:
+	elif not u.is_authenticated():
 		return HttpResponse("<p>Please log in to upload data.</p>")
+	else:
+		return HttpResponse("<p>No file uploaded.</p>")
 
 def download_CSV(request):
 	u = request.user

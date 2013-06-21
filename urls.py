@@ -17,11 +17,12 @@ urlpatterns = patterns('',
     (r'^database/$', database), #Encompassing data view.
 			#Change Page
     (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Used for changing pages.
-    (r'^data_form/$', data_form), #Encompassing data view.
 			#Upload/Download Data
     (r'^upload_CSV/$', upload_CSV),
 	(r'^download_CSV/$', download_CSV),
+			#Modify Data
     (r'^data_update/$', data_update), #Update Information
+    (r'^data_form/$', data_form), #Encompassing data view.
 		#Authentication
     (r'^user_logout/$', user_logout), #Log Out
     (r'^user_login/$', user_login), #Log In

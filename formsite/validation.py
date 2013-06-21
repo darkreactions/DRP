@@ -5,8 +5,7 @@ def quick_validation(field, dirty_datum):
 	try:
 		from data_ranges import *
 	except:
-		print "ERROR LOADING DATA_RANGES"
-		
+		raise Exception("Please contact the site admin. Error loading data ranges.")
 	try:
 		if field in {"quantity_1","quantity_2", "quantity_3", "quantity_4", "quantity_5"}:
 			dirty_datum = float(dirty_datum)
@@ -39,6 +38,5 @@ def quick_validation(field, dirty_datum):
 			assert(ref_range[0] < len(dirty_datum) <= ref_range[1])
 		return True #Dirty datum passes the quick verification test. 
 	except:
-		print "FAILED SERVER VALIDATION"###
 		return False
 	

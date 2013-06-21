@@ -114,6 +114,12 @@ input[type=password] {
 	padding-left:5px;
 }
 
+button {
+	border:2px solid black;
+	font-weight:bold;
+	border-top-right-radius:10px;
+}
+
 input[type=button] {
 	border:2px solid black;
 	font-weight:bold;
@@ -278,6 +284,14 @@ input:focus {
 	min-width:400px;
 }
 
+#popupContainer[for="dbMenu_downloadCSV"] {
+	text-align:center;
+	top:50px;
+	left:20%;
+	width:60%;
+	min-width:400px;
+}
+
 .subPopup { /* Right now, just used for errors. */
 	position:absolute;
 	background-color: #FFD6D6;
@@ -289,6 +303,35 @@ input:focus {
 	
 	color:black;
 }
+
+		/* ###############   Popup Confirmation   ################### */
+.popupConfirmation{
+	background-color:white;
+	padding:10px;
+	border-radius:5px;
+	font-style:oblique;
+}
+
+.ui-dialog {
+	border: 2px solid black;
+	background-color: #355A77;
+	padding:10px;
+	border-radius:10px;
+}
+
+.ui-dialog-titlebar {
+	font-size:18px;
+	font-style:oblique;
+	color:#FFE98F;
+}
+.ui-dialog-buttonset {
+	padding-top:10px
+}
+
+.ui-dialog-titlebar-close {
+	display:none;
+}
+
 
 /* ###############   SUBGROUPS   #################################### */
 #topPanel div {
@@ -449,9 +492,14 @@ input:focus {
 	height:18px;
 	background: black;
 }
-.progressBar {
-	height:18px;
-	background: green;
+
+.editField {
+	padding-left:10px;
+	padding-right:10px;
+	background-color:#BFFF84;
+	max-width:inherit;
+	display:inline-block;
+	
 }
 
 /* ###############   DATA STYLE   ################################### */
@@ -474,7 +522,7 @@ input:focus {
 }
 
 .dataSelected .dataIndex:after {
-	content: "\2713 "
+	content: "\2713"
 }
 
 .dataIndex {
@@ -520,7 +568,7 @@ input:focus {
 .type_notes:empty:after { content:"(None)"; }
 
 		/* ############### :BEFORE STYLE ############################# */
-.type_reactant:not(:first-child):before { content: "+ "; }
+.type_reactant:not(:first-child):before { content: "+ ";}
 .type_quantity:before { content: "("; }
 .type_slow_cool:before { content: "Slow Cooled: "; }
 .type_leak:before { content: "Leak: "; }
@@ -539,6 +587,11 @@ input:focus {
 .type_reactant { 
 	font-weight:bold;
 	font-style:none; 
+	max-width:300px;
+}
+
+.type_notes {
+	max-width:400px;
 }
 
 .type_user {
