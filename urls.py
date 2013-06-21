@@ -15,18 +15,20 @@ urlpatterns = patterns('',
 		#Database
     (r'^$', database),
     (r'^database/$', database), #Encompassing data view.
+			#Change Page
     (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Used for changing pages.
     (r'^data_form/$', data_form), #Encompassing data view.
+			#Upload/Download Data
     (r'^upload_CSV/$', upload_CSV),
+	(r'^download_CSV/$', download_CSV),
+    (r'^data_update/$', data_update), #Update Information
 		#Authentication
     (r'^user_logout/$', user_logout), #Log Out
     (r'^user_login/$', user_login), #Log In
+		#Registration
     (r'^registration_prompt/$', registration_prompt), #Redirects to correct registration choice.
     (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
     (r'^user_registration/$', user_registration), #Create User
-		#Change Page
-    (r'^data_update/$', data_update), #Update Information
-	(r'^download_CSV/$', download_CSV),
 	#Enable the admin:
     (r'^admin/', include(admin.site.urls)),
     

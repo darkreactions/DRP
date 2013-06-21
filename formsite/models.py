@@ -133,7 +133,7 @@ class Data(models.Model):
 		return "{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 	
 #Add specified entries to a datum. Assume fields are present, safe, and clean.###
-def create_data_entry(user, **kwargs):
+def create_data_entry(user, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = Data()
 		#Set the user-related fields:
@@ -142,10 +142,18 @@ def create_data_entry(user, **kwargs):
 		
 		#Validate field names
 		field_vals = kwargs.items()
+		
+		fields_left = get_data_field_names()
+		for field_pair in field_vals:
+			fields_left.remove(field_pair[0])
+		print "{} {}".format(len(field_vals),len(get_data_field_names()))
+		print fields_left
+		print "<br/>"
+		
 		assert len(field_vals) == len(get_data_field_names()) ###SLOW?
 
 		#Set the non-user field values.
-		for (field, value) in field_vals: ###Clean/Insanity Check?
+		for (field, value) in field_vals: #Assume data passed to the function is clean.
 			setattr(new_entry, field, value)
 		new_entry.save()
 	except Exception as e:

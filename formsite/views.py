@@ -4,6 +4,7 @@ from django.contrib import auth
 from models import *
 from validation import *
 
+import json
 import csv
 import string
 import datetime
@@ -11,7 +12,7 @@ import datetime
 ######################  Static  ########################################
 class Controller(object):
 	def __init__(self):
-		self.data_per_page = 40 #Change to set different numbers of data per page.
+		self.data_per_page = 15 #Change to set different numbers of data per page.
 		self.current_radius = 4 #Max number of links to display "around" current link.
 	
 control = Controller()	
@@ -129,6 +130,7 @@ def data_form(request): #If no data is entered, stay on the current page.
 #Send/receive the upload-CSV form:
 def upload_CSV(request):
 	u = request.user
+	print "FILE:",request.FILES###
 	if request.method == 'POST' and u.is_authenticated(): 
 		return upload_data(request)
 	else:
@@ -137,7 +139,7 @@ def upload_CSV(request):
 ######################  Helper Functions ###############################
 
 #Helper function that returns a related data entry field ("reactant 1 name" --> "reactant_1")
-def get_related_field(heading):
+def get_related_field(heading): ###Not re-read.
 	#Strip all punctuation, capitalization and spacing from the header. 
 	#Note, translate() is a super fast version of replace())
 	stripped_heading = heading.translate(None, string.punctuation)
@@ -182,8 +184,7 @@ def get_related_field(heading):
 		raise Exception("TRANSLATION ERROR: No relation found for {}.".format(heading))###Possible Raise?
 	return related_field
 		
-def upload_data(redirected_request):
-	request = redirected_request #Request should be redirected from the upload view. 
+def upload_data(request): ###Not re-read.
 	true_fields = get_data_field_names()
 	not_required = { ###Auto-generate?
 			"reactant_3", "quantity_3", "unit_3", 
@@ -193,16 +194,16 @@ def upload_data(redirected_request):
 		}
 			
 	u = request.user
-	added_quantity=0###
-	error_quantity=0###
 	
 	if request.method=="POST" and request.FILES and u.is_authenticated():
 		uploaded_file = request.FILES["file"]
-		if len(uploaded_file) == 0:
-			return HttpResponse("No data selected!")
+		added_quantity=0
+		error_quantity=0
+		error_log = ""
+		
 		try:
 			blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data. ###
-			unknown_label = "UNKNOWN" #Label that blacklist values receive.
+			unknown_label = "?" #The label that blacklist values will inherit.
 			
 			#Attempt to validate the headings of the uploaded doc.
 			headings_valid = False
@@ -259,6 +260,8 @@ def upload_data(redirected_request):
 							#Skip the field if it was auto-added because
 							#	no data is present in the generated column.
 							j += 1
+							if field[:-2]=="quantity":
+								auto_add
 							continue
 						try:
 							#If the datum isn't helpful, don't remember it.###
@@ -270,6 +273,7 @@ def upload_data(redirected_request):
 							else:
 								#If the field is a quantity, check for units.
 								if field[:-2]=="quantity":
+									if field == "quantity_5": print "YES!"
 									#Remove punctuation and whitespace if necessary.
 									datum = str(datum).lower()
 									datum = datum.translate(None, "\n?/,!@#$%^&*-+=_\\|") #Remove gross stuff.
@@ -311,20 +315,26 @@ def upload_data(redirected_request):
 							raise Exception("Entry could not be added!")
 					
 					#Add the new entry to the database. ###SLOWWwwwww...
+					print "1"###
+					print entry_fields
+					print "<br />"
 					create_data_entry(u, **entry_fields)
 					added_quantity += 1###
 				except Exception as e:
-					print "ERROR:",e,"\n",data_group,"at",field,"({})".format(datum)
+					error_log += "ERROR:",e,"\n",data_group,"at",field,"({})<br/>".format(datum)
 					error_quantity +=1###
 					
 		except Exception as e:
-			print "ERROR:", e
+			print "Data could not be uploaded."
 	
-	###Bulk Upload?
-	
-	message = "{} entries added.".format(added_quantity)
-	message += "\n{} entries failed validation.".format(error_quantity)
-	return HttpResponse(message)
+	###Bulk Upload Instead?
+		message = "<h1>Results:</h1>".format(added_quantity)
+		message += "Added: {}<br/>".format(added_quantity)
+		message += "Failed: {}".format(error_quantity)
+		message += "<h1>Error Log: </h1>{}".format(error_log)
+		return HttpResponse(message)
+	else:
+		return HttpResponse("<p>Please log in to upload data.</p>")
 
 def download_CSV(request):
 	u = request.user
@@ -363,7 +373,7 @@ def download_CSV(request):
 		print "Total errors: {}".format(errors_total)
 		return CSV_file #ie, return HttpResponse(content_type="text/csv")
 	else:
-		return HttpResponse("Please sign in to download data.")
+		return HttpResponse("<p>Please log in to download data.</p>")
 	
 
 ######################  Change Page ####################################
@@ -410,27 +420,23 @@ def data_transmit(request, num = 0, control=control):
 	except:	
 		return HttpResponse("<p>Woopsie!... Something went wrong.</p>")
 
+######################  Update Data ####################################
 def data_update(request):
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
-		changesMade = simplejson.loads(request.body, "utf-8")
+		changesMade = json.loads(request.body, "utf-8")
 		
 		#Get the Lab_Group data to allow direct manipulation.
 		saved_data = get_saved_data(u.get_profile().lab_group)	
 			
 		while (len(changesMade["edit"]) > 0):
 			try:
-				#An editPackage is [indexChanged, fieldChanged, newValue] 
+				#An editPackage is [indexChanged, fieldChanged, newValue]. 
 				editPackage = changesMade["edit"].pop()
-				
-				indexChanged = int(editPackage[0])-1 #0-based Index
-				
-				#Translate the DOM class to the Django field.
-				fieldChanged = editPackage[1]
-				
-				#Check that the new value is valid.	
+				indexChanged = int(editPackage[0])-1 #Translate to 0-based Index
+				fieldChanged = editPackage[1] 
 				newValue = editPackage[2] ###CHECK NEW NAMES, CASEY
-				assert(quick_validation(fieldChanged, newValue))
+				assert(quick_validation(fieldChanged, newValue)) #Check that the new value is valid.
 				
 				#Make the edit in the database
 				dataChanged = saved_data[indexChanged]
@@ -438,15 +444,13 @@ def data_update(request):
 				dataChanged.user = u
 				dataChanged.save()
 			except:
-				print "Invalid data in new edit."
-				
+				pass
 		while (len(changesMade["del"]) > 0):###SLOW
 			try:
 				indexChanged = changesMade["del"].pop()-1 #0-based Index
 				saved_data[indexChanged].delete() #Django handles the deletion process.
 			except:
-				print "ERROR DELETING FILES"
-				
+				pass
 		while (len(changesMade["dupl"]) > 0):
 			try:
 				indexToClone = int(changesMade["dupl"].pop())-1 #0-based Index
@@ -455,15 +459,8 @@ def data_update(request):
 				clonedItem.user = u #Set the user to the one who performed the duplication.
 				clonedItem.save()
 			except:
-				print "ERROR DUPLICATING FILES"
-				
-		while (len(changesMade["add"]) > 0): ###Replace "submit" button?
-			try:
-				indexChanged = changesMade["add"].pop()-1 #0-based Index
-				del Lab_Group.saved_data[indexChanged]
-			except:
-				print "ERROR ADDING FILES"
-	return HttpResponse("SUCCESS");
+				pass
+	return HttpResponse("SUCCESS"); #Django requires an HttpResponse...
 
 ######################  User Auth ######################################
 def user_login(request):

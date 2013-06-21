@@ -319,7 +319,7 @@ input:focus {
 }
 
 .navLink {
-	font-family:Times;
+	font-family:arial;
 	font-size:24px;
 	font-weight:bold;
 	color:black;
@@ -360,7 +360,7 @@ input:focus {
 #navMenu {
 	position:absolute;
 	bottom:0px;
-	left:200px;
+	left:170px;
 }
 
 #userInfo {
@@ -443,6 +443,15 @@ input:focus {
 	position:absolute;
 	top:0px;
 	left:0px;
+}
+
+#progressContainer {
+	height:18px;
+	background: black;
+}
+.progressBar {
+	height:18px;
+	background: green;
 }
 
 /* ###############   DATA STYLE   ################################### */

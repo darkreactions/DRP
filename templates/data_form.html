@@ -19,7 +19,7 @@
 {% endif %}
 
 
-<form id="dataEntryForm" action="/data_form/" method="post" action="/data_view/">
+<form id="dataEntryForm" action="/data_form/" method="post" action="/data_view/" class="popupScreenForm infoForm">
 	{% csrf_token %}
 	{% for field in form %}
 		{# Assumes reactants are first #}

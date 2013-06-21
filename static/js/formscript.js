@@ -17,122 +17,6 @@ var mLConversions = { //Must be strings to avoid simplification by Javascript.
 	"H2O":"1.000", 
 }
 
-//Prepare Edit Package for Server (Step 1 of verification)
-function submitEditToServer(element) {
-	var newValue = element.val();
-	var originalValue = element.attr("originalText");
-	var fieldChanged = element.parent().attr("class").split(' ')[1];
-	
-	//Remove "type_" from the data field.
-	fieldChanged = fieldChanged.substr(5);
-	
-	//Add the reactant number to the class (eg, 1-5) if applicable.
-	if (fieldChanged == "reactant" || fieldChanged == "quantity" || fieldChanged == "unit") {	
-		fieldChanged += "_"+ element.parent().attr("class").split(' ')[2];
-	}
-	
-	//If the new value isn't valid, don't ask the server to verify.
-	if (quickValidation(fieldChanged, newValue)) {
-		var indexChanged = parseInt(element.parent().parent().prev(
-			".data_index").html());
-		changesMade.edit.push([indexChanged, fieldChanged, newValue]);
-	} else {
-		displayErrorMessage("Invalid data.");
-		newValue = originalValue; //Revert back to old entry if invalid
-	}
-	element.parent().html(newValue);
-	
-	//Only send a POST to the server if a change was made.
-	if (originalValue != newValue) {
-		updateData(); //###Perhaps update every few seconds?
-	}	
-}
-
-//Upload changes to server. (Step 2 of verification)
-function updateData() {
-	JSONArray = JSON.stringify(changesMade);
-	
-	//Show the loading screen.
-	$("#loadingScreen").toggle();
-	
-	$.post("/data_update/", JSONArray, function() {
-	
-	//The data should now be up to date:
-	changesMade = {
-	del:[],
-	edit:[],
-	add:[],
-	}; 
-	refreshScreen();
-	
-	});
-}
-
-//Refresh the data container classes. (NOTE: Does not perform server request for new data.)
-function refreshDataContainer() {
-	//Fade out units if the amount is also faded out.
-	$(".type_unit").each(function() {
-		if ($(this).prev().is(":empty")) {
-			$(this).css({"opacity":"0.3"});
-		}
-	});
-	//Keep selected data highlighted even if on page changes.
-	$(".data_index").each(function() {
-		dataID = Number($(this).html().trim())
-		if (selectedData.indexOf(dataID) != -1) {
-			$(this).parent().addClass("selected");
-		}
-	});
-}
-
-//Refresh the screen to get new data from server. (NOTE: Clears form)
-function refreshScreen(hideLoadScreen) {
-	hideLoadScreen = hideLoadScreen || false;//###Hide reload screen?
-	
-	//refreshScreen(true) will not show the load screen.
-	if (!hideLoadScreen){
-		$("#loadingScreen").toggle();
-	}
-	
-	window.setTimeout('location.reload()', 300); //###Will this work under heavy load?
-	if (totalDataSize === 0){
-		$("#data_container").html('<div style="text-align:center;color:white;">jQuery says no data is present yet!</div>');
-	}
-}
-
-//Display a temporary error message in the center of the screen.
-function displayErrorMessage(message) {
-	$("#invalidDataScreen").html(message);
-	$("#invalidDataScreen").show();
-	setTimeout(function() {
-	$("#invalidDataScreen").fadeOut("slow");
-	}, 250);
-}
-
-//||||||||| Data Manipulation (Buttons): |||||||||||||||||||||||||||||||
-
-//DEV button ###
-$("#REFRESH").click(function() {
-	alert("selectedDataSize: " + selectedDataSize + "\ntotalDataSize: " + totalDataSize
-		+ "\nsDSize === sD.length: " + String(selectedDataSize === selectedData.length)); //###
-	alert("selectedData: \n" + selectedData);
-});
-
-//AUTH button ### //Test if user is authenticated.
-$("#AUTH").click(function() {
-	$.get("/auth_user/", function(response) {
-	alert(response);
-	});
-});
-
-// |||||||||||||||  CSV Download: |||||||||||||||||||||||||||||||||||||||||
-//Initiate the CSV Download from the Server
-$("#downloadPrompt").click(function() {
-	//Download the saved data as a CSV.
-	location.replace("/download_CSV/");
-});	
-
-//||||||||| Data Manipulation (Other): ||||||||||||||||||||||||||||||
 
 //Click-to-edit Data
 var editByMenu = { //###FIX ME
@@ -280,10 +164,88 @@ $(".fieldWrapper input").blur(function() {
 	}
 });
 
+//||||||||| User Authentication: ||||||||||||||||||||||||||||||||||||
+$(".userAuthLink").click( function() {
+	//Get the Registration form from the server if it is requested.
+	if ($(this).attr("id") == "userRegister") {
+		$.get("/user_registration/", function(formHTML) {
+			$("#userForm").html(formHTML);
+			$("#id_username").focus(); //###Should just be "first visible input"
+		});
+	} //Get the Log-In form if it is requested.
+	else if ($(this).attr("id") == "userLogin") {
+		$.get("/user_login/", function(formHTML) {
+			$("#userForm").html(formHTML);
+			$("#id_username").focus(); //###Should just be "first visible input"
+		});
+	}
+	
+	
+	//Show and center the userAuthScreen.
+	$("#userAuthScreen").css({
+		"margin":"0px auto",
+		"top":"0px",
+		"left":"0px",
+		"display":"block"});
+	$("#popupGlobal").show();
+});
 
+$("#userLogOut").click( function() {
+	//Send the log-out signal.
+	$.get("/user_logout/", function(formHTML) {});
+	
+	//Reload the screen to verify log-out.
+	//refreshScreen()
+});
 
 //||||||||| Upon Form Submissions: ||||||||||||||||||||||||||||||||||||
 
+
+$(document).on("submit", "#dataEntryForm", function() { //###Not generalized to all popups.
+	var form = $(this); //Keep a reference to the form inside the POST request.
+	//$.post($(form).attr("action"), $(form).serialize(), function(response) {
+		//Recreate the popup window with the server response.
+		//alert(response);
+	//});
+	//alert("yes!");
+	//return false; //Do not continue or else the form will post. 
+});
+
+//||||||||| Upon Page Load: ||||||||||||||||||||||||||||||||||||
+
+//Load the error log if values were not valid server-side.
+if (!$("#error_container_text").html().trim()=="") {
+	$("#error_container").css({
+		"margin":"0px auto",
+		"position":"fixed",
+		"top":"30%",
+		"display":"block"});
+		
+	$("#error_container").show();
+	$("#error_container").draggable();
+}
+
+$(document).on("click", "#popup_toggle", function() { //###Not generalized to all popups.
+	$("#error_container_text").animate({
+		height:"toggle",
+		opacity:"toggle",
+		},500, function(){});
+});
+
+$(document).on("click", "#popup_close", function() {
+	var popupScreen = $(this).parent();
+	if (popupScreen.parent().attr("id") == "popupGlobal") {
+		popupScreen.parent().animate({
+			height:"toggle",
+			opacity:"toggle",
+			},500, function(){});
+	} else {
+		popupScreen.animate({
+			height:"toggle",
+			opacity:"toggle",
+			},500, function(){});
+	}
+});
 
 refreshDataContainer();
 

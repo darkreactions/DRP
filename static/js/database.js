@@ -1,4 +1,13 @@
 $(document).ready(function() {
+//############ Variable Setup: #########################################
+var selectedData = Array();
+var changesMade = {
+	del:[],
+	edit:[],
+	dupl:[],
+	add:[],
+	};
+	
 //############ Post-load Setup: #########################################
 
 //############ Dependent Functions: ####################################
@@ -39,28 +48,71 @@ function restyleData() {
 	});
 }
 
-function showRibbon(message, color, location) {
+function showRibbon(message, color, location, timeout) {
 	//Default location is the dataContainer.
 	location = location !== undefined ? location : "#dataContainer"
+	//Assume that the ribbon should time out.
+	timeout = timeout !== undefined ? timeout : true
 	
 	$(location).append(
 		"<div class=ribbonMessage style=\"background-color:" + color + 
 			";\">" + message + "</div>"
 	);
-	setTimeout(function() {
-		$(".ribbonMessage").fadeOut(1000);
-	},500);
+	
+	if (timeout) {
+		setTimeout(function() {
+			$(".ribbonMessage").fadeOut(1000);
+		},500);
+	}
 }
 
+//############ Server Transactions: #########################################
+//Record a change if the data is valid.
+function changeElement(element) { //"element" is the temporary input field.
+	var newValue = element.val();
+	var originalValue = element.attr("originalText");
+	//Remove "type_" from the field name.
+	var fieldChanged = element.parent().attr("class").split(' ')[1].substr(5);
+	
+	//Add the reactant number to the class (eg, 1-5) if applicable.
+	if (fieldChanged == "reactant" || fieldChanged == "quantity" || fieldChanged == "unit") {	
+		fieldChanged += "_"+ element.parent().attr("class").split(' ')[2];
+	}
+	
+	//If the new value isn't valid, don't ask the server to verify.
+	if (clientValidate(fieldChanged, newValue)) {
+		var indexChanged = parseInt(element.parent().parent().siblings(
+			".dataIndex").html());
+		changesMade.edit.push([indexChanged, fieldChanged, newValue]);
+	} else {
+		showRibbon("Invalid edit!", "red");
+		newValue = originalValue; //Revert back to old entry if invalid
+	}
+	element.parent().html(newValue);
+	
+	//Only send a POST to the server if a change was made.
+	if (originalValue != newValue) {
+		submitChanges(); //###Perhaps update every few seconds?
+	}	
+}
 
-//############ Variable Setup: #########################################
-var selectedData = Array();
-var changesMade = {
-	del:[],
-	edit:[],
-	dupl:[],
-	add:[],
-	};
+function submitChanges() {
+	if (changesMade.del.length > 10 || changesMade.dupl > 10) {
+		showRibbon("Working. This may take a moment.", "orange","body", false);
+	}
+
+	JSONArray = JSON.stringify(changesMade);
+	$.post("/data_update/", JSONArray, function() {
+		//The data should now be up to date:
+		changesMade = {
+			del:[],
+			edit:[],
+			add:[],
+			dupl:[],
+			}; 
+		refreshScreen(true);
+	});
+}
 	
 //############ Popup Management: #######################################
 //Activate specified popup:
@@ -147,7 +199,16 @@ $(document).on("change", "#uploadCSV_hiddenInput", function() {
 });
 
 //############ Form Interactions: ######################################
-$(document).on("submit", "form", function() {
+
+$(document).on("submit", ".uploadForm", function() { //###Ugly...
+		//Show the ribbon message if applicable.
+		//////if ($(".successActivator").length) {
+			showRibbon("Working. This may take a moment.", "orange", "body", false);
+			//////$(".successActivator").remove();
+		//////}	
+});
+
+$(document).on("submit", ".infoForm", function() {
 	var form = $(this); //Keep a reference to the form inside the POST request.
 	$.post($(form).attr("action"), $(form).serialize(), function(response) {
 		//Recreate the popup window with the server response.
@@ -172,7 +233,7 @@ $(document).on("submit", "form", function() {
 
 
 
-//############ Data Selection: #########################################
+//////############ Data Selection: #########################################
 //Click Group to Select:
 $(document).on("click", ".dataGroup", function() {
 	$(this).toggleClass("dataSelected");
@@ -235,33 +296,36 @@ $("#dbMenu_selectAll").click(function() {
 	}
 });
 
-//############ Data Manipulation: #########################################
+//############### Change Data: #########################################
 //Duplicate Button
 $("#dbMenu_duplicate").click(function() {  
-	//Assume data that is selected is already correct.
-	for (var i in selectedData) {
-		changesMade.dupl.push(selectedData[i]);
+	if (selectedData.length) { 
+		for (var i in selectedData) {
+			changesMade.dupl.push(selectedData[i]);
+		}
+		
+		showRibbon("Selection duplicated!", "green");
+		
+		//Upload updated data
+		submitChanges();
 	}
-	
-	showRibbon("Selection duplicated!", "green");
-	
-	//Upload updated data
-	//updateData();###
 });
 
 //Delete Button
-$("#dbMenu_delete").click(function() {  
-	for (var i in selectedData) {
-		changesMade.del.push(selectedData[i]);
-		//Immediately delete the data from the client's view ("#g_x" represents group ID).
-		$("#g_"+String(selectedData[i])).remove()
+$("#dbMenu_delete").click(function() { 
+	if (selectedData.length) { 
+		for (var i in selectedData) {
+			changesMade.del.push(selectedData[i]);
+			//Immediately delete the data from the client's view ("#g_x" represents group ID).
+			$("#g_"+String(selectedData[i])).remove()
+		}
+		selectedData = [];
+		
+		showRibbon("Selection deleted!", "green");
+		
+		//Upload updated data
+		submitChanges();
 	}
-	selectedData = [];
-	
-	showRibbon("Selection deleted!", "red");
-	
-	//Upload updated data
-	//updateData(); ###
 });
 
 //############ User Authentication: ####################################
