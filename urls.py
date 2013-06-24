@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     (r'^upload_CSV/$', upload_CSV),
 	(r'^download_CSV/$', download_CSV),
 			#Modify Data
+    (r'^get_full_datum/$', get_full_datum), #"Expand" the data.
     (r'^data_update/$', data_update), #Update Information
     (r'^data_form/$', data_form), #Encompassing data view.
 		#Authentication

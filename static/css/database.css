@@ -37,6 +37,43 @@
 	right:10px;
 }
 
+.expandButton {
+	position:absolute;
+	bottom:-10px;
+	padding:2px;
+	border-radius:5px;
+	border:2px solid black;
+	text-align:center;
+	
+	font-size:10px;
+	font-weight:bold;
+	background-color:#FFE944;
+	opacity:0.3;
+}
+
+.expandButton:hover {
+	opacity:1.0;
+}
+
+#searchButton {
+	position:absolute;
+	right:0px;
+	bottom:0px;
+	height:20px;
+	width:20px;
+	
+	background-repeat:no-repeat;
+	background-position:center;
+	padding:5px;
+	border-radius:15px;
+	margin-bottom:2px;
+}
+	
+#searchButton:hover {
+	background-color:#FFE944;
+	cursor:pointer;
+}
+
 /* ###############   PANELS   ################################### */
 #leftPanel {
 	height:100%;

@@ -76,5 +76,13 @@ TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),)
 
 ROOT_URLCONF = 'urls'
 
-#Apply a user-profile to users: ###C
+#Apply a user-profile to users: 
 AUTH_PROFILE_MODULE = 'formsite.Lab_Member'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    }
+}
+

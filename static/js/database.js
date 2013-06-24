@@ -27,8 +27,9 @@ function refreshScreen(rememberPage) {
 }
 
 //Set the current_page cookie.
-function setPageCookie() {
-	$.cookie("current_page", $("#pagesCurrent").html().trim(),
+function setPageCookie(page) {
+	page = page !== undefined ? page : $("#pagesCurrent").html().trim();
+	$.cookie("current_page", page,
 		{expires: 7}); //Set cookie to expire after one week.
 }
 
@@ -241,6 +242,7 @@ $(document).on("submit", ".infoForm", function() {
 		if ($(".successActivator").length) {
 			showRibbon("Data added!", "green", "#popupContainer_inner");
 			$(".successActivator").remove();
+			return false;
 		}
 		
 		//Reload the page if applicable.
@@ -318,6 +320,21 @@ $("#dbMenu_selectAll").click(function() {
 	}
 });
 
+//View Full Datum (Button)
+$(document).on("click", ".expandButton", function() {
+	//Send the 0-based dataIndex to the server and replace the dataEntry.
+	var indexRequested = parseInt($(this).siblings(".dataIndex").html())-1;
+	var moreButton = $(this);
+	$(moreButton).siblings(".dataEntry").html("Loading. Please Wait.");
+	$.post("/get_full_datum/", {"indexRequested":indexRequested}, 
+		function(response) {
+			$(moreButton).siblings(".dataEntry").html(response);
+			$(moreButton).fadeOut("slow");
+	});
+	
+	return false; //Do not continue so the data is not selected.
+});
+
 //############### Change Data: #########################################
 //Duplicate Button
 $("#dbMenu_duplicate").click(function() {  
@@ -358,6 +375,9 @@ $("#dbMenu_delete").click(function() {
 					
 					//Upload updated data
 					submitChanges();
+					$(this).dialog("close");
+					$(this).remove();
+					
 				},
 				"No": function() {
 					$(this).dialog("close");
@@ -367,6 +387,7 @@ $("#dbMenu_delete").click(function() {
 		});
 	}
 });
+
 
 //############ Edit Data: ###########################@##################
 //Initiate edit session.
@@ -451,6 +472,7 @@ $(document).on("click", "#pagesInputButton", function() {
 		$.get(pageDestination, function(dataResponse) {
 			var newDataContainer = dataResponse;
 			$("#dataContainer").html(newDataContainer);
+			setPageCookie(pageLink)
 			restyleData();
 		});
 	} else {
@@ -468,6 +490,7 @@ $(document).on("click", ".pageLink", function() {
 		$.get(pageDestination, function(dataResponse) {
 			var newDataContainer = dataResponse;
 			$("#dataContainer").html(newDataContainer);
+			setPageCookie(pageLink)
 			restyleData();
 		});
 	}

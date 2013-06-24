@@ -5,7 +5,7 @@
 			Dark Reactions Project
 		</title>
 		
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/database.css" />
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/database.css" />
 	
 	</head>
 	<body> 
@@ -67,6 +67,9 @@
 				<a href="/database/" class="navLink" >Database</a>
 				<a href="/predictions/" class="navLink">Predictions</a>
 			</div>
+			
+			<div id="searchButton" title="Search for a phrase." style="background-image: url({{ STATIC_URL }}/icons/search.png);"
+				id="dbMenu_selectPage"></div>
 		</div>
 		
 		<div id="centerPanel">
@@ -87,12 +90,11 @@
 	
 	<!-- SCRIPTS -->
 	
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.9.1.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-ui-1.10.3.custom.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script> 
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery_csrf.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
 
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/data_validation_client.js" ></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/database.js" ></script>
 
 	

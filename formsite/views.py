@@ -20,7 +20,8 @@ control = Controller()
 ######################  Session Info  ####################################
 #Returns all data that belongs to a specific lab group.
 def get_saved_data(lab_group):
-	return Data.objects.filter(lab_group=lab_group)
+	lab_data = Data.objects.filter(lab_group=lab_group).order_by("ref")
+	return lab_data
 
 def get_total_pages(total_data_size):
 	total_pages = int(1 + (total_data_size-1)/control.data_per_page)
@@ -58,7 +59,7 @@ def get_page_links(current, total_pages):
 def get_fresh_session_info(current, lab_group):
 	session = {}
 	session["saved_data"] = get_saved_data(lab_group)
-	session["total_pages"] = get_total_pages(len(session["saved_data"]))
+	session["total_pages"] = get_total_pages(session["saved_data"].count())
 	session["page_links"] = get_page_links(current, session["total_pages"])
 	return session
 	
@@ -83,7 +84,7 @@ def database(request, control = control):
 		if current_page > total_pages: current_page = total_pages #In case pages of data are deleted.
 		
 	else:
-		saved_data = [] #Don't query the database if U is not logged in.
+		saved_data = Data.objects.none() #Don't query the database if U is not logged in.
 		total_pages = 1
 		page_links = [1]
 		current_page = 1
@@ -105,7 +106,7 @@ def database(request, control = control):
 	return render(request, 'database_global.html', {
 		"data_on_page": data_package, #Includes data and data_indexes.
 		"page_package": page_package, 
-		"total_data_size": len(saved_data),
+		"total_data_size": saved_data.count(),
 	})
 
 
@@ -132,7 +133,6 @@ def data_form(request): #If no data is entered, stay on the current page.
 #Send/receive the upload-CSV form:
 def upload_CSV(request):
 	u = request.user
-	print "FILE:",request.FILES###
 	if request.method == 'POST' and u.is_authenticated(): 
 		return upload_data(request)
 	else:
@@ -140,10 +140,9 @@ def upload_CSV(request):
 	
 ######################  Helper Functions ###############################
 
-#Helper function that returns a related data entry field ("reactant 1 name" --> "reactant_1")
+#Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
 def get_related_field(heading): ###Not re-read.
-	#Strip all punctuation, capitalization and spacing from the header. 
-	#Note, translate() is a super fast version of replace())
+	#Strip all punctuation, capitalization, and spacing from the header. 
 	stripped_heading = heading.translate(None, string.punctuation)
 	stripped_heading = stripped_heading.translate(None, " ").lower()
 	stripped_heading = stripped_heading[:20] #Limit the checked heading (saves time if super long).
@@ -186,6 +185,21 @@ def get_related_field(heading): ###Not re-read.
 		raise Exception("TRANSLATION ERROR: No relation found for {}.".format(heading))###Possible Raise?
 	return related_field
 		
+def live_name_validation(request):
+	u = request.user
+	try:
+		if u.is_authenticated() and request.method=="POST":
+			saved_data = get_saved_data(u.get_profile().lab_group)
+			
+			#Give the specific index requested.
+			raw_name = json.loads(request.POST["indexRequested"])
+			entry = saved_data[index_requested]
+			valid_name = ""
+		return HttpResponse(valid_name)	
+	except:
+		return HttpResponse("False")	
+
+######################  Upload/Download Functionality ##################
 def upload_data(request): ###Not re-read.
 	true_fields = get_data_field_names()
 	not_required = { ###Auto-generate?
@@ -356,10 +370,8 @@ def download_CSV(request):
 		verbose_headers = get_data_field_names(True)
 		writer.writerow(verbose_headers)
 		
-		
 		#Write the actual entries to the CSV_file if the user is authenticated.
 		headers = get_data_field_names()
-		errors_total = 0###TEST VARS
 		#Get the Lab_Group data to allow direct manipulation.
 		saved_data = get_saved_data(u.get_profile().lab_group)	
 		
@@ -370,13 +382,10 @@ def download_CSV(request):
 					row += [eval("entry.{}".format(field))]
 				writer.writerow(row)
 			except:
-				errors_total += 1
-				print "ERROR AT:\n", entry###
-		print "Total errors: {}".format(errors_total)
+				pass
 		return CSV_file #ie, return HttpResponse(content_type="text/csv")
 	else:
 		return HttpResponse("<p>Please log in to download data.</p>")
-	
 
 ######################  Change Page ####################################
 def data_transmit(request, num = 0, control=control):
@@ -415,7 +424,7 @@ def data_transmit(request, num = 0, control=control):
 			return render(request, 'data_and_page_container.html', {
 				"data_on_page": data_package, #Includes data indexes
 				"page_package": page_package, #Includes page links
-				"total_data_size": len(saved_data),
+				"total_data_size": saved_data.count(),
 			})
 		else:
 			return HttpResponse("<p>Please log in to view your data.</p>")
@@ -462,7 +471,22 @@ def data_update(request):
 				clonedItem.save()
 			except:
 				pass
-	return HttpResponse("SUCCESS"); #Django requires an HttpResponse...
+	return HttpResponse("OK"); #Django requires an HttpResponse...
+
+def get_full_datum(request):
+	u = request.user
+	try:
+		if u.is_authenticated() and request.method=="POST":
+			#Give the specific index requested.
+			index_requested = json.loads(request.POST["indexRequested"])
+			
+			entry = get_saved_data(u.get_profile().lab_group)[index_requested]
+			
+		return render(request, "full_datum.html", {
+			"entry":entry
+		})
+	except:
+		return HttpResponse("<p>Data could not be loaded!</p>")		
 
 ######################  User Auth ######################################
 def user_login(request):
@@ -488,7 +512,7 @@ def user_logout(request):
 
 #Redirects user to the appropriate registration screen.
 def registration_prompt(request):
-	#Needed to properly render template.
+	#"render" is needed to properly display template:
 	return render(request, "registration_cell.html", {})
 
 def user_registration(request):
@@ -522,7 +546,7 @@ def user_registration(request):
 		"profile_form": form[1],
 	})
 	
-def lab_registration(request):
+def lab_registration(request): ###Not finished.
 	if request.method=="POST":
 		pass
 	else:
