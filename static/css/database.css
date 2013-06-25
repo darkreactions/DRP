@@ -183,6 +183,10 @@ input:focus {
 	background-color:#FFD92E;
 }
 
+option {
+	background-color:inherit;
+}
+
 /* ###############   CONTAINERS   ################################### */
 .genericContainer {
 	background-color:#A1C5E2;
@@ -530,11 +534,12 @@ input:focus {
 	background: black;
 }
 
-.editField {
+.editText {
 	padding-left:10px;
 	padding-right:10px;
 	background-color:#BFFF84;
 	max-width:inherit;
+	width:10px;
 	display:inline-block;
 	
 }
@@ -636,6 +641,7 @@ input:focus {
 	opacity:0.5;
 	position:absolute;
 	right:0px;
+	bottom:-7px;
 }
 
 /* #################### FORM STYLE ################################# */
@@ -692,393 +698,13 @@ input:focus {
 	display:inline-block;
 	font-style:oblique;
 }
-.popup_button:hover{
-	background-color:#FFD92E;
-	cursor:pointer;
-}
-
-/*
-#uploadCSVChoose_hidden {/*###Make pretty*/
-/*
-	opacity:0;
-	width:inherit;
-	height:inherit;
-	
-	position:absolute;
-	left:63px;
-	top:37px;
-}
-*/
-
-/*
-#uploadCSVChoose_display {/*###Make pretty*/
-*/
-/*
-	width:180px;
-	height:25px;
-	margin:5px;
-	margin-left:auto;
-	margin-right:auto;
-	background-color:#EFEFA9;
-	border:2px black solid;
-	border-radius:5px;
-}
-
-#uploadCSVChoose_display:hover {
-	background-color: #FFE05B;
-}
-
-#uploadCSVWords {
-	font-size:12px;
-	font-weight:thin;
-	line-height:26px;
-	color:black;
-	z-index:10;
-}
-
-#uploadCSVScreen {
-	position:fixed;
-	left:30%;
-	top:40%;
-	width:300px;
-	background-color:#418FDC;
-	display:none;
-	
-	border: 5px #454545 outset;
-	border-radius:15px;
-	padding:10px;
-	
-	font-weight:bold;
-	font-size:16px;
-	color:white;
-}
-
-#invalidDataScreen {
-	position:fixed;
-	left:40%;
-	right:40%;
-	top:40%;
-	background-color:#FF7070;
-	display:none;
-	
-	border:4px black solid;
-	border-radius:15px;
-	padding:10px;
-	
-	font-weight:bold;
-	font-size:20px;
-}
-
-.selected {	
-	background-color:#FFE05B;
-}
-.selected:after {	
-	content:  "(\2713)";
-}
-
-.sub_data {
-	display:inline-block;
-	padding:5px;
-	max-width:100%;
-}
-
-.sub_data:empty {
-	opacity:0.3;
-}
-
-.sub_data:hover {
-	cursor:pointer;
-}
-*/
-*/
-
-/* DATA FORMATTING */
-/*
-.type_temp:after {
-	content: "\2103";
-	font-weight:bold;
-	font-style:oblique;
-	font-size:14px;
-}
-
-.type_time:after {
-	content: " Hours";
-	font-weight:bold;
-	font-style:oblique;
-	font-size:14px;
-}
 
 
-.type_reactant {
-	font-weight:bold;
+.badData {
+	background-color:red;
+}
+.badData:focus {
+	background-color:#F7605B;
 }
 
-
-.type_reactant:not(:first-child):before {
-	content: "+ ";
-}
-
-.type_quantity {
-	font-style:oblique;
-}
-
-.type_quantity:before {
-	content: "(";
-	font-weight:bold;
-	font-style:oblique;
-}
-
-.type_unit: {
-	font-weight:bold;
-	font-style:oblique;
-}
-.type_unit:after {
-	content: ")";
-	font-weight:bold;
-	font-style:oblique;
-}
-
-.type_slow_cool:before {
-	content: "Slow Cooled: ";
-	font-weight:bold;
-	font-style:oblique;
-	font-size:14px;
-}
-
-.type_leak:before {
-	content: "Leak: ";
-	font-weight:bold;
-	font-style:oblique;
-	font-size:14px;
-}
-
-.type_pH:before {
-	content: "pH: ";
-	font-weight:bold;
-	font-style:oblique;
-	font-size:14px;
-}
-
-.type_purity:before {
-	content: "Purity: ";
-	font-weight:bold;
-	font-style:oblique;
-	font-size:14px;
-}
-.type_outcome:before {
-	content: "Outcome: ";
-	font-weight:bold;
-	font-style:oblique;
-	font-size:14px;
-}
-
-.type_user:before {
-	content:"Last Modified: ";
-}
-
-.type_user {
-	font-style:oblique;
-	font-size:14px;
-	opacity:0.5;
-	display:inline-block;
-}
-
-.type_notes {
-	font-style:oblique;
-	font-size:14px;
-}
-
-.type_notes:empty:after {
-	content:"(None)";
-}
-
-.type_notes:before {
-	font-weight:bold;
-	content: "Notes: ";
-}
-
-.type_ref {
-	font-style:oblique;
-	font-size:14px;
-}
-.type_ref:before {
-	content: "Reference: ";
-	font-weight:bold;
-	font-style:oblique;
-}
-*/
-
-
-/* FORM STYLE */
-
-/*
-.form_checkbox { /*### */
-}
-/*
-.form_checkbox:checked {
-}
-*/
-
-/*
-#dataEntryForm { /* The form container */
-/*
-	background-color:#418FDC;
-*/
-/*
-	border:2px black solid;
-	border-radius:10px;
-	font-family:arial;
-	text-align:center;
-	padding:5px;
-}
-*/
-*/
-
-/*
-.form_text {
-	background-color:#EFEFA9;
-	display:inline-block;
-	padding:5px;
-	border: 2px black solid;
-	border-radius:5px;
-}
-
-.form_text:hover{
-	background-color:#FFEA8F;
-}
-
-.form_text:focus {
-	background-color:#FFE05B;
-}
-
-.form_text_long {
-	width:450px;
-}
-
-.form_text_short {
-	width:60px;
-}
-
-.form_drop_down {
-	padding-left:0px;
-	width:60px;
-}
-*/
-
-/* Assorted Labels */
-/*
-form div label {
-	font-weight:bold;
-	font-size:16px;
-	color:white;
-}
-
-td label {
-	font-weight:bold;
-	font-size:16px;
-	color:white;
-}
-
-.error_label {
-	color:black;
-	font-weight:bold;
-	display:inline-block;
-}
-.error_label:hover {
-	text-decoration:underline;
-}
-
-.form_button {
-	background-color:#EFEFA9;
-	border: 2px #454545 solid;
-	border-style:outset;
-	border-radius:20px;
-	margin:5px;
-	font-family:arial;
-	font-style:oblique;
-}
-
-.form_button:hover {
-	background-color:#FFE05B;
-}
-
-
-}
-*/
-/* Should be last to overwrite other styles */
-/*
-.invalid_data {
-	border-color:red;
-	background-color:#F2BABA;
-}
-*/
-
-/* USER CONTAINER STYLE */
-/*
-.popup_screen {
-	background-color:#418FDC;
-	display:none;
-	
-	border: 5px #454545 outset;
-	border-radius:15px;
-	padding:10px;
-	
-	font-weight:bold;
-	font-size:16px;
-	color:white;
-	
-	min-width:42px;
-	min-height:10px;
-}
-
-
-#user_container {/*###Make pretty*/
-/*
-	width:180px;
-	height:35px;
-	margin:5px;
-	padding:5px;
-	background-color:#EFEFA9;
-	border:2px black solid;
-	border-radius:5px;
-	position:absolute;
-	right:0px;
-}
-
-#popupGlobal {
-	background:rgba(64, 64, 64, 0.9);
-	margin:10%;
-	width:80%;
-	min-width:300px;
-	padding:30px;
-	border-radius:5px;
-	
-	position:absolute;
-	top:0px;
-	display:none;
-	
-}
-
-#userAuthScreen {
-	opacity:1.0;
-	max-width:800px;
-	margin: 0 auto;
-}
-
-a {
-	cursor:pointer;
-	padding-left:5px;
-	padding-right:5px;
-}
-a:hover {
-	background-color:#FFE05B;
-	border-radius:15px;
-	font-style:oblique;
-}
-*/
-/*
-.reload_timer {
-	display:none;
-}
-*/
 

@@ -65,7 +65,10 @@
 			
 			<div id="navMenu">
 				<a href="/database/" class="navLink" >Database</a>
+				<a href="http://ironwood.fig.haverford.edu/main.html" class="navLink">Predictions</a>
+<!--###
 				<a href="/predictions/" class="navLink">Predictions</a>
+-->
 			</div>
 			
 			<div id="searchButton" title="Search for a phrase." style="background-image: url({{ STATIC_URL }}/icons/search.png);"
@@ -94,7 +97,13 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
-
+	
+	<script type="text/javascript">
+		//Define the STATIC_URL to be used in the JS files.
+		var STATIC_URL = "{{ STATIC_URL }}";
+	</script>
+	
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/clientValidate.js" ></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/database.js" ></script>
 
 	

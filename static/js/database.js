@@ -41,6 +41,7 @@ function restyleData() {
 			$(this).css({"opacity":"0.3"});
 		}
 	});
+	
 	//Keep selected data highlighted even if on page changes.
 	$(".dataIndex").each(function() {
 		dataID = Number($(this).html().trim())
@@ -89,37 +90,29 @@ function adaptSize(element) {
 	}, 50);
 };
 
-//############ Server Transactions: #########################################
-//Record a change if the data is valid.
-function changeElement(element) { //"element" is the temporary input field.
-	var newValue = element.val();
-	var originalValue = element.attr("originalText");
-	//Remove "type_" from the field name.
-	var fieldChanged = element.parent().attr("class").split(' ')[1].substr(5);
-	
-	//Add the reactant number to the class (eg, 1-5) if applicable.
-	if (fieldChanged == "reactant" || fieldChanged == "quantity" || fieldChanged == "unit") {	
-		fieldChanged += "_"+ element.parent().attr("class").split(' ')[2];
+//Get edit-by-menu options from editChoices.json.
+function getOptions(field) {
+	switch (field) {
+		case ("quantity"):
+			return  editChoices["unitChoices"]
+		case ("outcome"):
+			return  editChoices["outcomeChoices"]
+		case ("purity"):
+			return  editChoices["purityChoices"]
+		case ("slow_cool"):case("leak"): //ie, slow_cool and leak are the same case.
+			return  editChoices["boolChoices"]
+		default:
+			return ["No options found."]
 	}
-	
-	//If the new value isn't valid, don't ask the server to verify.
-	if (clientValidate(fieldChanged, newValue)) {
-		var indexChanged = parseInt(element.parent().parent().siblings(
-			".dataIndex").html());
-		changesMade.edit.push([indexChanged, fieldChanged, newValue]);
-	} else {
-		showRibbon("Invalid edit!", "red");
-		newValue = originalValue; //Revert back to old entry if invalid
-	}
-	element.parent().html(newValue);
-	
-	//Only send a POST to the server if a change was made.
-	if (originalValue != newValue) {
-		submitChanges(); //###Perhaps update every few seconds?
-	}	
 }
 
-function submitChanges() {
+//############ Server Transactions: ########################################
+
+
+//############ Server Transactions: #########################################
+function submitChanges(refresh) {
+	refresh = refresh !== undefined ? refresh : true 
+	
 	if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
 		showRibbon("Working. This may take a moment.", "orange","body", false);
 	}
@@ -133,7 +126,9 @@ function submitChanges() {
 			add:[],
 			dupl:[],
 			}; 
-		refreshScreen(true);
+		if (refresh) {
+			refreshScreen(true);
+		}
 	});
 }
 	
@@ -330,6 +325,7 @@ $(document).on("click", ".expandButton", function() {
 		function(response) {
 			$(moreButton).siblings(".dataEntry").html(response);
 			$(moreButton).fadeOut("slow");
+			restyleData();
 	});
 	
 	return false; //Do not continue so the data is not selected.
@@ -397,52 +393,94 @@ $(document).on("click", ".editable", function() {
 	if ($(this).children(".editConfirm").length == 0 ) {
 		var oldVal = String($(this).html());
 		var editAs = $(this).attr("editAs");
-		$(this).html("<input class=\"editField\" type=\"" + editAs
-			+ "\" title=\"Enter the new value.\" oldVal=\""+ oldVal
-			+ "\" value=\"" + oldVal + "\" />"
-			+ "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
-			);
-		adaptSize($(this).children(".editField"));
-		$(this).children(".editField").focus();
+		
+		if (editAs == "select") {
+			var options = getOptions($(this).attr("class").split(" ")[1].substr(5));
+			var newInnards = "<select class=\"editField editMenu dropDownMenu\""
+			+"oldVal=\""+oldVal+"\">";
+			for (var i in options) {
+				var choice = options[i];
+				if (oldVal == choice) {
+					newInnards += "<option value=\""+choice+"\"selected>"+choice+"</option>";
+				} else {
+					newInnards += "<option value=\""+choice+"\">"+choice+"</option>";
+				}
+			}
+			newInnards += "</select> <input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
+			$(this).html(newInnards);
+			$(this).children(".editMenu").focus();
+		} else {
+			$(this).html("<input class=\"editField editText\" type=\"" + editAs
+				+ "\" title=\"Enter the new value.\" oldVal=\""+ oldVal
+				+ "\" value=\"" + oldVal + "\" />"
+				+ "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
+				);
+			adaptSize($(this).children(".editText"));
+			$(this).children(".editText").focus();
+		}
 	}
 	return false; //Don't continue on to select the data.
 });
 
 //Confirm edit with button press.
 $(document).on("click", ".editConfirm", function() {
-	//Validate data and revert to old value if new value is invalid.
 	var editFieldSibling = $(this).siblings(".editField")
+	//Find the general fieldChanged (eg, quantity vs. quantity_1)
+	var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
 	var newValue = $(editFieldSibling).val();
 	var oldValue = $(editFieldSibling).attr("oldVal");
-	if ((true) && (newValue != oldValue)) {
-		//Find the fieldChanged.
-		var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
-		if ($.isNumeric(fieldChanged[2])) { 
-			fieldChanged = fieldChanged[1].substr(5) + "_" + fieldChanged[2];
+	
+	var validData = false;
+	
+	if (editFieldSibling.attr("class").split(" ")[1] == "editText") { //Edit by Text
+		if ($(this).siblings(".editText").attr("class").indexOf("badData") < 0 
+			&& fullValidate(fieldChanged[1].substr(5), newValue)) {
+			validData = true;
 		} else {
-			fieldChanged = fieldChanged[1].substr(5);
+			showRibbon("Invalid data!", "red");
 		}
-		
-		//Submit the new value to the server. 
-		changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
-			$(this).parent().parent().siblings(".dataIndex").html().trim(),
-			fieldChanged,
-			newValue
-			]);
-		
-		//Immediately change the visual for the user.
-		$(this).parent().html(newValue);
-	} else {
-		$(this).parent().html(oldValue);
+	} else { //Edit by Menu
+		//Since the only data choices are those which are supplied...
+		validData = true;
 	}
-	restyleData();
-	//submitChanges();
+	
+	if (validData) {
+		if (newValue != oldValue) {
+			//Find the specific fieldChanged.
+			if ($.isNumeric(fieldChanged[2])) { 
+				fieldChanged = fieldChanged[1].substr(5) + "_" + fieldChanged[2];
+			} else {
+				fieldChanged = fieldChanged[1].substr(5);
+			}
+			
+			//Submit the new value to the server. 
+			changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
+				$(this).parent().parent().siblings(".dataIndex").html().trim(),
+				fieldChanged,
+				newValue
+				]);
+			
+			//Immediately change the visual for the user.
+			$(this).parent().html(newValue);
+			submitChanges(false);
+		} else {
+			//Revert to old value if new value is unchanged.
+			$(this).parent().html(oldValue);
+		}
+		restyleData();
+	}
 	return false; //Don't re-edit the data (since ".editable" was clicked again).
 });
 
-//Make edit text fields auto-size while typing.
-$(document).on("keyup", ".editField", function() {
+//Make edit text fields auto-size and validate while typing.
+$(document).on("keyup", ".editText", function() {
 	adaptSize($(this));
+	if (!quickValidate(($(this).parent().attr("class").split(" ")[1]).substr(5),
+		$(this).val())) {
+		$(this).addClass("badData");
+	} else {
+		$(this).removeClass("badData");
+	}
 });
 
 //############ User Authentication: ####################################

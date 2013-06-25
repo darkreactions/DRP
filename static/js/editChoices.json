@@ -1,0 +1,6 @@
+{
+"unitChoices" : ["g","mL","d"],
+"boolChoices" : ["Yes","No","?"],
+"outcomeChoices" : [0,1,2,3,4],
+"purityChoices" : [0,1,2]
+}

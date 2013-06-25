@@ -180,7 +180,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 1."}))
 	unit_1 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_2 = CharField(widget=TextInput(
 		attrs={'class':'form_text',
@@ -189,7 +189,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 2."}))
 	unit_2 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_3 = CharField(required=False,
 		widget=TextInput(attrs={'class':'form_text',
@@ -199,7 +199,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 3."}))
 	unit_3 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_4 = CharField(required=False,
 		widget=TextInput(attrs={'class':'form_text',
@@ -209,7 +209,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 4."}))
 	unit_4 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_5 = CharField(required=False,
 		widget=TextInput(attrs={'class':'form_text',
@@ -219,7 +219,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 5."}))
 	unit_5 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	ref = CharField(label="Ref.", widget=TextInput(
 		attrs={'class':'form_text form_text_short',
@@ -234,16 +234,16 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text form_text_short', 'placeholder':'0 - 14',
 		"title":"The pH at which the reaction occurred."}))
 	slow_cool = ChoiceField(label="Slow Cool", choices = BOOL_CHOICES, 
-		widget=Select(attrs={'class':'form_text form_drop_down',
+		widget=Select(attrs={'class':'form_text dropDownMenu',
 		"title":"Was the reaction allowed to slow-cool?"}))
 	leak = ChoiceField(choices = BOOL_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"Was a leak present during the reaction?"}))
 	outcome = ChoiceField(choices = OUTCOME_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"0: No Data Available\n1: No Solid\n 2: Noncrystalline/Brown\n3: Powder/Crystallites\n4: Large Single Crystals"}))
 	purity = ChoiceField(choices = PURITY_CHOICES, widget=Select(
-		attrs={'class':'form_text form_drop_down',
+		attrs={'class':'form_text dropDownMenu',
 		"title":"0: No Data Available\n 1: Multiphase\n 2: Single Phase"}))
 	notes = CharField(required = False, widget=TextInput(
 		attrs={'class':'form_text form_text_long',
