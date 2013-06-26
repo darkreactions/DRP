@@ -83,12 +83,26 @@ class UserProfileForm(ModelForm):
 		fields = ["lab_group"]
 
  
+################ COMPOUND GUIDE ########################
+#class CompoundAbbrev(models.Model):
+	#compound = models.CharField("Compound:", max_length=100)
+	#abbrev = models.CharField("Abbrev:", max_length=40)
+
+	#lab_group = models.ForeignKey(Lab_Group, unique=False)
+		
+	#def __unicode__(self):
+		#return "{abbrev} --> {compound} (LAB: {})".format(self.ref, self.lab_group.lab_title)	
+	
+#class CompoundAbbrevForm(ModelForm):
+	#class Meta:
+		#model = CompoundAbbrev	
+
 ############### DATA ENTRY ########################
 #Create the form choices from the pre-defined ranges.
-OUTCOME_CHOICES = [[i,str(i)] for i in range(outcome_range[0],outcome_range[1]+1)]
-PURITY_CHOICES = [[i,str(i)] for i in range(purity_range[0],purity_range[1]+1)]
-UNIT_CHOICES = [["g"]*2,["mL"]*2, ["d"]*2]
-BOOL_CHOICES = [["Yes"]*2, ["No"]*2, ["?"]*2]
+OUTCOME_CHOICES = [[opt,opt] for opt in edit_choices["outcomeChoices"]]
+PURITY_CHOICES = [[opt,opt] for opt in edit_choices["purityChoices"]]
+UNIT_CHOICES = [[opt,opt] for opt in edit_choices["unitChoices"]]
+BOOL_CHOICES = [[opt,opt] for opt in edit_choices["boolChoices"]]
 
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
@@ -286,11 +300,10 @@ class DataEntryForm(ModelForm):
 		fields = get_data_field_names()
 		
 		#Gather the "coupled" fields (ie, the fields ending in a similar number) 
-		field_groups = [[],[],[],[],[]] ###Number of reactions (auto-generate?)
+		field_groups = [[] for _ in range(5)]
 		for field in fields:
 			if field[-1].isdigit():
-				field_number = int(field[-1])
-				field_groups[field_number-1] += [field]
+				field_groups[int(field[-1])-1] += [field]
 		
 		not_required = { ###Auto-generate?
 			"reactant_3", "quantity_3", "unit_3", 
@@ -300,14 +313,14 @@ class DataEntryForm(ModelForm):
 		}
 		
 		#Make sure all fields are available:
-		#Skip checking for missing dirty_data if possible.
+		#	(Skip checking for missing dirty_data if possible.)
 		if len(dirty_data) != len(fields):
 			for field in fields:
 				try:
 					dirty_data[field]	
 				except: #At this point, the datum is not available. 
 					if field in not_required: #Ie, if a field is required...
-						dirty_data[field] = "" #The datum was not required and nothing was entered.
+						dirty_data[field] = "?" #The datum was not required and nothing was entered.
 					else:
 						bad_data.add(field) #Remember that the data is bad.
 						

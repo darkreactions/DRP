@@ -93,7 +93,7 @@ function adaptSize(element) {
 //Get edit-by-menu options from editChoices.json.
 function getOptions(field) {
 	switch (field) {
-		case ("quantity"):
+		case ("unit"):
 			return  editChoices["unitChoices"]
 		case ("outcome"):
 			return  editChoices["outcomeChoices"]

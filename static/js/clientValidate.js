@@ -19,10 +19,11 @@ $.ajax({
 	}
 });
 	
-//Fields that can be edited with a range alone:
+//Fields that can be edited with a range alone: ###Copied in validation.py
 var rangeFields = ["quantity", "temp", "time", "pH", "outcome", "purity"];
 //Fields that must be between a specific character count/limit:
 var limitFields = ["ref", "notes"];
+
 function quickValidate(field, value) {
 	//Get the range if it is applicable.
 	if (dataRanges[field]) {
@@ -34,7 +35,6 @@ function quickValidate(field, value) {
 	} else if (limitFields.indexOf(field) >= 0) {
 		return (range[0] <= value.length && value.length <= range[1])
 	} else {
-		alert("nope!");
 		return true; //If range tests passed, label as valid data.
 	}
 }
