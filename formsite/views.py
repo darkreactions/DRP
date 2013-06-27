@@ -18,16 +18,11 @@ class DataManager(object):
 	def __init__(self):
 		self.data_per_page = 15 #Change to set different numbers of data per page.
 		self.current_radius = 4 #Max number of links to display "around" current link.
-		self.batch_size = 3
+		self.batch_size = 1
 		
 	#Collect all data relevant to a specific lab group.
 	def collect_all_data(self, lab_group):
-		lab_data = cache.get("{}|LABDATA".format(lab_group.lab_title))
-		if not lab_data:
-			lab_data = Data.objects.filter(lab_group=lab_group).order_by("ref")
-			#cache.set("{}|LABDATA".format(lab_group.lab_title), lab_data)
-			cache.set("{}|LABDATA".format(lab_group.lab_title), list(lab_data))
-		logging.info("-----COLLECTION COMPLETE");### All data as list or sub_caches?
+		lab_data = Data.objects.filter(lab_group=lab_group).order_by("ref")
 		return lab_data
 
 	def calc_total_pages(self, total_data_size):
@@ -37,34 +32,33 @@ class DataManager(object):
 			
 	def make_cursors(self, lab_group, lab_data, page = 1, end_page = None):
 		if not end_page:
-			end_page = calc_total_pages(lab_data.count())
+			end_page = self.calc_total_pages(lab_data.count())
 		
 		cache_name = "CURSOR"
+		cursor = None
 		while page <= end_page:
 			try:
 				#If the page doesn't require a cursor, skip to the next page.
-				if not ((page-1) % self.batch_size == 0) or page==end_page:
-					page += 1
-					continue
-				#Differentiate between the last page and other cursors:
-				cache_name = "LASTPAGE"
-				#Only create cursors if a cursor isn't present.
-				cursor = cache.get("{}|{}|{}".format(lab_group.lab_title, cache_name, page))
-				if not cursor:
-					cache.set("{}|{}|{}".format(lab_group.lab_title, cache_name, page),
-						get_cursor(lab_data)
-					)
-					cursor = get_cursor(lab_data)
-				lab_data = set_cursor(lab_data, cursor)
+				if (page-1) % self.batch_size == 0 or page==end_page:
+					#Differentiate between the last page and other cursors:
+					if page==end_page: cache_name = "LASTPAGE"
+					#Only create cursors if a cursor isn't present.
+					#cursor = None#cache.get("{}|{}|{}".format(lab_group.lab_title, cache_name, page))
+					if not cursor:
+						cursor = get_cursor(lab_data)
+						cache.set("{}|{}|{}".format(lab_group.lab_title, cache_name, page), cursor)
+					#lab_data = set_cursor(lab_data, cursor)
+					#lab_data = lab_data[0:(self.data_per_page*self.batch_size)]
 			except Exception as e:
-				logging.info("Oops...\n{}".format(e))
+				logging.info("\n----Oops...\n{}".format(e))###
 			page += 1
+		logging.info(lab_data)
 				
 	def find_cursor(self, lab_group, page, cache_name="CURSOR"):
 		cursor = cache.get("{}|{}|{}".format(lab_group.lab_title, cache_name, page))
 		while not cursor:
 			if page < 1 or cache_name=="LASTPAGE":
-				raise Exception("No cursors found!")
+				raise Exception("No cursors found")
 			else: page -= 1
 			cursor = cache.get("{}|{}|{}".format(lab_group.lab_title, cache_name, page))
 		return cursor	
@@ -97,19 +91,28 @@ class DataManager(object):
 		return page_links		
 	
 	#Returns the data relevant to a given page (from a cursor).
-	#	Note: Will skip lookup if given lab_data.
-	def retrieve_data(self, user, page = 1, lab_data = None):
+	#	Note: Will skip lookup if given lab_data or if not set to overwrite.
+	def retrieve_data(self, user, page = 1, overwrite = False, lab_data = None):
 		if not user.is_authenticated():
 			raise Exception("User not logged in.")
 		lab_group = user.get_profile().lab_group
-		#Retrieve the cursor.
-		cursor = self.find_cursor(lab_group, page)
 		#Only retrieve lab_data if it is not available.
-		if lab_data == None:
-			lab_data = self.collect_all_data(u.get_profile().lab_group)
-		#Apply the cursor to the lab data.
-		lab_data = set_cursor(lab_data, cursor)
-		return lab_data[0:self.data_per_page]
+		cached_data = None#cache.get("{}|PAGEDATA|{}".format(lab_group.lab_title, page))
+		if not cached_data or overwrite:
+			if lab_data == None:
+				lab_data = self.collect_all_data(user.get_profile().lab_group)
+			#Retrieve the cursor.
+			cursor = self.find_cursor(lab_group, page)
+			#Apply the cursor to the lab data.
+			lab_data = set_cursor(lab_data, cursor)
+			logging.info("3.) {}".format(lab_data.count()))
+			#lab_data = lab_data[0:self.data_per_page]
+			logging.info("4.) {}".format(lab_data))
+			#Overwrite the existing cache entry.
+			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), list(lab_data))
+		else: 
+			lab_data = cached_data 
+		return lab_data
 			
 	def get_fresh_page_info(self, request):
 		u = request.user
@@ -118,30 +121,29 @@ class DataManager(object):
 		try:
 			#Gather necessary information from the user's session:
 			current_page = int(request.COOKIES.get("current_page"))
-			if not current_page: current_page = 1
 			lab_data = self.collect_all_data(u.get_profile().lab_group)
-			logging.info("a")
+			#total_data_size = len(lab_data) ###List
 			total_data_size = lab_data.count()
-			logging.info("b")
 			total_pages = self.calc_total_pages(total_data_size)
-			logging.info("c")
+			
+			#Construct the cursors that are missing.
+			self.make_cursors(u.get_profile().lab_group, lab_data, current_page, total_pages)
 			
 			#Make sure the page is a valid page.
 			assert(0 < current_page <= total_pages)
 			
 			#Pack up the session info:
 			session = {}
-			session["relevant_data"] = self.retrieve_data(u, current_page, lab_data)
+			session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
 			session["total_data_size"] = total_data_size
 			session["total_pages"] = total_pages
-			session["page_links"] = self.get_page_links(current, total_pages)
+			session["page_links"] = self.get_page_links(current_page, total_pages)
 			session["current_page"] = current_page
 			return session
 		except Exception as e:
 			raise Exception("-Data could not be retrieved for page {}\n--{}.".format(current_page, e))
 control = DataManager()	
 	
-######################  Session Info  ####################################
 
 ######################  Core Views  ####################################
 def database(request, control = control):
