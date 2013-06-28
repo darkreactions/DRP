@@ -41,6 +41,11 @@ indexes:
 - kind: formsite_data
   properties:
   - name: lab_group_id
+  - name: creation_time
+
+- kind: formsite_data
+  properties:
+  - name: lab_group_id
   - name: ref
 
 - kind: formsite_lab_group

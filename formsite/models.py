@@ -9,7 +9,7 @@ from djangotoolbox import fields
 
 from validation import *
 from data_ranges import *
-import random, string
+import random, string, datetime
 
 ############### USER and LAB INTEGRATION #######################
 ACCESS_CODE_MAX_LENGTH = 20 #Designates the max_length of access_codes
@@ -139,9 +139,10 @@ class Data(models.Model):
 	
 	notes = models.CharField("Notes", max_length=200, blank=True)
 	
-	#User-related Fields
+	#Self-assigning Fields
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
+	creation_time = models.DateTimeField("Created", null=True, blank=True)
 	
 	def __unicode__(self):
 		return "{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
@@ -150,9 +151,10 @@ class Data(models.Model):
 def create_data_entry(user, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = Data()
-		#Set the user-related fields:
+		#Set the self-assigning fields:
 		setattr(new_entry, "user", user)
 		setattr(new_entry, "lab_group", user.get_profile().lab_group)
+		setattr(new_entry, "creation_time", str(datetime.datetime.now()))
 		
 		#Validate field names
 		field_vals = kwargs.items()

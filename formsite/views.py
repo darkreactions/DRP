@@ -18,50 +18,65 @@ class DataManager(object):
 	def __init__(self):
 		self.data_per_page = 15 #Change to set different numbers of data per page.
 		self.current_radius = 4 #Max number of links to display "around" current link.
-		self.batch_size = 1
+		self.batch_size = 2
 		
 	#Collect all data relevant to a specific lab group.
 	def collect_all_data(self, lab_group):
-		lab_data = Data.objects.filter(lab_group=lab_group).order_by("ref")
-		return lab_data
+		return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
 
-	def calc_total_pages(self, total_data_size):
+	def calc_total_pages(self, total_data_size, lab_group):
 		total_pages = 1 + int((total_data_size-1)/self.data_per_page)
 		if (total_pages < 1): total_pages = 1
+		cache.set("{}|TOTALPAGES".format(lab_group.lab_title), total_pages)
 		return total_pages
-			
-	def make_cursors(self, lab_group, lab_data, page = 1, end_page = None):
-		if not end_page:
-			end_page = self.calc_total_pages(lab_data.count())
+	
+	#(Over)write the cursors in the cache.
+	def make_cursors(self, lab_group, lab_data = None, page = None, last_page = None):
+		if not last_page:
+			last_page = self.calc_total_pages(lab_data.count(), lab_group)
+		if page:
+			assert page > 1
+			assert lab_data #A page must be given the data starting on that page.
+		else:
+			page = 2 #Start making cursors from the beginning.
+		if not lab_data:
+			lab_data = collect_all_data(lab_group)
 		
-		cache_name = "CURSOR"
-		cursor = None
-		while page <= end_page:
+		data_per_cursor = self.data_per_page*self.batch_size
+		sub_lab_data = lab_data[0:data_per_cursor]
+		while page <= last_page:
 			try:
+				#The start page should not have a cursor since no elements are skipped.
+				if page == 1:
+					page +=1
+					continue
 				#If the page doesn't require a cursor, skip to the next page.
-				if (page-1) % self.batch_size == 0 or page==end_page:
-					#Differentiate between the last page and other cursors:
-					if page==end_page: cache_name = "LASTPAGE"
-					#Only create cursors if a cursor isn't present.
-					#cursor = None#cache.get("{}|{}|{}".format(lab_group.lab_title, cache_name, page))
-					if not cursor:
-						cursor = get_cursor(lab_data)
-						cache.set("{}|{}|{}".format(lab_group.lab_title, cache_name, page), cursor)
-					#lab_data = set_cursor(lab_data, cursor)
-					#lab_data = lab_data[0:(self.data_per_page*self.batch_size)]
+				if (page-1) % self.batch_size == 0:
+					#Create and cache the cursors.
+					cursor = get_cursor(sub_lab_data)
+					sub_lab_data = set_cursor(lab_data, cursor)[0:data_per_cursor]
+					cache.set("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page), cursor)
+					logging.info("\n---------Made a cursor for: {}".format(page))
 			except Exception as e:
-				logging.info("\n----Oops...\n{}".format(e))###
+				logging.info("\n---------Oops...\n{}".format(e))###
 			page += 1
-		logging.info(lab_data)
+		if cursor:
+			cache.set("{}|PAGE|CURSOR|LAST".format(lab_group.lab_title), cursor)
 				
-	def find_cursor(self, lab_group, page, cache_name="CURSOR"):
-		cursor = cache.get("{}|{}|{}".format(lab_group.lab_title, cache_name, page))
+	def find_cursor(self, lab_group, page):
+		distance = 0
+		cursor = cache.get("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page))
 		while not cursor:
-			if page < 1 or cache_name=="LASTPAGE":
-				raise Exception("No cursors found")
-			else: page -= 1
-			cursor = cache.get("{}|{}|{}".format(lab_group.lab_title, cache_name, page))
-		return cursor	
+			if page > 1 or page!="LAST": 
+				page -= 1
+				distance += 1 #Distance from the page to the closest cursor.
+				assert(distance < self.batch_size)#If False, cursors need to be made.
+				cursor = cache.get("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page))
+			else:
+				logging.info("\n---------STARTING FROM START...")###
+				cursor="START" #No cursor exists for the page (ie, begin at the "start" of lab_data).
+		logging.info("\n---------STARTING FROM: {}".format(page))
+		return cursor, distance	
 		
 	def get_page_links(self, current, total_pages):
 		#Always display the first page.
@@ -98,43 +113,71 @@ class DataManager(object):
 		lab_group = user.get_profile().lab_group
 		#Only retrieve lab_data if it is not available.
 		cached_data = None#cache.get("{}|PAGEDATA|{}".format(lab_group.lab_title, page))
-		if not cached_data or overwrite:
+		if page==1: #The start page does not have a cursor as no entries are skipped. 
+			lab_data = lab_data[0:self.data_per_page]
+		elif not cached_data or overwrite:
 			if lab_data == None:
 				lab_data = self.collect_all_data(user.get_profile().lab_group)
 			#Retrieve the cursor.
-			cursor = self.find_cursor(lab_group, page)
-			#Apply the cursor to the lab data.
-			lab_data = set_cursor(lab_data, cursor)
-			logging.info("3.) {}".format(lab_data.count()))
-			#lab_data = lab_data[0:self.data_per_page]
-			logging.info("4.) {}".format(lab_data))
+			cursor, distance = self.find_cursor(lab_group, page)
+			#Apply the cursor to the lab data if applicable.###
+			if not cursor=="START":
+				logging.info("\n---------CURSOR APPLIED!")
+				lab_data = set_cursor(lab_data, cursor)
+			#Only return the data on the given page.
+			logging.info("\n---------TOTAL DATA THIS CURSOR: {}".format(len(lab_data)))
+			lab_data = lab_data[distance*self.data_per_page:(distance+1)*self.data_per_page]
 			#Overwrite the existing cache entry.
 			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), list(lab_data))
+			logging.info("\n---------DIST:{} from {}: {} Data".format(distance, page, len(lab_data)))
 		else: 
 			lab_data = cached_data 
 		return lab_data
 			
-	def get_fresh_page_info(self, request):
+	def update_cursors(self, lab_group, index_updated, lab_data=None): #Takes a 0-based index.
+		try:
+			#Find the cursor associated with the updated index:
+			page = (index_updated/self.data_per_page) + 1
+			cursor = self.find_cursor(lab_group, page)
+			if not lab_data:
+				lab_data = self.collect_all_data(user.get_profile().lab_group)
+			sub_lab_data = set_cursor(lab_data, cursor)[0:] #Ignore data before the current cursor.
+			#Make the cursors that follow the current cursor.
+			self.make_cursors(lab_group, sub_lab_data, page)
+		except Exception as e:
+			logging.info("\n---------Could not update cursor from: {}".format(page))		
+		
+	def get_fresh_page_info(self, request, current_page = None):
 		u = request.user
 		if not u.is_authenticated():
 			raise Exception("User not logged in.")
 		try:
 			#Gather necessary information from the user's session:
-			current_page = int(request.COOKIES.get("current_page"))
-			lab_data = self.collect_all_data(u.get_profile().lab_group)
+			if not current_page:
+				try:
+					current_page = int(request.COOKIES.get("current_page"))
+				except:
+					current_page = 1 #If no page is known, assume 1.
+			lab_group = u.get_profile().lab_group
+			lab_data = self.collect_all_data(lab_group)
 			#total_data_size = len(lab_data) ###List
 			total_data_size = lab_data.count()
-			total_pages = self.calc_total_pages(total_data_size)
-			
-			#Construct the cursors that are missing.
-			self.make_cursors(u.get_profile().lab_group, lab_data, current_page, total_pages)
+			total_pages = self.calc_total_pages(total_data_size, lab_group)
 			
 			#Make sure the page is a valid page.
-			assert(0 < current_page <= total_pages)
+			if not (0 < current_page <= total_pages):
+				current_page = total_pages
 			
 			#Pack up the session info:
 			session = {}
-			session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
+			try:
+				session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
+				logging.info("\n---------SUCCESSFULLY LOADED CURSORS...")###
+			except:
+				#Construct the cursors if necessary.
+				logging.info("\n---------CREATING NEW CURSORS...")###
+				self.make_cursors(lab_group, lab_data, None, total_pages)
+				session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
 			session["total_data_size"] = total_data_size
 			session["total_pages"] = total_pages
 			session["page_links"] = self.get_page_links(current_page, total_pages)
@@ -340,6 +383,7 @@ def upload_data(request): ###Not re-read.
 					#Access the data from the uploaded file.
 					i = 0 # data_group index (gets a datum)
 					j = 0 # user_fields index. (gets a field)
+					#
 					while (i < len(data_group) or j < len(user_fields)):
 						#Required since data and fields may be disjunct from missing units.
 						datum = data_group[i]
@@ -410,7 +454,13 @@ def upload_data(request): ###Not re-read.
 				except Exception as e:
 					error_log += "<li>{} ---- Failed assigning \"{}\" as \"{}\".</li>".format(e, datum, field)
 					error_quantity +=1
-					
+				
+			#Update cursors if data was added.
+			if added_quantity:
+				lab_group = u.get_profile().lab_group
+				lab_data = control.collect_all_data(lab_group)
+				first_index_updated = lab_data.count()-added_quantity
+				control.update_cursors(lab_group, first_index_updated, lab_data)
 		except Exception as e:
 			error_log += "<li>{}</li>".format(e.message)
 	
@@ -447,8 +497,7 @@ def download_CSV(request):
 		
 		#Write the actual entries to the CSV_file if the user is authenticated.
 		headers = get_data_field_names()
-		#Get the Lab_Group data to allow direct manipulation.
-		saved_data = get_saved_data(u.get_profile().lab_group)	
+		lab_data = control.collect_all_data(u.get_profile().lab_group)
 		
 		for entry in saved_data:
 			row = []
@@ -468,29 +517,24 @@ def data_transmit(request, num = 0, control=control):
 		if request.method == "GET" and request.user.is_authenticated():
 			#Get the request information.
 			u = request.user
-			requested_page = int(num)
-				
+			session = control.get_fresh_page_info(request, int(num))
+			
 			#Get the necessary data for a page change.
-			session = get_fresh_session_info(requested_page, u.get_profile().lab_group)
-			saved_data = session["saved_data"]
+			relevant_data = session["relevant_data"]
 			total_pages = session["total_pages"]
 			page_links = session["page_links"]
+			current_page = session["current_page"]
+			total_data_size = session["total_data_size"]
 			
-			#If the page does not exist, raise a 404. 
-			try:
-				assert 0 < requested_page <= total_pages
-			except:
-				raise Http404
-		
 			#Only send the data on the requested page. Note that Lab_Group.saved_data is a 0-based index.
-			start_index = (requested_page-1)*control.data_per_page 
-			end_index = (requested_page)*control.data_per_page
-			index_range = range(start_index+1, end_index+1) #1-based index for visuals
+			start_index = (current_page-1)*control.data_per_page 
+			end_index = (current_page)*control.data_per_page
+			index_range = range(start_index+1, end_index+1) #1-based index for IDs (para los users).
 		
 			#Prepare packages.
-			data_package = zip(saved_data[start_index:end_index], index_range)
+			data_package = zip(relevant_data, index_range)
 			page_package = {
-				"current_page":requested_page,
+				"current_page":current_page,
 				"total_pages":total_pages,
 				"data_per_page":control.data_per_page,
 				"page_links":page_links,
@@ -499,7 +543,7 @@ def data_transmit(request, num = 0, control=control):
 			return render(request, 'data_and_page_container.html', {
 				"data_on_page": data_package, #Includes data indexes
 				"page_package": page_package, #Includes page links
-				"total_data_size": saved_data.count(),
+				"total_data_size": total_data_size,
 			})
 		else:
 			return HttpResponse("<p>Please log in to view your data.</p>")
