@@ -142,19 +142,25 @@ class Data(models.Model):
 	#Self-assigning Fields
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
-	creation_time = models.DateTimeField("Created", null=True, blank=True)
+	creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
 	
 	def __unicode__(self):
 		return "{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
+	#def save(self, *args, **kwargs):
+		##Set the self-assigning fields:
+		#setattr(new_entry, "creation_time", str(datetime.datetime.now()))
+		#super(Data, self).save(*args, **kwargs)
+		
 	
-#Add specified entries to a datum. Assume fields are present, safe, and clean.###
+	
+#Add specified entries to a datum. Assume fields are present, safe, and clean.### NEEDED?
 def create_data_entry(user, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = Data()
 		#Set the self-assigning fields:
+		setattr(new_entry, "creation_time", str(datetime.datetime.now()))
 		setattr(new_entry, "user", user)
 		setattr(new_entry, "lab_group", user.get_profile().lab_group)
-		setattr(new_entry, "creation_time", str(datetime.datetime.now()))
 		
 		#Validate field names
 		field_vals = kwargs.items()
@@ -172,7 +178,7 @@ def create_data_entry(user, **kwargs): ###Not re-read yet.
 		raise Exception("Data construction failed!")
 		
 def get_data_field_names(verbose = False):
-	fields_to_ignore = {u"id","user","lab_group"} ###Auto-populate?
+	fields_to_ignore = {u"id","user","lab_group", "creation_time"} ###Auto-populate?
 	dirty_fields = [field for field in Data._meta.fields]
 	
 	#Ignore any field that is in fields_to_ignore.
@@ -267,7 +273,7 @@ class DataEntryForm(ModelForm):
 	
 	class Meta:
 		model = Data
-		exclude = ("user","lab_group")
+		exclude = ("user","lab_group", "creation_time")
 
 	def __init__(self, user=None, *args, **kwargs):
 		###http://stackoverflow.com/questions/1202839/get-request-data-in-django-form
@@ -277,11 +283,13 @@ class DataEntryForm(ModelForm):
 		if user:
 			self.user = user
 			self.lab_group = user.get_profile().lab_group
+		self.creation_time = str(datetime.datetime.now())
 		
 	def save(self, commit=True):
 		datum = super(DataEntryForm, self).save(commit=False)
 		datum.user = self.user
 		datum.lab_group = self.lab_group
+		datum.creation_time = self.creation_time
 		if commit:
 			datum.save()
 		return datum
@@ -298,6 +306,7 @@ class DataEntryForm(ModelForm):
 		#Add the user information to the clean data package:
 		clean_data["lab_group"] = self.lab_group
 		clean_data["user"] = self.user
+		clean_data["creation_time"] = self.creation_time
 		
 		fields = get_data_field_names()
 		

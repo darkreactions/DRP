@@ -24,7 +24,9 @@ class DataManager(object):
 	def collect_all_data(self, lab_group):
 		return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
 
-	def calc_total_pages(self, total_data_size, lab_group):
+	def calc_total_pages(self, lab_group, total_data_size = None):
+		if not total_data_size:
+			total_data_size = cache.get("{}|TOTALDATA".format(lab_group.lab_title))
 		total_pages = 1 + int((total_data_size-1)/self.data_per_page)
 		if (total_pages < 1): total_pages = 1
 		cache.set("{}|TOTALPAGES".format(lab_group.lab_title), total_pages)
@@ -33,23 +35,18 @@ class DataManager(object):
 	#(Over)write the cursors in the cache.
 	def make_cursors(self, lab_group, lab_data = None, page = None, last_page = None):
 		if not last_page:
-			last_page = self.calc_total_pages(lab_data.count(), lab_group)
+			last_page = cache.get("{}|TOTALPAGES".format(lab_group.lab_title))
 		if page:
-			assert page > 1
+			assert 1 < page <= last_page #Note: The start page should not have a cursor since no elements are skipped.
 			assert lab_data #A page must be given the data starting on that page.
 		else:
 			page = 2 #Start making cursors from the beginning.
-		if not lab_data:
-			lab_data = collect_all_data(lab_group)
-		
+		if not lab_data.exists():
+			lab_data = self.collect_all_data(lab_group)
 		data_per_cursor = self.data_per_page*self.batch_size
 		sub_lab_data = lab_data[0:data_per_cursor]
 		while page <= last_page:
 			try:
-				#The start page should not have a cursor since no elements are skipped.
-				if page == 1:
-					page +=1
-					continue
 				#If the page doesn't require a cursor, skip to the next page.
 				if (page-1) % self.batch_size == 0:
 					#Create and cache the cursors.
@@ -62,18 +59,19 @@ class DataManager(object):
 			page += 1
 		if cursor:
 			cache.set("{}|PAGE|CURSOR|LAST".format(lab_group.lab_title), cursor)
+			logging.info("\n---------Made a LAST cursor.")
 				
 	def find_cursor(self, lab_group, page):
 		distance = 0
 		cursor = cache.get("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page))
 		while not cursor:
-			if page > 1 or page!="LAST": 
+			if page > 1 or page=="LAST": 
 				page -= 1
 				distance += 1 #Distance from the page to the closest cursor.
-				assert(distance < self.batch_size)#If False, cursors need to be made.
+				if distance >= self.batch_size:#If False, cursors need to be made.
+					raise Exception("Cursor missing!")
 				cursor = cache.get("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page))
 			else:
-				logging.info("\n---------STARTING FROM START...")###
 				cursor="START" #No cursor exists for the page (ie, begin at the "start" of lab_data).
 		logging.info("\n---------STARTING FROM: {}".format(page))
 		return cursor, distance	
@@ -111,36 +109,39 @@ class DataManager(object):
 		if not user.is_authenticated():
 			raise Exception("User not logged in.")
 		lab_group = user.get_profile().lab_group
-		#Only retrieve lab_data if it is not available.
-		cached_data = None#cache.get("{}|PAGEDATA|{}".format(lab_group.lab_title, page))
-		if page==1: #The start page does not have a cursor as no entries are skipped. 
-			lab_data = lab_data[0:self.data_per_page]
-		elif not cached_data or overwrite:
+		
+		#Only retrieve lab_data if it is not already available.
+		cached_data = cache.get("{}|PAGEDATA|{}".format(lab_group.lab_title, page))
+		
+		if not cached_data or overwrite:
 			if lab_data == None:
 				lab_data = self.collect_all_data(user.get_profile().lab_group)
-			#Retrieve the cursor.
+			#Retrieve the closest cursor.
 			cursor, distance = self.find_cursor(lab_group, page)
 			#Apply the cursor to the lab data if applicable.###
-			if not cursor=="START":
+			if cursor!="START":
 				logging.info("\n---------CURSOR APPLIED!")
 				lab_data = set_cursor(lab_data, cursor)
 			#Only return the data on the given page.
-			logging.info("\n---------TOTAL DATA THIS CURSOR: {}".format(len(lab_data)))
+			logging.info("\n---------TOTAL DATA THIS CURSOR: {}".format(lab_data.count()))
 			lab_data = lab_data[distance*self.data_per_page:(distance+1)*self.data_per_page]
 			#Overwrite the existing cache entry.
 			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), list(lab_data))
-			logging.info("\n---------DIST:{} from {}: {} Data".format(distance, page, len(lab_data)))
+			logging.info("\n---------DIST:{} from {}: {} Data".format(distance, page, lab_data.count()))
 		else: 
 			lab_data = cached_data 
+			logging.info("\n---------Loaded page from cache!")
 		return lab_data
 			
 	def update_cursors(self, lab_group, index_updated, lab_data=None): #Takes a 0-based index.
 		try:
+			logging.info("\n---------UPDATING CURSORS!\n\n")		
 			#Find the cursor associated with the updated index:
 			page = (index_updated/self.data_per_page) + 1
 			cursor = self.find_cursor(lab_group, page)
 			if not lab_data:
 				lab_data = self.collect_all_data(user.get_profile().lab_group)
+			cache.set("{}|TOTALDATA".format(lab_group.lab_title), lab_data.count())
 			sub_lab_data = set_cursor(lab_data, cursor)[0:] #Ignore data before the current cursor.
 			#Make the cursors that follow the current cursor.
 			self.make_cursors(lab_group, sub_lab_data, page)
@@ -160,13 +161,14 @@ class DataManager(object):
 					current_page = 1 #If no page is known, assume 1.
 			lab_group = u.get_profile().lab_group
 			lab_data = self.collect_all_data(lab_group)
-			#total_data_size = len(lab_data) ###List
 			total_data_size = lab_data.count()
-			total_pages = self.calc_total_pages(total_data_size, lab_group)
+			cache.set("{}|TOTALDATA".format(lab_group.lab_title), total_data_size)
+			total_pages = self.calc_total_pages(lab_group, total_data_size)
 			
 			#Make sure the page is a valid page.
 			if not (0 < current_page <= total_pages):
 				current_page = total_pages
+				logging.info("Changed current_page!")
 			
 			#Pack up the session info:
 			session = {}
@@ -177,6 +179,7 @@ class DataManager(object):
 				#Construct the cursors if necessary.
 				logging.info("\n---------CREATING NEW CURSORS...")###
 				self.make_cursors(lab_group, lab_data, None, total_pages)
+				logging.info("\n---------LOADING RELEVANT DATA...")###
 				session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
 			session["total_data_size"] = total_data_size
 			session["total_pages"] = total_pages
@@ -185,7 +188,7 @@ class DataManager(object):
 			return session
 		except Exception as e:
 			raise Exception("-Data could not be retrieved for page {}\n--{}.".format(current_page, e))
-control = DataManager()	
+control = DataManager()
 	
 
 ######################  Core Views  ####################################
@@ -300,7 +303,7 @@ def get_related_field(heading): ###Not re-read.
 	elif "ph" in stripped_heading:
 		related_field = "pH" 
 	else: #ie, related_field is unchanged.
-		raise Exception("TRANSLATION ERROR: No relation found for {}.".format(heading))###Possible Raise?
+		raise Exception("No valid heading found for \"{}\".".format(heading))###Possible Raise?
 	return related_field
 		
 def live_name_validation(request): ###
@@ -351,7 +354,6 @@ def upload_data(request): ###Not re-read.
 					if not headings_valid: #Remember which column has which heading.
 						#Translate the user's field name into a usable field name.
 						user_fields = [get_related_field(field) for field in data_group]
-						
 						#If unit columns were not supplied, add them after each mass.
 						set_user_fields = set(user_fields)
 						auto_added_fields = set()
@@ -365,15 +367,17 @@ def upload_data(request): ###Not re-read.
 								
 						#Assert that there are no duplicates in the list
 						#	and that all fields are valid.
-						assert(len(user_fields)==len(true_fields))
+						if len(user_fields) != len(true_fields):
+							raise Exception("Too many columns present! {} needed but {} found.".format(len(true_fields), len(user_fields)))
+							
 						for field in true_fields:
 							assert(field in user_fields)
 							
 						headings_valid = True
 						continue
 				except Exception as e:
-					print e
 					validation_attempt += 1
+					error_log += "<li>{}</li>".format(e)
 					continue
 					
 				#All other rows should have data corresponding to the headings.
@@ -462,7 +466,7 @@ def upload_data(request): ###Not re-read.
 				first_index_updated = lab_data.count()-added_quantity
 				control.update_cursors(lab_group, first_index_updated, lab_data)
 		except Exception as e:
-			error_log += "<li>{}</li>".format(e.message)
+			error_log += "<li>{}</li>".format(e)
 	
 	###Bulk Upload Instead?
 	###Template?
@@ -499,7 +503,7 @@ def download_CSV(request):
 		headers = get_data_field_names()
 		lab_data = control.collect_all_data(u.get_profile().lab_group)
 		
-		for entry in saved_data:
+		for entry in lab_data:
 			row = []
 			try:
 				for field in headers:
@@ -551,14 +555,18 @@ def data_transmit(request, num = 0, control=control):
 		return HttpResponse("<p>Woopsie!... Something went wrong.</p>")
 
 ######################  Update Data ####################################
-def data_update(request):
+def data_update(request): ###Lump together?
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
 		changesMade = json.loads(request.body, "utf-8")
 		
 		#Get the Lab_Group data to allow direct manipulation.
-		saved_data = get_saved_data(u.get_profile().lab_group)	
+		lab_group = u.get_profile().lab_group
+		lab_data = control.collect_all_data(lab_group)
+		total_size = lab_data.count()	
+		earliest_index = -1 #Impossible, so if it changes, then a change exists.
 			
+		logging.info("\n----------{}".format(type(lab_data)))
 		while (len(changesMade["edit"]) > 0):
 			try:
 				#An editPackage is [indexChanged, fieldChanged, newValue]. 
@@ -568,42 +576,56 @@ def data_update(request):
 				newValue = editPackage[2] #Edits are validated client-side.
 				
 				#Make the edit in the database
-				dataChanged = saved_data[indexChanged]
+				dataChanged = lab_data[indexChanged]
 				setattr(dataChanged, fieldChanged, newValue)
 				dataChanged.user = u
 				dataChanged.save()
 			except:
 				pass
-		while (len(changesMade["del"]) > 0):###SLOW
-			try:
-				indexChanged = changesMade["del"].pop()-1 #0-based Index
-				saved_data[indexChanged].delete() #Django handles the deletion process.
-			except:
-				pass
+		logging.info("\n----------{}".format(type(lab_data)))
 		while (len(changesMade["dupl"]) > 0):
 			try:
 				indexToClone = int(changesMade["dupl"].pop())-1 #0-based Index
-				clonedItem = saved_data[indexToClone]
+				clonedItem = lab_data[indexToClone]
 				clonedItem.pk = None #Django creates a new ID for the object.
 				clonedItem.user = u #Set the user to the one who performed the duplication.
+				clonedItem.creation_time = str(datetime.datetime.now())
 				clonedItem.save()
+				if earliest_index < total_size or earliest_index == -1: 
+					earliest_index = total_size
+				total_size += 1
 			except:
 				pass
+		logging.info("\n----------{}".format(type(lab_data)))
+		while (len(changesMade["del"]) > 0):###SLOW
+			try:
+				indexChanged = changesMade["del"].pop()-1 #0-based Index
+				lab_data[indexChanged].delete() #Django handles the deletion process.
+				if earliest_index < indexChanged or earliest_index == -1: 
+					earliest_index = indexChanged
+			except:
+				pass
+		if earliest_index != -1:
+			control.update_cursors(lab_group, earliest_index, lab_data)
+		logging.info("\n----------{}".format(type(lab_data)))
 	return HttpResponse("OK"); #Django requires an HttpResponse...
 
-def get_full_datum(request):
+def get_full_datum(request, control=control):
 	u = request.user
 	try:
 		if u.is_authenticated() and request.method=="POST":
 			#Give the specific index requested.
 			index_requested = json.loads(request.POST["indexRequested"])
-			
-			###entry = get_saved_data(u.get_profile().lab_group)[index_requested]
+			###page = (index_requested/control.data_per_page) + 1
+			###relative_index = index_requested % page
+			###Is this efficient?
+			entry = control.collect_all_data(u.get_profile().lab_group)[index_requested]
 			
 		return render(request, "full_datum.html", {
-			"entry":"Nothing!"###
+			"entry":entry
 		})
-	except:
+	except Exception as e:
+		logging.info(str(e))
 		return HttpResponse("<p>Data could not be loaded!</p>")		
 
 ######################  User Auth ######################################

@@ -510,8 +510,10 @@ $(document).on("click", "#pagesInputButton", function() {
 		$.get(pageDestination, function(dataResponse) {
 			var newDataContainer = dataResponse;
 			$("#dataContainer").html(newDataContainer);
-			setPageCookie(pageLink)
-			restyleData();
+			if ($(".dataGroup").length) {
+				setPageCookie(pageLink)
+				restyleData();
+			}
 		});
 	} else {
 		showRibbon("Page does not exist", "red");
