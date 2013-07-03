@@ -19,7 +19,8 @@ edit_choices = {
 	"unitChoices" : ["g","mL","d"],
 	"boolChoices" : ["Yes","No","?"],
 	"outcomeChoices" : [0,1,2,3,4],
-	"purityChoices" : [0,1,2]
+	"purityChoices" : [0,1,2],
+	"typeChoices": ["Org", "Inorg", "pH", "Ox", "Sol", "Water"],
 	}
 	
 #Fields that can be edited with a range alone: ###Copied in clientValidate.js
@@ -36,4 +37,3 @@ def quick_validation(field, dirty_datum):
 		return (data_range[0] <= len(dirty_datum) <= data_range[1])
 	else:
 		return True
-	

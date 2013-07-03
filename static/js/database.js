@@ -7,14 +7,26 @@ var changesMade = {
 	dupl:[],
 	add:[],
 	};
+var CGSelected = Array();
 	
 //############ Post-load Setup: #########################################
+//Apply custom tooltips to applicable data.
+$(document).tooltip({
+	position: {
+		my: "left top",
+		at: "left bottom"
+	},
+	}); 
 restyleData() //Style the data according to what it contains.
 
 //############ Dependent Functions: ####################################
 //Sort from greatest to least.
-function sortNumbers(smallNum,bigNum) {
+function sortNumbers(smallNum, bigNum) {
 	return smallNum - bigNum;
+}
+
+function sortNumbersReverse(smallNum, bigNum) {
+	return bigNum - smallNum;
 }
 
 //Refresh screen.
@@ -106,9 +118,6 @@ function getOptions(field) {
 	}
 }
 
-//############ Server Transactions: ########################################
-
-
 //############ Server Transactions: #########################################
 function submitChanges(refresh) {
 	refresh = refresh !== undefined ? refresh : true 
@@ -127,7 +136,7 @@ function submitChanges(refresh) {
 			dupl:[],
 			}; 
 		if (refresh) {
-			refreshScreen(true);
+			refreshScreen();
 		}
 	});
 }
@@ -171,7 +180,6 @@ $(document).on("click", ".popupActivator", function() {
 		case "labRegistration":
 			$.get("/user_registration/", function(response) {
 				$("#labRegistration").html(response);
-				
 			});
 			break;
 		case "dbMenu_downloadCSV"://###Replace with cute form?
@@ -179,10 +187,17 @@ $(document).on("click", ".popupActivator", function() {
 			//Download the saved data as a CSV.
 			location.replace("/download_CSV/");
 			break;
+		case "CG_activatorButton":
+			$.get("/compound_guide_form/", function(response) {
+				$("#popupContainer_inner").html(response);
+				$(".CG_saveButton").remove()
+				CGSelected = Array();
+			});
+			break;
 		default: 
 			return false; //If a popup is not recognized, don't load anything.
 	}
-	$("#popupGlobal").fadeIn("fast");
+	$("#popupGlobal").fadeIn(300);
 	
 });
 
@@ -217,7 +232,6 @@ $(document).on("change", "#uploadCSV_hiddenInput", function() {
 });
 
 //############ Form Interactions: ######################################
-
 $(document).on("submit", ".uploadForm", function() { //###Ugly...
 		//Show the ribbon message if applicable.
 		//////if ($(".successActivator").length) {
@@ -250,9 +264,44 @@ $(document).on("submit", ".infoForm", function() {
 	return false; //Do not continue or else the form will post again. 
 });
 
+//################ CG Editing: #########################################
+//Delete CG data button (but requires a "save" confirmation).
+$(document).on("click", ".CG_deleteButton", function() {
+	//Add the compound guide entry index to the selected data list.
+	var CGIndex = (parseInt($(this).attr("id").substr(3))-1);
+	CGSelected.push(CGIndex);
+	
+	//Display a CG save button if one does not exist.
+	$("#popupContainer").append("<div class=\"CG_saveButton genericButton\">Save</div>");
+	$("#compoundGuideForm").html("Please save before continuing.")
+	
+	//Remove the data from the CG visual.
+	$(this).closest("tr").remove();
+});
+
+$(document).on("click", ".CG_saveButton", function() {
+	showRibbon("Submitting Changes.", "green","#CG_display", false);
+	//Sort the list prior to sending.
+	CGSelected.sort(sortNumbersReverse);
+
+	//Send the selected CG entry indexes to the server to be deleted. 
+	JSONArray = JSON.stringify(CGSelected);
+	$.post("/edit_CG_entry/", JSONArray, function() {
+		//Show a newly updated screen.
+		CGSelected = Array(); 
+		refreshScreen(false);
+	});
+});
 
 
-//////############ Data Selection: #########################################
+
+$(document).on("mouseover", ".CG_compound", function() {
+	//$(this).tooltip("open");
+});
+
+
+
+//############ Data Selection: #########################################
 //Click Group to Select:
 $(document).on("click", ".dataGroup", function() {
 	$(this).toggleClass("dataSelected");

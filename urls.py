@@ -23,7 +23,11 @@ urlpatterns = patterns('',
 			#Modify Data
     (r'^get_full_datum/$', get_full_datum), #"Expand" the data.
     (r'^data_update/$', data_update), #Update Information
-    (r'^data_form/$', data_form), #Encompassing data view.
+    (r'^data_form/$', data_form), #Form for adding new data.
+    (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
+    (r'^edit_CG_entry/$', edit_CG_entry), #Form for adding new CG abbreviations.
+		#Validation
+    (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
 		#Authentication
     (r'^user_logout/$', user_logout), #Log Out
     (r'^user_login/$', user_login), #Log In

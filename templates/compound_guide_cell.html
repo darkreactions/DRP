@@ -1,0 +1,68 @@
+{% if form.errors %}
+	<div class="subPopup">
+		<div class="closeButton genericButton">x</div>
+		 <h1>Errors:</h1>
+		{% for field in form %}
+		{% if field.errors %}
+			<div class="error">
+				<div class="error_label">{{ field.label_tag }}</div>
+				<div class="error_message">{{ field.errors.as_text }}</div>
+			</div>	
+		{% endif %}
+		{% endfor %}
+	</div>
+{% endif %}
+
+{% if success %}
+	<div class="successActivator"></div>
+{% endif %}
+
+<h1>Compound Guide:</h1>
+
+<div id="CG_display">
+	{% if guide %}
+		<table id="CG_table">
+			<tr id="headingRow">
+				<td></td>
+				<td>Abbreviation</td> <td></td>
+				<td>Compound</td>
+				<td>Type</td>
+				<td></td>
+			</tr>
+		{% for entry in guide %}
+			<tr>
+				<td>{{forloop.counter}}.)</td>
+				<td>{{ entry.abbrev }}</td>
+				<td class="CG_arrow"> &rarr; </td>
+				{% if entry.CAS_ID %}
+				<td title="CAS: {{ entry.CAS_ID }}" class="CG_compound">
+				{% else %}
+				<td title="No CAS ID found." class="CG_compound">
+				{% endif %}
+					{{ entry.compound }}</td>
+				<td>{{ entry.compound_type }}</td>
+				<td><div class="CG_deleteButton genericButton" id="cg_{{forloop.counter}}">x</div></td>
+			</tr>
+		{% endfor %}
+		</table>
+	{% else %}
+		<p>No entries in compound guide!</p>
+	{% endif %}
+</div>
+
+<form id="compoundGuideForm" method="post" action="/compound_guide_form/" class="popupScreenForm infoForm">
+	{% csrf_token %}
+	{% for field in form %}
+	    <div class="fieldWrapper">
+	        {{ field.label_tag }}: {{ field }}
+		</div>
+	{% endfor %}
+	{% if user.is_authenticated %}
+		<center>
+		<input name="submit" id = "submitData" type="submit" value="Add New" class="form_button"/>
+		</center>
+	{% else %}
+		<p> Please log in to submit data. </p>
+	{% endif %}			
+	</div>		
+</form>

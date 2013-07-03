@@ -14,8 +14,16 @@
 	border: 3px solid black;
 }
 
+.genericButton {
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
+ }
+
 .genericButton:hover {
 	background-color:#FFD92E;
+	opacity:1;
 	cursor:pointer;
 }
 
@@ -55,24 +63,59 @@
 	opacity:1.0;
 }
 
-#searchButton {
+.topButton {
 	position:absolute;
-	right:0px;
 	bottom:0px;
 	height:20px;
 	width:20px;
-	
 	background-repeat:no-repeat;
 	background-position:center;
 	padding:5px;
 	border-radius:15px;
 	margin-bottom:2px;
 }
-	
-#searchButton:hover {
+
+.topButton:hover {
 	background-color:#FFE944;
 	cursor:pointer;
 }
+
+#searchButton {
+	right:0px;
+}
+
+#CG_activatorButton {
+	right:50px;
+}
+
+.CG_deleteButton {
+	background-color:#FF857E;
+	border:2px solid black;
+	border-radius:15px;
+	border-top-left-radius:0px;
+	border-bottom-right-radius:0px;
+	padding:2px;
+	font-size:12px;
+	font-weight:bold;
+	opacity:0.5;
+}
+
+.CG_saveButton {
+	background-color:#FF857E;
+	font-size:14px;
+	font-weight:bold;
+	text-align:center;
+	
+	width:60px;
+	border:2px solid black;
+	border-bottom-left-radius:10px;
+	padding:2px;
+	
+	position:absolute;
+	top:10px;
+	right:60px;
+}
+
 
 /* ###############   PANELS   ################################### */
 #leftPanel {
@@ -185,6 +228,26 @@ input:focus {
 
 option {
 	background-color:inherit;
+}
+
+.ui-tooltip {
+	display:inline-block;
+}
+
+.ui-tooltip-content{
+	position:absolute;
+	padding:8px;
+	border-radius:15px;
+	max-width:400px;
+	
+	z-index:8000;
+	background-color:white;
+	border:2px solid black;
+	
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
 }
 
 /* ###############   CONTAINERS   ################################### */
@@ -333,6 +396,14 @@ option {
 	min-width:400px;
 }
 
+#popupContainer[for="CG_activatorButton"] {
+	text-align:center;
+	top:50px;
+	left:10%;
+	width:80%;
+	min-width:570px;
+}
+
 .subPopup { /* Right now, just used for errors. */
 	position:absolute;
 	background-color: #FFD6D6;
@@ -387,6 +458,21 @@ option {
 	color:white;
 }
 
+#CG_table{
+	width:100%;
+}
+
+#CG_table td {
+	padding-left:10px;
+	text-align:center;
+	padding:0px;
+}
+
+#CG_table td:first-child {
+	text-align:right;
+}
+
+
 /* ###############   TEXT   ######################################### */
 #popupContainer_inner > h1 {
 	margin:5px;
@@ -431,8 +517,41 @@ option {
 	color:black;
 }
 
+#headingRow {
+	font-weight:bold;
+	text-decoration:underline;
+}
+
+.CG_arrow {
+	font-weight:bold;
+	font-size:48px;
+	line-height:10px;
+}
+
+.CG_compound:hover {
+	background-color:yellow;
+	border-radius:5px;
+}
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
+#tempGuide { /* ### */
+	 position:absolute;
+	 top:0px;
+	 left:200px;
+	 padding:1px;
+	 border-radius:5px;
+	 border: 2px black solid;
+	 background-color:orange;
+	 font-size:10px;
+	 font-weight:bold;
+	 cursor:pointer;
+	 opacity:0.3;
+}
+#tempGuide:hover {
+	opacity:0.7;
+}
+
+
 #siteLogo {
 	height:80px;
 	width:200px;
@@ -470,6 +589,23 @@ option {
 	border-bottom-left-radius:15px;
 }
 
+#CG_display {
+	position:relative;
+	padding:16px;	
+	margin: 0 auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	min-height:20px;
+	max-height:300px;
+	max-width:600px;
+	border-radius:5px;
+	
+	overflow:auto;
+	
+	font-size:14px;
+	color:black;
+	background-color:white;
+}
 
 #uploadCSV_display {
 	position:relative;

@@ -26,25 +26,30 @@ class DataManager(object):
 
 	def calc_total_pages(self, lab_group, total_data_size = None):
 		if not total_data_size:
-			total_data_size = cache.get("{}|TOTALDATA".format(lab_group.lab_title))
+			total_data_size = cache.get("{}|TOTALSIZE".format(lab_group.lab_title))
 		total_pages = 1 + int((total_data_size-1)/self.data_per_page)
 		if (total_pages < 1): total_pages = 1
 		cache.set("{}|TOTALPAGES".format(lab_group.lab_title), total_pages)
 		return total_pages
-	
+		
 	#(Over)write the cursors in the cache.
 	def make_cursors(self, lab_group, lab_data = None, page = None, last_page = None):
-		if not last_page:
-			last_page = cache.get("{}|TOTALPAGES".format(lab_group.lab_title))
-		if page:
-			assert 1 < page <= last_page #Note: The start page should not have a cursor since no elements are skipped.
-			assert lab_data #A page must be given the data starting on that page.
-		else:
-			page = 2 #Start making cursors from the beginning.
 		if not lab_data.exists():
 			lab_data = self.collect_all_data(lab_group)
+		if not last_page:
+			#Try to retrieve the total number of pages.
+			last_page = cache.get("{}|TOTALPAGES".format(lab_group.lab_title))
+			if not last_page:
+				last_page = self.calc_total_pages(lab_group, lab_data.count())
+		if page:
+			assert 1 < page <= last_page #Note: The start page should not have a cursor since no elements are skipped.
+			assert lab_data.exists() #A page must be given the data starting on that page.
+		else:
+			page = 2 #Start making cursors from the beginning.
 		data_per_cursor = self.data_per_page*self.batch_size
 		sub_lab_data = lab_data[0:data_per_cursor]
+		logging.info("\n--------Starting while loop!")###
+		cursor = None
 		while page <= last_page:
 			try:
 				#If the page doesn't require a cursor, skip to the next page.
@@ -53,19 +58,17 @@ class DataManager(object):
 					cursor = get_cursor(sub_lab_data)
 					sub_lab_data = set_cursor(lab_data, cursor)[0:data_per_cursor]
 					cache.set("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page), cursor)
-					logging.info("\n---------Made a cursor for: {}".format(page))
 			except Exception as e:
 				logging.info("\n---------Oops...\n{}".format(e))###
 			page += 1
 		if cursor:
 			cache.set("{}|PAGE|CURSOR|LAST".format(lab_group.lab_title), cursor)
-			logging.info("\n---------Made a LAST cursor.")
 				
 	def find_cursor(self, lab_group, page):
 		distance = 0
 		cursor = cache.get("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page))
 		while not cursor:
-			if page > 1 or page=="LAST": 
+			if page > 1: 
 				page -= 1
 				distance += 1 #Distance from the page to the closest cursor.
 				if distance >= self.batch_size:#If False, cursors need to be made.
@@ -73,7 +76,6 @@ class DataManager(object):
 				cursor = cache.get("{}|PAGE|CURSOR|{}".format(lab_group.lab_title, page))
 			else:
 				cursor="START" #No cursor exists for the page (ie, begin at the "start" of lab_data).
-		logging.info("\n---------STARTING FROM: {}".format(page))
 		return cursor, distance	
 		
 	def get_page_links(self, current, total_pages):
@@ -110,43 +112,62 @@ class DataManager(object):
 			raise Exception("User not logged in.")
 		lab_group = user.get_profile().lab_group
 		
+		logging.info("\n---------Starting retrieve_data!")
+		
 		#Only retrieve lab_data if it is not already available.
 		cached_data = cache.get("{}|PAGEDATA|{}".format(lab_group.lab_title, page))
 		
+		
 		if not cached_data or overwrite:
-			if lab_data == None:
+			if not lab_data.exists():
+				logging.info("\n---------Finding cursor!")
 				lab_data = self.collect_all_data(user.get_profile().lab_group)
 			#Retrieve the closest cursor.
+			logging.info("\n---------Finding cursor!")
 			cursor, distance = self.find_cursor(lab_group, page)
 			#Apply the cursor to the lab data if applicable.###
+			logging.info("\n---------Finding BATCH!")
 			if cursor!="START":
-				logging.info("\n---------CURSOR APPLIED!")
-				lab_data = set_cursor(lab_data, cursor)
+				batch_lab_data = set_cursor(lab_data, cursor)###
+			else:
+				batch_lab_data = lab_data
 			#Only return the data on the given page.
-			logging.info("\n---------TOTAL DATA THIS CURSOR: {}".format(lab_data.count()))
-			lab_data = lab_data[distance*self.data_per_page:(distance+1)*self.data_per_page]
+			logging.info("\n---------Finding Rel Data!")
+			rel_lab_data = batch_lab_data[distance*self.data_per_page:(distance+1)*self.data_per_page]
 			#Overwrite the existing cache entry.
-			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), list(lab_data))
-			logging.info("\n---------DIST:{} from {}: {} Data".format(distance, page, lab_data.count()))
+			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), list(rel_lab_data))
+			logging.info("\n---------Cache set!")
 		else: 
-			lab_data = cached_data 
+			rel_lab_data = cached_data 
 			logging.info("\n---------Loaded page from cache!")
-		return lab_data
+		return rel_lab_data
 			
 	def update_cursors(self, lab_group, index_updated, lab_data=None): #Takes a 0-based index.
 		try:
-			logging.info("\n---------UPDATING CURSORS!\n\n")		
+			logging.info("\n---------UPDATING CURSORS!\n")		
 			#Find the cursor associated with the updated index:
 			page = (index_updated/self.data_per_page) + 1
-			cursor = self.find_cursor(lab_group, page)
-			if not lab_data:
+			if not lab_data.exists():
 				lab_data = self.collect_all_data(user.get_profile().lab_group)
-			cache.set("{}|TOTALDATA".format(lab_group.lab_title), lab_data.count())
-			sub_lab_data = set_cursor(lab_data, cursor)[0:] #Ignore data before the current cursor.
+			cache.set("{}|TOTALSIZE".format(lab_group.lab_title), lab_data.count())
+			if page == 1:
+				sub_lab_data = lab_data
+			else:
+				cursor, distance = self.find_cursor(lab_group, page)
+				sub_lab_data = set_cursor(lab_data, cursor)[0:] #Ignore data before the current cursor.
+				logging.info("\n---------MEEEEEEEEEEEEEEP...")		
+				sub_lab_data = sub_lab_data[distance*self.data_per_page:(distance+1)*self.data_per_page]
 			#Make the cursors that follow the current cursor.
-			self.make_cursors(lab_group, sub_lab_data, page)
+				
+			#Erase the proceeding cached pages.
+			logging.info("\n---------Clearing cash...")		
+			total_pages = control.calc_total_pages(lab_group, lab_data.count())
+			for i in xrange(page, total_pages+1):
+				cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, i), None)
+			logging.info("\n---------Cleared cash on from: {}".format(page))		
+			self.make_cursors(lab_group, sub_lab_data, page, total_pages)
 		except Exception as e:
-			logging.info("\n---------Could not update cursor from: {}".format(page))		
+			logging.info("\n---------Could not update cursor for page: {}".format(page))		
 		
 	def get_fresh_page_info(self, request, current_page = None):
 		u = request.user
@@ -162,25 +183,25 @@ class DataManager(object):
 			lab_group = u.get_profile().lab_group
 			lab_data = self.collect_all_data(lab_group)
 			total_data_size = lab_data.count()
-			cache.set("{}|TOTALDATA".format(lab_group.lab_title), total_data_size)
+			cache.set("{}|TOTALSIZE".format(lab_group.lab_title), total_data_size)
 			total_pages = self.calc_total_pages(lab_group, total_data_size)
 			
 			#Make sure the page is a valid page.
 			if not (0 < current_page <= total_pages):
 				current_page = total_pages
-				logging.info("Changed current_page!")
 			
 			#Pack up the session info:
 			session = {}
 			try:
+				logging.info("Trying!")
 				session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
-				logging.info("\n---------SUCCESSFULLY LOADED CURSORS...")###
+				logging.info("Success Loading Old!")
 			except:
 				#Construct the cursors if necessary.
-				logging.info("\n---------CREATING NEW CURSORS...")###
+				logging.info("Making new!")
 				self.make_cursors(lab_group, lab_data, None, total_pages)
-				logging.info("\n---------LOADING RELEVANT DATA...")###
 				session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
+				logging.info("Success Loading New!")
 			session["total_data_size"] = total_data_size
 			session["total_pages"] = total_pages
 			session["page_links"] = self.get_page_links(current_page, total_pages)
@@ -188,6 +209,7 @@ class DataManager(object):
 			return session
 		except Exception as e:
 			raise Exception("-Data could not be retrieved for page {}\n--{}.".format(current_page, e))
+
 control = DataManager()
 	
 
@@ -231,6 +253,57 @@ def database(request, control = control):
 	})
 
 
+#Send/receive the compound guide form:
+def compound_guide_form(request): #If no data is entered, stay on the current page.
+	u = request.user
+	success = False
+	if u.is_authenticated():
+		lab_group = u.get_profile().lab_group
+		if request.method == 'POST': 
+			#Bind the user's data and verify that it is legit.
+			form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
+			if form.is_valid():
+				#If all data is valid, save the entry.
+				form.save()
+				#Clear the cache.
+				cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
+				success = True #Used to display the ribbonMessage.
+		else:
+			#Submit a blank form if one was not just submitted.
+			form = CompoundGuideForm()
+	
+		guide = collect_CG_entries(u.get_profile().lab_group)
+		
+		return render(request, 'compound_guide_cell.html', {
+			"guide": guide,
+			"form": form,
+			"success": success,
+		})
+	else:
+		return HttpResponse("Please log in to access the compound guide!")
+
+def edit_CG_entry(request):
+	u = request.user
+	if request.method == 'POST' and u.is_authenticated():
+		changesMade = json.loads(request.body, "utf-8")
+		
+		#Get the Lab_Group data to allow direct manipulation.
+		lab_group = u.get_profile().lab_group
+		CG_data = collect_CG_entries(lab_group)	
+		
+		#Clear the cache.
+		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
+		
+		#Since only deletions are supported currently. ###
+		for index in changesMade:
+			try:
+				CG_data[int(index)].delete()
+				logging.info("\n\nDeleted!")
+			except Exception as e:
+				logging.info("\n\nCould not delete index! {}".format(e))
+			
+	return HttpResponse("OK")
+
 #Send/receive the data-entry form:
 def data_form(request): #If no data is entered, stay on the current page.
 	u = request.user
@@ -239,12 +312,15 @@ def data_form(request): #If no data is entered, stay on the current page.
 		#Bind the user's data and verify that it is legit.
 		form = DataEntryForm(user=u, data=request.POST)
 		if form.is_valid():
-			#If all data is valid, save the entry (and the submitter)
+			#If all data is valid, save the entry.
 			form.save()
-			success = True
+			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), None)
+			success = True #Used to display the ribbonMessage.
 	else:
 		#Submit a blank form if one was not just submitted.
-		form = DataEntryForm()
+		form = DataEntryForm(
+			initial={"leak":"No"}
+		)
 	
 	return render(request, 'data_form.html', {
 		"form": form,
@@ -516,7 +592,7 @@ def download_CSV(request):
 		return HttpResponse("<p>Please log in to download data.</p>")
 
 ######################  Change Page ####################################
-def data_transmit(request, num = 0, control=control):
+def data_transmit(request, num = 1, control=control):
 	try:
 		if request.method == "GET" and request.user.is_authenticated():
 			#Get the request information.
@@ -554,8 +630,17 @@ def data_transmit(request, num = 0, control=control):
 	except:	
 		return HttpResponse("<p>Woopsie!... Something went wrong.</p>")
 
+######################  Data Transmit ##################################
+#Send the CG name pairs to the client.
+def send_CG_names(request):
+	u = request.user
+	if u.is_authenticated():
+		name_pairs = collect_CG_name_pairs(lab_group, overwrite=False)
+		return HttpResponse(name_pairs)
+	return HttpResponse("Please log in to see data.")
+
 ######################  Update Data ####################################
-def data_update(request): ###Lump together?
+def data_update(request, control=control): ###Lump together?
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
 		changesMade = json.loads(request.body, "utf-8")
@@ -566,7 +651,6 @@ def data_update(request): ###Lump together?
 		total_size = lab_data.count()	
 		earliest_index = -1 #Impossible, so if it changes, then a change exists.
 			
-		logging.info("\n----------{}".format(type(lab_data)))
 		while (len(changesMade["edit"]) > 0):
 			try:
 				#An editPackage is [indexChanged, fieldChanged, newValue]. 
@@ -580,9 +664,12 @@ def data_update(request): ###Lump together?
 				setattr(dataChanged, fieldChanged, newValue)
 				dataChanged.user = u
 				dataChanged.save()
+				
+				#Erase the cached page since it is no longer up-to-date.
+				page = (indexChanged/control.data_per_page) + 1
+				cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), None)
 			except:
 				pass
-		logging.info("\n----------{}".format(type(lab_data)))
 		while (len(changesMade["dupl"]) > 0):
 			try:
 				indexToClone = int(changesMade["dupl"].pop())-1 #0-based Index
@@ -596,7 +683,6 @@ def data_update(request): ###Lump together?
 				total_size += 1
 			except:
 				pass
-		logging.info("\n----------{}".format(type(lab_data)))
 		while (len(changesMade["del"]) > 0):###SLOW
 			try:
 				indexChanged = changesMade["del"].pop()-1 #0-based Index
@@ -607,7 +693,7 @@ def data_update(request): ###Lump together?
 				pass
 		if earliest_index != -1:
 			control.update_cursors(lab_group, earliest_index, lab_data)
-		logging.info("\n----------{}".format(type(lab_data)))
+		
 	return HttpResponse("OK"); #Django requires an HttpResponse...
 
 def get_full_datum(request, control=control):
@@ -616,8 +702,6 @@ def get_full_datum(request, control=control):
 		if u.is_authenticated() and request.method=="POST":
 			#Give the specific index requested.
 			index_requested = json.loads(request.POST["indexRequested"])
-			###page = (index_requested/control.data_per_page) + 1
-			###relative_index = index_requested % page
 			###Is this efficient?
 			entry = control.collect_all_data(u.get_profile().lab_group)[index_requested]
 			
@@ -625,7 +709,6 @@ def get_full_datum(request, control=control):
 			"entry":entry
 		})
 	except Exception as e:
-		logging.info(str(e))
 		return HttpResponse("<p>Data could not be loaded!</p>")		
 
 ######################  User Auth ######################################

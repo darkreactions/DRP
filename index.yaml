@@ -33,6 +33,16 @@ indexes:
   - name: __key__
     direction: desc
 
+- kind: formsite_compoundentry
+  properties:
+  - name: __key__
+    direction: desc
+
+- kind: formsite_compoundentry
+  properties:
+  - name: lab_group_id
+  - name: abbrev
+
 - kind: formsite_data
   properties:
   - name: __key__

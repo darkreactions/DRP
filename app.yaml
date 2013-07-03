@@ -1,5 +1,5 @@
 application: darkreactionsproject
-version: 0-05
+version: 0-08
 runtime: python27
 api_version: 1
 threadsafe: yes

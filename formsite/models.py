@@ -1,5 +1,6 @@
 from django.forms import *
 from django.core import validators
+from django.core.cache import cache
 
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
@@ -10,6 +11,8 @@ from djangotoolbox import fields
 from validation import *
 from data_ranges import *
 import random, string, datetime
+
+import logging ###
 
 ############### USER and LAB INTEGRATION #######################
 ACCESS_CODE_MAX_LENGTH = 20 #Designates the max_length of access_codes
@@ -84,19 +87,83 @@ class UserProfileForm(ModelForm):
 
  
 ################ COMPOUND GUIDE ########################
-#class CompoundAbbrev(models.Model):
-	#compound = models.CharField("Compound:", max_length=100)
-	#abbrev = models.CharField("Abbrev:", max_length=40)
+class CompoundEntry(models.Model):
+	abbrev = models.CharField("Abbreviation", max_length=100)
+	compound = models.CharField("Compound", max_length=100)
+	CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, null=True)
+	compound_type = models.CharField("Type", max_length=10)
 
-	#lab_group = models.ForeignKey(Lab_Group, unique=False)
+	lab_group = models.ForeignKey(Lab_Group, unique=False)
 		
-	#def __unicode__(self):
-		#return "{abbrev} --> {compound} (LAB: {})".format(self.ref, self.lab_group.lab_title)	
-	
-#class CompoundAbbrevForm(ModelForm):
-	#class Meta:
-		#model = CompoundAbbrev	
+	def __unicode__(self):
+		if self.compound == self.abbrev:
+			return "{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
+		return "{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)	
 
+TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
+
+class CompoundGuideForm(ModelForm):
+	compound = CharField(widget=TextInput(
+		attrs={'class':'form_text',
+		"title":"What the abbreviation stands for."}))
+	abbrev = CharField(widget=TextInput(
+		attrs={'class':'form_text form_text_short',
+		"title":"The abbreviation you want to type."}))
+	CAS_ID = CharField(label="CAS ID", widget=TextInput(
+		attrs={'class':'form_text',
+		"title":"The CAS ID of the compound if available."}),
+		required=False)
+	compound_type = ChoiceField(label="Type", choices = TYPE_CHOICES, 
+		widget=Select(attrs={'class':'form_text dropDownMenu',
+		"title":"?"}))
+		
+	class Meta:
+		model = CompoundEntry	
+		exclude = ("lab_group",)
+
+	def __init__(self, lab_group=None, *args, **kwargs):
+		super(CompoundGuideForm, self).__init__(*args, **kwargs)
+		self.lab_group = lab_group
+		
+	def save(self, commit=True):
+		entry = super(CompoundGuideForm, self).save(commit=False)
+		entry.lab_group = self.lab_group
+		if commit:
+			entry.save()
+		return entry
+
+	def clean(self):
+		#Initialize the variables needed for the cleansing process.
+		dirty_data = super(CompoundGuideForm, self).clean() #Get the available raw (dirty) data
+		clean_data = {} #Keep track of cleaned fields
+		
+		try:
+			clean_CAS_ID = dirty_data["CAS_ID"].replace(" ", "-").replace("/", "-").replace("_", "-")
+			assert(clean_CAS_ID)
+			#Check that the CAS ID has three hyphen-delineated parts.
+			if len(clean_CAS_ID.split("-")) != 3:
+				self._errors["CAS_ID"] = self.error_class(
+					["CAS ID requires three distinct parts."])
+			#Check that only numbers are present.
+			elif not clean_CAS_ID.replace("-","").isdigit(): 
+				self._errors["CAS_ID"] = self.error_class(
+					["CAS ID may only have numeric characters."])
+			clean_data["CAS_ID"] = clean_CAS_ID
+		except Exception as e:
+			#If no CAS_ID is found, store a blank value.
+			logging.info("\n\n\nException!  {}".format(e))
+			clean_data["clean_CAS_ID"] = ""
+		
+		other_fields = ["abbrev", "compound", "compound_type"]
+		for field in other_fields:
+			try:
+				clean_data[field] = dirty_data[field]
+			except:
+				self._errors[field] = self.error_class(
+					["This field cannot be blank."])
+		
+		return clean_data
+		
 ############### DATA ENTRY ########################
 #Create the form choices from the pre-defined ranges.
 OUTCOME_CHOICES = [[opt,opt] for opt in edit_choices["outcomeChoices"]]
@@ -150,9 +217,27 @@ class Data(models.Model):
 		##Set the self-assigning fields:
 		#setattr(new_entry, "creation_time", str(datetime.datetime.now()))
 		#super(Data, self).save(*args, **kwargs)
+	
+def collect_CG_entries(lab_group, overwrite=False):
+	compound_guide = cache.get("{}|COMPOUNDGUIDE".format(lab_group.lab_title))
+	if not compound_guide or overwrite:
+		compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("abbrev")
+		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), list(compound_guide))
+	return compound_guide
+
+def collect_CG_name_pairs(lab_group, overwrite=False):
+	pairs = cache.get("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title))
+	if not pairs or overwrite:
+		compound_guide = collect_CG_entries(lab_group)
+		pairs = {entry.abbrev: entry.compound for entry in compound_guide}
+		cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), pairs)
+	return pairs
+
+def validate_name(abbrev_to_check, lab_group): ###Ultimately in validation.py?
+	#Get the cached set of abbreviations.
+	abbrevs = collect_CG_name_pairs(lab_group)
+	return abbrev_to_check in abbrevs
 		
-	
-	
 #Add specified entries to a datum. Assume fields are present, safe, and clean.### NEEDED?
 def create_data_entry(user, **kwargs): ###Not re-read yet.
 	try:
@@ -277,7 +362,6 @@ class DataEntryForm(ModelForm):
 
 	def __init__(self, user=None, *args, **kwargs):
 		###http://stackoverflow.com/questions/1202839/get-request-data-in-django-form
-		
 		super(DataEntryForm, self).__init__(*args, **kwargs)
 		
 		if user:
@@ -365,15 +449,15 @@ class DataEntryForm(ModelForm):
 				clean_data[field] = ""
 				continue
 			
-			#Make sure each reactant name is valid. ###REACTANT NAME VERIFICATION.
+			#Make sure each reactant name is valid.
 			if field[:-2]=="reactant":
 				try:
 					dirty_reactant = str(dirty_data[field])
-					###VALIDATE NAME
+					assert(validate_name(dirty_reactant, clean_data["lab_group"]))
 					clean_data[field] = dirty_reactant #Add the filtered value to the clean values dict.
 				except:
 					self._errors[field] = self.error_class(
-						["Reactant name could not be validated!"])
+						["Reactant not in compound guide! {}".format(e)])
 					bad_data.add(field)
 			
 			#Make sure each mass is a number.
