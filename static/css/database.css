@@ -231,23 +231,56 @@ option {
 }
 
 .ui-tooltip {
-	display:inline-block;
+	position:fixed;
+	z-index:8000;
+	background:rgba(1, 1, 1, 0.85);
+	padding:8px;
+	border-radius:15px;
+	color: white;
+	border:2px solid black;
 }
 
 .ui-tooltip-content{
-	position:absolute;
-	padding:8px;
-	border-radius:15px;
 	max-width:400px;
-	
-	z-index:8000;
-	background-color:white;
-	border:2px solid black;
 	
 	-webkit-user-select: none;  
 	-moz-user-select: none;    
 	-ms-user-select: none;      
 	user-select: none;
+}
+
+
+	/* ###############   Autocomplete    ############################ */
+.ui-autocomplete {
+	padding:8px;
+	width:150px;
+	background:rgba(1, 1, 1, 0.85);
+	border-radius:15px;
+	color:white;
+	z-index:2000;
+	
+	list-style:none;
+}
+
+.ui-menu-item {
+	padding-left:10px;
+}
+
+.ui-menu-item:hover {
+	background-color:#404040;
+	border-radius:15px;
+	cursor:pointer;
+	
+	font-style:oblique;
+	font-weight:bold;
+}
+
+.ui-corner-all {
+	color:white;
+}
+
+.ui-state-focus:hover {
+	background-color: #404040;
 }
 
 /* ###############   CONTAINERS   ################################### */

@@ -115,7 +115,8 @@ class CompoundGuideForm(ModelForm):
 		required=False)
 	compound_type = ChoiceField(label="Type", choices = TYPE_CHOICES, 
 		widget=Select(attrs={'class':'form_text dropDownMenu',
-		"title":"?"}))
+		"title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>"+
+		"--Solute<br/>--Water"}))
 		
 	class Meta:
 		model = CompoundEntry	
@@ -281,7 +282,7 @@ def get_data_field_names(verbose = False):
 class DataEntryForm(ModelForm):
 	#Define the style and other attributes for each field.
 	reactant_1 = CharField(widget=TextInput(
-		attrs={'class':'form_text',
+		attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_1 = CharField(label="Quantity", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
@@ -290,7 +291,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_2 = CharField(widget=TextInput(
-		attrs={'class':'form_text',
+		attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_2 = CharField(label="Quantity", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
@@ -299,7 +300,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_3 = CharField(required=False,
-		widget=TextInput(attrs={'class':'form_text',
+		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_3 = CharField(required=False,
 		label="Quantity", widget=TextInput(
@@ -309,7 +310,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_4 = CharField(required=False,
-		widget=TextInput(attrs={'class':'form_text',
+		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_4 = CharField(required=False,
 		label="Quantity", widget=TextInput(
@@ -319,7 +320,7 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text dropDownMenu',
 		"title":"Is the quantity a mass or volume?"}))
 	reactant_5 = CharField(required=False,
-		widget=TextInput(attrs={'class':'form_text',
+		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_5 = CharField(required=False,
 		label="Quantity", widget=TextInput(
@@ -348,10 +349,10 @@ class DataEntryForm(ModelForm):
 		"title":"Was a leak present during the reaction?"}))
 	outcome = ChoiceField(choices = OUTCOME_CHOICES, widget=Select(
 		attrs={'class':'form_text dropDownMenu',
-		"title":"0: No Data Available\n1: No Solid\n 2: Noncrystalline/Brown\n3: Powder/Crystallites\n4: Large Single Crystals"}))
+		"title":"0: No Data Available <br/> 1: No Solid<br/> 2: Noncrystalline/Brown<br/>3: Powder/Crystallites<br/>4: Large Single Crystals"}))
 	purity = ChoiceField(choices = PURITY_CHOICES, widget=Select(
 		attrs={'class':'form_text dropDownMenu',
-		"title":"0: No Data Available\n 1: Multiphase\n 2: Single Phase"}))
+		"title":"0: No Data Available<br/> 1: Multiphase<br/> 2: Single Phase"}))
 	notes = CharField(required = False, widget=TextInput(
 		attrs={'class':'form_text form_text_long',
 		"title":"Additional notes about the reaction."}))

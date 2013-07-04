@@ -48,7 +48,6 @@ class DataManager(object):
 			page = 2 #Start making cursors from the beginning.
 		data_per_cursor = self.data_per_page*self.batch_size
 		sub_lab_data = lab_data[0:data_per_cursor]
-		logging.info("\n--------Starting while loop!")###
 		cursor = None
 		while page <= last_page:
 			try:
@@ -112,39 +111,30 @@ class DataManager(object):
 			raise Exception("User not logged in.")
 		lab_group = user.get_profile().lab_group
 		
-		logging.info("\n---------Starting retrieve_data!")
-		
 		#Only retrieve lab_data if it is not already available.
 		cached_data = cache.get("{}|PAGEDATA|{}".format(lab_group.lab_title, page))
 		
 		
 		if not cached_data or overwrite:
 			if not lab_data.exists():
-				logging.info("\n---------Finding cursor!")
 				lab_data = self.collect_all_data(user.get_profile().lab_group)
 			#Retrieve the closest cursor.
-			logging.info("\n---------Finding cursor!")
 			cursor, distance = self.find_cursor(lab_group, page)
 			#Apply the cursor to the lab data if applicable.###
-			logging.info("\n---------Finding BATCH!")
 			if cursor!="START":
 				batch_lab_data = set_cursor(lab_data, cursor)###
 			else:
 				batch_lab_data = lab_data
 			#Only return the data on the given page.
-			logging.info("\n---------Finding Rel Data!")
 			rel_lab_data = batch_lab_data[distance*self.data_per_page:(distance+1)*self.data_per_page]
 			#Overwrite the existing cache entry.
 			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), list(rel_lab_data))
-			logging.info("\n---------Cache set!")
 		else: 
 			rel_lab_data = cached_data 
-			logging.info("\n---------Loaded page from cache!")
 		return rel_lab_data
 			
 	def update_cursors(self, lab_group, index_updated, lab_data=None): #Takes a 0-based index.
 		try:
-			logging.info("\n---------UPDATING CURSORS!\n")		
 			#Find the cursor associated with the updated index:
 			page = (index_updated/self.data_per_page) + 1
 			if not lab_data.exists():
@@ -155,16 +145,13 @@ class DataManager(object):
 			else:
 				cursor, distance = self.find_cursor(lab_group, page)
 				sub_lab_data = set_cursor(lab_data, cursor)[0:] #Ignore data before the current cursor.
-				logging.info("\n---------MEEEEEEEEEEEEEEP...")		
 				sub_lab_data = sub_lab_data[distance*self.data_per_page:(distance+1)*self.data_per_page]
 			#Make the cursors that follow the current cursor.
 				
 			#Erase the proceeding cached pages.
-			logging.info("\n---------Clearing cash...")		
 			total_pages = control.calc_total_pages(lab_group, lab_data.count())
 			for i in xrange(page, total_pages+1):
 				cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, i), None)
-			logging.info("\n---------Cleared cash on from: {}".format(page))		
 			self.make_cursors(lab_group, sub_lab_data, page, total_pages)
 		except Exception as e:
 			logging.info("\n---------Could not update cursor for page: {}".format(page))		
@@ -193,15 +180,11 @@ class DataManager(object):
 			#Pack up the session info:
 			session = {}
 			try:
-				logging.info("Trying!")
 				session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
-				logging.info("Success Loading Old!")
 			except:
 				#Construct the cursors if necessary.
-				logging.info("Making new!")
 				self.make_cursors(lab_group, lab_data, None, total_pages)
 				session["relevant_data"] = self.retrieve_data(u, current_page, False, lab_data)
-				logging.info("Success Loading New!")
 			session["total_data_size"] = total_data_size
 			session["total_pages"] = total_pages
 			session["page_links"] = self.get_page_links(current_page, total_pages)
@@ -265,8 +248,9 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 			if form.is_valid():
 				#If all data is valid, save the entry.
 				form.save()
-				#Clear the cache.
+				#Clear the cached CG data.
 				cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
+				cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), None)
 				success = True #Used to display the ribbonMessage.
 		else:
 			#Submit a blank form if one was not just submitted.
@@ -291,14 +275,14 @@ def edit_CG_entry(request):
 		lab_group = u.get_profile().lab_group
 		CG_data = collect_CG_entries(lab_group)	
 		
-		#Clear the cache.
+		#Clear the cached CG entries.
 		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
+		cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), None)
 		
 		#Since only deletions are supported currently. ###
 		for index in changesMade:
 			try:
 				CG_data[int(index)].delete()
-				logging.info("\n\nDeleted!")
 			except Exception as e:
 				logging.info("\n\nCould not delete index! {}".format(e))
 			
@@ -635,8 +619,9 @@ def data_transmit(request, num = 1, control=control):
 def send_CG_names(request):
 	u = request.user
 	if u.is_authenticated():
+		lab_group = u.get_profile().lab_group
 		name_pairs = collect_CG_name_pairs(lab_group, overwrite=False)
-		return HttpResponse(name_pairs)
+		return HttpResponse(json.dumps(name_pairs), mimetype="application/json")
 	return HttpResponse("Please log in to see data.")
 
 ######################  Update Data ####################################

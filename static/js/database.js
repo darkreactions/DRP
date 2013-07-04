@@ -8,16 +8,38 @@ var changesMade = {
 	add:[],
 	};
 var CGSelected = Array();
+var CGEntries;
+var CGAbbrevs;
 	
 //############ Post-load Setup: #########################################
 //Apply custom tooltips to applicable data.
 $(document).tooltip({
-	position: {
-		my: "left top",
-		at: "left bottom"
+	 position: {
+		my: "center top+20",
 	},
+	track: true,
+	content: function() {
+		return $(this).attr("title")
+		}
 	}); 
 restyleData() //Style the data according to what it contains.
+
+//############ Tooltip functionality: ##################################
+$(document).on("mouseover", ".type_reactant", function() {
+	if (CGEntries == undefined) {
+		$(this).attr("title", "Loading!")
+		$.get("/send_CG_names/", function(response) {
+			CGEntries = response;
+			var compound = CGEntries[$(this).html()] || "Compound not in guide!"
+			$(this).attr("title", compound);
+			$(".ui-tooltip").html(compound);
+			});
+	} else {
+		var compound = CGEntries[$(this).html()] || "Compound not in guide!"
+		$(this).attr("title", compound)
+	}
+});
+
 
 //############ Dependent Functions: ####################################
 //Sort from greatest to least.
@@ -140,6 +162,10 @@ function submitChanges(refresh) {
 		}
 	});
 }
+
+function getCGEntries() {
+	
+}
 	
 //############ Popup Management: #######################################
 //Activate specified popup:
@@ -155,6 +181,32 @@ $(document).on("click", ".popupActivator", function() {
 		case "dbMenu_addNew":
 			$.get("/data_form/", function(response) {
 				$("#popupContainer_inner").html(response);
+				
+				//Get the auto-complete options form the CG guide.
+				if (CGAbbrevs == undefined) {
+					$.get("/send_CG_names/", function(response) {
+						CGEntries = response;
+						CGAbbrevs = Array();
+						for (var key in CGEntries) {
+							CGAbbrevs.push(key);
+						}
+						$(".autocomplete_reactant").autocomplete({ 
+							source: CGAbbrevs,
+							messages: {
+								noResults: "",
+								results: function() {}
+							}
+						});
+					})
+				} else {
+					$(".autocomplete_reactant").autocomplete({ 
+						source: CGAbbrevs,
+						messages: {
+							noResults: "",
+							results: function() {}
+						}
+					});
+				}
 			});
 			break;
 		case "dbMenu_uploadCSV":
@@ -191,6 +243,9 @@ $(document).on("click", ".popupActivator", function() {
 			$.get("/compound_guide_form/", function(response) {
 				$("#popupContainer_inner").html(response);
 				$(".CG_saveButton").remove()
+				//Erase the current JSON object and selected CG entries.
+				CGEntries = undefined;
+				CGAbbrevs = undefined;
 				CGSelected = Array();
 			});
 			break;
@@ -292,14 +347,6 @@ $(document).on("click", ".CG_saveButton", function() {
 		refreshScreen(false);
 	});
 });
-
-
-
-$(document).on("mouseover", ".CG_compound", function() {
-	//$(this).tooltip("open");
-});
-
-
 
 //############ Data Selection: #########################################
 //Click Group to Select:
@@ -433,7 +480,6 @@ $("#dbMenu_delete").click(function() {
 	}
 });
 
-
 //############ Edit Data: ###########################@##################
 //Initiate edit session.
 $(document).on("click", ".editable", function() {
@@ -460,11 +506,29 @@ $(document).on("click", ".editable", function() {
 			$(this).children(".editMenu").focus();
 		} else {
 			$(this).html("<input class=\"editField editText\" type=\"" + editAs
-				+ "\" title=\"Enter the new value.\" oldVal=\""+ oldVal
+				+ "\" oldVal=\""+ oldVal
 				+ "\" value=\"" + oldVal + "\" />"
 				+ "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
 				);
 			adaptSize($(this).children(".editText"));
+			
+			
+			if ($(this).attr("class").indexOf("type_reactant") >= 0) {
+				//Get the auto-complete options form the CG guide.
+				if (CGAbbrevs == undefined) {
+					CGAbbrevs = Array();
+					for (var key in CGEntries) {
+						CGAbbrevs.push(key);
+					}
+				}
+				$(this).children(".editText").autocomplete({ 
+					source: CGAbbrevs,
+					messages: {
+						noResults: "",
+						results: function() {}
+					}
+				});
+			}
 			$(this).children(".editText").focus();
 		}
 	}
