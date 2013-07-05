@@ -32,8 +32,15 @@
 		{% for entry in guide %}
 			<tr>
 				<td>{{forloop.counter}}.)</td>
-				<td>{{ entry.abbrev }}</td>
+				
+				{% if entry.abbrev == entry.compound %} 
+					<td style="opacity:0.5;">(None)</td>
+				{% else %}
+					<td>{{ entry.abbrev }}</td>
+				{% endif %}
+				
 				<td class="CG_arrow"> &rarr; </td>
+				
 				{% if entry.CAS_ID %}
 				<td title="CAS: {{ entry.CAS_ID }}" class="CG_compound">
 				{% else %}

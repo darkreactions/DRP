@@ -222,7 +222,7 @@ class Data(models.Model):
 def collect_CG_entries(lab_group, overwrite=False):
 	compound_guide = cache.get("{}|COMPOUNDGUIDE".format(lab_group.lab_title))
 	if not compound_guide or overwrite:
-		compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("abbrev")
+		compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), list(compound_guide))
 	return compound_guide
 
@@ -239,7 +239,20 @@ def validate_name(abbrev_to_check, lab_group): ###Ultimately in validation.py?
 	abbrevs = collect_CG_name_pairs(lab_group)
 	return abbrev_to_check in abbrevs
 		
-#Add specified entries to a datum. Assume fields are present, safe, and clean.### NEEDED?
+#Add specified entries to a datum. Assume fields are now valid.
+def create_CG_entry(lab_group, **kwargs): ###Not re-read yet.
+	try:
+		new_entry = CompoundEntry()
+		#Set the self-assigning fields:
+		setattr(new_entry, "lab_group", lab_group)
+		
+		#Set the non-user field values.
+		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
+			setattr(new_entry, field, value)
+		new_entry.save()
+	except Exception as e:
+		raise Exception("CompoundEntry construction failed!")
+		
 def create_data_entry(user, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = Data()
@@ -248,24 +261,23 @@ def create_data_entry(user, **kwargs): ###Not re-read yet.
 		setattr(new_entry, "user", user)
 		setattr(new_entry, "lab_group", user.get_profile().lab_group)
 		
-		#Validate field names
-		field_vals = kwargs.items()
-		
-		fields_left = get_data_field_names()
-		for field_pair in field_vals:
-			fields_left.remove(field_pair[0])
-		assert len(field_vals) == len(get_data_field_names()) ###SLOW?
-
 		#Set the non-user field values.
-		for (field, value) in field_vals: #Assume data passed to the function is clean.
+		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
 			setattr(new_entry, field, value)
 		new_entry.save()
 	except Exception as e:
 		raise Exception("Data construction failed!")
 		
-def get_data_field_names(verbose = False):
-	fields_to_ignore = {u"id","user","lab_group", "creation_time"} ###Auto-populate?
-	dirty_fields = [field for field in Data._meta.fields]
+		
+def get_data_field_names(verbose = False, model="Data"):
+	if model=="Data":
+		fields_to_ignore = {u"id","user","lab_group", "creation_time"} ###Auto-populate?
+		dirty_fields = [field for field in Data._meta.fields]
+	elif model=="CompoundEntry":
+		fields_to_ignore = {u"id","lab_group"} ###Auto-populate?
+		dirty_fields = [field for field in CompoundEntry._meta.fields]
+	else:
+		raise Exception("Unknown model specified.")
 	
 	#Ignore any field that is in fields_to_ignore.
 	clean_fields = []

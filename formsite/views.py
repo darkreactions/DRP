@@ -311,124 +311,161 @@ def data_form(request): #If no data is entered, stay on the current page.
 		"success": success,
 	})
 
-#Send/receive the upload-CSV form:
-def upload_CSV(request):
-	u = request.user
-	if request.method == 'POST' and u.is_authenticated(): 
-		return upload_data(request)
-	else:
-		return render(request, 'upload_form.html')
-	
 ######################  Helper Functions ###############################
 
 #Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
-def get_related_field(heading): ###Not re-read.
+def get_related_field(heading, model="Data"): ###Not re-read.
 	#Strip all punctuation, capitalization, and spacing from the header. 
 	stripped_heading = heading.translate(None, string.punctuation)
 	stripped_heading = stripped_heading.translate(None, " ").lower()
 	stripped_heading = stripped_heading[:20] #Limit the checked heading (saves time if super long).
-	if ("reacta" in stripped_heading or "mass" in stripped_heading
-		or "unit" in stripped_heading or "vol" in stripped_heading
-		or "amou" in stripped_heading or "name" in stripped_heading
-		or "qua" in stripped_heading):
-		if ("mass" in stripped_heading or "quantity" in stripped_heading
-			or "vol" in stripped_heading or "amount" in stripped_heading):
-			related_field = "quantity_"
-		elif "unit" in stripped_heading:
-			related_field = "unit_"
-		else:
-			related_field = "reactant_"
-		for i in range(5): #ie, 1-5
-			if str(i+1) in stripped_heading: 
-				related_field += str(i+1)
-				break; #Only add 1 number to the data form.
-	elif "temp" in stripped_heading:
-		related_field = "temp"
-	elif "time" in stripped_heading:
-		related_field = "time" 
-	elif "cool" in stripped_heading or "slow" in stripped_heading:
-		related_field = "slow_cool"
-	elif "pur" in stripped_heading:
-		related_field = "purity" 
-	elif "leak" in stripped_heading or "error" in stripped_heading:
-		related_field = "leak" 
-	elif ("ref" in stripped_heading or "cont" in stripped_heading
-		or "num" in stripped_heading):
-		related_field = "ref" 
-	elif "out" in stripped_heading or "res" in stripped_heading:
-		related_field = "outcome" 
-	elif ("note" in stripped_heading or "other" in stripped_heading 
-		or "info" in stripped_heading):
-		related_field = "notes" 
-	elif "ph" in stripped_heading:
-		related_field = "pH" 
-	else: #ie, related_field is unchanged.
-		raise Exception("No valid heading found for \"{}\".".format(heading))###Possible Raise?
-	return related_field
-		
-def live_name_validation(request): ###
-	u = request.user
-	try:
-		if u.is_authenticated() and request.method=="POST":
-			saved_data = get_saved_data(u.get_profile().lab_group)
-			
-			#Give the specific index requested.
-			raw_name = json.loads(request.POST["indexRequested"])
-			entry = saved_data[index_requested]
-			valid_name = ""
-		return HttpResponse(valid_name)	
-	except:
-		return HttpResponse("False")	
-
-######################  Upload/Download Functionality ##################
-def upload_data(request): ###Not re-read.
-	true_fields = get_data_field_names()
-	not_required = { ###Auto-generate?
-			"reactant_3", "quantity_3", "unit_3", 
-			"reactant_4", "quantity_4", "unit_4",
-			"reactant_5", "quantity_5", "unit_5",
-			"notes"
-		}
-			
-	u = request.user
 	
+	if model=="Data":
+		if ("reacta" in stripped_heading or "mass" in stripped_heading
+			or "unit" in stripped_heading or "vol" in stripped_heading
+			or "amou" in stripped_heading or "name" in stripped_heading
+			or "qua" in stripped_heading):
+			if ("mass" in stripped_heading or "quantity" in stripped_heading
+				or "vol" in stripped_heading or "amount" in stripped_heading):
+				related_field = "quantity_"
+			elif "unit" in stripped_heading:
+				related_field = "unit_"
+			else:
+				related_field = "reactant_"
+			for i in range(5): #ie, 1-5
+				if str(i+1) in stripped_heading: 
+					related_field += str(i+1)
+					break; #Only add 1 number to the data form.
+		elif "temp" in stripped_heading:
+			related_field = "temp"
+		elif "time" in stripped_heading:
+			related_field = "time" 
+		elif "cool" in stripped_heading or "slow" in stripped_heading:
+			related_field = "slow_cool"
+		elif "pur" in stripped_heading:
+			related_field = "purity" 
+		elif "leak" in stripped_heading or "error" in stripped_heading:
+			related_field = "leak" 
+		elif ("ref" in stripped_heading or "cont" in stripped_heading
+			or "num" in stripped_heading):
+			related_field = "ref" 
+		elif "out" in stripped_heading or "res" in stripped_heading:
+			related_field = "outcome" 
+		elif ("note" in stripped_heading or "other" in stripped_heading 
+			or "info" in stripped_heading):
+			related_field = "notes" 
+		elif "ph" in stripped_heading:
+			related_field = "pH" 
+		else: #ie, related_field is unchanged.
+			raise Exception("No valid heading found for \"{}\".".format(heading))###Possible Raise?
+	elif model=="CompoundEntry":
+		if "cas" in stripped_heading:
+			related_field = "CAS_ID"
+		elif "type" in stripped_heading:
+			related_field = "compound_type"
+		elif ("comp" in stripped_heading or "full" in stripped_heading 
+			or "name" in stripped_heading):
+			related_field = "compound"
+		elif "abbr" in stripped_heading or "short" in stripped_heading:
+			related_field = "abbrev"
+		else:
+			raise Exception("No valid heading found for \"{}\".".format(heading))###Possible Raise?
+	else:
+		raise Exception("Unknown model specification for relations.")
+	return related_field
+
+def guess_type(datum):
+	guess = ""
+	datum=datum.lower()
+	if "wat" in datum or "h2o" in datum:
+		return "Water"
+	if "oxa" in datum:
+		return "Ox"
+	if ("eth" in datum or "prop" in datum or "but" in datum or "amin" in datum
+		or "pip" in datum or ("c" in datum and not "cl" in datum)):
+		return "Org"
+	if "ol" in datum:
+		return "Sol"
+	return "Inorg" #Default to inorganic if no guess is uncovered.
+	###raise Exception("Unable to guess type of \"{}\"".format(datum))
+	
+######################  Upload/Download Functionality ##################
+def upload_CSV(request, model="Data"): ###Not re-read.
+	u = request.user
 	if request.method=="POST" and request.FILES and u.is_authenticated():
+		#Get the file and model specification from the POST request.
+		model=request.POST["dataType"]
 		uploaded_file = request.FILES["file"]
+		
+		#Get the appropriate field names.
+		if model=="Data":
+			not_required = {
+					"reactant_3", "quantity_3", "unit_3", 
+					"reactant_4", "quantity_4", "unit_4",
+					"reactant_5", "quantity_5", "unit_5",
+					"notes"
+				}
+			allow_unknowns = True
+		elif model=="CompoundEntry":
+			not_required = {
+					"CAS_ID"
+				}
+			allow_unknowns = False
+			no_abbrev = False
+		else:
+			raise Exception("Unknown model specified in upload.")
+			
+		true_fields = get_data_field_names(model=model)
+		row_num = 1
 		added_quantity=0
 		error_quantity=0
 		error_log = ""
 		
+		#Settings:
+		blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data.
+		unknown_label = "?" #The label that blacklist values will inherit.
+		not_required_label = "" #The label that auto-added values will inherit.
+		
 		try:
-			blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data.
-			unknown_label = "?" #The label that blacklist values will inherit.
-			not_required_label = "" #The label that auto-added values will inherit.
-			
-			#Attempt to validate the headings of the uploaded doc.
+			#Attempt to validate the headings of the uploaded CSV.
 			headings_valid = False
 			validation_attempt = 0
 			#Separate data into groups of fields -- then separate fields.
-			for data_group in csv.reader(uploaded_file, delimiter=","):
-				#The first data_group should be a series of headings.
+			for row in csv.reader(uploaded_file, delimiter=","):
+				#The first row should be a series of headings.
 				if validation_attempt > 5: raise Exception("Unable to validate headings.")
 				try:
 					if not headings_valid: #Remember which column has which heading.
-						#Translate the user's field name into a usable field name.
-						user_fields = [get_related_field(field) for field in data_group]
-						#If unit columns were not supplied, add them after each mass.
+						#Translate the user's headings into usable field names.
+						user_fields = []
+						row_length = 0 #Remember how many elements to read per row.
+						for field in row:
+							if field == "":
+								break #Stop checking for headings if a "" is encountered.
+							user_fields.append(get_related_field(field,model=model))
+							row_length+=1
+							
+						#If unit columns were not supplied, add them after each quantity.
 						set_user_fields = set(user_fields)
 						auto_added_fields = set()
 						recheck_fields = set()
-						for i in range(1,6): #Since only 5 reactants supported...
-							if not "unit_{}".format(i) in set_user_fields:
-								user_fields.insert(
-									user_fields.index("quantity_{}".format(i))+1,
-										"unit_{}".format(i))
-								auto_added_fields.add("unit_{}".format(i))
-								
+						if model=="Data":
+							for i in range(1,6): #Since only 5 reactants supported...
+								if not "unit_{}".format(i) in set_user_fields:
+									user_fields.insert(
+										user_fields.index("quantity_{}".format(i))+1,
+											"unit_{}".format(i))
+									auto_added_fields.add("unit_{}".format(i))
+						elif model=="CompoundEntry":
+							for opt in ["CAS_ID", "abbrev"]:
+								if not opt in set_user_fields:
+									user_fields.append(opt)
+									auto_added_fields.add(opt)
+									
 						#Assert that there are no duplicates in the list
 						#	and that all fields are valid.
 						if len(user_fields) != len(true_fields):
-							raise Exception("Too many columns present! {} needed but {} found.".format(len(true_fields), len(user_fields)))
+							raise Exception("Invalid column quantity! {} needed but {} found.".format(len(true_fields), len(user_fields)))
 							
 						for field in true_fields:
 							assert(field in user_fields)
@@ -443,31 +480,44 @@ def upload_data(request): ###Not re-read.
 				#All other rows should have data corresponding to the headings.
 				try:
 					#Create new object that will receive the uploaded data.
-					entry_fields = {}
+					model_fields = {}
 					#Access the data from the uploaded file.
-					i = 0 # data_group index (gets a datum)
+					i = 0 # row index (gets a datum)
 					j = 0 # user_fields index. (gets a field)
-					#
-					while (i < len(data_group) or j < len(user_fields)):
+					
+					while (i < row_length or j < len(user_fields)):
 						#Required since data and fields may be disjunct from missing units.
-						datum = data_group[i]
+						datum = row[i]
 						field = user_fields[j]
 						if field in auto_added_fields: 
 							#Skip the field if it was auto-added because
-							#	no data is present in the generated column.
+							#	no data is present for the generated column.
 							j += 1
 							try:
-								entry_fields[field] #Check if the field exists already.
+								if model=="CompoundEntry":
+									if field=="abbrev":
+										#Assume blank abbrevs should be same as compound.
+										model_fields[field] = model_fields["compound"]
+								model_fields[field] #Check if the field exists already.
 							except:
-								entry_fields[field] = not_required_label
+								model_fields[field] = not_required_label
 							continue
 						try:
-							#If the datum isn't helpful, don't remember it.
+							#Attempt to change blacklist entries if possible.
 							if datum in blacklist: 
+								#If abbrevs are empty, assume same as compound.
+								if field=="abbrev": no_abbrev=True
+								#If a CG entry type is empty, try to guess it.
+								if field=="compound_type": datum=guess_type(model_fields["compound"])
+							
+							#If the datum isn't helpful, don't remember it.
+							if datum in blacklist:		
 								if field in not_required:
 									datum = not_required_label
-								else:
+								elif allow_unknowns:
 									datum = unknown_label ###Take this value or no?
+								else:
+									raise Exception("Needs new value".format(datum))
 							else:
 								#If the field is a quantity, check for units.
 								if field[:-2]=="quantity":
@@ -487,7 +537,7 @@ def upload_data(request): ###Not re-read.
 											if element == " ": unit = "g" #Mark data before a space as grams.
 											elif element == "m": unit = "ml"
 											elif element == "d": unit = "d"
-											else: raise Exception("Unknown unit in quantity.")	
+											else: raise Exception("Unknown unit present: {}".format(element))	
 											break #Ignore anything beyond the unit.
 										else:
 											stripped_datum += element
@@ -498,48 +548,72 @@ def upload_data(request): ###Not re-read.
 										#If no unit was gathered, default to grams.
 										if unit=="": unit = "g"
 										#Apply the unit to the data entry.
-										entry_fields[corresponding_unit] = unit
+										model_fields[corresponding_unit] = unit
+								
+								elif field == "CAS_ID":
+									datum = datum.replace("/","-").replace(" ","-").replace("_","-")
+								elif field == "compound_type":
+									for option in edit_choices["typeChoices"]:
+										datum = datum[0:2].lower()
+										if option[0:len(datum)].lower() == datum:
+											datum = option
+											break
 								try:
 									#Attempt to validate the data.
 									if datum != unknown_label:
-										assert(quick_validation(field, datum))
+										assert(quick_validation(field, datum, model=model))
 								except:
 									raise Exception("Data did not pass validation!")
-							entry_fields[field] = datum
-							#Continue to iterate through the data_group.
+									
+								try:
+									#Post-validation configuration.
+									if model=="CompoundEntry":
+										if no_abbrev and field=="compound":
+											model_fields["abbrev"] = datum
+								except:
+									raise Exception("Post-validation configuration failed!") 
+											
+							model_fields[field] = datum
+							#Continue to iterate through the row.
 							i+=1
 							j+=1
-						except:
-							raise Exception("Entry could not be added!")
-					
+						except Exception as e:
+							raise Exception("Entry {} not added... ({})".format(row_num, e))
+						
 					#Add the new entry to the database. ###SLOWWwwwww...
-					create_data_entry(u, **entry_fields)
+					if model=="Data":
+						create_data_entry(u, **model_fields)
+					elif model=="CompoundEntry":
+						create_CG_entry(u.get_profile().lab_group, **model_fields)
+
 					added_quantity += 1
 				except Exception as e:
-					error_log += "<li>{} ---- Failed assigning \"{}\" as \"{}\".</li>".format(e, datum, field)
+					error_log += "<li>{} <ul>Invalid value for \"{}\": \"{}\"</ul></li>".format(e, field, datum)
 					error_quantity +=1
+				row_num += 1
 				
 			#Update cursors if data was added.
-			if added_quantity:
+			if added_quantity and model=="Data":
 				lab_group = u.get_profile().lab_group
 				lab_data = control.collect_all_data(lab_group)
 				first_index_updated = lab_data.count()-added_quantity
 				control.update_cursors(lab_group, first_index_updated, lab_data)
 		except Exception as e:
-			error_log += "<li>{}</li>".format(e)
-	
+			error_log += "{}".format(e)
 	###Bulk Upload Instead?
 	###Template?
 		message = "<h1>Results:</h1>".format(added_quantity)
 		message += "Added: {}<br/>".format(added_quantity)
 		message += "Failed: {}".format(error_quantity)
-		message += "<h1>Error Log: </h1>{}".format(error_log)
+		message += "<h1>Error Log: </h1><div id=\"uploadErrorContainer\">{}</div>".format(error_log)
 		message += "<a href=\"/database/\">Return to Database</a>"
 		return HttpResponse(message)
 	elif not u.is_authenticated():
 		return HttpResponse("<p>Please log in to upload data.</p>")
-	else:
+	elif request.method=="POST" and not request.FILES:
 		return HttpResponse("<p>No file uploaded.</p>")
+	else:
+		return render(request, 'upload_form.html')
 
 def download_CSV(request):
 	u = request.user

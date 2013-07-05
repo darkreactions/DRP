@@ -6,6 +6,8 @@
 	<input name="file" id = "uploadCSV_hiddenInput" type="file" 
 	accept=".csv" value="Upload CSV" class="form_button"/>
 	</div>
+	<input type="radio" name="dataType" value="Data" checked> Reaction Data </input>
+	<input type="radio" name="dataType" value="CompoundEntry"> Compound Guide </input><br/>
 	{% if user.is_authenticated %}
 		<input name="submit" id = "uploadCSVSubmit" type="submit" value="Upload" class="form_button"/>
 	{% else %}

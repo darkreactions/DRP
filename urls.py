@@ -6,7 +6,6 @@ from django.conf.urls.static import static
 # Uncomment the next two lines to enable the admin: ###C
 from django.contrib import admin
 admin.autodiscover()
-
 handler500 = 'formsite.views.display_500_error'
 handler404 = 'formsite.views.display_404_error'
 
@@ -14,6 +13,7 @@ urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
 		#Database
     (r'^$', database),
+
     (r'^database/$', database), #Encompassing data view.
 			#Change Page
     (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Used for changing pages.
