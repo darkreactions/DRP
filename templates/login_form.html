@@ -8,8 +8,11 @@
 		<label for="password">Password:</label>
 		<input type="password" name="password" value="" id="id_password">
 		<br />
+		<div id="changePassword" class="popupActivator">Change Password</div>
+		<br/>
 		<input type="submit" value="Log In" class="form_button"/>
 	{% if login_fail %}
+		<br/>
 		<div class="error">
 			Invalid login credentials!
 		</div>	

@@ -9,7 +9,6 @@ from django.db import models
 from djangotoolbox import fields
 
 from validation import *
-from data_ranges import *
 import random, string, datetime
 
 import logging ###
@@ -83,6 +82,7 @@ class UserProfileForm(ModelForm):
 		
 	class Meta:
 		model = Lab_Member
+		app_label = "formsite"
 		fields = ["lab_group"]
 
  
@@ -194,7 +194,7 @@ class Data(models.Model):
 	quantity_5 = models.CharField("Quantity 5", max_length=55, blank=True)
 	unit_5 = models.CharField("Unit 5", max_length=50, blank=True)
 	
-	ref = models.CharField("Reference", max_length=25)
+	ref = models.CharField("Reference", max_length=12)
 	temp = models.CharField("Temperature", max_length=10)
 	time = models.CharField("Time", max_length=10) ###
 	pH = models.CharField("pH", max_length=5)
@@ -448,11 +448,10 @@ class DataEntryForm(ModelForm):
 					#A field is empty, but the group is "used" -- so raise an error.
 					bad_data.add(field)
 					self._errors[field] = self.error_class(
-						["Datum is missing for reaction!"]
+						["More info required."]
 					)
-				#Else, don't do anything. ###Verify the datum here?
+				#Else, don't do anything.
 		
-		#Grouped fields	
 		for field in fields:
 			#If data is already bad, don't attempt to validate it.
 			if field in bad_data:continue
@@ -461,65 +460,50 @@ class DataEntryForm(ModelForm):
 			if dirty_data[field] == "" and field in not_required: 
 				clean_data[field] = ""
 				continue
+				
+			#Get the generalized field name:
+			if "_" in field:
+				gen_field = field[:field.index("_")]
+			else:
+				gen_field = field
 			
 			#Make sure each reactant name is valid.
-			if field[:-2]=="reactant":
+			if gen_field=="reactant":
 				try:
 					dirty_reactant = str(dirty_data[field])
 					assert(validate_name(dirty_reactant, clean_data["lab_group"]))
 					clean_data[field] = dirty_reactant #Add the filtered value to the clean values dict.
 				except:
 					self._errors[field] = self.error_class(
-						["Reactant not in compound guide! {}".format(e)])
+						["Reactant not in compound guide!"])
 					bad_data.add(field)
 			
-			#Make sure each mass is a number.
-			elif field[:-2]=="quantity":
+			#Numeric fields:
+			elif gen_field in float_fields or gen_field in int_fields:
+				if gen_field in float_fields: field_type="float"
+				else: field_type="int"
+				
 				try:
-					dirty_quantity = float(dirty_data[field])
-					assert(quick_validation(field, dirty_quantity))
-					clean_data[field] = dirty_quantity #Add the filtered mass to clean_data 
+					exec("dirty_datum = {}(dirty_data[field])".format(field_type))
+					assert(quick_validation(gen_field, dirty_datum))
+					clean_data[field] = dirty_datum #Add the filtered mass to clean_data 
 				except:
 					self._errors[field] = self.error_class(
-						["Quantity must be between {} and {}.".format(quantity_range[0], quantity_range[1])]) ###Remove range limit?
+						["Must be between {} and {}.".format(data_ranges[gen_field][0], data_ranges[gen_field][1])])
 					bad_data.add(field)
-					
-			elif field[:-2]=="unit":
-				try:
-					dirty_unit = str(dirty_data[field])
-					assert(quick_validation(field, dirty_unit))
-					clean_data[field] = dirty_unit  
-				except:
-					self._errors[field] = self.error_class(
-						["Unit must be mass (\"g\") or volume (\"mL\"/\\\"d\"rops)."])
-					bad_data.add(field)
-
-			#Range-dependent fields.
-			elif field in {"pH", "temp", "time",  "outcome", "purity"}:
-				try:
-					dirty_datum = int(dirty_data[field])
-					assert(quick_validation(field,dirty_datum))
-					clean_data[field] = dirty_datum 
-				except:
-					#Get the associated field range (Note: each field in this if-statement is assumed to have a range)
-					field_range = eval(field+"_range")
-					
-					self._errors[field] = self.error_class(
-						["{} must be a number between {} and {}.".format(field, field_range[0], field_range[1])])
-					bad_data.add(field)		
 			
-			#"Yes" or "No" fields.
-			elif field in {"slow_cool","leak"}:
+			#Option fields:
+			elif gen_field in opt_fields:
 				try:
-					#It is faster not to quick_validate booleans and skip to conversions.
-					dirty_datum = str(dirty_data[field]).lower()
-					if dirty_datum in {"yes","y","no","n","?"}:
-						clean_data[field]  = dirty_datum
-					else:
-						raise Exception
+					dirty_datum = str(dirty_data[field])
+					assert(quick_validation(gen_field, dirty_datum))
+					clean_data[field] = dirty_datum  
 				except:
+					logging.info("{} {}".format(bool_fields, gen_field))
+					if gen_field in bool_fields: category="boolChoices"
+					else: category=gen_field+"Choices"
 					self._errors[field] = self.error_class(
-						["{} must be a \"yes\" or \"no\" answer.".format(field)])
+						["Field must be one of: {}".format(edit_choices[category])])
 					bad_data.add(field)
 			
 			#Text fields.
@@ -529,11 +513,8 @@ class DataEntryForm(ModelForm):
 					assert(quick_validation(field, dirty_datum))
 					clean_data[field] = dirty_datum
 				except:
-					#Get the associated field range (Note: each field in this if-statement is assumed to have a range)
-					field_range = eval(field+"_range")
-					
 					self._errors[field] = self.error_class(
-						["{} cannot exceed {} characters.".format(field, field_range[1])])
+						["Cannot exceed {} characters.".format(data_ranges[field][1])])
 					bad_data.add(field)
 					
 		return clean_data

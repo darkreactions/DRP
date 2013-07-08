@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<title>
+			Dark Reactions Project
+		</title>
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/general_page.css" />
+	</head>
+	<body> 
+		<a href="/database/" id="siteLogo"><img src="{{ STATIC_URL }}/images/mainLogo.png" /></a>
+		<div class="genericContainer" style="max-width:700px;min-width:350px;width:50%;">
+			<div class="genericContainer_inner">
+				<h1>Upload Results:</h1>
+				<a id="backLink" href="javascript:history.go(-1)">Go Back</a>
+				{% if fatal_message %} 
+					<p>{{fatal_message}}</p>
+				{% endif %}
+				
+				{% if added_quantity %}
+					<p>Successfully added {{added_quantity}} data... ({{success_percent}})</p>
+				{% endif %}
+				
+				{% if error_quantity %}
+					<p>Failed to add {{error_quantity}} data!</p>
+				{% endif %}
+				
+				{% if error_log %}
+					<h1>Error Log:</h1>
+					<ul id="uploadErrorList">
+						{% autoescape off %}
+							{% for entry in error_log %}
+								{% if entry|length == 1 %}
+									<li>{{entry.0}}</li>
+								{% else %}
+									<li>Entry {{entry.0}}</li>
+								<ul>
+									<li>Datum: <div class="failedUploadData">{{entry.2}}</div></li> 
+									<li>Field: <div class="failedUploadData">{{entry.3}}</div></li>
+									<li>Error: <div class="failedUploadData">{{entry.1}}</div></li>
+								</ul>
+								{% endif %}
+							{% endfor %}
+						{% endautoescape %}
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+		<div id="copyrightContainer">
+			Haverford College &copy;{% now "Y" %}
+		</div>
+	</body>
+</html>
+

@@ -198,7 +198,7 @@ control = DataManager()
 
 ######################  Core Views  ####################################
 def database(request, control = control):
-	#Get all saved data if it exists.
+	#Get user data if it exists.
 	u = request.user
 	try: 
 		assert(u.is_authenticated())
@@ -235,7 +235,21 @@ def database(request, control = control):
 		"total_data_size": total_data_size,
 	})
 
+def predictions(request):
+	#Variable Setup
+	u = request.user
+	fatal_message = ""
+	svg_src = ""
+	
+	if u.is_authenticated():
+		svg_src = "FAKEURL"###
+	
+	return render(request, 'predictions_global.html', {
+		"fatal_message": fatal_message,
+		"svg_src": svg_src, #Includes data and data_indexes.
+	})
 
+######################  CG Guide  ######################################
 #Send/receive the compound guide form:
 def compound_guide_form(request): #If no data is entered, stay on the current page.
 	u = request.user
@@ -288,6 +302,23 @@ def edit_CG_entry(request):
 			
 	return HttpResponse("OK")
 
+	##################  Helper Functions ###############################
+def guess_type(datum):
+	guess = ""
+	datum=datum.lower()
+	if "wat" in datum or "h2o" in datum:
+		return "Water"
+	if "oxa" in datum:
+		return "Ox"
+	if ("eth" in datum or "prop" in datum or "but" in datum or "amin" in datum
+		or "pip" in datum or ("c" in datum and not "cl" in datum)):
+		return "Org"
+	if "ol" in datum:
+		return "Sol"
+	return "Inorg" #Default to inorganic if no guess is uncovered.
+	###raise Exception("Unable to guess type of \"{}\"".format(datum))
+
+######################  Database Functions  ############################
 #Send/receive the data-entry form:
 def data_form(request): #If no data is entered, stay on the current page.
 	u = request.user
@@ -298,7 +329,15 @@ def data_form(request): #If no data is entered, stay on the current page.
 		if form.is_valid():
 			#If all data is valid, save the entry.
 			form.save()
-			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), None)
+			lab_group = u.get_profile().lab_group
+			
+			#Clear the cache of the last page.
+			old_data_size = cache.get("{}|TOTALSIZE".format(lab_group.lab_title))
+			last_page = control.calc_total_pages(lab_group, old_data_size)
+			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, last_page), None)
+			
+			#Refresh the TOTALSIZE cache.
+			cache.set("{}|TOTALSIZE".format(lab_group.lab_title), old_data_size + 1)
 			success = True #Used to display the ribbonMessage.
 	else:
 		#Submit a blank form if one was not just submitted.
@@ -311,7 +350,7 @@ def data_form(request): #If no data is entered, stay on the current page.
 		"success": success,
 	})
 
-######################  Helper Functions ###############################
+	##################  Helper Functions ###############################
 
 #Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
 def get_related_field(heading, model="Data"): ###Not re-read.
@@ -357,7 +396,7 @@ def get_related_field(heading, model="Data"): ###Not re-read.
 		elif "ph" in stripped_heading:
 			related_field = "pH" 
 		else: #ie, related_field is unchanged.
-			raise Exception("No valid heading found for \"{}\".".format(heading))###Possible Raise?
+			raise Exception("Not a valid heading: <div class=failedUploadData>{}</div>".format(heading))
 	elif model=="CompoundEntry":
 		if "cas" in stripped_heading:
 			related_field = "CAS_ID"
@@ -369,29 +408,21 @@ def get_related_field(heading, model="Data"): ###Not re-read.
 		elif "abbr" in stripped_heading or "short" in stripped_heading:
 			related_field = "abbrev"
 		else:
-			raise Exception("No valid heading found for \"{}\".".format(heading))###Possible Raise?
+			raise Exception("Not a valid heading: <div class=failedUploadData>{}</div>".format(heading))
 	else:
 		raise Exception("Unknown model specification for relations.")
 	return related_field
-
-def guess_type(datum):
-	guess = ""
-	datum=datum.lower()
-	if "wat" in datum or "h2o" in datum:
-		return "Water"
-	if "oxa" in datum:
-		return "Ox"
-	if ("eth" in datum or "prop" in datum or "but" in datum or "amin" in datum
-		or "pip" in datum or ("c" in datum and not "cl" in datum)):
-		return "Org"
-	if "ol" in datum:
-		return "Sol"
-	return "Inorg" #Default to inorganic if no guess is uncovered.
-	###raise Exception("Unable to guess type of \"{}\"".format(datum))
 	
-######################  Upload/Download Functionality ##################
+######################  Upload/Download   ##############################
 def upload_CSV(request, model="Data"): ###Not re-read.
 	u = request.user
+	
+	#Variable setup.
+	error_log = []
+	fatal_message = ""
+	added_quantity = 0
+	error_quantity = 0
+		
 	if request.method=="POST" and request.FILES and u.is_authenticated():
 		#Get the file and model specification from the POST request.
 		model=request.POST["dataType"]
@@ -417,9 +448,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			
 		true_fields = get_data_field_names(model=model)
 		row_num = 1
-		added_quantity=0
-		error_quantity=0
-		error_log = ""
 		
 		#Settings:
 		blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data.
@@ -433,7 +461,9 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			#Separate data into groups of fields -- then separate fields.
 			for row in csv.reader(uploaded_file, delimiter=","):
 				#The first row should be a series of headings.
-				if validation_attempt > 5: raise Exception("Unable to validate headings.")
+				if validation_attempt > 5: 
+					fatal_message = "File doesn't have valid headings."
+					raise Exception("Exceeded validation attempts.")
 				try:
 					if not headings_valid: #Remember which column has which heading.
 						#Translate the user's headings into usable field names.
@@ -469,12 +499,11 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 							
 						for field in true_fields:
 							assert(field in user_fields)
-							
 						headings_valid = True
 						continue
 				except Exception as e:
 					validation_attempt += 1
-					error_log += "<li>{}</li>".format(e)
+					error_log.append([str(e)])
 					continue
 					
 				#All other rows should have data corresponding to the headings.
@@ -521,7 +550,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 							else:
 								#If the field is a quantity, check for units.
 								if field[:-2]=="quantity":
-									if field == "quantity_5": print "YES!"
 									#Remove punctuation and whitespace if necessary.
 									datum = str(datum).lower()
 									datum = datum.translate(None, "\n?/,!@#$%^&*-+=_\\|") #Remove gross stuff.
@@ -533,9 +561,9 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 											
 											#If another element is reached, assume it is a unit. 
 											#	(if it isn't valid, raise an exception)
-											if element == "g": unit = "g"
-											if element == " ": unit = "g" #Mark data before a space as grams.
-											elif element == "m": unit = "ml"
+											if element == " ": continue #Ignore spaces.
+											elif element == "g": unit = "g"
+											elif element == "m": unit = "mL"
 											elif element == "d": unit = "d"
 											else: raise Exception("Unknown unit present: {}".format(element))	
 											break #Ignore anything beyond the unit.
@@ -549,6 +577,11 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										if unit=="": unit = "g"
 										#Apply the unit to the data entry.
 										model_fields[corresponding_unit] = unit
+								#Translate any yes/no answer to "Yes"/"No"
+								elif field[:4] in bool_fields: #[:4] Because gen_field can't be applied to compound_type.
+									datum = datum.lower()
+									if "y" in datum: datum="Yes"
+									elif "n" in datum: datum="No"
 								
 								elif field == "CAS_ID":
 									datum = datum.replace("/","-").replace(" ","-").replace("_","-")
@@ -578,7 +611,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 							i+=1
 							j+=1
 						except Exception as e:
-							raise Exception("Entry {} not added... ({})".format(row_num, e))
+							raise Exception([row_num, str(e)])
 						
 					#Add the new entry to the database. ###SLOWWwwwww...
 					if model=="Data":
@@ -588,7 +621,10 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 
 					added_quantity += 1
 				except Exception as e:
-					error_log += "<li>{} <ul>Invalid value for \"{}\": \"{}\"</ul></li>".format(e, field, datum)
+					if type(e.message)==list:
+						error_log.append(e.message+[field, datum])
+					else:
+						error_log.append([str(e)])
 					error_quantity +=1
 				row_num += 1
 				
@@ -599,21 +635,28 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 				first_index_updated = lab_data.count()-added_quantity
 				control.update_cursors(lab_group, first_index_updated, lab_data)
 		except Exception as e:
-			error_log += "{}".format(e)
-	###Bulk Upload Instead?
-	###Template?
-		message = "<h1>Results:</h1>".format(added_quantity)
-		message += "Added: {}<br/>".format(added_quantity)
-		message += "Failed: {}".format(error_quantity)
-		message += "<h1>Error Log: </h1><div id=\"uploadErrorContainer\">{}</div>".format(error_log)
-		message += "<a href=\"/database/\">Return to Database</a>"
-		return HttpResponse(message)
+			error_log.append([str(e)])
 	elif not u.is_authenticated():
-		return HttpResponse("<p>Please log in to upload data.</p>")
+		fatal_message = "Please log in to upload data."
+		return HttpResponse(fatal_message)
 	elif request.method=="POST" and not request.FILES:
-		return HttpResponse("<p>No file uploaded.</p>")
+		fatal_message = "No file uploaded."
 	else:
 		return render(request, 'upload_form.html')
+	
+	if error_quantity != 0:
+		success_percent = "{:.1%}".format(added_quantity/(added_quantity+error_quantity))
+	else:
+		success_percent = "100%"
+	
+	#Render the results template.
+	return render(request, 'upload_results.html', {
+		"fatal_message": fatal_message, #Includes data and data_indexes.
+		"error_log": error_log, 
+		"added_quantity": added_quantity,
+		"error_quantity": error_quantity,
+		"success_percent": success_percent,
+	})
 
 def download_CSV(request):
 	u = request.user
@@ -771,6 +814,21 @@ def get_full_datum(request, control=control):
 		return HttpResponse("<p>Data could not be loaded!</p>")		
 
 ######################  User Auth ######################################
+def change_password(request):
+	code_sent = False
+	if request.method == "POST":
+		logging.info(request.POST)
+		if request.POST.get("emailCode"):
+			logging.info("YES\n")
+			code_sent = True
+		username = request.POST.get("email", "")
+		code = request.POST.get("code", "")
+		password = request.POST.get("newpassword", "")
+		
+	return render(request, "change_password_form.html", {
+		"code_sent":code_sent
+	})
+	
 def user_login(request):
 	login_fail = False #The user hasn't logged in yet...
 	

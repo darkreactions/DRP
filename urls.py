@@ -13,7 +13,6 @@ urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
 		#Database
     (r'^$', database),
-
     (r'^database/$', database), #Encompassing data view.
 			#Change Page
     (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Used for changing pages.
@@ -26,15 +25,20 @@ urlpatterns = patterns('',
     (r'^data_form/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
     (r'^edit_CG_entry/$', edit_CG_entry), #Form for adding new CG abbreviations.
-		#Validation
+			#Validation
     (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
-		#Authentication
+		#Predictions
+    (r'^predictions/$', predictions), #Send the CG name_pairs for client-side validation.
+		#Users and Labs
+			#Authentication
     (r'^user_logout/$', user_logout), #Log Out
     (r'^user_login/$', user_login), #Log In
-		#Registration
+			#Registration
     (r'^registration_prompt/$', registration_prompt), #Redirects to correct registration choice.
     (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
     (r'^user_registration/$', user_registration), #Create User
+    (r'^change_password/$', change_password), #Change Password
+	
 	#Enable the admin:
     (r'^admin/', include(admin.site.urls)),
     

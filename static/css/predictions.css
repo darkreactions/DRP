@@ -1,5 +1,5 @@
 /* ###############   BUTTONS   ###################################### */
-.dbMenuButton {
+.leftMenuButton {
 	height:40px;
 	width:40px;
 	
@@ -877,39 +877,5 @@ option {
 	width:250px;
 }
 
-
-		/* #################### ERROR STYLE ######################### */
-.error {
-	display:inline-block;
-	background-color: #F7605B;
-	border: 2px solid #B35350;
-	margin:2px;
-	padding:5px;
-	border-radius:15px;
-	border-top-right-radius:0px;
-}
-
-.error_label {
-	text-align:left;
-	font-weight:bold;
-	font-style:oblique;
-	cursor:pointer;
-}
-.error_label:hover {
-	color:#FFE949;
-}
-
-.error_message {
-	display:inline-block;
-	font-style:oblique;
-}
-
-
-.badData {
-	background-color:red;
-}
-.badData:focus {
-	background-color:#F7605B;
-}
 
 

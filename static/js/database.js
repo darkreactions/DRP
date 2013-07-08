@@ -26,20 +26,34 @@ restyleData() //Style the data according to what it contains.
 
 //############ Tooltip functionality: ##################################
 $(document).on("mouseover", ".type_reactant", function() {
-	if (CGEntries == undefined) {
-		$(this).attr("title", "Loading!")
-		$.get("/send_CG_names/", function(response) {
-			CGEntries = response;
+	if ($(this).children("input").length == 0){
+		if (CGEntries == undefined) {
+			$(this).attr("title", "Loading!")
+			$.get("/send_CG_names/", function(response) {
+				CGEntries = response;
+				var compound = CGEntries[$(this).html()] || "Compound not in guide!"
+				$(this).attr("title", compound);
+				$(".ui-tooltip").html(compound);
+				});
+		} else {
 			var compound = CGEntries[$(this).html()] || "Compound not in guide!"
-			$(this).attr("title", compound);
-			$(".ui-tooltip").html(compound);
-			});
-	} else {
-		var compound = CGEntries[$(this).html()] || "Compound not in guide!"
-		$(this).attr("title", compound)
+			$(this).attr("title", compound)
+		}
 	}
 });
 
+var tooltips_disabled = false;
+$(document).on("focusin", "input", function() {
+	if (!tooltips_disabled) {
+		tooltips_disabled = true
+		$(document).tooltip("disable");
+	}
+});
+
+$(document).on("focusout", "input", function() {
+	tooltips_disabled = false
+	$(document).tooltip("enable");
+});
 
 //############ Dependent Functions: ####################################
 //Sort from greatest to least.
@@ -216,6 +230,11 @@ $(document).on("click", ".popupActivator", function() {
 			break;
 		case "userLogin":
 			$.get("/user_login/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
+		case "changePassword":
+			$.get("/change_password/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
@@ -453,6 +472,11 @@ $("#dbMenu_delete").click(function() {
 			resizable: false,
 			closeOnEscape: false, // ###Temporary fix?
 			height: 150,
+			position:{
+				my:"center",
+				at:"center",
+				of:"#dataContainer_inner",
+			},
 			modal: true,
 			buttons: {
 				"Delete Selection": function() {
@@ -504,6 +528,7 @@ $(document).on("click", ".editable", function() {
 			newInnards += "</select> <input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
 			$(this).html(newInnards);
 			$(this).children(".editMenu").focus();
+			$(this).attr("title","");
 		} else {
 			$(this).html("<input class=\"editField editText\" type=\"" + editAs
 				+ "\" oldVal=\""+ oldVal
@@ -530,6 +555,7 @@ $(document).on("click", ".editable", function() {
 				});
 			}
 			$(this).children(".editText").focus();
+			$(this).attr("title","");
 		}
 	}
 	return false; //Don't continue on to select the data.
