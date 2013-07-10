@@ -1,12 +1,13 @@
 $(document).ready(function() {
 //######################################################################
-//############   Window Management   ###################################
-//Set the current_page cookie.
-function setPageCookie(page) {
-	alert("3");
-	page = page !== undefined ? page : $("#pagesCurrent").html().trim();
-	$.cookie("current_page", page,
-		{expires: 7}); //Set cookie to expire after one week.
+//############   Sorting   #############################################
+//Sort from greatest to least.
+function sortNumbers(smallNum, bigNum) {
+	return smallNum - bigNum;
+}
+
+function sortNumbersReverse(smallNum, bigNum) {
+	return bigNum - smallNum;
 }
 
 //############   Tooltips   ############################################
@@ -21,6 +22,7 @@ $(document).tooltip({
 		}
 	}); 
 
+//Disable the tooltips when an input is selected.
 var tooltips_disabled = false;
 $(document).on("focusin", "input", function() {
 	if (!tooltips_disabled) {
@@ -35,25 +37,46 @@ $(document).on("focusout", "input", function() {
 });
 
 //############   Ribbons   #############################################
-function showRibbon(message, color, location, timeout) {
-	//Default location is the dataContainer.
-	location = location !== undefined ? location : "#dataContainer"
+window.showRibbon = function(message, color, location, timeout) {
 	//Assume that the ribbon should time out.
 	timeout = timeout !== undefined ? timeout : true
-	
 	//Remove any extra 
 	$(".ribbonMessage").remove();
 	
 	$(location).append(
-		"<div class=ribbonMessage style=\"background-color:" + color + 
+		"<div class=\"ribbonMessage\" style=\"background-color:" + color + 
 			";\">" + message + "</div>"
 	);
+	//alert($(".ribbonMessage").length);
 	if (timeout) {
 		setTimeout(function() {
 			$(location + " .ribbonMessage").fadeOut(1000);
 		},500);
 	}
 }
+//############  Form Interactions:  ####################################
+$(document).on("submit", ".infoForm", function() {
+	var form = $(this); //Keep a reference to the form inside the POST request.
+	$.post($(form).attr("action"), $(form).serialize(), function(response) {
+		//Recreate the popup window with the server response.
+		$("#popupContainer_inner").html(response);
+		$(".subPopup").draggable();
+		
+		//Show the ribbon message if applicable.
+		if ($(".successActivator").length) {
+			showRibbon("Data added!", "green", "#popupContainer_inner");
+			$(".successActivator").remove();
+			return false;
+		}
+		
+		//Reload the page if applicable.
+		if ($(".reloadActivator").length) {
+			window.location.reload(true);
+		}
+		
+	});
+	return false; //Do not continue or else the form will post again. 
+});
 //############ User Authentication: ####################################
 $("#userLogOut").click( function() {
 	//Send the log-out signal.
@@ -64,7 +87,7 @@ $("#userLogOut").click( function() {
 });
 
 //############ Popup Management: #######################################
-function createPopupConfirmation(message) {
+window.createPopupConfirmation = function(message) {
 	$("body").append("<div class=popupConfirmation title=Confirm:>"+
 		message+"</div>");
 }
@@ -78,7 +101,7 @@ $(document).on("click", ".popupActivator", function() {
 	activatorID = $(this).attr("id");
 	$("#popupContainer").attr("for", activatorID);
 	switch ($(this).attr("id")) {
-		case "dbMenu_addNew":
+		case "leftMenu_addNew":
 			$.get("/data_form/", function(response) {
 				$("#popupContainer_inner").html(response);
 				
@@ -109,7 +132,7 @@ $(document).on("click", ".popupActivator", function() {
 				}
 			});
 			break;
-		case "dbMenu_uploadCSV":
+		case "leftMenu_uploadCSV":
 			$.get("/upload_CSV/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
@@ -139,7 +162,7 @@ $(document).on("click", ".popupActivator", function() {
 				$("#labRegistration").html(response);
 			});
 			break;
-		case "dbMenu_downloadCSV"://###Replace with cute form?
+		case "leftMenu_downloadCSV"://###Replace with cute form?
 			$("#popupContainer_inner").html("CSV downloading!");
 			//Download the saved data as a CSV.
 			location.replace("/download_CSV/");
@@ -166,7 +189,7 @@ $(document).on("click", "#mask", function() {
 	
 	//Reload the screen if requested.
 	if ($(".reloadActivator").length) {
-		refreshScreen();
+		window.location.reload(true);
 		$(".reloadActivator").remove();
 	};
 });

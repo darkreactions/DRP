@@ -5,6 +5,7 @@
 			Dark Reactions Project
 		</title>
 		
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/database.css" />
 	
 	</head>
@@ -39,25 +40,25 @@
 	
 	<!-- DATABASE MENU -->
 	<div id="leftPanel">
-		<div id="dbMenuContainer" class="genericContainer">
-			<div class="dbMenuButton genericButton popupActivator" title="Add new data." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
-				id="dbMenu_addNew"> </div>
-			<div class="dbMenuButton genericButton" title="Delete selection." style="background-image: url({{ STATIC_URL }}/icons/delete.png);"
-				id="dbMenu_delete"></div>
-			<div class="dbMenuButton genericButton" title="Duplicate selection." style="background-image: url({{ STATIC_URL }}/icons/duplicate.png);"
-				id="dbMenu_duplicate"></div>
-			<div class="dbMenuButton genericButton" title="Select page." style="background-image: url({{ STATIC_URL }}/icons/selectPage.png);"
-				id="dbMenu_selectPage"></div>
-			<div class="dbMenuButton genericButton" title="Select all data." style="background-image: url({{ STATIC_URL }}/icons/selectAll.png);"
-				id="dbMenu_selectAll"></div>
-			<div class="dbMenuButton genericButton popupActivator" title="Upload CSV to database." style="background-image: url({{ STATIC_URL }}/icons/upload.png);"
-				id="dbMenu_uploadCSV"></div>
-			<div class="dbMenuButton genericButton popupActivator" title="Download database CSV." style="background-image: url({{ STATIC_URL }}/icons/download.png);"
-				id="dbMenu_downloadCSV"></div>
+		<div id="leftMenuContainer" class="genericContainer">
+			<div class="leftMenuButton genericButton popupActivator" title="Add new data." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
+				id="leftMenu_addNew"> </div>
+			<div class="leftMenuButton genericButton" title="Delete selection." style="background-image: url({{ STATIC_URL }}/icons/delete.png);"
+				id="leftMenu_delete"></div>
+			<div class="leftMenuButton genericButton" title="Duplicate selection." style="background-image: url({{ STATIC_URL }}/icons/duplicate.png);"
+				id="leftMenu_duplicate"></div>
+			<div class="leftMenuButton genericButton" title="Select page." style="background-image: url({{ STATIC_URL }}/icons/selectPage.png);"
+				id="leftMenu_selectPage"></div>
+			<div class="leftMenuButton genericButton" title="Select all data." style="background-image: url({{ STATIC_URL }}/icons/selectAll.png);"
+				id="leftMenu_selectAll"></div>
+			<div class="leftMenuButton genericButton popupActivator" title="Upload CSV to database." style="background-image: url({{ STATIC_URL }}/icons/upload.png);"
+				id="leftMenu_uploadCSV"></div>
+			<div class="leftMenuButton genericButton popupActivator" title="Download database CSV." style="background-image: url({{ STATIC_URL }}/icons/download.png);"
+				id="leftMenu_downloadCSV"></div>
 		</div>
 	</div>
 	
-	<!-- NAVIGATION MENU -->
+	<!-- RIGHT PANELS -->
 	<div id="rightPanel">
 		<div id="topPanel">
 			<div id="siteLogo" style="background-image: url({{ STATIC_URL }}/images/mainLogo.png);">
@@ -81,26 +82,29 @@ Some Notes: <br/> _____________________________________<br/>
 				Hover Help
 			</div>
 			
+			<!-- NAVIGATION MENU -->
 			<div id="navMenu">
 				<a href="/database/" class="navLink" >Database</a>
 				<a href="/predictions/" class="navLink">Predictions</a>
 			</div>
 			
-			<div id="searchButton" title="Search for a phrase." class="topButton"
+			<div id="searchButton" title="Search for a phrase." class="topMenuButton"
 			style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
 			
-			<div id="CG_activatorButton" title="Edit the compound guide." class="topButton popupActivator"
+			<div id="CG_activatorButton" title="Edit the compound guide." class="topMenuButton popupActivator"
 			style="background-image: url({{ STATIC_URL }}/icons/compoundGuide.png);"></div>
 			
 		</div>
 		
 		<div id="centerPanel">
+			<!-- DATA CONTAINER -->
 			<div id="dataContainer" class="genericContainer">
 				{% include "data_and_page_container.html" %}
 			</div>
 		</div>
 		
 	<div id="bottomPanel">
+		<!-- COPYRIGHT -->
 		<div id="copyrightContainer">
 			Haverford College &copy;{% now "Y" %}
 		</div>
@@ -111,7 +115,6 @@ Some Notes: <br/> _____________________________________<br/>
 	</body>
 	
 	<!-- SCRIPTS -->
-	
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script> 
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
@@ -123,6 +126,7 @@ Some Notes: <br/> _____________________________________<br/>
 	</script>
 	
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/clientValidate.js" ></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/database.js" ></script>
 
 	

@@ -848,7 +848,7 @@ def user_login(request):
 	
 def user_logout(request):
 	auth.logout(request)
-	return HttpResponse("Logged Out!")
+	return HttpResponse("OK")
 
 #Redirects user to the appropriate registration screen.
 def registration_prompt(request):

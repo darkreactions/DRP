@@ -1,85 +1,4 @@
 /* ###############   BUTTONS   ###################################### */
-.dbMenuButton {
-	height:40px;
-	width:40px;
-	
-	background-repeat:no-repeat;
-	background-position:center;
-	background-size:80%;
-	margin:15px;
-	padding:5px;
-	
-	background-color:white;
-	border-radius:15px;
-	border: 3px solid black;
-}
-
-.genericButton {
-	-webkit-user-select: none;  
-	-moz-user-select: none;    
-	-ms-user-select: none;      
-	user-select: none;
- }
-
-.genericButton:hover {
-	background-color:#FFD92E;
-	opacity:1;
-	cursor:pointer;
-}
-
-.closeButton {
-	background-color:white;
-	font-size:12px;
-	font-weight:bold;
-	text-align:center;
-	
-	width:15px;
-	height:15px;
-	border:2px solid black;
-	border-top-right-radius:10px;
-	border-bottom-left-radius:10px;
-	padding:2px;
-	
-	position:absolute;
-	top:10px;
-	right:10px;
-}
-
-.expandButton {
-	position:absolute;
-	bottom:-10px;
-	padding:2px;
-	border-radius:5px;
-	border:2px solid black;
-	text-align:center;
-	
-	font-size:10px;
-	font-weight:bold;
-	background-color:#FFE944;
-	opacity:0.3;
-}
-
-.expandButton:hover {
-	opacity:1.0;
-}
-
-.topButton {
-	position:absolute;
-	bottom:0px;
-	height:20px;
-	width:20px;
-	background-repeat:no-repeat;
-	background-position:center;
-	padding:5px;
-	border-radius:15px;
-	margin-bottom:2px;
-}
-
-.topButton:hover {
-	background-color:#FFE944;
-	cursor:pointer;
-}
-
 #searchButton {
 	right:0px;
 }
@@ -129,216 +48,7 @@
 */
 }
 
-/* ###############   PANELS   ################################### */
-#leftPanel {
-	height:100%;
-	width:100px;
-	
-	position:fixed;
-	margin-top:15px;
-	left:0px;
-}
-
-#rightPanel {
-	margin-left:130px;
-	height:100%;
-}
-
-#topPanel {
-	height:100px;
-	position:relative; /* Required for children to position. */
-	border-bottom:2px solid black;
-	min-width:500px;
-}
-
-#centerPanel {
-	height:80%;
-	min-height:510px;
-	min-width:600px;
-	position:relative;
-	border-bottom:2px solid black;
-}
-
-#bottomPanel {
-
-}
-
-/* ###############   UNIVERSAL   ################################### */
-a {
-	text-decoration:none;
-	cursor:pointer;
-	color:8CFDFF;
-}
-
-a:hover {
-	font-style:oblique;
-	background-color:#FFD92E;
-	border-radius:25px;
-}
-
-p {
-	text-align:center;
-}
-
-table {
-	color:inherit;
-	margin: 0 auto;
-}
-
-body {
-	font-family:helvetica;
-	min-width:600px;
-	overflow:hidden;
-	background-color:#E8F4FF;
-}
-
-input[type=text] {
-	border:2px solid black;
-	border-radius:5px;
-	padding:2px;
-	padding-left:5px;
-}
-
-input[type=password] {
-	border:2px solid black;
-	border-radius:5px;
-	padding:2px;
-	padding-left:5px;
-}
-
-button {
-	border:2px solid black;
-	font-weight:bold;
-	border-top-right-radius:10px;
-}
-
-input[type=button] {
-	border:2px solid black;
-	font-weight:bold;
-	border-top-right-radius:10px;
-}
-
-input[type=submit] {
-	border:2px solid black;
-	font-weight:bold;
-	border-top-right-radius:10px;
-}
-
-select {
-	border:2px solid black;
-	font-weight:bold;
-	border-top-right-radius:10px;
-}
-
-input:hover {
-	background-color:#FFF1B5;
-}
-
-input:focus {
-	background-color:#FFD92E;
-}
-
-option {
-	background-color:inherit;
-}
-
-	/* ################   Tooltips    ############################### */
-.ui-tooltip {
-	position:fixed;
-	z-index:8000;
-	background:rgba(1, 1, 1, 0.85);
-	padding:8px;
-	border-radius:15px;
-	color: white;
-	border:2px solid black;
-}
-
-.ui-tooltip-content{
-	max-width:400px;
-	color:white;
-	
-	-webkit-user-select: none;  
-	-moz-user-select: none;    
-	-ms-user-select: none;      
-	user-select: none;
-}
-
-
-	/* ###############   Autocomplete    ############################ */
-.ui-autocomplete {
-	padding:8px;
-	width:150px;
-	background:rgba(1, 1, 1, 0.85);
-	border-radius:15px;
-	color:white;
-	z-index:2000;
-	
-	list-style:none;
-}
-
-.ui-menu-item {
-	padding-left:10px;
-	color:white;
-}
-
-.ui-menu-item:hover {
-	background-color:#404040;
-	border-radius:15px;
-	cursor:pointer;
-	
-	font-style:oblique;
-	font-weight:bold;
-}
-
-.ui-corner-all {
-	color:inherit;
-}
-
-.ui-state-focus:hover {
-	background-color: #404040;
-}
-
 /* ###############   CONTAINERS   ################################### */
-.genericContainer {
-	background-color:#A1C5E2;
-	border-radius:15px;
-	border: 2px solid black;
-}
-
-.genericContainer_inner {
-	background-color:white;
-	border-radius:10px;
-	padding:10px;
-}
-
-#dbMenuContainer {
-	border-top-left-radius:0px;
-	border-bottom-left-radius:0px;
-}
-
-#dataContainer {
-	top:10px;
-	bottom:10px;
-	width:100%;
-	position:absolute;
-	padding-bottom:70px;
-	
-	border-top-right-radius:0px;
-	border-bottom-right-radius:0px;
-	margin-left:-20px;
-	margin-right:20px;
-}
-
-#dataContainer_inner {
-	position:relative;
-	margin:10px;
-	margin-right:0px;
-	border-top-right-radius:0px;
-	border-bottom-right-radius:0px;
-	height:100%;
-	overflow:auto;
-}
-
 #pagesContainer {
 	position:absolute;
 	width:100%;
@@ -352,51 +62,8 @@ option {
 	text-align:center;
 }
 
-#copyrightContainer {
-	font-size:12px;
-	font-style:oblique;
-	padding:5px;
-	text-align:center;
-}
-/* ################### POPUP STYLES ################################# */
-#popupGlobal {
-	display:none;
-	position:absolute;
-	z-index:101;
-	width:100%;
-}
-
-#popupContainer {
-	position:relative;	
-	height:auto;
-	width:auto;
-	z-index:101;
-}
-
-#popupContainer_inner {
-	background-color:#355A77;
-	margin:10px;
-	border-top: 2px black solid;
-	border-left: 2px black solid;
-	border-radius:25px;
-	padding:15px;
-	
-	color:#FFE98F;
-	font-style:oblique;
-}
-
-#mask {
-	position:fixed;
-	top:0px;
-	left:0px;
-	height:100%;
-	width:100%;
-	background-color:black;
-	opacity:0.3;
-	z-index:100;
-}
-		/* ############### SPECIFIC POPUPS ########################## */
-#popupContainer[for="dbMenu_addNew"] {
+/* ############### SPECIFIC POPUPS ########################## */
+#popupContainer[for="leftMenu_addNew"] {
 	text-align:center;
 	top:50px;
 	left:10%;
@@ -404,7 +71,7 @@ option {
 	min-width:570px;
 }
 
-#popupContainer[for="dbMenu_uploadCSV"] {
+#popupContainer[for="leftMenu_uploadCSV"] {
 	text-align:center;
 	top:50px;
 	left:30%;
@@ -412,39 +79,7 @@ option {
 	min-width:300px;
 }
 
-#popupContainer[for="changePassword"] {
-	text-align:center;
-	top:50px;
-	left:30%;
-	width:40%;
-	min-width:300px;
-}
-
-#popupContainer[for="userLogin"] {
-	text-align:center;
-	top:50px;
-	left:30%;
-	width:40%;
-	min-width:300px;
-}
-
-#popupContainer[for="registrationPrompt"] {
-	text-align:center;
-	top:50px;
-	left:30%;
-	width:40%;
-	min-width:300px;
-}
-
-#popupContainer[for="userRegistration"] {
-	text-align:center;
-	top:50px;
-	left:20%;
-	width:60%;
-	min-width:400px;
-}
-
-#popupContainer[for="dbMenu_downloadCSV"] {
+#popupContainer[for="leftMenu_downloadCSV"] {
 	text-align:center;
 	top:50px;
 	left:20%;
@@ -460,54 +95,7 @@ option {
 	min-width:570px;
 }
 
-.subPopup { /* Right now, just used for errors. */
-	position:absolute;
-	background-color: #FFD6D6;
-	border:4px solid #B20200;
-	border-radius:15px;
-	width:550px;
-	z-index:103;
-	padding-bottom:5px;
-	
-	color:black;
-}
-
-		/* ###############   Popup Confirmation   ################### */
-.popupConfirmation{
-	background-color:white;
-	padding:10px;
-	border-radius:5px;
-	font-style:oblique;
-	top:0px;
-}
-
-.ui-dialog {
-	border: 2px solid black;
-	background-color: #355A77;
-	padding:10px;
-	border-radius:10px;
-}
-
-.ui-dialog-titlebar {
-	font-size:18px;
-	font-style:oblique;
-	color:#FFE98F;
-}
-.ui-dialog-buttonset {
-	padding-top:10px
-}
-
-.ui-dialog-titlebar-close {
-	display:none;
-}
-
-
 /* ###############   SUBGROUPS   #################################### */
-#topPanel div {
-	display:inline-block;
-	padding:10px;
-}
-
 .pagesInfo {
 	font-weight:bold;
 	display:inline-block;
@@ -531,28 +119,6 @@ option {
 
 
 /* ###############   TEXT   ######################################### */
-#popupContainer_inner > h1 {
-	margin:5px;
-	text-align:center;
-	font-style:oblique;
-	color:white;
-	border-bottom:2px solid white;
-}
-.subPopup > h1 {
-	margin:5px;
-	text-align:left;
-	padding-left:20px;
-	font-style:oblique;
-}
-
-.navLink {
-	font-family:arial;
-	font-size:24px;
-	font-weight:bold;
-	color:black;
-	margin:10px;
-}
-
 .pageLink {
 	background-color:#3B5D77;
 	padding-left:3px;
@@ -570,10 +136,6 @@ option {
 	border:2px solid #304B60;
 }
 
-.userAuthLink {
-	color:black;
-}
-
 #headingRow {
 	font-weight:bold;
 	text-decoration:underline;
@@ -586,19 +148,8 @@ option {
 }
 
 .CG_compound:hover {
-	background-color:yellow;
+	background-color:#FCFF77;
 	border-radius:5px;
-}
-
-#changePassword {
-	cursor:pointer;
-	display:inline-block;
-	font-size:12px;
-	margin-bottom:4px;
-}
-
-#changePassword:hover {
-	font-weight:bold;
 }
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
@@ -617,44 +168,6 @@ option {
 }
 #tempGuide:hover {
 	opacity:0.7;
-}
-
-
-#siteLogo {
-	height:80px;
-	width:200px;
-	margin-left:-30px;
-	background-repeat:no-repeat;
-	background-size:contain;
-}
-
-#navMenu {
-	position:absolute;
-	bottom:0px;
-	left:170px;
-}
-
-#userInfo {
-	z-index:5;
-	background-color:#A1C5E2;
-	border-bottom-left-radius:15px;
-	border: 2px solid black;
-	position:absolute;
-	right:0px;
-	top:0px;
-	
-	text-align:center;
-	padding:5px;
-	min-width:100px;
-}
-
-#userInfo_inner {
-	font-size:14px;
-	padding:8px;
-	margin-left:15px;
-	background-color:white;
-	border-radius:5px;
-	border-bottom-left-radius:15px;
 }
 
 #CG_display {
@@ -699,44 +212,6 @@ option {
 	height:100%;
 	border-radius:inherit;
 	opacity:0;
-}
-
-.ribbonMessage {
-	font-size:18px;
-	position:absolute;
-	width:100%;
-	top:40%;
-	left:0px;
-	text-align:center;
-	
-	background-color:white;
-	color:black;
-	
-	border-top:2px solid black;
-	border-bottom:3px solid black;
-	padding-top:5px;
-	padding-bottom:5px;
-}
-
-.reloadActivator {
-	height:1px;
-	width:1px;
-	position:absolute;
-	top:0px;
-	left:0px;
-}
-
-.successActivator {
-	height:1px;
-	width:1px;
-	position:absolute;
-	top:0px;
-	left:0px;
-}
-
-#progressContainer {
-	height:18px;
-	background: black;
 }
 
 .editText {
@@ -876,34 +351,6 @@ option {
 .form_text_long {
 	width:250px;
 }
-
-
-		/* #################### ERROR STYLE ######################### */
-.error {
-	display:inline-block;
-	background-color: #F7605B;
-	border: 2px solid #B35350;
-	margin:2px;
-	padding:5px;
-	border-radius:15px;
-	border-top-right-radius:0px;
-}
-
-.error_label {
-	text-align:left;
-	font-weight:bold;
-	font-style:oblique;
-	cursor:pointer;
-}
-.error_label:hover {
-	color:#FFE949;
-}
-
-.error_message {
-	display:inline-block;
-	font-style:oblique;
-}
-
 
 .badData {
 	background-color:red;

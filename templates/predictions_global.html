@@ -7,6 +7,13 @@
 		
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/predictions.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script> 
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
+	
+	<script type="text/javascript" src="{{ STATIC_URL }}js/raphael.js"></script>
+	<script src="{{ STATIC_URL }}js/elemental.min.js"></script>
+	<script src="{{ STATIC_URL }}js/rappar.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.vectron.js"></script>
 	
 	</head>
 	<body> 
@@ -26,35 +33,53 @@
 		{% endif %}
 		</div>
 	</div>
+
+		<!-- POPUP CONTAINER -->
+	<div id="popupGlobal" >
+		<div id="popupContainer"  class="genericContainer">
+			<div class="closeButton genericButton">x</div>
+			<div id="popupContainer_inner"  class="genericContainer_inner">
+			</div>
+		</div>
+		<div id="mask">
+		</div>
+	</div>
 	
 	<div id="leftPanel">
-		<div id="dbMenuContainer" class="genericContainer">
+		<div id="leftMenuContainer" class="genericContainer">
 			<div class="leftMenuButton genericButton popupActivator" title="Mark a reaction." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
-				id="dbMenu_addNew"> </div>
+				id="leftMenu_addNew"> </div>
 		</div>
 	</div>
 		
-	<!-- NAVIGATION MENU -->
+	<!-- RIGHT PANELS -->
 	<div id="rightPanel">
 		<div id="topPanel">
+			<!-- ### Jump back to Ironwood-->
+			<a id="toIronwood" href="http://ironwood.fig.haverford.edu/main.html">To ironwood!</a>
 			<div id="siteLogo" style="background-image: url({{ STATIC_URL }}/images/mainLogo.png);">
 			</div>
 			
+			<!-- NAVIGATION MENU -->
 			<div id="navMenu">
 				<a href="/database/" class="navLink" >Database</a>
 				<a href="/predictions/" class="navLink">Predictions</a>
 			</div>
 			
-			<div id="searchButton" title="Search for a phrase." class="topButton"
+			<div id="searchButton" title="Search for a phrase." class="topMenuButton"
 			style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
 		</div>
 		
+		<!-- SVG CONTAINER -->
 		<div id="centerPanel">
 			<div id="dataContainer" class="genericContainer">
+				<div id="svg-file" data="http://ironwood.fig.haverford.edu/test.svg">
+				</div>
 			</div>
 		</div>
 		
 	<div id="bottomPanel">
+		<!-- COPYRIGHT -->
 		<div id="copyrightContainer">
 			Haverford College &copy;{% now "Y" %}
 		</div>
@@ -65,9 +90,6 @@
 	</body>
 	
 	<!-- SCRIPTS -->
-	
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script> 
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
 	

@@ -12,19 +12,9 @@ var CGEntries;
 var CGAbbrevs;
 	
 //############ Post-load Setup: #########################################
-//Apply custom tooltips to applicable data.
-$(document).tooltip({
-	 position: {
-		my: "center top+20",
-	},
-	track: true,
-	content: function() {
-		return $(this).attr("title")
-		}
-	}); 
 restyleData() //Style the data according to what it contains.
 
-//############ Tooltip functionality: ##################################
+//############ Reactant Tooltips: ##################################
 $(document).on("mouseover", ".type_reactant", function() {
 	if ($(this).children("input").length == 0){
 		if (CGEntries == undefined) {
@@ -42,38 +32,7 @@ $(document).on("mouseover", ".type_reactant", function() {
 	}
 });
 
-var tooltips_disabled = false;
-$(document).on("focusin", "input", function() {
-	if (!tooltips_disabled) {
-		tooltips_disabled = true
-		$(document).tooltip("disable");
-	}
-});
-
-$(document).on("focusout", "input", function() {
-	tooltips_disabled = false
-	$(document).tooltip("enable");
-});
-
 //############ Dependent Functions: ####################################
-//Sort from greatest to least.
-function sortNumbers(smallNum, bigNum) {
-	return smallNum - bigNum;
-}
-
-function sortNumbersReverse(smallNum, bigNum) {
-	return bigNum - smallNum;
-}
-
-//Refresh screen.
-function refreshScreen(rememberPage) {
-	rememberPage = rememberPage !== undefined ? rememberPage : true
-	if (rememberPage) { 
-		setPageCookie(); 
-	}
-	window.setTimeout('location.reload()', 300);
-}
-
 //Set the current_page cookie.
 function setPageCookie(page) {
 	page = page !== undefined ? page : $("#pagesCurrent").html().trim();
@@ -97,31 +56,6 @@ function restyleData() {
 			$(this).parent().addClass("dataSelected");
 		}
 	});
-}
-
-function showRibbon(message, color, location, timeout) {
-	//Default location is the dataContainer.
-	location = location !== undefined ? location : "#dataContainer"
-	//Assume that the ribbon should time out.
-	timeout = timeout !== undefined ? timeout : true
-	
-	//Remove any extra 
-	$(".ribbonMessage").remove();
-	
-	$(location).append(
-		"<div class=ribbonMessage style=\"background-color:" + color + 
-			";\">" + message + "</div>"
-	);
-	if (timeout) {
-		setTimeout(function() {
-			$(location + " .ribbonMessage").fadeOut(1000);
-		},500);
-	}
-}
-
-function createPopupConfirmation(message) {
-	$("body").append("<div class=popupConfirmation title=Confirm:>"+
-		message+"</div>");
 }
 
 function adaptSize(element) {
@@ -155,11 +89,15 @@ function getOptions(field) {
 }
 
 //############ Server Transactions: #########################################
+function testfunction() {
+	alert("cat");
+}
+
 function submitChanges(refresh) {
 	refresh = refresh !== undefined ? refresh : true 
 	
 	if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
-		showRibbon("Working. This may take a moment.", "orange","body", false);
+		showRibbon("Working! This may take a moment.", "FFC87C", "body", false);
 	}
 
 	JSONArray = JSON.stringify(changesMade);
@@ -172,13 +110,9 @@ function submitChanges(refresh) {
 			dupl:[],
 			}; 
 		if (refresh) {
-			refreshScreen();
+			window.location.reload(true);
 		}
 	});
-}
-
-function getCGEntries() {
-	
 }
 	
 //############ Popup Management: #######################################
@@ -192,7 +126,7 @@ $(document).on("click", ".popupActivator", function() {
 	$("#popupContainer").attr("for", activatorID);
 	
 	switch ($(this).attr("id")) {
-		case "dbMenu_addNew":
+		case "leftMenu_addNew":
 			$.get("/data_form/", function(response) {
 				$("#popupContainer_inner").html(response);
 				
@@ -223,7 +157,7 @@ $(document).on("click", ".popupActivator", function() {
 				}
 			});
 			break;
-		case "dbMenu_uploadCSV":
+		case "leftMenu_uploadCSV":
 			$.get("/upload_CSV/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
@@ -253,7 +187,7 @@ $(document).on("click", ".popupActivator", function() {
 				$("#labRegistration").html(response);
 			});
 			break;
-		case "dbMenu_downloadCSV"://###Replace with cute form?
+		case "leftMenu_downloadCSV"://###Replace with cute form?
 			$("#popupContainer_inner").html("CSV downloading!");
 			//Download the saved data as a CSV.
 			location.replace("/download_CSV/");
@@ -281,8 +215,7 @@ $(document).on("click", "#mask", function() {
 	
 	//Reload the screen if requested.
 	if ($(".reloadActivator").length) {
-		refreshScreen();
-		$(".reloadActivator").remove();
+		window.location.reload(true);
 	};
 });
 
@@ -307,35 +240,7 @@ $(document).on("change", "#uploadCSV_hiddenInput", function() {
 
 //############ Form Interactions: ######################################
 $(document).on("submit", ".uploadForm", function() { //###Ugly...
-		//Show the ribbon message if applicable.
-		//////if ($(".successActivator").length) {
-			showRibbon("Working. This may take a moment.", "orange", "body", false);
-			//////$(".successActivator").remove();
-		//////}	
-});
-
-$(document).on("submit", ".infoForm", function() {
-	var form = $(this); //Keep a reference to the form inside the POST request.
-	$.post($(form).attr("action"), $(form).serialize(), function(response) {
-		//Recreate the popup window with the server response.
-		$("#popupContainer_inner").html(response);
-		$(".subPopup").draggable();
-		
-		//Show the ribbon message if applicable.
-		if ($(".successActivator").length) {
-			showRibbon("Data added!", "green", "#popupContainer_inner");
-			$(".successActivator").remove();
-			return false;
-		}
-		
-		//Reload the page if applicable.
-		if ($(".reloadActivator").length) {
-			refreshScreen(false); //Do not remember the log-in page.
-		}
-		
-	});
-	
-	return false; //Do not continue or else the form will post again. 
+	showRibbon("Working! This may take a moment.", "FFC87C", "body", false);
 });
 
 //################ CG Editing: #########################################
@@ -354,7 +259,7 @@ $(document).on("click", ".CG_deleteButton", function() {
 });
 
 $(document).on("click", ".CG_saveButton", function() {
-	showRibbon("Submitting Changes.", "green","#CG_display", false);
+	showRibbon("Saving!", "99FF5E","#CG_display", false);
 	//Sort the list prior to sending.
 	CGSelected.sort(sortNumbersReverse);
 
@@ -363,7 +268,7 @@ $(document).on("click", ".CG_saveButton", function() {
 	$.post("/edit_CG_entry/", JSONArray, function() {
 		//Show a newly updated screen.
 		CGSelected = Array(); 
-		refreshScreen(false);
+		window.location.reload(true);
 	});
 });
 
@@ -385,7 +290,7 @@ $(document).on("click", ".dataGroup", function() {
 });
 
 //Select Page (Button)
-$("#dbMenu_selectPage").click(function() { 
+$("#leftMenu_selectPage").click(function() { 
 	var selectedOnPage = [];
 	
 	//Select data
@@ -412,7 +317,7 @@ $("#dbMenu_selectPage").click(function() {
 });
 
 //Select All (Button)
-$("#dbMenu_selectAll").click(function() { 
+$("#leftMenu_selectAll").click(function() { 
 	//If all data is selected, deselect everything.
 	var totalDataSize = $("#pagesTotal").attr("total_data_size");
 	if (selectedData.length == totalDataSize) {
@@ -447,14 +352,14 @@ $(document).on("click", ".expandButton", function() {
 });
 
 //############### Change Data: #########################################
+
 //Duplicate Button
-$("#dbMenu_duplicate").click(function() {  
+$("#leftMenu_duplicate").click(function() {  
 	if (selectedData.length) { 
 		for (var i in selectedData) {
 			changesMade.dupl.push(selectedData[i]);
 		}
-		
-		showRibbon("Selection duplicated!", "green");
+		showRibbon("Duplicated!", "#99FF5E", "#dataContainer", true);
 		
 		//Upload updated data
 		submitChanges();
@@ -463,7 +368,7 @@ $("#dbMenu_duplicate").click(function() {
 
 //Delete Button
 //Ask for confirmations for deletions.
-$("#dbMenu_delete").click(function() { 
+$("#leftMenu_delete").click(function() { 
 	if (selectedData.length) { 
 		//Delete any extra popup confirmations that exist.
 		$(".popupConfirmation").remove();
@@ -487,7 +392,7 @@ $("#dbMenu_delete").click(function() {
 					}
 					selectedData = [];
 					
-					showRibbon("Selection deleted!", "green");
+					showRibbon("Deleted!", "#99FF5E", "#dataContainer");
 					
 					//Upload updated data
 					submitChanges();
@@ -576,7 +481,7 @@ $(document).on("click", ".editConfirm", function() {
 			&& fullValidate(fieldChanged[1].substr(5), newValue)) {
 			validData = true;
 		} else {
-			showRibbon("Invalid data!", "red");
+			showRibbon("Invalid!", "FF6870", "#dataContainer");
 		}
 	} else { //Edit by Menu
 		//Since the only data choices are those which are supplied...
@@ -622,21 +527,12 @@ $(document).on("keyup", ".editText", function() {
 	}
 });
 
-//############ User Authentication: ####################################
-$("#userLogOut").click( function() {
-	//Send the log-out signal.
-	$.get("/user_logout/", function() {});
-	
-	//Reload the screen to verify log-out.
-	refreshScreen()
-});
-
 //############## Change Pages: #########################################
 $(document).on("click", "#pagesInputButton", function() {
 	var pageLink = $("#pagesInputText").val().trim();
 	
 	if (pageLink == $("#pageLinkCurrent").html().trim()) {
-		showRibbon("Already here!", "green");
+		showRibbon("Already here!", "#99FF5E", "#dataContainer");
 		return false //Don't do anything else if page already is active.
 	} else if ($.isNumeric(pageLink)
 		&& parseInt(pageLink) <= parseInt($("#pagesTotal").html().trim())
@@ -655,7 +551,7 @@ $(document).on("click", "#pagesInputButton", function() {
 			}
 		});
 	} else {
-		showRibbon("Page does not exist", "red");
+		showRibbon("Page does not exist", "#FF6870", "#dataContainer");
 	}
 });
 

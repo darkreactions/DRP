@@ -88,7 +88,7 @@ class UserProfileForm(ModelForm):
  
 ################ COMPOUND GUIDE ########################
 class CompoundEntry(models.Model):
-	abbrev = models.CharField("Abbreviation", max_length=100)
+	abbrev = models.CharField("Abbreviation", max_length=100) ###repr in admin 500 error
 	compound = models.CharField("Compound", max_length=100)
 	CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, null=True)
 	compound_type = models.CharField("Type", max_length=10)
@@ -164,7 +164,34 @@ class CompoundGuideForm(ModelForm):
 					["This field cannot be blank."])
 		
 		return clean_data
+
+def collect_CG_entries(lab_group, overwrite=False):
+	compound_guide = cache.get("{}|COMPOUNDGUIDE".format(lab_group.lab_title))
+	if not compound_guide or overwrite:
+		compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
+		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), list(compound_guide))
+	return compound_guide
+
+def collect_CG_name_pairs(lab_group, overwrite=False):
+	pairs = cache.get("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title))
+	if not pairs or overwrite:
+		compound_guide = collect_CG_entries(lab_group)
+		pairs = {entry.abbrev: entry.compound for entry in compound_guide}
+		cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), pairs)
+	return pairs
+def create_CG_entry(lab_group, **kwargs): ###Not re-read yet.
+	try:
+		new_entry = CompoundEntry()
+		#Set the self-assigning fields:
+		setattr(new_entry, "lab_group", lab_group)
 		
+		#Set the non-user field values.
+		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
+			setattr(new_entry, field, value)
+		new_entry.save()
+	except Exception as e:
+		raise Exception("CompoundEntry construction failed!")
+
 ############### DATA ENTRY ########################
 #Create the form choices from the pre-defined ranges.
 OUTCOME_CHOICES = [[opt,opt] for opt in edit_choices["outcomeChoices"]]
@@ -172,28 +199,46 @@ PURITY_CHOICES = [[opt,opt] for opt in edit_choices["purityChoices"]]
 UNIT_CHOICES = [[opt,opt] for opt in edit_choices["unitChoices"]]
 BOOL_CHOICES = [[opt,opt] for opt in edit_choices["boolChoices"]]
 
+#Functions to get/store list fields as strings.
+def make_listy_string(list_to_store):
+	listy_string = ""
+	for item in list_to_store:
+		listy_string += "{},".format(item)
+	return listy_string
+
+#Fields that are allowed to be stored as listy_strings.
+list_fields = {"reactant","unit","quantity"}
+
+def stored_listy_string(data, field, listy_string):
+	#Convert the string to a listy_string if necessary.
+	if type(listy_string) == list: 
+		listy_string = make_listy_string(listy_string)
+	#Check if the field can take listy_strings.
+	if field not in list_fields:
+		raise Exception("Field \"{}\" does not allow list storage!".format(field))
+	#Store the string in the datum if requested.
+	setattr(data, field, stored_string)
+		
+def get_list_from(data, field, index=None):
+	if field not in list_fields:
+		raise Exception("Field does not allow list storage!")
+		
+	string_val = getattr(data, field)
+	list_val = [item for item in string_val.split(",") if len(item)]
+	if index:
+		try:
+			return list_val[index]
+		except:
+			raise Exception("Index does not exist!")
+	return list_val
+
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
-	reactant_1 = models.CharField("Reactant 1", max_length=100)
-	quantity_1 = models.CharField("Quantity 1", max_length=15)
-	unit_1 = models.CharField("Unit 1", max_length=10)
-	
-	reactant_2 = models.CharField("Reactant 2", max_length=200)
-	quantity_2 = models.CharField("Quantity 2", max_length=25)
-	unit_2 = models.CharField("Unit 2", max_length=20)
-	
-	reactant_3 = models.CharField("Reactant 3", max_length=300)
-	quantity_3 = models.CharField("Quantity 3", max_length=35)
-	unit_3 = models.CharField("Unit 3", max_length=30)
-	
-	reactant_4 = models.CharField("Reactant 4", max_length=400, blank=True)
-	quantity_4 = models.CharField("Quantity 4", max_length=45, blank=True)
-	unit_4 = models.CharField("Unit 4", max_length=40, blank=True)
-	
-	reactant_5 = models.CharField("Reactant 5", max_length=500, blank=True)
-	quantity_5 = models.CharField("Quantity 5", max_length=55, blank=True)
-	unit_5 = models.CharField("Unit 5", max_length=50, blank=True)
-	
+	#List Fields
+	reactant = models.CharField("Reactant", max_length=155) #Account for commas in length.
+	quantity = models.CharField("Quantity", max_length=40)
+	unit = models.CharField("Unit", max_length=15)
+
 	ref = models.CharField("Reference", max_length=12)
 	temp = models.CharField("Temperature", max_length=10)
 	time = models.CharField("Time", max_length=10) ###
@@ -214,45 +259,13 @@ class Data(models.Model):
 	
 	def __unicode__(self):
 		return "{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
-	#def save(self, *args, **kwargs):
-		##Set the self-assigning fields:
-		#setattr(new_entry, "creation_time", str(datetime.datetime.now()))
-		#super(Data, self).save(*args, **kwargs)
-	
-def collect_CG_entries(lab_group, overwrite=False):
-	compound_guide = cache.get("{}|COMPOUNDGUIDE".format(lab_group.lab_title))
-	if not compound_guide or overwrite:
-		compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
-		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), list(compound_guide))
-	return compound_guide
-
-def collect_CG_name_pairs(lab_group, overwrite=False):
-	pairs = cache.get("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title))
-	if not pairs or overwrite:
-		compound_guide = collect_CG_entries(lab_group)
-		pairs = {entry.abbrev: entry.compound for entry in compound_guide}
-		cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), pairs)
-	return pairs
 
 def validate_name(abbrev_to_check, lab_group): ###Ultimately in validation.py?
 	#Get the cached set of abbreviations.
 	abbrevs = collect_CG_name_pairs(lab_group)
 	return abbrev_to_check in abbrevs
 		
-#Add specified entries to a datum. Assume fields are now valid.
-def create_CG_entry(lab_group, **kwargs): ###Not re-read yet.
-	try:
-		new_entry = CompoundEntry()
-		#Set the self-assigning fields:
-		setattr(new_entry, "lab_group", lab_group)
-		
-		#Set the non-user field values.
-		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
-			setattr(new_entry, field, value)
-		new_entry.save()
-	except Exception as e:
-		raise Exception("CompoundEntry construction failed!")
-		
+#Add specified entries to a datum. Assume fields are now valid.		
 def create_data_entry(user, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = Data()
@@ -267,7 +280,6 @@ def create_data_entry(user, **kwargs): ###Not re-read yet.
 		new_entry.save()
 	except Exception as e:
 		raise Exception("Data construction failed!")
-		
 		
 def get_data_field_names(verbose = False, model="Data"):
 	if model=="Data":
@@ -293,10 +305,10 @@ def get_data_field_names(verbose = False, model="Data"):
 	
 class DataEntryForm(ModelForm):
 	#Define the style and other attributes for each field.
-	reactant_1 = CharField(widget=TextInput(
+	reactant_1 = CharField(label="Reactant 1",widget=TextInput(
 		attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
-	quantity_1 = CharField(label="Quantity", widget=TextInput(
+	quantity_1 = CharField(label="Quantity 1", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 1."}))
 	unit_1 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
@@ -305,7 +317,7 @@ class DataEntryForm(ModelForm):
 	reactant_2 = CharField(widget=TextInput(
 		attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
-	quantity_2 = CharField(label="Quantity", widget=TextInput(
+	quantity_2 = CharField(label="Quantity 2", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 2."}))
 	unit_2 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
@@ -315,7 +327,7 @@ class DataEntryForm(ModelForm):
 		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_3 = CharField(required=False,
-		label="Quantity", widget=TextInput(
+		label="Quantity 3", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 3."}))
 	unit_3 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
@@ -325,7 +337,7 @@ class DataEntryForm(ModelForm):
 		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_4 = CharField(required=False,
-		label="Quantity", widget=TextInput(
+		label="Quantity 4", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 4."}))
 	unit_4 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
@@ -335,7 +347,7 @@ class DataEntryForm(ModelForm):
 		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
 		"title":"Enter the name of the reactant."}))
 	quantity_5 = CharField(required=False,
-		label="Quantity", widget=TextInput(
+		label="Quantity 5", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
 		"title":"Enter the mass of Reactant 5."}))
 	unit_5 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
@@ -371,7 +383,18 @@ class DataEntryForm(ModelForm):
 	
 	class Meta:
 		model = Data
-		exclude = ("user","lab_group", "creation_time")
+		exclude = ("user","lab_group", "creation_time", "reactant",
+			"quantity", "unit")
+		#Set the field order.
+		fields = [
+			"reactant_1", "quantity_1", "unit_1",
+			"reactant_2", "quantity_2", "unit_2",
+			"reactant_3", "quantity_3", "unit_3",
+			"reactant_4", "quantity_4", "unit_4",
+			"reactant_5", "quantity_5", "unit_5",
+			"ref", "temp", "time", "pH", "slow_cool",
+			"leak", "outcome", "purity", "notes"
+		]
 
 	def __init__(self, user=None, *args, **kwargs):
 		###http://stackoverflow.com/questions/1202839/get-request-data-in-django-form
@@ -397,6 +420,7 @@ class DataEntryForm(ModelForm):
 		
 		#Initialize the variables needed for the cleansing process.
 		dirty_data = super(DataEntryForm, self).clean() #Get the available raw (dirty) data
+		parsed_data = {} #Data that needs to be checked.
 		clean_data = {} #Keep track of cleaned fields
 		bad_data = set() #Keep track of fields that already include errors:
 		
@@ -408,114 +432,145 @@ class DataEntryForm(ModelForm):
 		fields = get_data_field_names()
 		
 		#Gather the "coupled" fields (ie, the fields ending in a similar number) 
-		field_groups = [[] for _ in range(5)]
-		for field in fields:
-			if field[-1].isdigit():
-				field_groups[int(field[-1])-1] += [field]
+		num_reactants = 5
+		for field in list_fields:
+			exec("{} = [[]]*num_reactants".format(field))
+			parsed_data[field] = [[]]*num_reactants
+			clean_data[field] = []
 		
+		#Strip data to be cleaned from the form.
+		
+		#Visible fields that are not required (not including rxn info).
 		not_required = { ###Auto-generate?
-			"reactant_3", "quantity_3", "unit_3", 
-			"reactant_4", "quantity_4", "unit_4",
-			"reactant_5", "quantity_5", "unit_5",
 			"notes"
 		}
 		
-		#Make sure all fields are available:
-		#	(Skip checking for missing dirty_data if possible.)
-		if len(dirty_data) != len(fields):
-			for field in fields:
-				try:
-					dirty_data[field]	
-				except: #At this point, the datum is not available. 
-					if field in not_required: #Ie, if a field is required...
-						dirty_data[field] = "?" #The datum was not required and nothing was entered.
-					else:
-						bad_data.add(field) #Remember that the data is bad.
-						
-		#Check that all grouped data is present if a group is "used."
-		for field_group in field_groups:
-			group_used = False
-			for field in field_group:
-				#Don't check bad data.
-				if field in bad_data: 
-					continue
-				#Most units should be auto-completed, so ignore if units exist and nothing else does.
-				elif field[:-2] == "unit" and dirty_data[field]!="":
-					continue
-				elif dirty_data[field] != "":
-					group_used = True
-				elif group_used:
-					#A field is empty, but the group is "used" -- so raise an error.
-					bad_data.add(field)
-					self._errors[field] = self.error_class(
-						["More info required."]
-					)
-				#Else, don't do anything.
-		
-		for field in fields:
-			#If data is already bad, don't attempt to validate it.
-			if field in bad_data:continue
-			
-			#If data is empty and not required, don't validate it. 
-			if dirty_data[field] == "" and field in not_required: 
-				clean_data[field] = ""
-				continue
-				
-			#Get the generalized field name:
-			if "_" in field:
-				gen_field = field[:field.index("_")]
+		for field in dirty_data:
+			if field[-1].isdigit():
+				rel_list = eval("{}".format(field[:-2]))
+				rel_list[int(field[-1])-1] = (dirty_data[field])
 			else:
-				gen_field = field
-			
-			#Make sure each reactant name is valid.
-			if gen_field=="reactant":
 				try:
-					dirty_reactant = str(dirty_data[field])
-					assert(validate_name(dirty_reactant, clean_data["lab_group"]))
-					clean_data[field] = dirty_reactant #Add the filtered value to the clean values dict.
+					assert(dirty_data[field]) #Assert that data was entered.
+					parsed_data[field] = dirty_data[field]
 				except:
-					self._errors[field] = self.error_class(
-						["Reactant not in compound guide!"])
-					bad_data.add(field)
+					if field in not_required:
+						clean_data[field] = "" #If nothing was entered, store nothing ###Used to be "?" -- why?
+					else:
+						bad_data.add(field)
+						self._errors[field] = self.error_class(
+									["Field required."]
+								)
+		#Check that equal numbers of fields are present in each list 
+		for i in reversed(xrange(num_reactants)):
+			x = 0
+			if reactant[i]:
+				x+=2
+				parsed_data["reactant"][i] = reactant[i]
+			if quantity[i]: 
+				x+=3
+				parsed_data["quantity"][i] = quantity[i]
+			parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
+			
+			#Unit is added automatically, so don't check it.
+			if x == 3:
+				self._errors["reactant_"+str(i+1)] = self.error_class(
+							["Info missing."]
+						)
+			elif x == 2:
+				self._errors["quantity_"+str(i+1)] = self.error_class(
+							["Info missing."]
+						)
+		
+		for field in parsed_data:
+			#Make sure each reactant name is valid.
+			if field=="reactant":
+				for i in xrange(len(parsed_data[field])):
+					if not parsed_data[field][i]: continue #Don't validate empty values.
+					try:
+						dirty_reactant = str(parsed_data[field][i])
+						assert(validate_name(dirty_reactant, clean_data["lab_group"]))
+						clean_data[field].append(dirty_reactant) #Add the filtered value to the clean values dict.
+					except:
+						self._errors[field+"_"+str(i+1)] = self.error_class(
+							["Not in compound guide!"])
 			
 			#Numeric fields:
-			elif gen_field in float_fields or gen_field in int_fields:
-				if gen_field in float_fields: field_type="float"
+			elif field in float_fields or field in int_fields:
+				if field in float_fields: field_type="float"
 				else: field_type="int"
 				
-				try:
-					exec("dirty_datum = {}(dirty_data[field])".format(field_type))
-					assert(quick_validation(gen_field, dirty_datum))
-					clean_data[field] = dirty_datum #Add the filtered mass to clean_data 
-				except:
-					self._errors[field] = self.error_class(
-						["Must be between {} and {}.".format(data_ranges[gen_field][0], data_ranges[gen_field][1])])
-					bad_data.add(field)
+				if field in list_fields:
+					for i in xrange(len(parsed_data[field])):
+						if not parsed_data[field][i]: continue #Don't validate empty values.
+						try:
+							dirty_datum = eval("{}(parsed_data[field][i])".format(field_type))
+							assert(quick_validation(field, dirty_datum))
+							clean_data[field].append(dirty_datum)
+						except:
+							self._errors[field+"_"+str(i+1)] = self.error_class(
+								["Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])])
+							bad_data.add(field)
+				else:
+					try:
+						dirty_datum = eval("{}(parsed_data[field])".format(field_type))
+						assert(quick_validation(field, dirty_datum))
+						parsed_data[field] = dirty_datum #Add the filtered mass to clean_data 
+					except:
+						self._errors[field] = self.error_class(
+							["Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])])
+						bad_data.add(field)
+						
+				if field not in bad_data:
+					clean_data[field] = parsed_data[field]
 			
 			#Option fields:
-			elif gen_field in opt_fields:
-				try:
-					dirty_datum = str(dirty_data[field])
-					assert(quick_validation(gen_field, dirty_datum))
-					clean_data[field] = dirty_datum  
-				except:
-					logging.info("{} {}".format(bool_fields, gen_field))
-					if gen_field in bool_fields: category="boolChoices"
-					else: category=gen_field+"Choices"
-					self._errors[field] = self.error_class(
-						["Field must be one of: {}".format(edit_choices[category])])
-					bad_data.add(field)
-			
+			elif field in opt_fields:
+				logging.info(parsed_data[field])
+				if field in list_fields:
+					for i in xrange(len(parsed_data[field])):
+						if not parsed_data[field][i]: continue #Don't validate empty values.
+						logging.info("-----------HERE")
+						try:
+							dirty_datum = str(parsed_data[field][i])
+							logging.info("DATUM: {}".format(dirty_datum))###
+							assert(quick_validation(field, dirty_datum))
+							clean_data[field].append(dirty_datum)
+						except:
+							if field in bool_fields: 
+								category="boolChoices"
+							else: 
+								category = field+"Choices"
+
+							self._errors[field] = self.error_class(
+								["Field must be one of: {}".format(edit_choices[category])])
+							bad_data.add(field)
+				else:
+					try:
+						dirty_datum = str(parsed_data[field])
+						assert(quick_validation(field, dirty_datum))
+						clean_data[field] = dirty_datum
+					except:
+						if field in bool_fields: 
+							category="boolChoices"
+						else: 
+							category = field+"Choices"
+
+						self._errors[field] = self.error_class(
+							["Field must be one of: {}".format(edit_choices[category])])
+						bad_data.add(field)
+
 			#Text fields.
 			elif field in {"ref","notes"}:
 				try:
-					dirty_datum = str(dirty_data[field])
+					dirty_datum = str(parsed_data[field])
 					assert(quick_validation(field, dirty_datum))
 					clean_data[field] = dirty_datum
 				except:
 					self._errors[field] = self.error_class(
 						["Cannot exceed {} characters.".format(data_ranges[field][1])])
 					bad_data.add(field)
+			logging.info("ERRORS...\n\n{}\n\n".format(self._errors))
 					
 		return clean_data
 		

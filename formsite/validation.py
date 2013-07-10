@@ -28,7 +28,7 @@ range_fields = {"quantity", "temp", "time", "pH", "outcome", "purity"}
 #Fields that must be between a specific character count/limit:
 limit_fields = {"ref", "notes"}
 #Fields that must be a specific option:
-opt_fields = {"unit", "slow", "leak"} #Note: slow_cool gains the general name of "slow" 
+opt_fields = {"unit", "slow_cool", "leak"} #Note: slow_cool gains the general name of "slow" 
 bool_fields = {"slow", "leak"}
 
 #Type Groupings
