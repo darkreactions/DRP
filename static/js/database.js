@@ -89,10 +89,6 @@ function getOptions(field) {
 }
 
 //############ Server Transactions: #########################################
-function testfunction() {
-	alert("cat");
-}
-
 function submitChanges(refresh) {
 	refresh = refresh !== undefined ? refresh : true 
 	

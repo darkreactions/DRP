@@ -24,7 +24,7 @@ var rangeFields = ["quantity", "temp", "time", "pH", "outcome", "purity"];
 //Fields that must be between a specific character count/limit:
 var limitFields = ["ref", "notes"];
 
-function quickValidate(field, value) {
+function quickValidate(field, value) {//###
 	//Get the range if it is applicable.
 	if (dataRanges[field]) {
 		var range = dataRanges[field];

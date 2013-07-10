@@ -209,15 +209,15 @@ def make_listy_string(list_to_store):
 #Fields that are allowed to be stored as listy_strings.
 list_fields = {"reactant","unit","quantity"}
 
-def stored_listy_string(data, field, listy_string):
-	#Convert the string to a listy_string if necessary.
-	if type(listy_string) == list: 
-		listy_string = make_listy_string(listy_string)
+def store_listy_string(data, field, listy_string):
 	#Check if the field can take listy_strings.
 	if field not in list_fields:
 		raise Exception("Field \"{}\" does not allow list storage!".format(field))
+	#Convert the string to a listy_string if necessary.
+	if type(listy_string) == list: 
+		listy_string = make_listy_string(listy_string)
 	#Store the string in the datum if requested.
-	setattr(data, field, stored_string)
+	setattr(data, field, listy_string)
 		
 def get_list_from(data, field, index=None):
 	if field not in list_fields:
@@ -281,10 +281,14 @@ def create_data_entry(user, **kwargs): ###Not re-read yet.
 	except Exception as e:
 		raise Exception("Data construction failed!")
 		
-def get_data_field_names(verbose = False, model="Data"):
+def get_data_field_names(verbose = False, model="Data", form_format=True):
 	if model=="Data":
-		fields_to_ignore = {u"id","user","lab_group", "creation_time"} ###Auto-populate?
-		dirty_fields = [field for field in Data._meta.fields]
+		dirty_fields = []
+		fields_to_ignore = {u"id","user","lab_group", "creation_time"}
+		if form_format:
+				fields_to_ignore.add("reactant", "quantity", "unit") ###Auto-populate?
+		else:
+			dirty_fields += [field for field in Data._meta.fields]
 	elif model=="CompoundEntry":
 		fields_to_ignore = {u"id","lab_group"} ###Auto-populate?
 		dirty_fields = [field for field in CompoundEntry._meta.fields]
@@ -410,6 +414,11 @@ class DataEntryForm(ModelForm):
 		datum.user = self.user
 		datum.lab_group = self.lab_group
 		datum.creation_time = self.creation_time
+
+		#Add the modified list fields to the datum.
+		for field in list_fields:
+			store_listy_string(datum, field, self.cleaned_data[field])
+
 		if commit:
 			datum.save()
 		return datum
@@ -422,7 +431,6 @@ class DataEntryForm(ModelForm):
 		dirty_data = super(DataEntryForm, self).clean() #Get the available raw (dirty) data
 		parsed_data = {} #Data that needs to be checked.
 		clean_data = {} #Keep track of cleaned fields
-		bad_data = set() #Keep track of fields that already include errors:
 		
 		#Add the user information to the clean data package:
 		clean_data["lab_group"] = self.lab_group
@@ -462,12 +470,12 @@ class DataEntryForm(ModelForm):
 									["Field required."]
 								)
 		#Check that equal numbers of fields are present in each list 
-		for i in reversed(xrange(num_reactants)):
+		for i in xrange(num_reactants):
 			x = 0
 			if reactant[i]:
 				x+=2
 				parsed_data["reactant"][i] = reactant[i]
-			if quantity[i]: 
+			if quantity[i]:
 				x+=3
 				parsed_data["quantity"][i] = quantity[i]
 			parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
@@ -510,30 +518,25 @@ class DataEntryForm(ModelForm):
 						except:
 							self._errors[field+"_"+str(i+1)] = self.error_class(
 								["Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])])
-							bad_data.add(field)
 				else:
 					try:
 						dirty_datum = eval("{}(parsed_data[field])".format(field_type))
 						assert(quick_validation(field, dirty_datum))
 						parsed_data[field] = dirty_datum #Add the filtered mass to clean_data 
+						clean_data[field] = parsed_data[field]
 					except:
 						self._errors[field] = self.error_class(
 							["Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])])
 						bad_data.add(field)
 						
-				if field not in bad_data:
-					clean_data[field] = parsed_data[field]
 			
 			#Option fields:
 			elif field in opt_fields:
-				logging.info(parsed_data[field])
 				if field in list_fields:
 					for i in xrange(len(parsed_data[field])):
 						if not parsed_data[field][i]: continue #Don't validate empty values.
-						logging.info("-----------HERE")
 						try:
 							dirty_datum = str(parsed_data[field][i])
-							logging.info("DATUM: {}".format(dirty_datum))###
 							assert(quick_validation(field, dirty_datum))
 							clean_data[field].append(dirty_datum)
 						except:
@@ -544,7 +547,6 @@ class DataEntryForm(ModelForm):
 
 							self._errors[field] = self.error_class(
 								["Field must be one of: {}".format(edit_choices[category])])
-							bad_data.add(field)
 				else:
 					try:
 						dirty_datum = str(parsed_data[field])
@@ -558,7 +560,6 @@ class DataEntryForm(ModelForm):
 
 						self._errors[field] = self.error_class(
 							["Field must be one of: {}".format(edit_choices[category])])
-						bad_data.add(field)
 
 			#Text fields.
 			elif field in {"ref","notes"}:
@@ -569,8 +570,5 @@ class DataEntryForm(ModelForm):
 				except:
 					self._errors[field] = self.error_class(
 						["Cannot exceed {} characters.".format(data_ranges[field][1])])
-					bad_data.add(field)
-			logging.info("ERRORS...\n\n{}\n\n".format(self._errors))
-					
 		return clean_data
 		

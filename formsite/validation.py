@@ -29,7 +29,7 @@ range_fields = {"quantity", "temp", "time", "pH", "outcome", "purity"}
 limit_fields = {"ref", "notes"}
 #Fields that must be a specific option:
 opt_fields = {"unit", "slow_cool", "leak"} #Note: slow_cool gains the general name of "slow" 
-bool_fields = {"slow", "leak"}
+bool_fields = {"slow_cool", "leak"}
 
 #Type Groupings
 int_fields = {"temp", "time",  "outcome", "purity"}
@@ -45,8 +45,8 @@ def quick_validation(field, dirty_datum, model="Data"):
 			return (data_range[0] <= float(dirty_datum) <= data_range[1])
 		if field in limit_fields:
 			return (data_range[0] <= len(dirty_datum) <= data_range[1])
-		if field[:4] in opt_fields:
-			if field[:4] in bool_fields: category = "boolChoices"
+		if field in opt_fields:
+			if field in bool_fields: category = "boolChoices"
 			else: category = field+"Choices"
 			return dirty_datum in edit_choices[category]
 		return True

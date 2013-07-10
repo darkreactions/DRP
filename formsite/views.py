@@ -138,7 +138,7 @@ class DataManager(object):
 			#Find the cursor associated with the updated index:
 			page = (index_updated/self.data_per_page) + 1
 			if not lab_data.exists():
-				lab_data = self.collect_all_data(user.get_profile().lab_group)
+				lab_data = self.collect_all_data(lab_group)
 			cache.set("{}|TOTALSIZE".format(lab_group.lab_title), lab_data.count())
 			if page == 1:
 				sub_lab_data = lab_data
@@ -153,7 +153,7 @@ class DataManager(object):
 			for i in xrange(page, total_pages+1):
 				cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, i), None)
 			self.make_cursors(lab_group, sub_lab_data, page, total_pages)
-		except Exception as e:
+		except:
 			logging.info("\n---------Could not update cursor for page: {}".format(page))		
 		
 	def get_fresh_page_info(self, request, current_page = None):
@@ -494,11 +494,12 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									
 						#Assert that there are no duplicates in the list
 						#	and that all fields are valid.
-						if len(user_fields) != len(true_fields):
-							raise Exception("Invalid column quantity! {} needed but {} found.".format(len(true_fields), len(user_fields)))
-							
+						#if len(user_fields) != len(true_fields):
+							#raise Exception("Invalid column quantity! {} needed but {} found.".format(len(true_fields), len(user_fields)))
+								
 						for field in true_fields:
-							assert(field in user_fields)
+							if field not in list_fields:
+								assert(field in user_fields)
 						headings_valid = True
 						continue
 				except Exception as e:
@@ -578,7 +579,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										#Apply the unit to the data entry.
 										model_fields[corresponding_unit] = unit
 								#Translate any yes/no answer to "Yes"/"No"
-								elif field[:4] in bool_fields: #[:4] Because gen_field can't be applied to compound_type.
+								elif field in bool_fields: 
 									datum = datum.lower()
 									if "y" in datum: datum="Yes"
 									elif "n" in datum: datum="No"
@@ -615,6 +616,15 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						
 					#Add the new entry to the database. ###SLOWWwwwww...
 					if model=="Data":
+						###Temp Fix. Should use lists like in dataform. and remove reactant_1-_5 (etc.).
+						for field in list_fields:
+							temp_list = []
+							for i in xrange(1, 6):
+								try:
+									exec("temp_list.append(model_fields[\"{}_{}\"])".format(field, i))
+								except:
+									break #Stop if no value was found.
+							model_fields[field] = make_listy_string(temp_list)
 						create_data_entry(u, **model_fields)
 					elif model=="CompoundEntry":
 						create_CG_entry(u.get_profile().lab_group, **model_fields)
@@ -658,7 +668,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 		"success_percent": success_percent,
 	})
 
-def download_CSV(request):
+def download_CSV(request): ###Need to fix.
 	u = request.user
 	if u.is_authenticated():
 		#Generate a file name.
@@ -673,11 +683,11 @@ def download_CSV(request):
 		writer = csv.writer(CSV_file)
 		
 		#Write the verbose headers to the CSV_file
-		verbose_headers = get_data_field_names(True)
+		verbose_headers = get_data_field_names(form_format=True, verbose=True)
 		writer.writerow(verbose_headers)
 		
 		#Write the actual entries to the CSV_file if the user is authenticated.
-		headers = get_data_field_names()
+		headers = get_data_field_names(form_format=True, verbose=False)
 		lab_data = control.collect_all_data(u.get_profile().lab_group)
 		
 		for entry in lab_data:
@@ -760,10 +770,15 @@ def data_update(request, control=control): ###Lump together?
 				indexChanged = int(editPackage[0])-1 #Translate to 0-based Index
 				fieldChanged = editPackage[1] 
 				newValue = editPackage[2] #Edits are validated client-side.
+				dataChanged = lab_data[indexChanged]
 				
 				#Make the edit in the database
-				dataChanged = lab_data[indexChanged]
-				setattr(dataChanged, fieldChanged, newValue)
+				if fieldChanged[-1].isdigit():
+					list_vals = get_list_from(dataChanged, fieldChanged[:-2])
+					list_vals[indexChanged] = newValue
+					store_listy_string(dataChanged, fieldChanged[:-2], list_vals)
+				else:
+					setattr(dataChanged, fieldChanged, newValue)
 				dataChanged.user = u
 				dataChanged.save()
 				
@@ -807,10 +822,17 @@ def get_full_datum(request, control=control):
 			###Is this efficient?
 			entry = control.collect_all_data(u.get_profile().lab_group)[index_requested]
 			
+			logging.info(get_list_from(entry, "reactant"))
+			logging.info(get_list_from(entry, "quantity"))
+			
 		return render(request, "full_datum.html", {
-			"entry":entry
+			"entry":entry,
+			"reactant": get_list_from(entry, "reactant"),
+			"quantity": get_list_from(entry, "quantity"),
+			"unit": get_list_from(entry, "unit"),
 		})
 	except Exception as e:
+		logging.info(e)
 		return HttpResponse("<p>Data could not be loaded!</p>")		
 
 ######################  User Auth ######################################
