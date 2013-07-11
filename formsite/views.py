@@ -256,33 +256,51 @@ def search(request):
 	if u.is_authenticated():
 		if request.method=="POST":
 			lab_group = u.get_profile().lab_group
-			entries = None
+			entries = []
 			field = request.POST.get("field")
 			value = request.POST.get("value")
 			
+			if not value:
+				return render(request, 'search_results.html', {
+					"no_search": True,
+				})
+					
+			
 			if field in list_fields:
-				t1 = time.time()
+				t1 = time.time()###
 				all_data = control.collect_all_data(lab_group)
-				for entry in all_data:
-					if value in getattr(entry, field):
-						entries.append(entry)
-				t2 = time.time()
+				value_list = all_data.values(field)
+				len(value_list)#Evaluate queryset
+				t3 = time.time()###
 				
+				t4 = time.time()###
+				for entry in value_list:
+					x = "y" in "aaaaaaaaaaaay"###Compare
+					#if value in getattr(entry, field): 
+						#entries.append(entry)
+				t5 = time.time()###
+				
+				t2 = time.time()###
+				entries=["test"]###
+				logging.info("Time for queryset: {:.5g}".format(t3-t1))
+				logging.info("Time for loop: {:.5g}".format(t5-t4))
+				
+				entries_found=len(entries)
+			
 			else:
-				###Timing
-				t1 = time.time()
+				t1 = time.time()###
 				entries = eval("Data.objects.filter(lab_group=lab_group, {}=value).order_by(\"creation_time\")".format(field))
-				t2 = time.time()
+				
+				entries_found=entries.count() ###Fast
+				for num in xrange(entries_found):###Fast!
+					x = "y" in "aaaaaaaaaaaay"###Compare
+				
+				t2 = time.time()###
 				
 			#Count the number of entries found.
-			if entries: 
-				if type(entries)==list:
-					entries_found=len(entries)
-				else:
-					entries_found=entries.count()
-			else: entries_found = 0
+			if not entries: entries_found = 0
 			
-			logging.info("\n---Found {} in {} seconds!\n\n".format(entries_found, t2-t1))
+			logging.info("\n---Found {} in {:.5g} seconds!\n\n".format(entries_found, t2-t1))
 			return render(request, 'search_results.html', {
 				"entries_found": entries_found,
 				"no_search": False,
