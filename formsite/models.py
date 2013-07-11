@@ -25,7 +25,6 @@ def get_random_code(length = ACCESS_CODE_MAX_LENGTH):
 	
 	
 class Lab_Group(models.Model):
-	saved_data = [] #fields.ListField()
 	lab_title = models.CharField(max_length=200)
 	
 	access_code = models.CharField(max_length=ACCESS_CODE_MAX_LENGTH,
@@ -37,7 +36,7 @@ class Lab_Group(models.Model):
 
 ############### USER CREATION #######################
 class Lab_Member(models.Model):
-	user = models.OneToOneField(User, unique=True)
+	user = models.OneToOneField(User, unique=True) ###Allow lab member to switch?
 	lab_group = models.ForeignKey(Lab_Group)
 	
 	def __unicode__(self):
@@ -94,7 +93,7 @@ class CompoundEntry(models.Model):
 	compound_type = models.CharField("Type", max_length=10)
 
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
-		
+		###User foreign key as well
 	def __unicode__(self):
 		if self.compound == self.abbrev:
 			return "{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
@@ -152,7 +151,6 @@ class CompoundGuideForm(ModelForm):
 			clean_data["CAS_ID"] = clean_CAS_ID
 		except Exception as e:
 			#If no CAS_ID is found, store a blank value.
-			logging.info("\n\n\nException!  {}".format(e))
 			clean_data["clean_CAS_ID"] = ""
 		
 		other_fields = ["abbrev", "compound", "compound_type"]
@@ -207,7 +205,7 @@ def make_listy_string(list_to_store):
 	return listy_string
 
 #Fields that are allowed to be stored as listy_strings.
-list_fields = {"reactant","unit","quantity"}
+list_fields = ["reactant", "quantity", "unit"]
 
 def store_listy_string(data, field, listy_string):
 	#Check if the field can take listy_strings.
@@ -282,13 +280,23 @@ def create_data_entry(user, **kwargs): ###Not re-read yet.
 		raise Exception("Data construction failed!")
 		
 def get_data_field_names(verbose = False, model="Data", form_format=True):
+	clean_fields = []
+	dirty_fields = []
+	
 	if model=="Data":
-		dirty_fields = []
 		fields_to_ignore = {u"id","user","lab_group", "creation_time"}
 		if form_format:
-				fields_to_ignore.add("reactant", "quantity", "unit") ###Auto-populate?
-		else:
-			dirty_fields += [field for field in Data._meta.fields]
+			fields_to_ignore = fields_to_ignore.union({"reactant", "quantity", "unit"}) ###Auto-populate?
+			for i in xrange(1,6):
+				for field in list_fields:
+					#Create the string.
+					raw_string = eval("\"{}_{}\"".format(field, i))
+					if verbose:
+						raw_string = (raw_string[0].upper() + raw_string[1:]).replace("_", " ")
+					
+					#Add the list fields to the clean_fields list.
+					clean_fields += [raw_string]
+		dirty_fields += [field for field in Data._meta.fields]
 	elif model=="CompoundEntry":
 		fields_to_ignore = {u"id","lab_group"} ###Auto-populate?
 		dirty_fields = [field for field in CompoundEntry._meta.fields]
@@ -296,7 +304,6 @@ def get_data_field_names(verbose = False, model="Data", form_format=True):
 		raise Exception("Unknown model specified.")
 	
 	#Ignore any field that is in fields_to_ignore.
-	clean_fields = []
 	for field in dirty_fields:
 		if field.name not in fields_to_ignore:
 			#Return either the verbose names or the non-verbose names.
@@ -304,7 +311,7 @@ def get_data_field_names(verbose = False, model="Data", form_format=True):
 				clean_fields += [field.verbose_name] ###Make verbose names pretty
 			else:
 				clean_fields += [field.name]
-	
+	logging.info(clean_fields)
 	return clean_fields
 	
 class DataEntryForm(ModelForm):

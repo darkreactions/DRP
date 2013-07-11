@@ -255,10 +255,9 @@ $(document).on("click", ".CG_deleteButton", function() {
 });
 
 $(document).on("click", ".CG_saveButton", function() {
-	showRibbon("Saving!", "99FF5E","#CG_display", false);
+	showRibbon("Saving!", "99FF5E","#popupContainer_inner", false);
 	//Sort the list prior to sending.
 	CGSelected.sort(sortNumbersReverse);
-
 	//Send the selected CG entry indexes to the server to be deleted. 
 	JSONArray = JSON.stringify(CGSelected);
 	$.post("/edit_CG_entry/", JSONArray, function() {
@@ -473,8 +472,12 @@ $(document).on("click", ".editConfirm", function() {
 	var validData = false;
 	
 	if (editFieldSibling.attr("class").split(" ")[1] == "editText") { //Edit by Text
+		if (parseInt($(this).parent().attr("class").split(" ")[2])>2) {
+			var required = false;
+		} else { var required = true; }
+		
 		if ($(this).siblings(".editText").attr("class").indexOf("badData") < 0 
-			&& fullValidate(fieldChanged[1].substr(5), newValue)) {
+			&& quickValidate(fieldChanged[1].substr(5), newValue, required)) {
 			validData = true;
 		} else {
 			showRibbon("Invalid!", "FF6870", "#dataContainer");
@@ -515,12 +518,21 @@ $(document).on("click", ".editConfirm", function() {
 //Make edit text fields auto-size and validate while typing.
 $(document).on("keyup", ".editText", function() {
 	adaptSize($(this));
+	if (parseInt($(this).parent().attr("class").split(" ")[2])>2) {
+		var required = false;
+	} else { var required = true; }
+		
 	if (!quickValidate(($(this).parent().attr("class").split(" ")[1]).substr(5),
-		$(this).val())) {
+		$(this).val(), required)) {
 		$(this).addClass("badData");
 	} else {
 		$(this).removeClass("badData");
 	}
+});
+
+//############## Edit CG: #########################################
+//Click to select entire compound.
+$(document).on("click", ".CG_compound", function() {//###
 });
 
 //############## Change Pages: #########################################

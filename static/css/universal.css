@@ -368,6 +368,14 @@ option {
 	min-width:400px;
 }
 
+#popupContainer[for="searchButton"] {
+	text-align:center;
+	top:50px;
+	left:20%;
+	width:60%;
+	min-width:500px;
+}
+
 .subPopup { /* Right now, just used for errors. */
 	position:absolute;
 	background-color: #FFD6D6;
@@ -378,6 +386,64 @@ option {
 	padding-bottom:5px;
 	
 	color:black;
+}
+
+/* #################    Periodic Table    ####################### */
+.PT_element {
+	width:17px;
+	height:17px;
+	text-align:center;
+	padding:3px;
+	padding-top:6px;
+	
+	background-color:white;
+	color:black;
+	font-size:12px;
+	font-weight:bold;
+	border: 2px solid black;
+	border-radius:5px;
+}
+.PT_element:hover {
+
+}
+
+/* #################    Search Results    ####################### */
+#searchResultsContainer{
+	overflow:visible;
+}
+
+#searchResultsOuterContainer{
+	position:relative;
+	color:black;
+}
+
+#searchResultsContainer{
+	position:relative;
+	padding:16px;	
+	margin: 0 auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	min-height:20px;
+	max-height:300px;
+	max-width:600px;
+	border-radius:5px;
+	
+	overflow:auto;
+	
+	font-size:14px;
+	color:black;
+	background-color:white;
+}
+
+#entriesFound {
+	position:absolute;
+	top:-10px;
+	right:0px;
+	padding:4px;
+	border-radius:15px;
+	font-size:12px;
+	font-weight:bold;
+	background-color:#DCDFE2;
 }
 
 /* #################    Popup Confirmation    ####################### */

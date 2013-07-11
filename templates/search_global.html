@@ -1,0 +1,29 @@
+<h1>Search</h1>
+<!-- Periodic Table -->
+<div id="periodicTableContainer"> {% include "periodic_table.html" %} </div>
+
+<h1></h1>
+{{ search_form }}
+
+<form action="/search/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
+	{% csrf_token %}
+	
+		<label for="field">Field:</label>
+		<input type="radio" name="field" value="reactant" checked>Reactant</input>
+		<input type="radio" name="field" value="unit">Unit</input>
+		<input type="radio" name="field" value="amount">Amount</input>
+		<input type="radio" name="field" value="outcome">Outcome</input>
+		
+		<br />
+		<label for="value">Value:</label>
+		<input type="text" name="value" value="">
+		<br />
+		
+		<input id="search_filterButton" type="button" value="Filter" class="form_button"/>
+		<input id="search_clearButton" type="button" value="Clear" class="form_button"/>
+</form>
+
+
+<div id="searchResultsOuterContainer">
+	{% include "search_results.html" %}
+</div>

@@ -1,0 +1,15 @@
+{% if entries_found %} 
+	<div id="searchResultsContainer">
+		{{entries}}
+	</div>
+	<div id="entriesFound">Found: {{entries_found}}</div>
+{% elif no_search %}
+	<div id="searchResultsContainer">
+		No search started yet.
+	</div>
+{% else %}
+	<div id="searchResultsContainer">
+		No data found!
+	</div>
+{% endif %}
+	

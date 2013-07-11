@@ -273,25 +273,39 @@
 	font-size:15px;
 }
 
+.datafield:empty {
+	min-width:10px;
+	min-height:5px;
+}
+.datafield:empty:hover {
+	background-color:#A8C8E0;
+}
+
 .dataField:after {
 	font-style:oblique;
 	font-weight:bold;
+	background-color:none;
 }
+
 .dataField:before {
 	font-style:oblique;
 	font-weight:bold;
 	font-size:14px;
 }
 
+.dataDecorator {
+	font-style:oblique;
+	font-weight:bold;
+	font-size:14px;
+	display:inline-block;
+}
+
 		/* ############### :AFTER STYLE ############################# */
 .type_temp:after { content: "\2103"; }
 .type_time:after { content: " Hours"; }
-.type_unit:after { content: ")"; }
 .type_notes:empty:after { content:"(None)"; }
 
 		/* ############### :BEFORE STYLE ############################# */
-.type_reactant:not(:first-child):before { content: "+ ";}
-.type_quantity:before { content: "("; }
 .type_slow_cool:before { content: "Slow Cooled: "; }
 .type_leak:before { content: "Leak: "; }
 .type_pH:before { content: "pH: "; }

@@ -12,7 +12,7 @@ data_ranges = {
 	"purity" : [0,2],
 	"time" : [0,350],
 	"pH" : [-2,17],
-	"ref" : [0,12],
+	"ref" : [1,12],
 	"notes" : [0,65]
 	}
 edit_choices = {

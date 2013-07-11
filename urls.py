@@ -29,6 +29,8 @@ urlpatterns = patterns('',
     (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
 		#Predictions
     (r'^predictions/$', predictions), #Send the CG name_pairs for client-side validation.
+		#Searching
+    (r'^search/$', search), #Send the CG name_pairs for client-side validation.
 		#Users and Labs
 			#Authentication
     (r'^user_logout/$', user_logout), #Log Out

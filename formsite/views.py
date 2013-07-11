@@ -248,6 +248,52 @@ def predictions(request):
 		"fatal_message": fatal_message,
 		"svg_src": svg_src, #Includes data and data_indexes.
 	})
+	
+######################  Searching  #####################################
+import time
+def search(request):
+	u = request.user
+	if u.is_authenticated():
+		if request.method=="POST":
+			lab_group = u.get_profile().lab_group
+			entries = None
+			field = request.POST.get("field")
+			value = request.POST.get("value")
+			
+			if field in list_fields:
+				t1 = time.time()
+				all_data = control.collect_all_data(lab_group)
+				for entry in all_data:
+					if value in getattr(entry, field):
+						entries.append(entry)
+				t2 = time.time()
+				
+			else:
+				###Timing
+				t1 = time.time()
+				entries = eval("Data.objects.filter(lab_group=lab_group, {}=value).order_by(\"creation_time\")".format(field))
+				t2 = time.time()
+				
+			#Count the number of entries found.
+			if entries: 
+				if type(entries)==list:
+					entries_found=len(entries)
+				else:
+					entries_found=entries.count()
+			else: entries_found = 0
+			
+			logging.info("\n---Found {} in {} seconds!\n\n".format(entries_found, t2-t1))
+			return render(request, 'search_results.html', {
+				"entries_found": entries_found,
+				"no_search": False,
+			})
+			
+		else:
+			return render(request, 'search_global.html', {
+			"no_search": True,
+			})
+	else:
+		return HttpResponse("Log in to search data.")
 
 ######################  CG Guide  ######################################
 #Send/receive the compound guide form:
@@ -259,13 +305,16 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 		if request.method == 'POST': 
 			#Bind the user's data and verify that it is legit.
 			form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
+			logging.info("\nVALIDATING")
 			if form.is_valid():
+				logging.info("\nVALID")
 				#If all data is valid, save the entry.
 				form.save()
 				#Clear the cached CG data.
 				cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
 				cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), None)
 				success = True #Used to display the ribbonMessage.
+				logging.info("\nFINISHED")
 		else:
 			#Submit a blank form if one was not just submitted.
 			form = CompoundGuideForm()
@@ -283,8 +332,10 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 def edit_CG_entry(request):
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
+		logging.info("\n1")
 		changesMade = json.loads(request.body, "utf-8")
 		
+		logging.info("\n2")
 		#Get the Lab_Group data to allow direct manipulation.
 		lab_group = u.get_profile().lab_group
 		CG_data = collect_CG_entries(lab_group)	
@@ -292,6 +343,7 @@ def edit_CG_entry(request):
 		#Clear the cached CG entries.
 		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
 		cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), None)
+		logging.info("\n3")
 		
 		#Since only deletions are supported currently. ###
 		for index in changesMade:
@@ -300,6 +352,7 @@ def edit_CG_entry(request):
 			except Exception as e:
 				logging.info("\n\nCould not delete index! {}".format(e))
 			
+	logging.info("\n4")
 	return HttpResponse("OK")
 
 	##################  Helper Functions ###############################
@@ -316,7 +369,6 @@ def guess_type(datum):
 	if "ol" in datum:
 		return "Sol"
 	return "Inorg" #Default to inorganic if no guess is uncovered.
-	###raise Exception("Unable to guess type of \"{}\"".format(datum))
 
 ######################  Database Functions  ############################
 #Send/receive the data-entry form:
@@ -687,16 +739,35 @@ def download_CSV(request): ###Need to fix.
 		writer.writerow(verbose_headers)
 		
 		#Write the actual entries to the CSV_file if the user is authenticated.
-		headers = get_data_field_names(form_format=True, verbose=False)
+		headers = get_data_field_names(verbose=False)
 		lab_data = control.collect_all_data(u.get_profile().lab_group)
+		logging.info(headers)
+		
 		
 		for entry in lab_data:
 			row = []
+			for field in list_fields:
+				exec("{} = get_list_from(entry, field)".format(field))
+				
 			try:
+				#Apply the list_field columns.
+				for i in xrange(0,5):
+					for field in list_fields:
+						try:
+							row += [eval("{}[i]".format(field))]
+						except:
+							#If no data is present, download an empty string.
+							row += [""]
+				
+				#Apply the other columns.
 				for field in headers:
-					row += [eval("entry.{}".format(field))]
+					if field[-1].isdigit():
+						pass
+					else:
+						row += [eval("entry.{}".format(field))]
 				writer.writerow(row)
-			except:
+			except Exception as e:
+				logging.info(e)###
 				pass
 		return CSV_file #ie, return HttpResponse(content_type="text/csv")
 	else:

@@ -2,11 +2,11 @@ $(document).ready(function() {
 //######################################################################
 //############   Sorting   #############################################
 //Sort from greatest to least.
-function sortNumbers(smallNum, bigNum) {
+window.sortNumbers = function(smallNum, bigNum) {
 	return smallNum - bigNum;
 }
 
-function sortNumbersReverse(smallNum, bigNum) {
+window.sortNumbersReverse = function(smallNum, bigNum) {
 	return bigNum - smallNum;
 }
 
@@ -86,6 +86,19 @@ $("#userLogOut").click( function() {
 	refreshScreen()
 });
 
+//################   Search   ##########################################
+
+$(document).on("click", "#search_filterButton", function() {
+	$.post("/search/", $('#searchForm').serializeArray(), function(response) {
+		$("#searchResultsOuterContainer").html(response)
+	});
+});
+
+$(document).on("click", "#search_clearButton", function() {
+	alert("click");//###
+});
+
+
 //############ Popup Management: #######################################
 window.createPopupConfirmation = function(message) {
 	$("body").append("<div class=popupConfirmation title=Confirm:>"+
@@ -134,6 +147,11 @@ $(document).on("click", ".popupActivator", function() {
 			break;
 		case "leftMenu_uploadCSV":
 			$.get("/upload_CSV/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
+		case "searchButton":
+			$.get("/search/", function(response) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
