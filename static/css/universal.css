@@ -120,6 +120,7 @@ a {
 	text-decoration:none;
 	cursor:pointer;
 	color:#3A6382;
+	outline:0;
 }
 
 a:hover {
@@ -142,6 +143,14 @@ body {
 	min-width:600px;
 	overflow:hidden;
 	background-color:#E8F4FF;
+}
+
+input {
+	outline:0;
+}
+
+select {
+	outline:0;
 }
 
 input[type=text] {
@@ -176,6 +185,21 @@ input[type=submit] {
 	border-top-right-radius:10px;
 }
 
+input[type=radio] {
+	display:none;
+}
+input[type=radio] + label {
+    padding: 4px;
+    border-radius:5px;
+	border: 2px solid black;
+    background-color: silver;
+    color:black;
+}
+input[type=radio]:checked + label { 
+	border:2px solid yellow;
+	background-color:#FFD92E;
+}
+
 select {
 	border:2px solid black;
 	font-weight:bold;
@@ -187,6 +211,13 @@ input:hover {
 }
 
 input:focus {
+	background-color:#FFD92E;
+}
+select:hover {
+	background-color:#FFF1B5;
+}
+
+select:focus {
 	background-color:#FFD92E;
 }
 
@@ -371,9 +402,9 @@ option {
 #popupContainer[for="searchButton"] {
 	text-align:center;
 	top:50px;
-	left:20%;
-	width:60%;
-	min-width:500px;
+	left:10%;
+	width:70%;
+	min-width:600px;
 }
 
 .subPopup { /* Right now, just used for errors. */
@@ -389,6 +420,10 @@ option {
 }
 
 /* #################    Periodic Table    ####################### */
+.PT_spacer{
+height:10px;
+}
+
 .PT_element {
 	width:17px;
 	height:17px;
@@ -398,13 +433,79 @@ option {
 	
 	background-color:white;
 	color:black;
-	font-size:12px;
+	font-size:10px;
 	font-weight:bold;
 	border: 2px solid black;
 	border-radius:5px;
 }
+
 .PT_element:hover {
 
+}
+/* Table partitions */
+.PT_hydrogen { background-color:#EBD8FF; } 
+.PT_alkaliMetal { background-color:#FFB459; } 
+.PT_alkaliEarth { background-color:#FFEE93; } 
+.PT_transitionMetal { background-color:#C381EA; } 
+.PT_poorMetal { background-color:#96C3FF; } 
+.PT_nonmetal { background-color:#8FD892; } 
+.PT_nobleGas { background-color:#BBAFFF; } 
+.PT_lanthanide { background-color:#FFCCF2; } 
+.PT_actinide { background-color:#C6905D; } 
+
+.PT_selected {
+	border:2px solid yellow;
+	background-color:#FFD92E;
+}
+
+#label_and {
+	position:absolute;
+	width:40px;
+	bottom:160px;
+	right:25px;
+}
+
+#label_or {
+	position:absolute;
+	width:40px;
+	bottom:125px;
+	right:25px;
+}
+
+#searchTabContainer{
+	position:absolute;
+	top:45px;
+	left:40px;
+	margin:0px;
+	padding:3px;
+	padding-left:6px;
+	padding-right:6px;
+	background-color:white;
+	border-top-right-radius:15px;
+	border-top-left-radius:15px;
+}
+
+.ui-state-hover .ui-state-focus{
+	background-color:none;
+}
+
+.ui-state-active{
+	background-color:#FFEC9B;
+	border-radius:15px;
+	font-weight:bold;
+}
+
+
+.searchTab{
+	margin-left:6px;
+	margin-right:6px;
+	list-style:none;
+	padding:0px;
+	display:inline-block;
+}
+
+.searchTab a{
+	color:black;
 }
 
 /* #################    Search Results    ####################### */

@@ -1,28 +1,45 @@
 <h1>Search</h1>
 <!-- Periodic Table -->
-<div id="periodicTableContainer"> {% include "periodic_table.html" %} </div>
-
-<h1></h1>
-{{ search_form }}
-
-<form action="/search/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
-	{% csrf_token %}
-	
-		<label for="field">Field:</label>
-		<input type="radio" name="field" value="reactant" checked>Reactant</input>
-		<input type="radio" name="field" value="unit">Unit</input>
-		<input type="radio" name="field" value="amount">Amount</input>
-		<input type="radio" name="field" value="outcome">Outcome</input>
-		
-		<br />
-		<label for="value">Value:</label>
-		<input type="text" name="value" value="">
-		<br />
-		
-		<input id="search_filterButton" type="button" value="Filter" class="form_button"/>
-		<input id="search_clearButton" type="button" value="Clear" class="form_button"/>
-</form>
-
+<div id="tabs">
+	<ul id="searchTabContainer">
+	<li class="searchTab"><a href="#tabs-1">Atoms</a></li>
+	<li class="searchTab"><a href="#tabs-2">Fields</a></li>
+	</ul>
+	<div id="tabs-1">
+		<div id="periodicTableContainer"> {% include "periodic_table.html" %} 
+		<form action="/search/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
+			{% csrf_token %}
+			<input id="radio_and" type="radio" name="condition" value="and" checked>
+				<label id="label_and" class="genericButton" for="radio_and">And</label>
+			</input><br/>
+			<input id="radio_or" class="genericButton" type="radio" name="condition" value="or">
+				<label id="label_or" class="genericButton" for="radio_or">Or</label>
+			</input>
+			<input id="search_filterButton_atoms" type="button" value="Filter" class="form_button"/>
+			<input id="search_clearButton_atoms" type="button" value="Clear" class="form_button"/>
+		</form>
+		</div>
+	</div>
+	<div id="tabs-2">
+		<form action="/search/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
+			{% csrf_token %}
+			
+				<label for="field">Field:</label>
+				<input type="radio" name="field" value="reactant" checked>Reactant</input>
+				<input type="radio" name="field" value="unit">Unit</input>
+				<input type="radio" name="field" value="amount">Amount</input>
+				<input type="radio" name="field" value="outcome">Outcome</input>
+				
+				<br />
+				<label for="value">Value:</label>
+				<input type="text" name="value" value="">
+				<br />
+				
+				<input id="search_filterButton" type="button" value="Filter" class="form_button"/>
+				<input id="search_clearButton" type="button" value="Clear" class="form_button"/>
+		</form>
+	</div>
+</div>
 
 <div id="searchResultsOuterContainer">
 	{% include "search_results.html" %}

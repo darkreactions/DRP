@@ -87,6 +87,18 @@ $("#userLogOut").click( function() {
 });
 
 //################   Search   ##########################################
+$(document).on("click", ".PT_element", function() {
+	$(this).toggleClass("PT_selected");
+	
+	var element = $(this).html().trim();
+	var indexOfElement = PT_selected.indexOf(element);
+	
+	if (indexOfElement == -1){
+		PT_selected.push(element);
+	} else {
+		PT_selected.splice(indexOfElement,1);
+	}
+});
 
 $(document).on("click", "#search_filterButton", function() {
 	$.post("/search/", $('#searchForm').serializeArray(), function(response) {
@@ -151,8 +163,10 @@ $(document).on("click", ".popupActivator", function() {
 			});
 			break;
 		case "searchButton":
+			PT_selected = Array();
 			$.get("/search/", function(response) {
 				$("#popupContainer_inner").html(response);
+				$("#tabs").tabs({active: 1});
 			});
 			break;
 		case "userLogin":
