@@ -23,33 +23,45 @@
 	<div id="tabs-2">
 		<form action="/search/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
 			{% csrf_token %}
-				<div id="radioContainer">
+				<div class="radioContainer">
 				<label for="field">Field:</label>
 				<input id="radio_reactant" type="radio" name="field" value="reactant" checked>
-					<label for="radio_reactant" class="radio_label">
+					<label for="radio_reactant" class="radio_label genericButton">
 						Reactant
 					</label>
 				</input>
 				<input id="radio_unit" type="radio" name="field" value="unit">
-					<label for="radio_unit" class="radio_label">
+					<label for="radio_unit" class="radio_label genericButton">
 						Unit
 					</label>
 				</input>
 				<input id="radio_quantity" type="radio" name="field" value="quantity">
-					<label for="radio_quantity" class="radio_label">
+					<label for="radio_quantity" class="radio_label genericButton">
 						Quantity
 					</label>
 				</input>
-				<input id="radio_outcome" type="radio" name="field" value="outcome">
-					<label for="radio_outcome" class="radio_label">
-						Outcome
-					</label>
-				</input>
+				{% for field in other_fields %}
+				{% if forloop.counter0 == 3 %}
+					</div>
+					<div class="radioContainer">
+					<input id="radio_{{field.raw}}" type="radio" name="field" value="{{field.raw}}">
+						<label for="radio_{{field.raw}}" class="radio_label genericButton">
+							{{field.verbose}}
+						</label>
+					</input>
+				{% else %}
+					<input id="radio_{{field.raw}}" type="radio" name="field" value="{{field.raw}}">
+						<label for="radio_{{field.raw}}" class="radio_label genericButton">
+							{{field.verbose}}
+						</label>
+					</input>
+				{% endif %}
+				{% endfor %}
 				</div>
 				
 				<br />
 				<label for="value">Value:</label>
-				<input type="text" name="value" value="">
+				<input id="searchValue" type="text" name="value" value="">
 				<br />
 				
 				<input id="search_filterButton" type="button" value="Filter" class="form_button"/>

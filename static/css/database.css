@@ -74,9 +74,9 @@
 #popupContainer[for="leftMenu_uploadCSV"] {
 	text-align:center;
 	top:50px;
-	left:30%;
-	width:40%;
-	min-width:300px;
+	left:25%;
+	width:50%;
+	min-width:400px;
 }
 
 #popupContainer[for="leftMenu_downloadCSV"] {

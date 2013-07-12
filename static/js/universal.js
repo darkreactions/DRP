@@ -50,7 +50,7 @@ window.showRibbon = function(message, color, location, timeout) {
 	//alert($(".ribbonMessage").length);
 	if (timeout) {
 		setTimeout(function() {
-			$(location + " .ribbonMessage").fadeOut(1000);
+			$(location).children(".ribbonMessage").fadeOut(1000);
 		},500);
 	}
 }
@@ -101,13 +101,40 @@ $(document).on("click", ".PT_element", function() {
 });
 
 $(document).on("click", "#search_filterButton", function() {
-	$.post("/search/", $('#searchForm').serializeArray(), function(response) {
-		$("#searchResultsOuterContainer").html(response)
-	});
+	if ($("#searchValue").val()){
+		current_query.push({
+			"field":$("input[name=field]:checked").val(),
+			"value":$("#searchValue").val(),
+		});
+		alert(current_query);
+		$.ajax({
+			url:"/search/", 
+			method:"post",
+			data: {"current_query":JSON.stringify(current_query)}, 
+			traditional: true,
+			success: function(response) {
+				$("#searchResultsOuterContainer").html(response)
+			}
+		});
+	} else {
+		showRibbon("Nothing entered!", "#FF6870", $("#popupContainer_inner"), true);
+	}
+	//WORKS FOR ONE QUERY:
+	//if ($("#searchValue").val()){
+		//current_query = {
+			//"field":$("input[name=field]:checked").val(),
+			//"value":$("#searchValue").val(),
+		//};
+		//$.post("/search/", current_query, function(response) {
+			//$("#searchResultsOuterContainer").html(response)
+		//});
+	//} else {
+		//showRibbon("Nothing entered!", "#FF6870", $("#popupContainer_inner"), true);
+	//}
 });
 
 $(document).on("click", "#search_clearButton", function() {
-	alert("click");//###
+	current_query = [];
 });
 
 
@@ -164,6 +191,7 @@ $(document).on("click", ".popupActivator", function() {
 			break;
 		case "searchButton":
 			PT_selected = Array();
+			current_query = Array();
 			$.get("/search/", function(response) {
 				$("#popupContainer_inner").html(response);
 				$("#tabs").tabs({active: 1});
@@ -214,10 +242,13 @@ $(document).on("click", ".popupActivator", function() {
 	}
 	$("#popupGlobal").fadeIn(300);
 });
-
+alert("UNIVERSAL!");//###
 // Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
 	$("#popupGlobal").fadeOut("fast");
+	
+	//Remove any extra additions the popup may have populated.
+	$(".CG_saveButton").remove()
 	
 	//Reload the screen if requested.
 	if ($(".reloadActivator").length) {
