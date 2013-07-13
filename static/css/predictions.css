@@ -19,3 +19,13 @@
 }
 
 /* ###############   CONTAINERS   ################################### */
+#nodeTooltipContainer {
+	opacity:0;
+	position:fixed;
+	background-color: rgba(1,1,1,0.7);
+	border:2px solid black;
+	border-radius:15px;
+	padding:10px;
+	color:white;
+	display:inline-block;
+}

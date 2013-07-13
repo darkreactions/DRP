@@ -10,10 +10,9 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script> 
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 	
-	<script type="text/javascript" src="{{ STATIC_URL }}js/raphael.js"></script>
-	<script src="{{ STATIC_URL }}js/elemental.min.js"></script>
-	<script src="{{ STATIC_URL }}js/rappar.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.vectron.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.svg.css"> 
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.svg.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.kinetic.min.js"></script>
 	
 	</head>
 	<body> 
@@ -65,15 +64,16 @@
 				<a href="/database/" class="navLink" >Database</a>
 				<a href="/predictions/" class="navLink">Predictions</a>
 			</div>
-			
-			<div id="searchButton" title="Search for a phrase." class="topMenuButton"
+
+			<div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
 			style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
 		</div>
 		
 		<!-- SVG CONTAINER -->
 		<div id="centerPanel">
 			<div id="dataContainer" class="genericContainer">
-				<div id="svg-file" data="http://ironwood.fig.haverford.edu/test.svg">
+				<div id="svgFile" type="image/svg+xml" data="{{ STATIC_URL }}/svgs/test.svg">
+					<p>Could not load graphic!</p>
 				</div>
 			</div>
 		</div>
@@ -87,6 +87,9 @@
 	
 	</div>
 	
+	<!-- NODE TOOLTIP CONTAINER -->
+	<div id="nodeTooltipContainer">TEST</div>
+	
 	</body>
 	
 	<!-- SCRIPTS -->
@@ -96,6 +99,7 @@
 	<script type="text/javascript">
 		//Define the STATIC_URL to be used in the JS files.
 		var STATIC_URL = "{{ STATIC_URL }}";
+		var USER_SVG = "{{ STATIC_URL }}svgs/test.svg"
 	</script>
 	
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
