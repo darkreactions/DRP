@@ -175,6 +175,8 @@ def predictions(request):
 ######################  Searching  #####################################
 def search(request):
 	u = request.user
+	max_search_size = 1000
+	search_page_size = 150
 	if u.is_authenticated():
 		other_fields = get_model_field_names(both=True, unique_only=True)
 		if request.method=="POST":
@@ -190,21 +192,23 @@ def search(request):
 			for query in query_list:
 				field = query.get("field")
 				value = query.get("value")
-				
 				if field in list_fields:
 					Q_string = ""
 					for i in xrange(1,6):
-						Q_string += "Q({}_{}=value )|".format(field, i)
+						Q_string += "Q({}_{}=\"{}\")|".format(field, i, value)
 					Q_string = Q_string[:-1] #Remove the last trailing "|".
 					filters += ".filter({})".format(Q_string)
 				else:
-					filters += ".filter({}=value)".format(field)
-			
-			entries = eval("all_data.{}".format(filters)).order_by("creation_time")
-			entries_found = entries.count()
+					filters += ".filter({}=\"{}\")".format(field, value)
+				
+			entries = eval("all_data{}".format(filters)).order_by("creation_time")[:max_search_size]
+			pk_list = entries[:max_search_size].values("pk")
 				
 			return render(request, 'search_results.html', {
-				"entries_found": entries_found,
+				"entries": entries[:search_page_size], #Only give back a specific amount of entries.
+				"search_page_size":search_page_size,
+				"max_search_size": max_search_size,
+				"entries_found": entries.count(),
 				"no_search": False,
 				"other_fields": other_fields,
 			})
@@ -617,7 +621,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 		return render(request, 'upload_form.html')
 	
 	if error_quantity != 0:
-		success_percent = "{:.1%}".format(added_quantity/(added_quantity+error_quantity))
+		success_percent = "{:.1%}".format(float(added_quantity)/(added_quantity+error_quantity))
 	else:
 		success_percent = "100%"
 	

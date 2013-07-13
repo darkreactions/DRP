@@ -1,0 +1,6 @@
+{% for entry in entries %}
+	<div class="dataGroup_shape genericContainer_inner">
+		<div class="dataIndex">{{ forloop.counter }}</div>
+		{% include "full_datum.html" %}
+	</div>
+{% endfor %}

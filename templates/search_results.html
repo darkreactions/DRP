@@ -1,11 +1,20 @@
 {% if entries_found %} 
 	<div id="searchResultsContainer">
-		{{entries}}
+		{% include "search_results_data_cell.html" %}
+		{% if entries_found > max_search_size %}
+			Filter to further explore data.
+		{% endif %}
 	</div>
-	<div id="entriesFound">Found: {{entries_found}}</div>
+	<div id="entriesFound">Found: 
+		{% if entries_found == max_search_size %}
+			{{max_search_size}}+
+		{% else %}
+			{{entries_found}}
+		{% endif %}
+	</div>
 {% elif no_search %}
 	<div id="searchResultsContainer">
-		No search started yet.
+		Enter filters to search.
 	</div>
 {% else %}
 	<div id="searchResultsContainer">

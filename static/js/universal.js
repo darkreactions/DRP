@@ -1,5 +1,8 @@
 $(document).ready(function() {
 //######################################################################
+CGEntries = undefined;
+CGAbbrevs = undefined;
+
 //############   Sorting   #############################################
 //Sort from greatest to least.
 window.sortNumbers = function(smallNum, bigNum) {
@@ -9,6 +12,18 @@ window.sortNumbers = function(smallNum, bigNum) {
 window.sortNumbersReverse = function(smallNum, bigNum) {
 	return bigNum - smallNum;
 }
+
+//############   Formatting   ##########################################
+window.make_name_verbose = function(string) {
+	var verbose_name = "";
+	var parts = string.split("_");
+	for (var i in parts){
+		verbose_name += parts[i][0].toUpperCase()+parts[i].slice(1)+" ";
+	}
+	verbose_name = verbose_name.slice(0,-1);
+	return verbose_name;
+}
+
 
 //############   Tooltips   ############################################
 //Apply custom tooltips to applicable data.
@@ -22,10 +37,12 @@ $(document).tooltip({
 		}
 	}); 
 
-//Disable the tooltips when an input is selected.
-var tooltips_disabled = false;
-$(document).on("focusin", "input", function() {
-	if (!tooltips_disabled) {
+//Disable the tooltips when a text-input is selected.
+tooltips_disabled = false;
+var exemptList = ["searchValue"];
+$(document).on("focusin", "input[type=text]", function() {
+	//if ((!tooltips_disabled) && exemptList.indexOf($(this).attr("id")) == -1) {
+	if (exemptList.indexOf($(this).attr("id")) == -1) {
 		tooltips_disabled = true
 		$(document).tooltip("disable");
 	}
@@ -83,7 +100,7 @@ $("#userLogOut").click( function() {
 	$.get("/user_logout/", function() {});
 	
 	//Reload the screen to verify log-out.
-	refreshScreen()
+	window.location.reload(true);
 });
 
 //################   Search   ##########################################
@@ -100,42 +117,152 @@ $(document).on("click", ".PT_element", function() {
 	}
 });
 
-$(document).on("click", "#search_filterButton", function() {
-	if ($("#searchValue").val()){
-		current_query.push({
-			"field":$("input[name=field]:checked").val(),
-			"value":$("#searchValue").val(),
-		});
-		alert(current_query);
-		$.ajax({
-			url:"/search/", 
-			method:"post",
-			data: {"current_query":JSON.stringify(current_query)}, 
-			traditional: true,
-			success: function(response) {
-				$("#searchResultsOuterContainer").html(response)
+function sendSearchQuery(current_query) {
+	$.ajax({
+		url:"/search/", 
+		method:"post",
+		data: {"current_query":JSON.stringify(current_query)}, 
+		traditional: true,
+		success: function(response) {
+			$("#searchResultsOuterContainer").html(response)
+			if ($("#searchResultsContainer").html().trim()=="No data found!"){
+				current_query = []; //Clear the current query if nothing is found.
 			}
-		});
+		}
+	});
+}
+
+//Back button tooltip
+$(document).on("mouseover", "#search_backButton", function() {
+	//alert("1");
+	if (current_query.length){
+		//Get the previously used filters.
+		var filter_string = "Filters:"
+		for (var i in current_query.slice(0,-1)) {
+			filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(current_query[i]["field"])+": " + current_query[i]["value"]
+		}
+		
+		//Add the new filter.
+		filter_string += "<br/><div class=\"search_backText\">"+parseInt(current_query.length)+".) "+make_name_verbose(current_query[current_query.length-1]["field"])+": "+current_query[current_query.length-1]["value"]+"</div>"
+		
+		$(this).attr("title", filter_string);
 	} else {
-		showRibbon("Nothing entered!", "#FF6870", $("#popupContainer_inner"), true);
+		$(this).attr("title", "");
 	}
-	//WORKS FOR ONE QUERY:
-	//if ($("#searchValue").val()){
-		//current_query = {
-			//"field":$("input[name=field]:checked").val(),
-			//"value":$("#searchValue").val(),
-		//};
-		//$.post("/search/", current_query, function(response) {
-			//$("#searchResultsOuterContainer").html(response)
-		//});
-	//} else {
-		//showRibbon("Nothing entered!", "#FF6870", $("#popupContainer_inner"), true);
-	//}
+});
+
+//Filter button tooltip
+$(document).on("mouseover", "#search_filterButton", function() {
+	if ($("#searchValue").val()){
+		//Get the previously used filters.
+		var filter_string = "Filters:"
+		for (var i in current_query) {
+			filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(current_query[i]["field"])+": " + current_query[i]["value"]
+		}
+		
+		//Add the new filter.
+		filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(current_query.length)+1)+".) "+make_name_verbose($("input[name=field]:checked").val())+": "+$("#searchValue").val()+"</div>"
+		
+		$(this).attr("title", filter_string);
+	} else {
+		$(this).attr("title", "");
+	}
+});
+
+$(document).on("click", "#search_filterButton", function() {
+	if ($("#searchResultsContainer").html().trim()!="No data found!") {
+		if ($("#searchValue").val()){
+			field = $("input[name=field]:checked").val()
+			value = $("#searchValue").val() 
+			//Make sure the query was not already searched.
+			if (current_query){
+				for (var i in current_query) {
+					if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
+						showRibbon("Already queried!", "#FFC87C","#popupContainer_inner", true);
+						return false //Don't continue if query is already present. 
+					}  
+				}
+			} 
+			
+			showRibbon("Searching!", "#99FF5E","#popupContainer_inner", true);
+			
+			current_query.push({
+				"field":field,
+				"value":value,
+			});
+			sendSearchQuery(current_query);
+		} else {
+			showRibbon("Nothing entered!", "#FF6870", $("#popupContainer_inner"), true);
+		}
+	} else {
+		showRibbon("No data to filter!", "#FF6870", $("#popupContainer_inner"), true);
+	}
+});
+
+$(document).on("click", "#search_backButton", function() {
+	if (current_query.length){
+		current_query.pop();
+		if (current_query.length){
+			sendSearchQuery(current_query);
+		} else {
+			$("#searchResultsOuterContainer").html("<div id=\"searchResultsContainer\"> Enter filters to search. </div>"); 
+		}
+	} else {
+		showRibbon("Already at start!", "#FF6870", $("#popupContainer_inner"), true);
+	}
 });
 
 $(document).on("click", "#search_clearButton", function() {
 	current_query = [];
+	showRibbon("Filters emptied!", "#99FF5E","#popupContainer_inner", true);
 });
+
+
+	//################   Autocompleting Search   #######################
+window.setAutoComplete = function(location, source) {
+	$(location).autocomplete({ 
+		source: source,
+		messages: {
+			noResults: "",
+			results: function() {}
+		}
+	});
+}
+
+$(document).on("focusin", "#searchValue", function() {
+	//Set autocomplete to vary with selection.
+});
+	
+	//////source = source !== undefined ? source : CGAbbrevs;
+	//////if (source==CGAbbrevs) {
+		////////Get the auto-complete options form the CG guide if no other source is found.
+		//////if (CGAbbrevs == undefined) {
+			//////$.get("/send_CG_names/", function(response) {
+				//////CGEntries = response;
+				//////CGAbbrevs = Array();
+				//////for (var key in CGEntries) {
+					//////CGAbbrevs.push(key);
+				//////}
+			//////})
+		//////} else {
+			//////$(location).autocomplete({ 
+				//////source: CGAbbrevs,
+				//////messages: {
+					//////noResults: "",
+					//////results: function() {}
+				//////}
+			//////});
+		//////}
+	//////} else {
+		//////$(location).autocomplete({ 
+			//////source: CGAbbrevs,
+			//////messages: {
+				//////noResults: "",
+				//////results: function() {}
+			//////}
+		//////});
+	//////}
+//////}//###
 
 
 //############ Popup Management: #######################################
@@ -156,7 +283,6 @@ $(document).on("click", ".popupActivator", function() {
 		case "leftMenu_addNew":
 			$.get("/data_form/", function(response) {
 				$("#popupContainer_inner").html(response);
-				
 				//Get the auto-complete options form the CG guide.
 				if (CGAbbrevs == undefined) {
 					$.get("/send_CG_names/", function(response) {
@@ -174,6 +300,7 @@ $(document).on("click", ".popupActivator", function() {
 						});
 					})
 				} else {
+						alert("1");
 					$(".autocomplete_reactant").autocomplete({ 
 						source: CGAbbrevs,
 						messages: {
@@ -242,7 +369,6 @@ $(document).on("click", ".popupActivator", function() {
 	}
 	$("#popupGlobal").fadeIn(300);
 });
-alert("UNIVERSAL!");//###
 // Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
 	$("#popupGlobal").fadeOut("fast");

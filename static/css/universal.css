@@ -367,6 +367,14 @@ option {
 	z-index:100;
 }
 
+.cover {
+	position:fixed;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+}
+
 /* ##################   SPECIFIC POPUPS   ########################### */
 #popupContainer[for="changePassword"] {
 	text-align:center;
@@ -515,8 +523,91 @@ padding-bottom:10px;
 	color:black;
 }
 
+/* ###############   DATA STYLE   ################################### */
+.dataGroup_shape {
+	margin-top:8px;
+	margin-bottom:15px;
+	position:relative;
+	border-left:2px solid black;
+	border-top:2px solid black;
+	width:95%;
+}
+.dataField {
+	font-style:oblique;
+	display: inline-block;
+	padding:2px;
+	border-radius:5px;
+	font-size:15px;
+}
+
+.datafield:empty {
+	min-width:10px;
+	min-height:5px;
+}
+.datafield:empty:hover {
+	background-color:#A8C8E0;
+}
+
+.dataField:after {
+	font-style:oblique;
+	font-weight:bold;
+	background-color:none;
+}
+
+.dataField:before {
+	font-style:oblique;
+	font-weight:bold;
+	font-size:14px;
+}
+
+.dataDecorator {
+	font-style:oblique;
+	font-weight:bold;
+	font-size:14px;
+	display:inline-block;
+}
+
+		/* ############### :AFTER STYLE ############################# */
+.type_temp:after { content: "\2103"; }
+.type_time:after { content: " Hours"; }
+.type_notes:empty:after { content:"(None)"; }
+
+		/* ############### :BEFORE STYLE ############################# */
+.type_slow_cool:before { content: "Slow Cooled: "; }
+.type_leak:before { content: "Leak: "; }
+.type_pH:before { content: "pH: "; }
+.type_purity:before { content: "Purity: "; }
+.type_outcome:before { content: "Outcome: "; }
+.type_notes:before { content: "Notes: "; }
+.type_ref:before { content: "Reference: "; }
+.type_user:before { 
+	content:"Last Modified by "; 
+	font-style:oblique;
+	font-weight:bold;
+}
+
+		/* ################ .TYPE STYLE ############################# */
+.type_reactant { 
+	font-weight:bold;
+	font-style:none; 
+	max-width:300px;
+}
+
+.type_notes {
+	max-width:400px;
+}
+
+.type_user {
+	font-size:14px;
+	opacity:0.5;
+	position:absolute;
+	right:0px;
+	bottom:-7px;
+}
+
 /* #################    Search Results    ####################### */
 #searchResultsContainer{
+	position:relative;
 	overflow:visible;
 }
 
@@ -698,6 +789,15 @@ padding-bottom:10px;
 	left:0px;
 }
 
+.search_backText {
+	text-decoration: line-through;
+	opacity:0.7;
+}
+
+.search_filterText {
+	font-weight: bold;
+	color:#99FF5E;
+}
 
 
 /* #####################   ERROR STYLE   ############################ */

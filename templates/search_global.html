@@ -9,13 +9,14 @@
 		<div id="periodicTableContainer"> {% include "periodic_table.html" %} 
 		<form action="/search/" method="post" name="login" id="searchForm_atom" class="popupScreenForm infoForm">
 			{% csrf_token %}
-			<input id="radio_and" type="radio" name="condition" value="and" checked>
+			<input id="radio_and" type="radio" class="radioSearch" name="condition" value="and" checked>
 				<label id="label_and" class="genericButton" for="radio_and">And</label>
 			</input><br/>
-			<input id="radio_or" class="genericButton" type="radio" name="condition" value="or">
+			<input id="radio_or" class="genericButton" type="radio" class="radioSearch" name="condition" value="or">
 				<label id="label_or" class="genericButton" for="radio_or">Or</label>
 			</input>
 			<input id="search_filterButton_atoms" type="button" value="Filter" class="form_button"/>
+			<input id="search_backButton_atoms" type="button" value="Back" class="form_button"/>
 			<input id="search_clearButton_atoms" type="button" value="Clear" class="form_button"/>
 		</form>
 		</div>
@@ -25,17 +26,17 @@
 			{% csrf_token %}
 				<div class="radioContainer">
 				<label for="field">Field:</label>
-				<input id="radio_reactant" type="radio" name="field" value="reactant" checked>
+				<input id="radio_reactant" type="radio" class="radioSearch" name="field" value="reactant" checked>
 					<label for="radio_reactant" class="radio_label genericButton">
 						Reactant
 					</label>
 				</input>
-				<input id="radio_unit" type="radio" name="field" value="unit">
+				<input id="radio_unit" type="radio" class="radioSearch" name="field" value="unit">
 					<label for="radio_unit" class="radio_label genericButton">
 						Unit
 					</label>
 				</input>
-				<input id="radio_quantity" type="radio" name="field" value="quantity">
+				<input id="radio_quantity" type="radio" class="radioSearch" name="field" value="quantity">
 					<label for="radio_quantity" class="radio_label genericButton">
 						Quantity
 					</label>
@@ -44,13 +45,13 @@
 				{% if forloop.counter0 == 3 %}
 					</div>
 					<div class="radioContainer">
-					<input id="radio_{{field.raw}}" type="radio" name="field" value="{{field.raw}}">
+					<input id="radio_{{field.raw}}" type="radio" class="radioSearch" name="field" value="{{field.raw}}">
 						<label for="radio_{{field.raw}}" class="radio_label genericButton">
 							{{field.verbose}}
 						</label>
 					</input>
 				{% else %}
-					<input id="radio_{{field.raw}}" type="radio" name="field" value="{{field.raw}}">
+					<input id="radio_{{field.raw}}" type="radio" class="radioSearch" name="field" value="{{field.raw}}">
 						<label for="radio_{{field.raw}}" class="radio_label genericButton">
 							{{field.verbose}}
 						</label>
@@ -65,6 +66,7 @@
 				<br />
 				
 				<input id="search_filterButton" type="button" value="Filter" class="form_button"/>
+				<input id="search_backButton" type="button" value="Back" class="form_button"/>
 				<input id="search_clearButton" type="button" value="Clear" class="form_button"/>
 		</form>
 	</div>

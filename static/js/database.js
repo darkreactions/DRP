@@ -8,15 +8,15 @@ var changesMade = {
 	add:[],
 	};
 var CGSelected = Array();
-var CGEntries;
-var CGAbbrevs;
 	
 //############ Post-load Setup: #########################################
 restyleData() //Style the data according to what it contains.
 
 //############ Reactant Tooltips: ##################################
 $(document).on("mouseover", ".type_reactant", function() {
-	if ($(this).children("input").length == 0){
+	if ($(this).is(":empty")) {
+		$(this).attr("title", "Click to add a new reactant.")
+	} else if ($(this).children("input").length == 0 && !(tooltips_disabled)){
 		if (CGEntries == undefined) {
 			$(this).attr("title", "Loading!")
 			$.get("/send_CG_names/", function(response) {
@@ -29,6 +29,8 @@ $(document).on("mouseover", ".type_reactant", function() {
 			var compound = CGEntries[$(this).html()] || "Compound not in guide!"
 			$(this).attr("title", compound)
 		}
+	} else {
+		$(this).attr("title", "")
 	}
 });
 
@@ -93,7 +95,7 @@ function submitChanges(refresh) {
 	refresh = refresh !== undefined ? refresh : true 
 	
 	if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
-		showRibbon("Working! This may take a moment.", "FFC87C", "body", false);
+		showRibbon("Working! This may take a moment.", "#FFC87C", "body", false);
 	}
 
 	JSONArray = JSON.stringify(changesMade);
@@ -123,7 +125,7 @@ $(document).on("change", "#uploadCSV_hiddenInput", function() {
 
 //############ Form Interactions: ######################################
 $(document).on("submit", ".uploadForm", function() { //###Ugly...
-	showRibbon("Working! This may take a moment.", "FFC87C", "body", false);
+	showRibbon("Working! This may take a moment.", "#FFC87C", "body", false);
 });
 
 //################ CG Editing: #########################################
@@ -157,6 +159,11 @@ $(document).on("click", ".CG_saveButton", function() {
 //############ Data Selection: #########################################
 //Click Group to Select:
 $(document).on("click", ".dataGroup", function() {
+	//Don't select data in search containers.
+	if ($(this).parent().attr("id") == "searchContainer") {
+		return false;
+	}
+	
 	$(this).toggleClass("dataSelected");
 	
 	//Get Index of Selected Data by Number
@@ -293,7 +300,13 @@ $("#leftMenu_delete").click(function() {
 
 //############ Edit Data: ###########################@##################
 //Initiate edit session.
+var editExemptions = ["searchResultsContainer"]
 $(document).on("click", ".editable", function() {
+	//Skip any data that should not be edited. //###
+	if (editExemptions.indexOf($(".editable").parent().parent().attr("id")) != -1) {
+		return false;
+	}
+	
 	$(".editable").css("opacity",1);
 	
 	if ($(this).children(".editConfirm").length == 0 ) {
