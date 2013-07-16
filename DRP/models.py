@@ -10,6 +10,22 @@ from django.db import models
 from validation import *
 import random, string, datetime
 
+
+
+#############  CACHE VALIDATION and ACCESS  ###########################
+#Strip any spaces from the lab group title and/or the keys on cache access.
+def set_cache(lab_group, key, value, duration=604800): #Default duration is 1 week.
+	condensed_lab = lab_group.lab_title.replace(" ","")
+	if key: condensed_key = key.replace(" ","") #Don't try to .replace None-types.
+	else: condensed_key = None
+	cache.set("{}|{}".format(condensed_lab, condensed_key), value, duration) 
+	
+	
+def get_cache(lab_group, key):
+	condensed_lab = lab_group.lab_title.replace(" ","")
+	condensed_key = key.replace(" ","") #Key must be a string.
+	return cache.get("{}|{}".format(condensed_lab, condensed_key)) 
+	
 ############### USER and LAB INTEGRATION #######################
 ACCESS_CODE_MAX_LENGTH = 20 #Designates the max_length of access_codes
 
@@ -161,18 +177,18 @@ class CompoundGuideForm(ModelForm):
 		return clean_data
 
 def collect_CG_entries(lab_group, overwrite=False):
-	compound_guide = cache.get("{}|COMPOUNDGUIDE".format(lab_group.lab_title))
+	compound_guide = get_cache(lab_group, "COMPOUNDGUIDE")
 	if not compound_guide or overwrite:
 		compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
-		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), list(compound_guide))
+		set_cache(lab_group, "COMPOUNDGUIDE", list(compound_guide))
 	return compound_guide
 
 def collect_CG_name_pairs(lab_group, overwrite=False):
-	pairs = cache.get("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title))
+	pairs = get_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS")
 	if not pairs or overwrite:
 		compound_guide = collect_CG_entries(lab_group)
 		pairs = {entry.abbrev: entry.compound for entry in compound_guide}
-		cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), pairs)
+		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", pairs)
 	return pairs
 def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
 	try:

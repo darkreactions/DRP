@@ -1,28 +1,14 @@
-###GAE serves static files separately and thus they can't easily be accessed.
-##from django.conf import settings
-##import json
-##with open(settings.STATIC_ROOT+"js/editChoices.json") as file_handle:
-	##range_fields = json.load(file_handle)
+from django.conf import settings
+import json
 
-#Contents of JSON files:
-data_ranges = {
-	"quantity" : [0,50],
-	"temp" : [0,500],
-	"outcome" : [0,4],
-	"purity" : [0,2],
-	"time" : [0,350],
-	"pH" : [-2,17],
-	"ref" : [1,12],
-	"notes" : [0,65]
-	}
-edit_choices = {
-	"unitChoices" : ["g","mL","d"],
-	"boolChoices" : ["Yes","No","?"],
-	"outcomeChoices" : [0,1,2,3,4],
-	"purityChoices" : [0,1,2],
-	"typeChoices": ["Org", "Inorg", "pH", "Ox", "Sol", "Water"],
-	}
+#Import the data ranges from the json files.
+static_dir = settings.BASE_DIR + settings.STATIC_URL
+with open(static_dir+"js/editChoices.json") as file_handle:
+	edit_choices = json.load(file_handle)
+with open(static_dir+"js/dataRanges.json") as file_handle:
+	data_ranges = json.load(file_handle)
 	
+
 #Fields that can be edited with a range alone: ###Copied in clientValidate.js
 range_fields = {"quantity", "temp", "time", "pH", "outcome", "purity"}
 #Fields that must be between a specific character count/limit:

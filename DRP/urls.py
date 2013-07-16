@@ -1,8 +1,7 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
-from views import *
+from DRP.views import *
 
 # Uncomment the next two lines to enable the admin: ###C
 admin.autodiscover()
@@ -42,7 +41,4 @@ urlpatterns = patterns('',
 	
 	#Enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    
-    #Send the favicon.ico:
-    #(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.STATIC_URL+'/favicon.ico'}),
 )

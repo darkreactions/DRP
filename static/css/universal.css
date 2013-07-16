@@ -351,6 +351,7 @@ option {
 	border-left: 2px black solid;
 	border-radius:25px;
 	padding:15px;
+	overflow:hidden;
 	
 	color:#FFE98F;
 	font-style:oblique;
@@ -411,7 +412,7 @@ option {
 #popupContainer[for="searchButton"] {
 	text-align:center;
 	top:50px;
-	left:10%;
+	left:15%;
 	width:70%;
 	min-width:600px;
 }
@@ -429,6 +430,12 @@ option {
 }
 
 /* #################    Periodic Table    ####################### */
+#periodicTableContainer {
+	position:relative;
+	width:560px;
+	display:inline-block;
+}
+
 .PT_spacer{
 height:10px;
 }
@@ -470,15 +477,15 @@ height:10px;
 #label_and {
 	position:absolute;
 	width:40px;
-	bottom:160px;
-	right:25px;
+	bottom:80px;
+	right:10px;
 }
 
 #label_or {
 	position:absolute;
 	width:40px;
-	bottom:125px;
-	right:25px;
+	bottom:40px;
+	right:10px;
 }
 
 .radioContainer{

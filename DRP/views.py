@@ -1,5 +1,4 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.core.cache import cache
 from django.shortcuts import render
 from django.contrib import auth
 from django.db.models import Q
@@ -11,7 +10,10 @@ import csv
 import string
 import datetime
 
+
 ######################  Controllers  ###################################
+
+#Manages pages and data:	
 class DataManager(object):
 	def __init__(self):
 		self.data_per_page = 15 #Change to set different numbers of data per page.
@@ -23,16 +25,16 @@ class DataManager(object):
 
 	def calc_total_pages(self, lab_group, total_data_size = None):
 		if not total_data_size:
-			total_data_size = cache.get("{}|TOTALSIZE".format(lab_group.lab_title))
+			total_data_size = get_cache(lab_group, "TOTALSIZE")
 		total_pages = 1 + int((total_data_size-1)/self.data_per_page)
 		if (total_pages < 1): total_pages = 1
-		cache.set("{}|TOTALPAGES".format(lab_group.lab_title), total_pages)
+		set_cache(lab_group, "TOTALPAGES", total_pages)
 		return total_pages
 		
 	#Erases the cached page which contains a specific index.
 	def clear_page_of(self, lab_group, indexChanged):
 		page = (indexChanged/self.data_per_page) + 1
-		cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), None)
+		set_cache(lab_group, "PAGEDATA|{}".format(page), None)
 		
 	def get_page_links(self, current, total_pages):
 		#Always display the first page.
@@ -69,7 +71,7 @@ class DataManager(object):
 		lab_group = user.get_profile().lab_group
 		
 		#Only retrieve lab_data if it is not already available.
-		cached_data = cache.get("{}|PAGEDATA|{}".format(lab_group.lab_title, page))
+		cached_data = get_cache(lab_group, "PAGEDATA|{}".format(page))
 		
 		
 		if not cached_data or overwrite:
@@ -79,7 +81,7 @@ class DataManager(object):
 			#Only return the data on the given page.
 			rel_lab_data = lab_data[(page-1)*self.data_per_page:(page)*self.data_per_page]
 			#Overwrite the existing cache entry.
-			cache.set("{}|PAGEDATA|{}".format(lab_group.lab_title, page), list(rel_lab_data))
+			set_cache(lab_group, "PAGEDATA|{}".format(page), list(rel_lab_data))
 		else: 
 			rel_lab_data = cached_data 
 		return rel_lab_data
@@ -98,7 +100,7 @@ class DataManager(object):
 			lab_group = u.get_profile().lab_group
 			lab_data = self.collect_all_data(lab_group)
 			total_data_size = lab_data.count()
-			cache.set("{}|TOTALSIZE".format(lab_group.lab_title), total_data_size)
+			set_cache(lab_group, "TOTALSIZE", total_data_size)
 			total_pages = self.calc_total_pages(lab_group, total_data_size)
 			
 			#Make sure the page is a valid page.
@@ -118,7 +120,6 @@ class DataManager(object):
 			raise Exception("-Data could not be retrieved for page {}\n--{}.".format(current_page, e))
 
 control = DataManager()
-	
 
 ######################  Core Views  ####################################
 def database(request, control = control):
@@ -235,8 +236,8 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 				#If all data is valid, save the entry.
 				form.save()
 				#Clear the cached CG data.
-				cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
-				cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), None)
+				set_cache(lab_group, "COMPOUNDGUIDE", None)
+				set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 				success = True #Used to display the ribbonMessage.
 		else:
 			#Submit a blank form if one was not just submitted.
@@ -252,21 +253,18 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 	else:
 		return HttpResponse("Please log in to access the compound guide!")
 
-def edit_CG_entry(request):
+def edit_CG_entry(request): ###Edits?
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
-		print("\n1")
 		changesMade = json.loads(request.body, "utf-8")
 		
-		print("\n2")
 		#Get the Lab_Group data to allow direct manipulation.
 		lab_group = u.get_profile().lab_group
 		CG_data = collect_CG_entries(lab_group)	
 		
 		#Clear the cached CG entries.
-		cache.set("{}|COMPOUNDGUIDE".format(lab_group.lab_title), None)
-		cache.set("{}|COMPOUNDGUIDE|NAMEPAIRS".format(lab_group.lab_title), None)
-		print("\n3")
+		set_cache(lab_group, "COMPOUNDGUIDE", None)
+		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 		
 		#Since only deletions are supported currently. ###
 		for index in changesMade: ###Tie names to CG abbrevs directly?
@@ -275,7 +273,6 @@ def edit_CG_entry(request):
 			except Exception as e:
 				print("\n\nCould not delete index! {}".format(e))
 			
-	print("\n4")
 	return HttpResponse("OK")
 
 	##################  Helper Functions ###############################
@@ -307,11 +304,11 @@ def data_form(request): #If no data is entered, stay on the current page.
 			lab_group = u.get_profile().lab_group
 			
 			#Clear the cache of the last page.
-			old_data_size = cache.get("{}|TOTALSIZE".format(lab_group.lab_title))
+			old_data_size = get_cache(lab_group, "TOTALSIZE")
 			control.clear_page_of(old_data_size)
 			
 			#Refresh the TOTALSIZE cache.
-			cache.set("{}|TOTALSIZE".format(lab_group.lab_title), old_data_size + 1)
+			set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
 			success = True #Used to display the ribbonMessage.
 	else:
 		#Submit a blank form if one was not just submitted.
@@ -423,7 +420,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			
 		true_fields = get_model_field_names(model=model)
 		print true_fields
-		row_num = 1
+		row_num = 2 #Assuming row 1 is headings.
 		
 		#Settings:
 		blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data.
@@ -528,24 +525,36 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								#If the field is a quantity, check for units.
 								if field[:-2]=="quantity":
 									#Remove punctuation and whitespace if necessary.
-									datum = str(datum).lower()
-									datum = datum.translate(None, "\n?/,!@#$%^&*-+=_\\|") #Remove gross stuff.
+									datum = str(datum).lower().translate(None, "\n?/,!@#$%^&*-+=_\\|") 
+									
+									#Make sure parentheses do not contain numbers as well -- and if they do, remove them.
+									try:
+										paren_contents = datum[datum.index("(")+1:datum.index(")")]
+										if paren_contents.isalpha():
+											unit = paren_contents
+										else:
+											#Ignore the paren_contents if obviously not a unit.
+											datum = datum[:datum.index("(")]+datum[datum.index(")")+1:]
+											###Display error or auto-convert?
+											###raise Exception("Invalid character found in unit: {}".format(paren_contents))
+									except:
+										unit = "" #Gather a unit from quantity if present.
+									
 									stripped_datum = ""
-									unit = "" #Gather a unit from quantity if present.
 									for element in datum:
-										if not element in "1234567890.":
+										if element in "1234567890. ": #Ignore spaces as well.
+											stripped_datum += element
+										else:
+											old_datum = datum
 											datum = float(stripped_datum)
 											
 											#If another element is reached, assume it is a unit. 
 											#	(if it isn't valid, raise an exception)
-											if element == " ": continue #Ignore spaces.
-											elif element == "g": unit = "g"
+											if element == "g": unit = "g"
 											elif element == "m": unit = "mL"
 											elif element == "d": unit = "d"
-											else: raise Exception("Unknown unit present: {}".format(element))	
+											else: raise Exception("Unknown unit present: {}".format(old_datum[old_datum.index(element):]))	
 											break #Ignore anything beyond the unit.
-										else:
-											stripped_datum += element
 											
 									#If the unit was auto-added_quantity, add the unit to the correct field.
 									corresponding_unit = "unit_{}".format(field[-1])
@@ -554,6 +563,11 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										if unit=="": unit = "g"
 										#Apply the unit to the data entry.
 										model_fields[corresponding_unit] = unit
+								
+								#Trim "note" fields that are over the range.
+								elif field=="notes":
+									if len(datum) > int(data_ranges["notes"][1]):
+										datum = datum[:int(data_ranges["notes"][1])]
 								#Translate any yes/no answer to "Yes"/"No"
 								elif field in bool_fields: 
 									datum = datum.lower()
@@ -608,8 +622,9 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			#Update cursors if data was added.
 			if added_quantity and model=="Data":
 				Data.objects.bulk_create(entry_list)
-			if added_quantity and model=="CompoundEntry":
+			elif added_quantity and model=="CompoundEntry":
 				CompoundEntry.objects.bulk_create(entry_list)
+			entry_list = None #Clear the entry_list out of memory.
 		except Exception as e:
 			error_log.append([str(e)])
 	elif not u.is_authenticated():
@@ -625,6 +640,10 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 	else:
 		success_percent = "100%"
 	
+	#Cache the error_log for easy access later.
+	if error_log:
+		#Store the error log for 4 hours.
+		set_cache(u.get_profile().lab_group, "UPLOADERRORLOG", 14400)
 	#Render the results template.
 	return render(request, 'upload_results.html', {
 		"fatal_message": fatal_message, #Includes data and data_indexes.
@@ -673,6 +692,45 @@ def download_CSV(request): ###Need to fix.
 	else:
 		return HttpResponse("<p>Please log in to download data.</p>")
 
+def download_error_log(request):
+	u = request.user
+	if u.is_authenticated():
+		#Generate a file name.
+		date = datetime.datetime.now()
+		file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
+			date.day, date.month, date.year)
+		
+		CSV_file = HttpResponse(content_type="text/csv")
+		CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
+		
+		#Django HttpResponse objects can be handleded like files.
+		writer = csv.writer(CSV_file)
+		
+		#Write the verbose headers to the CSV_file
+		verbose_headers = get_model_field_names(verbose=True)
+		writer.writerow(verbose_headers)
+		
+		#Write the actual entries to the CSV_file if the user is authenticated.
+		headers = get_model_field_names(verbose=False)
+		lab_data = control.collect_all_data(u.get_profile().lab_group)
+		
+		for entry in lab_data:
+			row = []
+			try:
+				#Apply the other columns.
+				for field in headers:
+					if field[-1].isdigit():
+						pass
+					else:
+						row += [eval("entry.{}".format(field))]
+				writer.writerow(row)
+			except Exception as e:
+				print(e)###
+				pass
+		return CSV_file #ie, return HttpResponse(content_type="text/csv")
+	else:
+		return HttpResponse("<p>Please log in to download data.</p>")
+	
 ######################  Change Page ####################################
 def data_transmit(request, num = 1, control=control):
 	try:

@@ -215,6 +215,7 @@ $(document).on("click", "#search_backButton", function() {
 $(document).on("click", "#search_clearButton", function() {
 	current_query = [];
 	showRibbon("Filters emptied!", "#99FF5E","#popupContainer_inner", true);
+	$("#searchResultsContainer").html("Enter filters to search."); 
 });
 
 
