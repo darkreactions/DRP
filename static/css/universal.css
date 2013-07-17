@@ -226,7 +226,7 @@ option {
 	background-color:inherit;
 }
 	/* ################   Tooltips    ############################### */
-.ui-tooltip {
+div.ui-tooltip {
 	position:fixed;
 	z-index:8000;
 	background:rgba(1, 1, 1, 0.85);

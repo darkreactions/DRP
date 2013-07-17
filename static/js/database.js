@@ -18,11 +18,11 @@ $(document).on("mouseover", ".type_reactant", function() {
 		$(this).attr("title", "Click to add a new reactant.")
 	} else if ($(this).children("input").length == 0 && !(tooltips_disabled)){
 		if (CGEntries == undefined) {
-			$(this).attr("title", "Loading!")
+			var specificDiv = $(this);
+			$(specificDiv).attr("title", "Loading!")
 			$.get("/send_CG_names/", function(response) {
 				CGEntries = response;
-				var compound = CGEntries[$(this).html()] || "Compound not in guide!"
-				$(this).attr("title", compound);
+				var compound = CGEntries[$(specificDiv).html()] || "Compound not in guide!"
 				$(".ui-tooltip").html(compound);
 				});
 		} else {

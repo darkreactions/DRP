@@ -39,6 +39,18 @@ function quickValidate(field, value, required) {//###
 		return (range[0] <= parseFloat(value) && parseFloat(value) <= range[1])
 	} else if (limitFields.indexOf(field) >= 0) {
 		return (range[0] <= value.length && value.length <= range[1])
+	} else if (field=="reactant"){
+		//Load the CG entries if not loaded yet.
+		if (CGEntries == undefined) {
+			$.get("/send_CG_names/", function(response) {
+				CGEntries = response;
+				});
+		} 
+			
+		if (CGEntries[value]!==undefined) {
+			return true;
+		}
+		return false;
 	} else {
 		return true; //If range tests passed, label as valid data.
 	}
