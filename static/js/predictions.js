@@ -6,7 +6,7 @@ var dragStartX = 0;
 var dragStartY = 0;
 var widthSVG = 0;
 var heightSVG = 0;
-var dragResistance = 0.50;
+var dragResistance = 0.5;
 
 
 //Load the SVG
@@ -19,37 +19,52 @@ $(document).one("mouseover", "svg", function() {
 	document.getElementById("graph1").getElementsByTagName("title")[0]
 		.childNodes[0].nodeValue="";
 	//Set the SVG size.
-	widthSVG = document.getElementsByTagName("svg")[0].getAttribute("width");
-	heightSVG= document.getElementsByTagName("svg")[0].getAttribute("height");
+	widthSVG = parseInt(document.getElementsByTagName("svg")[0].getAttribute("width"));
+	heightSVG= parseInt(document.getElementsByTagName("svg")[0].getAttribute("height"));
+	$("#svgFile").css("cursor","pointer");
 });
 
 $(document).on("mousedown", "#svgFile", function(e) {
+	$("#svgFile").css("cursor","move");
+	e.originalEvent.preventDefault();
 	dragging=true;
-	dragStartX = e.pageX;
-	dragStartY = e.pageY;
+	dragStartX = parseInt(e.pageX);
+	dragStartY = parseInt(e.pageY);
 });
 $(document).on("mouseup", "#svgFile", function(e) {
+	$("#svgFile").css("cursor","pointer");
 	dragging=false;
+});
+
+$(document).on("mouseout", "#svgFile", function(e) {
+	$("#svgFile").css("cursor","pointer");
+	dragging=false;
+});
+
+$(document).on("mousewheel", "#svgFILE", function(e) {
+	alert("cat");
 });
 
 $("#svgFile").mousemove(function(e) {
 	if (dragging) {
-		dragEndX = e.pageX;
-		dragEndY = e.pageY;
+		dragEndX = parseInt(e.pageX);
+		dragEndY = parseInt(e.pageY);
 		
 		
 		var currentPos = document.getElementsByTagName("svg")[0].getAttribute("viewBox").split(" ");
-		var newPos = []
-		newPos.push(parseInt(currentPos[0]-(dragEndX-dragStartX)*dragResistance));
-		newPos.push(parseInt(currentPos[1]-(dragEndY-dragStartY)*dragResistance));
-		newPos.push(parseInt(currentPos[2]-(dragEndX-dragStartX)*dragResistance)+parseInt(widthSVG));
-		newPos.push(parseInt(currentPos[3]-(dragEndY-dragStartY)*dragResistance)+parseInt(heightSVG));
 		
-		finalPos = newPos.join(" ");
+		//Make sure the SVG boundaries are not exceeded.
+		var leftX = parseInt(currentPos[0])-parseInt(dragEndX-dragStartX)*parseFloat(dragResistance);
+		if (leftX < 0) {leftX = 0}
+		var topY = parseInt(currentPos[1])-parseInt(dragEndY-dragStartY)*parseFloat(dragResistance);
+		if (topY < 0) {topY = 0}
+		 
+		//Replace the current viewbox.
+		var finalPos = [leftX, topY, widthSVG, heightSVG].join(" ");
 		document.getElementsByTagName("svg")[0].setAttribute("viewBox", finalPos);
 		
-		dragStartX = e.pageX;
-		dragStartY = e.pageY;
+		dragStartX = dragEndX;
+		dragStartY = dragEndY;
 	}
 });
 
@@ -58,6 +73,7 @@ function nodeTooltip(node) {
 	//Strip the title from the node.
 	var elemID = $(node).attr("id");
 	var elem = document.getElementById(elemID);
+	$("body").append("<div id=\"nodeTooltipContainer\"></div>");
 	$("#nodeTooltipContainer").html(
 		elem.getElementsByTagName("title")[0].childNodes[0].nodeValue
 		);
@@ -69,6 +85,7 @@ function nodeTooltip(node) {
 	var tooltipWidth = $("#nodeTooltipContainer").width();
 	
 	$("#nodeTooltipContainer").css({
+		"display": "inline-block",
 		"left": nodeCenterX-tooltipWidth/2,
 		"top": nodePos.top+50,
 	});
@@ -92,9 +109,11 @@ $(document).on("mouseover", ".node", function() {
 $(document).on("mouseout", ".node", function() {
 	$(this).children("ellipse").attr("stroke-width" ,"1");
 	$(this).children("ellipse").attr("stroke", "black");
-	$("#nodeTooltipContainer").animate({
-		opacity: 0,
-	}, 200);
+	//$("#nodeTooltipContainer").animate({
+		//opacity: 0,
+		//zindex:0,
+	//}, 200);
+	$("#nodeTooltipContainer").fadeOut(200);
 	
 	//Reinsert the title node for future use.
 	var elem = document.getElementById($(this).attr("id"));

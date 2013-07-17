@@ -305,7 +305,7 @@ def data_form(request): #If no data is entered, stay on the current page.
 			
 			#Clear the cache of the last page.
 			old_data_size = get_cache(lab_group, "TOTALSIZE")
-			control.clear_page_of(old_data_size)
+			control.clear_page_of(lab_group, old_data_size)
 			
 			#Refresh the TOTALSIZE cache.
 			set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
@@ -692,7 +692,7 @@ def download_CSV(request): ###Need to fix.
 	else:
 		return HttpResponse("<p>Please log in to download data.</p>")
 
-def download_error_log(request):
+def download_error_log(request): ###Nothing done yet... ;B
 	u = request.user
 	if u.is_authenticated():
 		#Generate a file name.

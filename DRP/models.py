@@ -291,6 +291,21 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 	return clean_fields
 	
 class DataEntryForm(ModelForm):
+	#List Fields
+	#for i in xrange(1,6):
+		#if i > 2: 
+			#required="required=False,"
+		#else: 
+			#required=""
+		#exec("""reactant_{0} = CharField({1} label='Reactant {0}', widget=TextInput(
+			#attrs={'class':'form_text autocomplete_reactant',
+			#'title':'Enter the name of the reactant.'}))""".format(i, required))
+		#exec("""quantity_{0} = CharField({1} label='Quantity {0}', widget=TextInput(
+		#attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
+		#'title':'Enter the mass of Reactant {}.'}))""".format(i, required))
+		#exec("""unit_{} = ChoiceField(choices = UNIT_CHOICES, widget=Select(
+		#attrs={'class':'form_text dropDownMenu',
+		#'title':'Is the quantity a mass or volume?'}))""".format(i))
 	#Define the style and other attributes for each field.
 	reactant_1 = CharField(label="Reactant 1",widget=TextInput(
 		attrs={'class':'form_text autocomplete_reactant',
@@ -398,10 +413,6 @@ class DataEntryForm(ModelForm):
 		datum.lab_group = self.lab_group
 		datum.creation_time = self.creation_time
 
-		#Add the modified list fields to the datum.
-		for field in list_fields:
-			store_listy_string(datum, field, self.cleaned_data[field])
-
 		if commit:
 			datum.save()
 		return datum
@@ -438,6 +449,7 @@ class DataEntryForm(ModelForm):
 		
 		for field in dirty_data:
 			if field[-1].isdigit():
+				#Put the data in its respective list.
 				rel_list = eval("{}".format(field[:-2]))
 				rel_list[int(field[-1])-1] = (dirty_data[field])
 			else:
@@ -479,11 +491,11 @@ class DataEntryForm(ModelForm):
 				for i in xrange(len(parsed_data[field])):
 					if not parsed_data[field][i]: continue #Don't validate empty values.
 					try:
-						dirty_reactant = str(parsed_data[field][i])
-						assert(validate_name(dirty_reactant, clean_data["lab_group"]))
-						clean_data[field].append(dirty_reactant) #Add the filtered value to the clean values dict.
+						dirty_datum = str(parsed_data[field][i])
+						assert(validate_name(dirty_datum, clean_data["lab_group"]))
+						clean_data["{}_{}".format(field,i+1)] = dirty_datum #Add the filtered value to the clean values dict.
 					except:
-						self._errors[field+"_"+str(i+1)] = self.error_class(
+						self._errors["{}_{}".format(field,i+1)] = self.error_class(
 							["Not in compound guide!"])
 			
 			#Numeric fields:
@@ -497,9 +509,9 @@ class DataEntryForm(ModelForm):
 						try:
 							dirty_datum = eval("{}(parsed_data[field][i])".format(field_type))
 							assert(quick_validation(field, dirty_datum))
-							clean_data[field].append(dirty_datum)
+							clean_data["{}_{}".format(field,i+1)] = dirty_datum
 						except:
-							self._errors[field+"_"+str(i+1)] = self.error_class(
+							self._errors["{}_{}".format(field,i+1)] = self.error_class(
 								["Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])])
 				else:
 					try:
@@ -521,14 +533,16 @@ class DataEntryForm(ModelForm):
 						try:
 							dirty_datum = str(parsed_data[field][i])
 							assert(quick_validation(field, dirty_datum))
-							clean_data[field].append(dirty_datum)
+							print "VALIDATED! {}_{}".format(field,i+1)
+							clean_data["{}_{}".format(field,i+1)] = dirty_datum
+							print "added!"
 						except:
 							if field in bool_fields: 
 								category="boolChoices"
 							else: 
 								category = field+"Choices"
 
-							self._errors[field] = self.error_class(
+							self._errors["{}_{}".format(field,i+1)] = self.error_class(
 								["Field must be one of: {}".format(edit_choices[category])])
 				else:
 					try:
@@ -553,5 +567,6 @@ class DataEntryForm(ModelForm):
 				except:
 					self._errors[field] = self.error_class(
 						["Cannot exceed {} characters.".format(data_ranges[field][1])])
+		print parsed_data
 		return clean_data
 		

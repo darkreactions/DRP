@@ -64,7 +64,6 @@ window.showRibbon = function(message, color, location, timeout) {
 		"<div class=\"ribbonMessage\" style=\"background-color:" + color + 
 			";\">" + message + "</div>"
 	);
-	//alert($(".ribbonMessage").length);
 	if (timeout) {
 		setTimeout(function() {
 			$(location).children(".ribbonMessage").fadeOut(1000);
@@ -134,7 +133,6 @@ function sendSearchQuery(current_query) {
 
 //Back button tooltip
 $(document).on("mouseover", "#search_backButton", function() {
-	//alert("1");
 	if (current_query.length){
 		//Get the previously used filters.
 		var filter_string = "Filters:"
@@ -301,7 +299,6 @@ $(document).on("click", ".popupActivator", function() {
 						});
 					})
 				} else {
-						alert("1");
 					$(".autocomplete_reactant").autocomplete({ 
 						source: CGAbbrevs,
 						messages: {
