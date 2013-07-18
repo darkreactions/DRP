@@ -10,6 +10,8 @@ import csv
 import string
 import datetime
 
+from svg_construction import *
+
 
 ######################  Controllers  ###################################
 
@@ -163,15 +165,18 @@ def predictions(request):
 	#Variable Setup
 	u = request.user
 	fatal_message = ""
-	svg_src = ""
+	svg = ""
 	
 	if u.is_authenticated():
-		svg_src = "FAKEURL"###
+		svg = generate_svg(u.get_profile().lab_group)
+	else:
+		fatal_message = "Please log in to view predictions."
 	
 	return render(request, 'predictions_global.html', {
 		"fatal_message": fatal_message,
-		"svg_src": svg_src, #Includes data and data_indexes.
+		"svg": svg, #Includes data and data_indexes.
 	})
+	
 	
 ######################  Searching  #####################################
 def search(request):

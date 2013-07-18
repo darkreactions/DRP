@@ -1,0 +1,5 @@
+[
+["selenium dioxide + homopiperazine + sodium metavanadate", {"class": "badNode generalNode", "cx":"100", "cy":"-7800", "rx":"27", "ry":"24"}],
+["selenium dioxide + asdf + sodium metavanadate", {"class": "goodNode generalNode", "cx":"300", "cy":"-7800", "rx":"27", "ry":"24"}],
+["selenium ffffff", {"class": "medNode generalNode", "cx":"500", "cy":"-7600", "rx":"27", "ry":"24"}]
+]

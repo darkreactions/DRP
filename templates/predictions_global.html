@@ -71,11 +71,15 @@
 		<!-- SVG CONTAINER -->
 		<div id="centerPanel">
 			<div id="dataContainer" class="genericContainer">
-				<div id="svgFile" type="image/svg+xml" data="{{ STATIC_URL }}/svgs/test.svg">
-					<p>Could not load graphic!
-					<a href="#" id="svgReload">Try Again</a>
-					</p>
-				</div>
+				{% if fatal_message %}
+					{{ fatal_message }}
+				{% elif svg %}
+					{% autoescape off %}
+						{{svg}}
+					{% endautoescape %}
+				{% else %}
+					<p>Could not load SVG! <a href="#" id="svgReload">Try Again</a></p>
+				{% endif %}
 			</div>
 		</div>
 		

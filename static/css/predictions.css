@@ -17,6 +17,37 @@
 	padding:5px;
 	left:200px;
 }
+/* ###############   SVG   ################################### */
+#svgFile {
+	cursor:pointer;
+	background-color:white;
+}
+
+	/* ###############   NODES   ################################### */
+.generalNode {
+}
+
+.generalNode:hover {
+	stroke: #FFD92E;
+	stroke-width:2;
+	opacity:0.7;
+}
+
+.badNode {
+	fill:#FF8359;
+	stroke:#A6401D;
+}
+
+.medNode {
+	fill:#FFAE59;
+	stroke:#BF9262;
+}
+
+.goodNode {
+	fill:#4AD391;
+	stroke:#188953;
+}
+
 
 /* ###############   CONTAINERS   ################################### */
 #nodeTooltipContainer {

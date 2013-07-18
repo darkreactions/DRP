@@ -109,8 +109,8 @@ class CompoundEntry(models.Model):
 		###User foreign key as well
 	def __unicode__(self):
 		if self.compound == self.abbrev:
-			return "{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
-		return "{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)	
+			return u"{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
+		return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)	
 
 TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
 
@@ -240,7 +240,7 @@ class Data(models.Model):
 	creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
 	
 	def __unicode__(self):
-		return "{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
+		return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
 def validate_name(abbrev_to_check, lab_group): ###Ultimately in validation.py?
 	#Get the cached set of abbreviations.

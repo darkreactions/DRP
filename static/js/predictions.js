@@ -8,13 +8,6 @@ var widthSVG = 0;
 var heightSVG = 0;
 var dragResistance = 0.5;
 
-//Load the SVG
-window.loadSVG = function() {
-	svg = $('#svgFile').svg(); 
-	svg.load(USER_SVG, {});
-}
-loadSVG();
-
 $(document).on("click", "#svgReload", function() {
 	showRibbon("Trying!", "#99FF5E", "#dataContainer");
 	loadSVG();
@@ -22,14 +15,14 @@ $(document).on("click", "#svgReload", function() {
 
 
 //Remove the title attribute on the first mouseover.
-$(document).one("mouseover", "svg", function() {
-	//Erase the SVG title.
-	document.getElementById("graph1").getElementsByTagName("title")[0]
-		.childNodes[0].nodeValue="";
+$(document).one("mouseover", "#svgFile", function() {
 	//Set the SVG size.
 	widthSVG = parseInt(document.getElementsByTagName("svg")[0].getAttribute("width"));
 	heightSVG= parseInt(document.getElementsByTagName("svg")[0].getAttribute("height"));
-	$("#svgFile").css("cursor","pointer");
+	
+	//Finally, erase the SVG title.### Needed?
+	//document.getElementById("graph1").getElementsByTagName("title")[0]
+	//	.childNodes[0].nodeValue="";
 });
 
 $(document).on("mousedown", "#svgFile", function(e) {
@@ -49,9 +42,9 @@ $(document).on("mouseout", "#svgFile", function(e) {
 	dragging=false;
 });
 
-$(document).on("mousewheel", "#svgFILE", function(e) {
-	alert("cat");
-});
+//////$(document).on("mousewheel", "#svgFILE", function(e) {###
+	//////alert("cat");
+//////});
 
 $("#svgFile").mousemove(function(e) {
 	if (dragging) {
@@ -81,13 +74,11 @@ function nodeTooltip(node) {
 	$("#nodeTooltipContainer").remove();
 	
 	//Strip the title from the node.
-	var elemID = $(node).attr("id");
-	var elem = document.getElementById(elemID);
 	$("body").append("<div id=\"nodeTooltipContainer\"></div>");
 	$("#nodeTooltipContainer").html(
-		elem.getElementsByTagName("title")[0].childNodes[0].nodeValue
+		node.get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue
 		);
-	elem.getElementsByTagName("title")[0].childNodes[0].nodeValue = ""
+	node.get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue = ""
 	
 	//Get positioning variables.
 	var nodePos = $(node).offset()
@@ -111,23 +102,13 @@ function nodePopup(node, startX, startY) {
 
 //Node Mouseovers
 $(document).on("mouseover", ".node", function() {
-	//Change the node color.
-	$(this).children("ellipse").attr("stroke-width" ,"2");
-	$(this).children("ellipse").attr("stroke", "yellow");
 	nodeTooltip($(this));
 });
 $(document).on("mouseout", ".node", function() {
-	$(this).children("ellipse").attr("stroke-width" ,"1");
-	$(this).children("ellipse").attr("stroke", "black");
-	//$("#nodeTooltipContainer").animate({
-		//opacity: 0,
-		//zindex:0,
-	//}, 200);
 	$("#nodeTooltipContainer").fadeOut(200);
 	
 	//Reinsert the title node for future use.
-	var elem = document.getElementById($(this).attr("id"));
-	elem.getElementsByTagName("title")[0].childNodes[0].nodeValue = $("#nodeTooltipContainer").html();
+	$(this).get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue = $("#nodeTooltipContainer").html();
 });
 
 //Node Clicks.
