@@ -8,11 +8,19 @@ var widthSVG = 0;
 var heightSVG = 0;
 var dragResistance = 0.5;
 
-
 //Load the SVG
-var svg = $('#svgFile').svg(); 
-svg.load(USER_SVG, {});
- 
+window.loadSVG = function() {
+	svg = $('#svgFile').svg(); 
+	svg.load(USER_SVG, {});
+}
+loadSVG();
+
+$(document).on("click", "#svgReload", function() {
+	showRibbon("Trying!", "#99FF5E", "#dataContainer");
+	loadSVG();
+});
+
+
 //Remove the title attribute on the first mouseover.
 $(document).one("mouseover", "svg", function() {
 	//Erase the SVG title.
@@ -70,6 +78,8 @@ $("#svgFile").mousemove(function(e) {
 
 //Node helper functions.
 function nodeTooltip(node) {
+	$("#nodeTooltipContainer").remove();
+	
 	//Strip the title from the node.
 	var elemID = $(node).attr("id");
 	var elem = document.getElementById(elemID);

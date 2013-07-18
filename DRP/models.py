@@ -292,69 +292,20 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 	
 class DataEntryForm(ModelForm):
 	#List Fields
-	#for i in xrange(1,6):
-		#if i > 2: 
-			#required="required=False,"
-		#else: 
-			#required=""
-		#exec("""reactant_{0} = CharField({1} label='Reactant {0}', widget=TextInput(
-			#attrs={'class':'form_text autocomplete_reactant',
-			#'title':'Enter the name of the reactant.'}))""".format(i, required))
-		#exec("""quantity_{0} = CharField({1} label='Quantity {0}', widget=TextInput(
-		#attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
-		#'title':'Enter the mass of Reactant {}.'}))""".format(i, required))
-		#exec("""unit_{} = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		#attrs={'class':'form_text dropDownMenu',
-		#'title':'Is the quantity a mass or volume?'}))""".format(i))
-	#Define the style and other attributes for each field.
-	reactant_1 = CharField(label="Reactant 1",widget=TextInput(
-		attrs={'class':'form_text autocomplete_reactant',
-		"title":"Enter the name of the reactant."}))
-	quantity_1 = CharField(label="Quantity 1", widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
-		"title":"Enter the mass of Reactant 1."}))
-	unit_1 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"Is the quantity a mass or volume?"}))
-	reactant_2 = CharField(widget=TextInput(
-		attrs={'class':'form_text autocomplete_reactant',
-		"title":"Enter the name of the reactant."}))
-	quantity_2 = CharField(label="Quantity 2", widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
-		"title":"Enter the mass of Reactant 2."}))
-	unit_2 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"Is the quantity a mass or volume?"}))
-	reactant_3 = CharField(required=False,
-		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
-		"title":"Enter the name of the reactant."}))
-	quantity_3 = CharField(required=False,
-		label="Quantity 3", widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
-		"title":"Enter the mass of Reactant 3."}))
-	unit_3 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"Is the quantity a mass or volume?"}))
-	reactant_4 = CharField(required=False,
-		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
-		"title":"Enter the name of the reactant."}))
-	quantity_4 = CharField(required=False,
-		label="Quantity 4", widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
-		"title":"Enter the mass of Reactant 4."}))
-	unit_4 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"Is the quantity a mass or volume?"}))
-	reactant_5 = CharField(required=False,
-		widget=TextInput(attrs={'class':'form_text autocomplete_reactant',
-		"title":"Enter the name of the reactant."}))
-	quantity_5 = CharField(required=False,
-		label="Quantity 5", widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'Amount',
-		"title":"Enter the mass of Reactant 5."}))
-	unit_5 = ChoiceField(choices = UNIT_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"Is the quantity a mass or volume?"}))
+	for i in xrange(1,6):
+		if i > 2: 
+			required="required=False,"
+		else: 
+			required=""
+		exec("reactant_{0} = CharField({1} label='Reactant {0}', widget=TextInput(".format(i, required) +
+			"attrs={'class':'form_text autocomplete_reactant',"+
+			"'title':'Enter the name of the reactant.'}))")
+		exec("quantity_{0} = CharField({1} label='Quantity {0}', widget=TextInput(".format(i, required) +
+			"attrs={'class':'form_text form_text_short', 'placeholder':'Amount',"+
+			"'title':'Enter the amount of reactant.'}))")
+		exec("unit_{0} = ChoiceField(choices = UNIT_CHOICES, widget=Select(".format(i, required) +
+			"attrs={'class':'form_text dropDownMenu',"+
+			"'title':'Is the quantity a mass or volume?'}))")
 	ref = CharField(label="Ref.", widget=TextInput(
 		attrs={'class':'form_text form_text_short',
 		"title":"The lab notebook and page number where the data can be found."}))

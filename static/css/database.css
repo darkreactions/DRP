@@ -35,6 +35,16 @@
 	right:60px;
 }
 
+.duplicateSpecificDataButton{
+	position:absolute;
+	top:-10px;
+	left:0px;
+	height:18px;
+	width:18px;
+	border-radius:15px;
+	background-size:contain;
+}
+
 #emailCodeButton {
 /*
 	background-color:#FF857E;

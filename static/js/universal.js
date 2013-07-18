@@ -78,6 +78,15 @@ $(document).on("submit", ".infoForm", function() {
 		$("#popupContainer_inner").html(response);
 		$(".subPopup").draggable();
 		
+		//Reset the autocomplete if necessary.
+		$(".autocomplete_reactant").autocomplete({ 
+			source: CGAbbrevs,
+			messages: {
+				noResults: "",
+				results: function() {}
+			}
+		});
+		
 		//Show the ribbon message if applicable.
 		if ($(".successActivator").length) {
 			showRibbon("Data added!", "green", "#popupContainer_inner");
@@ -89,6 +98,7 @@ $(document).on("submit", ".infoForm", function() {
 		if ($(".reloadActivator").length) {
 			window.location.reload(true);
 		}
+		
 		
 	});
 	return false; //Do not continue or else the form will post again. 
@@ -217,7 +227,7 @@ $(document).on("click", "#search_clearButton", function() {
 });
 
 
-	//################   Autocompleting Search   #######################
+	//################   Autocompleting Search   ####################### //###
 window.setAutoComplete = function(location, source) {
 	$(location).autocomplete({ 
 		source: source,
@@ -271,17 +281,32 @@ window.createPopupConfirmation = function(message) {
 }
 
 //Activate specified popup:
-$(document).on("click", ".popupActivator", function() {
+$(document).on("click", ".popupActivator", function(event) {
 	//Display a loading message if the request takes a visible amount of time.
 	$("#popupContainer_inner").html("<center>Loading. Please wait.</center>");
 	
 	//Load the activator CSS.
 	activatorID = $(this).attr("id");
+	
+	//"Forward" specific triggers to other popups.
+	if (activatorID == "leftMenu_addNew_copy") {
+		activatorID = "leftMenu_addNew"
+		event.stopPropagation();
+	}
+	
 	$("#popupContainer").attr("for", activatorID);
-	switch ($(this).attr("id")) {
+	switch (activatorID) {
 		case "leftMenu_addNew":
-			$.get("/data_form/", function(response) {
+			var index = "";
+			//Get the data to copy if applicable.
+			if ($(this).attr("class").indexOf("duplicateSpecificDataButton") != -1) {
+				index = $(this).siblings(".dataIndex").html().trim();
+			}
+			
+			//Send the request to the server
+			$.get("/data_form/"+index, function(response) {
 				$("#popupContainer_inner").html(response);
+				
 				//Get the auto-complete options form the CG guide.
 				if (CGAbbrevs == undefined) {
 					$.get("/send_CG_names/", function(response) {

@@ -240,6 +240,24 @@ $(document).on("click", ".expandButton", function() {
 	return false; //Do not continue so the data is not selected.
 });
 
+//Create the "Duplicate This Data" button.
+$(document).on("mouseover", ".dataGroup", function() {
+	if ($(".duplicateSpecificDataButton").length == 0 ){
+		var buttonDiv = "<div id=\"leftMenu_addNew_copy\"class=\"";
+		buttonDiv += "duplicateSpecificDataButton popupActivator";
+		buttonDiv += " genericButton\" style=\"background-image: url(";
+		buttonDiv += STATIC_URL+"/icons/add.png);\" title=\""
+		buttonDiv += "Copy this reaction to the data form."
+		buttonDiv += "\"></div>";
+		$(this).append(buttonDiv);
+	}
+});
+
+$(document).on("mouseleave", ".dataGroup", function() {
+	//Eliminate any duplication buttons on when the mouse isn't on a group.
+	$(".duplicateSpecificDataButton").remove();
+});
+
 //############### Change Data: #########################################
 
 //Duplicate Button
@@ -413,6 +431,13 @@ $(document).on("click", ".editConfirm", function() {
 		restyleData();
 	}
 	return false; //Don't re-edit the data (since ".editable" was clicked again).
+});
+
+//When the user clicks on an autocomplete option, trigger the "keyup" event.
+$(document).on("click", ".ui-menu-item", function() {
+	if ($(":focus").attr("class").indexOf("editField") != -1) {
+		$(".editText:focus").keyup();
+	}
 });
 
 //Make edit text fields auto-size and validate while typing.

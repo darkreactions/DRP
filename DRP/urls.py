@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     (r'^get_full_datum/$', get_full_datum), #"Expand" the data.
     (r'^data_update/$', data_update), #Update Information
     (r'^data_form/$', data_form), #Form for adding new data.
+    (r'^data_form/(?P<copy_index>\d+)/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
     (r'^edit_CG_entry/$', edit_CG_entry), #Form for adding new CG abbreviations.
 			#Validation

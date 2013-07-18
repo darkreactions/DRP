@@ -292,7 +292,7 @@ def guess_type(datum):
 
 ######################  Database Functions  ############################
 #Send/receive the data-entry form:
-def data_form(request): #If no data is entered, stay on the current page.
+def data_form(request, copy_index=None): #If no data is entered, stay on the current page.
 	u = request.user
 	success = False
 	if request.method == 'POST' and u.is_authenticated(): 
@@ -311,10 +311,23 @@ def data_form(request): #If no data is entered, stay on the current page.
 			set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
 			success = True #Used to display the ribbonMessage.
 	else:
-		#Submit a blank form if one was not just submitted.
-		form = DataEntryForm(
-			initial={"leak":"No"}
-		)
+		#Submit a blank/auto-filled form if one was not just submitted.
+		try: 
+			#Verify that an index is given is present.
+			assert(copy_index != None)
+			datum = control.collect_all_data(u.get_profile().lab_group)[int(copy_index)-1]
+			#Get the data from a specific index.
+			initial_fields = {}
+			for field in get_model_field_names(model="Data"):
+				initial_fields[field] = getattr(datum, field)
+			form = DataEntryForm(
+				initial=initial_fields
+			)
+			
+		except:
+			form = DataEntryForm(
+				initial={"leak":"No"}
+			)
 	
 	return render(request, 'data_form.html', {
 		"form": form,
