@@ -11,34 +11,34 @@ var dragResistance = 0.5;
 var explorePath = []
 
 //Remove the title attribute on the first mouseover.
-$(document).one("mouseover", "#svgFile", function() {
+$(document).one("mouseover", "svg", function() {
+	$(this).css("cursor","pointer");
 	//Set the SVG size.
 	widthSVG = parseInt(document.getElementsByTagName("svg")[0].getAttribute("width"));
 	heightSVG= parseInt(document.getElementsByTagName("svg")[0].getAttribute("height"));
 	
 	//Finally, erase the SVG title.### Needed?
-	//document.getElementById("graph1").getElementsByTagName("title")[0]
-	//	.childNodes[0].nodeValue="";
+	document.getElementById("graph1").getElementsByTagName("title")[0]
+		.childNodes[0].nodeValue="";
 });
 
-$(document).on("mousedown", "#svgFile", function(e) {
-	$("#svgFile").css("cursor","move");
+$(document).on("mousedown", "svg", function(e) {
+	$(this).css("cursor","move");
 	e.originalEvent.preventDefault();
 	dragging=true;
 	dragStartX = parseInt(e.pageX);
 	dragStartY = parseInt(e.pageY);
 });
-$(document).on("mouseup", "#svgFile", function(e) {
-	$("#svgFile").css("cursor","pointer");
+$(document).on("mouseup", "svg", function(e) {
+	$(this).css("cursor","pointer");
 	dragging=false;
 });
 
-$(document).on("mouseout", "#svgFile", function(e) {
-	$("#svgFile").css("cursor","pointer");
-	dragging=false;
+$(document).on("mouseleave", "#dataContainer", function(e) {
+	$("svg").mouseup();
 });
 
-$(document).on("mousemove", "#svgFile", function(e) {
+$(document).on("mousemove", "svg", function(e) {
 	if (dragging) {
 		dragEndX = parseInt(e.pageX);
 		dragEndY = parseInt(e.pageY);
@@ -101,7 +101,17 @@ function createSVGBack() {
 
 //Node Mouseovers
 $(document).on("mouseover", ".node", function() {
-	nodeTooltip($(this));
+	if (!dragging) {
+		//Apply the nodeTooltip.
+		nodeTooltip($(this));
+		//Expand the node an itty-bit.
+		var activeNode = $(this).get(0).getElementsByTagName("ellipse")[0];
+		var radiusX = activeNode.getAttribute("rx");
+		var newRadius = parseFloat(radiusX)*2;
+		activeNode.setAttribute("rx", newRadius);
+		activeNode.setAttribute("ry", newRadius);
+		
+	}
 });
 $(document).on("mouseout", ".node", function() {
 	$("#nodeTooltipContainer").fadeOut(200);
@@ -144,7 +154,7 @@ $(document).on("click", ".svgBackButton", function() {
 	//Take the last graph in the explorePath.
 	explorePath.pop();
 	if (explorePath.length>0) {
-		var lastGraph = explorePath.pop()
+		var lastGraph = explorePath[explorePath.length-1]
 	} else {
 		var lastGraph = ["start", null];
 	}
