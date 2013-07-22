@@ -106,10 +106,10 @@ $(document).on("submit", ".infoForm", function() {
 //############ User Authentication: ####################################
 $("#userLogOut").click( function() {
 	//Send the log-out signal.
-	$.get("/user_logout/", function() {});
-	
-	//Reload the screen to verify log-out.
-	window.location.reload(true);
+	$.get("/user_logout/", function() {
+		//Reload the screen to verify log-out.
+		window.location.reload(true);
+		});
 });
 
 //################   Search   ##########################################

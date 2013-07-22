@@ -11,6 +11,7 @@ import string
 import datetime
 
 from svg_construction import *
+from construct_descriptor_table import *
 
 
 ######################  Controllers  ###################################
@@ -168,7 +169,11 @@ def predictions(request):
 	svg = ""
 	
 	if u.is_authenticated():
-		svg = generate_svg(u.get_profile().lab_group)
+		try:
+			svg = generate_svg(u.get_profile().lab_group)
+		except Exception as e:
+			fatal_message = e
+		#construct_descriptor_table("cat","dog")
 	else:
 		fatal_message = "Please log in to view predictions."
 	
@@ -176,6 +181,28 @@ def predictions(request):
 		"fatal_message": fatal_message,
 		"svg": svg, #Includes data and data_indexes.
 	})
+	
+def gather_SVG(request):
+	u = request.user
+	fatal_message = ""
+	svg = ""
+	
+	if u.is_authenticated() and request.method=="POST":
+		try:
+			step = request.POST.get("step")
+			source = request.POST.get("source")
+			svg = generate_svg(u.get_profile().lab_group, step, source)
+		except Exception as e:
+			fatal_message = e
+		#construct_descriptor_table("cat","dog")
+	elif request.method!="POST":
+		fatal_message = "Could not gather information about SVG to create."
+	else:
+		fatal_message = "Please log in to view predictions."
+	
+	if fatal_message:
+		return HttpResponse("<p class=\"fatalError\">{}</p>".format(fatal_message))
+	return HttpResponse(svg)
 	
 	
 ######################  Searching  #####################################

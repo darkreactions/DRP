@@ -72,13 +72,13 @@
 		<div id="centerPanel">
 			<div id="dataContainer" class="genericContainer">
 				{% if fatal_message %}
-					{{ fatal_message }}
+					<p>{{ fatal_message }}</p>
 				{% elif svg %}
 					{% autoescape off %}
 						{{svg}}
 					{% endautoescape %}
 				{% else %}
-					<p>Could not load SVG! <a href="#" id="svgReload">Try Again</a></p>
+					<p>Graphic not available.</p>
 				{% endif %}
 			</div>
 		</div>

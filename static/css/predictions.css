@@ -23,6 +23,48 @@
 	background-color:white;
 }
 
+.svgTextUI {
+	position:absolute;
+	top:0px;
+	padding:10px;
+
+	font-size:24px;
+	font-style:oblique;
+	
+	cursor:pointer;
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
+}
+
+.svgTitleContainer {
+	right:0px;
+	margin-right:10px;
+}
+
+.svgBackButton {
+	left:0px;
+	padding:10px;
+	margin-left:10px;
+}
+
+.triangleSVG {
+	stroke:black;
+	fill:#E8F4FF;
+	
+}
+
+.textNode{
+	stroke:white;
+	fill:black;
+	
+	font-weight:bold;
+	font-family:arial;
+	font-size:20px;
+	z-index:100;
+}
+
 	/* ###############   NODES   ################################### */
 .generalNode {
 }

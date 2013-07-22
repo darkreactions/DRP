@@ -8,11 +8,7 @@ var widthSVG = 0;
 var heightSVG = 0;
 var dragResistance = 0.5;
 
-$(document).on("click", "#svgReload", function() {
-	showRibbon("Trying!", "#99FF5E", "#dataContainer");
-	loadSVG();
-});
-
+var explorePath = []
 
 //Remove the title attribute on the first mouseover.
 $(document).one("mouseover", "#svgFile", function() {
@@ -42,15 +38,10 @@ $(document).on("mouseout", "#svgFile", function(e) {
 	dragging=false;
 });
 
-//////$(document).on("mousewheel", "#svgFILE", function(e) {###
-	//////alert("cat");
-//////});
-
-$("#svgFile").mousemove(function(e) {
+$(document).on("mousemove", "#svgFile", function(e) {
 	if (dragging) {
 		dragEndX = parseInt(e.pageX);
 		dragEndY = parseInt(e.pageY);
-		
 		
 		var currentPos = document.getElementsByTagName("svg")[0].getAttribute("viewBox").split(" ");
 		
@@ -96,8 +87,16 @@ function nodeTooltip(node) {
 	}, 500);
 }
 
-function nodePopup(node, startX, startY) {
-	
+function createSVGTitle(text) {
+	$(".svgTitle").remove();
+	var titleContainer = "<div class=\"svgTitleContainer svgTextUI\">" + text[0].toUpperCase() + text.substr(1) + "</div>" 
+	$("#dataContainer").append(titleContainer);
+}
+
+function createSVGBack() {
+	$(".svgBack").remove();
+	var titleContainer = "<div class=\"svgBackButton genericButton svgTextUI\">Back</div>" 
+	$("#dataContainer").append(titleContainer);
 }
 
 //Node Mouseovers
@@ -113,9 +112,66 @@ $(document).on("mouseout", ".node", function() {
 
 //Node Clicks.
 $(document).on("click", ".node", function() {
-	alert("Do something! : )");
+	pastStep = document.getElementById("graph").getAttribute("class").split(" ")[1]
+	if (pastStep != "details") { //Details should be the last step.
+		
+		var source = $("#nodeTooltipContainer").html().toLowerCase().replace(/\+/g,"").replace(/ /g, "_").replace(/__/g,"_");
+	
+		//Remember the SVG source/step.
+		explorePath.push([pastStep, source])
+		$.post("/gather_SVG/", {
+				"step":pastStep,
+				"source":source
+			}, 
+			function(response){
+				$("#dataContainer").html(response);
+				
+				if ($(".fatalError").length>0){
+					$("#nodeTooltipContainer").remove()
+					return false;
+				} 
+				
+				//Set the SVG title to the new "graph step."
+				createSVGTitle(document.getElementById("graph").getAttribute("class").split(" ")[1]);
+				createSVGBack();
+		})
+		return false; //Don't continue or the graph will be clicked.
+	}
+});
+
+//#######################   SVG Buttons    #############################
+$(document).on("click", ".svgBackButton", function() {
+	//Take the last graph in the explorePath.
+	explorePath.pop();
+	if (explorePath.length>0) {
+		var lastGraph = explorePath.pop()
+	} else {
+		var lastGraph = ["start", null];
+	}
+	
+	$.post("/gather_SVG/", {
+			"step":lastGraph[0],
+			"source":lastGraph[1]
+		}, 
+		function(response){
+			$("#dataContainer").html(response);
+			
+			if ($(".fatalError").length>0){
+				$("#nodeTooltipContainer").remove()
+				return false;
+			} 
+			
+			//Set the SVG title to the new "graph step."
+			createSVGTitle(document.getElementById("graph").getAttribute("class").split(" ")[1]);
+			if (lastGraph[0]!="start") {
+				createSVGBack();
+			}
+	})
 	return false; //Don't continue or the graph will be clicked.
 });
- 
+
+//#######################   On Load    #################################
+createSVGTitle(document.getElementById("graph").getAttribute("class").split(" ")[1]);
+
 //######################################################################
 });
