@@ -170,7 +170,11 @@ def predictions(request):
 	
 	if u.is_authenticated():
 		try:
-			svg = generate_svg(u.get_profile().lab_group)
+			lab_group = u.get_profile().lab_group
+			svg = get_cache(lab_group, "TESTSVG")###
+			if not svg:
+				svg = generate_svg(u.get_profile().lab_group)
+				set_cache(lab_group, "TESTSVG", svg, 86400)
 		except Exception as e:
 			fatal_message = e
 		#construct_descriptor_table("cat","dog")
@@ -977,7 +981,11 @@ def lab_registration(request): ###Not finished.
 
 ######################  Error Messages  ################################
 def display_404_error(request):
-	return render(request, '404_error.html')
+	response = render(request, '404_error.html')
+	response.status_code = 404
+	return response
 	
 def display_500_error(request):
-	return render(request, '500_error.html')
+	response = render(request, '500_error.html')
+	response.status_code = 500
+	return response

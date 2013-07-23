@@ -4,23 +4,15 @@ $(document).ready(function() {
 var dragging = false;
 var dragStartX = 0;
 var dragStartY = 0;
-var widthSVG = 0;
-var heightSVG = 0;
+//Set the SVG size.
+var widthSVG = parseInt(document.getElementsByTagName("svg")[0].getAttribute("width"));
+var heightSVG= parseInt(document.getElementsByTagName("svg")[0].getAttribute("height"));
 var dragResistance = 0.5;
 
-var explorePath = []
+var explorePath = [];
+var nodeHoverGrowthProportion = 2;
+var nodeAltered = false;
 
-//Remove the title attribute on the first mouseover.
-$(document).one("mouseover", "svg", function() {
-	$(this).css("cursor","pointer");
-	//Set the SVG size.
-	widthSVG = parseInt(document.getElementsByTagName("svg")[0].getAttribute("width"));
-	heightSVG= parseInt(document.getElementsByTagName("svg")[0].getAttribute("height"));
-	
-	//Finally, erase the SVG title.### Needed?
-	document.getElementById("graph1").getElementsByTagName("title")[0]
-		.childNodes[0].nodeValue="";
-});
 
 $(document).on("mousedown", "svg", function(e) {
 	$(this).css("cursor","move");
@@ -67,7 +59,7 @@ function nodeTooltip(node) {
 	//Strip the title from the node.
 	$("body").append("<div id=\"nodeTooltipContainer\"></div>");
 	$("#nodeTooltipContainer").html(
-		node.get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue
+		node.get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue.substr(1).replace(/0/g," + ").replace(/_/g," ")
 		);
 	node.get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue = ""
 	
@@ -102,51 +94,76 @@ function createSVGBack() {
 //Node Mouseovers
 $(document).on("mouseover", ".node", function() {
 	if (!dragging) {
+		nodeAltered = true;
 		//Apply the nodeTooltip.
 		nodeTooltip($(this));
 		//Expand the node an itty-bit.
 		var activeNode = $(this).get(0).getElementsByTagName("ellipse")[0];
 		var radiusX = activeNode.getAttribute("rx");
-		var newRadius = parseFloat(radiusX)*2;
+		var newRadius = parseFloat(radiusX)*nodeHoverGrowthProportion;
 		activeNode.setAttribute("rx", newRadius);
 		activeNode.setAttribute("ry", newRadius);
-		
 	}
 });
+
+$(document).on("mouseover", ".edge", function() {
+	//Erase the edge title on hover if a title is present..
+	if ($(this).get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue) {
+		$(this).get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue = "";
+	}
+});
+
 $(document).on("mouseout", ".node", function() {
 	$("#nodeTooltipContainer").fadeOut(200);
 	
 	//Reinsert the title node for future use.
 	$(this).get(0).getElementsByTagName("title")[0].childNodes[0].nodeValue = $("#nodeTooltipContainer").html();
+
+	if (nodeAltered) {
+		//Shrink the node an itty-bit.
+		var activeNode = $(this).get(0).getElementsByTagName("ellipse")[0];
+		var radiusX = activeNode.getAttribute("rx");
+		var newRadius = parseFloat(radiusX)/nodeHoverGrowthProportion;
+		activeNode.setAttribute("rx", newRadius);
+		activeNode.setAttribute("ry", newRadius);
+		nodeAltered = false;
+	}
 });
 
 //Node Clicks.
 $(document).on("click", ".node", function() {
-	pastStep = document.getElementById("graph").getAttribute("class").split(" ")[1]
-	if (pastStep != "details") { //Details should be the last step.
+	//pastStep = document.getElementById("graph").getAttribute("class").split(" ")[1]
+	//if (pastStep != "details") { //Details should be the last step.
 		
-		var source = $("#nodeTooltipContainer").html().toLowerCase().replace(/\+/g,"").replace(/ /g, "_").replace(/__/g,"_");
+		
+		////###The "Back" feature is contained below.
+		//var source = $("#nodeTooltipContainer").html().toLowerCase().replace(/\+/g,"").replace(/ /g, "_").replace(/__/g,"_");
+		var source = $("#nodeTooltipContainer").html().replace(/\+/g,"0").replace(/ /g, ""); //Make link-able.
+		
+		//###Jump over to Ironwood in a new window.
+		var url = "http://ironwood.fig.haverford.edu/prefix/prefix_k"+source+".svg" 
+		window.open(url, "_blank");
 	
-		//Remember the SVG source/step.
-		explorePath.push([pastStep, source])
-		$.post("/gather_SVG/", {
-				"step":pastStep,
-				"source":source
-			}, 
-			function(response){
-				$("#dataContainer").html(response);
+		////Remember the SVG source/step.
+		//explorePath.push([pastStep, source])
+		//$.post("/gather_SVG/", {
+				//"step":pastStep,
+				//"source":source
+			//}, 
+			//function(response){
+				//$("#dataContainer").html(response);
 				
-				if ($(".fatalError").length>0){
-					$("#nodeTooltipContainer").remove()
-					return false;
-				} 
+				//if ($(".fatalError").length>0){
+					//$("#nodeTooltipContainer").remove()
+					//return false;
+				//} 
 				
-				//Set the SVG title to the new "graph step."
-				createSVGTitle(document.getElementById("graph").getAttribute("class").split(" ")[1]);
-				createSVGBack();
-		})
-		return false; //Don't continue or the graph will be clicked.
-	}
+				////Set the SVG title to the new "graph step."
+				//createSVGTitle(document.getElementById("graph").getAttribute("class").split(" ")[1]);
+				//createSVGBack();
+		//})
+		//return false; //Don't continue or the graph will be clicked.
+	//}
 });
 
 //#######################   SVG Buttons    #############################
@@ -172,7 +189,7 @@ $(document).on("click", ".svgBackButton", function() {
 			} 
 			
 			//Set the SVG title to the new "graph step."
-			createSVGTitle(document.getElementById("graph").getAttribute("class").split(" ")[1]);
+			createSVGTitle($("#svgControl").attr("currentStep"));
 			if (lastGraph[0]!="start") {
 				createSVGBack();
 			}
@@ -181,7 +198,18 @@ $(document).on("click", ".svgBackButton", function() {
 });
 
 //#######################   On Load    #################################
-createSVGTitle(document.getElementById("graph").getAttribute("class").split(" ")[1]);
+//Set up the SVG variables once everything has loaded.
+$("svg").css("cursor","pointer");
+
+
+//Finally, erase the main SVG title.
+document.getElementById("graph1").getElementsByTagName("title")[0].childNodes[0].nodeValue="";
+
+//Create the SVG Title.
+svgControl = "<div id=\"svgControl\" currentStep=\"compounds\"></div>"
+$("body").append(svgControl);
+createSVGTitle($("#svgControl").attr("currentStep"));
+
 
 //######################################################################
 });

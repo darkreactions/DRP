@@ -14,8 +14,7 @@ def generate_svg(lab_group, step = "start", source=None):
 	overallGraph = pgv.AGraph(settings.DYNAMIC_DIR + "/dots/edges_short.dot")
 	overallGraph.layout()
 	
-	#result = overallGraph.draw(format="svg")
-	#Replacing seems to have no effect on return time.
+	###Replacing seems to have no effect on return time.
 	result = overallGraph.draw(format="svg").replace(
 		"stroke=\"red\"", "class=\"badNode generalNode\"").replace(
 		"stroke=\"yellow\"", "class=\"medNode generalNode\"").replace(

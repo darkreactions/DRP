@@ -18,9 +18,10 @@
 	left:200px;
 }
 /* ###############   SVG   ################################### */
-#svgFile {
+svg {
 	cursor:pointer;
 	background-color:white;
+	width:100%
 }
 
 .svgTextUI {
@@ -65,6 +66,15 @@
 	z-index:100;
 }
 
+path {
+	opacity:0.3;
+}
+
+#svgControl {
+	display:none;
+}
+
+
 	/* ###############   NODES   ################################### */
 .generalNode {
 }
@@ -100,6 +110,7 @@
 	border-radius:15px;
 	padding:10px;
 	color:white;
+	text-align:center;
 	display:inline-block;
 	
 	cursor:pointer;

@@ -5,8 +5,8 @@ from DRP.views import *
 
 # Uncomment the next two lines to enable the admin: ###C
 admin.autodiscover()
-handler500 = 'views.display_500_error'
-handler404 = 'views.display_404_error'
+handler500 = 'DRP.views.display_500_error'
+handler404 = 'DRP.views.display_404_error'
 
 urlpatterns = patterns('',
 		#Database
