@@ -204,6 +204,115 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
 		raise Exception("CompoundEntry construction failed!")
 
 ############### DATA ENTRY ########################
+calc_fields = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass', 'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass', 
+			'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles', 'XXXorg1', 'XXXorg1mass',
+			'XXXorg1moles', 'XXXorg2', 'XXXorg2mass', 'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass', 
+			'XXXoxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH', 
+			'leak', 'numberInorg', 'numberOrg', 'numberOxlike', 'numberComponents', 'inorgavgpolMax', 
+			'inorgrefractivityMax', 'inorgmaximalprojectionareaMax', 'inorgmaximalprojectionradiusMax', 
+			'inorgmaximalprojectionsizeMax', 'inorgminimalprojectionareaMax', 'inorgminimalprojectionradiusMax', 
+			'inorgminimalprojectionsizeMax', 'inorgavgpol_pHdependentMax', 
+			'inorgmolpolMax', 'inorgvanderwaalsMax', 'inorgASAMax', 
+			'inorgASA+Max', 'inorgASA-Max', 'inorgASA_HMax', 
+			'inorgASA_PMax', 'inorgpolarsurfaceareaMax', 'inorghbdamsaccMax', 'inorghbdamsdonMax', 
+			'inorgavgpolMin', 'inorgrefractivityMin', 'inorgmaximalprojectionareaMin', 
+			'inorgmaximalprojectionradiusMin', 'inorgmaximalprojectionsizeMin', 
+			'inorgminimalprojectionareaMin', 'inorgminimalprojectionradiusMin', 
+			'inorgminimalprojectionsizeMin', 'inorgavgpol_pHdependentMin', 
+			'inorgmolpolMin', 'inorgvanderwaalsMin', 'inorgASAMin', 
+			'inorgASA+Min', 'inorgASA-Min', 'inorgASA_HMin', 
+			'inorgASA_PMin', 'inorgpolarsurfaceareaMin', 'inorghbdamsaccMin', 'inorghbdamsdonMin', 
+			'inorgavgpolArithAvg', 'inorgrefractivityArithAvg', 'inorgmaximalprojectionareaArithAvg', 
+			'inorgmaximalprojectionradiusArithAvg', 'inorgmaximalprojectionsizeArithAvg', 
+			'inorgminimalprojectionareaArithAvg', 'inorgminimalprojectionradiusArithAvg', 
+			'inorgminimalprojectionsizeArithAvg', 
+			'inorgavgpol_pHdependentArithAvg', 'inorgmolpolArithAvg', 
+			'inorgvanderwaalsArithAvg', 'inorgASAArithAvg', 
+			'inorgASA+ArithAvg', 'inorgASA-ArithAvg', 
+			'inorgASA_HArithAvg', 'inorgASA_PArithAvg', 
+			'inorgpolarsurfaceareaArithAvg', 
+			'inorghbdamsaccArithAvg', 'inorghbdamsdonArithAvg', 
+			'inorgavgpolGeomAvg', 'inorgrefractivityGeomAvg', 
+			'inorgmaximalprojectionareaGeomAvg', 'inorgmaximalprojectionradiusGeomAvg', 
+			'inorgmaximalprojectionsizeGeomAvg', 'inorgminimalprojectionareaGeomAvg', 
+			'inorgminimalprojectionradiusGeomAvg', 'inorgminimalprojectionsizeGeomAvg', 
+			'inorgavgpol_pHdependentGeomAvg', 'inorgmolpolGeomAvg', 'inorgvanderwaalsGeomAvg', 
+			'inorgASAGeomAvg', 'inorgASA+GeomAvg', 'inorgASA-GeomAvg', 'inorgASA_HGeomAvg', 
+			'inorgASA_PGeomAvg', 'inorgpolarsurfaceareaGeomAvg', 'inorghbdamsaccGeomAvg', 'inorghbdamsdonGeomAvg', 
+			'orgavgpolMax', 'orgrefractivityMax', 
+			'orgmaximalprojectionareaMax', 'orgmaximalprojectionradiusMax', 'orgmaximalprojectionsizeMax', 
+			'orgminimalprojectionareaMax', 'orgminimalprojectionradiusMax', 'orgminimalprojectionsizeMax', 
+			'orgavgpol_pHdependentMax', 'orgmolpolMax', 
+			'orgvanderwaalsMax', 'orgASAMax', 'orgASA+Max', 'orgASA-Max', 'orgASA_HMax', 'orgASA_PMax', 
+			'orgpolarsurfaceareaMax', 'orghbdamsaccMax', 
+			'orghbdamsdonMax', 'orgavgpolMin', 'orgrefractivityMin', 
+			'orgmaximalprojectionareaMin', 'orgmaximalprojectionradiusMin', 'orgmaximalprojectionsizeMin', 
+			'orgminimalprojectionareaMin', 'orgminimalprojectionradiusMin', 
+			'orgminimalprojectionsizeMin', 'orgavgpol_pHdependentMin',
+			'orgmolpolMin', 'orgvanderwaalsMin', 'orgASAMin', 
+			'orgASA+Min', 'orgASA-Min', 'orgASA_HMin', 'orgASA_PMin',
+			'orgpolarsurfaceareaMin', 'orghbdamsaccMin', 
+			'orghbdamsdonMin', 'orgavgpolArithAvg', 'orgrefractivityArithAvg', 
+			'orgmaximalprojectionareaArithAvg', 'orgmaximalprojectionradiusArithAvg', 
+			'orgmaximalprojectionsizeArithAvg', 'orgminimalprojectionareaArithAvg', 
+			'orgminimalprojectionradiusArithAvg', 'orgminimalprojectionsizeArithAvg', 
+			'orgavgpol_pHdependentArithAvg', 'orgmolpolArithAvg', 'orgvanderwaalsArithAvg', 
+			'orgASAArithAvg', 'orgASA+ArithAvg', 'orgASA-ArithAvg', 'orgASA_HArithAvg', 'orgASA_PArithAvg', 
+			'orgpolarsurfaceareaArithAvg', 'orghbdamsaccArithAvg', 
+			'orghbdamsdonArithAvg', 'orgavgpolGeomAvg', 'orgrefractivityGeomAvg', 
+			'orgmaximalprojectionareaGeomAvg', 'orgmaximalprojectionradiusGeomAvg', 
+			'orgmaximalprojectionsizeGeomAvg', 'orgminimalprojectionareaGeomAvg', 
+			'orgminimalprojectionradiusGeomAvg', 'orgminimalprojectionsizeGeomAvg', 
+			'orgavgpol_pHdependentGeomAvg', 'orgmolpolGeomAvg', 'orgvanderwaalsGeomAvg', 
+			'orgASAGeomAvg', 'orgASA+GeomAvg', 'orgASA-GeomAvg', 
+			'orgASA_HGeomAvg', 'orgASA_PGeomAvg', 'orgpolarsurfaceareaGeomAvg', 'orghbdamsaccGeomAvg', 
+			'orghbdamsdonGeomAvg', 'oxlikeavgpolMax', 
+			'oxlikerefractivityMax', 'oxlikemaximalprojectionareaMax',
+			'oxlikemaximalprojectionradiusMax', 'oxlikemaximalprojectionsizeMax', 'oxlikeminimalprojectionareaMax', 
+			'oxlikeminimalprojectionradiusMax', 'oxlikeminimalprojectionsizeMax', 
+			'oxlikeavgpol_pHdependentMax', 'oxlikemolpolMax', 
+			'oxlikevanderwaalsMax', 'oxlikeASAMax', 'oxlikeASA+Max', 
+			'oxlikeASA-Max', 'oxlikeASA_HMax', 'oxlikeASA_PMax', 
+			'oxlikepolarsurfaceareaMax', 'oxlikehbdamsaccMax', 
+			'oxlikehbdamsdonMax', 'oxlikeavgpolMin', 
+			'oxlikerefractivityMin', 'oxlikemaximalprojectionareaMin',
+			'oxlikemaximalprojectionradiusMin', 'oxlikemaximalprojectionsizeMin', 
+			'oxlikeminimalprojectionareaMin', 'oxlikeminimalprojectionradiusMin', 
+			'oxlikeminimalprojectionsizeMin', 'oxlikeavgpol_pHdependentMin', 'oxlikemolpolMin', 
+			'oxlikevanderwaalsMin', 'oxlikeASAMin', 'oxlikeASA+Min', 
+			'oxlikeASA-Min', 'oxlikeASA_HMin', 'oxlikeASA_PMin', 
+			'oxlikepolarsurfaceareaMin', 'oxlikehbdamsaccMin', 
+			'oxlikehbdamsdonMin', 'oxlikeavgpolArithAvg', 
+			'oxlikerefractivityArithAvg', 'oxlikemaximalprojectionareaArithAvg', 
+			'oxlikemaximalprojectionradiusArithAvg', 'oxlikemaximalprojectionsizeArithAvg', 'oxlikeminimalprojectionareaArithAvg', 
+			'oxlikeminimalprojectionradiusArithAvg', 'oxlikeminimalprojectionsizeArithAvg', 'oxlikeavgpol_pHdependentArithAvg', 
+			'oxlikemolpolArithAvg', 'oxlikevanderwaalsArithAvg', 
+			'oxlikeASAArithAvg', 'oxlikeASA+ArithAvg', 
+			'oxlikeASA-ArithAvg', 'oxlikeASA_HArithAvg', 
+			'oxlikeASA_PArithAvg', 'oxlikepolarsurfaceareaArithAvg',
+			'oxlikehbdamsaccArithAvg', 'oxlikehbdamsdonArithAvg', 
+			'oxlikeavgpolGeomAvg', 'oxlikerefractivityGeomAvg', 
+			'oxlikemaximalprojectionareaGeomAvg', 'oxlikemaximalprojectionradiusGeomAvg', 'oxlikemaximalprojectionsizeGeomAvg', 
+			'oxlikeminimalprojectionareaGeomAvg', 'oxlikeminimalprojectionradiusGeomAvg', 'oxlikeminimalprojectionsizeGeomAvg', 
+			'oxlikeavgpol_pHdependentGeomAvg', 'oxlikemolpolGeomAvg',
+			'oxlikevanderwaalsGeomAvg', 'oxlikeASAGeomAvg', 
+			'oxlikeASA+GeomAvg', 'oxlikeASA-GeomAvg', 'oxlikeASA_HGeomAvg', 'oxlikeASA_PGeomAvg', 
+			'oxlikepolarsurfaceareaGeomAvg', 'oxlikehbdamsaccGeomAvg',
+			'oxlikehbdamsdonGeomAvg', 'inorg-water-moleratio', 'inorgacc-waterdonratio', 'inorgdon-wateraccratio',
+			'org-water-moleratio', 'orgacc-waterdonratio', 'orgdon-wateraccratio', 'inorg-org-moleratio',
+			'inorgacc-orgdonratio', 'inorgdon-orgaccratio', 'notwater-water-moleratio', 'notwateracc-waterdonratio', 
+			'notwaterdon-wateraccratio', 'purity', 'outcome']
+			
+class DataCalc(models.Model):
+	for calc_field in calc_fields:
+		#Make sure field names don't contain operators.
+		calc_field = calc_field.replace("+","PLUS").replace("-","MINUS")
+		exec("{0} = models.CharField(\"{0}\", max_length=22)".format(calc_field))
+		
+	def __unicode__(self):
+		return u"{}".format(self.XXXtitle);
+
+
 #Create the form choices from the pre-defined ranges.
 OUTCOME_CHOICES = [[opt,opt] for opt in edit_choices["outcomeChoices"]]
 PURITY_CHOICES = [[opt,opt] for opt in edit_choices["purityChoices"]]
@@ -235,6 +344,7 @@ class Data(models.Model):
 	notes = models.CharField("Notes", max_length=200, blank=True)
 	
 	#Self-assigning Fields
+	calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
 	creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
@@ -520,4 +630,3 @@ class DataEntryForm(ModelForm):
 						["Cannot exceed {} characters.".format(data_ranges[field][1])])
 		print parsed_data
 		return clean_data
-		

@@ -6,7 +6,9 @@
 		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/general_page.css" />
 	</head>
 	<body> 
-		<a href="/database/" id="siteLogo"><img src="{{ STATIC_URL }}/images/mainLogo.png" /></a>
+		<div id="logoContainer">
+			{% include "main_logo.html" %}
+		</div>
 		<div class="genericContainer" style="width:400px;">
 			<div class="genericContainer_inner">
 				<h1>500 Error</h1>

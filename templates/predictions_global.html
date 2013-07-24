@@ -14,6 +14,14 @@
 	<body> 
 
 	<!-- OUTSIDE OF PANELS -->
+	
+		<!-- HAVERFORD LOGO ###Shouldn't be hosted on wikimedia probably-->
+	<div id="haverfordLogo">
+		<a href="http://www.haverford.edu/">
+			<img style="height:100%;width:100%;" src="http://upload.wikimedia.org/wikipedia/en/7/73/Haverford_logo.png"/>
+		</a>
+	</div>
+
 		<!-- USER CONTAINER -->
 	<div id="userInfo">
 		<div id = "userInfo_inner">
@@ -52,8 +60,7 @@
 		<div id="topPanel">
 			<!-- ### Jump back to Ironwood-->
 			<a id="toIronwood" href="http://ironwood.fig.haverford.edu/main.html">To Ironwood Main!</a>
-			<div id="siteLogo" style="background-image: url({{ STATIC_URL }}/images/mainLogo.png);">
-			</div>
+			{% include "main_logo.html" %}
 			
 			<!-- NAVIGATION MENU -->
 			<div id="navMenu">
@@ -88,7 +95,6 @@
 	</div>
 	
 	</div>
-	
 	
 	</body>
 	

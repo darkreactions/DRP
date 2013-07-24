@@ -3,14 +3,18 @@ from django.utils import simplejson
 
 from xml.etree import ElementTree as et
 import pygraphviz as pgv
+from construct_descriptor_table import *
 
 ###
 import time
 
 def generate_svg(lab_group, step = "start", source=None):
-	################
+	###Perform any additional calculations.
+	t1 = time.time()
+	construct_entire_descriptor_table(lab_group)
+	print time.time()-t1
+	
 	#Load the edges.dot file:
-	t1 =time.time()
 	overallGraph = pgv.AGraph(settings.DYNAMIC_DIR + "/dots/edges_short.dot")
 	overallGraph.layout()
 	
@@ -21,9 +25,7 @@ def generate_svg(lab_group, step = "start", source=None):
 		"stroke=\"blue\"", "class=\"goodNode generalNode\"").replace(
 		"style=\"filled\"", "")
 	
-	print time.time()-t1
 	return result
-	#################
 	
 ####FUNCTIONAL, BUT NOT INTEGRATED WITH GRAPHVIZ.
 #def generate_svg(lab_group, step = "start", source=None):

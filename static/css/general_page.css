@@ -35,7 +35,7 @@ p {
 	padding:10px;
 	
 	margin:0 auto;
-	margin-top:100px;
+	margin-top:20px;
 }
 
 .genericContainer_inner {
@@ -52,6 +52,10 @@ p {
 	text-align:center;
 }
 
+#logoContainer {
+	margin-left:50px;
+}
+
 /* ###############   TEXT   ######################################### */
 .failedUploadData{
 	font-weight:bold;
@@ -60,14 +64,6 @@ p {
 }
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
-#siteLogo {
-	position:fixed;
-	margin:15px;
-	top:0px;
-	left:0px;
-	height:100px;
-	z-index:-1;
-}
 
 #backLink{
 	position:absolute;

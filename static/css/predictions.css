@@ -5,20 +5,20 @@
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
 #toIronwood { /* ### */
-	position:absolute;
+	position:fixed;
+	right:0px;
+	bottom:0px;
 	background-color:orange;
 	border:2px solid black;
 	font-size:12px;
 	font-weight:bold;
 	text-align:center;
 	border-radius:5px;
-	top:0px;
 	color:black;
 	padding:5px;
-	left:200px;
 }
 /* ###############   SVG   ################################### */
-svg {
+svg:not(.backgroundSVG) {
 	cursor:pointer;
 	background-color:white;
 	width:100%

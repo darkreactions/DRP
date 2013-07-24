@@ -171,7 +171,7 @@ def predictions(request):
 	if u.is_authenticated():
 		try:
 			lab_group = u.get_profile().lab_group
-			svg = get_cache(lab_group, "TESTSVG")###
+			svg = None###get_cache(lab_group, "TESTSVG")###
 			if not svg:
 				svg = generate_svg(u.get_profile().lab_group)
 				set_cache(lab_group, "TESTSVG", svg, 86400)
@@ -468,7 +468,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			raise Exception("Unknown model specified in upload.")
 			
 		true_fields = get_model_field_names(model=model)
-		print true_fields
 		row_num = 2 #Assuming row 1 is headings.
 		
 		#Settings:
@@ -496,7 +495,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								break #Stop checking for headings if a "" is encountered.
 							user_fields.append(get_related_field(field,model=model))
 							row_length+=1
-						print user_fields
 							
 						#If unit columns were not supplied, add them after each quantity.
 						set_user_fields = set(user_fields)
@@ -661,8 +659,8 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 
 					added_quantity += 1
 				except Exception as e:
-					if type(e.message)==list:
-						error_log.append(e.message+[field, datum])
+					if type(e.args[0])==list:
+						error_log.append(e.args[0]+[field, datum])
 					else:
 						error_log.append([str(e)])
 					error_quantity +=1

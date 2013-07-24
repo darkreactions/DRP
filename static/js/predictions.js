@@ -5,8 +5,8 @@ var dragging = false;
 var dragStartX = 0;
 var dragStartY = 0;
 //Set the SVG size.
-var widthSVG = parseInt(document.getElementsByTagName("svg")[0].getAttribute("width"));
-var heightSVG= parseInt(document.getElementsByTagName("svg")[0].getAttribute("height"));
+var widthSVG = parseInt(document.getElementsByTagName("svg")[1].getAttribute("width"));
+var heightSVG= parseInt(document.getElementsByTagName("svg")[1].getAttribute("height"));
 var dragResistance = 0.5;
 
 var explorePath = [];
@@ -35,7 +35,7 @@ $(document).on("mousemove", "svg", function(e) {
 		dragEndX = parseInt(e.pageX);
 		dragEndY = parseInt(e.pageY);
 		
-		var currentPos = document.getElementsByTagName("svg")[0].getAttribute("viewBox").split(" ");
+		var currentPos = $(this).get(0).getAttribute("viewBox").split(" ");
 		
 		//Make sure the SVG boundaries are not exceeded.
 		var leftX = parseInt(currentPos[0])-parseInt(dragEndX-dragStartX)*parseFloat(dragResistance);
@@ -45,7 +45,7 @@ $(document).on("mousemove", "svg", function(e) {
 		 
 		//Replace the current viewbox.
 		var finalPos = [leftX, topY, widthSVG, heightSVG].join(" ");
-		document.getElementsByTagName("svg")[0].setAttribute("viewBox", finalPos);
+		$(this).get(0).setAttribute("viewBox", finalPos);
 		
 		dragStartX = dragEndX;
 		dragStartY = dragEndY;
@@ -68,10 +68,20 @@ function nodeTooltip(node) {
 	var nodeCenterX = parseInt(nodePos.left) + parseInt($(node).children("ellipse").attr("rx"));
 	var tooltipWidth = $("#nodeTooltipContainer").width();
 	
+	//Don't let the tooltips exceed the boundaries.
+	var leftPos = nodeCenterX-tooltipWidth/2;
+	if (leftPos<0) {
+		leftPos = 0;
+	}
+	var upperPos = nodePos.top+30;
+	if (upperPos + 60 + $("#nodeTooltipContainer").height() > window.innerHeight) {
+		upperPos = nodePos.top-70 - $("#nodeTooltipContainer").height();
+	}
+	
 	$("#nodeTooltipContainer").css({
 		"display": "inline-block",
-		"left": nodeCenterX-tooltipWidth/2,
-		"top": nodePos.top+50,
+		"left": leftPos,
+		"top": upperPos,
 	});
 	
 	$("#nodeTooltipContainer").animate({
