@@ -9,7 +9,7 @@ from django.db import models
 
 from validation import *
 import random, string, datetime
-
+from data_config import CONFIG
 
 
 #############  CACHE VALIDATION and ACCESS  ###########################
@@ -176,6 +176,7 @@ class CompoundGuideForm(ModelForm):
 		
 		return clean_data
 
+###REREAD TO PROVE USEFUL?
 def collect_CG_entries(lab_group, overwrite=False):
 	compound_guide = get_cache(lab_group, "COMPOUNDGUIDE")
 	if not compound_guide or overwrite:
@@ -190,6 +191,7 @@ def collect_CG_name_pairs(lab_group, overwrite=False):
 		pairs = {entry.abbrev: entry.compound for entry in compound_guide}
 		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", pairs)
 	return pairs
+	
 def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = CompoundEntry()
@@ -325,7 +327,7 @@ list_fields = ["reactant", "quantity", "unit"]
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
 	#List Fields
-	for i in xrange(1,6):
+	for i in CONFIG.reactant_range():
 		exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
 		exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
 		exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
@@ -378,7 +380,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 	dirty_fields = []
 	
 	if model=="Data":
-		fields_to_ignore = {u"id","user","lab_group", "creation_time"}
+		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations"}
 		dirty_fields += [field for field in Data._meta.fields if field.name not in fields_to_ignore]
 	elif model=="CompoundEntry":
 		fields_to_ignore = {u"id","lab_group"} ###Auto-populate?
@@ -402,7 +404,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 	
 class DataEntryForm(ModelForm):
 	#List Fields
-	for i in xrange(1,6):
+	for i in CONFIG.reactant_range():
 		if i > 2: 
 			required="required=False,"
 		else: 

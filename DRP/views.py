@@ -12,6 +12,7 @@ import datetime
 
 from svg_construction import *
 from construct_descriptor_table import *
+from data_config import CONFIG
 
 
 ######################  Controllers  ###################################
@@ -231,7 +232,7 @@ def search(request):
 				value = query.get("value")
 				if field in list_fields:
 					Q_string = ""
-					for i in xrange(1,6):
+					for i in CONFIG.reactant_range():
 						Q_string += "Q({}_{}=\"{}\")|".format(field, i, value)
 					Q_string = Q_string[:-1] #Remove the last trailing "|".
 					filters += ".filter({})".format(Q_string)
@@ -470,11 +471,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 		true_fields = get_model_field_names(model=model)
 		row_num = 2 #Assuming row 1 is headings.
 		
-		#Settings:
-		blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data.
-		unknown_label = "?" #The label that blacklist values will inherit.
-		not_required_label = "" #The label that auto-added values will inherit.
-		
 		try:
 			#Attempt to validate the headings of the uploaded CSV.
 			headings_valid = False
@@ -501,7 +497,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						auto_added_fields = set()
 						recheck_fields = set()
 						if model=="Data":
-							for i in range(1,6): #Since only 5 reactants supported...
+							for i in CONFIG.reactant_range(): #Since only 5 reactants supported...
 								if not "unit_{}".format(i) in set_user_fields:
 									user_fields.insert(
 										user_fields.index("quantity_{}".format(i))+1,
@@ -550,22 +546,22 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										model_fields[field] = model_fields["compound"]
 								model_fields[field] #Check if the field exists already.
 							except:
-								model_fields[field] = not_required_label
+								model_fields[field] = CONFIG.not_required_label
 							continue
 						try:
-							#Attempt to change blacklist entries if possible.
-							if datum in blacklist: 
+							#Attempt to change CONFIG.blacklist entries if possible.
+							if datum in CONFIG.blacklist: 
 								#If abbrevs are empty, assume same as compound.
 								if field=="abbrev": no_abbrev=True
 								#If a CG entry type is empty, try to guess it.
 								if field=="compound_type": datum=guess_type(model_fields["compound"])
 							
 							#If the datum isn't helpful, don't remember it.
-							if datum in blacklist:		
+							if datum in CONFIG.blacklist:		
 								if field in not_required:
-									datum = not_required_label
+									datum = CONFIG.not_required_label
 								elif allow_unknowns:
-									datum = unknown_label ###Take this value or no?
+									datum = CONFIG.unknown_label ###Take this value or no?
 								else:
 									raise Exception("Needs new value".format(datum))
 							else:
@@ -631,18 +627,18 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 											break
 								try:
 									#Attempt to validate the data.
-									if datum != unknown_label:
+									if datum != CONFIG.unknown_label:
 										assert(quick_validation(field, datum, model=model))
 								except:
 									raise Exception("Data did not pass validation!")
 									
 								try:
-									#Post-validation configuration.
+									#Post-validation CONFIGuration.
 									if model=="CompoundEntry":
 										if no_abbrev and field=="compound":
 											model_fields["abbrev"] = datum
 								except:
-									raise Exception("Post-validation configuration failed!") 
+									raise Exception("Post-validation CONFIGuration failed!") 
 											
 							model_fields[field] = datum
 							#Continue to iterate through the row.
@@ -656,6 +652,8 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						entry_list.append(new_Data_entry(u, **model_fields))
 					elif model=="CompoundEntry":
 						entry_list.append(new_CG_entry(u.get_profile().lab_group, **model_fields))
+						set_cache(lab_group, "COMPOUNDGUIDE", None)
+						set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
 					added_quantity += 1
 				except Exception as e:
@@ -723,18 +721,12 @@ def download_CSV(request): ###Need to fix.
 		lab_data = control.collect_all_data(u.get_profile().lab_group)
 		
 		for entry in lab_data:
-			row = []
 			try:
-				#Apply the other columns.
-				for field in headers:
-					if field[-1].isdigit():
-						pass
-					else:
-						row += [eval("entry.{}".format(field))]
+				#Create and apply the actual row.
+				row = [eval("entry.{}".format(field)).encode("utf-8") for field in headers]
 				writer.writerow(row)
 			except Exception as e:
 				print(e)###
-				pass
 		return CSV_file #ie, return HttpResponse(content_type="text/csv")
 	else:
 		return HttpResponse("<p>Please log in to download data.</p>")
