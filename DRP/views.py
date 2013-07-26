@@ -444,6 +444,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 	added_quantity = 0
 	error_quantity = 0
 	entry_list = [] #Used to bulk create entries.
+	no_abbrev = False
 		
 	if request.method=="POST" and request.FILES and u.is_authenticated():
 		#Get the file and model specification from the POST request.
@@ -464,7 +465,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 					"CAS_ID"
 				}
 			allow_unknowns = False
-			no_abbrev = False
 		else:
 			raise Exception("Unknown model specified in upload.")
 			
@@ -477,6 +477,9 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			validation_attempt = 0
 			#Separate data into groups of fields -- then separate fields.
 			for row in csv.reader(uploaded_file, delimiter=","):
+				#Variable Setup for each data group.
+				data_is_valid = True
+				
 				#The first row should be a series of headings.
 				if validation_attempt > 5: 
 					fatal_message = "File doesn't have valid headings."
@@ -535,6 +538,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						#Required since data and fields may be disjunct from missing units.
 						datum = row[i]
 						field = user_fields[j]
+						
 						if field in auto_added_fields: 
 							#Skip the field if it was auto-added because
 							#	no data is present for the generated column.
@@ -562,8 +566,13 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									datum = CONFIG.not_required_label
 								elif allow_unknowns:
 									datum = CONFIG.unknown_label ###Take this value or no?
+									data_is_valid = False
+								elif field=="compound" and not datum:
+									raise Exception("No compound specified!")
+								elif no_abbrev:
+									pass
 								else:
-									raise Exception("Needs new value".format(datum))
+									raise Exception("Value not allowed: \"{}\"".format(datum))
 							else:
 								#If the field is a quantity, check for units.
 								if field[:-2]=="quantity":
@@ -630,13 +639,15 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									if datum != CONFIG.unknown_label:
 										assert(quick_validation(field, datum, model=model))
 								except:
-									raise Exception("Data did not pass validation!")
+									data_is_valid = False
+									raise Exception("Datum did not pass validation!")
 									
 								try:
-									#Post-validation CONFIGuration.
+									#Post-validation configuration.
 									if model=="CompoundEntry":
 										if no_abbrev and field=="compound":
 											model_fields["abbrev"] = datum
+											no_abbrev = False
 								except:
 									raise Exception("Post-validation CONFIGuration failed!") 
 											
@@ -649,9 +660,12 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						
 					#Add the new entry to the database. ###SLOWWwwwww...
 					if model=="Data":
+						print data_is_valid
+						model_fields["is_valid"] = data_is_valid				
 						entry_list.append(new_Data_entry(u, **model_fields))
 					elif model=="CompoundEntry":
-						entry_list.append(new_CG_entry(u.get_profile().lab_group, **model_fields))
+						lab_group = u.get_profile().lab_group
+						entry_list.append(new_CG_entry(lab_group, **model_fields))
 						set_cache(lab_group, "COMPOUNDGUIDE", None)
 						set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
@@ -841,6 +855,8 @@ def data_update(request, control=control): ###Lump together?
 				
 				#Make the edit in the database
 				setattr(dataChanged, fieldChanged, newValue)
+				if not dataChanged.is_valid:
+					revalidate_data(dataChanged, lab_group)
 				dataChanged.user = u
 				dataChanged.save()
 				

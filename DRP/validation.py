@@ -1,4 +1,5 @@
 from django.conf import settings
+from data_config import CONFIG
 import json
 
 #Import the data ranges from the json files.

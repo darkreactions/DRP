@@ -240,6 +240,11 @@
 	cursor:pointer;
 }
 
+.badDataGroup {
+	background-color:#FF6868;
+	border-color:red;
+}
+
 .dataSelected {
 	background-color:#FFE944;
 }

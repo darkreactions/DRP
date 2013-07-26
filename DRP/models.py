@@ -350,11 +350,12 @@ class Data(models.Model):
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
 	creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
+	is_valid = models.BooleanField()
 	
 	def __unicode__(self):
 		return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
-def validate_name(abbrev_to_check, lab_group): ###Ultimately in validation.py?
+def validate_name(abbrev_to_check, lab_group):
 	#Get the cached set of abbreviations.
 	abbrevs = collect_CG_name_pairs(lab_group)
 	return abbrev_to_check in abbrevs
@@ -377,11 +378,10 @@ def new_Data_entry(user, **kwargs): ###Not re-read yet.
 		
 def get_model_field_names(both=False, verbose=False, model="Data", unique_only=False):
 	clean_fields = []
-	dirty_fields = []
 	
 	if model=="Data":
-		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations"}
-		dirty_fields += [field for field in Data._meta.fields if field.name not in fields_to_ignore]
+		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations", "is_valid"}
+		dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
 	elif model=="CompoundEntry":
 		fields_to_ignore = {u"id","lab_group"} ###Auto-populate?
 		dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
@@ -402,6 +402,150 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 			clean_fields += [field.name]
 	return clean_fields
 	
+def revalidate_data(data, lab_group):
+	#Collect the data to validate
+	dirty_data = {field:getattr(data, field) for field in get_model_field_names()}
+	#Validate and collect any errors
+	(clean_data, errors) = full_validation(dirty_data, lab_group)
+	
+	is_valid = False if errors else True
+	setattr(data, "is_valid", is_valid)
+	data.save()
+	
+def revalidate_all_data(lab_group, invalid_only = True):
+	data_to_validate = Data.objects.filter(lab_group=lab_group)
+	if invalid_only:
+		data_to_validate = data_to_validate.filter(is_valid=False)
+		
+	for data in data_to_validate:
+		revalidate_data(data, lab_group)
+
+def full_validation(dirty_data, lab_group):
+	parsed_data = {} #Data that needs to be checked.
+	clean_data = {} #Keep track of cleaned fields
+	errors = {}
+	
+	fields = get_model_field_names()
+	
+	#Gather the "coupled" fields (ie, the fields ending in a similar number) 
+	for field in list_fields:
+		exec("{} = [[]]*{}".format(field, CONFIG.num_reactants))
+		parsed_data[field] = [[]]*CONFIG.num_reactants
+		clean_data[field] = []
+	
+	#Visible fields that are not required (not including rxn info).
+	not_required = { ###Auto-generate?
+		"notes"
+	}
+	
+	for field in dirty_data:
+		if field[-1].isdigit():
+			#Put the data in its respective list.
+			rel_list = eval("{}".format(field[:-2]))
+			rel_list[int(field[-1])-1] = (dirty_data[field])
+		else:
+			try:
+				assert(dirty_data[field]) #Assert that data was entered.
+				parsed_data[field] = dirty_data[field]
+			except:
+				if field in not_required:
+					clean_data[field] = "" #If nothing was entered, store nothing ###Used to be "?" -- why?
+				else:
+					bad_data.add(field)
+					errors[field] = "Field required."
+					
+	#Check that equal numbers of fields are present in each list 
+	for i in xrange(CONFIG.num_reactants):
+		x = 0
+		if reactant[i]:
+			x+=2
+			parsed_data["reactant"][i] = reactant[i]
+		if quantity[i]:
+			x+=3
+			parsed_data["quantity"][i] = quantity[i]
+		parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
+		
+		#Unit is added automatically, so don't check it.
+		if x == 3:
+			errors["reactant_"+str(i+1)] = "Info missing."
+		elif x == 2:
+			errors["quantity_"+str(i+1)] = "Info missing."
+	
+	for field in parsed_data:
+		#Make sure each reactant name is valid.
+		if field=="reactant":
+			for i in xrange(len(parsed_data[field])):
+				if not parsed_data[field][i]: continue #Don't validate empty values.
+				try:
+					dirty_datum = str(parsed_data[field][i])
+					assert(validate_name(dirty_datum, lab_group))
+					clean_data["{}_{}".format(field,i+1)] = dirty_datum #Add the filtered value to the clean values dict.
+				except:
+					errors["{}_{}".format(field,i+1)] = "Not in compound guide!"
+		
+		#Numeric fields:
+		elif field in float_fields or field in int_fields:
+			if field in float_fields: field_type="float"
+			else: field_type="int"
+			
+			if field in list_fields:
+				for i in xrange(len(parsed_data[field])):
+					if not parsed_data[field][i]: continue #Don't validate empty values.
+					try:
+						dirty_datum = eval("{}(parsed_data[field][i])".format(field_type))
+						assert(quick_validation(field, dirty_datum))
+						clean_data["{}_{}".format(field,i+1)] = dirty_datum
+					except:
+						errors["{}_{}".format(field,i+1)] = "Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])
+			else:
+				try:
+					dirty_datum = eval("{}(parsed_data[field])".format(field_type))
+					assert(quick_validation(field, dirty_datum))
+					parsed_data[field] = dirty_datum #Add the filtered mass to clean_data 
+					clean_data[field] = parsed_data[field]
+				except:
+					errors[field] = "Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])
+		
+		#Option fields:
+		elif field in opt_fields:
+			if field in list_fields:
+				for i in xrange(len(parsed_data[field])):
+					if not parsed_data[field][i]: continue #Don't validate empty values.
+					try:
+						dirty_datum = str(parsed_data[field][i])
+						assert(quick_validation(field, dirty_datum))
+						clean_data["{}_{}".format(field,i+1)] = dirty_datum
+					except:
+						if field in bool_fields: 
+							category="boolChoices"
+						else: 
+							category = field+"Choices"
+
+						errors["{}_{}".format(field,i+1)] = "Field must be one of: {}".format(edit_choices[category])
+			else:
+				try:
+					dirty_datum = str(parsed_data[field])
+					assert(quick_validation(field, dirty_datum))
+					clean_data[field] = dirty_datum
+				except:
+					if field in bool_fields: 
+						category="boolChoices"
+					else: 
+						category = field+"Choices"
+
+					errors[field] = "Field must be one of: {}".format(edit_choices[category])
+
+		#Text fields.
+		elif field in {"ref","notes"}:
+			try:
+				dirty_datum = str(parsed_data[field])
+				assert(quick_validation(field, dirty_datum))
+				clean_data[field] = dirty_datum
+			except:
+				errors[field] = "Cannot exceed {} characters.".format(data_ranges[field][1])
+	
+	return (clean_data, errors)
+	
 class DataEntryForm(ModelForm):
 	#List Fields
 	for i in CONFIG.reactant_range():
@@ -417,7 +561,7 @@ class DataEntryForm(ModelForm):
 			"'title':'Enter the amount of reactant.'}))")
 		exec("unit_{0} = ChoiceField(choices = UNIT_CHOICES, widget=Select(".format(i, required) +
 			"attrs={'class':'form_text dropDownMenu',"+
-			"'title':'Is the quantity a mass or volume?'}))")
+			"'title':'\"g\": gram <br/> \"mL\": milliliter <br/> \"d\": drop'}))")
 	ref = CharField(label="Ref.", widget=TextInput(
 		attrs={'class':'form_text form_text_short',
 		"title":"The lab notebook and page number where the data can be found."}))
@@ -475,160 +619,28 @@ class DataEntryForm(ModelForm):
 		datum.user = self.user
 		datum.lab_group = self.lab_group
 		datum.creation_time = self.creation_time
+		datum.is_valid = True #If validation succeeded and data is saved, then it is_valid.
 
 		if commit:
 			datum.save()
 		return datum
 		
 		
-	#Clean All of the Data (IF FIELDS ARE ADDED, THEY MUST BE CLEANED HERE)
+	#Clean the data that is input using the form.
 	def clean(self):
-		
 		#Initialize the variables needed for the cleansing process.
 		dirty_data = super(DataEntryForm, self).clean() #Get the available raw (dirty) data
-		parsed_data = {} #Data that needs to be checked.
-		clean_data = {} #Keep track of cleaned fields
+	
+		#Gather the clean_data and any errors found.
+		clean_data, gathered_errors = full_validation(dirty_data, self.lab_group)
+		form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
 		
-		#Add the user information to the clean data package:
+		#Apply the errors to the form.
+		self._errors.update(form_errors)
+		
+		#Add the non-input information to the clean data package:
 		clean_data["lab_group"] = self.lab_group
 		clean_data["user"] = self.user
-		clean_data["creation_time"] = self.creation_time
+		clean_data["creation_time"] = self.creation_time		
 		
-		fields = get_model_field_names()
-		
-		#Gather the "coupled" fields (ie, the fields ending in a similar number) 
-		num_reactants = 5
-		for field in list_fields:
-			exec("{} = [[]]*num_reactants".format(field))
-			parsed_data[field] = [[]]*num_reactants
-			clean_data[field] = []
-		
-		#Strip data to be cleaned from the form.
-		
-		#Visible fields that are not required (not including rxn info).
-		not_required = { ###Auto-generate?
-			"notes"
-		}
-		
-		for field in dirty_data:
-			if field[-1].isdigit():
-				#Put the data in its respective list.
-				rel_list = eval("{}".format(field[:-2]))
-				rel_list[int(field[-1])-1] = (dirty_data[field])
-			else:
-				try:
-					assert(dirty_data[field]) #Assert that data was entered.
-					parsed_data[field] = dirty_data[field]
-				except:
-					if field in not_required:
-						clean_data[field] = "" #If nothing was entered, store nothing ###Used to be "?" -- why?
-					else:
-						bad_data.add(field)
-						self._errors[field] = self.error_class(
-									["Field required."]
-								)
-		#Check that equal numbers of fields are present in each list 
-		for i in xrange(num_reactants):
-			x = 0
-			if reactant[i]:
-				x+=2
-				parsed_data["reactant"][i] = reactant[i]
-			if quantity[i]:
-				x+=3
-				parsed_data["quantity"][i] = quantity[i]
-			parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
-			
-			#Unit is added automatically, so don't check it.
-			if x == 3:
-				self._errors["reactant_"+str(i+1)] = self.error_class(
-							["Info missing."]
-						)
-			elif x == 2:
-				self._errors["quantity_"+str(i+1)] = self.error_class(
-							["Info missing."]
-						)
-		
-		for field in parsed_data:
-			#Make sure each reactant name is valid.
-			if field=="reactant":
-				for i in xrange(len(parsed_data[field])):
-					if not parsed_data[field][i]: continue #Don't validate empty values.
-					try:
-						dirty_datum = str(parsed_data[field][i])
-						assert(validate_name(dirty_datum, clean_data["lab_group"]))
-						clean_data["{}_{}".format(field,i+1)] = dirty_datum #Add the filtered value to the clean values dict.
-					except:
-						self._errors["{}_{}".format(field,i+1)] = self.error_class(
-							["Not in compound guide!"])
-			
-			#Numeric fields:
-			elif field in float_fields or field in int_fields:
-				if field in float_fields: field_type="float"
-				else: field_type="int"
-				
-				if field in list_fields:
-					for i in xrange(len(parsed_data[field])):
-						if not parsed_data[field][i]: continue #Don't validate empty values.
-						try:
-							dirty_datum = eval("{}(parsed_data[field][i])".format(field_type))
-							assert(quick_validation(field, dirty_datum))
-							clean_data["{}_{}".format(field,i+1)] = dirty_datum
-						except:
-							self._errors["{}_{}".format(field,i+1)] = self.error_class(
-								["Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])])
-				else:
-					try:
-						dirty_datum = eval("{}(parsed_data[field])".format(field_type))
-						assert(quick_validation(field, dirty_datum))
-						parsed_data[field] = dirty_datum #Add the filtered mass to clean_data 
-						clean_data[field] = parsed_data[field]
-					except:
-						self._errors[field] = self.error_class(
-							["Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])])
-						bad_data.add(field)
-						
-			
-			#Option fields:
-			elif field in opt_fields:
-				if field in list_fields:
-					for i in xrange(len(parsed_data[field])):
-						if not parsed_data[field][i]: continue #Don't validate empty values.
-						try:
-							dirty_datum = str(parsed_data[field][i])
-							assert(quick_validation(field, dirty_datum))
-							print "VALIDATED! {}_{}".format(field,i+1)
-							clean_data["{}_{}".format(field,i+1)] = dirty_datum
-							print "added!"
-						except:
-							if field in bool_fields: 
-								category="boolChoices"
-							else: 
-								category = field+"Choices"
-
-							self._errors["{}_{}".format(field,i+1)] = self.error_class(
-								["Field must be one of: {}".format(edit_choices[category])])
-				else:
-					try:
-						dirty_datum = str(parsed_data[field])
-						assert(quick_validation(field, dirty_datum))
-						clean_data[field] = dirty_datum
-					except:
-						if field in bool_fields: 
-							category="boolChoices"
-						else: 
-							category = field+"Choices"
-
-						self._errors[field] = self.error_class(
-							["Field must be one of: {}".format(edit_choices[category])])
-
-			#Text fields.
-			elif field in {"ref","notes"}:
-				try:
-					dirty_datum = str(parsed_data[field])
-					assert(quick_validation(field, dirty_datum))
-					clean_data[field] = dirty_datum
-				except:
-					self._errors[field] = self.error_class(
-						["Cannot exceed {} characters.".format(data_ranges[field][1])])
-		print parsed_data
 		return clean_data
