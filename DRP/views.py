@@ -39,6 +39,10 @@ class DataManager(object):
 	def clear_page_of(self, lab_group, indexChanged):
 		page = (indexChanged/self.data_per_page) + 1
 		set_cache(lab_group, "PAGEDATA|{}".format(page), None)
+	
+	def clear_all_page_caches(self, lab_group):
+		for page in xrange(1, self.calc_total_pages(lab_group)+1):
+			set_cache(lab_group, "PAGEDATA|{}".format(page), None)
 		
 	def get_page_links(self, current, total_pages):
 		#Always display the first page.
@@ -76,7 +80,6 @@ class DataManager(object):
 		
 		#Only retrieve lab_data if it is not already available.
 		cached_data = get_cache(lab_group, "PAGEDATA|{}".format(page))
-		
 		
 		if not cached_data or overwrite:
 			if not lab_data.exists():
@@ -123,6 +126,32 @@ class DataManager(object):
 		except Exception as e:
 			raise Exception("-Data could not be retrieved for page {}\n--{}.".format(current_page, e))
 
+def revalidate_all_data(lab_group, invalid_only = True):
+	data_to_validate = Data.objects.filter(lab_group=lab_group)
+		
+	if invalid_only:
+		data_to_validate = data_to_validate.filter(is_valid=False)
+		
+	print "Found {} to validate.".format(data_to_validate.count())
+		
+	#Only validate data if data to validate is available.
+	###if data_to_validate.exists(): ###Prints missing CG entries.
+		###missing_CG_log = ""###
+		###missing = set()
+		###for data in data_to_validate:
+			###(text, CG_entries) = revalidate_data(data, lab_group, batch=True)
+			###if CG_entries:
+				###for CG_entry in CG_entries:
+					###if not CG_entry in missing:
+						###missing_CG_log += text
+						###missing.add(CG_entry) 
+		###print missing_CG_log
+
+	if data_to_validate.exists():
+		for data in data_to_validate:
+			revalidate_data(data, lab_group, batch=True)
+		#Clear the page caches ###(it's probably more efficient to clear all the caches than calculate which caches to clear).
+		control.clear_all_page_caches(lab_group)		
 control = DataManager()
 
 ######################  Core Views  ####################################
@@ -137,7 +166,6 @@ def database(request, control = control):
 		current_page = session["current_page"]
 		total_data_size = session["total_data_size"]
 	else:
-		print("\n\nCOULD NOT LOAD SESSION INFO\n\n")###
 		relevant_data = Data.objects.none() #Don't query the database if U is not logged in.
 		total_pages = 1
 		page_links = [1]
@@ -163,6 +191,9 @@ def database(request, control = control):
 		"total_data_size": total_data_size,
 	})
 
+###
+import time
+
 def predictions(request):
 	#Variable Setup
 	u = request.user
@@ -174,7 +205,14 @@ def predictions(request):
 			lab_group = u.get_profile().lab_group
 			svg = None###get_cache(lab_group, "TESTSVG")###
 			if not svg:
+				start_time = time.time()###
+				#Attempt to validate any invalid data.
+				revalidate_all_data(lab_group) ###Validates all data or just user data?
+				
+				#Create and cache the SVG.
 				svg = generate_svg(u.get_profile().lab_group)
+				print "Took {} seconds overall.".format(time.time()-start_time)###
+				
 				set_cache(lab_group, "TESTSVG", svg, 86400)
 		except Exception as e:
 			fatal_message = e
@@ -448,6 +486,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 		
 	if request.method=="POST" and request.FILES and u.is_authenticated():
 		#Get the file and model specification from the POST request.
+		lab_group = u.get_profile().lab_group
 		model=request.POST["dataType"]
 		uploaded_file = request.FILES["file"]
 		
@@ -533,6 +572,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 					#Access the data from the uploaded file.
 					i = 0 # row index (gets a datum)
 					j = 0 # user_fields index. (gets a field)
+					no_abbrev = False
 					
 					while (i < row_length or j < len(user_fields)):
 						#Required since data and fields may be disjunct from missing units.
@@ -553,24 +593,21 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								model_fields[field] = CONFIG.not_required_label
 							continue
 						try:
-							#Attempt to change CONFIG.blacklist entries if possible.
-							if datum in CONFIG.blacklist: 
-								#If abbrevs are empty, assume same as compound.
-								if field=="abbrev": no_abbrev=True
-								#If a CG entry type is empty, try to guess it.
-								if field=="compound_type": datum=guess_type(model_fields["compound"])
-							
 							#If the datum isn't helpful, don't remember it.
 							if datum in CONFIG.blacklist:		
 								if field in not_required:
 									datum = CONFIG.not_required_label
+								elif field=="compound_type":
+									#Attempt to guess missing compound_types.
+									datum=guess_type(model_fields["compound"])
 								elif allow_unknowns:
 									datum = CONFIG.unknown_label ###Take this value or no?
 									data_is_valid = False
 								elif field=="compound" and not datum:
 									raise Exception("No compound specified!")
-								elif no_abbrev:
-									pass
+								elif field=="abbrev":
+									#Allow absent abbreviations, but mark them the same as the datum.
+									no_abbrev=True
 								else:
 									raise Exception("Value not allowed: \"{}\"".format(datum))
 							else:
@@ -629,6 +666,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								elif field == "CAS_ID":
 									datum = datum.replace("/","-").replace(" ","-").replace("_","-")
 								elif field == "compound_type":
+									###Gross? Why not use dict, Past Casey? --Future Casey
 									for option in edit_choices["typeChoices"]:
 										datum = datum[0:2].lower()
 										if option[0:len(datum)].lower() == datum:
@@ -647,7 +685,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									if model=="CompoundEntry":
 										if no_abbrev and field=="compound":
 											model_fields["abbrev"] = datum
-											no_abbrev = False
 								except:
 									raise Exception("Post-validation CONFIGuration failed!") 
 											
@@ -658,16 +695,12 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						except Exception as e:
 							raise Exception([row_num, str(e)])
 						
-					#Add the new entry to the database. ###SLOWWwwwww...
+					#Add the new entry to the list of entries to batch add.
 					if model=="Data":
-						print data_is_valid
 						model_fields["is_valid"] = data_is_valid				
 						entry_list.append(new_Data_entry(u, **model_fields))
 					elif model=="CompoundEntry":
-						lab_group = u.get_profile().lab_group
 						entry_list.append(new_CG_entry(lab_group, **model_fields))
-						set_cache(lab_group, "COMPOUNDGUIDE", None)
-						set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
 					added_quantity += 1
 				except Exception as e:
@@ -683,6 +716,8 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 				Data.objects.bulk_create(entry_list)
 			elif added_quantity and model=="CompoundEntry":
 				CompoundEntry.objects.bulk_create(entry_list)
+				set_cache(lab_group, "COMPOUNDGUIDE", None)
+				set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 			entry_list = None #Clear the entry_list out of memory.
 		except Exception as e:
 			error_log.append([str(e)])
@@ -716,10 +751,13 @@ def download_CSV(request): ###Need to fix.
 	u = request.user
 	if u.is_authenticated():
 		#Generate a file name.
+		lab_group = u.get_profile().lab_group
 		date = datetime.datetime.now()
-		file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
-			date.day, date.month, date.year)
+		file_name = "{}_{}".format(lab_group.lab_title, model)
+		###file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
+			###date.day, date.month, date.year)
 		
+		#Set up the HttpResponse to be a CSV file. 
 		CSV_file = HttpResponse(content_type="text/csv")
 		CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
 		
@@ -727,14 +765,19 @@ def download_CSV(request): ###Need to fix.
 		writer = csv.writer(CSV_file)
 		
 		#Write the verbose headers to the CSV_file
-		verbose_headers = get_model_field_names(verbose=True)
+		verbose_headers = get_model_field_names(verbose=True, model=model) ###NOT TESTED.
 		writer.writerow(verbose_headers)
 		
 		#Write the actual entries to the CSV_file if the user is authenticated.
-		headers = get_model_field_names(verbose=False)
-		lab_data = control.collect_all_data(u.get_profile().lab_group)
+		headers = get_model_field_names(verbose=False, model=model)
 		
-		for entry in lab_data:
+		if model=="Data":
+			CSV_data = control.collect_all_data(lab_group)
+		elif model=="CompoundEntry":
+			###Better way? Generalize mass CG collection?
+			CSV_data = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
+		
+		for entry in CSV_data:
 			try:
 				#Create and apply the actual row.
 				row = [eval("entry.{}".format(field)).encode("utf-8") for field in headers]
@@ -906,7 +949,7 @@ def get_full_datum(request, control=control):
 def change_password(request):
 	code_sent = False
 	if request.method == "POST":
-		print(request.POST)
+		print(request.POST) ####
 		if request.POST.get("emailCode"):
 			print("YES\n")
 			code_sent = True
@@ -984,6 +1027,8 @@ def lab_registration(request): ###Not finished.
 	return render(request, "lab_registration_form.html", {
 		###"lab_form": form,
 	})	
+
+######################  Developer Functions  ###########################
 
 ######################  Error Messages  ################################
 def display_404_error(request):

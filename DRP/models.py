@@ -402,24 +402,33 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 			clean_fields += [field.name]
 	return clean_fields
 	
-def revalidate_data(data, lab_group):
+def revalidate_data(data, lab_group, batch=False):
 	#Collect the data to validate
 	dirty_data = {field:getattr(data, field) for field in get_model_field_names()}
 	#Validate and collect any errors
 	(clean_data, errors) = full_validation(dirty_data, lab_group)
 	
+	if errors:###
+		missing = []
+		for i in xrange(1,6):
+			if errors.get("reactant_{}".format(i)):
+				missing.append(getattr(data, "reactant_{}".format(i)).encode('ascii','ignore'))
+		
+		if missing:
+			reaction = getattr(data, "reactant_1")
+			for i in xrange(2,6):
+				reactant = getattr(data, "reactant_{}".format(i))
+				if reactant:
+					reaction +=  " + {}".format(reactant)
+			return ("{0} ({1})\n\tMissing:{2}\n".format(reaction, data.ref, missing), missing)
+
+	return ("",None)
+	
 	is_valid = False if errors else True
 	setattr(data, "is_valid", is_valid)
 	data.save()
-	
-def revalidate_all_data(lab_group, invalid_only = True):
-	data_to_validate = Data.objects.filter(lab_group=lab_group)
-	if invalid_only:
-		data_to_validate = data_to_validate.filter(is_valid=False)
+	#Does not auto-clear the cache --only modifies the data entry.
 		
-	for data in data_to_validate:
-		revalidate_data(data, lab_group)
-
 def full_validation(dirty_data, lab_group):
 	parsed_data = {} #Data that needs to be checked.
 	clean_data = {} #Keep track of cleaned fields

@@ -23,9 +23,9 @@ def construct_entire_descriptor_table(lab_group):
 	count = 0
 	for data in Data.objects.filter(lab_group=lab_group, calculations=None, is_valid=True):
 		#Display counter information:
-		if cnt % 100000 == 0:
-			print "---- Played with {} reactions so far...".format(cnt)
-		cnt += 1		
+		if count % 100000 == 0:
+			print "---- Played with {} reactions so far...".format(count)
+		count += 1		
 		
 		#Collect the reactant information.
 		compounds = [getattr(data,field) for field in data_fields if field[:-2]=="reactant"]
