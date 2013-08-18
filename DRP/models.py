@@ -129,6 +129,7 @@ class CompoundGuideForm(ModelForm):
 		widget=Select(attrs={'class':'form_text dropDownMenu',
 		"title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>"+
 		"--Solute<br/>--Water"}))
+	###NEED TO ADD SMILES? PERHAPS JUST AUTO-GEN...
 		
 	class Meta:
 		model = CompoundEntry	

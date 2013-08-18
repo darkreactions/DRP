@@ -13,6 +13,7 @@ import datetime
 from svg_construction import *
 from construct_descriptor_table import *
 from data_config import CONFIG
+import chemspipy
 
 
 ######################  Controllers  ###################################
@@ -607,6 +608,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									raise Exception("No compound specified!")
 								elif field=="abbrev":
 									#Allow absent abbreviations, but mark them the same as the datum.
+									print "FOUND THIS: \"{}\" in \"{}\"".format(datum,field)###
 									no_abbrev=True
 								else:
 									raise Exception("Value not allowed: \"{}\"".format(datum))
@@ -676,6 +678,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									#Attempt to validate the data.
 									if datum != CONFIG.unknown_label:
 										assert(quick_validation(field, datum, model=model))
+
 								except:
 									data_is_valid = False
 									raise Exception("Datum did not pass validation!")
@@ -683,7 +686,15 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								try:
 									#Post-validation configuration.
 									if model=="CompoundEntry":
+										if field == "compound":
+											try:
+												chemspider_data = chemspipy.find_one(datum)
+												print "RAW:\t{}".format(datum)
+												print "ChemSpi:\t{}: {}\n".format(chemspider_data.commonname, chemspider_data.smiles)
+											except:
+												print "----COULD NOT FIND SMILES----"###
 										if no_abbrev and field=="compound":
+											print "No abbreviation found for \"{}\" but continuing!".format(datum)###
 											model_fields["abbrev"] = datum
 								except:
 									raise Exception("Post-validation CONFIGuration failed!") 
@@ -714,6 +725,14 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			#Update cursors if data was added.
 			if added_quantity and model=="Data":
 				Data.objects.bulk_create(entry_list)
+				
+				#Remove the cached version of the last page.
+				old_data_size = get_cache(lab_group, "TOTALSIZE")
+				control.clear_page_of(lab_group, old_data_size)
+				
+				#Add the new data to the cached size.
+				get_cache(lab_group, "TOTALSIZE", old_data_size+len(entry_list))
+				
 			elif added_quantity and model=="CompoundEntry":
 				CompoundEntry.objects.bulk_create(entry_list)
 				set_cache(lab_group, "COMPOUNDGUIDE", None)
