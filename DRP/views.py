@@ -18,12 +18,12 @@ import chemspipy
 
 ######################  Controllers  ###################################
 
-#Manages pages and data:	
+#Manages pages and data:
 class DataManager(object):
 	def __init__(self):
 		self.data_per_page = 15 #Change to set different numbers of data per page.
 		self.current_radius = 4 #Max number of links to display "around" current link.
-		
+
 	#Collect all data relevant to a specific lab group.
 	def collect_all_data(self, lab_group):
 		return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
@@ -35,53 +35,53 @@ class DataManager(object):
 		if (total_pages < 1): total_pages = 1
 		set_cache(lab_group, "TOTALPAGES", total_pages)
 		return total_pages
-		
+
 	#Erases the cached page which contains a specific index.
 	def clear_page_of(self, lab_group, indexChanged):
 		page = (indexChanged/self.data_per_page) + 1
 		set_cache(lab_group, "PAGEDATA|{}".format(page), None)
-	
+
 	def clear_all_page_caches(self, lab_group):
 		for page in xrange(1, self.calc_total_pages(lab_group)+1):
 			set_cache(lab_group, "PAGEDATA|{}".format(page), None)
-		
+
 	def get_page_links(self, current, total_pages):
 		#Always display the first page.
-		page_links = {1} #Use a set to remove any duplicates. 
-		
+		page_links = {1} #Use a set to remove any duplicates.
+
 		if total_pages > 1:
 			for i in range(current - self.current_radius, current + self.current_radius+1):
 				if (1 < i < total_pages): page_links.add(i)
-				
+
 			#Always display the last page if applicable.
 			page_links.add(total_pages)
-			
+
 		#Convert page_links to an ordered list.
 		page_links = list(page_links)
 		page_links.sort()
-		
+
 		if len(page_links) >= 2:
 			i=0
 			while i < len(page_links):
 				try:
-					if page_links[i+1]-page_links[i] > 1: #If a gap exists between two numbers, add an ellipsis. 
+					if page_links[i+1]-page_links[i] > 1: #If a gap exists between two numbers, add an ellipsis.
 						page_links.insert(i+1,"...")
 						i+=1 #Extra addition to account for the new "..." element.
 				except:
 					pass #At the last element of the list or an error, just skip.
 				i += 1
-		return page_links		
-	
+		return page_links
+
 	#Returns the data relevant to a given page (from a cursor).
 	#	Note: Will skip lookup if given lab_data or if not set to overwrite.
 	def retrieve_data(self, user, page = 1, overwrite = False, lab_data = None):
 		if not user.is_authenticated():
 			raise Exception("User not logged in.")
 		lab_group = user.get_profile().lab_group
-		
+
 		#Only retrieve lab_data if it is not already available.
 		cached_data = get_cache(lab_group, "PAGEDATA|{}".format(page))
-		
+
 		if not cached_data or overwrite:
 			if not lab_data.exists():
 				lab_data = self.collect_all_data(user.get_profile().lab_group)
@@ -90,10 +90,10 @@ class DataManager(object):
 			rel_lab_data = lab_data[(page-1)*self.data_per_page:(page)*self.data_per_page]
 			#Overwrite the existing cache entry.
 			set_cache(lab_group, "PAGEDATA|{}".format(page), list(rel_lab_data))
-		else: 
-			rel_lab_data = cached_data 
+		else:
+			rel_lab_data = cached_data
 		return rel_lab_data
-			
+
 	def get_page_info(self, request, current_page = None):
 		u = request.user
 		if not u.is_authenticated():
@@ -110,11 +110,11 @@ class DataManager(object):
 			total_data_size = lab_data.count()
 			set_cache(lab_group, "TOTALSIZE", total_data_size)
 			total_pages = self.calc_total_pages(lab_group, total_data_size)
-			
+
 			#Make sure the page is a valid page.
 			if not (0 < current_page <= total_pages):
 				current_page = total_pages
-			
+
 			#Pack up the session info:
 			session = {
 				"relevant_data": self.retrieve_data(u, current_page, False, lab_data),
@@ -129,12 +129,12 @@ class DataManager(object):
 
 def revalidate_all_data(lab_group, invalid_only = True):
 	data_to_validate = Data.objects.filter(lab_group=lab_group)
-		
+
 	if invalid_only:
 		data_to_validate = data_to_validate.filter(is_valid=False)
-		
+
 	print "Found {} to validate.".format(data_to_validate.count())
-		
+
 	#Only validate data if data to validate is available.
 	###if data_to_validate.exists(): ###Prints missing CG entries.
 		###missing_CG_log = ""###
@@ -145,15 +145,140 @@ def revalidate_all_data(lab_group, invalid_only = True):
 				###for CG_entry in CG_entries:
 					###if not CG_entry in missing:
 						###missing_CG_log += text
-						###missing.add(CG_entry) 
+						###missing.add(CG_entry)
 		###print missing_CG_log
 
 	if data_to_validate.exists():
 		for data in data_to_validate:
 			revalidate_data(data, lab_group, batch=True)
 		#Clear the page caches ###(it's probably more efficient to clear all the caches than calculate which caches to clear).
-		control.clear_all_page_caches(lab_group)		
+		control.clear_all_page_caches(lab_group)
 control = DataManager()
+
+###Should be implemented eventually:
+######################  Analysis Functions  ####################################
+#Return the data without any duplicates. Must be given a QuerySet.
+def find_duplicates(lab_group, lab_data=None, only_good=True):
+	if not lab_data:
+		lab_data = control.collect_all_data(lab_group)
+
+	#Gather data that has an outcome of 4 (success) and no leaks.
+	if only_good:
+		lab_data = lab_data.filter(outcome=4).filter(leak="No")
+
+
+
+	return
+
+
+
+
+	####Variable Setup
+	###amount_variation = 0.01 #Percentage
+	###sorting_tree = {}
+	###reaction_groups = {}
+	###reaction_groups_by_ref = {}
+	###current_node = sorting_tree
+		####The fields used in sorting in the order to be sorted:
+	###fields = ["slow_cool","purity","pH","temp","time","reaction","quantity","ref"]
+
+	####Sort "fixed" value branches in the sorting tree (slow_cool, purity)
+
+	###for data in lab_data:
+		####Restart at the root of the tree for each datum.
+		###current_node = sorting_tree
+
+		###current_reaction = "" #Used to group "ref"s by reactions.
+
+		###for field in fields:
+
+			####Translate the "group" variables into a single, sorted string.
+			###if field == "reaction":
+				###raw_reactant_list = [getattr(data, "reactant_{}".format(i)) for i in CONFIG.reactant_range()]
+				###reactant_order = [y for (x,y) in sorted(
+					###zip(raw_reactant_list, CONFIG.reactant_range()))]
+
+				###reactant_list = [raw_reactant_list[i-1] for i in reactant_order]
+				###datum = "_".join(reactant_list)
+
+				###current_reaction = datum
+
+			###elif field == "quantity": #Must come AFTER "reaction" in fields.
+
+				###amount_list = [getattr(data, "quantity_{}".format(i)) for i in reactant_order]
+				###unit_list = [getattr(data, "unit_{}".format(i)) for i in reactant_order]
+
+				######Modify amount_list at all? round??
+
+				###pair_list = ["{}_{}".format(x, y) for (x,y) in zip(amount_list, unit_list)]
+
+				###datum = ",".join(pair_list)
+
+				####reaction_groups[current_reaction] = datum
+
+
+				#######Include units here
+				####for i in xrange
+				####datum = getattr(data, field)
+
+				#####Check if reaction should be new. if so...###
+				####if not reaction_groups.get(datum):
+					####reaction_groups[datum] = set()
+				####else:
+					#####If there is a reaction with different amounts.
+					####i=1
+					####while (reaction_groups.get(datum)):
+						####datum = "{}_{}".format(datum, i)
+						####i += 1
+			###else:
+				###datum = getattr(data, field)
+
+			###if field == "ref": #Must go last in field sorting.
+				###if not reaction_groups_by_ref.get(current_reaction):
+					###reaction_groups_by_ref[current_reaction] = set()
+				###reaction_groups_by_ref[current_reaction].add(datum)
+
+				###continue
+
+			###if not current_node.get(datum):
+				###current_node[datum] = {}
+			###elif field=="amount":
+				####	If all vars up to this point are the same and a branch
+				####	exists for the amount already, then we have a duplicate on our hands.
+				###print "Found a possible duplicate!"###
+
+			####Move down the tree and create a sub_branch if necessary.
+			###current_node = current_node[datum]
+
+	######
+	####print sorting_tree
+	###print"_____"*5
+	####print reaction_groups
+	###print reaction_groups_by_ref
+	###print "Number of reaction groups (without amount differentiation): {}".format(len(reaction_groups))
+	###print"_____"*5
+
+	###deduplicated_data = lab_data
+
+	###return deduplicated_data
+
+#Return all data before/after a specific date (ignoring time).
+def filter_by_date(lab_data, raw_date, direction="after"):
+	#Convert the date input into a usable string.
+	#Note, date must be given as MM-DD-YY.
+	date = datetime.datetime.strptime(raw_date, "%m-%d-%y")
+	date_string = str(date)
+
+	#Get the reactions before/after a specific date.
+	if direction.lower() == "after":
+		print "Getting data AFTER {}".format(date_string)###
+		filtered_data = lab_data.filter(creation_time__gte=date_string)
+	else:
+		print "Getting data BEFORE {}".format(date_string)###
+		filtered_data = lab_data.filter(creation_time__lte=date_string)
+
+	return filtered_data
+
 
 ######################  Core Views  ####################################
 def database(request, control = control):
@@ -172,11 +297,11 @@ def database(request, control = control):
 		page_links = [1]
 		current_page = 1
 		total_data_size = 0
-	
+
 	#Show the overall index of each datum.
 	start_index = (current_page-1)*control.data_per_page + 1
 	end_index = (current_page)*control.data_per_page + 1
-	
+
 	#Prepare packages.
 	data_package = zip(relevant_data, range(start_index, end_index))
 	page_package = {
@@ -185,10 +310,10 @@ def database(request, control = control):
 		"data_per_page":control.data_per_page,
 		"page_links":page_links,
 		}
-			
+
 	return render(request, 'database_global.html', {
 		"data_on_page": data_package, #Includes data and data_indexes.
-		"page_package": page_package, 
+		"page_package": page_package,
 		"total_data_size": total_data_size,
 	})
 
@@ -200,7 +325,7 @@ def predictions(request):
 	u = request.user
 	fatal_message = ""
 	svg = ""
-	
+
 	if u.is_authenticated():
 		try:
 			lab_group = u.get_profile().lab_group
@@ -209,28 +334,28 @@ def predictions(request):
 				start_time = time.time()###
 				#Attempt to validate any invalid data.
 				revalidate_all_data(lab_group) ###Validates all data or just user data?
-				
+
 				#Create and cache the SVG.
 				svg = generate_svg(u.get_profile().lab_group)
 				print "Took {} seconds overall.".format(time.time()-start_time)###
-				
+
 				set_cache(lab_group, "TESTSVG", svg, 86400)
 		except Exception as e:
 			fatal_message = e
 		#construct_descriptor_table("cat","dog")
 	else:
 		fatal_message = "Please log in to view predictions."
-	
+
 	return render(request, 'predictions_global.html', {
 		"fatal_message": fatal_message,
 		"svg": svg, #Includes data and data_indexes.
 	})
-	
+
 def gather_SVG(request):
 	u = request.user
 	fatal_message = ""
 	svg = ""
-	
+
 	if u.is_authenticated() and request.method=="POST":
 		try:
 			step = request.POST.get("step")
@@ -243,12 +368,12 @@ def gather_SVG(request):
 		fatal_message = "Could not gather information about SVG to create."
 	else:
 		fatal_message = "Please log in to view predictions."
-	
+
 	if fatal_message:
 		return HttpResponse("<p class=\"fatalError\">{}</p>".format(fatal_message))
 	return HttpResponse(svg)
-	
-	
+
+
 ######################  Searching  #####################################
 def search(request):
 	u = request.user
@@ -257,15 +382,15 @@ def search(request):
 	if u.is_authenticated():
 		other_fields = get_model_field_names(both=True, unique_only=True)
 		if request.method=="POST":
-			
+
 			query_list = json.loads(request.POST.get("current_query"))
 			if not query_list:
 				return HttpResponse("No search specified!")
-				
+
 			lab_group = u.get_profile().lab_group
 			all_data = Data.objects.filter(lab_group=lab_group) #Order doesn't matter at this point in search.
 			filters = ""
-			
+
 			for query in query_list:
 				field = query.get("field")
 				value = query.get("value")
@@ -277,10 +402,10 @@ def search(request):
 					filters += ".filter({})".format(Q_string)
 				else:
 					filters += ".filter({}=\"{}\")".format(field, value)
-				
+
 			entries = eval("all_data{}".format(filters)).order_by("creation_time")[:max_search_size]
 			pk_list = entries[:max_search_size].values("pk")
-				
+
 			return render(request, 'search_results.html', {
 				"entries": entries[:search_page_size], #Only give back a specific amount of entries.
 				"search_page_size":search_page_size,
@@ -289,7 +414,7 @@ def search(request):
 				"no_search": False,
 				"other_fields": other_fields,
 			})
-			
+
 		else:
 			return render(request, 'search_global.html', {
 			"no_search": True,
@@ -305,7 +430,7 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 	success = False
 	if u.is_authenticated():
 		lab_group = u.get_profile().lab_group
-		if request.method == 'POST': 
+		if request.method == 'POST':
 			#Bind the user's data and verify that it is legit.
 			form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
 			if form.is_valid():
@@ -318,9 +443,9 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 		else:
 			#Submit a blank form if one was not just submitted.
 			form = CompoundGuideForm()
-	
+
 		guide = collect_CG_entries(u.get_profile().lab_group)
-		
+
 		return render(request, 'compound_guide_cell.html', {
 			"guide": guide,
 			"form": form,
@@ -333,22 +458,22 @@ def edit_CG_entry(request): ###Edits?
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
 		changesMade = json.loads(request.body, "utf-8")
-		
+
 		#Get the Lab_Group data to allow direct manipulation.
 		lab_group = u.get_profile().lab_group
-		CG_data = collect_CG_entries(lab_group)	
-		
+		CG_data = collect_CG_entries(lab_group)
+
 		#Clear the cached CG entries.
 		set_cache(lab_group, "COMPOUNDGUIDE", None)
 		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
-		
+
 		#Since only deletions are supported currently. ###
 		for index in changesMade: ###Tie names to CG abbrevs directly?
 			try:
 				CG_data[int(index)].delete()
 			except Exception as e:
 				print("\n\nCould not delete index! {}".format(e))
-			
+
 	return HttpResponse("OK")
 
 	##################  Helper Functions ###############################
@@ -371,24 +496,24 @@ def guess_type(datum):
 def data_form(request, copy_index=None): #If no data is entered, stay on the current page.
 	u = request.user
 	success = False
-	if request.method == 'POST' and u.is_authenticated(): 
+	if request.method == 'POST' and u.is_authenticated():
 		#Bind the user's data and verify that it is legit.
 		form = DataEntryForm(user=u, data=request.POST)
 		if form.is_valid():
 			#If all data is valid, save the entry.
 			form.save()
 			lab_group = u.get_profile().lab_group
-			
+
 			#Clear the cache of the last page.
 			old_data_size = get_cache(lab_group, "TOTALSIZE")
 			control.clear_page_of(lab_group, old_data_size)
-			
+
 			#Refresh the TOTALSIZE cache.
 			set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
 			success = True #Used to display the ribbonMessage.
 	else:
 		#Submit a blank/auto-filled form if one was not just submitted.
-		try: 
+		try:
 			#Verify that an index is given is present.
 			assert(copy_index != None)
 			datum = control.collect_all_data(u.get_profile().lab_group)[int(copy_index)-1]
@@ -399,12 +524,12 @@ def data_form(request, copy_index=None): #If no data is entered, stay on the cur
 			form = DataEntryForm(
 				initial=initial_fields
 			)
-			
+
 		except:
 			form = DataEntryForm(
 				initial={"leak":"No"}
 			)
-	
+
 	return render(request, 'data_form.html', {
 		"form": form,
 		"success": success,
@@ -414,11 +539,11 @@ def data_form(request, copy_index=None): #If no data is entered, stay on the cur
 
 #Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
 def get_related_field(heading, model="Data"): ###Not re-read.
-	#Strip all punctuation, capitalization, and spacing from the header. 
+	#Strip all punctuation, capitalization, and spacing from the header.
 	stripped_heading = heading.translate(None, string.punctuation)
 	stripped_heading = stripped_heading.translate(None, " ").lower()
 	stripped_heading = stripped_heading[:20] #Limit the checked heading (saves time if super long).
-	
+
 	if model=="Data":
 		if ("reacta" in stripped_heading or "mass" in stripped_heading
 			or "unit" in stripped_heading or "vol" in stripped_heading
@@ -432,29 +557,29 @@ def get_related_field(heading, model="Data"): ###Not re-read.
 			else:
 				related_field = "reactant_"
 			for i in range(5): #ie, 1-5
-				if str(i+1) in stripped_heading: 
+				if str(i+1) in stripped_heading:
 					related_field += str(i+1)
 					break; #Only add 1 number to the data form.
 		elif "temp" in stripped_heading:
 			related_field = "temp"
 		elif "time" in stripped_heading:
-			related_field = "time" 
+			related_field = "time"
 		elif "cool" in stripped_heading or "slow" in stripped_heading:
 			related_field = "slow_cool"
 		elif "pur" in stripped_heading:
-			related_field = "purity" 
+			related_field = "purity"
 		elif "leak" in stripped_heading or "error" in stripped_heading:
-			related_field = "leak" 
+			related_field = "leak"
 		elif ("ref" in stripped_heading or "cont" in stripped_heading
 			or "num" in stripped_heading):
-			related_field = "ref" 
+			related_field = "ref"
 		elif "out" in stripped_heading or "res" in stripped_heading:
-			related_field = "outcome" 
-		elif ("note" in stripped_heading or "other" in stripped_heading 
+			related_field = "outcome"
+		elif ("note" in stripped_heading or "other" in stripped_heading
 			or "info" in stripped_heading):
-			related_field = "notes" 
+			related_field = "notes"
 		elif "ph" in stripped_heading:
-			related_field = "pH" 
+			related_field = "pH"
 		else: #ie, related_field is unchanged.
 			raise Exception("Not a valid heading: <div class=failedUploadData>{}</div>".format(heading))
 	elif model=="CompoundEntry":
@@ -462,7 +587,7 @@ def get_related_field(heading, model="Data"): ###Not re-read.
 			related_field = "CAS_ID"
 		elif "type" in stripped_heading:
 			related_field = "compound_type"
-		elif ("comp" in stripped_heading or "full" in stripped_heading 
+		elif ("comp" in stripped_heading or "full" in stripped_heading
 			or "name" in stripped_heading):
 			related_field = "compound"
 		elif "abbr" in stripped_heading or "short" in stripped_heading:
@@ -472,11 +597,11 @@ def get_related_field(heading, model="Data"): ###Not re-read.
 	else:
 		raise Exception("Unknown model specification for relations.")
 	return related_field
-	
+
 ######################  Upload/Download   ##############################
 def upload_CSV(request, model="Data"): ###Not re-read.
 	u = request.user
-	
+
 	#Variable setup.
 	error_log = []
 	fatal_message = ""
@@ -484,17 +609,17 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 	error_quantity = 0
 	entry_list = [] #Used to bulk create entries.
 	no_abbrev = False
-		
+
 	if request.method=="POST" and request.FILES and u.is_authenticated():
 		#Get the file and model specification from the POST request.
 		lab_group = u.get_profile().lab_group
 		model=request.POST["dataType"]
 		uploaded_file = request.FILES["file"]
-		
+
 		#Get the appropriate field names.
 		if model=="Data":
 			not_required = {
-					"reactant_3", "quantity_3", "unit_3", 
+					"reactant_3", "quantity_3", "unit_3",
 					"reactant_4", "quantity_4", "unit_4",
 					"reactant_5", "quantity_5", "unit_5",
 					"notes"
@@ -505,12 +630,13 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 					"CAS_ID"
 				}
 			allow_unknowns = False
+			abbrev_dict = collect_CG_name_pairs(lab_group)
 		else:
 			raise Exception("Unknown model specified in upload.")
-			
+
 		true_fields = get_model_field_names(model=model)
 		row_num = 2 #Assuming row 1 is headings.
-		
+
 		try:
 			#Attempt to validate the headings of the uploaded CSV.
 			headings_valid = False
@@ -519,9 +645,9 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 			for row in csv.reader(uploaded_file, delimiter=","):
 				#Variable Setup for each data group.
 				data_is_valid = True
-				
+
 				#The first row should be a series of headings.
-				if validation_attempt > 5: 
+				if validation_attempt > 5:
 					fatal_message = "File doesn't have valid headings."
 					raise Exception("Exceeded validation attempts.")
 				try:
@@ -534,7 +660,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								break #Stop checking for headings if a "" is encountered.
 							user_fields.append(get_related_field(field,model=model))
 							row_length+=1
-							
+
 						#If unit columns were not supplied, add them after each quantity.
 						set_user_fields = set(user_fields)
 						auto_added_fields = set()
@@ -551,12 +677,12 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								if not opt in set_user_fields:
 									user_fields.append(opt)
 									auto_added_fields.add(opt)
-									
+
 						#Assert that there are no duplicates in the list
 						#	and that all fields are valid.
 						if len(user_fields) != len(true_fields):
 							raise Exception("Invalid column quantity! {} needed but {} found.".format(len(true_fields), len(user_fields)))
-								
+
 						for field in true_fields:
 							assert(field in user_fields)
 						headings_valid = True
@@ -565,7 +691,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 					validation_attempt += 1
 					error_log.append([str(e)])
 					continue
-					
+
 				#All other rows should have data corresponding to the headings.
 				try:
 					#Create new object that will receive the uploaded data.
@@ -574,13 +700,13 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 					i = 0 # row index (gets a datum)
 					j = 0 # user_fields index. (gets a field)
 					no_abbrev = False
-					
+
 					while (i < row_length or j < len(user_fields)):
 						#Required since data and fields may be disjunct from missing units.
 						datum = row[i]
 						field = user_fields[j]
-						
-						if field in auto_added_fields: 
+
+						if field in auto_added_fields:
 							#Skip the field if it was auto-added because
 							#	no data is present for the generated column.
 							j += 1
@@ -595,7 +721,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 							continue
 						try:
 							#If the datum isn't helpful, don't remember it.
-							if datum in CONFIG.blacklist:		
+							if datum in CONFIG.blacklist:
 								if field in not_required:
 									datum = CONFIG.not_required_label
 								elif field=="compound_type":
@@ -616,8 +742,8 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								#If the field is a quantity, check for units.
 								if field[:-2]=="quantity":
 									#Remove punctuation and whitespace if necessary.
-									datum = str(datum).lower().translate(None, "\n?/,!@#$%^&*-+=_\\|") 
-									
+									datum = str(datum).lower().translate(None, "\n?/,!@#$%^&*-+=_\\|")
+
 									#Make sure parentheses do not contain numbers as well -- and if they do, remove them.
 									try:
 										paren_contents = datum[datum.index("(")+1:datum.index(")")]
@@ -630,7 +756,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 											###raise Exception("Invalid character found in unit: {}".format(paren_contents))
 									except:
 										unit = "" #Gather a unit from quantity if present.
-									
+
 									stripped_datum = ""
 									for element in datum:
 										if element in "1234567890. ": #Ignore spaces as well.
@@ -638,15 +764,15 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										else:
 											old_datum = datum
 											datum = float(stripped_datum)
-											
-											#If another element is reached, assume it is a unit. 
+
+											#If another element is reached, assume it is a unit.
 											#	(if it isn't valid, raise an exception)
 											if element == "g": unit = "g"
 											elif element == "m": unit = "mL"
 											elif element == "d": unit = "d"
-											else: raise Exception("Unknown unit present: {}".format(old_datum[old_datum.index(element):]))	
+											else: raise Exception("Unknown unit present: {}".format(old_datum[old_datum.index(element):]))
 											break #Ignore anything beyond the unit.
-											
+
 									#If the unit was auto-added_quantity, add the unit to the correct field.
 									corresponding_unit = "unit_{}".format(field[-1])
 									if corresponding_unit in auto_added_fields:
@@ -654,19 +780,25 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										if unit=="": unit = "g"
 										#Apply the unit to the data entry.
 										model_fields[corresponding_unit] = unit
-								
+
 								#Trim "note" fields that are over the range.
 								elif field=="notes":
 									if len(datum) > int(data_ranges["notes"][1]):
 										datum = datum[:int(data_ranges["notes"][1])]
 								#Translate any yes/no answer to "Yes"/"No"
-								elif field in bool_fields: 
+								elif field in bool_fields:
 									datum = datum.lower()
 									if "y" in datum: datum="Yes"
 									elif "n" in datum: datum="No"
-								
+
 								elif field == "CAS_ID":
 									datum = datum.replace("/","-").replace(" ","-").replace("_","-")
+								elif field == "abbrev":
+									try:
+										assert datum not in abbrev_dict
+										abbrev_dict[datum] = True #Remember the abbreviation is now being "used."
+									except:
+										raise Exception("Abbreviation already used!")
 								elif field == "compound_type":
 									###Gross? Why not use dict, Past Casey? --Future Casey
 									for option in edit_choices["typeChoices"]:
@@ -682,7 +814,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 								except:
 									data_is_valid = False
 									raise Exception("Datum did not pass validation!")
-									
+
 								try:
 									#Post-validation configuration.
 									if model=="CompoundEntry":
@@ -697,18 +829,18 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 											print "No abbreviation found for \"{}\" but continuing!".format(datum)###
 											model_fields["abbrev"] = datum
 								except:
-									raise Exception("Post-validation CONFIGuration failed!") 
-											
+									raise Exception("Post-validation CONFIGuration failed!")
+
 							model_fields[field] = datum
 							#Continue to iterate through the row.
 							i+=1
 							j+=1
 						except Exception as e:
 							raise Exception([row_num, str(e)])
-						
+
 					#Add the new entry to the list of entries to batch add.
 					if model=="Data":
-						model_fields["is_valid"] = data_is_valid				
+						model_fields["is_valid"] = data_is_valid
 						entry_list.append(new_Data_entry(u, **model_fields))
 					elif model=="CompoundEntry":
 						entry_list.append(new_CG_entry(lab_group, **model_fields))
@@ -721,18 +853,18 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						error_log.append([str(e)])
 					error_quantity +=1
 				row_num += 1
-				
+
 			#Update cursors if data was added.
 			if added_quantity and model=="Data":
 				Data.objects.bulk_create(entry_list)
-				
+
 				#Remove the cached version of the last page.
 				old_data_size = get_cache(lab_group, "TOTALSIZE")
 				control.clear_page_of(lab_group, old_data_size)
-				
+
 				#Add the new data to the cached size.
 				get_cache(lab_group, "TOTALSIZE", old_data_size+len(entry_list))
-				
+
 			elif added_quantity and model=="CompoundEntry":
 				CompoundEntry.objects.bulk_create(entry_list)
 				set_cache(lab_group, "COMPOUNDGUIDE", None)
@@ -747,12 +879,12 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 		fatal_message = "No file uploaded."
 	else:
 		return render(request, 'upload_form.html')
-	
+
 	if error_quantity != 0:
 		success_percent = "{:.1%}".format(float(added_quantity)/(added_quantity+error_quantity))
 	else:
 		success_percent = "100%"
-	
+
 	#Cache the error_log for easy access later.
 	if error_log:
 		#Store the error log for 4 hours.
@@ -760,7 +892,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 	#Render the results template.
 	return render(request, 'upload_results.html', {
 		"fatal_message": fatal_message, #Includes data and data_indexes.
-		"error_log": error_log, 
+		"error_log": error_log,
 		"added_quantity": added_quantity,
 		"error_quantity": error_quantity,
 		"success_percent": success_percent,
@@ -768,34 +900,41 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 
 def download_CSV(request): ###Need to fix.
 	u = request.user
-	if u.is_authenticated():
+	#Make sure the user is authenticated before downloading data.
+	if not u.is_authenticated():
+		return HttpResponse("<p>Please log in to download data.</p>")
+
+	if request.method=="POST":
+		#Specify which CSV to download.
+		model = request.POST["dataType"]
+
 		#Generate a file name.
 		lab_group = u.get_profile().lab_group
 		date = datetime.datetime.now()
 		file_name = "{}_{}".format(lab_group.lab_title, model)
 		###file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
 			###date.day, date.month, date.year)
-		
-		#Set up the HttpResponse to be a CSV file. 
+
+		#Set up the HttpResponse to be a CSV file.
 		CSV_file = HttpResponse(content_type="text/csv")
 		CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
-		
+
 		#Django HttpResponse objects can be handleded like files.
 		writer = csv.writer(CSV_file)
-		
+
 		#Write the verbose headers to the CSV_file
 		verbose_headers = get_model_field_names(verbose=True, model=model) ###NOT TESTED.
 		writer.writerow(verbose_headers)
-		
+
 		#Write the actual entries to the CSV_file if the user is authenticated.
 		headers = get_model_field_names(verbose=False, model=model)
-		
+
 		if model=="Data":
 			CSV_data = control.collect_all_data(lab_group)
 		elif model=="CompoundEntry":
 			###Better way? Generalize mass CG collection?
 			CSV_data = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
-		
+
 		for entry in CSV_data:
 			try:
 				#Create and apply the actual row.
@@ -805,7 +944,7 @@ def download_CSV(request): ###Need to fix.
 				print(e)###
 		return CSV_file #ie, return HttpResponse(content_type="text/csv")
 	else:
-		return HttpResponse("<p>Please log in to download data.</p>")
+		return render(request, 'download_form.html')
 
 def download_error_log(request): ###Nothing done yet... ;B
 	u = request.user
@@ -814,21 +953,21 @@ def download_error_log(request): ###Nothing done yet... ;B
 		date = datetime.datetime.now()
 		file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
 			date.day, date.month, date.year)
-		
+
 		CSV_file = HttpResponse(content_type="text/csv")
 		CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
-		
+
 		#Django HttpResponse objects can be handleded like files.
 		writer = csv.writer(CSV_file)
-		
+
 		#Write the verbose headers to the CSV_file
 		verbose_headers = get_model_field_names(verbose=True)
 		writer.writerow(verbose_headers)
-		
+
 		#Write the actual entries to the CSV_file if the user is authenticated.
 		headers = get_model_field_names(verbose=False)
 		lab_data = control.collect_all_data(u.get_profile().lab_group)
-		
+
 		for entry in lab_data:
 			row = []
 			try:
@@ -845,7 +984,7 @@ def download_error_log(request): ###Nothing done yet... ;B
 		return CSV_file #ie, return HttpResponse(content_type="text/csv")
 	else:
 		return HttpResponse("<p>Please log in to download data.</p>")
-	
+
 ######################  Change Page ####################################
 def data_transmit(request, num = 1, control=control):
 	try:
@@ -853,19 +992,19 @@ def data_transmit(request, num = 1, control=control):
 			#Get the request information.
 			u = request.user
 			session = control.get_page_info(request, int(num))
-			
+
 			#Get the necessary data for a page change.
 			relevant_data = session["relevant_data"]
 			total_pages = session["total_pages"]
 			page_links = session["page_links"]
 			current_page = session["current_page"]
 			total_data_size = session["total_data_size"]
-			
+
 			#Only send the data on the requested page. Note that Lab_Group.saved_data is a 0-based index.
-			start_index = (current_page-1)*control.data_per_page 
+			start_index = (current_page-1)*control.data_per_page
 			end_index = (current_page)*control.data_per_page
 			index_range = range(start_index+1, end_index+1) #1-based index for IDs (para los users).
-		
+
 			#Prepare packages.
 			data_package = zip(relevant_data, index_range)
 			page_package = {
@@ -874,7 +1013,7 @@ def data_transmit(request, num = 1, control=control):
 				"data_per_page":control.data_per_page,
 				"page_links":page_links,
 				}
-				
+
 			return render(request, 'data_and_page_container.html', {
 				"data_on_page": data_package, #Includes data indexes
 				"page_package": page_package, #Includes page links
@@ -882,7 +1021,7 @@ def data_transmit(request, num = 1, control=control):
 			})
 		else:
 			return HttpResponse("<p>Please log in to view your data.</p>")
-	except:	
+	except:
 		return HttpResponse("<p>Woopsie!... Something went wrong.</p>")
 
 ######################  Data Transmit ##################################
@@ -900,28 +1039,28 @@ def data_update(request, control=control): ###Lump together?
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
 		changesMade = json.loads(request.body, "utf-8")
-		
+
 		#Get the Lab_Group data to allow direct manipulation.
 		lab_group = u.get_profile().lab_group
 		lab_data = control.collect_all_data(lab_group)
-		total_size = lab_data.count()	
-			
+		total_size = lab_data.count()
+
 		while (len(changesMade["edit"]) > 0):
 			try:
-				#An editPackage is [indexChanged, fieldChanged, newValue]. 
+				#An editPackage is [indexChanged, fieldChanged, newValue].
 				editPackage = changesMade["edit"].pop()
 				indexChanged = int(editPackage[0])-1 #Translate to 0-based Index
-				fieldChanged = editPackage[1] 
+				fieldChanged = editPackage[1]
 				newValue = editPackage[2] #Edits are validated client-side.
 				dataChanged = lab_data[indexChanged]
-				
+
 				#Make the edit in the database
 				setattr(dataChanged, fieldChanged, newValue)
 				if not dataChanged.is_valid:
 					revalidate_data(dataChanged, lab_group)
 				dataChanged.user = u
 				dataChanged.save()
-				
+
 				control.clear_page_of(lab_group, indexChanged)
 			except:
 				pass
@@ -933,7 +1072,7 @@ def data_update(request, control=control): ###Lump together?
 				clonedItem.user = u #Set the user to the one who performed the duplication.
 				clonedItem.creation_time = str(datetime.datetime.now())
 				clonedItem.save()
-				
+
 				control.clear_page_of(lab_group, total_size)
 				###Need to change size?
 			except:
@@ -945,7 +1084,7 @@ def data_update(request, control=control): ###Lump together?
 				control.clear_page_of(lab_group, indexChanged)
 			except:
 				pass
-		
+
 	return HttpResponse("OK"); #Django requires an HttpResponse...
 
 def get_full_datum(request, control=control):
@@ -959,10 +1098,10 @@ def get_full_datum(request, control=control):
 				"entry":entry,
 			})
 		else: return HttpResponse("Please log in to see data details.")
-			
+
 	except Exception as e:
 		print(e)
-		return HttpResponse("<p>Data could not be loaded!</p>")		
+		return HttpResponse("<p>Data could not be loaded!</p>")
 
 ######################  User Auth ######################################
 def change_password(request):
@@ -975,28 +1114,28 @@ def change_password(request):
 		username = request.POST.get("email", "")
 		code = request.POST.get("code", "")
 		password = request.POST.get("newpassword", "")
-		
+
 	return render(request, "change_password_form.html", {
 		"code_sent":code_sent
 	})
-	
+
 def user_login(request):
 	login_fail = False #The user hasn't logged in yet...
-	
+
 	if request.method == "POST":
 		username = request.POST.get("username", "")
 		password = request.POST.get("password", "")
 		user = auth.authenticate(username=username, password=password)
 		if user is not None and user.is_active:
 			auth.login(request, user)
-			
+
 			return HttpResponse("Logged in successfully! <div class=reloadActivator></div>"); #Only the reloadActivator is "required" here.
 		else:
 			login_fail = True #The login info is not correct.
 	return render(request, "login_form.html", {
 		"login_fail": login_fail,
 	})
-	
+
 def user_logout(request):
 	auth.logout(request)
 	return HttpResponse("OK")
@@ -1010,10 +1149,10 @@ def user_registration(request):
 	if request.method == "POST":
 		form = [UserForm(data = request.POST), UserProfileForm(data = request.POST)]
 		if form[0].is_valid() and form[1].is_valid():
-			#Check that the access_code query for the Lab_Group is correct. 
-			lab_group = form[1].cleaned_data["lab_group"] 
+			#Check that the access_code query for the Lab_Group is correct.
+			lab_group = form[1].cleaned_data["lab_group"]
 			access_code = Lab_Group.objects.filter(lab_title=lab_group)[0].access_code
-			
+
 			if form[1].cleaned_data["access_code"] == access_code:
 				#Create the user to be associated with the profile.
 				new_user = form[0].save()
@@ -1036,7 +1175,7 @@ def user_registration(request):
 		"user_form": form[0],
 		"profile_form": form[1],
 	})
-	
+
 def lab_registration(request): ###Not finished.
 	if request.method=="POST":
 		pass
@@ -1045,7 +1184,7 @@ def lab_registration(request): ###Not finished.
 		pass
 	return render(request, "lab_registration_form.html", {
 		###"lab_form": form,
-	})	
+	})
 
 ######################  Developer Functions  ###########################
 
@@ -1054,7 +1193,7 @@ def display_404_error(request):
 	response = render(request, '404_error.html')
 	response.status_code = 404
 	return response
-	
+
 def display_500_error(request):
 	response = render(request, '500_error.html')
 	response.status_code = 500

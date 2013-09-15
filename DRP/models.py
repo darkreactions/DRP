@@ -146,13 +146,14 @@ class CompoundGuideForm(ModelForm):
 			entry.save()
 		return entry
 
-	def clean(self):
+	def clean(self): ################################################################## WORK HERE, CASEY : ) --Past Casey
 		#Initialize the variables needed for the cleansing process.
 		dirty_data = super(CompoundGuideForm, self).clean() #Get the available raw (dirty) data
 		clean_data = {} #Keep track of cleaned fields
 		
 		try:
 			clean_CAS_ID = dirty_data["CAS_ID"].replace(" ", "-").replace("/", "-").replace("_", "-")
+			###Try to find a CAS ID here?
 			assert(clean_CAS_ID)
 			#Check that the CAS ID has three hyphen-delineated parts.
 			if len(clean_CAS_ID.split("-")) != 3:
@@ -174,6 +175,11 @@ class CompoundGuideForm(ModelForm):
 			except:
 				self._errors[field] = self.error_class(
 					["This field cannot be blank."])
+		
+		#If an abbreviation is duplicated.
+		if clean_data["abbrev"] in abbrev_dict:###NO ACCESS TO THIS VAR?
+			self._errors["abbrev"] = self.error_class(
+				["Abbreviation already used."])
 		
 		return clean_data
 

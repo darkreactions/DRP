@@ -339,6 +339,11 @@ $(document).on("click", ".popupActivator", function(event) {
 				$("#popupContainer_inner").html(response);
 			});
 			break;
+		case "leftMenu_downloadCSV":
+			$.get("/download_CSV/", function(response) {
+				$("#popupContainer_inner").html(response);
+			});
+			break;
 		case "searchButton":
 			PT_selected = Array();
 			current_query = Array();
