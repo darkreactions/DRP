@@ -18,14 +18,14 @@ def set_cache(lab_group, key, value, duration=604800): #Default duration is 1 we
 	condensed_lab = lab_group.lab_title.replace(" ","")
 	if key: condensed_key = key.replace(" ","") #Don't try to .replace None-types.
 	else: condensed_key = None
-	cache.set("{}|{}".format(condensed_lab, condensed_key), value, duration) 
-	
-	
+	cache.set("{}|{}".format(condensed_lab, condensed_key), value, duration)
+
+
 def get_cache(lab_group, key):
 	condensed_lab = lab_group.lab_title.replace(" ","")
 	condensed_key = key.replace(" ","") #Key must be a string.
-	return cache.get("{}|{}".format(condensed_lab, condensed_key)) 
-	
+	return cache.get("{}|{}".format(condensed_lab, condensed_key))
+
 ############### USER and LAB INTEGRATION #######################
 ACCESS_CODE_MAX_LENGTH = 20 #Designates the max_length of access_codes
 
@@ -34,15 +34,15 @@ def get_random_code(length = ACCESS_CODE_MAX_LENGTH):
 	return "".join(
 			random.choice(
 				string.letters + string.digits
-			) for i in range(length))	
-	
-	
+			) for i in range(length))
+
+
 class Lab_Group(models.Model):
 	lab_title = models.CharField(max_length=200)
-	
+
 	access_code = models.CharField(max_length=ACCESS_CODE_MAX_LENGTH,
 		default=get_random_code)
-	
+
 	def __unicode__(self):
 		return self.lab_title
 
@@ -51,7 +51,7 @@ class Lab_Group(models.Model):
 class Lab_Member(models.Model):
 	user = models.OneToOneField(User, unique=True) ###Allow lab member to switch?
 	lab_group = models.ForeignKey(Lab_Group)
-	
+
 	def __unicode__(self):
 		return self.user.username
 
@@ -67,13 +67,13 @@ class UserForm(ModelForm):
 		widget=TextInput(attrs={'class':'form_text'}))
 	email = EmailField(label="Email", required=True,
 		widget=TextInput(attrs={'class':'form_text'}))
-				
+
 	class Meta:
 		model = User
-		fields = ("username", "email", 
-			"first_name", "last_name", 
+		fields = ("username", "email",
+			"first_name", "last_name",
 			"password")
-	
+
 	#Hash the user's password upon save.
 	def save(self, commit=True):
 		user = super(UserForm, self).save(commit=False)
@@ -81,23 +81,23 @@ class UserForm(ModelForm):
 		if commit:
 			user.save()
 		return user
-		
+
 class UserProfileForm(ModelForm):
 	#Enumerate all of the lab titles.
-		
+
 	lab_group = ModelChoiceField(queryset=Lab_Group.objects.all(),
 		label="Lab Group", required=True,
 		widget=Select(attrs={'class':'form_text'}))
 	access_code = CharField(label="Access Code", required=True,
 		max_length=ACCESS_CODE_MAX_LENGTH,
 		widget=TextInput(attrs={'class':'form_text'}))
-		
+
 	class Meta:
 		model = Lab_Member
 		app_label = "formsite"
 		fields = ["lab_group"]
 
- 
+
 ################ COMPOUND GUIDE ########################
 class CompoundEntry(models.Model):
 	abbrev = models.CharField("Abbreviation", max_length=100) ###repr in admin 500 error
@@ -110,7 +110,7 @@ class CompoundEntry(models.Model):
 	def __unicode__(self):
 		if self.compound == self.abbrev:
 			return u"{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
-		return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)	
+		return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)
 
 TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
 
@@ -125,20 +125,20 @@ class CompoundGuideForm(ModelForm):
 		attrs={'class':'form_text',
 		"title":"The CAS ID of the compound if available."}),
 		required=False)
-	compound_type = ChoiceField(label="Type", choices = TYPE_CHOICES, 
+	compound_type = ChoiceField(label="Type", choices = TYPE_CHOICES,
 		widget=Select(attrs={'class':'form_text dropDownMenu',
 		"title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>"+
 		"--Solute<br/>--Water"}))
 	###NEED TO ADD SMILES? PERHAPS JUST AUTO-GEN...
-		
+
 	class Meta:
-		model = CompoundEntry	
+		model = CompoundEntry
 		exclude = ("lab_group",)
 
 	def __init__(self, lab_group=None, *args, **kwargs):
 		super(CompoundGuideForm, self).__init__(*args, **kwargs)
 		self.lab_group = lab_group
-		
+
 	def save(self, commit=True):
 		entry = super(CompoundGuideForm, self).save(commit=False)
 		entry.lab_group = self.lab_group
@@ -150,7 +150,7 @@ class CompoundGuideForm(ModelForm):
 		#Initialize the variables needed for the cleansing process.
 		dirty_data = super(CompoundGuideForm, self).clean() #Get the available raw (dirty) data
 		clean_data = {} #Keep track of cleaned fields
-		
+
 		try:
 			clean_CAS_ID = dirty_data["CAS_ID"].replace(" ", "-").replace("/", "-").replace("_", "-")
 			###Try to find a CAS ID here?
@@ -160,14 +160,14 @@ class CompoundGuideForm(ModelForm):
 				self._errors["CAS_ID"] = self.error_class(
 					["CAS ID requires three distinct parts."])
 			#Check that only numbers are present.
-			elif not clean_CAS_ID.replace("-","").isdigit(): 
+			elif not clean_CAS_ID.replace("-","").isdigit():
 				self._errors["CAS_ID"] = self.error_class(
 					["CAS ID may only have numeric characters."])
 			clean_data["CAS_ID"] = clean_CAS_ID
 		except Exception as e:
 			#If no CAS_ID is found, store a blank value.
 			clean_data["clean_CAS_ID"] = ""
-		
+
 		other_fields = ["abbrev", "compound", "compound_type"]
 		for field in other_fields:
 			try:
@@ -175,12 +175,12 @@ class CompoundGuideForm(ModelForm):
 			except:
 				self._errors[field] = self.error_class(
 					["This field cannot be blank."])
-		
+
 		#If an abbreviation is duplicated.
 		if clean_data["abbrev"] in abbrev_dict:###NO ACCESS TO THIS VAR?
 			self._errors["abbrev"] = self.error_class(
 				["Abbreviation already used."])
-		
+
 		return clean_data
 
 ###REREAD TO PROVE USEFUL?
@@ -198,13 +198,13 @@ def collect_CG_name_pairs(lab_group, overwrite=False):
 		pairs = {entry.abbrev: entry.compound for entry in compound_guide}
 		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", pairs)
 	return pairs
-	
+
 def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = CompoundEntry()
 		#Set the self-assigning fields:
 		setattr(new_entry, "lab_group", lab_group)
-		
+
 		#Set the non-user field values.
 		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
 			setattr(new_entry, field, value)
@@ -213,111 +213,111 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
 		raise Exception("CompoundEntry construction failed!")
 
 ############### DATA ENTRY ########################
-calc_fields = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass', 'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass', 
+calc_fields = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass', 'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
 			'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles', 'XXXorg1', 'XXXorg1mass',
-			'XXXorg1moles', 'XXXorg2', 'XXXorg2mass', 'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass', 
-			'XXXoxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH', 
-			'leak', 'numberInorg', 'numberOrg', 'numberOxlike', 'numberComponents', 'inorgavgpolMax', 
-			'inorgrefractivityMax', 'inorgmaximalprojectionareaMax', 'inorgmaximalprojectionradiusMax', 
-			'inorgmaximalprojectionsizeMax', 'inorgminimalprojectionareaMax', 'inorgminimalprojectionradiusMax', 
-			'inorgminimalprojectionsizeMax', 'inorgavgpol_pHdependentMax', 
-			'inorgmolpolMax', 'inorgvanderwaalsMax', 'inorgASAMax', 
-			'inorgASA+Max', 'inorgASA-Max', 'inorgASA_HMax', 
-			'inorgASA_PMax', 'inorgpolarsurfaceareaMax', 'inorghbdamsaccMax', 'inorghbdamsdonMax', 
-			'inorgavgpolMin', 'inorgrefractivityMin', 'inorgmaximalprojectionareaMin', 
-			'inorgmaximalprojectionradiusMin', 'inorgmaximalprojectionsizeMin', 
-			'inorgminimalprojectionareaMin', 'inorgminimalprojectionradiusMin', 
-			'inorgminimalprojectionsizeMin', 'inorgavgpol_pHdependentMin', 
-			'inorgmolpolMin', 'inorgvanderwaalsMin', 'inorgASAMin', 
-			'inorgASA+Min', 'inorgASA-Min', 'inorgASA_HMin', 
-			'inorgASA_PMin', 'inorgpolarsurfaceareaMin', 'inorghbdamsaccMin', 'inorghbdamsdonMin', 
-			'inorgavgpolArithAvg', 'inorgrefractivityArithAvg', 'inorgmaximalprojectionareaArithAvg', 
-			'inorgmaximalprojectionradiusArithAvg', 'inorgmaximalprojectionsizeArithAvg', 
-			'inorgminimalprojectionareaArithAvg', 'inorgminimalprojectionradiusArithAvg', 
-			'inorgminimalprojectionsizeArithAvg', 
-			'inorgavgpol_pHdependentArithAvg', 'inorgmolpolArithAvg', 
-			'inorgvanderwaalsArithAvg', 'inorgASAArithAvg', 
-			'inorgASA+ArithAvg', 'inorgASA-ArithAvg', 
-			'inorgASA_HArithAvg', 'inorgASA_PArithAvg', 
-			'inorgpolarsurfaceareaArithAvg', 
-			'inorghbdamsaccArithAvg', 'inorghbdamsdonArithAvg', 
-			'inorgavgpolGeomAvg', 'inorgrefractivityGeomAvg', 
-			'inorgmaximalprojectionareaGeomAvg', 'inorgmaximalprojectionradiusGeomAvg', 
-			'inorgmaximalprojectionsizeGeomAvg', 'inorgminimalprojectionareaGeomAvg', 
-			'inorgminimalprojectionradiusGeomAvg', 'inorgminimalprojectionsizeGeomAvg', 
-			'inorgavgpol_pHdependentGeomAvg', 'inorgmolpolGeomAvg', 'inorgvanderwaalsGeomAvg', 
-			'inorgASAGeomAvg', 'inorgASA+GeomAvg', 'inorgASA-GeomAvg', 'inorgASA_HGeomAvg', 
-			'inorgASA_PGeomAvg', 'inorgpolarsurfaceareaGeomAvg', 'inorghbdamsaccGeomAvg', 'inorghbdamsdonGeomAvg', 
-			'orgavgpolMax', 'orgrefractivityMax', 
-			'orgmaximalprojectionareaMax', 'orgmaximalprojectionradiusMax', 'orgmaximalprojectionsizeMax', 
-			'orgminimalprojectionareaMax', 'orgminimalprojectionradiusMax', 'orgminimalprojectionsizeMax', 
-			'orgavgpol_pHdependentMax', 'orgmolpolMax', 
-			'orgvanderwaalsMax', 'orgASAMax', 'orgASA+Max', 'orgASA-Max', 'orgASA_HMax', 'orgASA_PMax', 
-			'orgpolarsurfaceareaMax', 'orghbdamsaccMax', 
-			'orghbdamsdonMax', 'orgavgpolMin', 'orgrefractivityMin', 
-			'orgmaximalprojectionareaMin', 'orgmaximalprojectionradiusMin', 'orgmaximalprojectionsizeMin', 
-			'orgminimalprojectionareaMin', 'orgminimalprojectionradiusMin', 
+			'XXXorg1moles', 'XXXorg2', 'XXXorg2mass', 'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass',
+			'XXXoxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH',
+			'leak', 'numberInorg', 'numberOrg', 'numberOxlike', 'numberComponents', 'inorgavgpolMax',
+			'inorgrefractivityMax', 'inorgmaximalprojectionareaMax', 'inorgmaximalprojectionradiusMax',
+			'inorgmaximalprojectionsizeMax', 'inorgminimalprojectionareaMax', 'inorgminimalprojectionradiusMax',
+			'inorgminimalprojectionsizeMax', 'inorgavgpol_pHdependentMax',
+			'inorgmolpolMax', 'inorgvanderwaalsMax', 'inorgASAMax',
+			'inorgASA+Max', 'inorgASA-Max', 'inorgASA_HMax',
+			'inorgASA_PMax', 'inorgpolarsurfaceareaMax', 'inorghbdamsaccMax', 'inorghbdamsdonMax',
+			'inorgavgpolMin', 'inorgrefractivityMin', 'inorgmaximalprojectionareaMin',
+			'inorgmaximalprojectionradiusMin', 'inorgmaximalprojectionsizeMin',
+			'inorgminimalprojectionareaMin', 'inorgminimalprojectionradiusMin',
+			'inorgminimalprojectionsizeMin', 'inorgavgpol_pHdependentMin',
+			'inorgmolpolMin', 'inorgvanderwaalsMin', 'inorgASAMin',
+			'inorgASA+Min', 'inorgASA-Min', 'inorgASA_HMin',
+			'inorgASA_PMin', 'inorgpolarsurfaceareaMin', 'inorghbdamsaccMin', 'inorghbdamsdonMin',
+			'inorgavgpolArithAvg', 'inorgrefractivityArithAvg', 'inorgmaximalprojectionareaArithAvg',
+			'inorgmaximalprojectionradiusArithAvg', 'inorgmaximalprojectionsizeArithAvg',
+			'inorgminimalprojectionareaArithAvg', 'inorgminimalprojectionradiusArithAvg',
+			'inorgminimalprojectionsizeArithAvg',
+			'inorgavgpol_pHdependentArithAvg', 'inorgmolpolArithAvg',
+			'inorgvanderwaalsArithAvg', 'inorgASAArithAvg',
+			'inorgASA+ArithAvg', 'inorgASA-ArithAvg',
+			'inorgASA_HArithAvg', 'inorgASA_PArithAvg',
+			'inorgpolarsurfaceareaArithAvg',
+			'inorghbdamsaccArithAvg', 'inorghbdamsdonArithAvg',
+			'inorgavgpolGeomAvg', 'inorgrefractivityGeomAvg',
+			'inorgmaximalprojectionareaGeomAvg', 'inorgmaximalprojectionradiusGeomAvg',
+			'inorgmaximalprojectionsizeGeomAvg', 'inorgminimalprojectionareaGeomAvg',
+			'inorgminimalprojectionradiusGeomAvg', 'inorgminimalprojectionsizeGeomAvg',
+			'inorgavgpol_pHdependentGeomAvg', 'inorgmolpolGeomAvg', 'inorgvanderwaalsGeomAvg',
+			'inorgASAGeomAvg', 'inorgASA+GeomAvg', 'inorgASA-GeomAvg', 'inorgASA_HGeomAvg',
+			'inorgASA_PGeomAvg', 'inorgpolarsurfaceareaGeomAvg', 'inorghbdamsaccGeomAvg', 'inorghbdamsdonGeomAvg',
+			'orgavgpolMax', 'orgrefractivityMax',
+			'orgmaximalprojectionareaMax', 'orgmaximalprojectionradiusMax', 'orgmaximalprojectionsizeMax',
+			'orgminimalprojectionareaMax', 'orgminimalprojectionradiusMax', 'orgminimalprojectionsizeMax',
+			'orgavgpol_pHdependentMax', 'orgmolpolMax',
+			'orgvanderwaalsMax', 'orgASAMax', 'orgASA+Max', 'orgASA-Max', 'orgASA_HMax', 'orgASA_PMax',
+			'orgpolarsurfaceareaMax', 'orghbdamsaccMax',
+			'orghbdamsdonMax', 'orgavgpolMin', 'orgrefractivityMin',
+			'orgmaximalprojectionareaMin', 'orgmaximalprojectionradiusMin', 'orgmaximalprojectionsizeMin',
+			'orgminimalprojectionareaMin', 'orgminimalprojectionradiusMin',
 			'orgminimalprojectionsizeMin', 'orgavgpol_pHdependentMin',
-			'orgmolpolMin', 'orgvanderwaalsMin', 'orgASAMin', 
+			'orgmolpolMin', 'orgvanderwaalsMin', 'orgASAMin',
 			'orgASA+Min', 'orgASA-Min', 'orgASA_HMin', 'orgASA_PMin',
-			'orgpolarsurfaceareaMin', 'orghbdamsaccMin', 
-			'orghbdamsdonMin', 'orgavgpolArithAvg', 'orgrefractivityArithAvg', 
-			'orgmaximalprojectionareaArithAvg', 'orgmaximalprojectionradiusArithAvg', 
-			'orgmaximalprojectionsizeArithAvg', 'orgminimalprojectionareaArithAvg', 
-			'orgminimalprojectionradiusArithAvg', 'orgminimalprojectionsizeArithAvg', 
-			'orgavgpol_pHdependentArithAvg', 'orgmolpolArithAvg', 'orgvanderwaalsArithAvg', 
-			'orgASAArithAvg', 'orgASA+ArithAvg', 'orgASA-ArithAvg', 'orgASA_HArithAvg', 'orgASA_PArithAvg', 
-			'orgpolarsurfaceareaArithAvg', 'orghbdamsaccArithAvg', 
-			'orghbdamsdonArithAvg', 'orgavgpolGeomAvg', 'orgrefractivityGeomAvg', 
-			'orgmaximalprojectionareaGeomAvg', 'orgmaximalprojectionradiusGeomAvg', 
-			'orgmaximalprojectionsizeGeomAvg', 'orgminimalprojectionareaGeomAvg', 
-			'orgminimalprojectionradiusGeomAvg', 'orgminimalprojectionsizeGeomAvg', 
-			'orgavgpol_pHdependentGeomAvg', 'orgmolpolGeomAvg', 'orgvanderwaalsGeomAvg', 
-			'orgASAGeomAvg', 'orgASA+GeomAvg', 'orgASA-GeomAvg', 
-			'orgASA_HGeomAvg', 'orgASA_PGeomAvg', 'orgpolarsurfaceareaGeomAvg', 'orghbdamsaccGeomAvg', 
-			'orghbdamsdonGeomAvg', 'oxlikeavgpolMax', 
+			'orgpolarsurfaceareaMin', 'orghbdamsaccMin',
+			'orghbdamsdonMin', 'orgavgpolArithAvg', 'orgrefractivityArithAvg',
+			'orgmaximalprojectionareaArithAvg', 'orgmaximalprojectionradiusArithAvg',
+			'orgmaximalprojectionsizeArithAvg', 'orgminimalprojectionareaArithAvg',
+			'orgminimalprojectionradiusArithAvg', 'orgminimalprojectionsizeArithAvg',
+			'orgavgpol_pHdependentArithAvg', 'orgmolpolArithAvg', 'orgvanderwaalsArithAvg',
+			'orgASAArithAvg', 'orgASA+ArithAvg', 'orgASA-ArithAvg', 'orgASA_HArithAvg', 'orgASA_PArithAvg',
+			'orgpolarsurfaceareaArithAvg', 'orghbdamsaccArithAvg',
+			'orghbdamsdonArithAvg', 'orgavgpolGeomAvg', 'orgrefractivityGeomAvg',
+			'orgmaximalprojectionareaGeomAvg', 'orgmaximalprojectionradiusGeomAvg',
+			'orgmaximalprojectionsizeGeomAvg', 'orgminimalprojectionareaGeomAvg',
+			'orgminimalprojectionradiusGeomAvg', 'orgminimalprojectionsizeGeomAvg',
+			'orgavgpol_pHdependentGeomAvg', 'orgmolpolGeomAvg', 'orgvanderwaalsGeomAvg',
+			'orgASAGeomAvg', 'orgASA+GeomAvg', 'orgASA-GeomAvg',
+			'orgASA_HGeomAvg', 'orgASA_PGeomAvg', 'orgpolarsurfaceareaGeomAvg', 'orghbdamsaccGeomAvg',
+			'orghbdamsdonGeomAvg', 'oxlikeavgpolMax',
 			'oxlikerefractivityMax', 'oxlikemaximalprojectionareaMax',
-			'oxlikemaximalprojectionradiusMax', 'oxlikemaximalprojectionsizeMax', 'oxlikeminimalprojectionareaMax', 
-			'oxlikeminimalprojectionradiusMax', 'oxlikeminimalprojectionsizeMax', 
-			'oxlikeavgpol_pHdependentMax', 'oxlikemolpolMax', 
-			'oxlikevanderwaalsMax', 'oxlikeASAMax', 'oxlikeASA+Max', 
-			'oxlikeASA-Max', 'oxlikeASA_HMax', 'oxlikeASA_PMax', 
-			'oxlikepolarsurfaceareaMax', 'oxlikehbdamsaccMax', 
-			'oxlikehbdamsdonMax', 'oxlikeavgpolMin', 
+			'oxlikemaximalprojectionradiusMax', 'oxlikemaximalprojectionsizeMax', 'oxlikeminimalprojectionareaMax',
+			'oxlikeminimalprojectionradiusMax', 'oxlikeminimalprojectionsizeMax',
+			'oxlikeavgpol_pHdependentMax', 'oxlikemolpolMax',
+			'oxlikevanderwaalsMax', 'oxlikeASAMax', 'oxlikeASA+Max',
+			'oxlikeASA-Max', 'oxlikeASA_HMax', 'oxlikeASA_PMax',
+			'oxlikepolarsurfaceareaMax', 'oxlikehbdamsaccMax',
+			'oxlikehbdamsdonMax', 'oxlikeavgpolMin',
 			'oxlikerefractivityMin', 'oxlikemaximalprojectionareaMin',
-			'oxlikemaximalprojectionradiusMin', 'oxlikemaximalprojectionsizeMin', 
-			'oxlikeminimalprojectionareaMin', 'oxlikeminimalprojectionradiusMin', 
-			'oxlikeminimalprojectionsizeMin', 'oxlikeavgpol_pHdependentMin', 'oxlikemolpolMin', 
-			'oxlikevanderwaalsMin', 'oxlikeASAMin', 'oxlikeASA+Min', 
-			'oxlikeASA-Min', 'oxlikeASA_HMin', 'oxlikeASA_PMin', 
-			'oxlikepolarsurfaceareaMin', 'oxlikehbdamsaccMin', 
-			'oxlikehbdamsdonMin', 'oxlikeavgpolArithAvg', 
-			'oxlikerefractivityArithAvg', 'oxlikemaximalprojectionareaArithAvg', 
-			'oxlikemaximalprojectionradiusArithAvg', 'oxlikemaximalprojectionsizeArithAvg', 'oxlikeminimalprojectionareaArithAvg', 
-			'oxlikeminimalprojectionradiusArithAvg', 'oxlikeminimalprojectionsizeArithAvg', 'oxlikeavgpol_pHdependentArithAvg', 
-			'oxlikemolpolArithAvg', 'oxlikevanderwaalsArithAvg', 
-			'oxlikeASAArithAvg', 'oxlikeASA+ArithAvg', 
-			'oxlikeASA-ArithAvg', 'oxlikeASA_HArithAvg', 
+			'oxlikemaximalprojectionradiusMin', 'oxlikemaximalprojectionsizeMin',
+			'oxlikeminimalprojectionareaMin', 'oxlikeminimalprojectionradiusMin',
+			'oxlikeminimalprojectionsizeMin', 'oxlikeavgpol_pHdependentMin', 'oxlikemolpolMin',
+			'oxlikevanderwaalsMin', 'oxlikeASAMin', 'oxlikeASA+Min',
+			'oxlikeASA-Min', 'oxlikeASA_HMin', 'oxlikeASA_PMin',
+			'oxlikepolarsurfaceareaMin', 'oxlikehbdamsaccMin',
+			'oxlikehbdamsdonMin', 'oxlikeavgpolArithAvg',
+			'oxlikerefractivityArithAvg', 'oxlikemaximalprojectionareaArithAvg',
+			'oxlikemaximalprojectionradiusArithAvg', 'oxlikemaximalprojectionsizeArithAvg', 'oxlikeminimalprojectionareaArithAvg',
+			'oxlikeminimalprojectionradiusArithAvg', 'oxlikeminimalprojectionsizeArithAvg', 'oxlikeavgpol_pHdependentArithAvg',
+			'oxlikemolpolArithAvg', 'oxlikevanderwaalsArithAvg',
+			'oxlikeASAArithAvg', 'oxlikeASA+ArithAvg',
+			'oxlikeASA-ArithAvg', 'oxlikeASA_HArithAvg',
 			'oxlikeASA_PArithAvg', 'oxlikepolarsurfaceareaArithAvg',
-			'oxlikehbdamsaccArithAvg', 'oxlikehbdamsdonArithAvg', 
-			'oxlikeavgpolGeomAvg', 'oxlikerefractivityGeomAvg', 
-			'oxlikemaximalprojectionareaGeomAvg', 'oxlikemaximalprojectionradiusGeomAvg', 'oxlikemaximalprojectionsizeGeomAvg', 
-			'oxlikeminimalprojectionareaGeomAvg', 'oxlikeminimalprojectionradiusGeomAvg', 'oxlikeminimalprojectionsizeGeomAvg', 
+			'oxlikehbdamsaccArithAvg', 'oxlikehbdamsdonArithAvg',
+			'oxlikeavgpolGeomAvg', 'oxlikerefractivityGeomAvg',
+			'oxlikemaximalprojectionareaGeomAvg', 'oxlikemaximalprojectionradiusGeomAvg', 'oxlikemaximalprojectionsizeGeomAvg',
+			'oxlikeminimalprojectionareaGeomAvg', 'oxlikeminimalprojectionradiusGeomAvg', 'oxlikeminimalprojectionsizeGeomAvg',
 			'oxlikeavgpol_pHdependentGeomAvg', 'oxlikemolpolGeomAvg',
-			'oxlikevanderwaalsGeomAvg', 'oxlikeASAGeomAvg', 
-			'oxlikeASA+GeomAvg', 'oxlikeASA-GeomAvg', 'oxlikeASA_HGeomAvg', 'oxlikeASA_PGeomAvg', 
+			'oxlikevanderwaalsGeomAvg', 'oxlikeASAGeomAvg',
+			'oxlikeASA+GeomAvg', 'oxlikeASA-GeomAvg', 'oxlikeASA_HGeomAvg', 'oxlikeASA_PGeomAvg',
 			'oxlikepolarsurfaceareaGeomAvg', 'oxlikehbdamsaccGeomAvg',
 			'oxlikehbdamsdonGeomAvg', 'inorg-water-moleratio', 'inorgacc-waterdonratio', 'inorgdon-wateraccratio',
 			'org-water-moleratio', 'orgacc-waterdonratio', 'orgdon-wateraccratio', 'inorg-org-moleratio',
-			'inorgacc-orgdonratio', 'inorgdon-orgaccratio', 'notwater-water-moleratio', 'notwateracc-waterdonratio', 
+			'inorgacc-orgdonratio', 'inorgdon-orgaccratio', 'notwater-water-moleratio', 'notwateracc-waterdonratio',
 			'notwaterdon-wateraccratio', 'purity', 'outcome']
-			
+
 class DataCalc(models.Model):
 	for calc_field in calc_fields:
 		#Make sure field names don't contain operators.
 		calc_field = calc_field.replace("+","PLUS").replace("-","MINUS")
 		exec("{0} = models.CharField(\"{0}\", max_length=22)".format(calc_field))
-		
+
 	def __unicode__(self):
 		return u"{}".format(self.XXXtitle);
 
@@ -343,22 +343,26 @@ class Data(models.Model):
 	temp = models.CharField("Temperature", max_length=10)
 	time = models.CharField("Time", max_length=10) ###
 	pH = models.CharField("pH", max_length=5)
-	
+
 	#Yes/No/? Fields:
 	slow_cool = models.CharField("Slow Cool", max_length=10)
 	leak = models.CharField("Leak", max_length=10)
 	outcome = models.CharField("Outcome", max_length=1)
 	purity = models.CharField("Purity", max_length=1)
-	
+
 	notes = models.CharField("Notes", max_length=200, blank=True)
-	
-	#Self-assigning Fields
+
+	#Self-assigning Fields:
 	calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
 	creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
 	is_valid = models.BooleanField()
-	
+
+	#Categorizing Fields:
+	duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
+	recommended = models.BooleanField()
+
 	def __unicode__(self):
 		return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
@@ -366,8 +370,8 @@ def validate_name(abbrev_to_check, lab_group):
 	#Get the cached set of abbreviations.
 	abbrevs = collect_CG_name_pairs(lab_group)
 	return abbrev_to_check in abbrevs
-		
-#Add specified entries to a datum. Assume fields are now valid.		
+
+#Add specified entries to a datum. Assume fields are now valid.
 def new_Data_entry(user, **kwargs): ###Not re-read yet.
 	try:
 		new_entry = Data()
@@ -375,17 +379,17 @@ def new_Data_entry(user, **kwargs): ###Not re-read yet.
 		setattr(new_entry, "creation_time", str(datetime.datetime.now()))
 		setattr(new_entry, "user", user)
 		setattr(new_entry, "lab_group", user.get_profile().lab_group)
-		
+
 		#Set the non-user field values.
 		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
 			setattr(new_entry, field, value)
 		return new_entry
 	except Exception as e:
 		raise Exception("Data construction failed!")
-		
+
 def get_model_field_names(both=False, verbose=False, model="Data", unique_only=False):
 	clean_fields = []
-	
+
 	if model=="Data":
 		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations", "is_valid"}
 		dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
@@ -394,12 +398,12 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 		dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
 	else:
 		raise Exception("Unknown model specified.")
-	
+
 	#Ignore any field that is in fields_to_ignore.
 	for field in dirty_fields:
 		#Return the non list-fields:
 		if unique_only and field.name[-1].isdigit(): continue
-		
+
 		#Return either the verbose names or the non-verbose names.
 		if both:
 			clean_fields += [{"verbose":field.verbose_name, "raw":field.name}] ###Make verbose names pretty
@@ -408,19 +412,19 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 		else:
 			clean_fields += [field.name]
 	return clean_fields
-	
+
 def revalidate_data(data, lab_group, batch=False):
 	#Collect the data to validate
 	dirty_data = {field:getattr(data, field) for field in get_model_field_names()}
 	#Validate and collect any errors
 	(clean_data, errors) = full_validation(dirty_data, lab_group)
-	
+
 	if errors:###
 		missing = []
 		for i in xrange(1,6):
 			if errors.get("reactant_{}".format(i)):
 				missing.append(getattr(data, "reactant_{}".format(i)).encode('ascii','ignore'))
-		
+
 		if missing:
 			reaction = getattr(data, "reactant_1")
 			for i in xrange(2,6):
@@ -430,30 +434,30 @@ def revalidate_data(data, lab_group, batch=False):
 			return ("{0} ({1})\n\tMissing:{2}\n".format(reaction, data.ref, missing), missing)
 
 	return ("",None)
-	
+
 	is_valid = False if errors else True
 	setattr(data, "is_valid", is_valid)
 	data.save()
 	#Does not auto-clear the cache --only modifies the data entry.
-		
+
 def full_validation(dirty_data, lab_group):
 	parsed_data = {} #Data that needs to be checked.
 	clean_data = {} #Keep track of cleaned fields
 	errors = {}
-	
+
 	fields = get_model_field_names()
-	
-	#Gather the "coupled" fields (ie, the fields ending in a similar number) 
+
+	#Gather the "coupled" fields (ie, the fields ending in a similar number)
 	for field in list_fields:
 		exec("{} = [[]]*{}".format(field, CONFIG.num_reactants))
 		parsed_data[field] = [[]]*CONFIG.num_reactants
 		clean_data[field] = []
-	
+
 	#Visible fields that are not required (not including rxn info).
 	not_required = { ###Auto-generate?
 		"notes"
 	}
-	
+
 	for field in dirty_data:
 		if field[-1].isdigit():
 			#Put the data in its respective list.
@@ -469,8 +473,8 @@ def full_validation(dirty_data, lab_group):
 				else:
 					bad_data.add(field)
 					errors[field] = "Field required."
-					
-	#Check that equal numbers of fields are present in each list 
+
+	#Check that equal numbers of fields are present in each list
 	for i in xrange(CONFIG.num_reactants):
 		x = 0
 		if reactant[i]:
@@ -480,13 +484,13 @@ def full_validation(dirty_data, lab_group):
 			x+=3
 			parsed_data["quantity"][i] = quantity[i]
 		parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
-		
+
 		#Unit is added automatically, so don't check it.
 		if x == 3:
 			errors["reactant_"+str(i+1)] = "Info missing."
 		elif x == 2:
 			errors["quantity_"+str(i+1)] = "Info missing."
-	
+
 	for field in parsed_data:
 		#Make sure each reactant name is valid.
 		if field=="reactant":
@@ -498,12 +502,12 @@ def full_validation(dirty_data, lab_group):
 					clean_data["{}_{}".format(field,i+1)] = dirty_datum #Add the filtered value to the clean values dict.
 				except:
 					errors["{}_{}".format(field,i+1)] = "Not in compound guide!"
-		
+
 		#Numeric fields:
 		elif field in float_fields or field in int_fields:
 			if field in float_fields: field_type="float"
 			else: field_type="int"
-			
+
 			if field in list_fields:
 				for i in xrange(len(parsed_data[field])):
 					if not parsed_data[field][i]: continue #Don't validate empty values.
@@ -517,11 +521,11 @@ def full_validation(dirty_data, lab_group):
 				try:
 					dirty_datum = eval("{}(parsed_data[field])".format(field_type))
 					assert(quick_validation(field, dirty_datum))
-					parsed_data[field] = dirty_datum #Add the filtered mass to clean_data 
+					parsed_data[field] = dirty_datum #Add the filtered mass to clean_data
 					clean_data[field] = parsed_data[field]
 				except:
 					errors[field] = "Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])
-		
+
 		#Option fields:
 		elif field in opt_fields:
 			if field in list_fields:
@@ -532,9 +536,9 @@ def full_validation(dirty_data, lab_group):
 						assert(quick_validation(field, dirty_datum))
 						clean_data["{}_{}".format(field,i+1)] = dirty_datum
 					except:
-						if field in bool_fields: 
+						if field in bool_fields:
 							category="boolChoices"
-						else: 
+						else:
 							category = field+"Choices"
 
 						errors["{}_{}".format(field,i+1)] = "Field must be one of: {}".format(edit_choices[category])
@@ -544,9 +548,9 @@ def full_validation(dirty_data, lab_group):
 					assert(quick_validation(field, dirty_datum))
 					clean_data[field] = dirty_datum
 				except:
-					if field in bool_fields: 
+					if field in bool_fields:
 						category="boolChoices"
-					else: 
+					else:
 						category = field+"Choices"
 
 					errors[field] = "Field must be one of: {}".format(edit_choices[category])
@@ -559,15 +563,15 @@ def full_validation(dirty_data, lab_group):
 				clean_data[field] = dirty_datum
 			except:
 				errors[field] = "Cannot exceed {} characters.".format(data_ranges[field][1])
-	
+
 	return (clean_data, errors)
-	
+
 class DataEntryForm(ModelForm):
 	#List Fields
 	for i in CONFIG.reactant_range():
-		if i > 2: 
+		if i > 2:
 			required="required=False,"
-		else: 
+		else:
 			required=""
 		exec("reactant_{0} = CharField({1} label='Reactant {0}', widget=TextInput(".format(i, required) +
 			"attrs={'class':'form_text autocomplete_reactant',"+
@@ -590,7 +594,7 @@ class DataEntryForm(ModelForm):
 	pH = CharField(label="pH", widget=TextInput(
 		attrs={'class':'form_text form_text_short', 'placeholder':'0 - 14',
 		"title":"The pH at which the reaction occurred."}))
-	slow_cool = ChoiceField(label="Slow Cool", choices = BOOL_CHOICES, 
+	slow_cool = ChoiceField(label="Slow Cool", choices = BOOL_CHOICES,
 		widget=Select(attrs={'class':'form_text dropDownMenu',
 		"title":"Was the reaction allowed to slow-cool?"}))
 	leak = ChoiceField(choices = BOOL_CHOICES, widget=Select(
@@ -605,7 +609,7 @@ class DataEntryForm(ModelForm):
 	notes = CharField(required = False, widget=TextInput(
 		attrs={'class':'form_text form_text_long',
 		"title":"Additional notes about the reaction."}))
-	
+
 	class Meta:
 		model = Data
 		exclude = ("user","lab_group", "creation_time", "reactant",
@@ -624,12 +628,12 @@ class DataEntryForm(ModelForm):
 	def __init__(self, user=None, *args, **kwargs):
 		###http://stackoverflow.com/questions/1202839/get-request-data-in-django-form
 		super(DataEntryForm, self).__init__(*args, **kwargs)
-		
+
 		if user:
 			self.user = user
 			self.lab_group = user.get_profile().lab_group
 		self.creation_time = str(datetime.datetime.now())
-		
+
 	def save(self, commit=True):
 		datum = super(DataEntryForm, self).save(commit=False)
 		datum.user = self.user
@@ -640,23 +644,23 @@ class DataEntryForm(ModelForm):
 		if commit:
 			datum.save()
 		return datum
-		
-		
+
+
 	#Clean the data that is input using the form.
 	def clean(self):
 		#Initialize the variables needed for the cleansing process.
 		dirty_data = super(DataEntryForm, self).clean() #Get the available raw (dirty) data
-	
+
 		#Gather the clean_data and any errors found.
 		clean_data, gathered_errors = full_validation(dirty_data, self.lab_group)
 		form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
-		
+
 		#Apply the errors to the form.
 		self._errors.update(form_errors)
-		
+
 		#Add the non-input information to the clean data package:
 		clean_data["lab_group"] = self.lab_group
 		clean_data["user"] = self.user
-		clean_data["creation_time"] = self.creation_time		
-		
+		clean_data["creation_time"] = self.creation_time
+
 		return clean_data

@@ -155,113 +155,7 @@ def revalidate_all_data(lab_group, invalid_only = True):
 		control.clear_all_page_caches(lab_group)
 control = DataManager()
 
-###Should be implemented eventually:
 ######################  Analysis Functions  ####################################
-#Return the data without any duplicates. Must be given a QuerySet.
-def find_duplicates(lab_group, lab_data=None, only_good=True):
-	if not lab_data:
-		lab_data = control.collect_all_data(lab_group)
-
-	#Gather data that has an outcome of 4 (success) and no leaks.
-	if only_good:
-		lab_data = lab_data.filter(outcome=4).filter(leak="No")
-
-
-
-	return
-
-
-
-
-	####Variable Setup
-	###amount_variation = 0.01 #Percentage
-	###sorting_tree = {}
-	###reaction_groups = {}
-	###reaction_groups_by_ref = {}
-	###current_node = sorting_tree
-		####The fields used in sorting in the order to be sorted:
-	###fields = ["slow_cool","purity","pH","temp","time","reaction","quantity","ref"]
-
-	####Sort "fixed" value branches in the sorting tree (slow_cool, purity)
-
-	###for data in lab_data:
-		####Restart at the root of the tree for each datum.
-		###current_node = sorting_tree
-
-		###current_reaction = "" #Used to group "ref"s by reactions.
-
-		###for field in fields:
-
-			####Translate the "group" variables into a single, sorted string.
-			###if field == "reaction":
-				###raw_reactant_list = [getattr(data, "reactant_{}".format(i)) for i in CONFIG.reactant_range()]
-				###reactant_order = [y for (x,y) in sorted(
-					###zip(raw_reactant_list, CONFIG.reactant_range()))]
-
-				###reactant_list = [raw_reactant_list[i-1] for i in reactant_order]
-				###datum = "_".join(reactant_list)
-
-				###current_reaction = datum
-
-			###elif field == "quantity": #Must come AFTER "reaction" in fields.
-
-				###amount_list = [getattr(data, "quantity_{}".format(i)) for i in reactant_order]
-				###unit_list = [getattr(data, "unit_{}".format(i)) for i in reactant_order]
-
-				######Modify amount_list at all? round??
-
-				###pair_list = ["{}_{}".format(x, y) for (x,y) in zip(amount_list, unit_list)]
-
-				###datum = ",".join(pair_list)
-
-				####reaction_groups[current_reaction] = datum
-
-
-				#######Include units here
-				####for i in xrange
-				####datum = getattr(data, field)
-
-				#####Check if reaction should be new. if so...###
-				####if not reaction_groups.get(datum):
-					####reaction_groups[datum] = set()
-				####else:
-					#####If there is a reaction with different amounts.
-					####i=1
-					####while (reaction_groups.get(datum)):
-						####datum = "{}_{}".format(datum, i)
-						####i += 1
-			###else:
-				###datum = getattr(data, field)
-
-			###if field == "ref": #Must go last in field sorting.
-				###if not reaction_groups_by_ref.get(current_reaction):
-					###reaction_groups_by_ref[current_reaction] = set()
-				###reaction_groups_by_ref[current_reaction].add(datum)
-
-				###continue
-
-			###if not current_node.get(datum):
-				###current_node[datum] = {}
-			###elif field=="amount":
-				####	If all vars up to this point are the same and a branch
-				####	exists for the amount already, then we have a duplicate on our hands.
-				###print "Found a possible duplicate!"###
-
-			####Move down the tree and create a sub_branch if necessary.
-			###current_node = current_node[datum]
-
-	######
-	####print sorting_tree
-	###print"_____"*5
-	####print reaction_groups
-	###print reaction_groups_by_ref
-	###print "Number of reaction groups (without amount differentiation): {}".format(len(reaction_groups))
-	###print"_____"*5
-
-	###deduplicated_data = lab_data
-
-	###return deduplicated_data
-
 #Return all data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
 	#Convert the date input into a usable string.
@@ -911,7 +805,7 @@ def download_CSV(request): ###Need to fix.
 		#Generate a file name.
 		lab_group = u.get_profile().lab_group
 		date = datetime.datetime.now()
-		file_name = "{}_{}".format(lab_group.lab_title, model)
+		file_name = "{}_{}".format(lab_group.lab_title, model).replace(" ", "_").lower()
 		###file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
 			###date.day, date.month, date.year)
 
