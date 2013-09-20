@@ -361,7 +361,7 @@ class Data(models.Model):
 
 	#Categorizing Fields:
 	duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
-	recommended = models.BooleanField()
+	recommended = models.CharField("Recommended", max_length=10)
 
 	def __unicode__(self):
 		return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
@@ -413,6 +413,13 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 			clean_fields += [field.name]
 	return clean_fields
 
+def get_ref_set(lab_group):
+	ref_set = get_cache(lab_group, "REFS")
+	if not ref_set:
+		ref_set = set(Data.objects.values_list('ref', flat=True))
+		set_cache(lab_group, "REFS", ref_set)
+	return ref_set
+
 def revalidate_data(data, lab_group, batch=False):
 	#Collect the data to validate
 	dirty_data = {field:getattr(data, field) for field in get_model_field_names()}
@@ -449,13 +456,16 @@ def full_validation(dirty_data, lab_group):
 
 	#Gather the "coupled" fields (ie, the fields ending in a similar number)
 	for field in list_fields:
-		exec("{} = [[]]*{}".format(field, CONFIG.num_reactants))
+		exec("{} = [[]]*{}".format(field, CONFIG.num_reactants)) #### {field: [[]]*CONFIG.num_reactants for field in list_fields} {field:
 		parsed_data[field] = [[]]*CONFIG.num_reactants
 		clean_data[field] = []
+	###fields = {field: [[]]*CONFIG.num_reactants for field in list_fields} ###CHANGE INTO ME, Future Casey
+	###parsed_data = {field: [[]]*CONFIG.num_reactants for field in list_fields}
+	###clean_data = {field: [] for field in list_fields}
 
 	#Visible fields that are not required (not including rxn info).
 	not_required = { ###Auto-generate?
-		"notes"
+		"notes", "duplicate_of"
 	}
 
 	for field in dirty_data:
@@ -471,7 +481,6 @@ def full_validation(dirty_data, lab_group):
 				if field in not_required:
 					clean_data[field] = "" #If nothing was entered, store nothing ###Used to be "?" -- why?
 				else:
-					bad_data.add(field)
 					errors[field] = "Field required."
 
 	#Check that equal numbers of fields are present in each list
@@ -556,11 +565,36 @@ def full_validation(dirty_data, lab_group):
 					errors[field] = "Field must be one of: {}".format(edit_choices[category])
 
 		#Text fields.
-		elif field in {"ref","notes"}:
+		elif field in {"ref","notes", "duplicate_of"}: ###No repeats in ref
 			try:
 				dirty_datum = str(parsed_data[field])
 				assert(quick_validation(field, dirty_datum))
-				clean_data[field] = dirty_datum
+
+				#Check to make sure no references are repeated.
+				if field=="ref":
+					try:
+						#Gather the reference_set to make sure references are unique.
+						ref_set = get_ref_set(lab_group)
+						print "CHECKING!"
+
+						#Check to make sure the ref isn't in the ref_set.
+						assert(not dirty_datum in ref_set)
+						clean_data[field] = dirty_datum
+					except:
+						errors[field] = "Already in use."
+
+				elif field=="duplicate_of":
+					try:
+						#Gather the reference_set to make sure references are unique.
+						ref_set = get_ref_set(lab_group)
+
+						#Check to make sure the ref isn't in the ref_set.
+						assert(dirty_datum in ref_set)
+						clean_data[field] = dirty_datum
+					except:
+						errors[field] = "Nonexistent reference."
+				else:
+					clean_data[field] = dirty_datum
 			except:
 				errors[field] = "Cannot exceed {} characters.".format(data_ranges[field][1])
 
@@ -610,10 +644,17 @@ class DataEntryForm(ModelForm):
 		attrs={'class':'form_text form_text_long',
 		"title":"Additional notes about the reaction."}))
 
+	duplicate_of = CharField(required = False,
+		label="Duplicate of", widget=TextInput(
+		attrs={'class':'form_text form_text_short',
+		"title":"The reaction reference of which this data is a duplicate."}))
+	recommended = ChoiceField(choices = BOOL_CHOICES, widget=Select(
+		attrs={'class':'form_text dropDownMenu',
+		"title":"Did we recommend this reaction to you?"}))
+
 	class Meta:
 		model = Data
-		exclude = ("user","lab_group", "creation_time", "reactant",
-			"quantity", "unit")
+		exclude = ("user","lab_group", "creation_time")
 		#Set the field order.
 		fields = [
 			"reactant_1", "quantity_1", "unit_1",
@@ -622,7 +663,8 @@ class DataEntryForm(ModelForm):
 			"reactant_4", "quantity_4", "unit_4",
 			"reactant_5", "quantity_5", "unit_5",
 			"ref", "temp", "time", "pH", "slow_cool",
-			"leak", "outcome", "purity", "notes"
+			"leak", "outcome", "purity",
+			"duplicate_of", "recommended","notes"
 		]
 
 	def __init__(self, user=None, *args, **kwargs):

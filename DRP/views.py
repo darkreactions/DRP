@@ -404,6 +404,7 @@ def data_form(request, copy_index=None): #If no data is entered, stay on the cur
 
 			#Refresh the TOTALSIZE cache.
 			set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
+			set_cache(lab_group, "REFS", None)
 			success = True #Used to display the ribbonMessage.
 	else:
 		#Submit a blank/auto-filled form if one was not just submitted.
@@ -516,7 +517,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 					"reactant_3", "quantity_3", "unit_3",
 					"reactant_4", "quantity_4", "unit_4",
 					"reactant_5", "quantity_5", "unit_5",
-					"notes"
+					"notes", "duplicate_of", "recommended",
 				}
 			allow_unknowns = True
 		elif model=="CompoundEntry":
@@ -552,13 +553,12 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						for field in row:
 							if field == "":
 								break #Stop checking for headings if a "" is encountered.
-							user_fields.append(get_related_field(field,model=model))
+							user_fields.append(get_related_field(field, model=model))
 							row_length+=1
 
 						#If unit columns were not supplied, add them after each quantity.
 						set_user_fields = set(user_fields)
 						auto_added_fields = set()
-						recheck_fields = set()
 						if model=="Data":
 							for i in CONFIG.reactant_range(): #Since only 5 reactants supported...
 								if not "unit_{}".format(i) in set_user_fields:
@@ -566,6 +566,11 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										user_fields.index("quantity_{}".format(i))+1,
 											"unit_{}".format(i))
 									auto_added_fields.add("unit_{}".format(i))
+							for opt in ["duplicate_of", "recommended"]:
+								if not opt in set_user_fields:
+									user_fields.append(opt)
+									auto_added_fields.add(opt)
+
 						elif model=="CompoundEntry":
 							for opt in ["CAS_ID", "abbrev"]:
 								if not opt in set_user_fields:
@@ -595,16 +600,27 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 					j = 0 # user_fields index. (gets a field)
 					no_abbrev = False
 
-					while (i < row_length or j < len(user_fields)):
+					#Get the set of references so no refs are reused.
+					ref_set = get_ref_set(lab_group)
+
+					###while (i < row_length or j < len(user_fields)):
+					while (j < len(user_fields)):
 						#Required since data and fields may be disjunct from missing units.
-						datum = row[i]
 						field = user_fields[j]
 
+						#Only get the datum if it is available.
 						if field in auto_added_fields:
 							#Skip the field if it was auto-added because
 							#	no data is present for the generated column.
 							j += 1
 							try:
+								if model=="Data":
+									if field=="recommended":
+										#Assume blank abbrevs should be same as compound.
+										model_fields[field] = "No"
+									elif field=="duplicate_of":
+										#Assume blank abbrevs should be same as compound.
+										model_fields[field] = ""
 								if model=="CompoundEntry":
 									if field=="abbrev":
 										#Assume blank abbrevs should be same as compound.
@@ -613,6 +629,9 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 							except:
 								model_fields[field] = CONFIG.not_required_label
 							continue
+						else:
+							datum = row[i]
+
 						try:
 							#If the datum isn't helpful, don't remember it.
 							if datum in CONFIG.blacklist:
@@ -628,7 +647,6 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									raise Exception("No compound specified!")
 								elif field=="abbrev":
 									#Allow absent abbreviations, but mark them the same as the datum.
-									print "FOUND THIS: \"{}\" in \"{}\"".format(datum,field)###
 									no_abbrev=True
 								else:
 									raise Exception("Value not allowed: \"{}\"".format(datum))
@@ -684,6 +702,14 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									datum = datum.lower()
 									if "y" in datum: datum="Yes"
 									elif "n" in datum: datum="No"
+									elif "" in datum: datum="No"
+								#Make sure references are not repeated.
+								elif field=="ref":
+									try:
+										assert(not datum in ref_set)
+									except:
+										raise Exception("Reference already in use!")
+
 
 								elif field == "CAS_ID":
 									datum = datum.replace("/","-").replace(" ","-").replace("_","-")
@@ -756,8 +782,11 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 				old_data_size = get_cache(lab_group, "TOTALSIZE")
 				control.clear_page_of(lab_group, old_data_size)
 
+				#Clear any other caches.
+				set_cache(lab_group, "REFS", None)
+
 				#Add the new data to the cached size.
-				get_cache(lab_group, "TOTALSIZE", old_data_size+len(entry_list))
+				set_cache(lab_group, "TOTALSIZE", old_data_size+len(entry_list))
 
 			elif added_quantity and model=="CompoundEntry":
 				CompoundEntry.objects.bulk_create(entry_list)
@@ -806,8 +835,6 @@ def download_CSV(request): ###Need to fix.
 		lab_group = u.get_profile().lab_group
 		date = datetime.datetime.now()
 		file_name = "{}_{}".format(lab_group.lab_title, model).replace(" ", "_").lower()
-		###file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
-			###date.day, date.month, date.year)
 
 		#Set up the HttpResponse to be a CSV file.
 		CSV_file = HttpResponse(content_type="text/csv")
@@ -832,7 +859,7 @@ def download_CSV(request): ###Need to fix.
 		for entry in CSV_data:
 			try:
 				#Create and apply the actual row.
-				row = [eval("entry.{}".format(field)).encode("utf-8") for field in headers]
+				row = [getattr(entry, field).encode("utf-8") for field in headers]
 				writer.writerow(row)
 			except Exception as e:
 				print(e)###
@@ -948,14 +975,25 @@ def data_update(request, control=control): ###Lump together?
 				newValue = editPackage[2] #Edits are validated client-side.
 				dataChanged = lab_data[indexChanged]
 
+				#Specific field-checks.
+				if fieldChanged=="ref":
+					#If the value is valid, change all of the duplicated reactions
+					#	to the new reference.
+					assert(not newValue in get_ref_set(lab_group))
+					old_ref = getattr(dataChanged, fieldChanged)
+					Data.objects.all().filter(lab_group=lab_group, duplicate_of=old_ref).update(duplicate_of=newValue)
+					control.clear_all_page_caches(lab_group)
+				else:
+					control.clear_page_of(lab_group, indexChanged)
+
 				#Make the edit in the database
 				setattr(dataChanged, fieldChanged, newValue)
+				#Data should only move closer to being "valid data."
 				if not dataChanged.is_valid:
 					revalidate_data(dataChanged, lab_group)
 				dataChanged.user = u
 				dataChanged.save()
 
-				control.clear_page_of(lab_group, indexChanged)
 			except:
 				pass
 		while (len(changesMade["dupl"]) > 0):
