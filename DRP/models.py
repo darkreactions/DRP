@@ -10,6 +10,7 @@ from django.db import models
 from validation import *
 import random, string, datetime
 from data_config import CONFIG
+import chemspipy
 
 
 #############  CACHE VALIDATION and ACCESS  ###########################
@@ -176,10 +177,25 @@ class CompoundGuideForm(ModelForm):
 				self._errors[field] = self.error_class(
 					["This field cannot be blank."])
 
+		#If the compound was entered, make sure we can get a SMILES from it.
+		if not self._errors.get("compound"):
+			try:
+				#Lookup the compound in the ChemSpider Database
+				name = clean_data["compound"]
+				chemspider_data = chemspipy.find("Benzene")
+				print "2"
+				smiles = chemspider_data.smiles
+				print smiles
+			except Exception as e:
+				print e
+				self._errors["compound"] = self.error_class(
+					["Could not find this molecule. Try a different name."])
+
+
 		#If an abbreviation is duplicated.
-		if clean_data["abbrev"] in abbrev_dict:###NO ACCESS TO THIS VAR?
-			self._errors["abbrev"] = self.error_class(
-				["Abbreviation already used."])
+		###if clean_data["abbrev"] in abbrev_dict:###NO ACCESS TO THIS VAR?
+			###self._errors["abbrev"] = self.error_class(
+				###["Abbreviation already used."])
 
 		return clean_data
 

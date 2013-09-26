@@ -11,9 +11,9 @@ import string
 import datetime
 
 from svg_construction import *
-from construct_descriptor_table import *
+#from construct_descriptor_table import *
 from data_config import CONFIG
-import chemspipy
+#import chemspipy
 
 
 ######################  Controllers  ###################################
@@ -830,11 +830,12 @@ def download_CSV(request): ###Need to fix.
 	if request.method=="POST":
 		#Specify which CSV to download.
 		model = request.POST["dataType"]
+		data_filter = request.POST["downloadFilter"]
 
 		#Generate a file name.
 		lab_group = u.get_profile().lab_group
 		date = datetime.datetime.now()
-		file_name = "{}_{}".format(lab_group.lab_title, model).replace(" ", "_").lower()
+		file_name = "{}_{}_{}".format(lab_group.lab_title, model, data_filter).replace(" ", "_").lower()
 
 		#Set up the HttpResponse to be a CSV file.
 		CSV_file = HttpResponse(content_type="text/csv")
@@ -851,7 +852,14 @@ def download_CSV(request): ###Need to fix.
 		headers = get_model_field_names(verbose=False, model=model)
 
 		if model=="Data":
-			CSV_data = control.collect_all_data(lab_group)
+			collected_data = control.collect_all_data(lab_group)
+			if data_filter=="good":
+				CSV_data = collected_data.filter(is_valid=True)
+			elif data_filter=="bad":
+				CSV_data = collected_data.filter(is_valid=False)
+			else:
+				CSV_data = collected_data
+
 		elif model=="CompoundEntry":
 			###Better way? Generalize mass CG collection?
 			CSV_data = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")

@@ -8,7 +8,7 @@ var changesMade = {
 	add:[],
 	};
 var CGSelected = Array();
-	
+
 //############ Post-load Setup: #########################################
 restyleData() //Style the data according to what it contains.
 
@@ -50,7 +50,7 @@ function restyleData() {
 			$(this).css({"opacity":"0.3"});
 		}
 	});
-	
+
 	//Keep selected data highlighted even if on page changes.
 	$(".dataIndex").each(function() {
 		dataID = Number($(this).html().trim())
@@ -92,8 +92,8 @@ function getOptions(field) {
 
 //############ Server Transactions: #########################################
 function submitChanges(refresh) {
-	refresh = refresh !== undefined ? refresh : true 
-	
+	refresh = refresh !== undefined ? refresh : true
+
 	if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
 		showRibbon("Working! This may take a moment.", "#FFC87C", "body", false);
 	}
@@ -106,13 +106,13 @@ function submitChanges(refresh) {
 			edit:[],
 			add:[],
 			dupl:[],
-			}; 
+			};
 		if (refresh) {
 			window.location.reload(true);
 		}
 	});
 }
-	
+
 //############ CSV Management: #######################################
 //Change visible file name when applicable.
 $(document).on("change", "#uploadCSV_hiddenInput", function() {
@@ -122,6 +122,15 @@ $(document).on("change", "#uploadCSV_hiddenInput", function() {
 		$("#uploadCSV_display").children("div").html("None Selected");
 	}
 });
+
+//Hide the Download Form's dataFilter selection menu if not applicable.
+$(document).on("click", "#radio_reactionData", function() {
+	$("#filterContainer").animate({"opacity": 1}, 100);
+});
+$(document).on("click", "#radio_compoundGuide", function() {
+	$("#filterContainer").animate({"opacity": 0}, 100);
+});
+
 
 //############ Form Interactions: ######################################
 $(document).on("submit", ".uploadForm", function() { //###Ugly...
@@ -134,11 +143,11 @@ $(document).on("click", ".CG_deleteButton", function() {
 	//Add the compound guide entry index to the selected data list.
 	var CGIndex = (parseInt($(this).attr("id").substr(3))-1);
 	CGSelected.push(CGIndex);
-	
+
 	//Display a CG save button if one does not exist.
 	$("#popupContainer").append("<div class=\"CG_saveButton genericButton\">Save</div>");
 	$("#compoundGuideForm").html("Please save before continuing.")
-	
+
 	//Remove the data from the CG visual.
 	$(this).closest("tr").remove();
 });
@@ -147,11 +156,11 @@ $(document).on("click", ".CG_saveButton", function() {
 	showRibbon("Saving!", "99FF5E","#popupContainer_inner", false);
 	//Sort the list prior to sending.
 	CGSelected.sort(sortNumbersReverse);
-	//Send the selected CG entry indexes to the server to be deleted. 
+	//Send the selected CG entry indexes to the server to be deleted.
 	JSONArray = JSON.stringify(CGSelected);
 	$.post("/edit_CG_entry/", JSONArray, function() {
 		//Show a newly updated screen.
-		CGSelected = Array(); 
+		CGSelected = Array();
 		window.location.reload(true);
 	});
 });
@@ -163,15 +172,15 @@ $(document).on("click", ".dataGroup", function() {
 	if ($(this).parent().attr("id") == "searchContainer") {
 		return false;
 	}
-	
+
 	$(this).toggleClass("dataSelected");
-	
+
 	//Get Index of Selected Data by Number
 	var dataID = parseInt($(this).children(".dataIndex").html());
-	
+
 	var indexOfData = selectedData.indexOf(dataID);
 	if (indexOfData >= 0) { //Data is already selected (thus, deselect)
-		selectedData.splice(indexOfData,1);	
+		selectedData.splice(indexOfData,1);
 	} else { //Select data
 		selectedData.push(dataID);
 		selectedData.sort(sortNumbers); //###Necessary? Probably
@@ -179,9 +188,9 @@ $(document).on("click", ".dataGroup", function() {
 });
 
 //Select Page (Button)
-$("#leftMenu_selectPage").click(function() { 
+$("#leftMenu_selectPage").click(function() {
 	var selectedOnPage = [];
-	
+
 	//Select data
 	$(".dataIndex").each(function() {
 		var dataID = parseInt($(this).html());
@@ -191,14 +200,14 @@ $("#leftMenu_selectPage").click(function() {
 		} else {
 			//Count the element as selected.
 			selectedOnPage.push(dataID);
-		} 
-	}); 
-	
+		}
+	});
+
 	//Deselect data (if all elements were already selected; ie, "toggle")
 	if (selectedOnPage.length == $(".dataGroup").length){
 		for (i in selectedOnPage) {
 			var indexOfData = selectedData.indexOf(selectedOnPage[i]);
-			selectedData.splice(indexOfData,1);	
+			selectedData.splice(indexOfData,1);
 		}
 		$(".dataGroup").removeClass("dataSelected");
 	}
@@ -206,7 +215,7 @@ $("#leftMenu_selectPage").click(function() {
 });
 
 //Select All (Button)
-$("#leftMenu_selectAll").click(function() { 
+$("#leftMenu_selectAll").click(function() {
 	//If all data is selected, deselect everything.
 	var totalDataSize = $("#pagesTotal").attr("total_data_size");
 	if (selectedData.length == totalDataSize) {
@@ -216,10 +225,10 @@ $("#leftMenu_selectAll").click(function() {
 		});
 	} else {
 		selectedData = [] //Clear selection to avoid duplicates.
-		for(i = 1; i <= totalDataSize; i++) { 
+		for(i = 1; i <= totalDataSize; i++) {
 			selectedData.push(i);
 		}
-		//Data will already be sorted from least to greatest after loop. 
+		//Data will already be sorted from least to greatest after loop.
 		$(".dataGroup").addClass("dataSelected");
 	}
 });
@@ -230,13 +239,13 @@ $(document).on("click", ".expandButton", function() {
 	var indexRequested = parseInt($(this).siblings(".dataIndex").html())-1;
 	var moreButton = $(this);
 	$(moreButton).siblings(".dataEntry").html("Loading. Please Wait.");
-	$.post("/get_full_datum/", {"indexRequested":indexRequested}, 
+	$.post("/get_full_datum/", {"indexRequested":indexRequested},
 		function(response) {
 			$(moreButton).siblings(".dataEntry").html(response);
 			$(moreButton).fadeOut("slow");
 			restyleData();
 	});
-	
+
 	return false; //Do not continue so the data is not selected.
 });
 
@@ -261,13 +270,13 @@ $(document).on("mouseleave", ".dataGroup", function() {
 //############### Change Data: #########################################
 
 //Duplicate Button
-$("#leftMenu_duplicate").click(function() {  
-	if (selectedData.length) { 
+$("#leftMenu_duplicate").click(function() {
+	if (selectedData.length) {
 		for (var i in selectedData) {
 			changesMade.dupl.push(selectedData[i]);
 		}
 		showRibbon("Duplicated!", "#99FF5E", "#dataContainer", true);
-		
+
 		//Upload updated data
 		submitChanges();
 	}
@@ -275,8 +284,8 @@ $("#leftMenu_duplicate").click(function() {
 
 //Delete Button
 //Ask for confirmations for deletions.
-$("#leftMenu_delete").click(function() { 
-	if (selectedData.length) { 
+$("#leftMenu_delete").click(function() {
+	if (selectedData.length) {
 		//Delete any extra popup confirmations that exist.
 		$(".popupConfirmation").remove();
 		createPopupConfirmation("Really delete the " + selectedData.length + " selected data?");
@@ -298,14 +307,14 @@ $("#leftMenu_delete").click(function() {
 						$("#g_"+String(selectedData[i])).remove()
 					}
 					selectedData = [];
-					
+
 					showRibbon("Deleted!", "#99FF5E", "#dataContainer");
-					
+
 					//Upload updated data
 					submitChanges();
 					$(this).dialog("close");
 					$(this).remove();
-					
+
 				},
 				"No": function() {
 					$(this).dialog("close");
@@ -324,13 +333,13 @@ $(document).on("click", ".editable", function() {
 	if (editExemptions.indexOf($(".editable").parent().parent().attr("id")) != -1) {
 		return false;
 	}
-	
+
 	$(".editable").css("opacity",1);
-	
+
 	if ($(this).children(".editConfirm").length == 0 ) {
 		var oldVal = String($(this).html());
 		var editAs = $(this).attr("editAs");
-		
+
 		if (editAs == "select") {
 			var options = getOptions($(this).attr("class").split(" ")[1].substr(5));
 			var newInnards = "<select class=\"editField editMenu dropDownMenu\""
@@ -354,8 +363,8 @@ $(document).on("click", ".editable", function() {
 				+ "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
 				);
 			adaptSize($(this).children(".editText"));
-			
-			
+
+
 			if ($(this).attr("class").indexOf("type_reactant") >= 0) {
 				//Get the auto-complete options form the CG guide.
 				if (CGAbbrevs == undefined) {
@@ -364,7 +373,7 @@ $(document).on("click", ".editable", function() {
 						CGAbbrevs.push(key);
 					}
 				}
-				$(this).children(".editText").autocomplete({ 
+				$(this).children(".editText").autocomplete({
 					source: CGAbbrevs,
 					messages: {
 						noResults: "",
@@ -386,15 +395,15 @@ $(document).on("click", ".editConfirm", function() {
 	var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
 	var newValue = $(editFieldSibling).val();
 	var oldValue = $(editFieldSibling).attr("oldVal");
-	
+
 	var validData = false;
-	
+
 	if (editFieldSibling.attr("class").split(" ")[1] == "editText") { //Edit by Text
 		if (parseInt($(this).parent().attr("class").split(" ")[2])>2) {
 			var required = false;
 		} else { var required = true; }
-		
-		if ($(this).siblings(".editText").attr("class").indexOf("badData") < 0 
+
+		if ($(this).siblings(".editText").attr("class").indexOf("badData") < 0
 			&& quickValidate(fieldChanged[1].substr(5), newValue, required)) {
 			validData = true;
 		} else {
@@ -404,23 +413,23 @@ $(document).on("click", ".editConfirm", function() {
 		//Since the only data choices are those which are supplied...
 		validData = true;
 	}
-	
+
 	if (validData) {
 		if (newValue != oldValue) {
 			//Find the specific fieldChanged.
-			if ($.isNumeric(fieldChanged[2])) { 
+			if ($.isNumeric(fieldChanged[2])) {
 				fieldChanged = fieldChanged[1].substr(5) + "_" + fieldChanged[2];
 			} else {
 				fieldChanged = fieldChanged[1].substr(5);
 			}
-			
-			//Submit the new value to the server. 
+
+			//Submit the new value to the server.
 			changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
 				$(this).parent().parent().siblings(".dataIndex").html().trim(),
 				fieldChanged,
 				newValue
 				]);
-			
+
 			//Immediately change the visual for the user.
 			$(this).parent().html(newValue);
 			submitChanges(false);
@@ -446,7 +455,7 @@ $(document).on("keyup", ".editText", function() {
 	if (parseInt($(this).parent().attr("class").split(" ")[2])>2) {
 		var required = false;
 	} else { var required = true; }
-		
+
 	if (!quickValidate(($(this).parent().attr("class").split(" ")[1]).substr(5),
 		$(this).val(), required)) {
 		$(this).addClass("badData");
@@ -463,7 +472,7 @@ $(document).on("click", ".CG_compound", function() {//###
 //############## Change Pages: #########################################
 $(document).on("click", "#pagesInputButton", function() {
 	var pageLink = $("#pagesInputText").val().trim();
-	
+
 	if (pageLink == $("#pageLinkCurrent").html().trim()) {
 		showRibbon("Already here!", "#99FF5E", "#dataContainer");
 		return false //Don't do anything else if page already is active.
@@ -472,7 +481,7 @@ $(document).on("click", "#pagesInputButton", function() {
 		&& parseInt(pageLink) > 0) {
 		//Create a CSRF Token for Django authorization.
 		var csrftoken = $.cookie("csrftoken");
-		
+
 		//Request the information about a page.
 		pageDestination = "/data_transmit/" + pageLink;
 		$.get(pageDestination, function(dataResponse) {
