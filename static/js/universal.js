@@ -35,7 +35,7 @@ $(document).tooltip({
 	content: function() {
 		return $(this).attr("title")
 		}
-	}); 
+	});
 
 //Disable the tooltips when a text-input is selected.
 tooltips_disabled = false;
@@ -57,11 +57,11 @@ $(document).on("focusout", "input", function() {
 window.showRibbon = function(message, color, location, timeout) {
 	//Assume that the ribbon should time out.
 	timeout = timeout !== undefined ? timeout : true
-	//Remove any extra 
+	//Remove any extra
 	$(".ribbonMessage").remove();
-	
+
 	$(location).append(
-		"<div class=\"ribbonMessage\" style=\"background-color:" + color + 
+		"<div class=\"ribbonMessage\" style=\"background-color:" + color +
 			";\">" + message + "</div>"
 	);
 	if (timeout) {
@@ -77,31 +77,31 @@ $(document).on("submit", ".infoForm", function() {
 		//Recreate the popup window with the server response.
 		$("#popupContainer_inner").html(response);
 		$(".subPopup").draggable();
-		
+
 		//Reset the autocomplete if necessary.
-		$(".autocomplete_reactant").autocomplete({ 
+		$(".autocomplete_reactant").autocomplete({
 			source: CGAbbrevs,
 			messages: {
 				noResults: "",
 				results: function() {}
 			}
 		});
-		
+
 		//Show the ribbon message if applicable.
 		if ($(".successActivator").length) {
 			showRibbon("Data added!", "green", "#popupContainer_inner");
 			$(".successActivator").remove();
 			return false;
 		}
-		
+
 		//Reload the page if applicable.
 		if ($(".reloadActivator").length) {
 			window.location.reload(true);
 		}
-		
-		
+
+
 	});
-	return false; //Do not continue or else the form will post again. 
+	return false; //Do not continue or else the form will post again.
 });
 //############ User Authentication: ####################################
 $("#userLogOut").click( function() {
@@ -115,10 +115,10 @@ $("#userLogOut").click( function() {
 //################   Search   ##########################################
 $(document).on("click", ".PT_element", function() {
 	$(this).toggleClass("PT_selected");
-	
+
 	var element = $(this).html().trim();
 	var indexOfElement = PT_selected.indexOf(element);
-	
+
 	if (indexOfElement == -1){
 		PT_selected.push(element);
 	} else {
@@ -128,9 +128,9 @@ $(document).on("click", ".PT_element", function() {
 
 function sendSearchQuery(current_query) {
 	$.ajax({
-		url:"/search/", 
+		url:"/search/",
 		method:"post",
-		data: {"current_query":JSON.stringify(current_query)}, 
+		data: {"current_query":JSON.stringify(current_query)},
 		traditional: true,
 		success: function(response) {
 			$("#searchResultsOuterContainer").html(response)
@@ -149,10 +149,10 @@ $(document).on("mouseover", "#search_backButton", function() {
 		for (var i in current_query.slice(0,-1)) {
 			filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(current_query[i]["field"])+": " + current_query[i]["value"]
 		}
-		
+
 		//Add the new filter.
 		filter_string += "<br/><div class=\"search_backText\">"+parseInt(current_query.length)+".) "+make_name_verbose(current_query[current_query.length-1]["field"])+": "+current_query[current_query.length-1]["value"]+"</div>"
-		
+
 		$(this).attr("title", filter_string);
 	} else {
 		$(this).attr("title", "");
@@ -167,10 +167,10 @@ $(document).on("mouseover", "#search_filterButton", function() {
 		for (var i in current_query) {
 			filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(current_query[i]["field"])+": " + current_query[i]["value"]
 		}
-		
+
 		//Add the new filter.
 		filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(current_query.length)+1)+".) "+make_name_verbose($("input[name=field]:checked").val())+": "+$("#searchValue").val()+"</div>"
-		
+
 		$(this).attr("title", filter_string);
 	} else {
 		$(this).attr("title", "");
@@ -181,19 +181,19 @@ $(document).on("click", "#search_filterButton", function() {
 	if ($("#searchResultsContainer").html().trim()!="No data found!") {
 		if ($("#searchValue").val()){
 			field = $("input[name=field]:checked").val()
-			value = $("#searchValue").val() 
+			value = $("#searchValue").val()
 			//Make sure the query was not already searched.
 			if (current_query){
 				for (var i in current_query) {
 					if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
 						showRibbon("Already queried!", "#FFC87C","#popupContainer_inner", true);
-						return false //Don't continue if query is already present. 
-					}  
+						return false //Don't continue if query is already present.
+					}
 				}
-			} 
-			
+			}
+
 			showRibbon("Searching!", "#99FF5E","#popupContainer_inner", true);
-			
+
 			current_query.push({
 				"field":field,
 				"value":value,
@@ -213,7 +213,7 @@ $(document).on("click", "#search_backButton", function() {
 		if (current_query.length){
 			sendSearchQuery(current_query);
 		} else {
-			$("#searchResultsOuterContainer").html("<div id=\"searchResultsContainer\"> Enter filters to search. </div>"); 
+			$("#searchResultsOuterContainer").html("<div id=\"searchResultsContainer\"> Enter filters to search. </div>");
 		}
 	} else {
 		showRibbon("Already at start!", "#FF6870", $("#popupContainer_inner"), true);
@@ -223,13 +223,13 @@ $(document).on("click", "#search_backButton", function() {
 $(document).on("click", "#search_clearButton", function() {
 	current_query = [];
 	showRibbon("Filters emptied!", "#99FF5E","#popupContainer_inner", true);
-	$("#searchResultsContainer").html("Enter filters to search."); 
+	$("#searchResultsContainer").html("Enter filters to search.");
 });
 
 
 	//################   Autocompleting Search   ####################### //###
 window.setAutoComplete = function(location, source) {
-	$(location).autocomplete({ 
+	$(location).autocomplete({
 		source: source,
 		messages: {
 			noResults: "",
@@ -241,7 +241,7 @@ window.setAutoComplete = function(location, source) {
 $(document).on("focusin", "#searchValue", function() {
 	//Set autocomplete to vary with selection.
 });
-	
+
 	//////source = source !== undefined ? source : CGAbbrevs;
 	//////if (source==CGAbbrevs) {
 		////////Get the auto-complete options form the CG guide if no other source is found.
@@ -254,7 +254,7 @@ $(document).on("focusin", "#searchValue", function() {
 				//////}
 			//////})
 		//////} else {
-			//////$(location).autocomplete({ 
+			//////$(location).autocomplete({
 				//////source: CGAbbrevs,
 				//////messages: {
 					//////noResults: "",
@@ -263,7 +263,7 @@ $(document).on("focusin", "#searchValue", function() {
 			//////});
 		//////}
 	//////} else {
-		//////$(location).autocomplete({ 
+		//////$(location).autocomplete({
 			//////source: CGAbbrevs,
 			//////messages: {
 				//////noResults: "",
@@ -284,16 +284,16 @@ window.createPopupConfirmation = function(message) {
 $(document).on("click", ".popupActivator", function(event) {
 	//Display a loading message if the request takes a visible amount of time.
 	$("#popupContainer_inner").html("<center>Loading. Please wait.</center>");
-	
+
 	//Load the activator CSS.
 	activatorID = $(this).attr("id");
-	
+
 	//"Forward" specific triggers to other popups.
 	if (activatorID == "leftMenu_addNew_copy") {
 		activatorID = "leftMenu_addNew"
 		event.stopPropagation();
 	}
-	
+
 	$("#popupContainer").attr("for", activatorID);
 	switch (activatorID) {
 		case "leftMenu_addNew":
@@ -302,12 +302,12 @@ $(document).on("click", ".popupActivator", function(event) {
 			if ($(this).attr("class").indexOf("duplicateSpecificDataButton") != -1) {
 				index = $(this).siblings(".dataIndex").html().trim();
 			}
-			
+
 			//Send the request to the server
 			$.get("/data_form/"+index, function(response) {
 				$("#popupContainer_inner").html(response);
-				
-				//Get the auto-complete options form the CG guide.
+
+				//Get the auto-complete options form the CG guide. ###SOME ERROR HERE, CASEY
 				if (CGAbbrevs == undefined) {
 					$.get("/send_CG_names/", function(response) {
 						CGEntries = response;
@@ -315,7 +315,7 @@ $(document).on("click", ".popupActivator", function(event) {
 						for (var key in CGEntries) {
 							CGAbbrevs.push(key);
 						}
-						$(".autocomplete_reactant").autocomplete({ 
+						$(".autocomplete_reactant").autocomplete({
 							source: CGAbbrevs,
 							messages: {
 								noResults: "",
@@ -324,7 +324,7 @@ $(document).on("click", ".popupActivator", function(event) {
 						});
 					})
 				} else {
-					$(".autocomplete_reactant").autocomplete({ 
+					$(".autocomplete_reactant").autocomplete({
 						source: CGAbbrevs,
 						messages: {
 							noResults: "",
@@ -392,7 +392,7 @@ $(document).on("click", ".popupActivator", function(event) {
 				CGSelected = Array();
 			});
 			break;
-		default: 
+		default:
 			return false; //If a popup is not recognized, don't load anything.
 	}
 	$("#popupGlobal").fadeIn(300);
@@ -400,10 +400,10 @@ $(document).on("click", ".popupActivator", function(event) {
 // Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
 	$("#popupGlobal").fadeOut("fast");
-	
+
 	//Remove any extra additions the popup may have populated.
 	$(".CG_saveButton").remove()
-	
+
 	//Reload the screen if requested.
 	if ($(".reloadActivator").length) {
 		window.location.reload(true);
@@ -415,7 +415,7 @@ $(document).on("click", "#mask", function() {
 $(document).on("click", ".closeButton", function() {
 	//Close the global container if the main container is closed.
 	if ($(this).parent().attr("id")=="popupContainer") {
-		$(this).parent().parent().fadeOut("fast"); 
+		$(this).parent().parent().fadeOut("fast");
 	} else {
 		$(this).parent().fadeOut("fast");
 	}

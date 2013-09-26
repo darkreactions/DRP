@@ -223,11 +223,11 @@ def predictions(request):
 	if u.is_authenticated():
 		try:
 			lab_group = u.get_profile().lab_group
-			svg = None###get_cache(lab_group, "TESTSVG")###
+			svg = get_cache(lab_group, "TESTSVG")###
 			if not svg:
 				start_time = time.time()###
 				#Attempt to validate any invalid data.
-				revalidate_all_data(lab_group) ###Validates all data or just user data?
+				###revalidate_all_data(lab_group) ###Validates all data or just user data?
 
 				#Create and cache the SVG.
 				svg = generate_svg(u.get_profile().lab_group)
@@ -288,6 +288,13 @@ def search(request):
 			for query in query_list:
 				field = query.get("field")
 				value = query.get("value")
+
+				#Check the field and value for possible attacks. ###Make better before you show Paul or he will cry.
+				for char in field:
+					assert(not char in "();[],./<>!@#$%^&*`~|{}\"'")
+				for char in value:
+					assert(not char in "();[],./<>!@#$%^&*`~|{}\"'")
+
 				if field in list_fields:
 					Q_string = ""
 					for i in CONFIG.reactant_range():

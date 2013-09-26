@@ -167,7 +167,7 @@ class CompoundGuideForm(ModelForm):
 			clean_data["CAS_ID"] = clean_CAS_ID
 		except Exception as e:
 			#If no CAS_ID is found, store a blank value.
-			clean_data["clean_CAS_ID"] = ""
+			clean_data["CAS_ID"] = ""
 
 		other_fields = ["abbrev", "compound", "compound_type"]
 		for field in other_fields:
@@ -177,19 +177,18 @@ class CompoundGuideForm(ModelForm):
 				self._errors[field] = self.error_class(
 					["This field cannot be blank."])
 
-		#If the compound was entered, make sure we can get a SMILES from it.
-		if not self._errors.get("compound"):
-			try:
-				#Lookup the compound in the ChemSpider Database
-				name = clean_data["compound"]
-				chemspider_data = chemspipy.find("Benzene")
-				print "2"
-				smiles = chemspider_data.smiles
-				print smiles
-			except Exception as e:
-				print e
-				self._errors["compound"] = self.error_class(
-					["Could not find this molecule. Try a different name."])
+		##If the compound was entered, make sure we can get a SMILES from it.
+		#if not self._errors.get("compound"):
+			#try:
+				##Lookup the compound in the ChemSpider Database
+				#chemspider_data = chemspipy.find_one(clean_data["compound"])
+				#smiles = chemspider_data.smiles
+				####Possible? Might need to add to chemspipy.py
+				####if not clean_data["CAS_ID"]:
+					####clean_data["CAS_ID"] = chemspider_data.cas
+			#except Exception as e:
+				#self._errors["compound"] = self.error_class(
+					#["Could not find this molecule. Try a different name."])
 
 
 		#If an abbreviation is duplicated.

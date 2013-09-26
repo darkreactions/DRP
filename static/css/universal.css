@@ -1,8 +1,8 @@
 /* ###############   BUTTONS   ###################################### */
 .genericButton {
-	-webkit-user-select: none;  
-	-moz-user-select: none;    
-	-ms-user-select: none;      
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
  }
 
@@ -17,14 +17,14 @@
 	font-size:12px;
 	font-weight:bold;
 	text-align:center;
-	
+
 	width:15px;
 	height:15px;
 	border:2px solid black;
 	border-top-right-radius:10px;
 	border-bottom-left-radius:10px;
 	padding:2px;
-	
+
 	position:absolute;
 	top:10px;
 	right:10px;
@@ -37,7 +37,7 @@
 	border-radius:5px;
 	border:2px solid black;
 	text-align:center;
-	
+
 	font-size:10px;
 	font-weight:bold;
 	background-color:#FFE944;
@@ -52,13 +52,13 @@
 .leftMenuButton {
 	height:40px;
 	width:40px;
-	
+
 	background-repeat:no-repeat;
 	background-position:center;
 	background-size:80%;
 	margin:15px;
 	padding:5px;
-	
+
 	background-color:white;
 	border-radius:15px;
 	border: 3px solid black;
@@ -85,7 +85,7 @@
 #leftPanel {
 	height:100%;
 	width:100px;
-	
+
 	position:fixed;
 	margin-top:15px;
 	left:0px;
@@ -197,7 +197,7 @@ input[type=radio] + label {
     background-color: silver;
     color:black;
 }
-input[type=radio]:checked + label { 
+input[type=radio]:checked + label {
 	border:2px solid yellow;
 	background-color:#FFD92E;
 }
@@ -240,10 +240,10 @@ div.ui-tooltip {
 .ui-tooltip-content{
 	max-width:400px;
 	color:white;
-	
-	-webkit-user-select: none;  
-	-moz-user-select: none;    
-	-ms-user-select: none;      
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
 
@@ -256,7 +256,7 @@ div.ui-tooltip {
 	border-radius:15px;
 	color:white;
 	z-index:2000;
-	
+
 	list-style:none;
 }
 
@@ -273,7 +273,7 @@ div.ui-tooltip {
 	background-color:#404040;
 	border-radius:15px;
 	cursor:pointer;
-	
+
 	font-style:oblique;
 	font-weight:bold;
 }
@@ -306,7 +306,7 @@ div.ui-tooltip {
 	position:absolute;
 	padding-bottom:70px;
 	overflow:hidden;
-	
+
 	border-top-right-radius:0px;
 	border-bottom-right-radius:0px;
 	margin-left:-20px;
@@ -339,7 +339,7 @@ div.ui-tooltip {
 }
 
 #popupContainer {
-	position:relative;	
+	position:relative;
 	height:auto;
 	width:auto;
 	z-index:101;
@@ -353,7 +353,7 @@ div.ui-tooltip {
 	border-radius:25px;
 	padding:15px;
 	overflow:hidden;
-	
+
 	color:#FFE98F;
 	font-style:oblique;
 }
@@ -426,7 +426,7 @@ div.ui-tooltip {
 	width:550px;
 	z-index:103;
 	padding-bottom:5px;
-	
+
 	color:black;
 }
 
@@ -447,7 +447,7 @@ height:10px;
 	text-align:center;
 	padding:3px;
 	padding-top:6px;
-	
+
 	background-color:white;
 	color:black;
 	font-size:10px;
@@ -460,15 +460,15 @@ height:10px;
 
 }
 /* Table partitions */
-.PT_hydrogen { background-color:#EBD8FF; } 
-.PT_alkaliMetal { background-color:#FFB459; } 
-.PT_alkaliEarth { background-color:#FFEE93; } 
-.PT_transitionMetal { background-color:#C381EA; } 
-.PT_poorMetal { background-color:#96C3FF; } 
-.PT_nonmetal { background-color:#8FD892; } 
-.PT_nobleGas { background-color:#BBAFFF; } 
-.PT_lanthanide { background-color:#FFCCF2; } 
-.PT_actinide { background-color:#C6905D; } 
+.PT_hydrogen { background-color:#EBD8FF; }
+.PT_alkaliMetal { background-color:#FFB459; }
+.PT_alkaliEarth { background-color:#FFEE93; }
+.PT_transitionMetal { background-color:#C381EA; }
+.PT_poorMetal { background-color:#96C3FF; }
+.PT_nonmetal { background-color:#8FD892; }
+.PT_nobleGas { background-color:#BBAFFF; }
+.PT_lanthanide { background-color:#FFCCF2; }
+.PT_actinide { background-color:#C6905D; }
 
 .PT_selected {
 	border:2px solid yellow;
@@ -579,6 +579,7 @@ padding-bottom:10px;
 .type_temp:after { content: "\2103"; }
 .type_time:after { content: " Hours"; }
 .type_notes:empty:after { content:"(None)"; }
+.type_duplicate_of:empty:after { content:"(None)"; }
 
 		/* ############### :BEFORE STYLE ############################# */
 .type_slow_cool:before { content: "Slow Cooled: "; }
@@ -588,21 +589,39 @@ padding-bottom:10px;
 .type_outcome:before { content: "Outcome: "; }
 .type_notes:before { content: "Notes: "; }
 .type_ref:before { content: "Reference: "; }
-.type_user:before { 
-	content:"Last Modified by "; 
+.type_duplicate_of:before { content: "Duplicate of: "; }
+.type_recommended:before { content: "Recommended: "; }
+.type_user:before {
+	content:"Last Modified by ";
 	font-style:oblique;
 	font-weight:bold;
 }
 
 		/* ################ .TYPE STYLE ############################# */
-.type_reactant { 
+.type_reactant {
 	font-weight:bold;
-	font-style:none; 
+	font-style:none;
 	max-width:300px;
 }
 
 .type_notes {
 	max-width:400px;
+}
+
+.type_duplicate_of {
+	font-size:14px;
+	opacity:0.5;
+	position:absolute;
+	left:50px;
+	bottom:-9px;
+}
+
+.type_recommended {
+	font-size:14px;
+	opacity:0.5;
+	position:absolute;
+	right:200px;
+	bottom:-9px;
 }
 
 .type_user {
@@ -626,7 +645,7 @@ padding-bottom:10px;
 
 #searchResultsContainer{
 	position:relative;
-	padding:16px;	
+	padding:16px;
 	margin: 0 auto;
 	margin-top:10px;
 	margin-bottom:10px;
@@ -634,9 +653,9 @@ padding-bottom:10px;
 	max-height:300px;
 	max-width:600px;
 	border-radius:5px;
-	
+
 	overflow:auto;
-	
+
 	font-size:14px;
 	color:black;
 	background-color:white;
@@ -741,7 +760,7 @@ padding-bottom:10px;
 	position:absolute;
 	right:0px;
 	top:0px;
-	
+
 	text-align:center;
 	padding:5px;
 	min-width:100px;
@@ -763,10 +782,10 @@ padding-bottom:10px;
 	top:40%;
 	left:0px;
 	text-align:center;
-	
+
 	background-color:white;
 	color:black;
-	
+
 	border-top:2px solid black;
 	border-bottom:3px solid black;
 	padding-top:5px;

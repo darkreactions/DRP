@@ -79,6 +79,8 @@ function getOptions(field) {
 	switch (field) {
 		case ("unit"):
 			return  editChoices["unitChoices"]
+		case ("recommended"):
+			return  editChoices["boolChoices"]
 		case ("outcome"):
 			return  editChoices["outcomeChoices"]
 		case ("purity"):
