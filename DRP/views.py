@@ -345,7 +345,7 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 			#Submit a blank form if one was not just submitted.
 			form = CompoundGuideForm()
 
-		guide = collect_CG_entries(u.get_profile().lab_group)
+		guide = collect_CG_entries(lab_group)
 
 		return render(request, 'compound_guide_cell.html', {
 			"guide": guide,
@@ -877,7 +877,7 @@ def download_CSV(request): ###Need to fix.
 				row = [getattr(entry, field).encode("utf-8") for field in headers]
 				writer.writerow(row)
 			except Exception as e:
-				print(e)###
+				print("ERROR getting '{}':{}".format(entry,e))###
 		return CSV_file #ie, return HttpResponse(content_type="text/csv")
 	else:
 		return render(request, 'download_form.html')

@@ -103,7 +103,7 @@ class UserProfileForm(ModelForm):
 class CompoundEntry(models.Model):
 	abbrev = models.CharField("Abbreviation", max_length=100) ###repr in admin 500 error
 	compound = models.CharField("Compound", max_length=100)
-	CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, null=True)
+	CAS_ID = models.CharField("CAS ID", max_length=13, blank=True)
 	compound_type = models.CharField("Type", max_length=10)
 
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
@@ -178,17 +178,17 @@ class CompoundGuideForm(ModelForm):
 					["This field cannot be blank."])
 
 		##If the compound was entered, make sure we can get a SMILES from it.
-		#if not self._errors.get("compound"):
-			#try:
-				##Lookup the compound in the ChemSpider Database
-				#chemspider_data = chemspipy.find_one(clean_data["compound"])
-				#smiles = chemspider_data.smiles
-				####Possible? Might need to add to chemspipy.py
-				####if not clean_data["CAS_ID"]:
-					####clean_data["CAS_ID"] = chemspider_data.cas
-			#except Exception as e:
-				#self._errors["compound"] = self.error_class(
-					#["Could not find this molecule. Try a different name."])
+		if not self._errors.get("compound"):
+			try:
+				#Lookup the compound in the ChemSpider Database
+				chemspider_data = chemspipy.find_one(clean_data["compound"])
+				smiles = chemspider_data.smiles
+				###Possible? Might need to add to chemspipy.py
+				###if not clean_data["CAS_ID"]:
+					###clean_data["CAS_ID"] = chemspider_data.cas
+			except Exception as e:
+				self._errors["compound"] = self.error_class(
+					["Could not find this molecule. Try a different name."])
 
 
 		#If an abbreviation is duplicated.
