@@ -336,7 +336,7 @@ $(document).on("click", ".editable", function() {
 		return false;
 	}
 
-	$(".editable").css("opacity",1);
+	$(this).css("opacity",1);
 
 	if ($(this).children(".editConfirm").length == 0 ) {
 		var oldVal = String($(this).html());
@@ -425,12 +425,25 @@ $(document).on("click", ".editConfirm", function() {
 				fieldChanged = fieldChanged[1].substr(5);
 			}
 
-			//Submit the new value to the server.
-			changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
-				$(this).parent().parent().siblings(".dataIndex").html().trim(),
-				fieldChanged,
-				newValue
-				]);
+			//Send edits for Compound Guide
+			if ($("#CG_display").length) {
+				$.post("/edit_CG_entry/", JSON.stringify({
+						"field" : fieldChanged,
+						"newVal" : newValue,
+						"oldVal" : oldValue,
+						"type" : "edit"
+					}), function() {
+				alert("done");
+				});
+
+			} else {
+				//Send edits for the Database View
+				changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
+					$(this).parent().parent().siblings(".dataIndex").html().trim(),
+					fieldChanged,
+					newValue
+					]);
+			}
 
 			//Immediately change the visual for the user.
 			$(this).parent().html(newValue);
@@ -468,7 +481,8 @@ $(document).on("keyup", ".editText", function() {
 
 //############## Edit CG: #########################################
 //Click to select entire compound.
-$(document).on("click", ".CG_compound", function() {//###
+$(document).on("click", ".CG_compound", function() {
+
 });
 
 //############## Change Pages: #########################################

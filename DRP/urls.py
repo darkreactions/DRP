@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     (r'^data_form/$', data_form), #Form for adding new data.
     (r'^data_form/(?P<copy_index>\d+)/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
-    (r'^edit_CG_entry/$', edit_CG_entry), #Form for adding new CG abbreviations.
+    (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
 			#Validation
     (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
 		#Predictions
@@ -40,7 +40,7 @@ urlpatterns = patterns('',
     (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
     (r'^user_registration/$', user_registration), #Create User
     (r'^change_password/$', change_password), #Change Password
-	
+
 	#Enable the admin:
     (r'^admin/', include(admin.site.urls)),
 )

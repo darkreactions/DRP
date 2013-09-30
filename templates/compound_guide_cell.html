@@ -7,7 +7,7 @@
 			<div class="error">
 				<div class="error_label">{{ field.label_tag }}</div>
 				<div class="error_message">{{ field.errors.as_text }}</div>
-			</div>	
+			</div>
 		{% endif %}
 		{% endfor %}
 	</div>
@@ -32,22 +32,22 @@
 		{% for entry in guide %}
 			<tr>
 				<td>{{forloop.counter}}.)</td>
-				
-				{% if entry.abbrev == entry.compound %} 
+
+				{% if entry.abbrev == entry.compound %}
 					<td style="opacity:0.5;">(None)</td>
 				{% else %}
-					<td>{{ entry.abbrev }}</td>
+					<td><div class="editable type_abbrev" editAs="text">{{ entry.abbrev }}</div></td>
 				{% endif %}
-				
+
 				<td class="CG_arrow"> &rarr; </td>
-				
+
 				{% if entry.CAS_ID %}
 				<td title="CAS: {{ entry.CAS_ID }}" class="CG_compound">
 				{% else %}
 				<td title="No CAS ID found." class="CG_compound">
 				{% endif %}
-					{{ entry.compound }}</td>
-				<td>{{ entry.compound_type }}</td>
+					<div class="editable type_compound" editAs="text">{{ entry.compound }}</div></td>
+				<td><div class="editable type_compound_type" editAs="select">{{ entry.compound_type }}</div></td>
 				<td><div class="CG_deleteButton genericButton" id="cg_{{forloop.counter}}">x</div></td>
 			</tr>
 		{% endfor %}
@@ -70,6 +70,6 @@
 		</center>
 	{% else %}
 		<p> Please log in to submit data. </p>
-	{% endif %}			
-	</div>		
+	{% endif %}
+	</div>
 </form>

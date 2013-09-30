@@ -368,12 +368,29 @@ def edit_CG_entry(request): ###Edits?
 		set_cache(lab_group, "COMPOUNDGUIDE", None)
 		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
-		#Since only deletions are supported currently. ###
-		for index in changesMade: ###Tie names to CG abbrevs directly?
+		###Should make cleaner and "directed" rather than "catching", Casey --Tired Casey
+		edit_type = changesMade.get("type", "del")
+
+		if changesMade["type"]=="del":
+			#Since only deletions are supported currently. ###
+			for index in changesMade: ###Tie names to CG abbrevs directly?
+				try:
+					CG_data[int(index)].delete()
+				except Exception as e:
+					print("\n\nCould not delete index: {}".format(e))
+		elif changesMade["type"]=="edit":
 			try:
-				CG_data[int(index)].delete()
-			except Exception as e:
-				print("\n\nCould not delete index! {}".format(e))
+				#if changesMade["field"]=="compound":
+					#collect_CG_name_pairs
+
+				#abbrev_dict = collect_CG_name_pairs(lab_group)
+				#assert(not changesMade["newValue"] in abbrev_dict)
+
+				#Clear the cached CG
+				set_cache(lab_group, "COMPOUNDGUIDE", None)
+				set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
+			except:
+				return HttpResponse("No")
 
 	return HttpResponse("OK")
 
