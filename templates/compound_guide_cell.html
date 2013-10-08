@@ -34,7 +34,7 @@
 				<td>{{forloop.counter}}.)</td>
 
 				{% if entry.abbrev == entry.compound %}
-					<td style="opacity:0.5;">(None)</td>
+					<td><div class="editable type_abbrev" editAs="text"></div></td>
 				{% else %}
 					<td><div class="editable type_abbrev" editAs="text">{{ entry.abbrev }}</div></td>
 				{% endif %}

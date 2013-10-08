@@ -380,19 +380,62 @@ def edit_CG_entry(request): ###Edits?
 					print("\n\nCould not delete index: {}".format(e))
 		elif changesMade["type"]=="edit":
 			try:
-				#if changesMade["field"]=="compound":
-					#collect_CG_name_pairs
+				#Variable Setup
+				print changesMade
+				field = changesMade["field"]
+				new_val  = changesMade["newVal"]
+				old_val  = changesMade["oldVal"]
+				compound = changesMade["compound"]
 
-				#abbrev_dict = collect_CG_name_pairs(lab_group)
-				#assert(not changesMade["newValue"] in abbrev_dict)
+				assert(new_val and compound and field)
+
+				#Gather all relevant data (and check for duplicates).
+				try:
+					changed_entry = CompoundEntry.objects.get(lab_group=lab_group, compound=compound)
+				except:
+					return HttpResponse("Please delete duplicate entry!")
+
+				#Make sure the compound isn't already being used.
+				if field=="compound":
+					possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, compound=new_val)
+					if possible_entry.exists():
+						return HttpResponse("Already used!")
+				elif field=="abbrev":
+					possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=new_val)
+					if possible_entry.exists():
+						return HttpResponse("Already used!")
+
+
+				#Make sure the new value does not invalidate the entry.
+				dirty_data = model_to_dict(changed_entry)
+				dirty_data[field] = new_val
+				clean_data, errors = CG_validation(dirty_data, lab_group)
+				new_val = clean_data[field]
+				if errors:
+					return HttpResponse(errors.values())
+
+				#Commit the change to the Entry.
+				setattr(changed_entry, field, new_val)
+				changed_entry.save()
+
+				#Make any edits to the Data if needed.
+				if field=="abbrev":
+					#Don't overwrite ALL empty entries -- only those related to the compound.
+					if not old_val:
+						old_val = compound
+
+					for i in CONFIG.reactant_range():
+						exec("old_data = Data.objects.filter(lab_group=lab_group, reactant_{}=old_val)".format(i))
+						exec("old_data.update(reactant_{}=new_val)".format(i))
 
 				#Clear the cached CG
 				set_cache(lab_group, "COMPOUNDGUIDE", None)
 				set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
-			except:
-				return HttpResponse("No")
+			except Exception as e:
+				print e###
+				return HttpResponse("Invalid!")
 
-	return HttpResponse("OK")
+	return HttpResponse("0")
 
 	##################  Helper Functions ###############################
 def guess_type(datum):
@@ -658,6 +701,8 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 
 						try:
 							#If the datum isn't helpful, don't remember it.
+							if type(datum)==str:
+								datum = datum.replace("\n","").replace("\t","")#TODO: Find better way?
 							if datum in CONFIG.blacklist:
 								if field in not_required:
 									datum = CONFIG.not_required_label
@@ -745,9 +790,11 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										raise Exception("Abbreviation already used!")
 								elif field == "compound_type":
 									###Gross? Why not use dict, Past Casey? --Future Casey
+									print "yes"
 									for option in edit_choices["typeChoices"]:
 										datum = datum[0:2].lower()
 										if option[0:len(datum)].lower() == datum:
+											print "Found match!"
 											datum = option
 											break
 								try:
@@ -765,10 +812,10 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										if field == "compound":
 											try:
 												chemspider_data = chemspipy.find_one(datum)
-												print "RAW:\t{}".format(datum)
-												print "ChemSpi:\t{}: {}\n".format(chemspider_data.commonname, chemspider_data.smiles)
+												#print "RAW:\t{}".format(datum)
+												#print "ChemSpi:\t{}: {}\n".format(chemspider_data.commonname, chemspider_data.smiles)
 											except:
-												print "----COULD NOT FIND SMILES----"###
+												raise Exception("Unknown compound! Try another name?")
 										if no_abbrev and field=="compound":
 											print "No abbreviation found for \"{}\" but continuing!".format(datum)###
 											model_fields["abbrev"] = datum

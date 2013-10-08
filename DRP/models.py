@@ -12,7 +12,6 @@ import random, string, datetime
 from data_config import CONFIG
 import chemspipy
 
-
 #############  CACHE VALIDATION and ACCESS  ###########################
 #Strip any spaces from the lab group title and/or the keys on cache access.
 def set_cache(lab_group, key, value, duration=604800): #Default duration is 1 week.
@@ -20,7 +19,6 @@ def set_cache(lab_group, key, value, duration=604800): #Default duration is 1 we
 	if key: condensed_key = key.replace(" ","") #Don't try to .replace None-types.
 	else: condensed_key = None
 	cache.set("{}|{}".format(condensed_lab, condensed_key), value, duration)
-
 
 def get_cache(lab_group, key):
 	condensed_lab = lab_group.lab_title.replace(" ","")
@@ -115,6 +113,52 @@ class CompoundEntry(models.Model):
 
 TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
 
+####errors[field] = "Field must be one of: {}".format(edit_choices[category])
+def CG_validation(dirty_data, lab_group):
+	#Initialize the variables needed for the cleansing process.
+	clean_data = {} #Keep track of cleaned fields
+	errors = {}
+
+	try:
+		clean_CAS_ID = dirty_data["CAS_ID"].replace(" ", "-").replace("/", "-").replace("_", "-")
+		###Try to find a CAS ID here?
+		assert(clean_CAS_ID)
+		#Check that the CAS ID has three hyphen-delineated parts.
+		if len(clean_CAS_ID.split("-")) != 3:
+			errors["CAS_ID"] = "CAS ID requires three distinct parts."
+		#Check that only numbers are present.
+		elif not clean_CAS_ID.replace("-","").isdigit():
+			errors["CAS_ID"] = "CAS ID may only have numeric characters."
+		clean_data["CAS_ID"] = clean_CAS_ID
+	except Exception as e:
+		#If no CAS_ID is found, store a blank value.
+		clean_data["CAS_ID"] = ""
+
+	other_fields = ["abbrev", "compound", "compound_type"]
+	for field in other_fields:
+		try:
+			clean_data[field] = dirty_data[field]
+		except:
+			errors[field] = "This field cannot be blank."
+
+	##If the compound was entered, make sure we can get a SMILES from it.
+	if not errors.get("compound"):
+		try:
+			#Lookup the compound in the ChemSpider Database
+			chemspider_data = chemspipy.find_one(clean_data["compound"])
+			smiles = chemspider_data.smiles
+			###Possible? Might need to add to chemspipy.py
+			###if not clean_data["CAS_ID"]:
+				###clean_data["CAS_ID"] = chemspider_data.cas
+		except Exception as e:
+			errors["compound"] = "Could not find this molecule. Try a different name."
+
+	#If an abbreviation is duplicated.
+	###if clean_data["abbrev"] in abbrev_dict:###NO ACCESS TO THIS VAR?
+		###errors["abbrev"] = self.error_class(
+			###["Abbreviation already used."])
+	return clean_data, errors
+
 class CompoundGuideForm(ModelForm):
 	compound = CharField(widget=TextInput(
 		attrs={'class':'form_text',
@@ -150,51 +194,13 @@ class CompoundGuideForm(ModelForm):
 	def clean(self): ################################################################## WORK HERE, CASEY : ) --Past Casey
 		#Initialize the variables needed for the cleansing process.
 		dirty_data = super(CompoundGuideForm, self).clean() #Get the available raw (dirty) data
-		clean_data = {} #Keep track of cleaned fields
 
-		try:
-			clean_CAS_ID = dirty_data["CAS_ID"].replace(" ", "-").replace("/", "-").replace("_", "-")
-			###Try to find a CAS ID here?
-			assert(clean_CAS_ID)
-			#Check that the CAS ID has three hyphen-delineated parts.
-			if len(clean_CAS_ID.split("-")) != 3:
-				self._errors["CAS_ID"] = self.error_class(
-					["CAS ID requires three distinct parts."])
-			#Check that only numbers are present.
-			elif not clean_CAS_ID.replace("-","").isdigit():
-				self._errors["CAS_ID"] = self.error_class(
-					["CAS ID may only have numeric characters."])
-			clean_data["CAS_ID"] = clean_CAS_ID
-		except Exception as e:
-			#If no CAS_ID is found, store a blank value.
-			clean_data["CAS_ID"] = ""
+		#Gather the clean_data and any errors found.
+		clean_data, gathered_errors = CG_validation(dirty_data, self.lab_group)
+		form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
 
-		other_fields = ["abbrev", "compound", "compound_type"]
-		for field in other_fields:
-			try:
-				clean_data[field] = dirty_data[field]
-			except:
-				self._errors[field] = self.error_class(
-					["This field cannot be blank."])
-
-		##If the compound was entered, make sure we can get a SMILES from it.
-		if not self._errors.get("compound"):
-			try:
-				#Lookup the compound in the ChemSpider Database
-				chemspider_data = chemspipy.find_one(clean_data["compound"])
-				smiles = chemspider_data.smiles
-				###Possible? Might need to add to chemspipy.py
-				###if not clean_data["CAS_ID"]:
-					###clean_data["CAS_ID"] = chemspider_data.cas
-			except Exception as e:
-				self._errors["compound"] = self.error_class(
-					["Could not find this molecule. Try a different name."])
-
-
-		#If an abbreviation is duplicated.
-		###if clean_data["abbrev"] in abbrev_dict:###NO ACCESS TO THIS VAR?
-			###self._errors["abbrev"] = self.error_class(
-				###["Abbreviation already used."])
+		#Apply the errors to the form.
+		self._errors.update(form_errors)
 
 		return clean_data
 

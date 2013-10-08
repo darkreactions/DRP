@@ -79,6 +79,8 @@ function getOptions(field) {
 	switch (field) {
 		case ("unit"):
 			return  editChoices["unitChoices"]
+		case ("compound_type"):
+			return  editChoices["typeChoices"]
 		case ("recommended"):
 			return  editChoices["boolChoices"]
 		case ("outcome"):
@@ -393,6 +395,7 @@ $(document).on("click", ".editable", function() {
 //Confirm edit with button press.
 $(document).on("click", ".editConfirm", function() {
 	var editFieldSibling = $(this).siblings(".editField")
+	var editParent = $(this).parent();
 	//Find the general fieldChanged (eg, quantity vs. quantity_1)
 	var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
 	var newValue = $(editFieldSibling).val();
@@ -427,13 +430,28 @@ $(document).on("click", ".editConfirm", function() {
 
 			//Send edits for Compound Guide
 			if ($("#CG_display").length) {
+				if (fieldChanged=="compound"){
+					var compound = oldValue;
+				} else {
+					var compound_container = $(this).parent().parent().siblings(".CG_compound").children()
+					var compound = $(compound_container).html();
+				}
+
 				$.post("/edit_CG_entry/", JSON.stringify({
 						"field" : fieldChanged,
 						"newVal" : newValue,
 						"oldVal" : oldValue,
+						"compound": compound, //Acts as the reference to know which Entry to change.
 						"type" : "edit"
-					}), function() {
-				alert("done");
+					}), function(response) {
+						if (response!="0"){
+							editParent.html(oldValue);
+							showRibbon(response, "#FF6870", "#popupContainer");
+						} else {
+							if ($(editParent).parent().parent().find(".type_abbrev").is(':empty')) {
+								$(editParent).parent().parent().find(".type_abbrev").html(oldValue);
+							}
+						}
 				});
 
 			} else {

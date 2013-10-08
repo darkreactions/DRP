@@ -580,6 +580,10 @@ padding-bottom:10px;
 .type_time:after { content: " Hours"; }
 .type_notes:empty:after { content:"(None)"; }
 .type_duplicate_of:empty:after { content:"(None)"; }
+.type_abbrev:empty:after {
+	content:"(None)";
+	opacity:0.5;
+}
 
 		/* ############### :BEFORE STYLE ############################# */
 .type_slow_cool:before { content: "Slow Cooled: "; }

@@ -67,7 +67,7 @@ window.showRibbon = function(message, color, location, timeout) {
 	if (timeout) {
 		setTimeout(function() {
 			$(location).children(".ribbonMessage").fadeOut(1000);
-		},500);
+		},500+15*message.length);
 	}
 }
 //############  Form Interactions:  ####################################
