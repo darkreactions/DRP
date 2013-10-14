@@ -4,22 +4,22 @@
 		<title>
 			Dark Reactions Project
 		</title>
-		
+
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/database.css" />
-	
+
 	</head>
-	<body> 
+	<body>
 
 	<!-- OUTSIDE OF PANELS -->
-	
+
 		<!-- HAVERFORD LOGO ###Shouldn't be hosted on wikimedia probably-->
 	<div id="haverfordLogo">
 		<a href="http://www.haverford.edu/">
 			<img style="height:100%;width:100%;" src="http://upload.wikimedia.org/wikipedia/en/7/73/Haverford_logo.png"/>
 		</a>
 	</div>
-	
+
 		<!-- USER CONTAINER -->
 	<div id="userInfo">
 		<div id = "userInfo_inner">
@@ -28,13 +28,13 @@
 			<a id="userLogOut" class="userAuthLink"> (Log Out) </a>
 		{% else %}
 			Welcome! <br />
-			<a id="userLogin" class="userAuthLink popupActivator">Log In</a> 
-			/ 
+			<a id="userLogin" class="userAuthLink popupActivator">Log In</a>
+			/
 			<a id="registrationPrompt" class="userAuthLink popupActivator">Register</a>
 		{% endif %}
 		</div>
 	</div>
-		
+
 		<!-- POPUP CONTAINER -->
 	<div id="popupGlobal" >
 		<div id="popupContainer"  class="genericContainer">
@@ -45,7 +45,7 @@
 		<div id="mask">
 		</div>
 	</div>
-	
+
 	<!-- DATABASE MENU -->
 	<div id="leftPanel">
 		<div id="leftMenuContainer" class="genericContainer">
@@ -65,58 +65,58 @@
 				id="leftMenu_downloadCSV"></div>
 		</div>
 	</div>
-	
+
 	<!-- RIGHT PANELS -->
 	<div id="rightPanel">
 		<div id="topPanel">
 			{% include "main_logo.html" %}
-			
+
 			<!-- NAVIGATION MENU -->
 			<div id="navMenu">
 				<a href="/database/" class="navLink" >Database</a>
 				<a href="/predictions/" class="navLink">Predictions</a>
 			</div>
-			
+
 			<div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
 			style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
-			
+
 			<div id="CG_activatorButton" title="Edit the compound guide." class="topMenuButton popupActivator"
 			style="background-image: url({{ STATIC_URL }}/icons/compoundGuide.png);"></div>
-			
+
 		</div>
-		
+
 		<div id="centerPanel">
 			<!-- DATA CONTAINER -->
 			<div id="dataContainer" class="genericContainer">
 				{% include "data_and_page_container.html" %}
 			</div>
 		</div>
-		
+
 	<div id="bottomPanel">
 		<!-- COPYRIGHT -->
 		<div id="copyrightContainer">
 			Haverford College &copy;{% now "Y" %}
 		</div>
 	</div>
-	
+
 	</div>
-	
+
 	</body>
-	
+
 	<!-- SCRIPTS -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script> 
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
-	
+
 	<script type="text/javascript">
 		//Define the STATIC_URL to be used in the JS files.
 		var STATIC_URL = "{{ STATIC_URL }}";
 	</script>
-	
+
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/clientValidate.js" ></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/database.js" ></script>
 
-	
+
 </html>

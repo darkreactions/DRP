@@ -13,7 +13,6 @@ import datetime
 from svg_construction import *
 #from construct_descriptor_table import *
 from data_config import CONFIG
-#import chemspipy
 
 
 ######################  Controllers  ###################################
@@ -135,23 +134,10 @@ def revalidate_all_data(lab_group, invalid_only = True):
 
 	print "Found {} to validate.".format(data_to_validate.count())
 
-	#Only validate data if data to validate is available.
-	###if data_to_validate.exists(): ###Prints missing CG entries.
-		###missing_CG_log = ""###
-		###missing = set()
-		###for data in data_to_validate:
-			###(text, CG_entries) = revalidate_data(data, lab_group, batch=True)
-			###if CG_entries:
-				###for CG_entry in CG_entries:
-					###if not CG_entry in missing:
-						###missing_CG_log += text
-						###missing.add(CG_entry)
-		###print missing_CG_log
-
 	if data_to_validate.exists():
 		for data in data_to_validate:
 			revalidate_data(data, lab_group, batch=True)
-		#Clear the page caches ###(it's probably more efficient to clear all the caches than calculate which caches to clear).
+		#Clear the page caches
 		control.clear_all_page_caches(lab_group)
 control = DataManager()
 
@@ -291,9 +277,9 @@ def search(request):
 
 				#Check the field and value for possible attacks. ###Make better before you show Paul or he will cry.
 				for char in field:
-					assert(not char in "();[],./<>!@#$%^&*`~|{}\"'")
+					assert(not char in "\"'!={}/\\~`")
 				for char in value:
-					assert(not char in "();[],./<>!@#$%^&*`~|{}\"'")
+					assert(not char in "\"'!={}/\\~`")
 
 				if field in list_fields:
 					Q_string = ""
@@ -381,7 +367,6 @@ def edit_CG_entry(request): ###Edits?
 		elif changesMade["type"]=="edit":
 			try:
 				#Variable Setup
-				print changesMade
 				field = changesMade["field"]
 				new_val  = changesMade["newVal"]
 				old_val  = changesMade["oldVal"]
@@ -409,7 +394,7 @@ def edit_CG_entry(request): ###Edits?
 				#Make sure the new value does not invalidate the entry.
 				dirty_data = model_to_dict(changed_entry)
 				dirty_data[field] = new_val
-				clean_data, errors = CG_validation(dirty_data, lab_group)
+				clean_data, errors = CG_validation(dirty_data, lab_group, editing_this=True)
 				new_val = clean_data[field]
 				if errors:
 					return HttpResponse(errors.values())

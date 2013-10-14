@@ -114,7 +114,7 @@ class CompoundEntry(models.Model):
 TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
 
 ####errors[field] = "Field must be one of: {}".format(edit_choices[category])
-def CG_validation(dirty_data, lab_group):
+def CG_validation(dirty_data, lab_group, editing_this=False):
 	#Initialize the variables needed for the cleansing process.
 	clean_data = {} #Keep track of cleaned fields
 	errors = {}
@@ -146,17 +146,24 @@ def CG_validation(dirty_data, lab_group):
 		try:
 			#Lookup the compound in the ChemSpider Database
 			chemspider_data = chemspipy.find_one(clean_data["compound"])
-			smiles = chemspider_data.smiles
+			###smiles = chemspider_data.smiles
+
 			###Possible? Might need to add to chemspipy.py
 			###if not clean_data["CAS_ID"]:
 				###clean_data["CAS_ID"] = chemspider_data.cas
+
+			#Block duplicate compounds.
 		except Exception as e:
 			errors["compound"] = "Could not find this molecule. Try a different name."
 
-	#If an abbreviation is duplicated.
-	###if clean_data["abbrev"] in abbrev_dict:###NO ACCESS TO THIS VAR?
-		###errors["abbrev"] = self.error_class(
-			###["Abbreviation already used."])
+	#Block duplicate abbrevs and compounds.
+	if not editing_this:
+		if CompoundEntry.objects.filter(compound=clean_data["compound"]).exists():
+			errors["compound"] = "Compound already exists."
+		if not errors.get("abbrev"):
+			if CompoundEntry.objects.filter(abbrev=clean_data["abbrev"]).exists():
+				errors["abbrev"] = "Abbreviation already used."
+
 	return clean_data, errors
 
 class CompoundGuideForm(ModelForm):
@@ -375,6 +382,10 @@ class Data(models.Model):
 
 	#Self-assigning Fields:
 	calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
+	calculated_pH = models.BooleanField()
+	calculated_temp = models.BooleanField()
+	calculated_time = models.BooleanField()
+
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
 	creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
@@ -401,6 +412,10 @@ def new_Data_entry(user, **kwargs): ###Not re-read yet.
 		setattr(new_entry, "user", user)
 		setattr(new_entry, "lab_group", user.get_profile().lab_group)
 
+		setattr(new_entry, "calculated_pH", False)
+		setattr(new_entry, "calculated_time", False)
+		setattr(new_entry, "calculated_temp", False)
+
 		#Set the non-user field values.
 		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
 			setattr(new_entry, field, value)
@@ -412,7 +427,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 	clean_fields = []
 
 	if model=="Data":
-		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations", "is_valid"}
+		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid"}
 		dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
 	elif model=="CompoundEntry":
 		fields_to_ignore = {u"id","lab_group"} ###Auto-populate?
@@ -445,30 +460,23 @@ def revalidate_data(data, lab_group, batch=False):
 	#Collect the data to validate
 	dirty_data = {field:getattr(data, field) for field in get_model_field_names()}
 	#Validate and collect any errors
-	(clean_data, errors) = full_validation(dirty_data, lab_group)
-
-	if errors:###
-		missing = []
-		for i in xrange(1,6):
-			if errors.get("reactant_{}".format(i)):
-				missing.append(getattr(data, "reactant_{}".format(i)).encode('ascii','ignore'))
-
-		if missing:
-			reaction = getattr(data, "reactant_1")
-			for i in xrange(2,6):
-				reactant = getattr(data, "reactant_{}".format(i))
-				if reactant:
-					reaction +=  " + {}".format(reactant)
-			return ("{0} ({1})\n\tMissing:{2}\n".format(reaction, data.ref, missing), missing)
-
-	return ("",None)
+	(clean_data, errors) = full_validation(dirty_data, lab_group, revalidating=True)
 
 	is_valid = False if errors else True
+
+	if is_valid:
+		print "VALIDATED A BAD DATUM!"
+	else:
+		print errors
+
 	setattr(data, "is_valid", is_valid)
 	data.save()
+
+	return errors
+
 	#Does not auto-clear the cache --only modifies the data entry.
 
-def full_validation(dirty_data, lab_group):
+def full_validation(dirty_data, lab_group, revalidating=False):
 	parsed_data = {} #Data that needs to be checked.
 	clean_data = {} #Keep track of cleaned fields
 	errors = {}
@@ -586,17 +594,16 @@ def full_validation(dirty_data, lab_group):
 					errors[field] = "Field must be one of: {}".format(edit_choices[category])
 
 		#Text fields.
-		elif field in {"ref","notes", "duplicate_of"}: ###No repeats in ref
+		elif field in {"ref","notes", "duplicate_of"}:
 			try:
 				dirty_datum = str(parsed_data[field])
 				assert(quick_validation(field, dirty_datum))
 
 				#Check to make sure no references are repeated.
-				if field=="ref":
+				if field=="ref" and not revalidating:
 					try:
 						#Gather the reference_set to make sure references are unique.
 						ref_set = get_ref_set(lab_group)
-						print "CHECKING!"
 
 						#Check to make sure the ref isn't in the ref_set.
 						assert(not dirty_datum in ref_set)
