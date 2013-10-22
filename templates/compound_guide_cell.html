@@ -19,43 +19,52 @@
 
 <h1>Compound Guide:</h1>
 
+{% spaceless %}
 <div id="CG_display">
 	{% if guide %}
 		<table id="CG_table">
 			<tr id="headingRow">
-				<td></td>
-				<td>Abbreviation</td> <td></td>
+				<td>Structure</td>
+				<td>Abbreviation</td>
 				<td>Compound</td>
+				<td>CAS</td>
 				<td>Type</td>
-				<td></td>
 			</tr>
 		{% for entry in guide %}
-			<tr>
-				<td>{{forloop.counter}}.)</td>
+<tr>
+<td class="CG_image_container">
+	{% if entry.image_url %}<img class="CG_image" src="{{ entry.image_url }}" />{% endif %}
+</td>
 
-				{% if entry.abbrev == entry.compound %}
-					<td><div class="editable type_abbrev" editAs="text"></div></td>
-				{% else %}
-					<td><div class="editable type_abbrev" editAs="text">{{ entry.abbrev }}</div></td>
-				{% endif %}
 
-				<td class="CG_arrow"> &rarr; </td>
+<td>
+	<div class="editable type_abbrev" editAs="text">{% spaceless %}
+	{% if entry.abbrev != entry.compound %}
+		{{ entry.abbrev }}
+	{% endif %}
+	{% endspaceless %}</div>
+</td>
 
-				{% if entry.CAS_ID %}
-				<td title="CAS: {{ entry.CAS_ID }}" class="CG_compound">
-				{% else %}
-				<td title="No CAS ID found." class="CG_compound">
-				{% endif %}
-					<div class="editable type_compound" editAs="text">{{ entry.compound }}</div></td>
-				<td><div class="editable type_compound_type" editAs="select">{{ entry.compound_type }}</div></td>
-				<td><div class="CG_deleteButton genericButton" id="cg_{{forloop.counter}}">x</div></td>
-			</tr>
+<td class="CG_compound"><div class="editable type_compound" editAs="text">{{ entry.compound }}</div></td>
+
+{% spaceless %}
+<td class="CG_CAS"><div class="editable type_CAS_ID" editAs="text">
+{% if entry.CAS_ID %}{{ entry.CAS_ID }}{% endif %}
+</div></td>
+{% endspaceless %}
+
+<td><div class="editable type_compound_type" editAs="select">{{ entry.compound_type }}</div></td>
+
+<td><div class="CG_deleteButton genericButton" id="cg_{{forloop.counter}}">x</div></td>
+</tr>
 		{% endfor %}
 		</table>
 	{% else %}
 		<p>No entries in compound guide!</p>
 	{% endif %}
 </div>
+
+{% endspaceless %}
 
 <form id="compoundGuideForm" method="post" action="/compound_guide_form/" class="popupScreenForm infoForm">
 	{% csrf_token %}

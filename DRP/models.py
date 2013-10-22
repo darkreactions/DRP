@@ -103,6 +103,8 @@ class CompoundEntry(models.Model):
 	compound = models.CharField("Compound", max_length=100)
 	CAS_ID = models.CharField("CAS ID", max_length=13, blank=True)
 	compound_type = models.CharField("Type", max_length=10)
+	image_url = models.CharField("Image URL", max_length=100, blank=True)
+	smiles = models.CharField("SMILES", max_length=100, blank=True)
 
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
 		###User foreign key as well
@@ -119,6 +121,9 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 	clean_data = {} #Keep track of cleaned fields
 	errors = {}
 
+	#Set default fields:
+	clean_data["image_url"] = ""
+
 	try:
 		clean_CAS_ID = dirty_data["CAS_ID"].replace(" ", "-").replace("/", "-").replace("_", "-")
 		###Try to find a CAS ID here?
@@ -129,7 +134,11 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 		#Check that only numbers are present.
 		elif not clean_CAS_ID.replace("-","").isdigit():
 			errors["CAS_ID"] = "CAS ID may only have numeric characters."
+
 		clean_data["CAS_ID"] = clean_CAS_ID
+
+
+
 	except Exception as e:
 		#If no CAS_ID is found, store a blank value.
 		clean_data["CAS_ID"] = ""
@@ -141,21 +150,6 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 		except:
 			errors[field] = "This field cannot be blank."
 
-	##If the compound was entered, make sure we can get a SMILES from it.
-	if not errors.get("compound"):
-		try:
-			#Lookup the compound in the ChemSpider Database
-			chemspider_data = chemspipy.find_one(clean_data["compound"])
-			###smiles = chemspider_data.smiles
-
-			###Possible? Might need to add to chemspipy.py
-			###if not clean_data["CAS_ID"]:
-				###clean_data["CAS_ID"] = chemspider_data.cas
-
-			#Block duplicate compounds.
-		except Exception as e:
-			errors["compound"] = "Could not find this molecule. Try a different name."
-
 	#Block duplicate abbrevs and compounds.
 	if not editing_this:
 		if CompoundEntry.objects.filter(compound=clean_data["compound"]).exists():
@@ -163,6 +157,25 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 		if not errors.get("abbrev"):
 			if CompoundEntry.objects.filter(abbrev=clean_data["abbrev"]).exists():
 				errors["abbrev"] = "Abbreviation already used."
+
+	#Make sure the compound exists in ChemSpider's database. ###Limits us to only ChemSpi?
+	try:
+		used_var = ""
+		if clean_data["CAS_ID"]:
+			used_var = "CAS"
+			chemspi_query = chemspipy.find_one(clean_data["CAS_ID"])
+		elif not errors.get("compound"):
+			used_var = "compound"
+			chemspi_query = chemspipy.find_one(clean_data["compound"])
+
+		clean_data["image_url"] = chemspi_query.imageurl
+		clean_data["smiles"] = chemspi_query.smiles
+
+	except Exception as e:
+		if used_var=="CAS":
+			errors["CAS"] = "Could not validate CAS. Make sure it is correct."
+		elif used_var=="compound":
+			errors["compound"] = "Could not find this molecule. Try a different name."
 
 	return clean_data, errors
 
@@ -181,11 +194,10 @@ class CompoundGuideForm(ModelForm):
 		widget=Select(attrs={'class':'form_text dropDownMenu',
 		"title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>"+
 		"--Solute<br/>--Water"}))
-	###NEED TO ADD SMILES? PERHAPS JUST AUTO-GEN...
 
 	class Meta:
 		model = CompoundEntry
-		exclude = ("lab_group",)
+		exclude = ("lab_group", "image_url", "smiles")
 
 	def __init__(self, lab_group=None, *args, **kwargs):
 		super(CompoundGuideForm, self).__init__(*args, **kwargs)
@@ -430,7 +442,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
 		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid"}
 		dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
 	elif model=="CompoundEntry":
-		fields_to_ignore = {u"id","lab_group"} ###Auto-populate?
+		fields_to_ignore = {u"id","lab_group", "smiles", "image_url"} ###Auto-populate?
 		dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
 	else:
 		raise Exception("Unknown model specified.")
@@ -466,8 +478,6 @@ def revalidate_data(data, lab_group, batch=False):
 
 	if is_valid:
 		print "VALIDATED A BAD DATUM!"
-	else:
-		print errors
 
 	setattr(data, "is_valid", is_valid)
 	data.save()

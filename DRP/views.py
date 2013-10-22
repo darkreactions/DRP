@@ -126,19 +126,40 @@ class DataManager(object):
 		except Exception as e:
 			raise Exception("-Data could not be retrieved for page {}\n--{}.".format(current_page, e))
 
-def revalidate_all_data(lab_group, invalid_only = True):
+def revalidate_all_data(lab_group, invalid_only = True, return_errors=False):
 	data_to_validate = Data.objects.filter(lab_group=lab_group)
 
 	if invalid_only:
 		data_to_validate = data_to_validate.filter(is_valid=False)
 
 	print "Found {} to validate.".format(data_to_validate.count())
+	error_log = {"CG":[], "quantity": [], "refs":[], "pH":[], "temp":[], "time": []}
+	j = 0
 
 	if data_to_validate.exists():
 		for data in data_to_validate:
-			revalidate_data(data, lab_group, batch=True)
+			#Display how many were analyzed so far.
+			if j%500==0: print "Played with {}...".format(j)
+
+			errors = revalidate_data(data, lab_group, batch=True)
+			for i in CONFIG.reactant_range():
+				if "reactant_{}".format(i) in errors:
+					error_log["CG"].append("{}".format(getattr(data, "reactant_{}".format(i))))
+			for i in CONFIG.reactant_range():
+				if "quantity_{}".format(i) in errors:
+					error_log["quantity"].append(getattr(data, "ref"))
+			if "temp" in errors:
+				error_log["temp"].append(getattr(data, "ref"))
+			if "time" in errors:
+				error_log["time"].append(getattr(data, "ref"))
+			if "pH" in errors:
+				error_log["pH"].append(getattr(data, "ref"))
+
 		#Clear the page caches
 		control.clear_all_page_caches(lab_group)
+		if return_errors:
+			return error_log
+
 control = DataManager()
 
 ######################  Analysis Functions  ####################################
@@ -372,6 +393,8 @@ def edit_CG_entry(request): ###Edits?
 				old_val  = changesMade["oldVal"]
 				compound = changesMade["compound"]
 
+				print "GOT SOMETHING!"###
+
 				assert(new_val and compound and field)
 
 				#Gather all relevant data (and check for duplicates).
@@ -383,11 +406,15 @@ def edit_CG_entry(request): ###Edits?
 				#Make sure the compound isn't already being used.
 				if field=="compound":
 					possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, compound=new_val)
-					if possible_entry.exists():
+					if possible_entry.exists() and possible_entry[0].compound!=compound:
 						return HttpResponse("Already used!")
 				elif field=="abbrev":
 					possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=new_val)
-					if possible_entry.exists():
+					if possible_entry.exists() and possible_entry[0].compound!=compound:
+						return HttpResponse("Already used!")
+				elif field=="CAS_ID":
+					possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, CAS_ID=new_val)
+					if possible_entry.exists() and possible_entry[0].compound!=compound:
 						return HttpResponse("Already used!")
 
 
@@ -401,6 +428,10 @@ def edit_CG_entry(request): ###Edits?
 
 				#Commit the change to the Entry.
 				setattr(changed_entry, field, new_val)
+				changed_entry.save()
+
+				#Get a fresh image from ChemSpider
+				changed_entry.image_url = find_compound_image(changed_entry)
 				changed_entry.save()
 
 				#Make any edits to the Data if needed.
@@ -1098,6 +1129,23 @@ def get_full_datum(request, control=control):
 	except Exception as e:
 		print(e)
 		return HttpResponse("<p>Data could not be loaded!</p>")
+
+def find_compound_image(cg_entry):
+	chemspi_query = ""
+	for i in [cg_entry.CAS_ID, cg_entry.compound]:
+		if i: #ChemSpider doesn't like empty requests.
+			chemspi_query = chemspipy.find_one(i)
+		if chemspi_query: break
+
+	if chemspi_query:
+		return chemspi_query.imageurl
+	else:
+		return ""
+
+def assign_all_compound_images(lab_group):
+	for i in CompoundEntry.objects.filter(lab_group=lab_group):
+		i.image_url = find_compound_image(i)
+		i.save()
 
 ######################  User Auth ######################################
 def change_password(request):

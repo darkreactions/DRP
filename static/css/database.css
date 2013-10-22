@@ -24,12 +24,12 @@
 	font-size:14px;
 	font-weight:bold;
 	text-align:center;
-	
+
 	width:60px;
 	border:2px solid black;
 	border-bottom-left-radius:10px;
 	padding:2px;
-	
+
 	position:absolute;
 	top:10px;
 	right:60px;
@@ -51,7 +51,7 @@
 	font-weight:bold;
 	text-align:center;
 	display:inline-block;
-	
+
 	border:2px solid black;
 	border-radius:10px;
 	padding:2px;
@@ -123,11 +123,6 @@
 	padding:0px;
 }
 
-#CG_table td:first-child {
-	text-align:right;
-}
-
-
 /* ###############   TEXT   ######################################### */
 .pageLink {
 	background-color:#3B5D77;
@@ -146,20 +141,57 @@
 	border:2px solid #304B60;
 }
 
+/* ###############   CG Guide   ############################ */
+
 #headingRow {
 	font-weight:bold;
 	text-decoration:underline;
+	text-align:center;
 }
 
-.CG_arrow {
-	font-weight:bold;
-	font-size:48px;
-	line-height:10px;
-}
-
-.CG_compound:hover {
+#CG_display .editable:hover {
 	background-color:#FCFF77;
-	border-radius:5px;
+	border-radius:25px;
+}
+
+.CG_image_container {
+	width:200px;
+}
+
+.CG_image_container:empty:after {
+	opacity:0.5;
+	font-style:oblique;
+	font-size:12px;
+	content:"Unknown!";
+}
+
+
+.CG_image {
+	height:100px;
+}
+
+.CG_image:hover {
+	height:180px;
+	border: 2px solid black;
+	border-radius:15px;
+}
+
+.type_CAS_ID {
+	min-width:100px;
+}
+.type_CAS_ID:empty:after {
+	opacity:0.5;
+	font-style:oblique;
+	font-size:12px;
+	content:"Unknown!";
+}
+
+.type_abbrev {
+	min-width:100px;
+}
+
+.type_compound {
+	min-width:100px;
 }
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
@@ -182,17 +214,16 @@
 
 #CG_display {
 	position:relative;
-	padding:16px;	
+	padding:16px;
 	margin: 0 auto;
 	margin-top:10px;
 	margin-bottom:10px;
 	min-height:20px;
-	max-height:300px;
-	max-width:600px;
+	max-height:350px;
 	border-radius:5px;
-	
+
 	overflow:auto;
-	
+
 	font-size:14px;
 	color:black;
 	background-color:white;
@@ -205,7 +236,7 @@
 	border:2px black solid;
 	border-radius:5px;
 	background-color:#EFEFA9;
-	
+
 	color:black;
 	font-size:14px;
 }
@@ -231,7 +262,7 @@
 	max-width:inherit;
 	width:10px;
 	display:inline-block;
-	
+
 }
 
 /* ###############   DATA STYLE   ################################### */
@@ -260,7 +291,7 @@
 	position:absolute;
 	right:-7px;
 	top:-8px;
-	
+
 	border-radius:15px;
 	border-top-right-radius:0px;
 	border-bottom-left-radius:0px;
@@ -268,7 +299,7 @@
 	background-color:yellow;
 	padding-left:15px;
 	padding-right:8px;
-	
+
 }
 
 /* #################### FORM STYLE ################################# */

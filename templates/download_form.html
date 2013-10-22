@@ -1,0 +1,31 @@
+<h1>Download CSV:</h1>
+<form id="CSVForm" method="POST" enctype="multipart/form-data" action="/download_CSV/" class="popupScreenForm downloadForm">
+	{% csrf_token %}
+	<div class="radioContainer">
+	<input id="radio_reactionData" type="radio" name="dataType" value="Data" checked>
+		<label class="genericButton radio_label" for="radio_reactionData">
+			Reaction Data
+		</label>
+	</input>
+	<input id="radio_compoundGuide" type="radio" name="dataType" value="CompoundEntry">
+		<label class="genericButton radio_label" for="radio_compoundGuide">
+			Compound Guide
+		</label>
+	</input>
+	</div>
+	<div id="filterContainer">
+		Data to download:
+		<select class="dropDownMenu" id="downloadFilter" name="downloadFilter">
+			<option value="all">All</option>
+			<option value="good">Valid</option>
+			<option value="bad">Invalid</option>
+		</select>
+	</div>
+	</br>
+
+	{% if user.is_authenticated %}
+		<input name="submit" id = "downloadCSVSubmit" type="submit" value="Download" class="form_button"/>
+	{% else %}
+		<p> Please sign in to download data. </p>
+	{% endif %}
+</form>
