@@ -98,11 +98,17 @@ $(document).on("submit", ".infoForm", function() {
 		if ($(".reloadActivator").length) {
 			window.location.reload(true);
 		}
+		//$(".loadingWheel").remove();
 
 
 	});
 	return false; //Do not continue or else the form will post again.
 });
+
+$(document).on("click", ".form_button[type=submit]", function() {
+	$(this).parent().append("<div class=\"loadingWheel\"></div>");
+});
+
 //############ User Authentication: ####################################
 $("#userLogOut").click( function() {
 	//Send the log-out signal.
@@ -414,6 +420,7 @@ $(document).on("click", "#mask", function() {
 //Close popups on close-button click.
 $(document).on("click", ".closeButton", function() {
 	//Close the global container if the main container is closed.
+	CGSelected = Array();
 	if ($(this).parent().attr("id")=="popupContainer") {
 		$(this).parent().parent().fadeOut("fast");
 	} else {

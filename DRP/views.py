@@ -371,20 +371,15 @@ def edit_CG_entry(request): ###Edits?
 		lab_group = u.get_profile().lab_group
 		CG_data = collect_CG_entries(lab_group)
 
-		#Clear the cached CG entries.
-		set_cache(lab_group, "COMPOUNDGUIDE", None)
-		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
-
-		###Should make cleaner and "directed" rather than "catching", Casey --Tired Casey
-		edit_type = changesMade.get("type", "del")
-
 		if changesMade["type"]=="del":
-			#Since only deletions are supported currently. ###
-			for index in changesMade: ###Tie names to CG abbrevs directly?
+			for i in changesMade["data"]:
 				try:
-					CG_data[int(index)].delete()
+					if i["abbrev"]=="": #If the compound has no abbrev.
+						CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i["compound"], compound=i["compound"])[0].delete()
+					else:
+						CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i["abbrev"], compound=i["compound"])[0].delete()
 				except Exception as e:
-					print("\n\nCould not delete index: {}".format(e))
+					print("Could not delete!\n {}".format(e))
 		elif changesMade["type"]=="edit":
 			try:
 				#Variable Setup
@@ -392,8 +387,6 @@ def edit_CG_entry(request): ###Edits?
 				new_val  = changesMade["newVal"]
 				old_val  = changesMade["oldVal"]
 				compound = changesMade["compound"]
-
-				print "GOT SOMETHING!"###
 
 				assert(new_val and compound and field)
 
@@ -445,11 +438,13 @@ def edit_CG_entry(request): ###Edits?
 						exec("old_data.update(reactant_{}=new_val)".format(i))
 
 				#Clear the cached CG
-				set_cache(lab_group, "COMPOUNDGUIDE", None)
-				set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 			except Exception as e:
 				print e###
 				return HttpResponse("Invalid!")
+
+		#Clear the cached CG entries.
+		set_cache(lab_group, "COMPOUNDGUIDE", None)
+		set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
 	return HttpResponse("0")
 
@@ -540,6 +535,10 @@ def get_related_field(heading, model="Data"): ###Not re-read.
 					break; #Only add 1 number to the data form.
 		elif "temp" in stripped_heading:
 			related_field = "temp"
+		elif "dupl" in stripped_heading:
+			related_field = "duplicate_of"
+		elif "recom" in stripped_heading:
+			related_field = "recommended"
 		elif "time" in stripped_heading:
 			related_field = "time"
 		elif "cool" in stripped_heading or "slow" in stripped_heading:
@@ -806,11 +805,9 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 										raise Exception("Abbreviation already used!")
 								elif field == "compound_type":
 									###Gross? Why not use dict, Past Casey? --Future Casey
-									print "yes"
 									for option in edit_choices["typeChoices"]:
 										datum = datum[0:2].lower()
 										if option[0:len(datum)].lower() == datum:
-											print "Found match!"
 											datum = option
 											break
 								try:
@@ -827,9 +824,8 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 									if model=="CompoundEntry":
 										if field == "compound":
 											try:
+												###The query is sent here for validation, AND later for data; super inefficient. --Casey (TODO)
 												chemspider_data = chemspipy.find_one(datum)
-												#print "RAW:\t{}".format(datum)
-												#print "ChemSpi:\t{}: {}\n".format(chemspider_data.commonname, chemspider_data.smiles)
 											except:
 												raise Exception("Unknown compound! Try another name?")
 										if no_abbrev and field=="compound":
@@ -850,6 +846,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						model_fields["is_valid"] = data_is_valid
 						entry_list.append(new_Data_entry(u, **model_fields))
 					elif model=="CompoundEntry":
+						model_fields["image_url"], model_fields["smiles"] = find_compound_image(model_fields, return_smiles=True)
 						entry_list.append(new_CG_entry(lab_group, **model_fields))
 
 					added_quantity += 1
@@ -933,13 +930,24 @@ def download_CSV(request): ###Need to fix.
 
 		#Write the verbose headers to the CSV_file
 		verbose_headers = get_model_field_names(verbose=True, model=model) ###NOT TESTED.
-		writer.writerow(verbose_headers)
+
 
 		#Write the actual entries to the CSV_file if the user is authenticated.
 		headers = get_model_field_names(verbose=False, model=model)
 
 		if model=="Data":
+			#Throw the "Ref" in front of the data if applicable.
+			verbose_headers.remove("Reference")
+			headers.remove("ref")
+			verbose_headers.insert(0, "Reference")
+			headers.insert(0, "ref")
+
+			#Write the header row
+			writer.writerow(verbose_headers)
+
+			#Gather the data and filter it depending on what the user wants.
 			collected_data = control.collect_all_data(lab_group)
+
 			if data_filter=="good":
 				CSV_data = collected_data.filter(is_valid=True)
 			elif data_filter=="bad":
@@ -948,6 +956,9 @@ def download_CSV(request): ###Need to fix.
 				CSV_data = collected_data
 
 		elif model=="CompoundEntry":
+			#Write the header row
+			writer.writerow(verbose_headers)
+
 			###Better way? Generalize mass CG collection?
 			CSV_data = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 
@@ -1129,24 +1140,6 @@ def get_full_datum(request, control=control):
 	except Exception as e:
 		print(e)
 		return HttpResponse("<p>Data could not be loaded!</p>")
-
-def find_compound_image(cg_entry):
-	chemspi_query = ""
-	for i in [cg_entry.CAS_ID, cg_entry.compound]:
-		if i: #ChemSpider doesn't like empty requests.
-			chemspi_query = chemspipy.find_one(i)
-		if chemspi_query: break
-
-	if chemspi_query:
-		return chemspi_query.imageurl
-	else:
-		return ""
-
-def assign_all_compound_images(lab_group):
-	for i in CompoundEntry.objects.filter(lab_group=lab_group):
-		i.image_url = find_compound_image(i)
-		i.save()
-
 ######################  User Auth ######################################
 def change_password(request):
 	code_sent = False

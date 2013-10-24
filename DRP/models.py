@@ -152,7 +152,7 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 
 	#Block duplicate abbrevs and compounds.
 	if not editing_this:
-		if CompoundEntry.objects.filter(compound=clean_data["compound"]).exists():
+		if not errors.get("compound") and CompoundEntry.objects.filter(compound=clean_data["compound"]).exists():
 			errors["compound"] = "Compound already exists."
 		if not errors.get("abbrev"):
 			if CompoundEntry.objects.filter(abbrev=clean_data["abbrev"]).exists():
@@ -178,6 +178,44 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 			errors["compound"] = "Could not find this molecule. Try a different name."
 
 	return clean_data, errors
+
+
+def find_compound_image(cg_entry, return_smiles=False):
+	chemspi_query = ""
+
+	#Accept either a CompoundEntry object or a dict with the valid fields
+
+	try:
+		if type(cg_entry) == dict:
+			query_criteria = [cg_entry["CAS_ID"], cg_entry["compound"]]
+		else:
+			query_criteria = [cg_entry.CAS_ID, cg_entry.compound]
+	except:
+		raise Exception("cg_entry must be a CompoundEntry object or a valid dict")
+
+	for i in query_criteria:
+		if i: #ChemSpider doesn't like empty requests.
+			chemspi_query = chemspipy.find_one(i)
+		if chemspi_query: break
+
+	if chemspi_query:
+		if return_smiles:
+			return chemspi_query.imageurl, chemspi_query.smiles
+		else:
+			return chemspi_query.imageurl
+	else:
+		return ""
+
+def update_all_compounds(lab_group):
+	for i in CompoundEntry.objects.filter(lab_group=lab_group):
+		try:
+			i.image_url, i.smiles = find_compound_image(i, return_smiles=True)
+			i.save()
+		except:
+			print "Could not \"update\" {}".format(i)
+	print "Finished updating all compounds."
+
+
 
 class CompoundGuideForm(ModelForm):
 	compound = CharField(widget=TextInput(
@@ -206,6 +244,11 @@ class CompoundGuideForm(ModelForm):
 	def save(self, commit=True):
 		entry = super(CompoundGuideForm, self).save(commit=False)
 		entry.lab_group = self.lab_group
+
+		entry.image_url, entry.smiles = find_compound_image(
+			{"compound":entry.compound,
+			"CAS_ID":entry.CAS_ID}, return_smiles=True)
+
 		if commit:
 			entry.save()
 		return entry

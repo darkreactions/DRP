@@ -262,7 +262,10 @@
 	max-width:inherit;
 	width:10px;
 	display:inline-block;
+}
 
+.loadingWheel:after {
+	content: "Working...";
 }
 
 /* ###############   DATA STYLE   ################################### */

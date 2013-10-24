@@ -146,12 +146,23 @@ $(document).on("submit", ".uploadForm", function() { //###Ugly...
 //Delete CG data button (but requires a "save" confirmation).
 $(document).on("click", ".CG_deleteButton", function() {
 	//Add the compound guide entry index to the selected data list.
-	var CGIndex = (parseInt($(this).attr("id").substr(3))-1);
-	CGSelected.push(CGIndex);
+	var editParent = $(this).closest("tr");
+
+	//Send data to identify the entry to be deleted.
+	CGSelected.push({
+		"compound": $(editParent).find(".type_compound").html(),
+		"abbrev": $(editParent).find(".type_abbrev").html()
+		});
 
 	//Display a CG save button if one does not exist.
 	$("#popupContainer").append("<div class=\"CG_saveButton genericButton\">Save</div>");
-	$("#compoundGuideForm").html("Please save before continuing.")
+	$("#compoundGuideForm").html("Please save before continuing.");
+	//Clear editing abilities and revert any edits-to-be-made.
+	$(".editable").removeClass("editable");
+	$(".editField").each(function() {
+		var oldVal = $(this).attr("oldVal");
+		$(this).parent().html(oldVal);
+		});
 
 	//Remove the data from the CG visual.
 	$(this).closest("tr").remove();
@@ -162,7 +173,7 @@ $(document).on("click", ".CG_saveButton", function() {
 	//Sort the list prior to sending.
 	CGSelected.sort(sortNumbersReverse);
 	//Send the selected CG entry indexes to the server to be deleted.
-	JSONArray = JSON.stringify(CGSelected);
+	JSONArray = JSON.stringify({"type":"del", "data":CGSelected});
 	$.post("/edit_CG_entry/", JSONArray, function() {
 		//Show a newly updated screen.
 		CGSelected = Array();
