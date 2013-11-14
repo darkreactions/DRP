@@ -3,13 +3,14 @@ from django.core import validators
 from django.core.cache import cache
 
 from django.contrib.auth.models import User, Group
-from django.contrib.auth.forms import UserCreationForm
 
 from django.db import models
+from django.db.models import Q
 
 from validation import *
 import random, string, datetime
 from data_config import CONFIG
+import rdkit.Chem as Chem
 import chemspipy
 
 #############  CACHE VALIDATION and ACCESS  ###########################
@@ -54,50 +55,15 @@ class Lab_Member(models.Model):
 	def __unicode__(self):
 		return self.user.username
 
+############### COMPOUND GUIDE ########################
+class CG_calculations(models.Model):
+	json_data = models.TextField()
+	compound = models.CharField(max_length=100, unique=True)
+	smiles = models.CharField(max_length=200, unique=True)
 
-class UserForm(ModelForm):
-	username = CharField(label="Username", required=True,
-		widget=TextInput(attrs={'class':'form_text'}))
-	password = CharField(label="Password", required=True,
-		widget=PasswordInput(attrs={'class':'form_text'}))
-	first_name = CharField(label="First Name", required=True,
-		widget=TextInput(attrs={'class':'form_text'}))
-	last_name = CharField(label="Last Name", required=True,
-		widget=TextInput(attrs={'class':'form_text'}))
-	email = EmailField(label="Email", required=True,
-		widget=TextInput(attrs={'class':'form_text'}))
+	def __unicode__(self):
+		return u"{} ({})".format(self.compound, self.smiles)
 
-	class Meta:
-		model = User
-		fields = ("username", "email",
-			"first_name", "last_name",
-			"password")
-
-	#Hash the user's password upon save.
-	def save(self, commit=True):
-		user = super(UserForm, self).save(commit=False)
-		user.set_password(self.cleaned_data["password"])
-		if commit:
-			user.save()
-		return user
-
-class UserProfileForm(ModelForm):
-	#Enumerate all of the lab titles.
-
-	lab_group = ModelChoiceField(queryset=Lab_Group.objects.all(),
-		label="Lab Group", required=True,
-		widget=Select(attrs={'class':'form_text'}))
-	access_code = CharField(label="Access Code", required=True,
-		max_length=ACCESS_CODE_MAX_LENGTH,
-		widget=TextInput(attrs={'class':'form_text'}))
-
-	class Meta:
-		model = Lab_Member
-		app_label = "formsite"
-		fields = ["lab_group"]
-
-
-################ COMPOUND GUIDE ########################
 class CompoundEntry(models.Model):
 	abbrev = models.CharField("Abbreviation", max_length=100) ###repr in admin 500 error
 	compound = models.CharField("Compound", max_length=100)
@@ -105,9 +71,11 @@ class CompoundEntry(models.Model):
 	compound_type = models.CharField("Type", max_length=10)
 	image_url = models.CharField("Image URL", max_length=100, blank=True)
 	smiles = models.CharField("SMILES", max_length=100, blank=True)
+	mw = models.CharField("Molecular Weight", max_length=20)
 
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
-		###User foreign key as well
+	#calculations = models.ForeignKey(CG_calculations)
+
 	def __unicode__(self):
 		if self.compound == self.abbrev:
 			return u"{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
@@ -159,39 +127,44 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 				errors["abbrev"] = "Abbreviation already used."
 
 	#Make sure the compound exists in ChemSpider's database. ###Limits us to only ChemSpi?
+	used_var = ""
 	try:
-		used_var = ""
 		if clean_data["CAS_ID"]:
-			used_var = "CAS"
-			chemspi_query = chemspipy.find_one(clean_data["CAS_ID"])
+			used_var = "CAS_ID"
 		elif not errors.get("compound"):
 			used_var = "compound"
-			chemspi_query = chemspipy.find_one(clean_data["compound"])
+		else:
+			return clean_data, errors
 
-		clean_data["image_url"] = chemspi_query.imageurl
-		clean_data["smiles"] = chemspi_query.smiles
-
+		query = chemspider_lookup({used_var:clean_data[used_var]})
+		clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = query
 	except Exception as e:
-		if used_var=="CAS":
-			errors["CAS"] = "Could not validate CAS. Make sure it is correct."
-		elif used_var=="compound":
+		if used_var=="CAS_ID":
+			errors["CAS_ID"] = "Could not validate CAS. Make sure it is correct."
+		else:
 			errors["compound"] = "Could not find this molecule. Try a different name."
 
 	return clean_data, errors
 
 
-def find_compound_image(cg_entry, return_smiles=False):
+def chemspider_lookup(cg_entry):
 	chemspi_query = ""
-
-	#Accept either a CompoundEntry object or a dict with the valid fields
-
+	print cg_entry
+	print "______________"
 	try:
-		if type(cg_entry) == dict:
-			query_criteria = [cg_entry["CAS_ID"], cg_entry["compound"]]
-		else:
-			query_criteria = [cg_entry.CAS_ID, cg_entry.compound]
+		#Accept either a CompoundEntry object or a dict with the valid fields
+		search_fields = ["CAS_ID", "compound"]
+		if type(cg_entry)==dict:
+			query_criteria = [cg_entry.get(i) for i in search_fields if cg_entry.get(i)]
+		elif type(cg_entry)==CompoundEntry:
+			query_criteria = [getattr(cg_entry, i) for i in search_fields]
+		elif type(cg_entry)==str:
+			query_criteria = [cg_entry]
+
+		#Works for both dicts and CG_entries
+		assert(query_criteria)
 	except:
-		raise Exception("cg_entry must be a CompoundEntry object or a valid dict")
+		raise Exception("chemspider_lookup accepts strings, dicts, or CompoundEntries")
 
 	for i in query_criteria:
 		if i: #ChemSpider doesn't like empty requests.
@@ -199,72 +172,98 @@ def find_compound_image(cg_entry, return_smiles=False):
 		if chemspi_query: break
 
 	if chemspi_query:
-		if return_smiles:
-			return chemspi_query.imageurl, chemspi_query.smiles
-		else:
-			return chemspi_query.imageurl
+		return chemspi_query.imageurl, chemspi_query.smiles, chemspi_query.molecularweight
 	else:
-		return ""
+		raise Exception("Could not find compound on ChemSpider!")
 
-def update_all_compounds(lab_group):
-	for i in CompoundEntry.objects.filter(lab_group=lab_group):
-		try:
-			i.image_url, i.smiles = find_compound_image(i, return_smiles=True)
-			i.save()
-		except:
-			print "Could not \"update\" {}".format(i)
-	print "Finished updating all compounds."
+def get_atoms_from_compound(CG_entry = None):
+	return get_atoms_from_smiles(CG_entry.smiles)
 
+def get_atoms_from_smiles(smiles, show_hydrogen=False):
+	mols = Chem.MolFromSmiles(str(smiles),sanitize=False)
+	if mols == None:
+		return []
+	#TODO: Incorporate hydrogens into model.
+	#if show_hydrogen:
+	#	try:
+	#		mols = Chem.AddHs(mols) ###PRECONDITION?
+	#	except:
+	#		pass
+	atoms = mols.GetAtoms()
+	return [atom.GetSymbol() for atom in atoms]
 
+def collect_CGs_by_abbrevs(lab_group, abbrev_list):
+	CG_list = []
+	for i in abbrev_list:
+		query = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i)
+		if query.exists(): #Don't append index an empty query; Django gets annoyed.
+			CG_list.append(query[0])
+	return CG_list
 
-class CompoundGuideForm(ModelForm):
-	compound = CharField(widget=TextInput(
-		attrs={'class':'form_text',
-		"title":"What the abbreviation stands for."}))
-	abbrev = CharField(widget=TextInput(
-		attrs={'class':'form_text form_text_short',
-		"title":"The abbreviation you want to type."}))
-	CAS_ID = CharField(label="CAS ID", widget=TextInput(
-		attrs={'class':'form_text',
-		"title":"The CAS ID of the compound if available."}),
-		required=False)
-	compound_type = ChoiceField(label="Type", choices = TYPE_CHOICES,
-		widget=Select(attrs={'class':'form_text dropDownMenu',
-		"title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>"+
-		"--Solute<br/>--Water"}))
+def get_smiles_from_CG_list(CG_list):
+	smiles_list = [i.smiles for i in CG_list]
+	return smiles_list
 
-	class Meta:
-		model = CompoundEntry
-		exclude = ("lab_group", "image_url", "smiles")
+def condense_smiles_list_to_atoms(smiles_list, show_hydrogen = False):
+	atoms_list = []
+	for i in smiles_list:
+		atoms_list += get_atoms_from_smiles(i, show_hydrogen)
+	return set(atoms_list)
 
-	def __init__(self, lab_group=None, *args, **kwargs):
-		super(CompoundGuideForm, self).__init__(*args, **kwargs)
-		self.lab_group = lab_group
+def get_abbrevs_from_reaction(reaction):
+	abbrevs_list = [getattr(reaction, "reactant_{}".format(i)) for i in CONFIG.reactant_range() if getattr(reaction, "reactant_{}".format(i))]
+	return abbrevs_list
 
-	def save(self, commit=True):
-		entry = super(CompoundGuideForm, self).save(commit=False)
-		entry.lab_group = self.lab_group
+def get_atom_set_from_abbrevs(lab_group, abbrev_list):
+	return condense_smiles_list_to_atoms(
+		get_smiles_from_CG_list(
+			collect_CGs_by_abbrevs(lab_group, abbrev_list)
+			), show_hydrogen=True
+		)
 
-		entry.image_url, entry.smiles = find_compound_image(
-			{"compound":entry.compound,
-			"CAS_ID":entry.CAS_ID}, return_smiles=True)
+def get_atom_set_from_reaction(reaction):
+	return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
-		if commit:
-			entry.save()
-		return entry
+def update_reaction_atoms_for_compound(lab_group, compound):
+	pass
 
-	def clean(self): ################################################################## WORK HERE, CASEY : ) --Past Casey
-		#Initialize the variables needed for the cleansing process.
-		dirty_data = super(CompoundGuideForm, self).clean() #Get the available raw (dirty) data
+def get_reactions_with_compound(compound):
+	Q_string = ""
+	abbrev = compound.abbrev
+	for i in CONFIG.reactant_range():
+		Q_string += "Q(reactant_{}=\"{}\")|".format(i, abbrev)
 
-		#Gather the clean_data and any errors found.
-		clean_data, gathered_errors = CG_validation(dirty_data, self.lab_group)
-		form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
+	if Q_string:
+		Q_string = Q_string[:-1] #Remove the last trailing "|" if applicable.
 
-		#Apply the errors to the form.
-		self._errors.update(form_errors)
+	return eval("Data.objects.filter(lab_group=compound.lab_group).filter({})".format(Q_string))
 
-		return clean_data
+####
+
+def update_compound(compound):
+	try:
+		#Update the CG entry itself.
+		compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
+		compound.save()
+
+		#Update the individual "atom" records on each reaction.
+		changed_reactions = get_reactions_with_compound(compound)
+		for reaction in changed_reactions:
+			#Store the atoms as a string -- not a set.
+			reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
+			reaction.save()
+	except Exception as e:
+		print "Could not update {}\n\t{}".format(compound, e)
+
+def update_all_compounds(lab_group=None):
+	if lab_group:
+		for i in CompoundEntry.objects.filter(lab_group=lab_group):
+			update_compound(i)
+		print "Finished updating compounds for {}.".format(lab_group.lab_title)
+	else:
+		for i in CompoundEntry.objects.all():
+			update_compound(i)
+		print "Finished updating ALL compounds."
 
 ###REREAD TO PROVE USEFUL?
 def collect_CG_entries(lab_group, overwrite=False):
@@ -441,10 +440,13 @@ class Data(models.Model):
 	calculated_temp = models.BooleanField()
 	calculated_time = models.BooleanField()
 
+	atoms = models.CharField("Atoms", max_length=30, blank=True)
+
 	user = models.ForeignKey(User, unique=False)
 	lab_group = models.ForeignKey(Lab_Group, unique=False)
 	creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
-	is_valid = models.BooleanField()
+	is_valid = models.BooleanField("Valid")
+	#atoms = models.CharField("Atoms", max_length=40) ###Needs access to CG?
 
 	#Categorizing Fields:
 	duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
@@ -458,6 +460,17 @@ def validate_name(abbrev_to_check, lab_group):
 	abbrevs = collect_CG_name_pairs(lab_group)
 	return abbrev_to_check in abbrevs
 
+
+#TODO:
+def calculate_pH_from_CG(entry):
+	pass
+
+def calculate_pH_from_reaction(reaction_info):
+	pass
+
+
+
+
 #Add specified entries to a datum. Assume fields are now valid.
 def new_Data_entry(user, **kwargs): ###Not re-read yet.
 	try:
@@ -467,25 +480,39 @@ def new_Data_entry(user, **kwargs): ###Not re-read yet.
 		setattr(new_entry, "user", user)
 		setattr(new_entry, "lab_group", user.get_profile().lab_group)
 
-		setattr(new_entry, "calculated_pH", False)
+
 		setattr(new_entry, "calculated_time", False)
 		setattr(new_entry, "calculated_temp", False)
 
 		#Set the non-user field values.
 		for (field, value) in kwargs.items(): #Assume data passed to the function is clean.
 			setattr(new_entry, field, value)
+
+		#Calculate the pH if necessary.
+		if not getattr(new_entry, "pH"):
+			setattr(new_entry, "pH", calculate_pH_from_CG(new_entry))
+			setattr(new_entry, "calculated_pH", True)
+		else:
+			setattr(new_entry, "calculated_pH", False)
+
 		return new_entry
 	except Exception as e:
 		raise Exception("Data construction failed!")
 
-def get_model_field_names(both=False, verbose=False, model="Data", unique_only=False):
+def get_model_field_names(both=False, verbose=False, model="Data", unique_only=False, collect_ignored=False):
 	clean_fields = []
 
 	if model=="Data":
-		fields_to_ignore = {u"id","user","lab_group", "creation_time", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid"}
+		if collect_ignored:
+			fields_to_ignore = {u"id", "creation_time", "calculations"}
+		else:
+			fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid"}
 		dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
 	elif model=="CompoundEntry":
-		fields_to_ignore = {u"id","lab_group", "smiles", "image_url"} ###Auto-populate?
+		if collect_ignored:
+			fields_to_ignore = {u"id", "image_url"}
+		else:
+			fields_to_ignore = {u"id","lab_group", "smiles", "mw"} ###Auto-populate?
 		dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
 	else:
 		raise Exception("Unknown model specified.")
@@ -680,110 +707,3 @@ def full_validation(dirty_data, lab_group, revalidating=False):
 				errors[field] = "Cannot exceed {} characters.".format(data_ranges[field][1])
 
 	return (clean_data, errors)
-
-class DataEntryForm(ModelForm):
-	#List Fields
-	for i in CONFIG.reactant_range():
-		if i > 2:
-			required="required=False,"
-		else:
-			required=""
-		exec("reactant_{0} = CharField({1} label='Reactant {0}', widget=TextInput(".format(i, required) +
-			"attrs={'class':'form_text autocomplete_reactant',"+
-			"'title':'Enter the name of the reactant.'}))")
-		exec("quantity_{0} = CharField({1} label='Quantity {0}', widget=TextInput(".format(i, required) +
-			"attrs={'class':'form_text form_text_short', 'placeholder':'Amount',"+
-			"'title':'Enter the amount of reactant.'}))")
-		exec("unit_{0} = ChoiceField(choices = UNIT_CHOICES, widget=Select(".format(i, required) +
-			"attrs={'class':'form_text dropDownMenu',"+
-			"'title':'\"g\": gram <br/> \"mL\": milliliter <br/> \"d\": drop'}))")
-	ref = CharField(label="Ref.", widget=TextInput(
-		attrs={'class':'form_text form_text_short',
-		"title":"The lab notebook and page number where the data can be found."}))
-	temp = CharField(label="Temp.", widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'Celsius',
-		"title":"The temperature at which the reaction took place."}))
-	time = CharField(widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'Hours',
-		"title":"How long the reaction was allowed to occur."})) ###
-	pH = CharField(label="pH", widget=TextInput(
-		attrs={'class':'form_text form_text_short', 'placeholder':'0 - 14',
-		"title":"The pH at which the reaction occurred."}))
-	slow_cool = ChoiceField(label="Slow Cool", choices = BOOL_CHOICES,
-		widget=Select(attrs={'class':'form_text dropDownMenu',
-		"title":"Was the reaction allowed to slow-cool?"}))
-	leak = ChoiceField(choices = BOOL_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"Was a leak present during the reaction?"}))
-	outcome = ChoiceField(choices = OUTCOME_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"0: No Data Available <br/> 1: No Solid<br/> 2: Noncrystalline/Brown<br/>3: Powder/Crystallites<br/>4: Large Single Crystals"}))
-	purity = ChoiceField(choices = PURITY_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"0: No Data Available<br/> 1: Multiphase<br/> 2: Single Phase"}))
-	notes = CharField(required = False, widget=TextInput(
-		attrs={'class':'form_text form_text_long',
-		"title":"Additional notes about the reaction."}))
-
-	duplicate_of = CharField(required = False,
-		label="Duplicate of", widget=TextInput(
-		attrs={'class':'form_text form_text_short',
-		"title":"The reaction reference of which this data is a duplicate."}))
-	recommended = ChoiceField(choices = BOOL_CHOICES, widget=Select(
-		attrs={'class':'form_text dropDownMenu',
-		"title":"Did we recommend this reaction to you?"}))
-
-	class Meta:
-		model = Data
-		exclude = ("user","lab_group", "creation_time")
-		#Set the field order.
-		fields = [
-			"reactant_1", "quantity_1", "unit_1",
-			"reactant_2", "quantity_2", "unit_2",
-			"reactant_3", "quantity_3", "unit_3",
-			"reactant_4", "quantity_4", "unit_4",
-			"reactant_5", "quantity_5", "unit_5",
-			"ref", "temp", "time", "pH", "slow_cool",
-			"leak", "outcome", "purity",
-			"duplicate_of", "recommended","notes"
-		]
-
-	def __init__(self, user=None, *args, **kwargs):
-		###http://stackoverflow.com/questions/1202839/get-request-data-in-django-form
-		super(DataEntryForm, self).__init__(*args, **kwargs)
-
-		if user:
-			self.user = user
-			self.lab_group = user.get_profile().lab_group
-		self.creation_time = str(datetime.datetime.now())
-
-	def save(self, commit=True):
-		datum = super(DataEntryForm, self).save(commit=False)
-		datum.user = self.user
-		datum.lab_group = self.lab_group
-		datum.creation_time = self.creation_time
-		datum.is_valid = True #If validation succeeded and data is saved, then it is_valid.
-
-		if commit:
-			datum.save()
-		return datum
-
-
-	#Clean the data that is input using the form.
-	def clean(self):
-		#Initialize the variables needed for the cleansing process.
-		dirty_data = super(DataEntryForm, self).clean() #Get the available raw (dirty) data
-
-		#Gather the clean_data and any errors found.
-		clean_data, gathered_errors = full_validation(dirty_data, self.lab_group)
-		form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
-
-		#Apply the errors to the form.
-		self._errors.update(form_errors)
-
-		#Add the non-input information to the clean data package:
-		clean_data["lab_group"] = self.lab_group
-		clean_data["user"] = self.user
-		clean_data["creation_time"] = self.creation_time
-
-		return clean_data

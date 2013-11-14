@@ -6,18 +6,18 @@
 	<li class="searchTab"><a href="#tabs-2">Fields</a></li>
 	</ul>
 	<div id="tabs-1">
-		<div id="periodicTableContainer"> {% include "periodic_table.html" %} 
+		<div id="periodicTableContainer"> {% include "periodic_table.html" %}
 		<form action="/search/" method="post" name="login" id="searchForm_atom" class="popupScreenForm infoForm">
 			{% csrf_token %}
 			<input id="radio_and" type="radio" class="radioSearch" name="condition" value="and" checked>
 				<label id="label_and" class="genericButton" for="radio_and">And</label>
 			</input><br/>
-			<input id="radio_or" class="genericButton" type="radio" class="radioSearch" name="condition" value="or">
+			<input id="radio_or" type="radio" class="radioSearch" name="condition" value="or">
 				<label id="label_or" class="genericButton" for="radio_or">Or</label>
 			</input>
 			<input id="search_filterButton_atoms" type="button" value="Filter" class="form_button"/>
-			<input id="search_backButton_atoms" type="button" value="Back" class="form_button"/>
-			<input id="search_clearButton_atoms" type="button" value="Clear" class="form_button"/>
+			<input id="search_backButton" type="button" value="Back" class="form_button"/>
+			<input id="search_clearButton" type="button" value="Clear" class="form_button"/>
 		</form>
 		</div>
 	</div>
@@ -42,7 +42,7 @@
 					</label>
 				</input>
 				{% for field in other_fields %}
-				{% if forloop.counter0 == 3 %}
+				{% if forloop.counter0|divisibleby:"6" %}
 					</div>
 					<div class="radioContainer">
 					<input id="radio_{{field.raw}}" type="radio" class="radioSearch" name="field" value="{{field.raw}}">
@@ -59,12 +59,12 @@
 				{% endif %}
 				{% endfor %}
 				</div>
-				
+
 				<br />
 				<label for="value">Value:</label>
 				<input id="searchValue" type="text" name="value" value="">
 				<br />
-				
+
 				<input id="search_filterButton" type="button" value="Filter" class="form_button"/>
 				<input id="search_backButton" type="button" value="Back" class="form_button"/>
 				<input id="search_clearButton" type="button" value="Clear" class="form_button"/>

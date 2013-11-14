@@ -23,10 +23,11 @@ $.ajax({
 var rangeFields = ["quantity", "temp", "time", "pH", "outcome", "purity"];
 //Fields that must be between a specific character count/limit:
 var limitFields = ["ref", "notes"];
+var notRequired = ["CAS_ID"]
 
 function quickValidate(field, value, required) {//###
 	required = required !== undefined ? required : true;
-	if (!required && value=="") {
+	if ((!required && value=="") || (notRequired.indexOf(field)>=0 && value=="")) {
 		return true;
 	}
 

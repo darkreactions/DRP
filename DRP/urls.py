@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     (r'^data_form/$', data_form), #Form for adding new data.
     (r'^data_form/(?P<copy_index>\d+)/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
+    (r'^compound_guide_entry/$', compound_guide_entry), #Return a single CG table entry.
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
 			#Validation
     (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.

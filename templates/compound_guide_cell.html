@@ -32,30 +32,7 @@
 			</tr>
 		{% for entry in guide %}
 <tr>
-<td class="CG_image_container">
-	{% if entry.image_url %}<img class="CG_image" src="{{ entry.image_url }}" />{% endif %}
-</td>
-
-
-<td>
-	<div class="editable type_abbrev" editAs="text">{% spaceless %}
-	{% if entry.abbrev != entry.compound %}
-		{{ entry.abbrev }}
-	{% endif %}
-	{% endspaceless %}</div>
-</td>
-
-<td class="CG_compound"><div class="editable type_compound" editAs="text">{{ entry.compound }}</div></td>
-
-{% spaceless %}
-<td class="CG_CAS"><div class="editable type_CAS_ID" editAs="text">
-{% if entry.CAS_ID %}{{ entry.CAS_ID }}{% endif %}
-</div></td>
-{% endspaceless %}
-
-<td><div class="editable type_compound_type" editAs="select">{{ entry.compound_type }}</div></td>
-
-<td><div class="CG_deleteButton genericButton" id="cg_{{forloop.counter}}">x</div></td>
+	{% include "compound_guide_row.html" %}
 </tr>
 		{% endfor %}
 		</table>

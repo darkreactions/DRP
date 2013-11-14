@@ -3,12 +3,14 @@ from django.shortcuts import render
 from django.contrib import auth
 from django.db.models import Q
 from models import *
+from forms import *
 from validation import *
 
 import json
 import csv
 import string
 import datetime
+import rdkit.Chem as Chem
 
 from svg_construction import *
 #from construct_descriptor_table import *
@@ -278,10 +280,15 @@ def gather_SVG(request):
 ######################  Searching  #####################################
 def search(request):
 	u = request.user
-	max_search_size = 1000
+	max_search_size = 5000
 	search_page_size = 150
 	if u.is_authenticated():
-		other_fields = get_model_field_names(both=True, unique_only=True)
+
+		#Collect all the valid search options
+		raw_fields = get_model_field_names(both=True, unique_only=True, collect_ignored=True)
+		ignored_fields = {"user", "atoms", "lab_group", "calculated_pH", "calculated_temp", "calculated_time"}
+		other_fields = [field for field in raw_fields if field["raw"] not in ignored_fields]
+
 		if request.method=="POST":
 
 			query_list = json.loads(request.POST.get("current_query"))
@@ -292,6 +299,7 @@ def search(request):
 			all_data = Data.objects.filter(lab_group=lab_group) #Order doesn't matter at this point in search.
 			filters = ""
 
+			#Iterate over each "query" to allow multiple user filters.
 			for query in query_list:
 				field = query.get("field")
 				value = query.get("value")
@@ -302,14 +310,42 @@ def search(request):
 				for char in value:
 					assert(not char in "\"'!={}/\\~`")
 
+				#Create a query based on the cleaned input.
 				if field in list_fields:
 					Q_string = ""
 					for i in CONFIG.reactant_range():
-						Q_string += "Q({}_{}=\"{}\")|".format(field, i, value)
+						Q_string += "Q({}_{}__icontains=\"{}\")|".format(field, i, value)
 					Q_string = Q_string[:-1] #Remove the last trailing "|".
 					filters += ".filter({})".format(Q_string)
+				elif field=="atoms":
+					#TODO: Missing case where atom is Hydrogen
+					Q_string = ""
+					atom_list = value.split(" ")
+					if len(atom_list)>1:
+						#Provide the right Q object symbol.
+						search_bool = atom_list.pop(-2) #Take the "and" or "or" from the list.
+						if search_bool == "and":
+							symbol = ","
+						else:
+							symbol = "|"
+
+						for atom in atom_list:
+							Q_string += "Q(atoms__contains=\"{}\"){}".format(atom, symbol)
+						Q_string = Q_string[:-1] #Remove the last trailing "|".
+					else:
+						Q_string = "Q(atoms__contains=\"{}\")".format(atom_list[0])
+					filters += ".filter({})".format(Q_string)
+					print Q_string
 				else:
-					filters += ".filter({}=\"{}\")".format(field, value)
+					#Translate any client input into useful queries.
+					if field == "is_valid" and value:
+						if value.lower()[0] in {"1", "t", "y"}:
+							value = True
+						else:
+							value = False
+						filters += ".filter({}={})".format(field, value)
+					else:
+						filters += ".filter({}__icontains=\"{}\")".format(field, value)
 
 			entries = eval("all_data{}".format(filters)).order_by("creation_time")[:max_search_size]
 			pk_list = entries[:max_search_size].values("pk")
@@ -362,6 +398,24 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 	else:
 		return HttpResponse("Please log in to access the compound guide!")
 
+def compound_guide_entry(request):
+	u = request.user
+	if u.is_authenticated():
+		lab_group = u.get_profile().lab_group
+		if request.method == 'POST':
+			entry_info = json.loads(request.body, "utf-8")
+			query = CompoundEntry.objects.filter(lab_group=lab_group, compound=entry_info["compound"])
+			if query.exists():
+				return render(request, 'compound_guide_row.html', {
+					"entry": query[0]
+				})
+			else:
+				return HttpResponse("No CG found. Please refresh page.")
+		else:
+			return HttpResponse("Please use the compound guide interface.")
+	else:
+		return HttpResponse("Please log in to access the compound guide!")
+
 def edit_CG_entry(request): ###Edits?
 	u = request.user
 	if request.method == 'POST' and u.is_authenticated():
@@ -388,7 +442,7 @@ def edit_CG_entry(request): ###Edits?
 				old_val  = changesMade["oldVal"]
 				compound = changesMade["compound"]
 
-				assert(new_val and compound and field)
+				assert(compound and field)
 
 				#Gather all relevant data (and check for duplicates).
 				try:
@@ -405,7 +459,7 @@ def edit_CG_entry(request): ###Edits?
 					possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=new_val)
 					if possible_entry.exists() and possible_entry[0].compound!=compound:
 						return HttpResponse("Already used!")
-				elif field=="CAS_ID":
+				elif field=="CAS_ID" and new_val: #Empty CAS_IDs don't require queries.
 					possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, CAS_ID=new_val)
 					if possible_entry.exists() and possible_entry[0].compound!=compound:
 						return HttpResponse("Already used!")
@@ -423,9 +477,8 @@ def edit_CG_entry(request): ###Edits?
 				setattr(changed_entry, field, new_val)
 				changed_entry.save()
 
-				#Get a fresh image from ChemSpider
-				changed_entry.image_url = find_compound_image(changed_entry)
-				changed_entry.save()
+				#Lookup fresh data from ChemSpider and RDKit
+				update_compound(changed_entry)
 
 				#Make any edits to the Data if needed.
 				if field=="abbrev":
@@ -438,6 +491,7 @@ def edit_CG_entry(request): ###Edits?
 						exec("old_data.update(reactant_{}=new_val)".format(i))
 
 				#Clear the cached CG
+				print "REACHED END"
 			except Exception as e:
 				print e###
 				return HttpResponse("Invalid!")
@@ -846,7 +900,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 						model_fields["is_valid"] = data_is_valid
 						entry_list.append(new_Data_entry(u, **model_fields))
 					elif model=="CompoundEntry":
-						model_fields["image_url"], model_fields["smiles"] = find_compound_image(model_fields, return_smiles=True)
+						model_fields["image_url"], model_fields["smiles"], model_fields["mw"] = chemspider_lookup(model_fields)
 						entry_list.append(new_CG_entry(lab_group, **model_fields))
 
 					added_quantity += 1
@@ -914,7 +968,11 @@ def download_CSV(request): ###Need to fix.
 	if request.method=="POST":
 		#Specify which CSV to download.
 		model = request.POST["dataType"]
+
+		#Specify which data filter was used.
 		data_filter = request.POST["downloadFilter"]
+		if data_filter == "simple":
+			data_filter = ""
 
 		#Generate a file name.
 		lab_group = u.get_profile().lab_group
@@ -956,6 +1014,10 @@ def download_CSV(request): ###Need to fix.
 				CSV_data = collected_data
 
 		elif model=="CompoundEntry":
+			if data_filter=="complex":
+				verbose_headers.append("SMILES")
+				headers.append("smiles")
+
 			#Write the header row
 			writer.writerow(verbose_headers)
 
@@ -1224,6 +1286,8 @@ def lab_registration(request): ###Not finished.
 	})
 
 ######################  Developer Functions  ###########################
+
+
 
 ######################  Error Messages  ################################
 def display_404_error(request):

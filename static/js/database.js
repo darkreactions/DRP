@@ -130,10 +130,16 @@ $(document).on("change", "#uploadCSV_hiddenInput", function() {
 
 //Hide the Download Form's dataFilter selection menu if not applicable.
 $(document).on("click", "#radio_reactionData", function() {
-	$("#filterContainer").animate({"opacity": 1}, 100);
+	$(".dropDownMenu").html(
+	"<option value=\"all\">All</option>"+
+	"<option value=\"good\">Valid</option>"+
+	"<option value=\"bad\">Invalid</option>");
 });
+
 $(document).on("click", "#radio_compoundGuide", function() {
-	$("#filterContainer").animate({"opacity": 0}, 100);
+	$(".dropDownMenu").html(
+	"<option value=\"simple\">Simple</option>"+
+	"<option value=\"complex\">Complex</option>");
 });
 
 
@@ -408,6 +414,7 @@ $(document).on("click", ".editable", function() {
 $(document).on("click", ".editConfirm", function() {
 	var editFieldSibling = $(this).siblings(".editField")
 	var editParent = $(this).parent();
+	var editRow = $(editParent).parents("tr");
 	//Find the general fieldChanged (eg, quantity vs. quantity_1)
 	var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
 	var newValue = $(editFieldSibling).val();
@@ -419,7 +426,6 @@ $(document).on("click", ".editConfirm", function() {
 		if (parseInt($(this).parent().attr("class").split(" ")[2])>2) {
 			var required = false;
 		} else { var required = true; }
-
 		if ($(this).siblings(".editText").attr("class").indexOf("badData") < 0
 			&& quickValidate(fieldChanged[1].substr(5), newValue, required)) {
 			validData = true;
@@ -449,6 +455,7 @@ $(document).on("click", ".editConfirm", function() {
 					var compound = $(compound_container).html();
 				}
 
+				showRibbon("Working...", "#FFC87C", "#popupContainer", false);
 				$.post("/edit_CG_entry/", JSON.stringify({
 						"field" : fieldChanged,
 						"newVal" : newValue,
@@ -457,12 +464,20 @@ $(document).on("click", ".editConfirm", function() {
 						"type" : "edit"
 					}), function(response) {
 						if (response!="0"){
-							editParent.html(oldValue);
+							$(editParent).html(oldValue);
 							showRibbon(response, "#FF6870", "#popupContainer");
 						} else {
-							if ($(editParent).parent().parent().find(".type_abbrev").is(':empty')) {
-								$(editParent).parent().parent().find(".type_abbrev").html(oldValue);
+							if (fieldChanged=="compound") { //If the compound itself was changed, search for the new value.
+								compound = newValue;
 							}
+							$.post("/compound_guide_entry/", JSON.stringify({"compound":compound}),
+								function(response) {
+									$(editRow).html(response);
+									showRibbon("Success!", "#99FF5E", "#popupContainer");
+									if ($(editRow).find(".type_abbrev").is(':empty')) {
+										$(editRow).find(".type_abbrev").html(oldValue);
+									}
+							});
 						}
 				});
 

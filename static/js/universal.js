@@ -66,7 +66,11 @@ window.showRibbon = function(message, color, location, timeout) {
 	);
 	if (timeout) {
 		setTimeout(function() {
-			$(location).children(".ribbonMessage").fadeOut(1000);
+			$(location).children(".ribbonMessage").fadeOut(1000, function()
+			{
+				$(".ribbonMessage").remove();
+			});
+
 		},500+15*message.length);
 	}
 }
@@ -98,7 +102,7 @@ $(document).on("submit", ".infoForm", function() {
 		if ($(".reloadActivator").length) {
 			window.location.reload(true);
 		}
-		//$(".loadingWheel").remove();
+		$(".loadingWheel").remove();
 
 
 	});
@@ -106,6 +110,7 @@ $(document).on("submit", ".infoForm", function() {
 });
 
 $(document).on("click", ".form_button[type=submit]", function() {
+	$(".loadingWheel").remove();
 	$(this).parent().append("<div class=\"loadingWheel\"></div>");
 });
 
@@ -166,16 +171,38 @@ $(document).on("mouseover", "#search_backButton", function() {
 });
 
 //Filter button tooltip
-$(document).on("mouseover", "#search_filterButton", function() {
-	if ($("#searchValue").val()){
+
+function get_atom_query() {
+	var array_atom_query = Array();
+
+	$(".PT_selected").each(function() {
+		array_atom_query.push($(this).html());
+	});
+
+	var current_atom_query = array_atom_query.join(", ");
+
+	if (array_atom_query.length>2) {
+		var i = current_atom_query.lastIndexOf(" ");
+		current_atom_query = [current_atom_query.slice(0, i), " " + $(".radioSearch:checked").val(), current_atom_query.slice(i)].join(" ");
+	} else if (array_atom_query.length==2) {
+		current_atom_query = current_atom_query.replace(",", " " + $(".radioSearch:checked").val());
+	}
+
+	return current_atom_query
+}
+
+$(document).on("mouseover", "#search_filterButton_atoms", function() {
+	if ($(".PT_selected").length){
 		//Get the previously used filters.
 		var filter_string = "Filters:"
 		for (var i in current_query) {
 			filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(current_query[i]["field"])+": " + current_query[i]["value"]
 		}
 
+		current_atom_query = get_atom_query();
+
 		//Add the new filter.
-		filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(current_query.length)+1)+".) "+make_name_verbose($("input[name=field]:checked").val())+": "+$("#searchValue").val()+"</div>"
+		filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(current_query.length)+1)+".) "+"Atoms: "+current_atom_query+"</div>"
 
 		$(this).attr("title", filter_string);
 	} else {
@@ -183,9 +210,35 @@ $(document).on("mouseover", "#search_filterButton", function() {
 	}
 });
 
+$(document).on("click", "#search_filterButton_atoms", function() {
+	$("#search_filterButton").click();
+});
+
 $(document).on("click", "#search_filterButton", function() {
 	if ($("#searchResultsContainer").html().trim()!="No data found!") {
-		if ($("#searchValue").val()){
+		//If "Atoms" search is active.
+		if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
+			field = "atoms";
+			value = get_atom_query().replace(",","");
+			//Make sure the query was not already searched.
+			if (current_query){
+				for (var i in current_query) {
+					if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
+						showRibbon("Already queried!", "#FFC87C","#popupContainer_inner", true);
+						return false //Don't continue if query is already present.
+					}
+				}
+			}
+			showRibbon("Searching!", "#99FF5E","#popupContainer_inner", true);
+
+			current_query.push({
+				"field":field,
+				"value":value,
+			});
+			sendSearchQuery(current_query);
+
+		//If "Fields" search is active.
+		} else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
 			field = $("input[name=field]:checked").val()
 			value = $("#searchValue").val()
 			//Make sure the query was not already searched.
@@ -197,7 +250,6 @@ $(document).on("click", "#search_filterButton", function() {
 					}
 				}
 			}
-
 			showRibbon("Searching!", "#99FF5E","#popupContainer_inner", true);
 
 			current_query.push({
@@ -231,7 +283,6 @@ $(document).on("click", "#search_clearButton", function() {
 	showRibbon("Filters emptied!", "#99FF5E","#popupContainer_inner", true);
 	$("#searchResultsContainer").html("Enter filters to search.");
 });
-
 
 	//################   Autocompleting Search   ####################### //###
 window.setAutoComplete = function(location, source) {
@@ -383,11 +434,6 @@ $(document).on("click", ".popupActivator", function(event) {
 				$("#labRegistration").html(response);
 			});
 			break;
-		case "leftMenu_downloadCSV"://###Replace with cute form?
-			$("#popupContainer_inner").html("CSV downloading!");
-			//Download the saved data as a CSV.
-			location.replace("/download_CSV/");
-			break;
 		case "CG_activatorButton":
 			$.get("/compound_guide_form/", function(response) {
 				$("#popupContainer_inner").html(response);
@@ -405,26 +451,30 @@ $(document).on("click", ".popupActivator", function(event) {
 });
 // Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
-	$("#popupGlobal").fadeOut("fast");
+	if ($(".ribbonMessage").length==0){
+		$("#popupGlobal").fadeOut("fast");
 
-	//Remove any extra additions the popup may have populated.
-	$(".CG_saveButton").remove()
+		//Remove any extra additions the popup may have populated.
+		$(".CG_saveButton").remove()
 
-	//Reload the screen if requested.
-	if ($(".reloadActivator").length) {
-		window.location.reload(true);
-		$(".reloadActivator").remove();
-	};
+		//Reload the screen if requested.
+		if ($(".reloadActivator").length) {
+			window.location.reload(true);
+			$(".reloadActivator").remove();
+		};
+	}
 });
 
 //Close popups on close-button click.
 $(document).on("click", ".closeButton", function() {
-	//Close the global container if the main container is closed.
-	CGSelected = Array();
-	if ($(this).parent().attr("id")=="popupContainer") {
-		$(this).parent().parent().fadeOut("fast");
-	} else {
-		$(this).parent().fadeOut("fast");
+	if ($(".ribbonMessage").length==0){
+		//Close the global container if the main container is closed.
+		CGSelected = Array();
+		if ($(this).parent().attr("id")=="popupContainer") {
+			$(this).parent().parent().fadeOut("fast");
+		} else {
+			$(this).parent().fadeOut("fast");
+		}
 	}
 });
 
