@@ -417,7 +417,7 @@ $(document).on("click", ".editConfirm", function() {
 	var editRow = $(editParent).parents("tr");
 	//Find the general fieldChanged (eg, quantity vs. quantity_1)
 	var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
-	var newValue = $(editFieldSibling).val();
+	var newValue = $(editFieldSibling).val().trim();
 	var oldValue = $(editFieldSibling).attr("oldVal");
 
 	var validData = false;

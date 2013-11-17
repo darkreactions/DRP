@@ -335,7 +335,6 @@ def search(request):
 					else:
 						Q_string = "Q(atoms__contains=\"{}\")".format(atom_list[0])
 					filters += ".filter({})".format(Q_string)
-					print Q_string
 				else:
 					#Translate any client input into useful queries.
 					if field == "is_valid" and value:

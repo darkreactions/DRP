@@ -146,6 +146,7 @@ function sendSearchQuery(current_query) {
 		success: function(response) {
 			$("#searchResultsOuterContainer").html(response)
 			if ($("#searchResultsContainer").html().trim()=="No data found!"){
+				$("#entriesFound").remove();
 				current_query = []; //Clear the current query if nothing is found.
 			}
 		}
@@ -188,7 +189,7 @@ function get_atom_query() {
 		current_atom_query = current_atom_query.replace(",", " " + $(".radioSearch:checked").val());
 	}
 
-	return current_atom_query
+	return current_atom_query.replace(/ +/g, " ")
 }
 
 $(document).on("mouseover", "#search_filterButton_atoms", function() {
@@ -219,7 +220,7 @@ $(document).on("click", "#search_filterButton", function() {
 		//If "Atoms" search is active.
 		if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
 			field = "atoms";
-			value = get_atom_query().replace(",","");
+			value = get_atom_query().replace(/,/g,"");
 			//Make sure the query was not already searched.
 			if (current_query){
 				for (var i in current_query) {
@@ -280,6 +281,7 @@ $(document).on("click", "#search_backButton", function() {
 
 $(document).on("click", "#search_clearButton", function() {
 	current_query = [];
+	$("#entriesFound").remove();
 	showRibbon("Filters emptied!", "#99FF5E","#popupContainer_inner", true);
 	$("#searchResultsContainer").html("Enter filters to search.");
 });

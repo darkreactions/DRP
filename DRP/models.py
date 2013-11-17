@@ -149,8 +149,6 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 
 def chemspider_lookup(cg_entry):
 	chemspi_query = ""
-	print cg_entry
-	print "______________"
 	try:
 		#Accept either a CompoundEntry object or a dict with the valid fields
 		search_fields = ["CAS_ID", "compound"]
@@ -224,9 +222,6 @@ def get_atom_set_from_abbrevs(lab_group, abbrev_list):
 def get_atom_set_from_reaction(reaction):
 	return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
-def update_reaction_atoms_for_compound(lab_group, compound):
-	pass
-
 def get_reactions_with_compound(compound):
 	Q_string = ""
 	abbrev = compound.abbrev
@@ -238,31 +233,41 @@ def get_reactions_with_compound(compound):
 
 	return eval("Data.objects.filter(lab_group=compound.lab_group).filter({})".format(Q_string))
 
-####
-
-def update_compound(compound):
+def update_compound(compound, update_reactions=True):
 	try:
 		#Update the CG entry itself.
 		compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
 		compound.save()
 
 		#Update the individual "atom" records on each reaction.
-		changed_reactions = get_reactions_with_compound(compound)
-		for reaction in changed_reactions:
-			#Store the atoms as a string -- not a set.
-			reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
-			reaction.save()
+		if update_reactions:
+			update_reactions(compound)
 	except Exception as e:
 		print "Could not update {}\n\t{}".format(compound, e)
 
+def update_reactions(compound):
+	#Update the individual "atom" records on each reaction.
+	changed_reactions = get_reactions_with_compound(compound)
+	for reaction in changed_reactions:
+		#Store the atoms as a string -- not a set.
+		reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
+		reaction.save()
+
 def update_all_compounds(lab_group=None):
 	if lab_group:
-		for i in CompoundEntry.objects.filter(lab_group=lab_group):
-			update_compound(i)
+		query = CompoundEntry.objects.filter(lab_group=lab_group)
+		#Update all of the compounds before updating the reactions.
+		for i in query:
+			update_compound(i, update_reactions=False)
+		for i in query:
+			update_reactions(i)
 		print "Finished updating compounds for {}.".format(lab_group.lab_title)
 	else:
-		for i in CompoundEntry.objects.all():
-			update_compound(i)
+		query = CompoundEntry.objects.all()
+		for i in query:
+			update_compound(i, update_reactions)
+		for i in query:
+			update_reactions(i)
 		print "Finished updating ALL compounds."
 
 ###REREAD TO PROVE USEFUL?
@@ -272,6 +277,34 @@ def collect_CG_entries(lab_group, overwrite=False):
 		compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 		set_cache(lab_group, "COMPOUNDGUIDE", list(compound_guide))
 	return compound_guide
+
+def convert_QuerySet_to_list(query, model, with_headings=True):
+	#Get the appropriate headings.
+	all_fields = get_model_field_names(model=model, collect_ignored=True)
+	fields_to_exclude = {"lab_group", "atoms"}
+	headings = [field for field in all_fields if field not in fields_to_exclude]
+
+	if with_headings:
+		query_list = [list(headings)]
+	else:
+		query_list = []
+
+	for entry in query:
+		sub_list = []
+		for field in headings:
+			sub_list.append(getattr(entry, field))
+		query_list.append(sub_list)
+
+	return query_list
+
+
+def collect_reactions_as_lists(lab_group, with_headings=True):
+	query = Data.objects.filter(lab_group=lab_group)
+	return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
+
+def collect_CG_entries_as_lists(lab_group, with_headings=True):
+	query = collect_CG_entries(lab_group)
+	return convert_QuerySet_to_list(query, "CompoundEntry", with_headings=with_headings)
 
 def collect_CG_name_pairs(lab_group, overwrite=False):
 	pairs = get_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS")
@@ -293,6 +326,23 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
 		return new_entry
 	except Exception as e:
 		raise Exception("CompoundEntry construction failed!")
+
+def get_good_rxns(lab_group=None, with_headings=True):
+	#Convert string input into a lab_group if possible.
+	try:
+		if type(lab_group)==str:
+				lab_group = Lab_Group.objects.filter(lab_title=lab_group)[0]
+
+		#Collect ALL data or Lab-specific data.
+		if lab_group:
+			query = Data.objects.filter(lab_group=lab_group, is_valid=True)
+		else:
+			query = Data.objects.filter(is_valid=True)
+
+		return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
+	except:
+		raise Exception("Cannot find lab_group: \"{}\"".format(lab_group))
+
 
 ############### DATA ENTRY ########################
 calc_fields = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass', 'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
