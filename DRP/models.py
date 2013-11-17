@@ -178,6 +178,10 @@ def get_atoms_from_compound(CG_entry = None):
 	return get_atoms_from_smiles(CG_entry.smiles)
 
 def get_atoms_from_smiles(smiles, show_hydrogen=False):
+	if not smiles:
+		print "No smiles found!"
+		return []
+
 	mols = Chem.MolFromSmiles(str(smiles),sanitize=False)
 	if mols == None:
 		return []
@@ -256,16 +260,21 @@ def update_reactions(compound):
 def update_all_compounds(lab_group=None):
 	if lab_group:
 		query = CompoundEntry.objects.filter(lab_group=lab_group)
+		count = query.count()
 		#Update all of the compounds before updating the reactions.
+		print "Starting compound updates..."
 		for i in query:
 			update_compound(i, update_reactions=False)
+		print "Starting reaction updates..."
 		for i in query:
 			update_reactions(i)
 		print "Finished updating compounds for {}.".format(lab_group.lab_title)
 	else:
 		query = CompoundEntry.objects.all()
+		print "Starting compound updates..."
 		for i in query:
-			update_compound(i, update_reactions)
+			update_compound(i, update_reactions=False)
+		print "Starting reaction updates..."
 		for i in query:
 			update_reactions(i)
 		print "Finished updating ALL compounds."
@@ -297,12 +306,23 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
 
 	return query_list
 
-
 def collect_reactions_as_lists(lab_group, with_headings=True):
+	try:
+		if type(lab_group)==str:
+			lab_group = Lab_Group.objects.filter(lab_title=lab_group)[0]
+	except:
+		raise Exception("Could not find lab group: \"{}\"".format(lab_group))
+
 	query = Data.objects.filter(lab_group=lab_group)
 	return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
 def collect_CG_entries_as_lists(lab_group, with_headings=True):
+	try:
+		if type(lab_group)==str:
+			lab_group = Lab_Group.objects.filter(lab_title=lab_group)[0]
+	except:
+		raise Exception("Could not find lab group: \"{}\"".format(lab_group))
+
 	query = collect_CG_entries(lab_group)
 	return convert_QuerySet_to_list(query, "CompoundEntry", with_headings=with_headings)
 
