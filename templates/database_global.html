@@ -13,12 +13,8 @@
 
 	<!-- OUTSIDE OF PANELS -->
 
-		<!-- HAVERFORD LOGO ###Shouldn't be hosted on wikimedia probably-->
-	<div id="haverfordLogo">
-		<a href="http://www.haverford.edu/">
-			<img style="height:100%;width:100%;" src="http://upload.wikimedia.org/wikipedia/en/7/73/Haverford_logo.png"/>
-		</a>
-	</div>
+		<!-- HAVERFORD LOGO -->
+		{% include "haver_logo.html" %}
 
 		<!-- USER CONTAINER -->
 	<div id="userInfo">
@@ -71,11 +67,9 @@
 		<div id="topPanel">
 			{% include "main_logo.html" %}
 
+
 			<!-- NAVIGATION MENU -->
-			<div id="navMenu">
-				<a href="/database/" class="navLink" >Database</a>
-				<a href="/predictions/" class="navLink">Predictions</a>
-			</div>
+			{% include "top_menu.html" %}
 
 			<div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
 			style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>

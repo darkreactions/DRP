@@ -123,12 +123,13 @@ a {
 	outline:0;
 	outline-color:transparent;
 }
-
+/*
 a:hover {
 	font-style:oblique;
 	background-color:#FFD92E;
 	border-radius:25px;
-}
+} */
+
 
 p {
 	text-align:center;
@@ -294,6 +295,14 @@ div.ui-tooltip {
 	border-radius:10px;
 	padding:10px;
 }
+
+.genericContainer_inner_rec {
+	position:relative;
+	background-color:white;
+	padding:10px;
+	overflow: display;
+}
+
 #leftMenuContainer {
 	border-top-left-radius:0px;
 	border-bottom-left-radius:0px;
@@ -329,7 +338,6 @@ div.ui-tooltip {
 	padding:5px;
 	text-align:center;
 }
-
 /* ################### POPUP STYLES ################################# */
 #popupGlobal {
 	display:none;
@@ -706,6 +714,16 @@ padding-bottom:10px;
 }
 
 /* ###############   TEXT   ######################################### */
+.recommended_reactant {
+	display: inline-block;
+}
+
+.recommended_score {
+	display: inline-block;
+	margin-right:20px;
+	font-weight:bold;
+}
+
 #popupContainer_inner > h1 {
 	margin:5px;
 	text-align:center;
@@ -753,7 +771,7 @@ padding-bottom:10px;
 #navMenu {
 	position:absolute;
 	bottom:0px;
-	left:170px;
+	left:120px;
 }
 
 #userInfo {
@@ -828,10 +846,10 @@ padding-bottom:10px;
 	left:0px;
 	bottom:0px;
 	width:100px;
-	height:40px;
 	margin:15px;
 	z-index:100;
 	outline:none;
+	-webkit-filter: invert(1);
 }
 
 /* #####################   ERROR STYLE   ############################ */

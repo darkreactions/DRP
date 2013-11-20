@@ -6,9 +6,7 @@
 		</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/predictions.css" />
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/database.css" />
 
 	</head>
 	<body>
@@ -44,18 +42,29 @@
 		</div>
 	</div>
 
+	<!-- DATABASE MENU -->
 	<div id="leftPanel">
 		<div id="leftMenuContainer" class="genericContainer">
-			<div class="leftMenuButton genericButton popupActivator" title="Mark a reaction." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
+			<div class="leftMenuButton genericButton popupActivator" title="Add new data." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
 				id="leftMenu_addNew"> </div>
+			<div class="leftMenuButton genericButton" title="Delete selection." style="background-image: url({{ STATIC_URL }}/icons/delete.png);"
+				id="leftMenu_delete"></div>
+			<div class="leftMenuButton genericButton" title="Duplicate selection." style="background-image: url({{ STATIC_URL }}/icons/duplicate.png);"
+				id="leftMenu_duplicate"></div>
+			<div class="leftMenuButton genericButton" title="Select page." style="background-image: url({{ STATIC_URL }}/icons/selectPage.png);"
+				id="leftMenu_selectPage"></div>
+			<div class="leftMenuButton genericButton" title="Select all data." style="background-image: url({{ STATIC_URL }}/icons/selectAll.png);"
+				id="leftMenu_selectAll"></div>
+			<div class="leftMenuButton genericButton popupActivator" title="Upload CSV to database." style="background-image: url({{ STATIC_URL }}/icons/upload.png);"
+				id="leftMenu_uploadCSV"></div>
+			<div class="leftMenuButton genericButton popupActivator" title="Download database CSV." style="background-image: url({{ STATIC_URL }}/icons/download.png);"
+				id="leftMenu_downloadCSV"></div>
 		</div>
 	</div>
 
 	<!-- RIGHT PANELS -->
 	<div id="rightPanel">
 		<div id="topPanel">
-			<!-- ### Jump back to Ironwood-->
-			<a id="toIronwood" href="http://ironwood.fig.haverford.edu/main.html">To Ironwood Main!</a>
 			{% include "main_logo.html" %}
 
 			<!-- NAVIGATION MENU -->
@@ -63,20 +72,16 @@
 
 			<div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
 			style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
+
+			<div id="CG_activatorButton" title="Edit the compound guide." class="topMenuButton popupActivator"
+			style="background-image: url({{ STATIC_URL }}/icons/compoundGuide.png);"></div>
+
 		</div>
 
-		<!-- SVG CONTAINER -->
 		<div id="centerPanel">
+			<!-- DATA CONTAINER -->
 			<div id="dataContainer" class="genericContainer">
-				{% if fatal_message %}
-					<p>{{ fatal_message }}</p>
-				{% elif svg %}
-					{% autoescape off %}
-						{{svg}}
-					{% endautoescape %}
-				{% else %}
-					<p>Graphic not available.</p>
-				{% endif %}
+				{% include "list_container.html" %}
 			</div>
 		</div>
 
@@ -92,17 +97,18 @@
 	</body>
 
 	<!-- SCRIPTS -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
 
 	<script type="text/javascript">
 		//Define the STATIC_URL to be used in the JS files.
 		var STATIC_URL = "{{ STATIC_URL }}";
-		var USER_SVG = "{{ STATIC_URL }}svgs/test.svg"
 	</script>
 
 	<script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/predictions.js" ></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}/js/recommend.js" ></script>
 
 
 </html>
