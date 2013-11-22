@@ -1,23 +1,23 @@
 <html>
-	<head>
-		<title>
-			Dark Reactions Project
-		</title>
-		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/general_page.css" />
-	</head>
-	<body> 
-		<div id="logoContainer">
-			{% include "main_logo.html" %}
-		</div>
-		<div class="genericContainer" style="width:400px;">
-			<div class="genericContainer_inner">
-				<h1>404 Error</h1>
-				<p>Oops! It looks like that page doesn't exist...</p>
-				<a href="javascript:history.go(-1)">Go Back</a>
-			</div>
-		</div>
-		<div id="copyrightContainer">
-			Haverford College &copy;{% now "Y" %}
-		</div>
-	</body>
+ <head>
+  <title>
+   Dark Reactions Project
+  </title>
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/general_page.css" />
+ </head>
+ <body> 
+  <div id="logoContainer">
+   {% include "main_logo.html" %}
+  </div>
+  <div class="genericContainer" style="width:400px;">
+   <div class="genericContainer_inner">
+    <h1>404 Error</h1>
+    <p>Oops! It looks like that page doesn't exist...</p>
+    <a href="javascript:history.go(-1)">Go Back</a>
+   </div>
+  </div>
+  <div id="copyrightContainer">
+   Haverford College &copy;{% now "Y" %}
+  </div>
+ </body>
 </html>

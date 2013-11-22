@@ -1,61 +1,61 @@
 {% if form.errors %}
-	<div class="subPopup">
-		<div class="closeButton genericButton">x</div>
-		 <h1>Errors:</h1>
-		{% for field in form %}
-		{% if field.errors %}
-			<div class="error">
-				<div class="error_label">{{ field.label_tag }}</div>
-				<div class="error_message">{{ field.errors.as_text }}</div>
-			</div>
-		{% endif %}
-		{% endfor %}
-	</div>
+ <div class="subPopup">
+  <div class="closeButton genericButton">x</div>
+   <h1>Errors:</h1>
+  {% for field in form %}
+  {% if field.errors %}
+   <div class="error">
+    <div class="error_label">{{ field.label_tag }}</div>
+    <div class="error_message">{{ field.errors.as_text }}</div>
+   </div>
+  {% endif %}
+  {% endfor %}
+ </div>
 {% endif %}
 
 {% if success %}
-	<div class="successActivator"></div>
+ <div class="successActivator"></div>
 {% endif %}
 
 <h1>Compound Guide:</h1>
 
 {% spaceless %}
 <div id="CG_display">
-	{% if guide %}
-		<table id="CG_table">
-			<tr id="headingRow">
-				<td>Structure</td>
-				<td>Abbreviation</td>
-				<td>Compound</td>
-				<td>CAS</td>
-				<td>Type</td>
-			</tr>
-		{% for entry in guide %}
+ {% if guide %}
+  <table id="CG_table">
+   <tr id="headingRow">
+    <td>Structure</td>
+    <td>Abbreviation</td>
+    <td>Compound</td>
+    <td>CAS</td>
+    <td>Type</td>
+   </tr>
+  {% for entry in guide %}
 <tr>
-	{% include "compound_guide_row.html" %}
+ {% include "compound_guide_row.html" %}
 </tr>
-		{% endfor %}
-		</table>
-	{% else %}
-		<p>No entries in compound guide!</p>
-	{% endif %}
+  {% endfor %}
+  </table>
+ {% else %}
+  <p>No entries in compound guide!</p>
+ {% endif %}
 </div>
 
 {% endspaceless %}
 
 <form id="compoundGuideForm" method="post" action="/compound_guide_form/" class="popupScreenForm infoForm">
-	{% csrf_token %}
-	{% for field in form %}
-	    <div class="fieldWrapper">
-	        {{ field.label_tag }}: {{ field }}
-		</div>
-	{% endfor %}
-	{% if user.is_authenticated %}
-		<center>
-		<input name="submit" id = "submitData" type="submit" value="Add New" class="form_button"/>
-		</center>
-	{% else %}
-		<p> Please log in to submit data. </p>
-	{% endif %}
-	</div>
+ {% csrf_token %}
+ {% for field in form %}
+     <div class="fieldWrapper">
+         {{ field.label_tag }}: {{ field }}
+  </div>
+ {% endfor %}
+ {% if user.is_authenticated %}
+  <center>
+  <input name="submit" id = "submitData" type="submit" value="Add New" class="form_button"/>
+  </center>
+ {% else %}
+  <p> Please log in to submit data. </p>
+ {% endif %}
+ </div>
 </form>

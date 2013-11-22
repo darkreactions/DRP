@@ -1,29 +1,29 @@
 {% if user.is_authenticated %}
-	<div class="pagesInfo">
-		Page 
-	</div>
-	<div id="pagesCurrent" class="pagesInfo">
-		{{page_package.current_page}}
-	</div>
-	<div class="pagesInfo">
-		of 
-	</div>
-	<div id="pagesTotal" class="pagesInfo" total_data_size="{{total_data_size}}"
-		data_per_page="{{page_package.data_per_page}}">
-		{{page_package.total_pages}}
-		( {% for page in page_package.page_links %}
-			<a class="pageLink pagesInfo {% if page == page_package.current_page %}"
-			id="pageLinkCurrent{% endif %}">
-			 {{page}}
-			 </a>
-		{% endfor %} )
-	</div>
-	<br /> 
-	<div class="pagesInfo">
-		Page Jump:
-	</div>
-	<input id="pagesInputText" type="text" />
-	<input id="pagesInputButton" type="button" value="Go!"/>
+ <div class="pagesInfo">
+  Page 
+ </div>
+ <div id="pagesCurrent" class="pagesInfo">
+  {{page_package.current_page}}
+ </div>
+ <div class="pagesInfo">
+  of 
+ </div>
+ <div id="pagesTotal" class="pagesInfo" total_data_size="{{total_data_size}}"
+  data_per_page="{{page_package.data_per_page}}">
+  {{page_package.total_pages}}
+  ( {% for page in page_package.page_links %}
+   <a class="pageLink pagesInfo {% if page == page_package.current_page %}"
+   id="pageLinkCurrent{% endif %}">
+    {{page}}
+    </a>
+  {% endfor %} )
+ </div>
+ <br /> 
+ <div class="pagesInfo">
+  Page Jump:
+ </div>
+ <input id="pagesInputText" type="text" />
+ <input id="pagesInputButton" type="button" value="Go!"/>
 {% else %}
-		<p> . . . </p>
+  <p> . . . </p>
 {% endif %}

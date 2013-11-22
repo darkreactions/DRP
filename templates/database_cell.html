@@ -1,20 +1,20 @@
 {% if user.is_authenticated %}
-	{% if data_on_page %}
-		{% for entry, entryID in data_on_page %}
-			<div class="dataGroup dataGroup_shape genericContainer_inner 
-			{% if not entry.is_valid %}badDataGroup{% endif %}" id="g_{{entryID}}">
-				<div class="dataIndex">{{ entryID }}</div>
-				<div class="expandButton">More...</div> 
-				<div class="dataEntry">
-						<!-- REACTION -->
-					<div class="dataField type_ref" editAs="text">{{entry.ref}}</div>
-					<div class="type_user">{{entry.user}}</div>
-				</div>
-			</div>
-		{% endfor %}
-	{% else %}
-		<p>No data is available!</p>
-	{% endif %}
+ {% if data_on_page %}
+  {% for entry, entryID in data_on_page %}
+   <div class="dataGroup dataGroup_shape genericContainer_inner 
+   {% if not entry.is_valid %}badDataGroup{% endif %}" id="g_{{entryID}}">
+    <div class="dataIndex">{{ entryID }}</div>
+    <div class="expandButton">More...</div> 
+    <div class="dataEntry">
+      <!-- REACTION -->
+     <div class="dataField type_ref" editAs="text">{{entry.ref}}</div>
+     <div class="type_user">{{entry.user}}</div>
+    </div>
+   </div>
+  {% endfor %}
+ {% else %}
+  <p>No data is available!</p>
+ {% endif %}
 {% else %}
-	<p>Please log in to see your data.</p>
+ <p>Please log in to see your data.</p>
 {% endif %}

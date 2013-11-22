@@ -1,57 +1,57 @@
 {% if form.errors %}
-	<div class="subPopup">
-		<div class="closeButton genericButton">x</div>
-		 <h1>Errors:</h1>
-		{% for field in form %}
-		{% if field.errors %}
-			<div class="error">
-				<div class="error_label">{{ field.label_tag }}</div>
-				<div class="error_message">{{ field.errors.as_text }}</div>
-			</div>	
-		{% endif %}
-		{% endfor %}
-	</div>
+ <div class="subPopup">
+  <div class="closeButton genericButton">x</div>
+   <h1>Errors:</h1>
+  {% for field in form %}
+  {% if field.errors %}
+   <div class="error">
+    <div class="error_label">{{ field.label_tag }}</div>
+    <div class="error_message">{{ field.errors.as_text }}</div>
+   </div> 
+  {% endif %}
+  {% endfor %}
+ </div>
 {% endif %}
 
 {% if success %}
-	<div class="successActivator"></div>
-	<div class="reloadActivator"></div>
+ <div class="successActivator"></div>
+ <div class="reloadActivator"></div>
 {% endif %}
 
 
 <form id="dataEntryForm" method="post" action="/data_form/" class="popupScreenForm infoForm">
-	{% csrf_token %}
-	{% for field in form %}
-		{# Assumes reactants are first #}
-		{% if 15 > forloop.counter0  %}
-			{% if forloop.first or forloop.counter0|divisibleby:"3" %}
-				<div class="reactionWrapper">
-				    <div class="fieldWrapper">
-				        {{ field.label_tag }}: {{ field }}
-			        </div>
-				{% elif forloop.counter|divisibleby:"3" %}
-		        {{ field }}
-		        </div>
-		        </div>
-	        {% else %}
-			    <div class="fieldWrapper">
-		        {{ field.label_tag }}: {{ field }}
-	        {% endif %}
-		{% else %}	
-		    <div class="fieldWrapper">	
-		        {{ field.label_tag }}: {{ field }}
-			</div>
-		{% endif %}
-			{% if 15 == forloop.counter %}
-				<br />
-			{% endif %}
-	{% endfor %}
-		{% if user.is_authenticated %}
-			<center>
-			<input name="submit" id = "submitData" type="submit" value="Save" class="form_button"/>
-			</center>
-		{% else %}
-			<p> Please log in to submit data. </p>
-		{% endif %}			
-	</div>		
+ {% csrf_token %}
+ {% for field in form %}
+  {# Assumes reactants are first #}
+  {% if 15 > forloop.counter0  %}
+   {% if forloop.first or forloop.counter0|divisibleby:"3" %}
+    <div class="reactionWrapper">
+        <div class="fieldWrapper">
+            {{ field.label_tag }}: {{ field }}
+           </div>
+    {% elif forloop.counter|divisibleby:"3" %}
+          {{ field }}
+          </div>
+          </div>
+         {% else %}
+       <div class="fieldWrapper">
+          {{ field.label_tag }}: {{ field }}
+         {% endif %}
+  {% else %} 
+      <div class="fieldWrapper"> 
+          {{ field.label_tag }}: {{ field }}
+   </div>
+  {% endif %}
+   {% if 15 == forloop.counter %}
+    <br />
+   {% endif %}
+ {% endfor %}
+  {% if user.is_authenticated %}
+   <center>
+   <input name="submit" id = "submitData" type="submit" value="Save" class="form_button"/>
+   </center>
+  {% else %}
+   <p> Please log in to submit data. </p>
+  {% endif %}   
+ </div>  
 </form>

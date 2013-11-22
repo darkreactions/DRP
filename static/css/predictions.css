@@ -1,121 +1,121 @@
 /* ###############   BUTTONS   ###################################### */
 #searchButton {
-	right:0px;
+ right:0px;
 }
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
 #toIronwood { /* ### */
-	position:fixed;
-	right:0px;
-	bottom:0px;
-	background-color:orange;
-	border:2px solid black;
-	font-size:12px;
-	font-weight:bold;
-	text-align:center;
-	border-radius:5px;
-	color:black;
-	padding:5px;
+ position:fixed;
+ right:0px;
+ bottom:0px;
+ background-color:orange;
+ border:2px solid black;
+ font-size:12px;
+ font-weight:bold;
+ text-align:center;
+ border-radius:5px;
+ color:black;
+ padding:5px;
 }
 /* ###############   SVG   ################################### */
 svg:not(.backgroundSVG) {
-	cursor:pointer;
-	background-color:white;
-	width:100%
+ cursor:pointer;
+ background-color:white;
+ width:100%
 }
 
 .svgTextUI {
-	position:absolute;
-	top:0px;
-	padding:10px;
+ position:absolute;
+ top:0px;
+ padding:10px;
 
-	font-size:24px;
-	font-style:oblique;
-	
-	cursor:pointer;
-	-webkit-user-select: none;  
-	-moz-user-select: none;    
-	-ms-user-select: none;      
-	user-select: none;
+ font-size:24px;
+ font-style:oblique;
+ 
+ cursor:pointer;
+ -webkit-user-select: none;  
+ -moz-user-select: none;    
+ -ms-user-select: none;      
+ user-select: none;
 }
 
 .svgTitleContainer {
-	right:0px;
-	margin-right:10px;
+ right:0px;
+ margin-right:10px;
 }
 
 .svgBackButton {
-	left:0px;
-	padding:10px;
-	margin-left:10px;
+ left:0px;
+ padding:10px;
+ margin-left:10px;
 }
 
 .triangleSVG {
-	stroke:black;
-	fill:#E8F4FF;
-	
+ stroke:black;
+ fill:#E8F4FF;
+ 
 }
 
 .textNode{
-	stroke:white;
-	fill:black;
-	
-	font-weight:bold;
-	font-family:arial;
-	font-size:20px;
-	z-index:100;
+ stroke:white;
+ fill:black;
+ 
+ font-weight:bold;
+ font-family:arial;
+ font-size:20px;
+ z-index:100;
 }
 
 path {
-	opacity:0.3;
+ opacity:0.3;
 }
 
 #svgControl {
-	display:none;
+ display:none;
 }
 
 
-	/* ###############   NODES   ################################### */
+ /* ###############   NODES   ################################### */
 .generalNode {
 }
 
 .generalNode:hover {
-	stroke: #FFD92E;
-	stroke-width:2;
-	opacity:0.7;
+ stroke: #FFD92E;
+ stroke-width:2;
+ opacity:0.7;
 }
 
 .badNode {
-	fill:#FF8359;
-	stroke:#A6401D;
+ fill:#FF8359;
+ stroke:#A6401D;
 }
 
 .medNode {
-	fill:#FFAE59;
-	stroke:#BF9262;
+ fill:#FFAE59;
+ stroke:#BF9262;
 }
 
 .goodNode {
-	fill:#4AD391;
-	stroke:#188953;
+ fill:#4AD391;
+ stroke:#188953;
 }
 
 
 /* ###############   CONTAINERS   ################################### */
 #nodeTooltipContainer {
-	opacity:0;
-	position:fixed;
-	background-color: rgba(1,1,1,0.7);
-	border:2px solid black;
-	border-radius:15px;
-	padding:10px;
-	color:white;
-	text-align:center;
-	display:inline-block;
-	
-	cursor:pointer;
-	-webkit-user-select: none;  
-	-moz-user-select: none;    
-	-ms-user-select: none;      
-	user-select: none;
+ opacity:0;
+ position:fixed;
+ background-color: rgba(1,1,1,0.7);
+ border:2px solid black;
+ border-radius:15px;
+ padding:10px;
+ color:white;
+ text-align:center;
+ display:inline-block;
+ 
+ cursor:pointer;
+ -webkit-user-select: none;  
+ -moz-user-select: none;    
+ -ms-user-select: none;      
+ user-select: none;
 }

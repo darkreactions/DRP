@@ -1,21 +1,21 @@
 <h1>Log In</h1>
 <form action="/user_login/" method="post" name="login" class="popupScreenForm infoForm">
-	{% csrf_token %}
-	
-		<label for="username">Username:</label>
-		<input type="text" name="username" value="" id="id_username">
-		<br />
-		<label for="password">Password:</label>
-		<input type="password" name="password" value="" id="id_password">
-		<br />
-		<div id="changePassword" class="popupActivator">Change Password</div>
-		<br/>
-		<input type="submit" value="Log In" class="form_button"/>
-	{% if login_fail %}
-		<br/>
-		<div class="error">
-			Invalid login credentials!
-		</div>	
-	{% endif %}
+ {% csrf_token %}
+ 
+  <label for="username">Username:</label>
+  <input type="text" name="username" value="" id="id_username">
+  <br />
+  <label for="password">Password:</label>
+  <input type="password" name="password" value="" id="id_password">
+  <br />
+  <div id="changePassword" class="popupActivator">Change Password</div>
+  <br/>
+  <input type="submit" value="Log In" class="form_button"/>
+ {% if login_fail %}
+  <br/>
+  <div class="error">
+   Invalid login credentials!
+  </div> 
+ {% endif %}
 </form>
 

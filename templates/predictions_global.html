@@ -1,108 +1,108 @@
 <html>
 
-	<head>
-		<title>
-			Dark Reactions Project
-		</title>
+ <head>
+  <title>
+   Dark Reactions Project
+  </title>
 
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/predictions.css" />
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/predictions.css" />
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.js"></script>
 
-	</head>
-	<body>
+ </head>
+ <body>
 
-	<!-- OUTSIDE OF PANELS -->
+ <!-- OUTSIDE OF PANELS -->
 
-		<!-- HAVERFORD LOGO -->
-		{% include "haver_logo.html" %}
+  <!-- HAVERFORD LOGO -->
+  {% include "haver_logo.html" %}
 
-		<!-- USER CONTAINER -->
-	<div id="userInfo">
-		<div id = "userInfo_inner">
-		{% if user.is_authenticated %}
-			Hello, {{ user.first_name }}. <br />
-			<a id="userLogOut" class="userAuthLink"> (Log Out) </a>
-		{% else %}
-			Welcome! <br />
-			<a id="userLogin" class="userAuthLink popupActivator">Log In</a>
-			/
-			<a id="registrationPrompt" class="userAuthLink popupActivator">Register</a>
-		{% endif %}
-		</div>
-	</div>
+  <!-- USER CONTAINER -->
+ <div id="userInfo">
+  <div id = "userInfo_inner">
+  {% if user.is_authenticated %}
+   Hello, {{ user.first_name }}. <br />
+   <a id="userLogOut" class="userAuthLink"> (Log Out) </a>
+  {% else %}
+   Welcome! <br />
+   <a id="userLogin" class="userAuthLink popupActivator">Log In</a>
+   /
+   <a id="registrationPrompt" class="userAuthLink popupActivator">Register</a>
+  {% endif %}
+  </div>
+ </div>
 
-		<!-- POPUP CONTAINER -->
-	<div id="popupGlobal" >
-		<div id="popupContainer"  class="genericContainer">
-			<div class="closeButton genericButton">x</div>
-			<div id="popupContainer_inner"  class="genericContainer_inner">
-			</div>
-		</div>
-		<div id="mask">
-		</div>
-	</div>
+  <!-- POPUP CONTAINER -->
+ <div id="popupGlobal" >
+  <div id="popupContainer"  class="genericContainer">
+   <div class="closeButton genericButton">x</div>
+   <div id="popupContainer_inner"  class="genericContainer_inner">
+   </div>
+  </div>
+  <div id="mask">
+  </div>
+ </div>
 
-	<div id="leftPanel">
-		<div id="leftMenuContainer" class="genericContainer">
-			<div class="leftMenuButton genericButton popupActivator" title="Mark a reaction." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
-				id="leftMenu_addNew"> </div>
-		</div>
-	</div>
+ <div id="leftPanel">
+  <div id="leftMenuContainer" class="genericContainer">
+   <div class="leftMenuButton genericButton popupActivator" title="Mark a reaction." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
+    id="leftMenu_addNew"> </div>
+  </div>
+ </div>
 
-	<!-- RIGHT PANELS -->
-	<div id="rightPanel">
-		<div id="topPanel">
-			<!-- ### Jump back to Ironwood-->
-			<a id="toIronwood" href="http://ironwood.fig.haverford.edu/main.html">To Ironwood Main!</a>
-			{% include "main_logo.html" %}
+ <!-- RIGHT PANELS -->
+ <div id="rightPanel">
+  <div id="topPanel">
+   <!-- ### Jump back to Ironwood-->
+   <a id="toIronwood" href="http://ironwood.fig.haverford.edu/main.html">To Ironwood Main!</a>
+   {% include "main_logo.html" %}
 
-			<!-- NAVIGATION MENU -->
-			{% include "top_menu.html" %}
+   <!-- NAVIGATION MENU -->
+   {% include "top_menu.html" %}
 
-			<div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
-			style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
-		</div>
+   <div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
+   style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
+  </div>
 
-		<!-- SVG CONTAINER -->
-		<div id="centerPanel">
-			<div id="dataContainer" class="genericContainer">
-				{% if fatal_message %}
-					<p>{{ fatal_message }}</p>
-				{% elif svg %}
-					{% autoescape off %}
-						{{svg}}
-					{% endautoescape %}
-				{% else %}
-					<p>Graphic not available.</p>
-				{% endif %}
-			</div>
-		</div>
+  <!-- SVG CONTAINER -->
+  <div id="centerPanel">
+   <div id="dataContainer" class="genericContainer">
+    {% if fatal_message %}
+     <p>{{ fatal_message }}</p>
+    {% elif svg %}
+     {% autoescape off %}
+      {{svg}}
+     {% endautoescape %}
+    {% else %}
+     <p>Graphic not available.</p>
+    {% endif %}
+   </div>
+  </div>
 
-	<div id="bottomPanel">
-		<!-- COPYRIGHT -->
-		<div id="copyrightContainer">
-			Haverford College &copy;{% now "Y" %}
-		</div>
-	</div>
+ <div id="bottomPanel">
+  <!-- COPYRIGHT -->
+  <div id="copyrightContainer">
+   Haverford College &copy;{% now "Y" %}
+  </div>
+ </div>
 
-	</div>
+ </div>
 
-	</body>
+ </body>
 
-	<!-- SCRIPTS -->
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
+ <!-- SCRIPTS -->
+ <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
 
-	<script type="text/javascript">
-		//Define the STATIC_URL to be used in the JS files.
-		var STATIC_URL = "{{ STATIC_URL }}";
-		var USER_SVG = "{{ STATIC_URL }}svgs/test.svg"
-	</script>
+ <script type="text/javascript">
+  //Define the STATIC_URL to be used in the JS files.
+  var STATIC_URL = "{{ STATIC_URL }}";
+  var USER_SVG = "{{ STATIC_URL }}svgs/test.svg"
+ </script>
 
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}/js/predictions.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}/js/predictions.js" ></script>
 
 
 </html>

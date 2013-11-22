@@ -1,24 +1,24 @@
 {% if entries_found %} 
-	<div id="searchResultsContainer">
-		{% include "search_results_data_cell.html" %}
-		{% if entries_found > max_search_size %}
-			Filter to further explore data.
-		{% endif %}
-	</div>
-	<div id="entriesFound">Found: 
-		{% if entries_found == max_search_size %}
-			{{max_search_size}}+
-		{% else %}
-			{{entries_found}}
-		{% endif %}
-	</div>
+ <div id="searchResultsContainer">
+  {% include "search_results_data_cell.html" %}
+  {% if entries_found > max_search_size %}
+   Filter to further explore data.
+  {% endif %}
+ </div>
+ <div id="entriesFound">Found: 
+  {% if entries_found == max_search_size %}
+   {{max_search_size}}+
+  {% else %}
+   {{entries_found}}
+  {% endif %}
+ </div>
 {% elif no_search %}
-	<div id="searchResultsContainer">
-		Enter filters to search.
-	</div>
+ <div id="searchResultsContainer">
+  Enter filters to search.
+ </div>
 {% else %}
-	<div id="searchResultsContainer">
-		No data found!
-	</div>
+ <div id="searchResultsContainer">
+  No data found!
+ </div>
 {% endif %}
-	
+ 

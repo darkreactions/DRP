@@ -1,343 +1,343 @@
 /* ###############   BUTTONS   ###################################### */
 #searchButton {
-	right:0px;
+ right:0px;
 }
 
 #CG_activatorButton {
-	right:50px;
+ right:50px;
 }
 
 .CG_deleteButton {
-	background-color:#FF857E;
-	border:2px solid black;
-	border-radius:15px;
-	border-top-left-radius:0px;
-	border-bottom-right-radius:0px;
-	padding:2px;
-	font-size:12px;
-	font-weight:bold;
-	opacity:0.5;
+ background-color:#FF857E;
+ border:2px solid black;
+ border-radius:15px;
+ border-top-left-radius:0px;
+ border-bottom-right-radius:0px;
+ padding:2px;
+ font-size:12px;
+ font-weight:bold;
+ opacity:0.5;
 }
 
 .CG_saveButton {
-	background-color:#FF857E;
-	font-size:14px;
-	font-weight:bold;
-	text-align:center;
+ background-color:#FF857E;
+ font-size:14px;
+ font-weight:bold;
+ text-align:center;
 
-	width:60px;
-	border:2px solid black;
-	border-bottom-left-radius:10px;
-	padding:2px;
+ width:60px;
+ border:2px solid black;
+ border-bottom-left-radius:10px;
+ padding:2px;
 
-	position:absolute;
-	top:10px;
-	right:60px;
+ position:absolute;
+ top:10px;
+ right:60px;
 }
 
 .duplicateSpecificDataButton{
-	position:absolute;
-	top:-10px;
-	left:0px;
-	height:18px;
-	width:18px;
-	border-radius:15px;
-	background-size:contain;
+ position:absolute;
+ top:-10px;
+ left:0px;
+ height:18px;
+ width:18px;
+ border-radius:15px;
+ background-size:contain;
 }
 
 #emailCodeButton {
 /*
-	background-color:#FF857E;
-	font-weight:bold;
-	text-align:center;
-	display:inline-block;
+ background-color:#FF857E;
+ font-weight:bold;
+ text-align:center;
+ display:inline-block;
 
-	border:2px solid black;
-	border-radius:10px;
-	padding:2px;
+ border:2px solid black;
+ border-radius:10px;
+ padding:2px;
 */
 }
 
 /* ###############   CONTAINERS   ################################### */
 #pagesContainer {
-	position:absolute;
-	width:100%;
-	height:50px;
-	bottom:0px;
-	background-color:#5087B3;
-	padding-top:5px;
-	border-top:2px black solid;
-	border-radius:inherit;
-	border-top-left-radius:0px;
-	text-align:center;
+ position:absolute;
+ width:100%;
+ height:50px;
+ bottom:0px;
+ background-color:#5087B3;
+ padding-top:5px;
+ border-top:2px black solid;
+ border-radius:inherit;
+ border-top-left-radius:0px;
+ text-align:center;
 }
 
 /* ############### SPECIFIC POPUPS ########################## */
 #popupContainer[for="leftMenu_addNew"] {
-	text-align:center;
-	top:50px;
-	left:10%;
-	width:80%;
-	min-width:570px;
+ text-align:center;
+ top:50px;
+ left:10%;
+ width:80%;
+ min-width:570px;
 }
 
 #popupContainer[for="leftMenu_uploadCSV"] {
-	text-align:center;
-	top:50px;
-	left:25%;
-	width:50%;
-	min-width:400px;
+ text-align:center;
+ top:50px;
+ left:25%;
+ width:50%;
+ min-width:400px;
 }
 
 #popupContainer[for="leftMenu_downloadCSV"] {
-	text-align:center;
-	top:50px;
-	left:20%;
-	width:60%;
-	min-width:400px;
+ text-align:center;
+ top:50px;
+ left:20%;
+ width:60%;
+ min-width:400px;
 }
 
 #popupContainer[for="CG_activatorButton"] {
-	text-align:center;
-	top:50px;
-	left:10%;
-	width:80%;
-	min-width:570px;
+ text-align:center;
+ top:50px;
+ left:10%;
+ width:80%;
+ min-width:570px;
 }
 
 /* ###############   SUBGROUPS   #################################### */
 .pagesInfo {
-	font-weight:bold;
-	display:inline-block;
-	font-size:14px;
-	color:white;
+ font-weight:bold;
+ display:inline-block;
+ font-size:14px;
+ color:white;
 }
 
 #CG_table{
-	width:100%;
+ width:100%;
 }
 
 #CG_table td {
-	padding-left:10px;
-	text-align:center;
-	padding:0px;
+ padding-left:10px;
+ text-align:center;
+ padding:0px;
 }
 
 /* ###############   TEXT   ######################################### */
 .pageLink {
-	background-color:#3B5D77;
-	padding-left:3px;
-	padding-right:3px;
-	border-radius:15px;
+ background-color:#3B5D77;
+ padding-left:3px;
+ padding-right:3px;
+ border-radius:15px;
 }
 
 .pageLink:hover {
-	color:#3B5D77;
-	padding-left:3px;
-	padding-right:3px;
+ color:yellow;
+ padding-left:3px;
+ padding-right:3px;
 }
 
 #pageLinkCurrent {
-	border:2px solid #304B60;
+ border:2px solid #304B60;
 }
 
 /* ###############   CG Guide   ############################ */
 
 #headingRow {
-	font-weight:bold;
-	text-decoration:underline;
-	text-align:center;
+ font-weight:bold;
+ text-decoration:underline;
+ text-align:center;
 }
 
 #CG_display .editable:hover {
-	background-color:#FCFF77;
-	border-radius:25px;
+ background-color:#FCFF77;
+ border-radius:25px;
 }
 
 .CG_image_container {
-	width:200px;
+ width:200px;
 }
 
 .CG_image_container:empty:after {
-	opacity:0.5;
-	font-style:oblique;
-	font-size:12px;
-	content:"Unknown!";
+ opacity:0.5;
+ font-style:oblique;
+ font-size:12px;
+ content:"Unknown!";
 }
 
 
 .CG_image {
-	height:100px;
+ height:100px;
 }
 
 .CG_image:hover {
-	height:180px;
-	border: 2px solid black;
-	border-radius:15px;
+ height:180px;
+ border: 2px solid black;
+ border-radius:15px;
 }
 
 .type_CAS_ID {
-	min-width:100px;
+ min-width:100px;
 }
 .type_CAS_ID:empty:after {
-	opacity:0.5;
-	font-style:oblique;
-	font-size:12px;
-	content:"Unknown!";
+ opacity:0.5;
+ font-style:oblique;
+ font-size:12px;
+ content:"Unknown!";
 }
 
 .type_abbrev {
-	min-width:100px;
+ min-width:100px;
 }
 
 .type_compound {
-	min-width:100px;
+ min-width:100px;
 }
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
 #tempGuide { /* ### */
-	 position:absolute;
-	 top:0px;
-	 left:200px;
-	 padding:1px;
-	 border-radius:5px;
-	 border: 2px black solid;
-	 background-color:orange;
-	 font-size:10px;
-	 font-weight:bold;
-	 cursor:pointer;
-	 opacity:0.3;
+  position:absolute;
+  top:0px;
+  left:200px;
+  padding:1px;
+  border-radius:5px;
+  border: 2px black solid;
+  background-color:orange;
+  font-size:10px;
+  font-weight:bold;
+  cursor:pointer;
+  opacity:0.3;
 }
 #tempGuide:hover {
-	opacity:0.7;
+ opacity:0.7;
 }
 
 #CG_display {
-	position:relative;
-	padding:16px;
-	margin: 0 auto;
-	margin-top:10px;
-	margin-bottom:10px;
-	min-height:20px;
-	max-height:350px;
-	border-radius:5px;
+ position:relative;
+ padding:16px;
+ margin: 0 auto;
+ margin-top:10px;
+ margin-bottom:10px;
+ min-height:20px;
+ max-height:350px;
+ border-radius:5px;
 
-	overflow:auto;
+ overflow:auto;
 
-	font-size:14px;
-	color:black;
-	background-color:white;
+ font-size:14px;
+ color:black;
+ background-color:white;
 }
 
 #uploadCSV_display {
-	position:relative;
-	padding:5px;
-	margin-bottom:10px;
-	border:2px black solid;
-	border-radius:5px;
-	background-color:#EFEFA9;
+ position:relative;
+ padding:5px;
+ margin-bottom:10px;
+ border:2px black solid;
+ border-radius:5px;
+ background-color:#EFEFA9;
 
-	color:black;
-	font-size:14px;
+ color:black;
+ font-size:14px;
 }
 
 #uploadCSV_display:hover {
-	background-color: #FFE05B;
+ background-color: #FFE05B;
 }
 
 #uploadCSV_hiddenInput {
-	position:absolute;
-	top:0px; /*Should be equal to container padding.*/
-	left:0px;
-	width:100%;
-	height:100%;
-	border-radius:inherit;
-	opacity:0;
+ position:absolute;
+ top:0px; /*Should be equal to container padding.*/
+ left:0px;
+ width:100%;
+ height:100%;
+ border-radius:inherit;
+ opacity:0;
 }
 
 .editText {
-	padding-left:10px;
-	padding-right:10px;
-	background-color:#BFFF84;
-	max-width:inherit;
-	width:10px;
-	display:inline-block;
+ padding-left:10px;
+ padding-right:10px;
+ background-color:#BFFF84;
+ max-width:inherit;
+ width:10px;
+ display:inline-block;
 }
 
 .loadingWheel:after {
-	content: "Working...";
+ content: "Working...";
 }
 
 /* ###############   DATA STYLE   ################################### */
 .dataGroup:hover {
-	background-color:#F1FF8C;
-	cursor:pointer;
+ background-color:#F1FF8C;
+ cursor:pointer;
 }
 
 .badDataGroup {
-	background-color:#FF6868;
-	border-color:red;
+ background-color:#FF6868;
+ border-color:red;
 }
 
 .dataSelected {
-	background-color:#FFE944;
+ background-color:#FFE944;
 }
 
 .dataSelected .dataIndex:after {
-	content: "\2713"
+ content: "\2713"
 }
 
 .dataIndex {
-	font-size:12px;
-	font-style:oblique;
-	font-weight:bold;
-	position:absolute;
-	right:-7px;
-	top:-8px;
+ font-size:12px;
+ font-style:oblique;
+ font-weight:bold;
+ position:absolute;
+ right:-7px;
+ top:-8px;
 
-	border-radius:15px;
-	border-top-right-radius:0px;
-	border-bottom-left-radius:0px;
-	border:2px black solid;
-	background-color:yellow;
-	padding-left:15px;
-	padding-right:8px;
+ border-radius:15px;
+ border-top-right-radius:0px;
+ border-bottom-left-radius:0px;
+ border:2px black solid;
+ background-color:yellow;
+ padding-left:15px;
+ padding-right:8px;
 
 }
 
 /* #################### FORM STYLE ################################# */
 .fieldWrapper {
-	padding:5px;
-	border: 2px black solid;
-	border-radius:10px;
-	margin:5px;
-	display: inline-block;
-	text-align:left;
-	min-width:100px;
+ padding:5px;
+ border: 2px black solid;
+ border-radius:10px;
+ margin:5px;
+ display: inline-block;
+ text-align:left;
+ min-width:100px;
 
-	background-color:#75ADE6;
-	color:black;
+ background-color:#75ADE6;
+ color:black;
 }
 
 .reactionWrapper {
-	background:rgba(64, 64, 64, 0.3);
-	font-style:oblique;
-	display:inline-block;
-	border-radius:15px;
+ background:rgba(64, 64, 64, 0.3);
+ font-style:oblique;
+ display:inline-block;
+ border-radius:15px;
 }
 
 .form_text_short {
-	width:65px;
+ width:65px;
 }
 .form_text_long {
-	width:250px;
+ width:250px;
 }
 
 .badData {
-	background-color:red;
+ background-color:red;
 }
 .badData:focus {
-	background-color:#F7605B;
+ background-color:#F7605B;
 }
 
 

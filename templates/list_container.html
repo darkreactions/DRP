@@ -1,13 +1,17 @@
-<div class="genericContainer_inner_rec">
+<div id="dataContainer_inner" class="genericContainer_inner_rec">
 The number on the left signifies how sure we are that the reaction to the right will be successful!
 {% for recommendation in recommendations %}
-	<div class="recommendation">
-	{{ forloop.counter }}.) <div class="recommended_score">{{ recommendation.0|truncatechars:8 }}</div>
-	{% for reactant in recommendation.1 %}
-	<div class="recommended_reactant">
-		{{ reactant }}
-	</div>
-	{% endfor %}
-	</div>
+ <div class="recommendation">
+ {{ forloop.counter }}.) <div class="recommended_score">{{ recommendation.0|truncatechars:8 }}</div>
+ {% for reactant in recommendation.1 %}
+ <div class="recommended_reactant">
+  {{ reactant }}
+ </div>
+ {% if not forloop.last %}
+ +
+ {% endif %}
+
+ {% endfor %}
+ </div>
 {% endfor %}
 </div>

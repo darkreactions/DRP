@@ -1,79 +1,79 @@
 /* ###############   UNIVERSAL   ################################### */
 h1 {
-	margin:0px;
-	margin-left:10px;
+ margin:0px;
+ margin-left:10px;
 }
 
 a {
-	text-decoration:none;
-	cursor:pointer;
-	color:#3A6382;
+ text-decoration:none;
+ cursor:pointer;
+ color:#3A6382;
 }
 
 a:hover {
-	font-style:oblique;
-	background-color:#FFD92E;
-	border-radius:25px;
+ font-style:oblique;
+ background-color:#FFD92E;
+ border-radius:25px;
 }
 
 body {
-	font-family:helvetica;
-	min-width:600px;
-	background-color:#E8F4FF;
+ font-family:helvetica;
+ min-width:600px;
+ background-color:#E8F4FF;
 }
 
 p {
-	margin-left:30px;
+ margin-left:30px;
 }
 
 /* ###############   CONTAINERS   ################################### */
 .genericContainer {
-	position:relative;
-	background-color:#A1C5E2;
-	border-radius:15px;
-	border: 2px solid black;
-	padding:10px;
-	
-	margin:0 auto;
-	margin-top:20px;
+ position:relative;
+ background-color:#A1C5E2;
+ border-radius:15px;
+ border: 2px solid black;
+ padding:10px;
+ 
+ margin:0 auto;
+ margin-top:20px;
 }
 
 .genericContainer_inner {
-	position:relative;
-	background-color:white;
-	border-radius:10px;
-	padding:10px;
+ position:relative;
+ background-color:white;
+ border-radius:10px;
+ padding:10px;
 }
 
 #copyrightContainer {
-	font-size:12px;
-	font-style:oblique;
-	padding:5px;
-	text-align:center;
+ font-size:12px;
+ font-style:oblique;
+ padding:5px;
+ text-align:center;
 }
 
 #logoContainer {
-	margin-left:50px;
+ margin-left:50px;
 }
 
 /* ###############   TEXT   ######################################### */
 .failedUploadData{
-	font-weight:bold;
-	font-style:normal;
-	display:inline-block;
+ font-weight:bold;
+ font-style:normal;
+ display:inline-block;
 }
 
 /* ###############   SPECIFIC ELEMENTS   ############################ */
 
 #backLink{
-	position:absolute;
-	top:0px;
-	right:0px;
-	margin:8px;
+ position:absolute;
+ top:0px;
+ right:0px;
+ margin:8px;
 }
 
 #uploadErrorList ul li {
-	font-style:oblique;
+ font-style:oblique;
 }
 
 

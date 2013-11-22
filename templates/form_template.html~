@@ -1,166 +1,166 @@
 <html>
 
-	<head>
-		<title>
-			Dark Reactions Data Form
-		</title>
-		
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css" />
-	<script type="text/javascript" src="{{ STATIC_URL }}jquery-1.9.0.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}jquery-ui-1.10.3.custom.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}jquery.cookie.js"></script>
+ <head>
+  <title>
+   Dark Reactions Data Form
+  </title>
+  
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css" />
+ <script type="text/javascript" src="{{ STATIC_URL }}jquery-1.9.0.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}jquery-ui-1.10.3.custom.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}jquery.cookie.js"></script>
 
-	</head>
-	<body> 
-	###DELETE ME: {{ STATIC_URL }}
-	<div id="user_container"> {# User data is passed automatically #}
-		{% if user.is_authenticated %}
-			Hello, {{ user.first_name }}. <br />
-			<a id="userLogOut"> (Log Out) </a>
-		{% else %}
-			Welcome! <br />
-			<a id="userLogIn" class="userAuthLink">Log In</a> 
-			/ 
-			<a id="userRegister" class="userAuthLink">Register</a>
-		{% endif %}
-	</div>
-	
-	
-	<div id="body_container"> {# ##########FORM CONTAINER######### #}
-		<h1>Data Input:</h1>
-		<form id="dataEntryForm" action="/data_view/" method="post"
-			action="/data_view/">
-			{% csrf_token %}
-			{% for field in form %}
-				{# Assume reactans are first #}
-				{% if 15 > forloop.counter0  %}
+ </head>
+ <body> 
+ ###DELETE ME: {{ STATIC_URL }}
+ <div id="user_container"> {# User data is passed automatically #}
+  {% if user.is_authenticated %}
+   Hello, {{ user.first_name }}. <br />
+   <a id="userLogOut"> (Log Out) </a>
+  {% else %}
+   Welcome! <br />
+   <a id="userLogIn" class="userAuthLink">Log In</a> 
+   / 
+   <a id="userRegister" class="userAuthLink">Register</a>
+  {% endif %}
+ </div>
+ 
+ 
+ <div id="body_container"> {# ##########FORM CONTAINER######### #}
+  <h1>Data Input:</h1>
+  <form id="dataEntryForm" action="/data_view/" method="post"
+   action="/data_view/">
+   {% csrf_token %}
+   {% for field in form %}
+    {# Assume reactans are first #}
+    {% if 15 > forloop.counter0  %}
 
-					{% if forloop.first or forloop.counter0|divisibleby:"3" %}
-					
-					<div class="reaction_wrapper">
-				    <div class="field_wrapper">
-			        {{ field.label_tag }}: {{ field }}
-			        </div>
-					
-					{% elif forloop.counter|divisibleby:"3" %}
-					
-			        {{ field }}
-			        </div>
-			        </div>
-			        
-			        {% else %}
-			        
-				    <div class="field_wrapper">
-			        {{ field.label_tag }}: {{ field }}
-			        
-			        {% endif %}
-				
-				{% else %}	
-					
-				    <div class="field_wrapper">	
-			        {{ field.label_tag }}: {{ field }}
-					</div>
-				
-				{% endif %}
+     {% if forloop.first or forloop.counter0|divisibleby:"3" %}
+     
+     <div class="reaction_wrapper">
+        <div class="field_wrapper">
+           {{ field.label_tag }}: {{ field }}
+           </div>
+     
+     {% elif forloop.counter|divisibleby:"3" %}
+     
+           {{ field }}
+           </div>
+           </div>
+           
+           {% else %}
+           
+        <div class="field_wrapper">
+           {{ field.label_tag }}: {{ field }}
+           
+           {% endif %}
+    
+    {% else %} 
+     
+        <div class="field_wrapper"> 
+           {{ field.label_tag }}: {{ field }}
+     </div>
+    
+    {% endif %}
 
-				{% if 15 == forloop.counter %}
-					<br />
-				{% endif %}
+    {% if 15 == forloop.counter %}
+     <br />
+    {% endif %}
 
-			{% endfor %}
-			
-			
-			
-			
-			{% if user.is_authenticated %}
-			<center>
-			<input name="submit" id = "submitData" type="submit" value="Save" class="form_button"/>
-			<input name="delete" id = "deleteData" type="button" value="Delete" class="form_button"/>
-			<input id = "selectPage" type="button" value="Select Page" class="form_button"/>
-			<input id = "selectAll" type="button" value="Select All" class="form_button"/>
-			<input id = "duplicateData" type="button" value="Duplicate" class="form_button"/>
-			<input id = "uploadPrompt" type="button" value="Upload CSV" class="form_button"/>
-			<input id = "downloadPrompt" type="button" value="Download CSV" class="form_button"/>
-			<br />
-			</center>
-			{% else %}
-				<p>----</p>
-			{% endif %}			
-			</div>		
-		</form>
-		</div> <br />
-		
-		
-		<div id="body_container2"> {# ##########DATA CONTAINER######### #}
-			<h1>Saved Data:</h1>
-			<div id="data_container">
-			{% if user.is_authenticated %}
-				{% include "data_body_template.html" %}
-			{% else %}
-				<p>Please log in to see your data.</p>
-			{% endif %}
-	</div>
-	
-	</div>
-	<!-- Loading Screen -->
-	<div id="loadingScreen">Loading</div>
-	<!-- Success Screen -->
-	<div id="successScreen">Entry Added!</div>
-	<!-- Error Screens -->
-		<div id="error_container" class="popup_screen">
-		<div id="popup_toggle" class="popup_button">...</div>
-		<div id="popup_close" class="popup_button">x</div>
-		<div id="error_container_text">
-		{% if form.errors %}
-		<p>Errors:</p> <br/>
-			{% for field in form %}
-			{% if field.errors %}
-				<div class="error">
-					<div class="error_label">{{ field.label_tag }}</div>
-					{{ field.errors }}
-				</div>	
-			{% endif %}
-			{% endfor %}
-		{% endif %}
-		</div>
-		</div>
-		
-		
-	<div id="invalidDataScreen"></div>
-	<!-- Upload Screen -->
-	<div id="uploadCSVScreen" class="popup_screen">
-		<div id="popup_close" class="popup_button">x</div>
-		<p>Import CSV File:</p>
-		<form id="CSVForm" method="POST" enctype="multipart/form-data"
-			action="/upload_data/">
-		{% csrf_token %}
-		<div id = "uploadCSVChoose_display">
-			<div id = "uploadCSVWords">None Selected</div>
-		<input name="file" id = "uploadCSVChoose_hidden" type="file" 
-		accept=".csv" value="Upload CSV" class="form_button"/>
-		</div>
-		<input name="submit" id = "uploadCSVSubmit" type="submit" value="Upload" class="form_button"/>
-		<input name="cancel" id = "uploadCSVCancel" type="button" value="Cancel" class="form_button"/>
-		</form>
-	</div>
-	
-	<!-- User Popups -->
-	
-	<div id="popupContainer">
-		<div id="userAuthScreen" class="popup_screen">
-			<div id="popup_close" class="popup_button">x</div>
-			<div id="userForm"></div>
-		</div>
-	</div>
-	
-	<div id="copyright_container">
-		Haverford College &copy;{% now "Y" %}
-	</div>
-	
-	
-	</body>
-	<script type="text/javascript" src="{{ STATIC_URL }}data_validation_client.js" ></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}formscript.js" ></script>
-	
-	
+   {% endfor %}
+   
+   
+   
+   
+   {% if user.is_authenticated %}
+   <center>
+   <input name="submit" id = "submitData" type="submit" value="Save" class="form_button"/>
+   <input name="delete" id = "deleteData" type="button" value="Delete" class="form_button"/>
+   <input id = "selectPage" type="button" value="Select Page" class="form_button"/>
+   <input id = "selectAll" type="button" value="Select All" class="form_button"/>
+   <input id = "duplicateData" type="button" value="Duplicate" class="form_button"/>
+   <input id = "uploadPrompt" type="button" value="Upload CSV" class="form_button"/>
+   <input id = "downloadPrompt" type="button" value="Download CSV" class="form_button"/>
+   <br />
+   </center>
+   {% else %}
+    <p>----</p>
+   {% endif %}   
+   </div>  
+  </form>
+  </div> <br />
+  
+  
+  <div id="body_container2"> {# ##########DATA CONTAINER######### #}
+   <h1>Saved Data:</h1>
+   <div id="data_container">
+   {% if user.is_authenticated %}
+    {% include "data_body_template.html" %}
+   {% else %}
+    <p>Please log in to see your data.</p>
+   {% endif %}
+ </div>
+ 
+ </div>
+ <!-- Loading Screen -->
+ <div id="loadingScreen">Loading</div>
+ <!-- Success Screen -->
+ <div id="successScreen">Entry Added!</div>
+ <!-- Error Screens -->
+  <div id="error_container" class="popup_screen">
+  <div id="popup_toggle" class="popup_button">...</div>
+  <div id="popup_close" class="popup_button">x</div>
+  <div id="error_container_text">
+  {% if form.errors %}
+  <p>Errors:</p> <br/>
+   {% for field in form %}
+   {% if field.errors %}
+    <div class="error">
+     <div class="error_label">{{ field.label_tag }}</div>
+     {{ field.errors }}
+    </div> 
+   {% endif %}
+   {% endfor %}
+  {% endif %}
+  </div>
+  </div>
+  
+  
+ <div id="invalidDataScreen"></div>
+ <!-- Upload Screen -->
+ <div id="uploadCSVScreen" class="popup_screen">
+  <div id="popup_close" class="popup_button">x</div>
+  <p>Import CSV File:</p>
+  <form id="CSVForm" method="POST" enctype="multipart/form-data"
+   action="/upload_data/">
+  {% csrf_token %}
+  <div id = "uploadCSVChoose_display">
+   <div id = "uploadCSVWords">None Selected</div>
+  <input name="file" id = "uploadCSVChoose_hidden" type="file" 
+  accept=".csv" value="Upload CSV" class="form_button"/>
+  </div>
+  <input name="submit" id = "uploadCSVSubmit" type="submit" value="Upload" class="form_button"/>
+  <input name="cancel" id = "uploadCSVCancel" type="button" value="Cancel" class="form_button"/>
+  </form>
+ </div>
+ 
+ <!-- User Popups -->
+ 
+ <div id="popupContainer">
+  <div id="userAuthScreen" class="popup_screen">
+   <div id="popup_close" class="popup_button">x</div>
+   <div id="userForm"></div>
+  </div>
+ </div>
+ 
+ <div id="copyright_container">
+  Haverford College &copy;{% now "Y" %}
+ </div>
+ 
+ 
+ </body>
+ <script type="text/javascript" src="{{ STATIC_URL }}data_validation_client.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}formscript.js" ></script>
+ 
+ 
 </html>
