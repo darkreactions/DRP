@@ -17,19 +17,7 @@
   {% include "haver_logo.html" %}
 
   <!-- USER CONTAINER -->
- <div id="userInfo">
-  <div id = "userInfo_inner">
-  {% if user.is_authenticated %}
-   Hello, {{ user.first_name }}. <br />
-   <a id="userLogOut" class="userAuthLink"> (Log Out) </a>
-  {% else %}
-   Welcome! <br />
-   <a id="userLogin" class="userAuthLink popupActivator">Log In</a>
-   /
-   <a id="registrationPrompt" class="userAuthLink popupActivator">Register</a>
-  {% endif %}
-  </div>
- </div>
+  {% include "user_control_container.html" %}
 
   <!-- POPUP CONTAINER -->
  <div id="popupGlobal" >
@@ -81,7 +69,11 @@
   <div id="centerPanel">
    <!-- DATA CONTAINER -->
    <div id="dataContainer" class="genericContainer">
+    {% if fatal_message %}
+     <p>{{ fatal_message }}</p>
+    {% else %}
     {% include "list_container.html" %}
+    {% endif %}
    </div>
   </div>
 

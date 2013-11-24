@@ -85,7 +85,7 @@ TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
 
 def parse_CAS_ID(CAS):
   CAS = CAS.replace(" ", "-").replace("/", "-").replace("_", "-")
-  
+
   #Check that the CAS ID has three hyphen-delineated parts.
   if len(CAS.split("-")) != 3:
    raise Exception("CAS ID requires three distinct parts.")
@@ -106,12 +106,11 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
  clean_data["image_url"] = ""
 
  try:
+  #If a CAS_ID is submitted, validate it.
   if dirty_data["CAS_ID"]:
-   clean_data["CAS_ID"] = parse_CAS_ID(dirty_data["CAS_ID"]) 
-  else:
-   clean_data["CAS_ID"] = ""
+   raw_CAS = dirty_data["CAS_ID"]
+   clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
  except Exception as e:
-  #If no CAS_ID is found, store a blank value.
   clean_data["CAS_ID"] = ""
   errors["CAS_ID"] = e
 

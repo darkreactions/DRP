@@ -1,0 +1,13 @@
+<div id="userInfo">
+ <div id = "userInfo_inner">
+ {% if user.is_authenticated %}
+  Hello, {{ user.first_name }}. <br />
+  <a id="userLogOut" class="userAuthLink"> (Log Out) </a>
+ {% else %}
+  Welcome! <br />
+  <a id="userLogin" class="userAuthLink popupActivator">Log In</a>
+  /
+  <a id="registrationPrompt" class="userAuthLink popupActivator">Register</a>
+ {% endif %}
+ </div>
+</div>
