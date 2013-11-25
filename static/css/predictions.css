@@ -21,7 +21,7 @@
 svg:not(.backgroundSVG) {
  cursor:pointer;
  background-color:white;
- width:100%
+ position:relative;
 }
 
 .svgTextUI {

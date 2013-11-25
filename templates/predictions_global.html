@@ -34,7 +34,7 @@
 
  <div id="leftPanel">
   <div id="leftMenuContainer" class="genericContainer">
-   <div class="leftMenuButton genericButton popupActivator" title="Mark a reaction." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
+   <div class="leftMenuButton genericButton popupActivator" title="Mark a reaction." style="background-image: url({{ STATIC_URL }}icons/add.png);"
     id="leftMenu_addNew"> </div>
   </div>
  </div>
@@ -50,12 +50,12 @@
    {% include "top_menu.html" %}
 
    <div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
-   style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
+   style="background-image: url({{ STATIC_URL }}icons/search.png);"></div>
   </div>
 
   <!-- SVG CONTAINER -->
   <div id="centerPanel">
-   <div id="dataContainer" class="genericContainer">
+   <div id="svgContainer" class="genericContainer">
     {% if fatal_message %}
      <p>{{ fatal_message }}</p>
     {% elif svg %}
@@ -80,17 +80,19 @@
  </body>
 
  <!-- SCRIPTS -->
- <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
- <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.csrf.js"></script>
 
  <script type="text/javascript">
   //Define the STATIC_URL to be used in the JS files.
   var STATIC_URL = "{{ STATIC_URL }}";
   var USER_SVG = "{{ STATIC_URL }}svgs/test.svg"
  </script>
-
- <script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
- <script type="text/javascript" src="{{ STATIC_URL }}/js/predictions.js" ></script>
+ 
+ <script type="text/javascript" src="{{ STATIC_URL }}js/universal.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/d3.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/predictions_d3.js" ></script>
+ <!-- <script type="text/javascript" src="{{ STATIC_URL }}js/predictions.js" ></script> -->
 
 
 </html>

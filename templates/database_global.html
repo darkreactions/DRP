@@ -33,19 +33,19 @@
  <!-- DATABASE MENU -->
  <div id="leftPanel">
   <div id="leftMenuContainer" class="genericContainer">
-   <div class="leftMenuButton genericButton popupActivator" title="Add new data." style="background-image: url({{ STATIC_URL }}/icons/add.png);"
+   <div class="leftMenuButton genericButton popupActivator" title="Add new data." style="background-image: url({{ STATIC_URL }}icons/add.png);"
     id="leftMenu_addNew"> </div>
-   <div class="leftMenuButton genericButton" title="Delete selection." style="background-image: url({{ STATIC_URL }}/icons/delete.png);"
+   <div class="leftMenuButton genericButton" title="Delete selection." style="background-image: url({{ STATIC_URL }}icons/delete.png);"
     id="leftMenu_delete"></div>
-   <div class="leftMenuButton genericButton" title="Duplicate selection." style="background-image: url({{ STATIC_URL }}/icons/duplicate.png);"
+   <div class="leftMenuButton genericButton" title="Duplicate selection." style="background-image: url({{ STATIC_URL }}icons/duplicate.png);"
     id="leftMenu_duplicate"></div>
-   <div class="leftMenuButton genericButton" title="Select page." style="background-image: url({{ STATIC_URL }}/icons/selectPage.png);"
+   <div class="leftMenuButton genericButton" title="Select page." style="background-image: url({{ STATIC_URL }}icons/selectPage.png);"
     id="leftMenu_selectPage"></div>
-   <div class="leftMenuButton genericButton" title="Select all data." style="background-image: url({{ STATIC_URL }}/icons/selectAll.png);"
+   <div class="leftMenuButton genericButton" title="Select all data." style="background-image: url({{ STATIC_URL }}icons/selectAll.png);"
     id="leftMenu_selectAll"></div>
-   <div class="leftMenuButton genericButton popupActivator" title="Upload CSV to database." style="background-image: url({{ STATIC_URL }}/icons/upload.png);"
+   <div class="leftMenuButton genericButton popupActivator" title="Upload CSV to database." style="background-image: url({{ STATIC_URL }}icons/upload.png);"
     id="leftMenu_uploadCSV"></div>
-   <div class="leftMenuButton genericButton popupActivator" title="Download database CSV." style="background-image: url({{ STATIC_URL }}/icons/download.png);"
+   <div class="leftMenuButton genericButton popupActivator" title="Download database CSV." style="background-image: url({{ STATIC_URL }}icons/download.png);"
     id="leftMenu_downloadCSV"></div>
   </div>
  </div>
@@ -60,10 +60,10 @@
    {% include "top_menu.html" %}
 
    <div id="searchButton" title="Search for a phrase." class="topMenuButton popupActivator"
-   style="background-image: url({{ STATIC_URL }}/icons/search.png);"></div>
+   style="background-image: url({{ STATIC_URL }}icons/search.png);"></div>
 
    <div id="CG_activatorButton" title="Edit the compound guide." class="topMenuButton popupActivator"
-   style="background-image: url({{ STATIC_URL }}/icons/compoundGuide.png);"></div>
+   style="background-image: url({{ STATIC_URL }}icons/compoundGuide.png);"></div>
 
   </div>
 
@@ -88,17 +88,17 @@
  <!-- SCRIPTS -->
  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
- <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.cookie.js"></script>
- <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.csrf.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.csrf.js"></script>
 
  <script type="text/javascript">
   //Define the STATIC_URL to be used in the JS files.
   var STATIC_URL = "{{ STATIC_URL }}";
  </script>
 
- <script type="text/javascript" src="{{ STATIC_URL }}/js/clientValidate.js" ></script>
- <script type="text/javascript" src="{{ STATIC_URL }}/js/universal.js" ></script>
- <script type="text/javascript" src="{{ STATIC_URL }}/js/database.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/clientValidate.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/universal.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/database.js" ></script>
 
 
 </html>

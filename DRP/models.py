@@ -10,8 +10,7 @@ from django.db.models import Q
 from validation import *
 import random, string, datetime
 from data_config import CONFIG
-import rdkit.Chem as Chem
-import chemspipy
+from chemspider_rdkit_extensions import *
 
 #############  CACHE VALIDATION and ACCESS  ###########################
 #Strip any spaces from the lab group title and/or the keys on cache access.
@@ -110,6 +109,8 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
   if dirty_data["CAS_ID"]:
    raw_CAS = dirty_data["CAS_ID"]
    clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
+  else:
+   clean_data["CAS_ID"]=""
  except Exception as e:
   clean_data["CAS_ID"] = ""
   errors["CAS_ID"] = e
@@ -132,6 +133,7 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
  #Make sure the compound exists in ChemSpider's database. ###Limits us to only ChemSpi?
  used_var = ""
  try:
+  print clean_data["CAS_ID"]
   if clean_data["CAS_ID"]:
    used_var = "CAS_ID"
   elif not errors.get("compound"):
@@ -146,130 +148,10 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
    errors["CAS_ID"] = "Could not validate CAS. Make sure it is correct."
   else:
    errors["compound"] = "Could not find this molecule. Try a different name."
-
  return clean_data, errors
 
+######HERE
 
-def chemspider_lookup(cg_entry):
- chemspi_query = ""
- try:
-  #Accept either a CompoundEntry object or a dict with the valid fields
-  search_fields = ["CAS_ID", "compound"]
-  if type(cg_entry)==dict:
-   query_criteria = [cg_entry.get(i) for i in search_fields if cg_entry.get(i)]
-  elif type(cg_entry)==CompoundEntry:
-   query_criteria = [getattr(cg_entry, i) for i in search_fields]
-  elif type(cg_entry)==str:
-   query_criteria = [cg_entry]
-
-  #Works for both dicts and CG_entries
-  assert(query_criteria)
- except:
-  raise Exception("chemspider_lookup accepts strings, dicts, or CompoundEntries")
-
- for i in query_criteria:
-  if i: #ChemSpider doesn't like empty requests.
-   chemspi_query = chemspipy.find_one(i)
-  if chemspi_query: break
-
- if chemspi_query:
-  return chemspi_query.imageurl, chemspi_query.smiles, chemspi_query.molecularweight
- else:
-  raise Exception("Could not find compound on ChemSpider!")
-
-def get_atoms_from_compound(CG_entry = None):
- return get_atoms_from_smiles(CG_entry.smiles)
-
-def get_atoms_from_smiles(smiles, show_hydrogen=False):
- if not smiles:
-  print "No smiles found!"
-  return []
-
- mols = Chem.MolFromSmiles(str(smiles),sanitize=False)
- if mols == None:
-  return []
- #TODO: Incorporate hydrogens into model.
- #if show_hydrogen:
- # try:
- #  mols = Chem.AddHs(mols) ###PRECONDITION?
- # except:
- #  pass
- atoms = mols.GetAtoms()
- return [atom.GetSymbol() for atom in atoms]
-
-def collect_CGs_by_abbrevs(lab_group, abbrev_list):
- CG_list = []
- for i in abbrev_list:
-  query = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i)
-  if query.exists(): #Don't append index an empty query; Django gets annoyed.
-   CG_list.append(query[0])
- return CG_list
-
-def get_smiles_from_CG_list(CG_list):
- smiles_list = [i.smiles for i in CG_list]
- return smiles_list
-
-def condense_smiles_list_to_atoms(smiles_list, show_hydrogen = False):
- atoms_list = []
- for i in smiles_list:
-  atoms_list += get_atoms_from_smiles(i, show_hydrogen)
- return set(atoms_list)
-
-def get_abbrevs_from_reaction(reaction):
- abbrevs_list = [getattr(reaction, "reactant_{}".format(i)) for i in CONFIG.reactant_range() if getattr(reaction, "reactant_{}".format(i))]
- return abbrevs_list
-
-def get_atom_set_from_abbrevs(lab_group, abbrev_list):
- return condense_smiles_list_to_atoms(
-  get_smiles_from_CG_list(
-   collect_CGs_by_abbrevs(lab_group, abbrev_list)
-   ), show_hydrogen=True
-  )
-
-def get_atom_set_from_reaction(reaction):
- return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
-
-def get_reactions_with_compound(compound):
- Q_string = ""
- abbrev = compound.abbrev
- for i in CONFIG.reactant_range():
-  Q_string += "Q(reactant_{}=\"{}\")|".format(i, abbrev)
-
- if Q_string:
-  Q_string = Q_string[:-1] #Remove the last trailing "|" if applicable.
-
- return eval("Data.objects.filter(lab_group=compound.lab_group).filter({})".format(Q_string))
-
-def update_compound(compound, update_data=True):
- try:
-  #Update the CG entry itself. Make sure "inorg" types don't query ChemSpider.
-  try:
-   compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
-   print "1"
-   print compound.compound_type, compound.abbrev
-  except:
-   print "2"
-   if compound.compound_type=="Inorg":
-    compound.image_url, compound.smiles, compound.mw = "","",""
-   else:
-    raise Exception("Could not find via ChemSpider!")
-   print "3"
-  compound.save()
-  print "4"
-
-  #Update the individual "atom" records on each reaction.
-  if update_data:
-   update_reactions(compound)
- except Exception as e:
-  print "Could not update {}\n\t{}".format(compound, e)
-
-def update_reactions(compound):
- #Update the individual "atom" records on each reaction.
- changed_reactions = get_reactions_with_compound(compound)
- for reaction in changed_reactions:
-  #Store the atoms as a string -- not a set.
-  reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
-  reaction.save()
 
 def update_all_compounds(lab_group=None):
  if lab_group:

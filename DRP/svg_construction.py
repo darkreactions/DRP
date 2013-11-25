@@ -11,15 +11,16 @@ def generate_svg(lab_group, step = "start", source=None):
  construct_entire_descriptor_table(lab_group)
  
  #Load the edges.dot file:
- overallGraph = pgv.AGraph(settings.DYNAMIC_DIR + "/dots/edges_short.dot")
+ overallGraph = pgv.AGraph(settings.DYNAMIC_DIR + "/dots/edges.dot")
+ overallGraph.edge_attr['color']='red'
  overallGraph.layout()
  
  ###Replacing seems to have no effect on return time.
- result = overallGraph.draw(format="svg").replace(
-  "stroke=\"red\"", "class=\"badNode generalNode\"").replace(
-  "stroke=\"yellow\"", "class=\"medNode generalNode\"").replace(
-  "stroke=\"blue\"", "class=\"goodNode generalNode\"").replace(
-  "style=\"filled\"", "")
+ result = overallGraph.draw(format="svg")#.replace(
+  #"stroke=\"red\"", "class=\"badNode generalNode\"").replace(
+  #"stroke=\"yellow\"", "class=\"medNode generalNode\"").replace(
+  #"stroke=\"blue\"", "class=\"goodNode generalNode\"").replace(
+  #"style=\"filled\"", "")
  
  return result
  

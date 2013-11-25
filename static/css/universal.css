@@ -323,6 +323,19 @@ div.ui-tooltip {
  margin-right:20px;
 }
 
+#svgContainer {
+ top:10px;
+ bottom:10px;
+ width:100%;
+ position:absolute;
+ overflow:hidden;
+
+ border-top-right-radius:0px;
+ border-bottom-right-radius:0px;
+ margin-left:-20px;
+ margin-right:20px;
+}
+
 #dataContainer_inner {
  position:relative;
  margin:10px;
@@ -718,8 +731,34 @@ padding-bottom:10px;
 .recommended_reactant {
  display: inline-block;
  margin:5px;
- margin-right:10px;
- margin-left:10px;
+}
+
+.recommendation {
+ margin-top: 10px;
+ padding:5px;
+ padding-left:10px;
+ background-color:#DCE9F4;
+ border-left:2px solid #B5D0E8;
+ border-radius: 5px;
+}
+
+.recommended_mass {
+ display: inline-block;
+ font-size:14px;
+ margin-right:5px;
+}
+
+.recommended_heading {
+ display: inline-block;
+ font-weight: bold;
+ margin-left: 8px;
+ margin-right: 3px;
+}
+
+.recommended_info {
+ font-style:oblique;
+ font-size: 14px;
+ margin-left:40px;
 }
 
 .recommended_score {
