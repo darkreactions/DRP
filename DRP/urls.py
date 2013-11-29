@@ -13,15 +13,15 @@ urlpatterns = patterns('',
     (r'^$', database),
     (r'^database/$', database), #Encompassing data view.
    #Change Page
-    (r'^data_transmit/(?P<num>\d+)/$', data_transmit), #Used for changing pages.
+    (r'^data_transmit/(?P<page>\d+)/$', data_transmit), #Used for changing pages.
    #Upload/Download Data
     (r'^upload_CSV/$', upload_CSV),
  (r'^download_CSV/$', download_CSV),
    #Modify Data
-    (r'^get_full_datum/$', get_full_datum), #"Expand" the data.
+    #(r'^get_full_datum/$', get_full_datum), #"Expand" the data.
     (r'^data_update/$', data_update), #Update Information
     (r'^data_form/$', data_form), #Form for adding new data.
-    (r'^data_form/(?P<copy_index>\d+)/$', data_form), #Form for adding new data.
+    (r'^data_form/(?P<copy_ref>[\w.-_]+)/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
     (r'^compound_guide_entry/$', compound_guide_entry), #Return a single CG table entry.
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.

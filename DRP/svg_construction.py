@@ -8,7 +8,7 @@ from construct_descriptor_table import *
 ###
 def generate_svg(lab_group, step = "start", source=None):
  ###Perform any additional calculations.
- construct_entire_descriptor_table(lab_group)
+ #construct_entire_descriptor_table(lab_group)
  
  #Load the edges.dot file:
  overallGraph = pgv.AGraph(settings.DYNAMIC_DIR + "/dots/edges.dot")

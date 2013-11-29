@@ -4,14 +4,14 @@ var edges = graph.selectAll(".edge").selectAll("path");
 var nodes = graph.selectAll(".node").selectAll("ellipse");
 
 var svgWidth = parseFloat(svg.attr("width"));
-var svgHeight = parseFloat(svg.attr("height"));
+var svgHeight = svg.getBoundingBox().height;
 var halfSvgWidth = svgWidth/2;
 var halfSvgHeight = svgHeight/2;
 
 svg
  .attr("preserveAspectRation", "none")
  .attr("width", "100%")
- .attr("height", "100%")
+ .attr("height", "100%");
  /* Mouse Navigation? Not stable/functional.
  .on("click", function(d) {
   var newLocation = d3.mouse(this);
@@ -30,39 +30,39 @@ svg
 });
 */
 
-
 nodes
  .transition()
  .duration(1000)
- .attr("rx", function(d,i){return (i+1)*5})
- .attr("ry", function(d,i){return (i+1)*5})
+ .attr("rx", function(d,i){return (i+1)*15})
+ .attr("ry", function(d,i){return (i+1)*15});
 
-  //Make the nodes fade in on mouse-in.
 nodes
- .on("mouseover", function(d) {
- d3.select(this)
-  .transition()
-  .duration(750)
-  .style("stroke","green")
-  .style("fill","green");
-})
+ .on("mouseover", function(d) { //Make the nodes fade in on mouse-in.
+  d3.select(this)
+   .transition()
+   .duration(750)
+   .style("stroke","purple")
+   .style("fill","cyan")
+   .style("stroke-width", "20")
+  })
  //Make the nodes fade out on mouse-out.
  .on("mouseout", function(d) {
- d3.select(this)
-  .transition()
-  .duration(750)
-  .attr("rx", 0)
-  .attr("ry",0)
-  .remove();
-})
+  d3.select(this)
+   .transition()
+   .duration(750)
+   .style("stroke","orange")
+   .attr("stroke-width", "20")
+ })
  .on("click", function(d) {
- d3.select(this)
-  .transition()
-  .duration(400)
-  .style("fill", "cyan")
-  .style("stroke", "navy")
-  .attr("rx", 100)
-  .attr("ry", 100);
+  //Zoom in on the circle that was clicked.
+  var cx = this.getBBox().x;
+  var cy = this.getBBox().y+svgHeight;  
+  var screen_radius = 600;
+  var newView = Array(cx-screen_radius, cy-screen_radius, cx+screen_radius, cy+screen_radius);
+  svg
+   .transition()
+   .duration(1000)
+   .attr("viewBox", newView.join(" ")); 
 });
 
 edges

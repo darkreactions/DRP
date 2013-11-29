@@ -348,22 +348,19 @@ $(document).on("click", ".popupActivator", function(event) {
  activatorID = $(this).attr("id");
 
  //"Forward" specific triggers to other popups.
+ var specificRef = "";
  if (activatorID == "leftMenu_addNew_copy") {
   activatorID = "leftMenu_addNew"
+  specificDatum =  $(this).siblings(".dataEntry").children(".type_ref")//Mark spaces in references by "+"
+  specificRef = $(specificDatum).html().trim().replace(" ","+");
   event.stopPropagation();
  }
 
  $("#popupContainer").attr("for", activatorID);
  switch (activatorID) {
   case "leftMenu_addNew":
-   var index = "";
-   //Get the data to copy if applicable.
-   if ($(this).attr("class").indexOf("duplicateSpecificDataButton") != -1) {
-    index = $(this).siblings(".dataIndex").html().trim();
-   }
-
    //Send the request to the server
-   $.get("/data_form/"+index, function(response) {
+   $.get("/data_form/"+specificRef, function(response) {
     $("#popupContainer_inner").html(response);
 
     //Get the auto-complete options form the CG guide. ###SOME ERROR HERE, CASEY
@@ -408,6 +405,7 @@ $(document).on("click", ".popupActivator", function(event) {
    current_query = Array();
    $.get("/search/", function(response) {
     $("#popupContainer_inner").html(response);
+    $("#popupContainer").addClass("noMaskPopup");
     $("#tabs").tabs({active: 1});
    });
    break;

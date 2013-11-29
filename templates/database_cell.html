@@ -4,11 +4,9 @@
    <div class="dataGroup dataGroup_shape genericContainer_inner 
    {% if not entry.is_valid %}badDataGroup{% endif %}" id="g_{{entryID}}">
     <div class="dataIndex">{{ entryID }}</div>
-    <div class="expandButton">More...</div> 
     <div class="dataEntry">
       <!-- REACTION -->
-     <div class="dataField type_ref" editAs="text">{{entry.ref}}</div>
-     <div class="type_user">{{entry.user}}</div>
+     {% include "full_datum.html" %}
     </div>
    </div>
   {% endfor %}

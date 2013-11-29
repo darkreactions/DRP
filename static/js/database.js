@@ -291,19 +291,6 @@ $(document).on("mouseleave", ".dataGroup", function() {
 
 //############### Change Data: #########################################
 
-//Duplicate Button
-$("#leftMenu_duplicate").click(function() {
- if (selectedData.length) {
-  for (var i in selectedData) {
-   changesMade.dupl.push(selectedData[i]);
-  }
-  showRibbon("Duplicated!", "#99FF5E", "#dataContainer", true);
-
-  //Upload updated data
-  submitChanges();
- }
-});
-
 //Delete Button
 //Ask for confirmations for deletions.
 $("#leftMenu_delete").click(function() {
@@ -325,8 +312,6 @@ $("#leftMenu_delete").click(function() {
     "Delete Selection": function() {
      for (var i in selectedData) {
       changesMade.del.push(selectedData[i]);
-      //Immediately delete the data from the client's view ("#g_x" represents group ID).
-      $("#g_"+String(selectedData[i])).remove()
      }
      selectedData = [];
 
@@ -351,6 +336,7 @@ $("#leftMenu_delete").click(function() {
 //Initiate edit session.
 var editExemptions = ["searchResultsContainer"]
 $(document).on("click", ".editable", function() {
+ var refToChange = $(this).siblings(".type_ref").html().trim();
  //Skip any data that should not be edited. //###
  if (editExemptions.indexOf($(".editable").parent().parent().attr("id")) != -1) {
   return false;
@@ -365,7 +351,8 @@ $(document).on("click", ".editable", function() {
   if (editAs == "select") {
    var options = getOptions($(this).attr("class").split(" ")[1].substr(5));
    var newInnards = "<select class=\"editField editMenu dropDownMenu\""
-   +"oldVal=\""+oldVal+"\">";
+    + "refToChange=\"" + refToChange + "\" "
+    +"oldVal=\""+oldVal+"\">";
    for (var i in options) {
     var choice = options[i];
     if (oldVal == choice) {
@@ -379,9 +366,10 @@ $(document).on("click", ".editable", function() {
    $(this).children(".editMenu").focus();
    $(this).attr("title","");
   } else {
-   $(this).html("<input class=\"editField editText\" type=\"" + editAs
-    + "\" oldVal=\""+ oldVal
-    + "\" value=\"" + oldVal + "\" />"
+   $(this).html("<input class=\"editField editText\" type=\"" + editAs + "\" "
+    + "refToChange=\"" + refToChange + "\" "
+    + "oldVal=\""+ oldVal + "\" "
+    + "value=\""+ oldVal + "\" />"
     + "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
     );
    adaptSize($(this).children(".editText"));
@@ -484,7 +472,7 @@ $(document).on("click", ".editConfirm", function() {
    } else {
     //Send edits for the Database View
     changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
-     $(this).parent().parent().siblings(".dataIndex").html().trim(),
+     $(editFieldSibling).attr("refToChange"),
      fieldChanged,
      newValue
      ]);

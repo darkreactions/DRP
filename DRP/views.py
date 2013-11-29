@@ -16,118 +16,238 @@ from svg_construction import *
 #from construct_descriptor_table import *
 from data_config import CONFIG
 
+# # # # # # # # # # # # # # # # # # #
+  # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # #
+def get_lab_data(lab_group):
+ return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
 
-######################  Controllers  ###################################
+def get_public_data(lab_group):
+ #Only show the public data that is_valid.
+ return Data.objects.filter(public=True, is_valid=True).order_by("creation_time")
 
-#Manages pages and data:
-class DataManager(object):
- def __init__(self):
-  self.data_per_page = 15 #Change to set different numbers of data per page.
-  self.current_radius = 4 #Max number of links to display "around" current link.
+#Returns a specific datum if it is public or if it belongs to a lab_group.
+def get_datum(lab_group, ref):
+ query = Data.objects.filter(Q(ref=ref), Q(lab_group=lab_group) | Q(public=True))
+ if not query.exists():
+  raise Exception("Datum not found!")
+ return query[0]
+ 
+def get_lab_data_size(lab_group):
+ size = get_cache(lab_group, "TOTALSIZE")
+ if not size:
+  size = get_lab_data(lab_group).count()
+  set_cache(lab_group, "TOTALSIZE", size)
+ return size
 
- #Collect all data relevant to a specific lab group.
- def collect_all_data(self, lab_group):
-  return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
+def calc_total_pages(data_size):
+ total_pages = 1 + int((data_size-1)/CONFIG.data_per_page)
+ return total_pages if total_pages > 1 else 1
 
- def calc_total_pages(self, lab_group, total_data_size = None):
-  if not total_data_size:
-   total_data_size = get_cache(lab_group, "TOTALSIZE")
-  total_pages = 1 + int((total_data_size-1)/self.data_per_page)
-  if (total_pages < 1): total_pages = 1
-  set_cache(lab_group, "TOTALPAGES", total_pages)
-  return total_pages
+def get_page_link_format(current, total):
+ #Variable Setup:
+ radius = CONFIG.current_page_radius
+ data_per_page = CONFIG.data_per_page
 
- #Erases the cached page which contains a specific index.
- def clear_page_of(self, lab_group, indexChanged):
-  page = (indexChanged/self.data_per_page) + 1
-  set_cache(lab_group, "PAGEDATA|{}".format(page), None)
-
- def clear_all_page_caches(self, lab_group):
-  for page in xrange(1, self.calc_total_pages(lab_group)+1):
-   set_cache(lab_group, "PAGEDATA|{}".format(page), None)
-
- def get_page_links(self, current, total_pages):
-  #Always display the first page.
-  page_links = {1} #Use a set to remove any duplicates.
-
-  if total_pages > 1:
-   for i in range(current - self.current_radius, current + self.current_radius+1):
-    if (1 < i < total_pages): page_links.add(i)
-
-   #Always display the last page if applicable.
-   page_links.add(total_pages)
-
+ #Always display at least page one.
+ page_set = {1}
+ if total==1:
+  return list(page_set)
+ else:
+  for i in xrange(current-radius, current+radius+1):
+   if (1 < i < total): page_set.add(i)
+  page_set.add(total) #Always show the last page.
+ 
   #Convert page_links to an ordered list.
-  page_links = list(page_links)
-  page_links.sort()
+  raw_page_links = list(page_set)
+  raw_page_links.sort()
 
-  if len(page_links) >= 2:
-   i=0
-   while i < len(page_links):
-    try:
-     if page_links[i+1]-page_links[i] > 1: #If a gap exists between two numbers, add an ellipsis.
-      page_links.insert(i+1,"...")
-      i+=1 #Extra addition to account for the new "..." element.
-    except:
-     pass #At the last element of the list or an error, just skip.
-    i += 1
+  page_links = []
+  for i in raw_page_links:
+   if page_links and i-page_links[-1]>1:
+    page_links.append("...")#Add an ellipsis between any pages that have a gap between them.
+    page_links.append(i)
+   else:
+    page_links.append(i) 
   return page_links
 
- #Returns the data relevant to a given page (from a cursor).
- # Note: Will skip lookup if given lab_data or if not set to overwrite.
- def retrieve_data(self, user, page = 1, overwrite = False, lab_data = None):
-  if not user.is_authenticated():
-   raise Exception("User not logged in.")
-  lab_group = user.get_profile().lab_group
+def get_pagified_data(page, lab_group=None, data=None):
+ #Variable Setup:
+ data_per_page = CONFIG.data_per_page
 
-  #Only retrieve lab_data if it is not already available.
-  cached_data = get_cache(lab_group, "PAGEDATA|{}".format(page))
-
-  if not cached_data or overwrite:
-   if not lab_data.exists():
-    lab_data = self.collect_all_data(user.get_profile().lab_group)
-   #Apply the cursor to the lab data if applicable.###
-   #Only return the data on the given page.
-   rel_lab_data = lab_data[(page-1)*self.data_per_page:(page)*self.data_per_page]
-   #Overwrite the existing cache entry.
-   set_cache(lab_group, "PAGEDATA|{}".format(page), list(rel_lab_data))
-  else:
-   rel_lab_data = cached_data
-  return rel_lab_data
-
- def get_page_info(self, request, current_page = None):
-  u = request.user
-  if not u.is_authenticated():
-   raise Exception("User not logged in.")
+ #Get the Lab's data if data is not specified. 
+ if not data:
   try:
-   #Gather necessary information from the user's session:
-   if not current_page:
-    try:
-     current_page = int(request.COOKIES.get("current_page"))
-    except:
-     current_page = 1 #If no page is known, assume 1.
-   lab_group = u.get_profile().lab_group
-   lab_data = self.collect_all_data(lab_group)
-   total_data_size = lab_data.count()
-   set_cache(lab_group, "TOTALSIZE", total_data_size)
-   total_pages = self.calc_total_pages(lab_group, total_data_size)
+   data = get_lab_data(lab_group)
+  except:
+   raise Exception("No data nor lab_group was specified.")
+ total_pages = calc_total_pages(data.count())
 
-   #Make sure the page is a valid page.
-   if not (0 < current_page <= total_pages):
-    current_page = total_pages
+ #Check that the page request is valid.
+ if not (0<page<=total_pages):
+  raise Exception("Page requested is outside of page range.")
 
-   #Pack up the session info:
-   session = {
-    "relevant_data": self.retrieve_data(u, current_page, False, lab_data),
-    "total_data_size": total_data_size,
-    "total_pages": total_pages,
-    "page_links": self.get_page_links(current_page, total_pages),
-    "current_page": current_page,
-   }
-   return session
-  except Exception as e:
-   raise Exception("-Data could not be retrieved for page {}\n--{}.".format(current_page, e))
+ #Return the data that would be contained on the requested page.
+ page_data = data[(page-1)*data_per_page:page*data_per_page]
+ return page_data
 
+#Get data before/after a specific date (ignoring time).
+def get_date_filtered_data(lab_group, raw_date, direction="after", lab_data=None):
+ #Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
+ date = str(datetime.datetime.strptime(raw_date, "%m-%d-%y"))
+
+ #Only get the data that belongs to a specific lab_group.
+ if lab_data:
+  lab_data = lab_data.filter(lab_group=lab_group)
+ else:
+  lab_data = get_lab_data(lab_group)
+
+ #Get the reactions before/after a specific date.
+ if direction.lower() == "after":
+  filtered_data = lab_data.filter(creation_time__gte=date_string)
+ else:
+  filtered_data = lab_data.filter(creation_time__lte=date_string)
+
+ return filtered_data
+ 
+#Returns the info that belongs on a specific page.
+def get_page_info(request, page = None, data=None):
+ try:
+  #Gather necessary information from the user's session:
+   #Get the user's current_page (or 1 if it is unknown.
+  if not page:
+    page = int(request.COOKIES.get("current_page", 1))
+  
+  if not data:
+   u = request.user
+   if u.is_authenticated():
+    data = get_lab_data(u.get_profile().lab_group) ###TODO: Union this with public_data for lab_group?
+   else:
+    data = get_public_data()
+  
+  total_data_size = data.count()
+  total_pages = calc_total_pages(total_data_size)
+
+  #Make sure the page is a valid page. If not, go to the last page.
+  if not (0 < page <= total_pages):
+   page = total_pages
+
+  #Pack up the session info:
+  session = {
+   "page_data": get_pagified_data(page, data=data),
+   "total_data_size": total_data_size,
+   "total_pages": total_pages,
+   "page_links": get_page_link_format(page, total_pages),
+   "current_page": page,
+  }
+  return session
+ except Exception as e:
+  raise Exception("Data could not be retrieved for page {}:\n--{}.".format(page, e))
+
+def repackage_page_session(session):
+ data = session["page_data"]
+ total_pages = session["total_pages"]
+ page_links = session["page_links"]
+ current_page = session["current_page"]
+ total_data_size = session["total_data_size"]
+
+ #Show the overall index of each datum.
+ start_index = (current_page-1)*CONFIG.data_per_page + 1
+ end_index = (current_page)*CONFIG.data_per_page + 1
+
+ #Prepare packages.
+ data_package = zip(data, range(start_index, end_index))
+ page_package = {
+  "current_page":current_page,
+  "total_pages":total_pages,
+  "data_per_page":CONFIG.data_per_page,
+  "page_links":page_links,
+  }
+ return data_package, page_package, total_data_size
+
+# # # # # # # # # # # # # # # # # # #
+  # # # # # # # # Caching Functions # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # #
+def clear_page_cache(lab_group, page):
+ set_cache(lab_group, "PAGEDATA|{}".format(page), None)
+
+def clear_page_cache_of_index(lab_group, indexChanged):
+ page = (indexChanged/CONFIG.data_per_page) + 1
+ clear_page_cache(lab_group, page)
+
+def clear_all_page_caches(lab_group, skip_data_check=False):
+ if skip_data_check:
+  total_pages = get_cache(lab_group, "TOTALPAGES")
+ else:
+  total_pages = calc_total_pages(get_lab_data(lab_group).count())
+ for i in xrange(1, total_pages+1):
+  clear_page_cache(lab_group, i)
+
+# # # # # # # # # # # # # # # # # # #
+  # # # # # # # # View Functions # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # #
+def get_template_form(entry, model):
+ result = {}
+ if model=="Recommendation":
+  result["reaction"] = [[getattr(entry, "reactant_{}".format(i)), getattr(entry, "quantity_{}".format(i)), getattr(entry, "unit_{}".format(i))] for i in CONFIG.reactant_range()]
+  fields = get_model_field_names(model="Recommendation", unique_only=True)
+  verbose_fields = get_model_field_names(verbose=True, model="Recommendation", unique_only=True)
+  result["info"] = [[i, getattr(entry,j)] for (i,j) in zip(verbose_fields, fields)] 
+ else:
+  raise Exception("Model type not found!") 
+ return result
+
+# # # # # # # # # # # # # # # # # # #
+  # # # # # # # # View Functions # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # #
+def database(request, global_data=False):
+ #Organize the session information.
+ session = get_page_info(request)
+ data_package, page_package, total_data_size = repackage_page_session(session)
+ return render(request, 'database_global.html', {
+  "data_on_page": data_package, #Includes data and data_indexes.
+  "page_package": page_package,
+  "total_data_size": total_data_size,
+ })
+
+def data_transmit(request, page = 1):
+ try:
+  #Organize the session information.
+  session = get_page_info(request, page=int(page))
+  data_package, page_package, total_data_size = repackage_page_session(session)
+  return render(request, 'data_and_page_container.html', {
+   "data_on_page": data_package, #Includes data indexes
+   "page_package": page_package, #Includes page links
+   "total_data_size": total_data_size,
+  })
+ except Exception as e:
+  raise Exception("Could not transmit data for page: {}".format(page))
+
+def recommend(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
+ #Get user data if it exists.
+ u = request.user
+ if u.is_authenticated():
+  fatal_message = ""
+  recommendation_query = get_recommendations_by_date(u.get_profile().lab_group)
+  recommendations = [get_template_form(i, "Recommendation") for i in recommendation_query] 
+ else:
+  fatal_message = "Please log in to view recommendations."
+  recommendations = None
+
+ return render(request, 'recommend_global.html', {
+  "recommendations": recommendations,
+  "fatal_message": fatal_message,
+ })
+
+####################################################
+####################################################
+####################################################
+####################################################
+############   REWRITTEN THUS FAR ##################
+####################################################
+####################################################
+####################################################
+####################################################
 def revalidate_all_data(lab_group, invalid_only = True, return_errors=False):
  data_to_validate = Data.objects.filter(lab_group=lab_group)
 
@@ -158,98 +278,41 @@ def revalidate_all_data(lab_group, invalid_only = True, return_errors=False):
     error_log["pH"].append(getattr(data, "ref"))
 
   #Clear the page caches
-  control.clear_all_page_caches(lab_group)
+  clear_all_page_caches(lab_group)
   if return_errors:
    return error_log
 
-control = DataManager()
-
-######################  Analysis Functions  ####################################
-#Return all data before/after a specific date (ignoring time).
-def filter_by_date(lab_data, raw_date, direction="after"):
- #Convert the date input into a usable string.
- #Note, date must be given as MM-DD-YY.
- date = datetime.datetime.strptime(raw_date, "%m-%d-%y")
- date_string = str(date)
-
- #Get the reactions before/after a specific date.
- if direction.lower() == "after":
-  print "Getting data AFTER {}".format(date_string)###
-  filtered_data = lab_data.filter(creation_time__gte=date_string)
- else:
-  print "Getting data BEFORE {}".format(date_string)###
-  filtered_data = lab_data.filter(creation_time__lte=date_string)
-
- return filtered_data
-
 
 ######################  Core Views  ####################################
-def database(request, control = control):
- #Get user data if it exists.
- u = request.user
- if u.is_authenticated():
-  session = control.get_page_info(request)
-  relevant_data = session["relevant_data"]
-  total_pages = session["total_pages"]
-  page_links = session["page_links"]
-  current_page = session["current_page"]
-  total_data_size = session["total_data_size"]
- else:
-  relevant_data = Data.objects.none() #Don't query the database if U is not logged in.
-  total_pages = 1
-  page_links = [1]
-  current_page = 1
-  total_data_size = 0
 
- #Show the overall index of each datum.
- start_index = (current_page-1)*control.data_per_page + 1
- end_index = (current_page)*control.data_per_page + 1
-
- #Prepare packages.
- data_package = zip(relevant_data, range(start_index, end_index))
- page_package = {
-  "current_page":current_page,
-  "total_pages":total_pages,
-  "data_per_page":control.data_per_page,
-  "page_links":page_links,
-  }
-
- return render(request, 'database_global.html', {
-  "data_on_page": data_package, #Includes data and data_indexes.
-  "page_package": page_package,
-  "total_data_size": total_data_size,
- })
-
-
+###TODO: Modify to get recommendations from DB
 def get_reactants(lst): ###TODO: GENERALIZE
  reactant_info = [[lst[i-3],lst[i-2],lst[i-1]] for i in range(3,len(lst),3)]
  return reactant_info
   
 def get_info(lst): ###TODO: GENERALIZE
  #Get from Temperature on -- excluding Notes.
- verbose_headers = get_model_field_names(verbose=True, model="Data")[16:-1]
+ verbose_headers = get_model_field_names(verbose=True, model="Data")[16:]
  info = [[i, j] for (i,j) in zip(verbose_headers, lst)]
  return info 
 
-def recommend(request): ###TODO: Fix me, Casey
- #Parse the list
+def get_recommendations_by_date(lab_group, date = "recent"):
+ if date=="recent":
+  #Get the most recent version of the model.
+  try:
+   version = Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("date")[0]
+   date = version.date
+  except Exception as e:
+   raise Exception("Could not find any version of the model: {}".format(e))
 
- #Get user data if it exists.
- u = request.user
- if u.is_authenticated():
-  fatal_message = ""
-  #recommendations = collect_recommendations(lab_group)
-  recommendations = [(0.030158102766798426, ('NH4VO3', u'malH2', u'tepa'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'malH2', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.030158102766798426, ('NH4VO3', u'malH2', u'peha'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'malH2', 0.0005, 'g', u'peha', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.036079051383399216, ('NH4VO3', u'malH2', u'teta'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'malH2', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.04592885375494071, ('NH4VO3', u'malH2', u'tmed'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'malH2', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.04815568022440394, ('NH4VO3', u'phtH2', u'tepa'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'phtH2', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.04815568022440394, ('NH4VO3', u'i-phtH2', u'tepa'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'i-phtH2', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.04815568022440394, ('NH4VO3', u'i-phtH2', u'peha'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'i-phtH2', 0.0005, 'g', u'peha', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.050239234449760764, ('NH4VO3', u'malH2', u'pip'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'malH2', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.05350631136044881, ('NH4VO3', u'pyz-COOH', u'tepa'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'pyz-COOH', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.057610098176718104, ('NH4VO3', u'phtH2', u'teta'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'phtH2', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.057610098176718104, ('NH4VO3', u'i-phtH2', u'teta'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'i-phtH2', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.0637959866220736, ('NH4VO3', u'squH2', u'tepa'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'squH2', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.06401122019635344, ('NH4VO3', u'pyz-COOH', u'teta'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'pyz-COOH', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.07333800841514727, ('NH4VO3', u'phtH2', u'tmed'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'phtH2', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.07333800841514727, ('NH4VO3', u'i-phtH2', u'tmed'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'i-phtH2', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.07632107023411373, ('NH4VO3', u'squH2', u'teta'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'squH2', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.08022071307300509, ('NH4VO3', u'phtH2', u'pip'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'phtH2', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.08022071307300509, ('NH4VO3', u'i-phtH2', u'pip'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'i-phtH2', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.0814866760168303, ('NH4VO3', u'pyz-COOH', u'tmed'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'pyz-COOH', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.09715719063545152, ('NH4VO3', u'squH2', u'tmed'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'squH2', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.3188571428571429, (u'H2SeO4', 'NH4VO3', u'en'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'en', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.3188571428571429, (u'85H3PO4', 'NH4VO3', u'en'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'en', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.3188571428571429, (u'H2SO4', 'NH4VO3', u'en'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'en', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.3188571428571429, (u'CsOH', 'NH4VO3', u'en'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'en', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.3188571428571429, (u'HF', 'NH4VO3', u'en'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'en', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'H2SeO4', 'NH4VO3', u'tepa'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'85H3PO4', 'NH4VO3', u'tepa'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'H2SO4', 'NH4VO3', u'tepa'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'CsOH', 'NH4VO3', u'tepa'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'HF', 'NH4VO3', u'tepa'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tepa', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'H2SeO4', 'NH4VO3', u'peha'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'peha', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'85H3PO4', 'NH4VO3', u'peha'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'peha', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'H2SO4', 'NH4VO3', u'peha'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'peha', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'CsOH', 'NH4VO3', u'peha'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'peha', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.33173913043478265, (u'HF', 'NH4VO3', u'peha'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'peha', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.39686956521739136, (u'H2SeO4', 'NH4VO3', u'teta'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.39686956521739136, (u'85H3PO4', 'NH4VO3', u'teta'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.39686956521739136, (u'H2SO4', 'NH4VO3', u'teta'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.39686956521739136, (u'CsOH', 'NH4VO3', u'teta'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.39686956521739136, (u'HF', 'NH4VO3', u'teta'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'teta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.403, (u'H2SeO4', 'NH4VO3', u'deta'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.403, (u'85H3PO4', 'NH4VO3', u'deta'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.403, (u'H2SO4', 'NH4VO3', u'deta'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.403, (u'CsOH', 'NH4VO3', u'deta'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.403, (u'HF', 'NH4VO3', u'deta'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deta', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.44692307692307687, (u'H2SeO4', 'NH4VO3', u'dmeed'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dmeed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.44692307692307687, (u'85H3PO4', 'NH4VO3', u'dmeed'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dmeed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.44692307692307687, (u'H2SO4', 'NH4VO3', u'dmeed'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dmeed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.44692307692307687, (u'CsOH', 'NH4VO3', u'dmeed'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dmeed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.44692307692307687, (u'HF', 'NH4VO3', u'dmeed'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dmeed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5, (u'H2SeO4', 'NH4VO3', u'dea'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dea', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5, (u'85H3PO4', 'NH4VO3', u'dea'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dea', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5, (u'H2SO4', 'NH4VO3', u'dea'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dea', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5, (u'CsOH', 'NH4VO3', u'dea'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dea', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5, (u'HF', 'NH4VO3', u'dea'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'dea', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5052173913043478, (u'H2SeO4', 'NH4VO3', u'tmed'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5052173913043478, (u'85H3PO4', 'NH4VO3', u'tmed'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5052173913043478, (u'H2SO4', 'NH4VO3', u'tmed'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5052173913043478, (u'CsOH', 'NH4VO3', u'tmed'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5052173913043478, (u'HF', 'NH4VO3', u'tmed'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'tmed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5249999999999999, (u'H2SeO4', 'NH4VO3', u'deed'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5249999999999999, (u'85H3PO4', 'NH4VO3', u'deed'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5249999999999999, (u'H2SO4', 'NH4VO3', u'deed'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5249999999999999, (u'CsOH', 'NH4VO3', u'deed'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5249999999999999, (u'HF', 'NH4VO3', u'deed'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'deed', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.545, ('NH4VO3', u'peha', u'squH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'peha', 0.0005, 'g', u'squH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.545, ('NH4VO3', u'peha', u'pyz-COOH'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'peha', 0.0005, 'g', u'pyz-COOH', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.545, ('NH4VO3', u'peha', u'phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'peha', 0.0005, 'g', u'phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5526315789473684, (u'H2SeO4', 'NH4VO3', u'pip'), ['--', u'H2SeO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5526315789473684, (u'85H3PO4', 'NH4VO3', u'pip'), ['--', u'85H3PO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5526315789473684, (u'H2SO4', 'NH4VO3', u'pip'), ['--', u'H2SO4', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5526315789473684, (u'CsOH', 'NH4VO3', u'pip'), ['--', u'CsOH', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.5526315789473684, (u'HF', 'NH4VO3', u'pip'), ['--', u'HF', 0.0052499999999999995, 'g', 'NH4VO3', 0.0005, 'g', u'pip', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'deta', u'squH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deta', 0.0005, 'g', u'squH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'deta', u'pyz-COOH'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deta', 0.0005, 'g', u'pyz-COOH', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'deta', u'phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deta', 0.0005, 'g', u'phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'deta', u'i-phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deta', 0.0005, 'g', u'i-phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'deta', u'malH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deta', 0.0005, 'g', u'malH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'en', u'squH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'en', 0.0005, 'g', u'squH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'en', u'pyz-COOH'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'en', 0.0005, 'g', u'pyz-COOH', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'en', u'phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'en', 0.0005, 'g', u'phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'en', u'i-phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'en', 0.0005, 'g', u'i-phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.558, ('NH4VO3', u'en', u'malH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'en', 0.0005, 'g', u'malH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'pip', u'squH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'pip', 0.0005, 'g', u'squH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'pip', u'pyz-COOH'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'pip', 0.0005, 'g', u'pyz-COOH', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'deed', u'squH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deed', 0.0005, 'g', u'squH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'deed', u'pyz-COOH'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deed', 0.0005, 'g', u'pyz-COOH', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'deed', u'phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deed', 0.0005, 'g', u'phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'deed', u'i-phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deed', 0.0005, 'g', u'i-phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'deed', u'malH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'deed', 0.0005, 'g', u'malH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'dea', u'squH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dea', 0.0005, 'g', u'squH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'dea', u'pyz-COOH'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dea', 0.0005, 'g', u'pyz-COOH', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'dea', u'phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dea', 0.0005, 'g', u'phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'dea', u'i-phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dea', 0.0005, 'g', u'i-phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.75, ('NH4VO3', u'dea', u'malH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dea', 0.0005, 'g', u'malH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.83, ('NH4VO3', u'dmeed', u'squH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dmeed', 0.0005, 'g', u'squH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.83, ('NH4VO3', u'dmeed', u'pyz-COOH'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dmeed', 0.0005, 'g', u'pyz-COOH', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.83, ('NH4VO3', u'dmeed', u'phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dmeed', 0.0005, 'g', u'phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.83, ('NH4VO3', u'dmeed', u'i-phtH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dmeed', 0.0005, 'g', u'i-phtH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, '']), (0.83, ('NH4VO3', u'dmeed', u'malH2'), ['--', 'NH4VO3', 0.0052499999999999995, 'g', u'dmeed', 0.0005, 'g', u'malH2', 0.0005, 'g', 'water', 0.0005, 'g', '', '', '', 70, 30, 1, 'yes', 'no', 4, 2, ''])][::-1]
-  
-  parsed_recommendations = [[i[0], get_reactants(i[2][1:16]), get_info(i[2][16:-1])] for i in recommendations]
- else:
-  fatal_message = "Please log in to view predictions."
-  parsed_recommendations = []
+ #Get the data associated with a specific date. ###TODO: Probably should be "creation_time"
+ try:
+  recommendations = Recommendation.objects.filter(lab_group=lab_group, date=date).order_by("score")
+ except Exception as e:
+  raise Exception("Could not find any version of the model: {}".format(e))
 
- return render(request, 'recommend_global.html', {
-  "recommendations": parsed_recommendations,
-  "fatal_message": fatal_message,
- })
+ return recommendations
+
 
 ###
 import time
@@ -263,17 +326,18 @@ def predictions(request):
  if u.is_authenticated():
   try:
    lab_group = u.get_profile().lab_group
-   svg = None#get_cache(lab_group, "TESTSVG")###
+   svg = get_cache(lab_group, "TESTSVG")###
    if not svg:
     start_time = time.time()###
     #Attempt to validate any invalid data.
     ###revalidate_all_data(lab_group) ###Validates all data or just user data?
 
     #Create and cache the SVG.
+    print "Generating SVG..."
     svg = generate_svg(u.get_profile().lab_group)
     print "Took {} seconds overall.".format(time.time()-start_time)###
 
-    set_cache(lab_group, "TESTSVG", svg, 86400)
+    set_cache(lab_group, "TESTSVG", svg)
   except Exception as e:
    fatal_message = e
   #construct_descriptor_table("cat","dog")
@@ -555,49 +619,43 @@ def guess_type(datum):
 
 ######################  Database Functions  ############################
 #Send/receive the data-entry form:
-def data_form(request, copy_index=None): #If no data is entered, stay on the current page.
+def data_form(request, copy_ref=None): #If no data is entered, stay on the current page.
  u = request.user
  success = False
- if request.method == 'POST' and u.is_authenticated():
-  #Bind the user's data and verify that it is legit.
-  form = DataEntryForm(user=u, data=request.POST)
-  if form.is_valid():
-   #If all data is valid, save the entry.
-   form.save()
-   lab_group = u.get_profile().lab_group
-
-   #Clear the cache of the last page.
-   old_data_size = get_cache(lab_group, "TOTALSIZE")
-   control.clear_page_of(lab_group, old_data_size)
-
-   #Refresh the TOTALSIZE cache.
-   set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
-   set_cache(lab_group, "REFS", None)
-   success = True #Used to display the ribbonMessage.
+ if u.is_authenticated():
+  if request.method == 'POST':
+   #Bind the user's data and verify that it is legit.
+   form = DataEntryForm(user=u, data=request.POST)
+   if form.is_valid():
+    #If all data is valid, save the entry.
+    form.save()
+    lab_group = u.get_profile().lab_group
+ 
+    #Clear the cache of the last page.
+    old_data_size = get_lab_data_size(lab_group)
+    clear_page_cache_of_index(lab_group, old_data_size)
+ 
+    #Refresh the TOTALSIZE cache.
+    set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
+    success = True #Used to display the ribbonMessage.
+  else:
+   #Submit a blank form or an auto-filled form if a ref is supplied.
+   if copy_ref==None:
+    form = DataEntryForm(
+     initial={"leak":"No"}
+    )
+   else:
+    datum = get_datum(u.get_profile().lab_group, copy_ref.replace("+"," "))
+    initial_fields = {field:getattr(datum, field) for field in get_model_field_names(model="Data")}
+    form = DataEntryForm(
+     initial=initial_fields
+    )
+  return render(request, 'data_form.html', {
+   "form": form,
+   "success": success,
+  })
  else:
-  #Submit a blank/auto-filled form if one was not just submitted.
-  try:
-   #Verify that an index is given is present.
-   assert(copy_index != None)
-   datum = control.collect_all_data(u.get_profile().lab_group)[int(copy_index)-1]
-   #Get the data from a specific index.
-   initial_fields = {}
-   for field in get_model_field_names(model="Data"):
-    initial_fields[field] = getattr(datum, field)
-   form = DataEntryForm(
-    initial=initial_fields
-   )
-
-  except:
-   form = DataEntryForm(
-    initial={"leak":"No"}
-   )
-
- return render(request, 'data_form.html', {
-  "form": form,
-  "success": success,
- })
-
+  return HttpResponse("You do not have access to this datum.")
  ##################  Helper Functions ###############################
 
 #Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
@@ -954,10 +1012,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
 
     #Remove the cached version of the last page.
     old_data_size = get_cache(lab_group, "TOTALSIZE")
-    control.clear_page_of(lab_group, old_data_size)
-
-    #Clear any other caches.
-    set_cache(lab_group, "REFS", None)
+    clear_page_cache_of_index(lab_group, old_data_size)
 
     #Add the new data to the cached size.
     set_cache(lab_group, "TOTALSIZE", old_data_size+len(entry_list))
@@ -1040,7 +1095,7 @@ def download_CSV(request): ###Need to fix.
    writer.writerow(verbose_headers)
 
    #Gather the data and filter it depending on what the user wants.
-   collected_data = control.collect_all_data(lab_group)
+   collected_data = get_lab_data(lab_group)
 
    if data_filter=="good":
     CSV_data = collected_data.filter(is_valid=True)
@@ -1091,7 +1146,7 @@ def download_error_log(request): ###Nothing done yet... ;B
 
   #Write the actual entries to the CSV_file if the user is authenticated.
   headers = get_model_field_names(verbose=False)
-  lab_data = control.collect_all_data(u.get_profile().lab_group)
+  lab_data = get_lab_data(u.get_profile().lab_group)
 
   for entry in lab_data:
    row = []
@@ -1111,43 +1166,6 @@ def download_error_log(request): ###Nothing done yet... ;B
   return HttpResponse("<p>Please log in to download data.</p>")
 
 ######################  Change Page ####################################
-def data_transmit(request, num = 1, control=control):
- try:
-  if request.method == "GET" and request.user.is_authenticated():
-   #Get the request information.
-   u = request.user
-   session = control.get_page_info(request, int(num))
-
-   #Get the necessary data for a page change.
-   relevant_data = session["relevant_data"]
-   total_pages = session["total_pages"]
-   page_links = session["page_links"]
-   current_page = session["current_page"]
-   total_data_size = session["total_data_size"]
-
-   #Only send the data on the requested page. Note that Lab_Group.saved_data is a 0-based index.
-   start_index = (current_page-1)*control.data_per_page
-   end_index = (current_page)*control.data_per_page
-   index_range = range(start_index+1, end_index+1) #1-based index for IDs (para los users).
-
-   #Prepare packages.
-   data_package = zip(relevant_data, index_range)
-   page_package = {
-    "current_page":current_page,
-    "total_pages":total_pages,
-    "data_per_page":control.data_per_page,
-    "page_links":page_links,
-    }
-
-   return render(request, 'data_and_page_container.html', {
-    "data_on_page": data_package, #Includes data indexes
-    "page_package": page_package, #Includes page links
-    "total_data_size": total_data_size,
-   })
-  else:
-   return HttpResponse("<p>Please log in to view your data.</p>")
- except:
-  return HttpResponse("<p>Woopsie!... Something went wrong.</p>")
 
 ######################  Data Transmit ##################################
 #Send the CG name pairs to the client.
@@ -1160,35 +1178,33 @@ def send_CG_names(request):
  return HttpResponse("Please log in to see data.")
 
 ######################  Update Data ####################################
-def data_update(request, control=control): ###Lump together?
+def data_update(request): ###Lump together?
  u = request.user
  if request.method == 'POST' and u.is_authenticated():
   changesMade = json.loads(request.body, "utf-8")
 
   #Get the Lab_Group data to allow direct manipulation.
   lab_group = u.get_profile().lab_group
-  lab_data = control.collect_all_data(lab_group)
-  total_size = lab_data.count()
+  lab_data = get_lab_data(lab_group)
 
   while (len(changesMade["edit"]) > 0):
    try:
     #An editPackage is [indexChanged, fieldChanged, newValue].
     editPackage = changesMade["edit"].pop()
-    indexChanged = int(editPackage[0])-1 #Translate to 0-based Index
+    refChanged = editPackage[0] #Translate to 0-based Index
     fieldChanged = editPackage[1]
     newValue = editPackage[2] #Edits are validated client-side.
-    dataChanged = lab_data[indexChanged]
-
+    print "HERE1"
+    print refChanged
+    dataChanged = lab_data.filter(ref=refChanged)[0]
+    print "HERE2"
     #Specific field-checks.
     if fieldChanged=="ref":
-     #If the value is valid, change all of the duplicated reactions
+     #If the value is valid, change all of the "duplicate" reactions
      # to the new reference.
      assert(not newValue in get_ref_set(lab_group))
      old_ref = getattr(dataChanged, fieldChanged)
-     Data.objects.all().filter(lab_group=lab_group, duplicate_of=old_ref).update(duplicate_of=newValue)
-     control.clear_all_page_caches(lab_group)
-    else:
-     control.clear_page_of(lab_group, indexChanged)
+     Data.objects.filter(lab_group=lab_group, duplicate_of=old_ref).update(duplicate_of=newValue)
 
     #Make the edit in the database
     setattr(dataChanged, fieldChanged, newValue)
@@ -1197,39 +1213,25 @@ def data_update(request, control=control): ###Lump together?
      revalidate_data(dataChanged, lab_group)
     dataChanged.user = u
     dataChanged.save()
-
-   except:
-    pass
-  while (len(changesMade["dupl"]) > 0):
-   try:
-    indexToClone = int(changesMade["dupl"].pop())-1 #0-based Index
-    clonedItem = lab_data[indexToClone]
-    clonedItem.pk = None #Django creates a new ID for the object.
-    clonedItem.user = u #Set the user to the one who performed the duplication.
-    clonedItem.creation_time = str(datetime.datetime.now())
-    clonedItem.save()
-
-    control.clear_page_of(lab_group, total_size)
-    ###Need to change size?
-   except:
-    pass
+   except Exception as e:
+    print "Could not update: {}".format(e)
   while (len(changesMade["del"]) > 0):###SLOW
    try:
-    indexChanged = changesMade["del"].pop()-1 #0-based Index
-    lab_data[indexChanged].delete() #Django handles the deletion process.
-    control.clear_page_of(lab_group, indexChanged)
+    refChanged = editPackage[0] #Translate to 0-based Index
+    lab_data.filter(ref=refChanged).delete() #Django handles the deletion process.
    except:
     pass
-
+  clear_all_page_caches(lab_group)
  return HttpResponse("OK"); #Django requires an HttpResponse...
 
-def get_full_datum(request, control=control):
+""" ###TODO: Not re-written since full data given by default.
+def get_full_datum(request):
  u = request.user
  try:
   if u.is_authenticated() and request.method=="POST":
    #Give the specific index requested.
    index_requested = json.loads(request.POST["indexRequested"])
-   entry = control.collect_all_data(u.get_profile().lab_group)[index_requested]
+   entry = get_lab_data(u.get_profile().lab_group)[index_requested]
    return render(request, "full_datum.html", {
     "entry":entry,
    })
@@ -1238,6 +1240,7 @@ def get_full_datum(request, control=control):
  except Exception as e:
   print(e)
   return HttpResponse("<p>Data could not be loaded!</p>")
+"""
 ######################  User Auth ######################################
 def change_password(request):
  code_sent = False

@@ -10,7 +10,129 @@ from django.db.models import Q
 from validation import *
 import random, string, datetime
 from data_config import CONFIG
-from chemspider_rdkit_extensions import *
+#from chemspider_rdkit_extensions import *
+import rdkit.Chem as Chem
+import chemspipy
+
+# # # # # # # # # # # # # # # # # # #
+  # # # # # # # # RDKIT and ChemSpider Functions # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # #
+def chemspider_lookup(cg_entry):
+ chemspi_query = ""
+ try:
+  #Accept either a CompoundEntry object or a dict with the valid fields
+  search_fields = ["CAS_ID", "compound"]
+  if type(cg_entry)==dict:
+   query_criteria = [cg_entry.get(i) for i in search_fields if cg_entry.get(i)]
+  elif type(cg_entry)==CompoundEntry:
+   query_criteria = [getattr(cg_entry, i) for i in search_fields]
+  elif type(cg_entry)==str:
+   query_criteria = [cg_entry]
+
+  #Works for both dicts and CG_entries
+  assert(query_criteria)
+ except:
+  raise Exception("chemspider_lookup accepts strings, dicts, or CompoundEntries")
+
+ for i in query_criteria:
+  if i: #ChemSpider doesn't like empty requests.
+   chemspi_query = chemspipy.find_one(i)
+  if chemspi_query: break
+
+ if chemspi_query:
+  return chemspi_query.imageurl, chemspi_query.smiles, chemspi_query.molecularweight
+ else:
+  raise Exception("Could not find compound on ChemSpider!")
+
+def get_atoms_from_compound(CG_entry = None):
+ return get_atoms_from_smiles(CG_entry.smiles)
+
+def get_atoms_from_smiles(smiles, show_hydrogen=False):
+ if not smiles:
+  print "No smiles found!"
+  return []
+
+ mols = Chem.MolFromSmiles(str(smiles),sanitize=False)
+ if mols == None:
+  return []
+ #TODO: Incorporate hydrogens into model.
+ #if show_hydrogen:
+ # try:
+ #  mols = Chem.AddHs(mols) ###PRECONDITION?
+ # except:
+ #  pass
+ atoms = mols.GetAtoms()
+ return [atom.GetSymbol() for atom in atoms]
+
+def collect_CGs_by_abbrevs(lab_group, abbrev_list):
+ CG_list = []
+ for i in abbrev_list:
+  query = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i)
+  if query.exists(): #Don't append index an empty query; Django gets annoyed.
+   CG_list.append(query[0])
+ return CG_list
+
+def get_smiles_from_CG_list(CG_list):
+ smiles_list = [i.smiles for i in CG_list]
+ return smiles_list
+
+def condense_smiles_list_to_atoms(smiles_list, show_hydrogen = False):
+ atoms_list = []
+ for i in smiles_list:
+  atoms_list += get_atoms_from_smiles(i, show_hydrogen)
+ return set(atoms_list)
+
+def get_abbrevs_from_reaction(reaction):
+ abbrevs_list = [getattr(reaction, "reactant_{}".format(i)) for i in CONFIG.reactant_range() if getattr(reaction, "reactant_{}".format(i))]
+ return abbrevs_list
+
+def get_atom_set_from_abbrevs(lab_group, abbrev_list):
+ return condense_smiles_list_to_atoms(
+  get_smiles_from_CG_list(
+   collect_CGs_by_abbrevs(lab_group, abbrev_list)
+   ), show_hydrogen=True
+  )
+
+def get_atom_set_from_reaction(reaction):
+ return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
+
+def get_reactions_with_compound(compound):
+ Q_string = ""
+ abbrev = compound.abbrev
+ for i in CONFIG.reactant_range():
+  Q_string += "Q(reactant_{}=\"{}\")|".format(i, abbrev)
+
+ if Q_string:
+  Q_string = Q_string[:-1] #Remove the last trailing "|" if applicable.
+
+ return eval("Data.objects.filter(lab_group=compound.lab_group).filter({})".format(Q_string))
+
+def update_compound(compound, update_data=True):
+ try:
+  #Update the CG entry itself. Make sure "inorg" types don't query ChemSpider.
+  try:
+   compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
+   print compound.compound_type, compound.abbrev
+  except:
+   if compound.compound_type=="Inorg":
+    compound.image_url, compound.smiles, compound.mw = "","",""
+   else:
+    raise Exception("Could not find via ChemSpider!")
+  compound.save()
+
+  #Update the individual "atom" records on each reaction.
+  if update_data:
+   update_reactions(compound)
+ except Exception as e:
+  print "Could not update {}\n\t{}".format(compound, e)
+
+def update_reactions(compound):
+ #Update the individual "atom" records on each reaction.
+ changed_reactions = get_reactions_with_compound(compound)
+ for reaction in changed_reactions:
+  #Store the atoms as a string -- not a set.
+  reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
+  reaction.save()
 
 #############  CACHE VALIDATION and ACCESS  ###########################
 #Strip any spaces from the lab group title and/or the keys on cache access.
@@ -53,6 +175,115 @@ class Lab_Member(models.Model):
 
  def __unicode__(self):
   return self.user.username
+
+############### RECOMMENDATIONS ########################
+class Model_Versions(models.Model):
+ model_type = models.CharField("Type", max_length=20)
+ date = models.CharField("Date", max_length=26) ###TODO: Explore why this isn't a datetime field. 
+ notes = models.CharField("Notes", max_length=200, blank=True)
+
+class Recommendation(models.Model):
+ #Reactant Fields
+ for i in CONFIG.reactant_range():
+  exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
+  exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
+  exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
+
+ score = models.FloatField("Reference")
+ temp = models.CharField("Temperature", max_length=10)
+ pH = models.CharField("pH", max_length=5)
+
+ #Yes/No/? Fields:
+ slow_cool = models.CharField("Slow Cool", max_length=10)
+ leak = models.CharField("Leak", max_length=10)
+ outcome = models.CharField("Outcome", max_length=1)
+ purity = models.CharField("Purity", max_length=1)
+
+ #Self-assigning Fields:
+ atoms = models.CharField("Atoms", max_length=30, blank=True)
+ lab_group = models.ForeignKey(Lab_Group, unique=False)
+ date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
+
+ #Fields for user feedback.
+ nonsense = models.BooleanField("Nonsense", default=False)
+ notes = models.CharField("Notes", max_length=200, blank=True)
+
+ def __unicode__(self):
+  return u"REC: score -- (LAB: {})".format(self.score, self.lab_group.lab_title)
+
+#Organize the reactants into sublists: [[reactant, quantity, unit], ...]
+def partition_reactant_fields(lst):
+ num_fields = CONFIG.fields_per_reactants
+ total_fields = num_fields * CONFIG.num_reactants
+ #Sort the <total_fields> elements of lst into sublists of <num_fields> elements each
+ reaction = []
+ reactant = []
+ for (datum, i) in zip(lst, xrange(total_fields)):
+  if i%num_fields==0 and i!=0:
+   reaction.append(reactant)
+   reactant = [datum] 
+  else:
+   reactant.append(datum)
+ reaction.append(reactant)
+ return reaction
+ 
+#Apply the headings to the variables in the list.
+###TODO: Notes for Paul: Remove the "ref"
+def get_vars_from_list(lst):
+ verbose_headers = get_model_field_names(verbose=True, model="Data")[16:]
+ info = [[i, j] for (i,j) in zip(verbose_headers, lst)]
+ return info 
+
+#Creates the Recommendation entry, but does not store it in database.
+def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
+ try:
+  new_rec = Recommendation()
+  #Set the self-assigning fields:
+  setattr(new_rec, "lab_group", lab_group)
+  setattr(new_rec, "score", float(lst[0]))
+
+  #Set the non-user field values.
+  fields = get_model_field_names(model="Recommendation")
+  for (field, value) in zip(fields, lst[2]):
+   setattr(new_rec, field, value)
+  return new_rec
+   
+  new_rec.atoms = "".join(get_atom_set_from_abbrevs(lab_group, get_abbrevs_from_reaction(new_rec)))
+ 
+  if not in_bulk:
+    new_rec.date = str(datetime.datetime.now())
+
+  return new_rec
+ except Exception as e:
+  raise Exception("Recommendation construction failed: {}".format(e))
+
+def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = ""):
+ if type(lab_group) == Lab_Group:
+  pass
+ elif type(lab_group) == str:
+  lab_group = Lab_Group.objects.filter(lab_title=lab_group)
+ else:
+  raise Exception("lab_group must be a Lab_Group type or a valid Lab_Group's lab_title!")
+
+ call_time = str(datetime.datetime.now())
+ num_success = 0
+ count = 0
+ for i in list_of_recommendations:
+  count += 1
+  try:
+   new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
+   new_rec.date = call_time
+   new_rec.save() #Store this recommendation in the database
+   num_success += 1
+  except Exception as e:
+    raise Exception("Recommendation {} could not be constructed: {}".format(count, e))
+ 
+ #Store the information for this "Version" of the Recommendation model.
+ new_version = Model_Version()
+ new_version.model_type = "Recommendation"
+ new_version.date = call_time
+ new_version.notes = version_notes
+ print "Finished creating and storing {} of {} items!.".format(num_success, count)
 
 ############### COMPOUND GUIDE ########################
 class CG_calculations(models.Model):
@@ -412,9 +643,9 @@ class Data(models.Model):
  lab_group = models.ForeignKey(Lab_Group, unique=False)
  creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
  is_valid = models.BooleanField("Valid")
- #atoms = models.CharField("Atoms", max_length=40) ###Needs access to CG?
 
  #Categorizing Fields:
+ public = models.BooleanField("Public", default=False)
  duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
  recommended = models.CharField("Recommended", max_length=10)
 
@@ -473,6 +704,12 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
    fields_to_ignore = {u"id", "creation_time", "calculations"}
   else:
    fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid"}
+  dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
+ elif model=="Recommendation":
+  if collect_ignored:
+   fields_to_ignore = {u"id", "creation_time"}
+  else:
+   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time", "nonsense"}
   dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:

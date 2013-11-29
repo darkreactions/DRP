@@ -1,6 +1,11 @@
 class ConfigManager(object):
  def __init__(self):
   self.num_reactants = 5 #The number of reactants supported.
+  self.fields_per_reactant = 3 #Each reactant has a name, a quantity, and a unit.
+
+  #Database Page Variable
+  self.current_page_radius = 4 #The number of pages to show "around" the current page.
+  self.data_per_page = 15 #The number of reactions to show per page.
    #Note: if num_reactants changed, South needs to migrate database.
   self.blacklist = {"x", "-1", -1, "z", "?", "", " "} #Implies absence of data.
   self.unknown_label = "?" #The label that blacklisted values will inherit.
