@@ -211,6 +211,7 @@ class Recommendation(models.Model):
  #Self-assigning Fields:
  atoms = models.CharField("Atoms", max_length=30, blank=True)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
+ model_version = models.ForeignKey(Model_Version, unique=False)
  date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
 
  #Fields for user feedback.
@@ -253,7 +254,7 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
 
   #Set the non-user field values.
   fields = get_model_field_names(model="Recommendation")
-  for (field, value) in zip(fields, lst[2]):
+  for (field, value) in zip(fields, lst[2][1:]): #Ignore the reference field.
    setattr(new_rec, field, value)
   return new_rec
    
@@ -269,8 +270,18 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
 def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = ""):
  if type(lab_group) != Lab_Group:
   lab_group = get_Lab_Group(lab_group)
-
+ 
  call_time = str(datetime.datetime.now())
+ 
+ #Store the information for this "Version" of the Recommendation model.
+ new_version = Model_Version()
+ new_version.model_type = "Recommendation"
+ new_version.date = call_time
+ new_version.notes = version_notes
+ new_version.lab_group = lab_group
+ new_version.save()
+
+ #Store the actual Recommendation entries.
  num_success = 0
  count = 0
  for i in list_of_recommendations:
@@ -278,16 +289,13 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
   try:
    new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
    new_rec.date = call_time
+   print type(new_version)
+   new_rec.model_version = new_version
    new_rec.save() #Store this recommendation in the database
    num_success += 1
   except Exception as e:
-    raise Exception("Recommendation {} could not be constructed: {}".format(count, e))
+    print "Recommendation {} could not be constructed: {}".format(count, e)
  
- #Store the information for this "Version" of the Recommendation model.
- new_version = Model_Version()
- new_version.model_type = "Recommendation"
- new_version.date = call_time
- new_version.notes = version_notes
  print "Finished creating and storing {} of {} items!.".format(num_success, count)
 
 ############### COMPOUND GUIDE ########################
@@ -702,8 +710,8 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time", "nonsense"}
-  dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
+   fields_to_ignore = {u"id","user","lab_group", "model_version", "atoms", "creation_time", "nonsense"}
+  dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:
    fields_to_ignore = {u"id", "image_url"}
