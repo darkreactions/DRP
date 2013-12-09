@@ -119,7 +119,7 @@
 a {
  text-decoration:none;
  cursor:pointer;
- color:#3A6382;
+ color:yellow;
  outline:0;
  outline-color:transparent;
 }
@@ -183,6 +183,9 @@ input[type=button] {
 }
 
 input[type=submit] {
+ margin: 0 auto;
+ margin-top:20px;
+ display: block;
  border:2px solid black;
  font-weight:bold;
  border-top-right-radius:10px;
@@ -391,6 +394,10 @@ div.ui-tooltip {
  z-index:100;
 }
 
+.darkenedMask {!important //TODO: Make this less "hacky"
+ opacity: 0.9;
+}
+
 .cover {
  position:fixed;
  top:0px;
@@ -438,6 +445,14 @@ div.ui-tooltip {
  left:15%;
  width:70%;
  min-width:600px;
+}
+
+#popupContainer[for="userLicenseAgreement"] {
+ text-align:center;
+ top:50px;
+ left:20%;
+ width:60%;
+ min-width:300px;
 }
 
 .subPopup { /* Right now, just used for errors. */
@@ -803,6 +818,10 @@ padding-bottom:10px;
 
 #changePassword:hover {
  font-weight:bold;
+}
+
+.userAuthLink {
+color: #355A77;
 }
 
 /* ###############   Specific Elements   ############################ */

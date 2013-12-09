@@ -22,7 +22,7 @@ from data_config import CONFIG
 def get_lab_data(lab_group):
  return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
 
-def get_public_data(lab_group):
+def get_public_data():
  #Only show the public data that is_valid.
  return Data.objects.filter(public=True, is_valid=True).order_by("creation_time")
 
@@ -184,7 +184,7 @@ def clear_all_page_caches(lab_group, skip_data_check=False):
   clear_page_cache(lab_group, i)
 
 # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # View Functions # # # # # # # # # # #
+  # # # # # # # # View Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
 def get_template_form(entry, model):
  result = {}
@@ -238,6 +238,43 @@ def recommend(request): ###TODO: ADD TEMPLATE BITS, CASEY!
   "recommendations": recommendations,
   "fatal_message": fatal_message,
  })
+
+
+# # # # # # # # # # # # # # # # # # #
+  # # # # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # #
+def get_user_license_agreement(request):
+ u = request.user
+ #Indicate whether the user needs to agree to updated terms or sign the terms initially.
+ if u.is_authenticated():
+  if u.get_profile().license_agreement_date:
+   if u.get_profile().license_agreement_date < CONFIG.current_license_date:
+    license_changed = True
+   else:
+    return HttpResponse("Our records indicate that you already agreed to the terms and conditions!")
+  else:
+   license_changed = False
+   
+  return render(request, 'user_license_form.html', {
+   "license_changed": license_changed,
+   "license_file": CONFIG.current_license_file,
+   "license_date": CONFIG.current_license_date.split(" ")[0], #Show the modification date but ignore the time.
+  })
+ else:
+  return HttpResponse("Please create a user to accept the license agreement.")
+
+def update_user_license_agreement(request):
+ u = request.user 
+ if request.method=="POST":
+  try:
+   u.get_profile().license_agreement_date = str(datetime.datetime.now())
+   u.get_profile().save()  
+   return HttpResponse("Thank you for joining the Dark Reactions Project." +
+   "<button class=\"genericButton form_button clearScreenButton\">Explore</button>")
+  except:
+   return HttpResponse("Your request could not be completed. Please try again.")
+ else:
+  return HttpResponse("Please click the \"I Agree\" to accept the Terms and Conditions.")
 
 ####################################################
 ####################################################
@@ -1194,27 +1231,30 @@ def data_update(request): ###Lump together?
     refChanged = editPackage[0] #Translate to 0-based Index
     fieldChanged = editPackage[1]
     newValue = editPackage[2] #Edits are validated client-side.
-    print "HERE1"
-    print refChanged
     dataChanged = lab_data.filter(ref=refChanged)[0]
-    print "HERE2"
-    #Specific field-checks.
-    if fieldChanged=="ref":
-     #If the value is valid, change all of the "duplicate" reactions
-     # to the new reference.
-     assert(not newValue in get_ref_set(lab_group))
-     old_ref = getattr(dataChanged, fieldChanged)
-     Data.objects.filter(lab_group=lab_group, duplicate_of=old_ref).update(duplicate_of=newValue)
+    oldValue = getattr(dataChanged, fieldChanged)
 
-    #Make the edit in the database
     setattr(dataChanged, fieldChanged, newValue)
-    #Data should only move closer to being "valid data."
-    if not dataChanged.is_valid:
-     revalidate_data(dataChanged, lab_group)
+    dirty_data = model_to_dict(dataChanged, fields=get_model_field_names())
+    clean_data, errors = full_validation(dirty_data, lab_group)
+
+    #Show the user the first error to fix.
+    if errors:
+     return HttpResponse(errors[errors.keys()[0]])
+
+    #If the data is valid, make the change in the database.
+    setattr(dataChanged, fieldChanged, clean_data[fieldChanged])
+   
     dataChanged.user = u
     dataChanged.save()
+
+    if fieldChanged=="ref":
+     #If the ref is changed, change all of the "duplicate" reactions of it.
+     Data.objects.filter(lab_group=lab_group, duplicate_of=oldValue).update(duplicate_of=newValue)
+
    except Exception as e:
-    print "Could not update: {}".format(e)
+    print "Could not edit Data: \n--{}".format(e)
+
   while (len(changesMade["del"]) > 0):###SLOW
    try:
     refChanged = editPackage[0] #Translate to 0-based Index
@@ -1222,7 +1262,7 @@ def data_update(request): ###Lump together?
    except:
     pass
   clear_all_page_caches(lab_group)
- return HttpResponse("OK"); #Django requires an HttpResponse...
+ return HttpResponse("0"); 
 
 """ ###TODO: Not re-written since full data given by default.
 def get_full_datum(request):
@@ -1280,7 +1320,6 @@ def user_logout(request):
 
 #Redirects user to the appropriate registration screen.
 def registration_prompt(request):
- #"render" is needed to properly display template:
  return render(request, "registration_cell.html", {})
 
 def user_registration(request):

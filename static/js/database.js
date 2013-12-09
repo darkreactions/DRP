@@ -102,9 +102,8 @@ function submitChanges(refresh) {
  if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
   showRibbon("Working! This may take a moment.", "#FFC87C", "body", false);
  }
-
  JSONArray = JSON.stringify(changesMade);
- $.post("/data_update/", JSONArray, function() {
+ $.post("/data_update/", JSONArray, function(response) {
   //The data should now be up to date:
   changesMade = {
    del:[],
@@ -115,6 +114,8 @@ function submitChanges(refresh) {
   if (refresh) {
    window.location.reload(true);
   }
+  alert("response: " + response);
+  return response;
  });
 }
 
@@ -212,30 +213,29 @@ $(document).on("click", ".dataGroup", function() {
 //Select Page (Button)
 $("#leftMenu_selectPage").click(function() {
  var selectedOnPage = [];
-
  //Select data
- $(".dataIndex").each(function() {
-  var dataID = parseInt($(this).html());
-  if (selectedData.indexOf(dataID) < 0){ //If the item is not in the list yet.
-   $(this).parent().addClass("dataSelected");
-   selectedData.push(dataID);
+ $(".dataEntry>.type_ref").each(function() {
+  var dataRef = $(this).html();
+  if (selectedData.indexOf(dataRef) < 0){ //If the item is not in the list yet.
+   $(this).closest(".dataGroup").addClass("dataSelected");
+   selectedData.push(dataRef);
   } else {
    //Count the element as selected.
-   selectedOnPage.push(dataID);
+   selectedOnPage.push(dataRef);
   }
  });
 
  //Deselect data (if all elements were already selected; ie, "toggle")
- if (selectedOnPage.length == $(".dataGroup").length){
-  for (i in selectedOnPage) {
+ if (selectedOnPage.length == $(".dataEntry").length){
+  for (var i in selectedOnPage) {
    var indexOfData = selectedData.indexOf(selectedOnPage[i]);
    selectedData.splice(indexOfData,1);
   }
   $(".dataGroup").removeClass("dataSelected");
  }
- selectedData.sort(sortNumbers); //Sort data once selection is complete.
 });
 
+/* //###TODO: Remove since too easy to delete all data?
 //Select All (Button)
 $("#leftMenu_selectAll").click(function() {
  //If all data is selected, deselect everything.
@@ -255,13 +255,14 @@ $("#leftMenu_selectAll").click(function() {
  }
 });
 
+
 //View Full Datum (Button)
 $(document).on("click", ".expandButton", function() {
  //Send the 0-based dataIndex to the server and replace the dataEntry.
- var indexRequested = parseInt($(this).siblings(".dataIndex").html())-1;
+ var indexRequested = parseInt($(this).siblings(".dataEntry").children(".type_ref").html());
  var moreButton = $(this);
  $(moreButton).siblings(".dataEntry").html("Loading. Please Wait.");
- $.post("/get_full_datum/", {"indexRequested":indexRequested},
+ $.post("/get_full_datum/", {"refRequested":refRequested},
   function(response) {
    $(moreButton).siblings(".dataEntry").html(response);
    $(moreButton).fadeOut("slow");
@@ -270,6 +271,7 @@ $(document).on("click", ".expandButton", function() {
 
  return false; //Do not continue so the data is not selected.
 });
+*/
 
 //Create the "Duplicate This Data" button.
 $(document).on("mouseover", ".dataGroup", function() {
@@ -332,11 +334,12 @@ $("#leftMenu_delete").click(function() {
  }
 });
 
-//############ Edit Data: ###########################@##################
+//############ Edit Data: ##############################################
 //Initiate edit session.
 var editExemptions = ["searchResultsContainer"]
 $(document).on("click", ".editable", function() {
- var refToChange = $(this).siblings(".type_ref").html().trim();
+ var refToChange = $(this).parent().children(".type_ref").html().trim();
+
  //Skip any data that should not be edited. //###
  if (editExemptions.indexOf($(".editable").parent().parent().attr("id")) != -1) {
   return false;
@@ -477,13 +480,26 @@ $(document).on("click", ".editConfirm", function() {
      newValue
      ]);
    }
-
    //Immediately change the visual for the user.
    $(this).parent().html(newValue);
-   submitChanges(false);
+   JSONArray = JSON.stringify(changesMade);
+   $.post("/data_update/", JSONArray, function(response) {
+    //The data should now be up to date:
+    changesMade = {
+     del:[],
+     edit:[],
+     add:[],
+     dupl:[],
+     }
+    if (response!="0") {
+     $(editParent).html(oldValue);
+     showRibbon(response, "#FF6870", "#dataContainer");
+   }
+   });
+   
   } else {
    //Revert to old value if new value is unchanged.
-   $(this).parent().html(oldValue);
+   $(editParent).html(oldValue);
   }
   restyleData();
  }

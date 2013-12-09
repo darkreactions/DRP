@@ -38,6 +38,8 @@ urlpatterns = patterns('',
     (r'^user_logout/$', user_logout), #Log Out
     (r'^user_login/$', user_login), #Log In
    #Registration
+    (r'^user_license_agreement/$', get_user_license_agreement),
+    (r'^update_user_license_agreement/$', update_user_license_agreement),
     (r'^registration_prompt/$', registration_prompt), #Redirects to correct registration choice.
     (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
     (r'^user_registration/$', user_registration), #Create User

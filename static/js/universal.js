@@ -451,7 +451,7 @@ $(document).on("click", ".popupActivator", function(event) {
 });
 // Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
- if ($(".ribbonMessage").length==0){
+ if ($(".ribbonMessage").length==0 && $(".maskBlockFade").length==0){
   $("#popupGlobal").fadeOut("fast");
 
   //Remove any extra additions the popup may have populated.
@@ -465,9 +465,24 @@ $(document).on("click", "#mask", function() {
  }
 });
 
+function darkenMask() {
+ $("#mask").addClass("darkenedMask");
+}
+
+// Cancel any masks or popups that are covering the screen. 
+$(document).on("click", ".clearScreenButton", function() {
+  $("#popupGlobal").fadeOut("fast");
+
+  //Remove any extra additions the popup may have populated.
+  $(".CG_saveButton").remove()
+  $(".closeButton").show();
+  $("#mask").removeClass("darkenedMask");
+  $(".maskBlockFade").remove();
+});
+
 //Close popups on close-button click.
 $(document).on("click", ".closeButton", function() {
- if ($(".ribbonMessage").length==0){
+ if ($(".ribbonMessage").length==0 && $(".maskBlockFade").length==0){
   //Close the global container if the main container is closed.
   CGSelected = Array();
   if ($(this).parent().attr("id")=="popupContainer") {
@@ -478,7 +493,29 @@ $(document).on("click", ".closeButton", function() {
  }
 });
 
+//Detect any activators that might be loaded.
+if ($(".loadActivator").length){
+ var activatorID = $(".loadActivator").attr("id");
+ $("#popupContainer").attr("for", activatorID);
+ switch (activatorID) {
+  case "userLicenseAgreement":
+   darkenMask();
+   $.get("/user_license_agreement/", function(response) {
+    $("#popupContainer_inner").html(response);
+    $(".closeButton").hide(); //Remove unnecessary close buttons.
+   });
+   break;
+ }; 
+ $("#popupGlobal").fadeIn(300);
+}
 
 //######################################################################
 });
+
+
+
+
+
+
+
 

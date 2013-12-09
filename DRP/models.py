@@ -157,7 +157,6 @@ def get_random_code(length = ACCESS_CODE_MAX_LENGTH):
     string.letters + string.digits
    ) for i in range(length))
 
-
 class Lab_Group(models.Model):
  lab_title = models.CharField(max_length=200)
 
@@ -167,20 +166,30 @@ class Lab_Group(models.Model):
  def __unicode__(self):
   return self.lab_title
 
+def get_Lab_Group(raw_string):
+ try:
+  Lab_Group.objects.filter(lab_title=raw_string)
+ except:
+  raise Exception("Could not find Lab_Group with lab_title: {}".format(raw_string))
 
 ############### USER CREATION #######################
 class Lab_Member(models.Model):
  user = models.OneToOneField(User, unique=True) ###Allow lab member to switch?
+ license_agreement_date = models.CharField("License Agreement Date", max_length=26, blank=True) ###TODO: Explore why this isn't a datetime field. 
  lab_group = models.ForeignKey(Lab_Group)
+
+ def is_licensed(self):
+  return self.license_agreement_date and (self.license_agreement_date > CONFIG.license_agreement_date)
 
  def __unicode__(self):
   return self.user.username
 
 ############### RECOMMENDATIONS ########################
-class Model_Versions(models.Model):
+class Model_Version(models.Model):
  model_type = models.CharField("Type", max_length=20)
  date = models.CharField("Date", max_length=26) ###TODO: Explore why this isn't a datetime field. 
  notes = models.CharField("Notes", max_length=200, blank=True)
+ lab_group = models.ForeignKey(Lab_Group)
 
 class Recommendation(models.Model):
  #Reactant Fields
@@ -258,12 +267,8 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
   raise Exception("Recommendation construction failed: {}".format(e))
 
 def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = ""):
- if type(lab_group) == Lab_Group:
-  pass
- elif type(lab_group) == str:
-  lab_group = Lab_Group.objects.filter(lab_title=lab_group)
- else:
-  raise Exception("lab_group must be a Lab_Group type or a valid Lab_Group's lab_title!")
+ if type(lab_group) != Lab_Group:
+  lab_group = get_Lab_Group(lab_group)
 
  call_time = str(datetime.datetime.now())
  num_success = 0
@@ -434,21 +439,15 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
  return query_list
 
 def collect_reactions_as_lists(lab_group, with_headings=True):
- try:
-  if type(lab_group)==str:
-   lab_group = Lab_Group.objects.filter(lab_title=lab_group)[0]
- except:
-  raise Exception("Could not find lab group: \"{}\"".format(lab_group))
+ if type(lab_group) != Lab_Group:
+  lab_group = get_Lab_Group(lab_group)
 
  query = Data.objects.filter(lab_group=lab_group)
  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
 def collect_CG_entries_as_lists(lab_group, with_headings=True):
- try:
-  if type(lab_group)==str:
-   lab_group = Lab_Group.objects.filter(lab_title=lab_group)[0]
- except:
-  raise Exception("Could not find lab group: \"{}\"".format(lab_group))
+ if type(lab_group) != Lab_Group:
+  lab_group = get_Lab_Group(lab_group)
 
  query = collect_CG_entries(lab_group)
  return convert_QuerySet_to_list(query, "CompoundEntry", with_headings=with_headings)
@@ -475,20 +474,14 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
   raise Exception("CompoundEntry construction failed!")
 
 def get_good_rxns(lab_group=None, with_headings=True):
- #Convert string input into a lab_group if possible.
- try:
-  if type(lab_group)==str:
-    lab_group = Lab_Group.objects.filter(lab_title=lab_group)[0]
-
-  #Collect ALL data or Lab-specific data.
-  if lab_group:
-   query = Data.objects.filter(lab_group=lab_group, is_valid=True)
-  else:
+ if lab_group:
+  if type(lab_group) != Lab_Group:
+   lab_group = get_Lab_Group(lab_group)
+  query = Data.objects.filter(lab_group=lab_group, is_valid=True)
+ else:
    query = Data.objects.filter(is_valid=True)
 
-  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
- except:
-  raise Exception("Cannot find lab_group: \"{}\"".format(lab_group))
+ return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
 
 ############### DATA ENTRY ########################
@@ -703,7 +696,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time", "calculations"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid"}
+   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid", "public"}
   dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
  elif model=="Recommendation":
   if collect_ignored:
@@ -734,11 +727,11 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
    clean_fields += [field.name]
  return clean_fields
 
-def get_ref_set(lab_group):
- ref_set = get_cache(lab_group, "REFS")
- if not ref_set:
+def get_ref_set(lab_group, reset_cache=True):
+ ref_set = get_cache(lab_group, "DATAREFS")
+ if not ref_set or reset_cache:
   ref_set = set(Data.objects.values_list('ref', flat=True))
-  set_cache(lab_group, "REFS", ref_set)
+  set_cache(lab_group, "DATAREFS", ref_set)
  return ref_set
 
 def revalidate_data(data, lab_group, batch=False):
