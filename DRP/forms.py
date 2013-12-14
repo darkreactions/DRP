@@ -12,7 +12,7 @@ class UserForm(ModelForm):
  last_name = CharField(label="Last Name", required=True,
   widget=TextInput(attrs={'class':'form_text'}))
  email = EmailField(label="Email", required=True,
-  widget=TextInput(attrs={'class':'form_text'}))
+  widget=TextInput(attrs={'class':'form_text email_text'}))
 
  class Meta:
   model = User
@@ -30,18 +30,38 @@ class UserForm(ModelForm):
 
 class UserProfileForm(ModelForm):
  #Enumerate all of the lab titles.
-
  lab_group = ModelChoiceField(queryset=Lab_Group.objects.all(),
   label="Lab Group", required=True,
-  widget=Select(attrs={'class':'form_text'}))
+  widget=Select(attrs={'class':'form_text', 'title':'Choose which lab you would like to join.'}))
  access_code = CharField(label="Access Code", required=True,
   max_length=ACCESS_CODE_MAX_LENGTH,
-  widget=TextInput(attrs={'class':'form_text'}))
+  widget=TextInput(attrs={'class':'form_text', 'title':'The unique code given to you by a lab administrator.'}))
 
  class Meta:
   model = Lab_Member
   app_label = "formsite"
   fields = ["lab_group"]
+
+class LabForm(ModelForm):
+ lab_title = CharField(label="Lab Name", required=True,
+  widget=TextInput(attrs={'class':'form_text', 'title':'The unique name of your lab.'}))
+ lab_address = CharField(label="Address", required=True,
+  widget=TextInput(attrs={'class':'form_text', 'title':'This helps us see how the Dark Reactions Project is spreading.'}))
+ lab_email = EmailField(label="Contact Email", required=True,
+  widget=TextInput(attrs={'class':'form_text email_text', 'title':'We will send you a verification code through this email.'}))
+
+
+ class Meta:
+  model = Lab_Group
+  fields = ("lab_title", "lab_address", "lab_email")
+
+ def save(self, commit=True):
+  lab_group = super(LabForm, self).save(commit=False)
+  lab_group.access_code = get_random_code() 
+  if commit:
+   lab_group.save()
+  return lab_group
+
 
 class CompoundGuideForm(ModelForm):
  compound = CharField(widget=TextInput(

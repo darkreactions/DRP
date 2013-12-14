@@ -1,4 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import *
 from django.shortcuts import render
 from django.contrib import auth
 from django.db.models import Q
@@ -197,6 +199,27 @@ def get_template_form(entry, model):
   raise Exception("Model type not found!") 
  return result
 
+#Given a user, change their password and email them the new password.
+def reset_password(request):
+ if request.method=="POST":
+  #If the POST has been submitted.
+  user_info = json.loads(request.POST.get("user_info"))
+  user = User.objects.filter(email=user_info["email"],first_name=user_info["first_name"], last_name=user_info["last_name"]).get()
+  if user:
+   randomize_password(user) 
+   return HttpResponse("Password reset! Please check your email.")
+  else:
+   return HttpResponse("We could not find a user with that information.")
+ else:
+  return render(request, "user_reset_password.html")
+
+def randomize_password(user):
+ new_pass = get_random_code(15) #Generate a random password for the user.
+ user.password = make_password(new_pass) #Hash the password. 
+ user.save()
+ email_body = "Hello {},\n\n According to our records, you just requested a password change. We have changed your account information as follows:\nUsername:{}\nPassword:{}".format(user.first_name, user.username, new_pass)
+ send_mail("Dark Reactions: Password Change Request", email_body, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
@@ -224,6 +247,24 @@ def data_transmit(request, page = 1):
   raise Exception("Could not transmit data for page: {}".format(page))
 
 def recommend(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
+ #Get user data if it exists.
+ u = request.user
+ if u.is_authenticated():
+  fatal_message = ""
+  recommendation_query = get_recommendations_by_date(u.get_profile().lab_group)
+  recommendations = [get_template_form(i, "Recommendation") for i in recommendation_query] 
+ else:
+  fatal_message = "Please log in to view recommendations."
+  recommendations = None
+
+ return render(request, 'recommend_global.html', {
+  "recommendations": recommendations,
+  "fatal_message": fatal_message,
+ })
+
+
+###TODO: Add this -- right now it is just a copy. 
+def saved(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
  #Get user data if it exists.
  u = request.user
  if u.is_authenticated():
@@ -276,6 +317,22 @@ def update_user_license_agreement(request):
  else:
   return HttpResponse("Please click the \"I Agree\" to accept the Terms and Conditions.")
 
+def save_recommmendation(request):
+ u = request.user
+ if request.method=="POST":
+  try:
+   lab_group = u.get_profile().lab_group
+   rec_info = json.loads(request.POST.get("rec_info"))
+   if not rec["date"]:
+    #If no date is specified, assume the latest data is what is being changed.
+    rec["date"] = get_recommendations_by_date(lab_group).get().date  
+   rec = Recommendation.objects.filter(date=date).get()
+   
+  except:
+   return HttpResponse("Your request could not be completed. Please try again.")
+ else:
+  return HttpResponse("Please log in to save recommendations")
+  
 ####################################################
 ####################################################
 ####################################################
@@ -659,40 +716,39 @@ def guess_type(datum):
 def data_form(request, copy_ref=None): #If no data is entered, stay on the current page.
  u = request.user
  success = False
- if u.is_authenticated():
-  if request.method == 'POST':
-   #Bind the user's data and verify that it is legit.
-   form = DataEntryForm(user=u, data=request.POST)
-   if form.is_valid():
-    #If all data is valid, save the entry.
-    form.save()
-    lab_group = u.get_profile().lab_group
- 
-    #Clear the cache of the last page.
-    old_data_size = get_lab_data_size(lab_group)
-    clear_page_cache_of_index(lab_group, old_data_size)
- 
-    #Refresh the TOTALSIZE cache.
-    set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
-    success = True #Used to display the ribbonMessage.
-  else:
-   #Submit a blank form or an auto-filled form if a ref is supplied.
-   if copy_ref==None:
-    form = DataEntryForm(
-     initial={"leak":"No"}
-    )
-   else:
-    datum = get_datum(u.get_profile().lab_group, copy_ref.replace("+"," "))
-    initial_fields = {field:getattr(datum, field) for field in get_model_field_names(model="Data")}
-    form = DataEntryForm(
-     initial=initial_fields
-    )
-  return render(request, 'data_form.html', {
-   "form": form,
-   "success": success,
-  })
+ if request.method == 'POST' and u.is_authenticated():
+  #Bind the user's data and verify that it is legit.
+  form = DataEntryForm(user=u, data=request.POST)
+  if form.is_valid():
+   #If all data is valid, save the entry.
+   form.save()
+   lab_group = u.get_profile().lab_group
+
+   #Clear the cache of the last page.
+   old_data_size = get_lab_data_size(lab_group)
+   clear_page_cache_of_index(lab_group, old_data_size)
+
+   #Refresh the TOTALSIZE cache.
+   set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
+   success = True #Used to display the ribbonMessage.
  else:
-  return HttpResponse("You do not have access to this datum.")
+  #Submit a blank form or an auto-filled form if a ref is supplied.
+  if copy_ref==None:
+   form = DataEntryForm(
+    initial={"leak":"No"}
+   )
+  elif u.is_authenticated():
+   datum = get_datum(u.get_profile().lab_group, copy_ref.replace("+"," "))
+   initial_fields = {field:getattr(datum, field) for field in get_model_field_names(model="Data")}
+   form = DataEntryForm(
+    initial=initial_fields
+   )
+  else:
+   return HttpResponse("You do not have access to copy this datum.")
+ return render(request, 'data_form.html', {
+  "form": form,
+  "success": success,
+ })
  ##################  Helper Functions ###############################
 
 #Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
@@ -1355,17 +1411,37 @@ def user_registration(request):
 
 def lab_registration(request): ###Not finished.
  if request.method=="POST":
-  pass
+  form = LabForm(data = request.POST)
+  if form.is_valid():
+   lab_group = form.save()
+   access_code = lab_group.access_code
+   
+   #Send a "confirmation" email to the new lab email.
+   email_body = """
+Thank you for joining the Dark Reactions Project!\n\nPlease continue by creating a \"user\" for your lab. Simply...\n\t1.) Record the \"access code\" for your lab: {}\n\t2.) Click \"Register\" and create a user using the access code above.\n\t3.) Start uploading data!
+
+We wish you all the best,
+The Dark Reactions Project Team
+""".format(lab_group.access_code)
+
+   send_mail("Dark Reactions: Lab Registration Successful", email_body, settings.EMAIL_HOST_USER, [lab_group.lab_email], fail_silently=False)
+
+   #Send the DRP Admins an email about the new Lab Registration.
+   #TODO:Remove this when we scale to unmanageable quantities of labs.
+   alert_about_new_lab(lab_group)
+ 
+   return HttpResponse("Registration Successful! Please check your email.")
  else:
-  ####form = LabForm()
-  pass
+  form = LabForm()
  return render(request, "lab_registration_form.html", {
-  ###"lab_form": form,
+  "form": form,
  })
 
 ######################  Developer Functions  ###########################
-
-
+def alert_about_new_lab(lab_group):
+ email_body = "A new Lab Group has been registered:"
+ email_body += "\n{}\n{}\n{}".format(lab_group.lab_title, lab_group.lab_address, lab_group.lab_email) 
+ send_mail("Dark Reactions: New Lab Group Registered", email_body, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER], fail_silently=False)
 
 ######################  Error Messages  ################################
 def display_404_error(request):

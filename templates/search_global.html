@@ -42,28 +42,16 @@
      </label>
     </input>
     {% for field in other_fields %}
-    {% if forloop.counter0|divisibleby:"6" %}
-     </div>
-     <div class="radioContainer">
      <input id="radio_{{field.raw}}" type="radio" class="radioSearch" name="field" value="{{field.raw}}">
       <label for="radio_{{field.raw}}" class="radio_label genericButton">
        {{field.verbose}}
       </label>
      </input>
-    {% else %}
-     <input id="radio_{{field.raw}}" type="radio" class="radioSearch" name="field" value="{{field.raw}}">
-      <label for="radio_{{field.raw}}" class="radio_label genericButton">
-       {{field.verbose}}
-      </label>
-     </input>
-    {% endif %}
     {% endfor %}
     </div>
 
-    <br />
     <label for="value">Value:</label>
     <input id="searchValue" type="text" name="value" value="">
-    <br />
 
     <input id="search_filterButton" type="button" value="Filter" class="form_button"/>
     <input id="search_backButton" type="button" value="Back" class="form_button"/>

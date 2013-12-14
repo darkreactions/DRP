@@ -16,8 +16,6 @@
   <!-- HAVERFORD LOGO -->
   {% include "haver_logo.html" %}
 
-  <!-- USER CONTAINER -->
-  {% include "user_control_container.html" %}
 
   <!-- POPUP CONTAINER -->
  <div id="popupGlobal" >
@@ -31,6 +29,10 @@
  </div>
 
  <!-- DATABASE MENU -->
+<div id="mainContainer">
+  <!-- USER CONTAINER -->
+  {% include "user_control_container.html" %}
+
  <div id="leftPanel">
   <div id="leftMenuContainer" class="genericContainer">
    <div class="leftMenuButton genericButton popupActivator" title="Add new data." style="background-image: url({{ STATIC_URL }}icons/add.png);"
@@ -78,6 +80,11 @@
  </div>
 
  </div>
+</div>
+<div id="sideContainer">
+ <div id="sideContainer_inner">
+ </div>
+</div>
 
  </body>
 

@@ -158,8 +158,9 @@ def get_random_code(length = ACCESS_CODE_MAX_LENGTH):
    ) for i in range(length))
 
 class Lab_Group(models.Model):
- lab_title = models.CharField(max_length=200)
-
+ lab_title = models.CharField(max_length=200, unique=True, error_messages={'unique':"This name is already taken."})
+ lab_address = models.CharField(max_length=200)
+ lab_email = models.CharField(max_length=254) #Maximum length of email address
  access_code = models.CharField(max_length=ACCESS_CODE_MAX_LENGTH,
   default=get_random_code)
 
@@ -174,7 +175,7 @@ def get_Lab_Group(raw_string):
 
 ############### USER CREATION #######################
 class Lab_Member(models.Model):
- user = models.OneToOneField(User, unique=True) ###Allow lab member to switch?
+ user = models.OneToOneField(User, unique=True)
  license_agreement_date = models.CharField("License Agreement Date", max_length=26, blank=True) ###TODO: Explore why this isn't a datetime field. 
  lab_group = models.ForeignKey(Lab_Group)
 
@@ -198,7 +199,7 @@ class Recommendation(models.Model):
   exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
   exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
 
- score = models.FloatField("Reference")
+ score = models.FloatField("Score")
  temp = models.CharField("Temperature", max_length=10)
  pH = models.CharField("pH", max_length=5)
 
@@ -215,11 +216,12 @@ class Recommendation(models.Model):
  date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
 
  #Fields for user feedback.
+ saved = models.BooleanField("Saved", default=False)
  nonsense = models.BooleanField("Nonsense", default=False)
  notes = models.CharField("Notes", max_length=200, blank=True)
 
  def __unicode__(self):
-  return u"REC: score -- (LAB: {})".format(self.score, self.lab_group.lab_title)
+  return u"REC: score -- (LAB: {} -- Saved: {})".format(self.score, self.lab_group.lab_title, self.saved)
 
 #Organize the reactants into sublists: [[reactant, quantity, unit], ...]
 def partition_reactant_fields(lst):
@@ -289,7 +291,6 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
   try:
    new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
    new_rec.date = call_time
-   print type(new_version)
    new_rec.model_version = new_version
    new_rec.save() #Store this recommendation in the database
    num_success += 1
@@ -710,7 +711,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "model_version", "atoms", "creation_time", "nonsense"}
+   fields_to_ignore = {u"id","user","lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:

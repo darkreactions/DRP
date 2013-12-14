@@ -1,4 +1,20 @@
 /* ###############   BUTTONS   ###################################### */
+.popupActivator {
+ cursor:pointer;
+}
+
+.softButton {
+ background-color:silver;
+ color:black;
+ padding:10px;
+ border:2px solid black;
+ margin:10px;
+}
+
+.softButton:hover {
+ background-color:#FFD92E;
+}
+
 .genericButton {
  -webkit-user-select: none;
  -moz-user-select: none;
@@ -123,13 +139,6 @@ a {
  outline:0;
  outline-color:transparent;
 }
-/*
-a:hover {
- font-style:oblique;
- background-color:#FFD92E;
- border-radius:25px;
-} */
-
 
 p {
  text-align:center;
@@ -141,8 +150,10 @@ table {
 }
 
 body {
+ margin:0px;
+ padding: 0px;
  font-family:helvetica;
- min-width:710px;
+ min-width:915px;
  min-height:630px;
  overflow:hidden;
  background-color:#E8F4FF;
@@ -197,7 +208,7 @@ input[type=radio] {
 input[type=radio] + label {
     padding: 4px;
     border-radius:5px;
- border: 2px solid black;
+    border: 2px solid black;
     background-color: silver;
     color:black;
 }
@@ -233,6 +244,7 @@ option {
  /* ################   Tooltips    ############################### */
 div.ui-tooltip {
  position:fixed;
+ cursor: pointer;
  z-index:8000;
  background:rgba(1, 1, 1, 0.85);
  padding:8px;
@@ -383,6 +395,32 @@ div.ui-tooltip {
  font-style:oblique;
 }
 
+#mainContainer {
+ min-width:720px;
+ display:inline-block;
+ float:left;
+ width:100%;
+ position:relative;
+ height:100%;
+}
+
+#sideContainer {
+ display:inline-block;
+ float:left;
+ background-color:#355A77;
+ position:relative;
+ height:100%;
+ width:0%;
+ display:none;
+}
+
+#sideContainer_inner {
+ margin:5px;
+ text-align:center;
+ font-style:oblique;
+ color:white;
+}
+
 #mask {
  position:fixed;
  top:0px;
@@ -431,6 +469,14 @@ div.ui-tooltip {
  min-width:300px;
 }
 
+#popupContainer[for="labRegistration"] {
+ text-align:center;
+ top:50px;
+ left:20%;
+ width:60%;
+ min-width:400px;
+}
+
 #popupContainer[for="userRegistration"] {
  text-align:center;
  top:50px;
@@ -465,6 +511,11 @@ div.ui-tooltip {
  padding-bottom:5px;
 
  color:black;
+}
+
+/* #################    FORM ELEMENTS ####################### */
+.formField {
+ display:block;
 }
 
 /* #################    Periodic Table    ####################### */
@@ -531,22 +582,19 @@ padding-top:10px;
 padding-bottom:10px;
 }
 
+
 .radio_label {
+ display:block;
  position:relative;
  margin-left:5px;
+ height:12px;
 }
 
 #searchTabContainer{
- position:absolute;
- top:45px;
- left:40px;
- margin:0px;
- padding:3px;
- padding-left:6px;
- padding-right:6px;
+ position:relative;
+ width:100%;
+ padding:6px;
  background-color:white;
- border-top-right-radius:15px;
- border-top-left-radius:15px;
 }
 
 .ui-state-active{
@@ -803,10 +851,14 @@ padding-bottom:10px;
 
 .navLink {
  font-family:arial;
- font-size:24px;
+ font-size:20px;
  font-weight:bold;
  color:black;
  margin:10px;
+}
+
+.navLink:hover {
+ color:#444444;
 }
 
 #changePassword {

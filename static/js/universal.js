@@ -24,7 +24,6 @@ window.make_name_verbose = function(string) {
  return verbose_name;
 }
 
-
 //############   Tooltips   ############################################
 //Apply custom tooltips to applicable data.
 $(document).tooltip({
@@ -53,7 +52,21 @@ $(document).on("focusout", "input", function() {
  $(document).tooltip("enable");
 });
 
-//############   Ribbons   #############################################
+//############  Side Container:  ####################################
+function toggleSideContainer() {
+ if ($("#sideContainer").is(":visible")){
+  $("#mainContainer").animate({"width":"100%"}, 1000); 
+  $("#sideContainer").animate({"width":"0%"}, 1000, function(){
+  $("#sideContainer").hide();
+  });
+ } else {
+  $("#sideContainer").show();
+  $("#mainContainer").animate({"width":"80%"}, 1000); 
+  $("#sideContainer").animate({"width":"20%"}, 1000); 
+ } 
+}
+
+//############   Ribbons:   #############################################
 window.showRibbon = function(message, color, location, timeout) {
  //Assume that the ribbon should time out.
  timeout = timeout !== undefined ? timeout : true
@@ -74,6 +87,7 @@ window.showRibbon = function(message, color, location, timeout) {
   },500+15*message.length);
  }
 }
+
 //############  Form Interactions:  ####################################
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
@@ -111,6 +125,7 @@ $(document).on("submit", ".infoForm", function() {
 
 $(document).on("click", ".form_button[type=submit]", function() {
  $(".loadingWheel").remove();
+ $(this).hide();
  $(this).parent().append("<div class=\"loadingWheel\"></div>");
 });
 
@@ -144,9 +159,9 @@ function sendSearchQuery(current_query) {
   data: {"current_query":JSON.stringify(current_query)},
   traditional: true,
   success: function(response) {
-   $("#searchResultsOuterContainer").html(response)
-   if ($("#searchResultsContainer").html().trim()=="No data found!"){
-    $("#entriesFound").remove();
+   $("#dataContainer_inner").html(response)
+   if (response=="0"){
+    $("#dataContainer_inner").html("No data found!");
     current_query = []; //Clear the current query if nothing is found.
    }
   }
@@ -216,7 +231,7 @@ $(document).on("click", "#search_filterButton_atoms", function() {
 });
 
 $(document).on("click", "#search_filterButton", function() {
- if ($("#searchResultsContainer").html().trim()!="No data found!") {
+ if ($("#dataContainer_special").html().trim()!="No data found!") {
   //If "Atoms" search is active.
   if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
    field = "atoms";
@@ -225,12 +240,12 @@ $(document).on("click", "#search_filterButton", function() {
    if (current_query){
     for (var i in current_query) {
      if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
-      showRibbon("Already queried!", "#FFC87C","#popupContainer_inner", true);
+      showRibbon("Already queried!", "#FFC87C","#sideContainer", true);
       return false //Don't continue if query is already present.
      }
     }
    }
-   showRibbon("Searching!", "#99FF5E","#popupContainer_inner", true);
+   showRibbon("Searching!", "#99FF5E","#sideContainer", true);
 
    current_query.push({
     "field":field,
@@ -246,12 +261,12 @@ $(document).on("click", "#search_filterButton", function() {
    if (current_query){
     for (var i in current_query) {
      if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
-      showRibbon("Already queried!", "#FFC87C","#popupContainer_inner", true);
+      showRibbon("Already queried!", "#FFC87C","#sideContainer", true);
       return false //Don't continue if query is already present.
      }
     }
    }
-   showRibbon("Searching!", "#99FF5E","#popupContainer_inner", true);
+   showRibbon("Searching!", "#99FF5E","#sideContainer", true);
 
    current_query.push({
     "field":field,
@@ -259,10 +274,10 @@ $(document).on("click", "#search_filterButton", function() {
    });
    sendSearchQuery(current_query);
   } else {
-   showRibbon("Nothing entered!", "#FF6870", $("#popupContainer_inner"), true);
+   showRibbon("Nothing entered!", "#FF6870", $("#sideContainer"), true);
   }
  } else {
-  showRibbon("No data to filter!", "#FF6870", $("#popupContainer_inner"), true);
+  showRibbon("No data to filter!", "#FF6870", $("#sideContainer"), true);
  }
 });
 
@@ -404,10 +419,12 @@ $(document).on("click", ".popupActivator", function(event) {
    PT_selected = Array();
    current_query = Array();
    $.get("/search/", function(response) {
-    $("#popupContainer_inner").html(response);
-    $("#popupContainer").addClass("noMaskPopup");
+    $("#sideContainer_inner").html(response);
+    toggleSideContainer();
+    $(".closeButton").addClass("refreshOnDie");
     $("#tabs").tabs({active: 1});
    });
+   return false; //TODO: Separate this into a "sideContainer" activator
    break;
   case "userLogin":
    $.get("/user_login/", function(response) {
@@ -430,8 +447,8 @@ $(document).on("click", ".popupActivator", function(event) {
    });
    break;
   case "labRegistration":
-   $.get("/user_registration/", function(response) {
-    $("#labRegistration").html(response);
+   $.get("/lab_registration/", function(response) {
+    $("#popupContainer_inner").html(response);
    });
    break;
   case "CG_activatorButton":
@@ -449,6 +466,7 @@ $(document).on("click", ".popupActivator", function(event) {
  }
  $("#popupGlobal").fadeIn(300);
 });
+
 // Fade the popup when the mask is clicked.
 $(document).on("click", "#mask", function() {
  if ($(".ribbonMessage").length==0 && $(".maskBlockFade").length==0){
@@ -469,6 +487,12 @@ function darkenMask() {
  $("#mask").addClass("darkenedMask");
 }
 
+function revertMask() {
+ $("#mask").removeClass("darkenedMask");
+ $(".darkenedMask").remove();
+}
+
+
 // Cancel any masks or popups that are covering the screen. 
 $(document).on("click", ".clearScreenButton", function() {
   $("#popupGlobal").fadeOut("fast");
@@ -485,7 +509,9 @@ $(document).on("click", ".closeButton", function() {
  if ($(".ribbonMessage").length==0 && $(".maskBlockFade").length==0){
   //Close the global container if the main container is closed.
   CGSelected = Array();
-  if ($(this).parent().attr("id")=="popupContainer") {
+  if ($(this).hasClass("refreshOnDie")){
+   window.location.reload(true);
+  } else if ($(this).parent().attr("id")=="popupContainer") {
    $(this).parent().parent().fadeOut("fast");
   } else {
    $(this).parent().fadeOut("fast");

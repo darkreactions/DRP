@@ -1,50 +1,24 @@
-{# User Registration Form #}
+{% if form.errors %}
+ <div class="subPopup">
+  <div class="closeButton genericButton">x</div>
+   <h1>Errors:</h1>
+  {% for field in form %}
+  {% if field.errors %}
+   <div class="error">
+    <div class="error_label">{{ field.label_tag }}</div>
+    <div class="error_message">{{ field.errors.as_text }}</div>
+   </div> 
+  {% endif %}
+  {% endfor %}
+ </div>
+{% endif %}
 
-<form action="/user_registration/" method="post" name="registration" class="popupScreenForm infoForm">
+<h1>Lab Register</h1>
+<form action="/lab_registration/" method="post" name="lab_registration" class="popupScreenForm infoForm">
  {% csrf_token %}
- 
- {# Display Form Fields #}
- <p> Create an Account </p>
- 
- <table> {# Table allows easy line-up. #}
- {% for field in user_form %} {# User Form #}
-  <tr><td>
-   {{ field.label_tag }}: 
-   </td>
-   <td>
-   {{ field }} <br />
-  </td></tr>
+ {% for field in form %}
+  <div class="formField">{{field.label_tag}}: {{field}}</div>
  {% endfor %}
- 
- {% for field in profile_form %} {# Profile ("Lab_Member") Form #}
-  <tr><td>
-   {{ field.label_tag }}: 
-   </td>
-   <td>
-   {{ field }} <br />
-  </td></tr>
- {% endfor %}
- </table>  
- <input type="submit" value="Create" name="registration" class="form_button"/> <br />
-  
+  <input type="submit" value="Register" class="form_button"/>
 </form>
- 
- {# Display Errors ###First Name and Last Name should be req'd #}
- 
- {% for field in user_form %}
- {% if field.errors %}
-  <div class="error">
-   <div class="error_label">{{ field.label_tag }}</div>
-   {{ field.errors }}
-  </div> 
- {% endif %}
- {% endfor %}
- {% for field in profile_form %}
- {% if field.errors %}
-  <div class="error">
-   <div class="error_label">{{ field.label_tag }}</div>
-   {{ field.errors }}
-  </div> 
- {% endif %}
- {% endfor %}
- 
+

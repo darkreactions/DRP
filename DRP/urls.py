@@ -28,11 +28,12 @@ urlpatterns = patterns('',
    #Validation
     (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
   #Predictions
-    (r'^predictions/$', predictions), #Send the CG name_pairs for client-side validation.
-    (r'^recommend/$', recommend), #Send the CG name_pairs for client-side validation.
-    (r'^gather_SVG/$', gather_SVG), #Send the CG name_pairs for client-side validation.
+    (r'^predictions/$', predictions),
+    (r'^recommend/$', recommend),
+    (r'^saved/$', saved),
+    (r'^gather_SVG/$', gather_SVG),
   #Searching
-    (r'^search/$', search), #Send the CG name_pairs for client-side validation.
+    (r'^search/$', search), 
   #Users and Labs
    #Authentication
     (r'^user_logout/$', user_logout), #Log Out
