@@ -4,7 +4,7 @@
   {% if not user.get_profile.is_licensed %}
   <div class="loadActivator maskBlockFade" id="userLicenseAgreement"></div>
   {% endif %}
-  Hello, <div id="userUpdate" class="popupActivator">{{ user.first_name }}</div>. <br />
+  Hello, <div id="userUpdate" class="popupActivator" title="Update Account">{{ user.first_name }}</div>. <br />
   <a id="userLogOut" class="userAuthLink"> (Log Out) </a>
  {% else %}
   Welcome! <br />
