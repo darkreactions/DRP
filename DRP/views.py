@@ -200,24 +200,11 @@ def get_template_form(entry, model):
  return result
 
 #Given a user, change their password and email them the new password.
-def reset_password(request):
- if request.method=="POST":
-  #If the POST has been submitted.
-  user_info = json.loads(request.POST.get("user_info"))
-  user = User.objects.filter(email=user_info["email"],first_name=user_info["first_name"], last_name=user_info["last_name"]).get()
-  if user:
-   randomize_password(user) 
-   return HttpResponse("Password reset! Please check your email.")
-  else:
-   return HttpResponse("We could not find a user with that information.")
- else:
-  return render(request, "user_reset_password.html")
-
 def randomize_password(user):
  new_pass = get_random_code(15) #Generate a random password for the user.
  user.password = make_password(new_pass) #Hash the password. 
  user.save()
- email_body = "Hello {},\n\n According to our records, you just requested a password change. We have changed your account information as follows:\nUsername:{}\nPassword:{}".format(user.first_name, user.username, new_pass)
+ email_body = "Hello {},\n\n According to our records, you just requested a password change. We have changed your account information as follows:\nUsername: {}\nPassword: {}".format(user.first_name, user.username, new_pass)
  send_mail("Dark Reactions: Password Change Request", email_body, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
 # # # # # # # # # # # # # # # # # # #
@@ -1320,7 +1307,8 @@ def data_update(request): ###Lump together?
   clear_all_page_caches(lab_group)
  return HttpResponse("0"); 
 
-""" ###TODO: Not re-written since full data given by default.
+""" 
+###TODO: Not re-written since full data given by default.
 def get_full_datum(request):
  u = request.user
  try:
@@ -1336,21 +1324,25 @@ def get_full_datum(request):
  except Exception as e:
   print(e)
   return HttpResponse("<p>Data could not be loaded!</p>")
+
 """
 ######################  User Auth ######################################
 def change_password(request):
- code_sent = False
+ error=False
  if request.method == "POST":
-  print(request.POST) ####
-  if request.POST.get("emailCode"):
-   print("YES\n")
-   code_sent = True
-  username = request.POST.get("email", "")
-  code = request.POST.get("code", "")
-  password = request.POST.get("newpassword", "")
-
+  try:
+   email = request.POST.get("email")
+   username = request.POST.get("username")
+   last_name = request.POST.get("lastName")
+   user = User.objects.filter(Q(email=email)|Q(username=username), Q(last_name=last_name))[0]
+   #Change the user's password and send them an email.
+   randomize_password(user)
+   return HttpResponse("A new password has been emailed to you.")
+  except:
+   #If no user is found given the credentials, tell the user.
+   error=True
  return render(request, "change_password_form.html", {
-  "code_sent":code_sent
+  "error":error
  })
 
 def user_login(request):
@@ -1377,6 +1369,19 @@ def user_logout(request):
 #Redirects user to the appropriate registration screen.
 def registration_prompt(request):
  return render(request, "registration_cell.html", {})
+
+def user_update(request):
+ u = request.user
+ if request.method == "POST":
+  form = UserForm(request.POST, instance=u)
+  if form.is_valid():
+   form.save()
+   return HttpResponse("Update Successful!")
+ else:
+  form = UserForm(instance=u)
+ return render(request, "user_update_form.html", {
+  "form": form,
+ })
 
 def user_registration(request):
  if request.method == "POST":
@@ -1417,12 +1422,7 @@ def lab_registration(request): ###Not finished.
    access_code = lab_group.access_code
    
    #Send a "confirmation" email to the new lab email.
-   email_body = """
-Thank you for joining the Dark Reactions Project!\n\nPlease continue by creating a \"user\" for your lab. Simply...\n\t1.) Record the \"access code\" for your lab: {}\n\t2.) Click \"Register\" and create a user using the access code above.\n\t3.) Start uploading data!
-
-We wish you all the best,
-The Dark Reactions Project Team
-""".format(lab_group.access_code)
+   email_body = "Thank you for joining the Dark Reactions Project!\n\nPlease continue by creating a \"user\" for your lab. Simply...\n\t1.) Record the \"access code\" for your lab: {}\n\t2.) Click \"Register\" and create a user using the access code above.\n\t3.) Start uploading data!\n\nWe wish you all the best,\nThe Dark Reactions Project Team".format(lab_group.access_code)
 
    send_mail("Dark Reactions: Lab Registration Successful", email_body, settings.EMAIL_HOST_USER, [lab_group.lab_email], fail_silently=False)
 

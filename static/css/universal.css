@@ -28,6 +28,19 @@
  cursor:pointer;
 }
 
+.contractButton {
+ display:inline-block;
+ position:absolute;
+ cursor:pointer;
+
+ content:">>";
+ color:white;
+ top:0px;
+ right:0px;
+ font-size:20px;
+ font-weight:bold;
+}
+
 .closeButton {
  background-color:white;
  font-size:12px;
@@ -145,17 +158,16 @@ p {
 }
 
 table {
- color:inherit;
  margin: 0 auto;
+ color:inherit;
 }
 
 body {
  margin:0px;
  padding: 0px;
  font-family:helvetica;
- min-width:915px;
  min-height:630px;
- overflow:hidden;
+ //overflow:hidden;
  background-color:#E8F4FF;
 }
 
@@ -320,6 +332,7 @@ div.ui-tooltip {
 }
 
 #leftMenuContainer {
+ background-color:#355A77;
  border-top-left-radius:0px;
  border-bottom-left-radius:0px;
 }
@@ -396,22 +409,24 @@ div.ui-tooltip {
 }
 
 #mainContainer {
- min-width:720px;
  display:inline-block;
  float:left;
- width:100%;
  position:relative;
+ width:100%;
  height:100%;
+ min-width:730px;
+ z-index:1;
 }
 
 #sideContainer {
  display:inline-block;
- float:left;
+ float:right;
  background-color:#355A77;
  position:relative;
  height:100%;
  width:0%;
  display:none;
+ z-index:3;
 }
 
 #sideContainer_inner {
@@ -419,6 +434,16 @@ div.ui-tooltip {
  text-align:center;
  font-style:oblique;
  color:white;
+}
+
+#sideContainerWarning {
+ position:fixed;
+ margin:20px;
+ top: 35%;
+ right:0px;
+ width: 75px; 
+ z-index:2;
+ display: none;
 }
 
 #mask {
@@ -446,6 +471,14 @@ div.ui-tooltip {
 
 /* ##################   SPECIFIC POPUPS   ########################### */
 #popupContainer[for="changePassword"] {
+ text-align:center;
+ top:50px;
+ left:30%;
+ width:40%;
+ min-width:300px;
+}
+
+#popupContainer[for="userUpdate"] {
  text-align:center;
  top:50px;
  left:30%;
@@ -521,8 +554,9 @@ div.ui-tooltip {
 /* #################    Periodic Table    ####################### */
 #periodicTableContainer {
  position:relative;
- width:560px;
  display:inline-block;
+ text-align:center; 
+ width:100%;
 }
 
 .PT_spacer{
@@ -530,17 +564,10 @@ height:10px;
 }
 
 .PT_element {
- width:17px;
- height:17px;
  text-align:center;
- padding:3px;
- padding-top:6px;
-
- background-color:white;
+ padding:1.5px;
  color:black;
  font-size:10px;
- font-weight:bold;
- border: 2px solid black;
  border-radius:5px;
 }
 
@@ -559,22 +586,21 @@ height:10px;
 .PT_actinide { background-color:#C6905D; }
 
 .PT_selected {
- border:2px solid yellow;
  background-color:#FFD92E;
 }
 
 #label_and {
- position:absolute;
- width:40px;
- bottom:80px;
- right:10px;
+ margin:0 auto;
+ margin-top:10px;
+ display:block;
+ width:50%;
 }
 
 #label_or {
- position:absolute;
- width:40px;
- bottom:40px;
- right:10px;
+ margin:0 auto;
+ margin-bottom:10px;
+ display:block;
+ width:50%;
 }
 
 .radioContainer{
@@ -877,6 +903,14 @@ color: #355A77;
 }
 
 /* ###############   Specific Elements   ############################ */
+#userUpdate {
+ display:inline-block;
+}
+
+#userUpdate:hover {
+ font-weight:bold;
+}
+
 #topPanel div {
  display:inline-block;
  padding:10px;

@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     (r'^data_transmit/(?P<page>\d+)/$', data_transmit), #Used for changing pages.
    #Upload/Download Data
     (r'^upload_CSV/$', upload_CSV),
- (r'^download_CSV/$', download_CSV),
+    (r'^download_CSV/$', download_CSV),
    #Modify Data
     #(r'^get_full_datum/$', get_full_datum), #"Expand" the data.
     (r'^data_update/$', data_update), #Update Information
@@ -44,6 +44,7 @@ urlpatterns = patterns('',
     (r'^registration_prompt/$', registration_prompt), #Redirects to correct registration choice.
     (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
     (r'^user_registration/$', user_registration), #Create User
+    (r'^user_update/$', user_update), #Create User
     (r'^change_password/$', change_password), #Change Password
 
  #Enable the admin:

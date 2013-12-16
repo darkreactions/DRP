@@ -55,14 +55,18 @@ $(document).on("focusout", "input", function() {
 //############  Side Container:  ####################################
 function toggleSideContainer() {
  if ($("#sideContainer").is(":visible")){
-  $("#mainContainer").animate({"width":"100%"}, 1000); 
-  $("#sideContainer").animate({"width":"0%"}, 1000, function(){
-  $("#sideContainer").hide();
+  $("#sideContainer").css("min-width",null);
+  $("#mainContainer").animate({"width":"100%"}, 750); 
+  $("#sideContainer").animate({"width":"0%","min-width":"0px"}, 750, function(){
+   $("#sideContainer").hide();
   });
  } else {
   $("#sideContainer").show();
-  $("#mainContainer").animate({"width":"80%"}, 1000); 
-  $("#sideContainer").animate({"width":"20%"}, 1000); 
+  $("#mainContainer").animate({"width":"70%"}, 750); 
+  $("#sideContainer").animate({"width":"30%"}, 750, function() {
+   $("#sideContainerWarning").show();
+   $("#sideContainer").css("min-width","355px");
+  }); 
  } 
 }
 
@@ -421,7 +425,6 @@ $(document).on("click", ".popupActivator", function(event) {
    $.get("/search/", function(response) {
     $("#sideContainer_inner").html(response);
     toggleSideContainer();
-    $(".closeButton").addClass("refreshOnDie");
     $("#tabs").tabs({active: 1});
    });
    return false; //TODO: Separate this into a "sideContainer" activator
@@ -438,6 +441,11 @@ $(document).on("click", ".popupActivator", function(event) {
    break;
   case "registrationPrompt": //###REPLACE WITH PRELOADED DROP-DOWN MENU?
    $.get("/registration_prompt/", function(response) {
+    $("#popupContainer_inner").html(response);
+   });
+   break;
+  case "userUpdate":
+   $.get("/user_update/", function(response) {
     $("#popupContainer_inner").html(response);
    });
    break;
@@ -517,6 +525,12 @@ $(document).on("click", ".closeButton", function() {
    $(this).parent().fadeOut("fast");
   }
  }
+});
+
+//Shrink the slide container on contractButton clicks.
+$(document).on("click", ".contractButton", function() {
+ $("#sideContainerWarning").hide();
+ toggleSideContainer();
 });
 
 //Detect any activators that might be loaded.

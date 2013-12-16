@@ -11,7 +11,7 @@
    {% csrf_token %}
    <input id="radio_and" type="radio" class="radioSearch" name="condition" value="and" checked>
     <label id="label_and" class="genericButton" for="radio_and">And</label>
-   </input><br/>
+   </input>
    <input id="radio_or" type="radio" class="radioSearch" name="condition" value="or">
     <label id="label_or" class="genericButton" for="radio_or">Or</label>
    </input>
@@ -51,7 +51,7 @@
     </div>
 
     <label for="value">Value:</label>
-    <input id="searchValue" type="text" name="value" value="">
+    <input id="searchValue" type="text" name="value" value=""><br/>
 
     <input id="search_filterButton" type="button" value="Filter" class="form_button"/>
     <input id="search_backButton" type="button" value="Back" class="form_button"/>
@@ -59,3 +59,5 @@
   </form>
  </div>
 </div>
+
+<div class="contractButton">>></div>
