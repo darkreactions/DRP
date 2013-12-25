@@ -280,11 +280,11 @@ div.ui-tooltip {
 .ui-autocomplete {
  padding:8px;
  width:150px;
+ display:inline-block;
  background:rgba(1, 1, 1, 0.85);
  border-radius:15px;
  color:white;
  z-index:2000;
-
  list-style:none;
 }
 

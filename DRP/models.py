@@ -635,16 +635,16 @@ class Data(models.Model):
 
  #Self-assigning Fields:
  calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
- calculated_pH = models.BooleanField()
- calculated_temp = models.BooleanField()
- calculated_time = models.BooleanField()
+ calculated_pH = models.BooleanField(default=False)
+ calculated_temp = models.BooleanField(default=False)
+ calculated_time = models.BooleanField(default=False)
 
  atoms = models.CharField("Atoms", max_length=30, blank=True)
 
  user = models.ForeignKey(User, unique=False)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
  creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
- is_valid = models.BooleanField("Valid")
+ is_valid = models.BooleanField("Valid", default=False)
 
  #Categorizing Fields:
  public = models.BooleanField("Public", default=False)

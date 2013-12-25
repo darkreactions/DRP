@@ -98,23 +98,25 @@ function getOptions(field) {
 //############ Server Transactions: #########################################
 function submitChanges(refresh) {
  refresh = refresh !== undefined ? refresh : true
-
+ alert("2");
  if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
   showRibbon("Working! This may take a moment.", "#FFC87C", "body", false);
  }
  JSONArray = JSON.stringify(changesMade);
  $.post("/data_update/", JSONArray, function(response) {
   //The data should now be up to date:
+  alert("3");
   changesMade = {
    del:[],
    edit:[],
    add:[],
    dupl:[],
    };
+  alert(response);
   if (refresh) {
    window.location.reload(true);
   }
-  alert("response: " + response);
+  alert("4");
   return response;
  });
 }
@@ -317,12 +319,13 @@ $("#leftMenu_delete").click(function() {
      }
      selectedData = [];
 
-     showRibbon("Deleted!", "#99FF5E", "#dataContainer");
 
      //Upload updated data
      submitChanges();
      $(this).dialog("close");
      $(this).remove();
+
+     showRibbon("Deleted!", "#99FF5E", "#dataContainer");
 
     },
     "No": function() {

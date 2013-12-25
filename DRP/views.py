@@ -1260,6 +1260,7 @@ def send_CG_names(request):
 ######################  Update Data ####################################
 def data_update(request): ###Lump together?
  u = request.user
+ print "started data_update"
  if request.method == 'POST' and u.is_authenticated():
   changesMade = json.loads(request.body, "utf-8")
 
@@ -1305,6 +1306,7 @@ def data_update(request): ###Lump together?
    except:
     pass
   clear_all_page_caches(lab_group)
+ print "finished data_update"
  return HttpResponse("0"); 
 
 """ 
