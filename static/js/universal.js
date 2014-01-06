@@ -1,5 +1,7 @@
 $(document).ready(function() {
 //######################################################################
+selectedData = Array();
+
 CGEntries = undefined;
 CGAbbrevs = undefined;
 
@@ -24,6 +26,24 @@ window.make_name_verbose = function(string) {
  return verbose_name;
 }
 
+//Refresh the data container classes. (NOTE: Does not perform server request for new data.)
+window.restyleData = function() {
+ //Fade out units if the amount is also faded out.
+ $(".type_notes").each(function() {
+  if ($(this).is(":empty")) {
+   $(this).addClass("opaqueDatum");
+  }
+ });
+
+ //TODO: CHANGE TO CHECK REF INSTEAD OF INDEX ###
+ //Keep selected data highlighted even if on page changes.
+ $(".dataEntry").each(function() {
+  dataID = $(this).find(".type_ref").html().trim();
+  if (selectedData.indexOf(dataID) != -1) {
+   $(this).parent().addClass("dataSelected");
+  }
+ });
+}
 //############   Tooltips   ############################################
 //Apply custom tooltips to applicable data.
 $(document).tooltip({
@@ -54,20 +74,13 @@ $(document).on("focusout", "input", function() {
 
 //############  Side Container:  ####################################
 function toggleSideContainer() {
- if ($("#sideContainer").is(":visible")){
-  $("#sideContainer").css("min-width",null);
-  $("#mainContainer").animate({"width":"100%"}, 750); 
-  $("#sideContainer").animate({"width":"0%","min-width":"0px"}, 750, function(){
-   $("#sideContainer").hide();
-  });
+ if ($("#sidePanel").css("width")!="0px"){
+  $("#mainPanel").css("width","100%"); 
+  $("#sidePanel").css("width","0%"); 
  } else {
-  $("#sideContainer").show();
-  $("#mainContainer").animate({"width":"70%"}, 750); 
-  $("#sideContainer").animate({"width":"30%"}, 750, function() {
-   $("#sideContainerWarning").show();
-   $("#sideContainer").css("min-width","355px");
-  }); 
- } 
+  $("#mainPanel").animate({"width":"50%"}, 750); 
+  $("#sidePanel").animate({"width":"50%"}, 750); 
+ }
 }
 
 //############   Ribbons:   #############################################
@@ -244,12 +257,12 @@ $(document).on("click", "#search_filterButton", function() {
    if (current_query){
     for (var i in current_query) {
      if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
-      showRibbon("Already queried!", "#FFC87C","#sideContainer", true);
+      showRibbon("Already queried!", "#FFC87C","#sidePanel", true);
       return false //Don't continue if query is already present.
      }
     }
    }
-   showRibbon("Searching!", "#99FF5E","#sideContainer", true);
+   showRibbon("Searching!", "#99FF5E","#sidePanel", true);
 
    current_query.push({
     "field":field,
@@ -265,12 +278,12 @@ $(document).on("click", "#search_filterButton", function() {
    if (current_query){
     for (var i in current_query) {
      if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
-      showRibbon("Already queried!", "#FFC87C","#sideContainer", true);
+      showRibbon("Already queried!", "#FFC87C","#sidePanel", true);
       return false //Don't continue if query is already present.
      }
     }
    }
-   showRibbon("Searching!", "#99FF5E","#sideContainer", true);
+   showRibbon("Searching!", "#99FF5E","#sidePanel", true);
 
    current_query.push({
     "field":field,
@@ -278,10 +291,10 @@ $(document).on("click", "#search_filterButton", function() {
    });
    sendSearchQuery(current_query);
   } else {
-   showRibbon("Nothing entered!", "#FF6870", $("#sideContainer"), true);
+   showRibbon("Nothing entered!", "#FF6870", $("#sidePanel"), true);
   }
  } else {
-  showRibbon("No data to filter!", "#FF6870", $("#sideContainer"), true);
+  showRibbon("No data to filter!", "#FF6870", $("#sidePanel"), true);
  }
 });
 
@@ -423,11 +436,11 @@ $(document).on("click", ".popupActivator", function(event) {
    PT_selected = Array();
    current_query = Array();
    $.get("/search/", function(response) {
-    $("#sideContainer_inner").html(response);
+    $("#sidePanel_inner").html(response);
     toggleSideContainer();
     $("#tabs").tabs({active: 1});
    });
-   return false; //TODO: Separate this into a "sideContainer" activator
+   return false; //TODO: Separate this into a "sidePanel" activator
    break;
   case "userLogin":
    $.get("/user_login/", function(response) {
@@ -529,7 +542,7 @@ $(document).on("click", ".closeButton", function() {
 
 //Shrink the slide container on contractButton clicks.
 $(document).on("click", ".contractButton", function() {
- $("#sideContainerWarning").hide();
+ $("#sidePanelWarning").hide();
  toggleSideContainer();
 });
 

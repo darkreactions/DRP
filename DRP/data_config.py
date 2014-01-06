@@ -6,7 +6,7 @@ class ConfigManager(object):
    #Note: if num_reactants changes, database must be migrated.
 
   #Database Page View Variables
-  self.current_page_radius = 4 #The number of pages to show "around" the current page.
+  self.current_page_radius = 3 #The number of pages to show "around" the current page.
   self.data_per_page = 15 #The number of reactions to show per page.
 
   #Data Upload Variables

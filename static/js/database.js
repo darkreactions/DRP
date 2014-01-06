@@ -1,7 +1,5 @@
-
 $(document).ready(function() {
 //############ Variable Setup: #########################################
-var selectedData = Array();
 var changesMade = {
  del:[],
  edit:[],
@@ -41,24 +39,6 @@ function setPageCookie(page) {
  page = page !== undefined ? page : $("#pagesCurrent").html().trim();
  $.cookie("current_page", page,
   {expires: 7}); //Set cookie to expire after one week.
-}
-
-//Refresh the data container classes. (NOTE: Does not perform server request for new data.)
-function restyleData() {
- //Fade out units if the amount is also faded out.
- $(".type_notes").each(function() {
-  if ($(this).is(":empty")) {
-   $(this).css({"opacity":"0.3"});
-  }
- });
-
- //Keep selected data highlighted even if on page changes.
- $(".dataIndex").each(function() {
-  dataID = Number($(this).html().trim())
-  if (selectedData.indexOf(dataID) != -1) {
-   $(this).parent().addClass("dataSelected");
-  }
- });
 }
 
 function adaptSize(element) {
@@ -201,8 +181,8 @@ $(document).on("click", ".dataGroup", function() {
  $(this).toggleClass("dataSelected");
 
  //Get Index of Selected Data by Number
- var dataID = parseInt($(this).children(".dataIndex").html());
 
+ var dataID = $(this).find(".dataEntry>.type_ref").html().trim();
  var indexOfData = selectedData.indexOf(dataID);
  if (indexOfData >= 0) { //Data is already selected (thus, deselect)
   selectedData.splice(indexOfData,1);
@@ -216,8 +196,8 @@ $(document).on("click", ".dataGroup", function() {
 $("#leftMenu_selectPage").click(function() {
  var selectedOnPage = [];
  //Select data
- $(".dataEntry>.type_ref").each(function() {
-  var dataRef = $(this).html();
+ $(".type_ref").each(function() {
+  var dataRef = $(this).html().trim();
   if (selectedData.indexOf(dataRef) < 0){ //If the item is not in the list yet.
    $(this).closest(".dataGroup").addClass("dataSelected");
    selectedData.push(dataRef);
@@ -237,43 +217,6 @@ $("#leftMenu_selectPage").click(function() {
  }
 });
 
-/* //###TODO: Remove since too easy to delete all data?
-//Select All (Button)
-$("#leftMenu_selectAll").click(function() {
- //If all data is selected, deselect everything.
- var totalDataSize = $("#pagesTotal").attr("total_data_size");
- if (selectedData.length == totalDataSize) {
-  selectedData = [];
-  $(".dataGroup").each(function() {
-   $(this).removeClass("dataSelected");
-  });
- } else {
-  selectedData = [] //Clear selection to avoid duplicates.
-  for(i = 1; i <= totalDataSize; i++) {
-   selectedData.push(i);
-  }
-  //Data will already be sorted from least to greatest after loop.
-  $(".dataGroup").addClass("dataSelected");
- }
-});
-
-
-//View Full Datum (Button)
-$(document).on("click", ".expandButton", function() {
- //Send the 0-based dataIndex to the server and replace the dataEntry.
- var indexRequested = parseInt($(this).siblings(".dataEntry").children(".type_ref").html());
- var moreButton = $(this);
- $(moreButton).siblings(".dataEntry").html("Loading. Please Wait.");
- $.post("/get_full_datum/", {"refRequested":refRequested},
-  function(response) {
-   $(moreButton).siblings(".dataEntry").html(response);
-   $(moreButton).fadeOut("slow");
-   restyleData();
- });
-
- return false; //Do not continue so the data is not selected.
-});
-*/
 
 //Create the "Duplicate This Data" button.
 $(document).on("mouseover", ".dataGroup", function() {
@@ -309,7 +252,7 @@ $("#leftMenu_delete").click(function() {
    position:{
     my:"center",
     at:"center",
-    of:"#dataContainer_inner",
+    of:"body",
    },
    modal: true,
    buttons: {
@@ -338,15 +281,26 @@ $("#leftMenu_delete").click(function() {
 });
 
 //############ Edit Data: ##############################################
-//Initiate edit session.
-var editExemptions = ["searchResultsContainer"]
-$(document).on("click", ".editable", function() {
- var refToChange = $(this).parent().children(".type_ref").html().trim();
+function cancelEditables() {
+ $(".editField").each(function() {
+  var editParent = $(this).parent(".editable");
+  var oldVal = $(this).attr("oldVal");
+  $(editParent).html(oldVal);
+ });
+}
 
- //Skip any data that should not be edited. //###
- if (editExemptions.indexOf($(".editable").parent().parent().attr("id")) != -1) {
+
+//Initiate edit session.
+$(document).on("click", ".editable", function() {
+
+ //Close any other editables.
+ if ($(this).find(".editField").length != 0) {
   return false;
+ } else {
+  cancelEditables();
  }
+
+ var refToChange = $(this).parent().children(".type_ref").html().trim();
 
  $(this).css("opacity",1);
 

@@ -1,0 +1,73 @@
+<html>
+
+ <head>
+  <title>
+   Dark Reactions Project
+  </title>
+
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
+ {% with template|add:".css" as css_name %}
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/{{ css_name }}" />
+ {% endwith %}
+
+ </head>
+
+<body>
+<!-- POPUP CONTAINER -->
+<div id="popupGlobal" >
+ <div id="popupContainer"  class="genericContainer">
+  <div class="closeButton genericButton">x</div>
+  <div id="popupContainer_inner"  class="genericContainer_inner">
+  </div>
+ </div>
+ <div id="mask">
+ </div>
+</div>
+
+<div id="mainContainer">
+<div id="topPanel">
+ <div id="logoContainer">{% include "main_logo.html" %}</div>
+
+ {% include "top_menu.html" %}
+
+ <!-- Buttons used to manipulate the data presented on this page. -->
+ <div id="dataManipulationMenu">
+  {% include template|add:"_menu.html" %}
+ </div>
+ {% include "user_control_container.html" %}
+</div>
+
+<div id="centerPanel">
+ <div id="mainPanel">{% include template|add:".html" %}</div>
+ <div id="sidePanel"><div id="sidePanel_inner"></div></div>
+</div>
+
+<div id="bottomPanel">
+ <!-- COPYRIGHT -->
+ {% include "copyright.html" %}
+</div>
+
+</div>
+</div>
+
+ {% include "statcounter.html" %}
+ </body>
+
+ <!-- SCRIPTS -->
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.csrf.js"></script>
+
+ <script type="text/javascript">
+  //Define the STATIC_URL if needed in the JS files.
+  var STATIC_URL = "{{ STATIC_URL }}";
+ </script>
+
+ <script type="text/javascript" src="{{ STATIC_URL }}js/clientValidate.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/universal.js" ></script>
+ {% with template|add:".js" as js_name %}
+ <script type="text/javascript" src="{{ STATIC_URL }}js/{{ js_name }}" ></script>
+ {% endwith %}
+
+</html>

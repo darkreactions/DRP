@@ -1,39 +1,43 @@
  <!-- Reaction -->
-<div class="dataField type_reactant 1 editable" editAs="text">{{entry.reactant_1}}</div>
-<div class="dataDecorator">(</div>
-<div class="dataField type_quantity 1 editable" editAs="text">{{entry.quantity_1}}</div>
-<div class="dataField type.unit 1 editable" editAs="select">{{entry.unit_1}}</div>
-<div class="dataDecorator">) +</div>
-<div class="dataField type_reactant 2 editable" editAs="text">{{entry.reactant_2}}</div>
-<div class="dataDecorator">(</div>
-<div class="dataField type_quantity 2 editable" editAs="text">{{entry.quantity_2}}</div>
-<div class="dataField type_unit 2 editable" editAs="select">{{entry.unit_2}}</div>
-<div class="dataDecorator">) +</div>
-<div class="dataField type_reactant 3 editable" editAs="text">{{entry.reactant_3}}</div>
-<div class="dataDecorator">(</div>
-<div class="dataField type_quantity 3 editable" editAs="text">{{entry.quantity_3}}</div>
-<div class="dataField type_unit 3 editable" editAs="select">{{entry.unit_3}}</div>
-<div class="dataDecorator">) +</div>
-<div class="dataField type_reactant 4 editable" editAs="text">{{entry.reactant_4}}</div>
-<div class="dataDecorator">(</div>
-<div class="dataField type_quantity 4 editable" editAs="text">{{entry.quantity_4}}</div>
-<div class="dataField type_unit 4 editable" editAs="select">{{entry.unit_4}}</div>
-<div class="dataDecorator">) +</div>
-<div class="dataField type_reactant 5 editable" editAs="text">{{entry.reactant_5}}</div>
-<div class="dataDecorator">(</div>
-<div class="dataField type_quantity 5 editable" editAs="text">{{entry.quantity_5}}</div>
-<div class="dataField type_unit 5 editable" editAs="select">{{entry.unit_5}}</div>
-<div class="dataDecorator">)</div> <br/>
+<span class="dataField type_ref editable" editAs="text">{{entry.ref}}</span>
+<br />
+<span class="dataField type_reactant editable" group="1" editAs="text">{{entry.reactant_1}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" group="1" editAs="text">{{entry.quantity_1}}</span>
+<span class="dataField type.unit editable" group="1" editAs="select">{{entry.unit_1}}</span>
+<span class="dataDecorator">) +</span>
+<span class="dataField type_reactant editable" group="2" editAs="text">{{entry.reactant_2}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" group="2" editAs="text">{{entry.quantity_2}}</span>
+<span class="dataField type_unit editable" group="2" editAs="select">{{entry.unit_2}}</span>
+<span class="dataDecorator">) +</span>
+<span class="dataField type_reactant editable" group="3" editAs="text">{{entry.reactant_3}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" group="3" editAs="text">{{entry.quantity_3}}</span>
+<span class="dataField type_unit editable" group="3" editAs="select">{{entry.unit_3}}</span>
+<span class="dataDecorator">) +</span>
+<span class="dataField type_reactant editable" group="4" editAs="text">{{entry.reactant_4}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" group="4" editAs="text">{{entry.quantity_4}}</span>
+<span class="dataField type_unit editable" group="4" editAs="select">{{entry.unit_4}}</span>
+<span class="dataDecorator">) +</span>
+<span class="dataField type_reactant editable" group="5" editAs="text">{{entry.reactant_5}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" group="5" editAs="text">{{entry.quantity_5}}</span>
+<span class="dataField type_unit editable" group="5" editAs="select">{{entry.unit_5}}</span>
+<span class="dataDecorator">)</span>
+<br/>
  <!-- Variables -->
-<div class="dataField type_temp editable" editAs="text">{{entry.temp}}</div>
-<div class="dataField type_time editable" editAs="text">{{entry.time}}</div>
-<div class="dataField type_pH editable" editAs="text">{{entry.pH}}</div>
-<div class="dataField type_purity editable" editAs="select">{{entry.purity}}</div>
-<div class="dataField type_outcome editable" editAs="select">{{entry.outcome}}</div>
-<div class="dataField type_slow_cool editable" editAs="select">{{entry.slow_cool}}</div>
-<div class="dataField type_leak editable" editAs="select">{{entry.leak}}</div>
-<div class="dataField type_ref editable" editAs="text">{{entry.ref}}</div>
-<div class="dataField type_notes editable" editAs="text">{{entry.notes}}</div>
-<div class="dataField type_duplicate_of editable" editAs="text">{{entry.duplicate_of}}</div>
-<div class="dataField type_recommended editable" editAs="select">{{entry.recommended}}</div>
-<div class="type_user">{{entry.user}}</div>
+<span class="dataField type_temp editable" editAs="text">{{entry.temp}}</span>
+<span class="dataField type_time editable" editAs="text">{{entry.time}}</span>
+<span class="dataField type_pH editable" editAs="text">{{entry.pH}}</span>
+<span class="dataField type_purity editable" editAs="select">{{entry.purity}}</span>
+<span class="dataField type_outcome editable" editAs="select">{{entry.outcome}}</span>
+<span class="dataField type_slow_cool editable" editAs="select">{{entry.slow_cool}}</span>
+<span class="dataField type_leak editable" editAs="select">{{entry.leak}}</span>
+<br/>
+<span class="dataField type_notes editable" editAs="text">{{entry.notes}}</span>
+<br/>
+<span class="dataField type_duplicate_of editable opaqueDatum" editAs="text">{{entry.duplicate_of}}</span>
+<span class="dataField type_recommended editable opaqueDatum" editAs="select">{{entry.recommended}}</span>
+<span class="type_user opaqueDatum">{{entry.user}}</span>

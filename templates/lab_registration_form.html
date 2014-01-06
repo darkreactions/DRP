@@ -17,7 +17,7 @@
 <form action="/lab_registration/" method="post" name="lab_registration" class="popupScreenForm infoForm">
  {% csrf_token %}
  {% for field in form %}
-  <div class="formField">{{field.label_tag}}: {{field}}</div>
+  <div class="formField">{{field.label_tag}} {{field}}</div>
  {% endfor %}
   <input type="submit" value="Register" class="form_button"/>
 </form>

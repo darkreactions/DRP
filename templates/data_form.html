@@ -27,7 +27,7 @@
    {% if forloop.first or forloop.counter0|divisibleby:"3" %}
     <div class="reactionWrapper">
         <div class="fieldWrapper">
-            {{ field.label_tag }}: {{ field }}
+            {{ field.label_tag }} {{ field }}
            </div>
     {% elif forloop.counter|divisibleby:"3" %}
           {{ field }}
@@ -35,11 +35,11 @@
           </div>
          {% else %}
        <div class="fieldWrapper">
-          {{ field.label_tag }}: {{ field }}
+          {{ field.label_tag }} {{ field }}
          {% endif %}
   {% else %} 
       <div class="fieldWrapper"> 
-          {{ field.label_tag }}: {{ field }}
+          {{ field.label_tag }} {{ field }}
    </div>
   {% endif %}
    {% if 15 == forloop.counter %}

@@ -24,35 +24,21 @@
  <div id="tabs-2">
   <form action="/search/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
    {% csrf_token %}
-    <div class="radioContainer">
+   <div class="blockElement">
     <label for="field">Field:</label>
-    <input id="radio_reactant" type="radio" class="radioSearch" name="field" value="reactant" checked>
-     <label for="radio_reactant" class="radio_label genericButton">
-      Reactant
-     </label>
-    </input>
-    <input id="radio_unit" type="radio" class="radioSearch" name="field" value="unit">
-     <label for="radio_unit" class="radio_label genericButton">
-      Unit
-     </label>
-    </input>
-    <input id="radio_quantity" type="radio" class="radioSearch" name="field" value="quantity">
-     <label for="radio_quantity" class="radio_label genericButton">
-      Quantity
-     </label>
-    </input>
-    {% for field in other_fields %}
-     <input id="radio_{{field.raw}}" type="radio" class="radioSearch" name="field" value="{{field.raw}}">
-      <label for="radio_{{field.raw}}" class="radio_label genericButton">
-       {{field.verbose}}
-      </label>
-     </input>
-    {% endfor %}
-    </div>
-
+    <select class="dropDownMenu" name="field">
+      <option value="reactant">Reactant</option>
+      <option value="quantity">Quantity</option>
+      <option value="unit">Unit</option>
+     {% for field in other_fields %}
+      <option value="{{field.raw}}">{{field.verbose}}</option>
+     {% endfor %}
+    </select><br/>
+   </div>
+   <div class="blockElement">
     <label for="value">Value:</label>
-    <input id="searchValue" type="text" name="value" value=""><br/>
-
+    <input id="searchValue" type="text" name="value" value="">
+   </div>
     <input id="search_filterButton" type="button" value="Filter" class="form_button"/>
     <input id="search_backButton" type="button" value="Back" class="form_button"/>
     <input id="search_clearButton" type="button" value="Clear" class="form_button"/>

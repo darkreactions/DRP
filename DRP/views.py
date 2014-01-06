@@ -214,10 +214,11 @@ def database(request, global_data=False):
  #Organize the session information.
  session = get_page_info(request)
  data_package, page_package, total_data_size = repackage_page_session(session)
- return render(request, 'database_global.html', {
+ return render(request, 'global_page.html', {
   "data_on_page": data_package, #Includes data and data_indexes.
   "page_package": page_package,
   "total_data_size": total_data_size,
+  "template": "database",
  })
 
 def data_transmit(request, page = 1):
@@ -1258,6 +1259,34 @@ def send_CG_names(request):
  return HttpResponse("Please log in to see data.")
 
 ######################  Update Data ####################################
+  #Rules:
+  # 1.) Labs can only delete data it owns.
+  # 2.) Users can only modify their own lab's data.
+
+  #JSON Formats:
+  # request.body =
+  #  { 
+  #    "del": [originalRef_1, ..., originalRef_N],
+  #    "edit": [{originalRef:"X", fieldChanged:"X", newValue:"X"}, ...]
+  #  }
+
+
+def delete_data(request):
+ u = request.user
+ print "_----_----_---_---starting DELETION process."
+ if request.method == "POST" and u.is_authenticated():
+  #Variable Setup
+  lab_group = u.get_profile().lab_group
+  deleteList = json.loads(request.body, "utf-8")
+  lab_data = get_lab_data(lab_group)
+
+  #Attempt to find and delete data entries. 
+  for ref in deleteList:
+   lab_data.filter(ref=ref).delete()
+
+  return HttpResponse(0);
+ return HttpReponse("Please log in to delete data.") 
+
 def data_update(request): ###Lump together?
  u = request.user
  print "started data_update"
