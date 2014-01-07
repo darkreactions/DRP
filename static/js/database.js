@@ -1,11 +1,5 @@
 $(document).ready(function() {
 //############ Variable Setup: #########################################
-var changesMade = {
- del:[],
- edit:[],
- dupl:[],
- add:[],
- };
 var CGSelected = Array();
 
 //############ Post-load Setup: #########################################
@@ -73,32 +67,6 @@ function getOptions(field) {
   default:
    return ["No options found."]
  }
-}
-
-//############ Server Transactions: #########################################
-function submitChanges(refresh) {
- refresh = refresh !== undefined ? refresh : true
- alert("2");
- if ((changesMade.del.length > 10) || (changesMade.dupl.length > 10)) {
-  showRibbon("Working! This may take a moment.", "#FFC87C", "body", false);
- }
- JSONArray = JSON.stringify(changesMade);
- $.post("/data_update/", JSONArray, function(response) {
-  //The data should now be up to date:
-  alert("3");
-  changesMade = {
-   del:[],
-   edit:[],
-   add:[],
-   dupl:[],
-   };
-  alert(response);
-  if (refresh) {
-   window.location.reload(true);
-  }
-  alert("4");
-  return response;
- });
 }
 
 //############ CSV Management: #######################################
@@ -257,19 +225,20 @@ $("#leftMenu_delete").click(function() {
    modal: true,
    buttons: {
     "Delete Selection": function() {
-     for (var i in selectedData) {
-      changesMade.del.push(selectedData[i]);
-     }
-     selectedData = [];
-
-
      //Upload updated data
-     submitChanges();
+     JSONArray = JSON.stringify(selectedData);
+     $.post("/delete_Data/", JSONArray, function(response) {
+      showRibbon(response, "#99FF5E", "body");
+      if (response == 0) {
+       showRibbon("Working...", "#FFC87C", "body", false);
+       window.location.reload(true);
+      } else {
+       showRibbon(response,"#FF6870", "body");
+      }
+     });
+
      $(this).dialog("close");
      $(this).remove();
-
-     showRibbon("Deleted!", "#99FF5E", "#dataContainer");
-
     },
     "No": function() {
      $(this).dialog("close");
@@ -364,18 +333,20 @@ $(document).on("click", ".editConfirm", function() {
  var editParent = $(this).parent();
  var editRow = $(editParent).parents("tr");
  //Find the general fieldChanged (eg, quantity vs. quantity_1)
- var fieldChanged = $(this).closest(".editable").attr("class").split(' ');
+ var fieldChanged = $(this).closest(".editable").attr("class").split(" ")[1];
+ var numChanged = $(this).closest(".editable").attr("group");
  var newValue = $(editFieldSibling).val().trim();
  var oldValue = $(editFieldSibling).attr("oldVal");
 
  var validData = false;
 
- if (editFieldSibling.attr("class").split(" ")[1] == "editText") { //Edit by Text
-  if (parseInt($(this).parent().attr("class").split(" ")[2])>2) {
+ if (editFieldSibling.attr("class").split(" ").indexOf("editText") != -1) { //Edit by Text
+  //Check if the data is required (ie: if it pertains to reactant 3-5).
+  if (parseInt(numChanged)>2) {
    var required = false;
   } else { var required = true; }
   if ($(this).siblings(".editText").attr("class").indexOf("badData") < 0
-   && quickValidate(fieldChanged[1].substr(5), newValue, required)) {
+   && quickValidate(fieldChanged.substr(5), newValue, required)) {
    validData = true;
   } else {
    showRibbon("Invalid!", "#FF6870", "#dataContainer");
@@ -388,10 +359,10 @@ $(document).on("click", ".editConfirm", function() {
  if (validData) {
   if (newValue != oldValue) {
    //Find the specific fieldChanged.
-   if ($.isNumeric(fieldChanged[2])) {
-    fieldChanged = fieldChanged[1].substr(5) + "_" + fieldChanged[2];
+   if ($.isNumeric(numChanged)) {
+    fieldChanged = fieldChanged.substr(5) + "_" + numChanged;
    } else {
-    fieldChanged = fieldChanged[1].substr(5);
+    fieldChanged = fieldChanged.substr(5);
    }
 
    //Send edits for Compound Guide
@@ -431,26 +402,20 @@ $(document).on("click", ".editConfirm", function() {
 
    } else {
     //Send edits for the Database View
-    changesMade.edit.push([ //[indexChanged, fieldChanged, newValue]
-     $(editFieldSibling).attr("refToChange"),
-     fieldChanged,
-     newValue
-     ]);
+    editLog = {
+     "ref":$(editFieldSibling).attr("refToChange"),
+     "field":fieldChanged,
+     "newValue":newValue,
+    };
    }
    //Immediately change the visual for the user.
    $(this).parent().html(newValue);
-   JSONArray = JSON.stringify(changesMade);
-   $.post("/data_update/", JSONArray, function(response) {
+   JSONArray = JSON.stringify(editLog);
+   $.post("/change_Data/", JSONArray, function(response) {
     //The data should now be up to date:
-    changesMade = {
-     del:[],
-     edit:[],
-     add:[],
-     dupl:[],
-     }
-    if (response!="0") {
+    if (response != 0) {
      $(editParent).html(oldValue);
-     showRibbon(response, "#FF6870", "#dataContainer");
+     showRibbon(response, "#FF6870", "body");
    }
    });
    
@@ -473,7 +438,7 @@ $(document).on("click", ".ui-menu-item", function() {
 //Make edit text fields auto-size and validate while typing.
 $(document).on("keyup", ".editText", function() {
  adaptSize($(this));
- if (parseInt($(this).parent().attr("class").split(" ")[2])>2) {
+ if (parseInt($(this).parent().attr("group"))>2) {
   var required = false;
  } else { var required = true; }
 
@@ -492,46 +457,44 @@ $(document).on("click", ".CG_compound", function() {
 });
 
 //############## Change Pages: #########################################
-$(document).on("click", "#pagesInputButton", function() {
- var pageLink = $("#pagesInputText").val().trim();
+function changePageTo(page) {
+ showRibbon("Loading!", "#FFC87C", "#mainPanel", false);
+ pageDestination = "/data_transmit/" + page;
+ $.get(pageDestination, function(response) {
+  $("#mainPanel").html(response);
+  if ($(".dataGroup").length) {
+   setPageCookie(page)
+   restyleData();
+  $(".ribbonMessage").remove();
+  }
+ });
+// } else {
+//  showRibbon("Page does not exist", "#FF6870", "body");
+// }
+}
 
- if (pageLink == $("#pageLinkCurrent").html().trim()) {
+$(document).on("click", "#pagesInputButton", function() {
+ var pageNum = $("#pagesInputText").val().trim();
+
+ if (pageNum == $("#pageLinkCurrent").html().trim()) {
   showRibbon("Already here!", "#99FF5E", "#dataContainer");
   return false //Don't do anything else if page already is active.
- } else if ($.isNumeric(pageLink)
-  && parseInt(pageLink) <= parseInt($("#pagesTotal").html().trim())
-  && parseInt(pageLink) > 0) {
+ } else if ($.isNumeric(pageNum)
+  && parseInt(pageNum) <= parseInt($("#pagesTotal").html().trim())
+  && parseInt(pageNum) > 0) {
   //Create a CSRF Token for Django authorization.
   var csrftoken = $.cookie("csrftoken");
-
-  //Request the information about a page.
-  pageDestination = "/data_transmit/" + pageLink;
-  $.get(pageDestination, function(dataResponse) {
-   var newDataContainer = dataResponse;
-   $("#dataContainer").html(newDataContainer);
-   if ($(".dataGroup").length) {
-    setPageCookie(pageLink)
-    restyleData();
-   }
-  });
- } else {
-  showRibbon("Page does not exist", "#FF6870", "#dataContainer");
- }
+  changePageTo(pageNum)
+  }
 });
 
 $(document).on("click", ".pageLink", function() {
  //If a valid page link has been clicked.
- var pageLink = $(this).html().trim();
+ var pageNum = $(this).html().trim();
  //If the link is a number (not an ellipsis) and not the current page:
- if ($.isNumeric(pageLink) && pageLink != $("#pageLinkCurrent").html().trim()) {
+ if ($.isNumeric(pageNum) && pageNum != $("#pageLinkCurrent").html().trim()) {
   //Request the information about a page.
-  pageDestination = "/data_transmit/" + pageLink;
-  $.get(pageDestination, function(dataResponse) {
-   var newDataContainer = dataResponse;
-   $("#dataContainer").html(newDataContainer);
-   setPageCookie(pageLink)
-   restyleData();
-  });
+  changePageTo(pageNum)
  }
 });
 

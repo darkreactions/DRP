@@ -798,11 +798,6 @@ height:10px;
  border-radius:15px;
 }
 
-.datafield:empty {
- min-width:10px;
- min-height:5px;
-}
-
 .dataField:after {
  font-weight:bold;
 }

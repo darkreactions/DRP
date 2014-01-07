@@ -884,7 +884,7 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     dirty_datum = str(parsed_data[field])
     assert(quick_validation(field, dirty_datum))
 
-    #Check to make sure no references are repeated.
+    #The "ref" already exists in the saved datum, so ignore it upon re-validation.
     if field=="ref" and not revalidating:
      try:
       #Gather the reference_set to make sure references are unique.

@@ -226,13 +226,14 @@ def data_transmit(request, page = 1):
   #Organize the session information.
   session = get_page_info(request, page=int(page))
   data_package, page_package, total_data_size = repackage_page_session(session)
-  return render(request, 'data_and_page_container.html', {
+  return render(request, 'database.html', {
    "data_on_page": data_package, #Includes data indexes
    "page_package": page_package, #Includes page links
    "total_data_size": total_data_size,
   })
  except Exception as e:
-  raise Exception("Could not transmit data for page: {}".format(page))
+  print e
+  return HttpResponse("Could not transmit data for page: {}".format(page))
 
 def recommend(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
  #Get user data if it exists.
@@ -1260,103 +1261,86 @@ def send_CG_names(request):
 
 ######################  Update Data ####################################
   #Rules:
-  # 1.) Labs can only delete data it owns.
-  # 2.) Users can only modify their own lab's data.
+  # 1.) A Lab can only delete data it owns.
+  # 2.) Users can only modify their own Lab's data.
 
-  #JSON Formats:
-  # request.body =
-  #  { 
-  #    "del": [originalRef_1, ..., originalRef_N],
-  #    "edit": [{originalRef:"X", fieldChanged:"X", newValue:"X"}, ...]
-  #  }
+  #Verbose JSON Formats:
+  # request.body ===
+  #  delete_Data --> {[originalRef_1, ..., originalRef_N]}
+  #  change_Data --> {originalRef:"X", fieldChanged:"X", newValue:"X"}
 
-
-def delete_data(request):
+def delete_Data(request):
  u = request.user
- print "_----_----_---_---starting DELETION process."
  if request.method == "POST" and u.is_authenticated():
   #Variable Setup
   lab_group = u.get_profile().lab_group
   deleteList = json.loads(request.body, "utf-8")
   lab_data = get_lab_data(lab_group)
 
-  #Attempt to find and delete data entries. 
+  #Find and delete data entries in a User's Lab. 
   for ref in deleteList:
-   lab_data.filter(ref=ref).delete()
+   try:
+    lab_data.filter(ref=ref).first().delete()
+   except:
+    HttpResponse("One or more selected data not found.")
 
+  #Finally, return a success code.
   return HttpResponse(0);
  return HttpReponse("Please log in to delete data.") 
 
-def data_update(request): ###Lump together?
- u = request.user
- print "started data_update"
- if request.method == 'POST' and u.is_authenticated():
-  changesMade = json.loads(request.body, "utf-8")
+def change_Data(request):
+ #Fields that may be changed via this script.
+ whitelist = set(get_model_field_names())
 
-  #Get the Lab_Group data to allow direct manipulation.
+ u = request.user
+ if request.method == "POST" and u.is_authenticated():
+  #Variable Setup
   lab_group = u.get_profile().lab_group
+  editLog = json.loads(request.body, "utf-8")
   lab_data = get_lab_data(lab_group)
+  
+  #Get the Datum for the lab.
+  ref = editLog["ref"]
+  fieldChanged = editLog["field"]
+  newValue = editLog["newValue"]
+  datum = lab_data.filter(ref=ref).first() 
 
-  while (len(changesMade["edit"]) > 0):
-   try:
-    #An editPackage is [indexChanged, fieldChanged, newValue].
-    editPackage = changesMade["edit"].pop()
-    refChanged = editPackage[0] #Translate to 0-based Index
-    fieldChanged = editPackage[1]
-    newValue = editPackage[2] #Edits are validated client-side.
-    dataChanged = lab_data.filter(ref=refChanged)[0]
-    oldValue = getattr(dataChanged, fieldChanged)
+  #Check that the field being edited actually exists (to prevent sabotage).
+  if not fieldChanged in whitelist:
+   return HttpResponse("Cannot modify {}".format(fieldChanged))
 
-    setattr(dataChanged, fieldChanged, newValue)
-    dirty_data = model_to_dict(dataChanged, fields=get_model_field_names())
+  #Check that the edit doesn't invalidate the Datum in any way.   
+  try: 
+   oldValue = getattr(datum, fieldChanged)
+   setattr(datum, fieldChanged, newValue)
+   dirty_data = model_to_dict(datum, fields=get_model_field_names())
+   if fieldChanged=="ref":
     clean_data, errors = full_validation(dirty_data, lab_group)
-
-    #Show the user the first error to fix.
-    if errors:
-     return HttpResponse(errors[errors.keys()[0]])
-
-    #If the data is valid, make the change in the database.
-    setattr(dataChanged, fieldChanged, clean_data[fieldChanged])
+   else:
+    clean_data, errors = full_validation(dirty_data, lab_group, revalidating=True)
    
-    dataChanged.user = u
-    dataChanged.save()
+   #Send back an error if it exists.
+   if errors:
+    return HttpResponse("Error: {}".format(errors[errors.keys()[0]]))
+ 
+   #Get the parsed value after cleaning.
+   setattr(datum, fieldChanged, clean_data[fieldChanged])
+ 
+   #Make the edit in the database.
+   datum.user = u
+   datum.save()
+ 
+   if fieldChanged=="ref":
+    #Update the "ref" in any Data of which it is a duplicate.
+    lab_data.filter(duplicate_of=oldValue).update(duplicate_of=newValue)
+ 
+   return HttpResponse(0)
 
-    if fieldChanged=="ref":
-     #If the ref is changed, change all of the "duplicate" reactions of it.
-     Data.objects.filter(lab_group=lab_group, duplicate_of=oldValue).update(duplicate_of=newValue)
+  except:
+   return HttpResponse("Edit unsuccessful...")
 
-   except Exception as e:
-    print "Could not edit Data: \n--{}".format(e)
+ return HttpResponse("Please log in to modify data.")
 
-  while (len(changesMade["del"]) > 0):###SLOW
-   try:
-    refChanged = editPackage[0] #Translate to 0-based Index
-    lab_data.filter(ref=refChanged).delete() #Django handles the deletion process.
-   except:
-    pass
-  clear_all_page_caches(lab_group)
- print "finished data_update"
- return HttpResponse("0"); 
-
-""" 
-###TODO: Not re-written since full data given by default.
-def get_full_datum(request):
- u = request.user
- try:
-  if u.is_authenticated() and request.method=="POST":
-   #Give the specific index requested.
-   index_requested = json.loads(request.POST["indexRequested"])
-   entry = get_lab_data(u.get_profile().lab_group)[index_requested]
-   return render(request, "full_datum.html", {
-    "entry":entry,
-   })
-  else: return HttpResponse("Please log in to see data details.")
-
- except Exception as e:
-  print(e)
-  return HttpResponse("<p>Data could not be loaded!</p>")
-
-"""
 ######################  User Auth ######################################
 def change_password(request):
  error=False

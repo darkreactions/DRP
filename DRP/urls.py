@@ -18,8 +18,8 @@ urlpatterns = patterns('',
     (r'^upload_CSV/$', upload_CSV),
     (r'^download_CSV/$', download_CSV),
    #Modify Data
-    #(r'^get_full_datum/$', get_full_datum), #"Expand" the data.
-    (r'^data_update/$', data_update), #Update Information
+    (r'^change_Data/$', change_Data), #[JSON] Edit Data Entry
+    (r'^delete_Data/$', delete_Data), #[JSON] Delete Data Entries
     (r'^data_form/$', data_form), #Form for adding new data.
     (r'^data_form/(?P<copy_ref>[\w.-_]+)/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
