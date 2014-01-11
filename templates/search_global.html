@@ -27,10 +27,7 @@
    <div class="blockElement">
     <label for="field">Field:</label>
     <select class="dropDownMenu" name="field">
-      <option value="reactant">Reactant</option>
-      <option value="quantity">Quantity</option>
-      <option value="unit">Unit</option>
-     {% for field in other_fields %}
+     {% for field in search_fields %}
       <option value="{{field.raw}}">{{field.verbose}}</option>
      {% endfor %}
     </select><br/>
