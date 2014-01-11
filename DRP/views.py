@@ -14,7 +14,7 @@ import string
 import datetime
 import rdkit.Chem as Chem
 
-from svg_construction import *
+#from svg_construction import *
 #from construct_descriptor_table import *
 from data_config import CONFIG
 
@@ -221,10 +221,25 @@ def database(request, global_data=False):
   "template": "database",
  })
 
-def data_transmit(request, page = 1):
+def data_transmit(request):
  try:
-  #Organize the session information.
-  session = get_page_info(request, page=int(page))
+  try:
+   #Variable Setup
+   u = request.user
+   body = json.loads(request.POST["body"], "utf-8")
+   query_list = body.get("currentQuery")
+   page = body.get("page")
+
+   if query_list:
+    data = filter_data(u.get_profile().lab_group, query_list)
+   else:
+    data = get_lab_data(u.get_profile().lab_group)
+   session = get_page_info(request, page=int(page), data=data)
+  except Exception as e:
+   print e
+   return HttpResponse("Page could not be loaded.")
+
+  #Organize the data for the template.
   data_package, page_package, total_data_size = repackage_page_session(session)
   return render(request, 'database.html', {
    "data_on_page": data_package, #Includes data indexes
@@ -233,7 +248,7 @@ def data_transmit(request, page = 1):
   })
  except Exception as e:
   print e
-  return HttpResponse("Could not transmit data for page: {}".format(page))
+  return HttpResponse("Page \"{}\" could not be loaded".format(page))
 
 def recommend(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
  #Get user data if it exists.
@@ -456,93 +471,100 @@ def gather_SVG(request):
 
 
 ######################  Searching  #####################################
+  #Rules:
+  # 1.) A Lab can search only its data and public data.
+  # 2.) Data that is returned can be sent to editing functions.
+
+  #Verbose JSON Formats:
+  # request.body ===
+  #  query_list --> {[{u"field":u"FIELD", u"value":u"VALUE"}, ...]}
+
+def filter_data(lab_group, query_list):
+ #Variable Setup:
+ lab_data = get_lab_data(lab_group)
+ filters = ""
+
+ #Collect all the valid search options
+ non_reactant_fields = get_model_field_names(unique_only=True)
+ legal_fields = set(non_reactant_fields+["reactant","quantity","unit","public","is_valid", "user"])
+
+ #Check the query_list input before performing any database requests.
+ try:
+  for query in query_list:
+   assert query.get(u"field") in legal_fields
+   assert query.get(u"value")
+   assert not "\"" in query.get(u"value")
+
+ except:
+  raise Exception("One or more inputs is illegal.")
+ 
+ try:
+  for query in query_list:
+   field = query.get(u"field")
+   value = query.get(u"value")
+ 
+   if field in list_fields:
+    #Check all the reactant/quantity/unit fields.
+    Q_obj = ''.join(["Q({}_{}__icontains=\"{}\")|".format(field, i, value) for i in CONFIG.reactant_range()])[:-1]
+    filters += ".filter({})".format(Q_obj)
+   elif field=="atoms":
+    atom_list = value.split(" ")
+    if len(atom_list)>1:
+     search_bool = atom_list.pop(-2) #Take the "and" or "or" from the list.
+     op = "," if search_bool == "and" else "|" #Assign the correct Q operator.
+     #Add the atoms  to a Q filter.
+     Q_obj = ''.join(["Q(atoms__contains=\"{}\"){}".format(atom, op) for atom in atom_list])[:-1]
+    else:
+     Q_obj = "Q(atoms__contains=\"{}\")".format(atom_list[0])
+    filters += ".filter({})".format(Q_obj)
+   else:
+    #Translate Boolean inputs into Boolean values.
+    if field in bool_fields:
+     value = True if value.lower()[0] in "1tyc" else False
+     filters += ".filter({}={})".format(field, value)
+    else:
+     filters += ".filter({}__icontains=\"{}\")".format(field, value)
+  data = eval("lab_data"+filters).order_by("creation_time")
+  return data
+
+ except Exception as e:
+  print e
+  raise Exception("Woops! A problem has occurred...")
+
 def search(request):
  u = request.user
- max_search_size = 5000
- search_page_size = 150
- if u.is_authenticated():
 
-  #Collect all the valid search options
-  raw_fields = get_model_field_names(both=True, unique_only=True, collect_ignored=True)
-  ignored_fields = {"user", "atoms", "lab_group", "calculated_pH", "calculated_temp", "calculated_time"}
-  other_fields = [field for field in raw_fields if field["raw"] not in ignored_fields]
+ #Collect the fields that will be displayed in the Search "Fields" tab.
+ search_fields = get_model_field_names(both=True, unique_only=True)
+ search_fields = [
+  {"raw":"reactant", "verbose":"Reactant"},
+  {"raw":"quantity", "verbose":"Quantity"},
+  {"raw":"unit", "verbose":"Unit"},
+  {"raw":"is_valid", "verbose":"Is Valid"},
+  {"raw":"user", "verbose":"User"},
+  {"raw":"public", "verbose":"Public"}] + search_fields
 
-  if request.method=="POST":
-
-   query_list = json.loads(request.POST.get("current_query"))
-   if not query_list:
-    return HttpResponse("No search specified!")
-
+ if u.is_authenticated() and request.method=="POST":
+  body = json.loads(request.POST["body"], "utf-8")
+  query_list = body.get("currentQuery")
+  
+  try:
    lab_group = u.get_profile().lab_group
-   all_data = Data.objects.filter(lab_group=lab_group) #Order doesn't matter at this point in search.
-   filters = ""
+   #If no query_list is given, just return the lab_data.
+   if query_list:
+    data = filter_data(lab_group, query_list)
+   else:
+    data = get_lab_data(lab_group)
+  except Exception as e:
+   return HttpResponse(e)  
 
-   #Iterate over each "query" to allow multiple user filters.
-   for query in query_list:
-    field = query.get("field")
-    value = query.get("value")
+  #Return the filtered data to the user.
+  return data_transmit(request)
 
-    #Check the field and value for possible attacks. ###Make better before you show Paul or he will cry.
-    for char in field:
-     assert(not char in "\"'!={}/\\~`")
-    for char in value:
-     assert(not char in "\"'!={}/\\~`")
-
-    #Create a query based on the cleaned input.
-    if field in list_fields:
-     Q_string = ""
-     for i in CONFIG.reactant_range():
-      Q_string += "Q({}_{}__icontains=\"{}\")|".format(field, i, value)
-     Q_string = Q_string[:-1] #Remove the last trailing "|".
-     filters += ".filter({})".format(Q_string)
-    elif field=="atoms":
-     #TODO: Missing case where atom is Hydrogen
-     Q_string = ""
-     atom_list = value.split(" ")
-     if len(atom_list)>1:
-      #Provide the right Q object symbol.
-      search_bool = atom_list.pop(-2) #Take the "and" or "or" from the list.
-      if search_bool == "and":
-       symbol = ","
-      else:
-       symbol = "|"
-
-      for atom in atom_list:
-       Q_string += "Q(atoms__contains=\"{}\"){}".format(atom, symbol)
-      Q_string = Q_string[:-1] #Remove the last trailing "|".
-     else:
-      Q_string = "Q(atoms__contains=\"{}\")".format(atom_list[0])
-     filters += ".filter({})".format(Q_string)
-    else:
-     #Translate any client input into useful queries.
-     if field == "is_valid" and value:
-      if value.lower()[0] in {"1", "t", "y"}:
-       value = True
-      else:
-       value = False
-      filters += ".filter({}={})".format(field, value)
-     else:
-      filters += ".filter({}__icontains=\"{}\")".format(field, value)
-
-   entries = eval("all_data{}".format(filters)).order_by("creation_time")[:max_search_size]
-   pk_list = entries[:max_search_size].values("pk")
-
-   return render(request, 'search_results.html', {
-    "entries": entries[:search_page_size], #Only give back a specific amount of entries.
-    "search_page_size":search_page_size,
-    "max_search_size": max_search_size,
-    "entries_found": entries.count(),
-    "no_search": False,
-    "other_fields": other_fields,
-   })
-
-  else:
-   return render(request, 'search_global.html', {
-   "no_search": True,
-   "other_fields": other_fields,
-   })
  else:
-  return HttpResponse("Log in to search data.")
+  return render(request, 'search_global.html', {
+  "search_fields": search_fields,
+  })
 
 ######################  CG Guide  ######################################
 #Send/receive the compound guide form:

@@ -141,15 +141,9 @@ $(document).on("click", ".CG_saveButton", function() {
 //############ Data Selection: #########################################
 //Click Group to Select:
 $(document).on("click", ".dataGroup", function() {
- //Don't select data in search containers.
- if ($(this).parent().attr("id") == "searchContainer") {
-  return false;
- }
-
  $(this).toggleClass("dataSelected");
 
  //Get Index of Selected Data by Number
-
  var dataID = $(this).find(".dataEntry>.type_ref").html().trim();
  var indexOfData = selectedData.indexOf(dataID);
  if (indexOfData >= 0) { //Data is already selected (thus, deselect)
@@ -459,8 +453,11 @@ $(document).on("click", ".CG_compound", function() {
 //############## Change Pages: #########################################
 function changePageTo(page) {
  showRibbon("Loading!", "#FFC87C", "#mainPanel", false);
- pageDestination = "/data_transmit/" + page;
- $.get(pageDestination, function(response) {
+
+ //Send the currentQuery if it exists.
+ JSONQuery = JSON.stringify({"currentQuery":currentQuery, "page":page});
+
+ $.post("/data_transmit/", {"body":JSONQuery}, function(response) {
   $("#mainPanel").html(response);
   if ($(".dataGroup").length) {
    setPageCookie(page)
@@ -468,6 +465,7 @@ function changePageTo(page) {
   $(".ribbonMessage").remove();
   }
  });
+//TODO: add this back!
 // } else {
 //  showRibbon("Page does not exist", "#FF6870", "body");
 // }

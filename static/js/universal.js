@@ -1,6 +1,7 @@
 $(document).ready(function() {
 //######################################################################
 selectedData = Array();
+currentQuery = Array();
 
 CGEntries = undefined;
 CGAbbrevs = undefined;
@@ -35,7 +36,6 @@ window.restyleData = function() {
   }
  });
 
- //TODO: CHANGE TO CHECK REF INSTEAD OF INDEX ###
  //Keep selected data highlighted even if on page changes.
  $(".dataEntry").each(function() {
   dataID = $(this).find(".type_ref").html().trim();
@@ -169,33 +169,32 @@ $(document).on("click", ".PT_element", function() {
  }
 });
 
-function sendSearchQuery(current_query) {
+function sendSearchQuery(currentQuery) {
+ JSONQuery = JSON.stringify({"currentQuery":currentQuery,"page":"1"});
+
  $.ajax({
   url:"/search/",
   method:"post",
-  data: {"current_query":JSON.stringify(current_query)},
+  data: {"body":JSONQuery},
   traditional: true,
   success: function(response) {
-   $("#dataContainer_inner").html(response)
-   if (response=="0"){
-    $("#dataContainer_inner").html("No data found!");
-    current_query = []; //Clear the current query if nothing is found.
-   }
+   $("#mainPanel").html(response)
+   restyleData();
   }
  });
 }
 
 //Back button tooltip
 $(document).on("mouseover", "#search_backButton", function() {
- if (current_query.length){
+ if (currentQuery.length){
   //Get the previously used filters.
   var filter_string = "Filters:"
-  for (var i in current_query.slice(0,-1)) {
-   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(current_query[i]["field"])+": " + current_query[i]["value"]
+  for (var i in currentQuery.slice(0,-1)) {
+   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": " + currentQuery[i]["value"]
   }
 
   //Add the new filter.
-  filter_string += "<br/><div class=\"search_backText\">"+parseInt(current_query.length)+".) "+make_name_verbose(current_query[current_query.length-1]["field"])+": "+current_query[current_query.length-1]["value"]+"</div>"
+  filter_string += "<br/><div class=\"search_backText\">"+parseInt(currentQuery.length)+".) "+make_name_verbose(currentQuery[currentQuery.length-1]["field"])+": "+currentQuery[currentQuery.length-1]["value"]+"</div>"
 
   $(this).attr("title", filter_string);
  } else {
@@ -228,14 +227,14 @@ $(document).on("mouseover", "#search_filterButton_atoms", function() {
  if ($(".PT_selected").length){
   //Get the previously used filters.
   var filter_string = "Filters:"
-  for (var i in current_query) {
-   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(current_query[i]["field"])+": " + current_query[i]["value"]
+  for (var i in currentQuery) {
+   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": " + currentQuery[i]["value"]
   }
 
   current_atom_query = get_atom_query();
 
   //Add the new filter.
-  filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(current_query.length)+1)+".) "+"Atoms: "+current_atom_query+"</div>"
+  filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(currentQuery.length)+1)+".) "+"Atoms: "+current_atom_query+"</div>"
 
   $(this).attr("title", filter_string);
  } else {
@@ -248,15 +247,15 @@ $(document).on("click", "#search_filterButton_atoms", function() {
 });
 
 $(document).on("click", "#search_filterButton", function() {
- if ($("#dataContainer_special").html().trim()!="No data found!") {
+ if ($(".dataGroup").length != 0) {
   //If "Atoms" search is active.
   if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
    field = "atoms";
    value = get_atom_query().replace(/,/g,"");
    //Make sure the query was not already searched.
-   if (current_query){
-    for (var i in current_query) {
-     if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
+   if (currentQuery){
+    for (var i in currentQuery) {
+     if (currentQuery[i]["field"] == field && currentQuery[i]["value"] == value) {
       showRibbon("Already queried!", "#FFC87C","#sidePanel", true);
       return false //Don't continue if query is already present.
      }
@@ -264,20 +263,20 @@ $(document).on("click", "#search_filterButton", function() {
    }
    showRibbon("Searching!", "#99FF5E","#sidePanel", true);
 
-   current_query.push({
+   currentQuery.push({
     "field":field,
     "value":value,
    });
-   sendSearchQuery(current_query);
+   sendSearchQuery(currentQuery);
 
   //If "Fields" search is active.
   } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
-   field = $("input[name=field]:checked").val()
+   field = $(".dropDownMenu[name=field] option:selected").val()
    value = $("#searchValue").val()
    //Make sure the query was not already searched.
-   if (current_query){
-    for (var i in current_query) {
-     if (current_query[i]["field"] == field && current_query[i]["value"] == value) {
+   if (currentQuery){
+    for (var i in currentQuery) {
+     if (currentQuery[i]["field"] == field && currentQuery[i]["value"] == value) {
       showRibbon("Already queried!", "#FFC87C","#sidePanel", true);
       return false //Don't continue if query is already present.
      }
@@ -285,11 +284,11 @@ $(document).on("click", "#search_filterButton", function() {
    }
    showRibbon("Searching!", "#99FF5E","#sidePanel", true);
 
-   current_query.push({
+   currentQuery.push({
     "field":field,
     "value":value,
    });
-   sendSearchQuery(current_query);
+   sendSearchQuery(currentQuery);
   } else {
    showRibbon("Nothing entered!", "#FF6870", $("#sidePanel"), true);
   }
@@ -299,23 +298,19 @@ $(document).on("click", "#search_filterButton", function() {
 });
 
 $(document).on("click", "#search_backButton", function() {
- if (current_query.length){
-  current_query.pop();
-  if (current_query.length){
-   sendSearchQuery(current_query);
-  } else {
-   $("#searchResultsOuterContainer").html("<div id=\"searchResultsContainer\"> Enter filters to search. </div>");
-  }
+ if (currentQuery.length){
+  currentQuery.pop();
+  showRibbon("Removing last fitler!", "#99FF5E","#sidePanel", true);
+  sendSearchQuery(currentQuery);
  } else {
-  showRibbon("Already at start!", "#FF6870", $("#popupContainer_inner"), true);
+  showRibbon("No filters present!", "#FF6870", $("#sidePanel"), true);
  }
 });
 
 $(document).on("click", "#search_clearButton", function() {
- current_query = [];
- $("#entriesFound").remove();
- showRibbon("Filters emptied!", "#99FF5E","#popupContainer_inner", true);
- $("#searchResultsContainer").html("Enter filters to search.");
+ currentQuery = Array();
+ sendSearchQuery(currentQuery);
+ showRibbon("Filters emptied", "#99FF5E","#sidePanel", true);
 });
 
  //################   Autocompleting Search   ####################### //###
@@ -434,7 +429,6 @@ $(document).on("click", ".popupActivator", function(event) {
    break;
   case "searchButton":
    PT_selected = Array();
-   current_query = Array();
    $.get("/search/", function(response) {
     $("#sidePanel_inner").html(response);
     toggleSideContainer();

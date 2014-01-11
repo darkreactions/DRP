@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     (r'^$', database),
     (r'^database/$', database), #Encompassing data view.
    #Change Page
-    (r'^data_transmit/(?P<page>\d+)/$', data_transmit), #Used for changing pages.
+    (r'^data_transmit/$', data_transmit), #Used for changing pages.
    #Upload/Download Data
     (r'^upload_CSV/$', upload_CSV),
     (r'^download_CSV/$', download_CSV),
