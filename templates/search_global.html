@@ -15,9 +15,9 @@
    <input id="radio_or" type="radio" class="radioSearch" name="condition" value="or">
     <label id="label_or" class="genericButton" for="radio_or">Or</label>
    </input>
-   <input id="search_filterButton_atoms" type="button" value="Filter" class="form_button"/>
-   <input id="search_backButton" type="button" value="Back" class="form_button"/>
-   <input id="search_clearButton" type="button" value="Clear" class="form_button"/>
+   <input id="search_filterButton_atoms" type="button" value="Filter" class="form_button search_filterButton"/>
+   <input type="button" value="Back" class="form_button search_backButton"/>
+   <input title="Remove all filters." type="button" value="Clear" class="form_button search_clearButton"/>
   </form>
   </div>
  </div>
@@ -31,14 +31,19 @@
       <option value="{{field.raw}}">{{field.verbose}}</option>
      {% endfor %}
     </select><br/>
+    <label for="match">Match:</label>
+    <select class="dropDownMenu" name="match">
+     <option value="contain">Contains</option>
+     <option value="exact">Exactly</option>
+    </select><br/>
    </div>
    <div class="blockElement">
     <label for="value">Value:</label>
     <input id="searchValue" type="text" name="value" value="">
    </div>
-    <input id="search_filterButton" type="button" value="Filter" class="form_button"/>
-    <input id="search_backButton" type="button" value="Back" class="form_button"/>
-    <input id="search_clearButton" type="button" value="Clear" class="form_button"/>
+    <input id="search_filterButton" type="button" value="Filter" class="form_button search_filterButton"/>
+   <input type="button" value="Back" class="form_button search_backButton"/>
+   <input title="Remove all filters." type="button" value="Clear" class="form_button search_clearButton"/>
   </form>
  </div>
 </div>

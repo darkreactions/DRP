@@ -9,8 +9,10 @@ handler500 = 'DRP.views.display_500_error'
 handler404 = 'DRP.views.display_404_error'
 
 urlpatterns = patterns('',
+  #Homepage and info pages.
+    (r'^$', home),
+    (r'papers^$', papers),
   #Database
-    (r'^$', database),
     (r'^database/$', database), #Encompassing data view.
    #Change Page
     (r'^data_transmit/$', data_transmit), #Used for changing pages.

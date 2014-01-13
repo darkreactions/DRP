@@ -16,7 +16,7 @@ range_fields = {"quantity", "temp", "time", "pH", "outcome", "purity"}
 limit_fields = {"ref", "notes"}
 #Fields that must be a specific option:
 opt_fields = {"unit", "slow_cool", "leak", "recommended"} #Note: slow_cool gains the general name of "slow"
-bool_fields = {"slow_cool", "leak", "public", "valid", "recommended"}
+bool_fields = {"slow_cool", "leak", "public", "is_valid", "recommended"}
 
 #Type Groupings
 int_fields = {"temp", "time",  "outcome", "purity"}

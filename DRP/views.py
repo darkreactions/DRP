@@ -19,6 +19,15 @@ import rdkit.Chem as Chem
 from data_config import CONFIG
 
 # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # Basic Page Views # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # #
+def home(request):
+ return render(request, 'index.html', {})
+
+def papers(request):
+ return render(request, 'papers.html', {})
+
+# # # # # # # # # # # # # # # # # # #
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
 def get_lab_data(lab_group):
@@ -210,7 +219,7 @@ def randomize_password(user):
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-def database(request, global_data=False):
+def database(request):
  #Organize the session information.
  session = get_page_info(request)
  data_package, page_package, total_data_size = repackage_page_session(session)
@@ -234,7 +243,11 @@ def data_transmit(request):
     data = filter_data(u.get_profile().lab_group, query_list)
    else:
     data = get_lab_data(u.get_profile().lab_group)
-   session = get_page_info(request, page=int(page), data=data)
+
+   if data.count():
+    session = get_page_info(request, page=int(page), data=data)
+   else:
+    return HttpResponse("No data found!")
   except Exception as e:
    print e
    return HttpResponse("Page could not be loaded.")
@@ -486,12 +499,14 @@ def filter_data(lab_group, query_list):
 
  #Collect all the valid search options
  non_reactant_fields = get_model_field_names(unique_only=True)
- legal_fields = set(non_reactant_fields+["reactant","quantity","unit","public","is_valid", "user"])
+ foreign_fields = ["user"] #Fields that cannot search by containment.
+ legal_fields = set(non_reactant_fields+["reactant","quantity","unit","public","is_valid", "atoms"]+foreign_fields)
 
  #Check the query_list input before performing any database requests.
  try:
   for query in query_list:
    assert query.get(u"field") in legal_fields
+   assert query.get(u"match") in {"contain","exact"}
    assert query.get(u"value")
    assert not "\"" in query.get(u"value")
 
@@ -500,12 +515,19 @@ def filter_data(lab_group, query_list):
  
  try:
   for query in query_list:
+   #Get the query information.
    field = query.get(u"field")
+   if field in foreign_fields:
+    field = "user__username"
+   if query.get(u"match")=="contain" and field not in foreign_fields:
+    match = "__icontains"
+   else:
+    match = ""
    value = query.get(u"value")
  
    if field in list_fields:
     #Check all the reactant/quantity/unit fields.
-    Q_obj = ''.join(["Q({}_{}__icontains=\"{}\")|".format(field, i, value) for i in CONFIG.reactant_range()])[:-1]
+    Q_obj = ''.join(["Q({}_{}{}=\"{}\")|".format(field, i, match, value) for i in CONFIG.reactant_range()])[:-1]
     filters += ".filter({})".format(Q_obj)
    elif field=="atoms":
     atom_list = value.split(" ")
@@ -523,20 +545,25 @@ def filter_data(lab_group, query_list):
      value = True if value.lower()[0] in "1tyc" else False
      filters += ".filter({}={})".format(field, value)
     else:
-     filters += ".filter({}__icontains=\"{}\")".format(field, value)
+     filters += ".filter({}{}=\"{}\")".format(field, match, value)
   data = eval("lab_data"+filters).order_by("creation_time")
   return data
 
  except Exception as e:
-  print e
-  raise Exception("Woops! A problem has occurred...")
+  pass #Security precaution.
 
 def search(request):
  u = request.user
-
- #Collect the fields that will be displayed in the Search "Fields" tab.
- search_fields = get_model_field_names(both=True, unique_only=True)
- search_fields = [
+ if u.is_authenticated() and request.method=="POST":
+  try:
+   #Pass the request on to data_transmit.
+   return data_transmit(request)
+  except:
+   return HttpResponse("Woops! A problem occurred.")
+ else:
+  #Collect the fields that will be displayed in the Search "Fields" tab.
+  search_fields = get_model_field_names(both=True, unique_only=True)
+  search_fields = [
   {"raw":"reactant", "verbose":"Reactant"},
   {"raw":"quantity", "verbose":"Quantity"},
   {"raw":"unit", "verbose":"Unit"},
@@ -544,24 +571,6 @@ def search(request):
   {"raw":"user", "verbose":"User"},
   {"raw":"public", "verbose":"Public"}] + search_fields
 
- if u.is_authenticated() and request.method=="POST":
-  body = json.loads(request.POST["body"], "utf-8")
-  query_list = body.get("currentQuery")
-  
-  try:
-   lab_group = u.get_profile().lab_group
-   #If no query_list is given, just return the lab_data.
-   if query_list:
-    data = filter_data(lab_group, query_list)
-   else:
-    data = get_lab_data(lab_group)
-  except Exception as e:
-   return HttpResponse(e)  
-
-  #Return the filtered data to the user.
-  return data_transmit(request)
-
- else:
   return render(request, 'search_global.html', {
   "search_fields": search_fields,
   })

@@ -185,7 +185,7 @@ function sendSearchQuery(currentQuery) {
 }
 
 //Back button tooltip
-$(document).on("mouseover", "#search_backButton", function() {
+$(document).on("mouseover", ".search_backButton", function() {
  if (currentQuery.length){
   //Get the previously used filters.
   var filter_string = "Filters:"
@@ -198,12 +198,11 @@ $(document).on("mouseover", "#search_backButton", function() {
 
   $(this).attr("title", filter_string);
  } else {
-  $(this).attr("title", "");
+  $(this).attr("title", "Remove the last filter.");
  }
 });
 
 //Filter button tooltip
-
 function get_atom_query() {
  var array_atom_query = Array();
 
@@ -223,30 +222,38 @@ function get_atom_query() {
  return current_atom_query.replace(/ +/g, " ")
 }
 
-$(document).on("mouseover", "#search_filterButton_atoms", function() {
- if ($(".PT_selected").length){
-  //Get the previously used filters.
-  var filter_string = "Filters:"
-  for (var i in currentQuery) {
-   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": " + currentQuery[i]["value"]
+$(document).on("mouseover", ".search_filterButton", function() {
+ //Get the previously used filters.
+ var filter_string = "Filters:"
+ for (var i in currentQuery) {
+  if (currentQuery[i]["field"]=="atoms"){
+   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": "+currentQuery[i]["value"];
+  } else {
+   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": \""+currentQuery[i]["value"]+"\" ("+currentQuery[i]["match"]+")</div>";
   }
-
+ }
+ 
+ //If "Atoms" search is active.
+ if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
   current_atom_query = get_atom_query();
 
   //Add the new filter.
   filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(currentQuery.length)+1)+".) "+"Atoms: "+current_atom_query+"</div>"
 
-  $(this).attr("title", filter_string);
+ } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
+   field = $(".dropDownMenu[name=field] option:selected").val();
+   match = $(".dropDownMenu[name=match] option:selected").val();
+   value = $("#searchValue").val();
+   //Add the new filter.
+   filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(currentQuery.length)+1)+".) "+make_name_verbose(field)+": \""+value+"\" ("+match+")</div>";
  } else {
-  $(this).attr("title", "");
+  filter_string = "Enter a query!"; 
  }
+ //Apply the title.
+ $(this).attr("title", filter_string);
 });
 
-$(document).on("click", "#search_filterButton_atoms", function() {
- $("#search_filterButton").click();
-});
-
-$(document).on("click", "#search_filterButton", function() {
+$(document).on("click", ".search_filterButton", function() {
  if ($(".dataGroup").length != 0) {
   //If "Atoms" search is active.
   if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
@@ -265,6 +272,7 @@ $(document).on("click", "#search_filterButton", function() {
 
    currentQuery.push({
     "field":field,
+    "match":"exact",
     "value":value,
    });
    sendSearchQuery(currentQuery);
@@ -272,6 +280,7 @@ $(document).on("click", "#search_filterButton", function() {
   //If "Fields" search is active.
   } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
    field = $(".dropDownMenu[name=field] option:selected").val()
+   match = $(".dropDownMenu[name=match] option:selected").val()
    value = $("#searchValue").val()
    //Make sure the query was not already searched.
    if (currentQuery){
@@ -286,6 +295,7 @@ $(document).on("click", "#search_filterButton", function() {
 
    currentQuery.push({
     "field":field,
+    "match":match,
     "value":value,
    });
    sendSearchQuery(currentQuery);
@@ -297,17 +307,17 @@ $(document).on("click", "#search_filterButton", function() {
  }
 });
 
-$(document).on("click", "#search_backButton", function() {
+$(document).on("click", ".search_backButton", function() {
  if (currentQuery.length){
   currentQuery.pop();
-  showRibbon("Removing last fitler!", "#99FF5E","#sidePanel", true);
+  showRibbon("Removing last filter!", "#99FF5E","#sidePanel", true);
   sendSearchQuery(currentQuery);
  } else {
   showRibbon("No filters present!", "#FF6870", $("#sidePanel"), true);
  }
 });
 
-$(document).on("click", "#search_clearButton", function() {
+$(document).on("click", ".search_clearButton", function() {
  currentQuery = Array();
  sendSearchQuery(currentQuery);
  showRibbon("Filters emptied", "#99FF5E","#sidePanel", true);
