@@ -134,6 +134,7 @@
 
 #uploadCSV_hiddenInput {
  position:absolute;
+ cursor:pointer;
  top:0px; /*Should be equal to container padding.*/
  left:0px;
  width:100%;
@@ -149,10 +150,6 @@
  max-width:inherit;
  width:10px;
  display:inline-block;
-}
-
-.loadingWheel:after {
- content: "Working...";
 }
 
 /* #################### FORM STYLE ################################# */

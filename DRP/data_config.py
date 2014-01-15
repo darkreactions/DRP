@@ -15,8 +15,8 @@ class ConfigManager(object):
   self.not_required_label = "" #The label that auto-added values will inherit if empty.
 
   #Licensing/legal Setup
-  self.current_license_date = "2013-11-30 11:33:49.612035"
-  self.current_license_file = "/license/11_30_13.pdf" #Assumed to be in STATIC directory.
+  self.current_license_date = "2014-01-15 01:00:00.000000"
+  self.current_license_file = "/licenses/01_15_14.pdf" #Assumed to be in STATIC directory.
 
   #General Variable Setup
   self.jchem_path = "/home/ubuntu/ChemAxon/JChem/bin"

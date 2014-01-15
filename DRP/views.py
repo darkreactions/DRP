@@ -21,11 +21,8 @@ from data_config import CONFIG
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # Basic Page Views # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-def home(request):
- return render(request, 'index.html', {})
-
-def papers(request):
- return render(request, 'papers.html', {})
+def info_page(request, page):
+ return render(request, 'index.html', {"template":page})
 
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
@@ -214,7 +211,7 @@ def randomize_password(user):
  user.password = make_password(new_pass) #Hash the password. 
  user.save()
  email_body = "Hello {},\n\n According to our records, you just requested a password change. We have changed your account information as follows:\nUsername: {}\nPassword: {}".format(user.first_name, user.username, new_pass)
- send_mail("Dark Reactions: Password Change Request", email_body, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+ send_mail("DRP: Password Change Request", email_body, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
@@ -271,7 +268,7 @@ def recommend(request): ###TODO: ADD TEMPLATE BITS, CASEY!
   recommendation_query = get_recommendations_by_date(u.get_profile().lab_group)
   recommendations = [get_template_form(i, "Recommendation") for i in recommendation_query] 
  else:
-  fatal_message = "Please log in to view recommendations."
+  fatal_message = "<p>Please log in to view recommendations.</p>"
   recommendations = None
 
  return render(request, 'recommend_global.html', {
@@ -289,7 +286,7 @@ def saved(request): ###TODO: ADD TEMPLATE BITS, CASEY!
   recommendation_query = get_recommendations_by_date(u.get_profile().lab_group)
   recommendations = [get_template_form(i, "Recommendation") for i in recommendation_query] 
  else:
-  fatal_message = "Please log in to view recommendations."
+  fatal_message = "<p>Please log in to view recommendations.</p>"
   recommendations = None
 
  return render(request, 'recommend_global.html', {
@@ -299,17 +296,23 @@ def saved(request): ###TODO: ADD TEMPLATE BITS, CASEY!
 
 
 # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # # # #
+   # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
+#Return whether the user_license is valid (True) or invalid/missing (False)
+def user_license_is_valid(user):
+ try:
+  return user.get_profile().license_agreement_date > CONFIG.current_license_date
+ except:
+  #Assume that if the query fails, the user is not licensed.
+  return False
+
 def get_user_license_agreement(request):
  u = request.user
  #Indicate whether the user needs to agree to updated terms or sign the terms initially.
  if u.is_authenticated():
   if u.get_profile().license_agreement_date:
-   if u.get_profile().license_agreement_date < CONFIG.current_license_date:
+   if not user_license_is_valid(u):
     license_changed = True
-   else:
-    return HttpResponse("Our records indicate that you already agreed to the terms and conditions!")
   else:
    license_changed = False
    
@@ -319,7 +322,7 @@ def get_user_license_agreement(request):
    "license_date": CONFIG.current_license_date.split(" ")[0], #Show the modification date but ignore the time.
   })
  else:
-  return HttpResponse("Please create a user to accept the license agreement.")
+  return HttpResponse("<p>Please create a user to accept the license agreement.</p>")
 
 def update_user_license_agreement(request):
  u = request.user 
@@ -327,12 +330,14 @@ def update_user_license_agreement(request):
   try:
    u.get_profile().license_agreement_date = str(datetime.datetime.now())
    u.get_profile().save()  
-   return HttpResponse("Thank you for joining the Dark Reactions Project." +
-   "<button class=\"genericButton form_button clearScreenButton\">Explore</button>")
+   return HttpResponse(
+    "<p>You're all up-to-date!</p>" +
+    "<div class=\"button refreshButton\">Explore</div>"
+   )
   except:
-   return HttpResponse("Your request could not be completed. Please try again.")
+   return HttpResponse("<p>Your request could not be completed. Please try again.</p>")
  else:
-  return HttpResponse("Please click the \"I Agree\" to accept the Terms and Conditions.")
+  return HttpResponse("<p>Please click the \"I Agree\" to accept the Terms and Conditions.</p>")
 
 def save_recommmendation(request):
  u = request.user
@@ -346,9 +351,9 @@ def save_recommmendation(request):
    rec = Recommendation.objects.filter(date=date).get()
    
   except:
-   return HttpResponse("Your request could not be completed. Please try again.")
+   return HttpResponse("<p>Your request could not be completed. Please try again.</p>")
  else:
-  return HttpResponse("Please log in to save recommendations")
+  return HttpResponse("<p>Please log in to save recommendations.</p>")
   
 ####################################################
 ####################################################
@@ -453,7 +458,7 @@ def predictions(request):
    fatal_message = e
   #construct_descriptor_table("cat","dog")
  else:
-  fatal_message = "Please log in to view predictions."
+  fatal_message = "<p>Please log in to view predictions.</p>"
 
  return render(request, 'predictions_global.html', {
   "fatal_message": fatal_message,
@@ -476,7 +481,7 @@ def gather_SVG(request):
  elif request.method!="POST":
   fatal_message = "Could not gather information about SVG to create."
  else:
-  fatal_message = "Please log in to view predictions."
+  fatal_message = "<p>Please log in to view predictions.</p>"
 
  if fatal_message:
   return HttpResponse("<p class=\"fatalError\">{}</p>".format(fatal_message))
@@ -604,7 +609,7 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
    "success": success,
   })
  else:
-  return HttpResponse("Please log in to access the compound guide!")
+  return HttpResponse("<p>Please log in to access the compound guide!</p>")
 
 def compound_guide_entry(request):
  u = request.user
@@ -618,11 +623,11 @@ def compound_guide_entry(request):
      "entry": query[0]
     })
    else:
-    return HttpResponse("No CG found. Please refresh page.")
+    return HttpResponse("<p>No CG found. Please refresh page.</p>")
   else:
-   return HttpResponse("Please use the compound guide interface.")
+   return HttpResponse("<p>Please use the compound guide interface.</p>")
  else:
-  return HttpResponse("Please log in to access the compound guide!")
+  return HttpResponse("<p>Please log in to access the compound guide!</p>")
 
 def edit_CG_entry(request): ###Edits?
  u = request.user
@@ -656,7 +661,7 @@ def edit_CG_entry(request): ###Edits?
     try:
      changed_entry = CompoundEntry.objects.get(lab_group=lab_group, compound=compound)
     except:
-     return HttpResponse("Please delete duplicate entry!")
+     return HttpResponse("<p>Please delete duplicate entry!</p>")
 
     #Make sure the compound isn't already being used.
     if field=="compound":
@@ -865,6 +870,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
    allow_unknowns = True
   elif model=="CompoundEntry":
    not_required = {
+     "image_url",
      "CAS_ID"
     }
    allow_unknowns = False
@@ -1138,7 +1144,7 @@ def upload_CSV(request, model="Data"): ###Not re-read.
   except Exception as e:
    error_log.append([str(e)])
  elif not u.is_authenticated():
-  fatal_message = "Please log in to upload data."
+  fatal_message = "<p>Please log in to upload data.</p>"
   return HttpResponse(fatal_message)
  elif request.method=="POST" and not request.FILES:
   fatal_message = "No file uploaded."
@@ -1288,7 +1294,7 @@ def send_CG_names(request):
   lab_group = u.get_profile().lab_group
   name_pairs = collect_CG_name_pairs(lab_group, overwrite=False)
   return HttpResponse(json.dumps(name_pairs), mimetype="application/json")
- return HttpResponse("Please log in to see data.")
+ return HttpResponse("<p>Please log in to see data.</p>")
 
 ######################  Update Data ####################################
   #Rules:
@@ -1313,11 +1319,11 @@ def delete_Data(request):
    try:
     lab_data.filter(ref=ref).first().delete()
    except:
-    HttpResponse("One or more selected data not found.")
+    HttpResponse("<p>One or more selected data not found.</p>")
 
   #Finally, return a success code.
   return HttpResponse(0);
- return HttpReponse("Please log in to delete data.") 
+ return HttpReponse("<p>Please log in to delete data.</p>") 
 
 def change_Data(request):
  #Fields that may be changed via this script.
@@ -1370,7 +1376,7 @@ def change_Data(request):
   except:
    return HttpResponse("Edit unsuccessful...")
 
- return HttpResponse("Please log in to modify data.")
+ return HttpResponse("<p>Please log in to modify data.</p>")
 
 ######################  User Auth ######################################
 def change_password(request):
@@ -1400,6 +1406,9 @@ def user_login(request):
   user = auth.authenticate(username=username, password=password)
   if user is not None and user.is_active:
    auth.login(request, user)
+
+   if not user_license_is_valid(user):
+    return HttpResponse(1);
 
    return HttpResponse("Logged in successfully! <div class=reloadActivator></div>"); #Only the reloadActivator is "required" here.
   else:
@@ -1445,12 +1454,17 @@ def user_registration(request):
     #Assign the user to the profile
     profile.user = new_user
     profile.save()
+
+    #Send a "confirmation" email to the new user.
+    email_body = "This email confirms that you ({}) are now a registered member of the Dark Reaction Project under the following lab: {}".format(new_user.first_name, lab_group.lab_title)
+    send_mail("DRP: User Registration Successful", email_body, settings.EMAIL_HOST_USER, [new_user.email], fail_silently=False)
+
     #Politely log the user in!
     new_user = auth.authenticate(username = request.POST["username"],
      password = request.POST["password"])
     auth.login(request, new_user)
-    reload_timer = "<div class=reloadActivator></div>"
-    return HttpResponse("Registration Successful!"+reload_timer)
+    #Mark that the user must now agree to the terms and conditions.
+    return HttpResponse(1);
    else:
     return HttpResponse("Invalid Access Code!")
  else:
@@ -1468,15 +1482,15 @@ def lab_registration(request): ###Not finished.
    access_code = lab_group.access_code
    
    #Send a "confirmation" email to the new lab email.
-   email_body = "Thank you for joining the Dark Reactions Project!\n\nPlease continue by creating a \"user\" for your lab. Simply...\n\t1.) Record the \"access code\" for your lab: {}\n\t2.) Click \"Register\" and create a user using the access code above.\n\t3.) Start uploading data!\n\nWe wish you all the best,\nThe Dark Reactions Project Team".format(lab_group.access_code)
+   email_body = "Thank you for joining the Dark Reaction Project!\n\nPlease continue by creating a \"user\" for your lab. Simply...\n\t1.) Keep this \"access code\" for your lab in a safe place: {}\n\t2.) Click \"Register\" and create a user using the access code above.\n\t3.) Start uploading data!\n\nWe wish you all the best,\nThe Dark Reaction Project Team".format(lab_group.access_code)
 
-   send_mail("Dark Reactions: Lab Registration Successful", email_body, settings.EMAIL_HOST_USER, [lab_group.lab_email], fail_silently=False)
+   send_mail("DRP: Lab Registration Successful", email_body, settings.EMAIL_HOST_USER, [lab_group.lab_email], fail_silently=False)
 
    #Send the DRP Admins an email about the new Lab Registration.
    #TODO:Remove this when we scale to unmanageable quantities of labs.
    alert_about_new_lab(lab_group)
  
-   return HttpResponse("Registration Successful! Please check your email.")
+   return HttpResponse("<p>Registration Successful! Please check your email.</p>")
  else:
   form = LabForm()
  return render(request, "lab_registration_form.html", {
@@ -1487,7 +1501,7 @@ def lab_registration(request): ###Not finished.
 def alert_about_new_lab(lab_group):
  email_body = "A new Lab Group has been registered:"
  email_body += "\n{}\n{}\n{}".format(lab_group.lab_title, lab_group.lab_address, lab_group.lab_email) 
- send_mail("Dark Reactions: New Lab Group Registered", email_body, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER], fail_silently=False)
+ send_mail("DRP: New Lab Group Registered", email_body, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER], fail_silently=False)
 
 ######################  Error Messages  ################################
 def display_404_error(request):

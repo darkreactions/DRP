@@ -3,12 +3,12 @@
  {% csrf_token %}
  <div class="radioContainer">
  <input id="radio_reactionData" type="radio" name="dataType" value="Data" checked>
-  <label class="genericButton radioLabel" for="radio_reactionData">
+  <label class="button radioLabel" for="radio_reactionData">
    Reaction Data
   </label>
  </input>
  <input id="radio_compoundGuide" type="radio" name="dataType" value="CompoundEntry">
-  <label class="genericButton radioLabel" for="radio_compoundGuide">
+  <label class="button radioLabel" for="radio_compoundGuide">
    Compound Guide
   </label>
  </input>
@@ -24,7 +24,7 @@
  </br>
 
  {% if user.is_authenticated %}
-  <input name="submit" id = "downloadCSVSubmit" type="submit" value="Download" class="form_button"/>
+  <input name="submit" id = "downloadCSVSubmit" type="submit" value="Download" class="button"/>
  {% else %}
   <p> Please sign in to download data. </p>
  {% endif %}

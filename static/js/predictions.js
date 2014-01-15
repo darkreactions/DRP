@@ -97,7 +97,7 @@ function createSVGTitle(text) {
 
 function createSVGBack() {
  $(".svgBack").remove();
- var titleContainer = "<div class=\"svgBackButton genericButton svgTextUI\">Back</div>" 
+ var titleContainer = "<div class=\"svgBackButton button svgTextUI\">Back</div>" 
  $("#dataContainer").append(titleContainer);
 }
 

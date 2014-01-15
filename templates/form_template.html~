@@ -74,13 +74,13 @@
    
    {% if user.is_authenticated %}
    <center>
-   <input name="submit" id = "submitData" type="submit" value="Save" class="form_button"/>
-   <input name="delete" id = "deleteData" type="button" value="Delete" class="form_button"/>
-   <input id = "selectPage" type="button" value="Select Page" class="form_button"/>
-   <input id = "selectAll" type="button" value="Select All" class="form_button"/>
-   <input id = "duplicateData" type="button" value="Duplicate" class="form_button"/>
-   <input id = "uploadPrompt" type="button" value="Upload CSV" class="form_button"/>
-   <input id = "downloadPrompt" type="button" value="Download CSV" class="form_button"/>
+   <input name="submit" id = "submitData" type="submit" value="Save" class="button"/>
+   <input name="delete" id = "deleteData" type="button" value="Delete" class="button"/>
+   <input id = "selectPage" type="button" value="Select Page" class="button"/>
+   <input id = "selectAll" type="button" value="Select All" class="button"/>
+   <input id = "duplicateData" type="button" value="Duplicate" class="button"/>
+   <input id = "uploadPrompt" type="button" value="Upload CSV" class="button"/>
+   <input id = "downloadPrompt" type="button" value="Download CSV" class="button"/>
    <br />
    </center>
    {% else %}
@@ -137,10 +137,10 @@
   <div id = "uploadCSVChoose_display">
    <div id = "uploadCSVWords">None Selected</div>
   <input name="file" id = "uploadCSVChoose_hidden" type="file" 
-  accept=".csv" value="Upload CSV" class="form_button"/>
+  accept=".csv" value="Upload CSV" class="button"/>
   </div>
-  <input name="submit" id = "uploadCSVSubmit" type="submit" value="Upload" class="form_button"/>
-  <input name="cancel" id = "uploadCSVCancel" type="button" value="Cancel" class="form_button"/>
+  <input name="submit" id = "uploadCSVSubmit" type="submit" value="Upload" class="button"/>
+  <input name="cancel" id = "uploadCSVCancel" type="button" value="Cancel" class="button"/>
   </form>
  </div>
  

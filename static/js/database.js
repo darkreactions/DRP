@@ -112,7 +112,7 @@ $(document).on("click", ".CG_deleteButton", function() {
   });
 
  //Display a CG save button if one does not exist.
- $("#popupContainer").append("<div class=\"CG_saveButton genericButton\">Save</div>");
+ $("#popupContainer").append("<div class=\"CG_saveButton\">Save</div>");
  $("#compoundGuideForm").html("Please save before continuing.");
  //Clear editing abilities and revert any edits-to-be-made.
  $(".editable").removeClass("editable");
@@ -184,8 +184,8 @@ $("#leftMenu_selectPage").click(function() {
 $(document).on("mouseover", ".dataGroup", function() {
  if ($(".duplicateSpecificDataButton").length == 0 ){
   var buttonDiv = "<div id=\"leftMenu_addNew_copy\"class=\"";
-  buttonDiv += "duplicateSpecificDataButton popupActivator";
-  buttonDiv += " genericButton\" style=\"background-image: url(";
+  buttonDiv += "duplicateSpecificDataButton popupActivator\"";
+  buttonDiv += "style=\"background-image: url(";
   buttonDiv += STATIC_URL+"/icons/add.png);\" title=\""
   buttonDiv += "Copy this reaction to the data form."
   buttonDiv += "\"></div>";

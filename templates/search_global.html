@@ -10,14 +10,14 @@
   <form action="/search/" method="post" name="login" id="searchForm_atom" class="popupScreenForm infoForm">
    {% csrf_token %}
    <input id="radio_and" type="radio" class="radioSearch" name="condition" value="and" checked>
-    <label id="label_and" class="genericButton" for="radio_and">And</label>
+    <label id="label_and" class="button" for="radio_and">And</label>
    </input>
    <input id="radio_or" type="radio" class="radioSearch" name="condition" value="or">
-    <label id="label_or" class="genericButton" for="radio_or">Or</label>
+    <label id="label_or" class="button" for="radio_or">Or</label>
    </input>
-   <input id="search_filterButton_atoms" type="button" value="Filter" class="form_button search_filterButton"/>
-   <input type="button" value="Back" class="form_button search_backButton"/>
-   <input title="Remove all filters." type="button" value="Clear" class="form_button search_clearButton"/>
+   <input type="button" value="Filter" class="search_filterButton"/>
+   <input type="button" value="Back" class="search_backButton"/>
+   <input title="Remove all filters." type="button" value="Clear" class="search_clearButton"/>
   </form>
   </div>
  </div>
@@ -41,9 +41,9 @@
     <label for="value">Value:</label>
     <input id="searchValue" type="text" name="value" value="">
    </div>
-    <input id="search_filterButton" type="button" value="Filter" class="form_button search_filterButton"/>
-   <input type="button" value="Back" class="form_button search_backButton"/>
-   <input title="Remove all filters." type="button" value="Clear" class="form_button search_clearButton"/>
+   <input type="button" value="Filter" class="search_filterButton"/>
+   <input type="button" value="Back" class="search_backButton"/>
+   <input title="Remove all filters." type="button" value="Clear" class="search_clearButton"/>
   </form>
  </div>
 </div>

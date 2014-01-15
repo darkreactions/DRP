@@ -11,29 +11,31 @@
  cursor:pointer;
 }
 
-.softButton {
+.button {
+ cursor:pointer;
+
+ display:block;
+
+ padding:10px;
+ margin:0 auto;
+ margin-top:10px;
+ margin-bottom:10px;
+ border:2px solid black;
+ border-radius:2px;
  background-color:silver;
  color:black;
- padding:10px;
- border:2px solid black;
- margin:10px;
-}
 
-.softButton:hover {
- background-color:#FFD92E;
-}
-
-.genericButton {
+ user-select: none;
  -webkit-user-select: none;
  -moz-user-select: none;
  -ms-user-select: none;
- user-select: none;
- }
 
-.genericButton:hover {
+ font-size:16px;
+ font-family:Montserrat;
+}
+
+.button:hover {
  background-color:#FFD92E;
- opacity:1;
- cursor:pointer;
 }
 
 .contractButton {
@@ -46,6 +48,11 @@
  font-size:20px;
  font-weight:bold;
  opacity:0.8;
+
+ user-select: none;
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
 }
 
 .contractButton:hover {
@@ -55,6 +62,7 @@
 
 .closeButton {
  background-color:white;
+ cursor:pointer;
  font-size:12px;
  font-weight:bold;
  text-align:center;
@@ -69,6 +77,15 @@
  position:absolute;
  top:10px;
  right:10px;
+
+ user-select: none;
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+}
+
+.closeButton:hover {
+ background-color:#FFD92E;
 }
 
 .expandButton {
@@ -83,10 +100,6 @@
  font-weight:bold;
  background-color:#FFE944;
  opacity:0.3;
-}
-
-.expandButton:hover {
- opacity:1.0;
 }
 
  /*##############   Menu Buttons   ################################*/
@@ -273,22 +286,7 @@ input[type=password] {
  padding-left:5px;
 }
 
-button {
- border:2px solid black;
- font-weight:bold;
- border-top-right-radius:10px;
-}
-
 input[type=button] {
- border:2px solid black;
- font-weight:bold;
- border-top-right-radius:10px;
-}
-
-input[type=submit] {
- margin: 0 auto;
- margin-top:20px;
- display: block;
  border:2px solid black;
  font-weight:bold;
  border-top-right-radius:10px;
@@ -389,6 +387,16 @@ div.ui-tooltip {
 }
 
 /* ###############   CONTAINERS   ################################### */
+.infoContainer {
+ position:relative;
+ font-size: 12px;
+ background-color:white;
+ overflow:auto;
+ height:100%;
+ padding-right:40px;
+ padding-left:40px;
+}
+
 .genericContainer {
  background-color:#A1C5E2;
  border-radius:15px;
@@ -660,11 +668,17 @@ height:10px;
 }
 
 .PT_element {
+ cursor:pointer; 
  text-align:center;
  padding:1.5px;
  color:black;
  font-size:10px;
  border-radius:5px;
+
+ user-select: none;
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
 }
 
 .PT_element:hover {
@@ -726,6 +740,7 @@ height:10px;
  width:100%;
  padding:6px;
  margin:0px;
+ margin-bottom:20px;
  background-color:white;
 }
 
@@ -929,6 +944,19 @@ height:10px;
 }
 
 /* ###############   TEXT   ######################################### */
+.separatedText {
+ margin:20px;
+ font-size:18px;
+}
+
+p.basicParagraph {
+ margin: 10px;
+ text-align:justify;
+ text-indent:40px;
+ line-height:20px;
+ word-spacing:2px; 
+}
+
 .pagesInfo {
  font-weight:bold;
  display:inline-block;
@@ -1092,6 +1120,10 @@ color: #355A77;
 .search_backText {
  text-decoration: line-through;
  opacity:0.7;
+}
+
+.search_filterButton { 
+ display: inline-block;
 }
 
 .search_filterText {

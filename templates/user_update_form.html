@@ -1,6 +1,6 @@
 {% if form.errors or profile_form.errors %}
  <div class="subPopup">
-  <div class="closeButton genericButton">x</div>
+  <div class="closeButton">x</div>
    <h1>Errors:</h1>
   {% for field in form %}
   {% if field.errors %}
@@ -47,6 +47,6 @@
   </td></tr>
  {% endfor %}
  </table>  
- <input type="submit" value="Save" name="registration" class="form_button"/> <br />
+ <input type="submit" value="Save" name="registration" class="button"/> <br />
   
 </form>

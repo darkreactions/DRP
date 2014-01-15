@@ -1,6 +1,6 @@
 {% if form.errors %}
  <div class="subPopup">
-  <div class="closeButton genericButton">x</div>
+  <div class="closeButton">x</div>
    <h1>Errors:</h1>
   {% for field in form %}
   {% if field.errors %}
@@ -48,7 +48,7 @@
  {% endfor %}
   {% if user.is_authenticated %}
    <center>
-   <input name="submit" id = "submitData" type="submit" value="Save" class="form_button"/>
+   <input name="submit" id = "submitData" type="submit" value="Save" class="button"/>
    </center>
   {% else %}
    <p> Please log in to submit data. </p>

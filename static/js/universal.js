@@ -105,10 +105,59 @@ window.showRibbon = function(message, color, location, timeout) {
  }
 }
 
+//############  Mask Interactions:  ####################################
+function darkenMask() {
+ $("#mask").addClass("darkenedMask");
+ $("#mask").addClass("maskBlockFade");
+ $(".closeButton").hide();
+}
+
+function revertMask() {
+ $("#mask").removeClass("darkenedMask");
+ $("#mask").removeClass("maskBlockFade");
+ $(".closeButton").show();
+}
+
+// Fade the popup when the mask is clicked.
+$(document).on("click", "#mask", function() {
+ if ($(".ribbonMessage").length==0 && $(".maskBlockFade").length==0){
+  $("#popupGlobal").fadeOut("fast");
+
+  //Remove any extra additions the popup may have populated.
+  $(".CG_saveButton").remove()
+
+  //Reload the screen if requested.
+  if ($(".reloadActivator").length) {
+   window.location.reload(true);
+   $(".reloadActivator").remove();
+  };
+ }
+});
+
 //############  Form Interactions:  ####################################
+function getLicensePopup() {
+ $("#popupContainer").attr("for", "userLicenseAgreement");
+ darkenMask();
+
+ $.get("/user_license_agreement/", function(response) {
+  $("#popupContainer_inner").html(response);
+  $(".closeButton").hide(); //Remove unnecessary close buttons.
+ });
+ 
+ $("#popupGlobal").fadeIn(300);
+}
+
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
  $.post($(form).attr("action"), $(form).serialize(), function(response) {
+  //Remove the loading wheel.
+  $(".loadingWheel").remove();
+  //Translate server-responses to actions.
+  if (response==1) {
+   getLicensePopup();
+   return false;
+  }
+
   //Recreate the popup window with the server response.
   $("#popupContainer_inner").html(response);
   $(".subPopup").draggable();
@@ -133,17 +182,16 @@ $(document).on("submit", ".infoForm", function() {
   if ($(".reloadActivator").length) {
    window.location.reload(true);
   }
-  $(".loadingWheel").remove();
 
 
  });
  return false; //Do not continue or else the form will post again.
 });
 
-$(document).on("click", ".form_button[type=submit]", function() {
- $(".loadingWheel").remove();
+$(document).on("click", ".button[type=submit]", function() {
  $(this).hide();
- $(this).parent().append("<div class=\"loadingWheel\"></div>");
+ $(".loadingWheel").remove();
+ $(this).parent("form").append("<div class=\"loadingWheel\">. . .</div>");
 });
 
 //############ User Authentication: ####################################
@@ -492,41 +540,9 @@ $(document).on("click", ".popupActivator", function(event) {
  $("#popupGlobal").fadeIn(300);
 });
 
-// Fade the popup when the mask is clicked.
-$(document).on("click", "#mask", function() {
- if ($(".ribbonMessage").length==0 && $(".maskBlockFade").length==0){
-  $("#popupGlobal").fadeOut("fast");
-
-  //Remove any extra additions the popup may have populated.
-  $(".CG_saveButton").remove()
-
-  //Reload the screen if requested.
-  if ($(".reloadActivator").length) {
-   window.location.reload(true);
-   $(".reloadActivator").remove();
-  };
- }
-});
-
-function darkenMask() {
- $("#mask").addClass("darkenedMask");
-}
-
-function revertMask() {
- $("#mask").removeClass("darkenedMask");
- $(".darkenedMask").remove();
-}
-
-
 // Cancel any masks or popups that are covering the screen. 
-$(document).on("click", ".clearScreenButton", function() {
-  $("#popupGlobal").fadeOut("fast");
-
-  //Remove any extra additions the popup may have populated.
-  $(".CG_saveButton").remove()
-  $(".closeButton").show();
-  $("#mask").removeClass("darkenedMask");
-  $(".maskBlockFade").remove();
+$(document).on("click", ".refreshButton", function() {
+ window.location.reload(true);
 });
 
 //Close popups on close-button click.
@@ -552,15 +568,9 @@ $(document).on("click", ".contractButton", function() {
 
 //Detect any activators that might be loaded.
 if ($(".loadActivator").length){
- var activatorID = $(".loadActivator").attr("id");
- $("#popupContainer").attr("for", activatorID);
  switch (activatorID) {
   case "userLicenseAgreement":
-   darkenMask();
-   $.get("/user_license_agreement/", function(response) {
-    $("#popupContainer_inner").html(response);
-    $(".closeButton").hide(); //Remove unnecessary close buttons.
-   });
+   getLicensePopup();
    break;
  }; 
  $("#popupGlobal").fadeIn(300);
