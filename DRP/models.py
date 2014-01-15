@@ -169,7 +169,7 @@ class Lab_Group(models.Model):
 
 def get_Lab_Group(raw_string):
  try:
-  Lab_Group.objects.filter(lab_title=raw_string)
+  return Lab_Group.objects.filter(lab_title=raw_string).get()
  except:
   raise Exception("Could not find Lab_Group with lab_title: {}".format(raw_string))
 
@@ -201,6 +201,7 @@ class Recommendation(models.Model):
 
  score = models.FloatField("Score")
  temp = models.CharField("Temperature", max_length=10)
+ time = models.CharField("Time", max_length=10) ###
  pH = models.CharField("pH", max_length=5)
 
  #Yes/No/? Fields:
@@ -221,7 +222,7 @@ class Recommendation(models.Model):
  notes = models.CharField("Notes", max_length=200, blank=True)
 
  def __unicode__(self):
-  return u"REC: score -- (LAB: {} -- Saved: {})".format(self.score, self.lab_group.lab_title, self.saved)
+  return u"REC: {} -- (LAB: {} -- Saved: {})".format(self.score, self.lab_group.lab_title, self.saved)
 
 #Organize the reactants into sublists: [[reactant, quantity, unit], ...]
 def partition_reactant_fields(lst):
@@ -249,6 +250,7 @@ def get_vars_from_list(lst):
 #Creates the Recommendation entry, but does not store it in database.
 def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
  try:
+  print lst
   new_rec = Recommendation()
   #Set the self-assigning fields:
   setattr(new_rec, "lab_group", lab_group)
@@ -256,7 +258,14 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
 
   #Set the non-user field values.
   fields = get_model_field_names(model="Recommendation")
+  print fields
   for (field, value) in zip(fields, lst[2][1:]): #Ignore the reference field.
+   #Translate Booleans into Boolean values.
+   if value=="yes":
+    value=True
+   if value=="no":
+    value=False
+   print "{} {}".format(field, value)
    setattr(new_rec, field, value)
   return new_rec
    
@@ -711,7 +720,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense"}
+   fields_to_ignore = {u"id","user","lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense", "score", "date"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:
