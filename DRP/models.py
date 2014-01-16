@@ -112,7 +112,6 @@ def update_compound(compound, update_data=True):
   #Update the CG entry itself. Make sure "inorg" types don't query ChemSpider.
   try:
    compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
-   print compound.compound_type, compound.abbrev
   except:
    if compound.compound_type=="Inorg":
     compound.image_url, compound.smiles, compound.mw = "","",""
