@@ -1,3 +1,8 @@
+//Pre-load Variable Setup:
+goodColor = "#99FF5E";
+neutralColor = "#FFC87C";
+badColor = "#FF6870";
+
 $(document).ready(function() {
 //######################################################################
 selectedData = Array();
@@ -36,13 +41,15 @@ window.restyleData = function() {
   }
  });
 
- //Keep selected data highlighted even if on page changes.
- $(".dataEntry").each(function() {
-  dataID = $(this).find(".type_ref").html().trim();
-  if (selectedData.indexOf(dataID) != -1) {
-   $(this).parent().addClass("dataSelected");
-  }
- });
+ try {
+  //Keep selected data highlighted even if on page changes.
+  $(".dataEntry").each(function() {
+   dataID = $(this).find(".type_ref").html().trim();
+   if (selectedData.indexOf(dataID) != -1) {
+    $(this).parent().addClass("dataSelected");
+   }
+  });
+ } catch(err){}
 }
 //############   Tooltips   ############################################
 //Apply custom tooltips to applicable data.
@@ -72,6 +79,21 @@ $(document).on("focusout", "input", function() {
  $(document).tooltip("enable");
 });
 
+//Reactant Tooltips.
+$(document).on("mouseover", ".type_reactant", function() {
+ if (CGEntries == undefined) {
+  var specificDiv = $(this);
+  $(specificDiv).attr("title", "Loading!")
+  $.get("/send_CG_names/", function(response) {
+   CGEntries = response;
+   var compound = CGEntries[$(specificDiv).html().trim()] || "Compound not in guide!"
+   $(".ui-tooltip").html(compound);
+   });
+ } else {
+  var compound = CGEntries[$(this).html().trim()] || "Compound not in guide!"
+  $(this).attr("title", compound)
+ }
+});
 //############  Side Container:  ####################################
 function toggleSideContainer() {
  if ($("#sidePanel").css("width")!="0px"){
@@ -134,6 +156,23 @@ $(document).on("click", "#mask", function() {
  }
 });
 
+//############  Button Propagation:  ####################################
+window.addDataSpecificButton = function(data, buttonID, image, title, classes) {
+ classes = classes !== undefined ? classes : "";
+
+ var buttonDiv = "<div id=\""+buttonID+"\"" 
+ buttonDiv += "class=\"dataSpecificButton "+classes+"\"";
+ buttonDiv += "style=\"background-image: url(";
+ buttonDiv += STATIC_URL+"/icons/"+image+");\""
+ buttonDiv += "title=\""+title +"\"></div>";
+ $(data).find(".dataSpecificButtonContainer").append(buttonDiv);
+}
+
+$(document).on("mouseleave", ".dataGroup", function() {
+ //Eliminate any duplication buttons on when the mouse isn't on a group.
+ $(".dataSpecificButton").remove();
+});
+
 //############  Form Interactions:  ####################################
 function getLicensePopup() {
  $("#popupContainer").attr("for", "userLicenseAgreement");
@@ -173,7 +212,7 @@ $(document).on("submit", ".infoForm", function() {
 
   //Show the ribbon message if applicable.
   if ($(".successActivator").length) {
-   showRibbon("Data added!", "green", "#popupContainer_inner");
+   showRibbon("Data added!", goodColor, "#popupContainer_inner");
    $(".successActivator").remove();
    return false;
   }
@@ -311,12 +350,12 @@ $(document).on("click", ".search_filterButton", function() {
    if (currentQuery){
     for (var i in currentQuery) {
      if (currentQuery[i]["field"] == field && currentQuery[i]["value"] == value) {
-      showRibbon("Already queried!", "#FFC87C","#sidePanel", true);
+      showRibbon("Already queried!", neutralColor,"#sidePanel", true);
       return false //Don't continue if query is already present.
      }
     }
    }
-   showRibbon("Searching!", "#99FF5E","#sidePanel", true);
+   showRibbon("Searching!", goodColor,"#sidePanel", true);
 
    currentQuery.push({
     "field":field,
@@ -334,12 +373,12 @@ $(document).on("click", ".search_filterButton", function() {
    if (currentQuery){
     for (var i in currentQuery) {
      if (currentQuery[i]["field"] == field && currentQuery[i]["value"] == value) {
-      showRibbon("Already queried!", "#FFC87C","#sidePanel", true);
+      showRibbon("Already queried!", neutralColor,"#sidePanel", true);
       return false //Don't continue if query is already present.
      }
     }
    }
-   showRibbon("Searching!", "#99FF5E","#sidePanel", true);
+   showRibbon("Searching!", goodColor,"#sidePanel", true);
 
    currentQuery.push({
     "field":field,
@@ -348,27 +387,27 @@ $(document).on("click", ".search_filterButton", function() {
    });
    sendSearchQuery(currentQuery);
   } else {
-   showRibbon("Nothing entered!", "#FF6870", $("#sidePanel"), true);
+   showRibbon("Nothing entered!", badColor, $("#sidePanel"), true);
   }
  } else {
-  showRibbon("No data to filter!", "#FF6870", $("#sidePanel"), true);
+  showRibbon("No data to filter!", badColor, $("#sidePanel"), true);
  }
 });
 
 $(document).on("click", ".search_backButton", function() {
  if (currentQuery.length){
   currentQuery.pop();
-  showRibbon("Removing last filter!", "#99FF5E","#sidePanel", true);
+  showRibbon("Removing last filter!", goodColor,"#sidePanel", true);
   sendSearchQuery(currentQuery);
  } else {
-  showRibbon("No filters present!", "#FF6870", $("#sidePanel"), true);
+  showRibbon("No filters present!", badColor, $("#sidePanel"), true);
  }
 });
 
 $(document).on("click", ".search_clearButton", function() {
  currentQuery = Array();
  sendSearchQuery(currentQuery);
- showRibbon("Filters emptied", "#99FF5E","#sidePanel", true);
+ showRibbon("Filters emptied", goodColor,"#sidePanel", true);
 });
 
  //################   Autocompleting Search   ####################### //###
@@ -566,23 +605,7 @@ $(document).on("click", ".contractButton", function() {
  toggleSideContainer();
 });
 
-//Detect any activators that might be loaded.
-if ($(".loadActivator").length){
- switch (activatorID) {
-  case "userLicenseAgreement":
-   getLicensePopup();
-   break;
- }; 
- $("#popupGlobal").fadeIn(300);
-}
+restyleData();
 
 //######################################################################
 });
-
-
-
-
-
-
-
-

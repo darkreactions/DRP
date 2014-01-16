@@ -2,11 +2,11 @@
 <form action="/update_user_license_agreement/" method="post" name="user_license_agreement_form" class="popupScreenForm infoForm">
  {% csrf_token %}
  {% if license_changed %}
-  We updated our <a target="_blank" href="{{STATIC}}{{license_file}}">terms and conditions</a> on {{ license_date }}. <br/>
+  We updated our <a target="_blank" href="{{STATIC_URL}}{{license_file}}">terms and conditions</a> on {{ license_date }}. <br/>
   Please review and accept the new terms by clicking "I Agree" below. 
  {% else %}
   By clicking the "I Agree" button, you agree to the  
-  <a target="_blank" href="{{STATIC}}{{license_file}}">terms and conditions</a>
+  <a target="_blank" href="{{STATIC_URL}}{{license_file}}">terms and conditions</a>
   of the Dark Reactions Project. 
  {% endif %}
  <input type="submit" id="agreeButton" name="agreeButton" value="I Agree" class="button" />

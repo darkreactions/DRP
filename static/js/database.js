@@ -2,31 +2,6 @@ $(document).ready(function() {
 //############ Variable Setup: #########################################
 var CGSelected = Array();
 
-//############ Post-load Setup: #########################################
-restyleData() //Style the data according to what it contains.
-
-//############ Reactant Tooltips: ##################################
-$(document).on("mouseover", ".type_reactant", function() {
- if ($(this).is(":empty")) {
-  $(this).attr("title", "Click to add a new reactant.")
- } else if ($(this).children("input").length == 0 && !(tooltips_disabled)){
-  if (CGEntries == undefined) {
-   var specificDiv = $(this);
-   $(specificDiv).attr("title", "Loading!")
-   $.get("/send_CG_names/", function(response) {
-    CGEntries = response;
-    var compound = CGEntries[$(specificDiv).html()] || "Compound not in guide!"
-    $(".ui-tooltip").html(compound);
-    });
-  } else {
-   var compound = CGEntries[$(this).html()] || "Compound not in guide!"
-   $(this).attr("title", compound)
-  }
- } else {
-  $(this).attr("title", "")
- }
-});
-
 //############ Dependent Functions: ####################################
 //Set the current_page cookie.
 function setPageCookie(page) {
@@ -179,23 +154,13 @@ $("#leftMenu_selectPage").click(function() {
  }
 });
 
-
 //Create the "Duplicate This Data" button.
 $(document).on("mouseover", ".dataGroup", function() {
  if ($(".duplicateSpecificDataButton").length == 0 ){
-  var buttonDiv = "<div id=\"leftMenu_addNew_copy\"class=\"";
-  buttonDiv += "duplicateSpecificDataButton popupActivator\"";
-  buttonDiv += "style=\"background-image: url(";
-  buttonDiv += STATIC_URL+"/icons/add.png);\" title=\""
-  buttonDiv += "Copy this reaction to the data form."
-  buttonDiv += "\"></div>";
-  $(this).append(buttonDiv);
+  addDataSpecificButton(this, "leftMenu_addNew_copy", "add.png", 
+   "Copy this reaction to the data form.", 
+   "popupActivator duplicateSpecificDataButton");
  }
-});
-
-$(document).on("mouseleave", ".dataGroup", function() {
- //Eliminate any duplication buttons on when the mouse isn't on a group.
- $(".duplicateSpecificDataButton").remove();
 });
 
 //############### Change Data: #########################################

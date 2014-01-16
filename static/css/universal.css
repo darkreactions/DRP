@@ -38,6 +38,27 @@
  background-color:#FFD92E;
 }
 
+.dataSpecificButtonContainer {
+ position:absolute;
+ top:-10px;
+ left:5px;
+}
+
+.dataSpecificButton:hover{
+ opacity:1;
+}
+
+.dataSpecificButton{
+ position:relative;
+ display:inline-block;
+ margin-right:5px;
+ height:20px;
+ width:20px;
+ border-radius:5px;
+ background-size:contain;
+ opacity:0.7;
+}
+
 .contractButton {
  position:absolute;
  cursor:pointer;
@@ -464,8 +485,14 @@ div.ui-tooltip {
  padding-left:10px;
  padding-right:10px;
  height:86%;
- border-top-right-radius:0px;
- border-bottom-right-radius:0px;
+ overflow:auto;
+}
+
+#recContainer {
+ position:relative;
+ padding-left:10px;
+ padding-right:10px;
+ height:100%;
  overflow:auto;
 }
 
@@ -980,42 +1007,18 @@ p.basicParagraph {
 #pageLinkCurrent {
  border:2px solid #304B60;
 }
-.recommended_reactant {
- display: inline-block;
- margin:5px;
-}
 
+/* Recommendation Groups */
 .recommendation {
- margin-top: 10px;
- padding:5px;
- padding-left:10px;
- background-color:#DCE9F4;
- border-left:2px solid #B5D0E8;
- border-radius: 5px;
+ background-color: #B5D0E8;
 }
 
-.recommended_mass {
- display: inline-block;
- font-size:14px;
- margin-right:5px;
+.badRecommendation {
+ background-color:#FF8080;
 }
 
-.recommended_heading {
- display: inline-block;
- font-weight: bold;
- margin-left: 8px;
- margin-right: 3px;
-}
-
-.recommended_info {
- font-size: 14px;
- margin-left:40px;
-}
-
-.recommended_score {
- display: inline-block;
- margin-right:20px;
- font-weight:bold;
+.savedRecommendation {
+ background-color:#99FF99;
 }
 
 #popupContainer_inner > h1 {

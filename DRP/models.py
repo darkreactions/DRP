@@ -179,8 +179,9 @@ class Lab_Member(models.Model):
  license_agreement_date = models.CharField("License Agreement Date", max_length=26, blank=True) ###TODO: Explore why this isn't a datetime field. 
  lab_group = models.ForeignKey(Lab_Group)
 
- def is_licensed(self):
-  return self.license_agreement_date and (self.license_agreement_date > CONFIG.license_agreement_date)
+ def update_license(self):
+  self.license_agreement_date = str(datetime.datetime.now())
+  self.save()  
 
  def __unicode__(self):
   return self.user.username
@@ -214,6 +215,7 @@ class Recommendation(models.Model):
  atoms = models.CharField("Atoms", max_length=30, blank=True)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
  model_version = models.ForeignKey(Model_Version, unique=False)
+ user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None)
  date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
 
  #Fields for user feedback.
@@ -250,7 +252,6 @@ def get_vars_from_list(lst):
 #Creates the Recommendation entry, but does not store it in database.
 def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
  try:
-  print lst
   new_rec = Recommendation()
   #Set the self-assigning fields:
   setattr(new_rec, "lab_group", lab_group)
@@ -258,14 +259,12 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
 
   #Set the non-user field values.
   fields = get_model_field_names(model="Recommendation")
-  print fields
   for (field, value) in zip(fields, lst[2][1:]): #Ignore the reference field.
    #Translate Booleans into Boolean values.
    if value=="yes":
     value=True
    if value=="no":
     value=False
-   print "{} {}".format(field, value)
    setattr(new_rec, field, value)
   return new_rec
    

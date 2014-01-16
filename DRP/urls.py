@@ -33,9 +33,14 @@ urlpatterns = patterns('',
     (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
   #Predictions
     (r'^predictions/$', predictions),
-    (r'^recommend/$', recommend),
     (r'^saved/$', saved),
     (r'^gather_SVG/$', gather_SVG),
+  #Recommendations
+    (r'^recommend/$', recommend),
+    (r'^save_recommendation/$', edit_recommendation, {"action":"save"}),
+    (r'^unsave_recommendation/$', edit_recommendation, {"action":"unsave"}),
+    (r'^sensical_recommendation/$', edit_recommendation, {"action":"sense"}),
+    (r'^nonsensical_recommendation/$', edit_recommendation, {"action":"nonsense"}),
   #Searching
     (r'^search/$', search), 
   #Users and Labs

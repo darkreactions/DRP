@@ -260,22 +260,55 @@ def data_transmit(request):
   print e
   return HttpResponse("Page \"{}\" could not be loaded".format(page))
 
-def recommend(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
+def recommend(request): 
  #Get user data if it exists.
  u = request.user
+
+ recommendations = None
  if u.is_authenticated():
   fatal_message = ""
-  recommendation_query = get_recommendations_by_date(u.get_profile().lab_group)
-  recommendations = [get_template_form(i, "Recommendation") for i in recommendation_query] 
+  try:
+   recommendations = get_recommendations_by_date(u.get_profile().lab_group)
+  except:
+   fatal_message = "No recommendations available."   
  else:
-  fatal_message = "<p>Please log in to view recommendations.</p>"
-  recommendations = None
+  fatal_message = "Please log in to view recommendations."
 
- return render(request, 'recommend_global.html', {
+ return render(request, 'global_page.html', {
+  "template":"recommendations",
   "recommendations": recommendations,
   "fatal_message": fatal_message,
  })
 
+def edit_recommendation(request, action):
+ try:
+  u = request.user
+  assert u.is_authenticated() and request.method=="POST"
+  pid = request.POST["pid"]
+  recommendations = get_recommendations(u.get_profile().lab_group)
+  
+  #Filter the recommendation of interest.
+  recommendation = recommendations.get(id=pid)
+
+  if action=="save":
+   recommendation.saved = True
+   recommendation.save()
+  elif action=="unsave":
+   recommendation.saved = False
+   recommendation.save()
+  elif action=="sense":
+   recommendation.nonsense = False
+   recommendation.save()
+  elif action=="nonsense":
+   recommendation.nonsense = True
+   recommendation.save()
+  else:
+   raise Exception("Error: Illegal action specified.")
+
+  return HttpResponse(0)
+ except Exception as e:
+  print e
+  return HttpResponse(1)
 
 ###TODO: Add this -- right now it is just a copy. 
 def saved(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
@@ -328,8 +361,7 @@ def update_user_license_agreement(request):
  u = request.user 
  if request.method=="POST":
   try:
-   u.get_profile().license_agreement_date = str(datetime.datetime.now())
-   u.get_profile().save()  
+   u.get_profile().update_license()
    return HttpResponse(
     "<p>You're all up-to-date!</p>" +
     "<div class=\"button refreshButton\">Explore</div>"
@@ -412,6 +444,9 @@ def get_info(lst): ###TODO: GENERALIZE
  info = [[i, j] for (i,j) in zip(verbose_headers, lst)]
  return info 
 
+def get_recommendations(lab_group):
+ return Recommendation.objects.filter(lab_group=lab_group)
+
 def get_recommendations_by_date(lab_group, date = "recent"):
  if date=="recent":
   #Get the most recent version of the model.
@@ -421,9 +456,9 @@ def get_recommendations_by_date(lab_group, date = "recent"):
   except Exception as e:
    raise Exception("Could not find any version of the model: {}".format(e))
 
- #Get the data associated with a specific date. ###TODO: Probably should be "creation_time"
+ #Get the data associated with a specific date.
  try:
-  recommendations = Recommendation.objects.filter(lab_group=lab_group, date=date).order_by("score")
+  recommendations = get_recommendations(lab_group).filter(date=date).order_by("-score")
  except Exception as e:
   raise Exception("Could not find any version of the model: {}".format(e))
 
@@ -1193,7 +1228,7 @@ def download_CSV(request): ###Need to fix.
   CSV_file = HttpResponse(content_type="text/csv")
   CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
 
-  #Django HttpResponse objects can be handleded like files.
+  #Django HttpResponse objects can be handled like files.
   writer = csv.writer(CSV_file)
 
   #Write the verbose headers to the CSV_file
