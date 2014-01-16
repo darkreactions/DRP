@@ -11,6 +11,15 @@
  cursor:pointer;
 }
 
+.CG_saveButton {
+ cursor:pointer;
+
+ user-select: none;
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+}
+
 .button {
  cursor:pointer;
 
@@ -939,6 +948,10 @@ height:10px;
  bottom:-7px;
 }
 
+.type_assigned_user {
+ font-size:14px; 
+}
+
 /* #################    Search Results    ####################### */
 #searchResultsContainer{
  position:relative;
@@ -1197,4 +1210,5 @@ color: #355A77;
 .error_message {
  display:inline-block;
 }
+
 
