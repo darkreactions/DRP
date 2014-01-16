@@ -154,15 +154,6 @@ $("#leftMenu_selectPage").click(function() {
  }
 });
 
-//Create the "Duplicate This Data" button.
-$(document).on("mouseover", ".dataGroup", function() {
- if ($(".duplicateSpecificDataButton").length == 0 ){
-  addDataSpecificButton(this, "leftMenu_addNew_copy", "add.png", 
-   "Copy this reaction to the data form.", 
-   "popupActivator duplicateSpecificDataButton");
- }
-});
-
 //############### Change Data: #########################################
 
 //Delete Button

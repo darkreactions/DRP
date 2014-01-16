@@ -1,7 +1,7 @@
 {% if user.is_authenticated %}
  {% if data_on_page %}
   {% for entry, entryID in data_on_page %}
-   <div class="dataGroup dataGroup_shape genericContainer_inner 
+   <div class="dataGroup dataGroup_shape genericContainer_inner copyable 
    {% if not entry.is_valid %}badDataGroup{% endif %}" id="g_{{entryID}}">
     <div class="dataIndex">{{ entryID }}</div>
     <div class="dataEntry">

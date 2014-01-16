@@ -173,6 +173,112 @@ $(document).on("mouseleave", ".dataGroup", function() {
  $(".dataSpecificButton").remove();
 });
 
+$(document).on("mouseover", ".dataGroup", function() {
+ if ($(".dataSpecificButton").length == 0 ){
+
+  //Add the copy button.
+  if ($(this).attr("class").indexOf("copyable") >= 0) {
+   addDataSpecificButton(this, "leftMenu_addNew_copy", "add.png", 
+    "Copy this reaction to the data form.", 
+    "popupActivator duplicateSpecificDataButton");
+  }
+
+  //Add the (un)save buttons. 
+  if ($(this).attr("class").indexOf("savedRecommendation") < 0) {
+   addDataSpecificButton(this, "saveRecommendation", "delete.png", 
+    "Save this recommendation")
+  } else {
+   addDataSpecificButton(this, "unsaveRecommendation", "save.png", 
+    "Unsave this recommendation")
+  }
+
+  //Add the (non)sensical buttons.
+  if ($(this).attr("class").indexOf("badRecommendation") < 0) {
+   addDataSpecificButton(this, "nonsensicalRecommendation", "check.png", 
+    "Mark this recommendation as nonsensical.")
+  } else {
+   addDataSpecificButton(this, "sensicalRecommendation", "nonsense.png", 
+    "Mark this recommendation as sensical.")
+  }
+
+  //Add the transfer-to-database buttons.
+  if ($(this).attr("class").indexOf("transferable") >= 0) {
+   addDataSpecificButton(this, "transferRecommendation", "add.png", 
+    "Complete this entry.",
+    "popupActivator");
+  }
+ }
+});
+
+$(document).on("click", ".dataSpecificButton", function() {
+ var dataGroup = $(this).closest(".dataGroup");
+ var buttonID = $(this).attr("id");
+
+ //Get the pid if it exists.
+ try {
+  var pid = $(dataGroup).children(".dataEntry").attr("pid");
+ } catch(err) {
+  //TODO:Test this.
+  return false;
+ }
+
+ //Get the action of the button.
+ switch (buttonID){
+  case ("saveRecommendation"):
+   var url="/save_recommendation/";
+   var JSON = {"pid":pid}
+   break;
+  case ("unsaveRecommendation"):
+   var url="/unsave_recommendation/";
+   var JSON = {"pid":pid}
+   break;
+  case ("sensicalRecommendation"):
+   var url="/sensical_recommendation/";
+   var JSON = {"pid":pid}
+   break;
+  case ("nonsensicalRecommendation"):
+   var url="/nonsensical_recommendation/";
+   var JSON = {"pid":pid}
+   break;
+  default:
+   return false;
+ }
+
+
+ //Send the request and do something with the response 
+ $.post(url, JSON, function(response) {
+  if (response=="0"){
+   switch (buttonID) {
+    case("saveRecommendation"):
+     $(dataGroup).addClass("savedRecommendation");
+     var comment = "Saved!";
+     break;
+    case("unsaveRecommendation"):
+     $(dataGroup).removeClass("savedRecommendation");
+     var comment = "Unsaved!";
+     break;
+    case("sensicalRecommendation"):
+     $(dataGroup).removeClass("badRecommendation");
+     var comment = "Marked as sensical!";
+     break;
+    case("nonsensicalRecommendation"):
+     $(dataGroup).addClass("badRecommendation");
+     var comment = "Marked as nonsense!";
+     break;
+   }
+
+   //Refresh the mouse buttons.
+   $(dataGroup).children(".dataSpecificButtonContainer").empty();
+   $(dataGroup).trigger("mouseover");
+   showRibbon(comment, goodColor, "#mainPanel");
+  } else {
+   showRibbon("Edit failed!", badColor, "#mainPanel");
+  }
+
+ });
+
+});
+
 //############  Form Interactions:  ####################################
 function getLicensePopup() {
  $("#popupContainer").attr("for", "userLicenseAgreement");
@@ -482,6 +588,12 @@ $(document).on("click", ".popupActivator", function(event) {
 
  $("#popupContainer").attr("for", activatorID);
  switch (activatorID) {
+  case "transferRecommendation":
+   var pid = $(this).closest(".dataGroup").find(".dataEntry").attr("pid");
+   $.get("/transfer_recommendation/", {"pid":pid}, function(response) {
+    $("#popupContainer_inner").html(response);
+   })
+   break;
   case "leftMenu_addNew":
    //Send the request to the server
    $.get("/data_form/"+specificRef, function(response) {
@@ -605,6 +717,24 @@ $(document).on("click", ".contractButton", function() {
  toggleSideContainer();
 });
 
+//############ Forced Editable Changes #################################
+
+$(document).on("change", ".editable_assignedUser", function() {
+ var JSONQuery = {
+  rec_pid:$(this).closest(".dataGroup").find(".dataEntry").attr("pid"),
+  user_pid:$(this).children("option:selected").attr("val")
+ }
+
+ $.post("/assign_user/", JSONQuery, function(response) {
+  if (response==0) {
+   showRibbon("Edit successful!", goodColor, "#mainPanel");
+  } else {
+   showRibbon("Edit failed!", badColor, "#mainPanel");
+  }
+ });
+});
+
+//############ Post-load Config ########################################
 restyleData();
 
 //######################################################################

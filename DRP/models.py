@@ -175,7 +175,7 @@ def get_Lab_Group(raw_string):
 
 ############### USER CREATION #######################
 class Lab_Member(models.Model):
- user = models.OneToOneField(User, unique=True)
+ user = models.OneToOneField(User, related_name="profile", unique=True)
  license_agreement_date = models.CharField("License Agreement Date", max_length=26, blank=True) ###TODO: Explore why this isn't a datetime field. 
  lab_group = models.ForeignKey(Lab_Group)
 

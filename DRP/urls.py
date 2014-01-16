@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     (r'^change_Data/$', change_Data), #[JSON] Edit Data Entry
     (r'^delete_Data/$', delete_Data), #[JSON] Delete Data Entries
     (r'^data_form/$', data_form), #Form for adding new data.
+    (r'^transfer_recommendation/$', transfer_rec), #Add rec to data.
     (r'^data_form/(?P<copy_ref>[\w.-_]+)/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
     (r'^compound_guide_entry/$', compound_guide_entry), #Return a single CG table entry.
@@ -33,10 +34,11 @@ urlpatterns = patterns('',
     (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
   #Predictions
     (r'^predictions/$', predictions),
-    (r'^saved/$', saved),
     (r'^gather_SVG/$', gather_SVG),
   #Recommendations
     (r'^recommend/$', recommend),
+    (r'^saved/$', saved),
+    (r'^assign_user/$', assign_user_to_rec),
     (r'^save_recommendation/$', edit_recommendation, {"action":"save"}),
     (r'^unsave_recommendation/$', edit_recommendation, {"action":"unsave"}),
     (r'^sensical_recommendation/$', edit_recommendation, {"action":"sense"}),

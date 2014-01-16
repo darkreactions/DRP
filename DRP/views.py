@@ -310,27 +310,66 @@ def edit_recommendation(request, action):
   print e
   return HttpResponse(1)
 
-###TODO: Add this -- right now it is just a copy. 
-def saved(request): ###TODO: ADD TEMPLATE BITS, CASEY! 
- #Get user data if it exists.
+def saved(request): 
+ #Variable Setup
  u = request.user
+ recommendations = None
+ user_list = None
+
  if u.is_authenticated():
   fatal_message = ""
-  recommendation_query = get_recommendations_by_date(u.get_profile().lab_group)
-  recommendations = [get_template_form(i, "Recommendation") for i in recommendation_query] 
- else:
-  fatal_message = "<p>Please log in to view recommendations.</p>"
-  recommendations = None
+  try:
+   #Get the recommendations that are saved for the lab.
+   lab_group = u.get_profile().lab_group
+   recommendations = get_recommendations_by_date(lab_group)
+   recommendations = recommendations.filter(saved=True)
 
- return render(request, 'recommend_global.html', {
+   #Get the lab users for the select field.
+   user_list = User.objects.filter(profile__lab_group=lab_group)
+   
+   #Get users
+  except:
+   fatal_message = "No saved recommendations available."   
+ else:
+  fatal_message = "Please log in to view saved data."
+
+ return render(request, 'global_page.html', {
+  "template":"saved",
   "recommendations": recommendations,
   "fatal_message": fatal_message,
+  "users":user_list,
  })
 
+# # # # # # # # # # # # # # # # # # #
+   # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
+#Change the assigned_user of a recommendation.
+def assign_user_to_rec(request):
+ u = request.user
+ try:
+  lab_group = u.get_profile().lab_group
+  assert u.is_authenticated() and request.method=="POST"
+  #Get PIDs from the request.
+  rec_pid = request.POST["rec_pid"]
+  user_pid = request.POST["user_pid"]
 
-# # # # # # # # # # # # # # # # # # #
-   # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # #
-# # # # # # # # # # # # # # # # # # #
+  #Get the recommendation to change.
+  rec = get_recommendations(lab_group).get(id=rec_pid)
+
+  #Get the newly assigned user or None.
+  if user_pid:
+   new_user = User.objects.get(id=user_pid)
+  else:
+   new_user = None
+
+  #Assign the change in the database.
+  rec.user = new_user
+  rec.save()
+  return HttpResponse(0)
+ except Exception as e:
+  print e
+  return HttpResponse(1)
+
 #Return whether the user_license is valid (True) or invalid/missing (False)
 def user_license_is_valid(user):
  try:
@@ -809,6 +848,26 @@ def data_form(request, copy_ref=None): #If no data is entered, stay on the curre
   "form": form,
   "success": success,
  })
+
+#Send/receive the data-entry form:
+def transfer_rec(request):
+ try:
+  u = request.user
+  lab_group = u.get_profile().lab_group
+  if u.is_authenticated() and request.method=="GET":
+   pid = request.GET["pid"]
+   rec = get_recommendations(lab_group).get(id=pid)
+   
+   initial_fields = {field:getattr(rec, field) for field in get_model_field_names(model="Recommendation")}
+   form = DataEntryForm(
+    initial=initial_fields
+   )
+   return render(request, 'data_form.html', {
+    "form": form,
+   })
+  return HttpResponse("<p>Request failed!</p>")
+ except:
+  return HttpResponse("<p>Woops! Something went wrong.</p>")
  ##################  Helper Functions ###############################
 
 #Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")

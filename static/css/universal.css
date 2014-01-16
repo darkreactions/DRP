@@ -572,6 +572,42 @@ div.ui-tooltip {
  width:100%;
 }
 
+/* #################### FORM STYLE ################################# */
+.fieldWrapper {
+ padding:5px;
+ border: 2px black solid;
+ border-radius:10px;
+ margin:5px;
+ display: inline-block;
+ text-align:left;
+ min-width:100px;
+
+ background-color:#75ADE6;
+ color:black;
+}
+
+.reactionWrapper {
+ background:rgba(64, 64, 64, 0.3);
+ display:inline-block;
+ border-radius:15px;
+}
+
+.form_text_short {
+ width:65px;
+}
+.form_text_long {
+ width:250px;
+}
+
+.badData {
+ background-color:red;
+}
+.badData:focus {
+ background-color:#F7605B;
+}
+
+
+
 /* ##################   SPECIFIC POPUPS   ########################### */
 #popupContainer[for="changePassword"] {
  text-align:center;
@@ -637,7 +673,8 @@ div.ui-tooltip {
  min-width:300px;
 }
 
-#popupContainer[for="leftMenu_addNew"] {
+#popupContainer[for="leftMenu_addNew"], 
+#popupContainer[for="transferRecommendation"] {
  text-align:center;
  top:50px;
  left:10%;
@@ -1015,6 +1052,7 @@ p.basicParagraph {
 
 .badRecommendation {
  background-color:#FF8080;
+ border-left-color: red;
 }
 
 .savedRecommendation {
