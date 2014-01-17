@@ -201,6 +201,7 @@ $(document).on("click", "#mask", function() {
 });
 
 //############  Button Propagation:  ####################################
+
 window.addDataSpecificButton = function(data, buttonID, image, title, classes) {
  classes = classes !== undefined ? classes : "";
 
@@ -265,7 +266,7 @@ $(document).on("click", ".dataSpecificButton", function() {
 
  //Get the pid if it exists.
  try {
-  var pid = $(dataGroup).children(".dataEntry").attr("pid");
+  var pid = $(dataGroup).attr("pid");
  } catch(err) {
   //TODO:Test this.
   return false;
@@ -631,14 +632,14 @@ $(document).on("click", ".popupActivator", function(event) {
  $("#popupContainer").attr("for", activatorID);
  switch (activatorID) {
   case "transferRecommendation":
-   var pid = $(this).closest(".dataGroup").find(".dataEntry").attr("pid");
+   var pid = $(this).closest(".dataGroup").attr("pid");
    $.get("/data_form/", {pid : pid, model: "rec"}, function(response) {
     $("#popupContainer_inner").html(response);
    })
    break;
   case "leftMenu_addNew":
    //
-   var pid = $(this).closest(".dataGroup").find(".dataEntry").attr("pid");
+   var pid = $(this).closest(".dataGroup").attr("pid");
    //Send the request to the server
    $.get("/data_form/", {pid : pid, model:"data"}, function(response) {
     $("#popupContainer_inner").html(response);
@@ -765,7 +766,7 @@ $(document).on("click", ".contractButton", function() {
 
 $(document).on("change", ".editable_assignedUser", function() {
  var JSONQuery = {
-  rec_pid:$(this).closest(".dataGroup").find(".dataEntry").attr("pid"),
+  rec_pid:$(this).closest(".dataGroup").attr("pid"),
   user_pid:$(this).children("option:selected").attr("val")
  }
 
@@ -789,7 +790,7 @@ $(document).on("click", ".ui-menu-item", function() {
 //Make edit text fields auto-size and validate while typing.
 $(document).on("keyup", ".editText", function() {
  adaptSize($(this));
- if (parseInt($(this).parent().attr("group"))>2) {
+ if (parseInt($(this).closest(".reactantField").attr("group"))>2) {
   var required = false;
  } else { var required = true; }
 
@@ -882,11 +883,17 @@ $(document).on("click", ".editConfirm", function() {
  var editRow = $(editParent).parents("tr");
  //Find the general fieldChanged (eg, quantity vs. quantity_1)
  var fieldChanged = $(this).closest(".editable").attr("class").split(" ")[1];
- var numChanged = $(this).closest(".editable").attr("group");
+ var numChanged = $(this).closest(".reactantField").attr("group");
  var newValue = $(editFieldSibling).val().trim();
  var oldValue = $(editFieldSibling).attr("oldVal");
 
  var validData = false;
+
+ if ($(this).closest(".dataGroup").attr("class").indexOf("recommendation")>=0) {
+  var model="rec";
+ } else {
+  var model="data";
+ }
 
  if (editFieldSibling.attr("class").split(" ").indexOf("editText") != -1) { //Edit by Text
   //Check if the data is required (ie: if it pertains to reactant 3-5).
@@ -936,13 +943,21 @@ $(document).on("click", ".editConfirm", function() {
      });
  
     } else {
-     //Send edits for the Database View
+     //Send edits for the Data/Rec View
      var editLog = {
       pid : $(editFieldSibling).attr("pidToChange"),
       field : fieldChanged,
       newValue : newValue,
      };
-    $.post("/change_Data/", editLog, function(response) {
+
+    //Get the appropriate URL.
+    if (model=="rec"){
+     var url = "/change_Recommendation/";
+    } else {
+     var url = "/change_Data/";
+    }
+
+    $.post(url, editLog, function(response) {
      //The data should now be up to date:
      if (response != 0) {
       $(editParent).html(oldValue);

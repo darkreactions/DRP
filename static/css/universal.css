@@ -40,7 +40,6 @@
  opacity:0.5;
 }
 
-
 .button {
  cursor:pointer;
 
@@ -962,6 +961,14 @@ height:10px;
 }
 
   /* ################ .TYPE STYLE ############################# */
+.reactantField {
+ display: inline-block;
+ position:relative;
+ background:rgba(1, 1, 1, 0.1);
+ padding:2px;
+ border-radius:5px;
+}
+
 .type_reactant {
  font-weight:bold;
  font-style:none;

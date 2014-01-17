@@ -7,38 +7,54 @@
 
 {% for entry in recommendations %}
 <div class="dataGroup dataGroup_shape genericContainer_inner recommendation transferable{% if entry.nonsense %} badRecommendation{% endif %}{% if entry.saved %} savedRecommendation{% endif %}
-">
+" pid="{{entry.id}}">
 
 <div class="dataIndex">{{ forloop.counter }}</div>
 <div class="dataSpecificButtonContainer"></div>
-<div class="dataEntry" pid="{{entry.id}}" score="{{entry.score}}">
+<div class="dataEntry">
 
 <!-- Reaction -->
-<span class="dataField type_reactant" group="1" editAs="text">{{entry.reactant_1}}</span>
-<span class="dataDecorator"></span>
-<span class="dataField type_quantity" group="1" editAs="text">{{entry.quantity_1}}</span>
-<span class="dataField type.unit" group="1" editAs="select">{{entry.unit_1}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant" group="2" editAs="text">{{entry.reactant_2}}</span>
+<span class="dataField type_ref editable" editAs="text">{{entry.ref}}</span>
+<br />
+<div class="reactantField" group="1">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_1}}</span>
 <span class="dataDecorator">(</span>
-<span class="dataField type_quantity" group="2" editAs="text">{{entry.quantity_2}}</span>
-<span class="dataField type_unit" group="2" editAs="select">{{entry.unit_2}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant" group="3" editAs="text">{{entry.reactant_3}}</span>
-<span class="dataDecorator">(</span>
-<span class="dataField type_quantity" group="3" editAs="text">{{entry.quantity_3}}</span>
-<span class="dataField type_unit" group="3" editAs="select">{{entry.unit_3}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant" group="4" editAs="text">{{entry.reactant_4}}</span>
-<span class="dataDecorator">(</span>
-<span class="dataField type_quantity" group="4" editAs="text">{{entry.quantity_4}}</span>
-<span class="dataField type_unit" group="4" editAs="select">{{entry.unit_4}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant" group="5" editAs="text">{{entry.reactant_5}}</span>
-<span class="dataDecorator">(</span>
-<span class="dataField type_quantity" group="5" editAs="text">{{entry.quantity_5}}</span>
-<span class="dataField type_unit" group="5" editAs="select">{{entry.unit_5}}</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_1}}</span>
+<span class="dataField type.unit editable" editAs="select">{{entry.unit_1}}</span>
 <span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="2">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_2}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_2}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_2}}</span>
+<span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="3">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_3}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_3}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_3}}</span>
+<span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="4">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_4}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_4}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_4}}</span>
+<span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="5">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_5}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_5}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_5}}</span>
+<span class="dataDecorator">)</span>
+</div>
 <br/>
  <!-- Variables -->
 <span class="dataField type_temp" editAs="text">{{entry.temp}}</span>

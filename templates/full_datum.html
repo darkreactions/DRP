@@ -1,31 +1,45 @@
  <!-- Reaction -->
 <span class="dataField type_ref editable" editAs="text">{{entry.ref}}</span>
 <br />
-<span class="dataField type_reactant editable" group="1" editAs="text">{{entry.reactant_1}}</span>
+<div class="reactantField" group="1">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_1}}</span>
 <span class="dataDecorator">(</span>
-<span class="dataField type_quantity editable" group="1" editAs="text">{{entry.quantity_1}}</span>
-<span class="dataField type.unit editable" group="1" editAs="select">{{entry.unit_1}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant editable" group="2" editAs="text">{{entry.reactant_2}}</span>
-<span class="dataDecorator">(</span>
-<span class="dataField type_quantity editable" group="2" editAs="text">{{entry.quantity_2}}</span>
-<span class="dataField type_unit editable" group="2" editAs="select">{{entry.unit_2}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant editable" group="3" editAs="text">{{entry.reactant_3}}</span>
-<span class="dataDecorator">(</span>
-<span class="dataField type_quantity editable" group="3" editAs="text">{{entry.quantity_3}}</span>
-<span class="dataField type_unit editable" group="3" editAs="select">{{entry.unit_3}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant editable" group="4" editAs="text">{{entry.reactant_4}}</span>
-<span class="dataDecorator">(</span>
-<span class="dataField type_quantity editable" group="4" editAs="text">{{entry.quantity_4}}</span>
-<span class="dataField type_unit editable" group="4" editAs="select">{{entry.unit_4}}</span>
-<span class="dataDecorator">) +</span>
-<span class="dataField type_reactant editable" group="5" editAs="text">{{entry.reactant_5}}</span>
-<span class="dataDecorator">(</span>
-<span class="dataField type_quantity editable" group="5" editAs="text">{{entry.quantity_5}}</span>
-<span class="dataField type_unit editable" group="5" editAs="select">{{entry.unit_5}}</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_1}}</span>
+<span class="dataField type.unit editable" editAs="select">{{entry.unit_1}}</span>
 <span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="2">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_2}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_2}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_2}}</span>
+<span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="3">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_3}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_3}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_3}}</span>
+<span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="4">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_4}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_4}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_4}}</span>
+<span class="dataDecorator">)</span>
+</div>
+<span class="dataDecorator">+</span>
+<div class="reactantField" group="5">
+<span class="dataField type_reactant editable" editAs="text">{{entry.reactant_5}}</span>
+<span class="dataDecorator">(</span>
+<span class="dataField type_quantity editable" editAs="text">{{entry.quantity_5}}</span>
+<span class="dataField type_unit editable" editAs="select">{{entry.unit_5}}</span>
+<span class="dataDecorator">)</span>
+</div>
 <br/>
  <!-- Variables -->
 <span class="dataField type_temp editable" editAs="text">{{entry.temp}}</span>

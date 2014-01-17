@@ -81,7 +81,72 @@ $("#leftMenu_selectPage").click(function() {
  }
 });
 
-//############### Change Data: #########################################
+//###############  Change Data   #########################################
+// # # # # # Delete Reactant Button
+$(document).on("mouseover", ".reactantField", function() {
+ if ($(".reactantButton").length==0 ){
+  if ($(this).children(".type_reactant").is(":empty")) {
+   $(this).append("<div class=\"reactantAddButton reactantButton genericButton\"" + 
+    "title=\"Add this reactant.\">+</div>"); 
+  } else {
+   $(this).append("<div class=\"reactantRemoveButton reactantButton genericButton\"" + 
+    "title=\"Delete this reactant.\">x</div>"); 
+  }
+ }
+});
+ 
+$(document).on("mouseleave", ".reactantField", function() {
+ $(".reactantButton").remove();
+})
+
+//TODO: Add me!
+$(document).on("click", ".reactantAddButton", function(event) {
+ alert("Feature not added yet!");
+ event.stopPropagation();
+});
+
+$(document).on("click", ".reactantRemoveButton", function(event) {
+ var reactantField = $(this).closest(".reactantField");
+ var pid = $(this).closest(".dataGroup").attr("pid");
+ var group = $(reactantField).attr("group");
+
+ $(".popupConfirmation").remove();
+ createPopupConfirmation("Erase these reactant fields?");
+ $(".popupConfirmation").dialog({
+  resizable: false,
+  height: 150,
+  position:{
+   my:"center",
+   at:"center",
+   of:"body",
+  },
+  modal: true,
+  buttons: {
+   "Delete Selection": function() {
+    //Upload updated data
+    showRibbon("Working...", neutralColor, "body");
+    $.post("/delete_reactant/", {group:group, pid:pid}, function(response) {
+     if (response==0){ 
+      showRibbon("Data deleted!", goodColor, "body");
+      $(reactantField).children(".dataField").empty();
+     } else {
+      showRibbon(response, badColor, "body");
+     }
+    });
+
+    $(this).dialog("close");
+    $(this).remove();
+   },
+   "No": function() {
+    $(this).dialog("close");
+    $(this).remove();
+   }
+  }
+ });
+
+ event.stopPropagation();
+})
+
 
 //Delete Button
 //Ask for confirmations for deletions.
@@ -92,7 +157,6 @@ $("#leftMenu_delete").click(function() {
   createPopupConfirmation("Really delete the " + selectedData.length + " selected data?");
   $(".popupConfirmation").dialog({
    resizable: false,
-   closeOnEscape: false, // ###Temporary fix?
    height: 150,
    position:{
     my:"center",

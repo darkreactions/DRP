@@ -1266,79 +1266,62 @@ def upload_CSV(request, model="Data"): ###Not re-read.
   "success_percent": success_percent,
  })
 
-def download_CSV(request): ###Need to fix.
+def download_CSV(request):
  u = request.user
- #Make sure the user is authenticated before downloading data.
- if not u.is_authenticated():
-  return HttpResponse("<p>Please log in to download data.</p>")
-
- if request.method=="POST":
-  #Specify which CSV to download.
-  model = request.POST["dataType"]
-
-  #Specify which data filter was used.
-  data_filter = request.POST["downloadFilter"]
-  if data_filter == "simple":
-   data_filter = ""
-
-  #Generate a file name.
+ if u.is_authenticated() and request.method=="POST":
+  #Variable Setup
   lab_group = u.get_profile().lab_group
-  date = datetime.datetime.now()
-  file_name = "{}_{}_{}".format(lab_group.lab_title, model, data_filter).replace(" ", "_").lower()
+  model_translation = {
+   "rec":"Recommendation",
+   "data":"Data", 
+   "cg":"CompoundEntry"
+  }
 
-  #Set up the HttpResponse to be a CSV file.
+  #Get the request from the POST
+  try:
+   print "___________"*2
+   print request.POST
+   print "___________"*2
+   model = model_translation[request.POST["model"]] #Simultaneously tests validity.
+   filters = request.POST["filters"]
+  except:
+   return HttpResponse("Download request failed!")
+
+  #File Setup
+  file_name = "{}_{}".format(lab_group.lab_title, model).replace(" ", "_").lower()
   CSV_file = HttpResponse(content_type="text/csv")
   CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
+  result = csv.writer(CSV_file)
 
-  #Django HttpResponse objects can be handled like files.
-  writer = csv.writer(CSV_file)
-
-  #Write the verbose headers to the CSV_file
-  verbose_headers = get_model_field_names(verbose=True, model=model) ###NOT TESTED.
-
-
-  #Write the actual entries to the CSV_file if the user is authenticated.
+  #Write the headers to the file.
+  verbose_headers = get_model_field_names(verbose=True, model=model)
   headers = get_model_field_names(verbose=False, model=model)
 
-  if model=="Data":
-   #Throw the "Ref" in front of the data if applicable.
+  #Modify the headers if needed and get/filter the data.
+  if model=="Data": 
+   #Make sure the "Reference" is the first column.
    verbose_headers.remove("Reference")
-   headers.remove("ref")
    verbose_headers.insert(0, "Reference")
+   headers.remove("ref")
    headers.insert(0, "ref")
+   data = get_lab_data(lab_group)
 
-   #Write the header row
-   writer.writerow(verbose_headers)
+  elif model=="Recommendation":
+   data = get_recommendations_by_date(lab_group)
 
-   #Gather the data and filter it depending on what the user wants.
-   collected_data = get_lab_data(lab_group)
+  else: #if model=="CompoundEntry"
+   data = collect_CG_entries(lab_group)
 
-   if data_filter=="good":
-    CSV_data = collected_data.filter(is_valid=True)
-   elif data_filter=="bad":
-    CSV_data = collected_data.filter(is_valid=False)
-   else:
-    CSV_data = collected_data
+  try:
+   #Write the data to the file.
+   result.writerow(verbose_headers)
+   for entry in data:
+    result.writerow([getattr(entry, field) for field in headers])
+   return CSV_file
+  except Exception as e:
+   print e
+   return HttpResponse("Error preparing the file!")
 
-  elif model=="CompoundEntry":
-   if data_filter=="complex":
-    verbose_headers.append("SMILES")
-    headers.append("smiles")
-
-   #Write the header row
-   writer.writerow(verbose_headers)
-
-   ###Better way? Generalize mass CG collection?
-   CSV_data = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
-
-  for entry in CSV_data:
-   try:
-    #Create and apply the actual row.
-    row = [getattr(entry, field).encode("utf-8") for field in headers]
-    writer.writerow(row)
-   except Exception as e:
-    print("ERROR getting '{}':{}".format(entry,e))###
-  return CSV_file #ie, return HttpResponse(content_type="text/csv")
  else:
   return render(request, 'download_form.html')
 
@@ -1400,8 +1383,34 @@ def send_CG_names(request):
 
   #Verbose JSON Formats:
   # request.body ===
+  #  delete_reactant --> {pid: ID, group: GROUP}
   #  delete_Data --> {[originalRef_1, ..., originalRef_N]}
   #  change_Data --> {originalRef:"X", fieldChanged:"X", newValue:"X"}
+
+#Delete a reactant group from a datum.
+def delete_reactant(request):
+ u = request.user
+ if request.method=="POST" and u.is_authenticated():
+  lab_group = u.get_profile().lab_group
+  lab_data = get_lab_data(lab_group)
+  try:
+   group = int(request.POST["group"])
+   pid = request.POST["pid"]
+
+   #If the reactant is required, don't delete it.
+   if group<=CONFIG.reactants_required:
+    return HttpResponse("First two reactants required.")
+
+   #Remove the reactant fields from the datum.
+   datum = lab_data.get(id=pid)
+   for field in list_fields:
+    setattr(datum, "{}_{}".format(field, group), "")
+   datum.save()
+
+   return HttpResponse(0)   
+  except Exception as e:
+   return ("Edit failed.") 
+ return HttpResponse("Please sign in to modify data.") 
 
 def delete_Data(request):
  u = request.user
@@ -1422,6 +1431,38 @@ def delete_Data(request):
   return HttpResponse(0);
  return HttpReponse("<p>Please log in to delete data.</p>") 
 
+def change_Recommendation(request):
+ u = request.user
+ if request.method=="POST" and u.is_authenticated():
+  try:
+   #Variable Setup
+   recommendations = get_recommendations(u.get_profile().lab_group)
+   editLog = request.POST
+   whitelist = {"notes"} #Only allow notes to be modified.
+   
+   #Read the editLog
+   try:
+    pid = editLog["pid"]
+    fieldChanged = editLog["field"]
+    newValue = editLog["newValue"]
+    rec = recommendations.get(id=pid) 
+
+    #Verify that the fieldChanged is in the whitelist.
+    assert fieldChanged in whitelist
+   except:
+    return HttpResponse("Datum not editable!")
+
+   #Save the new value.
+   setattr(rec, fieldChanged, newValue)
+   rec.save()
+
+   return HttpResponse(0)
+
+  except:
+   return HttpResponse("Edit unsuccessful...")
+ return HttpResponse("Please log in to modify data.")
+
+# Used to change fields in Data objects.
 def change_Data(request):
  #Fields that may be changed via this script.
  whitelist = set(get_model_field_names())
@@ -1439,12 +1480,11 @@ def change_Data(request):
    fieldChanged = editLog["field"]
    newValue = editLog["newValue"]
    datum = lab_data.get(id=pid) 
+
+   #Verify that the fieldChanged is in the whitelist.
+   assert fieldChanged in whitelist
   except:
    return HttpResponse("Datum not editable!")
-
-  #Check that the field being edited actually exists (to prevent sabotage).
-  if not fieldChanged in whitelist:
-   return HttpResponse("Cannot modify {}".format(fieldChanged))
 
   #Check that the edit doesn't invalidate the Datum in any way.   
   try: 

@@ -2,6 +2,7 @@ class ConfigManager(object):
  def __init__(self):
   #Database Setup Variables
   self.num_reactants = 5 #The number of reactants supported.
+  self.reactants_required = 2 #The number of reactants required.
   self.fields_per_reactant = 3 #Each reactant has a name, a quantity, and a unit.
    #Note: if num_reactants changes, database must be migrated.
 

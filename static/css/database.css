@@ -1,6 +1,29 @@
+/* # # # # # # # # #   Buttons   # # # # # # # # # # # # # # # # #  */
+.reactantRemoveButton {
+ color:red;
+}
 
-/* ###############   SPECIFIC ELEMENTS   ############################ */
+.reactantAddButton {
+ color:green;
+}
 
+.reactantButton {
+ position: absolute;
+ text-align:center;
+ top:-11px;
+ right:-6px;
+
+ width:18px;
+ height:18px;
+ font-size:16px;
+
+ z-index:100;
+ padding:1px;
+ border-radius:10px;
+ opacity:0.4;
+}
+
+/* # # # # # # # # #   Specific Fields   # # # # # # # # # # # # # # # # #  */
 #uploadCSV_display {
  position:relative;
  padding:5px;
