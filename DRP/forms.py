@@ -90,7 +90,7 @@ class CompoundGuideForm(ModelForm):
  def save(self, commit=True):
   entry = super(CompoundGuideForm, self).save(commit=False)
   entry.lab_group = self.lab_group
-  update_compound(entry)
+  update_compound(entry.lab_group, entry)
 
   if commit:
    entry.save()

@@ -31,7 +31,7 @@
     <td>Type</td>
    </tr>
   {% for entry in guide %}
-<tr>
+<tr pid="{{entry.id}}" class="CGRow">
  {% include "compound_guide_row.html" %}
 </tr>
   {% endfor %}

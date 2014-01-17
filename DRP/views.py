@@ -27,19 +27,13 @@ def info_page(request, page):
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-def get_lab_data(lab_group):
- return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
-
-def get_public_data():
- #Only show the public data that is_valid.
- return Data.objects.filter(public=True, is_valid=True).order_by("creation_time")
 
 #Returns a specific datum if it is public or if it belongs to a lab_group.
 def get_datum(lab_group, ref):
  query = Data.objects.filter(Q(ref=ref), Q(lab_group=lab_group) | Q(public=True))
  if not query.exists():
   raise Exception("Datum not found!")
- return query[0]
+ return query.first()
  
 def get_lab_data_size(lab_group):
  size = get_cache(lab_group, "TOTALSIZE")
@@ -675,7 +669,7 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
    #Submit a blank form if one was not just submitted.
    form = CompoundGuideForm()
 
-  guide = collect_CG_entries(lab_group)
+  guide = list(collect_CG_entries(lab_group))
 
   return render(request, 'compound_guide_cell.html', {
    "guide": guide,
@@ -703,54 +697,62 @@ def compound_guide_entry(request):
  else:
   return HttpResponse("<p>Please log in to access the compound guide!</p>")
 
-def edit_CG_entry(request): ###Edits?
+def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
+ if old_abbrev=="":
+  raise Exception("Abbrev cannot be an empty string.")
+
+ lab_data = get_lab_data(lab_group)
+ for i in CONFIG.reactant_range():
+  reactant = "reactant_{}".format(i)
+  affected_data = lab_data.filter(Q((reactant, old_abbrev)))
+  if affected_data.exists():
+   affected_data.update(**{reactant:new_abbrev})
+
+def edit_CG_entry(request): 
  u = request.user
  if request.method == 'POST' and u.is_authenticated():
-  changesMade = json.loads(request.body, "utf-8")
+  changesMade = request.POST
 
-  #Get the Lab_Group data to allow direct manipulation.
+  #Get the Lab_Group's Compound Guide
   lab_group = u.get_profile().lab_group
   CG_data = collect_CG_entries(lab_group)
 
   if changesMade["type"]=="del":
-   for i in changesMade["data"]:
-    try:
-     if i["abbrev"]=="": #If the compound has no abbrev.
-      CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i["compound"], compound=i["compound"])[0].delete()
-     else:
-      CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i["abbrev"], compound=i["compound"])[0].delete()
-    except Exception as e:
-     print("Could not delete!\n {}".format(e))
+   try:
+    lab_data = get_lab_data(lab_group)
+    #Delete each datum in the pid list.
+    for pid in changesMade.getlist("pids[]"):
+     #Mark any entry that uses this datum is now invalid.
+     entry = CG_data.get(id=pid)
+     affected_data = get_Data_with_abbrev(lab_data, entry.abbrev)
+     affected_data.update(is_valid=False)
+
+     #Now delete the CG entry.
+     entry.delete()
+   except Exception as e:
+    print e
+    return HttpResponse(1)
   elif changesMade["type"]=="edit":
    try:
     #Variable Setup
     field = changesMade["field"]
     new_val  = changesMade["newVal"]
-    old_val  = changesMade["oldVal"]
-    compound = changesMade["compound"]
+    pid = changesMade["pid"]
 
-    assert(compound and field)
+    #Collect the datum to be changed and the old value.
+    changed_entry = CG_data.get(id=pid)
+    old_val = getattr(changed_entry, field)
 
-    #Gather all relevant data (and check for duplicates).
-    try:
-     changed_entry = CompoundEntry.objects.get(lab_group=lab_group, compound=compound)
-    except:
-     return HttpResponse("<p>Please delete duplicate entry!</p>")
-
-    #Make sure the compound isn't already being used.
+    #Make sure the compound/abbrev isn't already being used.
+    possible_entry = None
     if field=="compound":
-     possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, compound=new_val)
-     if possible_entry.exists() and possible_entry[0].compound!=compound:
-      return HttpResponse("Already used!")
+     possible_entry = CG_data.filter(compound=new_val)
     elif field=="abbrev":
-     possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=new_val)
-     if possible_entry.exists() and possible_entry[0].compound!=compound:
-      return HttpResponse("Already used!")
+     possible_entry = CG_data.filter(abbrev=new_val)
     elif field=="CAS_ID" and new_val: #Empty CAS_IDs don't require queries.
-     possible_entry = CompoundEntry.objects.filter(lab_group=lab_group, CAS_ID=new_val)
-     if possible_entry.exists() and possible_entry[0].compound!=compound:
-      return HttpResponse("Already used!")
-
+     possible_entry = CG_data.filter(CAS_ID=new_val)
+    if possible_entry!=None and possible_entry.exists():
+     return HttpResponse("Already used!")
 
     #Make sure the new value does not invalidate the entry.
     dirty_data = model_to_dict(changed_entry)
@@ -758,33 +760,27 @@ def edit_CG_entry(request): ###Edits?
     clean_data, errors = CG_validation(dirty_data, lab_group, editing_this=True)
     new_val = clean_data[field]
     if errors:
-     return HttpResponse(errors.values())
+     print errors
+     raise Exception("Validation of datum failed.")
 
     #Commit the change to the Entry.
     setattr(changed_entry, field, new_val)
     changed_entry.save()
 
-    #Lookup fresh data from ChemSpider and RDKit
-    update_compound(changed_entry)
-
-
-    #Make any edits to the Data if needed.
+    #Change the occurrences of the old abbrev to the new abbrev.
     if field=="abbrev":
-     #Don't overwrite ALL empty entries -- only those related to the compound.
-     if not old_val:
-      old_val = compound
-
-     for i in CONFIG.reactant_range():
-      exec("old_data = Data.objects.filter(lab_group=lab_group, reactant_{}=old_val)".format(i))
-      exec("old_data.update(reactant_{}=new_val)".format(i))
+     change_Data_abbrev(lab_group, old_val, new_val)
 
     #If no inorganic was found, ask the user for its identity.
     if changed_entry.compound_type=="Inorg":
-     return HttpResponse("Not found!")
+     return HttpResponse("Inorganic not found!") #TODO: Add this.
+  
+    #Lookup fresh data from ChemSpider and RDKit
+    update_compound(lab_group, changed_entry, update_data=True)
 
-    ###TODO: Clear the cached CG
    except Exception as e:
-    return HttpResponse("Need more info!")
+    print e
+    return HttpResponse("Invalid!")
 
   #Clear the cached CG entries.
   set_cache(lab_group, "COMPOUNDGUIDE", None)
@@ -812,7 +808,7 @@ def guess_type(datum):
 
 ######################  Database Functions  ############################
 #Send/receive the data-entry form:
-def data_form(request, copy_ref=None): #If no data is entered, stay on the current page.
+def data_form(request): #If no data is entered, stay on the current page.
  u = request.user
  success = False
  if request.method == 'POST' and u.is_authenticated():
@@ -831,25 +827,32 @@ def data_form(request, copy_ref=None): #If no data is entered, stay on the curre
    set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
    success = True #Used to display the ribbonMessage.
  else:
-  #Submit a blank form or an auto-filled form if a ref is supplied.
-  if copy_ref==None:
-   form = DataEntryForm(
-    initial={"leak":"No"}
-   )
-  elif u.is_authenticated():
-   datum = get_datum(u.get_profile().lab_group, copy_ref.replace("+"," "))
-   initial_fields = {field:getattr(datum, field) for field in get_model_field_names(model="Data")}
-   form = DataEntryForm(
-    initial=initial_fields
-   )
-  else:
-   return HttpResponse("You do not have access to copy this datum.")
+  try:
+   lab_group = u.get_profile().lab_group
+   model = request.GET["model"]
+   pid = request.GET["pid"]
+
+   #Either get initial fields from a Recommendation or a Data entry.
+   if model=="rec":
+    data = get_recommendations(lab_group).get(id=pid)
+    print get_model_field_names("Recommendation")
+    init_fields = {field:getattr(data, field) for field in get_model_field_names(model="Recommendation")}
+   else:
+    data = get_lab_data(lab_group).get(id=pid)
+    init_fields = {field:getattr(data, field) for field in get_model_field_names()}
+
+  except Exception as e:
+   print e 
+   init_fields = {"leak":"No"}
+  form = DataEntryForm(
+   initial=init_fields
+  )
  return render(request, 'data_form.html', {
   "form": form,
   "success": success,
  })
 
-#Send/receive the data-entry form:
+#Send/receive the data-entry form: #TODO: Merge with the field above.
 def transfer_rec(request):
  try:
   u = request.user
@@ -1427,14 +1430,17 @@ def change_Data(request):
  if request.method == "POST" and u.is_authenticated():
   #Variable Setup
   lab_group = u.get_profile().lab_group
-  editLog = json.loads(request.body, "utf-8")
+  editLog = request.POST
   lab_data = get_lab_data(lab_group)
   
   #Get the Datum for the lab.
-  ref = editLog["ref"]
-  fieldChanged = editLog["field"]
-  newValue = editLog["newValue"]
-  datum = lab_data.filter(ref=ref).first() 
+  try:
+   pid = editLog["pid"]
+   fieldChanged = editLog["field"]
+   newValue = editLog["newValue"]
+   datum = lab_data.get(id=pid) 
+  except:
+   return HttpResponse("Datum not editable!")
 
   #Check that the field being edited actually exists (to prevent sabotage).
   if not fieldChanged in whitelist:
@@ -1456,7 +1462,10 @@ def change_Data(request):
  
    #Get the parsed value after cleaning.
    setattr(datum, fieldChanged, clean_data[fieldChanged])
- 
+
+   #Set the datum as valid since it passed validation.
+   datum.is_valid = True
+
    #Make the edit in the database.
    datum.user = u
    datum.save()
@@ -1464,6 +1473,9 @@ def change_Data(request):
    if fieldChanged=="ref":
     #Update the "ref" in any Data of which it is a duplicate.
     lab_data.filter(duplicate_of=oldValue).update(duplicate_of=newValue)
+   elif fieldChanged[:8]=="reactant":
+    #Update the atom information and any other information that may need updating. 
+    update_reaction(datum, lab_group)
  
    return HttpResponse(0)
 

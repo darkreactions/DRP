@@ -21,6 +21,45 @@ window.sortNumbersReverse = function(smallNum, bigNum) {
  return bigNum - smallNum;
 }
 
+//############   Dependent Functions  ##################################
+function adaptSize(element) {
+ var numChars = $(element).val().length;
+ var maxWidth = $(element).css("max-width") !== "none" ? parseInt($(element).css("max-width")) : 100;
+ var proposedWidth = ((numChars*6)+35)
+ if (proposedWidth < maxWidth) {
+  var newWidth = proposedWidth;
+ } else {
+  var newWidth = maxWidth;
+ }
+ $(element).animate({
+  "width": newWidth,
+ }, 50);
+};
+
+//Get edit-by-menu options from editChoices.json.
+function getOptions(field) {
+ switch (field) {
+  case ("unit"):
+   return  editChoices["unitChoices"]
+  case ("compound_type"):
+   return  editChoices["typeChoices"]
+  case ("recommended"):
+   return  editChoices["boolChoices"]
+  case ("outcome"):
+   return  editChoices["outcomeChoices"]
+  case ("purity"):
+   return  editChoices["purityChoices"]
+  case ("slow_cool"):case("leak"): //ie, slow_cool and leak are the same case.
+   return  editChoices["boolChoices"]
+  default:
+   return ["No options found."]
+ }
+}
+
+window.refreshOnMaskFade = function() {
+ $("body").append("<div class=\"reloadActivator\"></div>")
+}
+
 //############   Formatting   ##########################################
 window.make_name_verbose = function(string) {
  var verbose_name = "";
@@ -51,6 +90,7 @@ window.restyleData = function() {
   });
  } catch(err){}
 }
+
 //############   Tooltips   ############################################
 //Apply custom tooltips to applicable data.
 $(document).tooltip({
@@ -81,8 +121,12 @@ $(document).on("focusout", "input", function() {
 
 //Reactant Tooltips.
 $(document).on("mouseover", ".type_reactant", function() {
- if (CGEntries == undefined) {
-  var specificDiv = $(this);
+ var specificDiv = $(this);
+ //If the reactant is empty, don't complain about the compound guide.
+ if ($(specificDiv).is(":empty")){
+  $(specificDiv).attr("title", "Click to add reactant.")
+
+ } else if (CGEntries == undefined) {
   $(specificDiv).attr("title", "Loading!")
   $.get("/send_CG_names/", function(response) {
    CGEntries = response;
@@ -100,8 +144,8 @@ function toggleSideContainer() {
   $("#mainPanel").css("width","100%"); 
   $("#sidePanel").css("width","0%"); 
  } else {
-  $("#mainPanel").animate({"width":"50%"}, 750); 
-  $("#sidePanel").animate({"width":"50%"}, 750); 
+  $("#mainPanel").css("width","50%"); 
+  $("#sidePanel").css("width","50%"); 
  }
 }
 
@@ -178,35 +222,40 @@ $(document).on("mouseover", ".dataGroup", function() {
 
   //Add the copy button.
   if ($(this).attr("class").indexOf("copyable") >= 0) {
-   addDataSpecificButton(this, "leftMenu_addNew_copy", "add.png", 
+   addDataSpecificButton(this, "leftMenu_addNew", "add.png", 
     "Copy this reaction to the data form.", 
     "popupActivator duplicateSpecificDataButton");
   }
 
-  //Add the (un)save buttons. 
-  if ($(this).attr("class").indexOf("savedRecommendation") < 0) {
-   addDataSpecificButton(this, "saveRecommendation", "delete.png", 
-    "Save this recommendation")
-  } else {
-   addDataSpecificButton(this, "unsaveRecommendation", "save.png", 
-    "Unsave this recommendation")
+  //RECOMMENDATION-SPECIFIC BUTTONS # # # # # # # # # # # # # # # #
+  if ($(this).attr("class").indexOf("recommendation") >= 0) {
+   //Add the (un)save buttons. 
+   if ($(this).attr("class").indexOf("savedRecommendation") < 0) {
+    addDataSpecificButton(this, "saveRecommendation", "delete.png", 
+     "Save this recommendation")
+   } else {
+    addDataSpecificButton(this, "unsaveRecommendation", "save.png", 
+     "Unsave this recommendation")
+   }
+ 
+   //Add the (non)sensical buttons.
+   if ($(this).attr("class").indexOf("badRecommendation") < 0) {
+    addDataSpecificButton(this, "nonsensicalRecommendation", "check.png", 
+     "Mark this recommendation as nonsensical.")
+   } else {
+    addDataSpecificButton(this, "sensicalRecommendation", "nonsense.png", 
+     "Mark this recommendation as sensical.")
+   }
+ 
+   //Add the transfer-to-database buttons.
+   if ($(this).attr("class").indexOf("transferable") >= 0) {
+    addDataSpecificButton(this, "transferRecommendation", "add.png", 
+     "Complete this entry.",
+     "popupActivator");
+   }
+ 
   }
-
-  //Add the (non)sensical buttons.
-  if ($(this).attr("class").indexOf("badRecommendation") < 0) {
-   addDataSpecificButton(this, "nonsensicalRecommendation", "check.png", 
-    "Mark this recommendation as nonsensical.")
-  } else {
-   addDataSpecificButton(this, "sensicalRecommendation", "nonsense.png", 
-    "Mark this recommendation as sensical.")
-  }
-
-  //Add the transfer-to-database buttons.
-  if ($(this).attr("class").indexOf("transferable") >= 0) {
-   addDataSpecificButton(this, "transferRecommendation", "add.png", 
-    "Complete this entry.",
-    "popupActivator");
-  }
+ 
  }
 });
 
@@ -294,9 +343,10 @@ function getLicensePopup() {
 
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
+ $(".loadingWheel").remove();
+ $(this).parent("form").append("<div class=\"loadingWheel\">. . .</div>");
  $.post($(form).attr("action"), $(form).serialize(), function(response) {
   //Remove the loading wheel.
-  $(".loadingWheel").remove();
   //Translate server-responses to actions.
   if (response==1) {
    getLicensePopup();
@@ -319,6 +369,7 @@ $(document).on("submit", ".infoForm", function() {
   //Show the ribbon message if applicable.
   if ($(".successActivator").length) {
    showRibbon("Data added!", goodColor, "#popupContainer_inner");
+   refreshOnMaskFade();
    $(".successActivator").remove();
    return false;
   }
@@ -334,8 +385,8 @@ $(document).on("submit", ".infoForm", function() {
 });
 
 $(document).on("click", ".button[type=submit]", function() {
- $(this).hide();
  $(".loadingWheel").remove();
+ $(this).hide();
  $(this).parent("form").append("<div class=\"loadingWheel\">. . .</div>");
 });
 
@@ -577,26 +628,19 @@ $(document).on("click", ".popupActivator", function(event) {
  //Load the activator CSS.
  activatorID = $(this).attr("id");
 
- //"Forward" specific triggers to other popups.
- var specificRef = "";
- if (activatorID == "leftMenu_addNew_copy") {
-  activatorID = "leftMenu_addNew"
-  specificDatum =  $(this).siblings(".dataEntry").children(".type_ref")//Mark spaces in references by "+"
-  specificRef = $(specificDatum).html().trim().replace(" ","+");
-  event.stopPropagation();
- }
-
  $("#popupContainer").attr("for", activatorID);
  switch (activatorID) {
   case "transferRecommendation":
    var pid = $(this).closest(".dataGroup").find(".dataEntry").attr("pid");
-   $.get("/transfer_recommendation/", {"pid":pid}, function(response) {
+   $.get("/data_form/", {pid : pid, model: "rec"}, function(response) {
     $("#popupContainer_inner").html(response);
    })
    break;
   case "leftMenu_addNew":
+   //
+   var pid = $(this).closest(".dataGroup").find(".dataEntry").attr("pid");
    //Send the request to the server
-   $.get("/data_form/"+specificRef, function(response) {
+   $.get("/data_form/", {pid : pid, model:"data"}, function(response) {
     $("#popupContainer_inner").html(response);
 
     //Get the auto-complete options form the CG guide. ###SOME ERROR HERE, CASEY
@@ -730,6 +774,238 @@ $(document).on("change", ".editable_assignedUser", function() {
    showRibbon("Edit successful!", goodColor, "#mainPanel");
   } else {
    showRibbon("Edit failed!", badColor, "#mainPanel");
+  }
+ });
+});
+
+//############ Editable Data: ##############################################
+//When the user clicks on an autocomplete option, trigger the "keyup" event.
+$(document).on("click", ".ui-menu-item", function() {
+ if ($(":focus").attr("class").indexOf("editField") != -1) {
+  $(".editText:focus").keyup();
+ }
+});
+
+//Make edit text fields auto-size and validate while typing.
+$(document).on("keyup", ".editText", function() {
+ adaptSize($(this));
+ if (parseInt($(this).parent().attr("group"))>2) {
+  var required = false;
+ } else { var required = true; }
+
+ if (!quickValidate(($(this).parent().attr("class").split(" ")[1]).substr(5),
+  $(this).val(), required)) {
+  $(this).addClass("badData");
+ } else {
+  $(this).removeClass("badData");
+ }
+});
+function cancelEditables() {
+ $(".editField").each(function() {
+  var editParent = $(this).parent(".editable");
+  var oldVal = $(this).attr("oldVal");
+  $(editParent).html(oldVal);
+ });
+}
+
+//Initiate edit session.
+$(document).on("click", ".editable", function() {
+
+ //Close any other editables.
+ if ($(this).find(".editField").length != 0) {
+  return false;
+ } else {
+  cancelEditables();
+ }
+
+ var pidToChange = $(this).closest(".dataGroup").attr("pid");
+ $(this).css("opacity",1);
+
+ if ($(this).children(".editConfirm").length == 0 ) {
+  var oldVal = String($(this).html());
+  var editAs = $(this).attr("editAs");
+
+  if (editAs == "select") {
+   var options = getOptions($(this).attr("class").split(" ")[1].substr(5));
+   var newInnards = "<select class=\"editField editMenu dropDownMenu\""
+    + "pidToChange=\"" + pidToChange + "\" "
+    +"oldVal=\""+oldVal+"\">";
+   for (var i in options) {
+    var choice = options[i];
+    if (oldVal == choice) {
+     newInnards += "<option value=\""+choice+"\"selected>"+choice+"</option>";
+    } else {
+     newInnards += "<option value=\""+choice+"\">"+choice+"</option>";
+    }
+   }
+   newInnards += "</select> <input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
+   $(this).html(newInnards);
+   $(this).children(".editMenu").focus();
+   $(this).attr("title","");
+  } else {
+   $(this).html("<input class=\"editField editText\" type=\"" + editAs + "\" "
+    + "pidToChange=\"" + pidToChange + "\" "
+    + "oldVal=\""+ oldVal + "\" "
+    + "value=\""+ oldVal + "\" />"
+    + "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
+    );
+   adaptSize($(this).children(".editText"));
+
+
+   if ($(this).attr("class").indexOf("type_reactant") >= 0) {
+    //Get the auto-complete options form the CG guide.
+    if (CGAbbrevs == undefined) {
+     CGAbbrevs = Array();
+     for (var key in CGEntries) {
+      CGAbbrevs.push(key);
+     }
+    }
+    $(this).children(".editText").autocomplete({
+     source: CGAbbrevs,
+     messages: {
+      noResults: "",
+      results: function() {}
+     }
+    });
+   }
+   $(this).children(".editText").focus();
+   $(this).attr("title","");
+  }
+ }
+ return false; //Don't continue on to select the data.
+});
+
+//Confirm edit with button press.
+$(document).on("click", ".editConfirm", function() {
+ var editFieldSibling = $(this).siblings(".editField")
+ var editParent = $(this).parent();
+ var editRow = $(editParent).parents("tr");
+ //Find the general fieldChanged (eg, quantity vs. quantity_1)
+ var fieldChanged = $(this).closest(".editable").attr("class").split(" ")[1];
+ var numChanged = $(this).closest(".editable").attr("group");
+ var newValue = $(editFieldSibling).val().trim();
+ var oldValue = $(editFieldSibling).attr("oldVal");
+
+ var validData = false;
+
+ if (editFieldSibling.attr("class").split(" ").indexOf("editText") != -1) { //Edit by Text
+  //Check if the data is required (ie: if it pertains to reactant 3-5).
+  if (parseInt(numChanged)>2) {
+   var required = false;
+  } else { var required = true; }
+  if ($(this).siblings(".editText").attr("class").indexOf("badData") < 0
+   && quickValidate(fieldChanged.substr(5), newValue, required)) {
+   validData = true;
+  } else {
+   showRibbon("Invalid!", badColor, "#dataContainer");
+  }
+ } else { //Edit by Menu
+  //Since the only data choices are those which are supplied...
+  validData = true;
+ }
+
+ if (validData) {
+  if (newValue != oldValue) {
+   //Find the specific fieldChanged.
+   if ($.isNumeric(numChanged)) {
+     fieldChanged = fieldChanged.substr(5) + "_" + numChanged;
+    } else {
+     fieldChanged = fieldChanged.substr(5);
+    }
+ 
+    //Send edits for Compound Guide
+    if ($("#CG_display").length) {
+     var pidToChange = $(this).closest(".CGRow").attr("pid");
+     var compound = $(this).closest(".CGRow").find(".CG_compound div").html();
+     showRibbon("Working...", neutralColor, "#popupContainer", false);
+     var editLog = {
+      field : fieldChanged,
+      newVal : newValue,
+      oldVal : oldValue,
+      pid : pidToChange, 
+      type : "edit"
+     }
+     $.post("/edit_CG_entry/", editLog, function(response) {
+       if (response!="0"){
+         $(editParent).html(oldValue);
+        showRibbon(response, badColor, "#popupContainer");
+       } else {
+         refreshOnMaskFade();
+         showRibbon("Entry changed!", goodColor, "#popupContainer");
+       }
+     });
+ 
+    } else {
+     //Send edits for the Database View
+     var editLog = {
+      pid : $(editFieldSibling).attr("pidToChange"),
+      field : fieldChanged,
+      newValue : newValue,
+     };
+    $.post("/change_Data/", editLog, function(response) {
+     //The data should now be up to date:
+     if (response != 0) {
+      $(editParent).html(oldValue);
+      showRibbon(response, badColor, "body");
+     } else {
+      showRibbon("Entry changed!", goodColor, "#mainPanel");
+     }
+ 
+    });
+   } 
+
+   //Immediately change the visual for the user while waiting for a response.
+   if (typeof compound !== 'undefined') {
+    if (fieldChanged=="abbrev" && newValue==compound) {
+     $(editParent).empty();
+    }
+   } else {
+    $(this).parent().html(newValue);
+   }
+
+  } else {
+   //Revert to old value if new value is unchanged.
+   $(editParent).html(oldValue);
+  }
+  restyleData();
+ }
+ return false; //Don't re-edit the data (since ".editable" was clicked again).
+});
+
+//################ CG Editing: #########################################
+//Delete CG data button (but requires a "save" confirmation).
+$(document).on("click", ".CG_deleteButton", function() {
+ //Add the compound guide entry index to the selected data list.
+ var editParent = $(this).closest("tr");
+
+ //Send data to identify the entry to be deleted.
+ CGSelected.push($(this).closest(".CGRow").attr("pid"));
+
+ //Display a CG save button if one does not exist.
+ $("#popupContainer").append("<div class=\"CG_saveButton genericButton\">Save</div>");
+ $("#compoundGuideForm").html("Please save before continuing.");
+ //Clear editing abilities and revert any edits-to-be-made.
+ $(".editable").removeClass("editable");
+ $(".editField").each(function() {
+  var oldVal = $(this).attr("oldVal");
+  $(this).parent().html(oldVal);
+  });
+
+ //Remove the data from the CG visual.
+ $(this).closest("tr").remove();
+});
+
+$(document).on("click", ".CG_saveButton", function() {
+ showRibbon("Working...", neutralColor,"#popupContainer_inner", false);
+ //Send the selected CG entry indexes to the server to be deleted.
+ var JSONQuery = {type:"del", pids : CGSelected};
+ $.post("/edit_CG_entry/", JSONQuery, function(response) {
+  if (response==0) {
+   //Show a newly updated screen.
+   CGSelected = Array();
+   window.location.reload(true);
+  } else {
+   showRibbon("Edit failed!", badColor,"#popupContainer_inner");
   }
  });
 });

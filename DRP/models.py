@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import Q
 
 from validation import *
-import random, string, datetime
+import random, string, datetime, operator
 from data_config import CONFIG
 #from chemspider_rdkit_extensions import *
 import rdkit.Chem as Chem
@@ -96,19 +96,10 @@ def get_atom_set_from_abbrevs(lab_group, abbrev_list):
 def get_atom_set_from_reaction(reaction):
  return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
-def get_reactions_with_compound(compound):
- Q_string = ""
- abbrev = compound.abbrev
- for i in CONFIG.reactant_range():
-  Q_string += "Q(reactant_{}=\"{}\")|".format(i, abbrev)
-
- if Q_string:
-  Q_string = Q_string[:-1] #Remove the last trailing "|" if applicable.
-
- return eval("Data.objects.filter(lab_group=compound.lab_group).filter({})".format(Q_string))
-
-def update_compound(compound, update_data=True):
+def update_compound(lab_group, compound, update_data=True):
  try:
+  #Verify that the compound belongs to the lab_group.
+  assert compound.lab_group == lab_group
   #Update the CG entry itself. Make sure "inorg" types don't query ChemSpider.
   try:
    compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
@@ -121,17 +112,25 @@ def update_compound(compound, update_data=True):
 
   #Update the individual "atom" records on each reaction.
   if update_data:
-   update_reactions(compound)
+   update_reactions(lab_group, compound)
  except Exception as e:
   print "Could not update {}\n\t{}".format(compound, e)
 
-def update_reactions(compound):
+def update_reaction(reaction, lab_group):
+ #Store the atoms as a string -- not a set.
+ reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
+ #Revalidate and save the datum.
+ revalidate_datum(reaction, lab_group)
+
+def update_reactions(lab_group, compound):
  #Update the individual "atom" records on each reaction.
- changed_reactions = get_reactions_with_compound(compound)
+ lab_data = get_lab_data(lab_group)
+ changed_reactions = get_Data_with_abbrev(lab_data, compound)
  for reaction in changed_reactions:
-  #Store the atoms as a string -- not a set.
-  reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
-  reaction.save()
+  try:
+   update_reaction(reaction, lab_group)
+  except Exception as e:
+   print "update_reactions failed: {}".format(e)
 
 #############  CACHE VALIDATION and ACCESS  ###########################
 #Strip any spaces from the lab group title and/or the keys on cache access.
@@ -404,7 +403,7 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 
 ######HERE
 
-
+""" #TODO: Needs security work.
 def update_all_compounds(lab_group=None):
  if lab_group:
   query = CompoundEntry.objects.filter(lab_group=lab_group)
@@ -426,14 +425,11 @@ def update_all_compounds(lab_group=None):
   for i in query:
    update_reactions(i)
   print "Finished updating ALL compounds."
+"""
 
 ###REREAD TO PROVE USEFUL?
-def collect_CG_entries(lab_group, overwrite=False):
- compound_guide = get_cache(lab_group, "COMPOUNDGUIDE")
- if not compound_guide or overwrite:
-  compound_guide = CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
-  set_cache(lab_group, "COMPOUNDGUIDE", list(compound_guide))
- return compound_guide
+def collect_CG_entries(lab_group):
+ return CompoundEntry.objects.filter(lab_group=lab_group).order_by("abbrev") 
 
 def convert_QuerySet_to_list(query, model, with_headings=True):
  #Get the appropriate headings.
@@ -489,6 +485,16 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
  except Exception as e:
   raise Exception("CompoundEntry construction failed!")
 
+
+#Filter the Data by a specific abbrev.
+def get_Data_with_abbrev(lab_data, abbrev):
+ if type(abbrev)==CompoundEntry:
+  abbrev = abbrev.abbrev #Meta...
+
+ Q_list = [Q(("reactant_{}".format(i),abbrev)) for i in CONFIG.reactant_range()]
+ return lab_data.filter(reduce(operator.or_, Q_list))
+
+#Collect a list of all valid data either globally or for a specific lab.
 def get_good_rxns(lab_group=None, with_headings=True):
  if lab_group:
   if type(lab_group) != Lab_Group:
@@ -675,6 +681,12 @@ def calculate_pH_from_reaction(reaction_info):
  pass
 
 
+def get_lab_data(lab_group):
+ return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
+
+def get_public_data():
+ #Only show the public data that is_valid.
+ return Data.objects.filter(public=True, is_valid=True).order_by("creation_time")
 
 
 #Add specified entries to a datum. Assume fields are now valid.
@@ -750,23 +762,20 @@ def get_ref_set(lab_group, reset_cache=True):
   set_cache(lab_group, "DATAREFS", ref_set)
  return ref_set
 
-def revalidate_data(data, lab_group, batch=False):
+def revalidate_datum(datum, lab_group):
  #Collect the data to validate
- dirty_data = {field:getattr(data, field) for field in get_model_field_names()}
+ dirty_data = {field:getattr(datum, field) for field in get_model_field_names()}
  #Validate and collect any errors
  (clean_data, errors) = full_validation(dirty_data, lab_group, revalidating=True)
 
  is_valid = False if errors else True
+ if not is_valid:
+  print errors
 
- if is_valid:
-  print "VALIDATED A BAD DATUM!"
+ setattr(datum, "is_valid", is_valid)
+ datum.save()
 
- setattr(data, "is_valid", is_valid)
- data.save()
-
- return errors
-
- #Does not auto-clear the cache --only modifies the data entry.
+ return (clean_data, errors)
 
 def full_validation(dirty_data, lab_group, revalidating=False):
  parsed_data = {} #Data that needs to be checked.
