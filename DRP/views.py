@@ -760,12 +760,13 @@ def edit_CG_entry(request):
     clean_data, errors = CG_validation(dirty_data, lab_group, editing_this=True)
     new_val = clean_data[field]
     if errors:
-     print errors
      raise Exception("Validation of datum failed.")
 
     #Commit the change to the Entry.
     setattr(changed_entry, field, new_val)
     changed_entry.save()
+    #TODO:Remove this and make more "function" in style?
+    set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
     #Change the occurrences of the old abbrev to the new abbrev.
     if field=="abbrev":

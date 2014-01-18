@@ -384,7 +384,6 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
  #Make sure the compound exists in ChemSpider's database. ###Limits us to only ChemSpi?
  used_var = ""
  try:
-  print clean_data["CAS_ID"]
   if clean_data["CAS_ID"]:
    used_var = "CAS_ID"
   elif not errors.get("compound"):
@@ -769,8 +768,6 @@ def revalidate_datum(datum, lab_group):
  (clean_data, errors) = full_validation(dirty_data, lab_group, revalidating=True)
 
  is_valid = False if errors else True
- if not is_valid:
-  print errors
 
  setattr(datum, "is_valid", is_valid)
  datum.save()

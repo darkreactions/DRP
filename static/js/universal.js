@@ -360,7 +360,7 @@ $(document).on("submit", ".downloadForm", function(event) {
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
  $(".loadingWheel").remove();
- $(this).parent("form").append("<div class=\"loadingWheel\">. . .</div>");
+ $(this).closest("form").append("<div class=\"loadingWheel\">. . .</div>");
  $.post($(form).attr("action"), $(form).serialize(), function(response) {
   //Remove the loading wheel.
   //Translate server-responses to actions.
@@ -923,11 +923,13 @@ $(document).on("click", ".editConfirm", function() {
 
  var validData = false;
 
- if ($(this).closest(".dataGroup").attr("class").indexOf("recommendation")>=0) {
-  var model="rec";
- } else {
-  var model="data";
- }
+ try {
+  if ($(this).closest(".dataGroup").attr("class").indexOf("recommendation")>=0) {
+   var model="rec";
+  } else {
+   var model="data";
+  }
+ } catch(err) {}
 
  if (editFieldSibling.attr("class").split(" ").indexOf("editText") != -1) { //Edit by Text
   //Check if the data is required (ie: if it pertains to reactant 3-5).
@@ -968,7 +970,7 @@ $(document).on("click", ".editConfirm", function() {
      }
      $.post("/edit_CG_entry/", editLog, function(response) {
        if (response!="0"){
-         $(editParent).html(oldValue);
+        $(editParent).html(oldValue);
         showRibbon(response, badColor, "#popupContainer");
        } else {
          refreshOnMaskFade();
@@ -1007,9 +1009,11 @@ $(document).on("click", ".editConfirm", function() {
    if (typeof compound !== 'undefined') {
     if (fieldChanged=="abbrev" && newValue==compound) {
      $(editParent).empty();
+    } else {
+     $(editParent).html(newValue);
     }
    } else {
-    $(this).parent().html(newValue);
+    $(editParent).html(newValue);
    }
 
   } else {
