@@ -18,9 +18,10 @@ urlpatterns = patterns('',
     (r'^database/$', database), #Encompassing data view.
    #Change Page
     (r'^data_transmit/$', data_transmit), #Used for changing pages.
-   #Upload/Download Data
+   #Upload/Download database.
     (r'^upload_CSV/$', upload_CSV),
-    (r'^download_CSV/$', download_CSV),
+    (r'^download_prompt/$', download_prompt),
+    (r'^download_data/$', download_CSV),
    #Modify Data
     (r'^change_Data/$', change_Data), #[JSON] Edit Data Entry
     (r'^delete_Data/$', delete_Data), #[JSON] Delete Data Entries

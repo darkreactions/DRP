@@ -1271,20 +1271,15 @@ def download_CSV(request):
  if u.is_authenticated() and request.method=="POST":
   #Variable Setup
   lab_group = u.get_profile().lab_group
-  model_translation = {
-   "rec":"Recommendation",
-   "data":"Data", 
-   "cg":"CompoundEntry"
-  }
 
-  #Get the request from the POST
+  #Get the info from the POST request.
   try:
-   print "___________"*2
-   print request.POST
-   print "___________"*2
-   model = model_translation[request.POST["model"]] #Simultaneously tests validity.
-   filters = request.POST["filters"]
-  except:
+   filters = request.POST.get("filters")
+   if filters: 
+    filters = json.loads(filters)
+   model = request.POST.get("model")
+   assert model in {"Recommendation", "Data", "Saved", "CompoundEntry"}
+  except Exception as e:
    return HttpResponse("Download request failed!")
 
   #File Setup
@@ -1294,6 +1289,12 @@ def download_CSV(request):
   result = csv.writer(CSV_file)
 
   #Write the headers to the file.
+  if model=="Saved":
+   model="Recommendation"
+   saved_only = True
+  else:
+   saved_only = False
+
   verbose_headers = get_model_field_names(verbose=True, model=model)
   headers = get_model_field_names(verbose=False, model=model)
 
@@ -1306,10 +1307,17 @@ def download_CSV(request):
    headers.insert(0, "ref")
    data = get_lab_data(lab_group)
 
+   if filters:
+    data = filter_data(lab_group, filters)
+
   elif model=="Recommendation":
    data = get_recommendations_by_date(lab_group)
+   if saved_only:
+    data = data.filter(saved=True)
 
   else: #if model=="CompoundEntry"
+   verbose_headers.remove("Image URL")
+   headers.remove("image_url")
    data = collect_CG_entries(lab_group)
 
   try:
@@ -1317,13 +1325,28 @@ def download_CSV(request):
    result.writerow(verbose_headers)
    for entry in data:
     result.writerow([getattr(entry, field) for field in headers])
+   print "FINISHED MAKING FILE"
    return CSV_file
   except Exception as e:
    print e
    return HttpResponse("Error preparing the file!")
 
- else:
-  return render(request, 'download_form.html')
+def download_prompt(request):
+ u = request.user
+ if u.is_authenticated() and request.method=="POST":
+  model = request.POST.get("model")
+  if model in {"Data"}:
+   return render(request, 'download_form.html', {
+    "model":model,
+    "allow_filters":True
+   })
+  elif model in {"CompoundEntry","Saved","Recommendation"}:
+   return render(request, 'download_form.html', {
+    "model":model,
+    "allow_filters":False
+   })
+
+ return HttpResponse("Request illegal!")
 
 def download_error_log(request): ###Nothing done yet... ;B
  u = request.user

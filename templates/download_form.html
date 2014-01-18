@@ -1,30 +1,25 @@
-<h1>Download CSV:</h1>
-<form id="CSVForm" method="POST" enctype="multipart/form-data" action="/download_CSV/" class="popupScreenForm downloadForm">
+<h1>Download {{verbose_model}}:</h1>
+<form id="CSVForm" method="POST" enctype="multipart/form-data" action="/download_data/" class="popupScreenForm downloadForm">
  {% csrf_token %}
+
+ <input type="hidden" name="model" value="{{model}}">
+
+ {% if allow_filters %}
  <div class="radioContainer">
- <input id="radio_reactionData" type="radio" name="dataType" value="Data" checked>
-  <label class="button radioLabel" for="radio_reactionData">
-   Reaction Data
-  </label>
+ Use the current search filters?
+ <input id="radio_yes_filters" type="radio" name="use_filters" value="True" checked>
+  <label class="button radioLabel" for="radio_yes_filters" >Yes</label>
  </input>
- <input id="radio_compoundGuide" type="radio" name="dataType" value="CompoundEntry">
-  <label class="button radioLabel" for="radio_compoundGuide">
-   Compound Guide
-  </label>
+ <input id="radio_no_filters" type="radio" name="use_filters" value="False">
+  <label class="button radioLabel" for="radio_no_filters">No</label>
  </input>
  </div>
- <div id="filterContainer">
-  Data to download:
-  <select class="dropDownMenu" id="downloadFilter" name="downloadFilter">
-   <option value="all">All</option>
-   <option value="good">Valid</option>
-   <option value="bad">Invalid</option>
-  </select>
- </div>
- </br>
+ 
+ <input type="hidden" name="filters" value="">
+ {% endif %}
 
  {% if user.is_authenticated %}
-  <input name="submit" id = "downloadCSVSubmit" type="submit" value="Download" class="button"/>
+  <input type="submit" value="Download" class="button"/>
  {% else %}
   <p> Please sign in to download data. </p>
  {% endif %}

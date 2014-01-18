@@ -342,6 +342,21 @@ function getLicensePopup() {
  $("#popupGlobal").fadeIn(300);
 }
 
+$(document).on("submit", ".downloadForm", function(event) {
+ //Variable Setup
+ var form = $(this);
+ model=$(this).find("input[name=model]").val();
+
+ //If filters are enabled, send them in the form.
+ var filters = "";
+ if ($(this).find("input[name=use_filters]").val()=="True"){
+  $(this).find("input[name=filters]").val(JSON.stringify(currentQuery));
+ }
+
+ showRibbon("Working...", neutralColor, "#popupContainer");
+
+});
+
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
  $(".loadingWheel").remove();
@@ -629,7 +644,6 @@ $(document).on("click", ".popupActivator", function(event) {
  //Load the activator CSS.
  activatorID = $(this).attr("id");
 
- $("#popupContainer").attr("for", activatorID);
  switch (activatorID) {
   case "transferRecommendation":
    var pid = $(this).closest(".dataGroup").attr("pid");
@@ -676,10 +690,29 @@ $(document).on("click", ".popupActivator", function(event) {
     $("#popupContainer_inner").html(response);
    });
    break;
-  case "leftMenu_downloadCSV":
-   $.get("/download_CSV/", function(response) {
+  case "leftMenu_download_data":
+   $.post("/download_prompt/", {model: "Data"}, function(response) {
     $("#popupContainer_inner").html(response);
    });
+   activatorID = "leftMenu_downloadCSV";
+   break;
+  case "leftMenu_download_compoundentry":
+   $.post("/download_prompt/", {model: "CompoundEntry"}, function(response) {
+    $("#popupContainer_inner").html(response);
+   });
+   activatorID = "leftMenu_downloadCSV";
+   break;
+  case "leftMenu_download_saved":
+   $.post("/download_prompt/", {model: "Saved"}, function(response) {
+    $("#popupContainer_inner").html(response);
+   });
+   activatorID = "leftMenu_downloadCSV";
+   break;
+  case "leftMenu_download_recs":
+   $.post("/download_prompt/", {model: "Recommendation"}, function(response) {
+    $("#popupContainer_inner").html(response);
+   });
+   activatorID = "leftMenu_downloadCSV";
    break;
   case "searchButton":
    PT_selected = Array();
@@ -733,6 +766,7 @@ $(document).on("click", ".popupActivator", function(event) {
   default:
    return false; //If a popup is not recognized, don't load anything.
  }
+ $("#popupContainer").attr("for", activatorID);
  $("#popupGlobal").fadeIn(300);
 });
 
