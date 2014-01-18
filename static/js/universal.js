@@ -364,7 +364,12 @@ $(document).on("submit", ".infoForm", function() {
  $.post($(form).attr("action"), $(form).serialize(), function(response) {
   //Remove the loading wheel.
   //Translate server-responses to actions.
-  if (response==1) {
+  if (response==0){
+   //If the form simply should close, do so.
+   refreshOnMaskFade();
+   $(".mask").trigger("click");
+   return false;
+  } else if (response==1) {
    getLicensePopup();
    return false;
   }
@@ -689,6 +694,13 @@ $(document).on("click", ".popupActivator", function(event) {
    $.get("/upload_CSV/", function(response) {
     $("#popupContainer_inner").html(response);
    });
+   break;
+  case "addReactantGroup":
+   var group = $(this).closest(".reactantField").attr("group");
+   $.get("/add_reactant/", {group: group}, function(response) {
+    $("#popupContainer_inner").html(response);
+   });
+   activatorID = "leftMenu_downloadCSV";
    break;
   case "leftMenu_download_data":
    $.post("/download_prompt/", {model: "Data"}, function(response) {

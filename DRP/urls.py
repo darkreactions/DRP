@@ -25,7 +25,8 @@ urlpatterns = patterns('',
    #Modify Data
     (r'^change_Data/$', change_Data), #[JSON] Edit Data Entry
     (r'^delete_Data/$', delete_Data), #[JSON] Delete Data Entries
-    (r'^delete_reactant/$', delete_reactant), #[JSON] Delete Data Entries
+    (r'^add_reactant/$', add_reactant), #[JSON] Add Reactant Group
+    (r'^delete_reactant/$', delete_reactant), #[JSON] Delete Reactant Group
     (r'^data_form/$', data_form), #Form for adding new data.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
     (r'^compound_guide_entry/$', compound_guide_entry), #Return a single CG table entry.

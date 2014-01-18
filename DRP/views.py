@@ -1412,6 +1412,35 @@ def send_CG_names(request):
   #  change_Data --> {originalRef:"X", fieldChanged:"X", newValue:"X"}
 
 #Delete a reactant group from a datum.
+def add_reactant(request):
+ u = request.user
+ if request.method=="POST" and u.is_authenticated():
+  #Gather the request information.
+  try:
+   group = request.POST["group"]
+   quantity = request.POST["quantity"]
+   unit = request.POST["unit"]
+  except:
+   return HttpResponse("Info missing!")
+
+  #Validate and the apply datum.
+  try:
+   #TODO:Validate and add reactant group (only this reactant).
+
+   return HttpResponse(0) 
+  except:
+   return HttpResponse("Invalid data!")
+ try:
+  group = request.GET["group"] 
+  return render(request, "add_reactant_form.html", {
+   "group":group,
+   "unitChoices":edit_choices["unitChoices"],
+  })
+ except Exception as e:
+  print e
+  return HttpResponse("Illegal group specified.")
+
+#Delete a reactant group from a datum.
 def delete_reactant(request):
  u = request.user
  if request.method=="POST" and u.is_authenticated():
@@ -1433,7 +1462,7 @@ def delete_reactant(request):
 
    return HttpResponse(0)   
   except Exception as e:
-   return ("Edit failed.") 
+   return HttpResponse("Edit failed.") 
  return HttpResponse("Please sign in to modify data.") 
 
 def delete_Data(request):

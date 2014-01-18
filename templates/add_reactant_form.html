@@ -1,0 +1,25 @@
+<h1>Add Reactant:</h1>
+<form id="CSVForm" method="POST" enctype="multipart/form-data" action="/add_reactant/" class="popupScreenForm infoForm">
+ {% csrf_token %}
+
+ <input type="hidden" name="group" value="{{group}}">
+
+ <div class="reactionWrapper">
+  <div class="fieldWrapper">
+  <input type="text" class="form_text" name="reactant" placeholder="Reactant {{group}}">
+  </div>
+  <div class="fieldWrapper">
+  <input type="text" class="form_text form_text_short" name="quantity" placeholder="Amount">
+  <select name="unit" class="dataField" title="'g': gram <br/> 'm': milliliter <br/> 'd': drop">
+   {% for choice in unitChoices %}
+    <option val="{{choice}}">{{choice}}</option>
+   {% endfor %}
+  </select>
+  </div>
+ </div>
+ {% if user.is_authenticated %}
+  <input type="submit" value="Submit" class="button"/>
+ {% else %}
+  <p> Please sign in to download data. </p>
+ {% endif %}
+</form>

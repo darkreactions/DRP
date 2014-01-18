@@ -86,7 +86,7 @@ $("#leftMenu_selectPage").click(function() {
 $(document).on("mouseover", ".reactantField", function() {
  if ($(".reactantButton").length==0 ){
   if ($(this).children(".type_reactant").is(":empty")) {
-   $(this).append("<div class=\"reactantAddButton reactantButton genericButton\"" + 
+   $(this).append("<div id=\"addReactantGroup\" class=\"reactantAddButton reactantButton popupActivator genericButton\"" + 
     "title=\"Add this reactant.\">+</div>"); 
   } else {
    $(this).append("<div class=\"reactantRemoveButton reactantButton genericButton\"" + 
@@ -98,12 +98,6 @@ $(document).on("mouseover", ".reactantField", function() {
 $(document).on("mouseleave", ".reactantField", function() {
  $(".reactantButton").remove();
 })
-
-//TODO: Add me!
-$(document).on("click", ".reactantAddButton", function(event) {
- alert("Feature not added yet!");
- event.stopPropagation();
-});
 
 $(document).on("click", ".reactantRemoveButton", function(event) {
  var reactantField = $(this).closest(".reactantField");
