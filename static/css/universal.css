@@ -225,6 +225,15 @@ Airplane Mode src: local('Montserrat-Regular'), url(http://themes.googleusercont
 }
 
 /* ########### MAIN AND SIDE PANELS ####################### */
+#infoPanel{
+ position:relative;
+ display:block;
+ text-align:center;
+ width:100%;
+ height:675px;
+ border-bottom:2px solid black;
+}
+
 #centerPanel {
  position:relative;
  display:block;
@@ -537,6 +546,7 @@ div.ui-tooltip {
 #copyrightContainer {
  position:relative;
  margin-top:5px;
+ padding-bottom:10px;
  font-size:12px;
  text-align:center;
 }
@@ -869,13 +879,38 @@ height:10px;
 
 
 /* ###############   EDITABLES STYLE   ################################### */
+.editConfirm {
+ position:relative;
+}
+
+.cancelEditableButton {
+ position: absolute;
+ text-align:center;
+ top:-9px;
+ left:-9px;
+
+ width:16px;
+ height:16px;
+ font-size:12px;
+
+ z-index:100;
+ padding:1px;
+ border-radius:10px;
+ opacity:0.4;
+ color:red;
+}
+
+.editable {
+ display:inline-block;
+ position:relative;
+}
+
 .editText {
+ position:relative;
+ display:inline-block;
  padding-left:10px;
  padding-right:10px;
  background-color:#BFFF84;
- max-width:inherit;
- width:10px;
- display:inline-block;
 }
 
 /* ###############   DATA STYLE   ################################### */
@@ -925,6 +960,7 @@ height:10px;
 }
 
 .dataField {
+ position:relative;
  padding:2px;
  border-radius:5px;
  font-size:12px;
@@ -1163,14 +1199,25 @@ color: #355A77;
 }
 
 /* ###############   Specific Elements   ############################ */
-.secondaryPopupCornerButton {
+.tertiaryCornerButton {
+ z-index:4; /*Must be less than #secondaryPopupCornerButton */
+ width:45px;
+}
+
+.secondaryCornerButton {
+ z-index:5; /*Must be less than .closeButton */
+ width:25px;
+}
+
+.popupCornerButton {
  background-color:white;
  cursor:pointer;
  font-size:12px;
  font-weight:bold;
  text-align:center;
 
- width:25px;
+ top:10px;
+ right:20px;
  height:15px;
  border:2px solid black;
  border-bottom-left-radius:10px;
@@ -1180,10 +1227,7 @@ color: #355A77;
  background-repeat:no-repeat;
 
  position:absolute;
- top:10px;
- right:20px;
  opacity: 0.5;
- z-index:5; /*Must be less than .closeButton */
 }
 
 #userUpdate {

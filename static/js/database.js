@@ -10,49 +10,18 @@ function setPageCookie(page) {
   {expires: 7}); //Set cookie to expire after one week.
 }
 
-//############ CSV Management: #######################################
-//Change visible file name when applicable.
-$(document).on("change", "#uploadCSV_hiddenInput", function() {
- if ($("#uploadCSV_hiddenInput").val()) {
-  $("#uploadCSV_display").children("div").html($("#uploadCSV_hiddenInput").val().split("\\").pop());
- } else {
-  $("#uploadCSV_display").children("div").html("None Selected");
- }
-});
-
-//Hide the Download Form's dataFilter selection menu if not applicable.
-$(document).on("click", "#radio_reactionData", function() {
- $(".dropDownMenu").html(
- "<option value=\"all\">All</option>"+
- "<option value=\"good\">Valid</option>"+
- "<option value=\"bad\">Invalid</option>");
-});
-
-$(document).on("click", "#radio_compoundGuide", function() {
- $(".dropDownMenu").html(
- "<option value=\"simple\">Simple</option>"+
- "<option value=\"complex\">Complex</option>");
-});
-
-
-//############ Form Interactions: ######################################
-$(document).on("submit", ".uploadForm", function() { //###Ugly...
- showRibbon("Working! This may take a moment.", "#FFC87C", "body", false);
-});
-
 //############ Data Selection: #########################################
 //Click Group to Select:
 $(document).on("click", ".dataGroup", function() {
  $(this).toggleClass("dataSelected");
 
  //Get Index of Selected Data by Number
- var dataID = $(this).find(".dataEntry>.type_ref").html().trim();
+ var dataID = $(this).attr("pid");
  var indexOfData = selectedData.indexOf(dataID);
  if (indexOfData >= 0) { //Data is already selected (thus, deselect)
   selectedData.splice(indexOfData,1);
  } else { //Select data
   selectedData.push(dataID);
-  selectedData.sort(sortNumbers); //###Necessary? Probably
  }
 });
 
@@ -60,23 +29,20 @@ $(document).on("click", ".dataGroup", function() {
 $("#leftMenu_selectPage").click(function() {
  var selectedOnPage = [];
  //Select data
- $(".type_ref").each(function() {
-  var dataRef = $(this).html().trim();
-  if (selectedData.indexOf(dataRef) < 0){ //If the item is not in the list yet.
-   $(this).closest(".dataGroup").addClass("dataSelected");
-   selectedData.push(dataRef);
+ $(".dataGroup").each(function() {
+  var dataPID = $(this).attr("pid");
+  if (selectedData.indexOf(dataPID) < 0){ //If the item is not in the list yet.
+   $(this).addClass("dataSelected");
+   selectedData.push(dataPID);
   } else {
    //Count the element as selected.
-   selectedOnPage.push(dataRef);
+   selectedOnPage.push(dataPID);
   }
  });
 
- //Deselect data (if all elements were already selected; ie, "toggle")
- if (selectedOnPage.length == $(".dataEntry").length){
-  for (var i in selectedOnPage) {
-   var indexOfData = selectedData.indexOf(selectedOnPage[i]);
-   selectedData.splice(indexOfData,1);
-  }
+ //Deselect data (if all elements were already selected; ie, allow "toggle")
+ if (selectedOnPage.length == $(".dataGroup").length){
+  selectedData = Array();
   $(".dataGroup").removeClass("dataSelected");
  }
 });
@@ -87,7 +53,7 @@ $(document).on("mouseover", ".reactantField", function() {
  if ($(".reactantButton").length==0 ){
   if ($(this).children(".type_reactant").is(":empty")) {
    $(this).append("<div id=\"addReactantGroup\" class=\"reactantAddButton reactantButton popupActivator genericButton\"" + 
-    "title=\"Add this reactant.\">+</div>"); 
+    "title=\"Add a reactant here.\">+</div>"); 
   } else {
    $(this).append("<div class=\"reactantRemoveButton reactantButton genericButton\"" + 
     "title=\"Delete this reactant.\">x</div>"); 
@@ -197,6 +163,8 @@ function changePageTo(page) {
    setPageCookie(page)
    restyleData();
   $(".ribbonMessage").remove();
+  } else {
+   alert("NOPE")
   }
  });
 //TODO: add this back!

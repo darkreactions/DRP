@@ -11,16 +11,6 @@ currentQuery = Array();
 CGEntries = undefined;
 CGAbbrevs = undefined;
 
-//############   Sorting   #############################################
-//Sort from greatest to least.
-window.sortNumbers = function(smallNum, bigNum) {
- return smallNum - bigNum;
-}
-
-window.sortNumbersReverse = function(smallNum, bigNum) {
- return bigNum - smallNum;
-}
-
 //############   Dependent Functions  ##################################
 function adaptSize(element) {
  var numChars = $(element).val().length;
@@ -82,10 +72,10 @@ window.restyleData = function() {
 
  try {
   //Keep selected data highlighted even if on page changes.
-  $(".dataEntry").each(function() {
-   dataID = $(this).find(".type_ref").html().trim();
+  $(".dataGroup").each(function() {
+   dataID = $(this).attr("pid");
    if (selectedData.indexOf(dataID) != -1) {
-    $(this).parent().addClass("dataSelected");
+    $(this).addClass("dataSelected");
    }
   });
  } catch(err){}
@@ -104,11 +94,10 @@ $(document).tooltip({
  });
 
 //Disable the tooltips when a text-input is selected.
+var exemptList = ["searchValue"]
 tooltips_disabled = false;
-var exemptList = ["searchValue"];
 $(document).on("focusin", "input[type=text]", function() {
- //if ((!tooltips_disabled) && exemptList.indexOf($(this).attr("id")) == -1) {
- if (exemptList.indexOf($(this).attr("id")) == -1) {
+ if ((!tooltips_disabled) && exemptList.indexOf($(this).attr("id")) == -1) {
   tooltips_disabled = true
   $(document).tooltip("disable");
  }
@@ -123,9 +112,8 @@ $(document).on("focusout", "input", function() {
 $(document).on("mouseover", ".type_reactant", function() {
  var specificDiv = $(this);
  //If the reactant is empty, don't complain about the compound guide.
- if ($(specificDiv).is(":empty")){
-  $(specificDiv).attr("title", "Click to add reactant.")
-
+ if ($(specificDiv).is(":empty") || $(".editField").length){
+  $(specificDiv).attr("title", "")
  } else if (CGEntries == undefined) {
   $(specificDiv).attr("title", "Loading!")
   $.get("/send_CG_names/", function(response) {
@@ -192,6 +180,12 @@ $(document).on("click", "#mask", function() {
   //Remove any extra additions the popup may have populated.
   $(".CG_saveButton").remove()
 
+  //Remove any edits that are pending.
+  $(".editField").each(function() {
+   var oldVal = $(this).attr("oldVal");
+   $(this).parent().html(oldVal);
+   });
+
   //Reload the screen if requested.
   if ($(".reloadActivator").length) {
    window.location.reload(true);
@@ -201,7 +195,6 @@ $(document).on("click", "#mask", function() {
 });
 
 //############  Button Propagation:  ####################################
-
 window.addDataSpecificButton = function(data, buttonID, image, title, classes) {
  classes = classes !== undefined ? classes : "";
 
@@ -264,11 +257,9 @@ $(document).on("click", ".dataSpecificButton", function() {
  var dataGroup = $(this).closest(".dataGroup");
  var buttonID = $(this).attr("id");
 
- //Get the pid if it exists.
  try {
   var pid = $(dataGroup).attr("pid");
  } catch(err) {
-  //TODO:Test this.
   return false;
  }
 
@@ -329,6 +320,14 @@ $(document).on("click", ".dataSpecificButton", function() {
 
 });
 
+//Cancel Editable Button.
+$(document).on("click", ".cancelEditableButton", function(event) {
+ var oldVal = $(this).siblings(".editField").attr("oldVal");
+ $(this).parent().html(oldVal);
+ event.stopPropagaton();
+});
+
+
 //############  Form Interactions:  ####################################
 function getLicensePopup() {
  $("#popupContainer").attr("for", "userLicenseAgreement");
@@ -363,20 +362,42 @@ $(document).on("submit", ".infoForm", function() {
  $(this).closest("form").append("<div class=\"loadingWheel\">. . .</div>");
  $.post($(form).attr("action"), $(form).serialize(), function(response) {
   //Remove the loading wheel.
+  $(".loadingWheel").remove();
   //Translate server-responses to actions.
-  if (response==0){
+  if (response=="0"){
+   showRibbon("Data added!", goodColor, $("#popupContainer_inner"));
+   refreshOnMaskFade();
+   return false;
+  } else if (response=="0_close"){
    //If the form simply should close, do so.
    refreshOnMaskFade();
-   $(".mask").trigger("click");
+   $("#mask").trigger("click");
    return false;
-  } else if (response==1) {
+  } else if (response=="1") {
    getLicensePopup();
    return false;
+  } else if (response=="2") {
+   showRibbon("Edit failed!", badColor, $("#popupContainer_inner"));
+   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>"); 
+   return false;
+  } else if (response=="3") {
+   showRibbon("Info missing!", badColor, $("#popupContainer_inner"));
+   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>"); 
+   return false;
+  } else if (response=="4") {
+   showRibbon("Invalid data!", badColor, $("#popupContainer_inner"));
+   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>"); 
+   return false;
+  } else if (response=="5") {
+   showRibbon("Please select a file!", badColor, $("#popupContainer_inner"));
+   $(form).append("<input type=\"submit\" value=\"Upload\" class=\"button\"/>"); 
+   return false;
+  } else {
+   //Recreate the popup window with the server response.
+   $("#popupContainer_inner").html(response);
+   $(".subPopup").draggable();
   }
 
-  //Recreate the popup window with the server response.
-  $("#popupContainer_inner").html(response);
-  $(".subPopup").draggable();
 
   //Reset the autocomplete if necessary.
   $(".autocomplete_reactant").autocomplete({
@@ -487,6 +508,16 @@ function get_atom_query() {
  return current_atom_query.replace(/ +/g, " ")
 }
 
+//Set the autocomplete box on reactants if needed.
+$(document).on("change", ".dropDownMenu[name=field]", function() {
+ if ($(this).val()=="reactant"){
+  $(".autocomplete_reactant").autocomplete("enable")
+  $("#searchValue").addClass("autocomplete_reactant")
+ } else {
+  $(".autocomplete_reactant").autocomplete("disable")
+ }
+});
+
 $(document).on("mouseover", ".search_filterButton", function() {
  //Get the previously used filters.
  var filter_string = "Filters:"
@@ -589,51 +620,33 @@ $(document).on("click", ".search_clearButton", function() {
 });
 
  //################   Autocompleting Search   ####################### //###
-window.setAutoComplete = function(location, source) {
- $(location).autocomplete({
-  source: source,
-  messages: {
-   noResults: "",
-   results: function() {}
-  }
- });
+window.setReactantAutoComplete = function() {
+ //Get the auto-complete options form the CG guide. ###SOME ERROR HERE, CASEY
+ if (CGAbbrevs == undefined) {
+  $.get("/send_CG_names/", function(response) {
+   CGEntries = response;
+   CGAbbrevs = Array();
+   for (var key in CGEntries) {
+    CGAbbrevs.push(key);
+   }
+   $(".autocomplete_reactant").autocomplete({
+    source: CGAbbrevs,
+    messages: {
+     noResults: "",
+     results: function() {}
+    }
+   });
+  })
+ } else {
+  $(".autocomplete_reactant").autocomplete({
+   source: CGAbbrevs,
+   messages: {
+    noResults: "",
+    results: function() {}
+   }
+  });
+ }
 }
-
-$(document).on("focusin", "#searchValue", function() {
- //Set autocomplete to vary with selection.
-});
-
- //////source = source !== undefined ? source : CGAbbrevs;
- //////if (source==CGAbbrevs) {
-  ////////Get the auto-complete options form the CG guide if no other source is found.
-  //////if (CGAbbrevs == undefined) {
-   //////$.get("/send_CG_names/", function(response) {
-    //////CGEntries = response;
-    //////CGAbbrevs = Array();
-    //////for (var key in CGEntries) {
-     //////CGAbbrevs.push(key);
-    //////}
-   //////})
-  //////} else {
-   //////$(location).autocomplete({
-    //////source: CGAbbrevs,
-    //////messages: {
-     //////noResults: "",
-     //////results: function() {}
-    //////}
-   //////});
-  //////}
- //////} else {
-  //////$(location).autocomplete({
-   //////source: CGAbbrevs,
-   //////messages: {
-    //////noResults: "",
-    //////results: function() {}
-   //////}
-  //////});
- //////}
-//////}//###
-
 
 //############ Popup Management: #######################################
 window.createPopupConfirmation = function(message) {
@@ -662,45 +675,30 @@ $(document).on("click", ".popupActivator", function(event) {
    //Send the request to the server
    $.get("/data_form/", {pid : pid, model:"data"}, function(response) {
     $("#popupContainer_inner").html(response);
-
-    //Get the auto-complete options form the CG guide. ###SOME ERROR HERE, CASEY
-    if (CGAbbrevs == undefined) {
-     $.get("/send_CG_names/", function(response) {
-      CGEntries = response;
-      CGAbbrevs = Array();
-      for (var key in CGEntries) {
-       CGAbbrevs.push(key);
-      }
-      $(".autocomplete_reactant").autocomplete({
-       source: CGAbbrevs,
-       messages: {
-        noResults: "",
-        results: function() {}
-       }
-      });
-     })
-    } else {
-     $(".autocomplete_reactant").autocomplete({
-      source: CGAbbrevs,
-      messages: {
-       noResults: "",
-       results: function() {}
-      }
-     });
-    }
+    setReactantAutoComplete();
    });
    break;
-  case "leftMenu_uploadCSV":
-   $.get("/upload_CSV/", function(response) {
+  case "leftMenu_upload_data":
+   $.post("/upload_prompt/", {model: "Data"}, function(response) {
     $("#popupContainer_inner").html(response);
    });
+   activatorID = "leftMenu_uploadCSV";
+   break;
+  case "leftMenu_upload_compoundentry":
+   $.post("/upload_prompt/", {model: "CompoundEntry"}, function(response) {
+    $("#popupContainer_inner").html(response);
+   });
+   activatorID = "leftMenu_uploadCSV";
    break;
   case "addReactantGroup":
    var group = $(this).closest(".reactantField").attr("group");
-   $.get("/add_reactant/", {group: group}, function(response) {
+   var pid = $(this).closest(".dataGroup").attr("pid");
+   $.get("/add_reactant/", {group: group, pid:pid}, function(response) {
     $("#popupContainer_inner").html(response);
+    setReactantAutoComplete();
    });
-   activatorID = "leftMenu_downloadCSV";
+   activatorID = "addReactantGroup";
+   event.stopPropagation();
    break;
   case "leftMenu_download_data":
    $.post("/download_prompt/", {model: "Data"}, function(response) {
@@ -732,6 +730,7 @@ $(document).on("click", ".popupActivator", function(event) {
     $("#sidePanel_inner").html(response);
     toggleSideContainer();
     $("#tabs").tabs({active: 1});
+    setReactantAutoComplete();
    });
    return false; //TODO: Separate this into a "sidePanel" activator
    break;
@@ -745,7 +744,7 @@ $(document).on("click", ".popupActivator", function(event) {
     $("#popupContainer_inner").html(response);
    });
    break;
-  case "registrationPrompt": //###REPLACE WITH PRELOADED DROP-DOWN MENU?
+  case "registrationPrompt": 
    $.get("/registration_prompt/", function(response) {
     $("#popupContainer_inner").html(response);
    });
@@ -847,6 +846,7 @@ $(document).on("keyup", ".editText", function() {
   $(this).removeClass("badData");
  }
 });
+
 function cancelEditables() {
  $(".editField").each(function() {
   var editParent = $(this).parent(".editable");
@@ -856,7 +856,13 @@ function cancelEditables() {
 }
 
 //Initiate edit session.
-$(document).on("click", ".editable", function() {
+$(document).on("click", ".editable", function() { 
+ //Don't allow editables of empties in a reactantField
+ if ($(this).closest(".reactantField").length && $(this).is(":empty")){
+  return false;
+ } else if ($(this).closest(".recommendation").length && $(this).attr("class").indexOf("type_notes")<0) {
+  return false;
+ } 
 
  //Close any other editables.
  if ($(this).find(".editField").length != 0) {
@@ -890,12 +896,17 @@ $(document).on("click", ".editable", function() {
    $(this).children(".editMenu").focus();
    $(this).attr("title","");
   } else {
-   $(this).html("<input class=\"editField editText\" type=\"" + editAs + "\" "
+   var cancelButton = ("<div title=\"Cancel this edit.\""
+    +"class=\"genericButton cancelEditableButton\">x</div>");
+   var inputFields = ("<input class=\"editField editText\" type=\"" + editAs + "\" "
     + "pidToChange=\"" + pidToChange + "\" "
     + "oldVal=\""+ oldVal + "\" "
     + "value=\""+ oldVal + "\" />"
+    + cancelButton
     + "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
     );
+
+   $(this).html(inputFields);
    adaptSize($(this).children(".editText"));
 
 
@@ -1073,6 +1084,16 @@ $(document).on("click", ".CG_saveButton", function() {
    showRibbon("Edit failed!", badColor,"#popupContainer_inner");
   }
  });
+});
+
+//############   Upload   ########################################
+//Change visible file name when applicable.
+$(document).on("change", "#uploadCSV_hiddenInput", function() {
+ if ($("#uploadCSV_hiddenInput").val()) {
+  $("#uploadCSV_display").children("div").html($("#uploadCSV_hiddenInput").val().split("\\").pop());
+ } else {
+  $("#uploadCSV_display").children("div").html("None Selected");
+ }
 });
 
 //############ Post-load Config ########################################

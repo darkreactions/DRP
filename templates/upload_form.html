@@ -1,25 +1,14 @@
-<h1>Upload CSV:</h1>
-<form id="CSVForm" method="POST" enctype="multipart/form-data" action="/upload_CSV/" class="popupScreenForm uploadForm">
+<h1>Upload {{model_verbose}}:</h1>
+<form id="CSVForm" method="post" enctype="multipart/form-data" action="/upload_data/" class="popupScreenForm uploadForm">
  {% csrf_token %}
+ <input type="hidden" name="model" value="{{model}}">
  <div id = "uploadCSV_display">
  <div>None Selected</div>
- <input name="file" id="uploadCSV_hiddenInput" type="file" 
- accept=".csv" value="Upload CSV"/>
+ <input name="file" id="uploadCSV_hiddenInput" type="file" accept=".csv"/>
  </div>
- <div class="radioContainer">
- <input id="radio_reactionData" type="radio" name="dataType" value="Data" checked>
-  <label class="button radioLabel" for="radio_reactionData">
-   Reaction Data
-  </label>
- </input>
- <input id="radio_compoundGuide" type="radio" name="dataType" value="CompoundEntry">
-  <label class="button radioLabel" for="radio_compoundGuide">
-   Compound Guide
-  </label>
- </input>
- </div><br/>
+
  {% if user.is_authenticated %}
-  <input name="submit" id = "uploadCSVSubmit" type="submit" value="Upload" class="button"/>
+  <input name="submit" id="uploadCSVSubmit" type="submit" value="Upload" class="button"/>
  {% else %}
   <p> Please sign in to submit data. </p>
  {% endif %} 

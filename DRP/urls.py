@@ -19,7 +19,8 @@ urlpatterns = patterns('',
    #Change Page
     (r'^data_transmit/$', data_transmit), #Used for changing pages.
    #Upload/Download database.
-    (r'^upload_CSV/$', upload_CSV),
+    (r'^upload_prompt/$', upload_prompt),
+    (r'^upload_data/$', upload_CSV),
     (r'^download_prompt/$', download_prompt),
     (r'^download_data/$', download_CSV),
    #Modify Data

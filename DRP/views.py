@@ -286,18 +286,17 @@ def edit_recommendation(request, action):
 
   if action=="save":
    recommendation.saved = True
-   recommendation.save()
   elif action=="unsave":
    recommendation.saved = False
-   recommendation.save()
   elif action=="sense":
    recommendation.nonsense = False
-   recommendation.save()
   elif action=="nonsense":
    recommendation.nonsense = True
-   recommendation.save()
   else:
    raise Exception("Error: Illegal action specified.")
+
+  rec.user = u
+  recommendation.save()
 
   return HttpResponse(0)
  except Exception as e:
@@ -357,7 +356,8 @@ def assign_user_to_rec(request):
    new_user = None
 
   #Assign the change in the database.
-  rec.user = new_user
+  rec.assigned_user = new_user
+  rec.user = u
   rec.save()
   return HttpResponse(0)
  except Exception as e:
@@ -429,40 +429,6 @@ def save_recommmendation(request):
 ####################################################
 ####################################################
 ####################################################
-def revalidate_all_data(lab_group, invalid_only = True, return_errors=False):
- data_to_validate = Data.objects.filter(lab_group=lab_group)
-
- if invalid_only:
-  data_to_validate = data_to_validate.filter(is_valid=False)
-
- print "Found {} to validate.".format(data_to_validate.count())
- error_log = {"CG":[], "quantity": [], "refs":[], "pH":[], "temp":[], "time": []}
- j = 0
-
- if data_to_validate.exists():
-  for data in data_to_validate:
-   #Display how many were analyzed so far.
-   if j%500==0: print "Played with {}...".format(j)
-
-   errors = revalidate_data(data, lab_group, batch=True)
-   for i in CONFIG.reactant_range():
-    if "reactant_{}".format(i) in errors:
-     error_log["CG"].append("{}".format(getattr(data, "reactant_{}".format(i))))
-   for i in CONFIG.reactant_range():
-    if "quantity_{}".format(i) in errors:
-     error_log["quantity"].append(getattr(data, "ref"))
-   if "temp" in errors:
-    error_log["temp"].append(getattr(data, "ref"))
-   if "time" in errors:
-    error_log["time"].append(getattr(data, "ref"))
-   if "pH" in errors:
-    error_log["pH"].append(getattr(data, "ref"))
-
-  #Clear the page caches
-  clear_all_page_caches(lab_group)
-  if return_errors:
-   return error_log
-
 
 ######################  Core Views  ####################################
 
@@ -671,7 +637,7 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
 
   guide = list(collect_CG_entries(lab_group))
 
-  return render(request, 'compound_guide_cell.html', {
+  return render(request, 'compound_guide.html', {
    "guide": guide,
    "form": form,
    "success": success,
@@ -836,7 +802,6 @@ def data_form(request): #If no data is entered, stay on the current page.
    #Either get initial fields from a Recommendation or a Data entry.
    if model=="rec":
     data = get_recommendations(lab_group).get(id=pid)
-    print get_model_field_names("Recommendation")
     init_fields = {field:getattr(data, field) for field in get_model_field_names(model="Recommendation")}
    else:
     data = get_lab_data(lab_group).get(id=pid)
@@ -940,7 +905,97 @@ def get_related_field(heading, model="Data"): ###Not re-read.
  return related_field
 
 ######################  Upload/Download   ##############################
-def upload_CSV(request, model="Data"): ###Not re-read.
+def upload_prompt(request):
+ u = request.user
+ if u.is_authenticated() and request.method=="POST":
+  model = request.POST.get("model")
+  if model == "Data":
+   return render(request, 'upload_form.html', {
+    "model":model,
+    "model_verbose":"Data",
+   })
+  elif model =="CompoundEntry":
+   return render(request, 'upload_form.html', {
+    "model":model,
+    "model_verbose":"Compounds",
+   })
+
+  return HttpResponse("Request illegal!")
+ return HttpResponse("Please log in to upload data.")
+
+def upload_CSV(request, model="Data"):
+ u = request.user
+ if u.is_authenticated() and request.method=="POST":
+  #Variable Setup:
+  lab_group = u.get_profile().lab_group
+  fatal_message =""
+  error_log=[]
+  successes, fails, success_percent = 0, 0, 0
+
+  #Attempt to get the data from the request
+  print request.FILES #TODO DECLUTTER ME.
+  return HttpResponse("Feature not added yet.")
+  try:
+   model=request.POST["model"]
+   assert model in {"CompoundEntry", "Data"}
+   uploaded_file = request.FILES["file"]
+  except:
+   return HttpResponse("5") #TODO: Add different types of responses.
+
+  #More Variable Setup
+  true_cols = get_model_field_names(model=model)
+  file_fields = []
+  auto_added_fields = {}
+  list_field_nums = {field:1 for field in list_fields}
+  current_row = 0
+  current_col = 0
+ 
+  return HttpResponse("Feature not added yet.")
+  #Get the fields that are not required.
+  not_required = get_not_required_fields(model=model) #TODO: WRITE ME. 
+   
+  #Get the correct headings for the file.
+  content = csv.reader(uploaded_file, delimiter=",")
+
+  #Attempt to figure out the field order based on the headers in the file.
+  for col in content[0]:
+   try:
+    field = get_related_field(col, model=model, for_upload=True)
+   
+    #Add the field number if it is missing.
+    if field in list_fields:
+     field += list_field_nums[field]
+     list_field_nums[field] += 1
+     
+    true_cols.remove(field)
+    file_fields.append(field) #Remember the order of fields in the file. 
+
+   except Exception as e:
+    print e
+    return HttpResponse("Valid headers were not found.")
+  
+  #Add the auto-add fields.
+  auto_added_fields = set(true_fields)
+
+  print field_fields
+  print auto_added_fields
+
+  #Make sure no vital fields are missed.
+  for field in true_fields:
+   assert field in not_required  
+
+#############################################################
+  success_percent = 1 if not (fails+successes) else successes/(fails+successes)
+  return render(request, 'upload_results.html', {
+   "fatal_message": fatal_message, #Includes data and data_indexes.
+   "error_log": error_log,
+   "added_quantity": added_quantity,
+   "error_quantity": error_quantity,
+   "success_percent": success_percent,
+  })
+ return render(request, 'upload_form.html')
+
+def upload_CSV_bak(request, model="Data"): ###Not re-read.
  u = request.user
 
  #Variable setup.
@@ -1339,15 +1394,22 @@ def download_prompt(request):
   if model in {"Data"}:
    return render(request, 'download_form.html', {
     "model":model,
+    "model_verbose":"Data",
     "allow_filters":True
    })
   elif model in {"CompoundEntry","Saved","Recommendation"}:
    return render(request, 'download_form.html', {
     "model":model,
+    "model_verbose":{
+      "CompoundEntry":"Compounds", 
+      "Saved":"Saved", 
+      "Recommendation":"Recommendations"}[model],
     "allow_filters":False
    })
 
- return HttpResponse("Request illegal!")
+  return HttpResponse("Request illegal!")
+ return HttpResponse("Please log in to download data.")
+
 
 def download_error_log(request): ###Nothing done yet... ;B
  u = request.user
@@ -1406,39 +1468,68 @@ def send_CG_names(request):
   # 2.) Users can only modify their own Lab's data.
 
   #Verbose JSON Formats:
-  # request.body ===
-  #  delete_reactant --> {pid: ID, group: GROUP}
-  #  delete_Data --> {[originalRef_1, ..., originalRef_N]}
-  #  change_Data --> {originalRef:"X", fieldChanged:"X", newValue:"X"}
+  # request.POST ===
+  #  add_reactant --> {pid, group, reactant, quantity, unit}
+  #  delete_reactant --> {pid, group}
+  #  delete_Data --> {[PID_0, PID_1, ... , PID_N]}
+  #  change_Data --> {PID, fieldChanged, newValue}
 
 #Delete a reactant group from a datum.
 def add_reactant(request):
  u = request.user
  if request.method=="POST" and u.is_authenticated():
-  #Gather the request information.
+  #Variable Setup
+  reactantDict = {}
+  lab_group = u.get_profile().lab_group
+  lab_data = get_lab_data(lab_group) 
+
+  #Gather the request and user info.
   try:
    group = request.POST["group"]
-   quantity = request.POST["quantity"]
-   unit = request.POST["unit"]
-  except:
-   return HttpResponse("Info missing!")
+   pid = request.POST["pid"]
+   reactantDict["reactant"] = request.POST["reactant"]
+   reactantDict["quantity"] = request.POST["quantity"]
+   reactantDict["unit"] = request.POST["unit"]
+  except Exception as e:
+   print e
+   return HttpResponse(3)
 
   #Validate and the apply datum.
   try:
-   #TODO:Validate and add reactant group (only this reactant).
-
-   return HttpResponse(0) 
+   #Do a basic validation of the reactant.
+   datum = lab_data.get(id=pid)
+   assert validate_name(reactantDict["reactant"], lab_group)  
+   assert reactantDict["unit"] in edit_choices["unitChoices"]
+   assert quick_validation("quantity", reactantDict["quantity"])
+  except Exception as e:
+   return HttpResponse(4)
+  
+  #Actually add the fields to the datum.
+  try: 
+   for entry in list_fields:
+    setattr(datum, "{}_{}".format(entry, group), reactantDict[entry])
+   datum.user = u
+   datum.save()
   except:
-   return HttpResponse("Invalid data!")
- try:
-  group = request.GET["group"] 
-  return render(request, "add_reactant_form.html", {
-   "group":group,
-   "unitChoices":edit_choices["unitChoices"],
-  })
- except Exception as e:
-  print e
-  return HttpResponse("Illegal group specified.")
+   return HttpResponse(2)
+
+  #Attempt to update/re-validate the full datum (but don't die on fail).
+  try:
+   update_reaction(datum, lab_group)
+  except:
+   pass
+  return HttpResponse("0_close") 
+ else:
+  try:
+   group = request.GET["group"] 
+   pid = request.GET["pid"] 
+   return render(request, "add_reactant_form.html", {
+    "group":group,
+    "pid":pid,
+    "unitChoices":edit_choices["unitChoices"],
+   })
+  except Exception as e:
+   return HttpResponse("Illegal group specified.")
 
 #Delete a reactant group from a datum.
 def delete_reactant(request):
@@ -1458,7 +1549,14 @@ def delete_reactant(request):
    datum = lab_data.get(id=pid)
    for field in list_fields:
     setattr(datum, "{}_{}".format(field, group), "")
+   datum.user = u
    datum.save()
+
+   #Attempt to update/re-validate the full datum (but don't die on fail).
+   try:
+    update_reaction(datum, lab_group)
+   except:
+    pass
 
    return HttpResponse(0)   
   except Exception as e:
@@ -1474,9 +1572,9 @@ def delete_Data(request):
   lab_data = get_lab_data(lab_group)
 
   #Find and delete data entries in a User's Lab. 
-  for ref in deleteList:
+  for pid in deleteList:
    try:
-    lab_data.filter(ref=ref).first().delete()
+    lab_data.get(id=pid).delete()
    except:
     HttpResponse("<p>One or more selected data not found.</p>")
 
@@ -1507,6 +1605,7 @@ def change_Recommendation(request):
 
    #Save the new value.
    setattr(rec, fieldChanged, newValue)
+   rec.user = u
    rec.save()
 
    return HttpResponse(0)
@@ -1551,7 +1650,7 @@ def change_Data(request):
    
    #Send back an error if it exists.
    if errors:
-    return HttpResponse("Error: {}".format(errors[errors.keys()[0]]))
+    return HttpResponse("{}".format(errors[errors.keys()[0]]))
  
    #Get the parsed value after cleaning.
    setattr(datum, fieldChanged, clean_data[fieldChanged])

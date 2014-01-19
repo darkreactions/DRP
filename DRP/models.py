@@ -112,7 +112,7 @@ def update_compound(lab_group, compound, update_data=True):
 
   #Update the individual "atom" records on each reaction.
   if update_data:
-   update_reactions(lab_group, compound)
+   update_reactions_with_compound(lab_group, compound)
  except Exception as e:
   print "Could not update {}\n\t{}".format(compound, e)
 
@@ -122,7 +122,16 @@ def update_reaction(reaction, lab_group):
  #Revalidate and save the datum.
  revalidate_datum(reaction, lab_group)
 
-def update_reactions(lab_group, compound):
+def update_all_reactions(lab_group):
+ data = get_lab_data(lab_group)
+ for entry in data:
+  try:
+   update_reaction(reaction, lab_group)
+  except:
+   print "--could not update reaction: {}".format(entry)
+ print "Finished data validation."
+
+def update_reactions_with_compound(lab_group, compound):
  #Update the individual "atom" records on each reaction.
  lab_data = get_lab_data(lab_group)
  changed_reactions = get_Data_with_abbrev(lab_data, compound)
@@ -130,7 +139,7 @@ def update_reactions(lab_group, compound):
   try:
    update_reaction(reaction, lab_group)
   except Exception as e:
-   print "update_reactions failed: {}".format(e)
+   print "update_reactions_with_compound failed: {}".format(e)
 
 #############  CACHE VALIDATION and ACCESS  ###########################
 #Strip any spaces from the lab group title and/or the keys on cache access.
@@ -213,8 +222,10 @@ class Recommendation(models.Model):
  atoms = models.CharField("Atoms", max_length=30, blank=True)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
  model_version = models.ForeignKey(Model_Version, unique=False)
- user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None)
+ user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="last_user_set")
+ assigned_user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="assigned_user_set")
  date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
+ complete = models.BooleanField("Complete", default=False)
 
  #Fields for user feedback.
  saved = models.BooleanField("Saved", default=False)
@@ -410,19 +421,19 @@ def update_all_compounds(lab_group=None):
   #Update all of the compounds before updating the reactions.
   print "Starting compound updates..."
   for i in query:
-   update_compound(i, update_reactions=False)
+   update_compound(i, update_reactions_with_compound=False)
   print "Starting reaction updates..."
   for i in query:
-   update_reactions(i)
+   update_reactions_with_compound(i)
   print "Finished updating compounds for {}.".format(lab_group.lab_title)
  else:
   query = CompoundEntry.objects.all()
   print "Starting compound updates..."
   for i in query:
-   update_compound(i, update_reactions=False)
+   update_compound(i, update_reactions_with_compound=False)
   print "Starting reaction updates..."
   for i in query:
-   update_reactions(i)
+   update_reactions_with_compound(i)
   print "Finished updating ALL compounds."
 """
 
@@ -716,7 +727,7 @@ def new_Data_entry(user, **kwargs): ###Not re-read yet.
  except Exception as e:
   raise Exception("Data construction failed!")
 
-def get_model_field_names(both=False, verbose=False, model="Data", unique_only=False, collect_ignored=False):
+def get_model_field_names(both=False, verbose=False, model="Data", unique_only=False, collect_ignored=False, for_upload=False):
  clean_fields = []
 
  if model=="Data":

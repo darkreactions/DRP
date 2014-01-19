@@ -14,8 +14,6 @@
 <div class="dataEntry">
 
 <!-- Reaction -->
-<span class="dataField type_ref editable" editAs="text">{{entry.ref}}</span>
-<br />
 <div class="reactantField" group="1">
 <span class="dataField type_reactant editable" editAs="text">{{entry.reactant_1}}</span>
 <span class="dataDecorator">(</span>
@@ -72,3 +70,5 @@
 
 {% endif %}
 </div>
+
+<span class="type_user opaqueDatum">{{entry.user}}</span>

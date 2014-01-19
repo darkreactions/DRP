@@ -3,10 +3,11 @@
  {% csrf_token %}
 
  <input type="hidden" name="group" value="{{group}}">
+ <input type="hidden" name="pid" value="{{pid}}">
 
  <div class="reactionWrapper">
   <div class="fieldWrapper">
-  <input type="text" class="form_text" name="reactant" placeholder="Reactant {{group}}">
+  <input type="text" class="form_text autocomplete_reactant" name="reactant" placeholder="Reactant {{group}}">
   </div>
   <div class="fieldWrapper">
   <input type="text" class="form_text form_text_short" name="quantity" placeholder="Amount">
@@ -18,7 +19,7 @@
   </div>
  </div>
  {% if user.is_authenticated %}
-  <input type="submit" value="Submit" class="button"/>
+  <input type="submit" value="Save" class="button"/>
  {% else %}
   <p> Please sign in to download data. </p>
  {% endif %}
