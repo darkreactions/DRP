@@ -64,6 +64,9 @@
 <span class="dataField type_leak" editAs="select">{{entry.leak}}</span>
 <br/>
 <span class="dataField type_notes" editAs="text">{{entry.notes}}</span>
+{% if entry.user %}
+<span class="type_user opaqueDatum">{{entry.user}}</span>
+{% endif %}
 </div>
 </div>
 {% endfor %}
@@ -71,4 +74,3 @@
 {% endif %}
 </div>
 
-<span class="type_user opaqueDatum">{{entry.user}}</span>

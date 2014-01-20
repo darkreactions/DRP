@@ -282,21 +282,21 @@ def edit_recommendation(request, action):
   recommendations = get_recommendations(u.get_profile().lab_group)
   
   #Filter the recommendation of interest.
-  recommendation = recommendations.get(id=pid)
+  rec = recommendations.get(id=pid)
 
   if action=="save":
-   recommendation.saved = True
+   rec.saved = True
   elif action=="unsave":
-   recommendation.saved = False
+   rec.saved = False
   elif action=="sense":
-   recommendation.nonsense = False
+   rec.nonsense = False
   elif action=="nonsense":
-   recommendation.nonsense = True
+   rec.nonsense = True
   else:
    raise Exception("Error: Illegal action specified.")
 
   rec.user = u
-  recommendation.save()
+  rec.save()
 
   return HttpResponse(0)
  except Exception as e:
@@ -316,6 +316,7 @@ def saved(request):
    lab_group = u.get_profile().lab_group
    recommendations = get_recommendations_by_date(lab_group)
    recommendations = recommendations.filter(saved=True)
+   assert recommendations.count()
 
    #Get the lab users for the select field.
    user_list = User.objects.filter(profile__lab_group=lab_group)

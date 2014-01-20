@@ -1,6 +1,5 @@
 <div id="recContainer"> 
 {% if fatal_message %}
-
  <p>{{ fatal_message }}</p>
 
 {% else %}
@@ -78,6 +77,9 @@ Assigned User:
 </select
 >
 </span>
+{% if entry.user %}
+<span class="type_user opaqueDatum">{{entry.user}}</span>
+{% endif %}
 
 </div>
 </div>
@@ -85,5 +87,3 @@ Assigned User:
 
 {% endif %}
 </div>
-
-<span class="type_user opaqueDatum">{{entry.user}}</span>

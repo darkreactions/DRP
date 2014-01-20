@@ -740,7 +740,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense", "score", "date"}
+   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense", "complete", "score", "date"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:
