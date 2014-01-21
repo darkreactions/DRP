@@ -10,6 +10,14 @@ with open(static_dir+"js/dataRanges.json") as file_handle:
  data_ranges = json.load(file_handle)
 
 
+#Create the form choices from the pre-defined ranges.
+OUTCOME_CHOICES = [[opt,opt] for opt in edit_choices["outcomeChoices"]]
+PURITY_CHOICES = [[opt,opt] for opt in edit_choices["purityChoices"]]
+UNIT_CHOICES = [[opt,opt] for opt in edit_choices["unitChoices"]]
+BOOL_CHOICES = [[opt,opt] for opt in edit_choices["boolChoices"]]
+
+#Fields that are allowed to be stored as listy_strings.
+list_fields = ["reactant", "quantity", "unit"]
 #Fields that can be edited with a range alone: ###Copied in clientValidate.js
 range_fields = {"quantity", "temp", "time", "pH", "outcome", "purity"}
 #Fields that must be between a specific character count/limit:

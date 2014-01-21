@@ -932,6 +932,20 @@ $(document).on("click", ".editable", function() {
  }
  return false; //Don't continue on to select the data.
 });
+/* //Needs to check reactants as well. Perhaps just do quick request?
+function checkForUnknown(elem) {
+ var is_valid = true;
+ alert("1");
+ $(elem).find(".boolField").each(function() {
+  if (is_valid && $(this).html()=="?") {
+   $(elem).addClass("badData");
+   alert("2");
+   return false;
+  }
+ });
+ alert("3");
+ $(elem).removeClass("badData");
+}*/
 
 //Confirm edit with button press.
 $(document).on("click", ".editConfirm", function() {
@@ -1024,7 +1038,6 @@ $(document).on("click", ".editConfirm", function() {
      } else {
       showRibbon("Entry changed!", goodColor, "#mainPanel");
      }
- 
     });
    } 
 
@@ -1037,6 +1050,7 @@ $(document).on("click", ".editConfirm", function() {
     }
    } else {
     $(editParent).html(newValue);
+    //checkForUnknown($(this).closest(".dataGroup")); 
    }
 
   } else {

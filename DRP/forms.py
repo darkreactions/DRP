@@ -123,7 +123,7 @@ class DataEntryForm(ModelForm):
   exec("quantity_{0} = CharField({1} label='Quantity {0}', widget=TextInput(".format(i, required) +
    "attrs={'class':'form_text form_text_short', 'placeholder':'Amount',"+
    "'title':'Enter the amount of reactant.'}))")
-  exec("unit_{0} = ChoiceField(choices = UNIT_CHOICES, widget=Select(".format(i, required) +
+  exec("unit_{0} = ChoiceField({1} choices = UNIT_CHOICES, widget=Select(".format(i, required) +
    "attrs={'class':'form_text dropDownMenu',"+
    "'title':'\"g\": gram <br/> \"mL\": milliliter <br/> \"d\": drop'}))")
  ref = CharField(label="Ref.", widget=TextInput(
@@ -178,7 +178,6 @@ class DataEntryForm(ModelForm):
   ]
 
  def __init__(self, user=None, *args, **kwargs):
-  ###http://stackoverflow.com/questions/1202839/get-request-data-in-django-form
   super(DataEntryForm, self).__init__(*args, **kwargs)
 
   if user:
@@ -187,7 +186,9 @@ class DataEntryForm(ModelForm):
   self.creation_time = str(datetime.datetime.now())
 
  def save(self, commit=True):
+  print "1"
   datum = super(DataEntryForm, self).save(commit=False)
+  print "2"
   datum.user = self.user
   datum.lab_group = self.lab_group
   datum.creation_time = self.creation_time

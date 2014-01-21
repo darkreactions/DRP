@@ -4,7 +4,8 @@ from django.contrib.auth.hashers import *
 from django.shortcuts import render
 from django.contrib import auth
 from django.db.models import Q
-from models import *
+
+from retrievalFunctions import *
 from forms import *
 from validation import *
 
@@ -27,21 +28,6 @@ def info_page(request, page):
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-
-#Returns a specific datum if it is public or if it belongs to a lab_group.
-def get_datum(lab_group, ref):
- query = Data.objects.filter(Q(ref=ref), Q(lab_group=lab_group) | Q(public=True))
- if not query.exists():
-  raise Exception("Datum not found!")
- return query.first()
- 
-def get_lab_data_size(lab_group):
- size = get_cache(lab_group, "TOTALSIZE")
- if not size:
-  size = get_lab_data(lab_group).count()
-  set_cache(lab_group, "TOTALSIZE", size)
- return size
-
 def calc_total_pages(data_size):
  total_pages = 1 + int((data_size-1)/CONFIG.data_per_page)
  return total_pages if total_pages > 1 else 1
@@ -80,7 +66,7 @@ def get_pagified_data(page, lab_group=None, data=None):
  #Get the Lab's data if data is not specified. 
  if not data:
   try:
-   data = get_lab_data(lab_group)
+   data = get_lab_Data(lab_group)
   except:
    raise Exception("No data nor lab_group was specified.")
  total_pages = calc_total_pages(data.count())
@@ -92,25 +78,6 @@ def get_pagified_data(page, lab_group=None, data=None):
  #Return the data that would be contained on the requested page.
  page_data = data[(page-1)*data_per_page:page*data_per_page]
  return page_data
-
-#Get data before/after a specific date (ignoring time).
-def get_date_filtered_data(lab_group, raw_date, direction="after", lab_data=None):
- #Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
- date = str(datetime.datetime.strptime(raw_date, "%m-%d-%y"))
-
- #Only get the data that belongs to a specific lab_group.
- if lab_data:
-  lab_data = lab_data.filter(lab_group=lab_group)
- else:
-  lab_data = get_lab_data(lab_group)
-
- #Get the reactions before/after a specific date.
- if direction.lower() == "after":
-  filtered_data = lab_data.filter(creation_time__gte=date_string)
- else:
-  filtered_data = lab_data.filter(creation_time__lte=date_string)
-
- return filtered_data
  
 #Returns the info that belongs on a specific page.
 def get_page_info(request, page = None, data=None):
@@ -123,7 +90,7 @@ def get_page_info(request, page = None, data=None):
   if not data:
    u = request.user
    if u.is_authenticated():
-    data = get_lab_data(u.get_profile().lab_group) ###TODO: Union this with public_data for lab_group?
+    data = get_lab_Data(u.get_profile().lab_group) ###TODO: Union this with public_data for lab_group?
    else:
     data = get_public_data()
   
@@ -181,23 +148,13 @@ def clear_all_page_caches(lab_group, skip_data_check=False):
  if skip_data_check:
   total_pages = get_cache(lab_group, "TOTALPAGES")
  else:
-  total_pages = calc_total_pages(get_lab_data(lab_group).count())
+  total_pages = calc_total_pages(get_lab_Data(lab_group).count())
  for i in xrange(1, total_pages+1):
   clear_page_cache(lab_group, i)
 
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-def get_template_form(entry, model):
- result = {}
- if model=="Recommendation":
-  result["reaction"] = [[getattr(entry, "reactant_{}".format(i)), getattr(entry, "quantity_{}".format(i)), getattr(entry, "unit_{}".format(i))] for i in CONFIG.reactant_range()]
-  fields = get_model_field_names(model="Recommendation", unique_only=True)
-  verbose_fields = get_model_field_names(verbose=True, model="Recommendation", unique_only=True)
-  result["info"] = [[i, getattr(entry,j)] for (i,j) in zip(verbose_fields, fields)] 
- else:
-  raise Exception("Model type not found!") 
- return result
 
 #Given a user, change their password and email them the new password.
 def randomize_password(user):
@@ -233,7 +190,7 @@ def data_transmit(request):
    if query_list:
     data = filter_data(u.get_profile().lab_group, query_list)
    else:
-    data = get_lab_data(u.get_profile().lab_group)
+    data = get_lab_Data(u.get_profile().lab_group)
 
    if data.count():
     session = get_page_info(request, page=int(page), data=data)
@@ -432,40 +389,6 @@ def save_recommmendation(request):
 ####################################################
 
 ######################  Core Views  ####################################
-
-###TODO: Modify to get recommendations from DB
-def get_reactants(lst): ###TODO: GENERALIZE
- reactant_info = [[lst[i-3],lst[i-2],lst[i-1]] for i in range(3,len(lst),3)]
- return reactant_info
-  
-def get_info(lst): ###TODO: GENERALIZE
- #Get from Temperature on -- excluding Notes.
- verbose_headers = get_model_field_names(verbose=True, model="Data")[16:]
- info = [[i, j] for (i,j) in zip(verbose_headers, lst)]
- return info 
-
-def get_recommendations(lab_group):
- return Recommendation.objects.filter(lab_group=lab_group)
-
-def get_recommendations_by_date(lab_group, date = "recent"):
- if date=="recent":
-  #Get the most recent version of the model.
-  try:
-   version = Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("date")[0]
-   date = version.date
-  except Exception as e:
-   raise Exception("Could not find any version of the model: {}".format(e))
-
- #Get the data associated with a specific date.
- try:
-  recommendations = get_recommendations(lab_group).filter(date=date).order_by("-score")
- except Exception as e:
-  raise Exception("Could not find any version of the model: {}".format(e))
-
- return recommendations
-
-
-###
 import time
 
 def predictions(request):
@@ -532,66 +455,6 @@ def gather_SVG(request):
   # request.body ===
   #  query_list --> {[{u"field":u"FIELD", u"value":u"VALUE"}, ...]}
 
-def filter_data(lab_group, query_list):
- #Variable Setup:
- lab_data = get_lab_data(lab_group)
- filters = ""
-
- #Collect all the valid search options
- non_reactant_fields = get_model_field_names(unique_only=True)
- foreign_fields = ["user"] #Fields that cannot search by containment.
- legal_fields = set(non_reactant_fields+["reactant","quantity","unit","public","is_valid", "atoms"]+foreign_fields)
-
- #Check the query_list input before performing any database requests.
- try:
-  for query in query_list:
-   assert query.get(u"field") in legal_fields
-   assert query.get(u"match") in {"contain","exact"}
-   assert query.get(u"value")
-   assert not "\"" in query.get(u"value")
-
- except:
-  raise Exception("One or more inputs is illegal.")
- 
- try:
-  for query in query_list:
-   #Get the query information.
-   field = query.get(u"field")
-   if field in foreign_fields:
-    field = "user__username"
-   if query.get(u"match")=="contain" and field not in foreign_fields:
-    match = "__icontains"
-   else:
-    match = ""
-   value = query.get(u"value")
- 
-   if field in list_fields:
-    #Check all the reactant/quantity/unit fields.
-    Q_obj = ''.join(["Q({}_{}{}=\"{}\")|".format(field, i, match, value) for i in CONFIG.reactant_range()])[:-1]
-    filters += ".filter({})".format(Q_obj)
-   elif field=="atoms":
-    atom_list = value.split(" ")
-    if len(atom_list)>1:
-     search_bool = atom_list.pop(-2) #Take the "and" or "or" from the list.
-     op = "," if search_bool == "and" else "|" #Assign the correct Q operator.
-     #Add the atoms  to a Q filter.
-     Q_obj = ''.join(["Q(atoms__contains=\"{}\"){}".format(atom, op) for atom in atom_list])[:-1]
-    else:
-     Q_obj = "Q(atoms__contains=\"{}\")".format(atom_list[0])
-    filters += ".filter({})".format(Q_obj)
-   else:
-    #Translate Boolean inputs into Boolean values.
-    if field in bool_fields:
-     value = True if value.lower()[0] in "1tyc" else False
-     filters += ".filter({}={})".format(field, value)
-    else:
-     filters += ".filter({}{}=\"{}\")".format(field, match, value)
-  data = eval("lab_data"+filters).order_by("creation_time")
-  return data
-
- except Exception as e:
-  pass #Security precaution.
-
 def search(request):
  u = request.user
  if u.is_authenticated() and request.method=="POST":
@@ -636,7 +499,7 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
    #Submit a blank form if one was not just submitted.
    form = CompoundGuideForm()
 
-  guide = list(collect_CG_entries(lab_group))
+  guide = list(get_lab_CG(lab_group))
 
   return render(request, 'compound_guide.html', {
    "guide": guide,
@@ -652,7 +515,7 @@ def compound_guide_entry(request):
   lab_group = u.get_profile().lab_group
   if request.method == 'POST':
    entry_info = json.loads(request.body, "utf-8")
-   query = CompoundEntry.objects.filter(lab_group=lab_group, compound=entry_info["compound"])
+   query = get_lab_CG(lab_group).filter(compound=entry_info["compound"])
    if query.exists():
     return render(request, 'compound_guide_row.html', {
      "entry": query[0]
@@ -668,7 +531,7 @@ def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
  if old_abbrev=="":
   raise Exception("Abbrev cannot be an empty string.")
 
- lab_data = get_lab_data(lab_group)
+ lab_data = get_lab_Data(lab_group)
  for i in CONFIG.reactant_range():
   reactant = "reactant_{}".format(i)
   affected_data = lab_data.filter(Q((reactant, old_abbrev)))
@@ -682,11 +545,11 @@ def edit_CG_entry(request):
 
   #Get the Lab_Group's Compound Guide
   lab_group = u.get_profile().lab_group
-  CG_data = collect_CG_entries(lab_group)
+  CG_data = get_lab_CG(lab_group)
 
   if changesMade["type"]=="del":
    try:
-    lab_data = get_lab_data(lab_group)
+    lab_data = get_lab_Data(lab_group)
     #Delete each datum in the pid list.
     for pid in changesMade.getlist("pids[]"):
      #Mark any entry that uses this datum is now invalid.
@@ -788,7 +651,7 @@ def data_form(request): #If no data is entered, stay on the current page.
    lab_group = u.get_profile().lab_group
 
    #Clear the cache of the last page.
-   old_data_size = get_lab_data_size(lab_group)
+   old_data_size = get_lab_Data_size(lab_group)
    clear_page_cache_of_index(lab_group, old_data_size)
 
    #Refresh the TOTALSIZE cache.
@@ -805,7 +668,7 @@ def data_form(request): #If no data is entered, stay on the current page.
     data = get_recommendations(lab_group).get(id=pid)
     init_fields = {field:getattr(data, field) for field in get_model_field_names(model="Recommendation")}
    else:
-    data = get_lab_data(lab_group).get(id=pid)
+    data = get_lab_Data(lab_group).get(id=pid)
     init_fields = {field:getattr(data, field) for field in get_model_field_names()}
 
   except Exception as e:
@@ -1362,7 +1225,7 @@ def download_CSV(request):
    verbose_headers.insert(0, "Reference")
    headers.remove("ref")
    headers.insert(0, "ref")
-   data = get_lab_data(lab_group)
+   data = get_lab_Data(lab_group)
 
    if filters:
     data = filter_data(lab_group, filters)
@@ -1375,7 +1238,7 @@ def download_CSV(request):
   else: #if model=="CompoundEntry"
    verbose_headers.remove("Image URL")
    headers.remove("image_url")
-   data = collect_CG_entries(lab_group)
+   data = get_lab_CG(lab_group)
 
   try:
    #Write the data to the file.
@@ -1432,7 +1295,7 @@ def download_error_log(request): ###Nothing done yet... ;B
 
   #Write the actual entries to the CSV_file if the user is authenticated.
   headers = get_model_field_names(verbose=False)
-  lab_data = get_lab_data(u.get_profile().lab_group)
+  lab_data = get_lab_Data(u.get_profile().lab_group)
 
   for entry in lab_data:
    row = []
@@ -1482,7 +1345,7 @@ def add_reactant(request):
   #Variable Setup
   reactantDict = {}
   lab_group = u.get_profile().lab_group
-  lab_data = get_lab_data(lab_group) 
+  lab_data = get_lab_Data(lab_group) 
 
   #Gather the request and user info.
   try:
@@ -1537,7 +1400,7 @@ def delete_reactant(request):
  u = request.user
  if request.method=="POST" and u.is_authenticated():
   lab_group = u.get_profile().lab_group
-  lab_data = get_lab_data(lab_group)
+  lab_data = get_lab_Data(lab_group)
   try:
    group = int(request.POST["group"])
    pid = request.POST["pid"]
@@ -1570,7 +1433,7 @@ def delete_Data(request):
   #Variable Setup
   lab_group = u.get_profile().lab_group
   deleteList = json.loads(request.body, "utf-8")
-  lab_data = get_lab_data(lab_group)
+  lab_data = get_lab_Data(lab_group)
 
   #Find and delete data entries in a User's Lab. 
   for pid in deleteList:
@@ -1625,7 +1488,7 @@ def change_Data(request):
   #Variable Setup
   lab_group = u.get_profile().lab_group
   editLog = request.POST
-  lab_data = get_lab_data(lab_group)
+  lab_data = get_lab_Data(lab_group)
   
   #Get the Datum for the lab.
   try:
@@ -1633,7 +1496,6 @@ def change_Data(request):
    fieldChanged = editLog["field"]
    newValue = editLog["newValue"]
    datum = lab_data.get(id=pid) 
-
    #Verify that the fieldChanged is in the whitelist.
    assert fieldChanged in whitelist
   except:
@@ -1648,7 +1510,8 @@ def change_Data(request):
     clean_data, errors = full_validation(dirty_data, lab_group)
    else:
     clean_data, errors = full_validation(dirty_data, lab_group, revalidating=True)
-   
+
+
    #Send back an error if it exists.
    if errors:
     return HttpResponse("{}".format(errors[errors.keys()[0]]))
@@ -1656,11 +1519,9 @@ def change_Data(request):
    #Get the parsed value after cleaning.
    setattr(datum, fieldChanged, clean_data[fieldChanged])
 
-   #Set the datum as valid since it passed validation.
-   datum.is_valid = True
-
    #Make the edit in the database.
    datum.user = u
+   datum.is_valid = clean_data["is_valid"] 
    datum.save()
  
    if fieldChanged=="ref":
@@ -1669,10 +1530,10 @@ def change_Data(request):
    elif fieldChanged[:8]=="reactant":
     #Update the atom information and any other information that may need updating. 
     update_reaction(datum, lab_group)
- 
    return HttpResponse(0)
 
-  except:
+  except Exception as e:
+   print e
    return HttpResponse("Edit unsuccessful...")
 
  return HttpResponse("<p>Please log in to modify data.</p>")
@@ -1797,6 +1658,23 @@ def lab_registration(request): ###Not finished.
  })
 
 ######################  Developer Functions  ###########################
+def remove_lonely_grams(lab_group):
+ data = get_lab_Data(lab_group)
+ nums = [3,4,5]
+ for entry in data:
+  for i in nums:
+   if getattr(entry, "unit_{}".format(i)):
+    if not getattr(entry, "reactant_{}".format(i)):
+     setattr(entry, "unit_{}".format(i), "")
+     entry.save()
+
+     try:
+      revalidate_datum(reaction, lab_group)
+     except:
+      pass
+ print "Removed all lonely grams!"
+
+######################  Email Functions  ###########################
 def alert_about_new_lab(lab_group):
  email_body = "A new Lab Group has been registered:"
  email_body += "\n{}\n{}\n{}".format(lab_group.lab_title, lab_group.lab_address, lab_group.lab_email) 

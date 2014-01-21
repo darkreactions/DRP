@@ -70,7 +70,7 @@ Assigned User:
 <option val="">None</option>
 {% for usr in users %}
  <option val="{{usr.id}}" 
- {% if entry.user == usr %}
+ {% if entry.assigned_user == usr %}
  selected
  {% endif %}>{{usr.first_name}} {{usr.last_name}}</option>
 {% endfor %}

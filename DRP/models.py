@@ -14,6 +14,31 @@ from data_config import CONFIG
 import rdkit.Chem as Chem
 import chemspipy
 
+
+#Basic Retrieval Functions Necessary in Models:
+#Get the data that belongs to a Lab_Group
+def get_lab_Data(lab_group):
+ return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
+
+def get_ref_set(lab_group, reset_cache=True):
+ ref_set = get_cache(lab_group, "DATAREFS")
+ if not ref_set or reset_cache:
+  ref_set = set(get_lab_Data(lab_group).values_list('ref', flat=True))
+  set_cache(lab_group, "DATAREFS", ref_set)
+ return ref_set
+
+def get_Lab_Group(query):
+ try:
+  if type(query==Lab_Group):
+   return query
+  return Lab_Group.objects.filter(lab_title=raw_string).get()
+ except:
+  raise Exception("Could not find Lab_Group with lab_title: {}".format(raw_string))
+
+def get_lab_CG(lab_group):
+ return CompoundEntry.objects.filter(lab_group=lab_group).order_by("abbrev")
+
+
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # RDKIT and ChemSpider Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
@@ -67,7 +92,7 @@ def get_atoms_from_smiles(smiles, show_hydrogen=False):
 def collect_CGs_by_abbrevs(lab_group, abbrev_list):
  CG_list = []
  for i in abbrev_list:
-  query = CompoundEntry.objects.filter(lab_group=lab_group, abbrev=i)
+  query = get_lab_CG(lab_group).filter(abbrev=i)
   if query.exists(): #Don't append index an empty query; Django gets annoyed.
    CG_list.append(query[0])
  return CG_list
@@ -123,7 +148,7 @@ def update_reaction(reaction, lab_group):
  revalidate_datum(reaction, lab_group)
 
 def update_all_reactions(lab_group):
- data = get_lab_data(lab_group)
+ data = get_lab_Data(lab_group)
  for entry in data:
   try:
    update_reaction(reaction, lab_group)
@@ -133,7 +158,7 @@ def update_all_reactions(lab_group):
 
 def update_reactions_with_compound(lab_group, compound):
  #Update the individual "atom" records on each reaction.
- lab_data = get_lab_data(lab_group)
+ lab_data = get_lab_Data(lab_group)
  changed_reactions = get_Data_with_abbrev(lab_data, compound)
  for reaction in changed_reactions:
   try:
@@ -173,12 +198,6 @@ class Lab_Group(models.Model):
 
  def __unicode__(self):
   return self.lab_title
-
-def get_Lab_Group(raw_string):
- try:
-  return Lab_Group.objects.filter(lab_title=raw_string).get()
- except:
-  raise Exception("Could not find Lab_Group with lab_title: {}".format(raw_string))
 
 ############### USER CREATION #######################
 class Lab_Member(models.Model):
@@ -234,87 +253,6 @@ class Recommendation(models.Model):
 
  def __unicode__(self):
   return u"REC: {} -- (LAB: {} -- Saved: {})".format(self.score, self.lab_group.lab_title, self.saved)
-
-#Organize the reactants into sublists: [[reactant, quantity, unit], ...]
-def partition_reactant_fields(lst):
- num_fields = CONFIG.fields_per_reactants
- total_fields = num_fields * CONFIG.num_reactants
- #Sort the <total_fields> elements of lst into sublists of <num_fields> elements each
- reaction = []
- reactant = []
- for (datum, i) in zip(lst, xrange(total_fields)):
-  if i%num_fields==0 and i!=0:
-   reaction.append(reactant)
-   reactant = [datum] 
-  else:
-   reactant.append(datum)
- reaction.append(reactant)
- return reaction
- 
-#Apply the headings to the variables in the list.
-###TODO: Notes for Paul: Remove the "ref"
-def get_vars_from_list(lst):
- verbose_headers = get_model_field_names(verbose=True, model="Data")[16:]
- info = [[i, j] for (i,j) in zip(verbose_headers, lst)]
- return info 
-
-#Creates the Recommendation entry, but does not store it in database.
-def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
- try:
-  new_rec = Recommendation()
-  #Set the self-assigning fields:
-  setattr(new_rec, "lab_group", lab_group)
-  setattr(new_rec, "score", float(lst[0]))
-
-  #Set the non-user field values.
-  fields = get_model_field_names(model="Recommendation")
-  for (field, value) in zip(fields, lst[2][1:]): #Ignore the reference field.
-   #Translate Booleans into Boolean values.
-   if value=="yes":
-    value=True
-   if value=="no":
-    value=False
-   setattr(new_rec, field, value)
-  return new_rec
-   
-  new_rec.atoms = "".join(get_atom_set_from_abbrevs(lab_group, get_abbrevs_from_reaction(new_rec)))
- 
-  if not in_bulk:
-    new_rec.date = str(datetime.datetime.now())
-
-  return new_rec
- except Exception as e:
-  raise Exception("Recommendation construction failed: {}".format(e))
-
-def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = ""):
- if type(lab_group) != Lab_Group:
-  lab_group = get_Lab_Group(lab_group)
- 
- call_time = str(datetime.datetime.now())
- 
- #Store the information for this "Version" of the Recommendation model.
- new_version = Model_Version()
- new_version.model_type = "Recommendation"
- new_version.date = call_time
- new_version.notes = version_notes
- new_version.lab_group = lab_group
- new_version.save()
-
- #Store the actual Recommendation entries.
- num_success = 0
- count = 0
- for i in list_of_recommendations:
-  count += 1
-  try:
-   new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
-   new_rec.date = call_time
-   new_rec.model_version = new_version
-   new_rec.save() #Store this recommendation in the database
-   num_success += 1
-  except Exception as e:
-    print "Recommendation {} could not be constructed: {}".format(count, e)
- 
- print "Finished creating and storing {} of {} items!.".format(num_success, count)
 
 ############### COMPOUND GUIDE ########################
 class CG_calculations(models.Model):
@@ -386,7 +324,7 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 
  #Block duplicate abbrevs and compounds.
  if not editing_this:
-  if not errors.get("compound") and CompoundEntry.objects.filter(compound=clean_data["compound"]).exists():
+  if not errors.get("compound") and get_lab_CG(lab_group).filter(compound=clean_data["compound"]).exists():
    errors["compound"] = "Compound already exists."
   if not errors.get("abbrev"):
    if CompoundEntry.objects.filter(abbrev=clean_data["abbrev"]).exists():
@@ -413,34 +351,6 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
 
 ######HERE
 
-""" #TODO: Needs security work.
-def update_all_compounds(lab_group=None):
- if lab_group:
-  query = CompoundEntry.objects.filter(lab_group=lab_group)
-  count = query.count()
-  #Update all of the compounds before updating the reactions.
-  print "Starting compound updates..."
-  for i in query:
-   update_compound(i, update_reactions_with_compound=False)
-  print "Starting reaction updates..."
-  for i in query:
-   update_reactions_with_compound(i)
-  print "Finished updating compounds for {}.".format(lab_group.lab_title)
- else:
-  query = CompoundEntry.objects.all()
-  print "Starting compound updates..."
-  for i in query:
-   update_compound(i, update_reactions_with_compound=False)
-  print "Starting reaction updates..."
-  for i in query:
-   update_reactions_with_compound(i)
-  print "Finished updating ALL compounds."
-"""
-
-###REREAD TO PROVE USEFUL?
-def collect_CG_entries(lab_group):
- return CompoundEntry.objects.filter(lab_group=lab_group).order_by("abbrev") 
-
 def convert_QuerySet_to_list(query, model, with_headings=True):
  #Get the appropriate headings.
  all_fields = get_model_field_names(model=model, collect_ignored=True)
@@ -461,23 +371,21 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
  return query_list
 
 def collect_reactions_as_lists(lab_group, with_headings=True):
- if type(lab_group) != Lab_Group:
-  lab_group = get_Lab_Group(lab_group)
+ lab_group = get_Lab_Group(lab_group)
 
- query = Data.objects.filter(lab_group=lab_group)
+ query = get_lab_Data(lab_group)
  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
-def collect_CG_entries_as_lists(lab_group, with_headings=True):
- if type(lab_group) != Lab_Group:
-  lab_group = get_Lab_Group(lab_group)
+def get_lab_CG_as_lists(lab_group, with_headings=True):
+ lab_group = get_Lab_Group(lab_group)
 
- query = collect_CG_entries(lab_group)
+ query = get_lab_CG(lab_group)
  return convert_QuerySet_to_list(query, "CompoundEntry", with_headings=with_headings)
 
 def collect_CG_name_pairs(lab_group, overwrite=False):
  pairs = get_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS")
  if not pairs or overwrite:
-  compound_guide = collect_CG_entries(lab_group)
+  compound_guide = get_lab_CG(lab_group)
   pairs = {entry.abbrev: entry.compound for entry in compound_guide}
   set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", pairs)
  return pairs
@@ -495,7 +403,6 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
  except Exception as e:
   raise Exception("CompoundEntry construction failed!")
 
-
 #Filter the Data by a specific abbrev.
 def get_Data_with_abbrev(lab_data, abbrev):
  if type(abbrev)==CompoundEntry:
@@ -507,14 +414,12 @@ def get_Data_with_abbrev(lab_data, abbrev):
 #Collect a list of all valid data either globally or for a specific lab.
 def get_good_rxns(lab_group=None, with_headings=True):
  if lab_group:
-  if type(lab_group) != Lab_Group:
-   lab_group = get_Lab_Group(lab_group)
-  query = Data.objects.filter(lab_group=lab_group, is_valid=True)
+  lab_group = get_Lab_Group(lab_group)
+  query = get_lab_Data(lab_group).filter(is_valid=True)
  else:
    query = Data.objects.filter(is_valid=True)
 
  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
-
 
 ############### DATA ENTRY ########################
 calc_fields = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass', 'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
@@ -625,16 +530,6 @@ class DataCalc(models.Model):
  def __unicode__(self):
   return u"{}".format(self.XXXtitle);
 
-
-#Create the form choices from the pre-defined ranges.
-OUTCOME_CHOICES = [[opt,opt] for opt in edit_choices["outcomeChoices"]]
-PURITY_CHOICES = [[opt,opt] for opt in edit_choices["purityChoices"]]
-UNIT_CHOICES = [[opt,opt] for opt in edit_choices["unitChoices"]]
-BOOL_CHOICES = [[opt,opt] for opt in edit_choices["boolChoices"]]
-
-#Fields that are allowed to be stored as listy_strings.
-list_fields = ["reactant", "quantity", "unit"]
-
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
  #List Fields
@@ -689,15 +584,6 @@ def calculate_pH_from_CG(entry):
 
 def calculate_pH_from_reaction(reaction_info):
  pass
-
-
-def get_lab_data(lab_group):
- return Data.objects.filter(lab_group=lab_group).order_by("creation_time")
-
-def get_public_data():
- #Only show the public data that is_valid.
- return Data.objects.filter(public=True, is_valid=True).order_by("creation_time")
-
 
 #Add specified entries to a datum. Assume fields are now valid.
 def new_Data_entry(user, **kwargs): ###Not re-read yet.
@@ -765,12 +651,11 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
    clean_fields += [field.name]
  return clean_fields
 
-def get_ref_set(lab_group, reset_cache=True):
- ref_set = get_cache(lab_group, "DATAREFS")
- if not ref_set or reset_cache:
-  ref_set = set(Data.objects.values_list('ref', flat=True))
-  set_cache(lab_group, "DATAREFS", ref_set)
- return ref_set
+def bools_not_unknown(field):
+ for field in bool_fields:
+  if field==CONFIG.unknown_label:
+   return False
+ return True
 
 def revalidate_datum(datum, lab_group):
  #Collect the data to validate
@@ -778,9 +663,7 @@ def revalidate_datum(datum, lab_group):
  #Validate and collect any errors
  (clean_data, errors) = full_validation(dirty_data, lab_group, revalidating=True)
 
- is_valid = False if errors else True
-
- setattr(datum, "is_valid", is_valid)
+ setattr(datum, "is_valid", clean_data["is_valid"])
  datum.save()
 
  return (clean_data, errors)
@@ -791,6 +674,7 @@ def full_validation(dirty_data, lab_group, revalidating=False):
  errors = {}
 
  fields = get_model_field_names()
+ clean_data["is_valid"] = True
 
  #Gather the "coupled" fields (ie, the fields ending in a similar number)
  for field in list_fields:
@@ -817,7 +701,7 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     parsed_data[field] = dirty_data[field]
    except:
     if field in not_required:
-     clean_data[field] = "" #If nothing was entered, store nothing ###Used to be "?" -- why?
+     clean_data[field] = "" #If nothing was entered, store nothing. 
     else:
      errors[field] = "Field required."
 
@@ -830,7 +714,8 @@ def full_validation(dirty_data, lab_group, revalidating=False):
   if quantity[i]:
    x+=3
    parsed_data["quantity"][i] = quantity[i]
-  parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
+  if x==5:
+   parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
 
   #Unit is added automatically, so don't check it.
   if x == 3:
@@ -893,6 +778,8 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     try:
      dirty_datum = str(parsed_data[field])
      assert(quick_validation(field, dirty_datum))
+     if clean_data["is_valid"]:
+      clean_data["is_valid"] = CONFIG.unknown_label != dirty_datum
      clean_data[field] = dirty_datum
     except:
      if field in bool_fields:

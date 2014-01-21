@@ -2,7 +2,7 @@
  {% if data_on_page %}
   {% for entry, entryID in data_on_page %}
    <div class="dataGroup dataGroup_shape genericContainer_inner copyable 
-   {% if not entry.is_valid %}badDataGroup{% endif %}" pid="{{entry.id}}">
+   {% if not entry.is_valid %}badData{% endif %}" pid="{{entry.id}}">
     <div class="dataIndex">{{ entryID }}</div>
     <div class="dataSpecificButtonContainer"></div>
     <div class="dataEntry">
