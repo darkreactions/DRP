@@ -110,11 +110,15 @@ def filter_data(lab_group, query_list):
 def get_recommendations(lab_group):
  return Recommendation.objects.filter(lab_group=lab_group)
 
+def get_latest_Model_Version(lab_group):
+   return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date").first()
+
+
 def get_recommendations_by_date(lab_group, date = "recent"):
  if date=="recent":
   #Get the most recent version of the model.
   try:
-   version = Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("date")[0]
+   version = get_latest_Model_Version(lab_group)
    date = version.date
   except Exception as e:
    raise Exception("Could not find any version of the model: {}".format(e))
