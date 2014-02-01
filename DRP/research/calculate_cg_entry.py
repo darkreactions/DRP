@@ -1,6 +1,6 @@
 import sys, subprocess
 import rdkit.Chem as Chem
-class CGEntry:
+class CGCalculator:
     def __init__(self, abbrev, fake_abbrev, smiles, m_type,jchem_path = "/home/praccugl/ChemAxon/JChem/bin", sdf_path="sdf", error_pipe = sys.stderr):
         ''' smiles = SMILES string of the compound
         m_type = the type of the molecule. Can be: 

@@ -5,7 +5,7 @@ from retrievalFunctions import *
 
 
 def create_CG_calcs_if_needed(compound, smiles, compound_type):
-    from calculate_CG_entry import CGentry
+    from calculate_CG_entry import CGCalculator
     from models import CG_calculations
     import json
     
@@ -21,12 +21,12 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
         print "No smiles for {0}".format(abbrev)
         return
 
-    if len(CGEntry.objects.filter(compound=compound)) == 0:
+    if len(CGCalculator.objects.filter(compound=compound)) == 0:
         return
 
     sdf_filename = str(uuid4()) + filter(str.isalnum, compound)
 
-    props = CGEntry(abbrev, sdf_filename, smiles, compound_type, jchem_path, sdf_path).get_properties()
+    props = CGCalculator(abbrev, sdf_filename, smiles, compound_type, jchem_path, sdf_path).get_properties()
     props = json.dumps(props)
 
     cgc = CG_calculations(json_data=props, compound = compound, smiles = smiles)
