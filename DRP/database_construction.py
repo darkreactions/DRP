@@ -1,5 +1,40 @@
 from retrievalFunctions import *
 
+
+
+
+
+def create_CG_calcs_if_needed(compound, smiles, compound_type):
+    from calculate_CG_entry import CGentry
+    from models import CG_calculations
+    import json
+    
+    from UUID import uuid4
+    
+    jchem_path = "/home/drp/ChemAxon/JChem/bin"
+    sdf_path = "sdf
+
+    if compound_type != "Org":
+        return
+
+    if smiles == "" :
+        print "No smiles for {0}".format(abbrev)
+        return
+
+    if len(CGEntry.objects.filter(compound=compound)) == 0:
+        return
+
+    sdf_filename = str(uuid4()) + filter(str.isalnum, compound)
+
+    props = CGEntry(abbrev, sdf_filename, smiles, compound_type, jchem_path, sdf_path).get_properties()
+    props = json.dumps(props)
+
+    cgc = CG_calculations(json_data=props, compound = compound, smiles = smiles)
+    cgc.save()
+
+
+
+
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  Recommendations  # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
