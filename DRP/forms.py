@@ -76,12 +76,11 @@ class CompoundGuideForm(ModelForm):
   required=False)
  compound_type = ChoiceField(label="Type", choices = TYPE_CHOICES,
   widget=Select(attrs={'class':'form_text dropDownMenu',
-  "title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>"+
-  "--Solute<br/>--Water"}))
+  "title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>--Solute<br/>--Water"}))
 
  class Meta:
   model = CompoundEntry
-  exclude = ("lab_group", "image_url", "smiles", "mw")
+  exclude = ("lab_group", "calculations", "image_url", "smiles", "mw", "calculations", "custom")
 
  def __init__(self, lab_group=None, *args, **kwargs):
   super(CompoundGuideForm, self).__init__(*args, **kwargs)
@@ -90,7 +89,6 @@ class CompoundGuideForm(ModelForm):
  def save(self, commit=True):
   entry = super(CompoundGuideForm, self).save(commit=False)
   entry.lab_group = self.lab_group
-  update_compound(entry.lab_group, entry)
 
   if commit:
    entry.save()

@@ -31,7 +31,7 @@
 
  position:absolute;
  top:10px;
- right:60px;
+ left:60px;
 }
 
 .CG_deleteButton {
@@ -165,6 +165,10 @@
 #topPanel{
  position:relative;
  display:block;
+}
+
+.currentTitle {
+ font-weight:bold;
 }
 
 /* ###### NAVIGATION ####### */
@@ -750,7 +754,15 @@ div.ui-tooltip {
  min-width:400px;
 }
 
-#popupContainer[for="CG_activatorButton"] {
+#popupContainer[for="CompoundGuide"] {
+ text-align:center;
+ top:50px;
+ left:2.5%;
+ width:95%;
+ min-width:650px;
+}
+
+#popupContainer[for="CompoundGuide_form"] {
  text-align:center;
  top:50px;
  left:10%;
@@ -1113,6 +1125,11 @@ height:10px;
 }
 
 /* ###############   TEXT   ######################################### */
+.subscript {
+ vertical-align:sub;
+ font-size:12px;
+}
+
 .separatedText {
  margin:20px;
  font-size:18px;
@@ -1162,6 +1179,11 @@ p.basicParagraph {
 
 .savedRecommendation {
  background-color:#99FF99;
+}
+
+.hiddenRecommendation {
+ opacity:0.4;
+ background-color:white;
 }
 
 #popupContainer_inner > h1 {
@@ -1309,7 +1331,7 @@ color: #355A77;
 }
 
 /* ###############   CG Guide   ############################ */
-#CG_display {
+#CG_display, .compoundCheckResults {
  position:relative;
  padding:16px;
  margin: 0 auto;
@@ -1325,6 +1347,11 @@ color: #355A77;
  color:black;
  background-color:white;
 }
+
+.compoundCheckResults:empty {
+ display:none;
+}
+
 #CG_table{
  width:100%;
 }
@@ -1347,6 +1374,7 @@ color: #355A77;
 }
 
 .CG_image_container {
+ text-align:center;
  width:200px;
 }
 

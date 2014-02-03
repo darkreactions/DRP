@@ -1,26 +1,6 @@
 <div class="secondaryCornerButton popupCornerButton genericButton popupActivator" title="Download Compound Guide." style="background-image: url({{ STATIC_URL }}icons/download.png);" id="leftMenu_download_compoundentry"></div>
 <div class="tertiaryCornerButton popupCornerButton genericButton popupActivator" title="Upload Compound Guide." style="background-image: url({{ STATIC_URL }}icons/upload.png);" id="leftMenu_upload_compoundentry"></div>
 
-
-{% if form.errors %}
- <div class="subPopup">
-  <div class="closeButton">x</div>
-   <h1>Errors:</h1>
-  {% for field in form %}
-  {% if field.errors %}
-   <div class="error">
-    <div class="error_label">{{ field.label_tag }}</div>
-    <div class="error_message">{{ field.errors.as_text }}</div>
-   </div>
-  {% endif %}
-  {% endfor %}
- </div>
-{% endif %}
-
-{% if success %}
- <div class="successActivator"></div>
-{% endif %}
-
 <h1>Compound Guide:</h1>
 
 {% spaceless %}
@@ -44,22 +24,6 @@
   <p>No entries in compound guide!</p>
  {% endif %}
 </div>
-
 {% endspaceless %}
 
-<form id="compoundGuideForm" method="post" action="/compound_guide_form/" class="popupScreenForm infoForm">
- {% csrf_token %}
- {% for field in form %}
-     <div class="fieldWrapper">
-         {{ field.label_tag }} {{ field }}
-  </div>
- {% endfor %}
- {% if user.is_authenticated %}
-  <center>
-  <input name="submit" id = "submitData" type="submit" value="Add New" class="button"/>
-  </center>
- {% else %}
-  <p> Please log in to submit data. </p>
- {% endif %}
- </div>
-</form>
+<div class="button genericButton popupActivator" title="Add a new compound entry." id="CompoundGuide_form">New</div>

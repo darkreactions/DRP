@@ -26,6 +26,10 @@ function adaptSize(element) {
  }, 50);
 };
 
+function formatText(text) {
+ return text.replace(/_{(.*?)}/g, function(r,m){return "<span class=\"subscript\">"+m+"</span>"});
+}
+
 //Get edit-by-menu options from editChoices.json.
 function getOptions(field) {
  switch (field) {
@@ -214,6 +218,7 @@ $(document).on("mouseleave", ".dataGroup", function() {
 $(document).on("mouseover", ".dataGroup", function() {
  if ($(".dataSpecificButton").length == 0 ){
 
+  //DATA-SPECIFIC BUTTONS # # # # # # # # # # # # # # # #
   //Add the copy button.
   if ($(this).attr("class").indexOf("copyable") >= 0) {
    addDataSpecificButton(this, "leftMenu_addNew", "add.png", 
@@ -225,20 +230,29 @@ $(document).on("mouseover", ".dataGroup", function() {
   if ($(this).attr("class").indexOf("recommendation") >= 0) {
    //Add the (un)save buttons. 
    if ($(this).attr("class").indexOf("savedRecommendation") < 0) {
-    addDataSpecificButton(this, "saveRecommendation", "delete.png", 
-     "Save this recommendation")
+    addDataSpecificButton(this, "saveRecommendation", "save.png", 
+     "Save this recommendation.")
    } else {
-    addDataSpecificButton(this, "unsaveRecommendation", "save.png", 
-     "Unsave this recommendation")
+    addDataSpecificButton(this, "unsaveRecommendation", "delete.png", 
+     "Unsave this recommendation.")
    }
  
    //Add the (non)sensical buttons.
    if ($(this).attr("class").indexOf("badRecommendation") < 0) {
-    addDataSpecificButton(this, "nonsensicalRecommendation", "check.png", 
+    addDataSpecificButton(this, "nonsensicalRecommendation", "nonsense.png", 
      "Mark this recommendation as nonsensical.")
    } else {
-    addDataSpecificButton(this, "sensicalRecommendation", "nonsense.png", 
+    addDataSpecificButton(this, "sensicalRecommendation", "check.png", 
      "Mark this recommendation as sensical.")
+   }
+
+   //Add the show/hide button.
+   if ($(this).attr("class").indexOf("hiddenRecommendation") < 0) {
+    addDataSpecificButton(this, "hideRecommendation", "hide.png", 
+     "Hide this recommendation.");
+   } else {
+    addDataSpecificButton(this, "showRecommendation", "show.png", 
+     "Show this recommendation again.");
    }
  
    //Add the transfer-to-database buttons.
@@ -273,6 +287,14 @@ $(document).on("click", ".dataSpecificButton", function() {
    var url="/unsave_recommendation/";
    var JSON = {"pid":pid}
    break;
+  case ("showRecommendation"):
+   var url="/show_recommendation/";
+   var JSON = {"pid":pid}
+   break;
+  case ("hideRecommendation"):
+   var url="/hide_recommendation/";
+   var JSON = {"pid":pid}
+   break;
   case ("sensicalRecommendation"):
    var url="/sensical_recommendation/";
    var JSON = {"pid":pid}
@@ -297,6 +319,14 @@ $(document).on("click", ".dataSpecificButton", function() {
     case("unsaveRecommendation"):
      $(dataGroup).removeClass("savedRecommendation");
      var comment = "Unsaved!";
+     break;
+    case("hideRecommendation"):
+     $(dataGroup).addClass("hiddenRecommendation");
+     var comment = "Hidden!";
+     break;
+    case("showRecommendation"):
+     $(dataGroup).removeClass("hiddenRecommendation");
+     var comment = "Shown!";
      break;
     case("sensicalRecommendation"):
      $(dataGroup).removeClass("badRecommendation");
@@ -764,14 +794,20 @@ $(document).on("click", ".popupActivator", function(event) {
     $("#popupContainer_inner").html(response);
    });
    break;
-  case "CG_activatorButton":
-   $.get("/compound_guide_form/", function(response) {
+  case "CompoundGuide":
+   $.get("/compound_guide/", function(response) {
     $("#popupContainer_inner").html(response);
     $(".CG_saveButton").remove()
     //Erase the current JSON object and selected CG entries.
     CGEntries = undefined;
     CGAbbrevs = undefined;
     CGSelected = Array();
+   });
+   break;
+  case "CompoundGuide_form":
+   $.get("/compound_guide_form/", function(response) {
+    $("#popupContainer_inner").html(response);
+    $(".CG_saveButton").remove()
    });
    break;
   default:
@@ -784,6 +820,54 @@ $(document).on("click", ".popupActivator", function(event) {
 // Cancel any masks or popups that are covering the screen. 
 $(document).on("click", ".refreshButton", function() {
  window.location.reload(true);
+});
+
+// Grab the rest of the compound_entry to avoid looking up on ChemSpider.
+$(document).on("click", ".customCompoundButton", function() {
+ var form = $(this).closest("form");
+ var elementField = "<div class=\"fieldWrapper\"><label for=\"id_atoms\">Elements: </label><input class=\"form_text\" id=\"id_atoms\" name=\"atoms\" title=\"What elements are present in this compound? Separate with spaces.\" type=\"text\"></div>"; 
+ var mwField = "<div class=\"fieldWrapper\"><label for=\"id_mw\">Molecular Weight: </label><input class=\"form_text form_text_short numericValue\" id=\"id_mw\" name=\"mw\" title=\"What is the molecular weight of this compound (in g/mol)?\" type=\"text\"></div>"; 
+ var hiddenField = "<input type=\"hidden\" name=\"customCompound\" value=\"true\">"; 
+ $(form).append(elementField + mwField + hiddenField);
+ $(form).append("<input name=\"submit\" type=\"submit\" value=\"Save\" class=\"button\"/>");
+
+ //Remove the search elements from the form.
+ $(".customCompoundButton").remove();
+ $(".checkCompoundButton").remove();
+ $(".compoundCheckResults").remove();
+});
+
+// Check a compound before adding it.
+$(document).on("click", ".checkCompoundButton", function() {
+ //Variable Setup
+ var form = $(this).closest("form");
+ var CAS_ID = $(form).find("input[name=CAS_ID]").val();
+ var compound = $(form).find("input[name=compound]").val();
+
+ if (CAS_ID || compound) {
+  data = {
+    CAS_ID : CAS_ID,
+    compound: compound,
+   }
+  $.get("/check_compound/", data, function(response) {
+   $(form).find("input[name=submit]").remove();
+   if (response=="1"){
+    showRibbon("Compound not found!", badColor, "#popupContainer_inner");
+   } else {
+    newResults = "<div>Common Name: "+response["commonName"]+"</div>"
+      + "<div>Molecular Formula: "+response["mf"]+"</div>"
+      + "<div>Molecular Weight: " + response["mv"]+" g/mol</div>"
+      + "<img src=\""+response["imageurl"]+"\" class=\"CG_image_container\"/>"
+      + "<div>Is this the compound you want to add?</div>";
+    $(".compoundCheckResults").html(formatText(newResults));
+    $(form).append("<input name=\"submit\" type=\"submit\" value=\"Save\" class=\"button\"/>");
+    
+   }
+  });
+
+ } else {
+  showRibbon("Nothing to check!", badColor, "#popupContainer_inner");
+ }
 });
 
 //Close popups on close-button click.

@@ -6,7 +6,7 @@
 {% else %}
 
 {% for entry in recommendations %}
-<div class="dataGroup dataGroup_shape genericContainer_inner recommendation{% if entry.nonsense %} badRecommendation{% endif %}{% if entry.saved %} savedRecommendation{% endif %}
+<div class="dataGroup dataGroup_shape genericContainer_inner recommendation{% if entry.nonsense %} badRecommendation{% endif %}{% if entry.saved %} savedRecommendation{% endif %}{% if entry.hidden %} hiddenRecommendation{%endif%}
 " pid="{{entry.id}}">
 
 <div class="dataIndex">{{ forloop.counter }}</div>

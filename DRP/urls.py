@@ -29,6 +29,9 @@ urlpatterns = patterns('',
     (r'^add_reactant/$', add_reactant), #[JSON] Add Reactant Group
     (r'^delete_reactant/$', delete_reactant), #[JSON] Delete Reactant Group
     (r'^data_form/$', data_form), #Form for adding new data.
+   #Add Compound Entries
+    (r'^check_compound/$', check_compound), #Form for adding new CG abbreviations.
+    (r'^compound_guide/$', compound_guide), #Form for adding new CG abbreviations.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
     (r'^compound_guide_entry/$', compound_guide_entry), #Return a single CG table entry.
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
@@ -42,6 +45,8 @@ urlpatterns = patterns('',
     (r'^saved/$', saved),
     (r'^change_Recommendation/$', change_Recommendation), #[JSON] Edit Rec Entry
     (r'^assign_user/$', assign_user_to_rec),
+    (r'^show_recommendation/$', edit_recommendation, {"action":"show"}),
+    (r'^hide_recommendation/$', edit_recommendation, {"action":"hide"}),
     (r'^save_recommendation/$', edit_recommendation, {"action":"save"}),
     (r'^unsave_recommendation/$', edit_recommendation, {"action":"unsave"}),
     (r'^sensical_recommendation/$', edit_recommendation, {"action":"sense"}),

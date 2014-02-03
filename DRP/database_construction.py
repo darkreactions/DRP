@@ -1,9 +1,5 @@
 from retrievalFunctions import *
 
-
-
-
-
 def create_CG_calcs_if_needed(compound, smiles, compound_type):
     from calculate_CG_entry import CGCalculator
     from models import CG_calculations
@@ -12,7 +8,7 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
     from UUID import uuid4
     
     jchem_path = "/home/drp/ChemAxon/JChem/bin"
-    sdf_path = "sdf
+    sdf_path = "/tmp/"
 
     if compound_type != "Org":
         return

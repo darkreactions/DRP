@@ -220,7 +220,11 @@ def recommend(request):
   fatal_message = ""
   try:
    recommendations = get_recommendations_by_date(u.get_profile().lab_group)
-  except:
+   if not request.GET.get("show_hidden"):
+    recommendations = recommendations.filter(hidden=False)
+
+  except Exception as e:
+   print e
    fatal_message = "No recommendations available."   
  else:
   fatal_message = "Please log in to view recommendations."
@@ -245,6 +249,10 @@ def edit_recommendation(request, action):
    rec.saved = True
   elif action=="unsave":
    rec.saved = False
+  elif action=="show":
+   rec.hidden = False
+  elif action=="hide":
+   rec.hidden = True
   elif action=="sense":
    rec.nonsense = False
   elif action=="nonsense":
@@ -479,18 +487,59 @@ def search(request):
   })
 
 ######################  CG Guide  ######################################
-#Send/receive the compound guide form:
-def compound_guide_form(request): #If no data is entered, stay on the current page.
+#Return a json object of the first ChemSpider result.
+def check_compound(request):
+ u = request.user
+ if u.is_authenticated():
+  #Search through each available ChemSpider field.
+  search_fields = [request.GET.get("CAS_ID"), request.GET.get("compound")]
+  for i in search_fields:
+   try:
+    query = chemspipy.find_one(i)
+    query_results = {
+      "imageurl": query.imageurl, 
+      "commonName": query.commonname, 
+      "mv": query.molecularweight,
+      "mf": query.mf,
+     } 
+    response = json.dumps(query_results)
+    return HttpResponse(response, content_type="application/json")
+   except Exception as e:
+    print e
+    pass
+  return HttpResponse(1) #Return a code to signal the compound was not found.
+ return HttpResponse("Illegal request!")
+
+#Ask for a confirmation whether a CG is correct or not.
+def compound_guide_form(request):
  u = request.user
  success = False
  if u.is_authenticated():
   lab_group = u.get_profile().lab_group
   if request.method == 'POST':
+   return HttpResponse("Feature unstable. Casey will fix soon.")
    #Bind the user's data and verify that it is legit.
-   form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
+   entry = CompoundEntry(lab_group=lab_group)
+   form = CompoundGuideForm(lab_group=lab_group, data=request.POST, instance=entry)
+   #If all data is valid, save the entry.
    if form.is_valid():
-    #If all data is valid, save the entry.
-    form.save()
+    #Add any extra fields to the compound.
+    if request.POST.get("customCompound"):
+     entry.custom = True
+     entry.mw = request.POST.get("mw")
+    else:
+     update_compound(entry.lab_group, entry)
+
+    calculations = None #TODO: Add calculations here.
+
+    #If the compound is custom, input the values the user supplied.
+    if request.POST.get("customCompound"):
+     custom_details = {
+     }
+     form.save(custom=custom_details, calculations=calculations, search_chemspider=False)
+    else:
+     form.save(calculations=calculations)     
+ 
     #Clear the cached CG data.
     set_cache(lab_group, "COMPOUNDGUIDE", None)
     set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
@@ -499,12 +548,21 @@ def compound_guide_form(request): #If no data is entered, stay on the current pa
    #Submit a blank form if one was not just submitted.
    form = CompoundGuideForm()
 
-  guide = list(get_lab_CG(lab_group))
-
-  return render(request, 'compound_guide.html', {
-   "guide": guide,
+  return render(request, 'compound_guide_form.html', {
    "form": form,
    "success": success,
+  })
+ else:
+  return HttpResponse("<p>Please log in to access the compound guide!</p>")
+
+#Send/receive the compound guide:
+def compound_guide(request):
+ u = request.user
+ if u.is_authenticated():
+  lab_group = u.get_profile().lab_group
+  guide = list(get_lab_CG(lab_group))
+  return render(request, 'compound_guide.html', {
+   "guide": guide,
   })
  else:
   return HttpResponse("<p>Please log in to access the compound guide!</p>")

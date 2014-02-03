@@ -10,7 +10,6 @@ from django.db.models import Q
 from validation import *
 import random, string, datetime, operator
 from data_config import CONFIG
-#from chemspider_rdkit_extensions import *
 import rdkit.Chem as Chem
 import chemspipy
 
@@ -121,18 +120,16 @@ def get_atom_set_from_abbrevs(lab_group, abbrev_list):
 def get_atom_set_from_reaction(reaction):
  return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
-def update_compound(lab_group, compound, update_data=True):
+def update_compound(lab_group, compound, update_data=True, search_chemspider=True):
  try:
   #Verify that the compound belongs to the lab_group.
   assert compound.lab_group == lab_group
-  #Update the CG entry itself. Make sure "inorg" types don't query ChemSpider.
+  #Update the CG entry itself.
   try:
-   compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
+   if search_chemspider:
+    compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
   except:
-   if compound.compound_type=="Inorg":
-    compound.image_url, compound.smiles, compound.mw = "","",""
-   else:
-    raise Exception("Could not find via ChemSpider!")
+   compound.image_url, compound.smiles, compound.mw = "","",""
   compound.save()
 
   #Update the individual "atom" records on each reaction.
@@ -249,6 +246,7 @@ class Recommendation(models.Model):
  #Fields for user feedback.
  saved = models.BooleanField("Saved", default=False)
  nonsense = models.BooleanField("Nonsense", default=False)
+ hidden = models.BooleanField("Hidden", default=False)
  notes = models.CharField("Notes", max_length=200, blank=True)
 
  def __unicode__(self):
@@ -257,23 +255,24 @@ class Recommendation(models.Model):
 ############### COMPOUND GUIDE ########################
 class CG_calculations(models.Model):
  json_data = models.TextField()
- compound = models.CharField(max_length=100, unique=True)
+ compound = models.CharField(max_length=200, unique=True)
  smiles = models.CharField(max_length=200, unique=True)
 
  def __unicode__(self):
   return u"{} ({})".format(self.compound, self.smiles)
 
 class CompoundEntry(models.Model):
- abbrev = models.CharField("Abbreviation", max_length=100) ###repr in admin 500 error
+ abbrev = models.CharField("Abbreviation", max_length=100)
  compound = models.CharField("Compound", max_length=100)
  CAS_ID = models.CharField("CAS ID", max_length=13, blank=True)
  compound_type = models.CharField("Type", max_length=10)
- image_url = models.CharField("Image URL", max_length=100, blank=True)
- smiles = models.CharField("SMILES", max_length=100, blank=True)
- mw = models.CharField("Molecular Weight", max_length=20)
+ image_url = models.CharField("Image URL", max_length=100, blank=True, default="")
+ smiles = models.CharField("SMILES", max_length=100, blank=True, default="")
+ mw = models.CharField("Molecular Weight", max_length=20, default="")
+ custom = models.BooleanField("Custom", default=False)
 
  lab_group = models.ForeignKey(Lab_Group, unique=False)
- #calculations = models.ForeignKey(CG_calculations)
+ calculations = models.ForeignKey(CG_calculations, null=True)
 
  def __unicode__(self):
   if self.compound == self.abbrev:
@@ -296,7 +295,7 @@ def parse_CAS_ID(CAS):
 
 
 ####errors[field] = "Field must be one of: {}".format(edit_choices[category])
-def CG_validation(dirty_data, lab_group, editing_this=False):
+def CG_validation(dirty_data, lab_group, editing_this=False, custom_compound=True):
  #Initialize the variables needed for the cleansing process.
  clean_data = {} #Keep track of cleaned fields
  errors = {}
@@ -340,13 +339,17 @@ def CG_validation(dirty_data, lab_group, editing_this=False):
   else:
    return clean_data, errors
 
-  query = chemspider_lookup({used_var:clean_data[used_var]})
-  clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = query
+  if not custom_compound:
+   query = chemspider_lookup({used_var:clean_data[used_var]})
+   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = query
+  else:
+   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = "","",""
  except Exception as e:
   if used_var=="CAS_ID":
    errors["CAS_ID"] = "Could not validate CAS. Make sure it is correct."
   else:
    errors["compound"] = "Could not find this molecule. Try a different name."
+
  return clean_data, errors
 
 ######HERE
@@ -626,13 +629,13 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time"}
   else:
-   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense", "complete", "score", "date"}
+   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense", "complete", "score", "date", "hidden"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:
-   fields_to_ignore = {u"id", "image_url"}
+   fields_to_ignore = {u"id", "image_url", "custom", "calculations"}
   else:
-   fields_to_ignore = {u"id","lab_group", "smiles", "mw"} ###Auto-populate?
+   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom", "calculations"} ###Auto-populate?
   dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
  else:
   raise Exception("Unknown model specified.")
