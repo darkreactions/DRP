@@ -493,20 +493,16 @@ def check_compound(request):
  if u.is_authenticated():
   #Search through each available ChemSpider field.
   search_fields = [request.GET.get("CAS_ID"), request.GET.get("compound")]
-  for i in search_fields:
-   try:
-    query = chemspipy.find_one(i)
-    query_results = {
-      "imageurl": query.imageurl, 
-      "commonName": query.commonname, 
-      "mv": query.molecularweight,
-      "mf": query.mf,
-     } 
-    response = json.dumps(query_results)
-    return HttpResponse(response, content_type="application/json")
-   except Exception as e:
-    print e
-    pass
+  query = get_first_chemspider_entry(search_fields)
+  if query:
+   query_results = {
+     "imageurl": query.imageurl, 
+     "commonName": query.commonname, 
+     "mv": query.molecularweight,
+     "mf": query.mf,
+    } 
+   response = json.dumps(query_results)
+   return HttpResponse(response, content_type="application/json")
   return HttpResponse(1) #Return a code to signal the compound was not found.
  return HttpResponse("Illegal request!")
 
@@ -524,17 +520,10 @@ def compound_guide_form(request):
     print "form started"
     entry = form.save()
     if not entry.custom:
-     print "starting update"
-     update_compound(entry.lab_group, entry)
-    else:
-     print "form is custom"
-
-    #Apply calculations to the compound.
-    calculations = None #TODO: Add calculations here.
-    entry.calculations = calculations
-    entry.save()
-    print "entry calculations applied."
- 
+     #Apply calculations to the compound.
+     update_compound_and_reactions(lab_group, entry)
+     print "entry calculations applied."
+  
     #Clear the cached CG data.
     set_cache(lab_group, "COMPOUNDGUIDE", None)
     set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
@@ -591,6 +580,8 @@ def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
   if affected_data.exists():
    affected_data.update(**{reactant:new_abbrev})
 
+
+### EDIT ME
 def edit_CG_entry(request): 
  u = request.user
  if request.method == 'POST' and u.is_authenticated():

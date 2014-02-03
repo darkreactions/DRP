@@ -15,7 +15,7 @@ def get_datum_by_ref(lab_group, ref):
  datum = data.filter(ref=ref)
  if not datum.exists():
   raise Exception("Datum not found!")
- return datum.first()
+ return datum[0]
 
 def get_lab_Data_size(lab_group):
  size = get_cache(lab_group, "TOTALSIZE")
@@ -103,6 +103,8 @@ def filter_data(lab_group, query_list):
 
  except Exception as e:
   pass #Security precaution.
+
+
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # RECOMMENDATIONS # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -111,7 +113,7 @@ def get_recommendations(lab_group):
  return Recommendation.objects.filter(lab_group=lab_group)
 
 def get_latest_Model_Version(lab_group):
-   return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date").first()
+ return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date")[0]
 
 
 def get_recommendations_by_date(lab_group, date = "recent"):

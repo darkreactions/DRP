@@ -4,37 +4,6 @@ from retrievalFunctions import *
    # # # # # # # # # # # # #  CG_calculations  # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-def create_CG_calcs_if_needed(compound, smiles, compound_type):
-    from calculate_CG_entry import CGCalculator
-    from models import CG_calculations
-    import json
-    
-    from UUID import uuid4
-    
-    jchem_path = "/home/drp/ChemAxon/JChem/bin"
-    sdf_path = "/tmp/"
-
-    #Only Organics may have calculations.
-    if compound_type != "Org":
-        return
-
-    if not smiles:
-        print "No smiles for {0}".format(abbrev)
-        return
-
-    sdf_filename = str(uuid4()) + filter(str.isalnum, compound)
-
-    props = CGCalculator(abbrev, sdf_filename, smiles, compound_type, jchem_path, sdf_path).get_properties()
-    props = json.dumps(props)
-
-    #Either return an old CG_calculation or a new one.
-    cgc = CG_calculations(compound=compound).first()
-    if not cgc:
-        cgc = CG_calculations(json_data=props, compound=compound, smiles=smiles)
-        cgc.save()
-    return cgc
-
-
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  Recommendations  # # # # # # # # # # # # # # # #

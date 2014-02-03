@@ -1,18 +1,20 @@
 from django.forms import *
 from django.core import validators
 from django.core.cache import cache
-
 from django.contrib.auth.models import User, Group
-
 from django.db import models
 from django.db.models import Q
 
-from validation import *
-import random, string, datetime, operator
 from data_config import CONFIG
+from validation import *
+from uuid import uuid4
+from CGCalculator import CGCalculator
+    
+
+import json, random, string, datetime, operator
 import rdkit.Chem as Chem
 import chemspipy
-
+    
 
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
@@ -41,31 +43,31 @@ def get_lab_CG(lab_group):
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # RDKIT and ChemSpider Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-def chemspider_lookup(cg_entry):
+def get_first_chemspider_entry(search_fields):
+ for i in search_fields:
+  try:
+   query = chemspipy.find_one(i)
+   return query
+  except Exception as e:
+   pass
+ return None
+
+def chemspider_lookup(val):
  chemspi_query = ""
- try:
-  #Accept either a CompoundEntry object or a dict with the valid fields
-  search_fields = ["CAS_ID", "compound"]
-  if type(cg_entry)==dict:
-   query_criteria = [cg_entry.get(i) for i in search_fields if cg_entry.get(i)]
-  elif type(cg_entry)==CompoundEntry:
-   query_criteria = [getattr(cg_entry, i) for i in search_fields]
-  elif type(cg_entry)==str:
-   query_criteria = [cg_entry]
-
-  #Works for both dicts and CG_entries
-  assert(query_criteria)
- except:
-  raise Exception("chemspider_lookup accepts strings, dicts, or CompoundEntries")
-
- for i in query_criteria:
-  if i: #ChemSpider doesn't like empty requests.
-   chemspi_query = chemspipy.find_one(i)
-  if chemspi_query: break
-
- if chemspi_query:
-  return chemspi_query.imageurl, chemspi_query.smiles, chemspi_query.molecularweight
+ #Accept either a CompoundEntry object or a dict with the valid fields
+ search_fields = ["CAS_ID", "compound"]
+ if type(val)==dict:
+  query_criteria = [val.get(i) for i in search_fields if val.get(i)]
+ elif type(val)==CompoundEntry:
+  query_criteria = [getattr(val, i) for i in search_fields]
  else:
+  query_criteria = [val]
+
+ try:
+  query = get_first_chemspider_entry(search_fields)
+  assert query
+  return query
+ except:
   raise Exception("Could not find compound on ChemSpider!")
 
 def get_atoms_from_compound(CG_entry = None):
@@ -120,38 +122,40 @@ def get_atom_set_from_abbrevs(lab_group, abbrev_list):
 def get_atom_set_from_reaction(reaction):
  return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
-def update_compound(lab_group, compound, update_data=True, search_chemspider=True):
+def update_compound_and_reactions(lab_group, entry):
  try:
-  #Verify that the compound belongs to the lab_group.
-  assert compound.lab_group == lab_group
-  #Update the CG entry itself.
-  try:
-   if search_chemspider:
-    compound.image_url, compound.smiles, compound.mw = chemspider_lookup(compound)
-  except:
-   compound.image_url, compound.smiles, compound.mw = "","",""
-  compound.save()
-
-  #Update the individual "atom" records on each reaction.
-  if update_data:
-   update_reactions_with_compound(lab_group, compound)
+  print 1
+  update_compound(entry)
+  print 2
+  update_reactions_with_compound(lab_group, entry)
+  print 3
  except Exception as e:
-  print "Could not update {}\n\t{}".format(compound, e)
+  print e
+  raise Exception("Compound_and_reactions update failed!")
+
+#Update the compound by reloading the ChemSpider search data.
+def update_compound(entry):
+ try:
+  if not entry.custom: #Only update compounds that are not custom.
+   #Apply calculations to the compound using the compound's common name.
+   query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
+   calcs = create_CG_calcs_if_needed(query.commonname, query.smiles, entry.compound_type)
+   #Update the entry.
+   entry.calculations = calcs
+   entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
+  else:
+   entry.calculations = None
+   entry.image_url, entry.smiles, entry.mw = "","",""
+  entry.save()
+ except Exception as e:
+  print e
+  raise Exception("Compound update failed!")
 
 def update_reaction(reaction, lab_group):
  #Store the atoms as a string -- not a set.
  reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
  #Revalidate and save the datum.
  revalidate_datum(reaction, lab_group)
-
-def update_all_reactions(lab_group):
- data = get_lab_Data(lab_group)
- for entry in data:
-  try:
-   update_reaction(reaction, lab_group)
-  except:
-   print "--could not update reaction: {}".format(entry)
- print "Finished data validation."
 
 def update_reactions_with_compound(lab_group, compound):
  #Update the individual "atom" records on each reaction.
@@ -261,6 +265,27 @@ class CG_calculations(models.Model):
  def __unicode__(self):
   return u"{} ({})".format(self.compound, self.smiles)
 
+def create_CG_calcs_if_needed(compound, smiles, compound_type):
+    jchem_path = "/home/drp/ChemAxon/JChem/bin"
+    sdf_path = "/tmp/"
+
+    #Only Organics that have smiles may have calculations.
+    if compound_type != "Org" or not smiles:
+        return
+
+    #Either return an old CG_calculation or a new one.
+    try:
+        cgc = CG_calculations(compound=compound)[0]
+    except:
+        #Calculate properties for the CGEntry
+        sdf_filename = str(uuid4()) + filter(str.isalnum, compound)
+        props = CGCalculator(compound, sdf_filename, smiles, compound_type, jchem_path, sdf_path).get_properties()
+        props = json.dumps(props)
+        #Store the actual CG_calculation in the database.
+        cgc = CG_calculations(json_data=props, compound=compound, smiles=smiles)
+        cgc.save()
+    return cgc
+
 class CompoundEntry(models.Model):
  abbrev = models.CharField("Abbreviation", max_length=100)
  compound = models.CharField("Compound", max_length=100)
@@ -294,7 +319,6 @@ def parse_CAS_ID(CAS):
   return CAS
 
 def validate_CG(dirty_data, lab_group, editing_this=False):
- print 1
  #Variable Setup
  clean_data = dirty_data 
  errors = {}
@@ -305,24 +329,18 @@ def validate_CG(dirty_data, lab_group, editing_this=False):
   clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
  except Exception as e:
   errors["CAS_ID"] = e
- print 2
 
  #If the data is custom, don't query ChemSpider.
  if dirty_data.get("custom"):
-  print 3
   clean_data["custom"]=True
   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = "","",""
- else:
-  print 4
-  search_fields = {
-    "CAS_ID": dirty_data.get("CAS_ID"), 
-    "compound": dirty_data.get("compound"),
-  }
+ else: #But if it is normal, get extra data from the query.
   try:
-   #If it isn't custom, search ChemSpider for extra data.
-   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = chemspider_lookup(search_fields)
+   search_fields = [dirty_data.get("CAS_ID"), dirty_data.get("compound")]
+   query = get_first_chemspider_entry(search_fields)
+   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = query.imageurl, query.smiles, query.molecularweight
   except:
-   if search_fields["CAS_ID"]:
+   if search_fields[0]:
     errors["CAS_ID"] = "Could not find a molecule with this CAS ID."
    else:
     errors["compound"] = "Could not find this compound."
@@ -810,3 +828,14 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     errors[field] = "Cannot exceed {} characters.".format(data_ranges[field][1])
 
  return (clean_data, errors)
+
+######################  Developer Functions  ###########################
+
+def update_all_reactions(lab_group):
+ data = get_lab_Data(lab_group)
+ for entry in data:
+  try:
+   update_reaction(reaction, lab_group)
+  except:
+   print "--could not update reaction: {}".format(entry)
+ print "Finished data validation."

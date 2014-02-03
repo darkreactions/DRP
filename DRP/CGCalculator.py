@@ -1,7 +1,7 @@
 import sys, subprocess
 import rdkit.Chem as Chem
 class CGCalculator:
-    def __init__(self, abbrev, fake_abbrev, smiles, m_type,jchem_path = "/home/praccugl/ChemAxon/JChem/bin", sdf_path="sdf", error_pipe = sys.stderr):
+    def __init__(self, compound, file_name, smiles, m_type,jchem_path = "/home/praccugl/ChemAxon/JChem/bin", sdf_path="sdf", error_pipe = sys.stderr):
         ''' smiles = SMILES string of the compound
         m_type = the type of the molecule. Can be: 
             'w' (water),'p' (pH),'i' (inorganic),'o' (organic),'ox' (oxalate)
@@ -17,15 +17,15 @@ class CGCalculator:
 
         self.m_type = m_type
         self.smiles = smiles 
-        self.abbrev = abbrev
-        self.fake_abbrev = fake_abbrev
+        self.compound = compound
+        self.file_name = file_name
 
-        self.sdf = "{0}/{1}".format(self.sdf_path, fake_abbrev) 
+        self.sdf = "{0}/{1}".format(self.sdf_path, file_name) 
         self.calc_sdf()
 
 
 
-        self.properties_map = {"mw": self.calc_MW(), "NopH": self.calc_NopH(), "polsurf": self.calc_polSurf(), "msacc": self.calc_msacc(), "msdon": self.calc_msdon(), "projectionArea": self.calc_projectionArea(), "type": self.m_type, "atoms": list(set(atoms_from_smiles(smiles))), "abbrev": self.abbrev, "smiles": self.smiles}
+        self.properties_map = {"mw": self.calc_MW(), "NopH": self.calc_NopH(), "polsurf": self.calc_polSurf(), "msacc": self.calc_msacc(), "msdon": self.calc_msdon(), "projectionArea": self.calc_projectionArea(), "type": self.m_type, "atoms": list(set(atoms_from_smiles(smiles))), "compound":compound, "smiles": self.smiles}
 
     def get_properties(self):
         return self.properties_map
