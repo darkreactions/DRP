@@ -77,10 +77,11 @@ class CompoundGuideForm(ModelForm):
  compound_type = ChoiceField(label="Type", choices = TYPE_CHOICES,
   widget=Select(attrs={'class':'form_text dropDownMenu',
   "title":"Choose the compound type: <br/> --Organic <br/> --Inorganic<br/>--pH Changing<br/>--Oxalate-like<br/>--Solute<br/>--Water"}))
+ custom = CharField(widget=HiddenInput(attrs={"id":"input_custom"}), required=False)
 
  class Meta:
   model = CompoundEntry
-  exclude = ("lab_group", "calculations", "image_url", "smiles", "mw", "calculations", "custom")
+  exclude = ("lab_group", "calculations", "image_url", "smiles", "mw", "calculations")
 
  def __init__(self, lab_group=None, *args, **kwargs):
   super(CompoundGuideForm, self).__init__(*args, **kwargs)
@@ -94,17 +95,18 @@ class CompoundGuideForm(ModelForm):
    entry.save()
   return entry
 
- def clean(self): ################################################################## WORK HERE, CASEY : ) --Past Casey
+ def clean(self):
+  print "starting_cleaning"
   #Initialize the variables needed for the cleansing process.
   dirty_data = super(CompoundGuideForm, self).clean() #Get the available raw (dirty) data
 
   #Gather the clean_data and any errors found.
-  clean_data, gathered_errors = CG_validation(dirty_data, self.lab_group)
+  clean_data, gathered_errors = validate_CG(dirty_data, self.lab_group)
   form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
 
   #Apply the errors to the form.
   self._errors.update(form_errors)
-
+  print "finished cleaning!"
   return clean_data
 
 

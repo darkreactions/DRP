@@ -35,7 +35,7 @@ def get_Lab_Group(query):
   raise Exception("Could not find Lab_Group with lab_title: {}".format(raw_string))
 
 def get_lab_CG(lab_group):
- return CompoundEntry.objects.filter(lab_group=lab_group).order_by("abbrev")
+ return CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 
 
 # # # # # # # # # # # # # # # # # # #
@@ -264,7 +264,7 @@ class CG_calculations(models.Model):
 class CompoundEntry(models.Model):
  abbrev = models.CharField("Abbreviation", max_length=100)
  compound = models.CharField("Compound", max_length=100)
- CAS_ID = models.CharField("CAS ID", max_length=13, blank=True)
+ CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, default="")
  compound_type = models.CharField("Type", max_length=10)
  image_url = models.CharField("Image URL", max_length=100, blank=True, default="")
  smiles = models.CharField("SMILES", max_length=100, blank=True, default="")
@@ -272,7 +272,7 @@ class CompoundEntry(models.Model):
  custom = models.BooleanField("Custom", default=False)
 
  lab_group = models.ForeignKey(Lab_Group, unique=False)
- calculations = models.ForeignKey(CG_calculations, null=True)
+ calculations = models.ForeignKey(CG_calculations, unique=False, null=True, default=None)
 
  def __unicode__(self):
   if self.compound == self.abbrev:
@@ -293,66 +293,50 @@ def parse_CAS_ID(CAS):
 
   return CAS
 
-
-####errors[field] = "Field must be one of: {}".format(edit_choices[category])
-def CG_validation(dirty_data, lab_group, editing_this=False, custom_compound=True):
- #Initialize the variables needed for the cleansing process.
- clean_data = {} #Keep track of cleaned fields
+def validate_CG(dirty_data, lab_group, editing_this=False):
+ print 1
+ #Variable Setup
+ clean_data = dirty_data 
  errors = {}
 
- #Set default fields:
- clean_data["image_url"] = ""
-
+ #Get the CAS_ID if applicable.
+ raw_CAS = dirty_data.get("CAS_ID")
  try:
-  #If a CAS_ID is submitted, validate it.
-  if dirty_data["CAS_ID"]:
-   raw_CAS = dirty_data["CAS_ID"]
-   clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
-  else:
-   clean_data["CAS_ID"]=""
+  clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
  except Exception as e:
-  clean_data["CAS_ID"] = ""
   errors["CAS_ID"] = e
+ print 2
 
- other_fields = ["abbrev", "compound", "compound_type"]
- for field in other_fields:
+ #If the data is custom, don't query ChemSpider.
+ if dirty_data.get("custom"):
+  print 3
+  clean_data["custom"]=True
+  clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = "","",""
+ else:
+  print 4
+  search_fields = {
+    "CAS_ID": dirty_data.get("CAS_ID"), 
+    "compound": dirty_data.get("compound"),
+  }
   try:
-   clean_data[field] = dirty_data[field]
+   #If it isn't custom, search ChemSpider for extra data.
+   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = chemspider_lookup(search_fields)
   except:
-   errors[field] = "This field cannot be blank."
+   if search_fields["CAS_ID"]:
+    errors["CAS_ID"] = "Could not find a molecule with this CAS ID."
+   else:
+    errors["compound"] = "Could not find this compound."
+ print 5
 
- #Block duplicate abbrevs and compounds.
+ #Prevent duplicate abbrevs.
+ clean_data["abbrev"] = dirty_data["abbrev"]
  if not editing_this:
-  if not errors.get("compound") and get_lab_CG(lab_group).filter(compound=clean_data["compound"]).exists():
-   errors["compound"] = "Compound already exists."
   if not errors.get("abbrev"):
-   if CompoundEntry.objects.filter(abbrev=clean_data["abbrev"]).exists():
+   if get_lab_CG(lab_group).filter(abbrev=clean_data["abbrev"]).exists():
     errors["abbrev"] = "Abbreviation already used."
-
- #Make sure the compound exists in ChemSpider's database. ###Limits us to only ChemSpi?
- used_var = ""
- try:
-  if clean_data["CAS_ID"]:
-   used_var = "CAS_ID"
-  elif not errors.get("compound"):
-   used_var = "compound"
-  else:
-   return clean_data, errors
-
-  if not custom_compound:
-   query = chemspider_lookup({used_var:clean_data[used_var]})
-   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = query
-  else:
-   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = "","",""
- except Exception as e:
-  if used_var=="CAS_ID":
-   errors["CAS_ID"] = "Could not validate CAS. Make sure it is correct."
-  else:
-   errors["compound"] = "Could not find this molecule. Try a different name."
-
+ print 6
  return clean_data, errors
 
-######HERE
 
 def convert_QuerySet_to_list(query, model, with_headings=True):
  #Get the appropriate headings.

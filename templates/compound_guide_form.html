@@ -22,9 +22,13 @@
 <form id="compoundGuideForm" method="post" action="/compound_guide_form/" class="popupScreenForm infoForm">
  {% csrf_token %}
  {% for field in form %}
-     <div class="fieldWrapper">
-         {{ field.label_tag }} {{ field }}
-  </div>
+  {% if field.is_hidden %}
+    {{ field }}
+  {% else %}
+   <div class="fieldWrapper">
+    {{ field.label_tag }} {{ field }}
+   </div>
+  {% endif %}
  {% endfor %}
  {% if user.is_authenticated %}
   <center>

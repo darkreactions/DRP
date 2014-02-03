@@ -517,28 +517,23 @@ def compound_guide_form(request):
  if u.is_authenticated():
   lab_group = u.get_profile().lab_group
   if request.method == 'POST':
-   return HttpResponse("Feature unstable. Casey will fix soon.")
    #Bind the user's data and verify that it is legit.
-   entry = CompoundEntry(lab_group=lab_group)
-   form = CompoundGuideForm(lab_group=lab_group, data=request.POST, instance=entry)
+   form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
    #If all data is valid, save the entry.
    if form.is_valid():
-    #Add any extra fields to the compound.
-    if request.POST.get("customCompound"):
-     entry.custom = True
-     entry.mw = request.POST.get("mw")
-    else:
+    print "form started"
+    entry = form.save()
+    if not entry.custom:
+     print "starting update"
      update_compound(entry.lab_group, entry)
-
-    calculations = None #TODO: Add calculations here.
-
-    #If the compound is custom, input the values the user supplied.
-    if request.POST.get("customCompound"):
-     custom_details = {
-     }
-     form.save(custom=custom_details, calculations=calculations, search_chemspider=False)
     else:
-     form.save(calculations=calculations)     
+     print "form is custom"
+
+    #Apply calculations to the compound.
+    calculations = None #TODO: Add calculations here.
+    entry.calculations = calculations
+    entry.save()
+    print "entry calculations applied."
  
     #Clear the cached CG data.
     set_cache(lab_group, "COMPOUNDGUIDE", None)
@@ -645,7 +640,7 @@ def edit_CG_entry(request):
     #Make sure the new value does not invalidate the entry.
     dirty_data = model_to_dict(changed_entry)
     dirty_data[field] = new_val
-    clean_data, errors = CG_validation(dirty_data, lab_group, editing_this=True)
+    clean_data, errors = validate_CG(dirty_data, lab_group, editing_this=True)
     new_val = clean_data[field]
     if errors:
      raise Exception("Validation of datum failed.")

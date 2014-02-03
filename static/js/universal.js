@@ -825,16 +825,21 @@ $(document).on("click", ".refreshButton", function() {
 // Grab the rest of the compound_entry to avoid looking up on ChemSpider.
 $(document).on("click", ".customCompoundButton", function() {
  var form = $(this).closest("form");
- var elementField = "<div class=\"fieldWrapper\"><label for=\"id_atoms\">Elements: </label><input class=\"form_text\" id=\"id_atoms\" name=\"atoms\" title=\"What elements are present in this compound? Separate with spaces.\" type=\"text\"></div>"; 
- var mwField = "<div class=\"fieldWrapper\"><label for=\"id_mw\">Molecular Weight: </label><input class=\"form_text form_text_short numericValue\" id=\"id_mw\" name=\"mw\" title=\"What is the molecular weight of this compound (in g/mol)?\" type=\"text\"></div>"; 
- var hiddenField = "<input type=\"hidden\" name=\"customCompound\" value=\"true\">"; 
- $(form).append(elementField + mwField + hiddenField);
- $(form).append("<input name=\"submit\" type=\"submit\" value=\"Save\" class=\"button\"/>");
 
- //Remove the search elements from the form.
+ //Remove any search-related elements from the form.
  $(".customCompoundButton").remove();
  $(".checkCompoundButton").remove();
  $(".compoundCheckResults").remove();
+ $("input[type=submit]").remove();
+ $(".loadingWheel").remove();
+
+ var elementField = "<div class=\"fieldWrapper\"><label for=\"id_atoms\">Elements: </label><input class=\"form_text\" id=\"id_atoms\" name=\"atoms\" title=\"What elements are present in this compound? Separate with spaces.\" type=\"text\"></div>"; 
+ var mwField = "<div class=\"fieldWrapper\"><label for=\"id_mw\">Molecular Weight: </label><input class=\"form_text form_text_short numericValue\" id=\"id_mw\" name=\"mw\" title=\"What is the molecular weight of this compound (in g/mol)?\" type=\"text\"></div>"; 
+ var hiddenField = "<input type=\"hidden\" name=\"customCompound\" value=\"true\">"; 
+ $("#input_custom").val(true);
+ $(form).append(elementField + mwField);
+ $(form).append("<input name=\"submit\" type=\"submit\" value=\"Save\" class=\"button\"/>");
+
 });
 
 // Check a compound before adding it.
