@@ -20,7 +20,7 @@ class ConfigManager(object):
   self.current_license_file = "/licenses/01_20_14.pdf" #Assumed to be in STATIC directory.
 
   #General Variable Setup
-  self.jchem_path = "/home/ubuntu/ChemAxon/JChem/bin"
+  self.jchem_path = "/home/cfalk/ChemAxon/JChem/bin"
   self.weka_path = "/home/ubuntu/weka-3-7-9/weka.jar"
 
  def reactant_range(self):

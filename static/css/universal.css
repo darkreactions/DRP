@@ -641,6 +641,10 @@ div.ui-tooltip {
  color:black;
 }
 
+.hiddenField {
+ display:none;
+}
+
 .reactionWrapper {
  background:rgba(64, 64, 64, 0.3);
  display:inline-block;

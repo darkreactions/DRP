@@ -235,6 +235,25 @@ def recommend(request):
   "fatal_message": fatal_message,
  })
 
+def recommendation_transmit(request):
+ try:
+  #Variable Setup
+  u = request.user
+  body = json.loads(request.POST["body"], "utf-8")
+  query_list = body.get("currentQuery")
+
+  if query_list:
+   recs = filter_recommendations(u.get_profile().lab_group, query_list)
+  else:
+   recs = get_recommendations_by_date(u.get_profile().lab_group)
+
+  return render(request, 'recommendations.html', {
+   "recommendations": recs,
+  })
+ except Exception as e:
+  print e
+  return HttpResponse("Recommendations could not be loaded!")
+
 def edit_recommendation(request, action):
  try:
   u = request.user
@@ -463,28 +482,47 @@ def gather_SVG(request):
   # request.body ===
   #  query_list --> {[{u"field":u"FIELD", u"value":u"VALUE"}, ...]}
 
-def search(request):
+def search(request, model="Data"):
  u = request.user
  if u.is_authenticated() and request.method=="POST":
   try:
-   #Pass the request on to data_transmit.
-   return data_transmit(request)
+
+   #Get the appropriate data for the appropriate model.
+   if model=="Data":
+    #Pass the request on to data_transmit.
+    return data_transmit(request)
+   elif model=="Recommendation":
+    return recommendation_transmit(request)
+
   except:
    return HttpResponse("Woops! A problem occurred.")
  else:
-  #Collect the fields that will be displayed in the Search "Fields" tab.
-  search_fields = get_model_field_names(both=True, unique_only=True)
-  search_fields = [
-  {"raw":"reactant", "verbose":"Reactant"},
-  {"raw":"quantity", "verbose":"Quantity"},
-  {"raw":"unit", "verbose":"Unit"},
-  {"raw":"is_valid", "verbose":"Is Valid"},
-  {"raw":"user", "verbose":"User"},
-  {"raw":"public", "verbose":"Public"}] + search_fields
+
+  search_fields = get_model_field_names(both=True, unique_only=True, model=model)
+  if model=="Data":
+   #Collect the fields that will be displayed in the Search "Fields" tab.
+   search_fields = get_model_field_names(both=True, unique_only=True)
+   search_fields = [
+   {"raw":"reactant", "verbose":"Reactant"},
+   {"raw":"quantity", "verbose":"Quantity"},
+   {"raw":"unit", "verbose":"Unit"},
+   {"raw":"is_valid", "verbose":"Is Valid"},
+   {"raw":"user", "verbose":"User"},
+   {"raw":"public", "verbose":"Public"}] + search_fields
+  elif model=="Recommendation":
+   #Collect the fields that will be displayed in the Search "Fields" tab.
+   search_fields = [
+   {"raw":"reactant", "verbose":"Reactant"},
+   {"raw":"quantity", "verbose":"Quantity"},
+   {"raw":"unit", "verbose":"Unit"},
+   {"raw":"assigned_user", "verbose":"Assigned User"}] + search_fields
 
   return render(request, 'search_global.html', {
-  "search_fields": search_fields,
+   "search_fields": search_fields,
+   "model": model,
   })
+
+
 
 ######################  CG Guide  ######################################
 #Return a json object of the first ChemSpider result.
@@ -517,13 +555,13 @@ def compound_guide_form(request):
    form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
    #If all data is valid, save the entry.
    if form.is_valid():
-    print "form started"
     entry = form.save()
     if not entry.custom:
      #Apply calculations to the compound.
      update_compound_and_reactions(lab_group, entry)
-     print "entry calculations applied."
-  
+    else:
+     entry.smiles = request.POST.get("atoms")
+     entry.mw = request.POST.get("mw")
     #Clear the cached CG data.
     set_cache(lab_group, "COMPOUNDGUIDE", None)
     set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
@@ -1614,7 +1652,7 @@ def user_login(request):
    if not user_license_is_valid(user):
     return HttpResponse(1);
 
-   return HttpResponse("Logged in successfully! <div class=reloadActivator></div>"); #Only the reloadActivator is "required" here.
+   return HttpResponse("Logged in successfully! <div class=reloadImmediately></div>"); #Only the reloadActivator is "required" here.
   else:
    login_fail = True #The login info is not correct.
  return render(request, "login_form.html", {

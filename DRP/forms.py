@@ -96,17 +96,14 @@ class CompoundGuideForm(ModelForm):
   return entry
 
  def clean(self):
-  print "starting_cleaning"
   #Initialize the variables needed for the cleansing process.
   dirty_data = super(CompoundGuideForm, self).clean() #Get the available raw (dirty) data
-
   #Gather the clean_data and any errors found.
   clean_data, gathered_errors = validate_CG(dirty_data, self.lab_group)
   form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
 
   #Apply the errors to the form.
   self._errors.update(form_errors)
-  print "finished cleaning!"
   return clean_data
 
 
@@ -186,9 +183,7 @@ class DataEntryForm(ModelForm):
   self.creation_time = str(datetime.datetime.now())
 
  def save(self, commit=True):
-  print "1"
   datum = super(DataEntryForm, self).save(commit=False)
-  print "2"
   datum.user = self.user
   datum.lab_group = self.lab_group
   datum.creation_time = self.creation_time

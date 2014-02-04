@@ -124,11 +124,8 @@ def get_atom_set_from_reaction(reaction):
 
 def update_compound_and_reactions(lab_group, entry):
  try:
-  print 1
   update_compound(entry)
-  print 2
   update_reactions_with_compound(lab_group, entry)
-  print 3
  except Exception as e:
   print e
   raise Exception("Compound_and_reactions update failed!")
@@ -139,7 +136,10 @@ def update_compound(entry):
   if not entry.custom: #Only update compounds that are not custom.
    #Apply calculations to the compound using the compound's common name.
    query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
-   calcs = create_CG_calcs_if_needed(query.commonname, query.smiles, entry.compound_type)
+   try:
+    calcs = create_CG_calcs_if_needed(query.commonname, query.smiles, entry.compound_type)
+   except:
+    raise Exception("Calculation construction failed.")
    #Update the entry.
    entry.calculations = calcs
    entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
@@ -242,8 +242,8 @@ class Recommendation(models.Model):
  atoms = models.CharField("Atoms", max_length=30, blank=True)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
  model_version = models.ForeignKey(Model_Version, unique=False)
- user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="last_user_set")
- assigned_user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="assigned_user_set")
+ user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="last_user")
+ assigned_user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="assigned_user")
  date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
  complete = models.BooleanField("Complete", default=False)
 
@@ -266,8 +266,8 @@ class CG_calculations(models.Model):
   return u"{} ({})".format(self.compound, self.smiles)
 
 def create_CG_calcs_if_needed(compound, smiles, compound_type):
-    jchem_path = "/home/drp/ChemAxon/JChem/bin"
-    sdf_path = "/tmp/"
+    jchem_path =  CONFIG.jchem_path
+    sdf_path = "tmp"
 
     #Only Organics that have smiles may have calculations.
     if compound_type != "Org" or not smiles:
@@ -275,10 +275,11 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
 
     #Either return an old CG_calculation or a new one.
     try:
-        cgc = CG_calculations(compound=compound)[0]
-    except:
+        cgc = CG_calculations.objects.filter(compound=compound)[0]
+    except Exception as e:
         #Calculate properties for the CGEntry
         sdf_filename = str(uuid4()) + filter(str.isalnum, compound)
+        #TODO: Speed this up? This is dreadfully slow.
         props = CGCalculator(compound, sdf_filename, smiles, compound_type, jchem_path, sdf_path).get_properties()
         props = json.dumps(props)
         #Store the actual CG_calculation in the database.
@@ -323,6 +324,10 @@ def validate_CG(dirty_data, lab_group, editing_this=False):
  clean_data = dirty_data 
  errors = {}
 
+ for field in ["compound", "abbrev", "compound_type"]:
+  if not dirty_data.get(field):
+   errors[field] = "Field required."
+
  #Get the CAS_ID if applicable.
  raw_CAS = dirty_data.get("CAS_ID")
  try:
@@ -344,15 +349,15 @@ def validate_CG(dirty_data, lab_group, editing_this=False):
     errors["CAS_ID"] = "Could not find a molecule with this CAS ID."
    else:
     errors["compound"] = "Could not find this compound."
- print 5
 
  #Prevent duplicate abbrevs.
- clean_data["abbrev"] = dirty_data["abbrev"]
- if not editing_this:
-  if not errors.get("abbrev"):
+
+ if not errors.get("abbrev"):
+  print errors
+  clean_data["abbrev"] = dirty_data["abbrev"]
+  if not editing_this:
    if get_lab_CG(lab_group).filter(abbrev=clean_data["abbrev"]).exists():
     errors["abbrev"] = "Abbreviation already used."
- print 6
  return clean_data, errors
 
 

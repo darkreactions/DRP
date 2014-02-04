@@ -52,7 +52,9 @@ urlpatterns = patterns('',
     (r'^sensical_recommendation/$', edit_recommendation, {"action":"sense"}),
     (r'^nonsensical_recommendation/$', edit_recommendation, {"action":"nonsense"}),
   #Searching
-    (r'^search/$', search), 
+    (r'^search/$', search, {"model":"Data"}), 
+    (r'^search/Data/?$', search, {"model":"Data"}), 
+    (r'^search/Recommendation/?$', search, {"model":"Recommendation"}), 
   #Users and Labs
    #Authentication
     (r'^user_logout/$', user_logout), #Log Out

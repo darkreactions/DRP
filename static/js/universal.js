@@ -389,6 +389,10 @@ $(document).on("submit", ".downloadForm", function(event) {
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
  $(".loadingWheel").remove();
+ if ($(".warningIndicator").length){
+  showRibbon("Performing Calculations...", neutralColor, $("#popupContainer_inner"), false);
+ }
+
  $(this).closest("form").append("<div class=\"loadingWheel\">. . .</div>");
  $.post($(form).attr("action"), $(form).serialize(), function(response) {
   //Remove the loading wheel.
@@ -437,20 +441,18 @@ $(document).on("submit", ".infoForm", function() {
     results: function() {}
    }
   });
+  //Reload the page immediately if applicable.
+  if ($(".reloadImmediately").length) {
+   window.location.reload(true);
+  }
 
   //Show the ribbon message if applicable.
   if ($(".successActivator").length) {
-   showRibbon("Data added!", goodColor, "#popupContainer_inner");
+   showRibbon("Added!", goodColor, "#popupContainer_inner");
    refreshOnMaskFade();
    $(".successActivator").remove();
    return false;
   }
-
-  //Reload the page if applicable.
-  if ($(".reloadActivator").length) {
-   window.location.reload(true);
-  }
-
 
  });
  return false; //Do not continue or else the form will post again.
@@ -485,11 +487,24 @@ $(document).on("click", ".PT_element", function() {
  }
 });
 
-function sendSearchQuery(currentQuery) {
+function sendSearchQuery(currentQuery, destination) {
  JSONQuery = JSON.stringify({"currentQuery":currentQuery,"page":"1"});
-
  $.ajax({
-  url:"/search/",
+  url:destination,
+  method:"post",
+  data: {"body":JSONQuery},
+  traditional: true,
+  success: function(response) {
+   $("#mainPanel").html(response)
+   restyleData();
+  }
+ });
+}
+
+function sendRecSearchQuery(currentQuery) {
+ JSONQuery = JSON.stringify({"currentQuery":currentQuery});
+ $.ajax({
+  url:"/search_recs/",
   method:"post",
   data: {"body":JSONQuery},
   traditional: true,
@@ -601,7 +616,7 @@ $(document).on("click", ".search_filterButton", function() {
     "match":"exact",
     "value":value,
    });
-   sendSearchQuery(currentQuery);
+   sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
 
   //If "Fields" search is active.
   } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
@@ -624,7 +639,7 @@ $(document).on("click", ".search_filterButton", function() {
     "match":match,
     "value":value,
    });
-   sendSearchQuery(currentQuery);
+   sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
   } else {
    showRibbon("Nothing entered!", badColor, $("#sidePanel"), true);
   }
@@ -645,7 +660,7 @@ $(document).on("click", ".search_backButton", function() {
 
 $(document).on("click", ".search_clearButton", function() {
  currentQuery = Array();
- sendSearchQuery(currentQuery);
+ sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
  showRibbon("Filters emptied", goodColor,"#sidePanel", true);
 });
 
@@ -756,7 +771,16 @@ $(document).on("click", ".popupActivator", function(event) {
    break;
   case "searchButton":
    PT_selected = Array();
-   $.get("/search/", function(response) {
+   $.get("/search/Data", function(response) {
+    $("#sidePanel_inner").html(response);
+    toggleSideContainer();
+    $("#tabs").tabs({active: 1});
+    setReactantAutoComplete();
+   });
+   return false; //TODO: Separate this into a "sidePanel" activator
+   break;
+  case "searchButton_recs":
+   $.get("/search/Recommendation", function(response) {
     $("#sidePanel_inner").html(response);
     toggleSideContainer();
     $("#tabs").tabs({active: 1});
@@ -830,32 +854,38 @@ $(document).on("click", ".customCompoundButton", function() {
  $(".customCompoundButton").remove();
  $(".checkCompoundButton").remove();
  $(".compoundCheckResults").remove();
- $("input[type=submit]").remove();
  $(".loadingWheel").remove();
 
- var elementField = "<div class=\"fieldWrapper\"><label for=\"id_atoms\">Elements: </label><input class=\"form_text\" id=\"id_atoms\" name=\"atoms\" title=\"What elements are present in this compound? Separate with spaces.\" type=\"text\"></div>"; 
- var mwField = "<div class=\"fieldWrapper\"><label for=\"id_mw\">Molecular Weight: </label><input class=\"form_text form_text_short numericValue\" id=\"id_mw\" name=\"mw\" title=\"What is the molecular weight of this compound (in g/mol)?\" type=\"text\"></div>"; 
- var hiddenField = "<input type=\"hidden\" name=\"customCompound\" value=\"true\">"; 
+ //Show the hidden fields and mark the form as "custom."
  $("#input_custom").val(true);
- $(form).append(elementField + mwField);
- $(form).append("<input name=\"submit\" type=\"submit\" value=\"Save\" class=\"button\"/>");
+ $(".hiddenField").removeClass("hiddenField");
+
+ if ($("input[type=submit]").length==0){
+  $(form).append("<input name=\"submit\" type=\"submit\" value=\"Save\" class=\"button\"/>");
+ }
 
 });
 
 // Check a compound before adding it.
 $(document).on("click", ".checkCompoundButton", function() {
+ //Remove any search-related elements from the form.
+ $("input[type=submit]").remove();
+ $(".loadingWheel").remove();
+
  //Variable Setup
  var form = $(this).closest("form");
  var CAS_ID = $(form).find("input[name=CAS_ID]").val();
  var compound = $(form).find("input[name=compound]").val();
 
  if (CAS_ID || compound) {
+  showRibbon("Working...", neutralColor, "#popupContainer", false);
   data = {
     CAS_ID : CAS_ID,
     compound: compound,
    }
   $.get("/check_compound/", data, function(response) {
    $(form).find("input[name=submit]").remove();
+   $(".ribbonMessage").remove();
    if (response=="1"){
     showRibbon("Compound not found!", badColor, "#popupContainer_inner");
    } else {

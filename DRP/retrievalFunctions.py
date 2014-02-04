@@ -133,6 +133,55 @@ def get_recommendations_by_date(lab_group, date = "recent"):
 
  return recommendations
 
+def filter_recommendations(lab_group, query_list):
+ #Variable Setup
+ recs = get_recommendations(lab_group)
+ filters = {}
+ Q_list = []
+  #Collect all the valid search options
+ non_reactant_fields = get_model_field_names(model="Recommendation", unique_only=True)
+ foreign_fields = ["user", "assigned_user"] #Fields that cannot search by containment.
+ reactant_fields = ["reactant","quantity","unit"]
+ legal_fields = set(non_reactant_fields+reactant_fields+foreign_fields)
+
+ #Check the query_list input before performing any database requests.
+ for query in query_list:
+  try:
+   #Make sure values are provided.
+   assert query.get(u"field") in legal_fields
+   assert query.get(u"match") in {"contain","exact"}
+   assert query.get(u"value")
+  except:
+   raise Exception("One or more inputs is illegal")
+
+ for query in query_list:
+  field = query[u"field"]
+  match = "__icontains" if query[u"match"] == "contain" else ""
+  value = query[u"value"]
+  if field in foreign_fields:
+   field += "__username" #TODO: Generalize to all fields (make foreign_fields a dict where values are the foreign-field to search).
+
+  #Apply the filter or a Q object with a range of filters.
+  if field in reactant_fields:
+   or_Qs = []
+   for i in CONFIG.reactant_range():
+    temp = {field+"_{}".format(i)+match: value}
+    or_Qs.append(Q(**temp))
+
+   Q_list.append(reduce(operator.or_, or_Qs))
+  else:
+   filters[field+match] = value
+
+ #Apply the Q objects and the filters.
+ if Q_list:
+  recs = recs.filter(reduce(operator.and_, Q_list))
+ if filters:
+  print filters
+  recs = recs.filter(**filters)   
+ return recs
+
+
+
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  COMPOUND GUIDE # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

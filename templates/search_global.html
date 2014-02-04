@@ -2,12 +2,15 @@
 <!-- Periodic Table -->
 <div id="tabs">
  <ul id="searchTabContainer">
+ {% if model == "Data" %}
  <li class="searchTab"><a href="#tabs-1">Atoms</a></li>
+ {% endif %}
  <li class="searchTab"><a href="#tabs-2">Fields</a></li>
  </ul>
+ {% if model == "Data" %}
  <div id="tabs-1">
   <div id="periodicTableContainer"> {% include "periodic_table.html" %}
-  <form action="/search/" method="post" name="login" id="searchForm_atom" class="popupScreenForm infoForm">
+  <form action="/search/{{model}}/" method="post" name="login" id="searchForm_atom" class="popupScreenForm infoForm">
    {% csrf_token %}
    <input id="radio_and" type="radio" class="radioSearch" name="condition" value="and" checked>
     <label id="label_and" class="button" for="radio_and">And</label>
@@ -21,8 +24,10 @@
   </form>
   </div>
  </div>
+ {% endif %}
+
  <div id="tabs-2">
-  <form action="/search/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
+  <form action="/search/{{model}}/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
    {% csrf_token %}
    <div class="blockElement">
     <label for="field">Field:</label>
