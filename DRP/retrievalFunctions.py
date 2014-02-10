@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Max, Min
 from models import *
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -43,66 +43,68 @@ def get_date_filtered_data(lab_group, raw_date, direction="after", lab_data=None
 
  return filtered_data
 
-###Rewrite this to use dict format, Casey. Don't make Paul cry.
-def filter_data(lab_group, query_list):
- #Variable Setup:
- lab_data = get_lab_Data(lab_group)
- filters = ""
 
- #Collect all the valid search options
+def filter_data(lab_group, query_list):
+ #Variable Setup
+ data = get_lab_Data(lab_group)
+ filters = {}
+ Q_list = []
+
+  #Collect all the valid search options
  non_reactant_fields = get_model_field_names(unique_only=True)
  foreign_fields = ["user"] #Fields that cannot search by containment.
- legal_fields = set(non_reactant_fields+["reactant","quantity","unit","public","is_valid", "atoms"]+foreign_fields)
+ reactant_fields = ["reactant","quantity","unit"]
+ legal_fields = set(non_reactant_fields+reactant_fields+foreign_fields+["atoms", "public","is_valid"])
 
  #Check the query_list input before performing any database requests.
- try:
-  for query in query_list:
+ for query in query_list:
+  try:
+   #Make sure values are provided.
    assert query.get(u"field") in legal_fields
    assert query.get(u"match") in {"contain","exact"}
    assert query.get(u"value")
-   assert not "\"" in query.get(u"value")
+  except:
+   raise Exception("One or more inputs is illegal")
 
- except:
-  raise Exception("One or more inputs is illegal.")
- 
- try:
-  for query in query_list:
-   #Get the query information.
-   field = query.get(u"field")
-   if field in foreign_fields:
-    field = "user__username"
-   if query.get(u"match")=="contain" and field not in foreign_fields:
-    match = "__icontains"
-   else:
-    match = ""
-   value = query.get(u"value")
- 
-   if field in list_fields:
-    #Check all the reactant/quantity/unit fields.
-    Q_obj = ''.join(["Q({}_{}{}=\"{}\")|".format(field, i, match, value) for i in CONFIG.reactant_range()])[:-1]
-    filters += ".filter({})".format(Q_obj)
-   elif field=="atoms":
-    atom_list = value.split(" ")
-    if len(atom_list)>1:
-     search_bool = atom_list.pop(-2) #Take the "and" or "or" from the list.
-     op = "," if search_bool == "and" else "|" #Assign the correct Q operator.
-     #Add the atoms  to a Q filter.
-     Q_obj = ''.join(["Q(atoms__contains=\"{}\"){}".format(atom, op) for atom in atom_list])[:-1]
-    else:
-     Q_obj = "Q(atoms__contains=\"{}\")".format(atom_list[0])
-    filters += ".filter({})".format(Q_obj)
-   else:
-    #Translate Boolean inputs into Boolean values.
-    if field in bool_fields:
-     value = True if value.lower()[0] in "1tyc" else False
-     filters += ".filter({}={})".format(field, value)
-    else:
-     filters += ".filter({}{}=\"{}\")".format(field, match, value)
-  data = eval("lab_data"+filters).order_by("creation_time")
-  return data
+ for query in query_list:
+  field = query[u"field"]
+  match = "__icontains" if query[u"match"] == "contain" else ""
+  value = query[u"value"]
+  if field in foreign_fields:
+   field += "__username" #TODO: Generalize to all fields (make foreign_fields a dict where values are the foreign-field to search).
 
- except Exception as e:
-  pass #Security precaution.
+  #Translate Boolean inputs into Boolean values.
+  if field in bool_fields:
+   value = True if value.lower()[0] in "1tyc" else False
+
+  #Apply the filter or a Q object with a range of filters.
+  if field in reactant_fields:
+   or_Qs = []
+   for i in CONFIG.reactant_range():
+    temp = {field+"_{}".format(i)+match: value}
+    or_Qs.append(Q(**temp))
+
+   Q_list.append(reduce(operator.or_, or_Qs))
+
+  elif field=="atoms":
+   atom_list = value.split(" ")
+   if len(atom_list)>1:
+    search_bool = atom_list.pop(-2) #Take the "and" or "or" from the list.
+    op = operator.and_ if search_bool == "and" else operator.or_
+    atom_Qs = [Q(atoms__contains=atom) for atom in atom_list] #TODO: Test this
+    Q_list.append(reduce(op, atom_Qs))
+   else:
+    Q_list.append(Q(atoms__contains=atom_list[0]))
+
+  else:
+   filters[field+match] = value
+
+ #Apply the Q objects and the filters.
+ if Q_list:
+  data = data.filter(reduce(operator.and_, Q_list))
+ if filters:
+  data = data.filter(**filters)   
+ return data
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -176,7 +178,6 @@ def filter_recommendations(lab_group, query_list):
  if Q_list:
   recs = recs.filter(reduce(operator.and_, Q_list))
  if filters:
-  print filters
   recs = recs.filter(**filters)   
  return recs
 
@@ -205,3 +206,14 @@ def get_CG_list_dict(headers=True):
  labs = Lab_Group.objects.all()
  CG_list_dict = {lab.lab_title:get_CG_list(lab, headers=headers) for lab in labs}
  return CG_list_dict   
+
+def get_mass_range(lab_group, abbrev):
+ try:
+  compounds = get_lab_CG(lab_group).filter(abbrev=abbrev)
+  maximum = max([compounds.aggregate(Max("quantity_".format(i))) for i in CONFIG.num_reactants])
+  minimum = min([compounds.aggregate(Min("quantity_".format(i))) for i in CONFIG.num_reactants])
+  return (minimum, maximuim)
+ except:
+  raise Exception("Compound or lab not found.")
+
+

@@ -130,19 +130,35 @@ def update_compound_and_reactions(lab_group, entry):
   print e
   raise Exception("Compound_and_reactions update failed!")
 
+def refresh_compound_guide(lab_group = None, verbose = False):
+ #Either refresh all of the data or the data for a specific lab group.
+ if lab_group:
+  query = get_lab_CG(lab_group)
+ else:
+  query = CompoundEntry.objects.all()
+
+ #Actually perform the refresh/update.
+ i = 0
+ for compound in query:
+  try:
+   if verbose:
+    i += 1
+    if i%10==0: print "... {}.".format(i)
+   update_compound(compound)
+  except Exception as e:
+   print "Could not update: {}".format(compound)
+
 #Update the compound by reloading the ChemSpider search data.
 def update_compound(entry):
  try:
   if not entry.custom: #Only update compounds that are not custom.
-   #Apply calculations to the compound using the compound's common name.
+   #Get the most up-to-date ChemSpider info for a given CAS/compound.
    query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
-   try:
-    calcs = create_CG_calcs_if_needed(query.commonname, query.smiles, entry.compound_type)
-   except:
-    raise Exception("Calculation construction failed.")
-   #Update the entry.
-   entry.calculations = calcs
-   entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
+   if query: 
+    #Update the entry.
+    entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
+   else:
+    print "Found legacy entry that should be custom: {}".format(compound)
   else:
    entry.calculations = None
    entry.image_url, entry.smiles, entry.mw = "","",""
@@ -266,13 +282,14 @@ class CG_calculations(models.Model):
   return u"{} ({})".format(self.compound, self.smiles)
 
 def create_CG_calcs_if_needed(compound, smiles, compound_type):
+    #Variable Setup
     jchem_path =  CONFIG.jchem_path
     sdf_path = "tmp"
+    compound, smiles, compound_type = str(compound), str(smiles), str(compound_type)
 
     #Only Organics that have smiles may have calculations.
     if compound_type != "Org" or not smiles:
         return
-
     #Either return an old CG_calculation or a new one.
     try:
         cgc = CG_calculations.objects.filter(compound=compound)[0]
@@ -287,6 +304,33 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
         cgc.save()
     return cgc
 
+def perform_CG_calculations(only_missing=True, lab_group=None, verbose=False):
+ #Variable Setup
+ success = 0
+ i = 0
+
+ cg = CompoundEntry.objects.all()
+ if only_missing:
+  cg = cg.filter(calculations=None)
+ if lab_group:
+  cg = cg.filter(lab_group=lab_group)
+
+ for entry in cg:
+  try:
+   if verbose:
+    i+=1
+    if i%5==0: print "... {}.".format(i)
+
+   calc = create_CG_calcs_if_needed(entry.compound, entry.smiles, entry.compound_type)
+   entry.calculations = calc
+   entry.save
+   success += 1
+  except Exception as e:
+   print "CG_calculation construction failed: {}".format(entry.compound)
+   print "ERROR: {}".format(e)
+
+ print "CG_calculations complete! ({} of {} entries changed)".format(success, cg.count())
+  
 class CompoundEntry(models.Model):
  abbrev = models.CharField("Abbreviation", max_length=100)
  compound = models.CharField("Compound", max_length=100)
@@ -660,12 +704,6 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   else:
    clean_fields += [field.name]
  return clean_fields
-
-def bools_not_unknown(field):
- for field in bool_fields:
-  if field==CONFIG.unknown_label:
-   return False
- return True
 
 def revalidate_datum(datum, lab_group):
  #Collect the data to validate

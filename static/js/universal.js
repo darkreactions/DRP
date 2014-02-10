@@ -652,7 +652,7 @@ $(document).on("click", ".search_backButton", function() {
  if (currentQuery.length){
   currentQuery.pop();
   showRibbon("Removing last filter!", goodColor,"#sidePanel", true);
-  sendSearchQuery(currentQuery);
+  sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
  } else {
   showRibbon("No filters present!", badColor, $("#sidePanel"), true);
  }

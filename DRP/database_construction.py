@@ -43,10 +43,8 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
   fields = get_model_field_names(model="Recommendation")
   for (field, value) in zip(fields, lst[2][1:]): #Ignore the reference field.
    #Translate Booleans into Boolean values.
-   if value=="yes":
-    value=True
-   if value=="no":
-    value=False
+   if field in bool_fields:
+    value = True if value.lower()[0] in "1tyc" else False
    setattr(new_rec, field, value)
   return new_rec
    
