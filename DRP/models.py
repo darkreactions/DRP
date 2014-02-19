@@ -275,7 +275,7 @@ class Recommendation(models.Model):
 ############### COMPOUND GUIDE ########################
 class CG_calculations(models.Model):
  json_data = models.TextField()
- compound = models.CharField(max_length=200, unique=True)
+ compound = models.CharField(max_length=200)
  smiles = models.CharField(max_length=200, unique=True)
 
  def __unicode__(self):
@@ -285,14 +285,17 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
     #Variable Setup
     jchem_path =  CONFIG.jchem_path
     sdf_path = "tmp"
+
+    print "1"
     compound, smiles, compound_type = str(compound), str(smiles), str(compound_type)
+    print "2"
 
     #Only Organics that have smiles may have calculations.
     if compound_type != "Org" or not smiles:
         return
     #Either return an old CG_calculation or a new one.
     try:
-        cgc = CG_calculations.objects.filter(compound=compound)[0]
+        cgc = CG_calculations.objects.filter(smiles=smiles)[0]
     except Exception as e:
         #Calculate properties for the CGEntry
         sdf_filename = str(uuid4()) + filter(str.isalnum, compound)
@@ -321,6 +324,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None, verbose=False):
     i+=1
     if i%5==0: print "... {}.".format(i)
 
+   entry.compound = clean_compound(entry.compound)
    calc = create_CG_calcs_if_needed(entry.compound, entry.smiles, entry.compound_type)
    entry.calculations = calc
    entry.save
@@ -330,7 +334,11 @@ def perform_CG_calculations(only_missing=True, lab_group=None, verbose=False):
    print "ERROR: {}".format(e)
 
  print "CG_calculations complete! ({} of {} entries changed)".format(success, cg.count())
-  
+
+#Remove any non-printable characters.
+def clean_compound(compound):
+ return filter(lambda x: x in string.printable, compound)
+ 
 class CompoundEntry(models.Model):
  abbrev = models.CharField("Abbreviation", max_length=100)
  compound = models.CharField("Compound", max_length=100)
@@ -778,6 +786,8 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     if not parsed_data[field][i]: continue #Don't validate empty values.
     try:
      dirty_datum = str(parsed_data[field][i])
+     if not clean_compound(dirty_datum)==dirty_datum:
+      errors["{}_{}".format(field,i+1)] = "Contains illegal characters!"
      assert(validate_name(dirty_datum, lab_group))
      clean_data["{}_{}".format(field,i+1)] = dirty_datum #Add the filtered value to the clean values dict.
     except:
