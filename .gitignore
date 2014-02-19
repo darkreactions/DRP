@@ -1,0 +1,6 @@
+*.sw*
+/tmp/*
+/dynamic/*
+/DRP/migrations/*
+.gitignore
+*.pyc
