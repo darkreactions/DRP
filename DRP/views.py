@@ -689,7 +689,7 @@ def edit_CG_entry(request):
      return HttpResponse("Inorganic not found!") #TODO: Add this.
   
     #Lookup fresh data from ChemSpider and RDKit
-    update_compound(lab_group, changed_entry, update_data=True)
+    update_compound(changed_entry)
 
    except Exception as e:
     print e

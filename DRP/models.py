@@ -158,7 +158,7 @@ def update_compound(entry):
     #Update the entry.
     entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
    else:
-    print "Found legacy entry that should be custom: {}".format(compound)
+    print "Found legacy entry that should be custom: {}".format(entry.compound)
   else:
    entry.calculations = None
    entry.image_url, entry.smiles, entry.mw = "","",""
@@ -286,9 +286,7 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
     jchem_path =  CONFIG.jchem_path
     sdf_path = "tmp"
 
-    print "1"
     compound, smiles, compound_type = str(compound), str(smiles), str(compound_type)
-    print "2"
 
     #Only Organics that have smiles may have calculations.
     if compound_type != "Org" or not smiles:
