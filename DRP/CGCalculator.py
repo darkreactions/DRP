@@ -23,7 +23,10 @@ class CGCalculator:
         self.sdf = "{0}/{1}".format(self.sdf_path, file_name) 
         self.calc_sdf()
 
-        self.properties_map = {"mw": self.calc_MW(), "NopH": self.calc_NopH(), "polsurf": self.calc_polSurf(), "msacc": self.calc_msacc(), "msdon": self.calc_msdon(), "projectionArea": self.calc_projectionArea(), "type": self.m_type, "atoms": list(set(atoms_from_smiles(smiles))), "compound":compound, "smiles": self.smiles}
+        atoms = atoms_from_smiles(smiles)
+	atoms_count = {atom: atoms.count(atom) for atom in set(atoms)}
+
+        self.properties_map = {"mw": self.calc_MW(), "NopH": self.calc_NopH(), "polsurf": self.calc_polSurf(), "msacc": self.calc_msacc(), "msdon": self.calc_msdon(), "projectionArea": self.calc_projectionArea(), "type": self.m_type, "atoms": list(set(atoms)), "compound":compound, "smiles": self.smiles, "atoms_count": atoms_count}
 
     def get_properties(self):
         return self.properties_map
