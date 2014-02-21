@@ -2,14 +2,16 @@ import math
 def get_cg():
 	return json.load(open("restart.json"))
 
-class Metric:
-	def __init__(self, name):
-		assert(name in ["tanimoto", "euclidean"])
-		
 
+def Metric(name):
+	if name == "euclidean":
+		return Euclidean(name)
+	elif name == "tanimoto":
+		return Tanimoto(name)
+	else:
+		raise Exception("Unknown metric specified, {0}".format(name))
 
-
-class Euclidean(Metric):
+class Euclidean:
 	def __init__(self, name):
 		self.name = name
 		self.cg_props = get_cg() 
@@ -69,7 +71,7 @@ class Euclidean(Metric):
 
 
 
-class Tanimoto(Metric):
+class Tanimoto:
 	def __init__(self, name):
 		self.compound_smiles = dict()
 		self.joint_sim = dict()
