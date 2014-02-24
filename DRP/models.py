@@ -9,6 +9,7 @@ from data_config import CONFIG
 from validation import *
 from uuid import uuid4
 from CGCalculator import CGCalculator
+from collections import defaultdict
     
 
 import json, random, string, datetime, operator
@@ -75,8 +76,7 @@ def get_atoms_from_compound(CG_entry = None):
 
 def get_atoms_from_smiles(smiles, show_hydrogen=False):
  if not smiles:
-  print "No smiles found!"
-  return []
+  raise Exception("SMILES cannot be None!")
 
  mols = Chem.MolFromSmiles(str(smiles),sanitize=False)
  if mols == None:
@@ -89,6 +89,16 @@ def get_atoms_from_smiles(smiles, show_hydrogen=False):
  #  pass
  atoms = mols.GetAtoms()
  return [atom.GetSymbol() for atom in atoms]
+
+def get_atom_count_from_smiles(smiles):
+ atom_list = get_atoms_from_smiles(smiles)
+
+ #Count the number of occurances of each atom.
+ atom_count = defaultdict(int)
+ for atom in atom_list:
+  atom_count[atom] += 1
+
+ return dict(atom_count) #Return a normal dictionary, not a defaultdict.
 
 def collect_CGs_by_abbrevs(lab_group, abbrev_list):
  CG_list = []
@@ -277,6 +287,7 @@ class CG_calculations(models.Model):
  json_data = models.TextField()
  compound = models.CharField(max_length=200)
  smiles = models.CharField(max_length=200, unique=True)
+ json = models.TextField(null=True, default="{}")
 
  def __unicode__(self):
   return u"{} ({})".format(self.compound, self.smiles)
@@ -303,6 +314,9 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
         #Store the actual CG_calculation in the database.
         cgc = CG_calculations(json_data=props, compound=compound, smiles=smiles)
         cgc.save()
+
+	#Set the calculations field in each CompoundEntry.
+	CompoundEntry.objects.filter(smiles=smiles).update(calculations=cgc)
     return cgc
 
 def perform_CG_calculations(only_missing=True, lab_group=None, verbose=False):
