@@ -300,9 +300,10 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
     compound, smiles, compound_type = str(compound), str(smiles), str(compound_type)
 
     #Only Organics that have smiles may have calculations.
-    if compound_type != "Org" or not smiles:
+    if compound_type not in {"Org", "Inorg"} or not smiles:
         return
     #Either return an old CG_calculation or a new one.
+    print compound_type
     try:
         cgc = CG_calculations.objects.filter(smiles=smiles)[0]
     except Exception as e:

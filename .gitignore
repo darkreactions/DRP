@@ -1,3 +1,5 @@
+DRP/settings.py
+DRP/data_config.py
 *.sw*
 /tmp/*
 /dynamic/*
