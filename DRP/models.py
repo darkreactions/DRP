@@ -282,6 +282,51 @@ class Recommendation(models.Model):
  def __unicode__(self):
   return u"REC: {} -- (LAB: {} -- Saved: {})".format(self.score, self.lab_group.lab_title, self.saved)
 
+class RankedReactionList(models.Model):
+ original_list = models.TextField()
+ seed = models.TextField()
+ ranked_list = models.TextField()
+ ranker = models.ForeignKey(User, unique=False, default=None, null=True)
+
+ def __unicode__(self):
+  return u"RANKED_LIST: Seed: {} -- (Ranker: {})".format(self.seed, self.ranker)
+
+ def get_original_list(self):
+  return json.loads(self.original_list)
+
+ def get_ranked_list(self):
+  return json.loads(self.ranked_list)
+
+ def get_seed(self):
+  return json.loads(self.seed)
+
+ #Returns a shuffled list and the index of the seed.
+ def get_shuffled_list(self):
+  shuffled_list = self.get_original_list()+[self.get_seed()]
+  random.shuffle(shuffled_list)
+  return (shuffled_list)
+
+ def store_ranked_list(self, ranked_list, ranker):
+  self.ranker = ranker
+  self.ranked_list = json.dumps(ranked_list)
+  self.save()
+ 
+def get_unranked_reactions(seed=None):
+ unranked = RankedReactionList.objects.filter(ranker=None)
+ #If a seed is specified, apply it to the filter.
+ if seed:
+  #Convert any lists to strings to allow filtering.
+  seed = json.dumps(seed) if type(seed)==list else seed
+  unranked = unranked.filter(seed=seed)
+ return unranked
+
+def get_random_unranked_reaction_or_none(seed=None):
+ unranked_rxns = get_unranked_reactions(seed=seed)
+ if unranked_rxns.exists():
+  random_index = random.randrange(unranked_rxns.count())
+  return unranked_rxns[random_index]
+ return None
+
 ############### COMPOUND GUIDE ########################
 class CG_calculations(models.Model):
  json_data = models.TextField()

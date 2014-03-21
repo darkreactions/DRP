@@ -318,6 +318,25 @@ def saved(request):
   "users":user_list,
  })
 
+def rank(request): 
+ #Variable Setup:
+ u = request.user
+ unranked_rxn = get_random_unranked_reaction_or_none()
+
+ if not u.is_authenticated():
+  fatal_message = "Please log in to view reaction rankings."
+ elif not unranked_rxn:
+  fatal_message = "No unranked reactions available!"
+ else :
+  fatal_message = ""
+
+ return render(request, 'global_page.html', {
+  "template":"unranked_reaction",
+  "unranked_rxn": unranked_rxn,
+  "fatal_message": fatal_message,
+ })
+
+
 # # # # # # # # # # # # # # # # # # #
    # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # 
 # # # # # # # # # # # # # # # # # # #
@@ -348,6 +367,32 @@ def assign_user_to_rec(request):
  except Exception as e:
   print e
   return HttpResponse(1)
+
+def send_and_receive_rank(request):
+ u = request.user
+ if u.is_authenticated() and request.method=="POST":
+  #Get PIDs from the request.
+  pid = request.POST["pid"]
+  new_order = request.POST["newOrder"]
+
+  #Get the recommendation to change.
+  rxnlist = RankedReactionList.objects.get(id=pid)
+
+  #Assign the change in the database.
+  rxnlist.ranked_list = new_order
+  rxnlist.ranker = u
+  rxnlist.save()
+
+  #Get a new (un)RankedReaction
+  unranked_rxn = get_random_unranked_reaction_or_none()
+  if not unranked_rxn:
+   return HttpResponse("All unranked reactions now ranked!")
+
+  return render(request, 'unranked_reaction_list.html', {
+   "unranked_rxn": unranked_rxn,
+ })
+ else:
+  return HttpResponse("Please log in and use the submit button!")
 
 #Return whether the user_license is valid (True) or invalid/missing (False)
 def user_license_is_valid(user):

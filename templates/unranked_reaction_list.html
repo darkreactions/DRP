@@ -1,0 +1,11 @@
+{% load rank_extras %}
+
+<p>Click and drag the "better" reactions towards the top.</p>
+
+<ul class="sortable" pid="{{unranked_rxn.id}}">
+  {% for entry in unranked_rxn.get_shuffled_list %}
+    <li class="unrankedReaction" order="{{forloop.counter}}">
+    {{ entry|prettify_reaction_list }}
+    </li>
+  {% endfor %}
+</ul>

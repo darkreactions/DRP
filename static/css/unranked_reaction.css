@@ -1,0 +1,36 @@
+.sortable {
+ padding:0px;
+}
+
+.unrankedReaction {
+ list-style:none;
+ padding:10px;
+ margin-bottom:10px;
+ background-color:#FFF2CC;
+ border-radius:2px;
+ border-left:1px solid white;
+ border-right:1px solid white;
+
+transition: background-color .15s;
+-moz-transition: background-color .15s;
+-webkit-transition: background-color .15s;
+
+transition: border-color .25s;
+-moz-transition: border-color .25s;
+-webkit-transition: border .25s;
+
+}
+
+.unrankedReaction:first-child {
+ background-color:#C6FFB3;
+}
+
+.unrankedReaction:last-child {
+ background-color:#FFC6B3;
+}
+
+.unrankedReaction:hover {
+ border-right:1px solid black;
+ border-left:1px solid black;
+}
+

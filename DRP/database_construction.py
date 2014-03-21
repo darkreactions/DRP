@@ -57,6 +57,36 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
  except Exception as e:
   raise Exception("Recommendation construction failed: {}".format(e))
 
+def store_new_RankedReaction(json_input):
+ #Allow either valid json/dicts or strings that can be loaded as such.
+ if type(json_input)==str:
+  json_input = json.loads(json_input)
+
+ try:
+  rxn_list = RankedReactionList()
+  rxn_list.seed = json.dumps(json_input["seed"])
+  rxn_list.original_list = json.dumps(json_input["targets"])
+  rxn_list.save()
+  return rxn_list
+ except Exception as e:
+  raise Exception("RankedReactionList construction failed: {}".format(e))
+
+def store_new_RankedReaction_list(list_of_rankedrxn_lists):
+ #Variable Setup:
+ successes = 0
+ count = 0
+
+ for reaction_json in list_of_rankedrxn_lists:
+  try:
+   count += 1
+   store_new_RankedReaction(reaction_json)
+   successes += 1
+  except Exception as e:
+    print "RankedReactionList {} could not be constructed: {}".format(count, e)
+ 
+ print "Finished creating and storing {} of {} items!.".format(successes, count)
+
+
 def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = ""):
  lab_group = get_Lab_Group(lab_group)
  
