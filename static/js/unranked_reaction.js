@@ -15,7 +15,7 @@ $("#rankSubmit").click(function() {
 
 	//Get the new order.
 	var newOrder = Array();
-	$.each( $(".unrankedReaction"), function(){
+	$.each( $(".unrankedReaction.sorted "), function(){
 		var reactionList = Array();
 		$.each( $(this).find(".dataField"), function(){
 			reactionList.push($(this).html().trim());

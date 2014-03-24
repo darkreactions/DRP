@@ -302,7 +302,7 @@ class RankedReactionList(models.Model):
 
  #Returns a shuffled list and the index of the seed.
  def get_shuffled_list(self):
-  shuffled_list = self.get_original_list()+[self.get_seed()]
+  shuffled_list = self.get_original_list()
   random.shuffle(shuffled_list)
   return (shuffled_list)
 

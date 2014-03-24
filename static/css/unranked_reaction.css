@@ -6,7 +6,6 @@
  list-style:none;
  padding:10px;
  margin-bottom:10px;
- background-color:#FFF2CC;
  border-radius:2px;
  border-left:1px solid white;
  border-right:1px solid white;
@@ -21,15 +20,23 @@ transition: border-color .25s;
 
 }
 
-.unrankedReaction:first-child {
+.seed {
+ background-color:white;
+}
+
+.sorted {
+ background-color:#FFF2CC;
+}
+
+.sorted:first-child {
  background-color:#C6FFB3;
 }
 
-.unrankedReaction:last-child {
+.sorted:last-child {
  background-color:#FFC6B3;
 }
 
-.unrankedReaction:hover {
+.sorted:hover {
  border-right:1px solid black;
  border-left:1px solid black;
 }
