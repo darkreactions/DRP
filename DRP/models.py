@@ -104,18 +104,19 @@ def collect_CGs_by_abbrevs(lab_group, abbrev_list):
  CG_list = []
  for i in abbrev_list:
   query = get_lab_CG(lab_group).filter(abbrev=i)
-  if query.exists(): #Don't append index an empty query; Django gets annoyed.
+  if query.exists(): 
    CG_list.append(query[0])
  return CG_list
 
-def get_smiles_from_CG_list(CG_list):
- smiles_list = [i.smiles for i in CG_list]
+def get_smiles_from_CG_list(CG_list, allow_custom=True):
+ smiles_list = [i.smiles for i in CG_list if (not i.custom or allow_custom)]
  return smiles_list
 
-def condense_smiles_list_to_atoms(smiles_list, show_hydrogen = False):
+def condense_smiles_list_to_atoms(smiles_list):
  atoms_list = []
  for i in smiles_list:
-  atoms_list += get_atoms_from_smiles(i, show_hydrogen)
+  if i:
+   atoms_list += get_atoms_from_smiles(i)
  return set(atoms_list)
 
 def get_abbrevs_from_reaction(reaction):
@@ -125,9 +126,9 @@ def get_abbrevs_from_reaction(reaction):
 def get_atom_set_from_abbrevs(lab_group, abbrev_list):
  return condense_smiles_list_to_atoms(
   get_smiles_from_CG_list(
-   collect_CGs_by_abbrevs(lab_group, abbrev_list)
-   ), show_hydrogen=True
-  )
+   collect_CGs_by_abbrevs(lab_group, abbrev_list),
+   allow_custom=False
+   ))
 
 def get_atom_set_from_reaction(reaction):
  return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
@@ -652,13 +653,14 @@ class DataCalc(models.Model):
 
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
+ ref = models.CharField("Reference", max_length=12)
+
  #List Fields
  for i in CONFIG.reactant_range():
   exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
   exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
   exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
 
- ref = models.CharField("Reference", max_length=12)
  temp = models.CharField("Temperature", max_length=10)
  time = models.CharField("Time", max_length=10) ###
  pH = models.CharField("pH", max_length=5)

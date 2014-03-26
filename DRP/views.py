@@ -1371,8 +1371,7 @@ def download_CSV(request):
    #Write the data to the file.
    result.writerow(verbose_headers)
    for entry in data:
-    result.writerow([getattr(entry, field) for field in headers])
-   print "FINISHED MAKING FILE"
+    result.writerow([getattr(entry, field).encode('ascii', errors='ignore') for field in headers])
    return CSV_file
   except Exception as e:
    print e
