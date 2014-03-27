@@ -21,19 +21,11 @@ transition: border-color .25s;
 }
 
 .seed {
- background-color:white;
-}
-
-.sorted {
  background-color:#FFF2CC;
 }
 
-.sorted:first-child {
- background-color:#C6FFB3;
-}
-
-.sorted:last-child {
- background-color:#FFC6B3;
+.sorted {
+ background-color:white;
 }
 
 .sorted:hover {
