@@ -1,0 +1,56 @@
+#The following instructions are written to work with Ubuntu 12 and have been tested on Ubuntu 13.
+
+#Install the necessary programs.
+sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcache python-memcache
+
+#Note which version of Django gets installed.
+sudo pip install numpy scipy Django django-south pygraphviz
+
+sudo easy_install South
+
+#Install ChemAxon's JChem and Marvin. These do intense, high-level chem-calcs for us.
+#On the server, use a "cron" job to back up the database. Note that the password needs to change. Ideally the password will be stored more discretely in one place on the server. Add the following line to dump the database to a unique file every day in a DropBox backup folder:
+33 3 * * * mysqldump -uroot -p SecurePassword DRP_db > /home/drp/database_backups/Dropbox/DRP_db__$(date +\%m_\%d_\%y).sql
+
+#Install a virtualenv if you are on the development server. This helps prevent hackers from accessing file and system information outside of the directory of the project.
+
+#Set the "root" user password to "SecurePassword" so that you don't forget it and it has no correlation with the project itself. You should get prompted.
+
+#The URL below might change depending on your username.
+git clone https://cfalk@bitbucket.org/cfalk/dr-django-site.git
+
+#Move the NGINX and UWSGI files to their appropriate directories.
+sudo mv DRP_nginx aetc/nginx/sites-available/DRP_nginx
+sudo mv DRP_uwsgi /etc/uwsgi/apps-available/DRP_uwsgi
+
+#Set up "sym links" so that the files are "activated." This is good practice so that the actual configuration file itself is never discarded when a site is de-activated.
+sudo ln -s /etc/nginx/sites-available/DRP_nginx /etc/nginx/sites-enabled/DRP_nginx
+sudo ln -s /etc/uwsgi/apps-available/DRP_uwsgi /etc/uwsgi/apps-enabled/DRP_uwsgi
+
+#Restart nginx and uwsgi so that they know that we changed files. If we don't, they will continue to distribute the obsolete "cached" versions. This should be done every time a change is made.
+sudo services nginx restart
+sudo services uwsgi restart
+
+#Copy over a version of the database from the server. Choose the most recent mysqldump file.
+scp drp@darkreactions.haverford.edu:/home/drp/database_backups/Dropbox/DRP_db__03_30_14.sql ./database.sql
+
+#Create an empty database for DRP using the MySQL client:
+mysql -uroot -p
+mysql> CREATE DATABASE DRP_db;
+exit
+
+#Load the mysqldump into this empty DRP database.
+mysql -u root --password=SecurePassword DRP_db < database.sql
+
+#Remove any migration history that might exist. BE CAREFUL WHAT YOU DELETE.
+rm -r DRP/migrations/
+
+#Convert the database to be managed by South.
+python manage.py syncdb
+python manage.py convert_to_south DRP
+python manage.py migrate DRP --fake --delete-ghost-migrations
+
+#When a model changes or is added, you must run. This will have to be duplicated on the production server.
+python manage.py schemamigration --auto DRP
+python manage.py migrate DRP
+
