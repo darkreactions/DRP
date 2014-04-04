@@ -1,0 +1,11 @@
+.modelStatsName{
+ font-style:oblique;
+}
+
+.modelStatsEntry {
+ margin-bottom:20px;
+}
+
+.modelStatsEntry > span {
+ display:block;
+}

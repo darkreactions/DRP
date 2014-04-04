@@ -1,0 +1,14 @@
+<div class="infoContainer"> 
+
+{% for entry in model_stats %}
+<div class="modelStatsEntry">
+ <span><span class="modelStatsName">Performance: </span> {{ entry.performance }} </span>
+ <span><span class="modelStatsName">False Positive Rate: </span> {{ entry.false_positive_rate }} </span>
+ <span><span class="modelStatsName">Actual Success Rate: </span>{{ entry.actual_success_rate }} </span>
+ <span><span class="modelStatsName">Estimated Success Rate: </span>: {{ entry.estimated_success_rate }} </span>
+ <span><span class="modelStatsName">Description:  </span>{{ entry.description }} </span>
+ <span><span class="modelStatsName">Submitted: </span> {{ entry.datetime }} </span>
+</div>
+{% endfor %}
+
+</div>

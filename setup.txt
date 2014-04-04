@@ -9,6 +9,7 @@ sudo pip install numpy scipy Django django-south pygraphviz
 sudo easy_install South
 
 #Install ChemAxon's JChem and Marvin. These do intense, high-level chem-calcs for us.
+
 #On the server, use a "cron" job to back up the database. Note that the password needs to change. Ideally the password will be stored more discretely in one place on the server. Add the following line to dump the database to a unique file every day in a DropBox backup folder:
 33 3 * * * mysqldump -uroot -p SecurePassword DRP_db > /home/drp/database_backups/Dropbox/DRP_db__$(date +\%m_\%d_\%y).sql
 

@@ -9,6 +9,28 @@ from retrievalFunctions import *
    # # # # # # # # # # # # #  Recommendations  # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+def store_ModelStats(falsePositive, actualSuccess, estimatedSuccess, modelPerformance, description, datetime_input=None):
+  #Create an instance of the model.
+  model_stats = ModelStats()
+
+  #Set the fields of model_stats object.  
+  model_stats.false_positive_rate = falsePositive
+  model_stats.actual_success_rate = actualSuccess
+  model_stats.estimated_success_rate = estimatedSuccess
+  model_stats.performance = modelPerformance
+  model_stats.description = description
+
+  if (not datetime_input):
+    datetime_input = datetime.datetime.now()
+
+
+  model_stats.datetime = datetime_input
+
+  #Save the model.
+  model_stats.save()  
+
+  return model_stats
+
 #Organize the reactants into sublists: [[reactant, quantity, unit], ...]
 def partition_reactant_fields(lst):
  num_fields = CONFIG.fields_per_reactant

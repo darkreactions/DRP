@@ -1800,6 +1800,17 @@ def remove_lonely_grams(lab_group):
       pass
  print "Removed all lonely grams!"
 
+#TODO: Casey, ideally move me in the future to some other file.
+def get_dashboard(request):
+
+  #Grab all of the model_stats.
+  model_stats = ModelStats.objects.all()
+  return render(request, 'global_page.html', {
+   "template": "dashboard",
+   "model_stats": model_stats,
+  })
+  
+
 ######################  Email Functions  ###########################
 def alert_about_new_lab(lab_group):
  email_body = "A new Lab Group has been registered:"

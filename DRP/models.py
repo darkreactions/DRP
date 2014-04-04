@@ -241,6 +241,17 @@ class Lab_Member(models.Model):
   return self.user.username
 
 ############### RECOMMENDATIONS ########################
+class ModelStats(models.Model):
+  false_positive_rate = models.FloatField() 
+  actual_success_rate = models.FloatField() 
+  estimated_success_rate = models.FloatField() 
+  datetime = models.DateTimeField()
+  description = models.TextField()
+  performance = models.FloatField()
+
+  def __unicode__(self):
+    return "Performance:{} ({})".format(self.performance, self.datetime)
+
 class Model_Version(models.Model):
  model_type = models.CharField("Type", max_length=20)
  date = models.CharField("Date", max_length=26) ###TODO: Explore why this isn't a datetime field. 
