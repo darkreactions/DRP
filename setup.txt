@@ -1,10 +1,10 @@
 #The following instructions are written to work with Ubuntu 12 and have been tested on Ubuntu 13.
 
 #Install the necessary programs.
-sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcache python-memcache
+sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache
 
 #Note which version of Django gets installed.
-sudo pip install numpy scipy Django django-south pygraphviz
+sudo pip install numpy scipy Django pygraphviz
 
 sudo easy_install South
 

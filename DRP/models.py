@@ -245,9 +245,9 @@ class ModelStats(models.Model):
   false_positive_rate = models.FloatField() 
   actual_success_rate = models.FloatField() 
   estimated_success_rate = models.FloatField() 
+  performance = models.FloatField()
   datetime = models.DateTimeField()
   description = models.TextField()
-  performance = models.FloatField()
 
   def __unicode__(self):
     return "Performance:{} ({})".format(self.performance, self.datetime)

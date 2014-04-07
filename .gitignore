@@ -4,5 +4,6 @@ DRP/data_config.py
 /tmp/*
 /dynamic/*
 /DRP/migrations/*
-.gitignore
 *.pyc
+*.sql
+

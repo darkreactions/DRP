@@ -15,7 +15,8 @@ urlpatterns = patterns('',
     (r'^papers/?$', info_page, {"page":"papers"}),
     (r'^about/?$', info_page, {"page":"about"}),
   #Dashboard
-    (r'^dashboard/?$', get_dashboard), #Encompassing data view.
+    (r'^dashboard/?$', get_dashboard), #Displays the empty dashboard.
+    (r'^get_stats/?$', get_stats_json), #Actually loads the json.
   #Database
     (r'^database/$', database), #Encompassing data view.
    #Change Page
@@ -64,6 +65,7 @@ urlpatterns = patterns('',
    #Authentication
     (r'^user_logout/$', user_logout), #Log Out
     (r'^user_login/$', user_login), #Log In
+    (r'^accounts/login/?$', user_login), #TODO: This should lead to a separate login page with a separate login pipeline.
    #Registration
     (r'^user_license_agreement/$', get_user_license_agreement),
     (r'^update_user_license_agreement/$', update_user_license_agreement),

@@ -1,14 +1,11 @@
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/nvd3.css" />
+
 <div class="infoContainer"> 
-
-{% for entry in model_stats %}
-<div class="modelStatsEntry">
- <span><span class="modelStatsName">Performance: </span> {{ entry.performance }} </span>
- <span><span class="modelStatsName">False Positive Rate: </span> {{ entry.false_positive_rate }} </span>
- <span><span class="modelStatsName">Actual Success Rate: </span>{{ entry.actual_success_rate }} </span>
- <span><span class="modelStatsName">Estimated Success Rate: </span>: {{ entry.estimated_success_rate }} </span>
- <span><span class="modelStatsName">Description:  </span>{{ entry.description }} </span>
- <span><span class="modelStatsName">Submitted: </span> {{ entry.datetime }} </span>
+ <div id="loadingMessage">Loading!</div>
+ <div id="chart">
+  <svg></svg>
+ </div>
 </div>
-{% endfor %}
 
-</div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/d3.js" ></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/nvd3.js" ></script>

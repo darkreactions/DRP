@@ -1,4 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import *
 from django.shortcuts import render
@@ -1800,14 +1802,50 @@ def remove_lonely_grams(lab_group):
       pass
  print "Removed all lonely grams!"
 
-#TODO: Casey, ideally move me in the future to some other file.
-def get_dashboard(request):
 
+#TODO: Casey, ideally move these in the future to some other file.
+#Helper function for get_fields_as_json.
+def get_field_tuple(stat, entry):
+  #Note: in order to get milliseconds since the epoch, we need a TimeDelta object. 
+  seconds = int((entry.datetime - datetime.datetime(1970,1,1)).total_seconds()*1000)
+  value = getattr(entry, stat)
+  return [seconds, value] 
+
+def get_fields_as_json(model_stats):
+  #Variable Setup.
+  stats_to_serialize = ["false_positive_rate", "actual_success_rate", 
+                         "estimated_success_rate", "performance"]
+  results_list = []
+
+  # The D3 library needs the following format:
+  # [ { "key": "Label for these datums.", 
+  #     "values": [ [seconds, value], [seconds, value], ... ]
+  #   },
+  #   { ... }
+  # ]
+  for stat in stats_to_serialize:
+    key_dict = {"key":stat, 
+                "values":[get_field_tuple(stat, entry) for entry in model_stats],
+               }
+    results_list.append(key_dict)
+
+  result = json.dumps(results_list)
+  return result
+
+def get_stats_json(request):
   #Grab all of the model_stats.
-  model_stats = ModelStats.objects.all()
+  model_stats = ModelStats.objects.all().order_by("datetime")
+
+  #Convert the data into a JSON format.
+  data = get_fields_as_json(model_stats)
+  
+  #Send the JSON back to the client.
+  return HttpResponse(data, mimetype="application/json")  
+
+@login_required
+def get_dashboard(request):
   return render(request, 'global_page.html', {
    "template": "dashboard",
-   "model_stats": model_stats,
   })
   
 
