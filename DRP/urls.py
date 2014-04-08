@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     (r'^home/?$', info_page, {"page":"home"}),
     (r'^papers/?$', info_page, {"page":"papers"}),
     (r'^about/?$', info_page, {"page":"about"}),
+    (r'^contact/?$', info_page, {"page":"contact"}),
   #Dashboard
     (r'^dashboard/?$', get_dashboard), #Displays the empty dashboard.
     (r'^get_stats/?$', get_stats_json), #Actually loads the json.

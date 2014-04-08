@@ -1,9 +1,11 @@
 DRP/settings.py
 DRP/data_config.py
-*.sw*
-/tmp/*
-/dynamic/*
-/DRP/migrations/*
+DRP/migrations/*
+
+tmp/*
+dynamic/*
+
 *.pyc
 *.sql
+*.sw*
 

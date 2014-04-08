@@ -343,7 +343,7 @@ def get_random_unranked_reaction_or_none(seed=None):
 class CG_calculations(models.Model):
  json_data = models.TextField()
  compound = models.CharField(max_length=200)
- smiles = models.CharField(max_length=200, unique=True)
+ smiles = models.TextField(unique=True)
  json = models.TextField(null=True, default="{}")
 
  def __unicode__(self):
@@ -377,7 +377,7 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
 	CompoundEntry.objects.filter(smiles=smiles).update(calculations=cgc)
     return cgc
 
-def perform_CG_calculations(only_missing=True, lab_group=None, verbose=False):
+def perform_CG_calculations(only_missing=True, lab_group=None, reattempt_failed = False, verbose=False):
  #Variable Setup
  success = 0
  i = 0
@@ -387,6 +387,8 @@ def perform_CG_calculations(only_missing=True, lab_group=None, verbose=False):
   cg = cg.filter(calculations=None)
  if lab_group:
   cg = cg.filter(lab_group=lab_group)
+ if not reattempt_failed:
+  cg = cg.filter(calculations_failed=False)
 
  for entry in cg:
   try:
@@ -394,9 +396,13 @@ def perform_CG_calculations(only_missing=True, lab_group=None, verbose=False):
     i+=1
     if i%5==0: print "... {}.".format(i)
 
-   entry.compound = clean_compound(entry.compound)
-   calc = create_CG_calcs_if_needed(entry.compound, entry.smiles, entry.compound_type)
-   entry.calculations = calc
+   try:
+    entry.compound = clean_compound(entry.compound)
+    calc = create_CG_calcs_if_needed(entry.compound, entry.smiles, entry.compound_type)
+    entry.calculations = calc
+   except:
+    entry.calculations_failed = True
+
    entry.save
    success += 1
   except Exception as e:
@@ -415,12 +421,13 @@ class CompoundEntry(models.Model):
  CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, default="")
  compound_type = models.CharField("Type", max_length=10)
  image_url = models.CharField("Image URL", max_length=100, blank=True, default="")
- smiles = models.CharField("SMILES", max_length=100, blank=True, default="")
+ smiles = models.TextField("SMILES", blank=True, default="")
  mw = models.CharField("Molecular Weight", max_length=20, default="")
  custom = models.BooleanField("Custom", default=False)
 
  lab_group = models.ForeignKey(Lab_Group, unique=False)
  calculations = models.ForeignKey(CG_calculations, unique=False, null=True, default=None)
+ calculations_failed = models.BooleanField(default=False)
 
  def __unicode__(self):
   if self.compound == self.abbrev:
