@@ -20,6 +20,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         time,  pH, slowCool, leak, outcome, purity) = row[:23]
 
     for i in range(5):
+        if compound[i] == "water": continue
         if compound[i] == "" or rxn_table[compound[i]]["type"] in ['pH']: # TODO: fix
             compound[i] = 'x'
             mass[i] = '-1'
@@ -35,7 +36,7 @@ def parse_rxn(row, rxn_table, ml_convert):
 
     pH = float(pH)
     if not (pH > 0 and pH <= 14): #TODO: fix to allow 0 and 14
-        raise Exception("pH is out of bounds: {0}".format(title))
+        raise Exception("pH {0} is out of bounds: {1}".format(str(pH), title))
 
     if not purity:
         purity = 1
@@ -99,6 +100,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         assert(a != 0)
         compoundMoles[i] = mass[i]/a
         if isWater == i and not compoundMoles[i]:
+            print row
             raise Exception("Water moles zero: {0}, {1}".format(mass[i], a))
         r = [compound[i], mass[i], compoundMoles[i]]
         if inorganicList[i]:
@@ -125,7 +127,7 @@ def parse_rxn(row, rxn_table, ml_convert):
     output += [Tmax, time, slowCool.lower(), pH, leak.lower(), nInorg, nOrg, nOxlike, nInorg+nOrg+nOxlike]
     compoundProperties = [[] for k in range(5)]
     for j in range(5):
-        if not keepList[j]:
+        if not keepList[j] or isWater == j:
             compoundProperties[j] = [-1 for k in range(19)]
             continue
         a = compound[j]
@@ -135,12 +137,12 @@ def parse_rxn(row, rxn_table, ml_convert):
         compoundProperties[j] += [bar[k] for k in range(9*int(pH) - 9, 9*int(pH))]
         bar = rxn_table[compound[j]]["msacc"]
         compoundAcc[j] = bar[int(pH) -1] # TODO: what is this?
-        if abs(compoundAcc[j]) < 0.01:
-            compoundAcc[j] = 0.0001 # TODO: is this _really_ valid?
+        #if abs(compoundAcc[j]) < 0.01:
+        #    compoundAcc[j] = 0.0001 # TODO: is this _really_ valid?
         bar = rxn_table[compound[j]]["msdon"]
         compoundDon[j] = bar[int(pH) - 1] # TODO: same
-        if abs(compoundDon[j]) < 0.01:
-            compoundDon[i] = 0.0001 # TODO: is this valid?
+        #if abs(compoundDon[j]) < 0.01:
+        #    compoundDon[i] = 0.0001 # TODO: is this valid?
         compoundProperties[j] += [compoundAcc[j], compoundDon[j]]
         if len(compoundProperties[j]) != 19:
             raise Exception("Wat?" + str(len(compoundProperties[j])))
@@ -167,9 +169,11 @@ def parse_rxn(row, rxn_table, ml_convert):
     smiles = []
     atoms = []
     for j in range(5):
-        if keepList[j] == 1:
+        if keepList[j] == 1 and isWater != j:
             atoms += rxn_table[compound[j]]["atoms"]
             smiles.append((rxn_table[compound[j]]["smiles"], compoundMoles[j]) )
+	else:
+		smiles.append(None)
     atoms = set(atoms)
     for atom in rebuildCDT.atomsz:
         if atom in atoms:
@@ -177,7 +181,23 @@ def parse_rxn(row, rxn_table, ml_convert):
         else:
            output.append("no")
 
-    output += rebuildCDT.atomic_properties(atoms, smiles)
+    atom_counts = {} 
+    for idx in range(len(keepList)):
+        if (not keepList[idx]) or (isWater == idx): continue
+        if compound[idx] in rxn_table and "atom_count" in rxn_table[compound[idx]]: #TODO: check name
+            atoms_info = rxn_table[compound[idx]]["atom_count"]
+        else:
+            at_list = rebuildCDT.atoms_from_smiles(smiles[idx][0])
+            atoms_info = {a: at_list.count(a) for a in at_list} 
+
+        for atom in atoms_info:
+            if atom not in atom_counts:
+                atom_counts[atom] = atoms_info[atom]*compoundMoles[idx]
+            else:
+                atom_counts[atom] += atoms_info[atom]*compoundMoles[idx] 
+            
+
+    output += rebuildCDT.atomic_properties(atoms, smiles, atom_counts)
     output.append(purity)
     output.append(outcome)
  

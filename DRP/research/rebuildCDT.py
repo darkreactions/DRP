@@ -133,18 +133,17 @@ def atoms_from_smiles(smiles):
     atoms = mols.GetAtoms()
     return [atom.GetSymbol() for atom in atoms]
 
-def atomic_properties(atom_list, smiles_pairs):
+def atomic_properties(atom_list, smiles_pairs, counts = None):
     interesting = ["Se", "Te", "V", "Mo", "Zn","Ga","Co", "Cr"]
-    atom_count = [(filter(lambda x: x in interesting, atoms_from_smiles(k[0])), k[1]) for k in smiles_pairs]
+    if not counts:
+        atom_count = [(filter(lambda x: x in interesting, atoms_from_smiles(k[0])), k[1]) for k in smiles_pairs]
 
-    counts = {}
-    for p in atom_count:
-        for a in p[0]:
-            if a not in counts:
-                counts[a] = 0
-            counts[a] += min(1,p[0].count(a))*p[1] 
-
-    
+        counts = {}
+        for p in atom_count:
+            for a in p[0]:
+                if a not in counts:
+                    counts[a] = 0
+                counts[a] += min(1,p[0].count(a))*p[1] 
 
 
     atoms = {atom: properties[atom] for atom in atom_list if atom in interesting}
