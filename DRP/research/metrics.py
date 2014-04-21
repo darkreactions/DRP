@@ -50,7 +50,9 @@ class Euclidean:
 	def dissimilarity(self, A_ckey, B_ckey):
 		row_1 = parse_row(A_ckey) 
 		row_2 = parse_row(B_ckey) 
-	
+		return self.distance(row_1, row_2)
+
+	def distance(self, row_1, row_2):
 		dist = 0.0
 
 		for i in range(len(row_1)):
@@ -67,6 +69,13 @@ class Euclidean:
 					raise e
 		dist = math.sqrt(dist)
 		return dist
+
+	def sim(self, row_1, row_2):
+		row_1 = self.parse_rxn(row_1, self.cg_props, self.ml_convert)
+		row_2 = self.parse_rxn(row_2, self.cg_props, self.ml_convert)
+		
+		return self.distance(row_1, row_2)	
+
 
 
 
