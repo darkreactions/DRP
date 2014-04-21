@@ -343,7 +343,7 @@ def get_random_unranked_reaction_or_none(seed=None):
 class CG_calculations(models.Model):
  json_data = models.TextField()
  compound = models.CharField(max_length=200)
- smiles = models.CharField(max_length=500, unique=True)
+ smiles = models.CharField(max_length=255, unique=True)
  json = models.TextField(null=True, default="{}")
 
  def __unicode__(self):
@@ -421,7 +421,7 @@ class CompoundEntry(models.Model):
  CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, default="")
  compound_type = models.CharField("Type", max_length=10)
  image_url = models.CharField("Image URL", max_length=100, blank=True, default="")
- smiles = models.CharField("SMILES", max_length=500, blank=True, default="")
+ smiles = models.CharField("SMILES", max_length=255, blank=True, default="")
  mw = models.CharField("Molecular Weight", max_length=20, default="")
  custom = models.BooleanField("Custom", default=False)
 

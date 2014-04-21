@@ -7,7 +7,7 @@ class Command(BaseCommand):
   make_option('--only-missing',
        action='store_true',
        dest='only_missing',
-       default=False,
+       default=True,
        help='Perform calculations on only the missing data.'),
   )
 

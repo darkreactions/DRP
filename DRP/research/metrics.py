@@ -41,7 +41,7 @@ class Euclidean:
 		return new_row
 
 	def parse_row(self, ckey):
-		if row not in self.euclid_map
+		if row not in self.euclid_map:
 			row = self.parse_rxn(self.make_row(list(ckey)), self.cg_props, self.ml_convert)
 			self.apply_center(row)
 			self.euclid_map[ckey] = row
