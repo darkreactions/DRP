@@ -2,8 +2,19 @@ import subprocess
 import uuid
 
 POSITIVE = "4:4"
-def gen_model(train_arff, model_location):
-	subprocess.check_output("sh make_model.sh {0} {1}".format(model_location, train_arff), shell=True)	
+def gen_model(model_location):
+	''' 
+	gen_model("5.8.2014.UUID.model")
+	'''
+
+	rows = load_data.get_feature_vectors()
+	headers = get_arff_headers()
+	with open(prefix+name + ".arff", "w") as raw:
+		raw.write(headers+"\n")
+		for row in rows:
+			raw.write(",".join(row))
+	
+	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_BASE_DIR + model_location, train_arff), shell=True)
 
 def evaluate_model(results_location):
 	with open(results_location) as results_file:
@@ -44,3 +55,25 @@ def evaluate_real_results(lab_group = None):
 	recommended_results = {'correct': recommended.count('4') + recommended.count('3'), 'incorrect': recommended.count('2') + recommended.count('1') + recommended.count('0') }
 	unrecommended_results =  {'correct': unrecommended.count('4') + unrecommended.count('3'), 'incorrect': unrecommended.count('2') + unrecommended.count('1') + unrecommended.count('0') }
 	return recommnded_results, unrecommened_results
+
+
+def get_arff_headers():
+	hdrs = rebuildCDT.headers
+	XXX = 0
+	for header in headers:
+            if header[0:3] == "XXX":
+                 XXX += 1
+        headers = headers[XXX:]
+	
+
+def preface(headers, outcome, prefix, specials):
+    res = "%  COMMENT \n%  NAME, DATE\n@relation " + prefix 
+    for header in headers:
+        if header in specials.keys():
+            if not (outcome and header == "purity") and not (not outcome and header == "outcome"):
+                res += "\n@ATTRIBUTE " + header + " " + specials[header]
+        else:
+            res += "\n@ATTRIBUTE " + header + " NUMERIC"
+    res += "\n\n@DATA\n"
+    return res
+
