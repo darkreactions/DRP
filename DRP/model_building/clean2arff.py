@@ -38,8 +38,8 @@ def process_rows(rows, headers, prefix, outcome=True):
 def gen_specials():
     specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}", 
             "leak": "{yes,no}", "purity": "{1,2}"}
-    import rebuildCDT
-    for atom in rebuildCDT.atomsz + rebuildCDT.bools:
+    import rxn_calculator
+    for atom in rxn_calculator.atomsz + rxn_calculator.bools:
         specials[atom] = "{yes,no}"
     return specials
 

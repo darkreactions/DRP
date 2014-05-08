@@ -1,5 +1,5 @@
 import json, csv,sys,math
-import rebuildCDT
+import rxn_calculator
 import traceback
 
 def fixmL(t):
@@ -148,21 +148,21 @@ def parse_rxn(row, rxn_table, ml_convert):
             raise Exception("Wat?" + str(len(compoundProperties[j])))
 
     if nOrg > 0:
-        output += rebuildCDT.distList(organicList, compoundProperties)
+        output += rxn_calculator.distList(organicList, compoundProperties)
     else:
         output += [-1 for i in range(76)]
     if nOxlike > 0:
-        output += rebuildCDT.distList(oxalateList, compoundProperties)
+        output += rxn_calculator.distList(oxalateList, compoundProperties)
     else:
         output += [-1 for i in range(76)]
 
-    rxn_calculator = rebuildCDT.PropertiesCalculator(compoundMoles, inorganicList, compoundAcc, compoundDon, organicList, isWater)
-    output += [rxn_calculator.inorg_water_mole_ratio(),
-        rxn_calculator.org_water_mole_ratio(),
-        rxn_calculator.org_water_acceptor_on_inorg_ratio(),
-        rxn_calculator.org_water_donor_on_inorg_ratio(),
-        rxn_calculator.inorg_org_mole_ratio(),
-        rxn_calculator.not_water_mole_ratio(),
+    rxn_props_calculator = rxn_calculator.PropertiesCalculator(compoundMoles, inorganicList, compoundAcc, compoundDon, organicList, isWater)
+    output += [rxn_props_calculator.inorg_water_mole_ratio(),
+        rxn_props_calculator.org_water_mole_ratio(),
+        rxn_props_calculator.org_water_acceptor_on_inorg_ratio(),
+        rxn_props_calculator.org_water_donor_on_inorg_ratio(),
+        rxn_props_calculator.inorg_org_mole_ratio(),
+        rxn_props_calculator.not_water_mole_ratio(),
         ]
     
 
@@ -175,7 +175,7 @@ def parse_rxn(row, rxn_table, ml_convert):
 	else:
 		smiles.append(None)
     atoms = set(atoms)
-    for atom in rebuildCDT.atomsz:
+    for atom in rxn_calculator.atomsz:
         if atom in atoms:
            output.append("yes")
         else:
@@ -187,7 +187,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         if compound[idx] in rxn_table and "atom_count" in rxn_table[compound[idx]]: #TODO: check name
             atoms_info = rxn_table[compound[idx]]["atom_count"]
         else:
-            at_list = rebuildCDT.atoms_from_smiles(smiles[idx][0])
+            at_list = rxn_calculator.atoms_from_smiles(smiles[idx][0])
             atoms_info = {a: at_list.count(a) for a in at_list} 
 
         for atom in atoms_info:
@@ -197,7 +197,7 @@ def parse_rxn(row, rxn_table, ml_convert):
                 atom_counts[atom] += atoms_info[atom]*compoundMoles[idx] 
             
 
-    output += rebuildCDT.atomic_properties(atoms, smiles, atom_counts)
+    output += rxn_calculator.atomic_properties(atoms, smiles, atom_counts)
     output.append(purity)
     output.append(outcome)
  
@@ -324,7 +324,7 @@ def main():
         reader = csv.reader(data_source)
         writer = csv.writer(data_out)
         reader.next()
-        writer.writerow(rebuildCDT.headers)
+        writer.writerow(rxn_calculator.headers)
         rows = [line for line in reader]
         #prior = build_prior(rows)
         reader = rows# + prior

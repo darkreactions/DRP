@@ -176,7 +176,7 @@ def atomic_properties(atom_list, smiles_pairs, counts = None):
 	props += [0 for i in range(48)]
     return props
 
-properties = json.load(open(absolute_path + "/scripts/atomic_props.json"))
+properties = json.load(open(absolute_path + "scripts/atomic_props.json"))
 
 
 bools = ["Actinide", "AlkaliMetal", "Lanthanide", 
