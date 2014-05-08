@@ -1,6 +1,11 @@
-import math
+import math, json
+import load_cg
+global_cg = None
+
+
 def get_cg():
-	return json.load(open("restart.json"))
+	if global_cg: return global_cg
+	return load_cg.get_cg() 
 
 
 def Metric(name):
@@ -12,17 +17,22 @@ def Metric(name):
 		raise Exception("Unknown metric specified, {0}".format(name))
 
 class Euclidean:
-	def __init__(self, name):
+	def __init__(self, name, models, ml_convert = None, msm = None, ):
 		self.name = name
 		self.cg_props = get_cg() 
-		self.ml_convert = json.load(open("mlConvert.json"))
+		if not ml_convert:
+			ml_convert = json.load(open("/home/drp/web/darkreactions.haverford.edu/app/DRP/DRP/research/mlConvert.json"))
+		self.ml_convert = ml_convert 
 		self.euclid_map = dict()
 
-		self.mean_std_map, self.center_list = json.load(open("mean_std_map.json"))
+                if not msm:
+			msm = json.load(open("mean_std_map.json"))
+		self.mean_std_map, self.center_list = msm 
 		import rebuildCDT
 		import parse_rxn
 		self.parse_rxn = parse_rxn.parse_rxn
 		self.headers = rebuildCDT.headers
+		self.models = models
 
 	def make_row(self,combination):
 		return ["--", combination[0], 1.0, "g", combination[1], 1.0, "g", combination[2], 1.0, "g",  "water", 5.0,  "g", "", "","", 90, 36, 1, "yes", "no", 4, 2,""]
@@ -75,6 +85,12 @@ class Euclidean:
 		row_2 = self.parse_rxn(row_2, self.cg_props, self.ml_convert)
 		
 		return self.distance(row_1, row_2)	
+
+	def object_distance(self, obj_1, obj_2):
+		row_1 = self.parse_rxn(self.models.convert_Data_to_list(obj_1), self.cg_props, self.ml_convert)
+		row_2 = self.parse_rxn(self.models.convert_Data_to_list(obj_2), self.cg_props, self.ml_convert)
+		return self.distance(row_1, row_2)
+		
 
 
 

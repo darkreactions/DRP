@@ -242,9 +242,16 @@ class Lab_Member(models.Model):
 
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):
+  # model false-positive on test set
   false_positive_rate = models.FloatField() 
+
+  # recommendation quality
   actual_success_rate = models.FloatField() 
+
+  # evaluation of similarity metric
   estimated_success_rate = models.FloatField() 
+  
+  # model performance
   performance = models.FloatField()
   datetime = models.DateTimeField()
   description = models.TextField()
@@ -508,6 +515,28 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
   query_list.append(sub_list)
 
  return query_list
+
+def convert_Data_to_list(dat, headings=None):
+	if not headings:
+		all_fields = get_model_field_names(model="Data", collect_ignored = True)
+		fields_to_exclude = {"lab_group", "atoms"}
+		headings = [field for field in all_fields if field not in fields_to_exclude]
+
+	r_heads = ["reactant_" + str(i) for i in range(1,6)]
+
+	results = []
+	for field in headings:
+		val = getattr(dat, field)
+		if field in r_heads and val != '':
+			new_val = CompoundEntry.objects.filter(abbrev=val).first()
+			if new_val is None:
+				new_val = CompoundEntry.objects.filter(compound=val).first()
+			new_val = new_val.compound
+			if new_val:
+				val = new_val
+		results.append(val)
+
+	return results 
 
 def collect_reactions_as_lists(lab_group, with_headings=True):
  lab_group = get_Lab_Group(lab_group)

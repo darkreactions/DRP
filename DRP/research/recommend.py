@@ -1,0 +1,636 @@
+import uuid,json,subprocess,math
+import parse_rxn
+import clean2arff, rebuildCDT
+
+import load_cg 
+
+cg_props = load_cg.get_cg() 
+ml_convert = json.load(open("mlConvert.json"))
+hdrs = ",".join(rebuildCDT.headers)
+
+joint_sim = dict()
+
+restrict_lookup = dict()
+
+
+test_var = False 
+if not test_var:
+	time_range = [24, 36, 48]
+	pH_range = range(1,7,2) # TODO: make 2
+	temp_range = [80, 100, 130]
+	steps = 6
+else:
+	time_range = [30, 60]
+	pH_range = range(1,15,7)
+	temp_range = [70, 100]
+	steps = 2
+
+
+def user_recommend(combinations, similarity_map, range_map):
+	''' Combinations is a SET of tuples, where each tuple is a sorted
+	list of the reactants tried (with any pH / temp / mass information
+	stripped out. currently assuming each tuple is length 3.
+
+	Similarity_map maps from a reactant (key) to a sorted list of
+	(name, similarity) tuples where similarity = sim(key, name). 
+
+	Range map is a map from name to (min, max), where min and max are the
+	largest and smallest mass to try. We can make steps in between by using
+	(mix - min)/number_steps as a step size.
+	'''
+
+	explored = set(combinations) # every combination that is tried
+	recommendations = [] # list of tuples. r[0] = score, r[1] = the rec
+	for combination in combinations:
+		recs = explore(combination, explored,similarity_map, range_map) # NOTE: Mutates explored, adds new combinations that have been tried.
+		recommendations += recs
+	recs_source = sorted(recommendations, key=lambda x: x[0])
+	print recs_source, "source"
+	recs = sorted(dissimilarity_weighting(recs_source, similarity_map), key= lambda x: x[0])
+	print recs, "reweighted"
+	return recs
+
+def reweight(choice, recs, similarity_map):
+	return [ dissim(choice, rec, similarity_map) for rec in recs]
+
+def dissim(choice, rec, similarity_map, tanimoto=False):
+	if not tanimoto:
+		c = make_row(list(choice[1]), 0.1, 0.1, 0.1, 0.1, 1, 36, 70) #TODO: make valid
+		r = make_row(list(rec[1]), 0.1, 0.1, 0.1, 0.1, 1, 36, 70) # TODO: make valid
+		return (rec[0]*(1.0*euclidean_similarity(c, r)), rec[1], rec[2])
+	return (rec[0]/(1.0 + tanimoto_similarity(choice, rec, similarity_map)), rec[1], rec[2])
+	
+
+def tanimoto_similarity(choice, rec, similarity_map):
+	choice_compounds = list(choice[1])
+	rec_compounds = list(rec[1])
+	pairs = []
+	while len(choice_compounds):
+		assert(len(rec_compounds) > 0)
+		choice_compound = choice_compounds.pop(0)
+		max_i = -1
+		max_sim = -1
+		for i in range(len(rec_compounds)):
+			sim = calc_similarity(choice_compound, rec_compounds[i])
+			if sim > max_sim:
+				max_sim = sim
+				max_i = i
+		pairs.append( max_sim)
+		rec_compounds.pop(max_i)
+	sim = sum(pairs)
+	return sim 
+	
+	
+
+def dissimilarity_weighting(recs_unweighted, similarity_map):
+	recs = []
+	while len(recs_unweighted):
+		choice = recs_unweighted.pop(0)
+		recs.append(choice)
+		recs_unweighted = reweight(choice, recs_unweighted, similarity_map)
+	return recs
+		
+
+
+def do_get_evlaute_result(args):
+	new_combination, range_map, combination, similarity_map = args
+	score, best = evaluate_fitness(new_combination, range_map)
+	score = calc_score(score, similarity_map, combination, new_combination)
+	return (score, new_combination, best)
+
+def explore(combination, explored,similarity_map, range_map):
+	def args_yielder(similarity_map, combination, explored):
+		for count in range(0,total_sims): 
+			(i1, i2, i3) = calculate_indices(count, similarity_lengths)
+			new_combination = make_combination(similarity_map, combination, (i1,i2,i3))
+			if new_combination in explored:
+				continue
+			explored.add(new_combination)
+			yield (new_combination, range_map)
+
+
+	similarity_lengths = [len(similarity_map[combination[0]]), len(similarity_map[combination[1]]), len(similarity_map[combination[2]])]	
+	total_sims = similarity_lengths[0]*similarity_lengths[1]*similarity_lengths[2]
+	recs = []
+	import multiprocessing
+	pool = multiprocessingPool(processes=5)
+	recs = pool.map(do_get_evaluate_result, args_yielder(similarity_map, combination, explored)) 
+	return recs
+
+
+def calculate_indices(count, list_lengths):
+	indices = []
+	mod = 1
+	cnt = count
+	for i in range(len(list_lengths)):
+		mod = list_lengths[i]
+		diff = cnt % mod
+		indices.append(diff)
+		cnt = (cnt - diff) / mod
+	return indices
+
+def make_combination(similarity_map, combination, i):
+	i1,i2,i3 = i
+	names = [similarity_map[combination[0]][i1][0], similarity_map[combination[1]][i2][0], similarity_map[combination[2]][i3][0]]
+	return tuple(sorted(names))	
+
+
+def choose_center(rxns, new_combination):
+	mean = [sum(r)/float(len(r)) for r in zip(*rxns)]
+	dist = 100000000
+	center = rxns[0]
+	for rxn in range(len(rxns)):
+		# calculate the distance from the mean
+		d = sum( (rxns[rxn][i] - mean[i])**2 for i in range(len(rxns[rxn])))
+		if d < dist: # if we're closer than any previous, set a new center
+			dist = d
+			center = rxns[rxn]
+
+	return make_row(new_combination,  center[0], center[1],
+		center[2], center[3], center[4], center[5], center[6])
+
+
+def evaluate_fitness(new_combination, range_map):
+	#TODO: maybe make a smarter search?
+	name = str(uuid.uuid4())
+ 	prefix = "/home/drp/research/tmp/"
+	rows_generator = generate_rows(new_combination, range_map)
+	with open(prefix + name + ".csv","w") as raw:
+		raw.write(hdrs+"\n")
+		for row in rows_generator:
+			raw.write(",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, cg_props, ml_convert)]) +"\n")
+	clean2arff.clean(prefix + name) 
+	cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_model.sh {0}".format(name)
+	print cmd
+	result = subprocess.check_output(cmd, shell=True)
+	# The output of the above line should be "{0} {1}", where {0} is a score
+	# and {1} is an list of integers which are the ID #s of the highest 
+	# confidence rxns...
+
+	#find the first space!
+
+	# split the result into the conf and a list of indices
+	#print result
+
+	if "EMPTY" in result:
+		return  (0.0, get_rxn_row(0, new_combination, range_map))
+	result = result.split()
+	result = [result[0], result[1].split(",")]
+
+
+	# I can reverse engineer it!
+
+	if len(result) != 2:
+		raise Exception("Failed to check output: {0}".format(str(result)))
+	conf, rxn_idxes = result
+
+	if len(rxn_idxes) == 0:
+		return (0.0, [])
+	rxns = [get_rxn_row(int(rxn_idx) - 1, new_combination, range_map) for rxn_idx in rxn_idxes]
+	# -1 because weka isn't zero indexed.
+
+	rxn = choose_center(rxns, new_combination)
+
+	#cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_prior.sh {0}".format(name)
+
+	#result = subprocess.check_output(cmd, shell=True)
+
+	#if float(result) < 0.2:
+	#	print "prior does not like"
+	#	return (-1.0, [])
+
+	return (float(conf),rxn)
+	
+	
+		
+	
+
+def get_rxn_row(cnt, new_combination, range_map):
+	ranges = range_map[new_combination[0]], range_map[new_combination[1]], range_map[new_combination[2]], range_map['water']
+	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))] 
+	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
+	(mass1, mass2, mass3, mass4, pH, time, temp) = calculate_indices(i, len_list)
+	return [mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]]
+
+
+def generate_rows(new_combination, range_map):
+	from operator import mul
+	ranges = [range_map['water']]
+	for comb in new_combination:
+		if comb in range_map:
+			ranges.append(range_map[comb])
+		else:
+			range_map[comb] = [0.001, 0.005]
+			ranges.append( [0.001, 0.005] )
+
+	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))] 
+	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
+	#print reduce(mul, len_list)
+	for i in range(reduce(mul, len_list)):
+		(mass1, mass2, mass3, mass4, pH, time, temp) = calculate_indices(i, len_list)
+		yield make_row(new_combination, mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]) 
+
+
+def make_row(combination, m1, m2, m3, m4, pH, time, temp):
+	return ["--", combination[0], m1, "g", combination[1], m2, "g", combination[2], m3, "g",  "water", m4, "g", "", "","", temp, time, pH, "yes", "no", 4, 2,""]
+
+def calc_score(score, similarity_map, combination, new_combination):
+	return score # TURNING OFF SIMILARITY TO OBSERVE EfFECT ON RECOMmeNDATIONS
+	sim = []	
+	for i in range(len(combination)):
+		for p in similarity_map[combination[i]]:
+			if p[0] == new_combination[i]:
+				sim.append(p[1])
+				break
+	from operator import mul
+	return reduce(mul, sim)*score
+
+
+def euclidean_similarity(reaction_one, reaction_two):
+	row_1 = parse_rxn.parse_rxn(reaction_one, cg_props, ml_convert)
+	row_2 = parse_rxn.parse_rxn(reaction_two, cg_props, ml_convert)
+	dist = 0
+	# TODO: need to mean center and divide by std for every prop
+	for i in range(len(row_1)):
+		if "XXX" in rebuildCDT.headers[i]:
+			continue
+		if row_1[i] in ["yes", "no"]:
+			if row_1[i] != row_2[i]: dist += 1
+		else:
+			try:
+				dist += math.sqrt( (float(row_1[i]) - float(row_2[i]))**2)
+			except Exception as e:
+				print row_1[i], row_2[i]
+				raise e
+	dist = 1 / ( 1 + math.exp(- dist))
+	return dist
+	
+
+def calc_similarity(compound_one, compound_two):
+	if compound_one in joint_sim:
+		if compound_two in joint_sim[compound_one]:
+			return joint_sim[compound_one][compound_two]
+	else:
+		joint_sim[compound_one] = dict()
+
+	if compound_two not in joint_sim:
+		joint_sim[compound_two] = dict()
+
+	if cg_props[compound_one]["type"] != cg_props[compound_one]["type"]:
+		joint_sim[compound_one][compound_two] = 0.0
+		joint_sim[compound_two][compound_one] = 0.0
+		return 0.0
+
+	from rdkit import DataStructs
+	from rdkit.Chem.Fingerprints import FingerprintMols
+	from rdkit import Chem
+
+	mol_one = Chem.MolFromSmiles(str(cg_props[compound_one]["smiles"]))
+	mol_two = Chem.MolFromSmiles(str(cg_props[compound_two]["smiles"]))
+	fp_1 = FingerprintMols.FingerprintMol(mol_one)
+	fp_2 = FingerprintMols.FingerprintMol(mol_two)
+	similarity = DataStructs.FingerprintSimilarity(fp_1, fp_2)
+	joint_sim[compound_one][compound_two] = similarity
+	joint_sim[compound_two][compound_one] = similarity
+	return similarity
+	
+
+
+def build_sim_list(name, cg_targets, count=5):
+	if test_var:
+		count = 2
+	def reweight_list(choice, others):
+		return [ ( x[0], x[1], x[2]*(1.0 - calc_similarity(choice[0], x[0]))) for x in others ]
+	from rdkit import DataStructs
+	from rdkit.Chem.Fingerprints import FingerprintMols
+	from rdkit import Chem
+	mol = Chem.MolFromSmiles(str(cg_props[name]["smiles"]))
+	fp = FingerprintMols.FingerprintMol(mol)
+	sims = []
+	for compound in cg_targets: 
+		if compound == name: continue
+		try:
+			mol2 = Chem.MolFromSmiles(str(cg_props[compound]["smiles"]))
+			fp2 = FingerprintMols.FingerprintMol(mol2)
+			sim = DataStructs.FingerprintSimilarity(fp, fp2)
+			sims.append( (compound, sim, sim) )
+
+		except Exception as e:
+			continue
+
+	if len(sims) == 0:
+		return [(name,1.0)] 
+
+	returned_list = []
+
+	sims.sort(key=lambda x: x[1], reverse=True)
+	if sims[0][1] == 0.0:
+		return [(name, 1.0)]
+
+	while len(returned_list) < count:
+		choice = sims.pop(0)
+		if choice[1] == 0.0:
+			break 
+		returned_list.append(choice)
+		sims = reweight_list(choice, sims)
+		sims.sort(key = lambda x: x[2], reverse=True)
+
+	if len(returned_list) > count:
+		returned_list = returned_list[:count]
+	return [ (x[0], x[1]) for x in returned_list]
+
+
+def get_range(name):
+	#TODO: calculate min, max, and then choose what upper and lower amount to take
+	return (0.001*cg_props[name]["mw"], 0.01*cg_props[name]["mw"])
+
+
+def build_combos(reaction_list):
+	return [ tuple(sorted(filter(lambda x: x is not None and x != "water", [r[1],r[4],r[7],r[10],r[13]]))) for r in reaction_list]
+	
+
+def build_sim_map(compound_guide):
+	inorgs,orgs,oxs = [],[],[]
+	for r in compound_guide.keys():
+		t = compound_guide[r]["type"]
+		if t == "Org":
+			orgs.append(r)
+		elif t == "Inorg":
+			inorgs.append(r)
+		elif t == "Ox":
+			oxs.append(r)
+		else:
+			print t
+
+	similarity_map = {}
+	for r in orgs:
+		similarity_map[r] = build_sim_list(r, orgs)
+	for r in inorgs:
+		similarity_map[r] = build_sim_list(r, inorgs)
+	for r in oxs:
+		similarity_map[r] = build_sim_list(r, oxs)
+	return similarity_map
+
+def build_baseline(lab_group=None):
+	#TODO: test this stuff, rewrite to optionally accept a seed set
+	# and, also, rewrite the test() method to use this.
+	def quality_metric(scores):
+		return sum(scores) / float(len(scores))
+
+	def add_to_map(r_m, r):
+		idxes = [1,4,7,10,13]
+		for i in idxes:
+			if r[i] not in r_m:
+				r_m[r[i]] = set() 
+			try:
+				float(r[i+1])
+			except Exception as e:
+				continue
+			if float(r[i+1]) > 0: 
+				r_m[r[i]].add(float(r[i+1]))
+			
+	import sys, os
+	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+	from DRP.models import get_good_rxns
+	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
+	
+	combinations = set()
+	range_map = dict()
+	quality_map = dict()
+	for rxn in rxns:
+		r = rxn[:23]
+		compoundss = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
+		if any([True if c not in cg_props else False for c in compoundss]):
+			print compoundss
+			continue
+		q_key = tuple(sorted(compoundss)) 
+		combinations.add(q_key)
+		add_to_map(range_map, r)
+		if q_key not in quality_map:
+			quality_map[q_key] = []
+		quality_map[q_key].append(int(r[-2]))
+
+	for k in range_map:
+		try:
+			range_map[k] = (min(range_map[k]), max(range_map[k]))
+		except Exception as e:
+			range_map[k] = (0,0)
+	for q_key in quality_map:
+		quality_map[q_key] = quality_metric(quality_map[q_key]) 
+	return range_map, quality_map, combinations
+
+
+def fix_abbrevs(rxns):
+	abbrev_map, compound_set = get_abbrev_map()
+	abbrev_map[''] = ''
+	idxes = [1,4,7,10,13]
+	for i in range(len(rxns)):
+		for idx in idxes:
+			if rxns[i][idx] in abbrev_map:
+				rxns[i][idx] = abbrev_map[rxns[i][idx]]
+	return rxns
+
+def get_abbrev_map():
+	import sys, os
+	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+	from DRP.models import CompoundEntry as c 
+
+ 	entries = c.objects.all()
+	abbrev_map = dict()
+	compound_set = set()
+	for e in entries:
+		abbrev_map[e.abbrev] = e.compound
+		compound_set.add(e.compound)
+	return abbrev_map, compound_set
+	
+
+def test():
+	combinations = [ ("NH4VO3", "K2Cr2O7", 'pip'), ("V2O5", "H3PO3", "tmed"), ("NaVO3","SeO2","deta")]
+	similarity_map = dict()
+	for rxn in combinations:
+		for reactant in rxn:
+			if reactant not in similarity_map:
+				similarity_map[reactant] = build_sim_list(reactant) 
+	range_map = {}
+	print similarity_map, "sim"
+	for name in cg_props:
+		range_map[name] = get_range(name)
+	range_map['water'] = (3.0, 5.0)
+	print user_recommend(combinations, similarity_map, range_map)
+
+class_map = {'Te':[u'sodium tellurite', u'hydrogen telluride', u'tellurium dioxide'], 'Se': [u'Selenium dioxide', u'selenic acid', u'selenous acid', u'Sodium selenite'], 'V':[u'sodium metavanadate', u'lithium metavanadate', u'sodium orthovanadate', u'sodium vanadium trioxide', u'potassium vanadiumtrioxide', u'Oxovanadium(2+) sulfate', u'potassium metavanadate', u'lithium vanadium trioxide', u'ammonium metavanadate', u'vanadium(V) oxide'] }
+
+
+
+
+def combo_generator(seed):
+        for i in seed[0]:
+                for j in seed[1]:
+                        for k in seed[2]:
+                                yield (i,j,k)             
+             
+
+def rank_possibilities(seed, tried):
+        scorer = score_maker(tried)
+	if test_var:
+		how_many_to_rate = 10
+	else:
+	        how_many_to_rate = 500
+        scores = []
+        for combo in combo_generator(seed):
+                scores.append( (scorer(combo), combo) )             
+        
+        from operator import itemgetter             
+        scores.sort(key=itemgetter(0), reverse=True)
+
+	results = []
+
+	for i in range(how_many_to_rate):
+		item = scores.pop(0)
+		results.append(item)
+		reweight_restrict(item[1], scores)
+        return results[:how_many_to_rate]
+
+def reweight_restrict(item, scores):
+	for i in range(len(scores)):
+		sim = score(item, scores[i][1])
+		if sim > .9:
+			scores[i][0] = scores[i][0]*0.5
+	scores.sort(key=lambda x: x[0], reverse=True)
+
+
+def score_maker(tried):
+        def calc_score(t):
+                max_score = 0
+                if t in tried:
+                        return 0.0
+                for c in tried:
+	                max_score = max(score(t,c), max_score)
+                if max_score == 1.0:
+                        return 0.0
+                return max_score
+
+        return calc_score
+
+
+
+
+
+def score(combo_one, combo_two):
+	global restrict_lookup
+        def get_class(a):
+                for cl in class_map:
+			if a in class_map[cl]:
+				return cl
+                return None
+
+	p = (combo_one, combo_two)
+	if p in restrict_lookup:
+		return restrict_lookup[p]
+
+	pr = (combo_two, combo_one)
+	if pr in restrict_lookup:
+		return restrict_lookup[pr]
+
+        c_one = list()
+        c_two = list()
+        c_three = list()
+        for c in combo_one:
+                if c in class_map['V']:
+                        c_one.append(c)
+                elif c in class_map['Se'] or c in class_map['Te']:
+                        c_two.append(c)
+                elif cg_props[c]['type'] == "Org":
+                        c_three.append(c)
+        if not (len(c_one) == len(c_two) == len(c_three) == 1):
+		restrict_lookup[p] = 0.0
+                return 0.0
+        for c in combo_two:
+                if c in class_map['V']:
+                        c_one.append(c)
+                elif c in class_map['Se'] or c in class_map['Te']:
+                        c_two.append(c)
+                elif cg_props[c]['type'] == "Org":
+                        c_three.append(c)
+
+        if not (len(c_one) == len(c_two) == len(c_three) == 2):
+		restrict_lookup[p] = 0.0
+                return 0.0
+        score_list = []
+        if c_one[0] == c_one[1]:
+                score_list.append(1.0)
+        else:
+                score_list.append(0.5)
+
+
+        if c_two[0] == c_one[0]:
+                score_list.append(1.0)
+        else:
+                cl = [get_class(c_two[0]), get_class(c_two[1])]
+                if None in cl or "V" in cl:
+			print "None or V"
+			restrict_lookup[pr] = 0.0
+                        return 0.0
+                if cl[0] == cl[1]:
+                        score_list.append(0.5)
+                else:
+                        score_list.append(0.3)
+	amine = calc_similarity(c_three[0], c_three[1])
+	if amine == 1.0:
+		amine = 0.0
+        score_list.append(amine)
+	restrict_lookup[p] = score_list[0]*score_list[1]*score_list[2]
+        return score_list[0]*score_list[1]*score_list[2]
+
+
+
+def build_diverse_org():
+	orgs = [ c  for c in cg_props if cg_props[c]["type"] == "Org"]
+	results = [orgs[0]]
+	for org in orgs:
+		max_sim = max([calc_similarity(org, r) for r in results])
+		if max_sim < 0.9:
+			results.append(org)
+	print len(orgs), len(results)
+	return results
+
+def restrict_test():
+	total_to_score = 100
+	range_map, quality_map, combinations = build_baseline()
+	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org() )
+	abbrev_map, cs = get_abbrev_map()
+	for i in range(len(seed)):
+		for j in range(len(seed[i])):
+			if seed[i][j] in abbrev_map:
+				seed[i][j] = abbrev_map[seed[i][j]]
+		
+	scores = rank_possibilities(seed, combinations)
+	import mutual_info
+	scores = mutual_info.do_filter(scores, range_map)
+	print len(scores)
+	scores = scores[:total_to_score]
+	print scores
+	rescored = []
+	for s in scores:
+		try:
+			score, best = evaluate_fitness(s[1], range_map)
+			print "Score: {0}".format(score)
+			rescored.append(   ( score*s[0], best) )
+		except Exception as e:
+			print s, " failed: ", str(e), str(type(e))
+
+	rescored.sort(key=lambda x: x[0])
+	return rescored
+	
+	
+
+
+if __name__ == "__main__":
+	print restrict_test()
+	
+	#range_map, quality_map, combinations = build_baseline()
+	#sim_map = build_sim_map(cg_props)
+	#print sim_map
+	#print user_recommend(combinations, sim_map, range_map)
