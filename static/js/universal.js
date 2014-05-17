@@ -283,7 +283,7 @@ $(document).on("mouseover", ".dataGroup", function() {
  }
 });
 
-$(document).on("click", ".dataSpecificButton", function() {
+$(document).on("click", ".dataSpecificButton", function(event) {
  var dataGroup = $(this).closest(".dataGroup");
  var buttonID = $(this).attr("id");
 
@@ -385,7 +385,7 @@ $(document).on("click", ".dataSpecificButton", function() {
 
  });
 
- event.stopPropagaton();
+ event.stopPropagation();
 
 });
 
@@ -393,7 +393,7 @@ $(document).on("click", ".dataSpecificButton", function() {
 $(document).on("click", ".cancelEditableButton", function(event) {
  var oldVal = $(this).siblings(".editField").attr("oldVal");
  $(this).parent().html(oldVal);
- event.stopPropagaton();
+ event.stopPropagation();
 });
 
 

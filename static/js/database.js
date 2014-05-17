@@ -164,13 +164,9 @@ function changePageTo(page) {
    restyleData();
   $(".ribbonMessage").remove();
   } else {
-   alert("NOPE")
+   showRibbon("Page does not exist", badColor, "body");
   }
  });
-//TODO: add this back!
-// } else {
-//  showRibbon("Page does not exist", "#FF6870", "body");
-// }
 }
 
 $(document).on("click", "#pagesInputButton", function() {

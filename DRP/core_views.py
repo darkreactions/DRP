@@ -75,7 +75,6 @@ def get_pagified_data(page, lab_group=None, data=None):
  return page_data
  
 #Returns the info that belongs on a specific page.
-@require_http_methods(["GET"])
 def get_page_info(request, page = None, data=None):
  try:
   #Gather necessary information from the user's session:

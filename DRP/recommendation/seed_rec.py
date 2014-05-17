@@ -147,7 +147,7 @@ def generate_grid(reaction, amine_list):
 	clean2arff.clean(prefix+fileprefix)
 
 	#TODO: rewrite test_model
-	cmd = "sh {}/DRP/research/test_model.sh {0}".format(BASE_DIR, fileprefix)
+	cmd = "sh {0}/DRP/research/test_model.sh {1}".format(BASE_DIR, fileprefix)
 	result = subprocess.check_output(cmd, shell=True)
 
 	print result, cmd

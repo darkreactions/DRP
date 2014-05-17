@@ -26,7 +26,7 @@ def make_seed_recommendations(request):
   try:
     pid = request.POST["pid"]
   except:
-    return HttpResponse("1") #ERROR: General Failure!
+    return HttpResponse("1") #1: ERROR: General Failure!
 
   #Get the active recommendations from the cache.
   active_recs = get_cache(lab_group, "seed_recommendations_active")
@@ -34,7 +34,7 @@ def make_seed_recommendations(request):
 
   #Only allow a given number of seed rec calculations at a time.
   if get_cache(lab_group, "seed_recommendations_active")>=max_seed_calcs:
-    return HttpResponse("2") #ERROR: Too many active recs at once
+    return HttpResponse("2") #2: ERROR: Too many active recs at once
 
   #Start up another seed recommendation calculation if we are able to.
   try:
@@ -42,17 +42,19 @@ def make_seed_recommendations(request):
     seed = Data.objects.get(id=pid)
     set_cache(lab_group, "seed_recommendations_active", active_recs+1)
    
-    #Actually start the new process.
+    #TODO: This isn't actually truly daemonized; might NEED to use subprocess.popen.
+    #Actually start the new seed-rec construction Process in its own "Pool."
     p = multiprocessing.Process(target=seed_rec_worker, 
-		args=(lab_group, seed, u),
-		name="{} Seed Rec Worker".format(lab_group.lab_title)
+                                args=(lab_group, seed, u),
+                                name="{} Seed Rec Worker".format(lab_group.lab_title)
 	)
     p.start()
 
   except Exception as e:
     return HttpResponse("1")
   
-  return HttpResponse("0")
+  print "SHOULD RETURN NOW"
+  return HttpResponse("0") #0: Success
 
 def seed_rec_worker(lab_group, seed, user):
   try:
@@ -68,13 +70,11 @@ def seed_rec_worker(lab_group, seed, user):
     email_user(user, "Seed Recommendations Ready", email_body)
 
   except Exception as e:
-    print e
-
     #Email the user that their recommendations failed.
-    email_body = "We're very sorry, but the recommendations based on Reaction \"{}\" have failed to be created! Please let us know so that we can fix this!".format(seed.ref)
+    email_body = "We're very sorry, but the recommendations based on Reaction \"{}\" could not be created! Please let us know so that we can fix this!".format(seed.ref)
     email_user(user, "Seed Recommendations Failed!", email_body)
 
-    print "ERROR: Seed recommendation failed! (for \"{}\")".format(lab_group.lab_title)
+    print "ERROR: Seed recommendation failed! (for \"{}\"): \n {}".format(lab_group.lab_title, e)
 
   #Decrement the number of active recs.
   active_recs = get_cache(lab_group, "seed_recommendations_active")
