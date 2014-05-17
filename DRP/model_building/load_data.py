@@ -35,11 +35,11 @@ def get_abbrev_map():
 	return abbrev_map, compound_set
 
 
-def get_feature_vectors(lab_group=None, cg = None, ml_convert = None):
+def get_feature_vectors(lab_group=None, cg = None, ml_convert = None, keys = None):
 	raw = load(lab_group)
-	return convert_to_feature_vectors(raw,cg, ml_convert)
+	return convert_to_feature_vectors(raw,cg, ml_convert, keys = keys)
 
-def convert_to_feature_vectors(raw, cg = None, ml_convert = None):
+def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
 	if not cg:
 		cg = load_cg.get_cg()
 	if not ml_convert:
@@ -48,9 +48,11 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None):
 
 	transformed = []
 	failed = 0
+	keys = []
 	for row in raw:
 		try:
 			transformed.append(parse_rxn.parse_rxn(row, cg, ml_convert))
+			keys.append(create_key(row))
 		except Exception as e:
 			failed += 1
 			print e
@@ -60,7 +62,16 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None):
 	for r in transformed:
 		del r[-2]
 	
+	if keys:
+		return transformed, keys
 	return transformed
+
+def create_key(line):
+	print line
+	key = [line[0], line[3], line[6], line[9], line[12]]
+	key = [r for r in key if r.lower() != 'water' and r != ""]
+	key.sort()
+	return tuple(key)
 
 	
 def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
