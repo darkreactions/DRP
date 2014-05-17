@@ -1,20 +1,17 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-from django.core.mail import send_mail
 from django.contrib.auth.hashers import *
 from django.shortcuts import render
-from django.contrib import auth
-from django.db.models import Q
 
-from retrievalFunctions import *
+from emailFunctions import email_user
+from database_construction import *
 from forms import *
 from validation import *
 
 import json
 import csv
 import string
-import datetime
 import rdkit.Chem as Chem
 
 #from svg_construction import *
@@ -82,6 +79,7 @@ def get_pagified_data(page, lab_group=None, data=None):
  return page_data
  
 #Returns the info that belongs on a specific page.
+@require_http_methods(["GET"])
 def get_page_info(request, page = None, data=None):
  try:
   #Gather necessary information from the user's session:
@@ -154,17 +152,6 @@ def clear_all_page_caches(lab_group, skip_data_check=False):
  for i in xrange(1, total_pages+1):
   clear_page_cache(lab_group, i)
 
-# # # # # # # # # # # # # # # # # # #
-  # # # # # # # # View Helper Functions # # # # # # # # # # #
-# # # # # # # # # # # # # # # # # # #
-
-#Given a user, change their password and email them the new password.
-def randomize_password(user):
- new_pass = get_random_code(15) #Generate a random password for the user.
- user.password = make_password(new_pass) #Hash the password. 
- user.save()
- email_body = "Hello {},\n\n According to our records, you just requested a password change. We have changed your account information as follows:\nUsername: {}\nPassword: {}".format(user.first_name, user.username, new_pass)
- send_mail("DRP: Password Change Request", email_body, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
@@ -213,23 +200,21 @@ def data_transmit(request):
   print e
   return HttpResponse("Page \"{}\" could not be loaded".format(page))
 
+@login_required
 def recommend(request): 
  #Get user data if it exists.
  u = request.user
 
  recommendations = None
- if u.is_authenticated():
-  fatal_message = ""
-  try:
-   recommendations = get_recommendations_by_date(u.get_profile().lab_group)
-   if not request.GET.get("show_hidden"):
-    recommendations = recommendations.filter(hidden=False)
+ fatal_message = ""
+ try:
+  recommendations = get_recommendations_by_date(u.get_profile().lab_group)
+  if not request.GET.get("show_hidden"):
+   recommendations = recommendations.filter(hidden=False)
 
-  except Exception as e:
-   print e
-   fatal_message = "No recommendations available."   
- else:
-  fatal_message = "Please log in to view recommendations."
+ except Exception as e:
+  print e
+  fatal_message = "No recommendations available."   
 
  return render(request, 'global_page.html', {
   "template":"recommendations",
@@ -256,10 +241,11 @@ def recommendation_transmit(request):
   print e
   return HttpResponse("Recommendations could not be loaded!")
 
+@login_required
+@require_http_methods(["POST"])
 def edit_recommendation(request, action):
  try:
   u = request.user
-  assert u.is_authenticated() and request.method=="POST"
   pid = request.POST["pid"]
   recommendations = get_recommendations(u.get_profile().lab_group)
   
@@ -289,29 +275,28 @@ def edit_recommendation(request, action):
   print e
   return HttpResponse(1)
 
+@login_required
+@require_http_methods(["GET"])
 def saved(request): 
  #Variable Setup
  u = request.user
  recommendations = None
  user_list = None
 
- if u.is_authenticated():
-  fatal_message = ""
-  try:
-   #Get the recommendations that are saved for the lab.
-   lab_group = u.get_profile().lab_group
-   recommendations = get_recommendations_by_date(lab_group)
-   recommendations = recommendations.filter(saved=True)
-   assert recommendations.count()
+ fatal_message = ""
+ try:
+  #Get the recommendations that are saved for the lab.
+  lab_group = u.get_profile().lab_group
+  recommendations = get_recommendations_by_date(lab_group)
+  recommendations = recommendations.filter(saved=True)
+  assert recommendations.count()
 
-   #Get the lab users for the select field.
-   user_list = User.objects.filter(profile__lab_group=lab_group)
-   
-   #Get users
-  except:
-   fatal_message = "No saved recommendations available."   
- else:
-  fatal_message = "Please log in to view saved data."
+  #Get the lab users for the select field.
+  user_list = User.objects.filter(profile__lab_group=lab_group)
+  
+  #Get users
+ except:
+  fatal_message = "No saved recommendations available."   
 
  return render(request, 'global_page.html', {
   "template":"saved",
@@ -320,14 +305,14 @@ def saved(request):
   "users":user_list,
  })
 
+@login_required
+@require_http_methods(["GET"])
 def rank(request): 
  #Variable Setup:
  u = request.user
  unranked_rxn = get_random_unranked_reaction_or_none()
 
- if not u.is_authenticated():
-  fatal_message = "Please log in to view reaction rankings."
- elif not unranked_rxn:
+ if not unranked_rxn:
   fatal_message = "No unranked reactions available!"
  else :
   fatal_message = ""
@@ -343,11 +328,12 @@ def rank(request):
    # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # 
 # # # # # # # # # # # # # # # # # # #
 #Change the assigned_user of a recommendation.
+@login_required
+@require_http_methods(["POST"])
 def assign_user_to_rec(request):
  u = request.user
  try:
   lab_group = u.get_profile().lab_group
-  assert u.is_authenticated() and request.method=="POST"
   #Get PIDs from the request.
   rec_pid = request.POST["rec_pid"]
   user_pid = request.POST["user_pid"]
@@ -370,71 +356,30 @@ def assign_user_to_rec(request):
   print e
   return HttpResponse(1)
 
+@login_required
+@require_http_methods(["POST"])
 def send_and_receive_rank(request):
  u = request.user
- if u.is_authenticated() and request.method=="POST":
-  #Get PIDs from the request.
-  pid = request.POST["pid"]
-  new_order = request.POST["newOrder"]
+ #Get PIDs from the request.
+ pid = request.POST["pid"]
+ new_order = request.POST["newOrder"]
 
-  #Get the recommendation to change.
-  rxnlist = RankedReactionList.objects.get(id=pid)
+ #Get the recommendation to change.
+ rxnlist = RankedReactionList.objects.get(id=pid)
 
-  #Assign the change in the database.
-  rxnlist.ranked_list = new_order
-  rxnlist.ranker = u
-  rxnlist.save()
+ #Assign the change in the database.
+ rxnlist.ranked_list = new_order
+ rxnlist.ranker = u
+ rxnlist.save()
 
-  #Get a new (un)RankedReaction
-  unranked_rxn = get_random_unranked_reaction_or_none()
-  if not unranked_rxn:
-   return HttpResponse("All unranked reactions now ranked!")
+ #Get a new (un)RankedReaction
+ unranked_rxn = get_random_unranked_reaction_or_none()
+ if not unranked_rxn:
+  return HttpResponse("All unranked reactions now ranked!")
 
-  return render(request, 'unranked_reaction_list.html', {
-   "unranked_rxn": unranked_rxn,
+ return render(request, 'unranked_reaction_list.html', {
+  "unranked_rxn": unranked_rxn,
  })
- else:
-  return HttpResponse("Please log in and use the submit button!")
-
-#Return whether the user_license is valid (True) or invalid/missing (False)
-def user_license_is_valid(user):
- try:
-  return user.get_profile().license_agreement_date > CONFIG.current_license_date
- except:
-  #Assume that if the query fails, the user is not licensed.
-  return False
-
-def get_user_license_agreement(request):
- u = request.user
- #Indicate whether the user needs to agree to updated terms or sign the terms initially.
- if u.is_authenticated():
-  if u.get_profile().license_agreement_date:
-   if not user_license_is_valid(u):
-    license_changed = True
-  else:
-   license_changed = False
-   
-  return render(request, 'user_license_form.html', {
-   "license_changed": license_changed,
-   "license_file": CONFIG.current_license_file,
-   "license_date": CONFIG.current_license_date.split(" ")[0], #Show the modification date but ignore the time.
-  })
- else:
-  return HttpResponse("<p>Please create a user to accept the license agreement.</p>")
-
-def update_user_license_agreement(request):
- u = request.user 
- if request.method=="POST":
-  try:
-   u.get_profile().update_license()
-   return HttpResponse(
-    "<p>You're all up-to-date!</p>" +
-    "<div class=\"button refreshButton\">Explore</div>"
-   )
-  except:
-   return HttpResponse("<p>Your request could not be completed. Please try again.</p>")
- else:
-  return HttpResponse("<p>Please click the \"I Agree\" to accept the Terms and Conditions.</p>")
 
 def save_recommmendation(request):
  u = request.user
@@ -465,60 +410,20 @@ def save_recommmendation(request):
 ######################  Core Views  ####################################
 import time
 
-def predictions(request):
+@login_required
+def visuals(request):
  #Variable Setup
  u = request.user
  fatal_message = ""
- svg = ""
 
- if u.is_authenticated():
-  try:
-   lab_group = u.get_profile().lab_group
-   svg = get_cache(lab_group, "TESTSVG")###
-   if not svg:
-    start_time = time.time()###
-    #Attempt to validate any invalid data.
-    ###revalidate_all_data(lab_group) ###Validates all data or just user data?
-
-    #Create and cache the SVG.
-    print "Generating SVG..."
-    svg = generate_svg(u.get_profile().lab_group)
-    print "Took {} seconds overall.".format(time.time()-start_time)###
-
-    set_cache(lab_group, "TESTSVG", svg)
-  except Exception as e:
-   fatal_message = e
-  #construct_descriptor_table("cat","dog")
- else:
-  fatal_message = "<p>Please log in to view predictions.</p>"
+ #TODO: Nora, you'll want to have some "loading page" that uses JavaScript
+ #  to load the data via JSON. D3 makes this nifty easy. You'll want to make
+ #  sure that a lab only can view THEIR OWN data (and eventually public data --
+ #  but ignore this for now).
 
  return render(request, 'predictions_global.html', {
   "fatal_message": fatal_message,
-  "svg": svg, #Includes data and data_indexes.
  })
-
-def gather_SVG(request):
- u = request.user
- fatal_message = ""
- svg = ""
-
- if u.is_authenticated() and request.method=="POST":
-  try:
-   step = request.POST.get("step")
-   source = request.POST.get("source")
-   svg = generate_svg(u.get_profile().lab_group, step, source)
-  except Exception as e:
-   fatal_message = e
-  #construct_descriptor_table("cat","dog")
- elif request.method!="POST":
-  fatal_message = "Could not gather information about SVG to create."
- else:
-  fatal_message = "<p>Please log in to view predictions.</p>"
-
- if fatal_message:
-  return HttpResponse("<p class=\"fatalError\">{}</p>".format(fatal_message))
- return HttpResponse(svg)
-
 
 ######################  Searching  #####################################
   #Rules:
@@ -529,9 +434,10 @@ def gather_SVG(request):
   # request.body ===
   #  query_list --> {[{u"field":u"FIELD", u"value":u"VALUE"}, ...]}
 
+@login_required
 def search(request, model="Data"):
  u = request.user
- if u.is_authenticated() and request.method=="POST":
+ if request.method=="POST":
   try:
 
    #Get the appropriate data for the appropriate model.
@@ -573,86 +479,78 @@ def search(request, model="Data"):
 
 ######################  CG Guide  ######################################
 #Return a json object of the first ChemSpider result.
+@login_required
+@require_http_methods(["GET"])
 def check_compound(request):
  u = request.user
- if u.is_authenticated():
-  #Search through each available ChemSpider field.
-  search_fields = [request.GET.get("CAS_ID"), request.GET.get("compound")]
-  query = get_first_chemspider_entry(search_fields)
-  if query:
-   query_results = {
-     "imageurl": query.imageurl, 
-     "commonName": query.commonname, 
-     "mv": query.molecularweight,
-     "mf": query.mf,
-    } 
-   response = json.dumps(query_results)
-   return HttpResponse(response, content_type="application/json")
-  return HttpResponse(1) #Return a code to signal the compound was not found.
- return HttpResponse("Illegal request!")
+ #Search through each available ChemSpider field.
+ search_fields = [request.GET.get("CAS_ID"), request.GET.get("compound")]
+ query = get_first_chemspider_entry(search_fields)
+ if query:
+  query_results = {
+    "imageurl": query.imageurl, 
+    "commonName": query.commonname, 
+    "mv": query.molecularweight,
+    "mf": query.mf,
+   } 
+  response = json.dumps(query_results)
+  return HttpResponse(response, content_type="application/json")
+ return HttpResponse(1) #Return a code to signal the compound was not found.
 
 #Ask for a confirmation whether a CG is correct or not.
+@login_required
 def compound_guide_form(request):
  u = request.user
  success = False
- if u.is_authenticated():
-  lab_group = u.get_profile().lab_group
-  if request.method == 'POST':
-   #Bind the user's data and verify that it is legit.
-   form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
-   #If all data is valid, save the entry.
-   if form.is_valid():
-    entry = form.save()
-    if not entry.custom:
-     #Apply calculations to the compound.
-     update_compound_and_reactions(lab_group, entry)
-    else:
-     entry.smiles = request.POST.get("atoms")
-     entry.mw = request.POST.get("mw")
-    #Clear the cached CG data.
-    set_cache(lab_group, "COMPOUNDGUIDE", None)
-    set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
-    success = True #Used to display the ribbonMessage.
-  else:
-   #Submit a blank form if one was not just submitted.
-   form = CompoundGuideForm()
+ lab_group = u.get_profile().lab_group
+ if request.method == 'POST':
+  #Bind the user's data and verify that it is legit.
+  form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
+  #If all data is valid, save the entry.
+  if form.is_valid():
+   entry = form.save()
+   if not entry.custom:
+    #Apply calculations to the compound.
+    update_compound_and_reactions(lab_group, entry)
+   else:
+    entry.smiles = request.POST.get("atoms")
+    entry.mw = request.POST.get("mw")
+   #Clear the cached CG data.
+   set_cache(lab_group, "COMPOUNDGUIDE", None)
+   set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
+   success = True #Used to display the ribbonMessage.
+ else:
+  #Submit a blank form if one was not just submitted.
+  form = CompoundGuideForm()
 
   return render(request, 'compound_guide_form.html', {
    "form": form,
    "success": success,
   })
- else:
-  return HttpResponse("<p>Please log in to access the compound guide!</p>")
 
 #Send/receive the compound guide:
+@login_required
 def compound_guide(request):
  u = request.user
- if u.is_authenticated():
-  lab_group = u.get_profile().lab_group
-  guide = list(get_lab_CG(lab_group))
-  return render(request, 'compound_guide.html', {
-   "guide": guide,
-  })
- else:
-  return HttpResponse("<p>Please log in to access the compound guide!</p>")
+ lab_group = u.get_profile().lab_group
+ guide = list(get_lab_CG(lab_group))
+ return render(request, 'compound_guide.html', {
+  "guide": guide,
+ })
 
+@login_required
+@require_http_methods(["POST"])
 def compound_guide_entry(request):
  u = request.user
- if u.is_authenticated():
-  lab_group = u.get_profile().lab_group
-  if request.method == 'POST':
-   entry_info = json.loads(request.body, "utf-8")
-   query = get_lab_CG(lab_group).filter(compound=entry_info["compound"])
-   if query.exists():
-    return render(request, 'compound_guide_row.html', {
-     "entry": query[0]
-    })
-   else:
-    return HttpResponse("<p>No CG found. Please refresh page.</p>")
-  else:
-   return HttpResponse("<p>Please use the compound guide interface.</p>")
+ lab_group = u.get_profile().lab_group
+ entry_info = json.loads(request.body, "utf-8")
+ query = get_lab_CG(lab_group).filter(compound=entry_info["compound"])
+ if query.exists():
+  return render(request, 'compound_guide_row.html', {
+   "entry": query[0]
+  })
  else:
-  return HttpResponse("<p>Please log in to access the compound guide!</p>")
+  return HttpResponse("<p>No CG found. Please refresh page.</p>")
 
 def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
  if old_abbrev=="":
@@ -667,84 +565,85 @@ def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
 
 
 ### EDIT ME
+@login_required
+@require_http_methods(["POST"])
 def edit_CG_entry(request): 
  u = request.user
- if request.method == 'POST' and u.is_authenticated():
-  changesMade = request.POST
+ changesMade = request.POST
 
-  #Get the Lab_Group's Compound Guide
-  lab_group = u.get_profile().lab_group
-  CG_data = get_lab_CG(lab_group)
+ #Get the Lab_Group's Compound Guide
+ lab_group = u.get_profile().lab_group
+ CG_data = get_lab_CG(lab_group)
 
-  if changesMade["type"]=="del":
-   try:
-    lab_data = get_lab_Data(lab_group)
-    #Delete each datum in the pid list.
-    for pid in changesMade.getlist("pids[]"):
-     #Mark any entry that uses this datum is now invalid.
-     entry = CG_data.get(id=pid)
-     affected_data = get_Data_with_abbrev(lab_data, entry.abbrev)
-     affected_data.update(is_valid=False)
+ if changesMade["type"]=="del":
+  try:
+   lab_data = get_lab_Data(lab_group)
+   #Delete each datum in the pid list.
+   for pid in changesMade.getlist("pids[]"):
+    #Mark any entry that uses this datum is now invalid.
+    entry = CG_data.get(id=pid)
+    affected_data = get_Data_with_abbrev(lab_data, entry.abbrev)
+    affected_data.update(is_valid=False)
 
-     #Now delete the CG entry.
-     entry.delete()
-   except Exception as e:
-    print e
-    return HttpResponse(1)
-  elif changesMade["type"]=="edit":
-   try:
-    #Variable Setup
-    field = changesMade["field"]
-    new_val  = changesMade["newVal"]
-    pid = changesMade["pid"]
+    #Now delete the CG entry.
+    entry.delete()
+  except Exception as e:
+   print e
+   return HttpResponse(1)
+ elif changesMade["type"]=="edit":
+  try:
+   #Variable Setup
+   field = changesMade["field"]
+   new_val  = changesMade["newVal"]
+   pid = changesMade["pid"]
 
-    #Collect the datum to be changed and the old value.
-    changed_entry = CG_data.get(id=pid)
-    old_val = getattr(changed_entry, field)
+   #Collect the datum to be changed and the old value.
+   changed_entry = CG_data.get(id=pid)
+   old_val = getattr(changed_entry, field)
 
-    #Make sure the compound/abbrev isn't already being used.
-    possible_entry = None
-    if field=="compound":
-     possible_entry = CG_data.filter(compound=new_val)
-    elif field=="abbrev":
-     possible_entry = CG_data.filter(abbrev=new_val)
-    elif field=="CAS_ID" and new_val: #Empty CAS_IDs don't require queries.
-     possible_entry = CG_data.filter(CAS_ID=new_val)
-    if possible_entry!=None and possible_entry.exists():
-     return HttpResponse("Already used!")
+   #Make sure the compound/abbrev isn't already being used.
+   possible_entry = None
+   if field=="compound":
+    possible_entry = CG_data.filter(compound=new_val)
+   elif field=="abbrev":
+    possible_entry = CG_data.filter(abbrev=new_val)
+   elif field=="CAS_ID" and new_val: #Empty CAS_IDs don't require queries.
+    possible_entry = CG_data.filter(CAS_ID=new_val)
+   if possible_entry!=None and possible_entry.exists():
+    return HttpResponse("Already used!")
 
-    #Make sure the new value does not invalidate the entry.
-    dirty_data = model_to_dict(changed_entry)
-    dirty_data[field] = new_val
-    clean_data, errors = validate_CG(dirty_data, lab_group, editing_this=True)
-    new_val = clean_data[field]
-    if errors:
-     raise Exception("Validation of datum failed.")
+   #Make sure the new value does not invalidate the entry.
+   dirty_data = model_to_dict(changed_entry)
+   dirty_data[field] = new_val
+   clean_data, errors = validate_CG(dirty_data, lab_group, editing_this=True)
+   new_val = clean_data[field]
+   if errors:
+    raise Exception("Validation of datum failed.")
 
-    #Commit the change to the Entry.
-    setattr(changed_entry, field, new_val)
-    changed_entry.save()
-    #TODO:Remove this and make more "function" in style?
-    set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
+   #Commit the change to the Entry.
+   setattr(changed_entry, field, new_val)
+   changed_entry.save()
+   #TODO:Remove this and make more "function" in style?
+   set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
-    #Change the occurrences of the old abbrev to the new abbrev.
-    if field=="abbrev":
-     change_Data_abbrev(lab_group, old_val, new_val)
+   #Change the occurrences of the old abbrev to the new abbrev.
+   if field=="abbrev":
+    change_Data_abbrev(lab_group, old_val, new_val)
 
-    #If no inorganic was found, ask the user for its identity.
-    if changed_entry.compound_type=="Inorg":
-     return HttpResponse("Inorganic not found!") #TODO: Add this.
-  
-    #Lookup fresh data from ChemSpider and RDKit
-    update_compound(changed_entry)
+   #If no inorganic was found, ask the user for its identity.
+   if changed_entry.compound_type=="Inorg":
+    return HttpResponse("Inorganic not found!") #TODO: Add this.
+ 
+   #Lookup fresh data from ChemSpider and RDKit
+   update_compound(changed_entry)
 
-   except Exception as e:
-    print e
-    return HttpResponse("Invalid!")
+  except Exception as e:
+   print e
+   return HttpResponse("Invalid!")
 
-  #Clear the cached CG entries.
-  set_cache(lab_group, "COMPOUNDGUIDE", None)
-  set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
+ #Clear the cached CG entries.
+ set_cache(lab_group, "COMPOUNDGUIDE", None)
+ set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
  return HttpResponse("0")
 
@@ -812,24 +711,25 @@ def data_form(request): #If no data is entered, stay on the current page.
  })
 
 #Send/receive the data-entry form: #TODO: Merge with the field above.
+@login_required
+@require_http_methods(["GET"])
 def transfer_rec(request):
  try:
   u = request.user
   lab_group = u.get_profile().lab_group
-  if u.is_authenticated() and request.method=="GET":
-   pid = request.GET["pid"]
-   rec = get_recommendations(lab_group).get(id=pid)
-   
-   initial_fields = {field:getattr(rec, field) for field in get_model_field_names(model="Recommendation")}
-   form = DataEntryForm(
-    initial=initial_fields
-   )
-   return render(request, 'data_form.html', {
-    "form": form,
-   })
-  return HttpResponse("<p>Request failed!</p>")
+  pid = request.GET["pid"]
+  rec = get_recommendations(lab_group).get(id=pid)
+  
+  initial_fields = {field:getattr(rec, field) for field in get_model_field_names(model="Recommendation")}
+  form = DataEntryForm(
+   initial=initial_fields
+  )
+  return render(request, 'data_form.html', {
+   "form": form,
+  })
  except:
-  return HttpResponse("<p>Woops! Something went wrong.</p>")
+  return HttpResponse("<p>Request failed!</p>")
+
  ##################  Helper Functions ###############################
 
 #Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
@@ -898,27 +798,28 @@ def get_related_field(heading, model="Data"): ###Not re-read.
  return related_field
 
 ######################  Upload/Download   ##############################
+@login_required
+@require_http_methods(["POST"])
 def upload_prompt(request):
  u = request.user
- if u.is_authenticated() and request.method=="POST":
-  model = request.POST.get("model")
-  if model == "Data":
-   return render(request, 'upload_form.html', {
-    "model":model,
-    "model_verbose":"Data",
-   })
-  elif model =="CompoundEntry":
-   return render(request, 'upload_form.html', {
-    "model":model,
-    "model_verbose":"Compounds",
-   })
+ model = request.POST.get("model")
+ if model == "Data":
+  return render(request, 'upload_form.html', {
+   "model":model,
+   "model_verbose":"Data",
+  })
+ elif model =="CompoundEntry":
+  return render(request, 'upload_form.html', {
+   "model":model,
+   "model_verbose":"Compounds",
+  })
 
-  return HttpResponse("Request illegal!")
- return HttpResponse("Please log in to upload data.")
+ return HttpResponse("Request illegal!")
 
+@login_required
 def upload_CSV(request, model="Data"):
  u = request.user
- if u.is_authenticated() and request.method=="POST":
+ if request.method=="POST":
   #Variable Setup:
   lab_group = u.get_profile().lab_group
   fatal_message =""
@@ -988,6 +889,7 @@ def upload_CSV(request, model="Data"):
   })
  return render(request, 'upload_form.html')
 
+#TODO: Remo this. This is a legacy versino of the upload script for specifically data.
 def upload_CSV_bak(request, model="Data"): ###Not re-read.
  u = request.user
 
@@ -1315,144 +1217,6 @@ def upload_CSV_bak(request, model="Data"): ###Not re-read.
   "success_percent": success_percent,
  })
 
-def download_CSV(request):
- u = request.user
- if u.is_authenticated() and request.method=="POST":
-  #Variable Setup
-  lab_group = u.get_profile().lab_group
-
-  #Get the info from the POST request.
-  try:
-   filters = request.POST.get("filters")
-   if filters: 
-    filters = json.loads(filters)
-   model = request.POST.get("model")
-   assert model in {"Recommendation", "Data", "Saved", "CompoundEntry"}
-  except Exception as e:
-   return HttpResponse("Download request failed!")
-
-  #File Setup
-  file_name = "{}_{}".format(lab_group.lab_title, model).replace(" ", "_").lower()
-  CSV_file = HttpResponse(content_type="text/csv")
-  CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
-  result = csv.writer(CSV_file)
-
-  #Write the headers to the file.
-  if model=="Saved":
-   model="Recommendation"
-   saved_only = True
-  else:
-   saved_only = False
-
-  verbose_headers = get_model_field_names(verbose=True, model=model)
-  headers = get_model_field_names(verbose=False, model=model)
-
-  #Modify the headers if needed and get/filter the data.
-  if model=="Data": 
-   #Make sure the "Reference" is the first column.
-   verbose_headers.remove("Reference")
-   verbose_headers.insert(0, "Reference")
-   headers.remove("ref")
-   headers.insert(0, "ref")
-   data = get_lab_Data(lab_group)
-
-   if filters:
-    data = filter_data(lab_group, filters)
-
-  elif model=="Recommendation":
-   data = get_recommendations_by_date(lab_group)
-   if saved_only:
-    data = data.filter(saved=True)
-
-  else: #if model=="CompoundEntry"
-   verbose_headers.remove("Image URL")
-   headers.remove("image_url")
-   data = get_lab_CG(lab_group)
-
-  try:
-   #Write the data to the file.
-   result.writerow(verbose_headers)
-   for entry in data:
-    result.writerow([getattr(entry, field).encode('ascii', errors='ignore') for field in headers])
-   return CSV_file
-  except Exception as e:
-   print e
-   return HttpResponse("Error preparing the file!")
-
-def download_prompt(request):
- u = request.user
- if u.is_authenticated() and request.method=="POST":
-  model = request.POST.get("model")
-  if model in {"Data"}:
-   return render(request, 'download_form.html', {
-    "model":model,
-    "model_verbose":"Data",
-    "allow_filters":True
-   })
-  elif model in {"CompoundEntry","Saved","Recommendation"}:
-   return render(request, 'download_form.html', {
-    "model":model,
-    "model_verbose":{
-      "CompoundEntry":"Compounds", 
-      "Saved":"Saved", 
-      "Recommendation":"Recommendations"}[model],
-    "allow_filters":False
-   })
-
-  return HttpResponse("Request illegal!")
- return HttpResponse("Please log in to download data.")
-
-
-def download_error_log(request): ###Nothing done yet... ;B
- u = request.user
- if u.is_authenticated():
-  #Generate a file name.
-  date = datetime.datetime.now()
-  file_name = "{:2}_{:0>2}_{:0>2}_{}".format(u.get_profile().lab_group.lab_title,###
-   date.day, date.month, date.year)
-
-  CSV_file = HttpResponse(content_type="text/csv")
-  CSV_file["Content-Disposition"] = "attachment; filename={}.csv".format(file_name)
-
-  #Django HttpResponse objects can be handleded like files.
-  writer = csv.writer(CSV_file)
-
-  #Write the verbose headers to the CSV_file
-  verbose_headers = get_model_field_names(verbose=True)
-  writer.writerow(verbose_headers)
-
-  #Write the actual entries to the CSV_file if the user is authenticated.
-  headers = get_model_field_names(verbose=False)
-  lab_data = get_lab_Data(u.get_profile().lab_group)
-
-  for entry in lab_data:
-   row = []
-   try:
-    #Apply the other columns.
-    for field in headers:
-     if field[-1].isdigit():
-      pass
-     else:
-      row += [eval("entry.{}".format(field))]
-    writer.writerow(row)
-   except Exception as e:
-    print(e)###
-    pass
-  return CSV_file #ie, return HttpResponse(content_type="text/csv")
- else:
-  return HttpResponse("<p>Please log in to download data.</p>")
-
-######################  Change Page ####################################
-
-######################  Data Transmit ##################################
-#Send the CG name pairs to the client.
-def send_CG_names(request):
- u = request.user
- if u.is_authenticated():
-  lab_group = u.get_profile().lab_group
-  name_pairs = collect_CG_name_pairs(lab_group, overwrite=False)
-  return HttpResponse(json.dumps(name_pairs), mimetype="application/json")
- return HttpResponse("<p>Please log in to see data.</p>")
 
 ######################  Update Data ####################################
   #Rules:
@@ -1524,344 +1288,144 @@ def add_reactant(request):
    return HttpResponse("Illegal group specified.")
 
 #Delete a reactant group from a datum.
+@login_required
+@require_http_methods(["POST"])
 def delete_reactant(request):
  u = request.user
- if request.method=="POST" and u.is_authenticated():
-  lab_group = u.get_profile().lab_group
-  lab_data = get_lab_Data(lab_group)
+ lab_group = u.get_profile().lab_group
+ lab_data = get_lab_Data(lab_group)
+ try:
+  group = int(request.POST["group"])
+  pid = request.POST["pid"]
+
+  #If the reactant is required, don't delete it.
+  if group<=CONFIG.reactants_required:
+   return HttpResponse("First two reactants required.")
+
+  #Remove the reactant fields from the datum.
+  datum = lab_data.get(id=pid)
+  for field in list_fields:
+   setattr(datum, "{}_{}".format(field, group), "")
+  datum.user = u
+  datum.save()
+
+  #Attempt to update/re-validate the full datum (but don't die on fail).
   try:
-   group = int(request.POST["group"])
-   pid = request.POST["pid"]
+   update_reaction(datum, lab_group)
+  except:
+   pass
 
-   #If the reactant is required, don't delete it.
-   if group<=CONFIG.reactants_required:
-    return HttpResponse("First two reactants required.")
+  return HttpResponse(0)   
+ except Exception as e:
+  return HttpResponse("Edit failed.") 
 
-   #Remove the reactant fields from the datum.
-   datum = lab_data.get(id=pid)
-   for field in list_fields:
-    setattr(datum, "{}_{}".format(field, group), "")
-   datum.user = u
-   datum.save()
-
-   #Attempt to update/re-validate the full datum (but don't die on fail).
-   try:
-    update_reaction(datum, lab_group)
-   except:
-    pass
-
-   return HttpResponse(0)   
-  except Exception as e:
-   return HttpResponse("Edit failed.") 
- return HttpResponse("Please sign in to modify data.") 
-
+@login_required
+@require_http_methods(["POST"])
 def delete_Data(request):
  u = request.user
- if request.method == "POST" and u.is_authenticated():
-  #Variable Setup
-  lab_group = u.get_profile().lab_group
-  deleteList = json.loads(request.body, "utf-8")
-  lab_data = get_lab_Data(lab_group)
+ #Variable Setup
+ lab_group = u.get_profile().lab_group
+ deleteList = json.loads(request.body, "utf-8")
+ lab_data = get_lab_Data(lab_group)
 
-  #Find and delete data entries in a User's Lab. 
-  for pid in deleteList:
-   try:
-    lab_data.get(id=pid).delete()
-   except:
-    HttpResponse("<p>One or more selected data not found.</p>")
+ #Find and delete data entries in a User's Lab. 
+ for pid in deleteList:
+  try:
+   lab_data.get(id=pid).delete()
+  except:
+   HttpResponse("<p>One or more selected data not found.</p>")
 
-  #Finally, return a success code.
-  return HttpResponse(0);
- return HttpReponse("<p>Please log in to delete data.</p>") 
+ #Finally, return a success code.
+ return HttpResponse(0);
 
+@login_required
+@require_http_methods(["POST"])
 def change_Recommendation(request):
  u = request.user
- if request.method=="POST" and u.is_authenticated():
-  try:
-   #Variable Setup
-   recommendations = get_recommendations(u.get_profile().lab_group)
-   editLog = request.POST
-   whitelist = {"notes"} #Only allow notes to be modified.
-   
-   #Read the editLog
-   try:
-    pid = editLog["pid"]
-    fieldChanged = editLog["field"]
-    newValue = editLog["newValue"]
-    rec = recommendations.get(id=pid) 
-
-    #Verify that the fieldChanged is in the whitelist.
-    assert fieldChanged in whitelist
-   except:
-    return HttpResponse("Datum not editable!")
-
-   #Save the new value.
-   setattr(rec, fieldChanged, newValue)
-   rec.user = u
-   rec.save()
-
-   return HttpResponse(0)
-
-  except:
-   return HttpResponse("Edit unsuccessful...")
- return HttpResponse("Please log in to modify data.")
-
-# Used to change fields in Data objects.
-def change_Data(request):
- #Fields that may be changed via this script.
- whitelist = set(get_model_field_names())
-
- u = request.user
- if request.method == "POST" and u.is_authenticated():
+ try:
   #Variable Setup
-  lab_group = u.get_profile().lab_group
+  recommendations = get_recommendations(u.get_profile().lab_group)
   editLog = request.POST
-  lab_data = get_lab_Data(lab_group)
+  whitelist = {"notes"} #Only allow notes to be modified.
   
-  #Get the Datum for the lab.
+  #Read the editLog
   try:
    pid = editLog["pid"]
    fieldChanged = editLog["field"]
    newValue = editLog["newValue"]
-   datum = lab_data.get(id=pid) 
+   rec = recommendations.get(id=pid) 
+
    #Verify that the fieldChanged is in the whitelist.
    assert fieldChanged in whitelist
   except:
    return HttpResponse("Datum not editable!")
 
-  #Check that the edit doesn't invalidate the Datum in any way.   
-  try: 
-   oldValue = getattr(datum, fieldChanged)
-   setattr(datum, fieldChanged, newValue)
-   dirty_data = model_to_dict(datum, fields=get_model_field_names())
-   if fieldChanged=="ref":
-    clean_data, errors = full_validation(dirty_data, lab_group)
-   else:
-    clean_data, errors = full_validation(dirty_data, lab_group, revalidating=True)
+  #Save the new value.
+  setattr(rec, fieldChanged, newValue)
+  rec.user = u
+  rec.save()
 
+  return HttpResponse(0)
 
-   #Send back an error if it exists.
-   if errors:
-    return HttpResponse("{}".format(errors[errors.keys()[0]]))
- 
-   #Get the parsed value after cleaning.
-   setattr(datum, fieldChanged, clean_data[fieldChanged])
+ except:
+  return HttpResponse("Edit unsuccessful...")
 
-   #Make the edit in the database.
-   datum.user = u
-   datum.is_valid = clean_data["is_valid"] 
-   datum.save()
- 
-   if fieldChanged=="ref":
-    #Update the "ref" in any Data of which it is a duplicate.
-    lab_data.filter(duplicate_of=oldValue).update(duplicate_of=newValue)
-   elif fieldChanged[:8]=="reactant":
-    #Update the atom information and any other information that may need updating. 
-    update_reaction(datum, lab_group)
-   return HttpResponse(0)
-
-  except Exception as e:
-   print e
-   return HttpResponse("Edit unsuccessful...")
-
- return HttpResponse("<p>Please log in to modify data.</p>")
-
-######################  User Auth ######################################
-def change_password(request):
- error=False
- if request.method == "POST":
-  try:
-   email = request.POST.get("email")
-   username = request.POST.get("username")
-   last_name = request.POST.get("lastName")
-   user = User.objects.filter(Q(email=email)|Q(username=username), Q(last_name=last_name))[0]
-   #Change the user's password and send them an email.
-   randomize_password(user)
-   return HttpResponse("A new password has been emailed to you.")
-  except:
-   #If no user is found given the credentials, tell the user.
-   error=True
- return render(request, "change_password_form.html", {
-  "error":error
- })
-
-def user_login(request):
- login_fail = False #The user hasn't logged in yet...
-
- if request.method == "POST":
-  username = request.POST.get("username", "")
-  password = request.POST.get("password", "")
-  user = auth.authenticate(username=username, password=password)
-  if user is not None and user.is_active:
-   auth.login(request, user)
-
-   if not user_license_is_valid(user):
-    return HttpResponse(1);
-
-   return HttpResponse("Logged in successfully! <div class=reloadImmediately></div>"); #Only the reloadActivator is "required" here.
-  else:
-   login_fail = True #The login info is not correct.
- return render(request, "login_form.html", {
-  "login_fail": login_fail,
- })
-
-def user_logout(request):
- auth.logout(request)
- return HttpResponse("OK")
-
-#Redirects user to the appropriate registration screen.
-def registration_prompt(request):
- return render(request, "registration_cell.html", {})
-
-def user_update(request):
- u = request.user
- if request.method == "POST":
-  form = UserForm(request.POST, instance=u)
-  if form.is_valid():
-   form.save()
-   return HttpResponse("Update Successful!")
- else:
-  form = UserForm(instance=u)
- return render(request, "user_update_form.html", {
-  "form": form,
- })
-
-def user_registration(request):
- if request.method == "POST":
-  form = [UserForm(data = request.POST), UserProfileForm(data = request.POST)]
-  if form[0].is_valid() and form[1].is_valid():
-   #Check that the access_code query for the Lab_Group is correct.
-   lab_group = form[1].cleaned_data["lab_group"]
-   access_code = Lab_Group.objects.filter(lab_title=lab_group)[0].access_code
-
-   if form[1].cleaned_data["access_code"] == access_code:
-    #Create the user to be associated with the profile.
-    new_user = form[0].save()
-    #Save the profile
-    profile = form[1].save(commit = False)
-    #Assign the user to the profile
-    profile.user = new_user
-    profile.save()
-
-    #Send a "confirmation" email to the new user.
-    email_body = "This email confirms that you ({}) are now a registered member of the Dark Reaction Project under the following lab: {}".format(new_user.first_name, lab_group.lab_title)
-    send_mail("DRP: User Registration Successful", email_body, settings.EMAIL_HOST_USER, [new_user.email], fail_silently=False)
-
-    #Politely log the user in!
-    new_user = auth.authenticate(username = request.POST["username"],
-     password = request.POST["password"])
-    auth.login(request, new_user)
-    #Mark that the user must now agree to the terms and conditions.
-    return HttpResponse(1);
-   else:
-    return HttpResponse("Invalid Access Code!")
- else:
-  form = [UserForm(), UserProfileForm()]
- return render(request, "user_registration_form.html", {
-  "user_form": form[0],
-  "profile_form": form[1],
- })
-
-def lab_registration(request): ###Not finished.
- if request.method=="POST":
-  form = LabForm(data = request.POST)
-  if form.is_valid():
-   lab_group = form.save()
-   access_code = lab_group.access_code
-   
-   #Send a "confirmation" email to the new lab email.
-   email_body = "Thank you for joining the Dark Reaction Project!\n\nPlease continue by creating a \"user\" for your lab. Simply...\n\t1.) Keep this \"access code\" for your lab in a safe place: {}\n\t2.) Click \"Register\" and create a user using the access code above.\n\t3.) Start uploading data!\n\nWe wish you all the best,\nThe Dark Reaction Project Team".format(lab_group.access_code)
-
-   send_mail("DRP: Lab Registration Successful", email_body, settings.EMAIL_HOST_USER, [lab_group.lab_email], fail_silently=False)
-
-   #Send the DRP Admins an email about the new Lab Registration.
-   #TODO:Remove this when we scale to unmanageable quantities of labs.
-   alert_about_new_lab(lab_group)
- 
-   return HttpResponse("<p>Registration Successful! Please check your email.</p>")
- else:
-  form = LabForm()
- return render(request, "lab_registration_form.html", {
-  "form": form,
- })
-
-######################  Developer Functions  ###########################
-def remove_lonely_grams(lab_group):
- data = get_lab_Data(lab_group)
- nums = [3,4,5]
- for entry in data:
-  for i in nums:
-   if getattr(entry, "unit_{}".format(i)):
-    if not getattr(entry, "reactant_{}".format(i)):
-     setattr(entry, "unit_{}".format(i), "")
-     entry.save()
-
-     try:
-      revalidate_datum(reaction, lab_group)
-     except:
-      pass
- print "Removed all lonely grams!"
-
-
-#TODO: Casey, ideally move these in the future to some other file.
-#Helper function for get_fields_as_json.
-def get_field_tuple(stat, entry):
-  #Note: in order to get milliseconds since the epoch, we need a TimeDelta object. 
-  seconds = int((entry.datetime - datetime.datetime(1970,1,1)).total_seconds()*1000)
-  value = getattr(entry, stat)
-  return [seconds, value] 
-
-def get_fields_as_json(model_stats):
-  #Variable Setup.
-  stats_to_serialize = ["false_positive_rate", "actual_success_rate", 
-                         "estimated_success_rate", "performance"]
-  results_list = []
-
-  # The D3 library needs the following format:
-  # [ { "key": "Label for these datums.", 
-  #     "values": [ [seconds, value], [seconds, value], ... ]
-  #   },
-  #   { ... }
-  # ]
-  for stat in stats_to_serialize:
-    key_dict = {"key":stat, 
-                "values":[get_field_tuple(stat, entry) for entry in model_stats],
-               }
-    results_list.append(key_dict)
-
-  result = json.dumps(results_list)
-  return result
-
-def get_stats_json(request):
-  #Grab all of the model_stats.
-  model_stats = ModelStats.objects.all().order_by("datetime")
-
-  #Convert the data into a JSON format.
-  data = get_fields_as_json(model_stats)
-  
-  #Send the JSON back to the client.
-  return HttpResponse(data, mimetype="application/json")  
-
+# Used to change fields in Data objects.
 @login_required
-def get_dashboard(request):
-  return render(request, 'global_page.html', {
-   "template": "dashboard",
-  })
-  
+@require_http_methods(["POST"])
+def change_Data(request):
+ #Fields that may be changed via this script.
+ whitelist = set(get_model_field_names())
 
-######################  Email Functions  ###########################
-def alert_about_new_lab(lab_group):
- email_body = "A new Lab Group has been registered:"
- email_body += "\n{}\n{}\n{}".format(lab_group.lab_title, lab_group.lab_address, lab_group.lab_email) 
- send_mail("DRP: New Lab Group Registered", email_body, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER], fail_silently=False)
+ u = request.user
+ #Variable Setup
+ lab_group = u.get_profile().lab_group
+ editLog = request.POST
+ lab_data = get_lab_Data(lab_group)
+ 
+ #Get the Datum for the lab.
+ try:
+  pid = editLog["pid"]
+  fieldChanged = editLog["field"]
+  newValue = editLog["newValue"]
+  datum = lab_data.get(id=pid) 
+  #Verify that the fieldChanged is in the whitelist.
+  assert fieldChanged in whitelist
+ except:
+  return HttpResponse("Datum not editable!")
 
-######################  Error Messages  ################################
-def display_404_error(request):
- response = render(request, '404_error.html')
- response.status_code = 404
- return response
+ #Check that the edit doesn't invalidate the Datum in any way.   
+ try: 
+  oldValue = getattr(datum, fieldChanged)
+  setattr(datum, fieldChanged, newValue)
+  dirty_data = model_to_dict(datum, fields=get_model_field_names())
+  if fieldChanged=="ref":
+   clean_data, errors = full_validation(dirty_data, lab_group)
+  else:
+   clean_data, errors = full_validation(dirty_data, lab_group, revalidating=True)
 
-def display_500_error(request):
- response = render(request, '500_error.html')
- response.status_code = 500
- return response
+
+  #Send back an error if it exists.
+  if errors:
+   return HttpResponse("{}".format(errors[errors.keys()[0]]))
+ 
+  #Get the parsed value after cleaning.
+  setattr(datum, fieldChanged, clean_data[fieldChanged])
+
+  #Make the edit in the database.
+  datum.user = u
+  datum.is_valid = clean_data["is_valid"] 
+  datum.save()
+ 
+  if fieldChanged=="ref":
+   #Update the "ref" in any Data of which it is a duplicate.
+   lab_data.filter(duplicate_of=oldValue).update(duplicate_of=newValue)
+  elif fieldChanged[:8]=="reactant":
+   #Update the atom information and any other information that may need updating. 
+   update_reaction(datum, lab_group)
+  return HttpResponse(0)
+
+ except Exception as e:
+  print e
+  return HttpResponse("Edit unsuccessful...")
+

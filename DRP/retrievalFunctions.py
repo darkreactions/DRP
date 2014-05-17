@@ -114,6 +114,15 @@ def filter_data(lab_group, query_list):
 def get_recommendations(lab_group):
  return Recommendation.objects.filter(lab_group=lab_group)
 
+def get_seed_recs(lab_group, seed_ref=None):
+ seed_recs = Recommendation.objects.filter(seeded=True, lab_group=lab_group)
+ 
+ #If given a seed ref, only yield those recommendations that are seeded from it.
+ if seed_ref:
+   datum = Data.objects.filter(ref=seed_ref)
+   seed_recs.filter(seed=datum)
+ return seed_recs
+
 def get_latest_Model_Version(lab_group):
  return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date")[0]
 
@@ -216,4 +225,13 @@ def get_mass_range(lab_group, abbrev):
  except:
   raise Exception("Compound or lab not found.")
 
+
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # #  LABS AND USERS  # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+def get_lab_users(lab_group):
+  lab_members = Lab_Member.filter(lab_group=lab_group)
+  users = lab_members.values_list("user", flat=True)
+  return users
 

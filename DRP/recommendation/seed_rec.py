@@ -6,6 +6,7 @@ sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 import DRP.models
 
+
 sim = metrics.Euclidean("euclidean", DRP.models).sim
 
 #Variable Setup.
@@ -127,7 +128,7 @@ def generate_grid(reaction, amine_list):
 	#Variable Setup.
 	indices = get_reactants_indices(reaction)
 	amine_moles = get_amine_moles(reaction, indices["org"])
-	prefix = "/home/drp/web/darkreactions.haverford.edu/app/DRP/tmp/"
+	prefix = TMP_DIR
 	fileprefix = str(uuid.uuid4())
 	ml_convert = json.load(open("mlConvert.json"))
 	hdrs = ",".join(rebuildCDT.headers)
@@ -146,7 +147,7 @@ def generate_grid(reaction, amine_list):
 	clean2arff.clean(prefix+fileprefix)
 
 	#TODO: rewrite test_model
-	cmd = "sh /home/drp/web/darkreactions.haverford.edu/app/DRP/DRP/research/test_model.sh {0}".format(fileprefix)
+	cmd = "sh {}/DRP/research/test_model.sh {0}".format(BASE_DIR, fileprefix)
 	result = subprocess.check_output(cmd, shell=True)
 
 	print result, cmd
@@ -174,6 +175,25 @@ def generate_grid(reaction, amine_list):
 	print amines_results
 	amines_results.sort(key=lambda x: x[0]*x[1], reverse=True)
 	return amines_results
+
+def constructRecsFromSeed(seed_rxn_key):
+        lab = DRP.models.Lab_Group.objects.filter(lab_title = "default_amines").first()
+        amines_raw = DRP.models.CompoundEntry.objects.filter(lab_group = lab)
+        amines_names = [c.compound for c in amines_raw]
+
+        rxn = DRP.models.Data.objects.filter(ref=seed_rxn_key).first()
+        for f in reactant_fields:
+                abbrev = getattr(rxn, f)
+                if abbrev == "":
+                        continue
+                compound = DRP.models.CompoundEntry.objects.filter(abbrev=abbrev).first().compound
+                setattr(rxn, f, compound)
+
+
+
+        return generate_grid(rxn, amines_names)
+
+
 
 if __name__ == "__main__":
 

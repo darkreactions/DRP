@@ -1,12 +1,12 @@
 from django.conf.urls import *
 from django.conf import settings
 from django.contrib import admin
-from DRP.views import *
+from DRP.core_views import *
 
 # Uncomment the next two lines to enable the admin: ###C
 admin.autodiscover()
-handler500 = 'DRP.views.display_500_error'
-handler404 = 'DRP.views.display_404_error'
+handler500 = 'DRP.views.errors.display_500_error'
+handler404 = 'DRP.views.errors.display_404_error'
 
 urlpatterns = patterns('',
   #Home and info pages.
@@ -16,8 +16,8 @@ urlpatterns = patterns('',
     (r'^about/?$', info_page, {"page":"about"}),
     (r'^contact/?$', info_page, {"page":"contact"}),
   #Dashboard
-    (r'^dashboard/?$', get_dashboard), #Displays the empty dashboard.
-    (r'^get_stats/?$', get_stats_json), #Actually loads the json.
+    url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
+    url(r'^get_stats/?$', "DRP.views.dashboard.get_stats_json"), #Actually loads the json.
   #Database
     (r'^database/$', database), #Encompassing data view.
    #Change Page
@@ -25,8 +25,8 @@ urlpatterns = patterns('',
    #Upload/Download database.
     (r'^upload_prompt/$', upload_prompt),
     (r'^upload_data/$', upload_CSV),
-    (r'^download_prompt/$', download_prompt),
-    (r'^download_data/$', download_CSV),
+    (r'^download_prompt/$', "DRP.views.download.download_prompt"),
+    (r'^download_data/$', "DRP.views.download.download_CSV"),
    #Modify Data
     (r'^change_Data/$', change_Data), #[JSON] Edit Data Entry
     (r'^delete_Data/$', delete_Data), #[JSON] Delete Data Entries
@@ -40,11 +40,14 @@ urlpatterns = patterns('',
     (r'^compound_guide_entry/$', compound_guide_entry), #Return a single CG table entry.
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
    #Validation
-    (r'^send_CG_names/$', send_CG_names), #Send the CG name_pairs for client-side validation.
+    (r'^send_CG_names/$', "DRP.views.jsonViews.send_CG_names"), #Send the CG name_pairs for client-side validation.
   #Predictions
-    (r'^predictions/$', predictions),
-    (r'^gather_SVG/$', gather_SVG),
+    (r'^predictions/$', visuals), #TODO: Nora, rename this to whatever you want.
+                                  #      We called it "prediction" but now that's
+                                  #      not exactly what we're visualizing.
   #Recommendations
+    (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
+    (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),
     (r'^recommend/$', recommend),
     (r'^saved/$', saved),
     (r'^change_Recommendation/$', change_Recommendation), #[JSON] Edit Rec Entry
@@ -64,17 +67,17 @@ urlpatterns = patterns('',
     (r'^search/Recommendation/?$', search, {"model":"Recommendation"}), 
   #Users and Labs
    #Authentication
-    (r'^user_logout/$', user_logout), #Log Out
-    (r'^user_login/$', user_login), #Log In
-    (r'^accounts/login/?$', user_login), #TODO: This should lead to a separate login page with a separate login pipeline.
+    (r'^user_logout/$', "DRP.views.user.user_logout"), #Log Out
+    (r'^user_login/$', "DRP.views.user.user_login"), #Log In
+    (r'^login/?$', info_page, {"page":"login_form"}), 
    #Registration
-    (r'^user_license_agreement/$', get_user_license_agreement),
-    (r'^update_user_license_agreement/$', update_user_license_agreement),
-    (r'^registration_prompt/$', registration_prompt), #Redirects to correct registration choice.
-    (r'^lab_registration/$', lab_registration), #Create Lab ###INACTIVE
-    (r'^user_registration/$', user_registration), #Create User
-    (r'^user_update/$', user_update), #Create User
-    (r'^change_password/$', change_password), #Change Password
+    (r'^user_license_agreement/$', "DRP.views.license_agreement.get_user_license_agreement"),
+    (r'^update_user_license_agreement/$', "DRP.views.license_agreement.update_user_license_agreement"),
+    (r'^registration_prompt/$', "DRP.views.registration.registration_prompt"), #Redirects to correct registration choice.
+    (r'^lab_registration/$', "DRP.views.registration.lab_registration"), #Create Lab ###INACTIVE
+    (r'^user_registration/$', "DRP.views.registration.user_registration"), #Create User
+    (r'^user_update/$', "DRP.views.user.user_update"), #Create User
+    (r'^change_password/$', "DRP.views.user.change_password"), #Change Password
 
  #Enable the admin:
     (r'^admin/', include(admin.site.urls)),

@@ -50,6 +50,17 @@ function getOptions(field) {
  }
 }
 
+function reloadIfNeeded(){
+ //Reload the page immediately if applicable.
+ if ($(".reloadImmediately").length) {
+  if ($(".reloadImmediately").attr("name")==""){
+    window.location.reload(true);
+  } else {
+    window.location.href = $(".reloadImmediately").attr("redirect");
+  }
+ }
+}
+
 window.refreshOnMaskFade = function() {
  $("body").append("<div class=\"reloadActivator\"></div>")
 }
@@ -221,9 +232,14 @@ $(document).on("mouseover", ".dataGroup", function() {
   //DATA-SPECIFIC BUTTONS # # # # # # # # # # # # # # # #
   //Add the copy button.
   if ($(this).attr("class").indexOf("copyable") >= 0) {
+
    addDataSpecificButton(this, "leftMenu_addNew", "add.png", 
     "Copy this reaction to the data form.", 
     "popupActivator duplicateSpecificDataButton");
+   addDataSpecificButton(this, "makeSeedRecommendations", "seed.gif", 
+    "Generate recommendations based on this datum.", 
+    "");
+
   }
 
   //RECOMMENDATION-SPECIFIC BUTTONS # # # # # # # # # # # # # # # #
@@ -279,6 +295,10 @@ $(document).on("click", ".dataSpecificButton", function() {
 
  //Get the action of the button.
  switch (buttonID){
+  case ("makeSeedRecommendations"):
+   var url="/make_seed_recommendations/";
+   var JSON = {"pid":pid}
+   break;
   case ("saveRecommendation"):
    var url="/save_recommendation/";
    var JSON = {"pid":pid}
@@ -312,6 +332,9 @@ $(document).on("click", ".dataSpecificButton", function() {
  $.post(url, JSON, function(response) {
   if (response=="0"){
    switch (buttonID) {
+    case("makeSeedRecommendations"):
+     var comment = "Making recommendations based on seed!";
+     break;
     case("saveRecommendation"):
      $(dataGroup).addClass("savedRecommendation");
      var comment = "Saved!";
@@ -343,10 +366,26 @@ $(document).on("click", ".dataSpecificButton", function() {
    $(dataGroup).trigger("mouseover");
    showRibbon(comment, goodColor, "#mainPanel");
   } else {
-   showRibbon("Edit failed!", badColor, "#mainPanel");
+   var failureMessage;
+   switch (buttonID) {
+
+    case("makeSeedRecommendations"):
+     if (response=="2"){
+      failureMessage = "Still working on the last batch of recommendations!";
+     } else {
+      failureMessage = "Could not make recommendations from seed!";
+     }
+     break;
+
+    default:
+     failureMessage = "Edit failed!";
+   }
+   showRibbon(failureMessage, badColor, "#mainPanel");
   }
 
  });
+
+ event.stopPropagaton();
 
 });
 
@@ -394,7 +433,23 @@ $(document).on("submit", ".infoForm", function() {
  }
 
  $(this).closest("form").append("<div class=\"loadingWheel\">. . .</div>");
- $.post($(form).attr("action"), $(form).serialize(), function(response) {
+
+ 
+ var formName = $(form).attr("name");
+ var formAction = $(form).attr("action");
+
+ //Send any get-request params that might need to get through.
+ var params = window.location.search;
+ var paramsList = params.split("?").slice(1);
+ for (var i=0; i < paramsList.length; i++){
+   var keyValPair = paramsList[i].split("=");
+   $(form).append("<input name=\""+keyValPair[0]+
+		"\" type=\"hidden\" value=\""+keyValPair[1]+"\" />");
+ }
+
+ var formContents = $(form).serialize();
+
+ $.post(formAction, formContents, function(response) {
   //Remove the loading wheel.
   $(".loadingWheel").remove();
   //Translate server-responses to actions.
@@ -427,9 +482,14 @@ $(document).on("submit", ".infoForm", function() {
    $(form).append("<input type=\"submit\" value=\"Upload\" class=\"button\"/>"); 
    return false;
   } else {
-   //Recreate the popup window with the server response.
-   $("#popupContainer_inner").html(response);
-   $(".subPopup").draggable();
+   if ($("#popupContainer_inner").is(":visible")){
+    //Recreate the popup window with the server response.
+    $("#popupContainer_inner").html(response);
+    $(".subPopup").draggable();
+   } else {
+    $(".infoContainer").html(response);
+
+   }
   }
 
 
@@ -441,10 +501,8 @@ $(document).on("submit", ".infoForm", function() {
     results: function() {}
    }
   });
-  //Reload the page immediately if applicable.
-  if ($(".reloadImmediately").length) {
-   window.location.reload(true);
-  }
+
+  reloadIfNeeded();
 
   //Show the ribbon message if applicable.
   if ($(".successActivator").length) {
@@ -699,6 +757,36 @@ window.createPopupConfirmation = function(message) {
   message+"</div>");
 }
 
+function loadPopup(response, kwargs){
+  //If the user needs to be logged in, send them to a prettier login form.
+  if (response.indexOf("/user_login/")>0){
+    window.location.href = "/login/";
+  } else {
+    $("#popupContainer_inner").html(response);
+
+    //Allow optional popup features.
+    if (kwargs["autocomplete"]){
+      setReactantAutoComplete();
+    }
+  }
+}
+
+function loadSideBar(response, kwargs){
+  //If the user needs to be logged in, send them to a prettier login form.
+  if (response.indexOf("/user_login/")>0){
+    window.location.href = "/login/";
+  } else {
+    $("#sidePanel_inner").html(response);
+    toggleSideContainer();
+    $("#tabs").tabs({active: 1});
+
+    //Allow optional popup features.
+    if (kwargs["autocomplete"]){
+      setReactantAutoComplete();
+    }
+  }
+}
+
 //Activate specified popup:
 $(document).on("click", ".popupActivator", function(event) {
  //Display a loading message if the request takes a visible amount of time.
@@ -711,7 +799,7 @@ $(document).on("click", ".popupActivator", function(event) {
   case "transferRecommendation":
    var pid = $(this).closest(".dataGroup").attr("pid");
    $.get("/data_form/", {pid : pid, model: "rec"}, function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    })
    break;
   case "leftMenu_addNew":
@@ -719,19 +807,18 @@ $(document).on("click", ".popupActivator", function(event) {
    var pid = $(this).closest(".dataGroup").attr("pid");
    //Send the request to the server
    $.get("/data_form/", {pid : pid, model:"data"}, function(response) {
-    $("#popupContainer_inner").html(response);
-    setReactantAutoComplete();
+    loadPopup(response, {"autocomplete":true});
    });
    break;
   case "leftMenu_upload_data":
    $.post("/upload_prompt/", {model: "Data"}, function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    activatorID = "leftMenu_uploadCSV";
    break;
   case "leftMenu_upload_compoundentry":
    $.post("/upload_prompt/", {model: "CompoundEntry"}, function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    activatorID = "leftMenu_uploadCSV";
    break;
@@ -739,88 +826,81 @@ $(document).on("click", ".popupActivator", function(event) {
    var group = $(this).closest(".reactantField").attr("group");
    var pid = $(this).closest(".dataGroup").attr("pid");
    $.get("/add_reactant/", {group: group, pid:pid}, function(response) {
-    $("#popupContainer_inner").html(response);
-    setReactantAutoComplete();
+    loadPopup(response, {"autocomplete":true});
    });
    activatorID = "addReactantGroup";
    event.stopPropagation();
    break;
   case "leftMenu_download_data":
    $.post("/download_prompt/", {model: "Data"}, function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    activatorID = "leftMenu_downloadCSV";
    break;
   case "leftMenu_download_compoundentry":
    $.post("/download_prompt/", {model: "CompoundEntry"}, function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    activatorID = "leftMenu_downloadCSV";
    break;
   case "leftMenu_download_saved":
    $.post("/download_prompt/", {model: "Saved"}, function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    activatorID = "leftMenu_downloadCSV";
    break;
   case "leftMenu_download_recs":
    $.post("/download_prompt/", {model: "Recommendation"}, function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    activatorID = "leftMenu_downloadCSV";
    break;
   case "searchButton":
    PT_selected = Array();
    $.get("/search/Data", function(response) {
-    $("#sidePanel_inner").html(response);
-    toggleSideContainer();
-    $("#tabs").tabs({active: 1});
-    setReactantAutoComplete();
+    loadSideBar(response, {"autocomplete":true})
    });
-   return false; //TODO: Separate this into a "sidePanel" activator
+   return false; 
    break;
   case "searchButton_recs":
    $.get("/search/Recommendation", function(response) {
-    $("#sidePanel_inner").html(response);
-    toggleSideContainer();
-    $("#tabs").tabs({active: 1});
-    setReactantAutoComplete();
+    loadSideBar(response, {"autocomplete":true})
    });
-   return false; //TODO: Separate this into a "sidePanel" activator
+   return false; 
    break;
   case "userLogin":
    $.get("/user_login/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    break;
   case "changePassword":
    $.get("/change_password/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    break;
   case "registrationPrompt": 
    $.get("/registration_prompt/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    break;
   case "userUpdate":
    $.get("/user_update/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    break;
   case "userRegistration":
    $.get("/user_registration/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    break;
   case "labRegistration":
    $.get("/lab_registration/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
    });
    break;
   case "CompoundGuide":
    $.get("/compound_guide/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
     $(".CG_saveButton").remove()
     //Erase the current JSON object and selected CG entries.
     CGEntries = undefined;
@@ -830,7 +910,7 @@ $(document).on("click", ".popupActivator", function(event) {
    break;
   case "CompoundGuide_form":
    $.get("/compound_guide_form/", function(response) {
-    $("#popupContainer_inner").html(response);
+    loadPopup(response);
     $(".CG_saveButton").remove()
    });
    break;
@@ -1230,6 +1310,7 @@ $(document).on("change", "#uploadCSV_hiddenInput", function() {
 });
 
 //############ Post-load Config ########################################
+reloadIfNeeded();
 restyleData();
 
 //######################################################################

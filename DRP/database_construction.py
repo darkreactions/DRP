@@ -109,7 +109,7 @@ def store_new_RankedReaction_list(list_of_rankedrxn_lists):
  print "Finished creating and storing {} of {} items!.".format(successes, count)
 
 
-def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = ""):
+def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = "", seed_source=None):
  lab_group = get_Lab_Group(lab_group)
  
  call_time = str(datetime.datetime.now())
@@ -131,6 +131,10 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
    new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
    new_rec.date = call_time
    new_rec.model_version = new_version
+   if seed:
+     new_rec.seeded = True
+     new_rec.seed = seed_source #Record if this recommendation is seeded.
+
    new_rec.save() #Store this recommendation in the database
    num_success += 1
   except Exception as e:

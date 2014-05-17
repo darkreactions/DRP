@@ -240,6 +240,60 @@ class Lab_Member(models.Model):
  def __unicode__(self):
   return self.user.username
 
+############### DATA ENTRY ########################
+from calculationFields import calc_fields
+class DataCalc(models.Model):
+ for calc_field in calc_fields:
+  #Make sure field names don't contain operators.
+  calc_field = calc_field.replace("+","PLUS").replace("-","MINUS")
+  exec("{0} = models.CharField(\"{0}\", max_length=22)".format(calc_field))
+
+ def __unicode__(self):
+  return u"{}".format(self.XXXtitle);
+
+#Many data are saved per lab group. Each data represents one submission.
+class Data(models.Model):
+ ref = models.CharField("Reference", max_length=12)
+
+ #List Fields
+ for i in CONFIG.reactant_range():
+  exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
+  exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
+  exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
+
+ temp = models.CharField("Temperature", max_length=10)
+ time = models.CharField("Time", max_length=10) ###
+ pH = models.CharField("pH", max_length=5)
+
+ #Yes/No/? Fields:
+ slow_cool = models.CharField("Slow Cool", max_length=10)
+ leak = models.CharField("Leak", max_length=10)
+ outcome = models.CharField("Outcome", max_length=1)
+ purity = models.CharField("Purity", max_length=1)
+
+ notes = models.CharField("Notes", max_length=200, blank=True)
+
+ #Self-assigning Fields:
+ calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
+ calculated_pH = models.BooleanField(default=False)
+ calculated_temp = models.BooleanField(default=False)
+ calculated_time = models.BooleanField(default=False)
+
+ atoms = models.CharField("Atoms", max_length=30, blank=True)
+
+ user = models.ForeignKey(User, unique=False)
+ lab_group = models.ForeignKey(Lab_Group, unique=False)
+ creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
+ is_valid = models.BooleanField("Valid", default=False)
+
+ #Categorizing Fields:
+ public = models.BooleanField("Public", default=False)
+ duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
+ recommended = models.CharField("Recommended", max_length=10)
+
+ def __unicode__(self):
+  return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
+
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):
   # model false-positive on test set
@@ -289,8 +343,10 @@ class Recommendation(models.Model):
  model_version = models.ForeignKey(Model_Version, unique=False)
  user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="last_user")
  assigned_user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="assigned_user")
+ seed = models.ForeignKey(Data, unique=False, null=True, blank=True, default=None)
  date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
  complete = models.BooleanField("Complete", default=False)
+ seeded = models.BooleanField("From Seed", default=False)
 
  #Fields for user feedback.
  saved = models.BooleanField("Saved", default=False)
@@ -589,157 +645,7 @@ def get_good_rxns(lab_group=None, with_headings=True):
 
  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
-############### DATA ENTRY ########################
-calc_fields = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass', 'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
-   'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles', 'XXXorg1', 'XXXorg1mass',
-   'XXXorg1moles', 'XXXorg2', 'XXXorg2mass', 'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass',
-   'XXXoxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH',
-   'leak', 'numberInorg', 'numberOrg', 'numberOxlike', 'numberComponents', 'inorgavgpolMax',
-   'inorgrefractivityMax', 'inorgmaximalprojectionareaMax', 'inorgmaximalprojectionradiusMax',
-   'inorgmaximalprojectionsizeMax', 'inorgminimalprojectionareaMax', 'inorgminimalprojectionradiusMax',
-   'inorgminimalprojectionsizeMax', 'inorgavgpol_pHdependentMax',
-   'inorgmolpolMax', 'inorgvanderwaalsMax', 'inorgASAMax',
-   'inorgASA+Max', 'inorgASA-Max', 'inorgASA_HMax',
-   'inorgASA_PMax', 'inorgpolarsurfaceareaMax', 'inorghbdamsaccMax', 'inorghbdamsdonMax',
-   'inorgavgpolMin', 'inorgrefractivityMin', 'inorgmaximalprojectionareaMin',
-   'inorgmaximalprojectionradiusMin', 'inorgmaximalprojectionsizeMin',
-   'inorgminimalprojectionareaMin', 'inorgminimalprojectionradiusMin',
-   'inorgminimalprojectionsizeMin', 'inorgavgpol_pHdependentMin',
-   'inorgmolpolMin', 'inorgvanderwaalsMin', 'inorgASAMin',
-   'inorgASA+Min', 'inorgASA-Min', 'inorgASA_HMin',
-   'inorgASA_PMin', 'inorgpolarsurfaceareaMin', 'inorghbdamsaccMin', 'inorghbdamsdonMin',
-   'inorgavgpolArithAvg', 'inorgrefractivityArithAvg', 'inorgmaximalprojectionareaArithAvg',
-   'inorgmaximalprojectionradiusArithAvg', 'inorgmaximalprojectionsizeArithAvg',
-   'inorgminimalprojectionareaArithAvg', 'inorgminimalprojectionradiusArithAvg',
-   'inorgminimalprojectionsizeArithAvg',
-   'inorgavgpol_pHdependentArithAvg', 'inorgmolpolArithAvg',
-   'inorgvanderwaalsArithAvg', 'inorgASAArithAvg',
-   'inorgASA+ArithAvg', 'inorgASA-ArithAvg',
-   'inorgASA_HArithAvg', 'inorgASA_PArithAvg',
-   'inorgpolarsurfaceareaArithAvg',
-   'inorghbdamsaccArithAvg', 'inorghbdamsdonArithAvg',
-   'inorgavgpolGeomAvg', 'inorgrefractivityGeomAvg',
-   'inorgmaximalprojectionareaGeomAvg', 'inorgmaximalprojectionradiusGeomAvg',
-   'inorgmaximalprojectionsizeGeomAvg', 'inorgminimalprojectionareaGeomAvg',
-   'inorgminimalprojectionradiusGeomAvg', 'inorgminimalprojectionsizeGeomAvg',
-   'inorgavgpol_pHdependentGeomAvg', 'inorgmolpolGeomAvg', 'inorgvanderwaalsGeomAvg',
-   'inorgASAGeomAvg', 'inorgASA+GeomAvg', 'inorgASA-GeomAvg', 'inorgASA_HGeomAvg',
-   'inorgASA_PGeomAvg', 'inorgpolarsurfaceareaGeomAvg', 'inorghbdamsaccGeomAvg', 'inorghbdamsdonGeomAvg',
-   'orgavgpolMax', 'orgrefractivityMax',
-   'orgmaximalprojectionareaMax', 'orgmaximalprojectionradiusMax', 'orgmaximalprojectionsizeMax',
-   'orgminimalprojectionareaMax', 'orgminimalprojectionradiusMax', 'orgminimalprojectionsizeMax',
-   'orgavgpol_pHdependentMax', 'orgmolpolMax',
-   'orgvanderwaalsMax', 'orgASAMax', 'orgASA+Max', 'orgASA-Max', 'orgASA_HMax', 'orgASA_PMax',
-   'orgpolarsurfaceareaMax', 'orghbdamsaccMax',
-   'orghbdamsdonMax', 'orgavgpolMin', 'orgrefractivityMin',
-   'orgmaximalprojectionareaMin', 'orgmaximalprojectionradiusMin', 'orgmaximalprojectionsizeMin',
-   'orgminimalprojectionareaMin', 'orgminimalprojectionradiusMin',
-   'orgminimalprojectionsizeMin', 'orgavgpol_pHdependentMin',
-   'orgmolpolMin', 'orgvanderwaalsMin', 'orgASAMin',
-   'orgASA+Min', 'orgASA-Min', 'orgASA_HMin', 'orgASA_PMin',
-   'orgpolarsurfaceareaMin', 'orghbdamsaccMin',
-   'orghbdamsdonMin', 'orgavgpolArithAvg', 'orgrefractivityArithAvg',
-   'orgmaximalprojectionareaArithAvg', 'orgmaximalprojectionradiusArithAvg',
-   'orgmaximalprojectionsizeArithAvg', 'orgminimalprojectionareaArithAvg',
-   'orgminimalprojectionradiusArithAvg', 'orgminimalprojectionsizeArithAvg',
-   'orgavgpol_pHdependentArithAvg', 'orgmolpolArithAvg', 'orgvanderwaalsArithAvg',
-   'orgASAArithAvg', 'orgASA+ArithAvg', 'orgASA-ArithAvg', 'orgASA_HArithAvg', 'orgASA_PArithAvg',
-   'orgpolarsurfaceareaArithAvg', 'orghbdamsaccArithAvg',
-   'orghbdamsdonArithAvg', 'orgavgpolGeomAvg', 'orgrefractivityGeomAvg',
-   'orgmaximalprojectionareaGeomAvg', 'orgmaximalprojectionradiusGeomAvg',
-   'orgmaximalprojectionsizeGeomAvg', 'orgminimalprojectionareaGeomAvg',
-   'orgminimalprojectionradiusGeomAvg', 'orgminimalprojectionsizeGeomAvg',
-   'orgavgpol_pHdependentGeomAvg', 'orgmolpolGeomAvg', 'orgvanderwaalsGeomAvg',
-   'orgASAGeomAvg', 'orgASA+GeomAvg', 'orgASA-GeomAvg',
-   'orgASA_HGeomAvg', 'orgASA_PGeomAvg', 'orgpolarsurfaceareaGeomAvg', 'orghbdamsaccGeomAvg',
-   'orghbdamsdonGeomAvg', 'oxlikeavgpolMax',
-   'oxlikerefractivityMax', 'oxlikemaximalprojectionareaMax',
-   'oxlikemaximalprojectionradiusMax', 'oxlikemaximalprojectionsizeMax', 'oxlikeminimalprojectionareaMax',
-   'oxlikeminimalprojectionradiusMax', 'oxlikeminimalprojectionsizeMax',
-   'oxlikeavgpol_pHdependentMax', 'oxlikemolpolMax',
-   'oxlikevanderwaalsMax', 'oxlikeASAMax', 'oxlikeASA+Max',
-   'oxlikeASA-Max', 'oxlikeASA_HMax', 'oxlikeASA_PMax',
-   'oxlikepolarsurfaceareaMax', 'oxlikehbdamsaccMax',
-   'oxlikehbdamsdonMax', 'oxlikeavgpolMin',
-   'oxlikerefractivityMin', 'oxlikemaximalprojectionareaMin',
-   'oxlikemaximalprojectionradiusMin', 'oxlikemaximalprojectionsizeMin',
-   'oxlikeminimalprojectionareaMin', 'oxlikeminimalprojectionradiusMin',
-   'oxlikeminimalprojectionsizeMin', 'oxlikeavgpol_pHdependentMin', 'oxlikemolpolMin',
-   'oxlikevanderwaalsMin', 'oxlikeASAMin', 'oxlikeASA+Min',
-   'oxlikeASA-Min', 'oxlikeASA_HMin', 'oxlikeASA_PMin',
-   'oxlikepolarsurfaceareaMin', 'oxlikehbdamsaccMin',
-   'oxlikehbdamsdonMin', 'oxlikeavgpolArithAvg',
-   'oxlikerefractivityArithAvg', 'oxlikemaximalprojectionareaArithAvg',
-   'oxlikemaximalprojectionradiusArithAvg', 'oxlikemaximalprojectionsizeArithAvg', 'oxlikeminimalprojectionareaArithAvg',
-   'oxlikeminimalprojectionradiusArithAvg', 'oxlikeminimalprojectionsizeArithAvg', 'oxlikeavgpol_pHdependentArithAvg',
-   'oxlikemolpolArithAvg', 'oxlikevanderwaalsArithAvg',
-   'oxlikeASAArithAvg', 'oxlikeASA+ArithAvg',
-   'oxlikeASA-ArithAvg', 'oxlikeASA_HArithAvg',
-   'oxlikeASA_PArithAvg', 'oxlikepolarsurfaceareaArithAvg',
-   'oxlikehbdamsaccArithAvg', 'oxlikehbdamsdonArithAvg',
-   'oxlikeavgpolGeomAvg', 'oxlikerefractivityGeomAvg',
-   'oxlikemaximalprojectionareaGeomAvg', 'oxlikemaximalprojectionradiusGeomAvg', 'oxlikemaximalprojectionsizeGeomAvg',
-   'oxlikeminimalprojectionareaGeomAvg', 'oxlikeminimalprojectionradiusGeomAvg', 'oxlikeminimalprojectionsizeGeomAvg',
-   'oxlikeavgpol_pHdependentGeomAvg', 'oxlikemolpolGeomAvg',
-   'oxlikevanderwaalsGeomAvg', 'oxlikeASAGeomAvg',
-   'oxlikeASA+GeomAvg', 'oxlikeASA-GeomAvg', 'oxlikeASA_HGeomAvg', 'oxlikeASA_PGeomAvg',
-   'oxlikepolarsurfaceareaGeomAvg', 'oxlikehbdamsaccGeomAvg',
-   'oxlikehbdamsdonGeomAvg', 'inorg-water-moleratio', 'inorgacc-waterdonratio', 'inorgdon-wateraccratio',
-   'org-water-moleratio', 'orgacc-waterdonratio', 'orgdon-wateraccratio', 'inorg-org-moleratio',
-   'inorgacc-orgdonratio', 'inorgdon-orgaccratio', 'notwater-water-moleratio', 'notwateracc-waterdonratio',
-   'notwaterdon-wateraccratio', 'purity', 'outcome']
 
-class DataCalc(models.Model):
- for calc_field in calc_fields:
-  #Make sure field names don't contain operators.
-  calc_field = calc_field.replace("+","PLUS").replace("-","MINUS")
-  exec("{0} = models.CharField(\"{0}\", max_length=22)".format(calc_field))
-
- def __unicode__(self):
-  return u"{}".format(self.XXXtitle);
-
-#Many data are saved per lab group. Each data represents one submission.
-class Data(models.Model):
- ref = models.CharField("Reference", max_length=12)
-
- #List Fields
- for i in CONFIG.reactant_range():
-  exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
-  exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
-  exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
-
- temp = models.CharField("Temperature", max_length=10)
- time = models.CharField("Time", max_length=10) ###
- pH = models.CharField("pH", max_length=5)
-
- #Yes/No/? Fields:
- slow_cool = models.CharField("Slow Cool", max_length=10)
- leak = models.CharField("Leak", max_length=10)
- outcome = models.CharField("Outcome", max_length=1)
- purity = models.CharField("Purity", max_length=1)
-
- notes = models.CharField("Notes", max_length=200, blank=True)
-
- #Self-assigning Fields:
- calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
- calculated_pH = models.BooleanField(default=False)
- calculated_temp = models.BooleanField(default=False)
- calculated_time = models.BooleanField(default=False)
-
- atoms = models.CharField("Atoms", max_length=30, blank=True)
-
- user = models.ForeignKey(User, unique=False)
- lab_group = models.ForeignKey(Lab_Group, unique=False)
- creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
- is_valid = models.BooleanField("Valid", default=False)
-
- #Categorizing Fields:
- public = models.BooleanField("Public", default=False)
- duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
- recommended = models.CharField("Recommended", max_length=10)
-
- def __unicode__(self):
-  return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
 def validate_name(abbrev_to_check, lab_group):
  #Get the cached set of abbreviations.
