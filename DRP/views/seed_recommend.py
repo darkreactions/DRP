@@ -50,7 +50,6 @@ def make_seed_recommendations(request):
     p.start()
 
   except Exception as e:
-    print e #TODO: REMOVE ME AFTER TESTING
     return HttpResponse("1")
   
   return HttpResponse("0")
@@ -60,23 +59,29 @@ def seed_rec_worker(lab_group, seed, user):
     #Restart the database connection for this new process.
     django.db.close_connection()
 
-    print "HERE"
+    #Actually create new recommendations...
     recList = constructRecsFromSeed(seed.ref) #TODO: As is, this will break if using other Lab Groups.
+    #And store them in the database.
     store_new_Recommendation_list(lab_group, recList, seed_source=seed)
-
-    #Decrement the number of active recs.
-    active_recs = get_cache(lab_group, "seed_recommendations_active")
-   
-    #In case the cache gets cleared, don't try to subtract from a None type.
-    if active_recs:
-      set_cache(lab_group, "seed_recommendations_active", active_recs-1)
-
 
     email_body = "The recommendations based on Reaction \"{}\" have finished!".format(seed.ref)
     email_user(user, "Seed Recommendations Ready", email_body)
+
   except Exception as e:
     print e
-    print "Seed recommendation failed!"
+
+    #Email the user that their recommendations failed.
+    email_body = "We're very sorry, but the recommendations based on Reaction \"{}\" have failed to be created! Please let us know so that we can fix this!".format(seed.ref)
+    email_user(user, "Seed Recommendations Failed!", email_body)
+
+    print "ERROR: Seed recommendation failed! (for \"{}\")".format(lab_group.lab_title)
+
+  #Decrement the number of active recs.
+  active_recs = get_cache(lab_group, "seed_recommendations_active")
+  
+  #In case the cache gets cleared, don't try to subtract from a None type.
+  if active_recs:
+    set_cache(lab_group, "seed_recommendations_active", active_recs-1)
 
 
 @login_required

@@ -1,7 +1,11 @@
 import math, json
-import load_cg
 global_cg = None
 
+import sys, os
+#sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+#os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+from DRP.research import load_cg
+from DRP.settings import BASE_DIR
 
 def get_cg():
 	if global_cg: return global_cg
@@ -21,12 +25,12 @@ class Euclidean:
 		self.name = name
 		self.cg_props = get_cg() 
 		if not ml_convert:
-			ml_convert = json.load(open("/home/drp/web/darkreactions.haverford.edu/app/DRP/DRP/research/mlConvert.json"))
-		self.ml_convert = ml_convert 
+			ml_convert = json.load(open(BASE_DIR+"/DRP/research/mlConvert.json"))
+		self.ml_convert = ml_convert
 		self.euclid_map = dict()
 
                 if not msm:
-			msm = json.load(open("mean_std_map.json"))
+			msm = json.load(open(BASE_DIR+"/DRP/research/mean_std_map.json"))
 		self.mean_std_map, self.center_list = msm 
 		import rebuildCDT
 		import parse_rxn

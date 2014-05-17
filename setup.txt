@@ -1,3 +1,5 @@
+#Instructions written by Casey Falk (<5/17/14)
+
 #The following instructions are written to work with Ubuntu 12 and have been tested on Ubuntu 13.
 
 #Install the necessary programs.
@@ -13,7 +15,7 @@ sudo easy_install South
 #On the server, use a "cron" job to back up the database. Note that the password needs to change. Ideally the password will be stored more discretely in one place on the server. Add the following line to dump the database to a unique file every day in a DropBox backup folder:
 33 3 * * * mysqldump -uroot -p SecurePassword DRP_db > /home/drp/database_backups/Dropbox/DRP_db__$(date +\%m_\%d_\%y).sql
 
-#Install a virtualenv if you are on the development server. This helps prevent hackers from accessing file and system information outside of the directory of the project.
+#Install a virtualenv if you are on the production server. This helps prevent hackers from accessing file and system information outside of the directory of the project.
 
 #Set the "root" user password to "SecurePassword" so that you don't forget it and it has no correlation with the project itself. You should get prompted.
 

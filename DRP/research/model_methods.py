@@ -1,6 +1,12 @@
 import subprocess
 import uuid
 
+import sys, os
+sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+from DRP.models import get_good_rxns
+from DRP.settings import TMP_DIR
+
 POSITIVE = "4:4"
 def gen_model(model_location):
 	''' 
@@ -35,7 +41,7 @@ def evaluate_model(results_location):
 
 
 def make_predictions(target_file, model_location):
-	results_location = "/home/drp/web/darkreactions.haverford.edu/app/DRP/tmp/" + str(uuid.uuid4()) + ".out"
+	results_location = TMP_DIR + str(uuid.uuid4()) + ".out"
 	subprocess.check_output("sh make_predictions.sh {0} {1}".format(target_file, model_location, results_location), shell=True)
 	return results_location
 

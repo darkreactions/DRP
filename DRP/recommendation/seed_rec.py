@@ -1,11 +1,11 @@
 import  json, uuid, subprocess
-import rebuildCDT
-import metrics, load_cg, parse_rxn, clean2arff
+from DRP.research import metrics, load_cg, parse_rxn, clean2arff, rebuildCDT
 import sys, os
+
 sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 import DRP.models
-
+from DRP.settings import TMP_DIR, BASE_DIR
 
 sim = metrics.Euclidean("euclidean", DRP.models).sim
 
@@ -130,7 +130,7 @@ def generate_grid(reaction, amine_list):
 	amine_moles = get_amine_moles(reaction, indices["org"])
 	prefix = TMP_DIR
 	fileprefix = str(uuid.uuid4())
-	ml_convert = json.load(open("mlConvert.json"))
+	ml_convert = json.load(open(BASE_DIR+"/DRP/research/mlConvert.json"))
 	hdrs = ",".join(rebuildCDT.headers)
 
 	row_gen = row_generator(reaction, indices, amine_moles, amine_list)

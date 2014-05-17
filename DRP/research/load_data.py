@@ -1,9 +1,10 @@
-import load_cg,json
+import load_cg, json
+import sys, os
+
+sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 
 def load(lab_group=None):
-	import sys, os
-	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 	from DRP.models import get_good_rxns
 	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
 	return rxns
@@ -21,9 +22,6 @@ def fix_abbrevs(rxns):
 
 
 def get_abbrev_map():
-	import sys, os
-	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 	from DRP.models import CompoundEntry as c 
 
  	entries = c.objects.all()

@@ -4,8 +4,6 @@ def get_cg():
 	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 	from DRP.models import CompoundEntry
 
-
-
 	cg = dict()
 	for compound in CompoundEntry.objects.all():
 		if compound.calculations:
