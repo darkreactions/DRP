@@ -759,7 +759,7 @@ window.createPopupConfirmation = function(message) {
 
 function loadPopup(response, kwargs){
   //If the user needs to be logged in, send them to a prettier login form.
-  if (response.indexOf("/user_login/")>0){
+  if (response.indexOf("/user_login/")>0 && !kwargs["popupLogin"]){
     window.location.href = "/login/";
   } else {
     $("#popupContainer_inner").html(response);
@@ -870,7 +870,7 @@ $(document).on("click", ".popupActivator", function(event) {
    break;
   case "userLogin":
    $.get("/user_login/", function(response) {
-    loadPopup(response);
+    loadPopup(response, {"popupLogin":true});
    });
    break;
   case "changePassword":

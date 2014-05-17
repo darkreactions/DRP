@@ -1,10 +1,9 @@
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.hashers import *
 from django.shortcuts import render
 
-from emailFunctions import email_user
 from database_construction import *
 from forms import *
 from validation import *
@@ -12,10 +11,7 @@ from validation import *
 import json
 import csv
 import string
-import rdkit.Chem as Chem
 
-#from svg_construction import *
-#from construct_descriptor_table import *
 from data_config import CONFIG
 
 # # # # # # # # # # # # # # # # # # #
