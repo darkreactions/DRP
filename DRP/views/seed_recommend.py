@@ -3,16 +3,16 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 #Necessary Imports:
-from DRP.settings import BASE_DIR
+import django.db
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-import django.db
 
 from subprocess import Popen
 
 from DRP.retrievalFunctions import *
+from DRP.settings import BASE_DIR, LOG_DIR
 
 @login_required
 @require_http_methods(["POST"])
@@ -48,14 +48,16 @@ def make_seed_recommendations(request):
     user_id = u.id
    
     #Actually start the new seed-rec construction Process in its own "Pool."
-    worker_script = BASE_DIR+"/DRP/recommend/build_seed_recs.py"
+    err_log = open(LOG_DIR+"/seed_recommend/error.log","a")
+    act_log = open(LOG_DIR+"/seed_recommend/process.log","a")
+    worker_script = BASE_DIR+"/DRP/recommendation/build_seed_recs.py"
     command = "python {} {} {} {}".format(worker_script, lab_id, seed_id, user_id)
-    Popen(command.split(), shell=True)
+    Popen(command.split(), stdout=act_log, stderr=err_log)
 
   except Exception as e:
+    print e
     return HttpResponse("1") #1: ERROR: General Failure!
   
-  print "SHOULD RETURN NOW"
   return HttpResponse("0") #0: Success
 
 
@@ -63,12 +65,17 @@ def make_seed_recommendations(request):
 def seed_recommend(request): 
  #Get user data if it exists.
  u = request.user
-
+ lab_group = u.get_profile().lab_group
  fatal_message = ""
 
- recommendations = get_seed_recs(u.get_profile().lab_group)
+ recommendations = get_seed_recs(lab_group)
  if not recommendations.exists():
-   fatal_message = "No recommendations available."   
+   #Get the active recommendations from the cache.
+   active_recs = get_cache(lab_group, "seed_recommendations_active")
+   if not active_recs: active_recs = 0
+
+   fatal_message = "No recommendations available."
+   fatal_message += " (Currently Running: {})".format(active_recs)   
 
  return render(request, 'global_page.html', {
   "template":"seed_recommendations",

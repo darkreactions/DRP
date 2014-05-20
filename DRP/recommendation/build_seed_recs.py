@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
  # # Seed Recommendation Gen 'n Store  Worker Process  # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -13,7 +15,7 @@ if django_path not in sys.path:
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-from DRP.settings import BASE_DIR
+from DRP.settings import BASE_DIR, LOG_DIR
 import DRP.models
 import django.db
 
@@ -22,8 +24,11 @@ from DRP.retrievalFunctions import *
 from DRP.database_construction import *
 from DRP.recommendation.seed_rec import constructRecsFromSeed
 
+#An independent worker process for generating and storing seeds in the database.
 def seed_rec_worker(lab_group_id, seed_id, user_id):
   try:
+    print "Seed Rec: {} {} {}\n".format(lab_group_id, seed_id, user_id)
+
     #Restart the database connection for this new process.
     django.db.close_connection()
 
@@ -41,18 +46,22 @@ def seed_rec_worker(lab_group_id, seed_id, user_id):
     email_user(user, "Seed Recommendations Ready", email_body)
 
   except Exception as e:
+    #Log any errors that might have occurred.
+    sys.stderr.write("ERROR: {} {} {}\n".format(lab_group_id, seed_id, user_id))
+    sys.stderr.write("{}\n________\n".format(e))
+    sys.stderr.flush()
+
     #Email the user that their recommendations failed.
     email_body = "We're very sorry, but the recommendations based on Reaction \"{}\" could not be created! Please let us know so that we can fix this!".format(seed.ref)
     email_user(user, "Seed Recommendations Failed!", email_body)
 
-    print "ERROR: Seed recommendation failed! (for \"{}\"): \n {}".format(lab_group.lab_title, e)
-
-  #Decrement the number of active recs.
-  active_recs = get_cache(lab_group, "seed_recommendations_active")
+  finally: #In the case that emailing fails, always decrement the process count.
+    #Decrement the number of active recs.
+    active_recs = get_cache(lab_group, "seed_recommendations_active")
   
-  #In case the cache gets cleared, don't try to subtract from a None type.
-  if active_recs:
-    set_cache(lab_group, "seed_recommendations_active", active_recs-1)
+    #In case the cache gets cleared, don't try to subtract from a None type.
+    if active_recs:
+      set_cache(lab_group, "seed_recommendations_active", active_recs-1)
 
 
 if __name__ == "__main__":
