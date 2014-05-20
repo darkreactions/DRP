@@ -12,7 +12,6 @@ sim = metrics.Euclidean("euclidean", DRP.models).sim
 #Variable Setup.
 CG = load_cg.get_cg()
 
-
 reactant_fields = {
 	"reactant_1": ("quantity_1", "unit_1"),
 	"reactant_2": ("quantity_2", "unit_2"),
@@ -197,7 +196,6 @@ def constructRecsFromSeed(seed_rxn_key):
 
 if __name__ == "__main__":
 
-
 	lab = DRP.models.Lab_Group.objects.filter(lab_title = "default_amines").first()
 	amines_raw = DRP.models.CompoundEntry.objects.filter(lab_group = lab)
 	amines_names = [c.compound for c in amines_raw]
@@ -209,7 +207,5 @@ if __name__ == "__main__":
 			continue
 		compound = DRP.models.CompoundEntry.objects.filter(abbrev=abbrev).first().compound
 		setattr(rxn, f, compound)
-		
-		
 	
 	print generate_grid(rxn, amines_names) 

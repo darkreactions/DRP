@@ -3,18 +3,16 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 #Necessary Imports:
+from DRP.settings import BASE_DIR
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 import django.db
 
-import multiprocessing
+from subprocess import Popen
 
-from DRP.emailFunctions import email_user
 from DRP.retrievalFunctions import *
-from DRP.database_construction import *
-from DRP.recommendation.seed_rec import constructRecsFromSeed
 
 @login_required
 @require_http_methods(["POST"])
@@ -39,49 +37,26 @@ def make_seed_recommendations(request):
   #Start up another seed recommendation calculation if we are able to.
   try:
     #Set the cache and get the appropriate data entry.
-    seed = Data.objects.get(id=pid)
     set_cache(lab_group, "seed_recommendations_active", active_recs+1)
+
+    #Validate that the recommendation should be started.
+    seed = Data.objects.get(id=pid)
+
+    #Get the ids for each object.
+    seed_id = seed.id
+    lab_id = lab_group.id
+    user_id = u.id
    
-    #TODO: This isn't actually truly daemonized; might NEED to use subprocess.popen.
     #Actually start the new seed-rec construction Process in its own "Pool."
-    p = multiprocessing.Process(target=seed_rec_worker, 
-                                args=(lab_group, seed, u),
-                                name="{} Seed Rec Worker".format(lab_group.lab_title)
-	)
-    p.start()
+    worker_script = BASE_DIR+"/DRP/recommend/build_seed_recs.py"
+    command = "python {} {} {} {}".format(worker_script, lab_id, seed_id, user_id)
+    Popen(command.split(), shell=True)
 
   except Exception as e:
-    return HttpResponse("1")
+    return HttpResponse("1") #1: ERROR: General Failure!
   
   print "SHOULD RETURN NOW"
   return HttpResponse("0") #0: Success
-
-def seed_rec_worker(lab_group, seed, user):
-  try:
-    #Restart the database connection for this new process.
-    django.db.close_connection()
-
-    #Actually create new recommendations...
-    recList = constructRecsFromSeed(seed.ref) #TODO: As is, this will break if using other Lab Groups.
-    #And store them in the database.
-    store_new_Recommendation_list(lab_group, recList, seed_source=seed)
-
-    email_body = "The recommendations based on Reaction \"{}\" have finished!".format(seed.ref)
-    email_user(user, "Seed Recommendations Ready", email_body)
-
-  except Exception as e:
-    #Email the user that their recommendations failed.
-    email_body = "We're very sorry, but the recommendations based on Reaction \"{}\" could not be created! Please let us know so that we can fix this!".format(seed.ref)
-    email_user(user, "Seed Recommendations Failed!", email_body)
-
-    print "ERROR: Seed recommendation failed! (for \"{}\"): \n {}".format(lab_group.lab_title, e)
-
-  #Decrement the number of active recs.
-  active_recs = get_cache(lab_group, "seed_recommendations_active")
-  
-  #In case the cache gets cleared, don't try to subtract from a None type.
-  if active_recs:
-    set_cache(lab_group, "seed_recommendations_active", active_recs-1)
 
 
 @login_required
