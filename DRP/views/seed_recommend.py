@@ -52,7 +52,8 @@ def make_seed_recommendations(request):
     act_log = open(LOG_DIR+"/seed_recommend/process.log","a")
     worker_script = BASE_DIR+"/DRP/recommendation/build_seed_recs.py"
     command = "python {} {} {} {}".format(worker_script, lab_id, seed_id, user_id)
-    Popen(command.split(), stdout=act_log, stderr=err_log)
+    #Log to the files above and make the worker independent of the parent process.
+    Popen(command.split(), stdout=act_log, stderr=err_log, close_fds=True)
 
   except Exception as e:
     print e
