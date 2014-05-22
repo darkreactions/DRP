@@ -20,7 +20,7 @@ from DRP.settings import BASE_DIR, LOG_DIR
 from DRP.models import CompoundEntry, clean_compound, create_CG_calcs_if_needed
 
 from DRP.emailFunctions import email_admins
-from DRP.errorReporting import print_error, print_log
+from DRP.logPrinting import print_error, print_log
 
 #An independent worker process for calculating compound properties.
 def compound_calc_worker(compound_id):

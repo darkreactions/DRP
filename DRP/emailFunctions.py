@@ -1,14 +1,29 @@
 import sys
 from django.core.mail import send_mail
 from DRP.retrievalFunctions import *
-from DRP.errorReporting import print_error
+from DRP.logPrinting import print_error
+from DRP.settings import DEBUG
+
+"""
+The Email Functions below are designed to make emailing the admins (us),
+the lab heads, and the lab members easier. Each takes a subject and a 
+message (and a lab/user if applicable), and sends them an email. If a
+critical error occurs (which probably means the darkreactions email/pass
+is incorrect), an error is printed. Each automatic "worker" process that
+is added should include emails to admins to indicate failures.
+
+Note that in DEBUG-mode (indicated in settings.py) email errors will not
+be logged -- since emailing should never work if you have the password
+correctly set to "SecurePassword" as you should while developing.
+"""
 
 ######################  Email Functions  ########################### 
 def email_admins(subject, message):
   try:
     send_mail("DRP: {}".format(subject), message, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER], fail_silently=False)
   except Exception as e:
-    print_error("email_admins failed: {}\n".format(e))
+    if not DEBUG:
+      print_error("email_admins failed: {}\n".format(e))
 
 
 def email_user(user, subject, message):
@@ -16,7 +31,8 @@ def email_user(user, subject, message):
     send_mail("DRP: {}".format(subject), message, settings.EMAIL_HOST_USER, 
               [user.email], fail_silently=False)
   except:
-    print_error("email_user failed: {}\n".format(user.id))
+    if not DEBUG:
+      print_error("email_user failed: {}\n".format(user.id))
 
 
 def email_lab(lab, subject, message, include_members=False):
@@ -24,7 +40,8 @@ def email_lab(lab, subject, message, include_members=False):
     send_mail("DRP: {}".format(subject), message, settings.EMAIL_HOST_USER, 
               [lab.lab_email], fail_silently=False)
   except:
-    print_error("email_lab failed: {} ({})\n".format(lab.id, lab.lab_title))
+    if not DEBUG:
+      print_error("email_lab failed: {} ({})\n".format(lab.id, lab.lab_title))
 
   #Email every lab member if the option is specified.
   if include_members:

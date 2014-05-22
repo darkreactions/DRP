@@ -1,5 +1,5 @@
 from retrievalFunctions import *
-from DRP.errorReporting import print_error, print_log
+from DRP.logPrinting import print_error, print_log
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  CG_calculations  # # # # # # # # # # # # # # # #
