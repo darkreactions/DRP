@@ -1,4 +1,5 @@
 from retrievalFunctions import *
+from DRP.errorReporting import print_error, print_log
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  CG_calculations  # # # # # # # # # # # # # # # #
@@ -134,12 +135,13 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
      if new_version:
        new_rec.model_version = new_version
      if seed:
+       print "SEED: {}".format(seed_source)
        new_rec.seeded = True
        new_rec.seed = seed_source #Record if this recommendation is seeded.
   
      new_rec.save() #Store this recommendation in the database
      num_success += 1
     except Exception as e:
-      print "Recommendation {} could not be constructed: {}".format(count, e)
+      print_error("Recommendation {} could not be constructed: {}".format(count, e))
   
-  print "Finished creating and storing {} of {} items!.".format(num_success, count)
+  print_log("Finished creating and storing {} of {} items!.".format(num_success, count)))
