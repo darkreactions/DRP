@@ -23,22 +23,29 @@ from DRP.emailFunctions import email_user
 from DRP.retrievalFunctions import *
 from DRP.database_construction import *
 from DRP.recommendation.seed_rec import constructRecsFromSeed
+from DRP.errorReporting import print_error, print_log
 
 #An independent worker process for generating and storing seeds in the database.
-def seed_rec_worker(lab_group_id, seed_id, user_id):
-  try:
-    print "Seed Rec: {} {} {}\n".format(lab_group_id, seed_id, user_id)
+def seed_rec_worker(lab_id, seed_id, user_id):
+  print_log("Seed Rec: {} {} {}".format(lab_id, seed_id, user_id))
 
+  try:
     #Restart the database connection for this new process.
     django.db.close_connection()
 
     #Get the objects from the database (assuming validation has already passed).
     seed = Data.objects.get(id=seed_id)
-    lab_group = Lab_Group.objects.get(id=lab_group_id)
+    lab_group = Lab_Group.objects.get(id=lab_id)
     user = User.objects.get(id=user_id)
+  except Exception as e:
+    print_error("Can't load entries: {} {} {}".format(lab_id, seed_id, user_id))
 
+  try:
     #Actually create new recommendations...
-    recList = constructRecsFromSeed(seed.ref) #TODO: As is, this will break if using other Lab Groups.
+    try:
+      recList = constructRecsFromSeed(seed_id)
+    except Exception as e:
+      raise Exception("constructRecsFromSeed failed: {}".format(e))
     #And store them in the database.
     store_new_Recommendation_list(lab_group, recList, seed_source=seed)
 
@@ -47,9 +54,7 @@ def seed_rec_worker(lab_group_id, seed_id, user_id):
 
   except Exception as e:
     #Log any errors that might have occurred.
-    sys.stderr.write("ERROR: {} {} {}\n".format(lab_group_id, seed_id, user_id))
-    sys.stderr.write("{}\n________\n".format(e))
-    sys.stderr.flush()
+    print_error("{} {} {}".format(lab_id, seed_id, user_id), details=e)
 
     #Email the user that their recommendations failed.
     email_body = "We're very sorry, but the recommendations based on Reaction \"{}\" could not be created! Please let us know so that we can fix this!".format(seed.ref)
@@ -67,7 +72,7 @@ def seed_rec_worker(lab_group_id, seed_id, user_id):
 if __name__ == "__main__":
   if len(sys.argv) != 4:
     print "You probably want to let the UI handle this..."
-    print "python ./this_script.py lab_group_id seed_data_id user_id"
+    print "python ./this_script.py lab_id seed_data_id user_id"
   else:
     seed_rec_worker(sys.argv[1], sys.argv[2], sys.argv[3])
     

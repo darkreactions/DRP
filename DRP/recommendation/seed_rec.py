@@ -6,6 +6,7 @@ sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 import DRP.models
 from DRP.settings import TMP_DIR, BASE_DIR
+from DRP.errorReporting import print_error
 
 sim = metrics.Euclidean("euclidean", DRP.models).sim
 
@@ -123,7 +124,7 @@ def get_candidates(results, idx, raw_rows):
 
 	return best_row, best_conf
 
-def generate_grid(reaction, amine_list):
+def generate_grid(reaction, amine_list, debug=True):
 	#Variable Setup.
 	indices = get_reactants_indices(reaction)
 	amine_moles = get_amine_moles(reaction, indices["org"])
@@ -141,7 +142,7 @@ def generate_grid(reaction, amine_list):
 		for row in rows:
 			outfile.write(row+"\n")
 
-	print prefix + fileprefix + ".csv"
+	if debug: print prefix + fileprefix + ".csv"
 			
 	clean2arff.clean(prefix+fileprefix)
 
@@ -149,7 +150,7 @@ def generate_grid(reaction, amine_list):
 	cmd = "sh {0}/DRP/research/test_model.sh {1}".format(BASE_DIR, fileprefix)
 	result = subprocess.check_output(cmd, shell=True)
 
-	print result, cmd
+	if debug: print result, cmd
 
 	weka_results_file = fileprefix + ".out" 
 	results = dict()
@@ -171,41 +172,59 @@ def generate_grid(reaction, amine_list):
 			amines_results.append( (best_conf, sim(best_candidate, raw_rxn), best_candidate) )
 
 
-	print amines_results
+	if debug: print amines_results
 	amines_results.sort(key=lambda x: x[0]*x[1], reverse=True)
 	return amines_results
 
-def constructRecsFromSeed(seed_rxn_key):
-        lab = DRP.models.Lab_Group.objects.filter(lab_title = "default_amines").first()
-        amines_raw = DRP.models.CompoundEntry.objects.filter(lab_group = lab)
-        amines_names = [c.compound for c in amines_raw]
+def constructRecsFromSeed(seed_pid):
+  max_recommendations = 75
 
-        rxn = DRP.models.Data.objects.filter(ref=seed_rxn_key).first()
-        for f in reactant_fields:
-                abbrev = getattr(rxn, f)
-                if abbrev == "":
-                        continue
-                compound = DRP.models.CompoundEntry.objects.filter(abbrev=abbrev).first().compound
-                setattr(rxn, f, compound)
+  #Load the default amines.
+  try:
+    amine_lab = DRP.models.Lab_Group.objects.filter(lab_title = "default_amines")[0]
+    amines_raw = DRP.models.CompoundEntry.objects.filter(lab_group = amine_lab)
+    amines_names = [c.compound for c in amines_raw]
+  except Exception as e:
+    raise Exception("Could not load default_amines...\n{}".format(e))
+
+  #Get the datum and lab group
+  try:
+    rxn = DRP.models.Data.objects.get(id=seed_pid)
+    lab = rxn.lab_group
+  except Exception as e:
+    raise Exception("Could not use Datum \"{}\" as seed...\n{}".format(seed_pid, e))
+
+  #Translate abbrevs to full compound names so they play well with Paul's scripts.
+  try:
+    for field in reactant_fields:
+      abbrev = getattr(rxn, field)
+      if abbrev == "":
+        continue
+      compound = DRP.models.CompoundEntry.objects.filter(abbrev=abbrev)[0].compound
+      setattr(rxn, field, compound)
+
+    #Actually generate the recommendations.
+  except Exception as e:
+    raise Exception("Could not translate all abbrevs to compounds...\n{}".format(e))
+
+  #Actually create the recommendations from the supplied amines and Datum.
+  try:
+    recommendation_list = generate_grid(rxn, amines_names)
+  except Exception as e:
+    raise Exception("Could not generate_grid for Datum: {}\n{}".format(seed_pid, e))
+
+  if not recommendation_list:
+    raise Exception("No recommendations generated from Datum: {}".format(seed_pid))
+
+  #Only return a number of the possible recommendations.
+  return recommendation_list[:max_recommendations]
 
 
-
-        return generate_grid(rxn, amines_names)
-
-
-
+#Generate seeds from a Datum's id.
 if __name__ == "__main__":
-
-	lab = DRP.models.Lab_Group.objects.filter(lab_title = "default_amines").first()
-	amines_raw = DRP.models.CompoundEntry.objects.filter(lab_group = lab)
-	amines_names = [c.compound for c in amines_raw]
-
-	rxn = DRP.models.Data.objects.filter(ref="kw43.3").first()
-	for f in reactant_fields:
-		abbrev = getattr(rxn, f)
-		if abbrev == "":
-			continue
-		compound = DRP.models.CompoundEntry.objects.filter(abbrev=abbrev).first().compound
-		setattr(rxn, f, compound)
-	
-	print generate_grid(rxn, amines_names) 
+  try:
+    print constructRecsFromSeed(sys.argv[1])
+    print "Seed Recommendations Built Successfully!"
+  except Exception as e:
+    print e
+    print "\nUSAGE: python this_script.py <datum.id>"
