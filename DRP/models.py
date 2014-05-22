@@ -161,22 +161,35 @@ def refresh_compound_guide(lab_group = None, verbose = False):
 
 #Update the compound by reloading the ChemSpider search data.
 def update_compound(entry):
- try:
-  if not entry.custom: #Only update compounds that are not custom.
-   #Get the most up-to-date ChemSpider info for a given CAS/compound.
-   query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
-   if query: 
-    #Update the entry.
-    entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
-   else:
-    print "Found legacy entry that should be custom: {}".format(entry.compound)
-  else:
-   entry.calculations = None
-   entry.image_url, entry.smiles, entry.mw = "","",""
-  entry.save()
- except Exception as e:
-  print e
-  raise Exception("Compound update failed!")
+  try:
+    if not entry.custom: #Only update compounds that are not custom.
+      #Get the most up-to-date ChemSpider info for a given CAS/compound.
+      query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
+      if query: 
+        #Update the entry.
+        entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
+        perform_calcs = True
+  
+      else:
+        print "Found legacy entry that should be custom: {}".format(entry.compound)
+    else:
+        perform_calcs = False  
+        entry.calculations = None
+        entry.image_url, entry.smiles, entry.mw = "","",""
+    entry.save()
+
+    if perform_calcs:
+      #Start a new compound-calc worker process to determine compound properties.
+      err_log = open(LOG_DIR+"/compound_calculations/error.log","a")
+      act_log = open(LOG_DIR+"/compound_calculations/process.log","a")
+      worker_script = BASE_DIR+"/DRP/compound_calculations/calculate_compound_properties.py"
+      command = "python {} {}".format(worker_script, entry.id)
+      #Log to the files above and make the worker independent of the parent process.
+      Popen(command.split(), stdout=act_log, stderr=err_log, close_fds=True)
+
+  except Exception as e:
+    print e
+    raise Exception("Compound update failed!")
 
 def update_reaction(reaction, lab_group):
  #Store the atoms as a string -- not a set.
@@ -701,7 +714,7 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time"}
   else:
-   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense", "complete", "score", "date", "hidden"}
+   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", "model_version", "atoms", "creation_time", "nonsense", "complete", "score", "date", "hidden", "seed", "seeded"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:

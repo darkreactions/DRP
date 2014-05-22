@@ -47,7 +47,7 @@ def make_seed_recommendations(request):
     lab_id = lab_group.id
     user_id = u.id
    
-    #Actually start the new seed-rec construction Process in its own "Pool."
+    #Actually start the new seed-rec construction process to build recs.
     err_log = open(LOG_DIR+"/seed_recommend/error.log","a")
     act_log = open(LOG_DIR+"/seed_recommend/process.log","a")
     worker_script = BASE_DIR+"/DRP/recommendation/build_seed_recs.py"

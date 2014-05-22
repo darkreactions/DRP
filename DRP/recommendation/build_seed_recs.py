@@ -23,7 +23,7 @@ from DRP.emailFunctions import email_user
 from DRP.retrievalFunctions import *
 from DRP.database_construction import *
 from DRP.recommendation.seed_rec import constructRecsFromSeed
-from DRP.errorReporting import print_error, print_log
+from DRP.logPrinting import print_error, print_log
 
 #An independent worker process for generating and storing seeds in the database.
 def seed_rec_worker(lab_id, seed_id, user_id):

@@ -11,6 +11,8 @@ def print_error(error, details=None):
   sys.stderr.flush()
 
 def print_log(message):  
-  print "{}\n".format(datetime.datetime.now())
-  print "INFO: {}\n".format(message)
-  print "________\n"
+  #Note: Using "stdout.write" so that output is flushed programatically.
+  sys.stdout.write("{}\n".format(datetime.datetime.now()))
+  sys.stdout.write("INFO: {}\n".format(message))
+  sys.stdout.write("________\n")
+  sys.stdout.flush()

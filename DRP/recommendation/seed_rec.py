@@ -6,7 +6,7 @@ sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 import DRP.models
 from DRP.settings import TMP_DIR, BASE_DIR
-from DRP.errorReporting import print_error
+from DRP.logPrinting import print_error
 
 sim = metrics.Euclidean("euclidean", DRP.models).sim
 
@@ -209,7 +209,7 @@ def constructRecsFromSeed(seed_pid):
 
   #Actually create the recommendations from the supplied amines and Datum.
   try:
-    recommendation_list = generate_grid(rxn, amines_names)
+    recommendation_list = generate_grid(rxn, amines_names, debug=False)
   except Exception as e:
     raise Exception("Could not generate_grid for Datum: {}\n{}".format(seed_pid, e))
 
