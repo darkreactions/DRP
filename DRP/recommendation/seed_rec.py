@@ -209,7 +209,7 @@ def constructRecsFromSeed(seed_pid):
 
   #Actually create the recommendations from the supplied amines and Datum.
   try:
-    recommendation_list = generate_grid(rxn, amines_names)
+    recommendation_list = generate_grid(rxn, amines_names, debug=False)
   except Exception as e:
     raise Exception("Could not generate_grid for Datum: {}\n{}".format(seed_pid, e))
 
