@@ -109,35 +109,37 @@ def store_new_RankedReaction_list(list_of_rankedrxn_lists):
  print "Finished creating and storing {} of {} items!.".format(successes, count)
 
 
-def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = "", seed_source=None):
- lab_group = get_Lab_Group(lab_group)
+def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = "", seed_source=None, new_model=False):
+  lab_group = get_Lab_Group(lab_group)
+  
+  call_time = str(datetime.datetime.now())
+  
+  #Store the information for a new "Version" of the Recommendation model.
+  if new_model:
+    new_version = Model_Version()
+    new_version.model_type = "Recommendation"
+    new_version.date = call_time
+    new_version.notes = version_notes
+    new_version.lab_group = lab_group
+    new_version.save()
  
- call_time = str(datetime.datetime.now())
- 
- #Store the information for this "Version" of the Recommendation model.
- new_version = Model_Version()
- new_version.model_type = "Recommendation"
- new_version.date = call_time
- new_version.notes = version_notes
- new_version.lab_group = lab_group
- new_version.save()
-
- #Store the actual Recommendation entries.
- num_success = 0
- count = 0
- for i in list_of_recommendations:
-  count += 1
-  try:
-   new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
-   new_rec.date = call_time
-   new_rec.model_version = new_version
-   if seed:
-     new_rec.seeded = True
-     new_rec.seed = seed_source #Record if this recommendation is seeded.
-
-   new_rec.save() #Store this recommendation in the database
-   num_success += 1
-  except Exception as e:
-    print "Recommendation {} could not be constructed: {}".format(count, e)
- 
- print "Finished creating and storing {} of {} items!.".format(num_success, count)
+  #Store the actual Recommendation entries.
+  num_success = 0
+  count = 0
+  for i in list_of_recommendations:
+    count += 1
+    try:
+     new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
+     new_rec.date = call_time
+     if new_version:
+       new_rec.model_version = new_version
+     if seed:
+       new_rec.seeded = True
+       new_rec.seed = seed_source #Record if this recommendation is seeded.
+  
+     new_rec.save() #Store this recommendation in the database
+     num_success += 1
+    except Exception as e:
+      print "Recommendation {} could not be constructed: {}".format(count, e)
+  
+  print "Finished creating and storing {} of {} items!.".format(num_success, count)
