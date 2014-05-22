@@ -1,0 +1,11 @@
+To build a new model:
+
+$ python build.py
+
+
+
+
+The model process relies on model_methods.py. It also updates the dashboard, and puts a new model into the system. (stored in DRP/models)
+
+
+To edit the model building process, examine the shell scripts run by model_methods.py.
