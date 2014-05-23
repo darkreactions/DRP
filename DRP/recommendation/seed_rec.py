@@ -8,6 +8,10 @@ import DRP.models
 from DRP.settings import TMP_DIR, BASE_DIR
 from DRP.logPrinting import print_error
 
+import DRP.model_build.model_methods as mm
+
+MODEL_LOCATION = mm.get_current_model()
+
 sim = metrics.Euclidean("euclidean", DRP.models).sim
 
 #Variable Setup.
@@ -151,7 +155,7 @@ def generate_grid(reaction, amine_list, debug=True):
 	clean2arff.clean(prefix+fileprefix)
 
 	#TODO: rewrite test_model
-	cmd = "sh {0}/DRP/research/test_model.sh {1}".format(BASE_DIR, fileprefix)
+	cmd = "sh {0}/DRP/research/test_model.sh {1} {2}".format(BASE_DIR, fileprefix, MODEL_LOCATION)
 	result = subprocess.check_output(cmd, shell=True)
 
 	if debug: print result, cmd

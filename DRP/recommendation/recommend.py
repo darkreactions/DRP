@@ -4,6 +4,13 @@ import clean2arff, rebuildCDT
 
 import load_cg 
 
+sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+
+import DRP.model_build.model_methods as mm
+
+MODEL_LOCATION = mm.get_current_model()
+
+
 cg_props = load_cg.get_cg() 
 ml_convert = json.load(open("mlConvert.json"))
 hdrs = ",".join(rebuildCDT.headers)
@@ -160,7 +167,7 @@ def evaluate_fitness(new_combination, range_map):
 		for row in rows_generator:
 			raw.write(",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, cg_props, ml_convert)]) +"\n")
 	clean2arff.clean(prefix + name) 
-	cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_model.sh {0}".format(name)
+	cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_model.sh {0} {1}".format(name, MODEL_LOCATION)
 	print cmd
 	result = subprocess.check_output(cmd, shell=True)
 	# The output of the above line should be "{0} {1}", where {0} is a score
