@@ -98,6 +98,8 @@ def get_candidates(results, idx, raw_rows):
 			candidates.append( (results[i+idx], raw_rows[i+idx]))
 	if len(candidates) == 0:
 		return None, 0.0
+
+	num_candidates = len(candidates)
 	best_conf = max(candidates, key=lambda x: x[0])[0]
 	candidates = filter(lambda x: x[0] == best_conf, candidates)
 	candidates = [c[1] for c in candidates]
@@ -122,7 +124,9 @@ def get_candidates(results, idx, raw_rows):
 
 	assert(best_row is not None)
 
-	return best_row, best_conf
+	score = len(candidates)/float(num_candidates)
+
+	return best_row, score 
 
 def generate_grid(reaction, amine_list, debug=True):
 	#Variable Setup.
