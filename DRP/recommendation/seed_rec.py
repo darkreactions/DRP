@@ -78,7 +78,7 @@ def row_generator(reaction, indices, amine_moles, amine_list):
 
 	metal_1_mass = getattr(reaction,reactant_fields[indices["metal_1"]][0])
 	metal_2_mass = getattr(reaction,reactant_fields[indices["metal_2"]][0])
-	amine_moles = get_amine_moles(reaction, indices["org"])
+	amine_mass = getattr(reaction, reactant_fields[indices["org"]][0])
 	water_mass = getattr(reaction,reactant_fields[indices["water"]][0])
 
 	amine_range = get_amine_range(amine_moles)
