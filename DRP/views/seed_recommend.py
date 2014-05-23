@@ -64,24 +64,42 @@ def make_seed_recommendations(request):
 
 
 @login_required
+def check_seed_worker_cache(request):
+  #Get any seed_workers that are in the cache.
+  lab_group = request.user.get_profile().lab_group
+  active_workers = get_seed_rec_worker_list(lab_group)
+
+  #And send back the updated UI.
+  return render(request, 'seed_recommendations_cache_display.html', {
+    "currently_running": active_workers,
+   })
+
+
+@login_required
 def seed_recommend(request): 
- #Get user data if it exists.
- u = request.user
- lab_group = u.get_profile().lab_group
- fatal_message = ""
-
- recommendations = get_seed_recs(lab_group)
-
- #Get the active recommendations from the cache.
- active_recs = get_seed_rec_worker_list(lab_group)
-
- if not recommendations.exists():
-   fatal_message = "No recommendations available."
-
- return render(request, 'global_page.html', {
-  "template":"seed_recommendations",
-  "recommendations": recommendations,
-  "fatal_message": fatal_message,
-  "currently_running": active_recs,
- })
-
+   #Get user data if it exists.
+   u = request.user
+   lab_group = u.get_profile().lab_group
+   fatal_message = ""
+  
+   try:
+     #Either get all of the recommendations or just the non-hidden ones.
+     show_hidden = request.GET.get("show_hidden")=="True"
+     recommendations = get_seed_recs(lab_group, show_hidden=show_hidden)
+  
+     #Get the active recommendations from the cache.
+     active_workers = get_seed_rec_worker_list(lab_group)
+  
+     assert recommendations.exists()
+   except Exception as e:
+     fatal_message = "No recommendations available."
+     active_workers = []
+     recommendations = []
+  
+   return render(request, 'global_page.html', {
+    "template":"seed_recommendations",
+    "recommendations": recommendations,
+    "fatal_message": fatal_message,
+    "currently_running": active_workers,
+   })
+  

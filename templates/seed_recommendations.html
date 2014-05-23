@@ -1,20 +1,9 @@
-
-<div class="infoBar">
-{% if currently_running %}
-  Currently Baking: 
-  {% for worker in currently_running %}
-    <div>{{ worker }}</div>
-  {% endfor %}
-{% else %}
-  No seed recommendations in the oven...
-{% endif %}
-</div>
+{% include "seed_recommendations_cache_display.html" %}
 
 <div id="recContainer"> 
+
 {% if fatal_message %}
-
  <p>{{ fatal_message }}</p>
-
 {% else %}
 
 {% for entry in recommendations %}

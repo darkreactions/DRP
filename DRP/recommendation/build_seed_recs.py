@@ -22,6 +22,7 @@ import django.db
 from DRP.emailFunctions import email_user, email_admins
 from DRP.retrievalFunctions import *
 from DRP.database_construction import *
+from DRP.compoundGuideFunctions import 
 from DRP.recommendation.seed_rec import constructRecsFromSeed
 from DRP.logPrinting import print_error, print_log
 from DRP.cacheFunctions import *
@@ -47,6 +48,10 @@ def seed_rec_worker(lab_id, seed_id, user_id):
       recList = constructRecsFromSeed(seed_id)
     except Exception as e:
       raise Exception("constructRecsFromSeed failed: {}".format(e))
+
+    #Translate any compounds in the recList to abbrevs.
+    recList = translate_reactants(lab_group, recList)
+
     #And store them in the database.
     store_new_Recommendation_list(lab_group, recList, seed_source=seed)
 

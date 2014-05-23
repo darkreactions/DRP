@@ -1019,6 +1019,10 @@ height:10px;
  content:"Last Modified by ";
  font-weight:bold;
 }
+.type_seed:before {
+ content:"Seeded from ";
+ font-weight:bold;
+}
 
   /* ################ .TYPE STYLE ############################# */
 .reactantField {
@@ -1043,7 +1047,7 @@ height:10px;
  opacity:0.5;
 }
 
-.type_user {
+.type_user, .type_seed {
  font-size:14px;
  position:absolute;
  right:0px;
@@ -1435,4 +1439,11 @@ color: #355A77;
  display:inline-block;
 }
 
+.loadingWheel {
+ user-select: none;
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
 
+ cursor:default;
+}

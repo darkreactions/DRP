@@ -217,7 +217,7 @@ def recommend(request):
   "fatal_message": fatal_message,
  })
 
-def recommendation_transmit(request):
+def recommendation_transmit(request, seeded=False):
  try:
   #Variable Setup
   u = request.user
@@ -228,6 +228,10 @@ def recommendation_transmit(request):
    recs = filter_recommendations(u.get_profile().lab_group, query_list)
   else:
    recs = get_recommendations_by_date(u.get_profile().lab_group)
+
+  #Get either the Seed Recs or the general Recommendations.
+  recs = recs.filter(seeded=seeded)
+  #TODO: Edit the seed-rec template to be more general...
 
   return render(request, 'recommendations.html', {
    "recommendations": recs,
@@ -282,8 +286,8 @@ def saved(request):
  try:
   #Get the recommendations that are saved for the lab.
   lab_group = u.get_profile().lab_group
-  recommendations = get_recommendations_by_date(lab_group)
-  recommendations = recommendations.filter(saved=True)
+  
+  recommendations = get_recommendations(lab_group).filter(saved=True)
   assert recommendations.count()
 
   #Get the lab users for the select field.
@@ -430,7 +434,7 @@ def visuals(request):
   #  query_list --> {[{u"field":u"FIELD", u"value":u"VALUE"}, ...]}
 
 @login_required
-def search(request, model="Data"):
+def search(request, model="Data", params={}):
  u = request.user
  if request.method=="POST":
   try:
@@ -439,8 +443,11 @@ def search(request, model="Data"):
    if model=="Data":
     #Pass the request on to data_transmit.
     return data_transmit(request)
-   elif model=="Recommendation":
-    return recommendation_transmit(request)
+
+   elif model=="Recommendation":  
+    #If applicable, only show reactions that are from seeds.
+    seeded = params["seeded"]==True if "seeded" in params else False
+    return recommendation_transmit(request, seeded=seeded)
 
   except:
    return HttpResponse("Woops! A problem occurred.")

@@ -29,6 +29,25 @@ function adaptSize(element) {
 function formatText(text) {
  return text.replace(/_{(.*?)}/g, function(r,m){return "<span class=\"subscript\">"+m+"</span>"});
 }
+window.applyTickingDots = function(location) {
+  var interval = setInterval(function(){
+    content = $(location).html();
+    dotCount = content.split(".");
+    if (dotCount.length == 4){
+      $(location).html(".");
+    } else {
+      $(location).append(" .");
+    }
+  }, 1*1000);
+
+  return interval; //Return the interval so that it may be cleared.
+}
+
+window.applyLoadingWheel = function(location){
+  $(".loadingWheel").remove();
+  $(location).append("<div class=\"loadingWheel\">.</div>");
+  return applyTickingDots(".loadingWheel");
+}
 
 //Get edit-by-menu options from editChoices.json.
 function getOptions(field) {
@@ -427,13 +446,11 @@ $(document).on("submit", ".downloadForm", function(event) {
 
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
- $(".loadingWheel").remove();
  if ($(".warningIndicator").length){
   showRibbon("Performing Calculations...", neutralColor, $("#popupContainer_inner"), false);
  }
 
- $(this).closest("form").append("<div class=\"loadingWheel\">. . .</div>");
-
+ applyLoadingWheel($(this).closest("form"));
  
  var formName = $(form).attr("name");
  var formAction = $(form).attr("action");
@@ -517,9 +534,8 @@ $(document).on("submit", ".infoForm", function() {
 });
 
 $(document).on("click", ".button[type=submit]", function() {
- $(".loadingWheel").remove();
  $(this).hide();
- $(this).parent("form").append("<div class=\"loadingWheel\">. . .</div>");
+ applyLoadingWheel($(this).parent("form"));
 });
 
 //############ User Authentication: ####################################
@@ -549,20 +565,6 @@ function sendSearchQuery(currentQuery, destination) {
  JSONQuery = JSON.stringify({"currentQuery":currentQuery,"page":"1"});
  $.ajax({
   url:destination,
-  method:"post",
-  data: {"body":JSONQuery},
-  traditional: true,
-  success: function(response) {
-   $("#mainPanel").html(response)
-   restyleData();
-  }
- });
-}
-
-function sendRecSearchQuery(currentQuery) {
- JSONQuery = JSON.stringify({"currentQuery":currentQuery});
- $.ajax({
-  url:"/search_recs/",
   method:"post",
   data: {"body":JSONQuery},
   traditional: true,
@@ -864,6 +866,12 @@ $(document).on("click", ".popupActivator", function(event) {
    break;
   case "searchButton_recs":
    $.get("/search/Recommendation", function(response) {
+    loadSideBar(response, {"autocomplete":true})
+   });
+   return false; 
+   break;
+  case "searchButton_seed_recs":
+   $.get("/search/SeedRecommendation", function(response) {
     loadSideBar(response, {"autocomplete":true})
    });
    return false; 
@@ -1298,6 +1306,7 @@ $(document).on("click", ".CG_saveButton", function() {
   }
  });
 });
+
 
 //############   Upload   ########################################
 //Change visible file name when applicable.

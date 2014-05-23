@@ -114,13 +114,20 @@ def filter_data(lab_group, query_list):
 def get_recommendations(lab_group):
  return Recommendation.objects.filter(lab_group=lab_group)
 
-def get_seed_recs(lab_group, seed_ref=None):
+def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
  seed_recs = Recommendation.objects.filter(seeded=True, lab_group=lab_group)
  
  #If given a seed ref, only yield those recommendations that are seeded from it.
  if seed_ref:
    datum = Data.objects.filter(ref=seed_ref)
-   seed_recs.filter(seed=datum)
+   seed_recs = seed_recs.filter(seed=datum)
+
+ if not show_hidden:
+   seed_recs = seed_recs.filter(hidden=False)
+
+ if latest_first:
+   seed_recs.order_by("-date")
+
  return seed_recs
 
 def get_latest_Model_Version(lab_group):
