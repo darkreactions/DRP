@@ -114,16 +114,21 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
   lab_group = get_Lab_Group(lab_group)
   
   call_time = str(datetime.datetime.now())
-  
-  #Store the information for a new "Version" of the Recommendation model.
-  if new_model:
-    new_version = Model_Version()
-    new_version.model_type = "Recommendation"
-    new_version.date = call_time
-    new_version.notes = version_notes
-    new_version.lab_group = lab_group
-    new_version.save()
  
+  #Either prepare a new "Model Version" or use the latest one for a lab group. 
+  try:
+    if new_model:
+      model = Model_Version()
+      model.model_type = "Recommendation"
+      model.date = call_time
+      model.notes = version_notes
+      model.lab_group = lab_group
+      model.save()
+    else:
+      model = get_latest_Model_Version(lab_group)
+  except Exception as e:
+    print_error("Model not gathered for the Recommendation list: {}".format(e))
+
   #Store the actual Recommendation entries.
   num_success = 0
   count = 0
@@ -132,8 +137,7 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
     try:
      new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
      new_rec.date = call_time
-     if new_version:
-       new_rec.model_version = new_version
+     new_rec.model_version = model
      if seed_source:
        new_rec.seeded = True
        new_rec.seed = seed_source #Record if this recommendation is seeded.
