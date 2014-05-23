@@ -9,10 +9,12 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
+import json
 from subprocess import Popen
 
 from DRP.retrievalFunctions import *
 from DRP.settings import BASE_DIR, LOG_DIR
+from DRP.cacheFunctions import *
 
 @login_required
 @require_http_methods(["POST"])
@@ -27,18 +29,14 @@ def make_seed_recommendations(request):
     return HttpResponse("1") #1: ERROR: General Failure!
 
   #Get the active recommendations from the cache.
-  active_recs = get_cache(lab_group, "seed_recommendations_active")
-  if not active_recs: active_recs = 0
+  active_workers = get_seed_rec_worker_list(lab_group)
 
   #Only allow a given number of seed rec calculations at a time.
-  if get_cache(lab_group, "seed_recommendations_active")>=max_seed_calcs:
+  if len(active_workers)>=max_seed_calcs:
     return HttpResponse("2") #2: ERROR: Too many active recs at once
 
   #Start up another seed recommendation calculation if we are able to.
   try:
-    #Set the cache and get the appropriate data entry.
-    set_cache(lab_group, "seed_recommendations_active", active_recs+1)
-
     #Validate that the recommendation should be started.
     seed = Data.objects.get(id=pid)
 
@@ -46,6 +44,9 @@ def make_seed_recommendations(request):
     seed_id = seed.id
     lab_id = lab_group.id
     user_id = u.id
+
+    #Set the cache and get the appropriate data entry.
+    cache_seed_rec_worker(lab_group, seed.ref)
    
     #Actually start the new seed-rec construction process to build recs.
     err_log = open(LOG_DIR+"/seed_recommend/error.log","a")
@@ -70,16 +71,17 @@ def seed_recommend(request):
  fatal_message = ""
 
  recommendations = get_seed_recs(lab_group)
- if not recommendations.exists():
-   #Get the active recommendations from the cache.
-   active_recs = get_cache(lab_group, "seed_recommendations_active")
-   if not active_recs: active_recs = 0
 
+ #Get the active recommendations from the cache.
+ active_recs = get_seed_rec_worker_list(lab_group)
+
+ if not recommendations.exists():
    fatal_message = "No recommendations available."
-   fatal_message += " (Currently Running: {})".format(active_recs)   
 
  return render(request, 'global_page.html', {
   "template":"seed_recommendations",
   "recommendations": recommendations,
   "fatal_message": fatal_message,
+  "currently_running": active_recs,
  })
+
