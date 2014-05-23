@@ -36,6 +36,10 @@ def gen_model(model_name):
 	
 
 
+def get_current_model():
+	return sorted([f for f in os.listdir("/home/drp/web/darkreactions.haverford.edu/app/DRP/models/") if "." in f], key = lambda x: x.split(".")[0], reverse = True)[0]
+	
+
 def map_to_zero_one(v):
 	if v < 3:
 		return 1 
