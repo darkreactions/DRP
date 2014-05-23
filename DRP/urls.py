@@ -48,6 +48,7 @@ urlpatterns = patterns('',
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
     (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),
+    (r'^check_seed_oven/$', "DRP.views.seed_recommend.check_seed_worker_cache"),
     (r'^recommend/$', recommend),
     (r'^saved/$', saved),
     (r'^change_Recommendation/$', change_Recommendation), #[JSON] Edit Rec Entry
@@ -65,6 +66,11 @@ urlpatterns = patterns('',
     (r'^search/$', search, {"model":"Data"}), 
     (r'^search/Data/?$', search, {"model":"Data"}), 
     (r'^search/Recommendation/?$', search, {"model":"Recommendation"}), 
+    (r'^search/SeedRecommendation/?$', search, {
+		"model":"Recommendation", 
+		"params":{"seeded":True}
+		}), 
+
   #Users and Labs
    #Authentication
     (r'^user_logout/$', "DRP.views.user.user_logout"), #Log Out

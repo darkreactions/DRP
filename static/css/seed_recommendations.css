@@ -1,7 +1,18 @@
 .infoBar {
  padding:20px 0px 20px 0px;
+ margin: 0px 0px 0px 0px;
  background-color:white;
  
  font-weight:bold;
  border-bottom:black 1px solid;
+}
+
+#seedRecOven{
+position:relative;
+}
+
+#seedRecOven .loadingWheel {
+ position:absolute;
+ bottom:0px;
+ right:25px;
 }

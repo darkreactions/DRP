@@ -67,9 +67,8 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
   for (field, value) in zip(fields, lst[2][1:]): #Ignore the reference field.
    #Translate Booleans into Boolean values.
    if field in bool_fields:
-    value = True if value.lower()[0] in "1tyc" else False
+    value = True if value[0].lower() in "1tyc" else False
    setattr(new_rec, field, value)
-  return new_rec
    
   new_rec.atoms = "".join(get_atom_set_from_abbrevs(lab_group, get_abbrevs_from_reaction(new_rec)))
  
