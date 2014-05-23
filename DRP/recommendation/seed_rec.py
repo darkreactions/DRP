@@ -88,8 +88,7 @@ def row_generator(reaction, indices, amine_moles, amine_list):
 		if amine not in CG:
 			print "Not in CG: {0}".format(amine)
 			continue
-		for moles in amine_range:
-			mass = moles*CG[amine]["mw"]
+		for mass in amine_range:
 			for pH in pH_range:
 				yield ["--", metal_1, metal_1_mass, "g", metal_2, metal_2_mass,
 					"g", amine, mass, "g", water, water_mass, "g", "","","", 
