@@ -244,7 +244,6 @@ class Lab_Group(models.Model):
 class Lab_Member(models.Model):
  user = models.OneToOneField(User, related_name="profile", unique=True)
  license_agreement_date_dt = models.DateTimeField("License Agreement Date", null=True, blank=True)
- license_agreement_date = models.CharField("License Agreement Date", max_length=26, blank=True) ###TODO: Explore why this isn't a datetime field. 
  lab_group = models.ForeignKey(Lab_Group)
 
  def update_license(self):
@@ -297,7 +296,6 @@ class Data(models.Model):
 
  user = models.ForeignKey(User, unique=False)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
- creation_time = models.CharField("Created", max_length=26, null=True, blank=True)
  creation_time_dt = models.DateTimeField("Created", null=True, blank=True)
  is_valid = models.BooleanField("Valid", default=False)
 
@@ -330,7 +328,6 @@ class ModelStats(models.Model):
 
 class Model_Version(models.Model):
  model_type = models.CharField("Type", max_length=20)
- date = models.CharField("Date", max_length=26) ###TODO: Explore why this isn't a datetime field. 
  date_dt = models.DateTimeField("Date", null=True, blank=True)
  notes = models.CharField("Notes", max_length=200, blank=True)
  lab_group = models.ForeignKey(Lab_Group)
@@ -360,7 +357,6 @@ class Recommendation(models.Model):
  user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="last_user")
  assigned_user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="assigned_user")
  seed = models.ForeignKey(Data, unique=False, null=True, blank=True, default=None)
- date = models.CharField("Created", max_length=26, null=True, blank=True) ###TODO: Explore why this isn't a datetime field. 
  date_dt = models.DateTimeField("Created", null=True, blank=True)
  complete = models.BooleanField("Complete", default=False)
  seeded = models.BooleanField("From Seed", default=False)

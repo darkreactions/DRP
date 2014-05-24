@@ -26,13 +26,17 @@ def stringToDateTime(model_name, stringField, dateField):
     objs = Model_Version.objects.all()
 
   i = 0
+  skips = 0
   for obj in objs:
-    print ".",
     raw_string = getattr(obj, stringField)
+    if not raw_string:
+      skips += 1
+      continue
+
     dt = datetime.datetime.strptime(raw_string, "%Y-%m-%d %X.%f")
     setattr(obj, dateField, dt)
     obj.save()
     i += 1
 
-  print "{} of {} objects updated.".format(i, objs.count())
+  print "{} of {} objects updated ({} skips).".format(i, objs.count(), skips)
 
