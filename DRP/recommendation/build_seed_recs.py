@@ -22,7 +22,7 @@ import django.db
 from DRP.emailFunctions import email_user, email_admins
 from DRP.retrievalFunctions import *
 from DRP.database_construction import *
-from DRP.compoundGuideFunctions import 
+from DRP.compoundGuideFunctions import translate_reactants
 from DRP.recommendation.seed_rec import constructRecsFromSeed
 from DRP.logPrinting import print_error, print_log
 from DRP.cacheFunctions import *
