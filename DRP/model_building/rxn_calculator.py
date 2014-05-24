@@ -2,7 +2,11 @@ import sys, os, subprocess
 import json, csv, math
 import rdkit.Chem as Chem
 
-absolute_path = "/home/drp/research/chemml-research-streamlined/"
+#The following 2 lines are needed in case the script is not run from a Django-shell.
+sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+
+from DRP.settings import RESEARCH_DIR
 
 class PropertiesCalculator:
     def __init__(self, compoundMoles, inorganicList, compoundAcc, compoundDon, organicList, isWater):
@@ -176,7 +180,7 @@ def atomic_properties(atom_list, smiles_pairs, counts = None):
 	props += [0 for i in range(48)]
     return props
 
-properties = json.load(open(absolute_path + "scripts/atomic_props.json"))
+properties = json.load(open(RESEARCH_DIR + "scripts/atomic_props.json"))
 
 
 bools = ["Actinide", "AlkaliMetal", "Lanthanide", 

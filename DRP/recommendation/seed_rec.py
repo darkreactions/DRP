@@ -8,7 +8,7 @@ import DRP.models
 from DRP.settings import TMP_DIR, BASE_DIR
 from DRP.logPrinting import print_error
 
-import DRP.model_build.model_methods as mm
+import DRP.model_building.model_methods as mm
 
 MODEL_LOCATION = mm.get_current_model()
 
