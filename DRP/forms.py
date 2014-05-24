@@ -161,7 +161,7 @@ class DataEntryForm(ModelForm):
 
  class Meta:
   model = Data
-  exclude = ("user","lab_group", "creation_time")
+  exclude = ("user","lab_group", "creation_time_dt")
   #Set the field order.
   fields = [
    "reactant_1", "quantity_1", "unit_1",
@@ -180,13 +180,13 @@ class DataEntryForm(ModelForm):
   if user:
    self.user = user
    self.lab_group = user.get_profile().lab_group
-  self.creation_time = str(datetime.datetime.now())
+  self.creation_time_dt = datetime.datetime.now()
 
  def save(self, commit=True):
   datum = super(DataEntryForm, self).save(commit=False)
   datum.user = self.user
   datum.lab_group = self.lab_group
-  datum.creation_time = self.creation_time
+  datum.creation_time_dt = self.creation_time_dt
   datum.is_valid = True #If validation succeeded and data is saved, then it is_valid.
   datum.atoms = "".join(get_atom_set_from_reaction(datum))
 
@@ -210,6 +210,6 @@ class DataEntryForm(ModelForm):
   #Add the non-input information to the clean data package:
   clean_data["lab_group"] = self.lab_group
   clean_data["user"] = self.user
-  clean_data["creation_time"] = self.creation_time
+  clean_data["creation_time_dt"] = self.creation_time_dt
 
   return clean_data

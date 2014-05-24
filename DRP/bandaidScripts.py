@@ -12,3 +12,27 @@ def removeEmptyModels():
       i+=1
   print i
   print "All empty model versions purged ({} total).".format(i)
+
+import datetime
+def stringToDateTime(model_name, stringField, dateField):
+  #Get the corresponding objects from the database.
+  if model_name=="Lab_Member":
+    objs = Lab_Member.objects.all()
+  elif model_name=="Data":
+    objs = Data.objects.all()
+  elif model_name=="Recommendation":
+    objs = Recommendation.objects.all()
+  elif model_name=="Model_Version":
+    objs = Model_Version.objects.all()
+
+  i = 0
+  for obj in objs:
+    print ".",
+    raw_string = getattr(obj, stringField)
+    dt = datetime.datetime.strptime(raw_string, "%Y-%m-%d %X.%f")
+    setattr(obj, dateField, dt)
+    obj.save()
+    i += 1
+
+  print "{} of {} objects updated.".format(i, objs.count())
+

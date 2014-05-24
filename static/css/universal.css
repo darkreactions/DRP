@@ -919,10 +919,11 @@ height:10px;
 }
 
 /* ###############   DATA STYLE   ################################### */
+/*
 .dataGroup:hover {
  background-color:#F1FF8C;
  cursor:pointer;
-}
+}*/
 
 .dataSelected {
  background-color:#FFE944;
@@ -1389,12 +1390,6 @@ color: #355A77;
 
 .CG_image {
  height:100px;
-}
-
-.CG_image:hover {
- height:180px;
- border: 2px solid black;
- border-radius:15px;
 }
 
 .type_CAS_ID {

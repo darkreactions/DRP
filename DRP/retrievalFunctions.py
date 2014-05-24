@@ -8,7 +8,7 @@ from models import *
 #Returns a specific datum if it is public or if it belongs to a lab_group.
 def get_public_data():
  #Only show the public data that is_valid.
- return Data.objects.filter(public=True, is_valid=True).order_by("creation_time")
+ return Data.objects.filter(public=True, is_valid=True).order_by("creation_time_dt")
 
 def get_datum_by_ref(lab_group, ref):
  data = get_lab_Data(lab_group)
@@ -27,7 +27,7 @@ def get_lab_Data_size(lab_group):
 #Get data before/after a specific date (ignoring time).
 def get_date_filtered_data(lab_group, raw_date, direction="after", lab_data=None):
  #Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
- date = str(datetime.datetime.strptime(raw_date, "%m-%d-%y"))
+ date = datetime.datetime.strptime(raw_date, "%m-%d-%y")
 
  #Only get the data that belongs to a specific lab_group.
  if lab_data:
@@ -37,9 +37,9 @@ def get_date_filtered_data(lab_group, raw_date, direction="after", lab_data=None
 
  #Get the reactions before/after a specific date.
  if direction.lower() == "after":
-  filtered_data = lab_data.filter(creation_time__gte=date_string)
+  filtered_data = lab_data.filter(creation_time_dt__gte=date)
  else:
-  filtered_data = lab_data.filter(creation_time__lte=date_string)
+  filtered_data = lab_data.filter(creation_time_dt__lte=date)
 
  return filtered_data
 
@@ -160,7 +160,7 @@ def filter_recommendations(lab_group, query_list):
  non_reactant_fields = get_model_field_names(model="Recommendation", unique_only=True)
  foreign_fields = ["user", "assigned_user"] #Fields that cannot search by containment.
  reactant_fields = ["reactant","quantity","unit"]
- legal_fields = set(non_reactant_fields+reactant_fields+foreign_fields)
+ legal_fields = set(non_reactant_fields+reactant_fields+foreign_fields+["seeded"])
 
  #Check the query_list input before performing any database requests.
  for query in query_list:

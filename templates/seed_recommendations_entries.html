@@ -60,8 +60,8 @@
 <span class="dataField type_slow_cool" editAs="select">{{entry.slow_cool}}</span>
 <br/>
 <span class="dataField type_notes" editAs="text">{{entry.notes}}</span>
-{% if entry.user %}
-<span class="type_user opaqueDatum">{{entry.user}}</span>
+{% if entry.seed %}
+<span class="type_seed opaqueDatum">{{entry.seed.ref}} on {{entry.date_dt}}</span>
 {% endif %}
 </div>
 </div>
@@ -69,4 +69,5 @@
 
 {% endif %}
 </div>
+
 

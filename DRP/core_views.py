@@ -162,6 +162,8 @@ def database(request):
   "template": "database",
  })
 
+@login_required
+@require_http_methods(["POST"])
 def data_transmit(request):
  try:
   try:
@@ -217,6 +219,8 @@ def recommend(request):
   "fatal_message": fatal_message,
  })
 
+@login_required
+@require_http_methods(["POST"])
 def recommendation_transmit(request, seeded=False):
  try:
   #Variable Setup
@@ -224,17 +228,24 @@ def recommendation_transmit(request, seeded=False):
   body = json.loads(request.POST["body"], "utf-8")
   query_list = body.get("currentQuery")
 
+  #Get either the Seed Recs or the general Recommendations.
+  if seeded:
+    query_list.append({
+	"field":"seeded",
+	"value":"True",
+	"match":"exact"})
+
   if query_list:
    recs = filter_recommendations(u.get_profile().lab_group, query_list)
   else:
    recs = get_recommendations_by_date(u.get_profile().lab_group)
 
-  #Get either the Seed Recs or the general Recommendations.
-  recs = recs.filter(seeded=seeded)
-  #TODO: Edit the seed-rec template to be more general...
+  fatal_message = "" if recs.exists() else "No recommendations found."
 
-  return render(request, 'recommendations.html', {
+  template="seed_recommendations_entries.html" if seeded else "recommendations.html" 
+  return render(request, template, {
    "recommendations": recs,
+   "fatal_message": fatal_message
   })
  except Exception as e:
   print e
@@ -471,6 +482,9 @@ def search(request, model="Data", params={}):
    {"raw":"quantity", "verbose":"Quantity"},
    {"raw":"unit", "verbose":"Unit"},
    {"raw":"assigned_user", "verbose":"Assigned User"}] + search_fields
+   
+   if "seeded" in params and params["seeded"]:
+     model = "SeedRecommendation"
 
   return render(request, 'search_global.html', {
    "search_fields": search_fields,

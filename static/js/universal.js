@@ -569,7 +569,10 @@ function sendSearchQuery(currentQuery, destination) {
   data: {"body":JSONQuery},
   traditional: true,
   success: function(response) {
+   var infoBars = $(".infoBar") //Rescue any infoBars that may exist.
    $("#mainPanel").html(response)
+
+   $("#mainPanel").prepend(infoBars)
    restyleData();
   }
  });
