@@ -1,3 +1,6 @@
+import datetime
+strptime = datetime.datetime.strptime
+
 class ConfigManager(object):
  def __init__(self):
   #Database Setup Variables
@@ -16,7 +19,8 @@ class ConfigManager(object):
   self.not_required_label = "" #The label that auto-added values will inherit if empty.
 
   #Licensing/legal Setup
-  self.current_license_date = "2014-01-20 01:00:00.000000"
+  self.raw_license_date = "2014-01-20 01:00:00.000000"
+  self.current_license_date = strptime(self.raw_license_date, "%Y-%m-%d %X.%f")
   self.current_license_file = "/licenses/01_20_14.pdf" #Assumed to be in STATIC directory.
 
   #General Variable Setup

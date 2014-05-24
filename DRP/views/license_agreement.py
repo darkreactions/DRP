@@ -12,6 +12,7 @@ from DRP.retrievalFunctions import *
 from DRP.emailFunctions import *
 
 from DRP.data_config import CONFIG
+import datetime
 
 #Return whether the user_license is valid (True) or invalid/missing (False)
 def user_license_is_valid(user):
@@ -34,7 +35,7 @@ def get_user_license_agreement(request):
  return render(request, 'user_license_form.html', {
   "license_changed": license_changed,
   "license_file": CONFIG.current_license_file,
-  "license_date": CONFIG.current_license_date.split(" ")[0], #Show the modification date but ignore the time.
+  "license_date": CONFIG.current_license_date, 
  })
 
 def update_user_license_agreement(request):
