@@ -17,7 +17,7 @@ import datetime
 #Return whether the user_license is valid (True) or invalid/missing (False)
 def user_license_is_valid(user):
  try:
-  return user.get_profile().license_agreement_date > CONFIG.current_license_date
+  return user.get_profile().license_agreement_date_dt > CONFIG.current_license_date
  except:
   #Assume that if the query fails, the user is not licensed.
   return False
@@ -26,7 +26,7 @@ def user_license_is_valid(user):
 def get_user_license_agreement(request):
  u = request.user
  #Indicate whether the user needs to agree to updated terms or sign the terms initially.
- if u.get_profile().license_agreement_date:
+ if u.get_profile().license_agreement_date_dt:
   if not user_license_is_valid(u):
    license_changed = True
  else:
