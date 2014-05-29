@@ -26,17 +26,15 @@ def contact_form(request):
     time = datetime.datetime.now()
 
     #Get the user's information if possible.
-    if request.user.is_authenticated():
-      u = request.user
-      user_info = "{} (id: {})".format(u.id, u.username)
+    u = request.user
+    if u.is_authenticated():
+      user_info = "{} (database id: {})".format(u.username, u.id)
     else:
       user_info = "Anonymous User"
 
-    body = "SUBJECT:{}\nEMAIL:{}\nUSER:{}\n\nCONTENT:{}\n\n({})".format(subject,
-                                                                email, 
-                                                                user_info, 
-                                                                content,
-                                                                time) 
+    #Format the email.
+    frame = "SUBJECT: {}\nEMAIL: {}\nUSER: {}\n\nCONTENT: {}\n\n(SERVER TIME: {})"
+    body = frame.format(subject, email, user_info, content, time) 
 
     email_admins("Contact Form ({})".format(subject), body, include_managers=True) 
 
