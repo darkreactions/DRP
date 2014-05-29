@@ -1,17 +1,190 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+ # # # # # #   Dark Reaction Project README    # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+Last Updated by Casey Falk -- 5/29/14
+
+Table of Contents:
+--System Architecture
+--Database
+--Accounts
+
+_________________________________________________
+ # # # # #   System Architecture   # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
+The website can be accessed at "darkreactions.haverford.edu" -- this
+domain is managed by Haverford. The server itself (named "drp")
+is in the KINSC Server Room and can be accessed by SSH while on campus.
+Note that if you are off-campus and need to access drp, you will need 
+to tunnel through another server on campus, such as those hosted by FIG, 
+or through a CS Lab Computer (that is, SSH there and THEN SSH into drp).
+
+
+__ Setup of the Server/a Test-bed __
+For a complete, step-by-step guide on this, please check out
+"setup.py". I leave the installation process for that process
+and will focus on the actual architecture of the system here.
+
+
+__ Important Directories __
+There are a few directories that are vital to hosting the site.
+Notably, these are the directories of NGINX and UWSGI -- respectively
+"/etc/nginx/" and "/etc/uwsgi/". NGINX is responsible for serving static
+files and distributing HTTP requests; UWSGI acts as the gateway from
+NGINX to the Django files (located in the home directory of the "drp" user: 
+"/home/drp/web/darkreactions.haverford.edu/app/"). 
+
+
+__ Django Directory Setup __
+The DRP Django Project is set up as follows:
+
+DRP/
+   README	#This file.
+   setup.txt	#Instructions for setting up the server.
+   DRP_nginx	#The NGINX configuration. Move to /etc/nginx/sites-enabled/
+   DRP_uwsgi	#The UWSGI configuration. Move to /etc/uwsgi/apps-enabled/
+   manage.py	#The Django management file -- leave it as it is.
+
+   DRP/		#The DRP App (which actually has the scripts/views)
+      <lots of files>.py
+      research/
+      management/
+      templatetags/
+      views/
+      compound_calculations/
+      migrations/
+      model_building/
+      recommendation/
+   logs/	#Log files for worker processes. 
+   templates/	#The HTML templates for Django Views.
+   research/	#Any "research" scripts that are still being explored.
+   static/	#Any static files that Django can skip and just distribute.
+   tmp/		#Calculation files for compounds. Don't modify manually.
+
+
+_____________________________________
+ # # # # #   Database  # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
+
+The DRP uses a MySQL database that should be accessed by running
+MySQL queries using the "root" MySQL user on the "DRP_db" database. 
+However, that being said, these queries should be performed by 
+utilizing the Django ORM (for documentation on how to use the ORM: 
+https://docs.djangoproject.com/en/dev/topics/db/).
+
+
+__ Using the ORM  __
+The ORM can best be thought of as a generic wrapper that will
+translate Model methods into database queries (for example, MySQL
+wrappers). All database retrieval functions should be placed in
+"retrievalFunctions.py" and any database construction functions
+should be placed in "database_construction.py" so that they can
+be easily imported into Python scripts. For example, to import
+all of the retrieval and construction functions, just use:
+
+> from DRP.retrievalFunctions import *
+> from DRP.database_construction import *
+
+And now, to query the database for all of the reactions (which
+are stored as the Data model (aka Python "class" in models.py),
+now just use:
+
+> Data.objects.all()
+
+For more complicated queries, check out the examples in 
+"retrievalFunctions.py" -- and likewise for information on how to
+create new entries in the database, check out "database_construction.py". 
+The ORM is flexible and capable of any query you should be making -- and 
+allows us to abstract complicated MySQL queries out of our scripts.
+
+
+__  Getting a CSV File of a Database Table  __
+The best way to do this is to use the site interface, but you may need
+to load the data as a CSV temporarily for use with a library such as D3.
+To do so, use a Django view and stream the data directly in CSV format.
+The benefits of this are reduced file-clutter, the most up-to-date version
+of the database, and improved security (since we can enforce only users
+that are authenticated can access the database). For an example of using
+a view to download a CSV, check out ".../DRP/views/download.py".
+
+Note that the same process can and should be used to get JSON-formatted
+entries from the database. Find examples in ".../DRP/views/jsonViews.py".
+
+
+__ Independent Processes __
+Often, you may want to run independent Python processes that access
+the database. This requires the Python Path to be set to the DRP 
+project directory so that Django can include the appropriate files.
+To do so, just include the following lines to in top of the script:
+
+> django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+> django_path = "{}/DRP".format(django_dir)
+> if django_path not in sys.path:
+>   sys.path.append("{}/DRP".format(django_dir))
+> os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
+
+__ Editing the Database Schema  __
+Be wary about adding fields to the Django Models and adding new Models
+in general; there are a few steps that must be completed. The DRP 
+uses a database migration tool called South which handles most
+schema migrations. First, modify the Django Model (in models.py) and save
+the file. Second, run the South command that detects model changes:
+"python manage.py schemamigration DRP --auto". Finally, perform
+the migration: "pyhton manage.py migrate DRP". 
+
+Functionally, South re-creates any database tables that are modified and
+migrates the data in the old table over to the new table. There is more that
+goes on in the back-end of South (such as versioning and reverse-update
+control), but I leave that for the Documentation: http://south.aeracode.org/ .
+
+
+__ Database Backups __
+The database is dumped to a file and placed in a DropBox folder 
+every night. The DropBox folder can be found on the drp server at
+"/home/drp/database_backups/Dropbox/". The DropBox account
+uses the email "darkreactionsproject@gmail.com" and the standard
+password. Any database dumps that are performed should be placed
+in this folder to avoid clutter.
+
+
+_____________________________________
+ # # # # #   Accounts  # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
+There are a few accounts that are needed by the DRP to operate
+successfully -- they range from database accessors to mail serves.
+
+Google:
+darkreactionsproject@gmail.com -- Used to distribute automatic emails 
+from the DRP site, such as error messages, contact form completions,
+and seed recommendation results.
+
+ChemSpider:
+darkreactionsproject@gmail.com -- Used to allow developer access
+to the ChemSpider database; we query ChemSpider to get reactant
+images, molecular weights, and SMILES strings.
+
+ChemAxon:
+darkreactionsproject@gmail.com -- Used to perform chemical calculations
+on various reactants.
+
+
+
+
+
+_________________________________________________________________
+# # # # # # # # # # # # # # # # # # # # 
+ # # # # #   TODO    # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # #
 TODO for Paul and Casey before they leave for summer 2014
 
 Model building:
-- put all model-building everything into a directory (model_building) (you can give this a shorter name if you'd like - models?)
-- write a script (model_building/build.py) that builds the model (with the current best options set) from all the current data
 - put comments in the top of that script that explains the steps it's going to take and what it's doing.  maybe even have it print out its progress along the way!
 
 Rec system:
-- put all rec system everything into a direcotry (recommendations) (you can give this a shorter name if you'd like - recs?)
-- write a script (recommendations/build.py) that builds the rec system (with the current best options set) and pushes the recs out to the website
 - put comments in the top of that script that explains the steps it's going to take and what it's doing.  maybe even have it print out its progress along the way!
 
 Cleaning research:
-- after these directories exist, some stuff should be gone from research
 - move the stuff that isn't gone from research into research subdirectories (i.e., recommendations/research and model_building/research)
 
 Cleaning the base directory:
