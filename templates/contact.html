@@ -1,1 +1,26 @@
-To be added soon.
+<div class="infoContainer">
+
+ <h1>Contact Us</h1>
+ <form action="/contact_form/" class="inlineForm infoForm">
+  <label for="email">Email:
+   <input id="email" name="email" type="email" placeholder="johnsmith@gmail.com" value="{{user.email}}" />
+  </label>
+ 
+  <label for="subject">Subject:
+   <select id="subject" name="subject">
+     <option  value="comment">Comment</option>
+     <option  value="concern">Concern</option>
+     <option  value="bug/error">Bug / Error</option>
+     <option  value="feature  request">Feature  Request</option>
+   </select>
+  </label>
+ 
+  <label for="content">Content:
+   <textarea id="content" name="content" placeholder="Please insert text here..."></textarea>
+  </label>
+ 
+  <input name="submit" id="submit" type="submit" value="Send" class="button"/>
+ 
+ </form>
+
+</div>

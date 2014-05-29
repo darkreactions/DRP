@@ -353,7 +353,7 @@ input.shortText {
  width:80px;
 }
 
-input[type=password] {
+input[type=password], input[type=email], textarea {
  border:2px solid black;
  border-radius:5px;
  padding:2px;
@@ -387,18 +387,11 @@ select {
  border-top-right-radius:10px;
 }
 
-input:hover {
+input:hover, textarea:hover, select:hover {
  background-color:#FFF1B5;
 }
 
-input:focus {
- background-color:#FFD92E;
-}
-select:hover {
- background-color:#FFF1B5;
-}
-
-select:focus {
+input:focus, textarea:focus, select:focus {
  background-color:#FFD92E;
 }
 
@@ -463,7 +456,7 @@ div.ui-tooltip {
 /* ###############   CONTAINERS   ################################### */
 .infoContainer {
  position:relative;
- font-size: 12px;
+ font-size: 14px;
  background-color:white;
  overflow:auto;
  height:100%;
@@ -653,6 +646,24 @@ div.ui-tooltip {
  width:250px;
 }
 
+.inlineForm {
+ display:inline-block;
+}
+
+.inlineForm textarea {
+ height:200px;
+}
+
+.inlineForm label {
+ display:block;
+ text-align:left;
+ vertical-align:top;
+
+ margin-bottom:20px;
+ word-spacing:20px;
+
+ background-color:white;
+}
 
 /* ##################   SPECIFIC POPUPS   ########################### */
 #popupContainer[for="addReactantGroup"] {

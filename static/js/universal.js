@@ -84,6 +84,34 @@ window.refreshOnMaskFade = function() {
  $("body").append("<div class=\"reloadActivator\"></div>")
 }
 
+function getFormErrors(form) {
+ var formID = $(form).attr("action");
+ var errors = [];
+ switch(formID) {
+  case ("/contact_form/"):
+   //Verify the email.
+   var emailRegExp = new RegExp(/^\S+@\S+\.\S+$/);
+   var email = $(form).find("#email").val();
+   if (! emailRegExp.test(email)){
+     errors.push("Email invalid!");
+   }
+
+   //Verify that content and subject exist.
+   var content = $(form).find("#content").val();
+   if (content==""){
+     errors.push("No message written!");
+   }
+
+   var subject = $(form).find("#subject").val();
+   if (subject==""){
+     errors.push("No subject input!");
+   }
+
+  default: //If not listed, then assume no validation is needed.
+   return errors;
+ }
+}
+
 //############   Formatting   ##########################################
 window.make_name_verbose = function(string) {
  var verbose_name = "";
@@ -443,15 +471,13 @@ $(document).on("submit", ".downloadForm", function(event) {
  showRibbon("Working...", neutralColor, "#popupContainer");
 
 });
-
+ 
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
  if ($(".warningIndicator").length){
   showRibbon("Performing Calculations...", neutralColor, $("#popupContainer_inner"), false);
  }
 
- applyLoadingWheel($(this).closest("form"));
- 
  var formName = $(form).attr("name");
  var formAction = $(form).attr("action");
 
@@ -534,8 +560,18 @@ $(document).on("submit", ".infoForm", function() {
 });
 
 $(document).on("click", ".button[type=submit]", function() {
- $(this).hide();
- applyLoadingWheel($(this).parent("form"));
+ var form = $(this).closest("form");
+
+ //If form is invalid, display the first error and don't remove the submit button.
+ var errors = getFormErrors(form);
+
+ if (errors.length==0){
+   $(this).hide();
+   applyLoadingWheel($(this).parent("form"));
+ } else {
+  showRibbon(errors[0], badColor, "body");
+  return false;
+ }
 });
 
 //############ User Authentication: ####################################

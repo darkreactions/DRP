@@ -18,9 +18,14 @@ correctly set to "SecurePassword" as you should while developing.
 """
 
 ######################  Email Functions  ########################### 
-def email_admins(subject, message):
+def email_admins(subject, message, include_managers=False):
   try:
-    send_mail("DRP: {}".format(subject), message, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER], fail_silently=False)
+    if include_managers:
+      recipients = list(set(settings.ADMIN_EMAILS + settings.MANAGER_EMAILS))
+    else:
+      recipients = settings.ADMIN_EMAILS
+
+    send_mail("DRP: {}".format(subject), message, settings.EMAIL_HOST_USER, recipients, fail_silently=False)
   except Exception as e:
     if not DEBUG:
       print_error("email_admins failed: {}\n".format(e))
