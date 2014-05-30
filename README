@@ -101,7 +101,7 @@ the next time the new user logs in. Hurray!
 
 __ Connecting a User to BitBucket with an SSH Key __
 To start, hop over to BitBucket and log in to a user there. Then, follow
-the instructions in ".../DRP/HowToCreateAnSSHKey.txt" to create and pair
+the instructions in ".../DRP/HowToCommitToTheGitRepo.txt" to create and pair
 your development user with the BitBucket Repo. Note that to push, you'll 
 still need to be added to the BitBucket Organization. 
 
