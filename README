@@ -5,7 +5,18 @@ Last Updated by Casey Falk -- 5/29/14
 
 Table of Contents:
 --System Architecture
+  --Setup of the Server/a Test-bed
+  --Important Directories
+  --Django Directory Architecture
+  --Creating a User
+  --Connecting a User to BitBucket with an SSH Key
+  --Using a Test Bed ON the DRP Server
 --Database
+  --Using the ORM
+  --Getting a CSV File of a Database Table
+  --Independent Processes
+  --Editing the Database Schema 
+  --Database Backups
 --Accounts
 
 _________________________________________________
@@ -35,14 +46,16 @@ NGINX to the Django files (located in the home directory of the "drp" user:
 "/home/drp/web/darkreactions.haverford.edu/app/"). 
 
 
-__ Django Directory Setup __
+__ Django Directory Architecture __
 The DRP Django Project is set up as follows:
 
 DRP/
    README	#This file.
    setup.txt	#Instructions for setting up the server.
+   HowToCommitToTheGitRepo.txt	#Instructions for pairing an SSH Key with BitBucket.
    DRP_nginx	#The NGINX configuration. Move to /etc/nginx/sites-enabled/
    DRP_uwsgi	#The UWSGI configuration. Move to /etc/uwsgi/apps-enabled/
+   ChemAxonLicense.cxl	#A ChemAxon license file that should go in /<home>/.chemaxon/
    manage.py	#The Django management file -- leave it as it is.
 
    DRP/		#The DRP App (which actually has the scripts/views)

@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--PLEASE DO NOT MODIFY THIS FILE AND BE AWARE THAT THE FILE CONTAINS CONFIDENTIAL INFORMATION.-->
+<ChemAxon>
+<License>
+<Field Name="Software" Value="Marvin Applets"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFDHVa+oy99z0FYaE2CAh/PPZNJArAhQJGvE9SMKzwn/BAuuRs/PgRYnSTw=="/>
+</License>
+<License>
+<Field Name="Software" Value="Marvin Beans"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFCpz2c+qqMp4cJqUyFhaeJh72nrVAhQDCiIoc8nuaC9V/IIqVmmLOT3EQw=="/>
+</License>
+<License>
+<Field Name="Software" Value="Instant JChem"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="B/S/P/E" Value="Standard"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MC0CFQCCR0ZscfWThUJO3RSt7w/gRDuj+wIUQ8PL/8JnpDIdqEtiR54gBi0gNek="/>
+</License>
+<License>
+<Field Name="Software" Value="JChem Base"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Restriction Name="Search/Min" Value="Unlimited"/>
+<Signature Value="MC0CFQCGacgQwQUX+QlvozZluE++8oOp9wIUDM611AUdV5BC6bfNM9I2HhwFJRo="/>
+</License>
+<License>
+<Field Name="Software" Value="JChem Cartridge"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFC63oL22zMViYjhYSo6m0lLe9B4EAhR0dmBQJ+8ifJY83VtiHXrPHdH0eA=="/>
+</License>
+<License>
+<Field Name="Software" Value="Standardizer"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="B/S/P/E" Value="Standard"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFE+eJPkRrvml+64Doi6YJEsGiYL6AhRhTH8hPVxEaw51U1TcYiWdWdEsKg=="/>
+</License>
+<License>
+<Field Name="Software" Value="Screen"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFFqp6KJ54smIkq79rrivCipxVmnhAhR0+mbDKRsBrHM26pObjfWipzwSHA=="/>
+</License>
+<License>
+<Field Name="Software" Value="Reactor"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFEfyL8PhHm/mfvuhIusV64Fw6ZfTAhQ1MdhxAErZjPaRRrpUWbpYIpDM1Q=="/>
+</License>
+<License>
+<Field Name="Software" Value="Fragmenter"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFDIR545CnWKo/EI/1FzSL2NQuPODAhQO6uIcKUS3L8i7p4P+5/SY1TcHGA=="/>
+</License>
+<License>
+<Field Name="Software" Value="JKlustor"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="B/S/P/E" Value="Standard"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFF9Vtan/zbUoLdoi47zU9RTcwEV1AhQtLHifq+XXi/kmHGIdUzg1zRSTlg=="/>
+</License>
+<License>
+<Field Name="Software" Value="Metabolizer"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFEs2/XqDfVvFUksGscnRF/rq9tbRAhRmWriGSCNv5KYYZybiZ3t4fpyfCw=="/>
+</License>
+<License>
+<Field Name="Software" Value="Markush Search"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFCmcU+3cx4SWstWTIcLkTAS0JHkNAhRZYOkOkyXf0CKK8ajTvfzvvacW3Q=="/>
+</License>
+<License>
+<Field Name="Software" Value="Protonation Plugin Group"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFFJgg4ZPgvC4GPPK9sNibn0q021JAhQHJK0dFHEiQfG7X9J7GGgStiygvQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="Partitioning Plugin Group"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFB8URIJM/N9UvT08CuhvWdoXpilYAhRwRDURT0gErAvjp80QQdj+6gOlJA=="/>
+</License>
+<License>
+<Field Name="Software" Value="Charge Plugin Group"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFED+AT2Hn4Fw3nRJuojhQYjWoxNbAhQwGVhnugOXegYCfYLDkEYUl9/JBQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="Isomers Plugin Group"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFEzBLY/rzbQRCx3I/LEZ3Y9sHNK7AhRlHfbqhP/NpmIKf9S/Unq3JwDPAA=="/>
+</License>
+<License>
+<Field Name="Software" Value="Conformation Plugin Group"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFHBARIk2W/nYCtDqTcOAtv1RhlE5AhRIy+hWXbF6HkrRUB5PG6D3q2tc2g=="/>
+</License>
+<License>
+<Field Name="Software" Value="Geometry Plugin Group"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFA5nLvbLEbDiFhp0+CAA/SNP2AMKAhQJUBfBwSK29zH3znZd7KTuXw4uuQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="Huckel Analysis Plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFBpQX/4pasXRHazy8QewrQucXcFsAhQ2m3nXuT7qLGp31/m+TVSSqtYz4A=="/>
+</License>
+<License>
+<Field Name="Software" Value="Refractivity Plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFGfaza0vjZObs0M6hglIu9UorKUYAhQBq8mSFaqjHGI5E/lFztUFlK4Idg=="/>
+</License>
+<License>
+<Field Name="Software" Value="HBDA Plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFHoVJtOfXjLa3u8AM7vxjOolagkMAhRJVoyHFCVbyxh++lL5g9eOUJVt1A=="/>
+</License>
+<License>
+<Field Name="Software" Value="Markush Enumeration Plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCsCE38FZnEi6vW+ZjL2ja4ZOunPEfYCFB9qD1GYFKNEN3gGvfgAM2RP4Job"/>
+</License>
+<License>
+<Field Name="Software" Value="Structure to Name Plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFHnqRyp4wZW73esrl6LKSXGTiLd5AhQ3s9JqHHC1hSngz7dMPP5koiDcHg=="/>
+</License>
+<License>
+<Field Name="Software" Value="Name to Structure"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFCO5KJEo1RwKa5AR/YWoA3xOArPeAhQfYFKoDiCityxpEBqE9nSuJHrGXQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="JChem for Excel"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFD8XxViLux5fz5iefSjZSqW0ptGDAhQrV05v0IY9yRFxgje5eWuh1edbVg=="/>
+</License>
+<License>
+<Field Name="Software" Value="Structure Search"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFGUx8xc35Mb0lOE2XDzXcH0x0oNiAhQ3VAjPtZ2i1wWQjFXyFofjPoLGqw=="/>
+</License>
+<License>
+<Field Name="Software" Value="IUPAC naming plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFHOO6qv8XWKCMu3+UtsHQcTZuVXAAhROUKZGfq1RgPBqD0WbqCyLAkqS7Q=="/>
+</License>
+<License>
+<Field Name="Software" Value="Calculations Pack"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFFpJSHjeH8wgZFAVmCoq/DqGRP1/AhRmARkg4unSlG/xRnSBTkebfPvD0Q=="/>
+</License>
+<License>
+<Field Name="Software" Value="Web Services Server"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFGOORDBAsEqRJXPVRAVGmVRkbepzAhQbo0GcpB5LqTEt9/9XYnFFiZcSVg=="/>
+</License>
+<License>
+<Field Name="Software" Value="Structural Frameworks Plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFCYuN6x5ugVYMptkox/CM4M8x0dqAhQdXzjokCPnQHk5pXFckgfMTwH9sw=="/>
+</License>
+<License>
+<Field Name="Software" Value="Structure Checker"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFDrzuxrVxVUol6T0vth/S9j0jGdpAhR/mC050Kr8LgIl2UMdXOEWf1p2pw=="/>
+</License>
+<License>
+<Field Name="Software" Value="Predictor Plugin"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFCnBS8oBO82n+MITdTTit5ECOZxtAhQWm2EKJ53VTbIyv9EQa1/9VdKe7g=="/>
+</License>
+<License>
+<Field Name="Software" Value="MCES"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFGjuzeluvG//lqObBvLZR9mAo9yNAhQ8C9MM/xtfOBJXrxqagnt5Ettmug=="/>
+</License>
+<License>
+<Field Name="Software" Value="3D Alignment"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFBGkHqCFoj7GkDXz68RPOakFQ5L2AhQLgbsbeVzeJKFwGyvGTr4e0llJHQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="3D Screen"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFDSoa8yxsJXCV/P84ByFEy/A/lPFAhQsc92c5Nw1qRl6wLAd8ITYxGgmxw=="/>
+</License>
+<License>
+<Field Name="Software" Value="Molecular Descriptors"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFCId4WVMQUtWQLjLsY03yV31Y2PPAhQ84Zs75rYp7yGxSIhE+RsYPnU6NQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="Instant JChem VIZ"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFEJw+Wajh6ItR3UBhHKGsDXQF+G6AhRZ78NFDf1EJ7bZGjSCxm9YkJuhzQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="ECFP/FCFP"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFD7Zx5K2bcsLtjaVCuC0oo6lqdxQAhRyWCgSg/U4fn1dkSWtGYsKU7+HgQ=="/>
+</License>
+<License>
+<Field Name="Software" Value="Document to Structure"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFFZjMfQj+m9zbhJ2p1TCBwDkIOF9AhQJp9tr004AyZ9T0HbontHi/uVlPw=="/>
+</License>
+<License>
+<Field Name="Software" Value="NMR Predictor"/>
+<Field Name="License Term" Value="Academic Research"/>
+<Field Name="Licensee" Value="Haverford Collge"/>
+<Field Name="Number of Users" Value="1"/>
+<Field Name="Expiration Date" Value="2014-11-12"/>
+<Field Name="Support Expiration Date" Value="2014-11-12"/>
+<Field Name="Comment" Value="academic research license"/>
+<Restriction Name="Server Use" Value="Not Allowed"/>
+<Signature Value="MCwCFC3qoGxQtwmL9weP/Nc9jJFD+QD3AhRbw+Z92kPxP00ExbB6gU/yyfQ16g=="/>
+</License>
+</ChemAxon>
