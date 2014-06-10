@@ -172,6 +172,7 @@ def update_compound(entry):
         perform_calcs = True
   
       else:
+        perform_calcs = False
         print "Found legacy entry that should be custom: {}".format(entry.compound)
     else:
         perform_calcs = False  
