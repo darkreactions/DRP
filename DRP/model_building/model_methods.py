@@ -4,16 +4,18 @@ import load_data
 import rxn_calculator
 
 import sys, os
-sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+django_path = "{}/DRP".format(django_dir)
+if django_path not in sys.path:
+  sys.path.append("{}/DRP".format(django_dir))
 
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 import DRP.database_construction as dbc
-
+from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
 POSITIVE = "2:2"
-PREFIX = "/home/drp/web/darkreactions.haverford.edu/app/DRP/tmp/"
-MODEL_BASE_DIR = "/home/drp/web/darkreactions.haverford.edu/app/DRP/models/"
+
 def gen_model(model_name):
 	''' 
 	gen_model("5.8.2014.UUID.model")
@@ -27,7 +29,7 @@ def gen_model(model_name):
 	inc, total, false_p =  evaluate_model(rows, keys)
 	make_arff(name, rows)
 	
-	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_BASE_DIR + model_name, PREFIX+name+".arff"), shell=True)
+	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_BASE_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
 
 	performance = (total - inc) / float(total) if total != 0 else 0
 
@@ -58,8 +60,8 @@ def evaluate_model(rows,keys):
 	make_arff(name + "test", test, True)
 	make_arff(name + "train", train, True)
 	
-	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_BASE_DIR + name , PREFIX + name + "train" + ".arff"), shell=True)
-	results = make_predictions(PREFIX + name + "test.arff", MODEL_BASE_DIR + name)
+	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_BASE_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
+	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_BASE_DIR + name)
 	incorrect, total, false_positive = evaluate_results(results) 
 	
 	#TODO: add new entry
@@ -91,8 +93,8 @@ def make_arff(name, rows, zero_one = False):
 
 	headers = get_arff_headers(zero_one)
 
-	print PREFIX + name + ".arff"
-	with open(PREFIX+name + ".arff", "w") as raw:
+	print TMP_DIR + name + ".arff"
+	with open(TMP_DIR+name + ".arff", "w") as raw:
 		raw.write(headers+"\n")
 		for row in rows:
 			row[-1] = max(1, row[-1])
@@ -102,7 +104,7 @@ def make_arff(name, rows, zero_one = False):
 
 
 def make_predictions(target_file, model_location):
-	results_location = "/home/drp/web/darkreactions.haverford.edu/app/DRP/tmp/" + str(uuid.uuid4()) + ".out"
+	results_location = "{}/tmp/" + str(uuid.uuid4()) + ".out"
 	subprocess.check_output("sh make_predictions.sh {0} {1} {2}".format(target_file, model_location, results_location), shell=True)
 	return results_location
 

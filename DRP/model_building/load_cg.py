@@ -1,8 +1,16 @@
+#Grab the Django settings if they aren't already set.
+import sys, os, json
+django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+django_path = "{}/DRP".format(django_dir)
+if django_path not in sys.path:
+  sys.path.append("{}/DRP".format(django_dir))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
+
 def get_cg():
-	import sys, os, json
-	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 	from DRP.models import CompoundEntry
+	import json
 
 
 

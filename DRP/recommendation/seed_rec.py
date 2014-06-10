@@ -2,8 +2,13 @@ import  json, uuid, subprocess
 from DRP.research import metrics, load_cg, parse_rxn, clean2arff, rebuildCDT
 import sys, os
 
-sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+django_path = "{}/DRP".format(django_dir)
+if django_path not in sys.path:
+  sys.path.append("{}/DRP".format(django_dir))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
 import DRP.models
 from DRP.settings import TMP_DIR, BASE_DIR
 from DRP.logPrinting import print_error
@@ -132,56 +137,73 @@ def get_candidates(results, idx, raw_rows):
 	return best_row, score 
 
 def generate_grid(reaction, amine_list, debug=True):
-	#Variable Setup.
-	indices = get_reactants_indices(reaction)
-	amine_moles = get_amine_moles(reaction, indices["org"])
-	prefix = TMP_DIR
-	fileprefix = str(uuid.uuid4())
-	ml_convert = json.load(open(BASE_DIR+"/DRP/research/mlConvert.json"))
-	hdrs = ",".join(rebuildCDT.headers)
+  try:
+    #Variable Setup.
+    indices = get_reactants_indices(reaction)
+    amine_moles = get_amine_moles(reaction, indices["org"])
+    prefix = TMP_DIR
+    fileprefix = str(uuid.uuid4())
+    ml_convert = json.load(open(BASE_DIR+"/DRP/research/mlConvert.json"))
+    hdrs = ",".join(rebuildCDT.headers)
+  except Exception as e:
+    raise Exception("Failed step 1...\n{}".format(e))
 
-	row_gen = row_generator(reaction, indices, amine_moles, amine_list)
-	raw_rows = [row for row in row_gen]
-	#print raw_rows
-	rows =[hdrs] + [ ",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, CG, ml_convert)]) for row in raw_rows] 
+  try:
+    row_gen = row_generator(reaction, indices, amine_moles, amine_list)
+    raw_rows = [row for row in row_gen]
+    #print raw_rows
+    rows =[hdrs] + [ ",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, CG, ml_convert)]) for row in raw_rows] 
+  except Exception as e:
+    raise Exception("Failed step 2...\n{}".format(e))
 
-	with open(prefix + fileprefix + ".csv", "w") as outfile:
-		for row in rows:
-			outfile.write(row+"\n")
+  try:
+    with open(prefix + fileprefix + ".csv", "w") as outfile:
+      for row in rows:
+        outfile.write(row+"\n")
+  
+    if debug: print prefix + fileprefix + ".csv"
+        
+    clean2arff.clean(prefix+fileprefix)
+  except Exception as e:
+    raise Exception("Failed step 3...\n{}".format(e))
 
-	if debug: print prefix + fileprefix + ".csv"
-			
-	clean2arff.clean(prefix+fileprefix)
+  #TODO: rewrite test_model
+  try:
+    cmd = "sh {0}/DRP/research/test_model.sh {1} {2}".format(BASE_DIR, fileprefix, MODEL_LOCATION)
+    result = subprocess.check_output(cmd, shell=True)
+  
+    if debug: print result, cmd
+  except Exception as e:
+    raise Exception("Failed step 4...\n{}".format(e))
 
-	#TODO: rewrite test_model
-	cmd = "sh {0}/DRP/research/test_model.sh {1} {2}".format(BASE_DIR, fileprefix, MODEL_LOCATION)
-	result = subprocess.check_output(cmd, shell=True)
-
-	if debug: print result, cmd
-
-	weka_results_file = fileprefix + ".out" 
-	results = dict()
-	with open(prefix + weka_results_file, "r") as weka_results:
-		for i in xrange(5):
-			weka_results.next()
-
-		for i, row in enumerate(weka_results):
-			if "+" not in row and row != "\n":
-				conf = float(row.split()[-1])
-				results[i] =  conf
-	
-
-	amines_results = [] 
-	raw_rxn = DRP.models.convert_Data_to_list(reaction)
-	for i, amine in enumerate(amine_list):
-		best_candidate, best_conf = get_candidates(results,i*steps_per_amine, raw_rows)
-		if best_candidate:
-			amines_results.append( (best_conf, sim(best_candidate, raw_rxn), best_candidate) )
-
-
-	if debug: print amines_results
-	amines_results.sort(key=lambda x: x[0]*x[1], reverse=True)
-	return amines_results
+  try:
+    weka_results_file = fileprefix + ".out" 
+    results = dict()
+    with open(prefix + weka_results_file, "r") as weka_results:
+      for i in xrange(5):
+        weka_results.next()
+  
+      for i, row in enumerate(weka_results):
+        if "+" not in row and row != "\n":
+          conf = float(row.split()[-1])
+          results[i] =  conf
+  except Exception as e:
+    raise Exception("Failed step 5...\n{}".format(e))
+  
+  try:
+    amines_results = [] 
+    raw_rxn = DRP.models.convert_Data_to_list(reaction)
+    for i, amine in enumerate(amine_list):
+      best_candidate, best_conf = get_candidates(results,i*steps_per_amine, raw_rows)
+      if best_candidate:
+        amines_results.append( (best_conf, sim(best_candidate, raw_rxn), best_candidate) )
+  
+  
+    if debug: print amines_results
+    amines_results.sort(key=lambda x: x[0]*x[1], reverse=True)
+  except Exception as e:
+    raise Exception("Failed step 6...\n{}".format(e))
+  return amines_results
 
 def constructRecsFromSeed(seed_pid):
   max_recommendations = 75

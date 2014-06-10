@@ -2,9 +2,12 @@ import sys, os, subprocess
 import json, csv, math
 import rdkit.Chem as Chem
 
-#The following 2 lines are needed in case the script is not run from a Django-shell.
-sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+django_path = "{}/DRP".format(django_dir)
+if django_path not in sys.path:
+  sys.path.append("{}/DRP".format(django_dir))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.settings import RESEARCH_DIR
 

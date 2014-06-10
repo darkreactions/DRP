@@ -1,9 +1,16 @@
+
+import sys, os
+django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+django_path = "{}/DRP".format(django_dir)
+if django_path not in sys.path:
+  sys.path.append("{}/DRP".format(django_dir))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
+from DRP.settings import BASE_DIR
 import load_cg,json
 
 def load(lab_group=None):
-	import sys, os
-	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 	from DRP.models import get_good_rxns
 	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
 	return rxns
@@ -21,9 +28,6 @@ def fix_abbrevs(rxns):
 
 
 def get_abbrev_map():
-	import sys, os
-	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
 	from DRP.models import CompoundEntry as c 
 
  	entries = c.objects.all()
@@ -43,7 +47,7 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
 	if not cg:
 		cg = load_cg.get_cg()
 	if not ml_convert:
-		ml_convert = json.load(open("mlConvert.json"))
+		ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
 	import parse_rxn
 
 	transformed = []
@@ -79,7 +83,7 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
 	if not cg:
 		cg = load_cg.get_cg()
 	if not ml_convert:
-		ml_convert = json.load(open("mlConvert.json"))
+		ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
 	raw = load(lab_group)
 	transformed = []
 
