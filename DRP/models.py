@@ -10,7 +10,8 @@ from validation import *
 from uuid import uuid4
 from CGCalculator import CGCalculator
 from collections import defaultdict
-    
+from subprocess import Popen
+from DRP.settings import LOG_DIR, BASE_DIR    
 
 import json, random, string, datetime, operator
 import rdkit.Chem as Chem
