@@ -127,7 +127,7 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
       model = get_latest_Model_Version(lab_group)
   except Exception as e:
     print_error("Model not gathered for the Recommendation list: {}".format(e))
-
+ 
   #Store the actual Recommendation entries.
   num_success = 0
   count = 0

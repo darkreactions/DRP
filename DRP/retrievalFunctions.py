@@ -131,7 +131,7 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
  return seed_recs
 
 def get_latest_Model_Version(lab_group):
- return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date")[0]
+ return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date_dt")[0]
 
 
 def get_recommendations_by_date(lab_group, date = "recent"):
@@ -145,7 +145,7 @@ def get_recommendations_by_date(lab_group, date = "recent"):
 
  #Get the data associated with a specific date.
  try:
-  recommendations = get_recommendations(lab_group).filter(date=date).order_by("-score")
+  recommendations = get_recommendations(lab_group).filter(date_dt=date).order_by("-score")
  except Exception as e:
   raise Exception("Could not find any version of the model: {}".format(e))
 

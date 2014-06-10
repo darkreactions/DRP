@@ -29,7 +29,7 @@ def gen_model(model_name):
 	inc, total, false_p =  evaluate_model(rows, keys)
 	make_arff(name, rows)
 	
-	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_BASE_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
+	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
 
 	performance = (total - inc) / float(total) if total != 0 else 0
 
@@ -39,7 +39,7 @@ def gen_model(model_name):
 
 
 def get_current_model():
-	return MODEL_BASE_DIR + sorted([f for f in os.listdir(MODEL_BASE_DIR) if "model" in f], key = lambda x: x.split(".")[0], reverse = True)[0]
+	return MODEL_DIR + sorted([f for f in os.listdir(MODEL_DIR) if "model" in f], key = lambda x: x.split(".")[0], reverse = True)[0]
 	
 
 def map_to_zero_one(v):
@@ -60,8 +60,8 @@ def evaluate_model(rows,keys):
 	make_arff(name + "test", test, True)
 	make_arff(name + "train", train, True)
 	
-	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_BASE_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
-	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_BASE_DIR + name)
+	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
+	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_DIR + name)
 	incorrect, total, false_positive = evaluate_results(results) 
 	
 	#TODO: add new entry
