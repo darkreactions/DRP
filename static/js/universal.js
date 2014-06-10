@@ -39,14 +39,28 @@ window.applyTickingDots = function(location) {
       $(location).append(" .");
     }
   }, 1*1000);
+  
+  //Bind the loading animation to this specific entry.
+  $(location).data("timer", interval);
 
   return interval; //Return the interval so that it may be cleared.
 }
 
+function clearLoadingWheels(container){
+  //Stop the timers in the soon-to-be-removed .loadingWheels.
+  clearInterval($(container).find(".loadingWheel").data("timer"));
+
+  //Remove any pre-existing .loadingWheels in the container.
+  $(container).find(".loadingWheel").remove();
+}
+
 window.applyLoadingWheel = function(location){
-  $(".loadingWheel").remove();
-  $(location).append("<div class=\"loadingWheel\">.</div>");
-  return applyTickingDots(".loadingWheel");
+  //Remove old .loadingWheels if they exist.
+  clearLoadingWheels(container);
+
+  //Create a new .loadingWheel in the container and return the load timer.
+  var newLoad = $(location).append("<div class=\"loadingWheel\">.</div>");
+  return applyTickingDots(newLoad);
 }
 
 //Get edit-by-menu options from editChoices.json.
@@ -475,7 +489,7 @@ $(document).on("submit", ".downloadForm", function(event) {
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
  if ($(".warningIndicator").length){
-  showRibbon("Performing Calculations...", neutralColor, $("#popupContainer_inner"), false);
+  showRibbon("Working...", neutralColor, $("#popupContainer_inner"), false);
  }
 
  var formName = $(form).attr("name");
@@ -494,7 +508,8 @@ $(document).on("submit", ".infoForm", function() {
 
  $.post(formAction, formContents, function(response) {
   //Remove the loading wheel.
-  $(".loadingWheel").remove();
+  clearLoadingWheels(form)
+
   //Translate server-responses to actions.
   if (response=="0"){
    showRibbon("Data added!", goodColor, $("#popupContainer_inner"));
@@ -981,7 +996,7 @@ $(document).on("click", ".customCompoundButton", function() {
  $(".customCompoundButton").remove();
  $(".checkCompoundButton").remove();
  $(".compoundCheckResults").remove();
- $(".loadingWheel").remove();
+ clearLoadingWheels(form)
 
  //Show the hidden fields and mark the form as "custom."
  $("#input_custom").val(true);
@@ -997,7 +1012,7 @@ $(document).on("click", ".customCompoundButton", function() {
 $(document).on("click", ".checkCompoundButton", function() {
  //Remove any search-related elements from the form.
  $("input[type=submit]").remove();
- $(".loadingWheel").remove();
+ clearLoadingWheels($(this).parent());
 
  //Variable Setup
  var form = $(this).closest("form");

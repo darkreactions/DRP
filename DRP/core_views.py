@@ -524,25 +524,35 @@ def compound_guide_form(request):
   form = CompoundGuideForm(lab_group=lab_group, data=request.POST)
   #If all data is valid, save the entry.
   if form.is_valid():
-   entry = form.save()
+   #Variable Setup.
+   entry = form.save(commit=False) #Don't save to database, but make CompoundEntry.
+   atoms = request.POST.get("atoms")
+   mw = request.POST.get("mw")
+
    if not entry.custom:
     #Apply calculations to the compound.
+    entry.save()
     update_compound_and_reactions(lab_group, entry)
+    success = True #Used to display the ribbonMessage.
+   elif atoms and mw.replace(".","",1).isdigit():
+    entry.smiles = atoms
+    entry.mw = mw 
+    entry.save()
+    success = True #Used to display the ribbonMessage.
    else:
-    entry.smiles = request.POST.get("atoms")
-    entry.mw = request.POST.get("mw")
+    return HttpResponse("4")
    #Clear the cached CG data.
    set_cache(lab_group, "COMPOUNDGUIDE", None)
    set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
-   success = True #Used to display the ribbonMessage.
+   
  else:
   #Submit a blank form if one was not just submitted.
   form = CompoundGuideForm()
 
-  return render(request, 'compound_guide_form.html', {
+ return render(request, 'compound_guide_form.html', {
    "form": form,
    "success": success,
-  })
+ })
 
 #Send/receive the compound guide:
 @login_required

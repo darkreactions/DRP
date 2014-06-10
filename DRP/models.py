@@ -710,19 +710,24 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time_dt", "calculations"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time_dt", "calculations", "calculated_temp", "calculated_time", "calculated_pH", "is_valid", "public"}
+   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time_dt", 
+                       "calculations", "calculated_temp", "calculated_time", 
+                       "calculated_pH", "is_valid", "public"}
   dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
  elif model=="Recommendation":
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time_dt"}
   else:
-   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", "model_version", "atoms", "creation_time_dt", "nonsense", "complete", "score", "date_dt", "hidden", "seed", "seeded"}
+   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", 
+                       "model_version", "atoms", "creation_time_dt", "nonsense", 
+                       "complete", "score", "date_dt", "hidden", "seed", "seeded"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:
    fields_to_ignore = {u"id", "image_url", "custom", "calculations"}
   else:
-   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom", "calculations"} ###Auto-populate?
+   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom", 
+                       "calculations", "calculations_failed"} 
   dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
  else:
   raise Exception("Unknown model specified.")

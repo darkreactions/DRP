@@ -81,7 +81,8 @@ class CompoundGuideForm(ModelForm):
 
  class Meta:
   model = CompoundEntry
-  exclude = ("lab_group", "calculations", "image_url", "smiles", "mw", "calculations")
+  exclude = ("lab_group", "calculations", "image_url", "smiles", 
+             "mw", "calculations", "calculations_failed")
 
  def __init__(self, lab_group=None, *args, **kwargs):
   super(CompoundGuideForm, self).__init__(*args, **kwargs)
