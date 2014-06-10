@@ -85,7 +85,8 @@ def seed_recommend(request):
    try:
      #Either get all of the recommendations or just the non-hidden ones.
      show_hidden = request.GET.get("show_hidden")=="True"
-     recommendations = get_seed_recs(lab_group, show_hidden=show_hidden)
+     recommendations = get_seed_recs(lab_group, show_hidden=show_hidden)[:200]
+     #TODO:Ideally, pagify this, Future Casey.
   
      #Get the active recommendations from the cache.
      active_workers = get_seed_rec_worker_list(lab_group)
