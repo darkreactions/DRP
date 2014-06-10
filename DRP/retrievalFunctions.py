@@ -126,7 +126,7 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
    seed_recs = seed_recs.filter(hidden=False)
 
  if latest_first:
-   seed_recs.order_by("-date")
+   seed_recs.order_by("-date_dt")
 
  return seed_recs
 
