@@ -4,7 +4,7 @@
 #The following instructions are written to work with Ubuntu 12+ and have been tested on Ubuntu 13.
 
 #Install the necessary programs.
-sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache
+sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache mailutils
 
 #Note which version of Django gets installed.
 sudo pip install numpy scipy Django pygraphviz
@@ -15,8 +15,11 @@ sudo easy_install South
 #Install ChemAxon's JChem and Marvin. These do intense, high-level chem-calcs for us. Note that these DON'T need to be installed on a test-bed if you don't need to test the compound property calculators.
 
 # # # !! SKIPPABLE FOR TEST BED!!  # # # 
-#On a production server, use a "cron" job to back up the database. Note that the password needs to change. Ideally the password will be stored more discretely in one place on the server. Add the following line to dump the database to a unique file every day in a DropBox backup folder:
+#On a production server, use a "cron" job to back up the database (the command "sudo scrontab -e" initiates crontab editor). Note that the password needs to change from what it is below. Ideally the password will be stored more discretely in one place on the server. Add the following line to dump the database to a unique file every day in a DropBox backup folder.
 33 3 * * * mysqldump -uroot -p SecurePassword DRP_db > /home/drp/database_backups/Dropbox/DRP_db__$(date +\%m_\%d_\%y).sql
+
+#Likewise, set up nginx to start every hour in case it goes happens to go down.
+0 * * * * service nginx start
 
 # # # !! SKIPPABLE FOR TEST BED!!  # # # 
 #Install a virtualenv if you are on the production server. This helps prevent hackers from accessing file and system information outside of the directory of the project.

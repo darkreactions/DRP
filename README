@@ -92,6 +92,7 @@ DRP/
       licenses/	#The current and past licenses.
       admin/	#CSS for the /admin/ page. Feel free to ignore.
    tmp/		#Calculation files for compounds. Don't modify manually.
+   off_production_scripts/ #Scripts that are meant to live off the production server.
 
 There are many files that are not listed above in order to illucidate
 the "framework" of the DRP Django Project succinctly. Notably, there
