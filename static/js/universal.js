@@ -33,7 +33,7 @@ window.applyTickingDots = function(location) {
   var interval = setInterval(function(){
     content = $(location).html();
     dotCount = content.split(".");
-    if (dotCount.length == 4){
+    if (dotCount.length >= 4){
       $(location).html(".");
     } else {
       $(location).append(" .");
@@ -56,10 +56,10 @@ function clearLoadingWheels(container){
 
 window.applyLoadingWheel = function(location){
   //Remove old .loadingWheels if they exist.
-  clearLoadingWheels(container);
+  clearLoadingWheels(location);
 
   //Create a new .loadingWheel in the container and return the load timer.
-  var newLoad = $(location).append("<div class=\"loadingWheel\">.</div>");
+  var newLoad = $("<div class=\"loadingWheel\">.</div>").appendTo(location);
   return applyTickingDots(newLoad);
 }
 
@@ -820,8 +820,8 @@ function loadPopup(response, kwargs){
   } else {
     $("#popupContainer_inner").html(response);
 
-    //Allow optional popup features.
-    if (kwargs["autocomplete"]){
+    //Allow popup features on any .autocomplete_reactant element.
+    if ($("#popupContainer_inner").find(".autocomplete_reactant").length){
       setReactantAutoComplete();
     }
   }
@@ -838,7 +838,7 @@ function loadSideBar(response, kwargs){
 
     //Allow optional popup features.
     if (kwargs["autocomplete"]){
-      setReactantAutoComplete();
+       setReactantAutoComplete();
     }
   }
 }
@@ -999,7 +999,7 @@ $(document).on("click", ".customCompoundButton", function() {
  clearLoadingWheels(form)
 
  //Show the hidden fields and mark the form as "custom."
- $("#input_custom").val(true);
+ $("input[name=custom]").val(true);
  $(".hiddenField").removeClass("hiddenField");
 
  if ($("input[type=submit]").length==0){
