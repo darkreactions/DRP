@@ -206,8 +206,6 @@ def generate_grid(reaction, amine_list, debug=True):
   return amines_results
 
 def constructRecsFromSeed(seed_pid):
-  max_recommendations = 75
-
   #Load the default amines.
   try:
     amine_lab = DRP.models.Lab_Group.objects.filter(lab_title = "default_amines")[0]
@@ -246,7 +244,7 @@ def constructRecsFromSeed(seed_pid):
     raise Exception("No recommendations generated from Datum: {}".format(seed_pid))
 
   #Only return a number of the possible recommendations.
-  return recommendation_list[:max_recommendations]
+  return recommendation_list
 
 
 #Generate seeds from a Datum's id.

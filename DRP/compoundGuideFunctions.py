@@ -15,10 +15,12 @@ def translate_reactants(lab_group, dataList):
 
   #Actually "translate" the compounds to abbrevs.
   fields = get_model_field_names(model="Recommendation")
-  for (field, i) in zip(fields, range(len(dataList[2][1:]))):
-    if field[:8]=="reactant":
-        value = dataList[2][i+1]
+
+  for reactionTuple in dataList:
+    for (field, i) in zip(fields, range(len(reactionTuple[2][1:]))):
+      if field[:8]=="reactant":
+        value = reactionTuple[2][i+1]
         if value in compoundToAbbrevMap:
-          dataList[2][i+1] = compoundToAbbrevMap[value]
+          reactionTuple[2][i+1] = compoundToAbbrevMap[value]
 
   return dataList

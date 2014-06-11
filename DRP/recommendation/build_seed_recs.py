@@ -24,11 +24,13 @@ from DRP.retrievalFunctions import *
 from DRP.database_construction import *
 from DRP.compoundGuideFunctions import translate_reactants
 from DRP.recommendation.seed_rec import constructRecsFromSeed
+from DRP.recommendation.filter_seed_recs import filterSeedRecList
 from DRP.logPrinting import print_error, print_log
 from DRP.cacheFunctions import *
 
 #An independent worker process for generating and storing seeds in the database.
 def seed_rec_worker(lab_id, seed_id, user_id):
+  max_recs_per_seed = 250 #We don't want to clutter our database too much...
   print_log("Seed Rec: {} {} {}".format(lab_id, seed_id, user_id))
 
   try:
@@ -48,6 +50,11 @@ def seed_rec_worker(lab_id, seed_id, user_id):
       recList = constructRecsFromSeed(seed_id)
     except Exception as e:
       raise Exception("constructRecsFromSeed failed: {}".format(e))
+
+    try:
+      recList = filterSeedRecList(lab_group, recList)[:max_recs_per_seed]
+    except Exception as e:
+      raise Exception("filterSeedRecList failed: {}".format(e))
 
     #Translate any compounds in the recList to abbrevs.
     recList = translate_reactants(lab_group, recList)
