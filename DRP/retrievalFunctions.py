@@ -158,9 +158,13 @@ def filter_recommendations(lab_group, query_list):
  Q_list = []
   #Collect all the valid search options
  non_reactant_fields = get_model_field_names(model="Recommendation", unique_only=True)
- foreign_fields = ["user", "assigned_user"] #Fields that cannot search by containment.
+ #Keep track of what field of the ForeignKey should be used to search...
+ foreign_fields = {"user":"username",
+                   "assigned_user":"username",
+                   "seed":"ref"}
  reactant_fields = ["reactant","quantity","unit"]
- legal_fields = set(non_reactant_fields+reactant_fields+foreign_fields+["seeded"])
+ legal_fields = set(non_reactant_fields+reactant_fields+["seeded"]+
+                    foreign_fields.keys())
 
  #Check the query_list input before performing any database requests.
  for query in query_list:
@@ -176,8 +180,10 @@ def filter_recommendations(lab_group, query_list):
   field = query[u"field"]
   match = "__icontains" if query[u"match"] == "contain" else ""
   value = query[u"value"]
+
+  #If the field is a ForeignKey, query a field of THAT object.
   if field in foreign_fields:
-   field += "__username" #TODO: Generalize to all fields (make foreign_fields a dict where values are the foreign-field to search).
+   field += "__{}".format(foreign_fields[field])
 
   #Apply the filter or a Q object with a range of filters.
   if field in reactant_fields:

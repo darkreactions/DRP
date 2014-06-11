@@ -234,7 +234,7 @@ def recommendation_transmit(request, seeded=False):
 	"field":"seeded",
 	"value":"True",
 	"match":"exact"})
-
+  print query_list
   if query_list:
    recs = filter_recommendations(u.get_profile().lab_group, query_list)
   else:
@@ -484,7 +484,8 @@ def search(request, model="Data", params={}):
    {"raw":"assigned_user", "verbose":"Assigned User"}] + search_fields
    
    if "seeded" in params and params["seeded"]:
-     model = "SeedRecommendation"
+    model = "SeedRecommendation"
+    search_fields += [{"raw":"seed", "verbose":"Seed is..."}]
 
   return render(request, 'search_global.html', {
    "search_fields": search_fields,
