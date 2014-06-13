@@ -3,23 +3,24 @@
  position:absolute;
  height:80px;
  width:100%;
- margin-left:-30px;
+ margin-left:-60px;
  background-repeat:no-repeat;
  background-size:contain;
 }
 
 .logoTextFirst{
- font-size:46px;
+ font-size:36px;
  font-style:oblique;
 }
 
 #logoText {
  position:absolute;
  display:inline-block;
- font-size:40px;
+ font-size:30px;
  font-family:arial;
  font-weight:bold;
- 
+ letter-spacing:-1px;
+
  -webkit-user-select: none;  
  -moz-user-select: none;    
  -ms-user-select: none;      
@@ -29,7 +30,7 @@
 
 <div id="siteLogo" style="background-image: url({{ STATIC_URL }}images/mainLogo.png);">
 </div>
-<svg class="backgroundSVG" height=55 width=350 xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg class="backgroundSVG" height=55 width=400 xmlns="http://www.w3.org/2000/svg" version="1.1">
  <defs>  
   <linearGradient id="textGradient" x1="0%" x2="0%" y1="0%" y2="100%">  
       <stop stop-color="#3A6382" offset="0%"/>  
@@ -40,8 +41,9 @@
       <stop stop-color="#5087B3" offset="100%"/>  
   </linearGradient>  
  </defs>  
- <text id="logoText" x="30" y="45" fill="url(#textGradient)">
+ <text id="logoText" x="0" y="45" fill="url(#textGradient)">
   <tspan class="logoTextFirst" fill="url(#textGradientFirst)">D</tspan>ark
   <tspan class="logoTextFirst" fill="url(#textGradientFirst)">R</tspan>eaction
+  <tspan class="logoTextFirst" fill="url(#textGradientFirst)">P</tspan>roject
  </text>
 </svg>
