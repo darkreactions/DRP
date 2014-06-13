@@ -6,11 +6,9 @@ nv.addGraph(function() {
   var chart = nv.models.lineChart()
                   .x(function(d) { return d[0] })
                   .y(function(d) { return d[1] })
+                  .yDomain([0,1])
                   .useInteractiveGuideline(true)
-                  .showLegend(true)
-                  .showYAxis(true)
                   .showXAxis(true)
-                  .forceY([0,1])
                   ;
 
   //Set up the axes for the actual graph.
