@@ -24,7 +24,7 @@ def get_field_tuple(stat, entry):
 def get_fields_as_json(model_stats):
   #Variable Setup.
   stats_to_serialize = ["false_positive_rate", "actual_success_rate", 
-                         "estimated_success_rate", "performance"]
+                         "performance"]
   results_list = []
 
   # The D3 library needs the following format:
