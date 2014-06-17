@@ -87,12 +87,10 @@ def evaluate_results(results_location):
 				if row.split()[2] == POSITIVE:
 					false_positive += 1
 				else:
-					negative += 1
-			else:
-				noPlus += 1
+					true_negative += 1
 
 	#Get the actual rates.
-	falsePositiveRate = false_positive/float(noPlus+negative) if (noPlus+negative) else 0
+	falsePositiveRate = false_positive/float(true_negative+false_positive) if (true_negative + false_positive) else 0
 	performance = (total - inc) / float(total) if total != 0 else 0
 
 	return performance, falsePositiveRate

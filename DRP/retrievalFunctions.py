@@ -103,7 +103,7 @@ def filter_data(lab_group, query_list):
  if Q_list:
   data = data.filter(reduce(operator.and_, Q_list))
  if filters:
-  data = data.filter(**filters)   
+  data = data.filter(**filters)
  return data
 
 
@@ -116,7 +116,7 @@ def get_recommendations(lab_group):
 
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
  seed_recs = Recommendation.objects.filter(seeded=True, lab_group=lab_group)
- 
+
  #If given a seed ref, only yield those recommendations that are seeded from it.
  if seed_ref:
    datum = Data.objects.filter(ref=seed_ref)
@@ -139,7 +139,7 @@ def get_recommendations_by_date(lab_group, date = "recent"):
   #Get the most recent version of the model.
   try:
    version = get_latest_Model_Version(lab_group)
-   date = version.date
+   date = version.date_dt
   except Exception as e:
    raise Exception("Could not find any version of the model: {}".format(e))
 
@@ -163,7 +163,7 @@ def filter_recommendations(lab_group, query_list):
                    "assigned_user":"username",
                    "seed":"ref"}
  reactant_fields = ["reactant","quantity","unit"]
- legal_fields = set(non_reactant_fields+reactant_fields+["seeded"]+
+ legal_fields = set(non_reactant_fields+reactant_fields+["seeded", "saved"]+
                     foreign_fields.keys())
 
  #Check the query_list input before performing any database requests.
@@ -200,7 +200,7 @@ def filter_recommendations(lab_group, query_list):
  if Q_list:
   recs = recs.filter(reduce(operator.and_, Q_list))
  if filters:
-  recs = recs.filter(**filters)   
+  recs = recs.filter(**filters)
  return recs
 
 
@@ -219,15 +219,15 @@ def get_CG_list(lab_group, headers=True):
  #Apply headers to the list.
  if headers:
   CG_list = fields
- 
+
  #Get the entries' fields.
  CG_list += [getattr(entry, field) for entry in CG for field in fields]
- return CG_list  
+ return CG_list
 
 def get_CG_list_dict(headers=True):
  labs = Lab_Group.objects.all()
  CG_list_dict = {lab.lab_title:get_CG_list(lab, headers=headers) for lab in labs}
- return CG_list_dict   
+ return CG_list_dict
 
 def get_mass_range(lab_group, abbrev):
  try:
