@@ -39,7 +39,7 @@ window.applyTickingDots = function(location) {
       $(location).append(" .");
     }
   }, 1*1000);
-  
+
   //Bind the loading animation to this specific entry.
   $(location).data("timer", interval);
 
@@ -126,6 +126,19 @@ function getFormErrors(form) {
  }
 }
 
+function loadPageFilters(){
+  console.log("HERE");
+  console.log($(".filterLoader").length);
+  $(".filterLoader").each(function(i){
+    console.log($(this));
+    currentQuery.push({
+      "field":$(this).attr("field"),
+      "match":"exact",
+      "value":$(this).attr("value"),
+    });
+  });
+}
+
 //############   Formatting   ##########################################
 window.make_name_verbose = function(string) {
  var verbose_name = "";
@@ -205,11 +218,11 @@ $(document).on("mouseover", ".type_reactant", function() {
 //############  Side Container:  ####################################
 function toggleSideContainer() {
  if ($("#sidePanel").css("width")!="0px"){
-  $("#mainPanel").css("width","100%"); 
-  $("#sidePanel").css("width","0%"); 
+  $("#mainPanel").css("width","100%");
+  $("#sidePanel").css("width","0%");
  } else {
-  $("#mainPanel").css("width","50%"); 
-  $("#sidePanel").css("width","50%"); 
+  $("#mainPanel").css("width","50%");
+  $("#sidePanel").css("width","50%");
  }
 }
 
@@ -274,7 +287,7 @@ $(document).on("click", "#mask", function() {
 window.addDataSpecificButton = function(data, buttonID, image, title, classes) {
  classes = classes !== undefined ? classes : "";
 
- var buttonDiv = "<div id=\""+buttonID+"\"" 
+ var buttonDiv = "<div id=\""+buttonID+"\""
  buttonDiv += "class=\"dataSpecificButton "+classes+"\"";
  buttonDiv += "style=\"background-image: url(";
  buttonDiv += STATIC_URL+"/icons/"+image+");\""
@@ -294,53 +307,53 @@ $(document).on("mouseover", ".dataGroup", function() {
   //Add the copy button.
   if ($(this).attr("class").indexOf("copyable") >= 0) {
 
-   addDataSpecificButton(this, "leftMenu_addNew", "add.png", 
-    "Copy this reaction to the data form.", 
+   addDataSpecificButton(this, "leftMenu_addNew", "add.png",
+    "Copy this reaction to the data form.",
     "popupActivator duplicateSpecificDataButton");
-   addDataSpecificButton(this, "makeSeedRecommendations", "seed.gif", 
-    "Generate recommendations based on this datum.", 
+   addDataSpecificButton(this, "makeSeedRecommendations", "seed.gif",
+    "Generate recommendations based on this datum.",
     "");
 
   }
 
   //RECOMMENDATION-SPECIFIC BUTTONS # # # # # # # # # # # # # # # #
   if ($(this).attr("class").indexOf("recommendation") >= 0) {
-   //Add the (un)save buttons. 
+   //Add the (un)save buttons.
    if ($(this).attr("class").indexOf("savedRecommendation") < 0) {
-    addDataSpecificButton(this, "saveRecommendation", "save.png", 
+    addDataSpecificButton(this, "saveRecommendation", "save.png",
      "Save this recommendation.")
    } else {
-    addDataSpecificButton(this, "unsaveRecommendation", "delete.png", 
+    addDataSpecificButton(this, "unsaveRecommendation", "delete.png",
      "Unsave this recommendation.")
    }
- 
+
    //Add the (non)sensical buttons.
    if ($(this).attr("class").indexOf("badRecommendation") < 0) {
-    addDataSpecificButton(this, "nonsensicalRecommendation", "nonsense.png", 
+    addDataSpecificButton(this, "nonsensicalRecommendation", "nonsense.png",
      "Mark this recommendation as nonsensical.")
    } else {
-    addDataSpecificButton(this, "sensicalRecommendation", "check.png", 
+    addDataSpecificButton(this, "sensicalRecommendation", "check.png",
      "Mark this recommendation as sensical.")
    }
 
    //Add the show/hide button.
    if ($(this).attr("class").indexOf("hiddenRecommendation") < 0) {
-    addDataSpecificButton(this, "hideRecommendation", "hide.png", 
+    addDataSpecificButton(this, "hideRecommendation", "hide.png",
      "Hide this recommendation.");
    } else {
-    addDataSpecificButton(this, "showRecommendation", "show.png", 
+    addDataSpecificButton(this, "showRecommendation", "show.png",
      "Show this recommendation again.");
    }
- 
+
    //Add the transfer-to-database buttons.
    if ($(this).attr("class").indexOf("transferable") >= 0) {
-    addDataSpecificButton(this, "transferRecommendation", "add.png", 
+    addDataSpecificButton(this, "transferRecommendation", "add.png",
      "Complete this entry.",
      "popupActivator");
    }
- 
+
   }
- 
+
  }
 });
 
@@ -389,7 +402,7 @@ $(document).on("click", ".dataSpecificButton", function(event) {
  }
 
 
- //Send the request and do something with the response 
+ //Send the request and do something with the response
  $.post(url, JSON, function(response) {
   if (response=="0"){
    switch (buttonID) {
@@ -467,7 +480,7 @@ function getLicensePopup() {
   $("#popupContainer_inner").html(response);
   $(".closeButton").hide(); //Remove unnecessary close buttons.
  });
- 
+
  $("#popupGlobal").fadeIn(300);
 }
 
@@ -476,6 +489,8 @@ $(document).on("submit", ".downloadForm", function(event) {
  var form = $(this);
  model=$(this).find("input[name=model]").val();
 
+ loadPageFilters();
+ console.log(currentQuery);
  //If filters are enabled, send them in the form.
  var filters = "";
  if ($(this).find("input[name=use_filters]").val()=="True"){
@@ -485,7 +500,7 @@ $(document).on("submit", ".downloadForm", function(event) {
  showRibbon("Working...", neutralColor, "#popupContainer");
 
 });
- 
+
 $(document).on("submit", ".infoForm", function() {
  var form = $(this); //Keep a reference to the form inside the POST request.
  if ($(".warningIndicator").length){
@@ -525,19 +540,19 @@ $(document).on("submit", ".infoForm", function() {
    return false;
   } else if (response=="2") {
    showRibbon("Edit failed!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>"); 
+   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
    return false;
   } else if (response=="3") {
    showRibbon("Info missing!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>"); 
+   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
    return false;
   } else if (response=="4") {
    showRibbon("Invalid data!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>"); 
+   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
    return false;
   } else if (response=="5") {
    showRibbon("Please select a file!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Upload\" class=\"button\"/>"); 
+   $(form).append("<input type=\"submit\" value=\"Upload\" class=\"button\"/>");
    return false;
   } else {
    if ($("#popupContainer_inner").is(":visible")){
@@ -687,7 +702,7 @@ $(document).on("mouseover", ".search_filterButton", function() {
    filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": \""+currentQuery[i]["value"]+"\" ("+currentQuery[i]["match"]+")</div>";
   }
  }
- 
+
  //If "Atoms" search is active.
  if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
   current_atom_query = get_atom_query();
@@ -702,7 +717,7 @@ $(document).on("mouseover", ".search_filterButton", function() {
    //Add the new filter.
    filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(currentQuery.length)+1)+".) "+make_name_verbose(field)+": \""+value+"\" ("+match+")</div>";
  } else {
-  filter_string = "Enter a query!"; 
+  filter_string = "Enter a query!";
  }
  //Apply the title.
  $(this).attr("title", filter_string);
@@ -814,6 +829,9 @@ window.createPopupConfirmation = function(message) {
 }
 
 function loadPopup(response, kwargs){
+  //Default to no options being set.
+  if (kwargs===undefined) kwargs = {};
+
   //If the user needs to be logged in, send them to a prettier login form.
   if (response.indexOf("/user_login/")>0 && !kwargs["popupLogin"]){
     window.location.href = "/login/";
@@ -916,19 +934,19 @@ $(document).on("click", ".popupActivator", function(event) {
    $.get("/search/Data", function(response) {
     loadSideBar(response, {"autocomplete":true})
    });
-   return false; 
+   return false;
    break;
   case "searchButton_recs":
    $.get("/search/Recommendation", function(response) {
     loadSideBar(response, {"autocomplete":true})
    });
-   return false; 
+   return false;
    break;
   case "searchButton_seed_recs":
    $.get("/search/SeedRecommendation", function(response) {
     loadSideBar(response, {"autocomplete":true})
    });
-   return false; 
+   return false;
    break;
   case "userLogin":
    $.get("/user_login/", function(response) {
@@ -940,7 +958,7 @@ $(document).on("click", ".popupActivator", function(event) {
     loadPopup(response);
    });
    break;
-  case "registrationPrompt": 
+  case "registrationPrompt":
    $.get("/registration_prompt/", function(response) {
     loadPopup(response);
    });
@@ -983,7 +1001,7 @@ $(document).on("click", ".popupActivator", function(event) {
  $("#popupGlobal").fadeIn(300);
 });
 
-// Cancel any masks or popups that are covering the screen. 
+// Cancel any masks or popups that are covering the screen.
 $(document).on("click", ".refreshButton", function() {
  window.location.reload(true);
 });
@@ -1038,7 +1056,7 @@ $(document).on("click", ".checkCompoundButton", function() {
       + "<div>Is this the compound you want to add?</div>";
     $(".compoundCheckResults").html(formatText(newResults));
     $(form).append("<input name=\"submit\" type=\"submit\" value=\"Save\" class=\"button\"/>");
-    
+
    }
   });
 
@@ -1117,13 +1135,13 @@ function cancelEditables() {
 }
 
 //Initiate edit session.
-$(document).on("click", ".editable", function() { 
+$(document).on("click", ".editable", function() {
  //Don't allow editables of empties in a reactantField
  if ($(this).closest(".reactantField").length && $(this).is(":empty")){
   return false;
  } else if ($(this).closest(".recommendation").length && $(this).attr("class").indexOf("type_notes")<0) {
   return false;
- } 
+ }
 
  //Close any other editables.
  if ($(this).find(".editField").length != 0) {
@@ -1253,7 +1271,7 @@ $(document).on("click", ".editConfirm", function() {
     } else {
      fieldChanged = fieldChanged.substr(5);
     }
- 
+
     //Send edits for Compound Guide
     if ($("#CG_display").length) {
      var pidToChange = $(this).closest(".CGRow").attr("pid");
@@ -1263,7 +1281,7 @@ $(document).on("click", ".editConfirm", function() {
       field : fieldChanged,
       newVal : newValue,
       oldVal : oldValue,
-      pid : pidToChange, 
+      pid : pidToChange,
       type : "edit"
      }
      $.post("/edit_CG_entry/", editLog, function(response) {
@@ -1275,7 +1293,7 @@ $(document).on("click", ".editConfirm", function() {
          showRibbon("Entry changed!", goodColor, "#popupContainer");
        }
      });
- 
+
     } else {
      //Send edits for the Data/Rec View
      var editLog = {
@@ -1300,7 +1318,7 @@ $(document).on("click", ".editConfirm", function() {
       showRibbon("Entry changed!", goodColor, "#mainPanel");
      }
     });
-   } 
+   }
 
    //Immediately change the visual for the user while waiting for a response.
    if (typeof compound !== 'undefined') {
@@ -1311,7 +1329,7 @@ $(document).on("click", ".editConfirm", function() {
     }
    } else {
     $(editParent).html(newValue);
-    //checkForUnknown($(this).closest(".dataGroup")); 
+    //checkForUnknown($(this).closest(".dataGroup"));
    }
 
   } else {

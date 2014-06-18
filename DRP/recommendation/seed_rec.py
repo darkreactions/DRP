@@ -6,7 +6,6 @@ django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
 django_path = "{}/DRP".format(django_dir)
 if django_path not in sys.path:
   sys.path.append("{}/DRP".format(django_dir))
-
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 import DRP.models
@@ -33,7 +32,7 @@ reactant_fields = {
 
 pH_range = [1,3,5]
 number_of_amine_mole_steps = 10
-steps_per_amine = len(pH_range)*number_of_amine_mole_steps 
+steps_per_amine = len(pH_range)*number_of_amine_mole_steps
 
 def get_reactants_indices(reaction):
 	indices = dict()
@@ -44,14 +43,14 @@ def get_reactants_indices(reaction):
 
 		reactant_type = is_valid_reactant(reaction, r_f)
 		if reactant_type == "Org":
-			indices["org"] = r_f 
+			indices["org"] = r_f
 		elif reactant_type == "Inorg":
 			if "metal_1" in indices:
 				indices["metal_2"] = r_f
 			else:
-				indices["metal_1"] = r_f 
+				indices["metal_1"] = r_f
 		elif reactant_type == "Water":
-			indices["water"] = r_f	
+			indices["water"] = r_f
 	if "metal_1" not in indices or "metal_2" not in indices or "org" not in indices or "water" not in indices:
 		raise Exception("Missing a metal or amine: " + str(indices))
 	return indices
@@ -69,13 +68,13 @@ def is_valid_reactant(reaction, r_f):
 
 def get_amine_moles(reaction, amine_index):
 	return CG[getattr(reaction,amine_index)]["mw"] / float(getattr(reaction,reactant_fields[amine_index][0]))
-	
+
 
 def get_amine_range(moles):
 	return [i/5.0 for i in range(11)]
 
 def row_generator(reaction, indices, amine_moles, amine_list):
-	
+
 	metal_1 = getattr(reaction,indices["metal_1"])
 	metal_2 = getattr(reaction,indices["metal_2"])
 	amine = getattr(reaction,indices["org"])
@@ -96,9 +95,10 @@ def row_generator(reaction, indices, amine_moles, amine_list):
 		for mass in amine_range:
 			for pH in pH_range:
 				yield ["--", metal_1, metal_1_mass, "g", metal_2, metal_2_mass,
-					"g", amine, mass, "g", water, water_mass, "g", "","","", 
+					"g", amine, mass, "g", water, water_mass, "g", "","","",
 					getattr(reaction,"temp"), getattr(reaction,"time"), pH, "yes", "no", 4, 2, ""]
 
+#TODO: Look here for where to change the amine molar mass, Casey.
 def get_candidates(results, idx, raw_rows):
 	candidates = []
 	for i in range(steps_per_amine):
@@ -117,7 +117,7 @@ def get_candidates(results, idx, raw_rows):
 	for r in candidates:
 		avg_mass += float(r[8])
 		avg_ph += float(r[18])
-	
+
 	avg_mass = avg_mass / float(len(candidates))
 	avg_ph = avg_ph / float(len(candidates))
 
@@ -134,7 +134,7 @@ def get_candidates(results, idx, raw_rows):
 
 	score = len(candidates)/float(num_candidates)
 
-	return best_row, score 
+	return best_row, score
 
 def generate_grid(reaction, amine_list, debug=True):
   try:
@@ -152,7 +152,7 @@ def generate_grid(reaction, amine_list, debug=True):
     row_gen = row_generator(reaction, indices, amine_moles, amine_list)
     raw_rows = [row for row in row_gen]
     #print raw_rows
-    rows =[hdrs] + [ ",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, CG, ml_convert)]) for row in raw_rows] 
+    rows =[hdrs] + [ ",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, CG, ml_convert)]) for row in raw_rows]
   except Exception as e:
     raise Exception("Failed step 2...\n{}".format(e))
 
@@ -160,9 +160,9 @@ def generate_grid(reaction, amine_list, debug=True):
     with open(prefix + fileprefix + ".csv", "w") as outfile:
       for row in rows:
         outfile.write(row+"\n")
-  
+
     if debug: print prefix + fileprefix + ".csv"
-        
+
     clean2arff.clean(prefix+fileprefix)
   except Exception as e:
     raise Exception("Failed step 3...\n{}".format(e))
@@ -171,34 +171,34 @@ def generate_grid(reaction, amine_list, debug=True):
   try:
     cmd = "sh {0}/DRP/research/test_model.sh {1} {2}".format(BASE_DIR, fileprefix, MODEL_LOCATION)
     result = subprocess.check_output(cmd, shell=True)
-  
+
     if debug: print result, cmd
   except Exception as e:
     raise Exception("Failed step 4...\n{}".format(e))
 
   try:
-    weka_results_file = fileprefix + ".out" 
+    weka_results_file = fileprefix + ".out"
     results = dict()
     with open(prefix + weka_results_file, "r") as weka_results:
       for i in xrange(5):
         weka_results.next()
-  
+
       for i, row in enumerate(weka_results):
         if "+" not in row and row != "\n":
           conf = float(row.split()[-1])
           results[i] =  conf
   except Exception as e:
     raise Exception("Failed step 5...\n{}".format(e))
-  
+
   try:
-    amines_results = [] 
+    amines_results = []
     raw_rxn = DRP.models.convert_Data_to_list(reaction)
     for i, amine in enumerate(amine_list):
       best_candidate, best_conf = get_candidates(results,i*steps_per_amine, raw_rows)
       if best_candidate:
         amines_results.append( (best_conf, sim(best_candidate, raw_rxn), best_candidate) )
-  
-  
+
+
     if debug: print amines_results
     amines_results.sort(key=lambda x: x[0]*x[1], reverse=True)
   except Exception as e:

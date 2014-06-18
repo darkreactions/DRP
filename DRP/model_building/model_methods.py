@@ -11,7 +11,7 @@ if django_path not in sys.path:
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-import DRP.database_construction as dbc
+from DRP.database_construction import store_ModelStats
 from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
 POSITIVE = "2:2"
@@ -26,13 +26,13 @@ def gen_model(model_name):
 
 	rows, keys = load_data.get_feature_vectors(keys=True)
 	print "evaluating model"
-	inc, total, false_p =  evaluate_model(rows, keys)
+	performance, false_p =  evaluate_model(rows, keys)
 	make_arff(name, rows)
 	
 	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
 
-	performance = (total - inc) / float(total) if total != 0 else 0
 
+	#Prepare these model stats entry and store it in the database.
 	update_dashboard(false_positive = false_p, model_performance = performance, model_name = model_name)
 
 	
@@ -62,10 +62,9 @@ def evaluate_model(rows,keys):
 	
 	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
 	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_DIR + name)
-	incorrect, total, false_positive = evaluate_results(results) 
-	
-	#TODO: add new entry
-	return incorrect, total, false_positive
+
+	performance, falsePositiveRate = evaluate_results(results) 
+	return performance, falsePositiveRate
 
 	
 	 
@@ -77,6 +76,8 @@ def evaluate_results(results_location):
 		total = 0
 		incorrect = 0
 		false_positive = 0
+		negative = 0
+		noPlus = 0
 		for row in results_file:
 			if "\n" == row:
 				continue
@@ -85,7 +86,14 @@ def evaluate_results(results_location):
 				incorrect += 1
 				if row.split()[2] == POSITIVE:
 					false_positive += 1
-	return incorrect, total, false_positive
+				else:
+					true_negative += 1
+
+	#Get the actual rates.
+	falsePositiveRate = false_positive/float(true_negative+false_positive) if (true_negative + false_positive) else 0
+	performance = (total - inc) / float(total) if total != 0 else 0
+
+	return performance, falsePositiveRate
 
 
 def make_arff(name, rows, zero_one = False):
@@ -117,7 +125,8 @@ def update_dashboard(
 	model_name = None): 
 
 	import DRP.models as m
-
+	
+	#If a specific datum is missing for some reason, use the previous one. 
 	last = m.ModelStats.objects.last()
 	if false_positive is None:
 		false_positve = last.false_positive_rate
@@ -132,8 +141,8 @@ def update_dashboard(
 	if model_name is None:
 		model_name = "Automated update"
 
-	print false_positive, model_performance, rec_estimate, empirical_success, model_name
-	dbc.store_ModelStats(false_positive, empirical_success, rec_estimate, model_performance, model_name) 
+        #Store these stats in the database
+	store_ModelStats(false_positive, empirical_success, rec_estimate, model_performance, model_name) 
 	
 	
 def evaluate_real_results(lab_group = None):

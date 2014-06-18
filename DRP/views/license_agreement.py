@@ -44,7 +44,7 @@ def update_user_license_agreement(request):
   try:
    u.get_profile().update_license()
    email_body = "This is a receipt for your records to indicate that you accepted our new License Agreement. If you are receiving this in error, please contact us immediately."
-   email_user(user, "License Agreement Confirmed", email_body)
+   email_user(u, "License Agreement Confirmed", email_body)
    return HttpResponse(
     "<p>You're all up-to-date!</p>" +
     "<div class=\"button refreshButton\">Explore</div>"
