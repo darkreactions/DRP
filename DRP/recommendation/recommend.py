@@ -2,16 +2,22 @@ import uuid,json,subprocess,math
 import parse_rxn
 import clean2arff, rebuildCDT
 
-import load_cg 
+import load_cg
+import sys, os
 
-sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
+django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+django_path = "{}/DRP".format(django_dir)
+if django_path not in sys.path:
+  sys.path.append("{}/DRP".format(django_dir))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 import DRP.model_build.model_methods as mm
+from DRP.settings import TMP_DIR, BASE_DIR
 
 MODEL_LOCATION = mm.get_current_model()
 
 
-cg_props = load_cg.get_cg() 
+cg_props = load_cg.get_cg()
 ml_convert = json.load(open("mlConvert.json"))
 hdrs = ",".join(rebuildCDT.headers)
 
@@ -20,7 +26,7 @@ joint_sim = dict()
 restrict_lookup = dict()
 
 
-test_var = False 
+test_var = False
 if not test_var:
 	time_range = [24, 36, 48]
 	pH_range = range(1,7,2) # TODO: make 2
@@ -39,7 +45,7 @@ def user_recommend(combinations, similarity_map, range_map):
 	stripped out. currently assuming each tuple is length 3.
 
 	Similarity_map maps from a reactant (key) to a sorted list of
-	(name, similarity) tuples where similarity = sim(key, name). 
+	(name, similarity) tuples where similarity = sim(key, name).
 
 	Range map is a map from name to (min, max), where min and max are the
 	largest and smallest mass to try. We can make steps in between by using
@@ -66,7 +72,7 @@ def dissim(choice, rec, similarity_map, tanimoto=False):
 		r = make_row(list(rec[1]), 0.1, 0.1, 0.1, 0.1, 1, 36, 70) # TODO: make valid
 		return (rec[0]*(1.0*euclidean_similarity(c, r)), rec[1], rec[2])
 	return (rec[0]/(1.0 + tanimoto_similarity(choice, rec, similarity_map)), rec[1], rec[2])
-	
+
 
 def tanimoto_similarity(choice, rec, similarity_map):
 	choice_compounds = list(choice[1])
@@ -85,9 +91,9 @@ def tanimoto_similarity(choice, rec, similarity_map):
 		pairs.append( max_sim)
 		rec_compounds.pop(max_i)
 	sim = sum(pairs)
-	return sim 
-	
-	
+	return sim
+
+
 
 def dissimilarity_weighting(recs_unweighted, similarity_map):
 	recs = []
@@ -96,7 +102,7 @@ def dissimilarity_weighting(recs_unweighted, similarity_map):
 		recs.append(choice)
 		recs_unweighted = reweight(choice, recs_unweighted, similarity_map)
 	return recs
-		
+
 
 
 def do_get_evlaute_result(args):
@@ -107,7 +113,7 @@ def do_get_evlaute_result(args):
 
 def explore(combination, explored,similarity_map, range_map):
 	def args_yielder(similarity_map, combination, explored):
-		for count in range(0,total_sims): 
+		for count in range(0,total_sims):
 			(i1, i2, i3) = calculate_indices(count, similarity_lengths)
 			new_combination = make_combination(similarity_map, combination, (i1,i2,i3))
 			if new_combination in explored:
@@ -116,12 +122,12 @@ def explore(combination, explored,similarity_map, range_map):
 			yield (new_combination, range_map)
 
 
-	similarity_lengths = [len(similarity_map[combination[0]]), len(similarity_map[combination[1]]), len(similarity_map[combination[2]])]	
+	similarity_lengths = [len(similarity_map[combination[0]]), len(similarity_map[combination[1]]), len(similarity_map[combination[2]])]
 	total_sims = similarity_lengths[0]*similarity_lengths[1]*similarity_lengths[2]
 	recs = []
 	import multiprocessing
 	pool = multiprocessingPool(processes=5)
-	recs = pool.map(do_get_evaluate_result, args_yielder(similarity_map, combination, explored)) 
+	recs = pool.map(do_get_evaluate_result, args_yielder(similarity_map, combination, explored))
 	return recs
 
 
@@ -139,7 +145,7 @@ def calculate_indices(count, list_lengths):
 def make_combination(similarity_map, combination, i):
 	i1,i2,i3 = i
 	names = [similarity_map[combination[0]][i1][0], similarity_map[combination[1]][i2][0], similarity_map[combination[2]][i3][0]]
-	return tuple(sorted(names))	
+	return tuple(sorted(names))
 
 
 def choose_center(rxns, new_combination):
@@ -160,18 +166,18 @@ def choose_center(rxns, new_combination):
 def evaluate_fitness(new_combination, range_map):
 	#TODO: maybe make a smarter search?
 	name = str(uuid.uuid4())
- 	prefix = "/home/drp/research/tmp/"
+ 	prefix = TMP_DIR
 	rows_generator = generate_rows(new_combination, range_map)
 	with open(prefix + name + ".csv","w") as raw:
 		raw.write(hdrs+"\n")
 		for row in rows_generator:
 			raw.write(",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, cg_props, ml_convert)]) +"\n")
-	clean2arff.clean(prefix + name) 
-	cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_model.sh {0} {1}".format(name, MODEL_LOCATION)
+	clean2arff.clean(prefix + name)
+	cmd = "sh {0}/DRP/model_building/test_model.sh {1} {2}".format(BASE_DIR, name, MODEL_LOCATION)
 	print cmd
 	result = subprocess.check_output(cmd, shell=True)
 	# The output of the above line should be "{0} {1}", where {0} is a score
-	# and {1} is an list of integers which are the ID #s of the highest 
+	# and {1} is an list of integers which are the ID #s of the highest
 	# confidence rxns...
 
 	#find the first space!
@@ -207,14 +213,14 @@ def evaluate_fitness(new_combination, range_map):
 	#	return (-1.0, [])
 
 	return (float(conf),rxn)
-	
-	
-		
-	
+
+
+
+
 
 def get_rxn_row(cnt, new_combination, range_map):
 	ranges = range_map[new_combination[0]], range_map[new_combination[1]], range_map[new_combination[2]], range_map['water']
-	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))] 
+	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))]
 	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
 	(mass1, mass2, mass3, mass4, pH, time, temp) = calculate_indices(i, len_list)
 	return [mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]]
@@ -230,12 +236,12 @@ def generate_rows(new_combination, range_map):
 			range_map[comb] = [0.001, 0.005]
 			ranges.append( [0.001, 0.005] )
 
-	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))] 
+	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))]
 	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
 	#print reduce(mul, len_list)
 	for i in range(reduce(mul, len_list)):
 		(mass1, mass2, mass3, mass4, pH, time, temp) = calculate_indices(i, len_list)
-		yield make_row(new_combination, mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]) 
+		yield make_row(new_combination, mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp])
 
 
 def make_row(combination, m1, m2, m3, m4, pH, time, temp):
@@ -243,7 +249,7 @@ def make_row(combination, m1, m2, m3, m4, pH, time, temp):
 
 def calc_score(score, similarity_map, combination, new_combination):
 	return score # TURNING OFF SIMILARITY TO OBSERVE EfFECT ON RECOMmeNDATIONS
-	sim = []	
+	sim = []
 	for i in range(len(combination)):
 		for p in similarity_map[combination[i]]:
 			if p[0] == new_combination[i]:
@@ -271,7 +277,7 @@ def euclidean_similarity(reaction_one, reaction_two):
 				raise e
 	dist = 1 / ( 1 + math.exp(- dist))
 	return dist
-	
+
 
 def calc_similarity(compound_one, compound_two):
 	if compound_one in joint_sim:
@@ -300,7 +306,7 @@ def calc_similarity(compound_one, compound_two):
 	joint_sim[compound_one][compound_two] = similarity
 	joint_sim[compound_two][compound_one] = similarity
 	return similarity
-	
+
 
 
 def build_sim_list(name, cg_targets, count=5):
@@ -314,7 +320,7 @@ def build_sim_list(name, cg_targets, count=5):
 	mol = Chem.MolFromSmiles(str(cg_props[name]["smiles"]))
 	fp = FingerprintMols.FingerprintMol(mol)
 	sims = []
-	for compound in cg_targets: 
+	for compound in cg_targets:
 		if compound == name: continue
 		try:
 			mol2 = Chem.MolFromSmiles(str(cg_props[compound]["smiles"]))
@@ -326,7 +332,7 @@ def build_sim_list(name, cg_targets, count=5):
 			continue
 
 	if len(sims) == 0:
-		return [(name,1.0)] 
+		return [(name,1.0)]
 
 	returned_list = []
 
@@ -337,7 +343,7 @@ def build_sim_list(name, cg_targets, count=5):
 	while len(returned_list) < count:
 		choice = sims.pop(0)
 		if choice[1] == 0.0:
-			break 
+			break
 		returned_list.append(choice)
 		sims = reweight_list(choice, sims)
 		sims.sort(key = lambda x: x[2], reverse=True)
@@ -354,7 +360,7 @@ def get_range(name):
 
 def build_combos(reaction_list):
 	return [ tuple(sorted(filter(lambda x: x is not None and x != "water", [r[1],r[4],r[7],r[10],r[13]]))) for r in reaction_list]
-	
+
 
 def build_sim_map(compound_guide):
 	inorgs,orgs,oxs = [],[],[]
@@ -388,20 +394,17 @@ def build_baseline(lab_group=None):
 		idxes = [1,4,7,10,13]
 		for i in idxes:
 			if r[i] not in r_m:
-				r_m[r[i]] = set() 
+				r_m[r[i]] = set()
 			try:
 				float(r[i+1])
 			except Exception as e:
 				continue
-			if float(r[i+1]) > 0: 
+			if float(r[i+1]) > 0:
 				r_m[r[i]].add(float(r[i+1]))
-			
-	import sys, os
-	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
+
 	from DRP.models import get_good_rxns
 	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
-	
+
 	combinations = set()
 	range_map = dict()
 	quality_map = dict()
@@ -411,7 +414,7 @@ def build_baseline(lab_group=None):
 		if any([True if c not in cg_props else False for c in compoundss]):
 			print compoundss
 			continue
-		q_key = tuple(sorted(compoundss)) 
+		q_key = tuple(sorted(compoundss))
 		combinations.add(q_key)
 		add_to_map(range_map, r)
 		if q_key not in quality_map:
@@ -424,7 +427,7 @@ def build_baseline(lab_group=None):
 		except Exception as e:
 			range_map[k] = (0,0)
 	for q_key in quality_map:
-		quality_map[q_key] = quality_metric(quality_map[q_key]) 
+		quality_map[q_key] = quality_metric(quality_map[q_key])
 	return range_map, quality_map, combinations
 
 
@@ -439,10 +442,7 @@ def fix_abbrevs(rxns):
 	return rxns
 
 def get_abbrev_map():
-	import sys, os
-	sys.path.append('/home/drp/web/darkreactions.haverford.edu/app/DRP')
-	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DRP.settings')
-	from DRP.models import CompoundEntry as c 
+	from DRP.models import CompoundEntry as c
 
  	entries = c.objects.all()
 	abbrev_map = dict()
@@ -451,7 +451,7 @@ def get_abbrev_map():
 		abbrev_map[e.abbrev] = e.compound
 		compound_set.add(e.compound)
 	return abbrev_map, compound_set
-	
+
 
 def test():
 	combinations = [ ("NH4VO3", "K2Cr2O7", 'pip'), ("V2O5", "H3PO3", "tmed"), ("NaVO3","SeO2","deta")]
@@ -459,7 +459,7 @@ def test():
 	for rxn in combinations:
 		for reactant in rxn:
 			if reactant not in similarity_map:
-				similarity_map[reactant] = build_sim_list(reactant) 
+				similarity_map[reactant] = build_sim_list(reactant)
 	range_map = {}
 	print similarity_map, "sim"
 	for name in cg_props:
@@ -476,8 +476,8 @@ def combo_generator(seed):
         for i in seed[0]:
                 for j in seed[1]:
                         for k in seed[2]:
-                                yield (i,j,k)             
-             
+                                yield (i,j,k)
+
 
 def rank_possibilities(seed, tried):
         scorer = score_maker(tried)
@@ -487,9 +487,9 @@ def rank_possibilities(seed, tried):
 	        how_many_to_rate = 500
         scores = []
         for combo in combo_generator(seed):
-                scores.append( (scorer(combo), combo) )             
-        
-        from operator import itemgetter             
+                scores.append( (scorer(combo), combo) )
+
+        from operator import itemgetter
         scores.sort(key=itemgetter(0), reverse=True)
 
 	results = []
@@ -612,7 +612,7 @@ def restrict_test():
 		for j in range(len(seed[i])):
 			if seed[i][j] in abbrev_map:
 				seed[i][j] = abbrev_map[seed[i][j]]
-		
+
 	scores = rank_possibilities(seed, combinations)
 	import mutual_info
 	scores = mutual_info.do_filter(scores, range_map)
@@ -630,13 +630,13 @@ def restrict_test():
 
 	rescored.sort(key=lambda x: x[0])
 	return rescored
-	
-	
+
+
 
 
 if __name__ == "__main__":
 	print restrict_test()
-	
+
 	#range_map, quality_map, combinations = build_baseline()
 	#sim_map = build_sim_map(cg_props)
 	#print sim_map
