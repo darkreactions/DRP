@@ -258,13 +258,19 @@ class Lab_Member(models.Model):
 ############### DATA ENTRY ########################
 from calculationFields import calc_fields
 class DataCalc(models.Model):
- for calc_field in calc_fields:
-  #Make sure field names don't contain operators.
-  calc_field = calc_field.replace("+","PLUS").replace("-","MINUS")
-  exec("{0} = models.CharField(\"{0}\", max_length=22)".format(calc_field))
+  contents = models.TextField() 
 
- def __unicode__(self):
-  return u"{}".format(self.XXXtitle);
+  def __init__(self, jsonContent):
+    self.contents = json.dumps(jsonContent)  
+
+  def __unicode__(self):
+    return u"{}".format(self.contents);
+  
+  def make_json(self):
+    return json.loads(self.contents) 
+
+  def make_list(self):
+    return 
 
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):

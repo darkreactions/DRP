@@ -44,10 +44,14 @@ urlpatterns = patterns('',
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
    #Validation
     (r'^send_CG_names/$', "DRP.views.jsonViews.send_CG_names"), #Send the CG name_pairs for client-side validation.
-  #Predictions
-    (r'^predictions/$', visuals), #TODO: Nora, rename this to whatever you want.
-                                  #      We called it "prediction" but now that's
-                                  #      not exactly what we're visualizing.
+  #Visualization? (I'm assuming this is what "Predictions" referred to) 
+    (r'^explore/$',"DRP.views.explore_vis.py.get_vis"),
+	 #TODO: Hoping to map this URL to the view for the visualization, 
+	 # so that when the explore tab is opened, the visualization
+	 # will automatically come up (may eventually want options for how
+	 # how much/whose data should be represented, but perhaps that can
+	 # be configured in the view/template/js file for the visualization
+	 # (explore_vis.py, explore_vis.html, and explore_vis.js, respectively)
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
     (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),

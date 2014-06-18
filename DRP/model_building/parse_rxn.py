@@ -1,6 +1,16 @@
-import json, csv,sys,math
-import rxn_calculator
+import sys, os, json, csv, math 
+django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+django_path = "{}/DRP".format(django_dir)
+if django_path not in sys.path:
+  sys.path.append("{}/DRP".format(django_dir))
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
+from DRP.model_building.rxn_calculator as rxn_calculator 
 import traceback
+
+from DRP.models import DataCalc 
+
 
 def fixmL(t):
     o = ''
@@ -200,9 +210,13 @@ def parse_rxn(row, rxn_table, ml_convert):
     output += rxn_calculator.atomic_properties(atoms, smiles, atom_counts)
     output.append(purity)
     output.append(outcome)
- 
-    return map(lambda s: "{0:.4f}".format(s) if type(s) == float else s,  output)
-
+    # Needs work: trying to compile all expanded data into the DataCalc model 
+    result = map(lambda s: "{0:.4f}".format(s) if type(s) == float else s, output)
+    jsonText = json.dumps(result) 
+    newDataCalcObj = DataCalc(contents=jsonText)
+    newDataCalcObj.save() 
+    return result 
+    #return map(lambda s: "{0:.4f}".format(s) if type(s) == float else s,  output)  
 
 def parse_rxns(data, name, cg_props = None, ml_convert = None):
     results = []
