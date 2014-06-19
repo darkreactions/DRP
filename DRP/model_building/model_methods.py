@@ -32,7 +32,7 @@ def gen_model(model_name, description):
   performance, false_p =  evaluate_model(rows, keys)
   make_arff(name, rows)
 
-  subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
+  subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
 
 
   #Prepare these model stats entry and store it in the database.
@@ -66,7 +66,7 @@ def evaluate_model(rows,keys):
 	make_arff(name + "test", test, True)
 	make_arff(name + "train", train, True)
 
-	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
+	subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
 	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_DIR + name)
 
 	performance, falsePositiveRate = evaluate_results(results)
@@ -118,9 +118,10 @@ def make_arff(name, rows, zero_one = False):
 
 
 def make_predictions(target_file, model_location):
-	results_location = "{}/tmp/" + str(uuid.uuid4()) + ".out"
-	subprocess.check_output("sh make_predictions.sh {0} {1} {2}".format(target_file, model_location, results_location), shell=True)
-	return results_location
+  results_location = TMP_DIR + str(uuid.uuid4()) + ".out"
+  subprocess.check_output("bash DRP/model_building/make_predictions.sh {0} {1} {2}".format(target_file, model_location, results_location), shell=True)
+
+  return results_location
 
 
 def update_dashboard(
