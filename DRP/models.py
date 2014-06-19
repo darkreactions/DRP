@@ -11,12 +11,12 @@ from uuid import uuid4
 from CGCalculator import CGCalculator
 from collections import defaultdict
 from subprocess import Popen
-from DRP.settings import LOG_DIR, BASE_DIR    
+from DRP.settings import LOG_DIR, BASE_DIR
 
 import json, random, string, datetime, operator
 import rdkit.Chem as Chem
 import chemspipy
-    
+
 
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
@@ -105,7 +105,7 @@ def collect_CGs_by_abbrevs(lab_group, abbrev_list):
  CG_list = []
  for i in abbrev_list:
   query = get_lab_CG(lab_group).filter(abbrev=i)
-  if query.exists(): 
+  if query.exists():
    CG_list.append(query[0])
  return CG_list
 
@@ -166,16 +166,16 @@ def update_compound(entry):
     if not entry.custom: #Only update compounds that are not custom.
       #Get the most up-to-date ChemSpider info for a given CAS/compound.
       query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
-      if query: 
+      if query:
         #Update the entry.
         entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
         perform_calcs = True
-  
+
       else:
         perform_calcs = False
         print "Found legacy entry that should be custom: {}".format(entry.compound)
     else:
-        perform_calcs = False  
+        perform_calcs = False
         entry.calculations = None
         entry.image_url, entry.smiles, entry.mw = "","",""
     entry.save()
@@ -250,27 +250,25 @@ class Lab_Member(models.Model):
 
  def update_license(self):
   self.license_agreement_date_dt = datetime.datetime.now()
-  self.save()  
+  self.save()
 
  def __unicode__(self):
   return self.user.username
 
 ############### DATA ENTRY ########################
-from calculationFields import calc_fields
 class DataCalc(models.Model):
-  contents = models.TextField() 
+  contents = models.TextField(default="[]")
 
   def __init__(self, jsonContent):
-    self.contents = json.dumps(jsonContent)  
+    self.contents = json.dumps(jsonContent)
 
   def __unicode__(self):
     return u"{}".format(self.contents);
-  
-  def make_json(self):
-    return json.loads(self.contents) 
 
-  def make_list(self):
-    return 
+  #Convert the stringy contents to an actual array/JSON object.
+  def make_json(self):
+    return json.loads(self.contents)
+
 
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
@@ -318,18 +316,21 @@ class Data(models.Model):
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):
   # model false-positive on test set
-  false_positive_rate = models.FloatField() 
+  false_positive_rate = models.FloatField()
 
   # recommendation quality
-  actual_success_rate = models.FloatField() 
+  actual_success_rate = models.FloatField()
 
   # evaluation of similarity metric
-  estimated_success_rate = models.FloatField() 
-  
+  estimated_success_rate = models.FloatField()
+
   # model performance
   performance = models.FloatField()
   datetime = models.DateTimeField()
-  description = models.TextField()
+
+  #Model Descriptors
+  title = models.CharField("Title", max_length=100, default="")
+  description = models.TextField(default="")
 
   def __unicode__(self):
     return "Performance:{} ({})".format(self.performance, self.datetime)
@@ -406,7 +407,7 @@ class RankedReactionList(models.Model):
   self.ranker = ranker
   self.ranked_list = json.dumps(ranked_list)
   self.save()
- 
+
 def get_unranked_reactions(seed=None):
  unranked = RankedReactionList.objects.filter(ranker=None)
  #If a seed is specified, apply it to the filter.
@@ -498,7 +499,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None, reattempt_failed 
 #Remove any non-printable characters.
 def clean_compound(compound):
  return filter(lambda x: x in string.printable, compound)
- 
+
 class CompoundEntry(models.Model):
  abbrev = models.CharField("Abbreviation", max_length=100)
  compound = models.CharField("Compound", max_length=100)
@@ -534,7 +535,7 @@ def parse_CAS_ID(CAS):
 
 def validate_CG(dirty_data, lab_group, editing_this=False):
  #Variable Setup
- clean_data = dirty_data 
+ clean_data = dirty_data
  errors = {}
 
  for field in ["compound", "abbrev", "compound_type"]:
@@ -613,7 +614,7 @@ def convert_Data_to_list(dat, headings=None):
 				val = new_val
 		results.append(val)
 
-	return results 
+	return results
 
 def collect_reactions_as_lists(lab_group, with_headings=True):
  lab_group = get_Lab_Group(lab_group)
@@ -716,24 +717,24 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time_dt", "calculations"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time_dt", 
-                       "calculations", "calculated_temp", "calculated_time", 
+   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time_dt",
+                       "calculations", "calculated_temp", "calculated_time",
                        "calculated_pH", "is_valid", "public"}
   dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
  elif model=="Recommendation":
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time_dt"}
   else:
-   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", 
-                       "model_version", "atoms", "creation_time_dt", "nonsense", 
+   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved",
+                       "model_version", "atoms", "creation_time_dt", "nonsense",
                        "complete", "score", "date_dt", "hidden", "seed", "seeded"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:
    fields_to_ignore = {u"id", "image_url", "custom", "calculations"}
   else:
-   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom", 
-                       "calculations", "calculations_failed"} 
+   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom",
+                       "calculations", "calculations_failed"}
   dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
  else:
   raise Exception("Unknown model specified.")
@@ -796,7 +797,7 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     parsed_data[field] = dirty_data[field]
    except:
     if field in not_required:
-     clean_data[field] = "" #If nothing was entered, store nothing. 
+     clean_data[field] = "" #If nothing was entered, store nothing.
     else:
      errors[field] = "Field required."
 

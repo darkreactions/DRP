@@ -16,35 +16,41 @@ from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
 POSITIVE = "2:2"
 
-def gen_model(model_name):
-	''' 
-	gen_model("5.8.2014.UUID.model")
-	will generate a model in 5.8.2014.UUID.model
-	'''
+def gen_model(model_name, description):
+  '''
+  gen_model("5.8.2014.UUID.model", "Some description of the model version.")
+  will generate a model in 5.8.2014.UUID.model
+  '''
 
-	name = str(uuid.uuid4())
+  if not model_name or not description:
+    raise Exception("Model needs a valid model_name and description!")
 
-	rows, keys = load_data.get_feature_vectors(keys=True)
-	print "evaluating model"
-	performance, false_p =  evaluate_model(rows, keys)
-	make_arff(name, rows)
-	
-	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
+  name = str(uuid.uuid4())
+
+  rows, keys = load_data.get_feature_vectors(keys=True)
+  print "evaluating model"
+  performance, false_p =  evaluate_model(rows, keys)
+  make_arff(name, rows)
+
+  subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
 
 
-	#Prepare these model stats entry and store it in the database.
-	update_dashboard(false_positive = false_p, model_performance = performance, model_name = model_name)
+  #Prepare these model stats entry and store it in the database.
+  update_dashboard(false_positive = false_p,
+                   model_performance = performance,
+                   description=description,
+                   model_name = model_name)
 
-	
+
 
 
 def get_current_model():
 	return MODEL_DIR + sorted([f for f in os.listdir(MODEL_DIR) if "model" in f], key = lambda x: x.split(".")[0], reverse = True)[0]
-	
+
 
 def map_to_zero_one(v):
 	if v < 3:
-		return 1 
+		return 1
 	else:
 		return 2
 
@@ -59,15 +65,15 @@ def evaluate_model(rows,keys):
 	name = str(uuid.uuid4())
 	make_arff(name + "test", test, True)
 	make_arff(name + "train", train, True)
-	
+
 	subprocess.check_output("sh make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
 	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_DIR + name)
 
-	performance, falsePositiveRate = evaluate_results(results) 
+	performance, falsePositiveRate = evaluate_results(results)
 	return performance, falsePositiveRate
 
-	
-	 
+
+
 
 def evaluate_results(results_location):
 	with open(results_location) as results_file:
@@ -118,33 +124,34 @@ def make_predictions(target_file, model_location):
 
 
 def update_dashboard(
-	false_positive = None, 
-	model_performance = None, 
-	rec_estimate = None, 
-	empirical_success = None,
-	model_name = None): 
+  false_positive = None,
+  model_performance = None,
+  rec_estimate = None,
+  empirical_success = None,
+  description = "",
+  model_name = ""):
 
-	import DRP.models as m
-	
-	#If a specific datum is missing for some reason, use the previous one. 
-	last = m.ModelStats.objects.last()
-	if false_positive is None:
-		false_positve = last.false_positive_rate
-	if model_performance is None:
-		model_performance = last.performance
-	if rec_estimate is None:
-		rec_estimate = last.estimated_success_rate
-	if empirical_success is None:
-		empirical_success, _ = evaluate_real_results()
-		empirical_success = empirical_success['correct'] / float(empirical_success['correct'] + empirical_success['incorrect'])
+  import DRP.models as m
 
-	if model_name is None:
-		model_name = "Automated update"
+  #If a specific datum is missing for some reason, use the previous one.
+  last = m.ModelStats.objects.last()
+  if false_positive is None:
+    false_positve = last.false_positive_rate
+  if model_performance is None:
+    model_performance = last.performance
+  if rec_estimate is None:
+    rec_estimate = last.estimated_success_rate
+  if empirical_success is None:
+    empirical_success, _ = evaluate_real_results()
+    empirical_success = empirical_success['correct'] / float(empirical_success['correct'] + empirical_success['incorrect'])
+
+  if not model_name:
+    model_name = "Automated update"
 
         #Store these stats in the database
-	store_ModelStats(false_positive, empirical_success, rec_estimate, model_performance, model_name) 
-	
-	
+  store_ModelStats(false_positive, empirical_success, rec_estimate, model_performance, description, model_name)
+
+
 def evaluate_real_results(lab_group = None):
 	import DRP.models as m
 
@@ -169,7 +176,7 @@ def get_arff_headers(zero_one=False):
         headers = hdrs[XXX:]
 	res = preface(headers, True, zero_one = zero_one)
 	return res
-	
+
 
 def gen_specials(zero_one=False):
 	specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",
@@ -184,7 +191,7 @@ def gen_specials(zero_one=False):
 
 
 def preface(headers, outcome = True, prefix = "", zero_one = False):
-    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system" + prefix 
+    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system" + prefix
     specials = gen_specials(zero_one)
     for header in headers:
         if header in specials.keys():

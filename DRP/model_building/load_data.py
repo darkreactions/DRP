@@ -8,13 +8,14 @@ if django_path not in sys.path:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.settings import BASE_DIR
+from DRP.models import DataCalc
 import load_cg,json
 
 def load(lab_group=None):
 	from DRP.models import get_good_rxns
 	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
 	return rxns
-	
+
 
 def fix_abbrevs(rxns):
 	abbrev_map, compound_set = get_abbrev_map()
@@ -28,7 +29,7 @@ def fix_abbrevs(rxns):
 
 
 def get_abbrev_map():
-	from DRP.models import CompoundEntry as c 
+	from DRP.models import CompoundEntry as c
 
  	entries = c.objects.all()
 	abbrev_map = dict()
@@ -44,40 +45,52 @@ def get_feature_vectors(lab_group=None, cg = None, ml_convert = None, keys = Non
 	return convert_to_feature_vectors(raw,cg, ml_convert, keys = keys)
 
 def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
-	if not cg:
-		cg = load_cg.get_cg()
-	if not ml_convert:
-		ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
-	import parse_rxn
+  if not cg:
+    cg = load_cg.get_cg()
+  if not ml_convert:
+    ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
+  import parse_rxn
 
-	transformed = []
-	failed = 0
-	keys = []
-	for row in raw:
-		try:
-			transformed.append(parse_rxn.parse_rxn(row, cg, ml_convert))
-			keys.append(create_key(row))
-		except Exception as e:
-			failed += 1
-			print e
-	print "{0} failed out of {1} total".format(failed, len(raw))
-	remove_XXX(transformed)
+  transformed = []
+  failed = 0
+  keys = []
+  for row in raw:
+    try:
+      #if row.calculations:
+      if False: #TODO: Change "raw" to a list of CG Entries rather than list of lists.
+        calculations = row.calculations.make_json()
+      else:
+        calculations = parse_rxn.parse_rxn(row, cg, ml_convert)
+        newDataCalcObj = DataCalc(transformed)
+        #newDataCalcObj.save() #TODO: Don't save until we can RETRIEVE (above).
 
-	for r in transformed:
-		del r[-2]
-	
-	if keys:
-		return transformed, keys
-	return transformed
+      transformed.append(calculations)
+      keys.append(create_key(row))
+    except Exception as e:
+      failed += 1
+      print "ERROR convert_to_feature_vectors: {}".format(e)
+  print "{0} failed out of {1} total".format(failed, len(raw))
+  remove_XXX(transformed)
+
+  for r in transformed:
+    del r[-2]
+
+  # Convert the list to a JSON string for storage in the database.
+  #newDataCalcObj.save()
+
+  if keys:
+    return transformed, keys
+
+  return transformed
 
 def create_key(line):
-	print line
+	#print line
 	key = [line[0], line[3], line[6], line[9], line[12]]
 	key = [r for r in key if r.lower() != 'water' and r != ""]
 	key.sort()
 	return tuple(key)
 
-	
+
 def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
 	import parse_rxn
 	if not cg:
@@ -132,9 +145,9 @@ def rxn_to_triple(rxn, cg):
 		if compound not in cg:
 			raise Exception("Unknown compound: {0}".format(compound))
 	return tuple(sorted(compounds))
-	
-	
-	
+
+
+
 def remove_XXX(rows):
 	import rxn_calculator
 	dist = 0
