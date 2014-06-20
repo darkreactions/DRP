@@ -212,6 +212,14 @@ def parse_rxn(row, rxn_table, ml_convert):
     output.append(outcome)
     # Needs work: trying to compile all expanded data into the DataCalc model 
     result = map(lambda s: "{0:.4f}".format(s) if type(s) == float else s, output)
+    datum = Data.objects.get(id=ID)
+    newDataCalc = DataCalc(contents)
+    newDataCalc.save()
+    datum.calculations = newDataCalc
+    datum.save() 
+    if datum.calculations:
+
+    else:
     jsonText = json.dumps(result) 
     newDataCalcObj = DataCalc(contents=jsonText)
     newDataCalcObj.save() 
