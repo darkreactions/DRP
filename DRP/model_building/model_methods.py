@@ -22,32 +22,34 @@ def gen_model(model_name, description):
   will generate a model in 5.8.2014.UUID.model
   '''
 
-  #Make sure the model_name has no spaces in it.
-  model_name = model_name.replace(" ","_")
-
   if not model_name or not description:
     raise Exception("Model needs a valid model_name and description!")
 
+  #Make sure the model_name has no spaces in it.
+  model_name = model_name.replace(" ","_")
   name = str(uuid.uuid4())
+  print "Constructing model: {} ({})".format(model_name, name)
 
+
+  print "Loading feature vectors..."
   rows, keys = load_data.get_feature_vectors(keys=True)
-  print "evaluating model"
+  print "Creating and evaluating model..."
   performance, false_p =  evaluate_model(rows, keys)
-  print "arff time!"
+  print "Constructing the 'arff' file..."
   make_arff(name, rows)
 
   comm = "bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff")
-  print comm
-
-  print "ABOUT TO make_model.sh"
+  print "Throwing the model into Weka..."
   subprocess.check_output(comm, shell=True)
 
 
   #Prepare these model stats entry and store it in the database.
+  print "Creating a ModelStats entry in the database..."
   update_dashboard(false_positive = false_p,
                    model_performance = performance,
                    description=description,
                    model_name = model_name)
+  print "Model generation succesful..."
 
 
 
@@ -74,12 +76,10 @@ def evaluate_model(rows,keys):
 	make_arff(name + "test", test, True)
 	make_arff(name + "train", train, True)
 
-	print "on: evaluate_model"
 
 	subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
 	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_DIR + name)
 
-	print results
 	performance, falsePositiveRate = evaluate_results(results)
 	return performance, falsePositiveRate
 
@@ -93,24 +93,23 @@ def evaluate_results(results_location):
 		total = 0
 		incorrect = 0
 		false_positive = 0
-		negative = 0
 		true_negative = 0
 		for row in results_file:
 			if "\n" == row:
 				continue
 			total += 1
-			if "+" in row:
+			if "+" in row: #If it's "unrecommended"...
 				incorrect += 1
 				if row.split()[2] == POSITIVE:
 					false_positive += 1
 				else:
 					true_negative += 1
 
-	#Get the actual rates.
+	#Calculate the rates from the various counts.
 	falsePositiveRate = false_positive/float(true_negative+false_positive) if (true_negative + false_positive) else 0
-	performance = (total - incorrect) / float(total) if total != 0 else 0
+	truePositiveRate = (total - incorrect) / float(total) if total else 0
 
-	return performance, falsePositiveRate
+	return truePositiveRate, falsePositiveRate
 
 
 def make_arff(name, rows, zero_one = False):
@@ -118,7 +117,6 @@ def make_arff(name, rows, zero_one = False):
 
 	headers = get_arff_headers(zero_one)
 
-	print TMP_DIR + name + ".arff"
 	with open(TMP_DIR+name + ".arff", "w") as raw:
 		raw.write(headers+"\n")
 		for row in rows:
@@ -130,13 +128,8 @@ def make_arff(name, rows, zero_one = False):
 
 def make_predictions(target_file, model_location):
   results_location = TMP_DIR + str(uuid.uuid4()) + ".out"
-  print "______"
   comm = "bash DRP/model_building/make_predictions.sh {0} {1} {2}".format(target_file, model_location, results_location)
   subprocess.check_output(comm, shell=True)
-  print comm
-  print "\n___\nDONE WITH MAKE_PREDICTIONS"
-  print "TARGET FILE: {}".format(target_file)
-  print "MODEL LOCATION: {}".format(model_location)
   return results_location
 
 
