@@ -22,6 +22,9 @@ def gen_model(model_name, description):
   will generate a model in 5.8.2014.UUID.model
   '''
 
+  #Make sure the model_name has no spaces in it.
+  model_name = model_name.replace(" ","_")
+
   if not model_name or not description:
     raise Exception("Model needs a valid model_name and description!")
 
@@ -30,9 +33,14 @@ def gen_model(model_name, description):
   rows, keys = load_data.get_feature_vectors(keys=True)
   print "evaluating model"
   performance, false_p =  evaluate_model(rows, keys)
+  print "arff time!"
   make_arff(name, rows)
 
-  subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff"), shell=True)
+  comm = "bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff")
+  print comm
+
+  print "ABOUT TO make_model.sh"
+  subprocess.check_output(comm, shell=True)
 
 
   #Prepare these model stats entry and store it in the database.
@@ -66,9 +74,12 @@ def evaluate_model(rows,keys):
 	make_arff(name + "test", test, True)
 	make_arff(name + "train", train, True)
 
+	print "on: evaluate_model"
+
 	subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
 	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_DIR + name)
 
+	print results
 	performance, falsePositiveRate = evaluate_results(results)
 	return performance, falsePositiveRate
 
@@ -83,7 +94,7 @@ def evaluate_results(results_location):
 		incorrect = 0
 		false_positive = 0
 		negative = 0
-		noPlus = 0
+		true_negative = 0
 		for row in results_file:
 			if "\n" == row:
 				continue
@@ -97,7 +108,7 @@ def evaluate_results(results_location):
 
 	#Get the actual rates.
 	falsePositiveRate = false_positive/float(true_negative+false_positive) if (true_negative + false_positive) else 0
-	performance = (total - inc) / float(total) if total != 0 else 0
+	performance = (total - incorrect) / float(total) if total != 0 else 0
 
 	return performance, falsePositiveRate
 
@@ -119,8 +130,13 @@ def make_arff(name, rows, zero_one = False):
 
 def make_predictions(target_file, model_location):
   results_location = TMP_DIR + str(uuid.uuid4()) + ".out"
-  subprocess.check_output("bash DRP/model_building/make_predictions.sh {0} {1} {2}".format(target_file, model_location, results_location), shell=True)
-
+  print "______"
+  comm = "bash DRP/model_building/make_predictions.sh {0} {1} {2}".format(target_file, model_location, results_location)
+  subprocess.check_output(comm, shell=True)
+  print comm
+  print "\n___\nDONE WITH MAKE_PREDICTIONS"
+  print "TARGET FILE: {}".format(target_file)
+  print "MODEL LOCATION: {}".format(model_location)
   return results_location
 
 
