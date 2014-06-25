@@ -1,15 +1,13 @@
-import sys, os, json, csv, math 
-django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
+
 django_path = "{}/DRP".format(django_dir)
 if django_path not in sys.path:
   sys.path.append("{}/DRP".format(django_dir))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
-
-from DRP.model_building.rxn_calculator as rxn_calculator 
+from DRP.model_building import rxn_calculator
 import traceback
 
-from DRP.models import DataCalc 
+from DRP.models import DataCalc
 
 
 def fixmL(t):
@@ -62,7 +60,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         outcome = int(str(outcome) + str(purity))
 
     output = [title]
-    isWater = -1 
+    isWater = -1
     keepList = [1,1,1,1,1]
     organicList = [0,0,0,0,0]
     inorganicList = [0,0,0,0,0]
@@ -71,22 +69,22 @@ def parse_rxn(row, rxn_table, ml_convert):
     (nInorg, nOrg, nOxlike) = (0,0,0)
     for i in range(5):
         if compound[i].lower() == "water":
-            isWater = i 
+            isWater = i
         elif compound[i] == "" or compound[i].lower() in ["x","?"]:
             keepList[i] = 0
     for i in range(5):
         if keepList[i]:
             if rxn_table[compound[i]]["type"] == "Inorg":
-                inorganicList[i] = 1 
+                inorganicList[i] = 1
                 nInorg += 1
             elif rxn_table[compound[i]]["type"] == "Org":
-                organicList[i] = 1 
+                organicList[i] = 1
                 nOrg += 1
             elif rxn_table[compound[i]]["type"] == "Ox":
-                oxalateList[i] = 1 
+                oxalateList[i] = 1
                 nOxlike += 1
             elif compound[i].lower() == "water":
-                waterList[i] = 1 
+                waterList[i] = 1
                 isWater = i
             else:
                 raise Exception("Unknown type: {0}".format(compound[i]))
@@ -106,11 +104,11 @@ def parse_rxn(row, rxn_table, ml_convert):
     for i in range(5):
         if not keepList[i]:
             continue
-        a = rxn_table[compound[i]]["mw"] 
+        a = rxn_table[compound[i]]["mw"]
         assert(a != 0)
         compoundMoles[i] = mass[i]/a
         if isWater == i and not compoundMoles[i]:
-            print row
+            #print row
             raise Exception("Water moles zero: {0}, {1}".format(mass[i], a))
         r = [compound[i], mass[i], compoundMoles[i]]
         if inorganicList[i]:
@@ -132,7 +130,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         if len(orgDetails) + 1 < 6:
             orgDetails += [-1,-1,-1]
         if len(oxlikeDetails) + 1 < 3:
-            oxlikeDetails += [-1,-1,-1] 
+            oxlikeDetails += [-1,-1,-1]
     output += inorgDetails + orgDetails + oxlikeDetails
     output += [Tmax, time, slowCool.lower(), pH, leak.lower(), nInorg, nOrg, nOxlike, nInorg+nOrg+nOxlike]
     compoundProperties = [[] for k in range(5)]
@@ -174,7 +172,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         rxn_props_calculator.inorg_org_mole_ratio(),
         rxn_props_calculator.not_water_mole_ratio(),
         ]
-    
+
 
     smiles = []
     atoms = []
@@ -191,51 +189,42 @@ def parse_rxn(row, rxn_table, ml_convert):
         else:
            output.append("no")
 
-    atom_counts = {} 
+    atom_counts = {}
     for idx in range(len(keepList)):
         if (not keepList[idx]) or (isWater == idx): continue
         if compound[idx] in rxn_table and "atom_count" in rxn_table[compound[idx]]: #TODO: check name
             atoms_info = rxn_table[compound[idx]]["atom_count"]
         else:
             at_list = rxn_calculator.atoms_from_smiles(smiles[idx][0])
-            atoms_info = {a: at_list.count(a) for a in at_list} 
+            atoms_info = {a: at_list.count(a) for a in at_list}
 
         for atom in atoms_info:
             if atom not in atom_counts:
                 atom_counts[atom] = atoms_info[atom]*compoundMoles[idx]
             else:
-                atom_counts[atom] += atoms_info[atom]*compoundMoles[idx] 
-            
+                atom_counts[atom] += atoms_info[atom]*compoundMoles[idx]
+
 
     output += rxn_calculator.atomic_properties(atoms, smiles, atom_counts)
     output.append(purity)
     output.append(outcome)
-    # Needs work: trying to compile all expanded data into the DataCalc model 
+
     result = map(lambda s: "{0:.4f}".format(s) if type(s) == float else s, output)
-    datum = Data.objects.get(id=ID)
-    newDataCalc = DataCalc(contents)
-    newDataCalc.save()
-    datum.calculations = newDataCalc
-    datum.save() 
-    if datum.calculations:
+    return result
 
-    else:
-    jsonText = json.dumps(result) 
-    newDataCalcObj = DataCalc(contents=jsonText)
-    newDataCalcObj.save() 
-    return result 
-    #return map(lambda s: "{0:.4f}".format(s) if type(s) == float else s,  output)  
-
+#TODO: Delete? Not called anywhere...
+"""
 def parse_rxns(data, name, cg_props = None, ml_convert = None):
     results = []
-    
+
     if ml_convert is None:
         ml_convert = json.load(open("mlConvert.json"))
     if cg_props is None:
-        cg_props = json.load(open("restart.json")) 
+        cg_props = json.load(open("restart.json"))
     for line in data:
         results.append(parse_rxn(line, cg_props, ml_convert))
     return results
+"""
 
 def find_ranges(rows):
     ranges = {'temp':{'min':10000000,'max':0}}
@@ -256,7 +245,7 @@ def find_ranges(rows):
 
                 m = float(mass[i])
                 if ranges[compound[i]]['massmin'] > m and m > 0:
-                    ranges[compound[i]]['massmin'] = m 
+                    ranges[compound[i]]['massmin'] = m
                 if ranges[compound[i]]['massmax'] < m:
                     ranges[compound[i]]['massmax'] = m
                 pH = float(pH)
@@ -275,7 +264,7 @@ def find_combinations(rows):
         compounds = tuple(sorted(filter(lambda x: x != "", [row[1], row[4], row[7], row[10], row[13]])))
         combos.add(compounds)
     return combos
-    
+
 
 
 def build_prior_rows(mass_ranges, row):
@@ -297,8 +286,8 @@ def build_prior_rows(mass_ranges, row):
         for r in rows:
              l += build_prior_rows(mr_short, r)
         return l
-    
-        
+
+
 
 def build_prior(rows):
     prior = []
@@ -321,14 +310,14 @@ def build_prior(rows):
                     rows2 += [r + [i] for r in rows]
             else:
                 rows2 += [ r + [max(1,pH_max)] for r in rows]
-            if pH_min > 1 and pH_min != 14: 
+            if pH_min > 1 and pH_min != 14:
                 for i in range(1, pH_min):
                     rows2 += [r + [i] for r in rows]
             else:
                 rows2 += [r  + [max(1,pH_min)] for r in rows]
             rows = [r + ['Yes','No',0,1] for r in rows2]
         except Exception as e:
-            print str(e)
+            print "ERROR build_prior: {}".format(e)
         prior += rows
     return prior
 

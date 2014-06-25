@@ -1,7 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
  # # # # # #   Dark Reaction Project README    # # # # # # # # # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-Last Updated by Casey Falk -- 5/29/14
+Last Updated by Casey Falk -- 6/23/14
 
 Table of Contents:
 --System Architecture
@@ -11,6 +11,8 @@ Table of Contents:
   --Creating a User
   --Connecting a User to BitBucket with an SSH Key
   --Using a Test Bed ON the DRP Server
+--Django Management Commands
+  --generate_model
 --Database
   --Using the ORM
   --Getting a CSV File of a Database Table
@@ -155,6 +157,28 @@ same process as described above can be used to set up the Django Project.
 However, you'll want to SCP a version of the database over to your 
 development box and set up MySQL appropriately (see the setup.txt file above).
 Any of the backups in the DropBox backup folder should suffice.
+
+
+_____________________________________________________
+ # # # # #   Django Management Commands  # # # # # #  
+# # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+Django management commands (that is, the commands that pass through
+manage.py) can be called as "python manage.py <the command>" when
+in the main DRP project directory. These commands are each stored in
+a separate *.py file in the .../DRP/management/commands directory. To
+add a new command, use the existing files as examples.
+
+It also should be noted that using "python manage.py help" will detail
+all of the available management commands (of which there are many).
+
+__ generate_model __
+To generate a new model using the current pipeline, run:
+"python manage.py generate_model '<Model_Title>' '<An explanatory description.>'"
+The script encompasses the model construction, training, and testing
+stages and ultimately creates a new ModelStats entry in the Django database.
+This entry is complete with "stats" and a reference to the model name,
+description, and unique ID. The estimated run time is ~20 minutes.
 
 
 _____________________________________
