@@ -29,5 +29,5 @@ def select_for_vis(request) #This will select the data particular to the lab gro
   except Exception as e:
     return HttpResponse("Visualization request failed!")
 
-# Now wend this 'model' to the jsonViews to format the CSV correctly 
+# Now send this 'model' to the jsonViews to format the CSV correctly 
 
