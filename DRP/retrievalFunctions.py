@@ -107,6 +107,19 @@ def filter_data(lab_group, query_list):
  return data
 
 
+#Either get the valid Data entries for a lab group or get all valid data.
+def get_valid_data(lab_group):
+  if lab_group=="all labs":
+    return Data.objects.filter(is_valid=True)
+  return Data.objects.filter(is_valid=True, lab_group=lab_group)
+
+
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # # # # DATACALCS   # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # RECOMMENDATIONS # # # # # # # # # # # # # # # # # #

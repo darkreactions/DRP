@@ -259,9 +259,6 @@ class Lab_Member(models.Model):
 class DataCalc(models.Model):
   contents = models.TextField(default="[]")
 
-  def __init__(self, jsonContent):
-    self.contents = json.dumps(jsonContent)
-
   def __unicode__(self):
     return u"{}".format(self.contents);
 
@@ -272,46 +269,63 @@ class DataCalc(models.Model):
 
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
- ref = models.CharField("Reference", max_length=12)
+  ref = models.CharField("Reference", max_length=12)
 
- #List Fields
- for i in CONFIG.reactant_range():
-  exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
-  exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
-  exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
+  #List Fields
+  for i in CONFIG.reactant_range():
+    exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
+    exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
+    exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
 
- temp = models.CharField("Temperature", max_length=10)
- time = models.CharField("Time", max_length=10) ###
- pH = models.CharField("pH", max_length=5)
+  temp = models.CharField("Temperature", max_length=10)
+  time = models.CharField("Time", max_length=10) ###
+  pH = models.CharField("pH", max_length=5)
 
- #Yes/No/? Fields:
- slow_cool = models.CharField("Slow Cool", max_length=10)
- leak = models.CharField("Leak", max_length=10)
- outcome = models.CharField("Outcome", max_length=1)
- purity = models.CharField("Purity", max_length=1)
+  #Yes/No/? Fields:
+  slow_cool = models.CharField("Slow Cool", max_length=10)
+  leak = models.CharField("Leak", max_length=10)
+  outcome = models.CharField("Outcome", max_length=1)
+  purity = models.CharField("Purity", max_length=1)
 
- notes = models.CharField("Notes", max_length=200, blank=True)
+  notes = models.CharField("Notes", max_length=200, blank=True)
 
- #Self-assigning Fields:
- calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
- calculated_pH = models.BooleanField(default=False)
- calculated_temp = models.BooleanField(default=False)
- calculated_time = models.BooleanField(default=False)
+  #Self-assigning Fields:
+  calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
+  calculated_pH = models.BooleanField(default=False)
+  calculated_temp = models.BooleanField(default=False)
+  calculated_time = models.BooleanField(default=False)
 
- atoms = models.CharField("Atoms", max_length=30, blank=True)
+  atoms = models.CharField("Atoms", max_length=30, blank=True)
 
- user = models.ForeignKey(User, unique=False)
- lab_group = models.ForeignKey(Lab_Group, unique=False)
- creation_time_dt = models.DateTimeField("Created", null=True, blank=True)
- is_valid = models.BooleanField("Valid", default=False)
+  user = models.ForeignKey(User, unique=False)
+  lab_group = models.ForeignKey(Lab_Group, unique=False)
+  creation_time_dt = models.DateTimeField("Created", null=True, blank=True)
+  is_valid = models.BooleanField("Valid", default=False)
 
- #Categorizing Fields:
- public = models.BooleanField("Public", default=False)
- duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
- recommended = models.CharField("Recommended", max_length=10)
+  #Categorizing Fields:
+  public = models.BooleanField("Public", default=False)
+  duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
+  recommended = models.CharField("Recommended", max_length=10)
 
- def __unicode__(self):
-  return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
+  def __unicode__(self):
+    return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
+
+  def get_calculations_list(self):
+    from DRP.model_building.load_data import create_expanded_datum_field_list
+
+    if not self.calculations:
+      # Create the extended calculations.
+      calcList = create_expanded_datum_field_list(self)
+
+      # Prepare a new DataCalc object.
+      newDataCalc = DataCalc(contents=json.dumps(calcList))
+      newDataCalc.save()
+
+      # Create the ForeignKey between the new DataCalc and this Datum.
+      self.calculations = newDataCalc
+      self.save()
+    return self.calculations.make_json()
+
 
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):
@@ -594,6 +608,7 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
 
  return query_list
 
+
 def convert_Data_to_list(dat, headings=None):
 	if not headings:
 		all_fields = get_model_field_names(model="Data", collect_ignored = True)
@@ -616,17 +631,20 @@ def convert_Data_to_list(dat, headings=None):
 
 	return results
 
+
 def collect_reactions_as_lists(lab_group, with_headings=True):
  lab_group = get_Lab_Group(lab_group)
 
  query = get_lab_Data(lab_group)
  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
+
 def get_lab_CG_as_lists(lab_group, with_headings=True):
  lab_group = get_Lab_Group(lab_group)
 
  query = get_lab_CG(lab_group)
  return convert_QuerySet_to_list(query, "CompoundEntry", with_headings=with_headings)
+
 
 def collect_CG_name_pairs(lab_group, overwrite=False):
  pairs = get_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS")
@@ -635,6 +653,7 @@ def collect_CG_name_pairs(lab_group, overwrite=False):
   pairs = {entry.abbrev: entry.compound for entry in compound_guide}
   set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", pairs)
  return pairs
+
 
 def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
  try:
@@ -649,6 +668,7 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
  except Exception as e:
   raise Exception("CompoundEntry construction failed!")
 
+
 #Filter the Data by a specific abbrev.
 def get_Data_with_abbrev(lab_data, abbrev):
  if type(abbrev)==CompoundEntry:
@@ -656,6 +676,7 @@ def get_Data_with_abbrev(lab_data, abbrev):
 
  Q_list = [Q(("reactant_{}".format(i),abbrev)) for i in CONFIG.reactant_range()]
  return lab_data.filter(reduce(operator.or_, Q_list))
+
 
 #Collect a list of all valid data either globally or for a specific lab.
 def get_good_rxns(lab_group=None, with_headings=True):

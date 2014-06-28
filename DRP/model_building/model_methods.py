@@ -1,5 +1,6 @@
 import subprocess
 import uuid
+import time
 import load_data
 import rxn_calculator
 
@@ -12,14 +13,16 @@ if django_path not in sys.path:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.database_construction import store_ModelStats
+from DRP.retrievalFunctions import get_valid_data
 from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
 POSITIVE = "2:2"
 
 def gen_model(model_name, description):
   '''
-  gen_model("5.8.2014.UUID.model", "Some description of the model version.")
-  will generate a model in 5.8.2014.UUID.model
+  gen_model("5.8.2014.model", "Some description of the model version.")
+  will generate a model as the file "5.8.2014.model" and store the
+  model statistics in a ModelStats database entry.
   '''
 
   if not model_name or not description:
@@ -27,29 +30,38 @@ def gen_model(model_name, description):
 
   #Make sure the model_name has no spaces in it.
   model_name = model_name.replace(" ","_")
-  name = str(uuid.uuid4())
+  name = str(int(time.time()))
   print "Constructing model: {} ({})".format(model_name, name)
 
+  # Get the valid reactions across all lab groups.
+  print "Loading data entries."
+  data = get_valid_data("all labs")
 
-  print "Loading feature vectors..."
-  rows, keys = load_data.get_feature_vectors(keys=True)
-  print "Creating and evaluating model..."
-  performance, false_p =  evaluate_model(rows, keys)
-  print "Constructing the 'arff' file..."
-  make_arff(name, rows)
+  # Choose "training" and "test" data and construct a "sample model."
+  #   From that sample model, see how well the actual model will perform.
+  print "Creating a sample model to evaluate the model stats..."
+  truePositiveRate, falsePositiveRate = sample_model_quality(data, name)
 
-  comm = "bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + model_name, TMP_DIR+name+".arff")
-  print "Throwing the model into Weka..."
-  subprocess.check_output(comm, shell=True)
+  print "Constructing the final ARFF file..."
+  make_arff(name, data)
+
+  #Using ALL of the data, now construct the full model.
+  print "Building the actual model..."
+  modelFullName = MODEL_DIR + model_name
+  arffFullName = TMP_DIR+name+"_final.arff"
+  command = "bash DRP/model_building/make_model.sh"
+  args = " {} {}".format(modelFullName, arffFullName)
+  subprocess.check_output(command+args, shell=True)
 
 
-  #Prepare these model stats entry and store it in the database.
+  #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
-  update_dashboard(false_positive = false_p,
-                   model_performance = performance,
+  update_dashboard(false_positive = falsePositiveRate,
+                   model_performance = truePositiveRate,
                    description=description,
                    model_name = model_name)
-  print "Model generation succesful..."
+
+  print "Model generation successful..."
 
 
 
@@ -64,9 +76,45 @@ def map_to_zero_one(v):
 	else:
 		return 2
 
+# Builds and evaluates a sample model given some input data to be partitioned
+#   into training and test data. Returns the stats of this sample model.
+from DRP.model_building.test_train_split import create_test_and_train_lists
+from DRP.model_building.load_data import create_reactant_keys
+def sample_model_quality(data, name):
+
+  # Create reactant-combination keys for each data entry.
+  dataKeys = create_reactant_keys(data)
+
+  # Partitions the data/keys into separate test/training datasets.
+  test, train = create_test_and_train_lists(data, dataKeys)
+
+  # Generate the "train" and "test" ARFFs and give them a model-unique name.
+  #TODO: ORIGINAL:   rows = [r[:-1] + [ map_to_zero_one(r[-1]) ] for r in rows]
+  #TODO: Incorporate map_to_zero_one??
+  #TODO: Why? Isn't used in FINAL make_arff?
+  make_arff(name + "test", test)
+  make_arff(name + "train", train)
+
+  #Give the temporary ARFF files and the model respectable names.
+  tmpPrefix = TMP_DIR + name
+  fullModelName = MODEL_DIR + name + "_SAMPLE_MODEL"
+
+  # Start a new process to actually construct the model from the training data.
+  command = "bash DRP/model_building/make_model.sh"
+  args = " {} {}".format(fullModelName,  tmpPrefix+"train.arff")
+  subprocess.check_output(command+args, shell=True)
+
+  # Use the test data to make samplePredictions that can gauge the model quality.
+  samplePredictions = make_predictions(tmpPrefix+"test.arff", fullModelName)
+
+  #Now that the sample model is created, evaluate its performance.
+  truePositiveRate, falsePositiveRate = evaluate_results(samplePredictions)
+  return truePositiveRate, falsePositiveRate
+
+
+
 
 def evaluate_model(rows,keys):
-	import test_train_split as splitter
 
 	rows = [r[:-1] + [ map_to_zero_one(r[-1]) ] for r in rows]
 	test,train = splitter.create_test_and_train_lists(rows, keys)
@@ -112,9 +160,46 @@ def evaluate_results(results_location):
 	return truePositiveRate, falsePositiveRate
 
 
+
+# Creates ARFF contents given data and writes the contents to a file ('name').
+def make_arff(name, data):
+  #Get the valid headers.
+  headers = get_arff_headers()
+
+  print "ARFFING"
+
+  #Count the number of failed data (ie: invalid) that were passed to the make_arff.
+  failed = 0
+  i = 0
+
+  fullFileName = TMP_DIR+name+".arff"
+  with open(fullFileName, "w") as f:
+    #Write the file headers.
+    f.write(headers + "\n")
+    print len(data),
+    #Write each datum to the file if possible.
+    for datum in data:
+      print i
+      try:
+        row = datum.get_calculations_list()
+
+        #Write the row to the ARFF file.
+        row[-1] = max(1, row[-1])
+        f.write(",".join([str(entry) for entry in row]) + "\n")
+
+      except:
+        failed += 1
+        #If the calculations_list failed/was invalid, erase it.
+        datum.calculations = None
+        datum.save()
+      i += 1
+
+  print "{} of {} data not usable by make_arff".format(failed, len(data))
+
+
+#TODO: Delete
+"""
 def make_arff(name, rows, zero_one = False):
-
-
 	headers = get_arff_headers(zero_one)
 
 	with open(TMP_DIR+name + ".arff", "w") as raw:
@@ -122,7 +207,7 @@ def make_arff(name, rows, zero_one = False):
 		for row in rows:
 			row[-1] = max(1, row[-1])
 			raw.write(",".join([str(c) for c in row]) + "\n")
-
+"""
 
 
 

@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     (r'^contact/?$', info_page, {"page":"contact"}),
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
     (r'^explore/?$', info_page, {"page":"explore"}),
-    (r'^help/?$', info_page, {"page":"help"}), 
+    (r'^help/?$', info_page, {"page":"help"}),
   #Dashboard
     url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
     url(r'^get_stats/?$', "DRP.views.dashboard.get_stats_json"), #Actually loads the json.
@@ -44,9 +44,9 @@ urlpatterns = patterns('',
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
    #Validation
     (r'^send_CG_names/$', "DRP.views.jsonViews.send_CG_names"), #Send the CG name_pairs for client-side validation.
-  #Visualization? (I'm assuming this is what "Predictions" referred to) 
-    (r'^explore/$',"DRP.views.explore_vis.py.get_vis"),
-	 #TODO: Hoping to map this URL to the view for the visualization, 
+  #Visualization? (I'm assuming this is what "Predictions" referred to)
+    #(r'^explore/$',"DRP.views.explore_vis.get_vis"),
+	 #TODO: Hoping to map this URL to the view for the visualization,
 	 # so that when the explore tab is opened, the visualization
 	 # will automatically come up (may eventually want options for how
 	 # how much/whose data should be represented, but perhaps that can
@@ -70,19 +70,19 @@ urlpatterns = patterns('',
     (r'^rank/$', rank),
     (r'^send_and_receive_rank/$', send_and_receive_rank),
   #Searching
-    (r'^search/$', search, {"model":"Data"}), 
-    (r'^search/Data/?$', search, {"model":"Data"}), 
-    (r'^search/Recommendation/?$', search, {"model":"Recommendation"}), 
+    (r'^search/$', search, {"model":"Data"}),
+    (r'^search/Data/?$', search, {"model":"Data"}),
+    (r'^search/Recommendation/?$', search, {"model":"Recommendation"}),
     (r'^search/SeedRecommendation/?$', search, {
-		"model":"Recommendation", 
+		"model":"Recommendation",
 		"params":{"seeded":True}
-		}), 
+		}),
 
   #Users and Labs
    #Authentication
     (r'^user_logout/$', "DRP.views.user.user_logout"), #Log Out
     (r'^user_login/$', "DRP.views.user.user_login"), #Log In
-    (r'^login/?$', info_page, {"page":"login_form"}), 
+    (r'^login/?$', info_page, {"page":"login_form"}),
    #Registration
     (r'^user_license_agreement/$', "DRP.views.license_agreement.get_user_license_agreement"),
     (r'^update_user_license_agreement/$', "DRP.views.license_agreement.update_user_license_agreement"),

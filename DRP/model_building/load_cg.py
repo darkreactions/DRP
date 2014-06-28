@@ -8,21 +8,19 @@ if django_path not in sys.path:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
-def get_cg():
-	from DRP.models import CompoundEntry
-	import json
+def get_cg(debug=False):
+  from DRP.models import CompoundEntry
+  import json
 
+  cg = dict()
+  for compound in CompoundEntry.objects.all():
+    if compound.calculations:
+      #cg[compound.abbrev] = json.loads(compound.calculations.json_data)
+      cg[compound.compound] = json.loads(compound.calculations.json_data)
+    elif debug:
+      print "No calculations: {0}".format(compound.compound)
 
-
-	cg = dict()
-	for compound in CompoundEntry.objects.all():
-		if compound.calculations:
-			#cg[compound.abbrev] = json.loads(compound.calculations.json_data)
-			cg[compound.compound] = json.loads(compound.calculations.json_data)
-		else:
-			print "No calculations: {0}".format(compound.compound)
-
-	return cg
+  return cg
 
 
 if __name__ == "__main__":
