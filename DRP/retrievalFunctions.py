@@ -118,6 +118,13 @@ def get_valid_data(lab_group):
    # # # # # # # # # # # # # # # DATACALCS   # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+def expand_data(data):
+  return [datum.get_calculations_list() for datum in data]
+
+def get_expanded_headers():
+  from DRP.model_building.rxn_calculator import headers
+  from DRP.model_building.load_data import remove_XXX
+  return remove_XXX(headers)
 
 
 

@@ -66,7 +66,7 @@ class PropertiesCalculator:
             totalOrganic += self.compoundMoles[k]*self.organicList[k]
             totalInorganic += self.compoundMoles[k]*self.inorganicList[k]
         if not totalOrganic:
-            totalOrganic = 0.00001 
+            totalOrganic = 0.00001
         return totalInorganic/totalOrganic
 
     def not_water_mole_ratio(self):
@@ -94,8 +94,8 @@ def dictFix(d):
 
 def distList(indicator, properties_lists):
     from operator import mul
-    ''' Every item in "properties_lists" is a list of values for a set of 
-    properties. Alternatively: properties_list is an n x 19 matrix, with 19 
+    ''' Every item in "properties_lists" is a list of values for a set of
+    properties. Alternatively: properties_list is an n x 19 matrix, with 19
     features, where each row corrresponds to a compound.
 
     Only some rows are relevant, so we filter out those rows that indicator
@@ -109,7 +109,7 @@ def distList(indicator, properties_lists):
 
     def max_f(l):
         if len(l) == 0: return 0
-        return max(l) 
+        return max(l)
 
     def mean(l):
         if len(l) == 0: return 0
@@ -123,7 +123,7 @@ def distList(indicator, properties_lists):
     compressed = [properties_lists[i] for i in range(len(indicator)) if indicator[i] == 1]
     transposed = zip(*compressed) # each element is a list of values for that column's property
     filtered = map(lambda property_set: filter(lambda prop_val: prop_val != -1, property_set), transposed)
-    
+
     minned = map(min_f, filtered)
     maxxed = map(max_f, filtered)
     meaned = map(mean, filtered)
@@ -150,12 +150,12 @@ def atomic_properties(atom_list, smiles_pairs, counts = None):
             for a in p[0]:
                 if a not in counts:
                     counts[a] = 0
-                counts[a] += min(1,p[0].count(a))*p[1] 
+                counts[a] += min(1,p[0].count(a))*p[1]
 
 
     atoms = {atom: properties[atom] for atom in atom_list if atom in interesting}
 
-    props = [] 
+    props = []
 
     props.append("yes" if any([atoms[b]["Actinide"] for b in atoms]) else "no")
     props.append("yes" if any([atoms[b]["AlkaliMetal"] for b in atoms]) else "no")
@@ -186,13 +186,13 @@ def atomic_properties(atom_list, smiles_pairs, counts = None):
 properties = json.load(open(RESEARCH_DIR + "scripts/atomic_props.json"))
 
 
-bools = ["Actinide", "AlkaliMetal", "Lanthanide", 
-    "P1", "P2", "P3", "P4", "P5", "P6", "P7", 
+bools = ["Actinide", "AlkaliMetal", "Lanthanide",
+    "P1", "P2", "P3", "P4", "P5", "P6", "P7",
     "G1", "G2", "G3", "G4", 'G5', 'G6', 'G7', 'G8', 'G9', 'G10', 'G11', 'G12', 'G13', 'G14', 'G15', 'G16', 'G17', 'G18',
     "V0", "V1", "V2", "V3", "V4", "V5", "V6", "V7"]
 
-field_names = ["Actinide", "AlkaliMetal", "Lanthanide", 
-    "P1", "P2", "P3", "P4", "P5", "P6", "P7", 
+field_names = ["Actinide", "AlkaliMetal", "Lanthanide",
+    "P1", "P2", "P3", "P4", "P5", "P6", "P7",
     "G1", "G2", "G3", "G4", 'G5', 'G6', 'G7', 'G8', 'G9', 'G10', 'G11', 'G12', 'G13', 'G14', 'G15', 'G16', 'G17', 'G18',
     "V0", "V1", "V2", "V3", "V4", "V5", "V6", "V7",
     "IonizationMax", "EAMax", "PaulingElectronegMax", "PearsonElectronegMax", "hardnessMax", "AtomicRadiusMax",
@@ -205,109 +205,109 @@ field_names = ["Actinide", "AlkaliMetal", "Lanthanide",
     "IonizationGeomWeighted", "EAGeomWeighted", "PaulingElectronegGeomWeighted", "PearsonElectronegGeomWeighted", "hardnessGeomWeighted", "AtomicRadiusGeomWeighted",
     ]
 atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O', 'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs', 'Cr', 'Cu']
-headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass', 
-            'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass', 
+headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
+            'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
             'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles', 'XXXorg1', 'XXXorg1mass',
-            'XXXorg1moles', 'XXXorg2', 'XXXorg2mass', 
-            'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass', 
-            'XXXoxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH', 
-            'leak', 'numberInorg', 'numberOrg', 'numberOxlike', 
-            'numberComponents', 'orgavgpolMax', 'orgrefractivityMax', 
-            'orgmaximalprojectionareaMax', 
-            'orgmaximalprojectionradiusMax', 
-            'orgmaximalprojectionsizeMax', 
-            'orgminimalprojectionareaMax', 
-            'orgminimalprojectionradiusMax', 
-            'orgminimalprojectionsizeMax', 
-            'orgavgpol_pHdependentMax', 'orgmolpolMax', 
-            'orgvanderwaalsMax', 'orgASAMax', 'orgASA+Max', 
-            'orgASA-Max', 'orgASA_HMax', 'orgASA_PMax', 
-            'orgpolarsurfaceareaMax', 'orghbdamsaccMax', 
-            'orghbdamsdonMax', 'orgavgpolMin', 'orgrefractivityMin', 
-            'orgmaximalprojectionareaMin', 
-            'orgmaximalprojectionradiusMin', 
-            'orgmaximalprojectionsizeMin', 
-            'orgminimalprojectionareaMin', 
-            'orgminimalprojectionradiusMin', 
+            'XXXorg1moles', 'XXXorg2', 'XXXorg2mass',
+            'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass',
+            'XXXoxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH',
+            'leak', 'numberInorg', 'numberOrg', 'numberOxlike',
+            'numberComponents', 'orgavgpolMax', 'orgrefractivityMax',
+            'orgmaximalprojectionareaMax',
+            'orgmaximalprojectionradiusMax',
+            'orgmaximalprojectionsizeMax',
+            'orgminimalprojectionareaMax',
+            'orgminimalprojectionradiusMax',
+            'orgminimalprojectionsizeMax',
+            'orgavgpol_pHdependentMax', 'orgmolpolMax',
+            'orgvanderwaalsMax', 'orgASAMax', 'orgASA+Max',
+            'orgASA-Max', 'orgASA_HMax', 'orgASA_PMax',
+            'orgpolarsurfaceareaMax', 'orghbdamsaccMax',
+            'orghbdamsdonMax', 'orgavgpolMin', 'orgrefractivityMin',
+            'orgmaximalprojectionareaMin',
+            'orgmaximalprojectionradiusMin',
+            'orgmaximalprojectionsizeMin',
+            'orgminimalprojectionareaMin',
+            'orgminimalprojectionradiusMin',
             'orgminimalprojectionsizeMin', 'orgavgpol_pHdependentMin',
-            'orgmolpolMin', 'orgvanderwaalsMin', 'orgASAMin', 
+            'orgmolpolMin', 'orgvanderwaalsMin', 'orgASAMin',
             'orgASA+Min', 'orgASA-Min', 'orgASA_HMin', 'orgASA_PMin',
-            'orgpolarsurfaceareaMin', 'orghbdamsaccMin', 
-            'orghbdamsdonMin', 'orgavgpolArithAvg', 
-            'orgrefractivityArithAvg', 
-            'orgmaximalprojectionareaArithAvg', 
-            'orgmaximalprojectionradiusArithAvg', 
-            'orgmaximalprojectionsizeArithAvg', 
-            'orgminimalprojectionareaArithAvg', 
-            'orgminimalprojectionradiusArithAvg', 
-            'orgminimalprojectionsizeArithAvg', 
-            'orgavgpol_pHdependentArithAvg', 
-            'orgmolpolArithAvg', 'orgvanderwaalsArithAvg', 
+            'orgpolarsurfaceareaMin', 'orghbdamsaccMin',
+            'orghbdamsdonMin', 'orgavgpolArithAvg',
+            'orgrefractivityArithAvg',
+            'orgmaximalprojectionareaArithAvg',
+            'orgmaximalprojectionradiusArithAvg',
+            'orgmaximalprojectionsizeArithAvg',
+            'orgminimalprojectionareaArithAvg',
+            'orgminimalprojectionradiusArithAvg',
+            'orgminimalprojectionsizeArithAvg',
+            'orgavgpol_pHdependentArithAvg',
+            'orgmolpolArithAvg', 'orgvanderwaalsArithAvg',
             'orgASAArithAvg', 'orgASA+ArithAvg', 'orgASA-ArithAvg',
-            'orgASA_HArithAvg', 'orgASA_PArithAvg', 
-            'orgpolarsurfaceareaArithAvg', 'orghbdamsaccArithAvg', 
-            'orghbdamsdonArithAvg', 'orgavgpolGeomAvg', 
-            'orgrefractivityGeomAvg', 
-            'orgmaximalprojectionareaGeomAvg', 
-            'orgmaximalprojectionradiusGeomAvg', 
-            'orgmaximalprojectionsizeGeomAvg', 
-            'orgminimalprojectionareaGeomAvg', 
-            'orgminimalprojectionradiusGeomAvg', 
-            'orgminimalprojectionsizeGeomAvg', 
-            'orgavgpol_pHdependentGeomAvg', 
-            'orgmolpolGeomAvg', 'orgvanderwaalsGeomAvg', 
-            'orgASAGeomAvg', 'orgASA+GeomAvg', 'orgASA-GeomAvg', 
-            'orgASA_HGeomAvg', 'orgASA_PGeomAvg', 
-            'orgpolarsurfaceareaGeomAvg', 'orghbdamsaccGeomAvg', 
-            'orghbdamsdonGeomAvg', 'oxlikeavgpolMax', 
+            'orgASA_HArithAvg', 'orgASA_PArithAvg',
+            'orgpolarsurfaceareaArithAvg', 'orghbdamsaccArithAvg',
+            'orghbdamsdonArithAvg', 'orgavgpolGeomAvg',
+            'orgrefractivityGeomAvg',
+            'orgmaximalprojectionareaGeomAvg',
+            'orgmaximalprojectionradiusGeomAvg',
+            'orgmaximalprojectionsizeGeomAvg',
+            'orgminimalprojectionareaGeomAvg',
+            'orgminimalprojectionradiusGeomAvg',
+            'orgminimalprojectionsizeGeomAvg',
+            'orgavgpol_pHdependentGeomAvg',
+            'orgmolpolGeomAvg', 'orgvanderwaalsGeomAvg',
+            'orgASAGeomAvg', 'orgASA+GeomAvg', 'orgASA-GeomAvg',
+            'orgASA_HGeomAvg', 'orgASA_PGeomAvg',
+            'orgpolarsurfaceareaGeomAvg', 'orghbdamsaccGeomAvg',
+            'orghbdamsdonGeomAvg', 'oxlikeavgpolMax',
             'oxlikerefractivityMax', 'oxlikemaximalprojectionareaMax',
-            'oxlikemaximalprojectionradiusMax', 
-            'oxlikemaximalprojectionsizeMax', 
-            'oxlikeminimalprojectionareaMax', 
-            'oxlikeminimalprojectionradiusMax', 
-            'oxlikeminimalprojectionsizeMax'] + [ 
-            'oxlikeavgpol_pHdependentMax', 'oxlikemolpolMax', 
-            'oxlikevanderwaalsMax', 'oxlikeASAMax', 'oxlikeASA+Max', 
-            'oxlikeASA-Max', 'oxlikeASA_HMax', 'oxlikeASA_PMax', 
-            'oxlikepolarsurfaceareaMax', 'oxlikehbdamsaccMax', 
-            'oxlikehbdamsdonMax', 'oxlikeavgpolMin', 
+            'oxlikemaximalprojectionradiusMax',
+            'oxlikemaximalprojectionsizeMax',
+            'oxlikeminimalprojectionareaMax',
+            'oxlikeminimalprojectionradiusMax',
+            'oxlikeminimalprojectionsizeMax'] + [
+            'oxlikeavgpol_pHdependentMax', 'oxlikemolpolMax',
+            'oxlikevanderwaalsMax', 'oxlikeASAMax', 'oxlikeASA+Max',
+            'oxlikeASA-Max', 'oxlikeASA_HMax', 'oxlikeASA_PMax',
+            'oxlikepolarsurfaceareaMax', 'oxlikehbdamsaccMax',
+            'oxlikehbdamsdonMax', 'oxlikeavgpolMin',
             'oxlikerefractivityMin', 'oxlikemaximalprojectionareaMin',
-            'oxlikemaximalprojectionradiusMin', 
-            'oxlikemaximalprojectionsizeMin', 
-            'oxlikeminimalprojectionareaMin', 
-            'oxlikeminimalprojectionradiusMin', 
-            'oxlikeminimalprojectionsizeMin', 
-            'oxlikeavgpol_pHdependentMin', 'oxlikemolpolMin', 
-            'oxlikevanderwaalsMin', 'oxlikeASAMin', 'oxlikeASA+Min', 
-            'oxlikeASA-Min', 'oxlikeASA_HMin', 'oxlikeASA_PMin', 
-            'oxlikepolarsurfaceareaMin', 'oxlikehbdamsaccMin', 
-            'oxlikehbdamsdonMin', 'oxlikeavgpolArithAvg', 
-            'oxlikerefractivityArithAvg', 
-            'oxlikemaximalprojectionareaArithAvg', 
-            'oxlikemaximalprojectionradiusArithAvg', 
-            'oxlikemaximalprojectionsizeArithAvg', 
-            'oxlikeminimalprojectionareaArithAvg', 
-            'oxlikeminimalprojectionradiusArithAvg', 
-            'oxlikeminimalprojectionsizeArithAvg', 
-            'oxlikeavgpol_pHdependentArithAvg', 
-            'oxlikemolpolArithAvg', 'oxlikevanderwaalsArithAvg', 
-            'oxlikeASAArithAvg', 'oxlikeASA+ArithAvg', 
-            'oxlikeASA-ArithAvg', 'oxlikeASA_HArithAvg', 
+            'oxlikemaximalprojectionradiusMin',
+            'oxlikemaximalprojectionsizeMin',
+            'oxlikeminimalprojectionareaMin',
+            'oxlikeminimalprojectionradiusMin',
+            'oxlikeminimalprojectionsizeMin',
+            'oxlikeavgpol_pHdependentMin', 'oxlikemolpolMin',
+            'oxlikevanderwaalsMin', 'oxlikeASAMin', 'oxlikeASA+Min',
+            'oxlikeASA-Min', 'oxlikeASA_HMin', 'oxlikeASA_PMin',
+            'oxlikepolarsurfaceareaMin', 'oxlikehbdamsaccMin',
+            'oxlikehbdamsdonMin', 'oxlikeavgpolArithAvg',
+            'oxlikerefractivityArithAvg',
+            'oxlikemaximalprojectionareaArithAvg',
+            'oxlikemaximalprojectionradiusArithAvg',
+            'oxlikemaximalprojectionsizeArithAvg',
+            'oxlikeminimalprojectionareaArithAvg',
+            'oxlikeminimalprojectionradiusArithAvg',
+            'oxlikeminimalprojectionsizeArithAvg',
+            'oxlikeavgpol_pHdependentArithAvg',
+            'oxlikemolpolArithAvg', 'oxlikevanderwaalsArithAvg',
+            'oxlikeASAArithAvg', 'oxlikeASA+ArithAvg',
+            'oxlikeASA-ArithAvg', 'oxlikeASA_HArithAvg',
             'oxlikeASA_PArithAvg', 'oxlikepolarsurfaceareaArithAvg',
-            'oxlikehbdamsaccArithAvg', 'oxlikehbdamsdonArithAvg', 
-            'oxlikeavgpolGeomAvg', 'oxlikerefractivityGeomAvg', 
-            'oxlikemaximalprojectionareaGeomAvg', 
-            'oxlikemaximalprojectionradiusGeomAvg', 
-            'oxlikemaximalprojectionsizeGeomAvg', 
-            'oxlikeminimalprojectionareaGeomAvg', 
-            'oxlikeminimalprojectionradiusGeomAvg', 
-            'oxlikeminimalprojectionsizeGeomAvg', 
+            'oxlikehbdamsaccArithAvg', 'oxlikehbdamsdonArithAvg',
+            'oxlikeavgpolGeomAvg', 'oxlikerefractivityGeomAvg',
+            'oxlikemaximalprojectionareaGeomAvg',
+            'oxlikemaximalprojectionradiusGeomAvg',
+            'oxlikemaximalprojectionsizeGeomAvg',
+            'oxlikeminimalprojectionareaGeomAvg',
+            'oxlikeminimalprojectionradiusGeomAvg',
+            'oxlikeminimalprojectionsizeGeomAvg',
             'oxlikeavgpol_pHdependentGeomAvg', 'oxlikemolpolGeomAvg',
-            'oxlikevanderwaalsGeomAvg', 'oxlikeASAGeomAvg', 
-            'oxlikeASA+GeomAvg', 'oxlikeASA-GeomAvg', 
-            'oxlikeASA_HGeomAvg', 'oxlikeASA_PGeomAvg', 
+            'oxlikevanderwaalsGeomAvg', 'oxlikeASAGeomAvg',
+            'oxlikeASA+GeomAvg', 'oxlikeASA-GeomAvg',
+            'oxlikeASA_HGeomAvg', 'oxlikeASA_PGeomAvg',
             'oxlikepolarsurfaceareaGeomAvg', 'oxlikehbdamsaccGeomAvg',
-            'oxlikehbdamsdonGeomAvg', 'inorg-water-moleratio', 
+            'oxlikehbdamsdonGeomAvg', 'inorg-water-moleratio',
             'org-water-moleratio', 'orgacc-waterdonratio',
             'orgdon-wateraccratio', 'inorg-org-moleratio',
             'notwater-water-moleratio'] + atomsz + field_names + ['purity', 'outcome']

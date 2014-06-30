@@ -71,7 +71,7 @@ def get_amine_moles(reaction, amine_index):
 
 
 def get_amine_range(moles):
-	return [i/5.0 for i in range(11)]
+	return [i/50.0 for i in range(11)]
 
 def row_generator(reaction, indices, amine_moles, amine_list):
 
