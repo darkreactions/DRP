@@ -137,6 +137,18 @@ def get_expanded_headers():
   return remove_XXX(headers)
 
 
+#Writes the expanded data from the DataCalc objects with their "expanded_headers" to a CSV
+def write_expanded_data_to_csv():
+  data = DataCalc.objects.filter(~Q(datacalc_calculations=None)) #Only grab reactions that have DataCalc objects already generated 
+  expanded_data = expand_data(data) #Grab their expanded versions
+  headers = get_expanded_headers() # Grab expanded headers
+  import csv 
+  csv = csv.writer(expanded_data, delimiter=' ') 
+  for row in expanded_data: 
+    csv.writerows(row)
+  
+  #datacalc "contents" are in json/string format
+
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # RECOMMENDATIONS # # # # # # # # # # # # # # # # # #
