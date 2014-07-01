@@ -43,7 +43,7 @@ def gen_model(model_name, description):
   truePositiveRate, falsePositiveRate = sample_model_quality(data, name)
 
   print "Constructing the final ARFF file..."
-  make_arff(name, data)
+  make_arff(name+"_final", data)
 
   #Using ALL of the data, now construct the full model.
   print "Building the actual model..."
@@ -51,6 +51,7 @@ def gen_model(model_name, description):
   arffFullName = TMP_DIR+name+"_final.arff"
   command = "bash DRP/model_building/make_model.sh"
   args = " {} {}".format(modelFullName, arffFullName)
+  print "COMMAND: {} {}".format(command, args)
   subprocess.check_output(command+args, shell=True)
 
 
@@ -92,8 +93,8 @@ def sample_model_quality(data, name):
   #TODO: ORIGINAL:   rows = [r[:-1] + [ map_to_zero_one(r[-1]) ] for r in rows]
   #TODO: Incorporate map_to_zero_one??
   #TODO: Why? Isn't used in FINAL make_arff?
-  make_arff(name + "test", test)
-  make_arff(name + "train", train)
+  make_arff(name + "_test", test)
+  make_arff(name + "_train", train)
 
   #Give the temporary ARFF files and the model respectable names.
   tmpPrefix = TMP_DIR + name
@@ -101,11 +102,12 @@ def sample_model_quality(data, name):
 
   # Start a new process to actually construct the model from the training data.
   command = "bash DRP/model_building/make_model.sh"
-  args = " {} {}".format(fullModelName,  tmpPrefix+"train.arff")
+  args = " {} {}".format(fullModelName,  tmpPrefix+"_train.arff")
+  print "COMMAND: {} {}".format(command, args)
   subprocess.check_output(command+args, shell=True)
 
   # Use the test data to make samplePredictions that can gauge the model quality.
-  samplePredictions = make_predictions(tmpPrefix+"test.arff", fullModelName)
+  samplePredictions = make_predictions(tmpPrefix+"_test.arff", fullModelName)
 
   #Now that the sample model is created, evaluate its performance.
   truePositiveRate, falsePositiveRate = evaluate_results(samplePredictions)
@@ -121,12 +123,12 @@ def evaluate_model(rows,keys):
 
 
 	name = str(uuid.uuid4())
-	make_arff(name + "test", test, True)
-	make_arff(name + "train", train, True)
+	make_arff(name + "_test", test, True)
+	make_arff(name + "_train", train, True)
 
 
-	subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "train" + ".arff"), shell=True)
-	results = make_predictions(TMP_DIR + name + "test.arff", MODEL_DIR + name)
+	subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "_train" + ".arff"), shell=True)
+	results = make_predictions(TMP_DIR + name + "_test.arff", MODEL_DIR + name)
 
 	performance, falsePositiveRate = evaluate_results(results)
 	return performance, falsePositiveRate
@@ -183,11 +185,17 @@ def make_arff(name, data):
       try:
         row = datum.get_calculations_list()
 
+        #TODO: Figure out a better way to get this into the form Paul's
+        #      scripts need...
+        # Remove the "raw" data before ARFFing (that is, the data
+        #   from the "ref" up to the first calculated field).
+        row = row[19:-2] + [row[-1]]
         #Write the row to the ARFF file.
         row[-1] = max(1, row[-1])
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
-      except:
+      except Exception as e:
+        print e
         failed += 1
         #If the calculations_list failed/was invalid, erase it.
         datum.calculations = None
