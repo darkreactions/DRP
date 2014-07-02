@@ -5,7 +5,11 @@ from django.shortcuts import render
 
 from DRP.models import * 
 from DRP.retrievalFunctions import * 
-from DRP.jsonViews import * 
+from DRP.views.vis.clustering import *
+from DRP.views.vis.datamatrix import *
+from DRP.views.vis.datamatrixToGraph import *
+from DRP. views.vis.get_data import *
+from DRP.views.vis.kdtree import * 
 
 import csv, json 
 
@@ -19,15 +23,21 @@ def select_for_vis(request) #This will select the data particular to the lab gro
   u = request.user
   lab_group = u.get_profile().lab_group
 
-#Get the info from the POST request.
-  try:
-    filters = request.POST.get("filters")
-    if filters:
-      filters = json.loads(filters)
-    model = request.POST.get("model")
-    assert model in {"Recommendation", "Data", "Saved", "CompoundEntry"}
-  except Exception as e:
-    return HttpResponse("Visualization request failed!")
+# result = json.dumps(data)
+# context = RequestContext(request, {
+#    'result': result,
+#})
+# return HttpResponse(template.render(context)) 
+
+
 
 # Now send this 'model' to the jsonViews to format the CSV correctly 
-
+  csv = write_expanded_data_to_csv() 
+  cleaned_matrix = datamatrix.dataMatrix(csv)
+  matrix_formatted_for_vis = datamatrixToGraph.myGraph(cleaned_matrix) 
+  matrix_to_json = datamatrixToGraph.writeJson(matrix_formatted_for_vis) 
+  context = RequestContext(request, {
+    'matrix_to_json':matrix_to_json,
+  }) 
+  return HttpResponse(template.render(context)) 
+     

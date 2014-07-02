@@ -72,7 +72,7 @@ var width = 1800,
  
 
 
-d3.json("dataNetworkMediumBetter.json", function(graph) {
+d3.json("data", function(graph) {
     var n = 100,
     nodes = graph.nodes,
     links = graph.links;

@@ -143,11 +143,11 @@ def write_expanded_data_to_csv():
   expanded_data = expand_data(data) #Grab their expanded versions
   headers = get_expanded_headers() # Grab expanded headers
   import csv 
-  csv = csv.writer(expanded_data, delimiter=' ') 
-  for row in expanded_data: 
+  csv = csv.writer(expanded_data) 
+  csv.writerows(headings)
+  for field in expanded_data: 
     csv.writerows(row)
-  
-  #datacalc "contents" are in json/string format
+  return csv 
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

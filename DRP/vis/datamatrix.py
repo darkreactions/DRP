@@ -1,5 +1,5 @@
 
-m get_data import *
+from get_data import *
 from clustering import *
 from kdtree import *
 
@@ -12,8 +12,6 @@ import random
 import sys
 from kdtree import *
 
-#file = raw_input('Input data file...')
-#DATA_FILENAME = file
 missing_data_token = "-1";
 
 # Linreg = linear regression(actually correlation) 
@@ -21,16 +19,16 @@ missing_data_token = "-1";
 class dataMatrix:
 	#Initialize data-matrix from file. Properties of the datamatrix will be the header_list, 
 	# dataset, num_cols, and num_rows
-	def __init__(self, filename):
+	def __init__(self, csvfile):
 		#calls get_data's method to find title of each column
-		self.header_list = get_headers(filename) 
+		self.header_list = get_headers(csvfile) 
 		# sets number of columns equal to length of headers (length of the first row)--
 		self.num_cols = len(self.header_list)
 		# initializes datamatrix 
 		self.dataset = []
 		# calls get_data method to put all rows of the file into a dictionary, with each cell in each row
 		# being a value and the key being the respective column header
-		l_of_d = get_data_list_of_dicts(filename)
+		l_of_d = get_data_list_of_dicts(csvfile)
 		# go through every column (the length of the first row) 
 		for i in range(0, self.num_col s):
 			# get_data_slice may be the (mal)funciton flipping the columns and rows 
@@ -337,7 +335,7 @@ class dataMatrix:
 # myHCluster = createHierClusterBetter(matrix.createPointList())
 # writeHClusterJson(turnTreetoDict(myHCluster))
 
-x = dataMatrix("dr_11_4.csv") # Creating a dataMatrix (a csv) from a file of data in the format 
+#x = dataMatrix("dr_11_4.csv") # Creating a dataMatrix (a csv) from a file of data in the format 
 #tree = KDTree(x.getAllPoints)
 #print "valueArr:"
 #print tree.findNearestNeighbor(point).valuesArr[0:10]
@@ -368,7 +366,7 @@ x = dataMatrix("dr_11_4.csv") # Creating a dataMatrix (a csv) from a file of dat
 #x.writeCleaningFlagFile()
 #x.writeFile()
 #x.getOnlyCols([1,3,5])
-x.writeFile() #write the data to a cleaned file 
+# x.writeFile() #write the data to a cleaned file 
 
 
 
