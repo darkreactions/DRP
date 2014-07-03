@@ -7,9 +7,9 @@
  </div>
 </div>
 
-<script type="text/javascript" src="{{ STATIC_URL }}js/d3.js"></script>
-  var data = {{ matrix_to_json|safe }}; <!-- matrix_to_json being the name of the data-->
-  d3.json(data); 
+<script type="text/javascript" src="{{ STATIC_URL }}js/d3.js"></script> 
 <script type="text/javascript" src="{{ STATIC_URL }}js/nvd3.js></script> 
 </script> 
 
+var data = {{ matrix_to_json|safe }};
+d3.json(data); 

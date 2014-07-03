@@ -5,11 +5,10 @@ from django.shortcuts import render
 
 from DRP.models import * 
 from DRP.retrievalFunctions import * 
-from DRP.views.vis.clustering import *
-from DRP.views.vis.datamatrix import *
-from DRP.views.vis.datamatrixToGraph import *
-from DRP. views.vis.get_data import *
-from DRP.views.vis.kdtree import * 
+from DRP.vis.datamatrix import *
+from DRP.vis.datamatrixToGraph import *
+from DRP.vis.get_data import *
+from DRP.vis.kdtree import * 
 
 import csv, json 
 
@@ -18,7 +17,7 @@ import csv, json
 # with the CSV/json file passed to it (the template). 
 @login_required
 
-def select_for_vis(request) #This will select the data particular to the lab group of the user 				 	  #(who is requesting the vis), and should also allow the user to add
+def get_vis(request): #This will select the data particular to the lab group of the user 				 	  #(who is requesting the vis), and should also allow the user to add
 			    #public data to the data to be rendered  
   u = request.user
   lab_group = u.get_profile().lab_group
