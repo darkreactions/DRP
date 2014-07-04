@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     (r'^about/?$', info_page, {"page":"about"}),
     (r'^contact/?$', info_page, {"page":"contact"}),
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
-    (r'^explore/?$', "DRP.views.explore_vis.get_vis"),
+    (r'^explore/?$', global_page, {"page":"explore"}),
     #(r'^help/?$', info_page, {"page":"help"}),
   #Dashboard
     url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
@@ -44,7 +44,8 @@ urlpatterns = patterns('',
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
    #Validation
     (r'^send_CG_names/$', "DRP.views.jsonViews.send_CG_names"), #Send the CG name_pairs for client-side validation.
-
+  #Visualization
+    (r'^get_graph/$', "DRP.views.explore_vis.get_graph_data"),
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
     (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),

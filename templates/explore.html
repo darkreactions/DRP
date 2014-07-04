@@ -1,15 +1,7 @@
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/nvd3.css" />
-
 <div class="infoContainer">
  <div id="loadingMessage">Loading!</div>
  <div id="graph">
-  <svg></svg>
  </div>
 </div>
 
-<script type="text/javascript" src="{{ STATIC_URL }}js/d3.js"></script> 
-<script type="text/javascript" src="{{ STATIC_URL }}js/nvd3.js></script> 
-</script> 
-
-var data = {{ matrix_to_json|safe }};
-d3.json(data); 
+<script type="text/javascript" src="{{ STATIC_URL }}js/d3.js"></script>  

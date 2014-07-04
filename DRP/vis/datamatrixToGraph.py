@@ -1,6 +1,6 @@
 
 
-rt json
+import json
 from kdtree import *
 from datamatrix import * 
 
@@ -218,12 +218,12 @@ class myGraph:
 	
 	
 		ru
-matrix = dataMatrix("filledNumericDataCleanwithTitleandId.csv")
-matrix.removeRandomRows(1000)
+# matrix = dataMatrix("filledNumericDataCleanwithTitleandId.csv")
+# matrix.removeRandomRows(1000)
 #print matrix.dataset[0]
-x = myGraph(matrix)
+#x = myGraph(matrix)
 #x.setPageRanks()
-x.writeJson()
+#x.writeJson()
 
 #print x.sortNodesByPR()[0].pagerank
 #print x.sortNodesByPR()[200].pagerank

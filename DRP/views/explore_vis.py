@@ -16,6 +16,19 @@ import csv, json
 # both), use jsonViews to convert it to a CSV/json (in the right format for the d3 visualization), and# then render the template with that data. The template, in turn, will render the javascript (d3 vis)
 # with the CSV/json file passed to it (the template). 
 @login_required
+def get_graph_data(request): 
+  data = Data.objects.filter(~Q(calculations=None)) #Only grab reactions that have DataCalc objects already generated
+  expanded_data = [row[19:-2] + [max(1, row[-1])]  for row in expand_data(data)] 
+  print expanded_data 
+  headers = get_expanded_headers() 
+  cleaned_matrix = dataMatrix([headers] + expanded_data) 
+  matrix_formatted_for_vis = myGraph(cleaned_matrix) 
+  matrix_to_json = writeJson(matrix_formatted_for_vis) 
+   
+  return HttpResponse(json.dumps(matrix_to_json), mimetype="application/json")
+
+
+
 
 def get_vis(request): #This will select the data particular to the lab group of the user 				 	  #(who is requesting the vis), and should also allow the user to add
 			    #public data to the data to be rendered  

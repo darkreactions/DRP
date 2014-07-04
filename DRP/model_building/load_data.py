@@ -186,10 +186,11 @@ def rxn_to_triple(rxn, cg):
 
 
 def remove_XXX(row):
-	import rxn_calculator
-	dist = 0
-	end = rxn_calculator.headers.index('outcome') + 1
-	for hdr in rxn_calculator.headers:
-		if "XXX" in hdr:
-			dist += 1
-	row = row[dist:end]
+  import rxn_calculator
+  dist = 0
+  end = rxn_calculator.headers.index('outcome') + 1
+  for hdr in rxn_calculator.headers:
+    if "XXX" in hdr:
+      dist += 1
+  row = row[dist:end]
+  return row       

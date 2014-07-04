@@ -19,21 +19,13 @@ missing_data_token = "-1";
 class dataMatrix:
 	#Initialize data-matrix from file. Properties of the datamatrix will be the header_list, 
 	# dataset, num_cols, and num_rows
-	def __init__(self, csvfile):
+	def __init__(self,data):
 		#calls get_data's method to find title of each column
-		self.header_list = get_headers(csvfile) 
+		self.header_list = data.pop(0) 
 		# sets number of columns equal to length of headers (length of the first row)--
-		self.num_cols = len(self.header_list)
+		self.num_cols = len(data)
 		# initializes datamatrix 
-		self.dataset = []
-		# calls get_data method to put all rows of the file into a dictionary, with each cell in each row
-		# being a value and the key being the respective column header
-		l_of_d = get_data_list_of_dicts(csvfile)
-		# go through every column (the length of the first row) 
-		for i in range(0, self.num_col s):
-			# get_data_slice may be the (mal)funciton flipping the columns and rows 
-			self.dataset.append(get_data_slice(self.header_list[i], l_of_d))
-		# the number of rows is dataset[0] because columns and rows are flipped
+		self.dataset = data	# calls get_data method to put all rows of the file into a dictionary, with each cell in each row	
 		self.num_rows = len(self.dataset[0])	
 		# creates an empty matrix of all zeros (cells will be changed to 1 when modified)
 		# modifications: yes, no  changed to 1, 0; '?', '-1' (missing data token)
@@ -205,7 +197,7 @@ class dataMatrix:
 		try:
 		    float(s)
 		    return True
-		except ValueError:is
+		except ValueError:
 		    return False
 		
 	#convert yes/no to 1/0

@@ -1,6 +1,6 @@
 
 			
-rt *
+from math import *
 from kdtree import *
 import json
 import random

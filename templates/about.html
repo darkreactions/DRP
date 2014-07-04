@@ -1,7 +1,87 @@
-<p class="basicParagraph">
-Hydrothermal synthesis reactions of organically-templated inorganic solids are an ideal test case for data-driven materials chemistry, as just a few reactants (one or two inorganic components, one or two organic components and solvent) and a few reaction conditions (pH, temperature, reaction time) yield a diversity of products with numerous applications. Despite this simplicity, the formation of crystalline products depends sensitively on the quantities of reagents used and the reaction conditions, which makes this a demanding test case for predicting success or failure of the reaction. Moreover, unlike other systems such as metal organic frameworks (MOFs), the many different types of intermolecular interactions that are present result in highly diverse crystal structures which cannot be predicted a priori. 
-</p>
+<style> 
 
-<p class="basicParagraph">
-Rather than predicting a final crystal structure, we aim to address the simpler problem of whether a reaction will yield any crystalline product or not. Our project will address this with three strategies: We propose constructing a searchable online repository for "dark reactions", the chemical reactions that have been performed and recorded in laboratory notebooks, but never reported in the literature. This begins with putting our own reactions online, then the reactions of selected experimental collaborators, and finally creating a web-accessible public repository for depositing, retrieving, and utilizing reaction information. Using this data, we propose using machine learning to derive predictions to increase the success rate of performing novel reactions. From the experimental reaction data, we use cheminformatics calculations to predict >200 computed properties of the individual reagents (e.g., van der Waals surface areas, polar surface areas as a function of pH, number of hydrogen bond donors and acceptors, etc.) and compute 50 stoichiometric descriptors (e.g., ratios of organic and inorganic components, weighted by hydrogen bond donor/acceptors as a function of pH, etc.). Based on a preliminary dataset of 506 reactions, we have been able to train a decision tree model to achieve an 87% success rate in predicting whether a crystalline product is formed or not. During this project, we will make the improved model publicly available (via the web), address weaknesses in the physicochemical model, and integrate this with databases of commercially available starting materials. Finally, we will perform experimental validation to demonstrate a proof-of-principle synthesis of new compounds, address structural holes in the dataset, and engage with the broader research community to guide experiments in other laboratories for the synthesis of new materials and addressing limitations in the chemical space of our model. Besides the impact on this specific area of materials synthesis, the software architecture that we develop will serve as a starting point for others to begin similar projects and we commit to freely distributing our work to others by open-sourcing our code under a license that will allow its free use in academic settings. 
-</p>
+img { 
+ max-width: 100%;
+ max-height: 100%; 
+}
+
+.column {
+ background-color: white; 
+ width: 33%;
+ display: inline-block; 
+ padding: 5px 0px; 
+ overflow: hidden; 
+ position: relative; 
+ vertical-align: top; 
+} 
+
+.colHead {
+ font-size: 18px;
+ color: white; 
+ background-color: #336699; 
+ margin-bottom: 5px; 
+ width: 100%; 
+}
+ 
+
+.colText { 
+ font-size: 14px;
+}
+
+#logos { 
+ position: relative;   
+ width: 100%;      
+ text-align: center; 
+ vertical-align: middle; 
+}
+
+
+#logos img { 
+  width: 10%; 
+  margin: 10px 10em; 
+  box-sizing: border-box; 
+}
+
+#logos #NSF {
+  width: 5%;   
+}
+
+.Professors {
+ width: 500px; 
+ height: 500px; 
+}
+</style> 
+
+<!--Display the NSF and Haverford logos, linking to their respective sites. --> 
+<div id="logos">
+   <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1307801">
+      <img id="NSF" src="{{STATIC_URL}}images/NSF.gif">
+    </a> 
+    <a href="http://www.haverford.edu/">
+      <img id="haverfordLogo" src="http://www.haverford.edu/foundation/images/Haverford-College-Wordmark-White.png" alt="Haverford College"/>
+    </a>
+</div>  
+
+<!--Display different "Teams" below the NSF and Haverfod logos --> 
+<div>
+
+  <div class="column">
+	<div class="colHead">Norquist Lab</div> 
+	<div> <img class="Professors" src="{{STATIC_URL}}images/Alex.jpg"/></div>
+  </div> 
+
+  <div class="column">
+	<div class="colHead">Schrier Lab </div>
+	<div> <img class="Professors" src="{{STATIC_URL}}images/Joshua.jpg"/></div> 
+  </div> 
+
+  <div class="column">
+	<div class="colHead">Friedler Lab</div> 
+	<div> <img class="Professors"src="{{STATIC_URL}}images/Sorelle.jpg"/></div> 
+ </div>   
+
+</div> 
+
+
+
+

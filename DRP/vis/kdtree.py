@@ -1,5 +1,5 @@
 
-m get_data import *
+from get_data import *
 #from clustering import *
 #from datamatrix import *
 import math

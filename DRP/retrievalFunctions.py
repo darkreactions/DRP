@@ -1,7 +1,7 @@
 from django.db.models import Q, Max, Min
 from models import *
 
-   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # DATA  # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -135,19 +135,6 @@ def get_expanded_headers():
   from DRP.model_building.rxn_calculator import headers
   from DRP.model_building.load_data import remove_XXX
   return remove_XXX(headers)
-
-
-#Writes the expanded data from the DataCalc objects with their "expanded_headers" to a CSV
-def write_expanded_data_to_csv():
-  data = DataCalc.objects.filter(~Q(datacalc_calculations=None)) #Only grab reactions that have DataCalc objects already generated 
-  expanded_data = expand_data(data) #Grab their expanded versions
-  headers = get_expanded_headers() # Grab expanded headers
-  import csv 
-  csv = csv.writer(expanded_data) 
-  csv.writerows(headings)
-  for field in expanded_data: 
-    csv.writerows(row)
-  return csv 
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
