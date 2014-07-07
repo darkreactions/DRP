@@ -9,10 +9,10 @@ img {
  background-color: white; 
  width: 33%;
  display: inline-block; 
- padding: 5px 0px; 
+ padding: 0px 0px; 
  overflow: hidden; 
  position: relative; 
- vertical-align: top; 
+ vertical-align: top;
 } 
 
 .colHead {
@@ -28,36 +28,55 @@ img {
  font-size: 14px;
 }
 
+.Professors {
+ width: 50%;
+ height: 30%;  
+ overflow: hidden; 
+ display: inline-block;  
+}
+
+.Professors img {
+ height: 125px;
+ position: absolute;
+ left: 0; 
+}
+
+.column p {
+ display: inline-block;
+ position: absolute;
+ right: 20%; 
+ width: 50%; 
+ font-size: 16px; 
+ text-align: left; 
+}
+
 #logos { 
  position: relative;   
  width: 100%;      
- text-align: center; 
- vertical-align: middle; 
+ text-align: center;   
 }
 
 
 #logos img { 
-  width: 10%; 
-  margin: 10px 10em; 
-  box-sizing: border-box; 
+ width: 10%; 
+ margin: 10px 10em; 
+ box-sizing: border-box;
+ vertical-align: middle;  
 }
 
 #logos #NSF {
-  width: 5%;   
+ width: 5%;   
 }
 
-.Professors {
- width: 500px; 
- height: 500px; 
-}
+
 </style> 
 
 <!--Display the NSF and Haverford logos, linking to their respective sites. --> 
 <div id="logos">
-   <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1307801">
+   <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1307801" title="See the full NSF award.">
       <img id="NSF" src="{{STATIC_URL}}images/NSF.gif">
     </a> 
-    <a href="http://www.haverford.edu/">
+    <a href="http://www.haverford.edu/" title="Haverford College home page.">
       <img id="haverfordLogo" src="http://www.haverford.edu/foundation/images/Haverford-College-Wordmark-White.png" alt="Haverford College"/>
     </a>
 </div>  
@@ -67,17 +86,20 @@ img {
 
   <div class="column">
 	<div class="colHead">Norquist Lab</div> 
-	<div> <img class="Professors" src="{{STATIC_URL}}images/Alex.jpg"/></div>
-  </div> 
+	<div class="Professors"> <img src="{{STATIC_URL}}images/Alex.jpg"/></div>
+ 	<p>Alex Norquist<br>Associate Professor of Chemistry, Haverford College.</p> 
+ </div> 
 
   <div class="column">
 	<div class="colHead">Schrier Lab </div>
-	<div> <img class="Professors" src="{{STATIC_URL}}images/Joshua.jpg"/></div> 
-  </div> 
+	<div class="Professors"> <img src="{{STATIC_URL}}images/Joshua.jpg"/></div> 
+	<p>Joshua Schrier<br>Assistant Professor of Chemistry, Haverford College.</p>   
+ </div> 
 
   <div class="column">
 	<div class="colHead">Friedler Lab</div> 
-	<div> <img class="Professors"src="{{STATIC_URL}}images/Sorelle.jpg"/></div> 
+	<div class="Professors"> <img src="{{STATIC_URL}}images/Sorelle.jpg"/></div> 
+ 	<p>Sorelle Friedler<br>Assistant Professor of Computer Science, Haverford College.</p>
  </div>   
 
 </div> 

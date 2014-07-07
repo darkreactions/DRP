@@ -20,6 +20,10 @@ from data_config import CONFIG
 def info_page(request, page):
  return render(request, 'index.html', {"template":page})
 
+def global_page(request, page):
+ return render(request, 'global_page.html', {"template":page})
+
+
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #

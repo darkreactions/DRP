@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.views.static import serve
 
 from DRP.models import * 
 from DRP.retrievalFunctions import * 
@@ -18,38 +19,18 @@ import csv, json
 @login_required
 def get_graph_data(request): 
   data = Data.objects.filter(~Q(calculations=None)) #Only grab reactions that have DataCalc objects already generated
-  expanded_data = [row[19:-2] + [max(1, row[-1])]  for row in expand_data(data)] 
+  expanded_data = [row[19:-2] + [max(1, row[-1])]  for row in expand_data(data)]#Not all of the data in the row is necessary, hence the [19:-2]  
   print expanded_data 
-  headers = get_expanded_headers() 
+  headers = get_expanded_headers()
+  new_file = [headers] + expanded_data 
   cleaned_matrix = dataMatrix([headers] + expanded_data) 
   matrix_formatted_for_vis = myGraph(cleaned_matrix) 
   matrix_to_json = writeJson(matrix_formatted_for_vis) 
    
-  return HttpResponse(json.dumps(matrix_to_json), mimetype="application/json")
-
-
-
-
-def get_vis(request): #This will select the data particular to the lab group of the user 				 	  #(who is requesting the vis), and should also allow the user to add
-			    #public data to the data to be rendered  
-  u = request.user
-  lab_group = u.get_profile().lab_group
-
-# result = json.dumps(data)
-# context = RequestContext(request, {
-#    'result': result,
-#})
-# return HttpResponse(template.render(context)) 
-
-
-
-# Now send this 'model' to the jsonViews to format the CSV correctly 
-  csv = write_expanded_data_to_csv() 
-  cleaned_matrix = datamatrix.dataMatrix(csv)
-  matrix_formatted_for_vis = datamatrixToGraph.myGraph(cleaned_matrix) 
-  matrix_to_json = datamatrixToGraph.writeJson(matrix_formatted_for_vis) 
-  context = RequestContext(request, {
-    'matrix_to_json':matrix_to_json,
-  }) 
-  return HttpResponse(template.render(context)) 
-     
+#  return HttpResponse(json.dumps(matrix_to_json), mimetype="application/json")
+  response = HttpResponse(content_type='text/csv')
+  response['Content-Disposition'] = 'attachment; filename="somefilename.csv" '  
+  result = csv.writer(response)
+  for row in new_file:
+    result.writerow(row)
+  return result 
