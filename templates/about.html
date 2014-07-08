@@ -5,24 +5,28 @@ img {
  max-height: 100%; 
 }
 
-.float {
-  display: inline-block;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: -webkit-transform;
-  transition-property: transform;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+a {
+ color: black;
 }
 
-.float:hover {
-  -webkit-transform: translateY(-5px);
-  -ms-transform: translateY(-5px);
-  transform: translateY(-5px);
-  
+.grow {
+ display: inline-block;
+ -webkit-transition-duration: 0.3s;
+ transition-duration: 0.3s;
+ -webkit-transition-property: transform;
+ transition-property: transform;
+ -webkit-transform: translateZ(0);
+ transform: translateZ(0);
+ box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+}
+
+.grow:hover, .grow:focus, .grow:active {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+#people {
+ min-width: 1000px; 
 }
 
 .column {
@@ -40,7 +44,7 @@ img {
  color: white; 
  background-color: #45759b; 
  margin-bottom: 5px; 
- width: 100%; 
+ width: 100%;
 } 
 
 .colText { 
@@ -60,18 +64,49 @@ img {
  left: 0; 
 }
 
+.column h1 {
+ width: 50%; 
+ right: 20%; 
+ top: 15%; 
+ position: absolute; 
+ text-align: left; 
+ font-size: 18px; 
+}
+
+
+.column h1:hover #Detail {
+ display: inline;
+}
+
+.column h1:hover #Name {
+ display: none;
+}
+
+.column h1 #Detail {
+ display:none;
+}
+
 .column p {
  display: inline-block;
  position: absolute;
  right: 20%; 
- width: 50%; 
+ width: 50%;
+ top: 25%;  
  font-size: 16px; 
  text-align: left; 
 }
 
+.column hr {
+ width: 50%;
+ right: 20%;
+ top: 25%;  
+ position: absolute;  
+}
+
 #logos { 
  position: relative;   
- width: 100%;      
+ width: 100%;
+ min-width: 1000px;        
  text-align: center;   
 }
 
@@ -84,7 +119,8 @@ img {
 }
 
 #logos #NSF {
- width: 5%;   
+ width: 5%; 
+ min-width: 40px;   
 }
 
 
@@ -101,35 +137,47 @@ img {
 </div>  
 
 <!--Display different "Teams" below the NSF and Haverfod logos --> 
-<div>
+<div id="people">
 
 
   <div class="column">
+    <div class="colHead">Friedler Lab</div>  
+	<div class="Professors"> <img id="Sorelle" src="{{STATIC_URL}}images/Sorelle.jpg"/>
+        </div> 
       <a href="http://www.haverford.edu/computerscience/faculty/sorelle/index.html">
-	<div class="colHead float">Friedler Lab</div> 
-      </a> 
-	<div class="Professors"> <img id="Sorelle" src="{{STATIC_URL}}images/Sorelle.jpg"/></div> 
- 	<p>Sorelle Friedler<br>Assistant Professor of Computer Science, Haverford College.</p>
- </div>   
+	  <h1 class="grow">
+	    <span id="Name">Sorelle Friedler</span>
+	    <span id="Detail">Sorelle's home page.</span>
+          </h1> 
+      </a>
+          <hr><p>Assistant Professor of Computer Science, Haverford College.</p>
+  </div>   
 
 
   <div class="column">
-      <a href="http://www.haverford.edu/chem/Norquist/index.html">
-	<div class="colHead float">Norquist Lab</div> 
-      </a> 
+	<div class="colHead">Norquist Lab</div> 
 	<div class="Professors"> <img id="Alex" src="{{STATIC_URL}}images/Alex.jpg"/></div>
- 	<p>Alex Norquist<br>Associate Professor of Chemistry, Haverford College.</p> 
- </div> 
+ 	<a href="http://www.haverford.edu/chem/Norquist/index.html">
+	<h1 class="grow">
+	  <span id="Name">Alex Norquist</span>
+	  <span id="Detail">Alex's home page</span>
+	</h1>
+	</a>
+	  <hr><p>Associate Professor of Chemistry, Haverford College.</p>  
+	</div> 
 
   <div class="column">
-      <a href="http://www.haverford.edu/chemistry/schrier">	
-	<div class="colHead float">Schrier Lab </div>
+	<div class="colHead">Schrier Lab </div>
       </a> 
 	<div class="Professors"> <img id="Joshua" src="{{STATIC_URL}}images/Joshua.jpg"/></div> 
-	<p>Joshua Schrier<br>Assistant Professor of Chemistry, Haverford College.</p>   
- </div> 
-
-</div> 
+	<a href="http://www.haverford.edu/chemistry/schrier">	
+	<h1 class="grow">
+	  <span id="Name">Joshua Schrier</span>
+	  <span id="Detail">Joshua's home page.</span> </h1>
+	</a>
+	  <hr><p>Assistant Professor of Chemistry, Haverford College.</p>   
+ 	</div> 
+  </div> 
 
 
 

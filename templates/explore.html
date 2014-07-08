@@ -1,7 +1,10 @@
-<div class="infoContainer">
- <div id="loadingMessage">Loading!</div>
- <div id="graph">
- </div>
-</div>
-
+{% if user.is_authenticated %} 
+  <div class="infoContainer">
+   <div id="loadingMessage">Loading!</div>
+   <div id="graph"></div>
+  </div>
 <script type="text/javascript" src="{{ STATIC_URL }}js/d3.js"></script>  
+
+{% else %}
+<p>Please log in to see your visualization.</p> 
+{% endif %} 
