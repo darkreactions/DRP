@@ -14,7 +14,7 @@ from kdtree import *
 
 missing_data_token = "-1";
 
-# Linreg = linear regression(actually correlation) 
+# Linreg = linear regression(actually crrelation) 
 #To loop through, go CR not RC (because rows and columns are flipped) 
 class dataMatrix:
 	#Initialize data-matrix from file. Properties of the datamatrix will be the header_list, 
@@ -23,46 +23,12 @@ class dataMatrix:
 		#calls get_data's method to find title of each column
 		self.header_list = data.pop(0) 
 		# sets number of columns equal to length of headers (length of the first row)--
-		self.num_cols = len(data)
 		# initializes datamatrix 
 		self.dataset = data	# calls get_data method to put all rows of the file into a dictionary, with each cell in each row	
-		self.num_rows = len(self.dataset[0])	
-		# creates an empty matrix of all zeros (cells will be changed to 1 when modified)
-		# modifications: yes, no  changed to 1, 0; '?', '-1' (missing data token)
-		# changed to mean of that column
-		self.cleaningflags = np.zeros((self.num_cols, self.num_rows))
-		
-	#Remove a column from the dataset by column number
-	def removeColumn(self, col_num):
-		self.header_list.pop(col_num)
-		self.dataset.pop(col_num)
-		self.cleaningflags = np.delete(self.cleaningflags, col_num, 0)
-		self.num_cols -= 1
-	
-	# Remove a row from the dataset by row number 
-	def removeRow(self, row_num):
-		#print row_num
-		#print self.num_rows
-		for c in range(0,self.num_cols):
-			#print c
-			self.dataset[c].pop(row_num)
-			#self.cleaningflags = np.delete(self.cleaningflags, row_num, 1)
-		self.num_rows -= 1
-	
-	# Because the first row (dataset[0]) is actually the first columns 
-	def getNumRows(self):
-		len(self.dataset[0]);
-		
-	#Get the column number of a specific header name (helps remove column by name)
-	def getColNum(self, header_name):
-		return self.header_list.index(header_name)
-	
-	#Write the matrix to a csv. Filename is given by user.
-	def writeFile(self):
-		# this line flips the matrix so the columns and rows are correctly placed 
-		set_to_write = np.transpose(self.dataset)
-		out_file = raw_input('Write full datafile where? ...')
-		write_data(out_file, self.header_list, set_to_write)
+		print len(self.dataset) 
+		self.num_rows = len(self.dataset) 
+		self.num_cols = len(self.dataset[0]) 
+		self.convertYesNotoOneZero() 
 	
 	#Automatically write matrix to a csv file, Filename is prese.t 
 	def writeToFile(self,filename):
@@ -130,26 +96,28 @@ class dataMatrix:
 	
 	#Finds the mean value of a given column (helper for filling missing rows with mean)
 	def meanCol(self,num_col):
-		if (self.is_number(self.dataset[num_col][0]) == False):
+		if (self.is_number(self.dataset[0][num_col]) == False):
 			return 0
-		sum = 0
+		total_sum = 0
 		counter = 0	
-		for i in self.dataset[num_col]:
+		for row in self.dataset:
+			i = row[num_col]		
 			if i != missing_data_token:
-				sum += float(i)
+				total_sum += float(i)
 			else:
 				counter+=1
-		return sum/(self.num_rows-counter)
+		return total_sum/(self.num_rows-counter)
 	
 	#Find standard deviation of a given column
 	def stdevCol(self, num_of_col):
-		if (self.is_number(self.dataset[num_of_col][0]) == False):
+		if (self.is_number(self.dataset[0][num_of_col]) == False):
 			return 0
 		#find the variance
 		mean = self.meanCol(num_of_col)
 		squared_diffs = []
 		#calculated all squared diffs
-		for num in self.dataset[num_of_col]:
+		for row in self.dataset:
+			num = row[num_of_col] 
 			try:
 				squared_diffs.append((float(num)-mean)**2)
 			except ValueError:
@@ -199,12 +167,12 @@ class dataMatrix:
 		    return True
 		except ValueError:
 		    return False
-		
-	#convert yes/no to 1/0
+	
+	#Convert yes's and no's to ones and zeroes 	
 	def convertYesNotoOneZero(self):
 		counter = 0		
-		for i in xrange(0,self.num_cols):
-			for j in xrange(0, self.num_rows):
+		for i in xrange(0,self.num_rows):
+			for j in xrange(0, self.num_cols):
 				#if j == 0:
 					#print "i, j: "
 					#print i,j
@@ -212,15 +180,12 @@ class dataMatrix:
 				if self.dataset[i][j] == "yes":
 					counter += 1
 					self.dataset[i][j] = 1
-					self.cleaningflags[i][j] = 1
 				elif self.dataset[i][j] == "no":
 					counter += 1
 					self.dataset[i][j] = 0
-					self.cleaningflags[i][j] = 1
 				elif self.dataset[i][j] == "?":
 					counter += 1
 					self.dataset[i][j] = 0
-					self.cleaningflags[i][j] = 1
 					
 	#Remove non-numeric columns
 	def removeStringCols(self):
@@ -272,7 +237,6 @@ class dataMatrix:
 	def removeColumn(self, col_num):
 		self.header_list.pop(col_num)
 		self.dataset.pop(col_num)
-		self.cleaningflags = np.delete(self.cleaningflags, col_num, 0)
 		self.num_cols -= 1
 	
 	# Creates array of all headers and array of all columns
@@ -298,12 +262,12 @@ class dataMatrix:
 	def createPointList(self):
 		meanArr = self.createMeanArrayAllCols()
 		statArr = self.createStdevArrayAllCols()
-		pointList = []
-		for r in range(0, self.num_rows):
-			valuesArr = []
-			for c in range(0,self.num_cols):
-				valuesArr.append(self.dataset[c][r])
-			pointList.append(Point(valuesArr, meanArr, statArr))
+		pointList = []  
+		for row in self.dataset: 
+			print len(row) 
+			print len(meanArr)
+			print len(statArr) 
+			pointList.append(Point(row, meanArr, statArr))
 		return pointList
 	
 	#FYI: Best not to use this function every time (slow) 

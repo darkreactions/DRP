@@ -324,8 +324,15 @@ class Data(models.Model):
       # Create the ForeignKey between the new DataCalc and this Datum.
       self.calculations = newDataCalc
       self.save()
-    return self.calculations.make_json()
+    final_list = self.calculations.make_json()
+    return map(check_for_numbers_in_string, final_list) 
 
+#Independent function to convert string (unicode) to list.
+def check_for_numbers_in_string(string): 
+  try:
+    return float(string)
+  except:
+    return string 
 
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):

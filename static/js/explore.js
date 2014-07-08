@@ -1,5 +1,5 @@
 // D3 code for visualization will go here! 
- 
+  
  $(function() {
     $(document).tooltip();
 	for (var i = 1; i < 5; i++) {
@@ -24,13 +24,15 @@
 var width = 1800,
     height = 2000;
  
-
+//$.get("/get_graph/", function(response) {
 
 d3.json("/get_graph/", function(graph) {
+    console.log("EEEK");
     var n = 100,
     nodes = graph.nodes,
-    links = graph.links;
-	
+    links = graph.links 
+    links[0] = links[1]
+    console.log(links)  	
 	var force = d3.layout.force()
     .nodes(nodes)
     .links(links)

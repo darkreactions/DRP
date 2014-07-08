@@ -47,23 +47,20 @@ class myGraph:
 		outcomes = []
 		purities = []
 		for r in range (datamatrix.num_rows):
-			ids.append(datamatrix.dataset[idCol][r])
-			names.append(datamatrix.dataset[namesCol][r])
-			inorg1s.append(datamatrix.dataset[inorg1Col][r])
-			inorg2s.append(datamatrix.dataset[inorg2Col][r])
-			org1s.append(datamatrix.dataset[org1Col][r])
-			outcomes.append(datamatrix.dataset[datamatrix.num_cols-1][r])
-			purities.append(datamatrix.dataset[datamatrix.num_cols-2][r])
+			ids.append(datamatrix.dataset[r][idCol])
+			names.append(datamatrix.dataset[r][namesCol])
+			inorg1s.append(datamatrix.dataset[r][inorg1Col])
+			inorg2s.append(datamatrix.dataset[r][inorg2Col])
+			org1s.append(datamatrix.dataset[r][org1Col])
+			outcomes.append(datamatrix.dataset[r][datamatrix.num_cols-1])
+			purities.append(datamatrix.dataset[r][datamatrix.num_cols-2])
 			
-		
-		datamatrix.removeColumn(1) #remove name
-		datamatrix.removeColumn(1) #remove inorg1
-		datamatrix.removeColumn(1) #remove inorg2
-		datamatrix.removeColumn(1) #remove org1
-		
+		#datamatrix.removeColumn(1) #remove name
+		#datamatrix.removeColumn(1) #remove inorg1
+		#datamatrix.removeColumn(1) #remove inorg2
+		#datamatrix.removeColumn(1) #remove org1
 		pointList = datamatrix.createPointList()
 		tree = KDTree(pointList)
-		
 		for point in pointList:
 			nnors = tree.findkNearestNeighbors(point, 5)
 			myFriendList = []
@@ -72,11 +69,9 @@ class myGraph:
 				#print neighbor.values
 				myFriendList.append(int(neighbor.values[0]))
 			linkslist.append(myFriendList)
-		
-		datamatrix.removeColumn(0)		
-		datamatrix.removeColumn(datamatrix.num_cols-1)
-		datamatrix.removeColumn(datamatrix.num_cols-2)
-		
+		#datamatrix.removeColumn(0)		
+		#datamatrix.removeColumn(datamatrix.num_cols-1)
+		#datamatrix.removeColumn(datamatrix.num_cols-2)
 		datamatrix.dataset = np.transpose(datamatrix.dataset)
 		#to add dataset
 		#for r in range (0, datamatrix.num_rows):
@@ -90,7 +85,6 @@ class myGraph:
 		for i in range(0,self.numNodes):
 			#print i
 			self.nodes.append(graphNode(self.names[i], ids[i], self.allLinks[i], 1.0/self.numNodes, purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
-	
 	
 	
 	def findNode(self, name):
@@ -136,6 +130,7 @@ class myGraph:
 				"value":1
 				}
 				)
+		print links[0] 
 		return {
 		"nodes": nodes, 
 		"links": links}
@@ -143,11 +138,7 @@ class myGraph:
 	def writeJson(self):
 		self.setPageRanks()
 		final_dict = self.createDictForVis()
-		out_file = raw_input('Write json file for FDG where? ...')
-		with open(out_file, "wb") as fp:
-			dump = json.dump(final_dict, fp, indent = 2)
-			#out_file.close()
-		return dump
+		return final_dict 
 	
 	#returns list of nodes sorted by sortfield. Does not modify object.
 	def sortNodesByPR(self):

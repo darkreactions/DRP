@@ -18,19 +18,16 @@ import csv, json
 # with the CSV/json file passed to it (the template). 
 @login_required
 def get_graph_data(request): 
-  data = Data.objects.filter(~Q(calculations=None)) #Only grab reactions that have DataCalc objects already generated
-  expanded_data = [row[19:-2] + [max(1, row[-1])]  for row in expand_data(data)]#Not all of the data in the row is necessary, hence the [19:-2]  
-  print expanded_data 
-  headers = get_expanded_headers()
+  data = Data.objects.filter(~Q(calculations=None))[:100] #Only grab reactions that have DataCalc objects already generated
+  expanded_data = [row[19:-1] + [max(1, row[-1])]  for row in expand_data(data)]#Not all of the data in the row is necessary, hence the [19:-2]  
+  print "first milemarker"
+  headers = get_expanded_headers() 
   new_file = [headers] + expanded_data 
+  print "2"
   cleaned_matrix = dataMatrix([headers] + expanded_data) 
+  print "2.3" 
   matrix_formatted_for_vis = myGraph(cleaned_matrix) 
-  matrix_to_json = writeJson(matrix_formatted_for_vis) 
-   
-#  return HttpResponse(json.dumps(matrix_to_json), mimetype="application/json")
-  response = HttpResponse(content_type='text/csv')
-  response['Content-Disposition'] = 'attachment; filename="somefilename.csv" '  
-  result = csv.writer(response)
-  for row in new_file:
-    result.writerow(row)
-  return result 
+  print "2.6" 
+  matrix_to_json = matrix_formatted_for_vis.writeJson() 
+  return HttpResponse(json.dumps(matrix_to_json), content_type="application/json")
+  
