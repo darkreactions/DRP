@@ -37,7 +37,8 @@ class myGraph:
     inorg1Col = 2
     inorg2Col = 3
     org1Col = 4
-    linkslist = []
+    edgeList = []
+
     names = []
     ids = []
     valuesArrs = []
@@ -62,16 +63,16 @@ class myGraph:
       myFriendList = []
       for neighbor in nnors:
         myFriendList.append(int(neighbor.values[0]))
-      linkslist.append(myFriendList)
+      edgeList.append(myFriendList)
     datamatrix.dataset = np.transpose(datamatrix.dataset)
 
-    #linkslist should be a list of lists (one list per point/row).
+    #edgeList should be a list of lists (one list per point/row).
     self.names = names
-    self.allLinks = linkslist
+    self.edgeList = edgeList
     self.nodes = []
     self.numNodes = len(names)
     for i in range(0,self.numNodes):
-      self.nodes.append(graphNode(self.names[i], ids[i], self.allLinks[i], 1.0/self.numNodes, purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
+      self.nodes.append(graphNode(self.names[i], ids[i], self.edgeList[i], 1.0/self.numNodes, purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
 
 
   def findNode(self, name):
@@ -104,8 +105,8 @@ class myGraph:
       )
 
     links = []
-    for (i, node) in enumerate(nodes):
-      for target in self.allLinks[i]:
+    for i in xrange(len(nodes)):
+      for target in self.edgeList[i]:
         links.append({
             "source": i,
             "target": target,
