@@ -205,7 +205,7 @@ class clusterNode:
 			#print tree
 			nearestPoint = tree.findNearestNeighbor(QP)
 			
-			print nearestPoint.point.id
+			#print nearestPoint.point.id
 			#tree.removePoint(nearestPoint.point)
 			nearestNode = clusterList[findNodePosbyID(clusterList, nearestPoint.point.id)]
 			#print "nodeID: ", nearestNode.id
@@ -262,7 +262,7 @@ def createHierClusterBetter(points):
 		clusterList.append(clusterNode(point,[],point.titledata[1] + " + " + point.titledata[2]))
 			
 	while (len(clusterList) > 1):
-		print len(clusterList)
+		#print len(clusterList)
 		k = 20
 		print "K ----- ", k				
 		if (len(clusterList) > k):

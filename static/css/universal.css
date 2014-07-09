@@ -460,8 +460,6 @@ div.ui-tooltip {
  background-color:white;
  overflow:auto;
  height:100%;
- padding-right:40px;
- padding-left:40px;
 }
 
 .genericContainer {
@@ -1156,6 +1154,7 @@ p.basicParagraph {
  text-indent:40px;
  line-height:20px;
  word-spacing:2px;
+ padding: 0px 40px; 
 }
 
 .pagesInfo {
@@ -1462,8 +1461,10 @@ color: #355A77;
  height: 100%; 
 }
 
-/*
- #graph:empty {
-  display: none;
-}
-*/ 
+ #loadingMessage {
+  position:absolute;
+  top: 8em; 
+  width: 100%;
+  text-align: center; 
+  font-size: 2em; 
+} 

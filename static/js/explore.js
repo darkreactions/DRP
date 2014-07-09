@@ -26,11 +26,37 @@ var height = parseInt(d3.select("#graph").style("height"), 10);
 console.log(width + "," + height) 
 
 d3.json("/get_graph/", function(graph) {
-    $("#loadingMessage").remove() 
 
     var n = 100;
     var nodes = graph.nodes;
     var links = graph.links;
+
+    var zoom = d3.behavior.zoom()
+    .scaleExtent([1/10, 2])
+    .on("zoom", zoomed);
+
+    var drag = d3.behavior.drag()
+      .origin(function(d) { return d; })
+      .on("dragstart", dragstarted)
+      .on("drag", dragged)
+      .on("dragend", dragended);
+
+
+//Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
+function dragstarted(d) {
+  d3.event.sourceEvent.stopPropagation();
+  d3.select(this).classed("dragging", true);
+}
+
+function dragged(d) {
+  d3.select(this)
+    .attr("cx", d.x = d3.event.x)
+    .attr("cy", d.y = d3.event.y);
+}
+
+function dragended(d) {
+  d3.select(this).classed("dragging", false);
+}
 
     //Add a default weight of   1   for each connection.
     links = links.map(function(connection) {
@@ -53,15 +79,15 @@ d3.json("/get_graph/", function(graph) {
 
 var svg = d3.select("#graph").append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .call(zoom);  
 
+var container = svg.append("g"); 
 
-var loading = svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height / 2)
-    .attr("dy", ".35em")
-    .style("text-anchor", "middle")
-    .text("Simulating. One moment please…");
+function zoomed() {
+  container.attr("transform", 
+  "translate(" + d3.event.translate +")scale("+ d3.event.scale + ")");
+}
 
 // Use a timeout to allow the rest of the page to load first.
 setTimeout(function() {
@@ -78,7 +104,7 @@ setTimeout(function() {
   for (var i = n*n; i > 0; --i) force.tick();
   force.stop();
 
-  svg.selectAll("line")
+  container.selectAll("line")
     .data(links)
   .enter().append("line")
     .attr("x1", function(d) { return d.source.x; })
@@ -88,7 +114,7 @@ setTimeout(function() {
     .style("stroke-width", 0.06)
      .attr("stroke", "gray");
 
-  svg.selectAll("circle")
+  container.selectAll("circle")
     .data(nodes.filter(function(d) { return d.outcome > 0;}))
     .enter().append("circle")
     .attr("cx", function(d) { return d.x; })
@@ -118,12 +144,12 @@ setTimeout(function() {
                     return "purple";
                     }
                   })
-    .call(force.drag)
     .append("title").text(function(d) {return "Title: " + d.name + "\nPagerank: " + (d.pagerank).toFixed(5) + "\nPurity: " + d.purity + "\nOutcome: " + d.outcome + "\ninorg1: " + d.inorg1 + "\ninorg2: " + d.inorg2 + "\norg1: " + d.org1;});
 
 
-  loading.remove();
+  $("#loadingMessage").remove()   
 }, 10);
  });
 
+ 
 

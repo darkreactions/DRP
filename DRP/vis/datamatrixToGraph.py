@@ -57,12 +57,10 @@ class myGraph:
     tree = KDTree(pointList)
     for point in pointList:
       nnors = tree.findkNearestNeighbors(point, 5)
-      myFriendList = []
-      for neighbor in nnors:
-        myFriendList.append(int(neighbor.values[0]))
+      #Because of the way index method works, will find only the first match (ignoring repeated elements)--hopefully not an issue  
+      myFriendList = [pointList.index(neighbor) for neighbor in nnors] 
       edgeList.append(myFriendList)
     datamatrix.dataset = np.transpose(datamatrix.dataset)
-
     #edgeList should be a list of lists (one list per point/row).
     self.names = names
     self.edgeList = edgeList
@@ -103,7 +101,7 @@ class myGraph:
     links = []
     for i in xrange(len(nodes)):
       for target in self.edgeList[i]:
-        links.append({
+	links.append({
             "source": i,
             "target": target,
             "value":1
