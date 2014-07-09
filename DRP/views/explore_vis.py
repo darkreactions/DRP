@@ -19,7 +19,7 @@ import csv, json
 @login_required
 def get_graph_data(request):
   #Only grab reactions that have DataCalc objects already generated
-  data = Data.objects.filter(~Q(calculations=None))[:100]
+  data = Data.objects.filter(~Q(calculations=None))[:1000] 
 
   #Not all of the data in the row is necessary, hence the [19:-2]
   expanded_data = [row[19:-1] + [max(1, row[-1])]  for row in expand_data(data)]

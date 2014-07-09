@@ -21,10 +21,13 @@
   );
 
 
-var width = 1800,
-    height = 2000;
+var width = parseInt(d3.select("#graph").style("width"), 10);
+var height = parseInt(d3.select("#graph").style("height"), 10); 
+console.log(width + "," + height) 
 
 d3.json("/get_graph/", function(graph) {
+    $("#loadingMessage").remove() 
+
     var n = 100;
     var nodes = graph.nodes;
     var links = graph.links;
@@ -42,10 +45,10 @@ d3.json("/get_graph/", function(graph) {
     var force = d3.layout.force()
                  .nodes(nodes)
                  .links(links)
-                 .charge(-350)
-                 .friction(0.6)
-                 .gravity(0.4)
-                 .linkDistance(4)
+                 .charge(100000)
+                 .friction(0.9)
+                 .gravity(0.1)
+                 .linkDistance(100)
                  .size([width, height]);
 
 var svg = d3.select("#graph").append("svg")
@@ -66,6 +69,11 @@ setTimeout(function() {
   // Run the layout a fixed number of times.
   // The ideal number of times scales with graph complexity.
   // Of course, don't run too long—you'll hang the page!
+ force.on("tick", function() {
+  nodes[0].x = width / 2;
+  nodes[0].y = height / 2; 
+}); 
+
   force.start();
   for (var i = n*n; i > 0; --i) force.tick();
   force.stop();
@@ -85,7 +93,7 @@ setTimeout(function() {
     .enter().append("circle")
     .attr("cx", function(d) { return d.x; })
     .attr("cy", function(d) { return d.y; })
-    .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*4500;
+    .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
       size = 10
       }
