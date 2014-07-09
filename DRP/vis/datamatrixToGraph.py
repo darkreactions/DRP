@@ -1,5 +1,3 @@
-
-
 import json
 from kdtree import *
 from datamatrix import *
@@ -16,7 +14,6 @@ class graphNode:
     self.inorg1 = inorg1
     self.inorg2 = inorg2
     self.org1 = org1
-    #self.valuesArr = valuesArr
     self.inNodes = []
 
   def getNumOut(self):
@@ -77,7 +74,6 @@ class myGraph:
 
   def findNode(self, name):
     for node in self.nodes:
-      #print node.name
       if node.name == name:
         return node
     return -1
@@ -123,7 +119,6 @@ class myGraph:
     final_dict = self.createDictForVis()
     return final_dict
 
-  #returns list of nodes sorted by sortfield. Does not modify object.
   def sortNodesByPR(self):
     return sorted(self.nodes, key=lambda node: node.pagerank, reverse = True)
 
@@ -148,12 +143,10 @@ class myGraph:
     damping = 0.85
     converged = False #converges when sum of differences < .001
     while (not converged):
-      #print counter
       ranklist = []
       for node in self.nodes:
         PR = (1-damping)/float(len(self.nodes))
         tsum = 0.0
-        #print node.inNodes
         for friend in node.inNodes:
           currNode = self.findNodebyID(friend)
           if (currNode == -1):
@@ -170,13 +163,10 @@ class myGraph:
       for i in range(0,len(self.nodes)):
         diff = float(self.nodes[i].pagerank) - float(ranklist[i])
         rankdiff += diff
-      #print rankdiff
-      #print ranklist
       self.updatePageRanks(ranklist)
       if (rankdiff < .000001):
         converged = True
       counter += 1
-      #print counter
 
   def updatePageRanks(self, ranklist):
     for i in range(0,len(ranklist)):
@@ -190,47 +180,3 @@ class myGraph:
         sinks.append(node)
     return sinks
 
-
-# matrix = dataMatrix("filledNumericDataCleanwithTitleandId.csv")
-# matrix.removeRandomRows(1000)
-#print matrix.dataset[0]
-#x = myGraph(matrix)
-#x.setPageRanks()
-#x.writeJson()
-
-#print x.sortNodesByPR()[0].pagerank
-#print x.sortNodesByPR()[200].pagerank
-
-#print "A", x.nodes[0].pagerank
-#print "B", x.nodes[1].pagerank
-#print "C", x.nodes[2].pagerank
-#print "D", x.nodes[3].pagerank
-
-#print "names:", len(x.names)
-#print "nodes:", x.nodes[1].pagerank
-
-
-
-"""
-def createNodes(input_file):
-  nodelist = {"nodes":
-  adjacencyList = open(input_file, 'r')
-  for n in adjacencyList:
-    nodelist += {"name": + n.name, "pagerank":n.pagerank}
-  adjacencyList.close()
-
-def createLinks(input_file):
-  linklist = {"links":
-  adjacencyList = open(input_file, 'r')
-  for n in adjacencyList:
-    for a in n:
-      linklist += {"source": + n, "target": + a}
-  adjacencyList.close()
-
-adjList = "myNetwork.json"
-out_file = raw_input('Write json file where? ...')
-outf = open(out_file, 'w')
-final_dict = createNodes(adjList) + createLinks(adjList)
-json.dump(graph_dict,outf)
-outf.close()
-"""
