@@ -4,11 +4,11 @@ from datamatrix import *
 
 # This will need to be modified to reflect current data (recommendations, etc.)
 class graphNode:
-  def __init__(self, name, myID, friendlist, pagerank, purity, outcome, inorg1, inorg2, org1):
+  def __init__(self, name, friendlist, pagerank, myID, purity, outcome, inorg1, inorg2, org1):
     self.name = name
     self.friendlist = friendlist
-    self.id = int(myID)
     self.pagerank = pagerank
+    self.id = myID 
     self.purity = purity
     self.outcome = outcome
     self.inorg1 = inorg1
@@ -29,29 +29,32 @@ class myGraph:
   #Creates a graph from a datamatrix object as long as csv has: First col == id, Sec col == name of experiments; 3rd == inorg1
   # 4th col == inorg2, 5th col == org1, 6th(last) == purity; in between are fully numeric, filled in columns;
   def __init__(self, datamatrix):
-    idCol = 0
-    namesCol = 1
+    idCol = 1 
+    namesCol = 0 
     inorg1Col = 2
     inorg2Col = 3
     org1Col = 4
-    edgeList = []
+    purityCol = 273
+    outcomeCol = 274  
 
-    names = []
-    ids = []
-    valuesArrs = []
+    edgeList = []    
+
+    #valuesArrs = []
+    names = [] 
+    ids = []  
     inorg1s = []
     inorg2s = []
     org1s = []
     outcomes = []
     purities = []
     for r in range (datamatrix.num_rows):
-      ids.append(datamatrix.dataset[r][idCol])
-      names.append(datamatrix.dataset[r][namesCol])
+      names.append(datamatrix.dataset[r][namesCol]) 
       inorg1s.append(datamatrix.dataset[r][inorg1Col])
       inorg2s.append(datamatrix.dataset[r][inorg2Col])
       org1s.append(datamatrix.dataset[r][org1Col])
-      outcomes.append(datamatrix.dataset[r][datamatrix.num_cols-1])
-      purities.append(datamatrix.dataset[r][datamatrix.num_cols-2])
+      outcomes.append(datamatrix.dataset[r][outcomeCol])
+      purities.append(datamatrix.dataset[r][purityCol])
+      ids.append(datamatrix.dataset[r][idCol]) 
 
     pointList = datamatrix.createPointList()
     tree = KDTree(pointList)
@@ -64,10 +67,11 @@ class myGraph:
     #edgeList should be a list of lists (one list per point/row).
     self.names = names
     self.edgeList = edgeList
+    self.ids = ids 
     self.nodes = []
     self.numNodes = len(names)
     for i in range(0,self.numNodes):
-      self.nodes.append(graphNode(self.names[i], ids[i], self.edgeList[i], 1.0/self.numNodes, purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
+      self.nodes.append(graphNode(self.names[i], self.edgeList[i], 1.0/self.numNodes, self.ids[i], purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
 
 
   def findNode(self, name):
@@ -87,9 +91,9 @@ class myGraph:
     nodes = [] #TODO: This could be just self.nodes if we want ALL the data?
     for node in self.nodes:
       nodes.append({
-      "name":node.name,
+      "ref":node.name, 
+      "id":node.id, 
       "pagerank":node.pagerank,
-      "id":node.id,
       "purity":node.purity,
       "outcome":node.outcome,
       "inorg1":node.inorg1,
@@ -97,6 +101,9 @@ class myGraph:
       "org1":node.org1
       }
       )
+    dids = [] 
+    for i in xrange(len(nodes)):
+     dids.append({ "id":node.id }) 
 
     links = []
     for i in xrange(len(nodes)):
@@ -111,7 +118,8 @@ class myGraph:
     return {
         "nodes": nodes,
         "links": links,
-      }
+        "dids" : dids, 
+  }
   def writeJson(self):
     self.setPageRanks()
     final_dict = self.createDictForVis()
@@ -119,6 +127,7 @@ class myGraph:
 
   def sortNodesByPR(self):
     return sorted(self.nodes, key=lambda node: node.pagerank, reverse = True)
+
 
   def setInNodes(self):
     for node in self.nodes:
@@ -177,4 +186,3 @@ class myGraph:
       if len(node.friendlist) == 0:
         sinks.append(node)
     return sinks
-

@@ -1,6 +1,5 @@
-// D3 code for visualization will go here!
-
- $(function() {
+ 
+$(function() {
     $(document).tooltip();
   for (var i = 1; i < 5; i++) {
     console.log("HERE");
@@ -23,13 +22,15 @@
 
 var width = parseInt(d3.select("#graph").style("width"), 10);
 var height = parseInt(d3.select("#graph").style("height"), 10); 
-console.log(width + "," + height) 
 
 d3.json("/get_graph/", function(graph) {
-
     var n = 100;
     var nodes = graph.nodes;
     var links = graph.links;
+    var dids = graph.dids;  
+    var url="/make_seed_recommendations/";
+    //JSON = {"pid":pid} 
+
 
     var zoom = d3.behavior.zoom()
     .scaleExtent([1/10, 2])
@@ -41,7 +42,39 @@ d3.json("/get_graph/", function(graph) {
       .on("drag", dragged)
       .on("dragend", dragended);
 
+// ("/make_seed_recommendations/")
+// ("/seed_recommend.seed_recommend/") 
 
+
+//Function to bring up 'seed-rec' icon on mouseover, make it disappear on mouseout
+function mouseover(d) { 
+  d3.select(this)
+  .classed("dataSpecificButtonContainer", true); 
+}
+
+/*
+$(document).on("mouseover", ".dataGroup", function() {
+ if ($(".dataSpecificButton").length == 0 ){
+
+  //DATA-SPECIFIC BUTTONS # # # # # # # # # # # # # # # #
+  //Add the copy button.
+  if ($(this).attr("class").indexOf("copyable") >= 0) {
+
+   addDataSpecificButton(this, "leftMenu_addNew", "add.png",
+    "Copy this reaction to the data form.",
+    "popupActivator duplicateSpecificDataButton");
+   addDataSpecificButton(this, "makeSeedRecommendations", "seed.gif",
+    "Generate recommendations based on this datum.",
+    "");
+  }
+
+
+function mouseout(d) {
+  d3.select(this)
+  .classed("dataSpecificButtonContainer", false);
+} 
+
+*/ 
 //Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
 function dragstarted(d) {
   d3.event.sourceEvent.stopPropagation();
@@ -71,9 +104,9 @@ function dragended(d) {
     var force = d3.layout.force()
                  .nodes(nodes)
                  .links(links)
-                 .charge(100000)
-                 .friction(0.9)
-                 .gravity(0.1)
+                 .charge(-500)
+                 .friction(0.6)
+                 .gravity(0.4)
                  .linkDistance(100)
                  .size([width, height]);
 
@@ -119,9 +152,9 @@ setTimeout(function() {
     .enter().append("circle")
     .attr("cx", function(d) { return d.x; })
     .attr("cy", function(d) { return d.y; })
-    .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
+    .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*1000;
     if (size > 10){
-      size = 10
+      size = 10 
       }
     else if (size < 0.5){
       size = 0.5;
@@ -144,12 +177,31 @@ setTimeout(function() {
                     return "purple";
                     }
                   })
-    .append("title").text(function(d) {return "Title: " + d.name + "\nPagerank: " + (d.pagerank).toFixed(5) + "\nPurity: " + d.purity + "\nOutcome: " + d.outcome + "\ninorg1: " + d.inorg1 + "\ninorg2: " + d.inorg2 + "\norg1: " + d.org1;});
+    .on("mouseover", mouseover)
+    .append("title").text(function(d) {return "Title: " + d.name + "\nPagerank: " + (d.pagerank).toFixed(5) + "\nID: " + d.id + "\nPurity: " + d.purity + "\nOutcome: " + d.outcome + "\ninorg1: " + d.inorg1 + "\ninorg2: " + d.inorg2 + "\norg1: " + d.org1;});
 
+
+//  $(document).on("mouseover", function() {
+//    addDataSpecificButton(this, "circle", "makeSeedRecommendations", "seed.gif",
+//    "Generate recommendations based on this datum.", 
+//    "");
+//});   
 
   $("#loadingMessage").remove()   
 }, 10);
- });
-
- 
-
+});
+/*
+$.post(url, JSON, function(response) {
+  if (response=='0') {
+    var comment = "Making recommendations based on seed!"; 
+    showRibbon(commend, goodColor, "#mainPanel"); 
+    } else {
+      var failureMessage;
+        if (response=="2") {
+          failureMessage = "Still working on the last batch of recommendations!";
+    } else {
+      failureMessage = "Could not make recommendations from seed!";
+    }
+    showRibbon(failureMessage, badColor, "#mainPanel"); 
+} 
+*/
