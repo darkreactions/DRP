@@ -65,8 +65,8 @@ a {
 }
 
 .column h1 {
- width: 50%; 
- right: 20%; 
+ width: 60%; 
+ right: 10%; 
  top: 15%; 
  position: absolute; 
  text-align: left; 
@@ -74,15 +74,15 @@ a {
 }
 
 
-.column h1:hover #Detail {
+.column h1:hover .Detail {
  display: inline;
 }
 
-.column h1:hover #Name {
+.column h1:hover .Name {
  display: none;
 }
 
-.column h1 #Detail {
+.column h1 .Detail {
  display:none;
 }
 
@@ -97,17 +97,17 @@ a {
 }
 
 .column hr {
- width: 50%;
- right: 20%;
- top: 25%;  
- position: absolute;  
-}
+ width: 60%;
+	right: 10%;
+	top: 25%;  
+	position: absolute;  
+	}
 
 #logos { 
- position: relative;   
- width: 100%;
- min-width: 1000px;        
- text-align: center;   
+position: relative;   
+width: 100%;
+min-width: 1000px;        
+text-align: center;   
 }
 
 
@@ -146,8 +146,8 @@ a {
         </div> 
       <a href="http://www.haverford.edu/computerscience/faculty/sorelle/index.html">
 	  <h1 class="grow">
-	    <span id="Name">Sorelle Friedler</span>
-	    <span id="Detail">Sorelle's home page.</span>
+	    <span class="Name" id="Sorelle">Sorelle Friedler</span>
+	    <span class="Detail">Visit Sorelle's home page.</span>
           </h1> 
       </a>
           <hr><p>Assistant Professor of Computer Science, Haverford College.</p>
@@ -159,8 +159,8 @@ a {
 	<div class="Professors"> <img id="Alex" src="{{STATIC_URL}}images/Alex.jpg"/></div>
  	<a href="http://www.haverford.edu/chem/Norquist/index.html">
 	<h1 class="grow">
-	  <span id="Name">Alex Norquist</span>
-	  <span id="Detail">Alex's home page</span>
+	  <span class="Name">Alex Norquist</span>
+	  <span class="Detail">Visit Alex's home page</span>
 	</h1>
 	</a>
 	  <hr><p>Associate Professor of Chemistry, Haverford College.</p>  
@@ -172,8 +172,8 @@ a {
 	<div class="Professors"> <img id="Joshua" src="{{STATIC_URL}}images/Joshua.jpg"/></div> 
 	<a href="http://www.haverford.edu/chemistry/schrier">	
 	<h1 class="grow">
-	  <span id="Name">Joshua Schrier</span>
-	  <span id="Detail">Joshua's home page.</span> </h1>
+	  <span class="Name">Joshua Schrier</span>
+	  <span class="Detail">Visit Joshua's home page.</span> </h1>
 	</a>
 	  <hr><p>Assistant Professor of Chemistry, Haverford College.</p>   
  	</div> 

@@ -80,7 +80,7 @@ class dataMatrix:
     counter = 0
     for row in self.dataset:
       i = row[num_col]
-      if i != missing_data_token:
+      if i != missing_data_token and self.is_number(i): 
         total_sum += float(i)
       else:
         counter+=1
@@ -118,9 +118,8 @@ class dataMatrix:
 
   #Creates array of means of all columns in data matrix (helpful when replacing missing tokens with mean)
   def createMeanArrayAllCols(self):
-    mean_arr = []
-    for i in xrange(0, self.num_cols):
-      mean_arr.append(self.meanCol(i))
+    mean_arr = [self.meanCol(i) for i in xrange(self.num_cols)]
+    #print "Printing length of mean array" + str( len(mean_arr))   
     return mean_arr
 
   #Fills any missing data fields with the mean of its column. Missing data must be marked by a '?' or '-1'
@@ -138,7 +137,7 @@ class dataMatrix:
     try:
         float(s)
         return True
-    except ValueError:
+    except:  
         return False
 
   #Convert yes's and no's to ones and zeroes

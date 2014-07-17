@@ -29,17 +29,17 @@ class myGraph:
   #Creates a graph from a datamatrix object as long as csv has: First col == id, Sec col == name of experiments; 3rd == inorg1
   # 4th col == inorg2, 5th col == org1, 6th(last) == purity; in between are fully numeric, filled in columns;
   def __init__(self, datamatrix):
-    idCol = 1 
+    idCol = -1  
     namesCol = 0 
-    inorg1Col = 2
-    inorg2Col = 3
-    org1Col = 4
-    purityCol = 273
-    outcomeCol = 274  
+    inorg1Col = 1  
+    inorg2Col = 4
+    org1Col = 10
+    purityCol = -2
+    outcomeCol = -2  
 
     edgeList = []    
 
-    #valuesArrs = []
+    valuesArrs = []
     names = [] 
     ids = []  
     inorg1s = []
@@ -121,9 +121,13 @@ class myGraph:
         "dids" : dids, 
   }
   def writeJson(self):
+    import os
+    from django.conf import settings
     self.setPageRanks()
     final_dict = self.createDictForVis()
-    return final_dict
+    #f = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'vis/matrix_formatted_for_vis'), "w")
+    #dump = json.dump(final_dict, f, indent = 2)
+    return final_dict  
 
   def sortNodesByPR(self):
     return sorted(self.nodes, key=lambda node: node.pagerank, reverse = True)

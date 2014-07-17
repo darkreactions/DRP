@@ -1,37 +1,32 @@
- 
-$(function() {
-    $(document).tooltip();
-  for (var i = 1; i < 5; i++) {
-    console.log("HERE");
-          $("td#color"+i).css({
 
+  $(function() {
+    $(document).tooltip();
+      for (var i = 1; i < 5; i++) {
+        console.log("HERE");
+        $("td#color"+i).css({
             "background-color": function(){
               console.log(i);
               if (i == 4)  return "#1a9641";
-        else if (i == 3) return "#a6d96a";
-        else if (i == 2) return "#fdae61";
-        else if (i == 1) return "#d7191c";
-      },
+              else if (i == 3) return "#a6d96a";
+              else if (i == 2) return "#fdae61";
+              else if (i == 1) return "#d7191c";
+              },
             "width": "20px",
             "height": "20px"
-          })
-        }
-  }
-  );
+        })
+     }
+  });
 
 
-var width = parseInt(d3.select("#graph").style("width"), 10);
-var height = parseInt(d3.select("#graph").style("height"), 10); 
+  var width = parseInt(d3.select("#graph").style("width"), 10);
+  var height = parseInt(d3.select("#graph").style("height"), 10); 
 
 d3.json("/get_graph/", function(graph) {
     var n = 100;
     var nodes = graph.nodes;
     var links = graph.links;
     var dids = graph.dids;  
-    var url="/make_seed_recommendations/";
-    //JSON = {"pid":pid} 
-
-
+   
     var zoom = d3.behavior.zoom()
     .scaleExtent([1/10, 2])
     .on("zoom", zoomed);
@@ -42,88 +37,62 @@ d3.json("/get_graph/", function(graph) {
       .on("drag", dragged)
       .on("dragend", dragended);
 
-// ("/make_seed_recommendations/")
-// ("/seed_recommend.seed_recommend/") 
-
-
-//Function to bring up 'seed-rec' icon on mouseover, make it disappear on mouseout
+/*Function to bring up 'seed-rec' icon on mouseover, make it disappear on mouseout
 function mouseover(d) { 
   d3.select(this)
   .classed("dataSpecificButtonContainer", true); 
 }
 
-/*
-$(document).on("mouseover", ".dataGroup", function() {
- if ($(".dataSpecificButton").length == 0 ){
-
-  //DATA-SPECIFIC BUTTONS # # # # # # # # # # # # # # # #
-  //Add the copy button.
-  if ($(this).attr("class").indexOf("copyable") >= 0) {
-
-   addDataSpecificButton(this, "leftMenu_addNew", "add.png",
-    "Copy this reaction to the data form.",
-    "popupActivator duplicateSpecificDataButton");
-   addDataSpecificButton(this, "makeSeedRecommendations", "seed.gif",
-    "Generate recommendations based on this datum.",
-    "");
-  }
-
-
-function mouseout(d) {
-  d3.select(this)
-  .classed("dataSpecificButtonContainer", false);
-} 
-
 */ 
 //Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
-function dragstarted(d) {
-  d3.event.sourceEvent.stopPropagation();
-  d3.select(this).classed("dragging", true);
-}
+  function dragstarted(d) {
+    d3.event.sourceEvent.stopPropagation();
+    d3.select(this).classed("dragging", true);
+  }
 
-function dragged(d) {
-  d3.select(this)
-    .attr("cx", d.x = d3.event.x)
-    .attr("cy", d.y = d3.event.y);
-}
+  function dragged(d) {
+    d3.select(this)
+      .attr("cx", d.x = d3.event.x)
+      .attr("cy", d.y = d3.event.y);
+  } 
 
-function dragended(d) {
-  d3.select(this).classed("dragging", false);
-}
+  function dragended(d) {
+    d3.select(this).classed("dragging", false);
+  }
 
     //Add a default weight of   1   for each connection.
-    links = links.map(function(connection) {
-      if (connection["source"]<0 || connection["target"]<0) {
-        console.log(connection);
-      }
-      connection["weight"] = 1;
-      return connection;
-    })
+  links = links.map(function(connection) {
+    if (connection["source"]<0 || connection["target"]<0) {
+      console.log(connection);
+    }
+    connection["weight"] = 1;
+    return connection;
+  })
 
 
-    var force = d3.layout.force()
-                 .nodes(nodes)
-                 .links(links)
-                 .charge(-500)
-                 .friction(0.6)
-                 .gravity(0.4)
-                 .linkDistance(100)
-                 .size([width, height]);
-
-var svg = d3.select("#graph").append("svg")
+  var force = d3.layout.force()
+   .nodes(nodes)
+   .links(links)
+   .charge(-500)
+   .friction(0.6)
+   .gravity(0.4)
+   .linkDistance(100)
+   .size([width, height]);
+ 
+  var svg = d3.select("#graph").append("svg")
     .attr("width", width)
     .attr("height", height)
     .call(zoom);  
 
-var container = svg.append("g"); 
+  var container = svg.append("g"); 
 
-function zoomed() {
-  container.attr("transform", 
-  "translate(" + d3.event.translate +")scale("+ d3.event.scale + ")");
-}
+  function zoomed() {
+    container.attr("transform", 
+    "translate(" + d3.event.translate +")scale("+ d3.event.scale + ")");
+  }
 
 // Use a timeout to allow the rest of the page to load first.
-setTimeout(function() {
+  setTimeout(function() {
 
   // Run the layout a fixed number of times.
   // The ideal number of times scales with graph complexity.
@@ -177,21 +146,20 @@ setTimeout(function() {
                     return "purple";
                     }
                   })
-    .on("mouseover", mouseover)
-    .append("title").text(function(d) {return "Title: " + d.name + "\nPagerank: " + (d.pagerank).toFixed(5) + "\nID: " + d.id + "\nPurity: " + d.purity + "\nOutcome: " + d.outcome + "\ninorg1: " + d.inorg1 + "\ninorg2: " + d.inorg2 + "\norg1: " + d.org1;});
+    .append("title").text(function(d) {return "Reference Number: " + d.ref + "\nPagerank: " + (d.pagerank).toFixed(5) + "\nID: " + d.id + "\nPurity: " + d.purity + "\nOutcome: " + d.outcome + "\ninorg1: " + d.inorg1 + "\ninorg2: " + d.inorg2 + "\norg1: " + d.org1;});
 
-
-//  $(document).on("mouseover", function() {
-//    addDataSpecificButton(this, "circle", "makeSeedRecommendations", "seed.gif",
-//    "Generate recommendations based on this datum.", 
-//    "");
-//});   
 
   $("#loadingMessage").remove()   
 }, 10);
 });
-/*
-$.post(url, JSON, function(response) {
+
+/*Put this on container that pops up on click event: 
+function mouseover() {
+
+ var url="/make_seed_recommendations/";
+ var request = {"did":did} 
+
+$.post(url, request, function(response) {
   if (response=='0') {
     var comment = "Making recommendations based on seed!"; 
     showRibbon(commend, goodColor, "#mainPanel"); 
@@ -203,5 +171,5 @@ $.post(url, JSON, function(response) {
       failureMessage = "Could not make recommendations from seed!";
     }
     showRibbon(failureMessage, badColor, "#mainPanel"); 
-} 
-*/
+};  
+*/ 

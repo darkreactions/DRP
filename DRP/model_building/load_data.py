@@ -13,6 +13,7 @@ import load_cg,json
 
 def load(lab_group=None):
 	from DRP.models import get_good_rxns
+        rxns = get_good_rxns(lab_group=lab_group)  
 	return rxns
 
 #Translate the abbrevs to the full compound names.

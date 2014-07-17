@@ -133,8 +133,7 @@ def expand_data(data):
 #Grabs the "expanded_headers" for the DataCalc objects created in 'parse_rxn.'
 def get_expanded_headers():
   from DRP.model_building.rxn_calculator import headers
-  from DRP.model_building.load_data import remove_XXX
-  return remove_XXX(headers)
+  return headers 
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
