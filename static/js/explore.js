@@ -1,4 +1,3 @@
-
   $(function() {
     $(document).tooltip();
       for (var i = 1; i < 5; i++) {
@@ -43,7 +42,15 @@ function mouseover(d) {
   .classed("dataSpecificButtonContainer", true); 
 }
 
-*/ 
+*/
+//styling for toolTips
+  function prettifiedTooltip(tooltips, i, d){
+    var title = tooltips[i][1] + ": ";
+    var rawText = d[tooltips[i][0]];
+    var prettyText = rawText.split("+").join(", ");
+    return title + prettyText;
+  }
+ 
 //Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
   function dragstarted(d) {
     d3.event.sourceEvent.stopPropagation();
@@ -60,7 +67,7 @@ function mouseover(d) {
     d3.select(this).classed("dragging", false);
   }
 
-    //Add a default weight of   1   for each connection.
+  //Add a default weight of   1   for each connection.
   links = links.map(function(connection) {
     if (connection["source"]<0 || connection["target"]<0) {
       console.log(connection);
@@ -146,8 +153,32 @@ function mouseover(d) {
                     return "purple";
                     }
                   })
-    .append("title").text(function(d) {return "Reference Number: " + d.ref + "\nPagerank: " + (d.pagerank).toFixed(5) + "\nID: " + d.id + "\nPurity: " + d.purity + "\nOutcome: " + d.outcome + "\ninorg1: " + d.inorg1 + "\ninorg2: " + d.inorg2 + "\norg1: " + d.org1;});
+    .on("mouseover", function() {
+        var g = this.parentNode;
+        this.parentNode.parentNode.appendChild(g)
+        d3.select(g).select("circle");
+        
+	var textbox = d3.select(g).append("g")
+            .attr("class", "tooltipContainer")
 
+	textbox.append("rect")
+        .attr("x", -100)
+ 	.attr("y", -20*tooltips.length-15)
+	.attr("width", 400)
+	.attr("height", 20*tooltips.length+10)
+	
+	for (var i=0; i < tooltips.length; i++){
+		textbox.append("text") 
+		.attr("dx", -80)
+		.attr("dy", (-20*tooltips.length+20)*i+5)
+		.attr("text-anchor", "left")
+		.attr("class", "tooltip")
+		.text(function(d) {return "Reference Number: " + d.ref + "\nPagerank: " + (d.pagerank).toFixed(5) + "\nPurity: " + d.purity + "\nOutcome: " + d.outcome + "\ninorg1: " + d.inorg1 + "\ninorg2: " + d.inorg2 + "\norg1: " + d.org1;
+		}); 
+	} 
+	})
+	.on("mouseout", function() {
+		d3.select(".tooltipContianer").remove(); 
 
   $("#loadingMessage").remove()   
 }, 10);
