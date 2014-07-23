@@ -41,11 +41,11 @@ def get_graph_data(request):
   else:
     print "vis_data does not exist" 
     #Only grab reactions that have DataCalc objects already generated
-    data = Data.objects.filter(~Q(calculations=None))[:100] 
+    data = Data.objects.filter(~Q(calculations=None))[:1000] 
 	    
     #Grab all data id  
     did = [datum.id for datum in data]  
-	  
+    print "just  finished querying for data objects and appending dids" 	  
     #Append the data id of each Reaction(DataCalc object) to the end of the row (will be the last field)
     #Works because data ids' and expanded_data's reactions are in the same order.  
     expanded_data = expand_data(data)  
@@ -55,13 +55,15 @@ def get_graph_data(request):
     headers = get_expanded_headers() + ["id"]   
     cleaned_matrix = dataMatrix([headers] + expanded_data)
     #Send cleaned matrix to dataMatrixToGraph.myGraph (puts into correct "object" format for  d3 graph)	  
+    print "Just finished creating dataMatrix to graph" 
     matrix_formatted_for_vis = myGraph(cleaned_matrix)
     matrix_prepped_for_json = matrix_formatted_for_vis.writeJson()
     #this_file_path = os.path.dirname(os.path.realpath((__file__))) 
     #completeName = os.path.join(this_file_path, "vis_data")   
-
+    print "Just finished creating myGraph object" 
 	  
-    vis_file = create_vis_data_file(matrix_prepped_for_json)  
+    vis_file = create_vis_data_file(matrix_prepped_for_json) 
+    print "just finished creating vis_data file"  
     file_data = open(path_to_vis_data_file) 
     deserialized_data = json.load(file_data)
     json_formatted_to_string = json.dumps(deserialized_data) 

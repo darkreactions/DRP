@@ -99,8 +99,9 @@ class dataMatrix:
       try:
         squared_diffs.append((float(num)-mean)**2)
       except ValueError:
-        print "problem with"
-        print num
+         pass 
+	 #print "problem with"
+        #print num
     #find the average of the squared_differences
     n = len(squared_diffs)
     sum_sdiffs = 0

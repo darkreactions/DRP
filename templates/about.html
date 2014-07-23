@@ -31,12 +31,13 @@ a {
 
 .column {
  background-color: white; 
- width: 32.95%;
+ width: 30%;
  display: inline-block; 
  padding: 1em 0px; 
  overflow: visible; 
  position: relative; 
  vertical-align: top;
+ box-sixing: border-box; 
 } 
 
 .colHead {
@@ -64,7 +65,7 @@ a {
  left: 1px; 
 }
 
-.column h1 {
+.column .NameDetail {
  width: 60%; 
  right: 10%; 
  top: 15%; 
@@ -74,15 +75,15 @@ a {
 }
 
 
-.column h1:hover .Detail {
+.column .NameDetail:hover .Detail {
  display: inline;
 }
 
-.column h1:hover .Name {
+.column .NameDetail:hover .Name {
  display: none;
 }
 
-.column h1 .Detail {
+.column .NameDetail .Detail {
  display:none;
 }
 
@@ -139,16 +140,17 @@ text-align: center;
 <!--Display different "Teams" below the NSF and Haverfod logos --> 
 <div id="people">
 
-
   <div class="column">
     <div class="colHead">Friedler Lab</div>  
 	<div class="Professors"> <img id="Sorelle" src="{{STATIC_URL}}images/Sorelle.jpg"/>
         </div> 
       <a href="http://www.haverford.edu/computerscience/faculty/sorelle/index.html">
-	  <h1 class="grow">
+	<div class="grow">   
+	<h1>
 	    <span class="Name" id="Sorelle">Sorelle Friedler</span>
 	    <span class="Detail">Visit Sorelle's home page.</span>
-          </h1> 
+          </h1>
+	</div>  
       </a>
           <hr><p>Assistant Professor of Computer Science, Haverford College.</p>
   </div>   

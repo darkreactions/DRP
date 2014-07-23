@@ -1,0 +1,31 @@
+.tooltip {
+ fill: black;  
+ stroke: black;
+ stroke-width: 0.3; 
+} 
+
+#seedRecText {
+ fill: #0066CC;
+ stroke: #0066CC;
+ stroke-width: 0.3; 
+ font-family: Nunito; 
+}
+
+
+#seedImage {
+ -webkit-filter: huerotate(180deg);
+} 
+
+#loadingMessage {
+ padding 30px auto; 
+ width: 100%;
+ text-align-center; 
+ font-size: 24px;
+} 
+
+.tooltipBackground {
+ stroke-width: 1px;
+ fill: #CCE6FF;
+ opacity:0.5;
+ text-anchor: left; 
+}
