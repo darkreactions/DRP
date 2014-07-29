@@ -34,26 +34,31 @@ def get_graph_data(request):
     file_data = open(path_to_vis_data_file)
     deserialized_data = json.load(file_data)
     json_formatted_to_string = json.dumps(deserialized_data) 
-    file_data.close() 
+    file_data.close()
+    links = deserialized_data["links"] 
+    dids = deserialized_data["dids"] 
+    print deserialized_data["nodes"]     
+    # print json_formatted_to_string[x:] 
     return HttpResponse(json_formatted_to_string, content_type="application/json")   
   
   #If vis_data is not created or not up to date, write new vis_data with current data and return that
   else:
     print "vis_data does not exist" 
     #Only grab reactions that have DataCalc objects already generated
-    data = Data.objects.filter(~Q(calculations=None))[:1000] 
+    data = Data.objects.filter(~Q(calculations=None)) 
 	    
-    #Grab all data id  
-    did = [datum.id for datum in data]  
+    #Grab all data ids  
+    dids= [datum.id for datum in data]  
     print "just  finished querying for data objects and appending dids" 	  
     #Append the data id of each Reaction(DataCalc object) to the end of the row (will be the last field)
     #Works because data ids' and expanded_data's reactions are in the same order.  
     expanded_data = expand_data(data)  
     for i in xrange(len(expanded_data)):
-      expanded_data[i] = expanded_data[i] + [did[i]]   
-    #Send headers and expanded data in rough CSV form to vis/dataMatrix function (cleans data) in preparation to be put into JSON object form 
+      expanded_data[i] = expanded_data[i] + [dids[i]]   
+    #Send headers and expanded data in rough CSV form to datamatrix.py.dataMatrix function (cleans data) in preparation to be put into JSON object form 
     headers = get_expanded_headers() + ["id"]   
     cleaned_matrix = dataMatrix([headers] + expanded_data)
+    #cleaned_matrix.removeCorrelatedLinregs(0,0)  
     #Send cleaned matrix to dataMatrixToGraph.myGraph (puts into correct "object" format for  d3 graph)	  
     print "Just finished creating dataMatrix to graph" 
     matrix_formatted_for_vis = myGraph(cleaned_matrix)
@@ -78,3 +83,9 @@ def create_vis_data_file(data_to_file):
     dump = json.dump(data_to_file, outfile) 
   return dump 
 
+"""
+def create_dict_of_nodelinks(dids, links):
+ link_dict = {} 
+ for i in xrange(len(dids)):
+ return link_dict
+"""

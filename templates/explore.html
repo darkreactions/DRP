@@ -1,6 +1,8 @@
 {% if user.is_authenticated %} 
   <div class="infoContainer">
-   <div id="loadingMessage">Loading!</div>
+   <div id="loadingMessage">Loading!
+     <div class="infoBar" id="seedRecOven"></div> 	
+   </div>
    <div id="graph"></div>
 {% for circle in graph %} 
    <div class="dataSpecificButtonContainer"></div> 

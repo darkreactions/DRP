@@ -6,13 +6,13 @@ console.log(width + "," + height)
 
 d3.json("/get_graph/", function(graph) {
     
-    var nodeTooltips = [["Reference Number", "ref"],
-			["Pagerank", "pagerank"],
-			["Purity", "purity"],
+    var nodeTooltips = [["Purity", "purity"],
 			["Outcome", "outcome"],
+			["Reference Number", "ref"], 
 			["Inorg1", "inorg1"],
 			["Inorg2", "inorg2"],
-			["Org1", "org1"] 
+			["Org1", "org1"],
+			["Pagerank", "pagerank"] 
 			]; 
     var n = 100;
     var nodes = graph.nodes;
@@ -73,7 +73,7 @@ container.append("rect")
 	.attr("width", width)
 	.attr("height", height)
 	.attr("fill", "white") 
-	.on("click", function() { console.log("Clicked the container"); d3.selectAll(".tooltipContainer").remove();}); 
+	.on("mouseover", function() { console.log("Clicked the container"); d3.selectAll(".tooltipContainer").remove();}); 
 
 
  
@@ -105,7 +105,13 @@ setTimeout(function() {
     .attr("x2", function(d) { return d.target.x; })
     .attr("y2", function(d) { return d.target.y; })
     .style("stroke-width", 0.06)
-     .attr("stroke", "gray");
+    .attr("stroke", "gray")
+    .on("mouseover", function(d) {
+	var thisLine = d3.select(this);
+ 	console.log(thisLine.x, thisLine.y)
+	console.log(d.source.x)
+	console.log(d.source.y); 
+    });   
 
   var nodeElements = container.selectAll(".node")
     .data(nodes.filter(function(d) { return d.outcome > 0;}))
@@ -139,10 +145,10 @@ setTimeout(function() {
                     return "purple";
                     }
                   })
-    .on("mousedown", function() {
+    .on("mouseover", function() {
 	d3.event.stopPropagation()})
 
-    .on("click", function() {
+    .on("mouseover", function() {
 	d3.selectAll(".tooltipContainer").remove(); 
 	var thisGroup = this.parentNode;
 	this.parentNode.parentNode.appendChild(thisGroup); 
@@ -154,10 +160,33 @@ setTimeout(function() {
 	  .attr("class", "tooltipContainer") 
         
 	textbox.append("rect")
-	  .attr("class", "tooltipBackground") 
-	  .attr("width", 300)
-	  .attr("height", nodeTooltips.length*35);
+	  .attr("class", "tooltipBackground")
+	  .attr("width", 350)
+	  .attr("height", nodeTooltips.length*36)
+	  
+	var defs = container.append("defs"); 
+
+	var filter = defs.append("filter") 
+	  .attr("id", "drop-shadow")
+	  .attr("height", "130%")
+	  .attr("width", "130%"); 
 	
+	filter.append("feGaussianBlur")
+	  .attr("in", "SourceAlpha")
+	  .attr("stdDeviation", 1)
+	  .attr("result", "blur"); 
+	filter.append("feOffset")
+	  .attr("in", "blur")
+	  .attr("dx", 1)
+	  .attr("dy", 1)
+	  .attr("result", "offsetBlur");
+	var feMerge = filter.append("feMerge");
+	feMerge.append("feMergeNode")
+	  .attr("in", "offsetBlur")
+	feMerge.append("feMergeNode")
+	  .attr("in", "SourceGraphic");
+
+			
 	var textElement = textbox.append("text")
 	  .attr("class", "tooltip")
 	
@@ -170,22 +199,43 @@ setTimeout(function() {
  	  textElement.append("tspan")
 		   .text(textField) 
 		   .attr("x", "20px")
-		   .attr("dy", "2em") 
-		}
-	textbox.append("text").text("Click to generate seed recs: ") 
-		.attr("id", "seedRecText") 
-		.attr('x', "20px") 
-		.attr('y', nodeTooltips.length*32) 
- 
-	var imageContainer = textbox.append("g")
+		   .attr("dy", "2em"); 
+		}; 
+	var seedRecButton = textbox.append("g")
+		.attr('cursor', 'pointer')
+		.on("mouseover", function() {
+		seedRecButton.select("rect").style("filter","url(#drop-shadow)");}) 
+		.on("mouseout", function() { 
+		seedRecButton.select("rect").style("filter", "none");}) 
+
+	seedRecButton.append("rect")
+		.attr("id", "seedButtonRect")  
+		.attr('width', 310)
+		.attr('height', 25)  
+		.attr('x', "20px")
+		.attr('y', nodeTooltips.length*31)
+		.attr("rx", "3")
+		.attr("ry", "3");
+	//	.style("filter", "url(#drop-shadow)");
+	
+	seedRecButton.append("text")
+		.text("Generate seed recommendations")
+		.attr('x', "40px")
+		.attr('y', nodeTooltips.length*33.5) 
+		.attr("id", "seedRecText")
+		.append("rect")
+		.attr("fill","none"); 
+ 	
+	var imageContainer = seedRecButton.append("g")
 	var seedButton = imageContainer.append("svg:image")
  	  .attr("id", "seedImage") 
-	  .attr('x', nodeTooltips.length*30) 
- 	  .attr('y', nodeTooltips.length*30)
- 	  .attr('width', 20)
- 	  .attr('height', 20)
- 	  .attr('xlink:href', "/static/icons/seed.gif")
-	  .on("click", function(d) { 
+	  .attr('x', nodeTooltips.length*40) 
+ 	  .attr('y', nodeTooltips.length*31.75)
+ 	  .attr('width', 22)
+ 	  .attr('height', 16)
+ 	  .attr('xlink:href', "/static/icons/seed.gif");
+	
+	seedRecButton.on("click", function(d) { 
 		var url="/make_seed_recommendations/";
 		var request = {"pid":d.id}
 		console.log(d.id);  
