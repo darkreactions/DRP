@@ -1,0 +1,222 @@
+=== Run information ===
+
+Scheme:weka.classifiers.bayes.NaiveBayes 
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R4-5,7,10,13,15-16,20,25,27,33-35,44,49,71,100,170,174,180,185,188,228,239,258,261,274
+Instances:    2645
+Attributes:   27
+              pH
+              leak
+              numberOrg
+              orgavgpolMax
+              orgmaximalprojectionradiusMax
+              orgminimalprojectionareaMax
+              orgminimalprojectionradiusMax
+              orgvanderwaalsMax
+              orgASA_PMax
+              orghbdamsaccMax
+              orgmaximalprojectionsizeMin
+              orgminimalprojectionareaMin
+              orgminimalprojectionradiusMin
+              orgASA_PMin
+              orgrefractivityArithAvg
+              orgmaximalprojectionsizeGeomAvg
+              oxlikeASA_HMax
+              Te
+              F
+              S
+              Cl
+              Cr
+              PaulingElectronegMax
+              EAMean
+              PaulingElectronegMinWeighted
+              AtomicRadiusMinWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Naive Bayes Classifier
+
+                                     Class
+Attribute                                1        2
+                                     (0.3)    (0.7)
+====================================================
+pH
+  mean                               4.1298   3.8978
+  std. dev.                          2.6286   2.5771
+  weight sum                            786     1859
+  precision                               1        1
+
+leak
+  yes                                  49.0     17.0
+  no                                  727.0   1832.0
+  [total]                             776.0   1849.0
+
+numberOrg
+  mean                               1.0725   1.0619
+  std. dev.                          0.2593   0.2431
+  weight sum                            786     1859
+  precision                               1        1
+
+orgavgpolMax
+  mean                              12.8067  12.5404
+  std. dev.                          3.9964   3.9164
+  weight sum                            786     1859
+  precision                          0.4055   0.4055
+
+orgmaximalprojectionradiusMax
+  mean                               4.9167   4.8056
+  std. dev.                          1.1865   1.0352
+  weight sum                            786     1859
+  precision                          0.1254   0.1254
+
+orgminimalprojectionareaMax
+  mean                              24.0424  23.9159
+  std. dev.                          4.8306   4.9448
+  weight sum                            786     1859
+  precision                          0.7384   0.7384
+
+orgminimalprojectionradiusMax
+  mean                               3.2204   3.2506
+  std. dev.                          0.3957   0.4509
+  weight sum                            786     1859
+  precision                          0.1042   0.1042
+
+orgvanderwaalsMax
+  mean                             282.9077 276.8637
+  std. dev.                         61.0009   55.111
+  weight sum                            786     1859
+  precision                          4.3977   4.3977
+
+orgASA_PMax
+  mean                              66.5695  62.9049
+  std. dev.                         43.7191  38.8509
+  weight sum                            786     1859
+  precision                          1.6474   1.6474
+
+orghbdamsaccMax
+  mean                               0.7334   0.5764
+  std. dev.                          1.4676   1.1527
+  weight sum                            786     1859
+  precision                          0.1057   0.1057
+
+orgmaximalprojectionsizeMin
+  mean                               5.5452   5.4738
+  std. dev.                          0.7314   0.6643
+  weight sum                            786     1859
+  precision                          0.1354   0.1354
+
+orgminimalprojectionareaMin
+  mean                              23.2213  23.2916
+  std. dev.                          5.1054   5.2746
+  weight sum                            786     1859
+  precision                          0.7469   0.7469
+
+orgminimalprojectionradiusMin
+  mean                                3.173   3.2106
+  std. dev.                          0.4117   0.4756
+  weight sum                            786     1859
+  precision                          0.1027   0.1027
+
+orgASA_PMin
+  mean                              61.3252  59.2617
+  std. dev.                         36.6419  35.7322
+  weight sum                            786     1859
+  precision                          1.2698   1.2698
+
+orgrefractivityArithAvg
+  mean                              31.6179  31.3446
+  std. dev.                          9.3756   9.4937
+  weight sum                            786     1859
+  precision                          0.7897   0.7897
+
+orgmaximalprojectionsizeGeomAvg
+  mean                               5.5839   5.5034
+  std. dev.                          0.6962   0.6355
+  weight sum                            786     1859
+  precision                          0.0911   0.0911
+
+oxlikeASA_HMax
+  mean                               0.0711    0.371
+  std. dev.                          1.5533   2.6034
+  weight sum                            786     1859
+  precision                            9.32     9.32
+
+Te
+  yes                                 218.0    296.0
+  no                                  570.0   1565.0
+  [total]                             788.0   1861.0
+
+F
+  yes                                  26.0     36.0
+  no                                  762.0   1825.0
+  [total]                             788.0   1861.0
+
+S
+  yes                                  93.0    201.0
+  no                                  695.0   1660.0
+  [total]                             788.0   1861.0
+
+Cl
+  yes                                  42.0     82.0
+  no                                  746.0   1779.0
+  [total]                             788.0   1861.0
+
+Cr
+  yes                                  35.0     26.0
+  no                                  753.0   1835.0
+  [total]                             788.0   1861.0
+
+PaulingElectronegMax
+  mean                               2.1781   2.2446
+  std. dev.                          0.3107    0.292
+  weight sum                            786     1859
+  precision                          0.1314   0.1314
+
+EAMean
+  mean                              102.958 103.3217
+  std. dev.                         33.6612  30.3146
+  weight sum                            786     1859
+  precision                         17.7273  17.7273
+
+PaulingElectronegMinWeighted
+  mean                               0.0026   0.0027
+  std. dev.                          0.0031   0.0028
+  weight sum                            786     1859
+  precision                          0.0003   0.0003
+
+AtomicRadiusMinWeighted
+  mean                               0.2351   0.2502
+  std. dev.                          0.2623   0.2566
+  weight sum                            786     1859
+  precision                          0.0023   0.0023
+
+
+
+Time taken to build model: 0.01 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         821               72.4625 %
+Incorrectly Classified Instances       312               27.5375 %
+Kappa statistic                          0.1864
+Mean absolute error                      0.3587
+Root mean squared error                  0.4563
+Relative absolute error                 88.402  %
+Root relative squared error            102.8658 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.271     0.11       0.474     0.271     0.345      0.646    1
+                 0.89      0.729      0.77      0.89      0.826      0.646    2
+Weighted Avg.    0.725     0.564      0.691     0.725     0.697      0.646
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+  82 221 |   a = 1
+  91 739 |   b = 2
+

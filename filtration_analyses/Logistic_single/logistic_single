@@ -1,0 +1,45 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.ClassifierSubsetEval -B weka.classifiers.functions.Logistic -T -H "Click to set hold out or test instances" -- -R 1.0E-8 -M -1
+Search:weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     rec_system
+Instances:    3778
+Attributes:   274
+[list of attributes omitted]
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 5024
+	Merit of best subset found:    0.482
+
+Attribute Subset Evaluator (supervised, Class (nominal): 274 outcome):
+	Classifier Subset Evaluator
+	Learning scheme: weka.classifiers.functions.Logistic
+	Scheme options: -R 1.0E-8 -M -1  
+	Hold out/test set: Training data
+	Accuracy estimation: classification error
+
+Selected attributes: 1,3,5,6,33,63,100,165,168,170,172,180,184,231 : 14
+                     Temp_max
+                     slowCool
+                     leak
+                     numberInorg
+                     orgmaximalprojectionsizeMin
+                     orgASA_PArithAvg
+                     oxlikeASA_HMax
+                     orgdon-wateraccratio
+                     Na
+                     Te
+                     K
+                     S
+                     Co
+                     AtomicRadiusMax
+

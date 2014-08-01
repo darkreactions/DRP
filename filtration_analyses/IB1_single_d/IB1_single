@@ -1,0 +1,34 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.ClassifierSubsetEval -B weka.classifiers.lazy.IB1 -T -H "Click to set hold out or test instances"
+Search:weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     rec_system
+Instances:    3778
+Attributes:   274
+[list of attributes omitted]
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 2162
+	Merit of best subset found:    0    
+
+Attribute Subset Evaluator (supervised, Class (nominal): 274 outcome):
+	Classifier Subset Evaluator
+	Learning scheme: weka.classifiers.lazy.IB1
+	Scheme options: 
+	Hold out/test set: Training data
+	Accuracy estimation: classification error
+
+Selected attributes: 2,165,166 : 3
+                     time
+                     orgdon-wateraccratio
+                     inorg-org-moleratio
+

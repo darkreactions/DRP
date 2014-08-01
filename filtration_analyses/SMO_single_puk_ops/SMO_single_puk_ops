@@ -1,0 +1,54 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.ClassifierSubsetEval -B weka.classifiers.functions.SMO -T -H "Click to set hold out or test instances" -- -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V 0 -W 1 -K "weka.classifiers.functions.supportVector.Puk -C 250007 -O 0.5 -S 7.0"
+Search:weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     rec_system
+Instances:    3778
+Attributes:   274
+[list of attributes omitted]
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 7273
+	Merit of best subset found:    0.448
+
+Attribute Subset Evaluator (supervised, Class (nominal): 274 outcome):
+	Classifier Subset Evaluator
+	Learning scheme: weka.classifiers.functions.SMO
+	Scheme options: -C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V 0 -W 1 -K weka.classifiers.functions.supportVector.Puk -C 250007 -O 0.5 -S 7.0 
+	Hold out/test set: Training data
+	Accuracy estimation: classification error
+
+Selected attributes: 3,4,5,7,8,13,17,43,74,85,168,170,171,172,174,179,180,188,228,232,250,256,269 : 23
+                     slowCool
+                     pH
+                     leak
+                     numberOrg
+                     numberOxlike
+                     orgmaximalprojectionradiusMax
+                     orgminimalprojectionsizeMax
+                     orgASA_HMin
+                     orgminimalprojectionsizeGeomAvg
+                     orghbdamsdonGeomAvg
+                     Na
+                     Te
+                     Br
+                     K
+                     F
+                     P
+                     S
+                     Cr
+                     PaulingElectronegMax
+                     IonizationMin
+                     IonizationMaxWeighted
+                     IonizationMinWeighted
+                     EAGeomWeighted
+

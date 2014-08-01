@@ -1,0 +1,109 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.Logistic -R 1.0E-8 -M -1
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R1-3,5,18,26,63,83,99-100,103,170,172,174,180,182,234,255,261,274
+Instances:    2645
+Attributes:   20
+              Temp_max
+              time
+              slowCool
+              leak
+              orgavgpol_pHdependentMax
+              orgpolarsurfaceareaMax
+              orgASA_PArithAvg
+              orgpolarsurfaceareaGeomAvg
+              oxlikeASA-Max
+              oxlikeASA_HMax
+              oxlikehbdamsaccMax
+              Te
+              K
+              F
+              S
+              Se
+              PaulingElectronegMin
+              AtomicRadiusMaxWeighted
+              AtomicRadiusMinWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Logistic Regression with ridge parameter of 1.0E-8
+Coefficients...
+                                Class
+Variable                            1
+=====================================
+Temp_max                      -0.0144
+time                          -0.0191
+slowCool                       -0.188
+leak                          -2.3863
+orgavgpol_pHdependentMax        0.038
+orgpolarsurfaceareaMax        -0.0085
+orgASA_PArithAvg               0.0286
+orgpolarsurfaceareaGeomAvg    -0.0382
+oxlikeASA-Max                 -0.0255
+oxlikeASA_HMax                -0.0709
+oxlikehbdamsaccMax             0.4747
+Te                            -0.6239
+K                              -1.354
+F                             -0.7266
+S                             -0.4022
+Se                             1.0567
+PaulingElectronegMin           1.2319
+AtomicRadiusMaxWeighted        0.2261
+AtomicRadiusMinWeighted       -0.8433
+Intercept                      4.0779
+
+
+Odds Ratios...
+                                Class
+Variable                            1
+=====================================
+Temp_max                       0.9858
+time                           0.9811
+slowCool                       0.8286
+leak                            0.092
+orgavgpol_pHdependentMax       1.0388
+orgpolarsurfaceareaMax         0.9915
+orgASA_PArithAvg                1.029
+orgpolarsurfaceareaGeomAvg     0.9625
+oxlikeASA-Max                  0.9748
+oxlikeASA_HMax                 0.9316
+oxlikehbdamsaccMax             1.6076
+Te                             0.5358
+K                              0.2582
+F                              0.4835
+S                              0.6688
+Se                             2.8769
+PaulingElectronegMin           3.4279
+AtomicRadiusMaxWeighted        1.2537
+AtomicRadiusMinWeighted        0.4303
+
+
+Time taken to build model: 0.11 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         829               73.1686 %
+Incorrectly Classified Instances       304               26.8314 %
+Kappa statistic                          0.1935
+Mean absolute error                      0.351 
+Root mean squared error                  0.425 
+Relative absolute error                 86.5059 %
+Root relative squared error             95.7942 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.261     0.096      0.497     0.261     0.342      0.684    1
+                 0.904     0.739      0.77      0.904     0.831      0.684    2
+Weighted Avg.    0.732     0.567      0.697     0.732     0.701      0.684
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+  79 224 |   a = 1
+  80 750 |   b = 2
+

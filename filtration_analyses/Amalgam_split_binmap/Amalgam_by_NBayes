@@ -1,0 +1,473 @@
+=== Run information ===
+
+Scheme:weka.classifiers.bayes.NaiveBayes 
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-R6,8,14,17,19,21-24,28-30,32,36-38,40,42-43,45-48,50-57,59,61-62,65-70,72-81,86-95,97-98,101-102,104-163,165-167,169,171,173,177-179,181,184,186-187,189-196,198-227,229-233,235-237,242-253,256-257,259-260,262-266,268-273
+Instances:    2645
+Attributes:   64
+              Temp_max
+              time
+              slowCool
+              pH
+              leak
+              numberOrg
+              numberComponents
+              orgavgpolMax
+              orgrefractivityMax
+              orgmaximalprojectionareaMax
+              orgmaximalprojectionradiusMax
+              orgminimalprojectionareaMax
+              orgminimalprojectionradiusMax
+              orgavgpol_pHdependentMax
+              orgvanderwaalsMax
+              orgASA_PMax
+              orgpolarsurfaceareaMax
+              orghbdamsaccMax
+              orgmaximalprojectionareaMin
+              orgmaximalprojectionsizeMin
+              orgminimalprojectionareaMin
+              orgminimalprojectionradiusMin
+              orgvanderwaalsMin
+              orgASA+Min
+              orgASA_PMin
+              orgrefractivityArithAvg
+              orgvanderwaalsArithAvg
+              orgASA+ArithAvg
+              orgASA_PArithAvg
+              orgpolarsurfaceareaArithAvg
+              orgmaximalprojectionsizeGeomAvg
+              orgASA_PGeomAvg
+              orgpolarsurfaceareaGeomAvg
+              orghbdamsaccGeomAvg
+              orghbdamsdonGeomAvg
+              oxlikevanderwaalsMax
+              oxlikeASA-Max
+              oxlikeASA_HMax
+              oxlikehbdamsaccMax
+              orgacc-waterdonratio
+              Na
+              Te
+              K
+              F
+              I
+              Mo
+              S
+              Se
+              Zn
+              Cl
+              Cr
+              P5
+              PaulingElectronegMax
+              PaulingElectronegMin
+              IonizationMean
+              EAMean
+              PaulingElectronegMean
+              PearsonElectronegMean
+              hardnessMaxWeighted
+              AtomicRadiusMaxWeighted
+              PaulingElectronegMinWeighted
+              AtomicRadiusMinWeighted
+              AtomicRadiusMeanWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Naive Bayes Classifier
+
+                                     Class
+Attribute                                1        2
+                                     (0.3)    (0.7)
+====================================================
+Temp_max
+  mean                             111.2433 120.9122
+  std. dev.                         29.8437  38.5803
+  weight sum                            786     1859
+  precision                          8.6111   8.6111
+
+time
+  mean                               35.645   43.497
+  std. dev.                          22.318  32.0028
+  weight sum                            786     1859
+  precision                              11       11
+
+slowCool
+  yes                                 544.0   1075.0
+  no                                  240.0    748.0
+  [total]                             784.0   1823.0
+
+pH
+  mean                               4.1298   3.8978
+  std. dev.                          2.6286   2.5771
+  weight sum                            786     1859
+  precision                               1        1
+
+leak
+  yes                                  49.0     17.0
+  no                                  727.0   1832.0
+  [total]                             776.0   1849.0
+
+numberOrg
+  mean                               1.0725   1.0619
+  std. dev.                          0.2593   0.2431
+  weight sum                            786     1859
+  precision                               1        1
+
+numberComponents
+  mean                               2.9733   2.9554
+  std. dev.                          0.6809   0.7463
+  weight sum                            786     1859
+  precision                               1        1
+
+orgavgpolMax
+  mean                              12.8067  12.5404
+  std. dev.                          3.9964   3.9164
+  weight sum                            786     1859
+  precision                          0.4055   0.4055
+
+orgrefractivityMax
+  mean                               32.311   31.727
+  std. dev.                           9.442    9.381
+  weight sum                            786     1859
+  precision                          1.1268   1.1268
+
+orgmaximalprojectionareaMax
+  mean                              41.8773   41.559
+  std. dev.                         10.6045  10.0065
+  weight sum                            786     1859
+  precision                          1.0248   1.0248
+
+orgmaximalprojectionradiusMax
+  mean                               4.9167   4.8056
+  std. dev.                          1.1865   1.0352
+  weight sum                            786     1859
+  precision                          0.1254   0.1254
+
+orgminimalprojectionareaMax
+  mean                              24.0424  23.9159
+  std. dev.                          4.8306   4.9448
+  weight sum                            786     1859
+  precision                          0.7384   0.7384
+
+orgminimalprojectionradiusMax
+  mean                               3.2204   3.2506
+  std. dev.                          0.3957   0.4509
+  weight sum                            786     1859
+  precision                          0.1042   0.1042
+
+orgavgpol_pHdependentMax
+  mean                              13.4245  13.1398
+  std. dev.                          4.0757   3.9973
+  weight sum                            786     1859
+  precision                          0.2791   0.2791
+
+orgvanderwaalsMax
+  mean                             282.9077 276.8637
+  std. dev.                         61.0009   55.111
+  weight sum                            786     1859
+  precision                          4.3977   4.3977
+
+orgASA_PMax
+  mean                              66.5695  62.9049
+  std. dev.                         43.7191  38.8509
+  weight sum                            786     1859
+  precision                          1.6474   1.6474
+
+orgpolarsurfaceareaMax
+  mean                              39.1652   39.715
+  std. dev.                         20.3279  20.5463
+  weight sum                            786     1859
+  precision                            2.36     2.36
+
+orghbdamsaccMax
+  mean                               0.7334   0.5764
+  std. dev.                          1.4676   1.1527
+  weight sum                            786     1859
+  precision                          0.1057   0.1057
+
+orgmaximalprojectionareaMin
+  mean                              40.1459  40.4042
+  std. dev.                         11.5247  10.9908
+  weight sum                            786     1859
+  precision                          1.0248   1.0248
+
+orgmaximalprojectionsizeMin
+  mean                               5.5452   5.4738
+  std. dev.                          0.7314   0.6643
+  weight sum                            786     1859
+  precision                          0.1354   0.1354
+
+orgminimalprojectionareaMin
+  mean                              23.2213  23.2916
+  std. dev.                          5.1054   5.2746
+  weight sum                            786     1859
+  precision                          0.7469   0.7469
+
+orgminimalprojectionradiusMin
+  mean                                3.173   3.2106
+  std. dev.                          0.4117   0.4756
+  weight sum                            786     1859
+  precision                          0.1027   0.1027
+
+orgvanderwaalsMin
+  mean                             276.4265 273.5045
+  std. dev.                          60.514  55.2131
+  weight sum                            786     1859
+  precision                          4.8267   4.8267
+
+orgASA+Min
+  mean                             226.4613 229.2609
+  std. dev.                         53.1738  50.3901
+  weight sum                            786     1859
+  precision                          4.0215   4.0215
+
+orgASA_PMin
+  mean                              61.3252  59.2617
+  std. dev.                         36.6419  35.7322
+  weight sum                            786     1859
+  precision                          1.2698   1.2698
+
+orgrefractivityArithAvg
+  mean                              31.6179  31.3446
+  std. dev.                          9.3756   9.4937
+  weight sum                            786     1859
+  precision                          0.7897   0.7897
+
+orgvanderwaalsArithAvg
+  mean                             279.9005 275.4368
+  std. dev.                           59.29  54.4707
+  weight sum                            786     1859
+  precision                          3.1748   3.1748
+
+orgASA+ArithAvg
+  mean                             231.4065 231.9354
+  std. dev.                         45.4057  45.6663
+  weight sum                            786     1859
+  precision                          2.6377   2.6377
+
+orgASA_PArithAvg
+  mean                              64.0061  61.1834
+  std. dev.                         38.7532  36.1408
+  weight sum                            786     1859
+  precision                          0.9293   0.9293
+
+orgpolarsurfaceareaArithAvg
+  mean                              38.4368  38.8369
+  std. dev.                         20.0273  20.4579
+  weight sum                            786     1859
+  precision                          1.4786   1.4786
+
+orgmaximalprojectionsizeGeomAvg
+  mean                               5.5839   5.5034
+  std. dev.                          0.6962   0.6355
+  weight sum                            786     1859
+  precision                          0.0911   0.0911
+
+orgASA_PGeomAvg
+  mean                              63.1511  60.5777
+  std. dev.                         38.2819  35.7902
+  weight sum                            786     1859
+  precision                          0.9287   0.9287
+
+orgpolarsurfaceareaGeomAvg
+  mean                              38.3854   38.751
+  std. dev.                         19.8724  20.2076
+  weight sum                            786     1859
+  precision                          1.5151   1.5151
+
+orghbdamsaccGeomAvg
+  mean                                0.443   0.4219
+  std. dev.                          0.8079   0.7246
+  weight sum                            786     1859
+  precision                          0.0558   0.0558
+
+orghbdamsdonGeomAvg
+  mean                                3.907   3.9665
+  std. dev.                          2.2695   2.5517
+  weight sum                            786     1859
+  precision                          0.0898   0.0898
+
+oxlikevanderwaalsMax
+  mean                              35.7686  43.2795
+  std. dev.                         83.0436  89.5505
+  weight sum                            786     1859
+  precision                           76.19    76.19
+
+oxlikeASA-Max
+  mean                              26.3886  34.6444
+  std. dev.                         62.7611  73.2306
+  weight sum                            786     1859
+  precision                           70.31    70.31
+
+oxlikeASA_HMax
+  mean                               0.0711    0.371
+  std. dev.                          1.5533   2.6034
+  weight sum                            786     1859
+  precision                            9.32     9.32
+
+oxlikehbdamsaccMax
+  mean                               1.3842   1.6801
+  std. dev.                          3.2166   3.4811
+  weight sum                            786     1859
+  precision                           2.198    2.198
+
+orgacc-waterdonratio
+  mean                              -0.0314  -0.0297
+  std. dev.                          0.1182   0.1184
+  weight sum                            786     1859
+  precision                          0.0028   0.0028
+
+Na
+  yes                                 501.0    913.0
+  no                                  287.0    948.0
+  [total]                             788.0   1861.0
+
+Te
+  yes                                 218.0    296.0
+  no                                  570.0   1565.0
+  [total]                             788.0   1861.0
+
+K
+  yes                                  69.0     71.0
+  no                                  719.0   1790.0
+  [total]                             788.0   1861.0
+
+F
+  yes                                  26.0     36.0
+  no                                  762.0   1825.0
+  [total]                             788.0   1861.0
+
+I
+  yes                                   3.0     21.0
+  no                                  785.0   1840.0
+  [total]                             788.0   1861.0
+
+Mo
+  yes                                 120.0    416.0
+  no                                  668.0   1445.0
+  [total]                             788.0   1861.0
+
+S
+  yes                                  93.0    201.0
+  no                                  695.0   1660.0
+  [total]                             788.0   1861.0
+
+Se
+  yes                                 315.0    932.0
+  no                                  473.0    929.0
+  [total]                             788.0   1861.0
+
+Zn
+  yes                                  17.0     14.0
+  no                                  771.0   1847.0
+  [total]                             788.0   1861.0
+
+Cl
+  yes                                  42.0     82.0
+  no                                  746.0   1779.0
+  [total]                             788.0   1861.0
+
+Cr
+  yes                                  35.0     26.0
+  no                                  753.0   1835.0
+  [total]                             788.0   1861.0
+
+P5
+  yes                                 337.0    711.0
+  no                                  451.0   1150.0
+  [total]                             788.0   1861.0
+
+PaulingElectronegMax
+  mean                               2.1781   2.2446
+  std. dev.                          0.3107    0.292
+  weight sum                            786     1859
+  precision                          0.1314   0.1314
+
+PaulingElectronegMin
+  mean                               1.7492   1.7846
+  std. dev.                          0.2127    0.233
+  weight sum                            786     1859
+  precision                           0.184    0.184
+
+IonizationMean
+  mean                             749.3259 748.6659
+  std. dev.                         59.3615  55.1464
+  weight sum                            786     1859
+  precision                         32.9273  32.9273
+
+EAMean
+  mean                              102.958 103.3217
+  std. dev.                         33.6612  30.3146
+  weight sum                            786     1859
+  precision                         17.7273  17.7273
+
+PaulingElectronegMean
+  mean                               1.9552   2.0158
+  std. dev.                          0.2004   0.1792
+  weight sum                            786     1859
+  precision                          0.0836   0.0836
+
+PearsonElectronegMean
+  mean                             424.3744 425.1508
+  std. dev.                          39.563  38.8773
+  weight sum                            786     1859
+  precision                         24.0091  24.0091
+
+hardnessMaxWeighted
+  mean                               1.5487   1.7019
+  std. dev.                          1.4424   1.4465
+  weight sum                            786     1859
+  precision                           0.005    0.005
+
+AtomicRadiusMaxWeighted
+  mean                               0.5393   0.5663
+  std. dev.                          0.4183   0.3818
+  weight sum                            786     1859
+  precision                          0.0016   0.0016
+
+PaulingElectronegMinWeighted
+  mean                               0.0026   0.0027
+  std. dev.                          0.0031   0.0028
+  weight sum                            786     1859
+  precision                          0.0003   0.0003
+
+AtomicRadiusMinWeighted
+  mean                               0.2351   0.2502
+  std. dev.                          0.2623   0.2566
+  weight sum                            786     1859
+  precision                          0.0023   0.0023
+
+AtomicRadiusMeanWeighted
+  mean                               0.3872    0.408
+  std. dev.                          0.2902   0.2723
+  weight sum                            786     1859
+  precision                          0.0017   0.0017
+
+
+
+Time taken to build model: 0.01 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         787               69.4616 %
+Incorrectly Classified Instances       346               30.5384 %
+Kappa statistic                          0.2397
+Mean absolute error                      0.3391
+Root mean squared error                  0.4914
+Relative absolute error                 83.5825 %
+Root relative squared error            110.7667 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.469     0.223      0.434     0.469     0.451      0.664    1
+                 0.777     0.531      0.8       0.777     0.789      0.664    2
+Weighted Avg.    0.695     0.449      0.702     0.695     0.698      0.664
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 142 161 |   a = 1
+ 185 645 |   b = 2
+

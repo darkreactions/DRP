@@ -1,0 +1,7 @@
+SMO classified by:
+    	    NBayes .... 68.579%  accurate
+	  Logistic .... 73.3451% accurate
+	       SMO .... 79.9647% accurate
+	     KStar .... 82.5243% accurate
+	   Bagging .... 83.9365% accurate
+	       J48 .... 83.4069% accurate

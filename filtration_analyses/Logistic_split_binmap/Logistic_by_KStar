@@ -1,0 +1,70 @@
+=== Run information ===
+
+Scheme:weka.classifiers.lazy.KStar -B 20 -M a
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R4-5,7,10,13,15-16,20,25,27,33-35,44,49,71,100,170,174,180,185,188,228,239,258,261,274
+Instances:    2645
+Attributes:   27
+              pH
+              leak
+              numberOrg
+              orgavgpolMax
+              orgmaximalprojectionradiusMax
+              orgminimalprojectionareaMax
+              orgminimalprojectionradiusMax
+              orgvanderwaalsMax
+              orgASA_PMax
+              orghbdamsaccMax
+              orgmaximalprojectionsizeMin
+              orgminimalprojectionareaMin
+              orgminimalprojectionradiusMin
+              orgASA_PMin
+              orgrefractivityArithAvg
+              orgmaximalprojectionsizeGeomAvg
+              oxlikeASA_HMax
+              Te
+              F
+              S
+              Cl
+              Cr
+              PaulingElectronegMax
+              EAMean
+              PaulingElectronegMinWeighted
+              AtomicRadiusMinWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+KStar Beta Verion (0.1b).
+Copyright (c) 1995-97 by Len Trigg (trigg@cs.waikato.ac.nz).
+Java port to Weka by Abdelaziz Mahoui (am14@cs.waikato.ac.nz).
+
+KStar options : -B 20 -M a  
+
+Time taken to build model: 0 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         916               80.8473 %
+Incorrectly Classified Instances       217               19.1527 %
+Kappa statistic                          0.4948
+Mean absolute error                      0.2264
+Root mean squared error                  0.3961
+Relative absolute error                 55.8056 %
+Root relative squared error             89.2903 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.591     0.112      0.658     0.591     0.623      0.808    1
+                 0.888     0.409      0.856     0.888     0.872      0.808    2
+Weighted Avg.    0.808     0.33       0.803     0.808     0.805      0.808
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 179 124 |   a = 1
+  93 737 |   b = 2
+

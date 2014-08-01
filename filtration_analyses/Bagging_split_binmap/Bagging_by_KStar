@@ -1,0 +1,52 @@
+=== Run information ===
+
+Scheme:weka.classifiers.lazy.KStar -B 20 -M a
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R2,58,64,103,168,180,197,238,274
+Instances:    2645
+Attributes:   9
+              time
+              orgvanderwaalsArithAvg
+              orgpolarsurfaceareaArithAvg
+              oxlikehbdamsaccMax
+              Na
+              S
+              P5
+              IonizationMean
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+KStar Beta Verion (0.1b).
+Copyright (c) 1995-97 by Len Trigg (trigg@cs.waikato.ac.nz).
+Java port to Weka by Abdelaziz Mahoui (am14@cs.waikato.ac.nz).
+
+KStar options : -B 20 -M a  
+
+Time taken to build model: 0 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         932               82.2595 %
+Incorrectly Classified Instances       201               17.7405 %
+Kappa statistic                          0.5152
+Mean absolute error                      0.2603
+Root mean squared error                  0.3697
+Relative absolute error                 64.165  %
+Root relative squared error             83.3419 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.564     0.083      0.713     0.564     0.63       0.821    1
+                 0.917     0.436      0.852     0.917     0.883      0.821    2
+Weighted Avg.    0.823     0.341      0.815     0.823     0.816      0.821
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 171 132 |   a = 1
+  69 761 |   b = 2
+

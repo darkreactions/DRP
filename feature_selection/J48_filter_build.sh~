@@ -1,0 +1,12 @@
+# First arg is training set
+# Second arg is test set
+# Third arg is name of file to output model to
+
+bash J48_filter.sh $1 ./J48_train.arff
+echo "Train filtered."
+bash J48_filter.sh $2 ./J48_test.arff
+echo "Test filtered."
+bash J48_make_model.sh ./J48_train.arff ./J48_test.arff $3
+echo "Model built."
+rm J48_train.arff
+rm J48_test.arff

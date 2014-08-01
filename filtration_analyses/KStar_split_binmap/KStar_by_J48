@@ -1,0 +1,324 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -C 0.25 -M 2
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R1-3,5,18,26,63,83,99-100,103,170,172,174,180,182,234,255,261,274
+Instances:    2645
+Attributes:   20
+              Temp_max
+              time
+              slowCool
+              leak
+              orgavgpol_pHdependentMax
+              orgpolarsurfaceareaMax
+              orgASA_PArithAvg
+              orgpolarsurfaceareaGeomAvg
+              oxlikeASA-Max
+              oxlikeASA_HMax
+              oxlikehbdamsaccMax
+              Te
+              K
+              F
+              S
+              Se
+              PaulingElectronegMin
+              AtomicRadiusMaxWeighted
+              AtomicRadiusMinWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+time <= 20
+|   slowCool = yes
+|   |   leak = yes
+|   |   |   Temp_max <= 140: 1 (15.0)
+|   |   |   Temp_max > 140
+|   |   |   |   time <= 15: 1 (2.0)
+|   |   |   |   time > 15
+|   |   |   |   |   orgpolarsurfaceareaMax <= 28.64: 2 (3.0)
+|   |   |   |   |   orgpolarsurfaceareaMax > 28.64: 1 (3.0/1.0)
+|   |   leak = no
+|   |   |   Temp_max <= 115
+|   |   |   |   orgpolarsurfaceareaMax <= 67.77
+|   |   |   |   |   time <= 16: 1 (18.0/1.0)
+|   |   |   |   |   time > 16
+|   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 28.64
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.3484: 2 (3.0)
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.3484: 1 (10.0/2.0)
+|   |   |   |   |   |   |   orgpolarsurfaceareaMax > 28.64: 1 (8.0)
+|   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   K = yes: 1 (4.0/1.0)
+|   |   |   |   |   |   |   K = no
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.0541: 1 (30.0/3.0)
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.0541
+|   |   |   |   |   |   |   |   |   oxlikeASA_HMax <= -1: 2 (31.0/13.0)
+|   |   |   |   |   |   |   |   |   oxlikeASA_HMax > -1
+|   |   |   |   |   |   |   |   |   |   time <= 18
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 10.63
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 1.0414: 1 (18.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 1.0414
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1737: 2 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1737
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 1.0488: 2 (3.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 1.0488: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 10.63
+|   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 12.56: 2 (11.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 12.56
+|   |   |   |   |   |   |   |   |   |   |   |   |   time <= 17
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1733: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1733: 1 (11.0/4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   time > 17
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1765: 1 (15.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1765: 2 (9.0/3.0)
+|   |   |   |   |   |   |   |   |   |   time > 18
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 48.69: 2 (10.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 48.69
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 57.53: 1 (11.0/3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 57.53: 2 (4.0)
+|   |   |   |   orgpolarsurfaceareaMax > 67.77
+|   |   |   |   |   oxlikeASA_HMax <= -1: 1 (3.0/1.0)
+|   |   |   |   |   oxlikeASA_HMax > -1: 2 (14.0)
+|   |   |   Temp_max > 115
+|   |   |   |   time <= 15: 2 (16.0/2.0)
+|   |   |   |   time > 15
+|   |   |   |   |   Se = yes
+|   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.2983: 1 (4.0)
+|   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.2983
+|   |   |   |   |   |   |   oxlikeASA_HMax <= -1
+|   |   |   |   |   |   |   |   orgASA_PArithAvg <= 34.93: 2 (27.0/1.0)
+|   |   |   |   |   |   |   |   orgASA_PArithAvg > 34.93
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 12.19: 2 (13.0)
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 12.19
+|   |   |   |   |   |   |   |   |   |   Temp_max <= 140
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 52.32: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 52.32: 2 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   Temp_max > 140: 1 (6.0)
+|   |   |   |   |   |   |   oxlikeASA_HMax > -1
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.6214: 2 (10.0)
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.6214
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.6303: 1 (2.0)
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.6303: 2 (2.0)
+|   |   |   |   |   Se = no: 2 (13.0/4.0)
+|   slowCool = no
+|   |   orgpolarsurfaceareaMax <= 67.77: 1 (64.0)
+|   |   orgpolarsurfaceareaMax > 67.77
+|   |   |   AtomicRadiusMaxWeighted <= 0.269: 1 (2.0)
+|   |   |   AtomicRadiusMaxWeighted > 0.269: 2 (4.0)
+time > 20
+|   orgASA_PArithAvg <= 143.27
+|   |   leak = yes
+|   |   |   orgASA_PArithAvg <= 31.365
+|   |   |   |   Temp_max <= 115: 2 (10.34/2.11)
+|   |   |   |   Temp_max > 115: 1 (2.0)
+|   |   |   orgASA_PArithAvg > 31.365: 1 (29.11/4.0)
+|   |   leak = no
+|   |   |   time <= 89
+|   |   |   |   Te = yes
+|   |   |   |   |   time <= 72
+|   |   |   |   |   |   Temp_max <= 105
+|   |   |   |   |   |   |   time <= 26: 2 (76.89/8.89)
+|   |   |   |   |   |   |   time > 26
+|   |   |   |   |   |   |   |   oxlikeASA-Max <= -1
+|   |   |   |   |   |   |   |   |   time <= 65
+|   |   |   |   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 15.43: 1 (40.61/19.23)
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 15.43: 2 (9.98)
+|   |   |   |   |   |   |   |   |   |   slowCool = no
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 17.76: 1 (33.0)
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 17.76
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 96.38
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 48.69
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 25.06
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.211: 1 (5.51/1.88)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.211: 2 (2.88)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 25.06: 1 (8.91)
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 48.69: 2 (11.02)
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 96.38: 1 (24.0/3.0)
+|   |   |   |   |   |   |   |   |   time > 65
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaGeomAvg <= 52.32: 2 (13.0)
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaGeomAvg > 52.32: 1 (6.0/1.0)
+|   |   |   |   |   |   |   |   oxlikeASA-Max > -1: 2 (14.0/1.0)
+|   |   |   |   |   |   Temp_max > 105: 1 (106.0/26.0)
+|   |   |   |   |   time > 72: 2 (63.75/7.98)
+|   |   |   |   Te = no
+|   |   |   |   |   K = yes
+|   |   |   |   |   |   Se = yes
+|   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 12.28
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.0851: 1 (3.0)
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.0851: 2 (9.0/3.0)
+|   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 12.28: 1 (2.0)
+|   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 12.56
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.6183: 1 (4.0)
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.6183
+|   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 40.31
+|   |   |   |   |   |   |   |   |   |   |   time <= 22: 1 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   time > 22: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 40.31: 2 (16.0)
+|   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 12.56: 2 (21.0/1.0)
+|   |   |   |   |   |   Se = no
+|   |   |   |   |   |   |   Temp_max <= 150
+|   |   |   |   |   |   |   |   Temp_max <= 120
+|   |   |   |   |   |   |   |   |   time <= 26
+|   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 96.11
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.1996: 1 (5.0)
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.1996
+|   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 12.03
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 2.0163: 2 (11.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 2.0163: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 12.03: 1 (3.0/1.0)
+|   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 96.11: 1 (16.0/1.0)
+|   |   |   |   |   |   |   |   |   time > 26: 1 (4.0)
+|   |   |   |   |   |   |   |   Temp_max > 120: 1 (12.0)
+|   |   |   |   |   |   |   Temp_max > 150
+|   |   |   |   |   |   |   |   oxlikeASA-Max <= -1: 1 (6.0/1.0)
+|   |   |   |   |   |   |   |   oxlikeASA-Max > -1: 2 (6.0)
+|   |   |   |   |   K = no
+|   |   |   |   |   |   orgavgpol_pHdependentMax <= 9.47
+|   |   |   |   |   |   |   F = yes
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.1975: 2 (2.0)
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.1975: 1 (6.0)
+|   |   |   |   |   |   |   F = no
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.2224: 1 (12.0/2.0)
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.2224
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaGeomAvg <= 41.78
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMin <= 1.63
+|   |   |   |   |   |   |   |   |   |   |   S = yes: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   S = no: 2 (23.0/8.0)
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMin > 1.63: 1 (4.0)
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaGeomAvg > 41.78: 2 (60.0/6.0)
+|   |   |   |   |   |   orgavgpol_pHdependentMax > 9.47
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.0583
+|   |   |   |   |   |   |   |   oxlikeASA-Max <= -1
+|   |   |   |   |   |   |   |   |   Se = yes
+|   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 11.76
+|   |   |   |   |   |   |   |   |   |   |   time <= 22: 2 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   time > 22
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.2372: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.2372: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 11.76
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.0325: 1 (5.0)
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.0325
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.27: 2 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.27: 1 (3.0)
+|   |   |   |   |   |   |   |   |   Se = no
+|   |   |   |   |   |   |   |   |   |   Temp_max <= 150
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMin <= 1.81: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMin > 1.81: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   Temp_max > 150: 2 (15.0/5.0)
+|   |   |   |   |   |   |   |   oxlikeASA-Max > -1: 2 (3.0)
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.0583
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 64.16
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 55.28
+|   |   |   |   |   |   |   |   |   |   time <= 48
+|   |   |   |   |   |   |   |   |   |   |   Se = yes
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 64.1
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max <= 100
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 41.78: 2 (268.0/11.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 41.78
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 14.93: 2 (19.0/3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 14.93: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max > 100
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   F = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.8458
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.5244: 2 (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.5244: 1 (7.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.8458: 2 (17.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   F = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 27.88
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1757: 2 (9.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1757: 1 (10.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 27.88
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 12.43
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1698: 1 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1698: 2 (45.0/8.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 12.43: 2 (28.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = no: 2 (115.0/21.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool = no: 1 (7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 64.1
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max <= 80: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max > 80: 2 (39.0/15.0)
+|   |   |   |   |   |   |   |   |   |   |   Se = no
+|   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 17.05: 2 (344.0/17.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 17.05
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.38
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max <= 140: 2 (26.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max > 140: 1 (24.0/8.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.38: 2 (38.0/1.0)
+|   |   |   |   |   |   |   |   |   |   time > 48
+|   |   |   |   |   |   |   |   |   |   |   Temp_max <= 115
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg <= 90.84
+|   |   |   |   |   |   |   |   |   |   |   |   |   Se = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1656: 1 (7.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1656
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   oxlikeASA_HMax <= 0: 2 (46.0/4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   oxlikeASA_HMax > 0
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 20.23: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 20.23: 2 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   Se = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 16.61: 1 (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 16.61
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 1.4903
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax <= 12.19: 1 (8.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax > 12.19: 2 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 1.4903: 2 (6.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg > 90.84: 1 (9.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   Temp_max > 115: 2 (44.0/2.0)
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 55.28
+|   |   |   |   |   |   |   |   |   |   Temp_max <= 100: 2 (24.0/2.0)
+|   |   |   |   |   |   |   |   |   |   Temp_max > 100
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 0.2362: 2 (9.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 0.2362: 1 (14.0/1.0)
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 64.16
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 1.5245: 2 (91.0)
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 1.5245
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted <= 2.0364: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted > 2.0364: 2 (3.0)
+|   |   |   time > 89: 2 (167.0/4.0)
+|   orgASA_PArithAvg > 143.27
+|   |   oxlikeASA_HMax <= -1
+|   |   |   F = yes: 1 (11.0)
+|   |   |   F = no
+|   |   |   |   orgavgpol_pHdependentMax <= 8.45: 2 (3.0)
+|   |   |   |   orgavgpol_pHdependentMax > 8.45: 1 (21.0/4.0)
+|   |   oxlikeASA_HMax > -1: 2 (4.0)
+
+Number of Leaves  : 	130
+
+Size of the tree : 	259
+
+
+Time taken to build model: 0.09 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         942               83.1421 %
+Incorrectly Classified Instances       191               16.8579 %
+Kappa statistic                          0.5563
+Mean absolute error                      0.2153
+Root mean squared error                  0.3758
+Relative absolute error                 53.0583 %
+Root relative squared error             84.719  %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.637     0.098      0.704     0.637     0.669      0.812    1
+                 0.902     0.363      0.872     0.902     0.887      0.812    2
+Weighted Avg.    0.831     0.292      0.827     0.831     0.829      0.812
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 193 110 |   a = 1
+  81 749 |   b = 2
+

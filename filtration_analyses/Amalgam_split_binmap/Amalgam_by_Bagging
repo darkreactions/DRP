@@ -1,0 +1,2035 @@
+=== Run information ===
+
+Scheme:weka.classifiers.meta.Bagging -P 100 -S 1 -I 10 -W weka.classifiers.trees.REPTree -- -M 2 -V 0.001 -N 3 -S 1 -L -1
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-R6,8,14,17,19,21-24,28-30,32,36-38,40,42-43,45-48,50-57,59,61-62,65-70,72-81,86-95,97-98,101-102,104-163,165-167,169,171,173,177-179,181,184,186-187,189-196,198-227,229-233,235-237,242-253,256-257,259-260,262-266,268-273
+Instances:    2645
+Attributes:   64
+              Temp_max
+              time
+              slowCool
+              pH
+              leak
+              numberOrg
+              numberComponents
+              orgavgpolMax
+              orgrefractivityMax
+              orgmaximalprojectionareaMax
+              orgmaximalprojectionradiusMax
+              orgminimalprojectionareaMax
+              orgminimalprojectionradiusMax
+              orgavgpol_pHdependentMax
+              orgvanderwaalsMax
+              orgASA_PMax
+              orgpolarsurfaceareaMax
+              orghbdamsaccMax
+              orgmaximalprojectionareaMin
+              orgmaximalprojectionsizeMin
+              orgminimalprojectionareaMin
+              orgminimalprojectionradiusMin
+              orgvanderwaalsMin
+              orgASA+Min
+              orgASA_PMin
+              orgrefractivityArithAvg
+              orgvanderwaalsArithAvg
+              orgASA+ArithAvg
+              orgASA_PArithAvg
+              orgpolarsurfaceareaArithAvg
+              orgmaximalprojectionsizeGeomAvg
+              orgASA_PGeomAvg
+              orgpolarsurfaceareaGeomAvg
+              orghbdamsaccGeomAvg
+              orghbdamsdonGeomAvg
+              oxlikevanderwaalsMax
+              oxlikeASA-Max
+              oxlikeASA_HMax
+              oxlikehbdamsaccMax
+              orgacc-waterdonratio
+              Na
+              Te
+              K
+              F
+              I
+              Mo
+              S
+              Se
+              Zn
+              Cl
+              Cr
+              P5
+              PaulingElectronegMax
+              PaulingElectronegMin
+              IonizationMean
+              EAMean
+              PaulingElectronegMean
+              PearsonElectronegMean
+              hardnessMaxWeighted
+              AtomicRadiusMaxWeighted
+              PaulingElectronegMinWeighted
+              AtomicRadiusMinWeighted
+              AtomicRadiusMeanWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+All the base classifiers: 
+
+
+REPTree
+============
+
+time < 20.5
+|   P5 = yes : 1 (64/8) [31/1]
+|   P5 = no
+|   |   orgvanderwaalsMax < 238.16
+|   |   |   time < 16.5 : 1 (11/0) [5/0]
+|   |   |   time >= 16.5
+|   |   |   |   AtomicRadiusMeanWeighted < 0.63
+|   |   |   |   |   orgvanderwaalsMax < 206.75 : 2 (7/1) [4/1]
+|   |   |   |   |   orgvanderwaalsMax >= 206.75
+|   |   |   |   |   |   hardnessMaxWeighted < 3.8
+|   |   |   |   |   |   |   pH < 1.5
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.6 : 1 (19/0) [7/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.6
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.74 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.74
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.61 : 1 (12/0) [4/1]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.61
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.62 : 1 (7/0) [4/2]
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.62
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.62 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.62 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   |   |   pH < 3 : 2 (8/2) [3/0]
+|   |   |   |   |   |   |   |   pH >= 3 : 1 (2/0) [4/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 3.8 : 2 (3/0) [0/0]
+|   |   |   |   AtomicRadiusMeanWeighted >= 0.63
+|   |   |   |   |   AtomicRadiusMeanWeighted < 0.68 : 2 (7/0) [6/1]
+|   |   |   |   |   AtomicRadiusMeanWeighted >= 0.68 : 1 (3/1) [4/1]
+|   |   orgvanderwaalsMax >= 238.16
+|   |   |   orgmaximalprojectionradiusMax < 5.57
+|   |   |   |   AtomicRadiusMeanWeighted < 0.4
+|   |   |   |   |   orgASA_PMax < 15.23 : 1 (5/0) [1/0]
+|   |   |   |   |   orgASA_PMax >= 15.23 : 2 (30/7) [16/2]
+|   |   |   |   AtomicRadiusMeanWeighted >= 0.4
+|   |   |   |   |   orghbdamsaccMax < 1.15 : 2 (38/0) [15/7]
+|   |   |   |   |   orghbdamsaccMax >= 1.15 : 1 (4/2) [1/0]
+|   |   |   orgmaximalprojectionradiusMax >= 5.57
+|   |   |   |   orgASA+Min < 261.96 : 1 (15/2) [5/1]
+|   |   |   |   orgASA+Min >= 261.96
+|   |   |   |   |   pH < 2.5
+|   |   |   |   |   |   leak = yes : 1 (4/0) [3/0]
+|   |   |   |   |   |   leak = no
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (13/0) [8/2]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.27 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.27 : 2 (12/3) [8/1]
+|   |   |   |   |   pH >= 2.5
+|   |   |   |   |   |   hardnessMaxWeighted < 0.5 : 2 (2/0) [2/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.5 : 1 (10/0) [1/0]
+time >= 20.5
+|   PaulingElectronegMean < 2.02
+|   |   orgASA_PGeomAvg < 93.52
+|   |   |   time < 77.5
+|   |   |   |   time < 49
+|   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   hardnessMaxWeighted < 0.09
+|   |   |   |   |   |   |   pH < 2.5 : 2 (5/0) [1/0]
+|   |   |   |   |   |   |   pH >= 2.5
+|   |   |   |   |   |   |   |   orghbdamsaccMax < 0.04 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   orghbdamsaccMax >= 0.04 : 2 (4/1) [1/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.09 : 1 (24/2) [10/4]
+|   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   pH < 1.5 : 1 (9/0) [5/2]
+|   |   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.49
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   |   orghbdamsaccMax < 1 : 1 (8/4) [5/0]
+|   |   |   |   |   |   |   |   |   orghbdamsaccMax >= 1 : 2 (19/0) [8/0]
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (83/0) [40/2]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.49
+|   |   |   |   |   |   |   |   numberOrg < 1.5
+|   |   |   |   |   |   |   |   |   pH < 6
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.24 : 1 (5/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.24
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 267.02 : 1 (7/3) [9/3]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 267.02 : 2 (17/1) [6/1]
+|   |   |   |   |   |   |   |   |   pH >= 6 : 2 (21/0) [4/0]
+|   |   |   |   |   |   |   |   numberOrg >= 1.5 : 1 (4/0) [3/0]
+|   |   |   |   time >= 49
+|   |   |   |   |   orgrefractivityArithAvg < 19.45 : 2 (7/0) [1/0]
+|   |   |   |   |   orgrefractivityArithAvg >= 19.45
+|   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.18 : 2 (19.42/3.47) [10.9/2]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.18
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 6.17 : 1 (25/4) [18/4]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 6.17 : 2 (4/0) [3/0]
+|   |   |   |   |   |   slowCool = no
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax < 14.37
+|   |   |   |   |   |   |   |   orgASA_PGeomAvg < 27.73
+|   |   |   |   |   |   |   |   |   pH < 9.5 : 2 (8.58/2.53) [4.1/1]
+|   |   |   |   |   |   |   |   |   pH >= 9.5 : 1 (3/0) [4/1]
+|   |   |   |   |   |   |   |   orgASA_PGeomAvg >= 27.73 : 1 (11/0) [0/0]
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 14.37 : 1 (31/0) [13/0]
+|   |   |   time >= 77.5
+|   |   |   |   S = yes : 1 (3/0) [2/0]
+|   |   |   |   S = no : 2 (95/5) [51/3]
+|   |   orgASA_PGeomAvg >= 93.52
+|   |   |   orgASA+Min < 261.96
+|   |   |   |   pH < 5.5 : 1 (66/5) [38/10]
+|   |   |   |   pH >= 5.5
+|   |   |   |   |   orgASA+Min < 240.19
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.04 : 1 (4/0) [2/0]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.04 : 2 (23/2) [13/4]
+|   |   |   |   |   orgASA+Min >= 240.19
+|   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.42 : 2 (4/1) [1/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.42 : 1 (4/0) [3/0]
+|   |   |   |   |   |   slowCool = no : 1 (21/0) [5/0]
+|   |   |   orgASA+Min >= 261.96
+|   |   |   |   AtomicRadiusMaxWeighted < 1.23
+|   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (6/3) [2/0]
+|   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (23/1) [14/2]
+|   |   |   |   AtomicRadiusMaxWeighted >= 1.23 : 1 (2/0) [2/0]
+|   PaulingElectronegMean >= 2.02
+|   |   leak = yes
+|   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (3/1) [4/1]
+|   |   |   AtomicRadiusMinWeighted >= 0.17 : 1 (18/0) [4/2]
+|   |   leak = no
+|   |   |   pH < 6.5
+|   |   |   |   orgmaximalprojectionsizeMin < 6.07
+|   |   |   |   |   hardnessMaxWeighted < 3.83
+|   |   |   |   |   |   hardnessMaxWeighted < 0.61
+|   |   |   |   |   |   |   orgavgpolMax < 16.56 : 2 (139/15) [74/10]
+|   |   |   |   |   |   |   orgavgpolMax >= 16.56
+|   |   |   |   |   |   |   |   time < 72 : 1 (14/5) [10/4]
+|   |   |   |   |   |   |   |   time >= 72 : 2 (2/0) [2/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.61
+|   |   |   |   |   |   |   orgavgpolMax < 6.82 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   orgavgpolMax >= 6.82
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax < 3.43
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.94 : 2 (75/0) [42/1]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.94
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax < 13.95
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 21.95
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.98 : 1 (3/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.98
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax < 78.01
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max < 97.5 : 2 (31/0) [20/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max >= 97.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = yes : 2 (16/0) [6/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (5/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max < 115 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max >= 115 : 2 (3/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 78.01 : 2 (71/0) [25/2]
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 21.95
+|   |   |   |   |   |   |   |   |   |   |   |   time < 36
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.39 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.39 : 2 (8/2) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max < 120 : 2 (25/2) [13/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max >= 120
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH < 2.5 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH >= 2.5 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 36 : 2 (23/1) [11/1]
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 13.95 : 2 (49/0) [15/1]
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.43 : 2 (159/1) [88/3]
+|   |   |   |   |   hardnessMaxWeighted >= 3.83 : 2 (90/22) [51/9]
+|   |   |   |   orgmaximalprojectionsizeMin >= 6.07
+|   |   |   |   |   orgmaximalprojectionradiusMax < 6.14
+|   |   |   |   |   |   orgASA_PMax < 21.79
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (9/0) [9/0]
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (8/4) [1/0]
+|   |   |   |   |   |   orgASA_PMax >= 21.79
+|   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.5 : 2 (6/1) [4/3]
+|   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.5
+|   |   |   |   |   |   |   |   time < 54 : 1 (14/0) [11/3]
+|   |   |   |   |   |   |   |   time >= 54 : 2 (9/4) [7/2]
+|   |   |   |   |   orgmaximalprojectionradiusMax >= 6.14
+|   |   |   |   |   |   S = yes : 1 (3/0) [1/0]
+|   |   |   |   |   |   S = no : 2 (33/0) [13/2]
+|   |   |   pH >= 6.5
+|   |   |   |   orgminimalprojectionradiusMax < 3.42
+|   |   |   |   |   orgmaximalprojectionsizeMin < 5.18 : 1 (13/0) [9/5]
+|   |   |   |   |   orgmaximalprojectionsizeMin >= 5.18
+|   |   |   |   |   |   hardnessMaxWeighted < 0.72 : 2 (12/0) [6/1]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.72
+|   |   |   |   |   |   |   orgvanderwaalsMax < 274.85 : 1 (11/0) [8/1]
+|   |   |   |   |   |   |   orgvanderwaalsMax >= 274.85
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (5/0) [3/0]
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (6/2) [4/1]
+|   |   |   |   orgminimalprojectionradiusMax >= 3.42 : 2 (29/3) [12/2]
+
+Size of the tree : 187
+
+
+REPTree
+============
+
+time < 20.5
+|   hardnessMaxWeighted < 1.9
+|   |   orgminimalprojectionradiusMax < 3.37
+|   |   |   pH < 2.5
+|   |   |   |   Temp_max < 122.5
+|   |   |   |   |   orgmaximalprojectionradiusMax < 4.31 : 1 (2/0) [2/0]
+|   |   |   |   |   orgmaximalprojectionradiusMax >= 4.31 : 2 (4/1) [5/2]
+|   |   |   |   Temp_max >= 122.5 : 1 (4/0) [3/1]
+|   |   |   pH >= 2.5 : 1 (41/0) [28/2]
+|   |   orgminimalprojectionradiusMax >= 3.37
+|   |   |   AtomicRadiusMaxWeighted < 0.17 : 2 (7/1) [1/0]
+|   |   |   AtomicRadiusMaxWeighted >= 0.17
+|   |   |   |   orgacc-waterdonratio < -0.02 : 2 (3/0) [1/0]
+|   |   |   |   orgacc-waterdonratio >= -0.02 : 1 (30/4) [19/9]
+|   hardnessMaxWeighted >= 1.9
+|   |   AtomicRadiusMaxWeighted < 1.03
+|   |   |   orgminimalprojectionareaMax < 25.53
+|   |   |   |   Temp_max < 135
+|   |   |   |   |   orgrefractivityMax < 30.84 : 2 (24/6) [13/2]
+|   |   |   |   |   orgrefractivityMax >= 30.84 : 1 (4/0) [3/1]
+|   |   |   |   Temp_max >= 135 : 2 (27/0) [9/1]
+|   |   |   orgminimalprojectionareaMax >= 25.53
+|   |   |   |   orgavgpol_pHdependentMax < 26.15
+|   |   |   |   |   AtomicRadiusMinWeighted < 0.18
+|   |   |   |   |   |   hardnessMaxWeighted < 3.66
+|   |   |   |   |   |   |   hardnessMaxWeighted < 2.42
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMax < 43.95 : 1 (7/1) [3/2]
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 43.95 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 2.42 : 1 (9/0) [2/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 3.66 : 2 (2/0) [0/0]
+|   |   |   |   |   AtomicRadiusMinWeighted >= 0.18
+|   |   |   |   |   |   hardnessMaxWeighted < 2.23 : 1 (4/1) [2/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 2.23 : 2 (8/0) [7/2]
+|   |   |   |   orgavgpol_pHdependentMax >= 26.15 : 2 (5/0) [2/0]
+|   |   AtomicRadiusMaxWeighted >= 1.03
+|   |   |   hardnessMaxWeighted < 3.77 : 1 (41/6) [17/2]
+|   |   |   hardnessMaxWeighted >= 3.77
+|   |   |   |   hardnessMaxWeighted < 3.94 : 2 (17/1) [5/1]
+|   |   |   |   hardnessMaxWeighted >= 3.94
+|   |   |   |   |   AtomicRadiusMeanWeighted < 0.71 : 1 (11/0) [4/0]
+|   |   |   |   |   AtomicRadiusMeanWeighted >= 0.71 : 2 (4/0) [3/1]
+time >= 20.5
+|   PaulingElectronegMean < 2.02
+|   |   time < 78
+|   |   |   hardnessMaxWeighted < 0.39
+|   |   |   |   orgASA_PMin < 72.58
+|   |   |   |   |   orgmaximalprojectionradiusMax < 5.06
+|   |   |   |   |   |   orghbdamsdonGeomAvg < 3.01 : 2 (23/0) [8/1]
+|   |   |   |   |   |   orghbdamsdonGeomAvg >= 3.01
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.07 : 1 (6/1) [3/1]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.07
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax < 3.6
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax < 14.37
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.04
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.09 : 2 (7/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.09 : 1 (2/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.04 : 1 (7/1) [7/0]
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (13/0) [8/1]
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 14.37 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.6 : 2 (14/0) [9/0]
+|   |   |   |   |   orgmaximalprojectionradiusMax >= 5.06 : 2 (40/0) [15/0]
+|   |   |   |   orgASA_PMin >= 72.58
+|   |   |   |   |   pH < 6
+|   |   |   |   |   |   orgmaximalprojectionareaMin < 30.57 : 1 (18/0) [6/0]
+|   |   |   |   |   |   orgmaximalprojectionareaMin >= 30.57
+|   |   |   |   |   |   |   orgavgpolMax < 16.53
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.04
+|   |   |   |   |   |   |   |   |   orgavgpolMax < 10.81 : 2 (8/2) [2/0]
+|   |   |   |   |   |   |   |   |   orgavgpolMax >= 10.81 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.04 : 1 (10/0) [0/0]
+|   |   |   |   |   |   |   orgavgpolMax >= 16.53 : 2 (4/0) [2/0]
+|   |   |   |   |   pH >= 6
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.04 : 1 (4/0) [1/1]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.04
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (15/0) [12/0]
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   orgASA_PMax < 96.25 : 2 (3/0) [3/0]
+|   |   |   |   |   |   |   |   orgASA_PMax >= 96.25 : 1 (2/0) [2/0]
+|   |   |   hardnessMaxWeighted >= 0.39
+|   |   |   |   slowCool = yes
+|   |   |   |   |   AtomicRadiusMaxWeighted < 0.23
+|   |   |   |   |   |   hardnessMaxWeighted < 0.39 : 1 (2/0) [1/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.39 : 2 (33.11/2) [23.41/3]
+|   |   |   |   |   AtomicRadiusMaxWeighted >= 0.23
+|   |   |   |   |   |   hardnessMaxWeighted < 1.86
+|   |   |   |   |   |   |   orgASA_PArithAvg < 96.22
+|   |   |   |   |   |   |   |   time < 49
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.6 : 2 (15/2) [11/1]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.6
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.29 : 1 (16/1) [8/1]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.29
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.05
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0.01 : 1 (15/1) [10/6]
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0.01
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax < 8.86 : 1 (3/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 8.86 : 2 (3/0) [4/1]
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.05 : 2 (7/0) [3/1]
+|   |   |   |   |   |   |   |   time >= 49 : 1 (23.7/0.7) [6/1]
+|   |   |   |   |   |   |   orgASA_PArithAvg >= 96.22 : 1 (20/0) [16/1]
+|   |   |   |   |   |   hardnessMaxWeighted >= 1.86
+|   |   |   |   |   |   |   orgmaximalprojectionareaMax < 35.07 : 1 (10/1) [6/1]
+|   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 35.07 : 2 (35.41/8) [12.7/2]
+|   |   |   |   slowCool = no
+|   |   |   |   |   orgavgpolMax < 13.92 : 2 (16.89/5) [11/1]
+|   |   |   |   |   orgavgpolMax >= 13.92 : 1 (59.89/1.89) [22.89/1.89]
+|   |   time >= 78
+|   |   |   orgASA_PArithAvg < 143.93 : 2 (92/4) [56/10]
+|   |   |   orgASA_PArithAvg >= 143.93 : 1 (8/1) [6/2]
+|   PaulingElectronegMean >= 2.02
+|   |   orgmaximalprojectionsizeMin < 5.91
+|   |   |   orgminimalprojectionradiusMax < 3.48
+|   |   |   |   pH < 6.5
+|   |   |   |   |   leak = yes : 1 (8/2) [12/2]
+|   |   |   |   |   leak = no
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.17 : 2 (67/2) [36/4]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.17
+|   |   |   |   |   |   |   |   orgvanderwaalsMax < 286.02
+|   |   |   |   |   |   |   |   |   Temp_max < 97.5
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (26/0) [18/0]
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (2/1) [2/0]
+|   |   |   |   |   |   |   |   |   Temp_max >= 97.5
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax < 30.13 : 2 (13/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax >= 30.13
+|   |   |   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg < 7.98
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.15 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.15
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   numberComponents < 3.5 : 1 (7/1) [4/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   numberComponents >= 3.5 : 2 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17 : 2 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg >= 7.98 : 2 (7/0) [11/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsMax >= 286.02
+|   |   |   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   |   |   Temp_max < 100 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   Temp_max >= 100 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17 : 1 (11/0) [3/1]
+|   |   |   |   |   |   |   |   |   slowCool = no : 2 (3/0) [2/0]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.4 : 2 (23/8) [4/1]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.4
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 1.03
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.65 : 2 (193/7) [94/6]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.65
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.65 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.65
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 206.75 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 206.75 : 2 (67/5) [26/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 1.03 : 2 (90/0) [48/5]
+|   |   |   |   pH >= 6.5
+|   |   |   |   |   hardnessMaxWeighted < 2.85
+|   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.24 : 2 (7/0) [4/2]
+|   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.24
+|   |   |   |   |   |   |   Na = yes : 1 (8/0) [3/1]
+|   |   |   |   |   |   |   Na = no : 2 (17/8) [8/3]
+|   |   |   |   |   hardnessMaxWeighted >= 2.85 : 2 (7/0) [5/3]
+|   |   |   orgminimalprojectionradiusMax >= 3.48 : 2 (187/3) [95/8]
+|   |   orgmaximalprojectionsizeMin >= 5.91
+|   |   |   orghbdamsaccMax < 0.2
+|   |   |   |   hardnessMaxWeighted < 0.61
+|   |   |   |   |   orgavgpolMax < 16.22 : 2 (7/1) [5/0]
+|   |   |   |   |   orgavgpolMax >= 16.22
+|   |   |   |   |   |   time < 72 : 1 (18/6) [5/1]
+|   |   |   |   |   |   time >= 72 : 2 (3/0) [1/0]
+|   |   |   |   hardnessMaxWeighted >= 0.61 : 2 (116/12) [54/8]
+|   |   |   orghbdamsaccMax >= 0.2
+|   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (15/4) [4/1]
+|   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   AtomicRadiusMaxWeighted < 0.37 : 2 (7/2) [2/0]
+|   |   |   |   |   AtomicRadiusMaxWeighted >= 0.37 : 1 (33/4) [14/6]
+
+Size of the tree : 175
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes
+|   |   orghbdamsaccMax < 0.07 : 1 (51/1) [24/0]
+|   |   orghbdamsaccMax >= 0.07
+|   |   |   hardnessMaxWeighted < 0.43 : 1 (4/1) [6/0]
+|   |   |   hardnessMaxWeighted >= 0.43 : 2 (3/0) [2/0]
+|   P5 = no
+|   |   orgASA_PMax < 96.22
+|   |   |   orgmaximalprojectionradiusMax < 4.73
+|   |   |   |   leak = yes : 1 (5/0) [2/0]
+|   |   |   |   leak = no
+|   |   |   |   |   AtomicRadiusMeanWeighted < 0.46
+|   |   |   |   |   |   orgminimalprojectionradiusMax < 3.45
+|   |   |   |   |   |   |   orgASA+Min < 221.44 : 2 (26/0) [13/1]
+|   |   |   |   |   |   |   orgASA+Min >= 221.44
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.28
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.7 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.7 : 2 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= 0 : 1 (5/0) [3/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.28 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17 : 2 (6/0) [6/0]
+|   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.45 : 1 (4/0) [1/0]
+|   |   |   |   |   AtomicRadiusMeanWeighted >= 0.46
+|   |   |   |   |   |   hardnessMaxWeighted < 3.79
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (3/0) [2/1]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   orgrefractivityMax < 30.84
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 218.21 : 1 (4/1) [7/1]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 218.21 : 2 (3/0) [4/1]
+|   |   |   |   |   |   |   |   orgrefractivityMax >= 30.84 : 1 (14/1) [14/5]
+|   |   |   |   |   |   hardnessMaxWeighted >= 3.79 : 2 (6/0) [6/2]
+|   |   |   orgmaximalprojectionradiusMax >= 4.73 : 2 (32/2) [12/1]
+|   |   orgASA_PMax >= 96.22
+|   |   |   orgASA+Min < 261.96 : 1 (44/7) [22/3]
+|   |   |   orgASA+Min >= 261.96
+|   |   |   |   numberComponents < 3.5
+|   |   |   |   |   AtomicRadiusMinWeighted < 0.06 : 1 (6/0) [8/1]
+|   |   |   |   |   AtomicRadiusMinWeighted >= 0.06
+|   |   |   |   |   |   hardnessMaxWeighted < 3.58 : 2 (20/6) [9/4]
+|   |   |   |   |   |   hardnessMaxWeighted >= 3.58 : 1 (4/0) [3/0]
+|   |   |   |   numberComponents >= 3.5 : 2 (12/0) [15/1]
+time >= 21.5
+|   PaulingElectronegMean < 2.02
+|   |   time < 77.5
+|   |   |   numberComponents < 2.5
+|   |   |   |   orgmaximalprojectionareaMax < 36.7
+|   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   Temp_max < 95 : 1 (10/5) [8/3]
+|   |   |   |   |   |   Temp_max >= 95 : 2 (11/0) [4/0]
+|   |   |   |   |   orgacc-waterdonratio >= 0 : 1 (38/7) [14/1]
+|   |   |   |   orgmaximalprojectionareaMax >= 36.7
+|   |   |   |   |   orgrefractivityMax < 34.54
+|   |   |   |   |   |   orgavgpolMax < 13.8
+|   |   |   |   |   |   |   time < 36
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.05 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.05
+|   |   |   |   |   |   |   |   |   leak = yes
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.38 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.38 : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   leak = no
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.09
+|   |   |   |   |   |   |   |   |   |   |   pH < 3 : 2 (6/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   pH >= 3 : 1 (2/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.09 : 2 (11/0) [5/0]
+|   |   |   |   |   |   |   time >= 36 : 2 (22/0) [12/0]
+|   |   |   |   |   |   orgavgpolMax >= 13.8 : 1 (2/0) [0/0]
+|   |   |   |   |   orgrefractivityMax >= 34.54 : 2 (45/0) [31/0]
+|   |   |   numberComponents >= 2.5
+|   |   |   |   Temp_max < 105
+|   |   |   |   |   time < 54 : 2 (70/8) [23/1]
+|   |   |   |   |   time >= 54
+|   |   |   |   |   |   numberComponents < 3.5
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.15
+|   |   |   |   |   |   |   |   orgavgpolMax < 16.52
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.15
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.15 : 1 (14/2) [10/2]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.15 : 2 (5/0) [1/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.15 : 1 (41/0) [18/1]
+|   |   |   |   |   |   |   |   orgavgpolMax >= 16.52 : 2 (4/0) [3/0]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.15 : 2 (29/9) [13/4]
+|   |   |   |   |   |   numberComponents >= 3.5 : 2 (19/0) [6/1]
+|   |   |   |   Temp_max >= 105
+|   |   |   |   |   orgvanderwaalsMax < 297.65
+|   |   |   |   |   |   orghbdamsdonGeomAvg < 2.89
+|   |   |   |   |   |   |   orghbdamsdonGeomAvg < 1.44
+|   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.05 : 1 (10/0) [3/0]
+|   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.05
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.64 : 1 (11/2) [4/1]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.64
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 1.24 : 2 (6/0) [5/2]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 1.24 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   orghbdamsdonGeomAvg >= 1.44 : 2 (11/2) [8/3]
+|   |   |   |   |   |   orghbdamsdonGeomAvg >= 2.89
+|   |   |   |   |   |   |   PaulingElectronegMax < 1.88 : 1 (13/0) [2/0]
+|   |   |   |   |   |   |   PaulingElectronegMax >= 1.88
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 275.99 : 1 (25/1) [8/3]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 275.99
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.03 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.03
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.28 : 1 (10/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.28
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.31 : 2 (4/0) [4/1]
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.31
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.48 : 1 (7/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.48 : 2 (3/1) [4/0]
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.54 : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.54 : 2 (4/0) [4/0]
+|   |   |   |   |   orgvanderwaalsMax >= 297.65 : 1 (17/0) [6/0]
+|   |   time >= 77.5
+|   |   |   orghbdamsdonGeomAvg < 2.83
+|   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   orgmaximalprojectionsizeMin < 4.37 : 1 (2/1) [1/0]
+|   |   |   |   |   orgmaximalprojectionsizeMin >= 4.37 : 2 (73/0) [31/0]
+|   |   |   |   orgacc-waterdonratio >= 0 : 2 (7/3) [8/1]
+|   |   |   orghbdamsdonGeomAvg >= 2.83 : 2 (42/15) [19/4]
+|   PaulingElectronegMean >= 2.02
+|   |   pH < 6.5
+|   |   |   orgmaximalprojectionsizeMin < 5.67
+|   |   |   |   leak = yes : 1 (7/1) [5/0]
+|   |   |   |   leak = no
+|   |   |   |   |   orgmaximalprojectionareaMax < 48.71
+|   |   |   |   |   |   Temp_max < 102.5 : 2 (193/3) [91/5]
+|   |   |   |   |   |   Temp_max >= 102.5
+|   |   |   |   |   |   |   Temp_max < 107.5 : 1 (9/3) [3/0]
+|   |   |   |   |   |   |   Temp_max >= 107.5
+|   |   |   |   |   |   |   |   orgavgpolMax < 8.07
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.38
+|   |   |   |   |   |   |   |   |   |   time < 72 : 1 (9/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   time >= 72 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.38 : 2 (32/2) [13/0]
+|   |   |   |   |   |   |   |   orgavgpolMax >= 8.07 : 2 (328/19) [144/12]
+|   |   |   |   |   orgmaximalprojectionareaMax >= 48.71 : 2 (27/8) [11/1]
+|   |   |   orgmaximalprojectionsizeMin >= 5.67
+|   |   |   |   S = yes : 1 (17/4) [6/3]
+|   |   |   |   S = no
+|   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.42 : 1 (5/0) [0/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.42
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.38 : 2 (6/0) [6/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.38
+|   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg < 3.13
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.51 : 1 (3/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.51 : 2 (7/0) [2/0]
+|   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg >= 3.13
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (3/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (5/0) [5/0]
+|   |   |   |   |   |   orgacc-waterdonratio >= 0 : 1 (7/0) [4/3]
+|   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   orgASA_PMax < 96.37
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.74
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.13 : 2 (11/1) [10/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.13
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.42 : 1 (5/0) [4/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.42 : 2 (14/4) [12/2]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.74
+|   |   |   |   |   |   |   |   Temp_max < 97.5
+|   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 6.87 : 2 (34/5) [20/3]
+|   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 6.87 : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   Temp_max >= 97.5 : 2 (64/1) [33/4]
+|   |   |   |   |   |   orgASA_PMax >= 96.37 : 2 (56/1) [33/1]
+|   |   pH >= 6.5
+|   |   |   orgminimalprojectionradiusMax < 3.42
+|   |   |   |   orgASA_PMax < 100.6
+|   |   |   |   |   hardnessMaxWeighted < 3.62
+|   |   |   |   |   |   orgASA_PMax < 96.35
+|   |   |   |   |   |   |   orgminimalprojectionradiusMax < 2.95 : 2 (3/0) [4/1]
+|   |   |   |   |   |   |   orgminimalprojectionradiusMax >= 2.95 : 1 (22/8) [10/5]
+|   |   |   |   |   |   orgASA_PMax >= 96.35 : 1 (4/0) [1/0]
+|   |   |   |   |   hardnessMaxWeighted >= 3.62 : 1 (8/0) [2/1]
+|   |   |   |   orgASA_PMax >= 100.6 : 2 (5/0) [1/0]
+|   |   |   orgminimalprojectionradiusMax >= 3.42 : 2 (25/2) [20/5]
+
+Size of the tree : 177
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes
+|   |   AtomicRadiusMinWeighted < 0.03 : 2 (3/0) [0/0]
+|   |   AtomicRadiusMinWeighted >= 0.03
+|   |   |   orghbdamsaccMax < 0.07 : 1 (47/0) [18/0]
+|   |   |   orghbdamsaccMax >= 0.07
+|   |   |   |   orghbdamsaccMax < 1 : 2 (4/1) [2/0]
+|   |   |   |   orghbdamsaccMax >= 1 : 1 (7/0) [3/0]
+|   P5 = no
+|   |   Temp_max < 115
+|   |   |   time < 16.5 : 1 (17/1) [8/0]
+|   |   |   time >= 16.5
+|   |   |   |   orgmaximalprojectionsizeMin < 4.54 : 1 (7/0) [3/1]
+|   |   |   |   orgmaximalprojectionsizeMin >= 4.54
+|   |   |   |   |   AtomicRadiusMaxWeighted < 1.24
+|   |   |   |   |   |   orghbdamsdonGeomAvg < 0.37 : 2 (8/0) [5/1]
+|   |   |   |   |   |   orghbdamsdonGeomAvg >= 0.37
+|   |   |   |   |   |   |   orgASA+Min < 234.87
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.69
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.81
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax < 15.87 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 15.87
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.51
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.16 : 2 (3/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.16 : 1 (15/1) [6/0]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.51
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.74 : 2 (8/0) [7/0]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.74
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.75 : 1 (8/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.75
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.62
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (11/3) [7/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.62 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.81 : 2 (6/0) [2/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.69 : 1 (5/0) [4/0]
+|   |   |   |   |   |   |   orgASA+Min >= 234.87
+|   |   |   |   |   |   |   |   numberComponents < 3.5
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.21
+|   |   |   |   |   |   |   |   |   |   pH < 2 : 2 (9/0) [1/1]
+|   |   |   |   |   |   |   |   |   |   pH >= 2
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.12
+|   |   |   |   |   |   |   |   |   |   |   |   pH < 6 : 2 (6/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   pH >= 6 : 1 (7/3) [7/1]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.12
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (6/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.21 : 1 (8/1) [2/2]
+|   |   |   |   |   |   |   |   numberComponents >= 3.5 : 2 (26/3) [12/0]
+|   |   |   |   |   AtomicRadiusMaxWeighted >= 1.24 : 2 (10/0) [3/0]
+|   |   Temp_max >= 115
+|   |   |   hardnessMaxWeighted < 2.21
+|   |   |   |   orgASA_PMax < 62.01
+|   |   |   |   |   orgvanderwaalsMax < 302.62
+|   |   |   |   |   |   pH < 1.5 : 2 (6/1) [3/0]
+|   |   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   |   orgvanderwaalsMax < 267.02
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.13 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.13 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   orgvanderwaalsMax >= 267.02 : 1 (4/0) [0/0]
+|   |   |   |   |   orgvanderwaalsMax >= 302.62 : 2 (11/1) [5/0]
+|   |   |   |   orgASA_PMax >= 62.01 : 1 (5/0) [5/1]
+|   |   |   hardnessMaxWeighted >= 2.21
+|   |   |   |   pH < 1.5 : 2 (23/0) [10/3]
+|   |   |   |   pH >= 1.5
+|   |   |   |   |   AtomicRadiusMeanWeighted < 0.4
+|   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.4 : 2 (10/0) [5/0]
+|   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.4
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax < 13.43 : 2 (7/1) [5/0]
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 13.43 : 1 (4/0) [4/1]
+|   |   |   |   |   AtomicRadiusMeanWeighted >= 0.4 : 2 (12/0) [3/0]
+time >= 21.5
+|   PaulingElectronegMean < 1.97
+|   |   time < 77.5
+|   |   |   hardnessMaxWeighted < 0.38
+|   |   |   |   orgavgpolMax < 9.4
+|   |   |   |   |   AtomicRadiusMeanWeighted < 0.07
+|   |   |   |   |   |   orgavgpolMax < 8.07 : 1 (2/0) [3/0]
+|   |   |   |   |   |   orgavgpolMax >= 8.07 : 2 (4/1) [3/1]
+|   |   |   |   |   AtomicRadiusMeanWeighted >= 0.07 : 1 (13/1) [11/2]
+|   |   |   |   orgavgpolMax >= 9.4
+|   |   |   |   |   AtomicRadiusMinWeighted < 0.1
+|   |   |   |   |   |   orgmaximalprojectionradiusMax < 4.16 : 2 (27/2) [15/3]
+|   |   |   |   |   |   orgmaximalprojectionradiusMax >= 4.16
+|   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (4/0) [4/0]
+|   |   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax < 4.17 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax >= 4.17
+|   |   |   |   |   |   |   |   |   pH < 6.5 : 1 (8/4) [5/0]
+|   |   |   |   |   |   |   |   |   pH >= 6.5 : 2 (15/2) [7/2]
+|   |   |   |   |   AtomicRadiusMinWeighted >= 0.1 : 2 (62/2) [32/0]
+|   |   |   hardnessMaxWeighted >= 0.38
+|   |   |   |   orgrefractivityMax < 39.52
+|   |   |   |   |   pH < 1.5 : 1 (27/2) [8/0]
+|   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   time < 49
+|   |   |   |   |   |   |   orgASA+Min < 241.78
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMax < 44.24
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (9/0) [5/1]
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.54
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax < 3.77
+|   |   |   |   |   |   |   |   |   |   |   |   pH < 4 : 1 (6/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   pH >= 4 : 2 (7/3) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax >= 3.77
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.2
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max < 100 : 2 (4/1) [6/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max >= 100 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.2
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.62 : 2 (12/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.62
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeGeomAvg < 5.2 : 1 (3/1) [6/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeGeomAvg >= 5.2 : 2 (4/0) [4/1]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.54 : 1 (7/0) [1/0]
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 44.24 : 1 (12/0) [10/1]
+|   |   |   |   |   |   |   orgASA+Min >= 241.78 : 2 (41/8) [23/3]
+|   |   |   |   |   |   time >= 49
+|   |   |   |   |   |   |   orgASA+ArithAvg < 192.26 : 2 (23/9) [6/0]
+|   |   |   |   |   |   |   orgASA+ArithAvg >= 192.26
+|   |   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.21
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (7/1) [4/0]
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= 0 : 2 (9/0) [6/1]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.21
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.39 : 1 (20/0) [10/1]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.39
+|   |   |   |   |   |   |   |   |   |   |   pH < 6 : 2 (5/2) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   pH >= 6 : 1 (2/0) [2/1]
+|   |   |   |   |   |   |   |   slowCool = no : 1 (45/2) [22/1]
+|   |   |   |   orgrefractivityMax >= 39.52 : 2 (10/0) [11/4]
+|   |   time >= 77.5
+|   |   |   orgminimalprojectionradiusMin < 2.71 : 2 (53/1) [22/0]
+|   |   |   orgminimalprojectionradiusMin >= 2.71
+|   |   |   |   orghbdamsdonGeomAvg < 3.03
+|   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   S = yes : 1 (2/0) [2/0]
+|   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.33
+|   |   |   |   |   |   |   |   orgacc-waterdonratio < -0.01 : 2 (11/1) [2/0]
+|   |   |   |   |   |   |   |   orgacc-waterdonratio >= -0.01 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.33 : 2 (38/0) [15/0]
+|   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   orgmaximalprojectionareaMax < 43.95 : 1 (13/3) [9/3]
+|   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 43.95 : 2 (3/0) [2/0]
+|   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (6/0) [1/0]
+|   |   |   |   orghbdamsdonGeomAvg >= 3.03
+|   |   |   |   |   pH < 4 : 1 (10/0) [7/2]
+|   |   |   |   |   pH >= 4 : 2 (4/0) [4/0]
+|   PaulingElectronegMean >= 1.97
+|   |   PaulingElectronegMin < 2.36
+|   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   AtomicRadiusMinWeighted < 0.38
+|   |   |   |   |   orghbdamsdonGeomAvg < 7.99
+|   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.91
+|   |   |   |   |   |   |   leak = yes : 1 (6/1) [5/1]
+|   |   |   |   |   |   |   leak = no
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.04 : 1 (7/2) [2/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.04
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.06
+|   |   |   |   |   |   |   |   |   |   oxlikevanderwaalsMax < 105.33
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.15 : 2 (56/0) [24/2]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.15
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.24 : 2 (46/15) [22/3]
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.24
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax < 10.51 : 2 (96/1) [50/2]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 10.51
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaMax < 38.21 : 1 (4/1) [2/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 38.21
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   numberComponents < 3.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgrefractivityMax < 35.77
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax < 27.84 : 1 (4/1) [4/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax >= 27.84 : 2 (29/3) [11/3]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgrefractivityMax >= 35.77 : 2 (58/2) [29/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   numberComponents >= 3.5 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   oxlikevanderwaalsMax >= 105.33 : 2 (68/0) [43/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.06
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 21.09 : 2 (83/9) [30/2]
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 21.09
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 23.12
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.42 : 1 (8/0) [2/1]
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.42
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.97 : 2 (4/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.97 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 23.12 : 2 (60/14) [27/7]
+|   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.91
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.18 : 1 (6/0) [1/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.18
+|   |   |   |   |   |   |   |   orgavgpol_pHdependentMax < 26.15
+|   |   |   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (22/7) [9/3]
+|   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   |   |   |   numberComponents < 3.5
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 6.35 : 1 (25/11) [8/2]
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 6.35 : 2 (16/1) [10/0]
+|   |   |   |   |   |   |   |   |   |   numberComponents >= 3.5 : 2 (21/0) [12/1]
+|   |   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 26.15 : 2 (14/0) [7/1]
+|   |   |   |   |   orghbdamsdonGeomAvg >= 7.99 : 2 (62/0) [37/0]
+|   |   |   |   AtomicRadiusMinWeighted >= 0.38 : 1 (9/1) [2/1]
+|   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   orgacc-waterdonratio < -0.04 : 1 (5/2) [3/1]
+|   |   |   |   orgacc-waterdonratio >= -0.04 : 2 (190/1) [107/6]
+|   |   PaulingElectronegMin >= 2.36 : 1 (7/0) [4/3]
+
+Size of the tree : 203
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes
+|   |   AtomicRadiusMinWeighted < 0.03 : 2 (2/0) [1/0]
+|   |   AtomicRadiusMinWeighted >= 0.03 : 1 (49/1) [25/2]
+|   P5 = no
+|   |   orghbdamsdonGeomAvg < 1.54
+|   |   |   AtomicRadiusMaxWeighted < 0.89 : 2 (37/2) [13/5]
+|   |   |   AtomicRadiusMaxWeighted >= 0.89 : 1 (2/0) [3/1]
+|   |   orghbdamsdonGeomAvg >= 1.54
+|   |   |   orgASA+Min < 189.08 : 2 (16/1) [3/1]
+|   |   |   orgASA+Min >= 189.08
+|   |   |   |   orgASA+Min < 241.78
+|   |   |   |   |   leak = yes : 1 (15/0) [3/0]
+|   |   |   |   |   leak = no
+|   |   |   |   |   |   pH < 3.5
+|   |   |   |   |   |   |   hardnessMaxWeighted < 3.74
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.26
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.99
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 1 (11/2) [6/2]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.2 : 2 (17/1) [9/0]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.2 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.99 : 1 (7/0) [6/1]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.26 : 2 (10/1) [5/1]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 3.74
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.21
+|   |   |   |   |   |   |   |   |   time < 16.5 : 1 (10/0) [6/0]
+|   |   |   |   |   |   |   |   |   time >= 16.5
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.78 : 1 (21/2) [13/3]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.78
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 4.15 : 2 (4/0) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 4.15 : 1 (6/1) [4/4]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.21 : 2 (2/0) [0/0]
+|   |   |   |   |   |   pH >= 3.5 : 1 (14/0) [8/1]
+|   |   |   |   orgASA+Min >= 241.78
+|   |   |   |   |   S = yes : 1 (5/0) [0/0]
+|   |   |   |   |   S = no
+|   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (4/0) [5/2]
+|   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   orghbdamsdonGeomAvg < 9.99
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 27.2 : 2 (16/0) [16/6]
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 27.2
+|   |   |   |   |   |   |   |   |   |   |   time < 19.5
+|   |   |   |   |   |   |   |   |   |   |   |   pH < 4 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   pH >= 4 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   time >= 19.5 : 2 (9/0) [6/2]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 27.56
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaMax < 49.48
+|   |   |   |   |   |   |   |   |   |   |   Temp_max < 137.5 : 2 (3/0) [10/1]
+|   |   |   |   |   |   |   |   |   |   |   Temp_max >= 137.5 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 49.48 : 1 (5/0) [4/0]
+|   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 27.56 : 2 (10/1) [10/3]
+|   |   |   |   |   |   |   orghbdamsdonGeomAvg >= 9.99 : 1 (3/0) [2/0]
+time >= 21.5
+|   PaulingElectronegMean < 1.87
+|   |   orgrefractivityArithAvg < 39.35
+|   |   |   orgvanderwaalsMax < 325.75
+|   |   |   |   pH < 5.5
+|   |   |   |   |   hardnessMaxWeighted < 0.6
+|   |   |   |   |   |   orgASA_PMin < 71.78
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.1
+|   |   |   |   |   |   |   |   orgvanderwaalsMin < 229.58
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.06 : 1 (5/0) [3/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.06 : 2 (8/2) [4/1]
+|   |   |   |   |   |   |   |   orgvanderwaalsMin >= 229.58 : 2 (9/1) [1/1]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.1 : 2 (37/0) [18/0]
+|   |   |   |   |   |   orgASA_PMin >= 71.78 : 1 (23/5) [23/6]
+|   |   |   |   |   hardnessMaxWeighted >= 0.6
+|   |   |   |   |   |   hardnessMaxWeighted < 1.34
+|   |   |   |   |   |   |   Temp_max < 175 : 1 (47/1) [15/4]
+|   |   |   |   |   |   |   Temp_max >= 175
+|   |   |   |   |   |   |   |   oxlikevanderwaalsMax < 109.53 : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   oxlikevanderwaalsMax >= 109.53 : 2 (2/0) [1/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 1.34
+|   |   |   |   |   |   |   hardnessMaxWeighted < 1.4 : 2 (7/0) [6/2]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 1.4
+|   |   |   |   |   |   |   |   pH < 1.5 : 1 (13/0) [5/1]
+|   |   |   |   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 285.27 : 1 (24/6) [4/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 285.27 : 2 (9/0) [2/0]
+|   |   |   |   pH >= 5.5
+|   |   |   |   |   orghbdamsdonGeomAvg < 2.89 : 2 (123/8) [51/5]
+|   |   |   |   |   orghbdamsdonGeomAvg >= 2.89
+|   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.63
+|   |   |   |   |   |   |   numberComponents < 2.5 : 2 (13/0) [5/0]
+|   |   |   |   |   |   |   numberComponents >= 2.5
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.19
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.13
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 25.34
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.39
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax < 96.35 : 1 (14/0) [10/4]
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 96.35 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.39
+|   |   |   |   |   |   |   |   |   |   |   |   time < 42 : 1 (5/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 42 : 2 (7/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 25.34
+|   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.13 : 2 (8/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.13 : 1 (8/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= 0 : 2 (21/0) [8/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.13 : 2 (17/0) [5/2]
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.19
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax < 52.85 : 2 (3/1) [1/0]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax >= 52.85 : 1 (10/0) [4/0]
+|   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.63 : 1 (8/0) [7/1]
+|   |   |   orgvanderwaalsMax >= 325.75
+|   |   |   |   time < 36 : 2 (9/1) [2/0]
+|   |   |   |   time >= 36
+|   |   |   |   |   AtomicRadiusMinWeighted < 0.15
+|   |   |   |   |   |   time < 108
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.17
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.2 : 1 (5/0) [2/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.2 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.17 : 1 (43/0) [14/3]
+|   |   |   |   |   |   time >= 108 : 2 (2/0) [2/0]
+|   |   |   |   |   AtomicRadiusMinWeighted >= 0.15
+|   |   |   |   |   |   orgmaximalprojectionsizeGeomAvg < 5.41 : 1 (12/2) [10/3]
+|   |   |   |   |   |   orgmaximalprojectionsizeGeomAvg >= 5.41 : 2 (7/0) [1/0]
+|   |   orgrefractivityArithAvg >= 39.35
+|   |   |   slowCool = yes : 2 (48.63/0) [16.81/0]
+|   |   |   slowCool = no : 1 (2.37/0.37) [9.19/1.19]
+|   PaulingElectronegMean >= 1.87
+|   |   leak = yes
+|   |   |   orgminimalprojectionradiusMax < 3.5 : 1 (11/0) [4/1]
+|   |   |   orgminimalprojectionradiusMax >= 3.5 : 2 (2/0) [1/0]
+|   |   leak = no
+|   |   |   orgvanderwaalsMax < 201.97 : 1 (10/1) [3/0]
+|   |   |   orgvanderwaalsMax >= 201.97
+|   |   |   |   Temp_max < 97.5 : 2 (316/19) [160/13]
+|   |   |   |   Temp_max >= 97.5
+|   |   |   |   |   Temp_max < 115
+|   |   |   |   |   |   orgvanderwaalsMax < 300.54
+|   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax < 5.37
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.09 : 1 (7/1) [1/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.09
+|   |   |   |   |   |   |   |   |   |   pH < 3.5
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 211.06 : 1 (13/6) [4/1]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 211.06
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax < 4.78 : 2 (88/4) [56/9]
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax >= 4.78
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3 : 1 (5/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3 : 2 (6/1) [7/0]
+|   |   |   |   |   |   |   |   |   |   pH >= 3.5
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax < 3.5
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax < 4.35 : 2 (7/1) [14/3]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax >= 4.35 : 1 (5.96/0.96) [4.96/0.96]
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (7/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.5 : 2 (7.92/0) [5/0]
+|   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax >= 5.37 : 2 (22/0) [10/1]
+|   |   |   |   |   |   |   slowCool = no : 1 (7.12/0.12) [1.04/0.04]
+|   |   |   |   |   |   orgvanderwaalsMax >= 300.54
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.43 : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.43
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.06 : 1 (16/0) [2/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.06
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax < 29.56 : 1 (4/0) [7/3]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax >= 29.56
+|   |   |   |   |   |   |   |   |   |   pH < 3.5 : 2 (6/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   pH >= 3.5 : 1 (2/0) [2/0]
+|   |   |   |   |   Temp_max >= 115
+|   |   |   |   |   |   hardnessMaxWeighted < 0.38
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.37
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 21.74
+|   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.24 : 2 (25/0) [20/1]
+|   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.24
+|   |   |   |   |   |   |   |   |   |   time < 84
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PMax < 96.37
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.36 : 1 (12/0) [8/2]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.36
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax < 12.17 : 1 (2/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 12.17 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 96.37 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   time >= 84 : 2 (3/0) [3/0]
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 21.74 : 2 (32/0) [20/1]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.37 : 1 (8/0) [3/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.38
+|   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.63
+|   |   |   |   |   |   |   |   orgASA_PMax < 96.35 : 2 (144/1) [63/2]
+|   |   |   |   |   |   |   |   orgASA_PMax >= 96.35
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0.01 : 2 (39/0) [17/0]
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0.01
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.98 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.98
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.09
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.08 : 2 (4/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.08 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.09 : 2 (5/0) [5/1]
+|   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.63 : 2 (83/13) [35/4]
+
+Size of the tree : 195
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes : 1 (62/4) [38/3]
+|   P5 = no
+|   |   orgpolarsurfaceareaMax < 51.99
+|   |   |   AtomicRadiusMinWeighted < 0.38
+|   |   |   |   orgminimalprojectionareaMax < 26
+|   |   |   |   |   AtomicRadiusMaxWeighted < 0.17 : 1 (4/0) [2/1]
+|   |   |   |   |   AtomicRadiusMaxWeighted >= 0.17
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (26/0) [7/1]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   leak = yes : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   leak = no : 2 (41/7) [19/2]
+|   |   |   |   orgminimalprojectionareaMax >= 26
+|   |   |   |   |   AtomicRadiusMinWeighted < 0.18
+|   |   |   |   |   |   orgminimalprojectionradiusMax < 3.42
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.18
+|   |   |   |   |   |   |   |   orghbdamsaccMax < 0.01
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.76
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax < 13.34 : 2 (5/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 13.34 : 1 (2/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.76 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17 : 1 (10/3) [6/1]
+|   |   |   |   |   |   |   |   orghbdamsaccMax >= 0.01 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.18 : 1 (4/0) [0/0]
+|   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.42 : 1 (6/0) [2/1]
+|   |   |   |   |   AtomicRadiusMinWeighted >= 0.18 : 2 (15/1) [8/1]
+|   |   |   AtomicRadiusMinWeighted >= 0.38 : 1 (10/0) [5/2]
+|   |   orgpolarsurfaceareaMax >= 51.99
+|   |   |   AtomicRadiusMinWeighted < 0.18
+|   |   |   |   AtomicRadiusMinWeighted < 0.13
+|   |   |   |   |   time < 19.5 : 1 (13/0) [8/2]
+|   |   |   |   |   time >= 19.5
+|   |   |   |   |   |   hardnessMaxWeighted < 0.3 : 1 (4/0) [0/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.3 : 2 (9/4) [7/1]
+|   |   |   |   AtomicRadiusMinWeighted >= 0.13
+|   |   |   |   |   leak = yes : 1 (4/0) [0/0]
+|   |   |   |   |   leak = no
+|   |   |   |   |   |   pH < 2.5
+|   |   |   |   |   |   |   orgASA_PMax < 120.45
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.96 : 2 (14/0) [2/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.96
+|   |   |   |   |   |   |   |   |   orgASA_PMax < 109.83
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.93 : 2 (14/4) [7/4]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.93 : 1 (3/0) [3/1]
+|   |   |   |   |   |   |   |   |   orgASA_PMax >= 109.83 : 2 (7/0) [4/1]
+|   |   |   |   |   |   |   orgASA_PMax >= 120.45 : 1 (2/0) [1/0]
+|   |   |   |   |   |   pH >= 2.5 : 1 (2/0) [0/0]
+|   |   |   AtomicRadiusMinWeighted >= 0.18
+|   |   |   |   orgASA_PMax < 106.16 : 1 (30/1) [9/1]
+|   |   |   |   orgASA_PMax >= 106.16
+|   |   |   |   |   numberComponents < 3.5 : 1 (5/1) [4/1]
+|   |   |   |   |   numberComponents >= 3.5 : 2 (5/0) [3/0]
+time >= 21.5
+|   PaulingElectronegMean < 1.97
+|   |   PaulingElectronegMinWeighted < 0
+|   |   |   Temp_max < 115
+|   |   |   |   hardnessMaxWeighted < 0.86
+|   |   |   |   |   orgmaximalprojectionsizeMin < 5.04 : 2 (4/1) [3/0]
+|   |   |   |   |   orgmaximalprojectionsizeMin >= 5.04
+|   |   |   |   |   |   hardnessMaxWeighted < 0.28 : 1 (15/0) [12/5]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.28
+|   |   |   |   |   |   |   S = yes : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   S = no : 1 (19/3) [12/1]
+|   |   |   |   hardnessMaxWeighted >= 0.86 : 1 (14/0) [6/0]
+|   |   |   Temp_max >= 115 : 2 (12/3) [4/1]
+|   |   PaulingElectronegMinWeighted >= 0
+|   |   |   orgASA+Min < 270.25
+|   |   |   |   time < 77.5
+|   |   |   |   |   time < 49
+|   |   |   |   |   |   orgminimalprojectionradiusMax < 3.05
+|   |   |   |   |   |   |   orgASA_PMax < 96.35
+|   |   |   |   |   |   |   |   pH < 3.5
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.37
+|   |   |   |   |   |   |   |   |   |   numberComponents < 2.5
+|   |   |   |   |   |   |   |   |   |   |   orgrefractivityMax < 18.44 : 1 (2/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgrefractivityMax >= 18.44 : 2 (8/0) [6/1]
+|   |   |   |   |   |   |   |   |   |   numberComponents >= 2.5 : 1 (6/0) [1/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.37 : 1 (10/0) [2/1]
+|   |   |   |   |   |   |   |   pH >= 3.5
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.08 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.08
+|   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg < 3.95
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.41
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.38 : 2 (3/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.38 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.41 : 2 (5/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg >= 3.95 : 2 (17/0) [3/0]
+|   |   |   |   |   |   |   orgASA_PMax >= 96.35
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 259.28 : 1 (16/0) [10/2]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 259.28 : 2 (4/1) [8/2]
+|   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.05
+|   |   |   |   |   |   |   K = yes
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 1 (8/1) [7/2]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax < 3.37 : 2 (4/0) [4/0]
+|   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.37 : 1 (3/1) [4/1]
+|   |   |   |   |   |   |   K = no : 2 (105/8) [45/10]
+|   |   |   |   |   time >= 49
+|   |   |   |   |   |   orgrefractivityArithAvg < 21.04 : 2 (16/1) [8/3]
+|   |   |   |   |   |   orgrefractivityArithAvg >= 21.04
+|   |   |   |   |   |   |   orgrefractivityMax < 36.75
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMin < 3.4
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.18
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.42
+|   |   |   |   |   |   |   |   |   |   |   oxlikevanderwaalsMax < 113.29 : 1 (13/1) [6/4]
+|   |   |   |   |   |   |   |   |   |   |   oxlikevanderwaalsMax >= 113.29 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.42 : 2 (5/0) [2/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.18
+|   |   |   |   |   |   |   |   |   |   orghbdamsaccGeomAvg < 1.68 : 1 (31/0) [13/1]
+|   |   |   |   |   |   |   |   |   |   orghbdamsaccGeomAvg >= 1.68
+|   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio < -0.02 : 1 (5/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= -0.02 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMin >= 3.4
+|   |   |   |   |   |   |   |   |   orgavgpolMax < 11.92 : 1 (3/0) [3/0]
+|   |   |   |   |   |   |   |   |   orgavgpolMax >= 11.92
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (7/3) [2/0]
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (12/0) [5/1]
+|   |   |   |   |   |   |   orgrefractivityMax >= 36.75 : 1 (28/0) [13/0]
+|   |   |   |   time >= 77.5
+|   |   |   |   |   orghbdamsdonGeomAvg < 2.84 : 2 (83/4) [45/4]
+|   |   |   |   |   orghbdamsdonGeomAvg >= 2.84
+|   |   |   |   |   |   orgacc-waterdonratio < -0.11
+|   |   |   |   |   |   |   orgvanderwaalsMax < 441.01 : 1 (13/1) [2/0]
+|   |   |   |   |   |   |   orgvanderwaalsMax >= 441.01 : 2 (2/0) [2/0]
+|   |   |   |   |   |   orgacc-waterdonratio >= -0.11
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.07 : 1 (6/2) [1/0]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.07 : 2 (19/1) [3/0]
+|   |   |   orgASA+Min >= 270.25 : 2 (50/2) [20/2]
+|   PaulingElectronegMean >= 1.97
+|   |   pH < 6.5
+|   |   |   leak = yes
+|   |   |   |   orgavgpol_pHdependentMax < 14.52 : 1 (10/0) [4/0]
+|   |   |   |   orgavgpol_pHdependentMax >= 14.52 : 2 (4/0) [2/0]
+|   |   |   leak = no
+|   |   |   |   orgmaximalprojectionsizeMin < 5.82
+|   |   |   |   |   Temp_max < 97.5 : 2 (189/7) [113/7]
+|   |   |   |   |   Temp_max >= 97.5
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.24
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.23
+|   |   |   |   |   |   |   |   S = yes : 2 (55/16) [21/3]
+|   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   orgavgpolMax < 8.07
+|   |   |   |   |   |   |   |   |   |   time < 54 : 1 (5/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   time >= 54 : 2 (5/0) [2/0]
+|   |   |   |   |   |   |   |   |   orgavgpolMax >= 8.07 : 2 (172/14) [74/14]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.23 : 1 (10/2) [2/0]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.24
+|   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.53 : 2 (106/1) [57/1]
+|   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.53
+|   |   |   |   |   |   |   |   orgASA_PMax < 96.22 : 2 (40/0) [24/0]
+|   |   |   |   |   |   |   |   orgASA_PMax >= 96.22
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.7
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.1
+|   |   |   |   |   |   |   |   |   |   |   time < 60
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.09
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.05 : 2 (12/5) [10/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.05 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.09 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   time >= 60 : 2 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.1 : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.7 : 2 (6/0) [3/0]
+|   |   |   |   orgmaximalprojectionsizeMin >= 5.82
+|   |   |   |   |   hardnessMaxWeighted < 0.48 : 1 (20/5) [12/3]
+|   |   |   |   |   hardnessMaxWeighted >= 0.48
+|   |   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (8/1) [3/0]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.18 : 1 (6/0) [2/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.18
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.18 : 2 (4/0) [2/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.18 : 1 (14/4) [6/2]
+|   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   hardnessMaxWeighted < 1.1 : 2 (43/0) [29/3]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 1.1
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.1 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.1 : 2 (104/12) [63/5]
+|   |   pH >= 6.5
+|   |   |   orghbdamsaccMax < 0.02 : 1 (9/0) [5/1]
+|   |   |   orghbdamsaccMax >= 0.02
+|   |   |   |   hardnessMaxWeighted < 2.26
+|   |   |   |   |   orgminimalprojectionradiusMax < 3.43
+|   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   orgminimalprojectionareaMax < 22.56 : 2 (10/0) [4/2]
+|   |   |   |   |   |   |   orgminimalprojectionareaMax >= 22.56 : 1 (9/4) [4/0]
+|   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (5/0) [3/1]
+|   |   |   |   |   orgminimalprojectionradiusMax >= 3.43 : 2 (24/0) [4/0]
+|   |   |   |   hardnessMaxWeighted >= 2.26
+|   |   |   |   |   Na = yes : 1 (7/0) [6/2]
+|   |   |   |   |   Na = no
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.18 : 2 (3/0) [5/2]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.18
+|   |   |   |   |   |   |   orgacc-waterdonratio < -0.01 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   orgacc-waterdonratio >= -0.01 : 1 (5/0) [6/2]
+
+Size of the tree : 195
+
+
+REPTree
+============
+
+time < 20.5
+|   P5 = yes
+|   |   orgminimalprojectionareaMax < 37.03 : 1 (58/1) [22/1]
+|   |   orgminimalprojectionareaMax >= 37.03 : 2 (2/0) [2/0]
+|   P5 = no
+|   |   Temp_max < 115
+|   |   |   orgASA_PMax < 109.83
+|   |   |   |   AtomicRadiusMinWeighted < 0.09 : 1 (10/0) [5/0]
+|   |   |   |   AtomicRadiusMinWeighted >= 0.09
+|   |   |   |   |   time < 18.5
+|   |   |   |   |   |   orgminimalprojectionareaMax < 19.44 : 2 (3/0) [8/1]
+|   |   |   |   |   |   orgminimalprojectionareaMax >= 19.44
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.18 : 1 (47/7) [23/3]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.18
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax < 9.91 : 1 (7/1) [7/1]
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 9.91 : 2 (16/7) [5/2]
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (4/0) [3/0]
+|   |   |   |   |   time >= 18.5
+|   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   hardnessMaxWeighted < 3.77
+|   |   |   |   |   |   |   |   orgASA_PMax < 96.39
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.74 : 2 (16/3) [8/3]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.74 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   orgASA_PMax >= 96.39 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 3.77 : 2 (5/0) [2/1]
+|   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (7/1) [0/0]
+|   |   |   orgASA_PMax >= 109.83 : 2 (10/1) [4/1]
+|   |   Temp_max >= 115
+|   |   |   orgavgpolMax < 11.45 : 2 (25/2) [9/3]
+|   |   |   orgavgpolMax >= 11.45
+|   |   |   |   orgASA+Min < 205.93 : 1 (6/0) [5/0]
+|   |   |   |   orgASA+Min >= 205.93
+|   |   |   |   |   orgminimalprojectionradiusMax < 3.8
+|   |   |   |   |   |   leak = yes : 1 (6/0) [4/0]
+|   |   |   |   |   |   leak = no
+|   |   |   |   |   |   |   orgASA+Min < 221.44 : 2 (9/0) [4/0]
+|   |   |   |   |   |   |   orgASA+Min >= 221.44
+|   |   |   |   |   |   |   |   Temp_max < 145
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 315.36 : 2 (9/0) [7/1]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 315.36 : 1 (3/1) [1/0]
+|   |   |   |   |   |   |   |   Temp_max >= 145
+|   |   |   |   |   |   |   |   |   pH < 1.5 : 2 (6/2) [2/0]
+|   |   |   |   |   |   |   |   |   pH >= 1.5 : 1 (10/1) [4/2]
+|   |   |   |   |   orgminimalprojectionradiusMax >= 3.8 : 2 (6/0) [5/1]
+time >= 20.5
+|   PaulingElectronegMean < 1.97
+|   |   orgrefractivityArithAvg < 39.35
+|   |   |   time < 77.5
+|   |   |   |   orgvanderwaalsMax < 299
+|   |   |   |   |   Temp_max < 105
+|   |   |   |   |   |   orgvanderwaalsMax < 219.35
+|   |   |   |   |   |   |   time < 37
+|   |   |   |   |   |   |   |   Na = yes : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   |   Na = no : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   time >= 37 : 1 (18/0) [10/0]
+|   |   |   |   |   |   orgvanderwaalsMax >= 219.35
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.81
+|   |   |   |   |   |   |   |   orgASA+Min < 213.49 : 2 (27/0) [9/1]
+|   |   |   |   |   |   |   |   orgASA+Min >= 213.49
+|   |   |   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio < -0.02 : 1 (3/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= -0.02 : 2 (38.96/0) [20.17/1]
+|   |   |   |   |   |   |   |   |   slowCool = no
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 277.36 : 2 (6.04/1) [3.83/1]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 277.36 : 1 (5/0) [4/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.81
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.42 : 1 (8/1) [6/2]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.42 : 2 (9/1) [5/1]
+|   |   |   |   |   Temp_max >= 105
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.06
+|   |   |   |   |   |   |   pH < 2.5
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (7/0) [8/2]
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (6/0) [1/0]
+|   |   |   |   |   |   |   pH >= 2.5 : 1 (44/4) [17/7]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.06
+|   |   |   |   |   |   |   PaulingElectronegMin < 1.72
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.31
+|   |   |   |   |   |   |   |   |   orgASA_PMin < 84.43 : 2 (22/1) [10/0]
+|   |   |   |   |   |   |   |   |   orgASA_PMin >= 84.43 : 1 (6/0) [4/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.31
+|   |   |   |   |   |   |   |   |   pH < 6
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax < 5.57
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.2 : 1 (17/1) [7/1]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.2
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.6 : 2 (6/0) [4/1]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.6 : 1 (51/13) [22/7]
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax >= 5.57 : 2 (7/1) [1/1]
+|   |   |   |   |   |   |   |   |   pH >= 6 : 2 (20/5) [5/2]
+|   |   |   |   |   |   |   PaulingElectronegMin >= 1.72 : 2 (12/0) [5/0]
+|   |   |   |   orgvanderwaalsMax >= 299
+|   |   |   |   |   numberComponents < 2.5 : 2 (10/0) [9/0]
+|   |   |   |   |   numberComponents >= 2.5
+|   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.2
+|   |   |   |   |   |   |   Temp_max < 125 : 2 (4/0) [1/1]
+|   |   |   |   |   |   |   Temp_max >= 125 : 1 (3/0) [2/0]
+|   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.2
+|   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMin < 45.1 : 1 (24/1) [14/0]
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMin >= 45.1
+|   |   |   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (3/0) [3/0]
+|   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= 0 : 2 (3/0) [4/1]
+|   |   |   |   |   |   |   slowCool = no : 1 (36/0) [21/1]
+|   |   |   time >= 77.5
+|   |   |   |   orgASA_PArithAvg < 140.82
+|   |   |   |   |   S = yes : 1 (4/0) [1/0]
+|   |   |   |   |   S = no : 2 (95/5) [59/7]
+|   |   |   |   orgASA_PArithAvg >= 140.82 : 1 (9/1) [5/1]
+|   |   orgrefractivityArithAvg >= 39.35
+|   |   |   slowCool = yes : 2 (53.44/0) [25.94/0]
+|   |   |   slowCool = no : 1 (3.56/1.56) [4.06/1.06]
+|   PaulingElectronegMean >= 1.97
+|   |   pH < 6.5
+|   |   |   orgmaximalprojectionsizeMin < 6.07
+|   |   |   |   leak = yes : 1 (15/4) [5/1]
+|   |   |   |   leak = no
+|   |   |   |   |   Temp_max < 97.5
+|   |   |   |   |   |   orgminimalprojectionradiusMax < 3.44
+|   |   |   |   |   |   |   orgvanderwaalsMax < 298.41 : 2 (137/6) [63/3]
+|   |   |   |   |   |   |   orgvanderwaalsMax >= 298.41
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 23.28
+|   |   |   |   |   |   |   |   |   pH < 1.5 : 2 (4/0) [8/2]
+|   |   |   |   |   |   |   |   |   pH >= 1.5 : 1 (8/2) [1/0]
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 23.28 : 2 (7/0) [2/0]
+|   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.44 : 2 (104/0) [54/1]
+|   |   |   |   |   Temp_max >= 97.5
+|   |   |   |   |   |   time < 84
+|   |   |   |   |   |   |   S = yes : 2 (68/18) [32/8]
+|   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 21.71
+|   |   |   |   |   |   |   |   |   Temp_max < 107.5 : 1 (3/0) [2/2]
+|   |   |   |   |   |   |   |   |   Temp_max >= 107.5
+|   |   |   |   |   |   |   |   |   |   pH < 3.5 : 2 (25/0) [18/1]
+|   |   |   |   |   |   |   |   |   |   pH >= 3.5
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.1
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.61
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.24 : 2 (34/2) [20/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.24
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.6
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.42 : 1 (14/6) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.42 : 2 (6/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.6 : 1 (4/0) [2/2]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.61
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.94 : 2 (46/0) [14/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.94
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.97 : 1 (5/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.97 : 2 (17/1) [7/1]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.1 : 2 (15/6) [8/1]
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 21.71
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.4
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.35 : 2 (31/0) [9/0]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.35
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax < 13.75
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.43 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.43
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.09 : 2 (27/2) [14/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.09 : 1 (5/1) [6/2]
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 13.75 : 2 (29/1) [11/2]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.4 : 2 (111/1) [47/4]
+|   |   |   |   |   |   time >= 84 : 2 (43/0) [30/0]
+|   |   |   orgmaximalprojectionsizeMin >= 6.07
+|   |   |   |   time < 66
+|   |   |   |   |   orgavgpolMax < 10.57 : 1 (4/0) [7/5]
+|   |   |   |   |   orgavgpolMax >= 10.57
+|   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.38 : 2 (11/0) [11/1]
+|   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.38
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 1 (8/2) [7/3]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   orghbdamsaccMax < 0.19 : 2 (40/5) [25/1]
+|   |   |   |   |   |   |   |   orghbdamsaccMax >= 0.19
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.5 : 2 (5/0) [3/1]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.5 : 1 (17/7) [4/0]
+|   |   |   |   time >= 66 : 1 (4/0) [2/1]
+|   |   pH >= 6.5
+|   |   |   orgminimalprojectionradiusMax < 3.43
+|   |   |   |   AtomicRadiusMinWeighted < 0.18
+|   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (3/0) [2/1]
+|   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   |   orgacc-waterdonratio < -0.02
+|   |   |   |   |   |   |   |   Temp_max < 100 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   Temp_max >= 100 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   orgacc-waterdonratio >= -0.02 : 2 (12/0) [4/0]
+|   |   |   |   |   |   orgacc-waterdonratio >= 0 : 1 (7/2) [11/3]
+|   |   |   |   AtomicRadiusMinWeighted >= 0.18
+|   |   |   |   |   orgacc-waterdonratio < -0.02 : 2 (3/0) [3/0]
+|   |   |   |   |   orgacc-waterdonratio >= -0.02 : 1 (18/1) [8/3]
+|   |   |   orgminimalprojectionradiusMax >= 3.43 : 2 (27/3) [7/0]
+
+Size of the tree : 189
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes
+|   |   orgacc-waterdonratio < -0.02 : 2 (4/0) [2/0]
+|   |   orgacc-waterdonratio >= -0.02 : 1 (62/0) [30/0]
+|   P5 = no
+|   |   orgASA+Min < 241.78
+|   |   |   time < 19.5
+|   |   |   |   hardnessMaxWeighted < 3.77
+|   |   |   |   |   hardnessMaxWeighted < 3.76
+|   |   |   |   |   |   hardnessMaxWeighted < 2.23 : 1 (10/0) [8/3]
+|   |   |   |   |   |   hardnessMaxWeighted >= 2.23
+|   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 1
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.05
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.99 : 2 (3/0) [4/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.99 : 1 (4/0) [4/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.05 : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 1
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 1.04 : 1 (15/0) [11/4]
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 1.04
+|   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax < 2.91 : 1 (7/0) [3/0]
+|   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax >= 2.91
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.21 : 2 (4/0) [5/1]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.21 : 1 (5/1) [2/0]
+|   |   |   |   |   hardnessMaxWeighted >= 3.76 : 1 (12/0) [3/0]
+|   |   |   |   hardnessMaxWeighted >= 3.77
+|   |   |   |   |   AtomicRadiusMeanWeighted < 0.63 : 2 (12/2) [7/1]
+|   |   |   |   |   AtomicRadiusMeanWeighted >= 0.63 : 1 (9/1) [4/1]
+|   |   |   time >= 19.5
+|   |   |   |   orgmaximalprojectionradiusMax < 5.29
+|   |   |   |   |   leak = yes : 1 (5/1) [4/0]
+|   |   |   |   |   leak = no : 2 (36/6) [14/3]
+|   |   |   |   orgmaximalprojectionradiusMax >= 5.29 : 1 (4/0) [5/2]
+|   |   orgASA+Min >= 241.78
+|   |   |   orgASA_PMax < 66.2 : 2 (32/2) [18/2]
+|   |   |   orgASA_PMax >= 66.2
+|   |   |   |   numberComponents < 3.5
+|   |   |   |   |   orgrefractivityMax < 43.58
+|   |   |   |   |   |   time < 15 : 2 (2/0) [1/0]
+|   |   |   |   |   |   time >= 15 : 1 (12/0) [4/1]
+|   |   |   |   |   orgrefractivityMax >= 43.58
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.04 : 1 (5/0) [1/0]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.04 : 2 (28/7) [18/9]
+|   |   |   |   numberComponents >= 3.5 : 2 (20/2) [13/3]
+time >= 21.5
+|   PaulingElectronegMean < 1.97
+|   |   time < 77.5
+|   |   |   orgrefractivityArithAvg < 38.35
+|   |   |   |   orgrefractivityMax < 37.74
+|   |   |   |   |   orgASA_PMin < 96.07
+|   |   |   |   |   |   hardnessMaxWeighted < 0.4
+|   |   |   |   |   |   |   orgrefractivityMax < 29.98
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.13
+|   |   |   |   |   |   |   |   |   Temp_max < 170
+|   |   |   |   |   |   |   |   |   |   time < 55 : 2 (24/3) [13/3]
+|   |   |   |   |   |   |   |   |   |   time >= 55 : 1 (3/0) [3/0]
+|   |   |   |   |   |   |   |   |   Temp_max >= 170 : 1 (5/0) [5/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.13 : 2 (13/0) [7/0]
+|   |   |   |   |   |   |   orgrefractivityMax >= 29.98 : 2 (31/1) [17/5]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.4
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   Temp_max < 120
+|   |   |   |   |   |   |   |   |   orgASA+ArithAvg < 193.61 : 2 (6/0) [4/2]
+|   |   |   |   |   |   |   |   |   orgASA+ArithAvg >= 193.61
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.38
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.18 : 2 (25/12) [12/2]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.18
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax < 20.71 : 2 (4/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 20.71 : 1 (27/1) [14/2]
+|   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.38 : 2 (5/0) [3/2]
+|   |   |   |   |   |   |   |   Temp_max >= 120 : 1 (15/0) [4/1]
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMax < 37.17
+|   |   |   |   |   |   |   |   |   Temp_max < 95
+|   |   |   |   |   |   |   |   |   |   pH < 9 : 1 (10/0) [9/0]
+|   |   |   |   |   |   |   |   |   |   pH >= 9
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax < 4.31 : 2 (2/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax >= 4.31 : 1 (2/0) [1/1]
+|   |   |   |   |   |   |   |   |   Temp_max >= 95
+|   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg < 1.95 : 2 (7/0) [6/0]
+|   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg >= 1.95
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.38 : 2 (4/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.38 : 1 (4/0) [4/0]
+|   |   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 37.17 : 2 (30/2) [19/1]
+|   |   |   |   |   orgASA_PMin >= 96.07
+|   |   |   |   |   |   orgASA_PMax < 108.47
+|   |   |   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   |   |   pH < 7.5 : 2 (5/0) [4/0]
+|   |   |   |   |   |   |   |   pH >= 7.5 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   |   Temp_max < 100
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.22
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.21 : 1 (12/2) [8/4]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.21 : 2 (5/0) [3/1]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.22 : 1 (7/0) [3/0]
+|   |   |   |   |   |   |   |   Temp_max >= 100 : 1 (42/2) [15/1]
+|   |   |   |   |   |   orgASA_PMax >= 108.47 : 2 (11/3) [3/1]
+|   |   |   |   orgrefractivityMax >= 37.74
+|   |   |   |   |   time < 36 : 2 (7/2) [2/0]
+|   |   |   |   |   time >= 36 : 1 (39/0) [18/2]
+|   |   |   orgrefractivityArithAvg >= 38.35
+|   |   |   |   slowCool = yes
+|   |   |   |   |   pH < 1.5 : 1 (2/0) [1/0]
+|   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   orgacc-waterdonratio < 0
+|   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 2 (7/1) [4/0]
+|   |   |   |   |   |   |   orgacc-waterdonratio >= 0 : 1 (2/0) [1/0]
+|   |   |   |   |   |   orgacc-waterdonratio >= 0 : 2 (51.89/0) [36.72/2]
+|   |   |   |   slowCool = no : 1 (10.11/1.11) [6.28/0.28]
+|   |   time >= 77.5
+|   |   |   orgASA_PArithAvg < 143.93
+|   |   |   |   S = yes : 1 (3/0) [0/0]
+|   |   |   |   S = no
+|   |   |   |   |   AtomicRadiusMinWeighted < 0.06
+|   |   |   |   |   |   AtomicRadiusMinWeighted < 0.05 : 2 (9/0) [4/0]
+|   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.05 : 1 (4/1) [1/0]
+|   |   |   |   |   AtomicRadiusMinWeighted >= 0.06 : 2 (113/1) [51/5]
+|   |   |   orgASA_PArithAvg >= 143.93 : 1 (13/1) [4/0]
+|   PaulingElectronegMean >= 1.97
+|   |   slowCool = yes
+|   |   |   Mo = yes : 2 (53/0) [31/1]
+|   |   |   Mo = no
+|   |   |   |   pH < 4.5
+|   |   |   |   |   orgmaximalprojectionradiusMax < 4.68
+|   |   |   |   |   |   orgminimalprojectionradiusMax < 3.6
+|   |   |   |   |   |   |   leak = yes : 1 (6/0) [6/0]
+|   |   |   |   |   |   |   leak = no
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.15 : 1 (6/1) [4/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.15 : 2 (114/24) [47/9]
+|   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.6 : 1 (10/1) [1/1]
+|   |   |   |   |   orgmaximalprojectionradiusMax >= 4.68
+|   |   |   |   |   |   pH < 3.5
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   orgavgpolMax < 13.22 : 2 (8/0) [2/0]
+|   |   |   |   |   |   |   |   orgavgpolMax >= 13.22
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax < 330.86 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax >= 330.86 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax < 3.48 : 2 (71/0) [37/2]
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax >= 3.48
+|   |   |   |   |   |   |   |   |   orgrefractivityMax < 36.66 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   orgrefractivityMax >= 36.66 : 2 (24/1) [19/2]
+|   |   |   |   |   |   pH >= 3.5 : 2 (23/7) [6/0]
+|   |   |   |   pH >= 4.5
+|   |   |   |   |   AtomicRadiusMeanWeighted < 0.45 : 2 (48.07/14.88) [22.65/5]
+|   |   |   |   |   AtomicRadiusMeanWeighted >= 0.45
+|   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (8/3) [1/0]
+|   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (20/2) [7/1]
+|   |   slowCool = no
+|   |   |   hardnessMaxWeighted < 3.46
+|   |   |   |   hardnessMaxWeighted < 0.63
+|   |   |   |   |   orgavgpolMax < 15.87 : 2 (120.79/8.56) [59.68/8]
+|   |   |   |   |   orgavgpolMax >= 15.87
+|   |   |   |   |   |   time < 72
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.36 : 1 (7/0) [6/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.36
+|   |   |   |   |   |   |   |   orgavgpolMax < 16.57 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   |   orgavgpolMax >= 16.57
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.43 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.43 : 2 (10/4) [2/0]
+|   |   |   |   |   |   time >= 72 : 2 (5/0) [1/0]
+|   |   |   |   hardnessMaxWeighted >= 0.63
+|   |   |   |   |   AtomicRadiusMinWeighted < 0.08 : 1 (3/1) [1/0]
+|   |   |   |   |   AtomicRadiusMinWeighted >= 0.08 : 2 (287.14/5.56) [138.68/10]
+|   |   |   hardnessMaxWeighted >= 3.46
+|   |   |   |   Temp_max < 97.5
+|   |   |   |   |   numberComponents < 3.5 : 2 (34/0) [9/0]
+|   |   |   |   |   numberComponents >= 3.5
+|   |   |   |   |   |   orgmaximalprojectionareaMax < 42.73
+|   |   |   |   |   |   |   hardnessMaxWeighted < 3.7 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 3.7
+|   |   |   |   |   |   |   |   Temp_max < 82.5 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   Temp_max >= 82.5 : 2 (9/2) [6/1]
+|   |   |   |   |   |   orgmaximalprojectionareaMax >= 42.73 : 2 (10/0) [10/1]
+|   |   |   |   Temp_max >= 97.5 : 1 (8/0) [2/0]
+
+Size of the tree : 175
+
+
+REPTree
+============
+
+time < 20.5
+|   P5 = yes : 1 (61/3) [30/3]
+|   P5 = no
+|   |   orghbdamsaccMax < 0.03
+|   |   |   orgASA+Min < 189.08 : 2 (11/0) [7/2]
+|   |   |   orgASA+Min >= 189.08
+|   |   |   |   orgASA+Min < 234.87
+|   |   |   |   |   Temp_max < 127.5
+|   |   |   |   |   |   time < 16.5 : 1 (13/0) [3/0]
+|   |   |   |   |   |   time >= 16.5
+|   |   |   |   |   |   |   hardnessMaxWeighted < 2.34 : 1 (11/0) [6/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 2.34
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.99 : 2 (3/0) [2/2]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.99
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (3/0) [4/2]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.68
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 3.77 : 1 (35/7) [15/2]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 3.77 : 2 (8/1) [7/0]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.68 : 1 (6/0) [1/0]
+|   |   |   |   |   Temp_max >= 127.5
+|   |   |   |   |   |   pH < 1.5 : 2 (6/0) [2/1]
+|   |   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   |   orgmaximalprojectionareaMax < 36.11 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 36.11 : 1 (2/0) [5/1]
+|   |   |   |   orgASA+Min >= 234.87
+|   |   |   |   |   numberComponents < 3.5
+|   |   |   |   |   |   orgASA_PMax < 101.94
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.39
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.3 : 2 (8/1) [4/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.3 : 1 (9/0) [5/1]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.39 : 2 (7/0) [1/0]
+|   |   |   |   |   |   orgASA_PMax >= 101.94 : 1 (21/4) [8/5]
+|   |   |   |   |   numberComponents >= 3.5
+|   |   |   |   |   |   orgavgpolMax < 18.7 : 2 (29/1) [10/2]
+|   |   |   |   |   |   orgavgpolMax >= 18.7 : 1 (2/0) [2/0]
+|   |   orghbdamsaccMax >= 0.03
+|   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   orgpolarsurfaceareaMax < 20.66 : 1 (5/2) [2/1]
+|   |   |   |   orgpolarsurfaceareaMax >= 20.66
+|   |   |   |   |   orghbdamsdonGeomAvg < 0.91
+|   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (6/3) [3/1]
+|   |   |   |   |   |   orgacc-waterdonratio >= 0 : 2 (4/0) [0/0]
+|   |   |   |   |   orghbdamsdonGeomAvg >= 0.91 : 2 (31/1) [19/1]
+|   |   |   PaulingElectronegMinWeighted >= 0 : 1 (3/0) [4/2]
+time >= 20.5
+|   PaulingElectronegMean < 1.97
+|   |   time < 77.5
+|   |   |   slowCool = yes
+|   |   |   |   orgmaximalprojectionareaMin < 48.87
+|   |   |   |   |   hardnessMaxWeighted < 0.53
+|   |   |   |   |   |   K = yes : 1 (11/0) [7/1]
+|   |   |   |   |   |   K = no
+|   |   |   |   |   |   |   orgvanderwaalsMax < 218.86
+|   |   |   |   |   |   |   |   orgavgpolMax < 10.8 : 1 (13/1) [7/0]
+|   |   |   |   |   |   |   |   orgavgpolMax >= 10.8 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   orgvanderwaalsMax >= 218.86
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   |   orgavgpolMax < 12.54 : 2 (31/11) [6/2]
+|   |   |   |   |   |   |   |   |   orgavgpolMax >= 12.54 : 1 (12/2) [9/2]
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   |   orgASA+ArithAvg < 222.09 : 2 (45/1) [19/0]
+|   |   |   |   |   |   |   |   |   orgASA+ArithAvg >= 222.09
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (18/7) [4/1]
+|   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   |   |   |   |   Temp_max < 100 : 2 (44.63/2) [24.07/1]
+|   |   |   |   |   |   |   |   |   |   |   Temp_max >= 100
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax < 72.58 : 2 (15/2) [15/2]
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 72.58 : 1 (9/1) [7/2]
+|   |   |   |   |   hardnessMaxWeighted >= 0.53
+|   |   |   |   |   |   hardnessMaxWeighted < 1.14 : 1 (52/7) [22/6]
+|   |   |   |   |   |   hardnessMaxWeighted >= 1.14
+|   |   |   |   |   |   |   pH < 3.5
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.85
+|   |   |   |   |   |   |   |   |   IonizationMean < 754.18
+|   |   |   |   |   |   |   |   |   |   Temp_max < 120 : 2 (21/5) [16/6]
+|   |   |   |   |   |   |   |   |   |   Temp_max >= 120 : 1 (3/0) [3/0]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 754.18 : 1 (9/1) [2/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.85 : 1 (14/0) [4/1]
+|   |   |   |   |   |   |   pH >= 3.5 : 2 (31/4) [12/1]
+|   |   |   |   orgmaximalprojectionareaMin >= 48.87 : 2 (44.25/0) [19.63/0]
+|   |   |   slowCool = no
+|   |   |   |   orgavgpolMax < 14.28
+|   |   |   |   |   orghbdamsdonGeomAvg < 1.44 : 1 (7/1) [8/0]
+|   |   |   |   |   orghbdamsdonGeomAvg >= 1.44 : 2 (21.37/3) [14.93/5]
+|   |   |   |   orgavgpolMax >= 14.28 : 1 (57.75/3.75) [25.37/1.37]
+|   |   time >= 77.5
+|   |   |   orgASA_PMin < 55.08 : 2 (96/6) [46/4]
+|   |   |   orgASA_PMin >= 55.08
+|   |   |   |   orghbdamsdonGeomAvg < 2.83 : 2 (4/0) [2/0]
+|   |   |   |   orghbdamsdonGeomAvg >= 2.83
+|   |   |   |   |   orgavgpolMax < 8.07 : 2 (2/0) [1/0]
+|   |   |   |   |   orgavgpolMax >= 8.07
+|   |   |   |   |   |   orgrefractivityMax < 43.58 : 1 (10/0) [2/0]
+|   |   |   |   |   |   orgrefractivityMax >= 43.58 : 2 (2/0) [7/3]
+|   PaulingElectronegMean >= 1.97
+|   |   orgmaximalprojectionsizeMin < 5.84
+|   |   |   leak = yes
+|   |   |   |   orgavgpol_pHdependentMax < 14.52 : 1 (7/0) [3/0]
+|   |   |   |   orgavgpol_pHdependentMax >= 14.52 : 2 (3/0) [1/0]
+|   |   |   leak = no
+|   |   |   |   AtomicRadiusMaxWeighted < 0.25
+|   |   |   |   |   AtomicRadiusMaxWeighted < 0.22
+|   |   |   |   |   |   hardnessMaxWeighted < 0.12
+|   |   |   |   |   |   |   orgavgpolMax < 8.07 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   orgavgpolMax >= 8.07
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.06 : 1 (2/0) [1/1]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.06 : 2 (2/0) [5/0]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.12
+|   |   |   |   |   |   |   time < 25
+|   |   |   |   |   |   |   |   Temp_max < 100
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax < 13.57 : 2 (11/0) [3/0]
+|   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 13.57
+|   |   |   |   |   |   |   |   |   |   pH < 4.5 : 2 (2/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   pH >= 4.5 : 1 (3/1) [1/0]
+|   |   |   |   |   |   |   |   Temp_max >= 100 : 1 (3/1) [6/1]
+|   |   |   |   |   |   |   time >= 25 : 2 (61/0) [28/4]
+|   |   |   |   |   AtomicRadiusMaxWeighted >= 0.22
+|   |   |   |   |   |   orgacc-waterdonratio < 0 : 2 (7/0) [1/0]
+|   |   |   |   |   |   orgacc-waterdonratio >= 0
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.24
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.36 : 1 (5/1) [2/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.36 : 2 (9/1) [6/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.24 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 1 (10/1) [5/2]
+|   |   |   |   AtomicRadiusMaxWeighted >= 0.25
+|   |   |   |   |   hardnessMaxWeighted < 3.8
+|   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.55
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 26.71
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.34
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax < 13.61 : 2 (12/1) [5/1]
+|   |   |   |   |   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 13.61 : 1 (4/1) [4/1]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17 : 2 (80.92/2.44) [37.31/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.34 : 2 (28.31/7) [9.44/4]
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 26.71
+|   |   |   |   |   |   |   |   |   Temp_max < 165 : 1 (9/2) [7/3]
+|   |   |   |   |   |   |   |   |   Temp_max >= 165 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.55 : 2 (59/0) [27/2]
+|   |   |   |   |   |   slowCool = no : 2 (253.77/6.56) [143.26/6]
+|   |   |   |   |   hardnessMaxWeighted >= 3.8
+|   |   |   |   |   |   time < 36 : 2 (67/8) [34/4]
+|   |   |   |   |   |   time >= 36
+|   |   |   |   |   |   |   hardnessMaxWeighted < 3.88 : 1 (11/1) [3/1]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 3.88 : 2 (10/3) [8/3]
+|   |   orgmaximalprojectionsizeMin >= 5.84
+|   |   |   orghbdamsaccMax < 0.19
+|   |   |   |   Temp_max < 107.5 : 2 (78/2) [40/2]
+|   |   |   |   Temp_max >= 107.5
+|   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   orgmaximalprojectionradiusMax < 6.69
+|   |   |   |   |   |   |   time < 36
+|   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.25 : 1 (4/2) [1/0]
+|   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.25 : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   |   Na = no : 1 (14/3) [7/1]
+|   |   |   |   |   |   |   time >= 36 : 2 (27/2) [17/1]
+|   |   |   |   |   |   orgmaximalprojectionradiusMax >= 6.69
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.36 : 1 (9/0) [3/1]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.36
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.61 : 2 (9/3) [5/1]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.61 : 1 (5/0) [0/0]
+|   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (36/0) [14/0]
+|   |   |   orghbdamsaccMax >= 0.19
+|   |   |   |   pH < 5.5
+|   |   |   |   |   oxlikevanderwaalsMax < 215.86
+|   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   Temp_max < 100
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.51 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.51 : 2 (5/2) [1/0]
+|   |   |   |   |   |   |   Temp_max >= 100 : 1 (7/0) [8/4]
+|   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.38 : 2 (6/0) [1/0]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.38 : 1 (5/1) [7/3]
+|   |   |   |   |   oxlikevanderwaalsMax >= 215.86 : 2 (11/2) [2/1]
+|   |   |   |   pH >= 5.5 : 1 (10/0) [4/0]
+
+Size of the tree : 179
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes : 1 (60/6) [29/0]
+|   P5 = no
+|   |   orgASA+Min < 241.78
+|   |   |   Temp_max < 145
+|   |   |   |   hardnessMaxWeighted < 3.77
+|   |   |   |   |   hardnessMaxWeighted < 3.75
+|   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.49 : 1 (60/9) [30/8]
+|   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.49
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax < 13.18 : 2 (4/0) [5/2]
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 13.18
+|   |   |   |   |   |   |   |   time < 17.5 : 1 (3/0) [2/2]
+|   |   |   |   |   |   |   |   time >= 17.5
+|   |   |   |   |   |   |   |   |   leak = yes : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   leak = no
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaMax < 39.61 : 1 (4/1) [7/1]
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaMax >= 39.61 : 2 (3/0) [1/0]
+|   |   |   |   |   hardnessMaxWeighted >= 3.75 : 1 (20/0) [11/2]
+|   |   |   |   hardnessMaxWeighted >= 3.77 : 2 (26/10) [4/2]
+|   |   |   Temp_max >= 145
+|   |   |   |   orgminimalprojectionareaMax < 25.53 : 2 (16/0) [10/1]
+|   |   |   |   orgminimalprojectionareaMax >= 25.53 : 1 (4/2) [5/2]
+|   |   orgASA+Min >= 241.78
+|   |   |   AtomicRadiusMinWeighted < 0.04 : 1 (5/0) [2/0]
+|   |   |   AtomicRadiusMinWeighted >= 0.04
+|   |   |   |   time < 7 : 1 (3/0) [1/0]
+|   |   |   |   time >= 7
+|   |   |   |   |   orgavgpolMax < 10.44 : 2 (9/0) [2/1]
+|   |   |   |   |   orgavgpolMax >= 10.44
+|   |   |   |   |   |   S = yes : 1 (5/1) [4/0]
+|   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax < 26.15
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 2 (6/0) [1/1]
+|   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.17
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax < 104.25
+|   |   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg < 3.95
+|   |   |   |   |   |   |   |   |   |   |   |   Temp_max < 135 : 1 (2/0) [1/1]
+|   |   |   |   |   |   |   |   |   |   |   |   Temp_max >= 135
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max < 145 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   Temp_max >= 145 : 1 (3/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   orghbdamsdonGeomAvg >= 3.95 : 2 (8/0) [4/1]
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 104.25 : 1 (6/0) [2/0]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.17 : 2 (38/8) [21/4]
+|   |   |   |   |   |   |   orgavgpol_pHdependentMax >= 26.15 : 2 (7/0) [4/0]
+time >= 21.5
+|   PaulingElectronegMean < 1.97
+|   |   orgrefractivityArithAvg < 39.52
+|   |   |   orgpolarsurfaceareaArithAvg < 52.99
+|   |   |   |   time < 92.5
+|   |   |   |   |   orgminimalprojectionareaMax < 27.12
+|   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.28
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.42
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.41
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.08
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax < 72.58 : 2 (34/12) [24/6]
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 72.58 : 1 (6/0) [8/3]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.08
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax < 42.21
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.11 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.11 : 2 (34/4) [17/1]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaMax >= 42.21 : 2 (22/0) [13/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.41 : 1 (5/0) [2/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.42
+|   |   |   |   |   |   |   |   pH < 1.5 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   pH >= 1.5 : 2 (49/0) [13/2]
+|   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.28
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.2
+|   |   |   |   |   |   |   |   orgrefractivityArithAvg < 21.05 : 2 (6/0) [5/3]
+|   |   |   |   |   |   |   |   orgrefractivityArithAvg >= 21.05
+|   |   |   |   |   |   |   |   |   time < 42
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.05 : 1 (9/1) [4/2]
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.05
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 1.63
+|   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax < 19.83 : 1 (3/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax >= 19.83 : 2 (10/1) [7/1]
+|   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 1.63 : 1 (12/4) [9/3]
+|   |   |   |   |   |   |   |   |   time >= 42 : 1 (23/1) [14/7]
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.2
+|   |   |   |   |   |   |   |   pH < 1.5 : 1 (5/0) [1/0]
+|   |   |   |   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.78 : 2 (15/0) [16/5]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.78
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax < 10.44
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.79 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.79 : 1 (7/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 10.44 : 2 (13/1) [4/1]
+|   |   |   |   |   orgminimalprojectionareaMax >= 27.12
+|   |   |   |   |   |   time < 36 : 2 (6/0) [1/0]
+|   |   |   |   |   |   time >= 36 : 1 (40/4) [14/1]
+|   |   |   |   time >= 92.5 : 2 (54/1) [26/2]
+|   |   |   orgpolarsurfaceareaArithAvg >= 52.99
+|   |   |   |   orgminimalprojectionareaMin < 21.12
+|   |   |   |   |   orghbdamsaccMax < 6.73
+|   |   |   |   |   |   orgvanderwaalsMax < 210.16
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.2 : 1 (8/0) [5/0]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.2 : 2 (12/2) [2/0]
+|   |   |   |   |   |   orgvanderwaalsMax >= 210.16
+|   |   |   |   |   |   |   hardnessMaxWeighted < 0.08 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   hardnessMaxWeighted >= 0.08
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.19
+|   |   |   |   |   |   |   |   |   pH < 4 : 1 (14/0) [6/0]
+|   |   |   |   |   |   |   |   |   pH >= 4
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.24 : 2 (3/0) [5/1]
+|   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.24 : 1 (12/1) [12/3]
+|   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.19 : 1 (30/0) [10/0]
+|   |   |   |   |   orghbdamsaccMax >= 6.73 : 2 (5/0) [5/1]
+|   |   |   |   orgminimalprojectionareaMin >= 21.12
+|   |   |   |   |   AtomicRadiusMaxWeighted < 0.22
+|   |   |   |   |   |   hardnessMaxWeighted < 0.11 : 1 (4/0) [5/1]
+|   |   |   |   |   |   hardnessMaxWeighted >= 0.11 : 2 (16/0) [7/1]
+|   |   |   |   |   AtomicRadiusMaxWeighted >= 0.22
+|   |   |   |   |   |   hardnessMaxWeighted < 1.84 : 1 (13/1) [4/1]
+|   |   |   |   |   |   hardnessMaxWeighted >= 1.84 : 2 (8/1) [4/0]
+|   |   orgrefractivityArithAvg >= 39.52
+|   |   |   slowCool = yes : 2 (42.8/0) [18.95/0]
+|   |   |   slowCool = no : 1 (2.2/0.2) [2.05/0.05]
+|   PaulingElectronegMean >= 1.97
+|   |   pH < 6.5
+|   |   |   leak = yes : 1 (10/1) [10/2]
+|   |   |   leak = no
+|   |   |   |   hardnessMaxWeighted < 3.83
+|   |   |   |   |   F = yes
+|   |   |   |   |   |   pH < 1.5 : 1 (6/0) [0/0]
+|   |   |   |   |   |   pH >= 1.5
+|   |   |   |   |   |   |   orgacc-waterdonratio < 0 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   orgacc-waterdonratio >= 0 : 2 (12/3) [9/2]
+|   |   |   |   |   F = no
+|   |   |   |   |   |   orgmaximalprojectionsizeMin < 5.66
+|   |   |   |   |   |   |   orgASA_PMax < 26.2 : 2 (57/0) [30/0]
+|   |   |   |   |   |   |   orgASA_PMax >= 26.2
+|   |   |   |   |   |   |   |   hardnessMaxWeighted < 0.39
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted < 0.21 : 2 (64/3) [22/1]
+|   |   |   |   |   |   |   |   |   AtomicRadiusMaxWeighted >= 0.21
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax < 9.47 : 2 (7/2) [3/1]
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 9.47 : 1 (7/0) [1/0]
+|   |   |   |   |   |   |   |   hardnessMaxWeighted >= 0.39 : 2 (381/22) [170/17]
+|   |   |   |   |   |   orgmaximalprojectionsizeMin >= 5.66
+|   |   |   |   |   |   |   orgacc-waterdonratio < -0.01 : 1 (8/1) [5/4]
+|   |   |   |   |   |   |   orgacc-waterdonratio >= -0.01
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted < 0.46
+|   |   |   |   |   |   |   |   |   orgASA_PMax < 96.37
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax < 77.22
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   |   |   |   |   |   Temp_max < 107.5 : 2 (39/1) [21/1]
+|   |   |   |   |   |   |   |   |   |   |   |   Temp_max >= 107.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   pH < 3.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH < 1.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.64 : 2 (11/1) [9/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.64 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH >= 1.5 : 2 (21/0) [6/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   pH >= 3.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 2.05 : 2 (14/2) [9/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 2.05 : 1 (7/0) [5/1]
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 77.22
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted < 0
+|   |   |   |   |   |   |   |   |   |   |   |   time < 54 : 1 (11/0) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 54 : 2 (5/2) [6/2]
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted >= 0 : 2 (16/2) [11/4]
+|   |   |   |   |   |   |   |   |   orgASA_PMax >= 96.37 : 2 (48/2) [34/1]
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted >= 0.46 : 2 (30/0) [13/0]
+|   |   |   |   hardnessMaxWeighted >= 3.83
+|   |   |   |   |   F = yes : 2 (11/0) [8/0]
+|   |   |   |   |   F = no
+|   |   |   |   |   |   PaulingElectronegMinWeighted < 0 : 1 (4/0) [1/0]
+|   |   |   |   |   |   PaulingElectronegMinWeighted >= 0
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted < 0.63
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaMax < 21.17 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaMax >= 21.17
+|   |   |   |   |   |   |   |   |   Temp_max < 97.5
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax < 56.12 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   orgASA_PMax >= 56.12 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   Temp_max >= 97.5 : 1 (9/0) [4/0]
+|   |   |   |   |   |   |   AtomicRadiusMeanWeighted >= 0.63
+|   |   |   |   |   |   |   |   pH < 4.5
+|   |   |   |   |   |   |   |   |   orgASA_PMax < 17 : 1 (10/4) [4/3]
+|   |   |   |   |   |   |   |   |   orgASA_PMax >= 17
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax < 11.86
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax < 11.73
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 4.47 : 2 (17/0) [11/1]
+|   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 4.47
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted < 4.56 : 1 (6/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted >= 4.56 : 2 (8/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 11.73 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax >= 11.86 : 2 (16/0) [15/1]
+|   |   |   |   |   |   |   |   pH >= 4.5 : 1 (3/0) [0/0]
+|   |   pH >= 6.5
+|   |   |   orgminimalprojectionradiusMax < 3.42
+|   |   |   |   AtomicRadiusMinWeighted < 0.17 : 2 (13/5) [3/1]
+|   |   |   |   AtomicRadiusMinWeighted >= 0.17
+|   |   |   |   |   hardnessMaxWeighted < 0.77 : 2 (2/0) [1/0]
+|   |   |   |   |   hardnessMaxWeighted >= 0.77 : 1 (32/3) [12/5]
+|   |   |   orgminimalprojectionradiusMax >= 3.42 : 2 (31/4) [15/1]
+
+Size of the tree : 195
+
+
+
+Time taken to build model: 0.91 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         931               82.1712 %
+Incorrectly Classified Instances       202               17.8288 %
+Kappa statistic                          0.5166
+Mean absolute error                      0.2549
+Root mean squared error                  0.3594
+Relative absolute error                 62.8354 %
+Root relative squared error             81.0186 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.574     0.088      0.704     0.574     0.633      0.847    1
+                 0.912     0.426      0.854     0.912     0.882      0.847    2
+Weighted Avg.    0.822     0.335      0.814     0.822     0.816      0.847
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 174 129 |   a = 1
+  73 757 |   b = 2
+

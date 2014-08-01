@@ -1,0 +1,41 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.ClassifierSubsetEval -B weka.classifiers.bayes.NaiveBayesUpdateable -T -H "Click to set hold out or test instances" --
+Search:weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     rec_system
+Instances:    3778
+Attributes:   274
+[list of attributes omitted]
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 3996
+	Merit of best subset found:    0.516
+
+Attribute Subset Evaluator (supervised, Class (nominal): 274 outcome):
+	Classifier Subset Evaluator
+	Learning scheme: weka.classifiers.bayes.NaiveBayesUpdateable
+	Scheme options:    
+	Hold out/test set: Training data
+	Accuracy estimation: classification error
+
+Selected attributes: 5,16,25,32,80,170,172,174,180,230 : 10
+                     leak
+                     orgminimalprojectionradiusMax
+                     orgASA_PMax
+                     orgmaximalprojectionradiusMin
+                     orgASA-GeomAvg
+                     Te
+                     K
+                     F
+                     S
+                     hardnessMax
+

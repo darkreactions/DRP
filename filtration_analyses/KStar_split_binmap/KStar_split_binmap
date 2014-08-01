@@ -1,0 +1,50 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.ClassifierSubsetEval -B weka.classifiers.lazy.KStar -H /home/jserota/weka_dummy_tests/terminal_test/CP_rxns_test.arff -- -B 20 -M a
+Search:weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     rec_system
+Instances:    2645
+Attributes:   274
+[list of attributes omitted]
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 6283
+	Merit of best subset found:    0.154
+
+Attribute Subset Evaluator (supervised, Class (nominal): 274 outcome):
+	Classifier Subset Evaluator
+	Learning scheme: weka.classifiers.lazy.KStar
+	Scheme options: -B 20 -M a  
+	Hold out/test set: /home/jserota/weka_dummy_tests/terminal_test/CP_rxns_test.arff
+	Accuracy estimation: classification error
+
+Selected attributes: 1,2,3,5,18,26,63,83,99,100,103,170,172,174,180,182,234,255,261 : 19
+                     Temp_max
+                     time
+                     slowCool
+                     leak
+                     orgavgpol_pHdependentMax
+                     orgpolarsurfaceareaMax
+                     orgASA_PArithAvg
+                     orgpolarsurfaceareaGeomAvg
+                     oxlikeASA-Max
+                     oxlikeASA_HMax
+                     oxlikehbdamsaccMax
+                     Te
+                     K
+                     F
+                     S
+                     Se
+                     PaulingElectronegMin
+                     AtomicRadiusMaxWeighted
+                     AtomicRadiusMinWeighted
+

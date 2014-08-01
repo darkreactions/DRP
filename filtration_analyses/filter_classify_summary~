@@ -1,0 +1,74 @@
+Unfiltered classified by:
+	   NBayes .... 58.3407% accurate
+	 Logistic .... 76.4342% accurate
+	      SMO .... 80.053%  accurate
+	    KStar .... 80.053%  accurate
+	  Bagging .... 81.4651% accurate
+	      J48 .... 82.083%  accurate
+Logistic classified by:
+           NBayes .... 72.4625% accurate
+         Logistic .... 78.376%  accurate
+              SMO .... 75.4634% accurate
+            KStar .... 80.8473% accurate
+          Bagging .... 80.2295% accurate
+              J48 .... 80.759%  accurate
+SMO classified by:
+           NBayes .... 68.579%  accurate
+         Logistic .... 73.3451% accurate
+	      SMO .... 79.9647% accurate
+	    KStar .... 82.5243% accurate
+	  Bagging .... 83.9365% accurate
+	      J48 .... 83.4069% accurate
+KStar classified by:
+           NBayes .... 67.1668% accurate
+	 Logistic .... 73.1686% accurate
+	      SMO .... 77.4051% accurate
+            KStar .... 84.5543% accurate
+	  Bagging .... 82.8773% accurate
+              J48 .... 83.1421% accurate
+
+
+Bagging 
+Selected attributes: 2,58,64,103,168,180,197,238 : 8
+                     time
+                     orgvanderwaalsArithAvg
+                     orgpolarsurfaceareaArithAvg
+                     oxlikehbdamsaccMax
+                     Na
+                     S
+                     P5
+                     IonizationMean
+   classified by:
+           NBayes .... 73.5216% accurate
+	 Logistic .... 74.316%  accurate
+	      SMO .... 74.669%  accurate
+	    KStar .... 82.2595% accurate
+          Bagging .... 83.0538% accurate
+	      J48 .... 80.8473% accurate
+
+
+J48 
+Selected attributes: 39,41,85,96,164,240,254,267 : 8
+                     orgvanderwaalsMin
+                     orgASA+Min
+                     orghbdamsdonGeomAvg
+                     oxlikevanderwaalsMax
+                     orgacc-waterdonratio
+                     PaulingElectronegMean
+                     hardnessMaxWeighted
+                     AtomicRadiusMeanWeighted
+   classified by:
+    	   NBayes .... 69.1968% accurate
+	 Logistic .... 72.1977% accurate
+	      SMO .... 73.2568% accurate
+	    KStar .... 80.4943% accurate
+	  Bagging .... 80.5825% accurate
+	      J48 .... 83.2304% accurate
+
+Amalgam Filter classified by:
+	   NBayes .... 69.4616% accurate
+	 Logistic .... 74.316%  accurate
+	      SMO .... 79.0821% accurate
+	    KStar .... 80.1412% accurate
+	  Bagging .... 82.1712% accurate
+	      J48 .... 83.1421% accurate

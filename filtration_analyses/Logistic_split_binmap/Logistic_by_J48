@@ -1,0 +1,333 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -C 0.25 -M 2
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R4-5,7,10,13,15-16,20,25,27,33-35,44,49,71,100,170,174,180,185,188,228,239,258,261,274
+Instances:    2645
+Attributes:   27
+              pH
+              leak
+              numberOrg
+              orgavgpolMax
+              orgmaximalprojectionradiusMax
+              orgminimalprojectionareaMax
+              orgminimalprojectionradiusMax
+              orgvanderwaalsMax
+              orgASA_PMax
+              orghbdamsaccMax
+              orgmaximalprojectionsizeMin
+              orgminimalprojectionareaMin
+              orgminimalprojectionradiusMin
+              orgASA_PMin
+              orgrefractivityArithAvg
+              orgmaximalprojectionsizeGeomAvg
+              oxlikeASA_HMax
+              Te
+              F
+              S
+              Cl
+              Cr
+              PaulingElectronegMax
+              EAMean
+              PaulingElectronegMinWeighted
+              AtomicRadiusMinWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+leak = yes
+|   orgASA_PMax <= 53.16
+|   |   pH <= 4
+|   |   |   orgrefractivityArithAvg <= 36.68: 1 (36.0/7.0)
+|   |   |   orgrefractivityArithAvg > 36.68: 2 (4.0/1.0)
+|   |   pH > 4: 2 (6.56/0.27)
+|   orgASA_PMax > 53.16: 1 (18.02)
+leak = no
+|   PaulingElectronegMinWeighted <= 0.0006
+|   |   Te = yes
+|   |   |   pH <= 7: 1 (84.0/18.0)
+|   |   |   pH > 7
+|   |   |   |   Cl = yes: 1 (3.0)
+|   |   |   |   Cl = no: 2 (9.0/1.0)
+|   |   Te = no
+|   |   |   PaulingElectronegMinWeighted <= 0.0003
+|   |   |   |   orghbdamsaccMax <= 1.42: 1 (10.0/1.0)
+|   |   |   |   orghbdamsaccMax > 1.42
+|   |   |   |   |   AtomicRadiusMinWeighted <= 0.0243: 1 (5.0/2.0)
+|   |   |   |   |   AtomicRadiusMinWeighted > 0.0243: 2 (2.0)
+|   |   |   PaulingElectronegMinWeighted > 0.0003
+|   |   |   |   S = yes: 1 (3.0/1.0)
+|   |   |   |   S = no
+|   |   |   |   |   pH <= 2: 2 (8.0)
+|   |   |   |   |   pH > 2
+|   |   |   |   |   |   orgmaximalprojectionsizeGeomAvg <= 4.94: 1 (3.0)
+|   |   |   |   |   |   orgmaximalprojectionsizeGeomAvg > 4.94
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.0366
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax <= 28.4: 2 (6.0/1.0)
+|   |   |   |   |   |   |   |   orgminimalprojectionareaMax > 28.4: 1 (3.0)
+|   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.0366: 2 (10.0)
+|   PaulingElectronegMinWeighted > 0.0006
+|   |   orgASA_PMax <= 169.28
+|   |   |   Cr = yes
+|   |   |   |   PaulingElectronegMax <= 2.1
+|   |   |   |   |   pH <= 1
+|   |   |   |   |   |   S = yes: 2 (2.0)
+|   |   |   |   |   |   S = no: 1 (5.0/1.0)
+|   |   |   |   |   pH > 1
+|   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0017: 1 (16.0/2.0)
+|   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0017
+|   |   |   |   |   |   |   S = yes: 1 (3.0)
+|   |   |   |   |   |   |   S = no: 2 (9.0/3.0)
+|   |   |   |   PaulingElectronegMax > 2.1
+|   |   |   |   |   orgmaximalprojectionradiusMax <= 5.4
+|   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0013
+|   |   |   |   |   |   |   orghbdamsaccMax <= 0: 1 (4.0)
+|   |   |   |   |   |   |   orghbdamsaccMax > 0
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.0851: 1 (2.0)
+|   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.0851: 2 (6.0/2.0)
+|   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0013: 2 (6.0/1.0)
+|   |   |   |   |   orgmaximalprojectionradiusMax > 5.4: 2 (5.0)
+|   |   |   Cr = no
+|   |   |   |   orgmaximalprojectionradiusMax <= 3.57
+|   |   |   |   |   orgASA_PMin <= 14.86: 2 (8.0/1.0)
+|   |   |   |   |   orgASA_PMin > 14.86
+|   |   |   |   |   |   pH <= 1
+|   |   |   |   |   |   |   PaulingElectronegMax <= 2.1: 1 (3.0)
+|   |   |   |   |   |   |   PaulingElectronegMax > 2.1
+|   |   |   |   |   |   |   |   oxlikeASA_HMax <= -1: 2 (5.0/1.0)
+|   |   |   |   |   |   |   |   oxlikeASA_HMax > -1
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0017: 1 (38.0/7.0)
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0017
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0019: 2 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0019
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.2095: 1 (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.2095: 2 (4.0)
+|   |   |   |   |   |   pH > 1
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0017: 2 (28.0/5.0)
+|   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0017: 1 (29.0/9.0)
+|   |   |   |   orgmaximalprojectionradiusMax > 3.57
+|   |   |   |   |   orgvanderwaalsMax <= 310.93
+|   |   |   |   |   |   orgminimalprojectionareaMax <= 30.5
+|   |   |   |   |   |   |   PaulingElectronegMax <= 2.1
+|   |   |   |   |   |   |   |   orgASA_PMin <= 77.71
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax <= 218.76
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax <= 25.84
+|   |   |   |   |   |   |   |   |   |   |   Cl = yes: 2 (5.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   Cl = no
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1532: 1 (13.9/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1532: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax > 25.84: 2 (4.0)
+|   |   |   |   |   |   |   |   |   orgvanderwaalsMax > 218.76
+|   |   |   |   |   |   |   |   |   |   EAMean <= 0
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax <= 11.71
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0172
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0022: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0022: 1 (11.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0172: 2 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax > 11.71: 2 (8.0/1.0)
+|   |   |   |   |   |   |   |   |   |   EAMean > 0
+|   |   |   |   |   |   |   |   |   |   |   Te = yes
+|   |   |   |   |   |   |   |   |   |   |   |   pH <= 5
+|   |   |   |   |   |   |   |   |   |   |   |   |   pH <= 4: 1 (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   pH > 4
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax <= 273.55: 2 (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax > 273.55
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0009: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0009: 1 (6.0)
+|   |   |   |   |   |   |   |   |   |   |   |   pH > 5
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgrefractivityArithAvg <= 20.5: 2 (50.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgrefractivityArithAvg > 20.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH <= 9: 2 (148.56/27.8)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH > 9
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax <= 28.75: 2 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax > 28.75
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax <= 5.75: 1 (7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax > 5.75: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   Te = no: 2 (86.0/5.0)
+|   |   |   |   |   |   |   |   orgASA_PMin > 77.71
+|   |   |   |   |   |   |   |   |   orghbdamsaccMax <= 6.99
+|   |   |   |   |   |   |   |   |   |   pH <= 6
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PMin <= 103.38
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax <= 4.57
+|   |   |   |   |   |   |   |   |   |   |   |   |   Te = yes: 2 (3.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   Te = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0021: 1 (9.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0021
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0126: 2 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0126: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax > 4.57: 1 (18.0)
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PMin > 103.38: 2 (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   pH > 6
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PMax <= 96.11: 2 (7.0)
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PMax > 96.11
+|   |   |   |   |   |   |   |   |   |   |   |   oxlikeASA_HMax <= 0
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax <= 96.39
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0125
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Te = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.075: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.075: 2 (9.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Te = no: 1 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0125: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax > 96.39: 1 (6.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   oxlikeASA_HMax > 0: 2 (2.0)
+|   |   |   |   |   |   |   |   |   orghbdamsaccMax > 6.99: 2 (8.0)
+|   |   |   |   |   |   |   PaulingElectronegMax > 2.1
+|   |   |   |   |   |   |   |   pH <= 6
+|   |   |   |   |   |   |   |   |   orgavgpolMax <= 9.06
+|   |   |   |   |   |   |   |   |   |   oxlikeASA_HMax <= -1
+|   |   |   |   |   |   |   |   |   |   |   F = yes: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   F = no
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax <= 4.21
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0013: 1 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0013: 2 (74.0/11.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax > 4.21: 2 (136.0/13.0)
+|   |   |   |   |   |   |   |   |   |   oxlikeASA_HMax > -1
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax <= 7.08: 2 (8.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   orgavgpolMax > 7.08: 1 (35.0/9.0)
+|   |   |   |   |   |   |   |   |   orgavgpolMax > 9.06
+|   |   |   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0035: 2 (151.0/19.0)
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0035
+|   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax <= 3.49: 1 (9.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax > 3.49: 2 (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   S = no: 2 (701.0/72.0)
+|   |   |   |   |   |   |   |   pH > 6
+|   |   |   |   |   |   |   |   |   PaulingElectronegMax <= 2.16: 2 (12.0)
+|   |   |   |   |   |   |   |   |   PaulingElectronegMax > 2.16
+|   |   |   |   |   |   |   |   |   |   orgrefractivityArithAvg <= 36.68
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax <= 3.42
+|   |   |   |   |   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0033
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax <= 9.73: 2 (7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax > 9.73
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.3352: 2 (3.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.3352: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0033: 1 (6.0)
+|   |   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0015: 2 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0015: 1 (37.0/13.0)
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax > 3.42
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0018: 1 (6.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0018: 2 (11.0)
+|   |   |   |   |   |   |   |   |   |   orgrefractivityArithAvg > 36.68: 2 (7.0)
+|   |   |   |   |   |   orgminimalprojectionareaMax > 30.5
+|   |   |   |   |   |   |   Te = yes: 1 (10.0)
+|   |   |   |   |   |   |   Te = no
+|   |   |   |   |   |   |   |   PaulingElectronegMax <= 2.16: 2 (10.0)
+|   |   |   |   |   |   |   |   PaulingElectronegMax > 2.16
+|   |   |   |   |   |   |   |   |   orgavgpolMax <= 18.72
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1656: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1656: 2 (7.0/1.0)
+|   |   |   |   |   |   |   |   |   orgavgpolMax > 18.72: 1 (2.0)
+|   |   |   |   |   orgvanderwaalsMax > 310.93
+|   |   |   |   |   |   pH <= 4
+|   |   |   |   |   |   |   Te = yes: 1 (2.0)
+|   |   |   |   |   |   |   Te = no
+|   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   pH <= 2: 1 (4.0)
+|   |   |   |   |   |   |   |   |   pH > 2
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0035: 2 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0035: 1 (3.0)
+|   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax <= 22.55
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMax <= 1.88: 2 (3.0/1.0)
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMax > 1.88
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0017: 1 (8.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0017: 2 (3.0/1.0)
+|   |   |   |   |   |   |   |   |   orgminimalprojectionareaMax > 22.55: 2 (188.0/22.0)
+|   |   |   |   |   |   pH > 4
+|   |   |   |   |   |   |   orgavgpolMax <= 15.15
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax <= 3.33: 1 (39.0)
+|   |   |   |   |   |   |   |   orgminimalprojectionradiusMax > 3.33
+|   |   |   |   |   |   |   |   |   orgavgpolMax <= 13.33
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.1461: 2 (3.95)
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.1461
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0033: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0033: 2 (2.0)
+|   |   |   |   |   |   |   |   |   orgavgpolMax > 13.33
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0035
+|   |   |   |   |   |   |   |   |   |   |   orghbdamsaccMax <= 0.89: 2 (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   orghbdamsaccMax > 0.89: 1 (42.0/14.0)
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0035: 1 (8.0)
+|   |   |   |   |   |   |   orgavgpolMax > 15.15
+|   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax <= 7.85
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0043
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.0789: 2 (22.0/2.0)
+|   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.0789
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0025
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin <= 5.93
+|   |   |   |   |   |   |   |   |   |   |   |   |   Te = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.002: 2 (8.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.002
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH <= 11: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH > 11: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   Te = no: 1 (21.0/7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeMin > 5.93
+|   |   |   |   |   |   |   |   |   |   |   |   |   EAMean <= 91.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax <= 15.28: 2 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax > 15.28: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   EAMean > 91.5: 1 (33.0/7.0)
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0025
+|   |   |   |   |   |   |   |   |   |   |   |   numberOrg <= 1
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax <= 96.34
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH <= 6
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.003: 1 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.003
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.3758: 2 (9.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.3758: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH > 6: 2 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PMax > 96.34
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted <= 0.378: 2 (17.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMinWeighted > 0.378: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   numberOrg > 1: 1 (2.0)
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0043
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax <= 319.98: 1 (3.0/1.0)
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsMax > 319.98: 2 (54.0/2.0)
+|   |   |   |   |   |   |   |   orgmaximalprojectionradiusMax > 7.85
+|   |   |   |   |   |   |   |   |   numberOrg <= 1: 1 (13.0)
+|   |   |   |   |   |   |   |   |   numberOrg > 1: 2 (2.0)
+|   |   orgASA_PMax > 169.28
+|   |   |   F = yes: 1 (11.0)
+|   |   |   F = no
+|   |   |   |   orgminimalprojectionareaMin <= 17.02: 2 (3.0)
+|   |   |   |   orgminimalprojectionareaMin > 17.02
+|   |   |   |   |   orgASA_PMin <= 41.83
+|   |   |   |   |   |   PaulingElectronegMinWeighted <= 0.0033: 2 (7.0)
+|   |   |   |   |   |   PaulingElectronegMinWeighted > 0.0033: 1 (3.0)
+|   |   |   |   |   orgASA_PMin > 41.83: 1 (12.0)
+
+Number of Leaves  : 	131
+
+Size of the tree : 	261
+
+
+Time taken to build model: 0.11 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         915               80.759  %
+Incorrectly Classified Instances       218               19.241  %
+Kappa statistic                          0.4841
+Mean absolute error                      0.2556
+Root mean squared error                  0.3972
+Relative absolute error                 63.0077 %
+Root relative squared error             89.5448 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.564     0.104      0.665     0.564     0.611      0.769    1
+                 0.896     0.436      0.849     0.896     0.872      0.769    2
+Weighted Avg.    0.808     0.347      0.8       0.808     0.802      0.769
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 171 132 |   a = 1
+  86 744 |   b = 2
+

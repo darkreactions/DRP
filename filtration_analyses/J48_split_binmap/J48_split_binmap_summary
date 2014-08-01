@@ -1,0 +1,7 @@
+J48 classified by:
+    	   NBayes .... 69.1968% accurate
+	 Logistic .... 72.1977% accurate
+	      SMO .... 73.2568% accurate
+	    KStar .... 80.4943% accurate
+	  Bagging .... 80.5825% accurate
+	      J48 .... 83.2304% accurate

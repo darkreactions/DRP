@@ -1,0 +1,57 @@
+=== Run information ===
+
+Evaluator:    weka.attributeSelection.ClassifierSubsetEval -B weka.classifiers.functions.Logistic -H /home/jserota/weka_dummy_tests/terminal_test/CP_rxns_test.arff -- -R 1.0E-8 -M -1
+Search:weka.attributeSelection.BestFirst -D 1 -N 5
+Relation:     rec_system
+Instances:    2645
+Attributes:   274
+[list of attributes omitted]
+Evaluation mode:evaluate on all training data
+
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 9815
+	Merit of best subset found:    0.216
+
+Attribute Subset Evaluator (supervised, Class (nominal): 274 outcome):
+	Classifier Subset Evaluator
+	Learning scheme: weka.classifiers.functions.Logistic
+	Scheme options: -R 1.0E-8 -M -1  
+	Hold out/test set: /home/jserota/weka_dummy_tests/terminal_test/CP_rxns_test.arff
+	Accuracy estimation: classification error
+
+Selected attributes: 4,5,7,10,13,15,16,20,25,27,33,34,35,44,49,71,100,170,174,180,185,188,228,239,258,261 : 26
+                     pH
+                     leak
+                     numberOrg
+                     orgavgpolMax
+                     orgmaximalprojectionradiusMax
+                     orgminimalprojectionareaMax
+                     orgminimalprojectionradiusMax
+                     orgvanderwaalsMax
+                     orgASA_PMax
+                     orghbdamsaccMax
+                     orgmaximalprojectionsizeMin
+                     orgminimalprojectionareaMin
+                     orgminimalprojectionradiusMin
+                     orgASA_PMin
+                     orgrefractivityArithAvg
+                     orgmaximalprojectionsizeGeomAvg
+                     oxlikeASA_HMax
+                     Te
+                     F
+                     S
+                     Cl
+                     Cr
+                     PaulingElectronegMax
+                     EAMean
+                     PaulingElectronegMinWeighted
+                     AtomicRadiusMinWeighted
+

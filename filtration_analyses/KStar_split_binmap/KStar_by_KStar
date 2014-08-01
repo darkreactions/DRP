@@ -1,0 +1,63 @@
+=== Run information ===
+
+Scheme:weka.classifiers.lazy.KStar -B 20 -M a
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R1-3,5,18,26,63,83,99-100,103,170,172,174,180,182,234,255,261,274
+Instances:    2645
+Attributes:   20
+              Temp_max
+              time
+              slowCool
+              leak
+              orgavgpol_pHdependentMax
+              orgpolarsurfaceareaMax
+              orgASA_PArithAvg
+              orgpolarsurfaceareaGeomAvg
+              oxlikeASA-Max
+              oxlikeASA_HMax
+              oxlikehbdamsaccMax
+              Te
+              K
+              F
+              S
+              Se
+              PaulingElectronegMin
+              AtomicRadiusMaxWeighted
+              AtomicRadiusMinWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+KStar Beta Verion (0.1b).
+Copyright (c) 1995-97 by Len Trigg (trigg@cs.waikato.ac.nz).
+Java port to Weka by Abdelaziz Mahoui (am14@cs.waikato.ac.nz).
+
+KStar options : -B 20 -M a  
+
+Time taken to build model: 0 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         958               84.5543 %
+Incorrectly Classified Instances       175               15.4457 %
+Kappa statistic                          0.5987
+Mean absolute error                      0.1931
+Root mean squared error                  0.3627
+Relative absolute error                 47.5994 %
+Root relative squared error             81.7587 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.683     0.095      0.724     0.683     0.703      0.86     1
+                 0.905     0.317      0.887     0.905     0.896      0.86     2
+Weighted Avg.    0.846     0.258      0.843     0.846     0.844      0.86 
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 207  96 |   a = 1
+  79 751 |   b = 2
+

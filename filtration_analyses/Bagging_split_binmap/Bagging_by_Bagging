@@ -1,0 +1,1646 @@
+=== Run information ===
+
+Scheme:weka.classifiers.meta.Bagging -P 100 -S 1 -I 10 -W weka.classifiers.trees.REPTree -- -M 2 -V 0.001 -N 3 -S 1 -L -1
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R2,58,64,103,168,180,197,238,274
+Instances:    2645
+Attributes:   9
+              time
+              orgvanderwaalsArithAvg
+              orgpolarsurfaceareaArithAvg
+              oxlikehbdamsaccMax
+              Na
+              S
+              P5
+              IonizationMean
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+All the base classifiers: 
+
+
+REPTree
+============
+
+time < 20.5
+|   P5 = yes : 1 (64/8) [31/1]
+|   P5 = no
+|   |   orgvanderwaalsArithAvg < 238.16
+|   |   |   time < 16.5 : 1 (11/0) [5/0]
+|   |   |   time >= 16.5
+|   |   |   |   orgvanderwaalsArithAvg < 206.75 : 2 (7/1) [5/1]
+|   |   |   |   orgvanderwaalsArithAvg >= 206.75
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 21.05 : 1 (31/13) [8/4]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 21.05
+|   |   |   |   |   |   time < 17.5 : 1 (8/0) [4/1]
+|   |   |   |   |   |   time >= 17.5
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 208.7 : 2 (3/1) [2/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 208.7 : 1 (11/0) [8/2]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 44.25 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 44.25 : 1 (17/7) [9/3]
+|   |   orgvanderwaalsArithAvg >= 238.16
+|   |   |   orgvanderwaalsArithAvg < 274.52 : 2 (38/3) [10/5]
+|   |   |   orgvanderwaalsArithAvg >= 274.52
+|   |   |   |   orgpolarsurfaceareaArithAvg < 44.25
+|   |   |   |   |   time < 17.5 : 1 (5/1) [0/0]
+|   |   |   |   |   time >= 17.5
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 287.89
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.65 : 2 (12/5) [5/2]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.65 : 1 (2/0) [1/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 287.89 : 2 (20/0) [18/3]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 44.25
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 59.12 : 1 (31/8) [13/7]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 59.12
+|   |   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 401.31
+|   |   |   |   |   |   |   |   time < 19 : 2 (8/3) [5/2]
+|   |   |   |   |   |   |   |   time >= 19 : 1 (8/2) [4/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 401.31 : 2 (2/0) [1/0]
+|   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (9/0) [4/0]
+time >= 20.5
+|   time < 77.5
+|   |   time < 49
+|   |   |   time < 25
+|   |   |   |   IonizationMean < 760.25
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 48.09
+|   |   |   |   |   |   S = yes : 1 (23/7) [9/4]
+|   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 14.97 : 2 (12/0) [5/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 14.97
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 289.52 : 2 (84/18) [39/11]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 289.52
+|   |   |   |   |   |   |   |   |   IonizationMean < 651.4 : 2 (21/5) [3/1]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 651.4 : 1 (8/2) [9/3]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 48.09
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 60.39
+|   |   |   |   |   |   |   IonizationMean < 614.85 : 2 (5/2) [1/0]
+|   |   |   |   |   |   |   IonizationMean >= 614.85 : 1 (55/9) [37/8]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 60.39
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 333.9
+|   |   |   |   |   |   |   |   IonizationMean < 700.08 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   IonizationMean >= 700.08
+|   |   |   |   |   |   |   |   |   P5 = yes : 1 (7/3) [3/0]
+|   |   |   |   |   |   |   |   |   P5 = no : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 333.9 : 2 (3/0) [1/0]
+|   |   |   |   IonizationMean >= 760.25
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 63.56
+|   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 201.97 : 1 (6/1) [5/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 201.97
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 276.05 : 2 (118/6) [63/3]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 276.05
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 32.65 : 2 (54/6) [39/2]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 32.65
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 59.12
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 292.98 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 292.98
+|   |   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 371.21 : 2 (13/6) [10/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 371.21 : 1 (6/2) [5/2]
+|   |   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (8/0) [4/1]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 59.12 : 2 (7/0) [0/0]
+|   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 312.68
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 263.73
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 233.3 : 2 (38/10) [18/4]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 233.3
+|   |   |   |   |   |   |   |   |   |   S = yes : 2 (3/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   S = no : 1 (18/4) [8/2]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 263.73 : 2 (108/17) [39/8]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 312.68
+|   |   |   |   |   |   |   |   S = yes : 1 (9/1) [3/1]
+|   |   |   |   |   |   |   |   S = no : 2 (4/1) [6/2]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 63.56 : 2 (53/1) [30/0]
+|   |   |   time >= 25
+|   |   |   |   Na = yes
+|   |   |   |   |   orgvanderwaalsArithAvg < 287.89
+|   |   |   |   |   |   time < 37 : 2 (5/0) [1/0]
+|   |   |   |   |   |   time >= 37 : 1 (20/6) [10/4]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 287.89 : 2 (12/0) [3/0]
+|   |   |   |   Na = no
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 55.84
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41 : 2 (45/0) [18/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 359.45
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 293.88
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 291.59 : 2 (170/13) [82/11]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 291.59 : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 293.88 : 2 (58/1) [30/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 359.45 : 2 (48/9) [27/6]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 55.84
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 267.37
+|   |   |   |   |   |   |   S = yes : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   S = no : 1 (8/0) [6/2]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 267.37 : 2 (12/3) [7/1]
+|   |   time >= 49
+|   |   |   IonizationMean < 778.03
+|   |   |   |   oxlikehbdamsaccMax < 9.15
+|   |   |   |   |   orgvanderwaalsArithAvg < 240.68
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 219.08 : 1 (21/2) [4/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 219.08 : 2 (28/3) [21/6]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 240.68
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 365.37
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 312.68
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 300.54
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 20.25 : 1 (11/5) [7/1]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 20.25
+|   |   |   |   |   |   |   |   |   |   time < 66
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 277.36
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 259.46 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 259.46 : 2 (5/2) [4/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 277.36 : 1 (11/1) [7/2]
+|   |   |   |   |   |   |   |   |   |   time >= 66 : 1 (13/0) [3/1]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 300.54 : 2 (3/0) [4/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 312.68 : 1 (40/3) [19/2]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 365.37
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 407.29 : 2 (6/0) [1/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 407.29 : 1 (2/1) [3/1]
+|   |   |   |   oxlikehbdamsaccMax >= 9.15 : 2 (14/2) [3/0]
+|   |   |   IonizationMean >= 778.03
+|   |   |   |   oxlikehbdamsaccMax < 9.52
+|   |   |   |   |   S = yes
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 295.28 : 2 (15/5) [4/1]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 295.28 : 1 (5/0) [5/2]
+|   |   |   |   |   S = no
+|   |   |   |   |   |   time < 55
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 17.33 : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 17.33 : 2 (11/4) [8/2]
+|   |   |   |   |   |   time >= 55 : 2 (58/8) [28/6]
+|   |   |   |   oxlikehbdamsaccMax >= 9.52 : 1 (3/0) [1/0]
+|   time >= 77.5
+|   |   IonizationMean < 668.1
+|   |   |   orgpolarsurfaceareaArithAvg < 42.48
+|   |   |   |   S = yes : 1 (3/0) [2/0]
+|   |   |   |   S = no : 2 (16/0) [6/0]
+|   |   |   orgpolarsurfaceareaArithAvg >= 42.48
+|   |   |   |   Na = yes : 1 (6/0) [5/2]
+|   |   |   |   Na = no
+|   |   |   |   |   time < 108 : 2 (4/0) [3/0]
+|   |   |   |   |   time >= 108
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 274.2 : 2 (7/2) [2/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 274.2 : 1 (3/0) [1/0]
+|   |   IonizationMean >= 668.1 : 2 (129/4) [74/3]
+
+Size of the tree : 161
+
+
+REPTree
+============
+
+time < 20.5
+|   P5 = yes
+|   |   orgpolarsurfaceareaArithAvg < 70.72 : 1 (46/1) [32/3]
+|   |   orgpolarsurfaceareaArithAvg >= 70.72 : 2 (4/1) [3/0]
+|   P5 = no
+|   |   Na = yes
+|   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   orgpolarsurfaceareaArithAvg < 46.47 : 2 (45/9) [17/2]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 46.47
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 51.99 : 1 (2/0) [1/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 51.99
+|   |   |   |   |   |   time < 19.5 : 1 (10/5) [2/0]
+|   |   |   |   |   |   time >= 19.5 : 2 (3/0) [5/1]
+|   |   |   oxlikehbdamsaccMax >= 3.52
+|   |   |   |   orgpolarsurfaceareaArithAvg < 59.12
+|   |   |   |   |   time < 16.5 : 1 (12/0) [4/0]
+|   |   |   |   |   time >= 16.5
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 298.41
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 238.16
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 209.44 : 2 (9/2) [2/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 209.44 : 1 (51/18) [24/4]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 238.16
+|   |   |   |   |   |   |   |   time < 18.5 : 2 (6/0) [6/0]
+|   |   |   |   |   |   |   |   time >= 18.5
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 281.86 : 2 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 281.86 : 1 (3/0) [1/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 298.41 : 1 (8/0) [1/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 59.12 : 2 (13/0) [4/0]
+|   |   Na = no
+|   |   |   time < 14
+|   |   |   |   orgpolarsurfaceareaArithAvg < 24.04 : 1 (3/0) [2/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 24.04 : 2 (4/0) [4/0]
+|   |   |   time >= 14 : 1 (34/7) [21/9]
+time >= 20.5
+|   IonizationMean < 778.03
+|   |   Na = yes
+|   |   |   time < 78
+|   |   |   |   orgvanderwaalsArithAvg < 307.51
+|   |   |   |   |   orgvanderwaalsArithAvg < 219.08
+|   |   |   |   |   |   time < 42
+|   |   |   |   |   |   |   IonizationMean < 651.4 : 1 (10/3) [8/3]
+|   |   |   |   |   |   |   IonizationMean >= 651.4
+|   |   |   |   |   |   |   |   S = yes : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   S = no : 2 (8/0) [1/0]
+|   |   |   |   |   |   time >= 42 : 1 (16/0) [4/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 219.08
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 231.11 : 2 (11/0) [4/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 231.11
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.25
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 249.64 : 1 (2/0) [3/1]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 249.64
+|   |   |   |   |   |   |   |   |   IonizationMean < 700.08 : 1 (7/3) [3/0]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 700.08 : 2 (32/6) [12/3]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.25
+|   |   |   |   |   |   |   |   time < 66
+|   |   |   |   |   |   |   |   |   time < 42
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 289.52
+|   |   |   |   |   |   |   |   |   |   |   P5 = yes
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 63.59
+|   |   |   |   |   |   |   |   |   |   |   |   |   S = yes : 2 (13/5) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 253 : 1 (11/2) [6/2]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 253 : 2 (25/9) [12/3]
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 63.59 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   P5 = no : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 289.52 : 1 (30/10) [20/8]
+|   |   |   |   |   |   |   |   |   time >= 42 : 2 (17/3) [16/5]
+|   |   |   |   |   |   |   |   time >= 66 : 1 (5/0) [6/5]
+|   |   |   |   orgvanderwaalsArithAvg >= 307.51
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 82.61
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 359.37 : 1 (51/2) [19/2]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 359.37 : 2 (7/2) [11/2]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 82.61 : 2 (6/0) [2/0]
+|   |   |   time >= 78
+|   |   |   |   IonizationMean < 651.4 : 1 (2/0) [3/1]
+|   |   |   |   IonizationMean >= 651.4 : 2 (77/3) [50/8]
+|   |   Na = no
+|   |   |   time < 36
+|   |   |   |   IonizationMean < 614.85 : 2 (29/6) [15/5]
+|   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 46.52
+|   |   |   |   |   |   IonizationMean < 651.4 : 2 (7/0) [4/2]
+|   |   |   |   |   |   IonizationMean >= 651.4
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 27.84
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 278.54 : 2 (4/1) [2/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.54 : 1 (8/3) [7/3]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 27.84 : 1 (6/0) [1/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 46.52 : 1 (27/3) [9/2]
+|   |   |   time >= 36
+|   |   |   |   orgpolarsurfaceareaArithAvg < 55.84
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 32.64 : 2 (73/0) [41/3]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 32.64
+|   |   |   |   |   |   time < 84
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 205.23 : 2 (24/0) [10/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 205.23
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 36.66 : 1 (10/4) [4/1]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 36.66 : 2 (251/32) [119/13]
+|   |   |   |   |   |   time >= 84 : 2 (32/0) [15/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 55.84 : 1 (35/11) [16/6]
+|   IonizationMean >= 778.03
+|   |   IonizationMean < 851.18
+|   |   |   orgvanderwaalsArithAvg < 393.87
+|   |   |   |   orgvanderwaalsArithAvg < 201.97
+|   |   |   |   |   time < 42
+|   |   |   |   |   |   oxlikehbdamsaccMax < 8.17 : 1 (7/1) [2/0]
+|   |   |   |   |   |   oxlikehbdamsaccMax >= 8.17 : 2 (5/2) [1/0]
+|   |   |   |   |   time >= 42 : 2 (3/0) [2/1]
+|   |   |   |   orgvanderwaalsArithAvg >= 201.97
+|   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 211.06 : 2 (82/4) [37/6]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 211.06
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 3.84 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 3.84
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 336.86
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 300.54
+|   |   |   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 8.28 : 1 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 8.28 : 2 (105/21) [55/13]
+|   |   |   |   |   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 274.63
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 31.01
+|   |   |   |   |   |   |   |   |   |   |   |   |   time < 23 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   time >= 23 : 2 (40/12) [13/4]
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 31.01 : 2 (29/5) [16/5]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 274.63 : 2 (92/3) [52/5]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 300.54 : 1 (15/7) [9/3]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 336.86 : 2 (27/1) [15/1]
+|   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (163/10) [91/4]
+|   |   |   orgvanderwaalsArithAvg >= 393.87
+|   |   |   |   Na = yes
+|   |   |   |   |   oxlikehbdamsaccMax < 3.52 : 2 (14/6) [2/0]
+|   |   |   |   |   oxlikehbdamsaccMax >= 3.52
+|   |   |   |   |   |   time < 54 : 2 (23/1) [4/0]
+|   |   |   |   |   |   time >= 54 : 1 (6/3) [3/1]
+|   |   |   |   Na = no : 1 (8/0) [3/1]
+|   |   IonizationMean >= 851.18 : 2 (37/16) [13/7]
+
+Size of the tree : 137
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes : 1 (58/5) [32/2]
+|   P5 = no
+|   |   orgpolarsurfaceareaArithAvg < 51.99
+|   |   |   orgvanderwaalsArithAvg < 218.21
+|   |   |   |   orgpolarsurfaceareaArithAvg < 38.74 : 1 (25/9) [27/13]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 38.74 : 2 (7/1) [3/0]
+|   |   |   orgvanderwaalsArithAvg >= 218.21
+|   |   |   |   time < 20.5
+|   |   |   |   |   Na = yes
+|   |   |   |   |   |   time < 19.5 : 2 (13/0) [5/1]
+|   |   |   |   |   |   time >= 19.5
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 248.49 : 2 (7/0) [0/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 248.49
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 278.54
+|   |   |   |   |   |   |   |   |   IonizationMean < 723.43 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 723.43
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 274.52 : 2 (4/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 274.52 : 1 (7/3) [2/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.54 : 2 (18/2) [8/0]
+|   |   |   |   |   Na = no : 2 (17/7) [16/6]
+|   |   |   |   time >= 20.5 : 2 (9/0) [5/1]
+|   |   orgpolarsurfaceareaArithAvg >= 51.99
+|   |   |   orgpolarsurfaceareaArithAvg < 59.12
+|   |   |   |   time < 17.5 : 1 (10/0) [4/0]
+|   |   |   |   time >= 17.5
+|   |   |   |   |   orgvanderwaalsArithAvg < 222.33 : 2 (5/1) [2/1]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 222.33
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 365.66 : 1 (33/7) [19/3]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 365.66 : 2 (7/3) [6/2]
+|   |   |   orgpolarsurfaceareaArithAvg >= 59.12
+|   |   |   |   oxlikehbdamsaccMax < 3.52 : 1 (25/10) [15/2]
+|   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (12/0) [14/0]
+time >= 21.5
+|   IonizationMean < 760.25
+|   |   IonizationMean < 716.28
+|   |   |   P5 = yes : 2 (309/34) [156/18]
+|   |   |   P5 = no
+|   |   |   |   orgpolarsurfaceareaArithAvg < 49.79
+|   |   |   |   |   IonizationMean < 651.4
+|   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 18.81 : 2 (8/0) [2/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 18.81
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 256.81 : 1 (14/6) [1/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 256.81 : 2 (12/3) [3/1]
+|   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   S = yes : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   S = no : 2 (79/4) [44/0]
+|   |   |   |   |   IonizationMean >= 651.4
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 23.42 : 1 (7/0) [3/3]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 23.42
+|   |   |   |   |   |   |   time < 80.5 : 1 (9/2) [4/0]
+|   |   |   |   |   |   |   time >= 80.5 : 2 (3/0) [3/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 49.79
+|   |   |   |   |   orgvanderwaalsArithAvg < 337.4
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 64.27
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 247.49 : 1 (40/13) [17/4]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 247.49 : 2 (16/4) [8/3]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 64.27 : 1 (9/0) [2/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 337.4 : 2 (7/0) [9/0]
+|   |   IonizationMean >= 716.28
+|   |   |   time < 77.5
+|   |   |   |   oxlikehbdamsaccMax < 4.5
+|   |   |   |   |   orgvanderwaalsArithAvg < 219.76
+|   |   |   |   |   |   time < 42
+|   |   |   |   |   |   |   S = yes : 1 (6/0) [1/0]
+|   |   |   |   |   |   |   S = no : 2 (11/4) [5/1]
+|   |   |   |   |   |   time >= 42 : 1 (18/0) [9/1]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 219.76
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 232.81 : 2 (15/0) [0/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 232.81
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 238.44 : 1 (13/1) [7/4]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 238.44
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 292.4
+|   |   |   |   |   |   |   |   |   S = yes : 1 (20/5) [5/4]
+|   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 274.63 : 2 (38/17) [22/9]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 274.63
+|   |   |   |   |   |   |   |   |   |   |   |   time < 54 : 2 (43/6) [24/7]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 54 : 1 (4/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   Na = no : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 292.4
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 359.37
+|   |   |   |   |   |   |   |   |   |   time < 36
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 327.05
+|   |   |   |   |   |   |   |   |   |   |   |   S = yes : 2 (5/2) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   S = no : 1 (20/3) [6/1]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 327.05 : 2 (12/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   time >= 36
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 349.64
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 300.54 : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 300.54
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 304.82 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 304.82 : 1 (20/8) [5/1]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 349.64 : 1 (22/1) [9/1]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 359.37
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 58.52 : 2 (3/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 58.52 : 1 (2/1) [1/0]
+|   |   |   |   oxlikehbdamsaccMax >= 4.5 : 2 (10/0) [5/1]
+|   |   |   time >= 77.5 : 2 (88/8) [45/3]
+|   IonizationMean >= 760.25
+|   |   orgpolarsurfaceareaArithAvg < 65.74
+|   |   |   orgvanderwaalsArithAvg < 201.97 : 1 (12/3) [7/4]
+|   |   |   orgvanderwaalsArithAvg >= 201.97
+|   |   |   |   IonizationMean < 851.18
+|   |   |   |   |   oxlikehbdamsaccMax < 9.52
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 37.5
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 8.28
+|   |   |   |   |   |   |   |   |   Na = yes : 1 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   Na = no : 2 (9/3) [11/3]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 8.28
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 275.99
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 265.73
+|   |   |   |   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 206.85 : 2 (15/0) [11/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 206.85
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 211.06 : 1 (6/1) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 211.06
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 223.68
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time < 48 : 2 (7/0) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time >= 48 : 1 (2/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 223.68 : 2 (15/5) [8/3]
+|   |   |   |   |   |   |   |   |   |   |   S = no : 2 (58/6) [20/6]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 265.73 : 2 (64/2) [26/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 275.99 : 2 (119/24) [53/10]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (101/5) [51/4]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 37.5
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 268.83 : 2 (63/8) [33/4]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 268.83
+|   |   |   |   |   |   |   |   time < 84
+|   |   |   |   |   |   |   |   |   time < 66
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 298.47
+|   |   |   |   |   |   |   |   |   |   |   S = yes : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   time < 42 : 1 (11/2) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 42 : 2 (5/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 298.47
+|   |   |   |   |   |   |   |   |   |   |   Na = yes : 2 (21/3) [14/4]
+|   |   |   |   |   |   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   |   |   |   |   |   time < 42 : 1 (7/2) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 42 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   time >= 66 : 1 (4/0) [2/0]
+|   |   |   |   |   |   |   |   time >= 84 : 2 (4/0) [3/0]
+|   |   |   |   |   oxlikehbdamsaccMax >= 9.52 : 1 (3/0) [1/0]
+|   |   |   |   IonizationMean >= 851.18
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 17.33 : 1 (6/0) [8/1]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 17.33
+|   |   |   |   |   |   time < 49 : 1 (4/1) [1/0]
+|   |   |   |   |   |   time >= 49 : 2 (18/5) [8/3]
+|   |   orgpolarsurfaceareaArithAvg >= 65.74 : 2 (66/0) [34/1]
+
+Size of the tree : 153
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes
+|   |   orgpolarsurfaceareaArithAvg < 44.25 : 1 (33/0) [13/0]
+|   |   orgpolarsurfaceareaArithAvg >= 44.25
+|   |   |   orgvanderwaalsArithAvg < 375.93
+|   |   |   |   orgvanderwaalsArithAvg < 292.02 : 1 (14/4) [4/1]
+|   |   |   |   orgvanderwaalsArithAvg >= 292.02 : 2 (3/1) [1/0]
+|   |   |   orgvanderwaalsArithAvg >= 375.93 : 1 (11/0) [5/0]
+|   P5 = no
+|   |   orgvanderwaalsArithAvg < 238.16
+|   |   |   time < 18.5
+|   |   |   |   time < 16.5 : 1 (11/0) [5/0]
+|   |   |   |   time >= 16.5
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 29.29
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 215.06 : 1 (27/12) [7/2]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 215.06 : 2 (3/0) [1/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 29.29 : 1 (22/5) [11/4]
+|   |   |   time >= 18.5 : 2 (21/2) [17/3]
+|   |   orgvanderwaalsArithAvg >= 238.16
+|   |   |   orgpolarsurfaceareaArithAvg < 51.99
+|   |   |   |   time < 13.5 : 2 (15/1) [7/2]
+|   |   |   |   time >= 13.5
+|   |   |   |   |   orgvanderwaalsArithAvg < 248.77 : 2 (8/0) [5/1]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 248.77
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 333.1
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 325.08
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 14.97 : 1 (7/2) [2/1]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 14.97
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 261.14 : 1 (7/3) [3/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 261.14 : 2 (40/5) [18/2]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 325.08 : 1 (5/0) [2/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 333.1 : 2 (12/1) [3/0]
+|   |   |   orgpolarsurfaceareaArithAvg >= 51.99
+|   |   |   |   oxlikehbdamsaccMax < 3.52 : 1 (59/29) [27/11]
+|   |   |   |   oxlikehbdamsaccMax >= 3.52
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 59.12 : 1 (5/0) [3/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 59.12 : 2 (16/0) [10/0]
+time >= 21.5
+|   IonizationMean < 851.18
+|   |   Na = yes
+|   |   |   IonizationMean < 778.03
+|   |   |   |   time < 77.5
+|   |   |   |   |   time < 54
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41 : 2 (37/4) [24/4]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 27.84 : 1 (6/0) [3/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 27.84
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 48.09
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 219.65 : 1 (14/6) [6/2]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 219.65
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 254.58 : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 254.58
+|   |   |   |   |   |   |   |   |   |   |   S = yes : 2 (5/1) [10/6]
+|   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   P5 = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 40.36 : 1 (4/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 40.36 : 2 (19/6) [7/0]
+|   |   |   |   |   |   |   |   |   |   |   |   P5 = no : 2 (11/3) [6/1]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 48.09
+|   |   |   |   |   |   |   |   |   P5 = yes : 1 (33/7) [22/5]
+|   |   |   |   |   |   |   |   |   P5 = no : 2 (7/2) [1/0]
+|   |   |   |   |   time >= 54
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 359.17
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 9.15
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 278.72
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 220 : 1 (19/2) [7/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 220
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 21.82
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 19.2
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 256.26 : 2 (4/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 256.26 : 1 (4/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 19.2 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 21.82
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 239.82 : 2 (7/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 239.82
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 249.92 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 249.92 : 2 (6/0) [4/1]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.72 : 1 (52/7) [25/2]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 9.15 : 2 (5/0) [5/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 359.17 : 2 (5/0) [9/4]
+|   |   |   |   time >= 77.5
+|   |   |   |   |   time < 98
+|   |   |   |   |   |   oxlikehbdamsaccMax < 3.65
+|   |   |   |   |   |   |   time < 86.5
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 234.43 : 2 (6/0) [1/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 234.43
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 263.49 : 2 (15/7) [9/3]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 263.49
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 12.08 : 1 (2/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 12.08 : 2 (23/2) [11/2]
+|   |   |   |   |   |   |   time >= 86.5 : 1 (2/0) [1/0]
+|   |   |   |   |   |   oxlikehbdamsaccMax >= 3.65 : 2 (7/0) [2/0]
+|   |   |   |   |   time >= 98 : 2 (50/3) [17/0]
+|   |   |   IonizationMean >= 778.03
+|   |   |   |   orgvanderwaalsArithAvg < 201.97 : 1 (13/5) [3/0]
+|   |   |   |   orgvanderwaalsArithAvg >= 201.97 : 2 (313/41) [171/17]
+|   |   Na = no
+|   |   |   time < 36
+|   |   |   |   IonizationMean < 760.25
+|   |   |   |   |   IonizationMean < 614.85 : 2 (17/2) [13/2]
+|   |   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   |   P5 = yes : 1 (4/0) [1/0]
+|   |   |   |   |   |   P5 = no
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 277.25 : 1 (23/6) [12/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 277.25
+|   |   |   |   |   |   |   |   IonizationMean < 700.08 : 1 (4/1) [2/0]
+|   |   |   |   |   |   |   |   IonizationMean >= 700.08 : 2 (9/3) [2/0]
+|   |   |   |   IonizationMean >= 760.25
+|   |   |   |   |   orgvanderwaalsArithAvg < 263.73
+|   |   |   |   |   |   time < 23 : 1 (6/1) [5/2]
+|   |   |   |   |   |   time >= 23 : 2 (43/8) [27/8]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 263.73
+|   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 17.33 : 1 (6/2) [2/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 17.33 : 2 (41/5) [26/4]
+|   |   |   |   |   |   S = no : 2 (43/2) [14/2]
+|   |   |   time >= 36
+|   |   |   |   orgpolarsurfaceareaArithAvg < 55.84 : 2 (493/51) [229/21]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 55.84
+|   |   |   |   |   IonizationMean < 740.13
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 91.96
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 57.11
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 221.85
+|   |   |   |   |   |   |   |   |   time < 96 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   time >= 96 : 2 (3/0) [3/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 221.85 : 1 (6/0) [3/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 57.11
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 64.27 : 2 (9/1) [7/1]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 64.27
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 319.93 : 1 (7/3) [5/1]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 319.93 : 2 (3/0) [3/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 91.96 : 1 (5/0) [5/3]
+|   |   |   |   |   IonizationMean >= 740.13 : 2 (12/0) [5/0]
+|   IonizationMean >= 851.18 : 1 (30/5) [14/9]
+
+Size of the tree : 135
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes : 1 (51/3) [26/3]
+|   P5 = no
+|   |   orgpolarsurfaceareaArithAvg < 51.99
+|   |   |   orgvanderwaalsArithAvg < 278.54 : 2 (109/54) [46/19]
+|   |   |   orgvanderwaalsArithAvg >= 278.54
+|   |   |   |   IonizationMean < 723.43 : 2 (8/0) [3/1]
+|   |   |   |   IonizationMean >= 723.43
+|   |   |   |   |   orgvanderwaalsArithAvg < 315.36 : 2 (28/4) [15/4]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 315.36
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 333.1 : 1 (2/0) [2/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 333.1 : 2 (5/1) [3/1]
+|   |   orgpolarsurfaceareaArithAvg >= 51.99
+|   |   |   orgpolarsurfaceareaArithAvg < 59.12
+|   |   |   |   time < 17.5 : 1 (14/0) [9/1]
+|   |   |   |   time >= 17.5
+|   |   |   |   |   IonizationMean < 723.43 : 1 (7/0) [2/0]
+|   |   |   |   |   IonizationMean >= 723.43
+|   |   |   |   |   |   S = yes : 1 (5/0) [0/0]
+|   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 269.44 : 2 (4/1) [4/1]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 269.44 : 1 (11/4) [8/1]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 1 (11/2) [12/4]
+|   |   |   orgpolarsurfaceareaArithAvg >= 59.12
+|   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 79.03
+|   |   |   |   |   |   time < 20.5
+|   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   time < 17.5 : 2 (5/1) [6/3]
+|   |   |   |   |   |   |   |   time >= 17.5
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 340 : 1 (3/0) [4/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 340 : 2 (6/2) [4/1]
+|   |   |   |   |   |   |   Na = no : 2 (6/0) [7/3]
+|   |   |   |   |   |   time >= 20.5 : 1 (2/0) [2/2]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 79.03 : 1 (4/0) [3/0]
+|   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (11/0) [10/0]
+time >= 21.5
+|   IonizationMean < 760.25
+|   |   Na = yes
+|   |   |   time < 77.5
+|   |   |   |   orgvanderwaalsArithAvg < 365.37
+|   |   |   |   |   orgvanderwaalsArithAvg < 289.31
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 275.99
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 3.84 : 2 (8/0) [2/1]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 3.84
+|   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.65
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 220.41 : 1 (28/6) [10/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 220.41
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 232.81 : 2 (9/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 232.81
+|   |   |   |   |   |   |   |   |   |   |   IonizationMean < 700.08 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   IonizationMean >= 700.08
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 273.34 : 1 (49/19) [18/4]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 273.34 : 2 (13/4) [4/1]
+|   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.65 : 1 (7/0) [2/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 275.99
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 21.2 : 2 (14/0) [2/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 21.2
+|   |   |   |   |   |   |   |   time < 42 : 2 (50/12) [19/6]
+|   |   |   |   |   |   |   |   time >= 42 : 1 (6/1) [4/1]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 289.31
+|   |   |   |   |   |   oxlikehbdamsaccMax < 9.15
+|   |   |   |   |   |   |   time < 66
+|   |   |   |   |   |   |   |   time < 42
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 327.05 : 1 (37/9) [16/6]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 327.05 : 2 (8/0) [2/0]
+|   |   |   |   |   |   |   |   time >= 42 : 1 (45/8) [18/6]
+|   |   |   |   |   |   |   time >= 66 : 1 (14/0) [6/0]
+|   |   |   |   |   |   oxlikehbdamsaccMax >= 9.15 : 2 (6/0) [2/0]
+|   |   |   |   orgvanderwaalsArithAvg >= 365.37 : 2 (18/1) [12/6]
+|   |   |   time >= 77.5
+|   |   |   |   IonizationMean < 651.4 : 1 (3/0) [2/0]
+|   |   |   |   IonizationMean >= 651.4 : 2 (75/6) [46/1]
+|   |   Na = no
+|   |   |   orgpolarsurfaceareaArithAvg < 55.84
+|   |   |   |   time < 36
+|   |   |   |   |   IonizationMean < 614.85 : 2 (21/3) [13/3]
+|   |   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 27.84 : 2 (13/3) [9/4]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 27.84
+|   |   |   |   |   |   |   IonizationMean < 699.58
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 235.05 : 2 (14/3) [2/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 235.05 : 1 (10/2) [8/1]
+|   |   |   |   |   |   |   IonizationMean >= 699.58 : 1 (8/0) [5/0]
+|   |   |   |   time >= 36
+|   |   |   |   |   S = yes : 1 (5/0) [0/0]
+|   |   |   |   |   S = no
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 32.64 : 2 (71/1) [34/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 32.64
+|   |   |   |   |   |   |   time < 60
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 357.32
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 293.88
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 291.34 : 2 (126/23) [76/11]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 291.34 : 1 (2/0) [4/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 293.88 : 2 (56/0) [28/3]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 357.32 : 2 (53/14) [20/6]
+|   |   |   |   |   |   |   time >= 60 : 2 (50/0) [21/0]
+|   |   |   orgpolarsurfaceareaArithAvg >= 55.84
+|   |   |   |   orgpolarsurfaceareaArithAvg < 80.76
+|   |   |   |   |   orgvanderwaalsArithAvg < 285.21
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 57.11 : 1 (6/0) [4/1]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 57.11 : 2 (15/5) [9/1]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 285.21 : 1 (7/0) [3/1]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 80.76 : 2 (5/0) [1/0]
+|   IonizationMean >= 760.25
+|   |   orgvanderwaalsArithAvg < 201.97 : 1 (10/1) [3/0]
+|   |   orgvanderwaalsArithAvg >= 201.97
+|   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   orgvanderwaalsArithAvg < 300.54
+|   |   |   |   |   orgvanderwaalsArithAvg < 291.89
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 63.59
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 3.84 : 1 (4/1) [1/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 3.84
+|   |   |   |   |   |   |   |   time < 78
+|   |   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 17.33 : 2 (11/0) [8/1]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 17.33
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 273.34
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 29.29 : 2 (21/0) [15/1]
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 29.29
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 31.58 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 31.58
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 204.9 : 2 (21/2) [8/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 204.9
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 206.75 : 1 (6/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 206.75 : 2 (27/7) [12/2]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 273.34
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 277.36 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 277.36 : 2 (16/7) [16/3]
+|   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   time < 23 : 1 (3/1) [0/0]
+|   |   |   |   |   |   |   |   |   |   time >= 23
+|   |   |   |   |   |   |   |   |   |   |   time < 37 : 2 (126/14) [65/6]
+|   |   |   |   |   |   |   |   |   |   |   time >= 37
+|   |   |   |   |   |   |   |   |   |   |   |   Na = yes : 1 (15/7) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   Na = no : 2 (34/3) [12/2]
+|   |   |   |   |   |   |   |   time >= 78 : 2 (10/0) [0/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 63.59 : 2 (19/0) [10/1]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 291.89 : 2 (36/0) [21/2]
+|   |   |   |   orgvanderwaalsArithAvg >= 300.54
+|   |   |   |   |   S = yes : 1 (20/6) [8/2]
+|   |   |   |   |   S = no
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 24.04 : 2 (15/0) [14/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 24.04
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 308.37 : 2 (5/0) [2/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 308.37
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 63.56
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 54.56 : 2 (21/10) [8/2]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 54.56 : 1 (5/1) [3/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 63.56 : 2 (3/0) [0/0]
+|   |   |   oxlikehbdamsaccMax >= 3.52
+|   |   |   |   orgpolarsurfaceareaArithAvg < 46.47
+|   |   |   |   |   orgvanderwaalsArithAvg < 309.02 : 2 (100/6) [48/6]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 309.02
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 30.13 : 2 (15/4) [5/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 30.13 : 1 (2/0) [2/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 46.47 : 2 (66/1) [42/4]
+
+Size of the tree : 159
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes : 1 (62/4) [38/3]
+|   P5 = no
+|   |   orgpolarsurfaceareaArithAvg < 51.99
+|   |   |   S = yes : 1 (16/5) [4/0]
+|   |   |   S = no
+|   |   |   |   orgpolarsurfaceareaArithAvg < 14.97
+|   |   |   |   |   time < 7 : 2 (2/0) [2/0]
+|   |   |   |   |   time >= 7 : 1 (39/19) [13/5]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 14.97 : 2 (73/16) [34/5]
+|   |   orgpolarsurfaceareaArithAvg >= 51.99
+|   |   |   orgpolarsurfaceareaArithAvg < 69.6
+|   |   |   |   time < 19.5
+|   |   |   |   |   orgvanderwaalsArithAvg < 397.47
+|   |   |   |   |   |   time < 16.5 : 1 (2/0) [2/0]
+|   |   |   |   |   |   time >= 16.5
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 230.82 : 1 (2/0) [1/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 230.82
+|   |   |   |   |   |   |   |   time < 18.5 : 1 (33/8) [12/2]
+|   |   |   |   |   |   |   |   time >= 18.5
+|   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.52 : 1 (11/3) [8/0]
+|   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (3/0) [2/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 397.47 : 1 (6/0) [2/2]
+|   |   |   |   time >= 19.5
+|   |   |   |   |   oxlikehbdamsaccMax < 3.65 : 2 (22/10) [7/1]
+|   |   |   |   |   oxlikehbdamsaccMax >= 3.65 : 1 (6/1) [2/1]
+|   |   |   orgpolarsurfaceareaArithAvg >= 69.6
+|   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   time < 14 : 2 (2/0) [0/0]
+|   |   |   |   |   time >= 14
+|   |   |   |   |   |   Na = yes : 1 (8/0) [3/0]
+|   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   IonizationMean < 723.43 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   IonizationMean >= 723.43 : 2 (2/0) [4/1]
+|   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (12/0) [5/0]
+time >= 21.5
+|   time < 77.5
+|   |   time < 49
+|   |   |   time < 25
+|   |   |   |   IonizationMean < 760.25
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 285.27
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 22.03 : 1 (5/2) [4/1]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 22.03 : 2 (29/6) [18/5]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 285.27 : 2 (21/0) [1/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41
+|   |   |   |   |   |   IonizationMean < 614.85 : 2 (18/3) [8/0]
+|   |   |   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 48.09
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 37.92
+|   |   |   |   |   |   |   |   |   IonizationMean < 651.4 : 2 (22/9) [13/4]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 651.4 : 1 (31/7) [16/7]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 37.92
+|   |   |   |   |   |   |   |   |   S = yes : 1 (2/0) [3/1]
+|   |   |   |   |   |   |   |   |   S = no : 2 (19/4) [12/5]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 48.09 : 1 (64/17) [37/12]
+|   |   |   |   IonizationMean >= 760.25
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 65.74
+|   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 201.97 : 1 (10/4) [2/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 201.97
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 51.99
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 204.9 : 2 (24/0) [12/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 204.9
+|   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 8.56
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 318.07
+|   |   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 8.28 : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 8.28 : 2 (84/16) [41/10]
+|   |   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (55/3) [28/3]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 318.07 : 2 (19/7) [12/0]
+|   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 8.56 : 2 (12/0) [2/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 51.99 : 2 (28/0) [13/1]
+|   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 317.4
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 291.89
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 233.3
+|   |   |   |   |   |   |   |   |   |   time < 23 : 1 (4/1) [5/1]
+|   |   |   |   |   |   |   |   |   |   time >= 23 : 2 (51/7) [17/2]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 233.3
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 261.14 : 1 (19/9) [5/2]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 261.14
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 273.34 : 2 (14/1) [6/1]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 273.34
+|   |   |   |   |   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 285.27 : 2 (27/10) [15/4]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 285.27 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   S = no : 2 (14/2) [12/6]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 291.89 : 2 (24/1) [10/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 317.4
+|   |   |   |   |   |   |   |   S = yes : 1 (4/0) [3/0]
+|   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 372.73 : 2 (2/0) [3/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 372.73 : 1 (5/1) [4/1]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 65.74 : 2 (46/1) [27/0]
+|   |   |   time >= 25
+|   |   |   |   orgpolarsurfaceareaArithAvg < 53.8 : 2 (156/8) [89/6]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 53.8
+|   |   |   |   |   orgvanderwaalsArithAvg < 233 : 2 (42/14) [24/8]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 233
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 359.74
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 91.96 : 2 (146/19) [69/8]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 91.96 : 1 (2/0) [1/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 359.74 : 2 (58/16) [37/11]
+|   |   time >= 49
+|   |   |   orgpolarsurfaceareaArithAvg < 8.28 : 1 (22/1) [15/5]
+|   |   |   orgpolarsurfaceareaArithAvg >= 8.28
+|   |   |   |   IonizationMean < 668.1 : 1 (9/0) [4/0]
+|   |   |   |   IonizationMean >= 668.1
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 31.27
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 332.07
+|   |   |   |   |   |   |   IonizationMean < 851.18
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 252.67
+|   |   |   |   |   |   |   |   |   P5 = yes : 1 (15/0) [9/1]
+|   |   |   |   |   |   |   |   |   P5 = no : 2 (12/4) [11/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 252.67
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 285.31 : 2 (29/6) [10/4]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 285.31 : 1 (8/1) [4/1]
+|   |   |   |   |   |   |   IonizationMean >= 851.18 : 1 (12/1) [5/1]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 332.07 : 2 (8/0) [5/2]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 31.27
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 283.65 : 2 (57/6) [29/7]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 283.65
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 353.64
+|   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 4.5
+|   |   |   |   |   |   |   |   |   IonizationMean < 722.2 : 2 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 722.2
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 45.87 : 2 (4/1) [1/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 45.87 : 1 (26/4) [10/5]
+|   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 4.5 : 2 (3/0) [0/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 353.64
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 401.54 : 2 (10/0) [6/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 401.54 : 1 (4/2) [1/0]
+|   time >= 77.5 : 2 (176/21) [80/8]
+
+Size of the tree : 135
+
+
+REPTree
+============
+
+time < 20.5
+|   P5 = yes
+|   |   orgpolarsurfaceareaArithAvg < 74.56 : 1 (58/1) [22/1]
+|   |   orgpolarsurfaceareaArithAvg >= 74.56 : 2 (2/0) [2/0]
+|   P5 = no
+|   |   time < 19.5
+|   |   |   orgpolarsurfaceareaArithAvg < 68.03
+|   |   |   |   orgvanderwaalsArithAvg < 239.02
+|   |   |   |   |   time < 16.5 : 1 (13/0) [6/0]
+|   |   |   |   |   time >= 16.5
+|   |   |   |   |   |   time < 18.5 : 1 (47/12) [25/5]
+|   |   |   |   |   |   time >= 18.5
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 205.23 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 205.23 : 1 (9/4) [3/1]
+|   |   |   |   orgvanderwaalsArithAvg >= 239.02
+|   |   |   |   |   orgvanderwaalsArithAvg < 274.52
+|   |   |   |   |   |   S = yes : 1 (2/1) [3/0]
+|   |   |   |   |   |   S = no : 2 (8/0) [3/1]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 274.52
+|   |   |   |   |   |   time < 7 : 1 (3/0) [0/0]
+|   |   |   |   |   |   time >= 7
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 8.17
+|   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 298.41
+|   |   |   |   |   |   |   |   |   |   time < 18.5 : 2 (4/0) [8/0]
+|   |   |   |   |   |   |   |   |   |   time >= 18.5 : 1 (2/1) [2/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 298.41 : 1 (6/3) [4/1]
+|   |   |   |   |   |   |   |   Na = no : 1 (20/6) [6/1]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 8.17 : 1 (3/0) [0/0]
+|   |   |   orgpolarsurfaceareaArithAvg >= 68.03 : 2 (12/1) [5/1]
+|   |   time >= 19.5
+|   |   |   orgvanderwaalsArithAvg < 208.7 : 2 (12/0) [9/3]
+|   |   |   orgvanderwaalsArithAvg >= 208.7
+|   |   |   |   orgpolarsurfaceareaArithAvg < 23.42 : 2 (11/0) [11/3]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 23.42
+|   |   |   |   |   orgvanderwaalsArithAvg < 222.32 : 1 (6/0) [4/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 222.32
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 277.25 : 2 (14/3) [5/2]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 277.25
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.65
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 65.74
+|   |   |   |   |   |   |   |   |   Na = yes : 2 (9/1) [6/1]
+|   |   |   |   |   |   |   |   |   Na = no : 1 (12/4) [3/1]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 65.74 : 1 (8/2) [2/0]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.65 : 1 (7/1) [1/1]
+time >= 20.5
+|   IonizationMean < 760.25
+|   |   Na = yes
+|   |   |   time < 77.5
+|   |   |   |   orgpolarsurfaceareaArithAvg < 3.84 : 2 (10/0) [4/1]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 3.84
+|   |   |   |   |   orgvanderwaalsArithAvg < 289.7
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 270.94
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 48.96
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 35.08 : 1 (61/23) [16/4]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 35.08 : 2 (9/2) [6/1]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 48.96
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 54.47 : 1 (5/0) [4/2]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 54.47
+|   |   |   |   |   |   |   |   |   time < 42
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 222.33
+|   |   |   |   |   |   |   |   |   |   |   S = yes : 1 (2/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   S = no : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 222.33 : 1 (17/2) [9/6]
+|   |   |   |   |   |   |   |   |   time >= 42 : 2 (2/0) [3/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 270.94
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 286.9
+|   |   |   |   |   |   |   |   IonizationMean < 700.08 : 1 (5/0) [2/0]
+|   |   |   |   |   |   |   |   IonizationMean >= 700.08
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 283.4
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 278.72 : 2 (9/0) [5/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.72
+|   |   |   |   |   |   |   |   |   |   |   time < 42
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 282.02 : 2 (13/0) [10/1]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 282.02
+|   |   |   |   |   |   |   |   |   |   |   |   |   P5 = yes : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   P5 = no : 2 (6/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   time >= 42
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 282.15 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 282.15 : 2 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 283.4
+|   |   |   |   |   |   |   |   |   |   S = yes : 1 (3/0) [1/1]
+|   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 4.5
+|   |   |   |   |   |   |   |   |   |   |   |   time < 42 : 2 (26/10) [8/2]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 42 : 1 (4/0) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 4.5 : 2 (2/0) [0/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 286.9 : 2 (9/0) [3/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 289.7
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 359.17
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 9.15
+|   |   |   |   |   |   |   |   IonizationMean < 651.4 : 2 (8/4) [5/2]
+|   |   |   |   |   |   |   |   IonizationMean >= 651.4
+|   |   |   |   |   |   |   |   |   S = yes : 2 (5/2) [1/0]
+|   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 329.86 : 1 (34/1) [17/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 329.86
+|   |   |   |   |   |   |   |   |   |   |   time < 42 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   time >= 42 : 1 (36/5) [23/1]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 9.15 : 2 (4/0) [3/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 359.17
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 407.29 : 2 (10/0) [4/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 407.29 : 1 (2/0) [1/0]
+|   |   |   time >= 77.5
+|   |   |   |   IonizationMean < 651.4 : 1 (3/0) [2/0]
+|   |   |   |   IonizationMean >= 651.4 : 2 (86/5) [47/7]
+|   |   Na = no
+|   |   |   time < 36
+|   |   |   |   IonizationMean < 614.85 : 2 (28/6) [11/1]
+|   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   P5 = yes : 1 (6/0) [2/0]
+|   |   |   |   |   P5 = no
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41
+|   |   |   |   |   |   |   IonizationMean < 700.08 : 1 (2/2) [2/0]
+|   |   |   |   |   |   |   IonizationMean >= 700.08 : 1 (4/2) [1/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41
+|   |   |   |   |   |   |   S = yes : 1 (4/0) [3/1]
+|   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 46.52
+|   |   |   |   |   |   |   |   |   IonizationMean < 699.58 : 2 (4/0) [5/0]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 699.58 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 46.52 : 1 (19/6) [10/1]
+|   |   |   time >= 36
+|   |   |   |   orgpolarsurfaceareaArithAvg < 55.84
+|   |   |   |   |   time < 92.5
+|   |   |   |   |   |   time < 80.5
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 32.64 : 2 (71/0) [31/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 32.64
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 33.21 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 33.21
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 357.32
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 296.77
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 291.59
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 205.23 : 2 (33/2) [10/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 205.23
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 36.25 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 36.25 : 2 (123/15) [52/5]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 291.59 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 296.77 : 2 (46/1) [38/1]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 357.32 : 2 (57/12) [12/3]
+|   |   |   |   |   |   time >= 80.5 : 1 (4/0) [1/0]
+|   |   |   |   |   time >= 92.5 : 2 (47/0) [40/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 55.84
+|   |   |   |   |   orgvanderwaalsArithAvg < 330.59
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 64.27
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 57.11 : 1 (5/0) [5/1]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 57.11 : 2 (4/0) [3/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 64.27 : 1 (14/1) [14/6]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 330.59 : 2 (3/0) [2/0]
+|   IonizationMean >= 760.25
+|   |   orgpolarsurfaceareaArithAvg < 65.74
+|   |   |   orgvanderwaalsArithAvg < 206.75 : 2 (92/7) [35/9]
+|   |   |   orgvanderwaalsArithAvg >= 206.75
+|   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   orgvanderwaalsArithAvg < 266.24
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 20.45
+|   |   |   |   |   |   |   time < 49
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 232.66 : 2 (6/1) [2/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 232.66 : 1 (6/1) [3/1]
+|   |   |   |   |   |   |   time >= 49 : 1 (8/1) [7/1]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 20.45 : 2 (90/25) [45/11]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 266.24
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 278.54 : 2 (60/4) [33/4]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.54
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 45.2
+|   |   |   |   |   |   |   |   time < 23 : 2 (12/0) [9/2]
+|   |   |   |   |   |   |   |   time >= 23
+|   |   |   |   |   |   |   |   |   time < 55
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 291.89 : 2 (65/22) [29/7]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 291.89
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 304.48 : 2 (24/2) [18/4]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 304.48
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 317.4 : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 317.4
+|   |   |   |   |   |   |   |   |   |   |   |   |   S = yes : 1 (7/3) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   S = no : 2 (10/0) [6/0]
+|   |   |   |   |   |   |   |   |   time >= 55 : 2 (20/1) [7/1]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 45.2 : 2 (23/11) [15/3]
+|   |   |   |   oxlikehbdamsaccMax >= 3.52
+|   |   |   |   |   oxlikehbdamsaccMax < 9.52
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 289.86 : 2 (82/5) [43/5]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 289.86
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 292.72 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 292.72
+|   |   |   |   |   |   |   |   time < 54 : 2 (48/4) [23/2]
+|   |   |   |   |   |   |   |   time >= 54 : 1 (8/4) [3/1]
+|   |   |   |   |   oxlikehbdamsaccMax >= 9.52 : 1 (2/0) [0/0]
+|   |   orgpolarsurfaceareaArithAvg >= 65.74 : 2 (58/2) [35/0]
+
+Size of the tree : 189
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes
+|   |   orgpolarsurfaceareaArithAvg < 74.56 : 1 (61/0) [30/0]
+|   |   orgpolarsurfaceareaArithAvg >= 74.56 : 2 (5/1) [2/0]
+|   P5 = no
+|   |   orgvanderwaalsArithAvg < 238.16
+|   |   |   orgvanderwaalsArithAvg < 206.79 : 2 (8/0) [4/0]
+|   |   |   orgvanderwaalsArithAvg >= 206.79 : 1 (67/18) [43/17]
+|   |   orgvanderwaalsArithAvg >= 238.16
+|   |   |   Na = yes
+|   |   |   |   orgpolarsurfaceareaArithAvg < 40.96 : 2 (53/7) [25/7]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 40.96
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 59.12 : 1 (10/3) [5/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 59.12
+|   |   |   |   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 375.59 : 1 (7/1) [4/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 375.59 : 2 (10/2) [5/3]
+|   |   |   |   |   |   oxlikehbdamsaccMax >= 3.52 : 2 (16/0) [10/0]
+|   |   |   Na = no
+|   |   |   |   orgvanderwaalsArithAvg < 318.42
+|   |   |   |   |   orgvanderwaalsArithAvg < 282.02 : 2 (15/7) [12/3]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 282.02 : 1 (17/2) [7/4]
+|   |   |   |   orgvanderwaalsArithAvg >= 318.42 : 2 (26/11) [15/7]
+time >= 21.5
+|   time < 77.5
+|   |   time < 49
+|   |   |   time < 25
+|   |   |   |   IonizationMean < 760.25
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 48.09
+|   |   |   |   |   |   oxlikehbdamsaccMax < 3.65
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 8.28 : 2 (10/0) [6/0]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 8.28
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 40.36
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41 : 2 (45/12) [25/5]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 27.84 : 1 (5/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 27.84
+|   |   |   |   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 29.29 : 2 (6/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 29.29
+|   |   |   |   |   |   |   |   |   |   |   |   |   P5 = yes : 1 (14/6) [4/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   P5 = no : 2 (18/6) [12/4]
+|   |   |   |   |   |   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   |   |   |   |   |   IonizationMean < 651.4 : 2 (7/3) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   |   IonizationMean >= 651.4 : 1 (7/0) [1/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 40.36 : 2 (27/3) [15/3]
+|   |   |   |   |   |   oxlikehbdamsaccMax >= 3.65 : 1 (5/0) [0/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 48.09
+|   |   |   |   |   |   IonizationMean < 614.85 : 2 (5/0) [2/1]
+|   |   |   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 69.6 : 1 (53/7) [24/6]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 69.6
+|   |   |   |   |   |   |   |   P5 = yes : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   P5 = no : 2 (2/0) [1/0]
+|   |   |   |   IonizationMean >= 760.25
+|   |   |   |   |   Na = yes
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 328.46
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 278.54
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 201.97 : 1 (4/2) [3/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 201.97
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 213.91 : 2 (52/1) [26/4]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 213.91
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 266.24
+|   |   |   |   |   |   |   |   |   |   |   S = yes : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   S = no : 2 (41/7) [14/1]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 266.24 : 2 (36/1) [21/2]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.54
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 61.3
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 45.87 : 2 (52/15) [29/2]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 45.87 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 61.3 : 2 (20/2) [9/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 328.46 : 2 (45/1) [23/2]
+|   |   |   |   |   Na = no
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 375.59
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 282.02
+|   |   |   |   |   |   |   |   S = yes : 2 (93/19) [31/11]
+|   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 253.98
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 238.16
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 208.37 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 208.37
+|   |   |   |   |   |   |   |   |   |   |   |   time < 23 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   time >= 23
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 230.82 : 2 (7/2) [6/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 230.82 : 1 (9/2) [1/0]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 238.16 : 1 (7/0) [2/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 253.98 : 2 (13/3) [10/4]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 282.02 : 2 (44/2) [23/2]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 375.59 : 1 (8/1) [1/0]
+|   |   |   time >= 25
+|   |   |   |   orgpolarsurfaceareaArithAvg < 23.42 : 2 (41/0) [23/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 23.42
+|   |   |   |   |   IonizationMean < 868.48
+|   |   |   |   |   |   S = yes : 2 (17/0) [9/0]
+|   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   P5 = yes : 2 (237/27) [107/19]
+|   |   |   |   |   |   |   P5 = no
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 293.37
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 291.59
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 72.45
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 282.02
+|   |   |   |   |   |   |   |   |   |   |   |   Na = yes : 2 (14/8) [7/2]
+|   |   |   |   |   |   |   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMean < 723.43
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 32.64 : 2 (3/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 32.64
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 37.5 : 1 (3/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 37.5
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 44.38 : 2 (3/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 44.38 : 1 (5/1) [6/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMean >= 723.43 : 2 (17/1) [6/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 282.02 : 2 (13/0) [7/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 72.45 : 1 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 291.59 : 1 (4/0) [0/0]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 293.37 : 2 (36/1) [32/0]
+|   |   |   |   |   IonizationMean >= 868.48 : 1 (3/0) [2/1]
+|   |   time >= 49
+|   |   |   IonizationMean < 778.03
+|   |   |   |   Na = yes
+|   |   |   |   |   orgvanderwaalsArithAvg < 219.32 : 1 (15/0) [18/2]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 219.32
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 239.9 : 2 (10/0) [8/2]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 239.9
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 9.15
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 365.37
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 278.72
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 249.7 : 1 (6/0) [2/1]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 249.7
+|   |   |   |   |   |   |   |   |   |   |   time < 66 : 2 (11/1) [5/2]
+|   |   |   |   |   |   |   |   |   |   |   time >= 66 : 1 (8/4) [7/2]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.72 : 1 (61/7) [27/5]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 365.37 : 2 (10/2) [4/0]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 9.15 : 2 (6/0) [6/0]
+|   |   |   |   Na = no : 2 (21/0) [9/0]
+|   |   |   IonizationMean >= 778.03
+|   |   |   |   time < 55
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 40.35 : 1 (10/2) [8/2]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 40.35 : 2 (7/1) [3/0]
+|   |   |   |   time >= 55 : 2 (76/17) [36/8]
+|   time >= 77.5
+|   |   orgpolarsurfaceareaArithAvg < 55.84 : 2 (159/6) [71/6]
+|   |   orgpolarsurfaceareaArithAvg >= 55.84
+|   |   |   orgvanderwaalsArithAvg < 337.01
+|   |   |   |   orgpolarsurfaceareaArithAvg < 64.27
+|   |   |   |   |   Na = yes : 1 (2/0) [1/0]
+|   |   |   |   |   Na = no : 2 (7/2) [1/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 64.27 : 1 (9/0) [3/0]
+|   |   |   orgvanderwaalsArithAvg >= 337.01 : 2 (4/0) [3/0]
+
+Size of the tree : 149
+
+
+REPTree
+============
+
+time < 20.5
+|   P5 = yes : 1 (61/3) [30/3]
+|   P5 = no
+|   |   time < 19.5
+|   |   |   orgpolarsurfaceareaArithAvg < 68.03
+|   |   |   |   orgpolarsurfaceareaArithAvg < 51.99
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41 : 1 (50/19) [23/8]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41 : 2 (20/3) [11/4]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 51.99 : 1 (48/11) [20/7]
+|   |   |   orgpolarsurfaceareaArithAvg >= 68.03 : 2 (20/3) [6/0]
+|   |   time >= 19.5
+|   |   |   orgpolarsurfaceareaArithAvg < 51.99
+|   |   |   |   orgpolarsurfaceareaArithAvg < 38.74
+|   |   |   |   |   orgvanderwaalsArithAvg < 211.06 : 1 (2/0) [3/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 211.06
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 295.01
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 248.49 : 2 (3/0) [2/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 248.49
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 17.33 : 1 (6/3) [3/1]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 17.33 : 2 (15/4) [8/3]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 295.01 : 2 (16/1) [11/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 38.74 : 2 (12/0) [4/0]
+|   |   |   orgpolarsurfaceareaArithAvg >= 51.99
+|   |   |   |   orgvanderwaalsArithAvg < 343.78 : 1 (14/2) [11/3]
+|   |   |   |   orgvanderwaalsArithAvg >= 343.78
+|   |   |   |   |   Na = yes : 2 (9/0) [4/1]
+|   |   |   |   |   Na = no
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 397.47 : 1 (2/0) [0/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 397.47
+|   |   |   |   |   |   |   S = yes : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   S = no : 2 (6/1) [3/1]
+time >= 20.5
+|   oxlikehbdamsaccMax < 3.52
+|   |   time < 77.5
+|   |   |   time < 49
+|   |   |   |   time < 25
+|   |   |   |   |   IonizationMean < 760.25
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 24.39
+|   |   |   |   |   |   |   IonizationMean < 700.08
+|   |   |   |   |   |   |   |   IonizationMean < 651.4 : 2 (9/0) [0/0]
+|   |   |   |   |   |   |   |   IonizationMean >= 651.4 : 1 (3/1) [2/0]
+|   |   |   |   |   |   |   IonizationMean >= 700.08 : 2 (19/0) [8/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 24.39
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 48.09
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 35.49
+|   |   |   |   |   |   |   |   |   IonizationMean < 614.85 : 2 (11/2) [3/1]
+|   |   |   |   |   |   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   |   |   S = yes : 2 (9/2) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 29.29
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 248.94 : 2 (4/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 248.94
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 277.25 : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 277.25 : 2 (11/3) [9/2]
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 29.29
+|   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMean < 705.5 : 2 (19/8) [6/2]
+|   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMean >= 705.5 : 1 (13/3) [3/0]
+|   |   |   |   |   |   |   |   |   |   Na = no : 1 (22/8) [11/7]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 35.49
+|   |   |   |   |   |   |   |   |   S = yes : 1 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   S = no : 2 (31/5) [15/2]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 48.09
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 360.04
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 69.6
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 56.55
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 210.16 : 1 (12/6) [9/2]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 210.16
+|   |   |   |   |   |   |   |   |   |   |   |   IonizationMean < 614.85
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 246.64 : 1 (8/3) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 246.64 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   |   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 253
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = yes : 2 (4/1) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = no : 1 (12/5) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 253 : 1 (21/5) [5/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   Na = no : 1 (13/1) [4/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 56.55 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 69.6 : 2 (5/1) [6/2]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 360.04 : 2 (5/0) [0/0]
+|   |   |   |   |   IonizationMean >= 760.25
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 375.59
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 23.42
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 12.68
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 282.54 : 2 (28/2) [12/0]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 282.54
+|   |   |   |   |   |   |   |   |   |   S = yes : 1 (2/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   S = no : 2 (12/3) [6/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 12.68
+|   |   |   |   |   |   |   |   |   Na = yes
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 20.45 : 1 (4/0) [4/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 20.45
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 251.4 : 2 (8/2) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 251.4 : 1 (3/1) [1/0]
+|   |   |   |   |   |   |   |   |   Na = no : 1 (9/0) [5/1]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 23.42
+|   |   |   |   |   |   |   |   Na = yes : 2 (77/5) [46/8]
+|   |   |   |   |   |   |   |   Na = no
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 204.9 : 2 (11/0) [6/2]
+|   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 204.9
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 299.76 : 2 (101/18) [45/5]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 299.76
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 306.02 : 1 (6/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 306.02 : 2 (9/1) [2/1]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 375.59
+|   |   |   |   |   |   |   Na = yes : 2 (5/2) [5/1]
+|   |   |   |   |   |   |   Na = no : 1 (8/0) [1/0]
+|   |   |   |   time >= 25
+|   |   |   |   |   Na = yes
+|   |   |   |   |   |   time < 37 : 2 (5/0) [4/0]
+|   |   |   |   |   |   time >= 37
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 205.23 : 2 (5/1) [4/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 205.23 : 1 (16/3) [8/0]
+|   |   |   |   |   Na = no
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41 : 2 (50/0) [19/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 359.74
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 319.66
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 62.8 : 2 (212/28) [125/15]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 62.8 : 1 (11/5) [13/5]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 319.66 : 2 (25/0) [11/1]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 359.74 : 2 (53/15) [24/3]
+|   |   |   time >= 49
+|   |   |   |   orgpolarsurfaceareaArithAvg < 31.27
+|   |   |   |   |   orgvanderwaalsArithAvg < 282.52
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 219.08 : 1 (25/1) [7/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 219.08
+|   |   |   |   |   |   |   S = yes : 2 (8/0) [2/0]
+|   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 278.54
+|   |   |   |   |   |   |   |   |   time < 55 : 1 (6/2) [1/1]
+|   |   |   |   |   |   |   |   |   time >= 55
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 13.76 : 2 (5/0) [6/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 13.76
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 248.64 : 1 (2/0) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 248.64 : 2 (11/2) [13/3]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 278.54 : 1 (8/2) [3/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 282.52
+|   |   |   |   |   |   Na = yes : 1 (34/1) [16/2]
+|   |   |   |   |   |   Na = no : 2 (3/1) [7/0]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 31.27
+|   |   |   |   |   orgvanderwaalsArithAvg < 284.29 : 2 (45/6) [31/10]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 284.29
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 291.54 : 1 (4/0) [0/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 291.54
+|   |   |   |   |   |   |   IonizationMean < 722.2 : 2 (3/0) [2/0]
+|   |   |   |   |   |   |   IonizationMean >= 722.2
+|   |   |   |   |   |   |   |   time < 66
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 73.33
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 48.29 : 2 (5/1) [3/0]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 48.29
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 407.29
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 349.59 : 1 (20/7) [6/3]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 349.59 : 2 (4/0) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 407.29 : 1 (5/1) [2/1]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 73.33 : 2 (2/0) [2/0]
+|   |   |   |   |   |   |   |   time >= 66 : 1 (3/0) [6/0]
+|   |   time >= 77.5
+|   |   |   IonizationMean < 668.1
+|   |   |   |   orgpolarsurfaceareaArithAvg < 48.84 : 2 (17/2) [5/1]
+|   |   |   |   orgpolarsurfaceareaArithAvg >= 48.84
+|   |   |   |   |   time < 108 : 2 (5/1) [4/0]
+|   |   |   |   |   time >= 108
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 239.77
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 214.07 : 1 (2/0) [0/0]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 214.07 : 2 (4/1) [1/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 239.77 : 1 (5/0) [6/1]
+|   |   |   IonizationMean >= 668.1 : 2 (149/7) [58/3]
+|   oxlikehbdamsaccMax >= 3.52
+|   |   IonizationMean < 687.73 : 1 (6/1) [8/4]
+|   |   IonizationMean >= 687.73
+|   |   |   orgvanderwaalsArithAvg < 201.97 : 2 (17/6) [2/1]
+|   |   |   orgvanderwaalsArithAvg >= 201.97
+|   |   |   |   orgvanderwaalsArithAvg < 294.96
+|   |   |   |   |   orgvanderwaalsArithAvg < 289.86
+|   |   |   |   |   |   oxlikehbdamsaccMax < 9.52
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 43.02 : 2 (65/1) [35/2]
+|   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 43.02
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 46.47 : 1 (3/1) [1/0]
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 46.47 : 2 (20/1) [11/1]
+|   |   |   |   |   |   oxlikehbdamsaccMax >= 9.52
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 263.49 : 1 (2/0) [4/2]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 263.49 : 2 (2/0) [1/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 289.86
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 35.64 : 2 (3/1) [1/0]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 35.64 : 1 (2/0) [0/0]
+|   |   |   |   orgvanderwaalsArithAvg >= 294.96 : 2 (83/1) [46/3]
+
+Size of the tree : 189
+
+
+REPTree
+============
+
+time < 21.5
+|   P5 = yes : 1 (60/6) [29/0]
+|   P5 = no
+|   |   orgvanderwaalsArithAvg < 238.16
+|   |   |   time < 17.5 : 1 (24/2) [11/2]
+|   |   |   time >= 17.5
+|   |   |   |   orgvanderwaalsArithAvg < 206.75 : 2 (11/3) [4/2]
+|   |   |   |   orgvanderwaalsArithAvg >= 206.75
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 8.28 : 2 (2/0) [0/0]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 8.28
+|   |   |   |   |   |   IonizationMean < 723.43 : 1 (3/0) [0/0]
+|   |   |   |   |   |   IonizationMean >= 723.43
+|   |   |   |   |   |   |   time < 18.5 : 1 (29/9) [21/5]
+|   |   |   |   |   |   |   time >= 18.5
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 217.19 : 1 (6/2) [3/1]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 217.19 : 2 (4/1) [2/0]
+|   |   orgvanderwaalsArithAvg >= 238.16
+|   |   |   orgvanderwaalsArithAvg < 248.77 : 2 (9/0) [10/1]
+|   |   |   orgvanderwaalsArithAvg >= 248.77
+|   |   |   |   Na = yes
+|   |   |   |   |   orgvanderwaalsArithAvg < 400.21
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 397.47
+|   |   |   |   |   |   |   time < 16.5 : 1 (5/1) [2/0]
+|   |   |   |   |   |   |   time >= 16.5 : 2 (66/23) [32/9]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 397.47 : 1 (3/0) [0/0]
+|   |   |   |   |   orgvanderwaalsArithAvg >= 400.21 : 2 (6/0) [4/0]
+|   |   |   |   Na = no : 1 (69/30) [34/9]
+time >= 21.5
+|   time < 89.5
+|   |   time < 49
+|   |   |   oxlikehbdamsaccMax < 3.52
+|   |   |   |   time < 25
+|   |   |   |   |   orgpolarsurfaceareaArithAvg < 51.18
+|   |   |   |   |   |   IonizationMean < 614.85 : 2 (13/0) [6/0]
+|   |   |   |   |   |   IonizationMean >= 614.85
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 304.48
+|   |   |   |   |   |   |   |   IonizationMean < 778.03
+|   |   |   |   |   |   |   |   |   S = yes
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 27.27 : 2 (11/5) [8/3]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 27.27 : 1 (8/1) [6/2]
+|   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 35.49
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 26.41 : 2 (34/5) [16/4]
+|   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 26.41
+|   |   |   |   |   |   |   |   |   |   |   |   P5 = yes : 1 (9/0) [9/4]
+|   |   |   |   |   |   |   |   |   |   |   |   P5 = no : 2 (22/8) [11/3]
+|   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 35.49 : 2 (28/3) [17/3]
+|   |   |   |   |   |   |   |   IonizationMean >= 778.03
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 23.42
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 275.99 : 2 (46/14) [23/3]
+|   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 275.99
+|   |   |   |   |   |   |   |   |   |   |   S = yes : 1 (3/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   Na = yes : 1 (2/0) [1/0]
+|   |   |   |   |   |   |   |   |   |   |   |   Na = no : 2 (7/2) [9/2]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 23.42 : 2 (187/31) [94/21]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 304.48
+|   |   |   |   |   |   |   |   Na = yes : 2 (17/4) [6/1]
+|   |   |   |   |   |   |   |   Na = no : 1 (9/0) [3/3]
+|   |   |   |   |   orgpolarsurfaceareaArithAvg >= 51.18
+|   |   |   |   |   |   IonizationMean < 778.03 : 1 (82/36) [26/8]
+|   |   |   |   |   |   IonizationMean >= 778.03 : 2 (34/9) [19/3]
+|   |   |   |   time >= 25
+|   |   |   |   |   Na = yes
+|   |   |   |   |   |   time < 37 : 2 (6/0) [2/0]
+|   |   |   |   |   |   time >= 37 : 1 (29/8) [10/4]
+|   |   |   |   |   Na = no
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 61.27 : 2 (336/37) [174/16]
+|   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 61.27
+|   |   |   |   |   |   |   IonizationMean < 740.13 : 1 (12/3) [5/2]
+|   |   |   |   |   |   |   IonizationMean >= 740.13 : 2 (3/0) [3/0]
+|   |   |   oxlikehbdamsaccMax >= 3.52
+|   |   |   |   orgvanderwaalsArithAvg < 201.97 : 1 (5/2) [1/0]
+|   |   |   |   orgvanderwaalsArithAvg >= 201.97 : 2 (137/9) [71/8]
+|   |   time >= 49
+|   |   |   orgvanderwaalsArithAvg < 353.56
+|   |   |   |   orgvanderwaalsArithAvg < 349.64
+|   |   |   |   |   IonizationMean < 668.1
+|   |   |   |   |   |   time < 80.5 : 1 (12/0) [4/0]
+|   |   |   |   |   |   time >= 80.5
+|   |   |   |   |   |   |   oxlikehbdamsaccMax < 3.65 : 1 (3/0) [5/2]
+|   |   |   |   |   |   |   oxlikehbdamsaccMax >= 3.65 : 2 (3/0) [1/0]
+|   |   |   |   |   IonizationMean >= 668.1
+|   |   |   |   |   |   IonizationMean < 722.2 : 2 (30/1) [12/0]
+|   |   |   |   |   |   IonizationMean >= 722.2
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg < 336.86
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 328.84
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg < 3.84 : 2 (7/0) [4/1]
+|   |   |   |   |   |   |   |   |   orgpolarsurfaceareaArithAvg >= 3.84
+|   |   |   |   |   |   |   |   |   |   time < 77.5
+|   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax < 8.17
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 283.65
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 273.34
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 257.54
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 246.61
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 239.03
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 219.6
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 217.24
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 214.33
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg < 209.44 : 2 (4/1) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 209.44 : 1 (15/3) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 214.33 : 2 (3/0) [0/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 217.24 : 1 (9/0) [5/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 219.6 : 2 (7/1) [12/2]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 239.03 : 1 (6/0) [3/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 246.61 : 2 (8/0) [3/1]
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 257.54 : 1 (14/2) [2/0]
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 273.34 : 2 (28/7) [22/8]
+|   |   |   |   |   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 283.65 : 1 (12/2) [11/2]
+|   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsaccMax >= 8.17 : 2 (27/8) [13/2]
+|   |   |   |   |   |   |   |   |   |   time >= 77.5 : 2 (45/11) [16/1]
+|   |   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 328.84 : 1 (15/1) [11/3]
+|   |   |   |   |   |   |   orgvanderwaalsArithAvg >= 336.86 : 2 (10/0) [2/0]
+|   |   |   |   orgvanderwaalsArithAvg >= 349.64 : 1 (20/2) [8/0]
+|   |   |   orgvanderwaalsArithAvg >= 353.56
+|   |   |   |   orgvanderwaalsArithAvg < 411.13 : 2 (16/0) [8/0]
+|   |   |   |   orgvanderwaalsArithAvg >= 411.13
+|   |   |   |   |   time < 72
+|   |   |   |   |   |   orgvanderwaalsArithAvg < 504.79 : 1 (2/1) [2/0]
+|   |   |   |   |   |   orgvanderwaalsArithAvg >= 504.79 : 2 (2/0) [1/0]
+|   |   |   |   |   time >= 72 : 2 (3/0) [0/0]
+|   time >= 89.5
+|   |   orgpolarsurfaceareaArithAvg < 55.84 : 2 (114/3) [47/3]
+|   |   orgpolarsurfaceareaArithAvg >= 55.84
+|   |   |   orgpolarsurfaceareaArithAvg < 57.11 : 1 (2/0) [2/0]
+|   |   |   orgpolarsurfaceareaArithAvg >= 57.11
+|   |   |   |   orgvanderwaalsArithAvg < 274.2 : 2 (5/1) [2/0]
+|   |   |   |   orgvanderwaalsArithAvg >= 274.2 : 1 (4/1) [7/2]
+
+Size of the tree : 129
+
+
+
+Time taken to build model: 0.1 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         941               83.0538 %
+Incorrectly Classified Instances       192               16.9462 %
+Kappa statistic                          0.5385
+Mean absolute error                      0.2715
+Root mean squared error                  0.3671
+Relative absolute error                 66.9293 %
+Root relative squared error             82.7467 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.584     0.08       0.728     0.584     0.648      0.815    1
+                 0.92      0.416      0.858     0.92      0.888      0.815    2
+Weighted Avg.    0.831     0.326      0.824     0.831     0.824      0.815
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 177 126 |   a = 1
+  66 764 |   b = 2
+

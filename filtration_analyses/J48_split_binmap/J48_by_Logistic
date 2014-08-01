@@ -1,0 +1,76 @@
+=== Run information ===
+
+Scheme:weka.classifiers.functions.Logistic -R 1.0E-8 -M -1
+Relation:     rec_system-weka.filters.unsupervised.attribute.Remove-V-R39,41,85,96,164,240,254,267,274
+Instances:    2645
+Attributes:   9
+              orgvanderwaalsMin
+              orgASA+Min
+              orghbdamsdonGeomAvg
+              oxlikevanderwaalsMax
+              orgacc-waterdonratio
+              PaulingElectronegMean
+              hardnessMaxWeighted
+              AtomicRadiusMeanWeighted
+              outcome
+Test mode:user supplied test set: size unknown (reading incrementally)
+
+=== Classifier model (full training set) ===
+
+Logistic Regression with ridge parameter of 1.0E-8
+Coefficients...
+                              Class
+Variable                          1
+===================================
+orgvanderwaalsMin            0.0046
+orgASA+Min                   -0.005
+orghbdamsdonGeomAvg          0.0258
+oxlikevanderwaalsMax        -0.0006
+orgacc-waterdonratio         0.7943
+PaulingElectronegMean       -1.8266
+hardnessMaxWeighted          0.0897
+AtomicRadiusMeanWeighted    -0.4432
+Intercept                    2.6372
+
+
+Odds Ratios...
+                              Class
+Variable                          1
+===================================
+orgvanderwaalsMin            1.0046
+orgASA+Min                    0.995
+orghbdamsdonGeomAvg          1.0261
+oxlikevanderwaalsMax         0.9994
+orgacc-waterdonratio          2.213
+PaulingElectronegMean         0.161
+hardnessMaxWeighted          1.0938
+AtomicRadiusMeanWeighted      0.642
+
+
+Time taken to build model: 0.05 seconds
+
+=== Evaluation on test set ===
+=== Summary ===
+
+Correctly Classified Instances         818               72.1977 %
+Incorrectly Classified Instances       315               27.8023 %
+Kappa statistic                          0.0003
+Mean absolute error                      0.3944
+Root mean squared error                  0.4387
+Relative absolute error                 97.2103 %
+Root relative squared error             98.8932 %
+Total Number of Instances             1133     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.023     0.023      0.269     0.023     0.043      0.624    1
+                 0.977     0.977      0.733     0.977     0.837      0.624    2
+Weighted Avg.    0.722     0.722      0.609     0.722     0.625      0.624
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+   7 296 |   a = 1
+  19 811 |   b = 2
+

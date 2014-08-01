@@ -1,0 +1,219 @@
+Unfiltered
+   All attributes used
+   classified by:
+	   NBayes .... 58.3407% accurate
+	 Logistic .... 76.4342% accurate
+	      SMO .... 80.053%  accurate
+	    KStar .... 80.053%  accurate
+	  Bagging .... 81.4651% accurate
+	      J48 .... 82.083%  accurate
+Logistic 
+   Selected attributes: 4,5,7,10,13,15,16,20,25,27,33,34,35,44,49,71,100,170,174,180,185,188,228,239,258,261 : 26
+                     pH
+                     leak
+                     numberOrg
+                     orgavgpolMax
+                     orgmaximalprojectionradiusMax
+                     orgminimalprojectionareaMax
+                     orgminimalprojectionradiusMax
+                     orgvanderwaalsMax
+                     orgASA_PMax
+                     orghbdamsaccMax
+                     orgmaximalprojectionsizeMin
+                     orgminimalprojectionareaMin
+                     orgminimalprojectionradiusMin
+                     orgASA_PMin
+                     orgrefractivityArithAvg
+                     orgmaximalprojectionsizeGeomAvg
+                     oxlikeASA_HMax
+                     Te
+                     F
+                     S
+                     Cl
+                     Cr
+                     PaulingElectronegMax
+                     EAMean
+                     PaulingElectronegMinWeighted
+                     AtomicRadiusMinWeighted
+   classified by:
+           NBayes .... 72.4625% accurate
+         Logistic .... 78.376%  accurate
+              SMO .... 75.4634% accurate
+            KStar .... 80.8473% accurate
+          Bagging .... 80.2295% accurate
+              J48 .... 80.759%  accurate
+
+SMO 
+   Selected attributes: 1,3,4,5,9,10,11,12,18,31,39,44,82,84,168,176,180,182,183,188,228,254 : 22
+                     Temp_max
+                     slowCool
+                     pH
+                     leak
+                     numberComponents
+                     orgavgpolMax
+                     orgrefractivityMax
+                     orgmaximalprojectionareaMax
+                     orgavgpol_pHdependentMax
+                     orgmaximalprojectionareaMin
+                     orgvanderwaalsMin
+                     orgASA_PMin
+                     orgASA_PGeomAvg
+                     orghbdamsaccGeomAvg
+                     Na
+                     Mo
+                     S
+                     Se
+                     Zn
+                     Cr
+                     PaulingElectronegMax
+                     hardnessMaxWeighted
+   classified by:
+           NBayes .... 68.579%  accurate
+         Logistic .... 73.3451% accurate
+	      SMO .... 79.9647% accurate
+	    KStar .... 82.5243% accurate
+	  Bagging .... 83.9365% accurate
+	      J48 .... 83.4069% accurate
+
+KStar 
+   Selected attributes: 1,2,3,5,18,26,63,83,99,100,103,170,172,174,180,182,234,255,261 : 19
+                     Temp_max
+                     time
+                     slowCool
+                     leak
+                     orgavgpol_pHdependentMax
+                     orgpolarsurfaceareaMax
+                     orgASA_PArithAvg
+                     orgpolarsurfaceareaGeomAvg
+                     oxlikeASA-Max
+                     oxlikeASA_HMax
+                     oxlikehbdamsaccMax
+                     Te
+                     K
+                     F
+                     S
+                     Se
+                     PaulingElectronegMin
+                     AtomicRadiusMaxWeighted
+                     AtomicRadiusMinWeighted
+   classified by:
+           NBayes .... 67.1668% accurate
+	 Logistic .... 73.1686% accurate
+	      SMO .... 77.4051% accurate
+            KStar .... 84.5543% accurate
+	  Bagging .... 82.8773% accurate
+              J48 .... 83.1421% accurate
+
+Bagging 
+   Selected attributes: 2,58,64,103,168,180,197,238 : 8
+                     time
+                     orgvanderwaalsArithAvg
+                     orgpolarsurfaceareaArithAvg
+                     oxlikehbdamsaccMax
+                     Na
+                     S
+                     P5
+                     IonizationMean
+   classified by:
+           NBayes .... 73.5216% accurate
+	 Logistic .... 74.316%  accurate
+	      SMO .... 74.669%  accurate
+	    KStar .... 82.2595% accurate
+          Bagging .... 83.0538% accurate
+	      J48 .... 80.8473% accurate
+
+
+J48 
+   Selected attributes: 39,41,85,96,164,240,254,267 : 8
+                     orgvanderwaalsMin
+                     orgASA+Min
+                     orghbdamsdonGeomAvg
+                     oxlikevanderwaalsMax
+                     orgacc-waterdonratio
+                     PaulingElectronegMean
+                     hardnessMaxWeighted
+                     AtomicRadiusMeanWeighted
+   classified by:
+    	   NBayes .... 69.1968% accurate
+	 Logistic .... 72.1977% accurate
+	      SMO .... 73.2568% accurate
+	    KStar .... 80.4943% accurate
+	  Bagging .... 80.5825% accurate
+	      J48 .... 83.2304% accurate
+
+Amalgam Filter
+   Selected attributes: 1,2,3,4,5,7,9,10,11,12,13,15,16,18,20,25,26,27,31,33,34,35,39,41,44,49,58,60,63,64,71,82,83,84,85,96,99,100,103,164,168,170,172,174,175,176,180,182,183,185,188,197,228,234,238,239,240,241,254,255,258,261,267 :  64
+              Temp_max
+              time
+              slowCool
+              pH
+              leak
+              numberOrg
+              numberComponents
+              orgavgpolMax
+              orgrefractivityMax
+              orgmaximalprojectionareaMax
+              orgmaximalprojectionradiusMax
+              orgminimalprojectionareaMax
+              orgminimalprojectionradiusMax
+              orgavgpol_pHdependentMax
+              orgvanderwaalsMax
+              orgASA_PMax
+              orgpolarsurfaceareaMax
+              orghbdamsaccMax
+              orgmaximalprojectionareaMin
+              orgmaximalprojectionsizeMin
+              orgminimalprojectionareaMin
+              orgminimalprojectionradiusMin
+              orgvanderwaalsMin
+              orgASA+Min
+              orgASA_PMin
+              orgrefractivityArithAvg
+              orgvanderwaalsArithAvg
+              orgASA+ArithAvg
+              orgASA_PArithAvg
+              orgpolarsurfaceareaArithAvg
+              orgmaximalprojectionsizeGeomAvg
+              orgASA_PGeomAvg
+              orgpolarsurfaceareaGeomAvg
+              orghbdamsaccGeomAvg
+              orghbdamsdonGeomAvg
+              oxlikevanderwaalsMax
+              oxlikeASA-Max
+              oxlikeASA_HMax
+              oxlikehbdamsaccMax
+              orgacc-waterdonratio
+              Na
+              Te
+              K
+              F
+              I
+              Mo
+              S
+              Se
+              Zn
+              Cl
+              Cr
+              P5
+              PaulingElectronegMax
+              PaulingElectronegMin
+              IonizationMean
+              EAMean
+              PaulingElectronegMean
+              PearsonElectronegMean
+              hardnessMaxWeighted
+              AtomicRadiusMaxWeighted
+              PaulingElectronegMinWeighted
+              AtomicRadiusMinWeighted
+              AtomicRadiusMeanWeighted
+              outcome
+   classified by:
+	   NBayes .... 69.4616% accurate
+	 Logistic .... 74.316%  accurate
+	      SMO .... 79.0821% accurate
+	    KStar .... 80.1412% accurate
+	  Bagging .... 82.1712% accurate
+	      J48 .... 83.1421% accurate
+
+
+In summary, J48 is the most frequently top scorer in classification accuracy for each individual filter. However, the highest single score was slightly higher than J48's average, at 84.5543% accuracy. This occurred for the KStar filter, KStar classifier pair. For all other filters, KStar is usually third best, behind Bagging and J48. I personally lean toward J48 for its slightly better consistency in giving the highest quality recommendation, but I can also recommend KStar for its exceptionally high performance when used to both filter and classify the data.
