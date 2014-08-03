@@ -17,6 +17,11 @@ from data_config import CONFIG
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # Basic Page Views # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
+
+#Having issues with about page being rendered and reording the divs (namely, #bottomPanel div is being put inside #infoPanel instead of on the same level, so going to bypass the issue for now by not inheriting the index template
+def about_page(request):
+  return render(request, 'temp_about.html') 
+
 def info_page(request, page):
  return render(request, 'index.html', {"template":page})
 

@@ -1,4 +1,3 @@
-
 from get_data import *
 from clustering import *
 from kdtree import *
@@ -14,7 +13,7 @@ from kdtree import *
 
 missing_data_token = "-1";
 
-# Linreg = linear regression(actually crrelation)
+# Linreg = linear regression(actually correlation)
 #To loop through, go CR not RC (because rows and columns are flipped)
 class dataMatrix:
   #Initialize data-matrix from file. Properties of the datamatrix will be the header_list,
@@ -28,6 +27,17 @@ class dataMatrix:
     self.num_rows = len(self.dataset)
     self.num_cols = len(self.dataset[0])
     self.convertYesNotoOneZero()
+
+
+  #Remove non-numeric columns
+  def removeStringCols(self):
+    counter = 0		
+    for i in xrange(0,self.num_cols):
+      for j in xrange(1, self.num_rows):
+        if (self.is_number(self.dataset[i][j]) == False and not (self.dataset[i][j]) == "?"):
+          counter += 1
+          self.removeColumn(i)
+          return self.removeStringCols()
 
   #Automatically write matrix to a csv file, Filename is prese.t
   def writeToFile(self,filename):
@@ -70,7 +80,18 @@ class dataMatrix:
     linreg_list = self.findAllLinregs()
     for item in linreg_list:
       just_correls.append(item[2])
-    return just_
+    return just_correls 
+
+#Removes any linregs that are correlated within a certain range
+  def removeCorrelatedLinregs(self, x, y):		
+    correl_range = [.98,1.02]	
+    for i in xrange(x, self.num_cols):
+      for j in xrange(y, self.num_cols):
+        if i != j and self.is_number(self.dataset[i]) and self.is_number(self.dataset[j]):
+          if (-correl_range[0] > self.findLinreg(i,j) > -correl_range[1] or correl_range[0] < self.findLinreg(i,j) < correl_range[1]):
+            if not (self.header_list[j] == "purity" or self.header_list[j] == "outcome"):
+       	      self.removeColumn(j)
+  	      return self.removeCorrelatedLinregs(i, j)
 
   #Finds the mean value of a given column (helper for filling missing rows with mean)
   def meanCol(self,num_col):

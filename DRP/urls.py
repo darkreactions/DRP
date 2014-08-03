@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     (r'^$', info_page, {"page":"home"}),
     (r'^home/?$', info_page, {"page":"home"}),
     (r'^papers/?$', info_page, {"page":"papers"}),
-    (r'^about/?$', info_page, {"page":"about"}),
+    (r'^about/?$', about_page),
     (r'^contact/?$', info_page, {"page":"contact"}),
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
     (r'^explore/?$', global_page, {"page":"explore"}),
@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     (r'^send_CG_names/$', "DRP.views.jsonViews.send_CG_names"), #Send the CG name_pairs for client-side validation.
   #Visualization
     (r'^get_graph/$', "DRP.views.explore_vis.get_graph_data"),
+    (r'^setup_graph/$', "DRP.views.explore_vis.store_graph"), 
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
     (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),

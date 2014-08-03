@@ -1,12 +1,13 @@
+<html>
+<head><title>Dark Reaction Project</title> 
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
+</head>
+
 <style> 
 
 img { 
  max-width: 100%;
  max-height: 100%; 
-}
-
-a {
- color: black;
 }
 
 .grow {
@@ -39,13 +40,16 @@ a {
 
 #people {
  min-width: 600px;
+ max-height: 190px; 
+ overflow: hidden;
+ box-sizing: border-box; 
 }
 
 .column {
  background-color: white; 
- width: 32.3%;
+ width: 32.25%;
  display: inline-block; 
- padding: 1em 0px; 
+ padding: 1em 0px;
  overflow: visible; 
  position: relative; 
  vertical-align: top;
@@ -73,7 +77,7 @@ a {
  box-sizing: border-box;
  position: relative; 
  display: inline-block;  
- padding-top: 3%; 
+ padding-top: 4%;
 }
 
 .profPics {
@@ -82,7 +86,7 @@ a {
  height: 75%; 
  display: inline-block;
  position: absolute;  
- left: 0px;    
+ left: 2%;    
 }
 
 .profPics img {
@@ -121,6 +125,10 @@ a {
  display:none;
 }
 
+.profLinks a {
+ color: black;
+}  
+
 .profBio {
  position: absolute;
  display: inline-block;
@@ -141,8 +149,9 @@ a {
 .profBio hr {
  width: 95%;
  top: -1%; 
- position: absolute;  
-	}
+ position: absolute;
+ overflow: hidden;
+}
 
 <!--Logo panel styling--> 
 
@@ -169,8 +178,28 @@ text-align: center;
 
 </style>
 
-<div class="back_ground">
 <!--Display the NSF and Haverford logos, linking to their respective sites. --> 
+
+<body>
+ {% include "popupContainer.html" %}
+
+<div id="mainContainer">
+<div id="topPanel">
+ <div id="logoContainer">{% include "main_logo.html" %}</div>
+
+ {% include "info_menu.html" %}
+
+ <!-- Buttons used to manipulate the data presented on this page. -->
+ <div id="dataManipulationMenu">
+ </div>
+ {% include "user_control_container.html" %}
+</div>
+
+<div id="infoPanel" background-color: #F1F8FF>
+ <div id="mainPanel" background-color: #F1F8FF>
+  <div class="infoContainer" background-color: "#F1F8FF"> 
+  
+
 <div id="logos">
     <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1307801" title="See the full NSF award.">
       <img id="NSF" src="{{STATIC_URL}}images/NSF.gif"/>
@@ -245,5 +274,35 @@ text-align: center;
   </div> 
 
 </div> 
-{% endblock %} 
 
+</div>
+ </div>
+ 
+<div id="sidePanel"><div id="sidePanel_inner"></div></div>
+</div>
+
+<div id="bottomPanel">
+ <!-- COPYRIGHT -->
+ {% include "copyright.html" %}
+</div>
+
+</div>
+</div>
+
+ </body>
+
+ <!-- SCRIPTS -->
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.csrf.js"></script>
+
+ <script type="text/javascript">
+  //Define the STATIC_URL if needed in the JS files.
+  var STATIC_URL = "{{ STATIC_URL }}";
+ </script>
+
+ <script type="text/javascript" src="{{ STATIC_URL }}js/clientValidate.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/universal.js" ></script>
+
+</html> 

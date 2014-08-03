@@ -1,9 +1,12 @@
 // D3 code for visualization will go here!
-
+//var worker = new Worker("/static/js/exploreWorker.js"); 
+//worker.addEventListener('progress', function(e) {
+// console.log(e) }, false); 
+//worker.postMessage(); 
+ 
+//var nodePositionsPath = "/home/ntien/workspace/dark-reaction-site/DRP/vis/nodePositions.json" 
 var width = parseInt(d3.select("#graph").style("width"), 10);
 var height = parseInt(d3.select("#graph").style("height"), 10); 
-console.log(width + "," + height) 
-
 d3.json("/get_graph/", function(graph) {
     
     var nodeTooltips = [["Purity", "purity"],
@@ -14,20 +17,28 @@ d3.json("/get_graph/", function(graph) {
 			["Org1", "org1"],
 			["Pagerank", "pagerank"] 
 			]; 
-    var n = 100;
-    var nodes = graph.nodes;
+    var nodes = graph.nodes  
+    var preLoad = graph.skipTicks === "True";  
     var links = graph.links;
-
-    var zoom = d3.behavior.zoom()
+     
+/*  var saveFile = function() {$.ajax({
+	type: 'POST', 
+	url: nodePositionsPath, 
+	data: nodes, 
+	success: success,
+	dataType: json
+  	});
+ }; 
+ */ 
+  var zoom = d3.behavior.zoom()
     .scaleExtent([1/10, 2])
     .on("zoom", zoomed);
 
-    var drag = d3.behavior.drag()
+  var drag = d3.behavior.drag()
       .origin(function(d) { return d; })
       .on("dragstart", dragstarted)
       .on("drag", dragged)
       .on("dragend", dragended);
-
 
 //Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
 function dragstarted(d) {
@@ -52,7 +63,7 @@ function dragended(d) {
       connection["weight"] = 1;
       return connection;
     })
-
+  
 var force = d3.layout.force()
   .nodes(nodes)
   .links(links)
@@ -61,7 +72,7 @@ var force = d3.layout.force()
   .gravity(0.4)
   .linkDistance(100)
   .size([width, height]);
-
+ 
 var svg = d3.select("#graph").append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -73,7 +84,7 @@ container.append("rect")
 	.attr("width", width)
 	.attr("height", height)
 	.attr("fill", "white") 
-	.on("mouseover", function() { console.log("Clicked the container"); d3.selectAll(".tooltipContainer").remove();}); 
+	.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove();}); 
 
 
  
@@ -88,15 +99,32 @@ setTimeout(function() {
   // Run the layout a fixed number of times.
   // The ideal number of times scales with graph complexity.
   // Of course, don't run too long—you'll hang the page!
+var maxIterations = parseFloat(100); 
+var loadingBar = $("#innerLoadingBar");
+var loadingBarMaxLength = loadingBar.parent().width();
+
+
+if (!preLoad) {
+ console.log(preLoad) 
+ console.log("made it to preload!")  
  force.on("tick", function() {
   nodes[0].x = width / 2;
-  nodes[0].y = height / 2; 
-}); 
+  nodes[0].y = height / 2;
+ }); 
 
   force.start();
-  for (var i = n*n; i > 0; --i) force.tick();
-  force.stop();
-
+  for (var i = 0; i < maxIterations; i++) {
+	force.tick()
+  }
+  force.stop();  
+  } else {
+   force.start();  
+   force.tick();
+   force.stop();
+  } 
+    
+    
+ 
   container.selectAll("line")
     .data(links)
   .enter().append("line")
@@ -105,13 +133,7 @@ setTimeout(function() {
     .attr("x2", function(d) { return d.target.x; })
     .attr("y2", function(d) { return d.target.y; })
     .style("stroke-width", 0.06)
-    .attr("stroke", "gray")
-    .on("mouseover", function(d) {
-	var thisLine = d3.select(this);
- 	console.log(thisLine.x, thisLine.y)
-	console.log(d.source.x)
-	console.log(d.source.y); 
-    });   
+    .attr("stroke", "gray");
 
   var nodeElements = container.selectAll(".node")
     .data(nodes.filter(function(d) { return d.outcome > 0;}))
@@ -154,7 +176,6 @@ setTimeout(function() {
 	this.parentNode.parentNode.appendChild(thisGroup); 
 	
 	var currentCircle = d3.select(thisGroup);  
-	console.log("Made it to mouseover")  
 	
 	var textbox = currentCircle.append("g")
 	  .attr("class", "tooltipContainer") 
@@ -237,8 +258,8 @@ setTimeout(function() {
 	
 	seedRecButton.on("click", function(d) { 
 		var url="/make_seed_recommendations/";
-		var request = {"pid":d.id}
-		console.log(d.id);  
+		var request = {"pid":d.id}; 
+		console.log(d.id); 
 		$.post(url, request, function(response) {
   		if (response=='0') {
     			var comment = "Making recommendations based on seed!"; 
@@ -258,7 +279,17 @@ setTimeout(function() {
     nodeElements.attr("transform", function(d) {
 	return "translate(" + d.x + "," + d.y + ")";
     });  
-  $("#loadingMessage").remove()   
+  $("#loadingMessage").remove()  
+  function grabLinkIndices(links) {
+	var linkIndices = [] 
+	for (var i=0; i < links.length; i++) { 
+		var newSet = {"source": links[i].source.index, "target": links[i].target.index} 
+		linkIndices.push(newSet)
+        }
+	return linkIndices
+  }
+  var data = {"nodes": JSON.stringify(nodes), "links": JSON.stringify(grabLinkIndices(links))};  
+  $.post('/setup_graph/', data);
 }, 10);
  });
 
