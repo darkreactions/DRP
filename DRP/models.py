@@ -310,7 +310,7 @@ class Data(models.Model):
   def __unicode__(self):
     return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
-  def get_calculations_list(self):
+  def get_calculations_list(self, include_lab_info=False):
     from DRP.model_building.load_data import create_expanded_datum_field_list
 
     if not self.calculations:
@@ -325,14 +325,20 @@ class Data(models.Model):
       self.calculations = newDataCalc
       self.save()
     final_list = self.calculations.make_json()
-    return map(check_for_numbers_in_string, final_list) 
 
-#Independent function to convert string (unicode) to list.
-def check_for_numbers_in_string(string): 
+    if include_lab_info:
+      final_list += [self.lab_group.lab_title, str(self.creation_time_dt)]
+
+    formatted_data = map(convert_numbers_to_floats, final_list)
+
+    return formatted_data
+
+# Convert any number-like strings to floats.
+def convert_numbers_to_floats(string):
   try:
     return float(string)
   except:
-    return string 
+    return string
 
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):

@@ -35,7 +35,7 @@ def gen_model(model_name, description):
 
   # Get the valid reactions across all lab groups.
   print "Loading data entries."
-  data = get_valid_data("all labs")
+  data = get_valid_data()
 
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.

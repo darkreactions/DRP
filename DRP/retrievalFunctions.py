@@ -109,10 +109,10 @@ def filter_data(lab_group, query_list):
 
 #Either get the valid Data entries for a lab group or get all valid data.
 #  Note: Accepts an actual LabGroup object.
-def get_valid_data(lab_group):
-  if lab_group=="all labs":
-    return Data.objects.filter(is_valid=True)
-  return Data.objects.filter(is_valid=True, lab_group=lab_group)
+def get_valid_data(lab_group=None):
+  if lab_group:
+    return Data.objects.filter(is_valid=True, lab_group=lab_group)
+  return Data.objects.filter(is_valid=True)
 
 
 
@@ -121,19 +121,20 @@ def get_valid_data(lab_group):
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Given some 'data', returns a list of any DataCalc objects that can be gathered.
-def expand_data(data):
+def expand_data(data, include_lab_info=False):
   calcList = []
   for datum in data:
     try:
-      calcList.append(datum.get_calculations_list())
-    except:
+      calcList.append(datum.get_calculations_list(include_lab_info=include_lab_info))
+    except Exception as e:
+      print e
       pass
   return calcList
 
 #Grabs the "expanded_headers" for the DataCalc objects created in 'parse_rxn.'
 def get_expanded_headers():
   from DRP.model_building.rxn_calculator import headers
-  return headers 
+  return headers
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
