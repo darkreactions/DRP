@@ -9,13 +9,15 @@ handler500 = 'DRP.views.errors.display_500_error'
 handler404 = 'DRP.views.errors.display_404_error'
 
 urlpatterns = patterns('',
-  #Home and info pages.
+ #Home and info pages.
     (r'^$', info_page, {"page":"home"}),
     (r'^home/?$', info_page, {"page":"home"}),
     (r'^papers/?$', info_page, {"page":"papers"}),
-    (r'^about/?$', info_page, {"page":"about"}),
+    (r'^about/?$', info_page, {"page": "old_about"}),
     (r'^contact/?$', info_page, {"page":"contact"}),
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
+    (r'^explore/?$', global_page, {"page":"explore"}),
+    #(r'^help/?$', info_page, {"page":"help"}),
   #Dashboard
     url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
     url(r'^get_stats/?$', "DRP.views.dashboard.get_stats_json"), #Actually loads the json.
@@ -42,10 +44,9 @@ urlpatterns = patterns('',
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.
    #Validation
     (r'^send_CG_names/$', "DRP.views.jsonViews.send_CG_names"), #Send the CG name_pairs for client-side validation.
-  #Predictions
-    (r'^predictions/$', visuals), #TODO: Nora, rename this to whatever you want.
-                                  #      We called it "prediction" but now that's
-                                  #      not exactly what we're visualizing.
+  #Visualization
+    (r'^get_graph/$', "DRP.views.explore_vis.get_graph_data"),
+    (r'^setup_graph/$', "DRP.views.explore_vis.store_graph"), 
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
     (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),
@@ -64,19 +65,19 @@ urlpatterns = patterns('',
     (r'^rank/$', rank),
     (r'^send_and_receive_rank/$', send_and_receive_rank),
   #Searching
-    (r'^search/$', search, {"model":"Data"}), 
-    (r'^search/Data/?$', search, {"model":"Data"}), 
-    (r'^search/Recommendation/?$', search, {"model":"Recommendation"}), 
+    (r'^search/$', search, {"model":"Data"}),
+    (r'^search/Data/?$', search, {"model":"Data"}),
+    (r'^search/Recommendation/?$', search, {"model":"Recommendation"}),
     (r'^search/SeedRecommendation/?$', search, {
-		"model":"Recommendation", 
+		"model":"Recommendation",
 		"params":{"seeded":True}
-		}), 
+		}),
 
   #Users and Labs
    #Authentication
     (r'^user_logout/$', "DRP.views.user.user_logout"), #Log Out
     (r'^user_login/$', "DRP.views.user.user_login"), #Log In
-    (r'^login/?$', info_page, {"page":"login_form"}), 
+    (r'^login/?$', info_page, {"page":"login_form"}),
    #Registration
     (r'^user_license_agreement/$', "DRP.views.license_agreement.get_user_license_agreement"),
     (r'^update_user_license_agreement/$', "DRP.views.license_agreement.update_user_license_agreement"),

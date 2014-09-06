@@ -1,6 +1,6 @@
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
  # # # # # # JSON Views  # # # # # #
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
 
 #Necessary Imports:
 from django.http import HttpResponse
@@ -23,7 +23,7 @@ def download_CSV(request):
  #Get the info from the POST request.
  try:
   filters = request.POST.get("filters")
-  if filters: 
+  if filters:
    filters = json.loads(filters)
   model = request.POST.get("model")
   assert model in {"Recommendation", "Data", "Saved", "CompoundEntry"}
@@ -47,7 +47,7 @@ def download_CSV(request):
  headers = get_model_field_names(verbose=False, model=model)
 
  #Modify the headers if needed and get/filter the data.
- if model=="Data": 
+ if model=="Data":
   #Make sure the "Reference" is the first column.
   verbose_headers.remove("Reference")
   verbose_headers.insert(0, "Reference")
@@ -59,9 +59,14 @@ def download_CSV(request):
    data = filter_data(lab_group, filters)
 
  elif model=="Recommendation":
-  data = get_recommendations_by_date(lab_group)
-  if saved_only:
-   data = data.filter(saved=True)
+  print filters
+
+  #If there are any filters, apply them.
+  if filters:
+   data = filter_recommendations(lab_group, filters)
+  else:
+   data = get_recommendations_by_date(lab_group)
+
 
  else: #if model=="CompoundEntry"
   verbose_headers.remove("Image URL")
@@ -83,6 +88,7 @@ def download_CSV(request):
 def download_prompt(request):
  u = request.user
  model = request.POST.get("model")
+ print model
  if model in {"Data"}:
   return render(request, 'download_form.html', {
    "model":model,
@@ -93,10 +99,10 @@ def download_prompt(request):
   return render(request, 'download_form.html', {
    "model":model,
    "model_verbose":{
-     "CompoundEntry":"Compounds", 
-     "Saved":"Saved", 
+     "CompoundEntry":"Compounds",
+     "Saved":"Saved",
      "Recommendation":"Recommendations"}[model],
-   "allow_filters":False
+   "allow_filters":True
   })
 
  return HttpResponse("Request illegal!")

@@ -5,13 +5,12 @@ MAX_PARTITION_SIZE = 35 # MAGIC!
 
 
 
-# JUST KIDDING. 
+# JUST KIDDING.
 # I chose to only include relatively small partitions in the test set.
 # Choosing 35 makes more than 95% of partitions eligible, and more than 80%
-# of the data eligible. 
+# of the data eligible.
 
 def create_key(line):
-	print line
 	key = [line[0], line[3], line[6], line[9], line[12]]
 	key = [r for r in key if r.lower() != 'water' and r != ""]
 	key.sort()
@@ -30,7 +29,7 @@ def create_key_in_test_map(data_list):
 		number_of_reactions += 1
 
 	key_list = key_count_map.keys()
-	### Shuffle the list. We can now pick items from the top of the list 
+	### Shuffle the list. We can now pick items from the top of the list
 	random.shuffle(key_list)
 	key_in_test = dict()
 	test_total = 0
@@ -39,39 +38,49 @@ def create_key_in_test_map(data_list):
 	i = 0
 	for key in key_list:
 		if test_total < max_test and key_count_map[key] <= MAX_PARTITION_SIZE:
-			key_in_test[key] = True	
+			key_in_test[key] = True
 			test_total += key_count_map[key]
 		else:
 			key_in_test[key] = False
 	return key_in_test
 
 def build_key_in_test_map(keys):
-	key_counts = {k: keys.count(k) for k in set(keys)}
-	key_list = key_counts.keys()
-	key_in_test = dict()
-	test_total = 0
-	max_test = int(TEST_PERCENT*len(keys))
-	i = 0
-	for key in key_list:
-		if test_total < max_test and key_counts[key] <= MAX_PARTITION_SIZE:
-			key_in_test[key] = True
-			test_total += key_counts[key]
-		else:
-			key_in_test[key] = False
-	return key_in_test
+  key_counts = {k: keys.count(k) for k in set(keys)}
+  key_list = key_counts.keys()
+  key_in_test = dict()
+  test_total = 0
+  max_test = int(TEST_PERCENT*len(keys))
+  i = 0
+  for key in key_list:
+    if test_total < max_test and key_counts[key] <= MAX_PARTITION_SIZE:
+      key_in_test[key] = True
+      test_total += key_counts[key]
+    else:
+      key_in_test[key] = False
+  return key_in_test
 
-def create_test_and_train_lists(data_list, key_list):
-	test_list, train_list = [], []
 
-	key_in_test_map = build_key_in_test_map(key_list) 
+# Returns two separate lists of data entries (a test and a training list)
+#   given data entries and the corresponding keys (in the same order).
+def create_test_and_train_lists(data, keys):
+  test, train = [], []
 
-	for i in range(len(key_list)):
-		if key_in_test_map[key_list[i]]:
-			test_list.append(data_list[i])
-		else:
-			train_list.append(data_list[i])
-		
-	return test_list, train_list
+  # Choose which key should go where (ie: whether a datum will
+  #   be thrown to the test or training lists).
+  key_in_test_map = build_key_in_test_map(keys)
+
+  for i in xrange(len(keys)):
+    datum = data[i]
+    key = keys[i]
+
+    if key_in_test_map[key]:
+      test.append(datum)
+    else:
+      train.append(datum)
+
+  return test, train
+
+
 
 def is_match(line, m):
 	ts = [line[1], line[4], line[7], line[10], line[13]]
@@ -88,4 +97,4 @@ def create_test_train_lists_type(data_list):
 		elif is_match(line, "Se"):
 			selenium.append(line)
 	return tellurium, selenium
-	
+

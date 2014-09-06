@@ -1,0 +1,14 @@
+{% if user.is_authenticated %} 
+  <div class="infoContainer">
+   <div id="loadingMessage">Loading! Takes approximately 5 seconds. 
+   </div>  
+   <div id="graph"></div>
+{% for circle in graph %} 
+   <div class="dataSpecificButtonContainer"></div> 
+{% endfor %}   
+   </div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/d3.js"></script>  
+
+{% else %}
+<p>Please log in to see your visualization.</p> 
+{% endif %} 

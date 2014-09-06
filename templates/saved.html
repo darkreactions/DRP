@@ -1,4 +1,4 @@
-<div id="recContainer"> 
+<div id="recContainer">
 {% if fatal_message %}
  <p>{{ fatal_message }}</p>
 
@@ -66,7 +66,7 @@ Assigned User:
 <select name="assigned_user" class="editable_assignedUser">
 <option val="">None</option>
 {% for usr in users %}
- <option val="{{usr.id}}" 
+ <option val="{{usr.id}}"
  {% if entry.assigned_user == usr %}
  selected
  {% endif %}>{{usr.first_name}} {{usr.last_name}}</option>

@@ -11,12 +11,12 @@ from uuid import uuid4
 from CGCalculator import CGCalculator
 from collections import defaultdict
 from subprocess import Popen
-from DRP.settings import LOG_DIR, BASE_DIR    
+from DRP.settings import LOG_DIR, BASE_DIR
 
 import json, random, string, datetime, operator
 import rdkit.Chem as Chem
 import chemspipy
-    
+
 
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
@@ -105,7 +105,7 @@ def collect_CGs_by_abbrevs(lab_group, abbrev_list):
  CG_list = []
  for i in abbrev_list:
   query = get_lab_CG(lab_group).filter(abbrev=i)
-  if query.exists(): 
+  if query.exists():
    CG_list.append(query[0])
  return CG_list
 
@@ -166,16 +166,16 @@ def update_compound(entry):
     if not entry.custom: #Only update compounds that are not custom.
       #Get the most up-to-date ChemSpider info for a given CAS/compound.
       query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
-      if query: 
+      if query:
         #Update the entry.
         entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
         perform_calcs = True
-  
+
       else:
         perform_calcs = False
         print "Found legacy entry that should be custom: {}".format(entry.compound)
     else:
-        perform_calcs = False  
+        perform_calcs = False
         entry.calculations = None
         entry.image_url, entry.smiles, entry.mw = "","",""
     entry.save()
@@ -250,80 +250,114 @@ class Lab_Member(models.Model):
 
  def update_license(self):
   self.license_agreement_date_dt = datetime.datetime.now()
-  self.save()  
+  self.save()
 
  def __unicode__(self):
   return self.user.username
 
 ############### DATA ENTRY ########################
-from calculationFields import calc_fields
 class DataCalc(models.Model):
- for calc_field in calc_fields:
-  #Make sure field names don't contain operators.
-  calc_field = calc_field.replace("+","PLUS").replace("-","MINUS")
-  exec("{0} = models.CharField(\"{0}\", max_length=22)".format(calc_field))
+  contents = models.TextField(default="[]")
 
- def __unicode__(self):
-  return u"{}".format(self.XXXtitle);
+  def __unicode__(self):
+    return u"{}".format(self.contents);
+
+  #Convert the stringy contents to an actual array/JSON object.
+  def make_json(self):
+    return json.loads(self.contents)
+
 
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
- ref = models.CharField("Reference", max_length=12)
+  ref = models.CharField("Reference", max_length=12)
 
- #List Fields
- for i in CONFIG.reactant_range():
-  exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
-  exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
-  exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
+  #List Fields
+  for i in CONFIG.reactant_range():
+    exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
+    exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
+    exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
 
- temp = models.CharField("Temperature", max_length=10)
- time = models.CharField("Time", max_length=10) ###
- pH = models.CharField("pH", max_length=5)
+  temp = models.CharField("Temperature", max_length=10)
+  time = models.CharField("Time", max_length=10) ###
+  pH = models.CharField("pH", max_length=5)
 
- #Yes/No/? Fields:
- slow_cool = models.CharField("Slow Cool", max_length=10)
- leak = models.CharField("Leak", max_length=10)
- outcome = models.CharField("Outcome", max_length=1)
- purity = models.CharField("Purity", max_length=1)
+  #Yes/No/? Fields:
+  slow_cool = models.CharField("Slow Cool", max_length=10)
+  leak = models.CharField("Leak", max_length=10)
+  outcome = models.CharField("Outcome", max_length=1)
+  purity = models.CharField("Purity", max_length=1)
 
- notes = models.CharField("Notes", max_length=200, blank=True)
+  notes = models.CharField("Notes", max_length=200, blank=True)
 
- #Self-assigning Fields:
- calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
- calculated_pH = models.BooleanField(default=False)
- calculated_temp = models.BooleanField(default=False)
- calculated_time = models.BooleanField(default=False)
+  #Self-assigning Fields:
+  calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
+  calculated_pH = models.BooleanField(default=False)
+  calculated_temp = models.BooleanField(default=False)
+  calculated_time = models.BooleanField(default=False)
 
- atoms = models.CharField("Atoms", max_length=30, blank=True)
+  atoms = models.CharField("Atoms", max_length=30, blank=True)
 
- user = models.ForeignKey(User, unique=False)
- lab_group = models.ForeignKey(Lab_Group, unique=False)
- creation_time_dt = models.DateTimeField("Created", null=True, blank=True)
- is_valid = models.BooleanField("Valid", default=False)
+  user = models.ForeignKey(User, unique=False)
+  lab_group = models.ForeignKey(Lab_Group, unique=False)
+  creation_time_dt = models.DateTimeField("Created", null=True, blank=True)
+  is_valid = models.BooleanField("Valid", default=False)
 
- #Categorizing Fields:
- public = models.BooleanField("Public", default=False)
- duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
- recommended = models.CharField("Recommended", max_length=10)
+  #Categorizing Fields:
+  public = models.BooleanField("Public", default=False)
+  duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
+  recommended = models.CharField("Recommended", max_length=10)
 
- def __unicode__(self):
-  return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
+  def __unicode__(self):
+    return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
+
+  def get_calculations_list(self, include_lab_info=False):
+    from DRP.model_building.load_data import create_expanded_datum_field_list
+
+    if not self.calculations:
+      # Create the extended calculations.
+      calcList = create_expanded_datum_field_list(self)
+
+      # Prepare a new DataCalc object.
+      newDataCalc = DataCalc(contents=json.dumps(calcList))
+      newDataCalc.save()
+
+      # Create the ForeignKey between the new DataCalc and this Datum.
+      self.calculations = newDataCalc
+      self.save()
+    final_list = self.calculations.make_json()
+
+    if include_lab_info:
+      final_list += [self.lab_group.lab_title, str(self.creation_time_dt)]
+
+    formatted_data = map(convert_numbers_to_floats, final_list)
+
+    return formatted_data
+
+# Convert any number-like strings to floats.
+def convert_numbers_to_floats(string):
+  try:
+    return float(string)
+  except:
+    return string
 
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):
   # model false-positive on test set
-  false_positive_rate = models.FloatField() 
+  false_positive_rate = models.FloatField()
 
   # recommendation quality
-  actual_success_rate = models.FloatField() 
+  actual_success_rate = models.FloatField()
 
   # evaluation of similarity metric
-  estimated_success_rate = models.FloatField() 
-  
+  estimated_success_rate = models.FloatField()
+
   # model performance
   performance = models.FloatField()
   datetime = models.DateTimeField()
-  description = models.TextField()
+
+  #Model Descriptors
+  title = models.CharField("Title", max_length=100, default="")
+  description = models.TextField(default="")
 
   def __unicode__(self):
     return "Performance:{} ({})".format(self.performance, self.datetime)
@@ -400,7 +434,7 @@ class RankedReactionList(models.Model):
   self.ranker = ranker
   self.ranked_list = json.dumps(ranked_list)
   self.save()
- 
+
 def get_unranked_reactions(seed=None):
  unranked = RankedReactionList.objects.filter(ranker=None)
  #If a seed is specified, apply it to the filter.
@@ -492,7 +526,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None, reattempt_failed 
 #Remove any non-printable characters.
 def clean_compound(compound):
  return filter(lambda x: x in string.printable, compound)
- 
+
 class CompoundEntry(models.Model):
  abbrev = models.CharField("Abbreviation", max_length=100)
  compound = models.CharField("Compound", max_length=100)
@@ -528,7 +562,7 @@ def parse_CAS_ID(CAS):
 
 def validate_CG(dirty_data, lab_group, editing_this=False):
  #Variable Setup
- clean_data = dirty_data 
+ clean_data = dirty_data
  errors = {}
 
  for field in ["compound", "abbrev", "compound_type"]:
@@ -587,6 +621,7 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
 
  return query_list
 
+
 def convert_Data_to_list(dat, headings=None):
 	if not headings:
 		all_fields = get_model_field_names(model="Data", collect_ignored = True)
@@ -607,7 +642,8 @@ def convert_Data_to_list(dat, headings=None):
 				val = new_val
 		results.append(val)
 
-	return results 
+	return results
+
 
 def collect_reactions_as_lists(lab_group, with_headings=True):
  lab_group = get_Lab_Group(lab_group)
@@ -615,11 +651,13 @@ def collect_reactions_as_lists(lab_group, with_headings=True):
  query = get_lab_Data(lab_group)
  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
+
 def get_lab_CG_as_lists(lab_group, with_headings=True):
  lab_group = get_Lab_Group(lab_group)
 
  query = get_lab_CG(lab_group)
  return convert_QuerySet_to_list(query, "CompoundEntry", with_headings=with_headings)
+
 
 def collect_CG_name_pairs(lab_group, overwrite=False):
  pairs = get_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS")
@@ -628,6 +666,7 @@ def collect_CG_name_pairs(lab_group, overwrite=False):
   pairs = {entry.abbrev: entry.compound for entry in compound_guide}
   set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", pairs)
  return pairs
+
 
 def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
  try:
@@ -642,6 +681,7 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
  except Exception as e:
   raise Exception("CompoundEntry construction failed!")
 
+
 #Filter the Data by a specific abbrev.
 def get_Data_with_abbrev(lab_data, abbrev):
  if type(abbrev)==CompoundEntry:
@@ -649,6 +689,7 @@ def get_Data_with_abbrev(lab_data, abbrev):
 
  Q_list = [Q(("reactant_{}".format(i),abbrev)) for i in CONFIG.reactant_range()]
  return lab_data.filter(reduce(operator.or_, Q_list))
+
 
 #Collect a list of all valid data either globally or for a specific lab.
 def get_good_rxns(lab_group=None, with_headings=True):
@@ -710,24 +751,24 @@ def get_model_field_names(both=False, verbose=False, model="Data", unique_only=F
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time_dt", "calculations"}
   else:
-   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time_dt", 
-                       "calculations", "calculated_temp", "calculated_time", 
+   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time_dt",
+                       "calculations", "calculated_temp", "calculated_time",
                        "calculated_pH", "is_valid", "public"}
   dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
  elif model=="Recommendation":
   if collect_ignored:
    fields_to_ignore = {u"id", "creation_time_dt"}
   else:
-   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved", 
-                       "model_version", "atoms", "creation_time_dt", "nonsense", 
+   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved",
+                       "model_version", "atoms", "creation_time_dt", "nonsense",
                        "complete", "score", "date_dt", "hidden", "seed", "seeded"}
   dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
  elif model=="CompoundEntry":
   if collect_ignored:
    fields_to_ignore = {u"id", "image_url", "custom", "calculations"}
   else:
-   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom", 
-                       "calculations", "calculations_failed"} 
+   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom",
+                       "calculations", "calculations_failed"}
   dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
  else:
   raise Exception("Unknown model specified.")
@@ -790,7 +831,7 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     parsed_data[field] = dirty_data[field]
    except:
     if field in not_required:
-     clean_data[field] = "" #If nothing was entered, store nothing. 
+     clean_data[field] = "" #If nothing was entered, store nothing.
     else:
      errors[field] = "Field required."
 

@@ -1,0 +1,52 @@
+/* SHADOW/GLOW TRANSITIONS */
+/* Glow */
+.glow {
+  display: inline-block;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: box-shadow;
+  transition-property: box-shadow;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+}
+.glow:hover, .glow:focus, .glow:active {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.tooltip {
+ fill: black;  
+ stroke: black;
+ stroke-width: 0.3; 
+} 
+
+#seedButtonRect {
+ -webkit-box-shadow: 10px 10px 5px; 
+ box-shadow: 10px 10px 5px; 
+ fill: white; 
+} 
+
+#seedRecText {
+ fill: #2E6809; 
+ stroke: #0066CC;
+ stroke-width: 0.3; 
+}
+
+
+#seedImage {
+ -webkit-filter: huerotate(180deg);
+} 
+
+#loadingMessage {
+ padding 30px auto; 
+ width: 100%;
+ text-align-center; 
+ font-size: 24px;
+} 
+
+.tooltipBackground {
+ stroke-width: 1px;
+ fill: #CCE6FF;
+ opacity:0.5;
+ text-anchor: left; 
+}
