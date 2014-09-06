@@ -1,1 +1,0 @@
-java -cp /home/drp/weka/weka.jar weka.classifiers.trees.J48 -d ./J48_model.out -c last -t ./J48_split_binmap_train.arff -T ./J48_split_binmap_test.arff

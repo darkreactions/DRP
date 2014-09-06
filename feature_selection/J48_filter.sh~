@@ -1,1 +1,0 @@
-java -cp /home/drp/weka/weka.jar weka.filters.unsupervised.attribute.Remove -V -R 39,41,85,96,164,240,254,267,last -i $1 -o $2
