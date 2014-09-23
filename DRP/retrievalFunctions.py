@@ -17,12 +17,14 @@ def get_datum_by_ref(lab_group, ref):
   raise Exception("Datum not found!")
  return datum[0]
 
+
 def get_lab_Data_size(lab_group):
  size = get_cache(lab_group, "TOTALSIZE")
  if not size:
   size = get_lab_Data(lab_group).count()
   set_cache(lab_group, "TOTALSIZE", size)
  return size
+
 
 #Get data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
@@ -36,6 +38,20 @@ def filter_by_date(lab_data, raw_date, direction="after"):
   filtered_data = lab_data.filter(creation_time_dt__lte=date)
 
  return filtered_data
+
+
+def filter_existing_calculations(data):
+  """
+  Returns only the data which have calculations.
+  """
+  from DRP.models import Data
+  from django.db.models import Q
+
+  data = data.filter(~Q(calculations=None))
+             .filter(~Q(calculations__contents=""))
+             .filter(~Q(calculations__contents="[]"))
+
+  return data
 
 
 def filter_data(lab_group, query_list):
