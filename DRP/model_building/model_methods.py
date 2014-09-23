@@ -18,11 +18,13 @@ from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
 POSITIVE = "2:2"
 
-def gen_model(model_name, description):
+def gen_model(model_name, description, data=None):
   '''
   gen_model("5.8.2014.model", "Some description of the model version.")
   will generate a model as the file "5.8.2014.model" and store the
   model statistics in a ModelStats database entry.
+
+  Optionally, only certain data will be used to construct the model.
   '''
 
   if not model_name or not description:
@@ -35,7 +37,8 @@ def gen_model(model_name, description):
 
   # Get the valid reactions across all lab groups.
   print "Loading data entries."
-  data = get_valid_data()
+  if not data:
+    data = get_valid_data()
 
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.

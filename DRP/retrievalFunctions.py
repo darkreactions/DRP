@@ -25,15 +25,9 @@ def get_lab_Data_size(lab_group):
  return size
 
 #Get data before/after a specific date (ignoring time).
-def get_date_filtered_data(lab_group, raw_date, direction="after", lab_data=None):
+def filter_by_date(lab_data, raw_date, direction="after"):
  #Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
- date = datetime.datetime.strptime(raw_date, "%m-%d-%y")
-
- #Only get the data that belongs to a specific lab_group.
- if lab_data:
-  lab_data = lab_data.filter(lab_group=lab_group)
- else:
-  lab_data = get_lab_Data(lab_group)
+ date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
 
  #Get the reactions before/after a specific date.
  if direction.lower() == "after":
