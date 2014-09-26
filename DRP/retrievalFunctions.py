@@ -40,16 +40,15 @@ def filter_by_date(lab_data, raw_date, direction="after"):
  return filtered_data
 
 
-def filter_existing_calculations(data):
+def filter_existing_calcs(data):
   """
   Returns only the data which have calculations.
   """
-  from DRP.models import Data
   from django.db.models import Q
 
   data = data.filter(~Q(calculations=None))
-             .filter(~Q(calculations__contents=""))
-             .filter(~Q(calculations__contents="[]"))
+  data = data.filter(~Q(calculations__contents=""))
+  data = data.filter(~Q(calculations__contents="[]"))
 
   return data
 

@@ -181,10 +181,8 @@ def make_arff(name, data):
   with open(fullFileName, "w") as f:
     #Write the file headers.
     f.write(headers + "\n")
-    print len(data),
     #Write each datum to the file if possible.
     for datum in data:
-      print i
       try:
         row = datum.get_calculations_list()
 
