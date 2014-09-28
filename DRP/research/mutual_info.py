@@ -1,8 +1,17 @@
-import load_data, load_cg
+import os, sys
+full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+django_path = full_path[:full_path.rfind("/DRP/")]
+if django_path not in sys.path:
+  sys.path = [django_path] + sys.path
+  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
+from DRP.model_building import load_data, load_cg
 import numpy, math
 from scipy.stats import multivariate_normal
 import scipy.sparse
 import time
+
+
 def main():
 	time_struct = dict() 
 	time_struct['start'] = time.time()
@@ -310,7 +319,7 @@ def do_filter(candidate_triples, range_map):
 	results = []
 
 	cg = load_cg.get_cg()
-	ml_convert = json.load(open("mlConvert.json"))
+	ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(django_path)))
 
 	for i in range(len(candidate_triples)):
 		try:

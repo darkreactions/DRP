@@ -606,6 +606,8 @@ def restrict_test():
 	total_to_score = 100
 	range_map, quality_map, combinations = build_baseline()
 	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org() )
+
+	print "Making abbrev_map..."
 	abbrev_map, cs = get_abbrev_map()
 	for i in range(len(seed)):
 		for j in range(len(seed[i])):
@@ -615,6 +617,7 @@ def restrict_test():
 	print "Ranking possibilities..."
 	scores = rank_possibilities(seed, combinations)
 
+	print "Filtering scores..."
 	import DRP.research.mutual_info as mutual_info
 	scores = mutual_info.do_filter(scores, range_map)
 
@@ -622,6 +625,7 @@ def restrict_test():
 	scores = scores[:total_to_score]
 	print scores
 
+	print "Rescoring..."
 	rescored = []
 	for s in scores:
 		try:
