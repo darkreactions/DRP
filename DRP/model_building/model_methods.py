@@ -30,7 +30,7 @@ def makeBool(entry):
     return entry
 
 
-def gen_model(model_name, description, data=None):
+def gen_model(model_name, description, data=None, clock=True):
   '''
   gen_model("5.8.2014.model", "Some description of the model version.")
   will generate a model as the file "5.8.2014.model" and store the
@@ -38,13 +38,16 @@ def gen_model(model_name, description, data=None):
 
   Optionally, only certain data can be used to construct the model.
   '''
-  
+
   # Set to true to show run-times.
   import time
-  clock = True
 
   if not model_name or not description:
     raise Exception("Model needs a valid model_name and description!")
+
+  if clock:
+    import datetime
+    print "Started gen_model at {}".format(datetime.datetime.now())
 
   #Make sure the model_name has no spaces in it.
   model_name = model_name.replace(" ","_")
@@ -66,7 +69,7 @@ def gen_model(model_name, description, data=None):
 
   #Using ALL of the data, now construct the full model.
   print "Building the actual model..."
-  modelFullName = MODEL_DIR + model_name
+  modelFullName = MODEL_DIR + model_name + ".model"
   arffFullName = TMP_DIR+name+"_final.arff"
 
   create_dir_if_necessary(TMP_DIR)
@@ -95,7 +98,9 @@ def gen_model(model_name, description, data=None):
 
 
 def get_current_model():
-	return MODEL_DIR + sorted([f for f in os.listdir(MODEL_DIR) if "model" in f], key = lambda x: x.split(".")[0], reverse = True)[0]
+  models = [file for file in os.listdir(MODEL_DIR) if ".model" in file]
+  models.sort(key=lambda x: os.stat(os.path.join(MODEL_DIR, x)).st_mtime)
+  return models.pop()
 
 
 def map_to_zero_one(v):
@@ -136,7 +141,7 @@ def sample_model_quality(data, name, clock=False):
   args = " {} {}".format(modelFullName, tmpPrefix+"_train.arff")
   print "SUBPROCESS:\n{}".format(move+command+args)
   subprocess.check_output(move+command+args, shell=True)
- 
+
   # Use the test data to make samplePredictions that can gauge the model quality.
   samplePredictions = make_predictions(tmpPrefix+"_test.arff", modelFullName)
 
@@ -159,7 +164,7 @@ def evaluate_model(rows,keys):
 
 
 	move = "cd {};".format(django_path)
-	command = "bash DRP/model_building/make_model.sh" 
+	command = "bash DRP/model_building/make_model.sh"
 	args = " {} {}".format(MODEL_DIR + name , TMP_DIR + name + "_train" + ".arff")
 	subprocess.check_output(move+command+args, shell=True)
 	results = make_predictions(TMP_DIR + name + "_test.arff", MODEL_DIR + name)

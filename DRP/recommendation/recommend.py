@@ -3,13 +3,13 @@ import parse_rxn
 import clean2arff, rebuildCDT
 
 import load_cg
-import sys, os
 
-django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
-django_path = "{}/DRP".format(django_dir)
+import os, sys
+full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+django_path = full_path[:full_path.rfind("/DRP/")]
 if django_path not in sys.path:
-  sys.path.append("{}/DRP".format(django_dir))
-os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+  sys.path = [django_path] + sys.path
+  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 import DRP.model_build.model_methods as mm
 from DRP.settings import TMP_DIR, BASE_DIR

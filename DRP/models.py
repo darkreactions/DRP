@@ -1,6 +1,5 @@
 from django.forms import *
 from django.core import validators
-from django.core.cache import cache
 from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import Q
@@ -12,6 +11,7 @@ from CGCalculator import CGCalculator
 from collections import defaultdict
 from subprocess import Popen
 from DRP.settings import LOG_DIR, BASE_DIR
+from DRP.cacheFunctions import get_cache, set_cache
 
 import json, random, string, datetime, operator
 import rdkit.Chem as Chem
@@ -209,18 +209,6 @@ def update_reactions_with_compound(lab_group, compound):
   except Exception as e:
    print "update_reactions_with_compound failed: {}".format(e)
 
-#############  CACHE VALIDATION and ACCESS  ###########################
-#Strip any spaces from the lab group title and/or the keys on cache access.
-def set_cache(lab_group, key, value, duration=604800): #Default duration is 1 week.
- condensed_lab = lab_group.lab_title.replace(" ","")
- if key: condensed_key = key.replace(" ","") #Don't try to .replace None-types.
- else: condensed_key = None
- cache.set("{}|{}".format(condensed_lab, condensed_key), value, duration)
-
-def get_cache(lab_group, key):
- condensed_lab = lab_group.lab_title.replace(" ","")
- condensed_key = key.replace(" ","") #Key must be a string.
- return cache.get("{}|{}".format(condensed_lab, condensed_key))
 
 ############### USER and LAB INTEGRATION #######################
 ACCESS_CODE_MAX_LENGTH = 20 #Designates the max_length of access_codes
@@ -257,7 +245,7 @@ class Lab_Member(models.Model):
 
 ############### DATA ENTRY ########################
 class DataCalc(models.Model):
-  contents = models.TextField(default="[]")
+  contents = models.TextField(default="{}")
 
   def __unicode__(self):
     return u"{}".format(self.contents);
@@ -342,7 +330,7 @@ class Data(models.Model):
 
     if include_lab_info:
       final_dict.update({
-                         "lab_title":self.lab_group.lab_title, 
+                         "lab_title":self.lab_group.lab_title,
                          "creation_time_dt":str(self.creation_time_dt),
                         })
 
@@ -357,7 +345,7 @@ class Data(models.Model):
       # If a field isn't present in the calcDict, update the calculation.
       calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True)
       return [calcDict[field] for field in headers]
-      
+
 
 # Convert any number-like strings to floats.
 def make_float(string):
