@@ -310,31 +310,57 @@ class Data(models.Model):
   def __unicode__(self):
     return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
-  def get_calculations_list(self, include_lab_info=False):
+
+  def get_calculations_dict(self, include_lab_info=False, force_recalculate=False):
     from DRP.model_building.load_data import create_expanded_datum_field_list
 
-    if not self.calculations:
+
+    if not self.calculations or force_recalculate:
       # Create the extended calculations.
       calcList = create_expanded_datum_field_list(self)
 
+      from DRP.model_building.rxn_calculator import headers
+      calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
+
       # Prepare a new DataCalc object.
-      newDataCalc = DataCalc(contents=json.dumps(calcList))
+      newDataCalc = DataCalc(contents=json.dumps(calcDict))
       newDataCalc.save()
 
       # Create the ForeignKey between the new DataCalc and this Datum.
       self.calculations = newDataCalc
       self.save()
-    final_list = self.calculations.make_json()
+
+      final_dict = calcDict
+    else:
+      # Load the result from the database if it is already present.
+      final_dict = self.calculations.make_json()
+
+    if type(final_dict) != dict:
+      # If the final_dict is in the wrong format, recalculate it.
+      return self.get_calculations_dict(include_lab_info=include_lab_info,
+                                        force_recalculate=True)
 
     if include_lab_info:
-      final_list += [self.lab_group.lab_title, str(self.creation_time_dt)]
+      final_dict.update({
+                         "lab_title":self.lab_group.lab_title, 
+                         "creation_time_dt":str(self.creation_time_dt),
+                        })
 
-    formatted_data = map(convert_numbers_to_floats, final_list)
+    return final_dict
 
-    return formatted_data
+  def get_calculations_list(self, include_lab_info=False):
+    from DRP.model_building.rxn_calculator import headers
+    try:
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info)
+      return [calcDict[field] for field in headers]
+    except:
+      # If a field isn't present in the calcDict, update the calculation.
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True)
+      return [calcDict[field] for field in headers]
+      
 
 # Convert any number-like strings to floats.
-def convert_numbers_to_floats(string):
+def make_float(string):
   try:
     return float(string)
   except:

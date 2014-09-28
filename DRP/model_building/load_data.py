@@ -49,9 +49,10 @@ def get_feature_vectors(lab_group=None, cg = None, ml_convert = None, keys = Non
 
 
 
-from DRP.models import convert_Data_to_list
-from DRP.model_building.parse_rxn import parse_rxn
 def create_expanded_datum_field_list(datum):
+  from DRP.models import convert_Data_to_list
+  from DRP.model_building.parse_rxn import parse_rxn
+
   #Convert the datum into a datumList (ie: a list of field values).
   dirtyDatumList = convert_Data_to_list(datum, headings=None)
   datumList = fix_abbrevs( dirtyDatumList ) #Ignore the "ref" field
@@ -62,7 +63,7 @@ def create_expanded_datum_field_list(datum):
 
   #Actually parse the reaction and spit out an "expanded" one.
   calculations = parse_rxn(datumList, compoundGuide, ml_convert)
-  remove_XXX(calculations) #TODO: THIS SHOULDN'T EXIST; DON'T MAKE GARBAGE ENTRIES IN THE FIRST PLACE.
+  #remove_XXX(calculations) #TODO: THIS SHOULDN'T EXIST; DON'T MAKE GARBAGE ENTRIES IN THE FIRST PLACE.
 
   return calculations
 

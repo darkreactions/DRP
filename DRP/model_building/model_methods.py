@@ -38,6 +38,10 @@ def gen_model(model_name, description, data=None):
 
   Optionally, only certain data can be used to construct the model.
   '''
+  
+  # Set to true to show run-times.
+  import time
+  clock = True
 
   if not model_name or not description:
     raise Exception("Model needs a valid model_name and description!")
@@ -55,10 +59,10 @@ def gen_model(model_name, description, data=None):
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.
   print "Creating a sample model to evaluate the model stats..."
-  truePositiveRate, falsePositiveRate = sample_model_quality(data, name)
+  truePositiveRate, falsePositiveRate = sample_model_quality(data, name, clock=clock)
 
   print "Constructing the final ARFF file..."
-  make_arff(name+"_final", data)
+  make_arff(name+"_final", data, clock=clock)
 
   #Using ALL of the data, now construct the full model.
   print "Building the actual model..."
@@ -68,11 +72,15 @@ def gen_model(model_name, description, data=None):
   create_dir_if_necessary(TMP_DIR)
   create_dir_if_necessary(MODEL_DIR)
 
+  tStart = time.clock()
+
   move = "cd {};".format(django_path)
   command = "bash DRP/model_building/make_model.sh"
   args = " {} {}".format(modelFullName, arffFullName)
   print "SUBPROCESS:\n{}".format(move+command+args)
   subprocess.check_output(move+command+args, shell=True)
+
+  if clock: print "Took {} minutes.".format((time.clock()-tStart)/60.0)
 
   #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
@@ -100,7 +108,7 @@ def map_to_zero_one(v):
 #   into training and test data. Returns the stats of this sample model.
 from DRP.model_building.test_train_split import create_test_and_train_lists
 from DRP.model_building.load_data import create_reactant_keys
-def sample_model_quality(data, name):
+def sample_model_quality(data, name, clock=False):
 
   # Create reactant-combination keys for each data entry.
   dataKeys = create_reactant_keys(data)
@@ -112,8 +120,8 @@ def sample_model_quality(data, name):
   #TODO: ORIGINAL:   rows = [r[:-1] + [ map_to_zero_one(r[-1]) ] for r in rows]
   #TODO: Incorporate map_to_zero_one??
   #TODO: Why? Isn't used in FINAL make_arff?
-  make_arff(name + "_test", test)
-  make_arff(name + "_train", train)
+  make_arff(name + "_test", test, clock=clock)
+  make_arff(name + "_train", train, clock=clock)
 
   #Give the temporary ARFF files and the model respectable names.
   tmpPrefix = TMP_DIR + name
@@ -191,9 +199,15 @@ def evaluate_results(results_location):
 def remove_indexes(row, unused):
   return [entry for i, entry in enumerate(row) if i not in unused]
 
+def dict_to_list(calcDict, listFields):
+  return [calcDict[field] for field in listFields]
+
 # Creates ARFF contents given data and writes the contents to a file ('name').
-def make_arff(name, data):
+def make_arff(name, data, clock=False):
+  import time
+
   print "Constructing: {}.arff".format(name)
+  tStart = time.clock()
 
   #Count the number of failed data (ie: invalid) that were passed to the make_arff.
   failed = 0
@@ -209,25 +223,26 @@ def make_arff(name, data):
     #Write each datum to the file if possible.
     for datum in data:
       try:
-        row = datum.get_calculations_list()
-        print len(unused_indexes)
-        print row #TODO: RESUME HERE. POSSIBLE THAT CALCULATIONS ARE BUSTED.
-        row = row[5:-2] + [max(1,row[-1])]
-        print "{} of {}".format(len(row), len(arff_fields))
-        row = remove_indexes(row, unused_indexes)
+        calcDict = datum.get_calculations_dict()
+        calcDict["outcome"] = max(1, int(calcDict["outcome"]))
+        row = dict_to_list(calcDict, arff_fields)
+
+        #row = row[5:-2] + [max(1,row[-1])]
+        #row = remove_indexes(row, unused_indexes)
         #Write the row to the ARFF file.
-        
+
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
       except Exception as e:
-        print e
+        print "FAILED: {}".format(e)
         failed += 1
         #If the calculations_list failed/was invalid, erase it.
         datum.calculations = None
         datum.save()
       i += 1
 
-  print "{} of {} data not usable by make_arff".format(failed, len(data))
+  print "Completed: {} of {} data not usable.".format(failed, len(data))
+  if clock: print "Took {} seconds.".format(time.clock()-tStart)
 
 
 def make_predictions(target_file, model_location):
@@ -311,7 +326,7 @@ def get_arff_headers(zero_one=False):
 
 def gen_specials(zero_one=False):
 	specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",
-		"leak": "{yes,no}", "purity": "{1,2}"}
+		"leak": "{yes,no}"}
 
 	if zero_one:
 		specials["outcome"] = "{1,2}"
@@ -326,8 +341,7 @@ def preface(headers, outcome = True, prefix = "", zero_one = False):
     specials = gen_specials(zero_one)
     for header in headers:
         if header in specials.keys():
-            if not (outcome and header == "purity") and not (not outcome and header == "outcome"):
-                res += "\n@ATTRIBUTE " + header + " " + specials[header]
+            res += "\n@ATTRIBUTE " + header + " " + specials[header]
         else:
             res += "\n@ATTRIBUTE " + header + " NUMERIC"
     res += "\n\n@DATA\n"
