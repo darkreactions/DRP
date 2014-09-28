@@ -100,6 +100,8 @@ def gen_model(model_name, description, data=None, clock=True):
 def get_current_model():
   models = [file for file in os.listdir(MODEL_DIR) if ".model" in file]
   models.sort(key=lambda x: os.stat(os.path.join(MODEL_DIR, x)).st_mtime)
+  if len(models)==0:
+    raise Exception("No models found in '{}'".format(MODEL_DIR))
   return models.pop()
 
 
