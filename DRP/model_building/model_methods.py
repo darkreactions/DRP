@@ -4,13 +4,12 @@ import time
 import load_data
 import rxn_calculator
 
-import sys, os
-django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
-django_path = "{}/DRP".format(django_dir)
+import os, sys
+full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+django_path = full_path[:full_path.rfind("/DRP/")]
 if django_path not in sys.path:
-  sys.path.append("{}/DRP".format(django_dir))
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+  sys.path = [django_path] + sys.path
+  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.database_construction import store_ModelStats
 from DRP.retrievalFunctions import get_valid_data
@@ -18,13 +17,26 @@ from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
 POSITIVE = "2:2"
 
+def create_dir_if_necessary(directory):
+  if not os.path.exists(directory):
+    os.makedirs(directory)
+
+def makeBool(entry):
+  if entry=="yes":
+    return 1
+  elif entry=="no":
+    return 0
+  else:
+    return entry
+
+
 def gen_model(model_name, description, data=None):
   '''
   gen_model("5.8.2014.model", "Some description of the model version.")
   will generate a model as the file "5.8.2014.model" and store the
-  model statistics in a ModelStats database entry.
+  model's statistics in a ModelStats database entry.
 
-  Optionally, only certain data will be used to construct the model.
+  Optionally, only certain data can be used to construct the model.
   '''
 
   if not model_name or not description:
@@ -52,11 +64,15 @@ def gen_model(model_name, description, data=None):
   print "Building the actual model..."
   modelFullName = MODEL_DIR + model_name
   arffFullName = TMP_DIR+name+"_final.arff"
+
+  create_dir_if_necessary(TMP_DIR)
+  create_dir_if_necessary(MODEL_DIR)
+
+  move = "cd {};".format(django_path)
   command = "bash DRP/model_building/make_model.sh"
   args = " {} {}".format(modelFullName, arffFullName)
-  print "COMMAND: {} {}".format(command, args)
-  subprocess.check_output(command+args, shell=True)
-
+  print "SUBPROCESS:\n{}".format(move+command+args)
+  subprocess.check_output(move+command+args, shell=True)
 
   #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
@@ -101,16 +117,20 @@ def sample_model_quality(data, name):
 
   #Give the temporary ARFF files and the model respectable names.
   tmpPrefix = TMP_DIR + name
-  fullModelName = MODEL_DIR + name + "_SAMPLE_MODEL"
+  modelFullName = MODEL_DIR + name + "_SAMPLE_MODEL"
+
+  create_dir_if_necessary(TMP_DIR)
+  create_dir_if_necessary(MODEL_DIR)
 
   # Start a new process to actually construct the model from the training data.
+  move = "cd {};".format(django_path)
   command = "bash DRP/model_building/make_model.sh"
-  args = " {} {}".format(fullModelName,  tmpPrefix+"_train.arff")
-  print "COMMAND: {} {}".format(command, args)
-  subprocess.check_output(command+args, shell=True)
-
+  args = " {} {}".format(modelFullName, tmpPrefix+"_train.arff")
+  print "SUBPROCESS:\n{}".format(move+command+args)
+  subprocess.check_output(move+command+args, shell=True)
+ 
   # Use the test data to make samplePredictions that can gauge the model quality.
-  samplePredictions = make_predictions(tmpPrefix+"_test.arff", fullModelName)
+  samplePredictions = make_predictions(tmpPrefix+"_test.arff", modelFullName)
 
   #Now that the sample model is created, evaluate its performance.
   truePositiveRate, falsePositiveRate = evaluate_results(samplePredictions)
@@ -130,7 +150,10 @@ def evaluate_model(rows,keys):
 	make_arff(name + "_train", train, True)
 
 
-	subprocess.check_output("bash DRP/model_building/make_model.sh {0} {1}".format(MODEL_DIR + name , TMP_DIR + name + "_train" + ".arff"), shell=True)
+	move = "cd {};".format(django_path)
+	command = "bash DRP/model_building/make_model.sh" 
+	args = " {} {}".format(MODEL_DIR + name , TMP_DIR + name + "_train" + ".arff")
+	subprocess.check_output(move+command+args, shell=True)
 	results = make_predictions(TMP_DIR + name + "_test.arff", MODEL_DIR + name)
 
 	performance, falsePositiveRate = evaluate_results(results)
@@ -165,13 +188,12 @@ def evaluate_results(results_location):
 	return truePositiveRate, falsePositiveRate
 
 
+def remove_indexes(row, unused):
+  return [entry for i, entry in enumerate(row) if i not in unused]
 
 # Creates ARFF contents given data and writes the contents to a file ('name').
 def make_arff(name, data):
-  #Get the valid headers.
-  headers = get_arff_headers()
-
-  print "ARFFING"
+  print "Constructing: {}.arff".format(name)
 
   #Count the number of failed data (ie: invalid) that were passed to the make_arff.
   failed = 0
@@ -180,19 +202,21 @@ def make_arff(name, data):
   fullFileName = TMP_DIR+name+".arff"
   with open(fullFileName, "w") as f:
     #Write the file headers.
-    f.write(headers + "\n")
+    arff_fields, unused_indexes = get_used_fields()
+    full_headers = preface(arff_fields, True)
+    f.write(full_headers + "\n")
+
     #Write each datum to the file if possible.
     for datum in data:
       try:
         row = datum.get_calculations_list()
-
-        #TODO: Figure out a better way to get this into the form Paul's
-        #      scripts need...
-        # Remove the "raw" data before ARFFing (that is, the data
-        #   from the "ref" up to the first calculated field).
-        row = row[19:-2] + [row[-1]]
+        print len(unused_indexes)
+        print row #TODO: RESUME HERE. POSSIBLE THAT CALCULATIONS ARE BUSTED.
+        row = row[5:-2] + [max(1,row[-1])]
+        print "{} of {}".format(len(row), len(arff_fields))
+        row = remove_indexes(row, unused_indexes)
         #Write the row to the ARFF file.
-        row[-1] = max(1, row[-1])
+        
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
       except Exception as e:
@@ -206,24 +230,14 @@ def make_arff(name, data):
   print "{} of {} data not usable by make_arff".format(failed, len(data))
 
 
-#TODO: Delete
-"""
-def make_arff(name, rows, zero_one = False):
-	headers = get_arff_headers(zero_one)
-
-	with open(TMP_DIR+name + ".arff", "w") as raw:
-		raw.write(headers+"\n")
-		for row in rows:
-			row[-1] = max(1, row[-1])
-			raw.write(",".join([str(c) for c in row]) + "\n")
-"""
-
-
-
 def make_predictions(target_file, model_location):
   results_location = TMP_DIR + str(uuid.uuid4()) + ".out"
-  comm = "bash DRP/model_building/make_predictions.sh {0} {1} {2}".format(target_file, model_location, results_location)
-  subprocess.check_output(comm, shell=True)
+  move = "cd {};".format(django_path)
+  comm = "bash DRP/model_building/make_predictions.sh"
+  args = " {} {} {}".format(target_file, model_location, results_location)
+
+  print "SUBPROCESS:\n{}".format(move+comm+args)
+  subprocess.check_output(move+comm+args, shell=True)
   return results_location
 
 
@@ -256,21 +270,34 @@ def update_dashboard(
   store_ModelStats(false_positive, empirical_success, rec_estimate, model_performance, description, model_name)
 
 
+#TODO: Rewrite this.
 def evaluate_real_results(lab_group = None):
-	import DRP.models as m
+  import DRP.models as m
 
-	if lab_group:
-		recommended = [o.outcome for o in m.Data.objects.filter(recommended="Yes", lab_group=lab_group)]
-		unrecommended =  [o.outcome for o in m.Data.objects.filter(recommended="No", lab_group = lab_group)]
-	else:
-		recommended = [o.outcome for o in m.Data.objects.filter(recommended="Yes")]
-		unrecommended =  [o.outcome for o in m.Data.objects.filter(recommended="No")]
+  if lab_group:
+    recommended = [o.outcome for o in m.Data.objects.filter(recommended="Yes", lab_group=lab_group)]
+    unrecommended =  [o.outcome for o in m.Data.objects.filter(recommended="No", lab_group = lab_group)]
+  else:
+    recommended = [o.outcome for o in m.Data.objects.filter(recommended="Yes")]
+    unrecommended =  [o.outcome for o in m.Data.objects.filter(recommended="No")]
 
-	recommended_results = {'correct': recommended.count('4') + recommended.count('3'), 'incorrect': recommended.count('2') + recommended.count('1') + recommended.count('0') }
-	unrecommended_results =  {'correct': unrecommended.count('4') + unrecommended.count('3'), 'incorrect': unrecommended.count('2') + unrecommended.count('1') + unrecommended.count('0') }
-	return recommended_results, unrecommended_results
+  recommended_results = {'correct': recommended.count('4') + recommended.count('3'), 'incorrect': recommended.count('2') + recommended.count('1') + recommended.count('0') }
+  unrecommended_results =  {'correct': unrecommended.count('4') + unrecommended.count('3'), 'incorrect': unrecommended.count('2') + unrecommended.count('1') + unrecommended.count('0') }
+  return recommended_results, unrecommended_results
+
+def get_used_fields():
+  unused_indexes = set()
+  used = []
+  for i, header in enumerate(rxn_calculator.headers):
+    if header[0:3] == "XXX": # Don't use fields marked with an "XXX"
+      unused_indexes.add(i)
+    else:
+      used.append(header)
+  return used, unused_indexes
 
 
+#TODO:
+"""
 def get_arff_headers(zero_one=False):
 	hdrs = rxn_calculator.headers
 	XXX = 0
@@ -278,9 +305,9 @@ def get_arff_headers(zero_one=False):
             if header[0:3] == "XXX":
                  XXX += 1
         headers = hdrs[XXX:]
-	res = preface(headers, True, zero_one = zero_one)
+        print "HEADERS: {}".format(len(headers))
 	return res
-
+"""
 
 def gen_specials(zero_one=False):
 	specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",

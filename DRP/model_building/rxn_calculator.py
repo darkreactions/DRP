@@ -204,10 +204,15 @@ field_names = ["Actinide", "AlkaliMetal", "Lanthanide",
     "IonizationMeanWeighted", "EAMeanWeighted", "PaulingElectronegMeanWeighted", "PearsonElectronegMeanWeighted", "hardnessMeanWeighted", "AtomicRadiusMeanWeighted",
     "IonizationGeomWeighted", "EAGeomWeighted", "PaulingElectronegGeomWeighted", "PearsonElectronegGeomWeighted", "hardnessGeomWeighted", "AtomicRadiusGeomWeighted",
     ]
-atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O', 'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs', 'Cr', 'Cu']
+
+atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O', 
+          'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs', 
+          'Cr', 'Cu']
+
 headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
             'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
-            'XXXinorg2moles', 'inorg3', 'inorg3mass','inorg3moles', 'org1', 'org1mass',
+            'XXXinorg2moles', 'inorg3', 'inorg3mass','inorg3moles', 
+            'org1', 'org1mass',
             'org1moles', 'org2', 'org2mass',
             'org2moles', 'oxlike1', 'oxlike1mass',
             'oxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH',
