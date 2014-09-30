@@ -1,8 +1,5 @@
 import uuid,json,subprocess,math
-import parse_rxn
-import clean2arff, rebuildCDT
 
-import load_cg
 
 import os, sys
 full_path = os.path.dirname(os.path.realpath(__file__))+"/"
@@ -11,14 +8,16 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-import DRP.model_build.model_methods as mm
+import DRP.model_building.model_methods as mm
+from DRP.model_building import parse_rxn, load_cg, clean2arff
+from DRP.recommendation import rebuildCDT
 from DRP.settings import TMP_DIR, BASE_DIR
 
 MODEL_LOCATION = mm.get_current_model()
 
 
 cg_props = load_cg.get_cg()
-ml_convert = json.load(open("mlConvert.json"))
+ml_convert = json.load(open(django_path+"/DRP/model_building/mlConvert.json"))
 hdrs = ",".join(rebuildCDT.headers)
 
 joint_sim = dict()
@@ -607,18 +606,26 @@ def restrict_test():
 	total_to_score = 100
 	range_map, quality_map, combinations = build_baseline()
 	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org() )
+
+	print "Making abbrev_map..."
 	abbrev_map, cs = get_abbrev_map()
 	for i in range(len(seed)):
 		for j in range(len(seed[i])):
 			if seed[i][j] in abbrev_map:
 				seed[i][j] = abbrev_map[seed[i][j]]
 
+	print "Ranking possibilities..."
 	scores = rank_possibilities(seed, combinations)
-	import mutual_info
+
+	print "Filtering scores..."
+	import DRP.research.mutual_info as mutual_info
 	scores = mutual_info.do_filter(scores, range_map)
-	print len(scores)
+
+	print "Scores ({} Total):".format(len(scores))
 	scores = scores[:total_to_score]
 	print scores
+
+	print "Rescoring..."
 	rescored = []
 	for s in scores:
 		try:
