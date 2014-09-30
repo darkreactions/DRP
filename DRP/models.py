@@ -21,7 +21,6 @@ import chemspipy
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
 def get_lab_Data(lab_group):
-  from DRP.models import Data
   return Data.objects.filter(lab_group=lab_group).order_by("creation_time_dt")
 
 def get_ref_set(lab_group, reset_cache=True):

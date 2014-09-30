@@ -20,7 +20,7 @@ from data_config import CONFIG
 
 #Having issues with about page being rendered and reording the divs (namely, #bottomPanel div is being put inside #infoPanel instead of on the same level, so going to bypass the issue for now by not inheriting the index template
 def about_page(request):
-  return render(request, 'temp_about.html') 
+  return render(request, 'temp_about.html')
 
 def info_page(request, page):
  return render(request, 'index.html', {"template":page})
@@ -49,7 +49,7 @@ def get_page_link_format(current, total):
   for i in xrange(current-radius, current+radius+1):
    if (1 < i < total): page_set.add(i)
   page_set.add(total) #Always show the last page.
- 
+
   #Convert page_links to an ordered list.
   raw_page_links = list(page_set)
   raw_page_links.sort()
@@ -60,14 +60,14 @@ def get_page_link_format(current, total):
     page_links.append("...")#Add an ellipsis between any pages that have a gap between them.
     page_links.append(i)
    else:
-    page_links.append(i) 
+    page_links.append(i)
   return page_links
 
 def get_pagified_data(page, lab_group=None, data=None):
  #Variable Setup:
  data_per_page = CONFIG.data_per_page
 
- #Get the Lab's data if data is not specified. 
+ #Get the Lab's data if data is not specified.
  if not data:
   try:
    data = get_lab_Data(lab_group)
@@ -82,7 +82,7 @@ def get_pagified_data(page, lab_group=None, data=None):
  #Return the data that would be contained on the requested page.
  page_data = data[(page-1)*data_per_page:page*data_per_page]
  return page_data
- 
+
 #Returns the info that belongs on a specific page.
 def get_page_info(request, page = None, data=None):
  try:
@@ -90,14 +90,14 @@ def get_page_info(request, page = None, data=None):
    #Get the user's current_page (or 1 if it is unknown.
   if not page:
     page = int(request.COOKIES.get("current_page", 1))
-  
+
   if not data:
    u = request.user
    if u.is_authenticated():
     data = get_lab_Data(u.get_profile().lab_group) ###TODO: Union this with public_data for lab_group?
    else:
     data = get_public_data()
-  
+
   total_data_size = data.count()
   total_pages = calc_total_pages(total_data_size)
 
@@ -207,7 +207,7 @@ def data_transmit(request):
   return HttpResponse("Page \"{}\" could not be loaded".format(page))
 
 @login_required
-def recommend(request): 
+def recommend(request):
  #Get user data if it exists.
  u = request.user
 
@@ -220,7 +220,7 @@ def recommend(request):
 
  except Exception as e:
   print e
-  fatal_message = "No recommendations available."   
+  fatal_message = "No recommendations available."
 
  return render(request, 'global_page.html', {
   "template":"recommendations",
@@ -251,7 +251,7 @@ def recommendation_transmit(request, seeded=False):
 
   fatal_message = "" if recs.exists() else "No recommendations found."
 
-  template="seed_recommendations_entries.html" if seeded else "recommendations.html" 
+  template="seed_recommendations_entries.html" if seeded else "recommendations.html"
   return render(request, template, {
    "recommendations": recs,
    "fatal_message": fatal_message
@@ -267,7 +267,7 @@ def edit_recommendation(request, action):
   u = request.user
   pid = request.POST["pid"]
   recommendations = get_recommendations(u.get_profile().lab_group)
-  
+
   #Filter the recommendation of interest.
   rec = recommendations.get(id=pid)
 
@@ -296,7 +296,7 @@ def edit_recommendation(request, action):
 
 @login_required
 @require_http_methods(["GET"])
-def saved(request): 
+def saved(request):
  #Variable Setup
  u = request.user
  recommendations = None
@@ -306,16 +306,16 @@ def saved(request):
  try:
   #Get the recommendations that are saved for the lab.
   lab_group = u.get_profile().lab_group
-  
+
   recommendations = get_recommendations(lab_group).filter(saved=True)
   assert recommendations.count()
 
   #Get the lab users for the select field.
   user_list = User.objects.filter(profile__lab_group=lab_group)
-  
+
   #Get users
  except:
-  fatal_message = "No saved recommendations available."   
+  fatal_message = "No saved recommendations available."
 
  return render(request, 'global_page.html', {
   "template":"saved",
@@ -326,7 +326,7 @@ def saved(request):
 
 @login_required
 @require_http_methods(["GET"])
-def rank(request): 
+def rank(request):
  #Variable Setup:
  u = request.user
  unranked_rxn = get_random_unranked_reaction_or_none()
@@ -344,7 +344,7 @@ def rank(request):
 
 
 # # # # # # # # # # # # # # # # # # #
-   # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # # 
+   # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
 #Change the assigned_user of a recommendation.
 @login_required
@@ -408,14 +408,14 @@ def save_recommmendation(request):
    rec_info = json.loads(request.POST.get("rec_info"))
    if not rec["date"]:
     #If no date is specified, assume the latest data is what is being changed.
-    rec["date"] = get_recommendations_by_date(lab_group).get().date  
+    rec["date"] = get_recommendations_by_date(lab_group).get().date
    rec = Recommendation.objects.filter(date=date).get()
-   
+
   except:
    return HttpResponse("<p>Your request could not be completed. Please try again.</p>")
  else:
   return HttpResponse("<p>Please log in to save recommendations.</p>")
-  
+
 ####################################################
 ####################################################
 ####################################################
@@ -464,7 +464,7 @@ def search(request, model="Data", params={}):
     #Pass the request on to data_transmit.
     return data_transmit(request)
 
-   elif model=="Recommendation":  
+   elif model=="Recommendation":
     #If applicable, only show reactions that are from seeds.
     seeded = params["seeded"]==True if "seeded" in params else False
     return recommendation_transmit(request, seeded=seeded)
@@ -491,7 +491,7 @@ def search(request, model="Data", params={}):
    {"raw":"quantity", "verbose":"Quantity"},
    {"raw":"unit", "verbose":"Unit"},
    {"raw":"assigned_user", "verbose":"Assigned User"}] + search_fields
-   
+
    if "seeded" in params and params["seeded"]:
     model = "SeedRecommendation"
     search_fields += [{"raw":"seed", "verbose":"Seed is..."}]
@@ -514,11 +514,11 @@ def check_compound(request):
  query = get_first_chemspider_entry(search_fields)
  if query:
   query_results = {
-    "imageurl": query.imageurl, 
-    "commonName": query.commonname, 
+    "imageurl": query.imageurl,
+    "commonName": query.commonname,
     "mv": query.molecularweight,
     "mf": query.mf,
-   } 
+   }
   response = json.dumps(query_results)
   return HttpResponse(response, content_type="application/json")
  return HttpResponse(1) #Return a code to signal the compound was not found.
@@ -546,7 +546,7 @@ def compound_guide_form(request):
     success = True #Used to display the ribbonMessage.
    elif atoms and mw.replace(".","",1).isdigit():
     entry.smiles = atoms
-    entry.mw = mw 
+    entry.mw = mw
     entry.save()
     success = True #Used to display the ribbonMessage.
    else:
@@ -554,7 +554,7 @@ def compound_guide_form(request):
    #Clear the cached CG data.
    set_cache(lab_group, "COMPOUNDGUIDE", None)
    set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
-   
+
  else:
   #Submit a blank form if one was not just submitted.
   form = CompoundGuideForm()
@@ -603,7 +603,7 @@ def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
 ### EDIT ME
 @login_required
 @require_http_methods(["POST"])
-def edit_CG_entry(request): 
+def edit_CG_entry(request):
  u = request.user
  changesMade = request.POST
 
@@ -669,7 +669,7 @@ def edit_CG_entry(request):
    #If no inorganic was found, ask the user for its identity.
    if changed_entry.compound_type=="Inorg":
     return HttpResponse("Inorganic not found!") #TODO: Add this.
- 
+
    #Lookup fresh data from ChemSpider and RDKit
    update_compound(changed_entry)
 
@@ -736,7 +736,7 @@ def data_form(request): #If no data is entered, stay on the current page.
     init_fields = {field:getattr(data, field) for field in get_model_field_names()}
 
   except Exception as e:
-   print e 
+   print e
    init_fields = {"leak":"No"}
   form = DataEntryForm(
    initial=init_fields
@@ -755,7 +755,7 @@ def transfer_rec(request):
   lab_group = u.get_profile().lab_group
   pid = request.GET["pid"]
   rec = get_recommendations(lab_group).get(id=pid)
-  
+
   initial_fields = {field:getattr(rec, field) for field in get_model_field_names(model="Recommendation")}
   form = DataEntryForm(
    initial=initial_fields
@@ -879,11 +879,11 @@ def upload_CSV(request, model="Data"):
   list_field_nums = {field:1 for field in list_fields}
   current_row = 0
   current_col = 0
- 
+
   return HttpResponse("Feature not added yet.")
   #Get the fields that are not required.
-  not_required = get_not_required_fields(model=model) #TODO: WRITE ME. 
-   
+  not_required = get_not_required_fields(model=model) #TODO: WRITE ME.
+
   #Get the correct headings for the file.
   content = csv.reader(uploaded_file, delimiter=",")
 
@@ -891,19 +891,19 @@ def upload_CSV(request, model="Data"):
   for col in content[0]:
    try:
     field = get_related_field(col, model=model, for_upload=True)
-   
+
     #Add the field number if it is missing.
     if field in list_fields:
      field += list_field_nums[field]
      list_field_nums[field] += 1
-     
+
     true_cols.remove(field)
-    file_fields.append(field) #Remember the order of fields in the file. 
+    file_fields.append(field) #Remember the order of fields in the file.
 
    except Exception as e:
     print e
     return HttpResponse("Valid headers were not found.")
-  
+
   #Add the auto-add fields.
   auto_added_fields = set(true_fields)
 
@@ -912,7 +912,7 @@ def upload_CSV(request, model="Data"):
 
   #Make sure no vital fields are missed.
   for field in true_fields:
-   assert field in not_required  
+   assert field in not_required
 
 #############################################################
   success_percent = 1 if not (fails+successes) else successes/(fails+successes)
@@ -1273,7 +1273,7 @@ def add_reactant(request):
   #Variable Setup
   reactantDict = {}
   lab_group = u.get_profile().lab_group
-  lab_data = get_lab_Data(lab_group) 
+  lab_data = get_lab_Data(lab_group)
 
   #Gather the request and user info.
   try:
@@ -1290,14 +1290,14 @@ def add_reactant(request):
   try:
    #Do a basic validation of the reactant.
    datum = lab_data.get(id=pid)
-   assert validate_name(reactantDict["reactant"], lab_group)  
+   assert validate_name(reactantDict["reactant"], lab_group)
    assert reactantDict["unit"] in edit_choices["unitChoices"]
    assert quick_validation("quantity", reactantDict["quantity"])
   except Exception as e:
    return HttpResponse(4)
-  
+
   #Actually add the fields to the datum.
-  try: 
+  try:
    for entry in list_fields:
     setattr(datum, "{}_{}".format(entry, group), reactantDict[entry])
    datum.user = u
@@ -1310,11 +1310,11 @@ def add_reactant(request):
    update_reaction(datum, lab_group)
   except:
    pass
-  return HttpResponse("0_close") 
+  return HttpResponse("0_close")
  else:
   try:
-   group = request.GET["group"] 
-   pid = request.GET["pid"] 
+   group = request.GET["group"]
+   pid = request.GET["pid"]
    return render(request, "add_reactant_form.html", {
     "group":group,
     "pid":pid,
@@ -1351,9 +1351,9 @@ def delete_reactant(request):
   except:
    pass
 
-  return HttpResponse(0)   
+  return HttpResponse(0)
  except Exception as e:
-  return HttpResponse("Edit failed.") 
+  return HttpResponse("Edit failed.")
 
 @login_required
 @require_http_methods(["POST"])
@@ -1364,7 +1364,7 @@ def delete_Data(request):
  deleteList = json.loads(request.body, "utf-8")
  lab_data = get_lab_Data(lab_group)
 
- #Find and delete data entries in a User's Lab. 
+ #Find and delete data entries in a User's Lab.
  for pid in deleteList:
   try:
    lab_data.get(id=pid).delete()
@@ -1383,13 +1383,13 @@ def change_Recommendation(request):
   recommendations = get_recommendations(u.get_profile().lab_group)
   editLog = request.POST
   whitelist = {"notes"} #Only allow notes to be modified.
-  
+
   #Read the editLog
   try:
    pid = editLog["pid"]
    fieldChanged = editLog["field"]
    newValue = editLog["newValue"]
-   rec = recommendations.get(id=pid) 
+   rec = recommendations.get(id=pid)
 
    #Verify that the fieldChanged is in the whitelist.
    assert fieldChanged in whitelist
@@ -1418,20 +1418,20 @@ def change_Data(request):
  lab_group = u.get_profile().lab_group
  editLog = request.POST
  lab_data = get_lab_Data(lab_group)
- 
+
  #Get the Datum for the lab.
  try:
   pid = editLog["pid"]
   fieldChanged = editLog["field"]
   newValue = editLog["newValue"]
-  datum = lab_data.get(id=pid) 
+  datum = lab_data.get(id=pid)
   #Verify that the fieldChanged is in the whitelist.
   assert fieldChanged in whitelist
  except:
   return HttpResponse("Datum not editable!")
 
- #Check that the edit doesn't invalidate the Datum in any way.   
- try: 
+ #Check that the edit doesn't invalidate the Datum in any way.
+ try:
   oldValue = getattr(datum, fieldChanged)
   setattr(datum, fieldChanged, newValue)
   dirty_data = model_to_dict(datum, fields=get_model_field_names())
@@ -1444,20 +1444,20 @@ def change_Data(request):
   #Send back an error if it exists.
   if errors:
    return HttpResponse("{}".format(errors[errors.keys()[0]]))
- 
+
   #Get the parsed value after cleaning.
   setattr(datum, fieldChanged, clean_data[fieldChanged])
 
   #Make the edit in the database.
   datum.user = u
-  datum.is_valid = clean_data["is_valid"] 
+  datum.is_valid = clean_data["is_valid"]
   datum.save()
- 
+
   if fieldChanged=="ref":
    #Update the "ref" in any Data of which it is a duplicate.
    lab_data.filter(duplicate_of=oldValue).update(duplicate_of=newValue)
   elif fieldChanged[:8]=="reactant":
-   #Update the atom information and any other information that may need updating. 
+   #Update the atom information and any other information that may need updating.
    update_reaction(datum, lab_group)
   return HttpResponse(0)
 

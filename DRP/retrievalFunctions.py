@@ -7,6 +7,7 @@ from models import *
 
 #Returns a specific datum if it is public or if it belongs to a lab_group.
 def get_public_data():
+ from DRP.models import Data
  #Only show the public data that is_valid.
  return Data.objects.filter(public=True, is_valid=True).order_by("creation_time_dt")
 
