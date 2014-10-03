@@ -210,7 +210,7 @@ def dict_to_list(calcDict, listFields):
   return [calcDict[field] for field in listFields]
 
 # Creates ARFF contents given data and writes the contents to a file ('name').
-def make_arff(name, data, clock=False):
+def make_arff(name, data, clock=False, raw_list_input=False):
   import time
 
   print "Constructing: {}.arff".format(name)
@@ -230,9 +230,12 @@ def make_arff(name, data, clock=False):
     #Write each datum to the file if possible.
     for datum in data:
       try:
-        calcDict = datum.get_calculations_dict()
-        calcDict["outcome"] = max(1, int(calcDict["outcome"]))
-        row = dict_to_list(calcDict, arff_fields)
+        if raw_list_input:
+          row = datum
+        else:
+          calcDict = datum.get_calculations_dict()
+          calcDict["outcome"] = max(1, int(calcDict["outcome"]))
+          row = dict_to_list(calcDict, arff_fields)
 
         #row = row[5:-2] + [max(1,row[-1])]
         #row = remove_indexes(row, unused_indexes)
@@ -253,7 +256,8 @@ def make_arff(name, data, clock=False):
 
 
 def make_predictions(target_file, model_location):
-  results_location = TMP_DIR + str(uuid.uuid4()) + ".out"
+  import time
+  results_location = "out".join(target_file.rsplit("arff", 1)) # Results file will be *.arff --> *.out
   move = "cd {};".format(django_path)
   comm = "bash DRP/model_building/make_predictions.sh"
   args = " {} {} {}".format(target_file, model_location, results_location)
@@ -263,18 +267,14 @@ def make_predictions(target_file, model_location):
   return results_location
 
 
-def update_dashboard(
-  false_positive = None,
-  model_performance = None,
-  rec_estimate = None,
-  empirical_success = None,
-  description = "",
-  model_name = ""):
+def update_dashboard(false_positive=None, model_performance=None,
+                     rec_estimate=None, empirical_success=None,
+                     description="", model_name=""):
 
-  import DRP.models as m
+  from DRP.models import ModelStats
 
   #If a specific datum is missing for some reason, use the previous one.
-  last = m.ModelStats.objects.last()
+  last = ModelStats.objects.last()
   if false_positive is None:
     false_positve = last.false_positive_rate
   if model_performance is None:

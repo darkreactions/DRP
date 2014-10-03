@@ -628,7 +628,7 @@ def restrict_test():
 
 
 if __name__ == "__main__":
-	print restrict_test()
+	#print restrict_test()
 	
 	#range_map, quality_map, combinations = build_baseline()
 	#sim_map = build_sim_map(cg_props)

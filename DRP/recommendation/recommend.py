@@ -11,22 +11,18 @@ if django_path not in sys.path:
 import DRP.model_building.model_methods as mm
 from DRP.model_building import parse_rxn, load_cg, clean2arff
 from DRP.recommendation import rebuildCDT
-from DRP.settings import TMP_DIR, BASE_DIR
-
-MODEL_LOCATION = mm.get_current_model()
-
+from DRP.settings import TMP_DIR, MODEL_DIR, BASE_DIR
 
 cg_props = load_cg.get_cg()
 ml_convert = json.load(open(django_path+"/DRP/model_building/mlConvert.json"))
-hdrs = ",".join(rebuildCDT.headers)
 
 joint_sim = dict()
 
 restrict_lookup = dict()
 
 
-test_var = False
-if not test_var:
+test_variables = False
+if not test_variables:
 	time_range = [24, 36, 48]
 	pH_range = range(1,7,2) # TODO: make 2
 	temp_range = [80, 100, 130]
@@ -104,7 +100,7 @@ def dissimilarity_weighting(recs_unweighted, similarity_map):
 
 
 
-def do_get_evlaute_result(args):
+def do_get_evaluate_result(args):
 	new_combination, range_map, combination, similarity_map = args
 	score, best = evaluate_fitness(new_combination, range_map)
 	score = calc_score(score, similarity_map, combination, new_combination)
@@ -163,55 +159,93 @@ def choose_center(rxns, new_combination):
 
 
 def evaluate_fitness(new_combination, range_map):
-	#TODO: maybe make a smarter search?
-	name = str(uuid.uuid4())
- 	prefix = TMP_DIR
-	rows_generator = generate_rows(new_combination, range_map)
-	with open(prefix + name + ".csv","w") as raw:
-		raw.write(hdrs+"\n")
-		for row in rows_generator:
-			raw.write(",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, cg_props, ml_convert)]) +"\n")
-	clean2arff.clean(prefix + name)
-	cmd = "sh {0}/DRP/model_building/test_model.sh {1} {2}".format(BASE_DIR, name, MODEL_LOCATION)
-	print cmd
-	result = subprocess.check_output(cmd, shell=True)
-	# The output of the above line should be "{0} {1}", where {0} is a score
-	# and {1} is an list of integers which are the ID #s of the highest
-	# confidence rxns...
+  import time, csv, random
+  suffix = "_recommend"
+  name = str(int(time.time()))+suffix
 
-	#find the first space!
+  mm.create_dir_if_necessary(TMP_DIR)
+  search_space_max_size = 100
 
-	# split the result into the conf and a list of indices
-	#print result
+  """
+  with open("{}.csv".format(csvFilename),"w") as f:
+    writer = csv.writer(f)
+    writer.writerow(rebuildCDT.headers)
+    for row in rows_generator:
+      calcs = parse_rxn.parse_rxn(row, cg_props, ml_convert)
+      writer.writerow([str(c).replace(",","c") for c in calcs])
 
-	if "EMPTY" in result:
-		return  (0.0, get_rxn_row(0, new_combination, range_map))
-	result = result.split()
-	result = [result[0], result[1].split(",")]
+  #clean2arff.clean(csvFilename)
+  #move = "cd {};".format(django_path)
+  #args = " {1} {2}".format(name, mm.get_current_model())
+  #cmd = "sh {0}/DRP/model_building/make_predictions.sh".format(BASE_DIR)
+  #raw_results = subprocess.check_output(move + cmd + args, shell=True)
+  """
 
+  row_generator = generate_rows(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?)
+  rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(row_generator) if i<search_space_max_size]
+  random.shuffle(rows)
+  print "Search Space: {}".format(len(rows))
 
-	# I can reverse engineer it!
+  arff_fields, unused_indexes = mm.get_used_fields()
+  cleaned = [[row[i] for i in xrange(len(row)) if i not in unused_indexes] for row in rows]
 
-	if len(result) != 2:
-		raise Exception("Failed to check output: {0}".format(str(result)))
-	conf, rxn_idxes = result
+  mm.make_arff(name, cleaned, raw_list_input=True)
+  model_path = MODEL_DIR+mm.get_current_model()
+  results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path)
 
-	if len(rxn_idxes) == 0:
-		return (0.0, [])
-	rxns = [get_rxn_row(int(rxn_idx) - 1, new_combination, range_map) for rxn_idx in rxn_idxes]
-	# -1 because weka isn't zero indexed.
+  """
+   The output of the above line should be "{0} {1}", where {0} is a score
+   and {1} is an list of integers which are the ID #s of the highest
+   confidence rxns...
+  """
 
-	rxn = choose_center(rxns, new_combination)
+  # split the result into the conf and a list of indices
+  #print result
+  raw_results = []
+  with open(results_location, "r") as results_file:
+    # Remove the headers.
+    for i in range(5):
+      results_file.next()
 
-	#cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_prior.sh {0}".format(name)
+    for row in results_file:
+      if "+" not in row and row != "\n":
+        conf = float(row.split("\t")[-1])
+        index = int(row.split("\t")[0])-1 # WEKA is 1-based, not 0-based.
+        raw_results.append((conf, rows[index]))
 
-	#result = subprocess.check_output(cmd, shell=True)
+  print raw_results
+ 
+  """
+  if "EMPTY" in raw_results:
+    return  (0.0, get_rxn_row(0, new_combination, range_map))
+  else:
+    results = raw_results.split()
+    print results
+    result = [results[0], results[1].split(",")]
+  """
 
-	#if float(result) < 0.2:
-	#	print "prior does not like"
-	#	return (-1.0, [])
+  # I can reverse engineer it!
 
-	return (float(conf),rxn)
+  if len(result) != 2:
+    raise Exception("Failed to check output: {0}".format(str(result)))
+  conf, rxn_idxes = result
+
+  if len(rxn_idxes) == 0:
+    return (0.0, [])
+  rxns = [get_rxn_row(int(rxn_idx) - 1, new_combination, range_map) for rxn_idx in rxn_idxes]
+  # -1 because weka isn't zero indexed.
+
+  rxn = choose_center(rxns, new_combination)
+
+  #cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_prior.sh {0}".format(name)
+
+  #result = subprocess.check_output(cmd, shell=True)
+
+  #if float(result) < 0.2:
+  #  print "prior does not like"
+  #  return (-1.0, [])
+
+  return (float(conf),rxn)
 
 
 
@@ -309,7 +343,7 @@ def calc_similarity(compound_one, compound_two):
 
 
 def build_sim_list(name, cg_targets, count=5):
-	if test_var:
+	if test_variables:
 		count = 2
 	def reweight_list(choice, others):
 		return [ ( x[0], x[1], x[2]*(1.0 - calc_similarity(choice[0], x[0]))) for x in others ]
@@ -410,8 +444,7 @@ def build_baseline(lab_group=None):
 	for rxn in rxns:
 		r = rxn[:23]
 		compoundss = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
-		if any([True if c not in cg_props else False for c in compoundss]):
-			print compoundss
+		if any([c not in cg_props for c in compoundss]):
 			continue
 		q_key = tuple(sorted(compoundss))
 		combinations.add(q_key)
@@ -480,31 +513,29 @@ def combo_generator(seed):
 
 def rank_possibilities(seed, tried):
         scorer = score_maker(tried)
-	if test_var:
-		how_many_to_rate = 10
-	else:
-	        how_many_to_rate = 500
+	how_many_to_rate = 10 if test_variables else 500
         scores = []
+
         for combo in combo_generator(seed):
                 scores.append( (scorer(combo), combo) )
 
-        from operator import itemgetter
-        scores.sort(key=itemgetter(0), reverse=True)
+	#Sort by the reactant tuples such that higher scores appear first.
+	scores.sort(key=lambda x: x[0], reverse=True)
 
 	results = []
+	for i, score_tuple in enumerate(scores):
+		if i==how_many_to_rate: break
+		reweight_restrict(score_tuple[1], scores)
+		scores.sort(key=lambda x: x[0], reverse=True)
+		results.append(score_tuple)
 
-	for i in range(how_many_to_rate):
-		item = scores.pop(0)
-		results.append(item)
-		reweight_restrict(item[1], scores)
-        return results[:how_many_to_rate]
+        return results
 
 def reweight_restrict(item, scores):
-	for i in range(len(scores)):
-		sim = score(item, scores[i][1])
+	for score in scores:
+		sim = score_combo(item, score[1])
 		if sim > .9:
-			scores[i][0] = scores[i][0]*0.5
-	scores.sort(key=lambda x: x[0], reverse=True)
+			score[0] *= 0.5
 
 
 def score_maker(tried):
@@ -513,7 +544,7 @@ def score_maker(tried):
                 if t in tried:
                         return 0.0
                 for c in tried:
-	                max_score = max(score(t,c), max_score)
+	                max_score = max(score_combo(t,c), max_score)
                 if max_score == 1.0:
                         return 0.0
                 return max_score
@@ -524,7 +555,7 @@ def score_maker(tried):
 
 
 
-def score(combo_one, combo_two):
+def score_combo(combo_one, combo_two):
 	global restrict_lookup
         def get_class(a):
                 for cl in class_map:
@@ -592,20 +623,40 @@ def score(combo_one, combo_two):
 
 
 
-def build_diverse_org():
+def build_diverse_org(max_results=250):
+	from random import shuffle
 	orgs = [ c  for c in cg_props if cg_props[c]["type"] == "Org"]
+	shuffle(orgs)
+
 	results = [orgs[0]]
-	for org in orgs:
+	for org in orgs[1:]:
+		if len(results)==max_results: break
+
 		max_sim = max([calc_similarity(org, r) for r in results])
 		if max_sim < 0.9:
 			results.append(org)
-	print len(orgs), len(results)
+
+	print "Explored: {}; Retained: {}".format(len(orgs), len(results))
 	return results
 
 def restrict_test():
-	total_to_score = 100
+	total_to_score = 10
+
+	print "Building baseline..."
 	range_map, quality_map, combinations = build_baseline()
-	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org() )
+
+	"""
+	range_map = {'': (0, 0), 
+		u'hydrochloric acid': (0.0824, 2.0235), 
+		u'HIO3': (0.2149, 0.8759), 
+		u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219), 
+		u"N,N'-diisopropylethylenediamine": (0.1019, 0.6559), 
+		...
+		}
+	"""
+
+	print "Finding distinct recommendations..."
+	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(100) )
 
 	print "Making abbrev_map..."
 	abbrev_map, cs = get_abbrev_map()
@@ -618,12 +669,11 @@ def restrict_test():
 	scores = rank_possibilities(seed, combinations)
 
 	print "Filtering scores..."
-	import DRP.research.mutual_info as mutual_info
-	scores = mutual_info.do_filter(scores, range_map)
+	#import DRP.research.mutual_info as mutual_info #TODO
+	#scores = mutual_info.do_filter(scores, range_map)
 
 	print "Scores ({} Total):".format(len(scores))
 	scores = scores[:total_to_score]
-	print scores
 
 	print "Rescoring..."
 	rescored = []

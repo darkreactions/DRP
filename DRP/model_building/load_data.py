@@ -81,7 +81,6 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
   for row in raw:
     try:
       calculations = parse_rxn.parse_rxn(row, cg, ml_convert)
-
       transformed.append(calculations)
       keys.append(create_key(row))
     except Exception as e:

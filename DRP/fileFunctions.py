@@ -1,11 +1,9 @@
-import sys, os
-django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
-django_path = "{}/DRP".format(django_dir)
+import os, sys
+full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+django_path = full_path[:full_path.rfind("/DRP/")]
 if django_path not in sys.path:
-  sys.path.append("{}/DRP".format(django_dir))
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
-
+  sys.path = [django_path] + sys.path
+  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 def writeCSV(name, data, headers=[]):
   import csv
@@ -15,6 +13,7 @@ def writeCSV(name, data, headers=[]):
   with open(name, "wb") as f:
     csvWriter = csv.writer(f)
     csvWriter.writerows(data)
+
 
 def writeExpandedCSV(name):
   from DRP.retrievalFunctions import expand_data,get_expanded_headers,get_valid_data

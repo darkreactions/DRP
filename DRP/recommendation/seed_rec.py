@@ -121,7 +121,7 @@ def get_candidates(results, idx, raw_rows):
 	avg_mass = avg_mass / float(len(candidates))
 	avg_ph = avg_ph / float(len(candidates))
 
-	smallest_dist = 10000000000000000000
+	smallest_dist = float("inf")
 	best_row = None
 
 	for row in candidates:

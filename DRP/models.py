@@ -695,6 +695,10 @@ def new_CG_entry(lab_group, **kwargs): ###Not re-read yet.
  except Exception as e:
   raise Exception("CompoundEntry construction failed!")
 
+def get_Data_with_compound(compound):
+ Q_list = [Q(("reactant_{}".format(i),compound)) for i in CONFIG.reactant_range()]
+ return Data.objects.filter(reduce(operator.or_, Q_list))
+
 
 #Filter the Data by a specific abbrev.
 def get_Data_with_abbrev(lab_data, abbrev):

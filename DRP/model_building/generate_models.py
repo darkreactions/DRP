@@ -24,3 +24,9 @@ def build_previous_model(model_name, model_description, date, data=None):
   filtered = filter_by_date(data, date, "previous")
   model_methods.gen_model(model_name, model_description, filtered)
 
+def retrogenerate_model(date):
+  title = "Retrogenerated {}".format(date)
+  description = "A model retrogenerated from the data available on {}".format(date)
+  build_previous_model(title, description, date)
+
+

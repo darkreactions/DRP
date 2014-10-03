@@ -29,6 +29,7 @@ def get_lab_Data_size(lab_group):
 
 #Get data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
+ import datetime
  #Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
  date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
 
@@ -269,14 +270,18 @@ def get_CG_list_dict(headers=True):
  CG_list_dict = {lab.lab_title:get_CG_list(lab, headers=headers) for lab in labs}
  return CG_list_dict
 
-def get_mass_range(lab_group, abbrev):
- try:
-  compounds = get_lab_CG(lab_group).filter(abbrev=abbrev)
-  maximum = max([compounds.aggregate(Max("quantity_".format(i))) for i in CONFIG.num_reactants])
-  minimum = min([compounds.aggregate(Min("quantity_".format(i))) for i in CONFIG.num_reactants])
-  return (minimum, maximuim)
- except:
-  raise Exception("Compound or lab not found.")
+def get_mass_range(compound):
+  #TODO: Turn Quantity Charfields into DecimalFields
+  try:
+    from DRP.models import get_Data_with_compound  
+    data = get_Data_with_compound(compound)
+    maximum = max([data.aggregate(Max("quantity_{}".format(i))) for i in CONFIG.reactant_range()])
+    minimum = min([data.aggregate(Min("quantity_{}".format(i))) for i in CONFIG.reactant_range()])
+    print maximum
+    return (minimum, maximum)
+  except Exception as e:
+    print e
+    raise Exception("Compound not found!")
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

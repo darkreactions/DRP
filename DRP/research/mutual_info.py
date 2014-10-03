@@ -315,34 +315,56 @@ def test_candidates():
 
 def do_filter(candidate_triples, range_map):
 	import json
-	mut_calc = build_mutual_calc()
-	results = []
-
-	cg = load_cg.get_cg()
 	ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(django_path)))
 
+	print "Building Mutual Information Calculator"
+	mutual_calc = build_mutual_calc()
+
+	print "Loading CG..."
+	cg = load_cg.get_cg()
+
+	results = []
 	for i in range(len(candidate_triples)):
 		try:
 			row = build_row(candidate_triples[i][1], range_map, cg, ml_convert)
-			if abs(mut_calc(row)) > 0.0:
+			print "GOT ROW"
+			#if abs(mutual_calc(row)) > 0.0:
+			if True: #TODO
+				print "______RESULLLLLTT!"
 				results.append(candidate_triples[i])
 			else:
 				print "discarding {0}".format(candidate_triples[i])
 		except Exception as e:
 			print "skipping {0} due to exception: {1}".format(str(candidate_triples[i]), e)
+	print len(results)
 	return results	
 
+def build_row(triple, ranges, cg, ml_convert):
+	"""
+	Variable Examples
+	triple = (u'sodium vanadium trioxide', u'selenous acid', u'1-methylpiperazine')
+	range_map = {'': (0, 0), 
+		u'hydrochloric acid': (0.0824, 2.0235), 
+		u'HIO3': (0.2149, 0.8759), 
+		u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219), 
+		u"N,N'-diisopropylethylenediamine": (0.1019, 0.6559),
+		...
+		}
+	"""
+	c1, c2, c3 = triple
 
-def build_row(triple, range_map, cg, ml_convert):
-	c1 = triple[0]
-	m1 = (range_map[c1][1] - range_map[c1][0])*.5 + range_map[c1][0]
-	c2 = triple[1]
-	m2 = (range_map[c2][1] - range_map[c2][0])*.5 + range_map[c2][0]
-	c3 = triple[2]
-	m1 = (range_map[c3][1] - range_map[c3][0])*.5 + range_map[c3][0]
-	row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water", 6, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""] 
+	minMax = ranges[c1]
+	m1 = (minMax[1] - minMax[0])*.5 + minMax[0]
 
-	row = load_data.convert_to_feature_vectors([row], cg, ml_convert)[0]
+	minMax = ranges[c2]
+	m2 = (minMax[1] - minMax[0])*.5 + minMax[0]
+
+	minMax = ranges[c3]
+	m3 = (minMax[1] - minMax[0])*.5 + minMax[0]
+
+	raw_row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water", 6, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""] 
+
+	row = load_data.convert_to_feature_vectors([raw_row], cg, ml_convert)[0][0]
 	clean_row(row)
 	return row 
 		
@@ -358,7 +380,7 @@ def build_mutual_calc():
 		try:
 			triple_Muts[triple] = MutualInformation(dataset[triple])
 		except Exception as e:
-			print "failed to build mutual_info struct {0}: {1}".format(str(triple), e)
+			print "failed to build mutual_info struct '{0}': {1}".format(str(triple), e)
 	return lambda x: find_delta_mut(triple_Muts, x)	
 
 
