@@ -158,13 +158,29 @@ def choose_center(rxns, new_combination):
 		center[2], center[3], center[4], center[5], center[6])
 
 
+def get_good_result_tuples(results_location, rows): 
+  raw_results = []
+  with open(results_location, "r") as results_file:
+    # Remove the headers.
+    for i in range(5):
+      results_file.next()
+
+    for row in results_file:
+      if "+" not in row and row != "\n":
+        clean = filter(lambda x:x!="" and x!="\n", row.split(" "))
+        conf = float(clean[-1])
+        index = int(clean[0])-1 # WEKA is 1-based, not 0-based.
+        raw_results.append((conf, rows[index]))
+  return raw_results
+
+
 def evaluate_fitness(new_combination, range_map):
   import time, csv, random
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
 
   mm.create_dir_if_necessary(TMP_DIR)
-  search_space_max_size = 100
+  search_space_max_size = 10000 #float("inf")
 
   """
   with open("{}.csv".format(csvFilename),"w") as f:
@@ -182,38 +198,29 @@ def evaluate_fitness(new_combination, range_map):
   """
 
   row_generator = generate_rows(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?)
-  rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(row_generator) if i<search_space_max_size]
-  random.shuffle(rows)
-  print "Search Space: {}".format(len(rows))
 
   arff_fields, unused_indexes = mm.get_used_fields()
-  cleaned = [[row[i] for i in xrange(len(row)) if i not in unused_indexes] for row in rows]
+
+  def removeUnused(row, unused_indexes):
+    return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
+
+  # Put the reactions in an appropriate format for handing off to WEKA.
+  rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(row_generator)]
+  random.shuffle(rows) # Shuffle the rows such that the search_space_max_size doesn't remove any possibilities.
+  cleaned = [removeUnused(row, unused_indexes) for row in rows if i<search_space_max_size]
 
   mm.make_arff(name, cleaned, raw_list_input=True)
   model_path = MODEL_DIR+mm.get_current_model()
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path)
 
-  """
-   The output of the above line should be "{0} {1}", where {0} is a score
-   and {1} is an list of integers which are the ID #s of the highest
-   confidence rxns...
-  """
-
   # split the result into the conf and a list of indices
-  #print result
-  raw_results = []
-  with open(results_location, "r") as results_file:
-    # Remove the headers.
-    for i in range(5):
-      results_file.next()
+  raw_results = get_good_result_tuples(results_location, rows)
 
-    for row in results_file:
-      if "+" not in row and row != "\n":
-        conf = float(row.split("\t")[-1])
-        index = int(row.split("\t")[0])-1 # WEKA is 1-based, not 0-based.
-        raw_results.append((conf, rows[index]))
+  if not raw_results:
+    return (0.0, [])
 
-  print raw_results
+  raw_results.sort(key=lambda tup: tup[0])  
+  return raw_results.pop()
  
   """
   if "EMPTY" in raw_results:
@@ -225,27 +232,28 @@ def evaluate_fitness(new_combination, range_map):
   """
 
   # I can reverse engineer it!
-
+  """
   if len(result) != 2:
     raise Exception("Failed to check output: {0}".format(str(result)))
   conf, rxn_idxes = result
+  """
 
-  if len(rxn_idxes) == 0:
-    return (0.0, [])
-  rxns = [get_rxn_row(int(rxn_idx) - 1, new_combination, range_map) for rxn_idx in rxn_idxes]
+  #rxns = [get_rxn_row(int(rxn_idx) - 1, new_combination, range_map) for rxn_idx in rxn_idxes]
   # -1 because weka isn't zero indexed.
 
-  rxn = choose_center(rxns, new_combination)
+  #rxn = choose_center(rxns, new_combination)
 
   #cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_prior.sh {0}".format(name)
 
   #result = subprocess.check_output(cmd, shell=True)
 
+  """
   #if float(result) < 0.2:
   #  print "prior does not like"
   #  return (-1.0, [])
 
   return (float(conf),rxn)
+  """
 
 
 
@@ -640,7 +648,7 @@ def build_diverse_org(max_results=250):
 	return results
 
 def restrict_test():
-	total_to_score = 10
+	total_to_score = 100
 
 	print "Building baseline..."
 	range_map, quality_map, combinations = build_baseline()
@@ -656,7 +664,7 @@ def restrict_test():
 	"""
 
 	print "Finding distinct recommendations..."
-	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(100) )
+	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org() )
 
 	print "Making abbrev_map..."
 	abbrev_map, cs = get_abbrev_map()
@@ -693,6 +701,7 @@ def restrict_test():
 
 if __name__ == "__main__":
 	print restrict_test()
+	#print get_good_result_tuples("/home/cfalk/DevDRP/tmp/1412533505_recommend.out", [])
 
 	#range_map, quality_map, combinations = build_baseline()
 	#sim_map = build_sim_map(cg_props)

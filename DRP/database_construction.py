@@ -11,6 +11,9 @@ from DRP.logPrinting import print_error, print_log
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def store_ModelStats(falsePositive, actualSuccess, estimatedSuccess, modelPerformance, description, title, datetime_input=None):
+  from DRP.models import ModelStats
+  import datetime
+
   #Create an instance of the model.
   model_stats = ModelStats()
 

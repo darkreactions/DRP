@@ -10,7 +10,7 @@ if django_path not in sys.path:
 
 def run():
   from DRP.model_building.generate_models import retrogenerate_model
-  date = "06-01-2014"
+  date = "10-31-2014"
   retrogenerate_model(date)
 
 if __name__=="__main__":
