@@ -174,13 +174,13 @@ def get_good_result_tuples(results_location, rows):
   return raw_results
 
 
-def evaluate_fitness(new_combination, range_map):
+def evaluate_fitness(new_combination, range_map, debug=True):
   import time, csv, random
-  suffix = "_recommend"
-  name = str(int(time.time()))+suffix
 
+  # Variable and Directory Preparation.
   mm.create_dir_if_necessary(TMP_DIR)
-  search_space_max_size = 10000 #float("inf")
+  search_space_max_size = 500 #float("inf")
+  arff_fields, unused_indexes = mm.get_used_fields()
 
   """
   with open("{}.csv".format(csvFilename),"w") as f:
@@ -197,26 +197,33 @@ def evaluate_fitness(new_combination, range_map):
   #raw_results = subprocess.check_output(move + cmd + args, shell=True)
   """
 
-  row_generator = generate_rows(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?)
 
-  arff_fields, unused_indexes = mm.get_used_fields()
 
+  # Generate different permutations of the new_combination of reactants.
+  row_generator = generate_rows(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?) #TODO: Fewer "dups" === Better
+  rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(row_generator)]
+  random.shuffle(rows) # Shuffle the rows such that the search_space_max_size doesn't block any possibile reactions towards the end.
+
+  # Put the reactions in an appropriate format for handing off to WEKA.
   def removeUnused(row, unused_indexes):
     return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
 
-  # Put the reactions in an appropriate format for handing off to WEKA.
-  rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(row_generator)]
-  random.shuffle(rows) # Shuffle the rows such that the search_space_max_size doesn't remove any possibilities.
-  cleaned = [removeUnused(row, unused_indexes) for row in rows if i<search_space_max_size]
+  cleaned = [removeUnused(row, unused_indexes) for i, row in enumerate(rows) if i<search_space_max_size]
+  
+  # Write all the reactions to an ARFF so that WEKA can read them.
+  suffix = "_recommend"
+  name = str(int(time.time()))+suffix
+  mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
 
-  mm.make_arff(name, cleaned, raw_list_input=True)
+  # Run the reactions through the current WEKA model.
   model_path = MODEL_DIR+mm.get_current_model()
-  results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path)
+  results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
-  # split the result into the conf and a list of indices
+  # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
   raw_results = get_good_result_tuples(results_location, rows)
 
   if not raw_results:
+    if debug: print "No raw_results found!"
     return (0.0, [])
 
   raw_results.sort(key=lambda tup: tup[0])  
@@ -647,10 +654,10 @@ def build_diverse_org(max_results=250):
 	print "Explored: {}; Retained: {}".format(len(orgs), len(results))
 	return results
 
-def restrict_test():
+def restrict_test(debug=False):
 	total_to_score = 100
 
-	print "Building baseline..."
+	if debug: print "Building baseline..."
 	range_map, quality_map, combinations = build_baseline()
 
 	"""
@@ -663,44 +670,64 @@ def restrict_test():
 		}
 	"""
 
-	print "Finding distinct recommendations..."
+	if debug: print "Finding distinct recommendations..."
 	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org() )
 
-	print "Making abbrev_map..."
+	if debug: print "Making abbrev_map..."
 	abbrev_map, cs = get_abbrev_map()
 	for i in range(len(seed)):
 		for j in range(len(seed[i])):
 			if seed[i][j] in abbrev_map:
 				seed[i][j] = abbrev_map[seed[i][j]]
 
-	print "Ranking possibilities..."
+	if debug: print "Ranking possibilities..."
 	scores = rank_possibilities(seed, combinations)
 
-	print "Filtering scores..."
+	if debug: print "Filtering scores..."
 	#import DRP.research.mutual_info as mutual_info #TODO
 	#scores = mutual_info.do_filter(scores, range_map)
 
-	print "Scores ({} Total):".format(len(scores))
+	if debug: print "Scores ({} Total):".format(len(scores))
 	scores = scores[:total_to_score]
 
-	print "Rescoring..."
+	if debug: print "Rescoring..."
 	rescored = []
 	for s in scores:
 		try:
-			score, best = evaluate_fitness(s[1], range_map)
-			print "Score: {0}".format(score)
-			rescored.append(   ( score*s[0], best) )
+			score, best_rxn = evaluate_fitness(s[1], range_map, debug=debug)
+			if debug: print "Confidence in chosen reaction: {0}".format(score)
+			rescored.append(   ( score*s[0], best_rxn) )
+			return [(score, best_rxn)] #TODO: TEST
 		except Exception as e:
-			print s, " failed: ", str(e), str(type(e))
+			print "{} failed with {}: {}".format(s, e, type(e))
 
 	rescored.sort(key=lambda x: x[0])
+	
 	return rescored
 
 
+def create_new_recommendations(lab_group, debug=True):
+  from DRP.database_construction import store_new_Recommendation_list
+  from DRP.compoundGuideFunctions import translate_reactants
+  import time
+  tStart = time.clock()
+
+  scored_reactions = restrict_test(debug=debug)
+  rec_list = [rec for (conf, rec) in scored_reactions]  
+ 
+  # Translate any compounds in the rec_list to abbrevs.
+  rec_list = translate_reactants(lab_group, rec_list)
+
+  # And store them in the database.
+  store_new_Recommendation_list(lab_group, rec_list)
+
+  if debug: print "Recommendation construction complete (took {} minutes)!".format(time.clock()-tStart)
+  
 
 
 if __name__ == "__main__":
-	print restrict_test()
+	create_new_recommendations("Norquist Lab", debug=True)
+	#print restrict_test()
 	#print get_good_result_tuples("/home/cfalk/DevDRP/tmp/1412533505_recommend.out", [])
 
 	#range_map, quality_map, combinations = build_baseline()

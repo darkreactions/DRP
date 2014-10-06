@@ -210,11 +210,11 @@ def dict_to_list(calcDict, listFields):
   return [calcDict[field] for field in listFields]
 
 # Creates ARFF contents given data and writes the contents to a file ('name').
-def make_arff(name, data, clock=False, raw_list_input=False):
+def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
   import time
 
-  print "Constructing: {}.arff".format(name)
-  tStart = time.clock()
+  if debug: print "Constructing: {}.arff".format(name)
+  if clock and debug: tStart = time.clock()
 
   #Count the number of failed data (ie: invalid) that were passed to the make_arff.
   failed = 0
@@ -251,18 +251,18 @@ def make_arff(name, data, clock=False, raw_list_input=False):
         datum.save()
       i += 1
 
-  print "Completed: {} of {} data not usable.".format(failed, len(data))
-  if clock: print "Took {} seconds.".format(time.clock()-tStart)
+  if debug: print "Completed: {} of {} data not usable.".format(failed, len(data))
+  if clock and debug: print "Took {} seconds.".format(time.clock()-tStart)
 
 
-def make_predictions(target_file, model_location):
+def make_predictions(target_file, model_location, debug=False):
   import time
   results_location = "out".join(target_file.rsplit("arff", 1)) # Results file will be *.arff --> *.out
   move = "cd {};".format(django_path)
   comm = "bash DRP/model_building/make_predictions.sh"
   args = " {} {} {}".format(target_file, model_location, results_location)
 
-  print "SUBPROCESS:\n{}".format(move+comm+args)
+  if debug: print "SUBPROCESS: {}".format(move+comm+args)
   subprocess.check_output(move+comm+args, shell=True)
   return results_location
 
