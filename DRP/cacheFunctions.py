@@ -12,6 +12,7 @@ def set_cache(lab_group, key, value, duration=604800): #Default duration is 1 we
   cache.set("{}|{}".format(condensed_lab, condensed_key), value, duration)
 
 def get_cache(lab_group, key):
+  from django.core.cache import cache
   condensed_lab = lab_group.lab_title.replace(" ","_")
   condensed_key = key.replace(" ","_") #Key must be a string.
   return cache.get("{}|{}".format(condensed_lab, condensed_key))
