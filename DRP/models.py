@@ -20,6 +20,8 @@ import chemspipy
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
 def get_lab_Data(lab_group):
+  from DRP.models import Data
+  lab_group = get_Lab_Group(lab_group)
   return Data.objects.filter(lab_group=lab_group).order_by("creation_time_dt")
 
 def get_ref_set(lab_group, reset_cache=True):
@@ -39,7 +41,7 @@ def get_Lab_Group(query):
     raise Exception("Could not find Lab_Group with lab_title: {}".format(query))
 
 def get_lab_CG(lab_query):
-  lab_group = get_Lab_Group(lab_query) 
+  lab_group = get_Lab_Group(lab_query)
   return CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 
 
@@ -123,7 +125,7 @@ def condense_smiles_list_to_atoms(smiles_list):
  return set(atoms_list)
 
 def get_abbrevs_from_reaction(reaction):
- import DRP.data_config as CONFIG
+ from DRP.data_config import CONFIG
  abbrevs_list = [getattr(reaction, "reactant_{}".format(i)) for i in CONFIG.reactant_range() if getattr(reaction, "reactant_{}".format(i))]
  return abbrevs_list
 

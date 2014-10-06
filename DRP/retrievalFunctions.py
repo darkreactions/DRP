@@ -20,11 +20,13 @@ def get_datum_by_ref(lab_group, ref):
 
 
 def get_lab_Data_size(lab_group):
- size = get_cache(lab_group, "TOTALSIZE")
- if not size:
-  size = get_lab_Data(lab_group).count()
-  set_cache(lab_group, "TOTALSIZE", size)
- return size
+  from DRP.cacheFunctions import get_cache, set_cache
+  from DRP.models import get_lab_Data
+  size = get_cache(lab_group, "TOTALSIZE")
+  if not size:
+    size = get_lab_Data(lab_group).count()
+    set_cache(lab_group, "TOTALSIZE", size)
+  return size
 
 
 #Get data before/after a specific date (ignoring time).
@@ -274,7 +276,7 @@ def get_CG_list_dict(headers=True):
 def get_mass_range(compound):
   #TODO: Turn Quantity Charfields into DecimalFields
   try:
-    from DRP.models import get_Data_with_compound  
+    from DRP.models import get_Data_with_compound
     data = get_Data_with_compound(compound)
     maximum = max([data.aggregate(Max("quantity_{}".format(i))) for i in CONFIG.reactant_range()])
     minimum = min([data.aggregate(Min("quantity_{}".format(i))) for i in CONFIG.reactant_range()])
