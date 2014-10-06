@@ -59,6 +59,9 @@ def get_vars_from_list(lst):
 
 #Creates the Recommendation entry, but does not store it in database.
 def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
+ from DRP.models import Recommendation, get_model_field_names, get_atom_set_from_abbrevs, get_abbrevs_from_reaction
+ import datetime
+
  try:
   new_rec = Recommendation()
   #Set the self-assigning fields:
@@ -113,6 +116,10 @@ def store_new_RankedReaction_list(list_of_rankedrxn_lists):
 
 
 def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = "", seed_source=None, new_model=False):
+  from DRP.models import get_Lab_Group, Model_Version
+  from DRP.retrievalFunctions import get_latest_Model_Version
+  import datetime
+
   lab_group = get_Lab_Group(lab_group)
 
   call_time = datetime.datetime.now()

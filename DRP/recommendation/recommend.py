@@ -179,7 +179,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   # Variable and Directory Preparation.
   mm.create_dir_if_necessary(TMP_DIR)
-  search_space_max_size = 500 #float("inf")
+  search_space_max_size = 10000 #float("inf")
   arff_fields, unused_indexes = mm.get_used_fields()
 
   """
@@ -697,7 +697,6 @@ def restrict_test(debug=False):
 			score, best_rxn = evaluate_fitness(s[1], range_map, debug=debug)
 			if debug: print "Confidence in chosen reaction: {0}".format(score)
 			rescored.append(   ( score*s[0], best_rxn) )
-			return [(score, best_rxn)] #TODO: TEST
 		except Exception as e:
 			print "{} failed with {}: {}".format(s, e, type(e))
 
@@ -716,9 +715,11 @@ def create_new_recommendations(lab_group, debug=True):
   rec_list = [rec for (conf, rec) in scored_reactions]  
  
   # Translate any compounds in the rec_list to abbrevs.
+  if debug: "Translating reactants into abbrevs where available..."
   rec_list = translate_reactants(lab_group, rec_list)
 
   # And store them in the database.
+  if debug: print "Storing new recommendations..."
   store_new_Recommendation_list(lab_group, rec_list)
 
   if debug: print "Recommendation construction complete (took {} minutes)!".format(time.clock()-tStart)

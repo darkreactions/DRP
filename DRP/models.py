@@ -14,7 +14,6 @@ from DRP.settings import LOG_DIR, BASE_DIR
 from DRP.cacheFunctions import get_cache, set_cache
 
 import json, random, string, datetime, operator
-import rdkit.Chem as Chem
 import chemspipy
 
 
@@ -31,15 +30,17 @@ def get_ref_set(lab_group, reset_cache=True):
  return ref_set
 
 def get_Lab_Group(query):
- try:
-  if type(query==Lab_Group):
-   return query
-  return Lab_Group.objects.filter(lab_title=raw_string).get()
- except:
-  raise Exception("Could not find Lab_Group with lab_title: {}".format(raw_string))
+  try:
+    if type(query)==Lab_Group:
+      return query
+    else:
+      return Lab_Group.objects.filter(lab_title=query).get()
+  except:
+    raise Exception("Could not find Lab_Group with lab_title: {}".format(query))
 
-def get_lab_CG(lab_group):
- return CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
+def get_lab_CG(lab_query):
+  lab_group = get_Lab_Group(lab_query) 
+  return CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 
 
 # # # # # # # # # # # # # # # # # # #
@@ -76,6 +77,7 @@ def get_atoms_from_compound(CG_entry = None):
  return get_atoms_from_smiles(CG_entry.smiles)
 
 def get_atoms_from_smiles(smiles, show_hydrogen=False):
+ import rdkit.Chem as Chem
  if not smiles:
   raise Exception("SMILES cannot be None!")
 
@@ -121,6 +123,7 @@ def condense_smiles_list_to_atoms(smiles_list):
  return set(atoms_list)
 
 def get_abbrevs_from_reaction(reaction):
+ import DRP.data_config as CONFIG
  abbrevs_list = [getattr(reaction, "reactant_{}".format(i)) for i in CONFIG.reactant_range() if getattr(reaction, "reactant_{}".format(i))]
  return abbrevs_list
 

@@ -172,7 +172,8 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
  return seed_recs
 
 def get_latest_Model_Version(lab_group):
- return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date_dt")[0]
+  from DRP.models import Model_Version
+  return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date_dt")[0]
 
 
 def get_recommendations_by_date(lab_group, date = "recent"):
