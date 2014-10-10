@@ -24,10 +24,7 @@ import csv, json, string
 # both), use jsonViews to convert it to a CSV/json (in the right format for the d3 visualization), and# then render the template with that data. The template, in turn, will render the javascript (d3 vis)
 # with the CSV/json file passed to it (the template).
 
-
-#Global Variables  
 path_to_vis_data_file = BASE_DIR + "/DRP/views/vis_data.json" 
-colors =["#a6cee3", "#1f78b4"," #b2df8a"," #33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00"," #cab2d6","#6a3d9a", "#ffff99", "#b15928"] 
 
 @login_required
 def get_graph_data(request):
@@ -51,15 +48,13 @@ def get_graph_data(request):
       node_clusters = create_node_clusters_for_labels(links, nodes)
       with open(path_to_label_dict, "w") as outfile:
         json.dump(node_clusters, outfile)  
+
     clusters = give_positions_to_clusters(nodes, node_clusters)
-    #clusters_with_radii = add_radii_to_clusters(clusters)
-    #clusters that are objects in a list within a larger list 
-    votes = vote_on_inorgs(reduce_clusters(clusters), clusters)     
-    clusters_with_colors = assign_colors_to_clusters(colors, clusters)
-    final_clusters = make_clusters_into_single_list(clusters_with_colors) 
-    #hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii) 
-    #small_clusters = check_size_of_clusters(clusters) 
-    response = {"nodes": nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
+    clusters_with_radii = add_radii_to_clusters(clusters)
+    
+    hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii) 
+    
+    response = {"nodes": nodes, "links": links, "clusters": clusters_with_radii, "skipTicks": "True"} 
     return HttpResponse(json.dumps(response), content_type="application/json")   
   
   #If vis_data is not created or not up to date, write new vis_data with current data and return that
@@ -131,15 +126,16 @@ def create_node_clusters_for_labels(links, nodes):
      "pagerank": nodes[i]["pagerank"],
      "x": 0,
      "y": 0,
+     "r": 0,
      "color": "none"  
      }) 
-    #if nodes[i]["inorg1"] != "-1": 
-     #  nodes_dict.append({"inorg1": nodes[i]["inorg1"]
-    # })
-    if "inorg1" in nodes[i]:
-      nodes_dict[i]["inorg1"] = nodes[i]["inorg1"]  
-    if "inorg2" in nodes[i]:
-      nodes_dict[i]["inorg2"] = nodes[i]["inorg2"]
+    if nodes[i]["inorg1"] != "-1": 
+       nodes_dict.append({"inorg1": nodes[i]["inorg1"]
+     }) 
+    if nodes[i]["inorg2"] != "-1":
+       nodes_dict.append({"inorg2": nodes[i]["inorg2"]
+     })
+
   from operator import itemgetter 
   #now the dict has been created, sort it by pagerank (denotes the most "common" reactions/the ones
   #with the most links that should therefore be in the center for labelling purposes
@@ -149,8 +145,6 @@ def create_node_clusters_for_labels(links, nodes):
   filtered_clusters = get_rid_of_single_item_clusters(clusters)
   return filtered_clusters 
 
-#Finding all nodes that are connected to each other and have both inorgs in common
-#Also, finding most common inorgs (single, not in pairs),
 def find_node_clusters(dictionary):
   neighbors = [] 
   while len(dictionary) > 1:
@@ -183,26 +177,16 @@ def get_rid_of_single_item_clusters(cluster):
   filtered_cluster = [item for item in cluster if len(item) > 1] 
   return filtered_cluster
  
-def make_clusters_into_single_list(clusters):
-  result = []   
-  for i in xrange(len(clusters)):
-    for j in xrange(len(clusters[i])): 
-      result.append(clusters[i][j])
-  return result 
-
 #    neighbors.append([item for item in dictionary if item["target"] == centerNode["source"] and check_inorgs(centerNode, item, full_nodes) == True]) 
     #remove these neighbors from the dictionary
 
 #This should find all the neighbors (nodes with direct links (targets match main node's source) and same inorg compounds of the main node, and then all the neighbors of each neighbor (only stopping when there are no more neighbors (and the length of neighbors should continue growing until all neighbors have been found)  
 
 def check_inorgs(mainNode, neighbor):
-  if mainNode["inorg1"] == neighbor["inorg1"]:
-    if "inorg2" in mainNode and "inorg2" in neighbor:
-      if mainNode["inorg2"] == neighbor["inorg2"]:
-        return True
-    else:
-      return True
-  return False 
+  if mainNode["inorg1"] == neighbor["inorg1"] and mainNode["inorg2"] == neighbor["inorg2"]:
+    return True
+  else:
+    return False 
 
 def store_graph(request):
   nodeData = json.loads(request.POST["nodes"])
@@ -231,48 +215,44 @@ def reduce_clusters(clusters):
   reduced_clusters = [i[0] for i in clusters] 
   return reduced_clusters
 
-def vote_on_inorgs(reduced_clusters, full_clusters):
-  inorg_Votes = {} 
-  for i in xrange(len(reduced_clusters)): 
-    inorg1 = reduced_clusters[i]["inorg1"]
-    if inorg1 in inorg_Votes:
-      inorg_Votes[inorg1] += len(full_clusters[i]) 
-    else:
-      inorg_Votes[inorg1] = 1
-    if "inorg2" in reduced_clusters[i]: 
-      inorg2 = reduced_clusters[i]["inorg2"] 
-      if inorg2 in inorg_Votes:
-        inorg_Votes[inorg2] += len(full_clusters[i]) 
-      else:
-        inorg_Votes[inorg2] = 1 
-  return inorg_Votes 
-
-def check_size_of_clusters(clusters):
-  small_clusters = 0 
-  large = 0
-  significant = 0
+def find_cluster_radii(clusters, reduced_clusters):
   for i in xrange(len(clusters)):
-   if len(clusters[i]) < 15:
-    small_clusters += 1
-   # print clusters[i][0]["inorg1"]
-    if "inorg2" in clusters[i]: 
-      inorg2 = clusters[i][0]["inorg2"]
-   elif len(clusters[i]) > 15 and len(clusters[i]) < 20: 
-     large += 1 
-   elif len(clusters[i]) > 20:
-     significant += 1
-  #print "Large" + str(large) 
-  #print "Significant" + str(significant)  
-  return small_clusters 
-    
+    r = find_cluster_radius(clusters[i]) 
+    reduced_clusters[i]["r"] = r
+  return reduced_clusters 
 
-import numpy as np
-import colorsys
+def find_cluster_radius(cluster):
+  xRange = [i["x"] for i in cluster] 
+  yRange = [i["y"] for i in cluster] 
+  xCenter = float(sum(xRange)/len(xRange)) 
+  yCenter = float(sum(yRange)/len(yRange)) 
+  xRadius = max([abs(xCenter - i) for i in xRange])  
+  yRadius = max([abs(yCenter - i) for i in yRange])
+  cluster[0]["x"] = xCenter
+  cluster[0]["y"] = yCenter 
+  return (xRadius + yRadius) / 2  
 
-def assign_colors_to_clusters(colors, node_clusters):
-  for i in xrange(len(node_clusters)):
-    for j in xrange(len(node_clusters[i])):
-      node_clusters[i][j]["color"] = colors[i%12] 
-  return node_clusters
+def add_radii_to_clusters(clusters):
+  reduced_clusters = reduce_clusters(clusters)
+  newClusters = find_cluster_radii(clusters, reduced_clusters) 
+  return newClusters
+
+def make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii):
+  from operator import itemgetter
+  hierarchy = {}
+  radiiList = sorted(clusters_with_radii, key=itemgetter("r"), reverse=True) 
+  maxR = clusters_with_radii[0]["r"]  
+  firstLevel = next((x for x in clusters_with_radii if x["r"] == maxR), None) 
+  print firstLevel 
+  hierarchy = { "firstRadius": maxR, 
+                "children": []}
+  clusters_with_radii.remove(firstLevel) 
+  hierarchy["children"].append(clusters_with_radii)
+  maxR2 = clusters_with_radii[1]["r"] 
+  secondLevel = next((x for x in clusters_with_radii if x["r"] == maxR), None) 
+  return clusters_with_radii
 
 
+
+
+ 

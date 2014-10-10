@@ -12,15 +12,36 @@ d3.json("/get_graph/", function(graph) {
     var nodes = graph.nodes;   
     var preLoad = graph.skipTicks === "True";  
     var links = graph.links; 
-    var clusters = graph.clusters;
+    var labels = graph.clusters;
     //declaring a variable that will serve to size the text boxes that appear upon hovering over the individual nodes
     var textPlacement = nodeTooltips.length*40;
     var boxLength = 130;
     
 
-  var translateValue1 = 500;
+    /*var labels = []; 
+    for (var i=0; i < clusters.length; i++) { 
+        var id = clusters[i]["id"]
+	var cluster = clusters[i];
+	var nodeWithPositions= $.grep(nodes, function(d) {return d.id == id; })  
+	var x = nodeWithPositions[0].x;
+	var y = nodeWithPositions[0].y;
+	cluster.x = x;
+	cluster.y = y;
+	labels.push(cluster)  
+     };
+    */ 
+ 
+/*  var saveFile = function() {$.ajax({
+	type: 'POST', 
+	data: nodes, 
+	success: success,
+	dataType: json
+  	});
+ }; 
+ */
+  var translateValue1 = 800;
   var translateValue2 = 300;
-  var scaleValue =.2; 
+  var scaleValue =.25; 
 
   var zoom = d3.behavior.zoom()
     .scaleExtent([1/10, 2])
@@ -80,9 +101,9 @@ container.append("rect")
 	.attr("width", width)
 	.attr("height", height)
 	.attr("fill", "white") 
+	.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove();}); 
 
 container.call(zoom).attr("transform","translate(" + translateValue1 +"," + translateValue2 +")scale(" + scaleValue +"," + scaleValue +")");
-
 
 function zoomed() {
   container.attr("transform", 
@@ -131,26 +152,22 @@ if (!preLoad) {
     .style("stroke-width", 0.06)
     .attr("stroke", "gray");
 
-  var circleClusters = container.selectAll(".clusters")
-      .data(clusters) 
-      .enter()
-      .append("circle") 
-      .attr("cx", function(d) {return d.x;})
-      .attr("cy", function(d) {return d.y;})
-      
-      .attr("r", "15")
-      .attr("fill", function(d) {return d.color;})
-      .attr("opacity", "0.5") 
-
-
-
-    var nodeElements = container.selectAll(".node")
+var clusterLabels = container.selectAll("circle")
+	.data(labels) 
+	.enter().append("circle")  
+	  .attr("r", function(d) {return d.r;}) 
+	  .attr("cx", function(d) {return d.x;}) 
+	  .attr("cy", function(d) {return d.y;}) 
+	  .attr("class", "labelBackground")
+      .append("text")
+      .text("help")//function(d) {return d.inorg1 + "/n" + d.inorg2;}) 
+	 
+  var nodeElements = container.selectAll(".node")
     .data(nodes.filter(function(d) { return d.outcome > 0;}))
 
     .enter().append("g")
     .attr("class", "node"); 
-
-   
+ 
       nodeElements.append("circle") 
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
@@ -194,10 +211,7 @@ if (!preLoad) {
 	  .attr("class", "tooltipBackground")
 	  .attr("width", 350)
 	  .attr("height", boxLength * 1.3)
-      .on("mouseover", function() {
-	d3.event.stopPropagation()})
-
-  
+	  
 	var defs = container.append("defs"); 
 
 	var filter = defs.append("filter") 
@@ -298,19 +312,7 @@ if (!preLoad) {
 		};
 	   });}) 
 	d3.event.stopPropagation();  
-    })
-
-/* var clusterCircles = container.selectAll(".nodes")
-    .data(clusters) 
-    .enter()
-    .append("circle")
-    .attr("class", "cluster")
-    .attr("x", function(d) {return d.x;})
-    .attr("y", function(d) {return d.y;})
-    .attr("r", "15")
-    .attr("fill", function(d) {return d.color;})
-    .attr("opacity", "0.5") 
- */ 
+    }) 
       nodeElements.attr("transform", function(d) {
 	return "translate(" + d.x + "," + d.y + ")";
     });  
