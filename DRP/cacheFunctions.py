@@ -1,4 +1,4 @@
-from DRP.retrievalFunctions import *
+from retrievalFunctions import *
 
 
 #Strip any spaces from the lab group title and/or the keys on cache access.

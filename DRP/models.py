@@ -10,8 +10,8 @@ from uuid import uuid4
 from CGCalculator import CGCalculator
 from collections import defaultdict
 from subprocess import Popen
-from DRP.settings import LOG_DIR, BASE_DIR
-from DRP.cacheFunctions import get_cache, set_cache
+from settings import LOG_DIR, BASE_DIR
+from cacheFunctions import get_cache, set_cache
 
 import json, random, string, datetime, operator
 import chemspipy
