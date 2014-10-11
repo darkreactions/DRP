@@ -201,14 +201,15 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   # Generate different permutations of the new_combination of reactants.
   row_generator = generate_rows(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?) #TODO: Fewer "dups" === Better
-  rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(row_generator)]
+  rows = [row for row in row_generator]
+  calc_rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(rows)]
   random.shuffle(rows) # Shuffle the rows such that the search_space_max_size doesn't block any possibile reactions towards the end.
 
   # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
   def removeUnused(row, unused_indexes):
     return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
 
-  cleaned = [removeUnused(row, unused_indexes) for i, row in enumerate(rows) if i<search_space_max_size]
+  cleaned = [removeUnused(row, unused_indexes) for i, row in enumerate(calc_rows) if i<search_space_max_size]
   
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
@@ -220,14 +221,14 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
-  raw_results = get_good_result_tuples(results_location, rows)
+  good_reactions = get_good_result_tuples(results_location, rows)
 
-  if not raw_results:
-    if debug: print "No raw_results found!"
+  if not good_reactions:
+    if debug: print "No good_reactions found!"
     return (0.0, [])
 
-  raw_results.sort(key=lambda tup: tup[0])  
-  return raw_results.pop()
+  good_reactions.sort(key=lambda tup: tup[0])  
+  return good_reactions.pop()
  
   """
   if "EMPTY" in raw_results:
@@ -655,6 +656,9 @@ def build_diverse_org(max_results=250, debug=True):
 	return results
 
 def recommendation_generator(use_lab_abbrevs=None, debug=False):
+	def remove_empty(rxn):
+		return [field if field!="-1" else "" for field in rxn]
+			
 	from DRP.compoundGuideFunctions import translate_reactants
 	total_to_score = 50
 
@@ -698,6 +702,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
 			score, best_rxn = evaluate_fitness(s[1], range_map, debug=debug)
 			if use_lab_abbrevs:
 				best_rxn = translate_reactants(use_lab_abbrevs, best_rxn, single=True)
+			best_rxn = remove_empty(best_rxn)
 			if debug: print "Confidence in chosen reaction: {0}".format(score*s[0])
 
 			yield (score*s[0], best_rxn)
@@ -725,7 +730,7 @@ def create_new_recommendations(lab_group, debug=True):
 
 
 if __name__ == "__main__":
-	create_new_recommendations("Norquist Lab", debug=False)
+	create_new_recommendations("Norquist Lab", debug=True)
 	print "COMPLETED!"
 	#print recommendation_generator()
 	#print get_good_result_tuples("/home/cfalk/DevDRP/tmp/1412533505_recommend.out", [])

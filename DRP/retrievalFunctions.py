@@ -179,6 +179,11 @@ def get_latest_Model_Version(lab_group):
 
 
 def get_recommendations_by_date(lab_group, date = "recent"):
+  from DRP.models import Recommendation
+  return Recommendation.objects.order_by("-date_dt")
+
+"""
+def get_recommendations_by_date(lab_group, date = "recent"):
  if date=="recent":
   #Get the most recent version of the model.
   try:
@@ -194,6 +199,7 @@ def get_recommendations_by_date(lab_group, date = "recent"):
   raise Exception("Could not find any version of the model: {}".format(e))
 
  return recommendations
+"""
 
 def filter_recommendations(lab_group, query_list):
  #Variable Setup

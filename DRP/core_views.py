@@ -226,7 +226,7 @@ def recommend(request):
 
  return render(request, 'global_page.html', {
   "template":"recommendations",
-  "recommendations": recommendations,
+  "recommendations": recommendations[:100],
   "fatal_message": fatal_message,
  })
 
@@ -245,7 +245,7 @@ def recommendation_transmit(request, seeded=False):
 	"field":"seeded",
 	"value":"True",
 	"match":"exact"})
-  print query_list
+
   if query_list:
    recs = filter_recommendations(u.get_profile().lab_group, query_list)
   else:

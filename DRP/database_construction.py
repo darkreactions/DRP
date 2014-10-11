@@ -70,7 +70,8 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
 
   #Set the non-user field values.
   fields = get_model_field_names(model="Recommendation")
-  for (field, value) in zip(fields, lst[2][1:]): #Ignore the reference field.
+
+  for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
    #Translate Booleans into Boolean values.
    if field in bool_fields:
     value = True if value[0].lower() in "1tyc" else False
