@@ -10,8 +10,8 @@ from uuid import uuid4
 from CGCalculator import CGCalculator
 from collections import defaultdict
 from subprocess import Popen
-from DRP.settings import LOG_DIR, BASE_DIR
-from DRP.cacheFunctions import get_cache, set_cache
+from settings import LOG_DIR, BASE_DIR
+from cacheFunctions import get_cache, set_cache
 
 import json, random, string, datetime, operator
 import chemspipy
@@ -20,6 +20,8 @@ import chemspipy
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
 def get_lab_Data(lab_group):
+  from DRP.models import Data
+  lab_group = get_Lab_Group(lab_group)
   return Data.objects.filter(lab_group=lab_group).order_by("creation_time_dt")
 
 def get_ref_set(lab_group, reset_cache=True):
@@ -39,7 +41,7 @@ def get_Lab_Group(query):
     raise Exception("Could not find Lab_Group with lab_title: {}".format(query))
 
 def get_lab_CG(lab_query):
-  lab_group = get_Lab_Group(lab_query) 
+  lab_group = get_Lab_Group(lab_query)
   return CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 
 

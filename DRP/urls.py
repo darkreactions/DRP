@@ -1,7 +1,7 @@
 from django.conf.urls import *
 from django.conf import settings
 from django.contrib import admin
-from DRP.core_views import *
+from core_views import *
 
 # Uncomment the next two lines to enable the admin: ###C
 admin.autodiscover()
