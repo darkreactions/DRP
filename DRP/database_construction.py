@@ -115,7 +115,7 @@ def store_new_RankedReaction_list(list_of_rankedrxn_lists):
  print "Finished creating and storing {} of {} items!.".format(successes, count)
 
 
-def store_new_Recommendation_list(lab_group, list_of_recommendations, version_notes = "", seed_source=None, new_model=False):
+def store_new_Recommendation_list(lab_group, recommendations, version_notes = "", seed_source=None, new_model=False, debug=True):
   from DRP.models import get_Lab_Group, Model_Version
   from DRP.retrievalFunctions import get_latest_Model_Version
   import datetime
@@ -141,10 +141,10 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
   #Store the actual Recommendation entries.
   num_success = 0
   count = 0
-  for i in list_of_recommendations:
+  for rec in recommendations:
     count += 1
     try:
-     new_rec = field_list_to_Recommendation(lab_group, i, in_bulk=True)
+     new_rec = field_list_to_Recommendation(lab_group, rec, in_bulk=True)
      new_rec.date_dt = call_time
      new_rec.model_version = model
      if seed_source:
@@ -156,4 +156,4 @@ def store_new_Recommendation_list(lab_group, list_of_recommendations, version_no
     except Exception as e:
       print_error("Recommendation {} could not be constructed: {}".format(count, e))
 
-  print_log("Finished creating and storing {} of {} items!.".format(num_success, count))
+  if debug: print_log("Finished creating and storing {} of {} items!.".format(num_success, count))

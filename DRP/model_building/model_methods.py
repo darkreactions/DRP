@@ -213,7 +213,6 @@ def dict_to_list(calcDict, listFields):
 def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
   import time
 
-  if debug: print "Constructing: {}.arff".format(name)
   if clock and debug: tStart = time.clock()
 
   #Count the number of failed data (ie: invalid) that were passed to the make_arff.
@@ -221,6 +220,8 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
   i = 0
 
   fullFileName = TMP_DIR+name+".arff"
+  if debug: print "Constructing: {}".format(fullFileName)
+
   with open(fullFileName, "w") as f:
     #Write the file headers.
     arff_fields, unused_indexes = get_used_fields()
@@ -244,7 +245,7 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
       except Exception as e:
-        print "FAILED: {}".format(e)
+        if debug: print "FAILED: {}".format(e)
         failed += 1
         #If the calculations_list failed/was invalid, erase it.
         datum.calculations = None
@@ -253,6 +254,8 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
 
   if debug: print "Completed: {} of {} data not usable.".format(failed, len(data))
   if clock and debug: print "Took {} seconds.".format(time.clock()-tStart)
+
+  return fullFileName
 
 
 def make_predictions(target_file, model_location, debug=False):

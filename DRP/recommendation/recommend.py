@@ -21,7 +21,7 @@ joint_sim = dict()
 restrict_lookup = dict()
 
 
-test_variables = False
+test_variables = True
 if not test_variables:
 	time_range = [24, 36, 48]
 	pH_range = range(1,7,2) # TODO: make 2
@@ -204,7 +204,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(row_generator)]
   random.shuffle(rows) # Shuffle the rows such that the search_space_max_size doesn't block any possibile reactions towards the end.
 
-  # Put the reactions in an appropriate format for handing off to WEKA.
+  # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
   def removeUnused(row, unused_indexes):
     return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
 
@@ -213,7 +213,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
-  mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
+  mm.make_arff(name, cleaned, raw_list_input=True, debug=False) #TODO: True=works?
 
   # Run the reactions through the current WEKA model.
   model_path = MODEL_DIR+mm.get_current_model()
@@ -528,7 +528,7 @@ def combo_generator(seed):
 
 def rank_possibilities(seed, tried):
         scorer = score_maker(tried)
-	how_many_to_rate = 10 if test_variables else 500
+	how_many_to_rate = 100 if test_variables else 500
         scores = []
 
         for combo in combo_generator(seed):
@@ -638,7 +638,7 @@ def score_combo(combo_one, combo_two):
 
 
 
-def build_diverse_org(max_results=250):
+def build_diverse_org(max_results=250, debug=True):
 	from random import shuffle
 	orgs = [ c  for c in cg_props if cg_props[c]["type"] == "Org"]
 	shuffle(orgs)
@@ -651,11 +651,12 @@ def build_diverse_org(max_results=250):
 		if max_sim < 0.9:
 			results.append(org)
 
-	print "Explored: {}; Retained: {}".format(len(orgs), len(results))
+	if debug: print "Explored: {}; Retained: {}".format(len(orgs), len(results))
 	return results
 
-def restrict_test(debug=False):
-	total_to_score = 100
+def recommendation_generator(use_lab_abbrevs=None, debug=False):
+	from DRP.compoundGuideFunctions import translate_reactants
+	total_to_score = 50
 
 	if debug: print "Building baseline..."
 	range_map, quality_map, combinations = build_baseline()
@@ -671,7 +672,7 @@ def restrict_test(debug=False):
 	"""
 
 	if debug: print "Finding distinct recommendations..."
-	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org() )
+	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug) )
 
 	if debug: print "Making abbrev_map..."
 	abbrev_map, cs = get_abbrev_map()
@@ -695,40 +696,38 @@ def restrict_test(debug=False):
 	for s in scores:
 		try:
 			score, best_rxn = evaluate_fitness(s[1], range_map, debug=debug)
-			if debug: print "Confidence in chosen reaction: {0}".format(score)
-			rescored.append(   ( score*s[0], best_rxn) )
+			if use_lab_abbrevs:
+				best_rxn = translate_reactants(use_lab_abbrevs, best_rxn, single=True)
+			if debug: print "Confidence in chosen reaction: {0}".format(score*s[0])
+
+			yield (score*s[0], best_rxn)
+
 		except Exception as e:
 			print "{} failed with {}: {}".format(s, e, type(e))
-
-	rescored.sort(key=lambda x: x[0])
-	
-	return rescored
+			yield (0, None)
 
 
 def create_new_recommendations(lab_group, debug=True):
   from DRP.database_construction import store_new_Recommendation_list
-  from DRP.compoundGuideFunctions import translate_reactants
   import time
   tStart = time.clock()
 
-  scored_reactions = restrict_test(debug=debug)
-  rec_list = [rec for (conf, rec) in scored_reactions]  
- 
-  # Translate any compounds in the rec_list to abbrevs.
-  if debug: "Translating reactants into abbrevs where available..."
-  rec_list = translate_reactants(lab_group, rec_list)
+  if debug: print "Creating recommendation generator..."
+  scored_reactions = recommendation_generator(use_lab_abbrevs=lab_group, debug=debug)
 
-  # And store them in the database.
-  if debug: print "Storing new recommendations..."
-  store_new_Recommendation_list(lab_group, rec_list)
+  if debug: print "Storing recommmendations..."
+  for (conf, rec) in scored_reactions:
+    if conf>0:
+      store_new_Recommendation_list(lab_group, [[conf]+rec], debug=debug)
 
   if debug: print "Recommendation construction complete (took {} minutes)!".format(time.clock()-tStart)
   
 
 
 if __name__ == "__main__":
-	create_new_recommendations("Norquist Lab", debug=True)
-	#print restrict_test()
+	create_new_recommendations("Norquist Lab", debug=False)
+	print "COMPLETED!"
+	#print recommendation_generator()
 	#print get_good_result_tuples("/home/cfalk/DevDRP/tmp/1412533505_recommend.out", [])
 
 	#range_map, quality_map, combinations = build_baseline()

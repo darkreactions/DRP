@@ -123,7 +123,7 @@ def condense_smiles_list_to_atoms(smiles_list):
  return set(atoms_list)
 
 def get_abbrevs_from_reaction(reaction):
- import DRP.data_config as CONFIG
+ from DRP.data_config import CONFIG
  abbrevs_list = [getattr(reaction, "reactant_{}".format(i)) for i in CONFIG.reactant_range() if getattr(reaction, "reactant_{}".format(i))]
  return abbrevs_list
 

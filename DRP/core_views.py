@@ -160,6 +160,8 @@ def clear_all_page_caches(lab_group, skip_data_check=False):
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
+@login_required
+@require_http_methods(["GET"])
 def database(request):
  #Organize the session information.
  session = get_page_info(request)
