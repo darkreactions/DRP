@@ -274,6 +274,38 @@ def get_rxn_row(cnt, new_combination, range_map):
 	(mass1, mass2, mass3, mass4, pH, time, temp) = calculate_indices(i, len_list)
 	return [mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]]
 
+def generate_rows_molar(reactants, mass_map):
+  def molarRange(compound, mass_map, steps):
+    from compoundGuideFunctions import getMoles
+
+    min_mass = mass_map[compound][0] if compound in mass_map else 0.1
+    min_mols = getMoles(min_mass, compound)
+
+    max_mass = mass_map[compound][0] if compound in mass_map else 0.1
+    max_mols = getMoles(max_mass, compound)
+    return xrange(min, max, steps)
+
+  def fillRow(combo, mol1, mol2, mol3, water_mol, pH, time, temp):
+    from compoundGuideFunctions import getMass
+    m1 = getMass(combo[0], mol1)
+    m2 = getMass(combo[1], mol2)
+    m3 = getMass(combo[2], mol3)
+    water_mass = getMass("water", water_mol)
+    return ["--", combo[0], m1, "g", combo[1], m2, "g", combo[2], m3, "g", 
+            "water", water_mass, "g", "", "","", temp, time, pH, 
+            "yes", "no", 4, 2,""]
+
+  steps = 4
+
+  for pH in pH_range: #TODO: TEST
+    for time in time_range:
+      for temp in temp_range:
+        for mol1 in molarRange(reactants[0], mass_map, steps):
+          for mol2 in molarRange(reactants[1], mass_map, steps):
+            for mol3 in molarRange(reactants[2], mass_map, steps):
+              for water in molarRange("water", mass_map, steps):
+                yield fillRow(reactants, mol1, mol2, mol3, water, pH, time, temp)
+                
 
 def generate_rows(new_combination, range_map):
 	from operator import mul
@@ -285,6 +317,8 @@ def generate_rows(new_combination, range_map):
 			range_map[comb] = [0.001, 0.005]
 			ranges.append( [0.001, 0.005] )
 
+	print ranges
+	# [(0.0064, 32.995), (0.0151, 0.94), (0.1671, 2.2604), [0.001, 0.005]]
 	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))]
 	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
 	#print reduce(mul, len_list)
