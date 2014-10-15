@@ -23,15 +23,15 @@ restrict_lookup = dict()
 
 test_variables = True
 if not test_variables:
-	time_range = [24, 36, 48]
-	pH_range = range(1,7,2) # TODO: make 2
-	temp_range = [80, 100, 130]
 	steps = 6
+	time_range = xrange(24, 48, steps)
+	pH_range = xrange(1,7, steps)
+	temp_range = xrange(80, 130, steps)
 else:
-	time_range = [30, 60]
-	pH_range = range(1,15,7)
-	temp_range = [70, 100]
-	steps = 2
+	steps = 3
+	time_range = xrange(30, 60, steps)
+	pH_range = xrange(1,15, steps)
+	temp_range = xrange(70, 100, steps)
 
 
 def user_recommend(combinations, similarity_map, range_map):
@@ -200,9 +200,13 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
 
   # Generate different permutations of the new_combination of reactants.
-  row_generator = generate_rows(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?) #TODO: Fewer "dups" === Better
+  print "Starting row generator..."
+  print "1"
+  row_generator = generate_rows_molar(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?) #TODO: Fewer "dups" === Better
   rows = [row for row in row_generator]
+  print "1.5"
   calc_rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(rows)]
+  print "2"
   random.shuffle(rows) # Shuffle the rows such that the search_space_max_size doesn't block any possibile reactions towards the end.
 
   # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
@@ -211,23 +215,29 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   cleaned = [removeUnused(row, unused_indexes) for i, row in enumerate(calc_rows) if i<search_space_max_size]
   
+  print "3"
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
   mm.make_arff(name, cleaned, raw_list_input=True, debug=False) #TODO: True=works?
+  print "4"
 
   # Run the reactions through the current WEKA model.
   model_path = MODEL_DIR+mm.get_current_model()
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
+  print "5"
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
   good_reactions = get_good_result_tuples(results_location, rows)
+  print "7"
 
   if not good_reactions:
     if debug: print "No good_reactions found!"
     return (0.0, [])
 
   good_reactions.sort(key=lambda tup: tup[0])  
+
+  print "8"
   return good_reactions.pop()
  
   """
@@ -276,17 +286,17 @@ def get_rxn_row(cnt, new_combination, range_map):
 
 def generate_rows_molar(reactants, mass_map):
   def molarRange(compound, mass_map, steps):
-    from compoundGuideFunctions import getMoles
+    from DRP.compoundGuideFunctions import getMoles
 
     min_mass = mass_map[compound][0] if compound in mass_map else 0.1
-    min_mols = getMoles(min_mass, compound)
+    max_mass = mass_map[compound][0] if compound in mass_map else 0.5
 
-    max_mass = mass_map[compound][0] if compound in mass_map else 0.1
+    min_mols = getMoles(min_mass, compound)
     max_mols = getMoles(max_mass, compound)
-    return xrange(min, max, steps)
+    return xrange(min_mols, max_mols, steps) #TODO: Needs to be int-based
 
   def fillRow(combo, mol1, mol2, mol3, water_mol, pH, time, temp):
-    from compoundGuideFunctions import getMass
+    from DRP.compoundGuideFunctions import getMass
     m1 = getMass(combo[0], mol1)
     m2 = getMass(combo[1], mol2)
     m3 = getMass(combo[2], mol3)
@@ -297,13 +307,21 @@ def generate_rows_molar(reactants, mass_map):
 
   steps = 4
 
+  print "a"
   for pH in pH_range: #TODO: TEST
+    print "b"
     for time in time_range:
+      print "c"
       for temp in temp_range:
+        print "d"
         for mol1 in molarRange(reactants[0], mass_map, steps):
+          print "e"
           for mol2 in molarRange(reactants[1], mass_map, steps):
+	    print "f"
             for mol3 in molarRange(reactants[2], mass_map, steps):
+              print "g"
               for water in molarRange("water", mass_map, steps):
+                print "HERE"
                 yield fillRow(reactants, mol1, mol2, mol3, water, pH, time, temp)
                 
 
