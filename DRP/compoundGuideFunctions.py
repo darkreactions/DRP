@@ -33,9 +33,7 @@ def translate_reactants(lab_group, dataList, single=False):
 def getMoles(mass, compound):
   from DRP.models import CompoundEntry
   try:
-    print "1.1"
     molar_mass = CompoundEntry.objects.filter(compound=compound)[0].mw
-    print "MM: {}".format(molar_mass)
     return mass/float(molar_mass)
   except Exception as e:
     print e
@@ -44,7 +42,7 @@ def getMoles(mass, compound):
 def getMass(moles, compound):
   from DRP.models import CompoundEntry
   try:
-    molar_mass = float(CompoundEntry.objects.filter(compound=compound)[0].mw)
+    molar_mass = CompoundEntry.objects.filter(compound=compound)[0].mw
     return moles*float(molar_mass)
   except Exception as e:
     print e

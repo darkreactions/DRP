@@ -179,7 +179,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   # Variable and Directory Preparation.
   mm.create_dir_if_necessary(TMP_DIR)
-  search_space_max_size = 10000 #float("inf")
+  search_space_max_size = 15000 #float("inf")
   arff_fields, unused_indexes = mm.get_used_fields()
 
   """
@@ -201,12 +201,9 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   # Generate different permutations of the new_combination of reactants.
   print "Starting row generator..."
-  print "1"
-  row_generator = generate_rows_molar(new_combination, range_map) #TODO: maybe make a smarter search? (by moles instead of mass?) #TODO: Fewer "dups" === Better
+  row_generator = generate_rows_molar(new_combination, range_map)
   rows = [row for row in row_generator]
-  print "1.5"
   calc_rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(rows)]
-  print "2"
   random.shuffle(rows) # Shuffle the rows such that the search_space_max_size doesn't block any possibile reactions towards the end.
 
   # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
@@ -215,21 +212,17 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   cleaned = [removeUnused(row, unused_indexes) for i, row in enumerate(calc_rows) if i<search_space_max_size]
   
-  print "3"
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
   mm.make_arff(name, cleaned, raw_list_input=True, debug=False) #TODO: True=works?
-  print "4"
 
   # Run the reactions through the current WEKA model.
   model_path = MODEL_DIR+mm.get_current_model()
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
-  print "5"
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
   good_reactions = get_good_result_tuples(results_location, rows)
-  print "7"
 
   if not good_reactions:
     if debug: print "No good_reactions found!"
@@ -237,7 +230,6 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   good_reactions.sort(key=lambda tup: tup[0])  
 
-  print "8"
   return good_reactions.pop()
  
   """
@@ -285,43 +277,47 @@ def get_rxn_row(cnt, new_combination, range_map):
 	return [mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]]
 
 def generate_rows_molar(reactants, mass_map):
+  def frange(start, stop, step):
+    current = start
+    while start < stop:
+      yield start
+      start += step
+
   def molarRange(compound, mass_map, steps):
     from DRP.compoundGuideFunctions import getMoles
 
     min_mass = mass_map[compound][0] if compound in mass_map else 0.1
-    max_mass = mass_map[compound][0] if compound in mass_map else 0.5
+    max_mass = mass_map[compound][1] if compound in mass_map else 0.5
 
     min_mols = getMoles(min_mass, compound)
     max_mols = getMoles(max_mass, compound)
-    return xrange(min_mols, max_mols, steps) #TODO: Needs to be int-based
 
-  def fillRow(combo, mol1, mol2, mol3, water_mol, pH, time, temp):
+    radius = 0.25
+
+    min_mols *= (1.0-radius)
+    max_mols *= (1.0+radius)
+    return frange(min_mols, max_mols, steps)
+
+  def fillRow(combo, mols1, mols2, mols3, water_mols, pH, time, temp):
     from DRP.compoundGuideFunctions import getMass
-    m1 = getMass(combo[0], mol1)
-    m2 = getMass(combo[1], mol2)
-    m3 = getMass(combo[2], mol3)
-    water_mass = getMass("water", water_mol)
-    return ["--", combo[0], m1, "g", combo[1], m2, "g", combo[2], m3, "g", 
-            "water", water_mass, "g", "", "","", temp, time, pH, 
-            "yes", "no", 4, 2,""]
+    m1 = getMass(mols1, combo[0])
+    m2 = getMass(mols2, combo[1])
+    m3 = getMass(mols3, combo[2])
+    water_mass = getMass(water_mols, "water")
+    result = ["--", combo[0], m1, "g", combo[1], m2, "g", combo[2], m3, "g", 
+              "water", water_mass, "g", "", "","", temp, time, pH, 
+              "yes", "no", 4, 2,""]
+    return result
 
-  steps = 4
+  step = 0.125
 
-  print "a"
   for pH in pH_range: #TODO: TEST
-    print "b"
     for time in time_range:
-      print "c"
       for temp in temp_range:
-        print "d"
-        for mol1 in molarRange(reactants[0], mass_map, steps):
-          print "e"
-          for mol2 in molarRange(reactants[1], mass_map, steps):
-	    print "f"
-            for mol3 in molarRange(reactants[2], mass_map, steps):
-              print "g"
-              for water in molarRange("water", mass_map, steps):
-                print "HERE"
+        for mol1 in molarRange(reactants[0], mass_map, step):
+          for mol2 in molarRange(reactants[1], mass_map, step):
+            for mol3 in molarRange(reactants[2], mass_map, step):
+              for water in molarRange("water", mass_map, step):
                 yield fillRow(reactants, mol1, mol2, mol3, water, pH, time, temp)
                 
 
@@ -335,8 +331,7 @@ def generate_rows(new_combination, range_map):
 			range_map[comb] = [0.001, 0.005]
 			ranges.append( [0.001, 0.005] )
 
-	print ranges
-	# [(0.0064, 32.995), (0.0151, 0.94), (0.1671, 2.2604), [0.001, 0.005]]
+	# Ranges:[(0.0064, 32.995), (0.0151, 0.94), (0.1671, 2.2604), [0.001, 0.005]]
 	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))]
 	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
 	#print reduce(mul, len_list)
@@ -712,7 +707,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
 		return [field if field!="-1" else "" for field in rxn]
 			
 	from DRP.compoundGuideFunctions import translate_reactants
-	total_to_score = 50
+	total_to_score = 100
 
 	if debug: print "Building baseline..."
 	range_map, quality_map, combinations = build_baseline()
