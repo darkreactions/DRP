@@ -183,9 +183,11 @@ def get_good_result_tuples(results_location, rows, debug=False):
 def evaluate_fitness(new_combination, range_map, debug=True):
   import time, csv, random
 
+  return_limit=10
+  search_space_max_size = 1000 #float("inf")
+
   # Variable and Directory Preparation.
   mm.create_dir_if_necessary(TMP_DIR)
-  search_space_max_size = 1000 #float("inf")
   arff_fields, unused_indexes = mm.get_used_fields()
 
   """
@@ -242,11 +244,10 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   good_reactions = get_good_result_tuples(results_location, rows, debug=debug)
 
   if not good_reactions:
-    return (0.0, [])
+    return [(0.0, [])]
   else:
     good_reactions.sort(key=lambda tup: tup[0])  
-    print "Found {} good reactions!".format(len(good_reactions))
-    return good_reactions.pop()
+    return good_reactions[:return_limit]
  
   """
   if "EMPTY" in raw_results:
@@ -724,60 +725,67 @@ def build_diverse_org(max_results=250, debug=True):
 	return results
 
 def recommendation_generator(use_lab_abbrevs=None, debug=False):
-	def remove_empty(rxn):
-		return [field if field!="-1" else "" for field in rxn]
-			
-	from DRP.compoundGuideFunctions import translate_reactants
-	total_to_score = 15000
+  def remove_empty(rxn):
+    return [field if field!="-1" else "" for field in rxn]
+      
+  from DRP.compoundGuideFunctions import translate_reactants
 
-	if debug: print "Building baseline..."
-	range_map, quality_map, combinations = build_baseline()
+  # Variable Setup
+  total_to_score = 15000
 
-	"""
-	range_map = {'': (0, 0), 
-		u'hydrochloric acid': (0.0824, 2.0235), 
-		u'HIO3': (0.2149, 0.8759), 
-		u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219), 
-		u"N,N'-diisopropylethylenediamine": (0.1019, 0.6559), 
-		...
-		}
-	"""
+  if debug: print "Building baseline..."
 
-	if debug: print "Finding distinct recommendations..."
-	seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug) )
+  range_map, quality_map, combinations = build_baseline()
 
-	if debug: print "Making abbrev_map..."
-	abbrev_map, cs = get_abbrev_map()
-	for i in range(len(seed)):
-		for j in range(len(seed[i])):
-			if seed[i][j] in abbrev_map:
-				seed[i][j] = abbrev_map[seed[i][j]]
+  """
+  range_map = {'': (0, 0), 
+    u'hydrochloric acid': (0.0824, 2.0235), 
+    u'HIO3': (0.2149, 0.8759), 
+    u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219), 
+    u"N,N'-diisopropylethylenediamine": (0.1019, 0.6559), 
+    ...
+    }
+  """
 
-	if debug: print "Ranking possibilities..."
-	scores = rank_possibilities(seed, combinations)
+  if debug: print "Finding distinct recommendations..."
+  seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug) )
 
-	if debug: print "Filtering scores..."
-	#import DRP.research.mutual_info as mutual_info #TODO
-	#scores = mutual_info.do_filter(scores, range_map)
+  if debug: print "Making abbrev_map..."
+  abbrev_map, cs = get_abbrev_map()
+  for i in range(len(seed)):
+    for j in range(len(seed[i])):
+      if seed[i][j] in abbrev_map:
+        seed[i][j] = abbrev_map[seed[i][j]]
 
-	if debug: print "Scores ({} Total):".format(len(scores))
-	scores = scores[:total_to_score]
+  if debug: print "Ranking possibilities..."
+  scores = rank_possibilities(seed, combinations)
 
-	if debug: print "Rescoring..."
-	rescored = []
-	for s in scores:
-		try:
-			score, best_rxn = evaluate_fitness(s[1], range_map, debug=debug)
-			if use_lab_abbrevs:
-				best_rxn = translate_reactants(use_lab_abbrevs, best_rxn, single=True)
-			best_rxn = remove_empty(best_rxn)
-			if debug: print "Confidence in chosen reaction: {0}".format(score*s[0])
+  if debug: print "Filtering scores..."
+  #import DRP.research.mutual_info as mutual_info #TODO
+  #scores = mutual_info.do_filter(scores, range_map)
 
-			yield (score*s[0], best_rxn)
+  if debug: print "Scores ({} Total):".format(len(scores))
+  scores = scores[:total_to_score]
 
-		except Exception as e:
-			print "{} failed with {}: {}".format(s, e, type(e))
-			yield (0, None)
+  if debug: print "Rescoring..."
+  rescored = []
+  for s in scores:
+    try:
+      
+      reaction_tuples = evaluate_fitness(s[1], range_map, debug=debug)
+      if not reaction_tuples:
+        yield (0, None)
+      else:
+        for score, rxn in reaction_tuples:
+          if use_lab_abbrevs:
+            rxn = translate_reactants(use_lab_abbrevs, rxn, single=True)
+          rxn = remove_empty(rxn)
+
+          yield (score*s[0], rxn)
+
+    except Exception as e:
+      print "{} failed with {}: {}".format(s, e, type(e))
+      yield (0, None)
 
 
 def create_new_recommendations(lab_group, debug=True):
