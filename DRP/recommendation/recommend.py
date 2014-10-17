@@ -21,17 +21,25 @@ joint_sim = dict()
 restrict_lookup = dict()
 
 
+def frange(start, stop, steps):
+  current = start
+  step = (stop-start)/steps
+  while current < stop:
+    yield current
+    current += step
+
+
 test_variables = True
 if not test_variables:
-	steps = 6
+	steps = 3
 	time_range = xrange(24, 48, steps)
-	pH_range = xrange(1,7, steps)
+	pH_range = xrange(1,14, steps)
 	temp_range = xrange(80, 130, steps)
 else:
 	steps = 3
-	time_range = xrange(30, 60, steps)
-	pH_range = xrange(1,15, steps)
-	temp_range = xrange(70, 100, steps)
+	time_range = frange(30, 60, steps)
+	pH_range = frange(1,15, steps)
+	temp_range = frange(70, 100, steps)
 
 
 def user_recommend(combinations, similarity_map, range_map):
@@ -181,10 +189,43 @@ def get_good_result_tuples(results_location, rows, debug=False):
 
 
 def evaluate_fitness(new_combination, range_map, debug=True):
+  def removeUnused(row, unused_indexes):
+    return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
+  def getDifferentReactions(tuples, num_to_get):
+    def difference(rxn1, rxn2):
+      weights = [0,  0,10,0,  0,10,0,  0,10,0,  0,0.5,0]
+      difference = 0
+      for i, weight in enumerate(weights):
+        if weight>0:
+          difference += abs(weight*(rxn1[i]-rxn2[i]))
+      return difference
+
+    # Only consider the tuples which have similar confidences.
+    conf_threshold = 0.1
+    conf = tuples[0][0]*(1.0-conf_threshold) # Assume first = max conf.
+    tuples = filter(lambda tup: tup[0]>=conf, tuples)
+
+    # Gather as many different tuples as possible.
+    gathered = [tuples.pop(0)]
+    diff_thresh = 0.01
+    while tuples and num_to_get>0:
+      tup1 = tuples.pop(0)
+
+      if all([difference(tup1[1], tup2[1])>diff_thresh for tup2 in gathered]):
+        diff = min([difference(tup1[1], tup2[1]) for tup2 in gathered])
+        print "Got one:\n{} (diff: {})".format(tup1, diff)
+        gathered.append(tup1)
+        num_to_get -= 1
+      else:
+        print ".",
+
+    return gathered
+
   import time, csv, random
 
-  return_limit=10
-  search_space_max_size = 1000 #float("inf")
+  debug_samples = False
+  return_limit=3
+  search_space_max_size = 5000 #float("inf")
 
   # Variable and Directory Preparation.
   mm.create_dir_if_necessary(TMP_DIR)
@@ -208,6 +249,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
 
   # Generate different permutations of the new_combination of reactants.
+  print "___"*10
   print "Starting row generator..."
   row_generator = generate_rows_molar(new_combination, range_map)
   rows = [row for row in row_generator]
@@ -215,21 +257,19 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   # Shuffle the rows such that the search_space_max_size doesn't block combos. 
   random.shuffle(rows)
 
+  print "Calculating..."
   # Expand each row to have all the used features.
   calc_rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(rows)]
 
   # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
-  def removeUnused(row, unused_indexes):
-    return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
-
   cleaned = [removeUnused(row, unused_indexes) for i, row in enumerate(calc_rows) if i<search_space_max_size]
 
 
   if debug:
     print "Search-space size: {} (limited to {})".format(len(rows), len(cleaned))
-    print "Sample:"
-    for row in rows[:3]:
-      print row
+    if debug_samples:
+      print "Search-space Sample:"
+      print rows[0]
 
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
@@ -242,12 +282,21 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
   good_reactions = get_good_result_tuples(results_location, rows, debug=debug)
+  if debug:
+    print "Good Reactions: {}".format(len(good_reactions))
 
   if not good_reactions:
     return [(0.0, [])]
   else:
     good_reactions.sort(key=lambda tup: tup[0])  
-    return good_reactions[:return_limit]
+    result = getDifferentReactions(good_reactions, return_limit)
+
+    if debug_samples:
+      print "Result Sample:"
+      for row in result[:3]:
+        print row
+
+    return result 
  
   """
   if "EMPTY" in raw_results:
@@ -295,12 +344,6 @@ def get_rxn_row(cnt, new_combination, range_map):
 
 
 def generate_rows_molar(reactants, mass_map):
-  def frange(start, stop, step):
-    current = start
-    while start < stop:
-      yield start
-      start += step
-
   def molarRange(compound, mass_map, steps):
     from DRP.compoundGuideFunctions import getMoles
    
@@ -331,15 +374,15 @@ def generate_rows_molar(reactants, mass_map):
               "yes", "no", 4, 2,""]
     return result
 
-  step = 0.125
-
-  for pH in pH_range: 
-    for time in time_range:
-      for temp in temp_range:
-        for mol1 in molarRange(reactants[0], mass_map, step):
-          for mol2 in molarRange(reactants[1], mass_map, step):
-            for mol3 in molarRange(reactants[2], mass_map, step):
-              for water in molarRange("water", mass_map, step):
+  var_steps = 3
+  amt_steps = 4
+  for pH in frange(1,14, var_steps): 
+    for time in frange(24, 48, var_steps):
+      for temp in frange(80, 130, var_steps):
+        for mol1 in molarRange(reactants[0], mass_map, amt_steps):
+          for mol2 in molarRange(reactants[1], mass_map, amt_steps):
+            for mol3 in molarRange(reactants[2], mass_map, amt_steps):
+              for water in molarRange("water", mass_map, amt_steps):
                 yield fillRow(reactants, mol1, mol2, mol3, water, pH, time, temp)
                 
 
@@ -731,7 +774,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
   from DRP.compoundGuideFunctions import translate_reactants
 
   # Variable Setup
-  total_to_score = 15000
+  total_to_score = 250
 
   if debug: print "Building baseline..."
 
