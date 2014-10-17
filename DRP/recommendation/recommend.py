@@ -13,33 +13,21 @@ from DRP.model_building import parse_rxn, load_cg, clean2arff
 from DRP.recommendation import rebuildCDT
 from DRP.settings import TMP_DIR, MODEL_DIR, BASE_DIR
 
+
+# Variable Setup
 cg_props = load_cg.get_cg()
 ml_convert = json.load(open(django_path+"/DRP/model_building/mlConvert.json"))
-
 joint_sim = dict()
-
 restrict_lookup = dict()
-
+test_variables = False
 
 def frange(start, stop, steps):
+  # Creates a float range with n=`steps` intervals between the `start` and `stop`.
   current = start
   step = (stop-start)/steps
   while current < stop:
     yield current
     current += step
-
-
-test_variables = True
-if not test_variables:
-	steps = 3
-	time_range = xrange(24, 48, steps)
-	pH_range = xrange(1,14, steps)
-	temp_range = xrange(80, 130, steps)
-else:
-	steps = 3
-	time_range = frange(30, 60, steps)
-	pH_range = frange(1,15, steps)
-	temp_range = frange(70, 100, steps)
 
 
 def user_recommend(combinations, similarity_map, range_map):
@@ -225,7 +213,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   debug_samples = False
   return_limit=3
-  search_space_max_size = 5000 #float("inf")
+  search_space_max_size = float("inf")
 
   # Variable and Directory Preparation.
   mm.create_dir_if_necessary(TMP_DIR)
@@ -249,24 +237,25 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
 
   # Generate different permutations of the new_combination of reactants.
-  print "___"*10
-  print "Starting row generator..."
+  if debug:
+    print "___"*10
+    print "Starting row generator..."
+
   row_generator = generate_rows_molar(new_combination, range_map)
   rows = [row for row in row_generator]
 
   # Shuffle the rows such that the search_space_max_size doesn't block combos. 
   random.shuffle(rows)
 
-  print "Calculating..."
-  # Expand each row to have all the used features.
-  calc_rows = [parse_rxn.parse_rxn(row, cg_props, ml_convert) for i, row in enumerate(rows)]
-
   # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
-  cleaned = [removeUnused(row, unused_indexes) for i, row in enumerate(calc_rows) if i<search_space_max_size]
+  cleaned = []
+  for i, row in enumerate(rows[:search_space_max_size]):
+    expanded = parse_rxn.parse_rxn(row, cg_props, ml_convert)
+    cleaned.append( removeUnused(expanded, unused_indexes) )
 
 
   if debug:
-    print "Search-space size: {} (limited to {})".format(len(rows), len(cleaned))
+    print "Search-space size: {} of {}".format(len(cleaned), len(rows))
     if debug_samples:
       print "Search-space Sample:"
       print rows[0]
@@ -767,6 +756,7 @@ def build_diverse_org(max_results=250, debug=True):
 	if debug: print "Explored: {}; Retained: {}".format(len(orgs), len(results))
 	return results
 
+
 def recommendation_generator(use_lab_abbrevs=None, debug=False):
   def remove_empty(rxn):
     return [field if field!="-1" else "" for field in rxn]
@@ -774,7 +764,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
   from DRP.compoundGuideFunctions import translate_reactants
 
   # Variable Setup
-  total_to_score = 250
+  total_to_score = 100 # The number of possible combos to test.
 
   if debug: print "Building baseline..."
 
