@@ -8,11 +8,8 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-def retrogenerateModel(date="5-31-2014"):
-  from DRP.model_building.generate_models import retrogenerate_model
-  retrogenerate_model(date)
-
 def retrogenerateModels():
+  from DRP.model_building.generate_models import retrogenerateModel
   def dateRange(start, interval):
     import datetime
     from dateutil.relativedelta import relativedelta
@@ -36,7 +33,7 @@ def retrogenerateModels():
   for date in dateRange(start, "month"):
     date_string = date.strftime("%m-%d-%Y")
     print "Retrogenerating model from {}".format(date_string)
-    retrogenerateModel(date=date_string)
+    retrogenerateModel(date_string)
  
 
 if __name__=="__main__":

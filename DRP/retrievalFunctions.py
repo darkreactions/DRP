@@ -31,17 +31,17 @@ def get_lab_Data_size(lab_group):
 
 #Get data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
- import datetime
- #Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
- date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
-
- #Get the reactions before/after a specific date.
- if direction.lower() == "after":
-  filtered_data = lab_data.filter(creation_time_dt__gte=date)
- else:
-  filtered_data = lab_data.filter(creation_time_dt__lte=date)
-
- return filtered_data
+  import datetime
+  #Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
+  date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
+ 
+  #Get the reactions before/after a specific date.
+  if direction.lower() == "after":
+    filtered_data = lab_data.filter(creation_time_dt__gte=date)
+  else: #TODO: Ignore time and just go by date.
+    filtered_data = lab_data.filter(creation_time_dt__lte=date)
+ 
+  return filtered_data
 
 
 def filter_existing_calcs(data):
@@ -123,6 +123,7 @@ def filter_data(lab_group, query_list):
 #Either get the valid Data entries for a lab group or get all valid data.
 #  Note: Accepts an actual LabGroup object.
 def get_valid_data(lab_group=None):
+  from DRP.models import Data
   if lab_group:
     return Data.objects.filter(is_valid=True, lab_group=lab_group)
   return Data.objects.filter(is_valid=True)

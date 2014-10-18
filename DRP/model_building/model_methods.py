@@ -47,7 +47,7 @@ def gen_model(model_name, description, data=None, clock=True):
 
   if clock:
     import datetime
-    print "Started gen_model at {}".format(datetime.datetime.now())
+    print "Called gen_model at {}".format(datetime.datetime.now())
 
   #Make sure the model_name has no spaces in it.
   model_name = model_name.replace(" ","_")
@@ -56,8 +56,9 @@ def gen_model(model_name, description, data=None, clock=True):
 
   # Get the valid reactions across all lab groups.
   print "Loading data entries."
-  if not data:
+  if data==None:
     data = get_valid_data()
+  print "... Loaded {} entries!".format(len(data))
 
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.
