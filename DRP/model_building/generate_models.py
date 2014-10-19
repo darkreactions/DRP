@@ -24,6 +24,7 @@ def build_previous_model(model_name, model_description, date, data=None):
   filtered = filter_by_date(data, date, "previous")
   model_methods.gen_model(model_name, model_description, data=filtered)
 
+
 def retrogenerateModel(date):
   """
   A convenient wrapper to generate a model using data available on a given date.
@@ -34,10 +35,9 @@ def retrogenerateModel(date):
   build_previous_model(title, description, date)
 
 
-
 def retrogenerateModels():
   """
-  Constructs a Learning Curve based on time.
+  Constructs a Learning Curve based on time by repeatedly retrogenerating models.
   """
 
   def dateRange(start, interval):

@@ -181,7 +181,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
     return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
   def getDifferentReactions(tuples, num_to_get):
     def difference(rxn1, rxn2):
-      weights = [0,  0,10,0,  0,10,0,  0,10,0,  0,0.5,0]
+      weights = [0,  0,20,0,  0,20,0,  0,20,0,  0,0.5,0]
       difference = 0
       for i, weight in enumerate(weights):
         if weight>0:
@@ -195,7 +195,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
     # Gather as many different tuples as possible.
     gathered = [tuples.pop(0)]
-    diff_thresh = 0.01
+    diff_thresh = 0.1
     while tuples and num_to_get>0:
       tup1 = tuples.pop(0)
 
@@ -213,7 +213,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
 
   debug_samples = False
   return_limit=3
-  search_space_max_size = float("inf")
+  search_space_max_size = 1000 #float("inf")
 
   # Variable and Directory Preparation.
   mm.create_dir_if_necessary(TMP_DIR)
@@ -364,7 +364,7 @@ def generate_rows_molar(reactants, mass_map):
     return result
 
   var_steps = 3
-  amt_steps = 4
+  amt_steps = 3 #4
   for pH in frange(1,14, var_steps): 
     for time in frange(24, 48, var_steps):
       for temp in frange(80, 130, var_steps):
@@ -764,7 +764,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
   from DRP.compoundGuideFunctions import translate_reactants
 
   # Variable Setup
-  total_to_score = 100 # The number of possible combos to test.
+  total_to_score = 50 # The number of possible combos to test.
 
   if debug: print "Building baseline..."
 
@@ -821,26 +821,37 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
       yield (0, None)
 
 
-def create_new_recommendations(lab_group, debug=True):
+def create_new_recommendations(lab_group, debug=True, bare_debug=True):
   from DRP.database_construction import store_new_Recommendation_list
   import time
-  tStart = time.clock()
 
-  if debug: print "Creating recommendation generator..."
+  # Variable Setup
+  tStart = time.clock()
+  total = 0
+  max_recs_per_call = 150
+
+  if debug: print "-- Creating recommendation generator..."
   scored_reactions = recommendation_generator(use_lab_abbrevs=lab_group, debug=debug)
 
-  if debug: print "Storing recommmendations..."
+  if debug: print "-- Storing recommmendations..."
   for (conf, rec) in scored_reactions:
     if conf>0:
+      rec = map(str, rec)
       store_new_Recommendation_list(lab_group, [[conf]+rec], debug=debug)
+      total += 1
 
-  if debug: print "Recommendation construction complete (took {} minutes)!".format(time.clock()-tStart)
+    if total>max_recs_per_call:
+      break
+
+  if debug or bare_debug:
+    mins = (time.clock()-tStart)/60.0
+    print "-- Rec. pipeline complete (took {:.4} minutes)!".format(mins)
+    print "-- Constructed {} new recommendations".format(total)
   
 
 
 if __name__ == "__main__":
-	create_new_recommendations("Norquist Lab", debug=True)
-	print "COMPLETED!"
+	create_new_recommendations("Norquist Lab", debug=True, bare_debug=True)
 	#print recommendation_generator()
 	#print get_good_result_tuples("/home/cfalk/DevDRP/tmp/1412533505_recommend.out", [])
 
