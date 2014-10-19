@@ -18,6 +18,8 @@ def retrogenerateModels():
       interval = relativedelta(months=1)
     elif interval == "days":
       interval = relativedelta(days=10)
+    else:
+      raise Exception("No interval prepared for '{}'".format(interval))
 
     end = datetime.datetime.now()
     current = start
@@ -30,10 +32,10 @@ def retrogenerateModels():
   earliest_datum = Data.objects.order_by("creation_time_dt")[0]
   start = earliest_datum.creation_time_dt
 
-  for date in dateRange(start, "month"):
+  for date in dateRange(start, "months"):
     date_string = date.strftime("%m-%d-%Y")
     print "Retrogenerating model from {}".format(date_string)
-    retrogenerateModel(date_string)
+    #retrogenerateModel(date_string)
  
 
 if __name__=="__main__":
