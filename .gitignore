@@ -4,6 +4,7 @@ DRP/migrations/*
 
 
 tmp/*
+models/*
 dynamic/*
 
 *.pyc

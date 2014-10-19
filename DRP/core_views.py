@@ -160,6 +160,8 @@ def clear_all_page_caches(lab_group, skip_data_check=False):
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
+@login_required
+@require_http_methods(["GET"])
 def database(request):
  #Organize the session information.
  session = get_page_info(request)
@@ -224,7 +226,7 @@ def recommend(request):
 
  return render(request, 'global_page.html', {
   "template":"recommendations",
-  "recommendations": recommendations,
+  "recommendations": recommendations[:100],
   "fatal_message": fatal_message,
  })
 
@@ -243,7 +245,7 @@ def recommendation_transmit(request, seeded=False):
 	"field":"seeded",
 	"value":"True",
 	"match":"exact"})
-  print query_list
+
   if query_list:
    recs = filter_recommendations(u.get_profile().lab_group, query_list)
   else:
