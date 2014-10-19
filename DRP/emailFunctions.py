@@ -1,6 +1,6 @@
 import sys
 from django.core.mail import send_mail
-from DRP.retrievalFunctions import *
+from retrievalFunctions import *
 from DRP.logPrinting import print_error
 from DRP.settings import DEBUG
 

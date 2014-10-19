@@ -205,11 +205,12 @@ def check_inorgs(mainNode, neighbor):
   return False 
 
 def store_graph(request):
+  print request.POST.keys()  
   nodeData = json.loads(request.POST["nodes"])
   linkData = json.loads(request.POST["links"]) 
   path_to_nodePositions = BASE_DIR + "/DRP/vis/nodePositions.json"
   path_to_links = BASE_DIR + "/DRP/vis/linkIndices.json" 
-  
+   
   with open(path_to_nodePositions, "w") as f:
     json.dump(nodeData, f) 
  
