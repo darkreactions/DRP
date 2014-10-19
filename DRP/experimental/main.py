@@ -35,7 +35,7 @@ def retrogenerateModels():
   for date in dateRange(start, "months"):
     date_string = date.strftime("%m-%d-%Y")
     print "Retrogenerating model from {}".format(date_string)
-    #retrogenerateModel(date_string)
+    retrogenerateModel(date_string)
  
 
 if __name__=="__main__":
