@@ -17,10 +17,6 @@ from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
 POSITIVE = "2:2"
 
-def create_dir_if_necessary(directory):
-  if not os.path.exists(directory):
-    os.makedirs(directory)
-
 def makeBool(entry):
   if entry=="yes":
     return 1
@@ -39,7 +35,7 @@ def gen_model(model_name, description, data=None, clock=True):
   Optionally, only certain data can be used to construct the model.
   '''
 
-  # Set to true to show run-times.
+  from DRP.fileFunctions import createDirIfNecessary
   import time
 
   if not model_name or not description:
@@ -73,8 +69,8 @@ def gen_model(model_name, description, data=None, clock=True):
   modelFullName = MODEL_DIR + model_name + ".model"
   arffFullName = TMP_DIR+name+"_final.arff"
 
-  create_dir_if_necessary(TMP_DIR)
-  create_dir_if_necessary(MODEL_DIR)
+  createDirIfNecessary(TMP_DIR)
+  createDirIfNecessary(MODEL_DIR)
 
   tStart = time.clock()
 
@@ -117,6 +113,7 @@ def map_to_zero_one(v):
 from DRP.model_building.test_train_split import create_test_and_train_lists
 from DRP.model_building.load_data import create_reactant_keys
 def sample_model_quality(data, name, clock=False):
+  from DRP.fileFunctions import createDirIfNecessary
 
   # Create reactant-combination keys for each data entry.
   dataKeys = create_reactant_keys(data)
@@ -135,8 +132,8 @@ def sample_model_quality(data, name, clock=False):
   tmpPrefix = TMP_DIR + name
   modelFullName = MODEL_DIR + name + "_SAMPLE_MODEL"
 
-  create_dir_if_necessary(TMP_DIR)
-  create_dir_if_necessary(MODEL_DIR)
+  createDirIfNecessary(TMP_DIR)
+  createDirIfNecessary(MODEL_DIR)
 
   # Start a new process to actually construct the model from the training data.
   move = "cd {};".format(django_path)
@@ -321,6 +318,33 @@ def get_used_fields():
       used.append(header)
   return used, unused_indexes
 
+
+def removeUnused(row, unused_indexes=None):
+  if unused_indexes is None:
+    arff_fields, unused_indexes = get_used_fields()
+  return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
+
+
+def get_good_result_tuples(results_location, rows, debug=False): 
+  reactions = []
+  total = 0
+  with open(results_location, "r") as results_file:
+    # Remove the headers.
+    for i in range(5):
+      results_file.next()
+
+    for row in results_file:
+      if "+" not in row and row != "\n":
+        clean = filter(lambda x:x!="" and x!="\n", row.split(" "))
+        conf = float(clean[-1])
+        index = int(clean[0])-1 # WEKA is 1-based, not 0-based.
+        reactions.append((conf, rows[index]))
+      total += 1
+
+  if debug:
+    "{} of {} reactions are good.".format(len(reactions), total) 
+
+  return reactions
 
 #TODO:
 """

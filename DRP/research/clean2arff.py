@@ -45,6 +45,7 @@ def gen_specials():
 
 def clean(prefix, specials = gen_specials()):
     XXX = 0
+    filename = prefix + "_out.arff"
     headers = None 
     do_shuffle = True
     if len(sys.argv) == 3:
@@ -59,10 +60,11 @@ def clean(prefix, specials = gen_specials()):
         rows = [ row for row in reader]
         random.shuffle(rows)
         reader = rows
-        with open(prefix + "_out.arff","w") as out:
+        with open(filename,"w") as out:
             out.write(preface(headers, True, prefix, specials))
             for row in reader:
                 out.write(",".join(remove_col(row[XXX:], True)) + "\n")
+    return filename
 
 if __name__ == "__main__":
     if sys.argv[1] in ["help","h","-h","--help","--h","-help"]:

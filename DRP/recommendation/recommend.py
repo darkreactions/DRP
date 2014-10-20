@@ -154,31 +154,7 @@ def choose_center(rxns, new_combination):
 		center[2], center[3], center[4], center[5], center[6])
 
 
-def get_good_result_tuples(results_location, rows, debug=False): 
-  reactions = []
-  total = 0
-  with open(results_location, "r") as results_file:
-    # Remove the headers.
-    for i in range(5):
-      results_file.next()
-
-    for row in results_file:
-      if "+" not in row and row != "\n":
-        clean = filter(lambda x:x!="" and x!="\n", row.split(" "))
-        conf = float(clean[-1])
-        index = int(clean[0])-1 # WEKA is 1-based, not 0-based.
-        reactions.append((conf, rows[index]))
-      total += 1
-
-  if debug:
-    "{} of {} reactions are good.".format(len(reactions), total) 
-
-  return reactions
-
-
 def evaluate_fitness(new_combination, range_map, debug=True):
-  def removeUnused(row, unused_indexes):
-    return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
   def getDifferentReactions(tuples, num_to_get):
     def difference(rxn1, rxn2):
       weights = [0,  0,20,0,  0,20,0,  0,20,0,  0,0.5,0]
@@ -251,7 +227,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   cleaned = []
   for i, row in enumerate(rows[:search_space_max_size]):
     expanded = parse_rxn.parse_rxn(row, cg_props, ml_convert)
-    cleaned.append( removeUnused(expanded, unused_indexes) )
+    cleaned.append( mm.removeUnused(expanded, unused_indexes) )
 
 
   if debug:
@@ -263,14 +239,14 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
-  mm.make_arff(name, cleaned, raw_list_input=True, debug=False) #TODO: True=works?
+  mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
 
   # Run the reactions through the current WEKA model.
   model_path = MODEL_DIR+mm.get_current_model()
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
-  good_reactions = get_good_result_tuples(results_location, rows, debug=debug)
+  good_reactions = mm.get_good_result_tuples(results_location, rows, debug=debug)
   if debug:
     print "Good Reactions: {}".format(len(good_reactions))
 
