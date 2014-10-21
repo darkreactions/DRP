@@ -13,12 +13,15 @@ import json
 from subprocess import Popen
 
 from DRP.retrievalFunctions import *
-from DRP.settings import BASE_DIR, LOG_DIR
 from DRP.cacheFunctions import *
 
 @login_required
 @require_http_methods(["POST"])
 def make_seed_recommendations(request):
+  from DRP.settings import BASE_DIR, LOG_DIR
+  from DRP.fileFunctions import createDirIfNecessary
+  from DRP.models import Data
+
   u = request.user
   lab_group = u.get_profile().lab_group
   max_seed_calcs = 5
@@ -48,11 +51,17 @@ def make_seed_recommendations(request):
     #Set the cache and get the appropriate data entry.
     cache_seed_rec_worker(lab_group, seed.ref)
    
+    # Prepare the log files for the seed-recommendation subprocess.
+    err_dir = "seed_recommend"
+    createDirIfNecessary(LOG_DIR)
+    createDirIfNecessary("{}/{}".format(LOG_DIR, err_dir))
+    err_log = open("{}/{}/error.log".format(LOG_DIR, err_dir),"a")
+    act_log = open("{}/{}/process.log".format(LOG_DIR, err_dir),"a")
+
     #Actually start the new seed-rec construction process to build recs.
-    err_log = open(LOG_DIR+"/seed_recommend/error.log","a")
-    act_log = open(LOG_DIR+"/seed_recommend/process.log","a")
     worker_script = BASE_DIR+"/DRP/recommendation/build_seed_recs.py"
     command = "python {} {} {} {}".format(worker_script, lab_id, seed_id, user_id)
+
     #Log to the files above and make the worker independent of the parent process.
     Popen(command.split(), stdout=act_log, stderr=err_log, close_fds=True)
 

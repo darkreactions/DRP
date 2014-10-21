@@ -15,21 +15,21 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-from DRP.settings import BASE_DIR, LOG_DIR
-import DRP.models
-import django.db
 
-from DRP.emailFunctions import email_user, email_admins
 from DRP.retrievalFunctions import *
 from DRP.database_construction import *
-from DRP.compoundGuideFunctions import translate_reactants
-from DRP.recommendation.seed_rec import constructRecsFromSeed
-from DRP.recommendation.filter_seed_recs import filterSeedRecList
-from DRP.logPrinting import print_error, print_log
 from DRP.cacheFunctions import *
 
 #An independent worker process for generating and storing seeds in the database.
 def seed_rec_worker(lab_id, seed_id, user_id):
+  from DRP.models import Data, Lab_Group, User
+  from DRP.compoundGuideFunctions import translate_reactants
+  from DRP.recommendation.seed_rec import constructRecsFromSeed
+  from DRP.recommendation.filter_seed_recs import filterSeedRecList
+  from DRP.logPrinting import print_error, print_log
+  from DRP.emailFunctions import email_user, email_admins
+  import django.db
+
   max_recs_per_seed = 250 #We don't want to clutter our database too much...
   print_log("Seed Rec: {} {} {}".format(lab_id, seed_id, user_id))
 
@@ -42,26 +42,31 @@ def seed_rec_worker(lab_id, seed_id, user_id):
     lab_group = Lab_Group.objects.get(id=lab_id)
     user = User.objects.get(id=user_id)
   except Exception as e:
-    print_error("Can't load entries: {} {} {}".format(lab_id, seed_id, user_id))
+    print_error("Can't load entries: {} {} {}\n{}".format(lab_id, seed_id, user_id, e))
 
   try:
+    print_log("--1")
     #Actually create new recommendations...
     try:
       recList = constructRecsFromSeed(seed_id)
     except Exception as e:
       raise Exception("constructRecsFromSeed failed: {}".format(e))
 
+    print_log("--2")
     try:
       recList = filterSeedRecList(lab_group, recList)[:max_recs_per_seed]
     except Exception as e:
       raise Exception("filterSeedRecList failed: {}".format(e))
 
+    print_log("--3")
     #Translate any compounds in the recList to abbrevs.
     recList = translate_reactants(lab_group, recList)
 
+    print_log("--4")
     #And store them in the database.
     store_new_Recommendation_list(lab_group, recList, seed_source=seed)
 
+    print_log("--5")
     email_body = "The recommendations based on Reaction \"{}\" have finished!".format(seed.ref)
     email_user(user, "Seed Recommendations Ready", email_body)
 

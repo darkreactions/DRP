@@ -72,9 +72,13 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
   fields = get_model_field_names(model="Recommendation")
 
   for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
+   if "quantity" in field:
+    value = str(value)[:10] #TODO: change quantities to floats rather than strings.
+
    #Translate Booleans into Boolean values.
    if field in bool_fields:
     value = True if value[0].lower() in "1tyc" else False
+   print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
    setattr(new_rec, field, value)
 
   new_rec.atoms = "".join(get_atom_set_from_abbrevs(lab_group, get_abbrevs_from_reaction(new_rec)))
@@ -145,6 +149,7 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
   for rec in recommendations:
     count += 1
     try:
+     print "1: {}".format(rec)
      new_rec = field_list_to_Recommendation(lab_group, rec, in_bulk=True)
      new_rec.date_dt = call_time
      new_rec.model_version = model

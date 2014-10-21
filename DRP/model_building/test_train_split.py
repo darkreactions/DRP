@@ -44,7 +44,7 @@ def create_key_in_test_map(data_list):
 			key_in_test[key] = False
 	return key_in_test
 
-def build_key_in_test_map(keys):
+def build_key_in_test_map(keys): #TODO: Expand to allow custom "splits"
   key_counts = {k: keys.count(k) for k in set(keys)}
   key_list = key_counts.keys()
   key_in_test = dict()

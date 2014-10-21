@@ -26,3 +26,7 @@ def writeExpandedCSV(name):
 
   print "Write complete!"
 
+
+def createDirIfNecessary(directory):
+  if not os.path.exists(directory):
+    os.makedirs(directory)
