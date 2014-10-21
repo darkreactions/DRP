@@ -1,8 +1,8 @@
 import sys
 from django.core.mail import send_mail
 from retrievalFunctions import *
-from DRP.logPrinting import print_error
-from DRP.settings import DEBUG
+from logPrinting import print_error
+from settings import DEBUG
 
 """
 The Email Functions below are designed to make emailing the admins (us),

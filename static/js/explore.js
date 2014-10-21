@@ -129,21 +129,20 @@ if (!preLoad) {
     .attr("x2", function(d) { return d.target.x; })
     .attr("y2", function(d) { return d.target.y; })
     .style("stroke-width", 0.06)
-    .attr("stroke", "gray");
-
+    .attr("stroke", "gray")
+/*
   var circleClusters = container.selectAll(".clusters")
       .data(clusters) 
       .enter()
       .append("circle") 
       .attr("cx", function(d) {return d.x;})
       .attr("cy", function(d) {return d.y;})
-      
-      .attr("r", "15")
+      .attr("r", "20")
       .attr("fill", function(d) {return d.color;})
       .attr("opacity", "0.5") 
-
-
-
+*/ 
+container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove(); console.log("made it!");}); 
+ 
     var nodeElements = container.selectAll(".node")
     .data(nodes.filter(function(d) { return d.outcome > 0;}))
 
@@ -151,7 +150,9 @@ if (!preLoad) {
     .attr("class", "node"); 
 
    
-      nodeElements.append("circle") 
+    nodeElements.append("circle").attr("class", ".circleClusters").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 20) 
+
+    nodeElements.append("circle") 
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
       size = 10
@@ -177,10 +178,10 @@ if (!preLoad) {
                     return "purple";
                     }
                   })
-    .on("mouseover", function() {
+    .on("click", function() {
 	d3.event.stopPropagation()})
 
-    .on("mouseover", function() {
+    .on("click", function() {
 	d3.selectAll(".tooltipContainer").remove(); 
 	var thisGroup = this.parentNode;
 	this.parentNode.parentNode.appendChild(thisGroup); 
@@ -253,7 +254,7 @@ if (!preLoad) {
 		seedRecButton.select("rect").style("filter", "none");}) 
 
 	seedRecButton.append("rect")
-		.attr("id", "seedButtonRect")  
+		.attr("class", "seedButtonRect")  
 		.attr('width', 310)
 		.attr('height', 25)  
 		.attr('x', "20px")
@@ -264,15 +265,14 @@ if (!preLoad) {
 	
 	seedRecButton.append("text")
 		.text("Generate seed recommendations")
+        .attr("class", "seedRecText")
 		.attr('x', "25px")
 		.attr('y', boxLength + 15) 
-		.attr("id", "seedRecText")
 		.append("rect")
 		.attr("fill","none"); 
  	
 	var imageContainer = seedRecButton.append("g")
 	var seedButton = imageContainer.append("svg:image")
- 	  .attr("id", "seedImage") 
 	  .attr('x', textPlacement*1.7) 
  	  .attr('y', boxLength + 5)
  	  .attr('width', 22)
@@ -280,7 +280,7 @@ if (!preLoad) {
  	  .attr('xlink:href', "/static/icons/seed.gif");
 	
 	seedRecButton.on("click", function(d) { 
-		var url="/make_seed_recommendations/";
+		var url="/nd/make_seed_recommendations/";
 		var request = {"pid":d.id}; 
 		console.log(d.id); 
 		$.post(url, request, function(response) {
@@ -296,21 +296,12 @@ if (!preLoad) {
     		}			
     		showRibbon(failureMessage, badColor, "#mainPanel"); 
 		};
-	   });}) 
+	   })
+    ;})
 	d3.event.stopPropagation();  
     })
-
-/* var clusterCircles = container.selectAll(".nodes")
-    .data(clusters) 
-    .enter()
-    .append("circle")
-    .attr("class", "cluster")
-    .attr("x", function(d) {return d.x;})
-    .attr("y", function(d) {return d.y;})
-    .attr("r", "15")
-    .attr("fill", function(d) {return d.color;})
-    .attr("opacity", "0.5") 
- */ 
+  
+ 
       nodeElements.attr("transform", function(d) {
 	return "translate(" + d.x + "," + d.y + ")";
     });  

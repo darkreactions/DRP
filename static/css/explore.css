@@ -18,23 +18,26 @@
  fill: black;  
  stroke: black;
  stroke-width: 0.3; 
+ pointer-events: none; 
 } 
 
-#seedButtonRect {
+.seedButtonRect {
  -webkit-box-shadow: 10px 10px 5px; 
  box-shadow: 10px 10px 5px; 
  fill: white; 
 } 
 
-#seedRecText {
+.seedRecText {
  fill: #2E6809; 
  stroke: #0066CC;
- stroke-width: 0.3; 
+ stroke-width: 0.3;
+ pointer-events: none;  
 }
 
 
-#seedImage {
+.seedImage {
  -webkit-filter: huerotate(180deg);
+ pointer-events: none;  
 } 
 
 #loadingMessage {
