@@ -8,10 +8,6 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-def run():
-  from DRP.model_building.generate_models import retrogenerate_model
-  date = "10-31-2014"
-  retrogenerate_model(date)
 
 if __name__=="__main__":
-  run()
+  print "No experiment set!"

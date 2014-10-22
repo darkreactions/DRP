@@ -137,58 +137,44 @@ def get_candidates(results, idx, raw_rows):
 	return best_row, score
 
 def generate_grid(reaction, amine_list, debug=True):
+  import time
+  from DRP.model_building import model_methods as mm
+  from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
+
   try:
     #Variable Setup.
     indices = get_reactants_indices(reaction)
     amine_moles = get_amine_moles(reaction, indices["org"])
     prefix = TMP_DIR
-    fileprefix = str(uuid.uuid4())
     ml_convert = json.load(open(BASE_DIR+"/DRP/research/mlConvert.json"))
-    hdrs = ",".join(rebuildCDT.headers)
+    arff_fields, unused_indexes = mm.get_used_fields()
   except Exception as e:
     raise Exception("Failed step 1...\n{}".format(e))
 
   try:
     row_gen = row_generator(reaction, indices, amine_moles, amine_list)
     raw_rows = [row for row in row_gen]
-    #print raw_rows
-    rows =[hdrs] + [ ",".join([str(c).replace(",","c") for c in parse_rxn.parse_rxn(row, CG, ml_convert)]) for row in raw_rows]
+    rows = [parse_rxn.parse_rxn(row, CG, ml_convert) for row in raw_rows]
+    cleaned = [mm.removeUnused(row, unused_indexes) for row in rows]
+
+    # Write all the reactions to an ARFF so that WEKA can read them.
+    suffix = "_seed"
+    name = str(int(time.time()))+suffix
+    mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
+
   except Exception as e:
     raise Exception("Failed step 2...\n{}".format(e))
 
-  try:
-    with open(prefix + fileprefix + ".csv", "w") as outfile:
-      for row in rows:
-        outfile.write(row+"\n")
 
-    if debug: print prefix + fileprefix + ".csv"
+  try: 
+    model_path = MODEL_DIR+mm.get_current_model()
+    results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
-    clean2arff.clean(prefix+fileprefix)
+    # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
+    results = mm.get_good_result_tuples(results_location, rows, debug=debug)
+
   except Exception as e:
-    raise Exception("Failed step 3...\n{}".format(e))
-
-  #TODO: rewrite test_model
-  try:
-    cmd = "sh {0}/DRP/research/test_model.sh {1} {2}".format(BASE_DIR, fileprefix, MODEL_LOCATION)
-    result = subprocess.check_output(cmd, shell=True)
-
-    if debug: print result, cmd
-  except Exception as e:
-    raise Exception("Failed step 4...\n{}".format(e))
-
-  try:
-    weka_results_file = fileprefix + ".out"
-    results = dict()
-    with open(prefix + weka_results_file, "r") as weka_results:
-      for i in xrange(5):
-        weka_results.next()
-
-      for i, row in enumerate(weka_results):
-        if "+" not in row and row != "\n":
-          conf = float(row.split()[-1])
-          results[i] =  conf
-  except Exception as e:
-    raise Exception("Failed step 5...\n{}".format(e))
+    raise Exception("Failed step 3 ({})...\n{}".format(name, e))
 
   try:
     amines_results = []
@@ -199,24 +185,27 @@ def generate_grid(reaction, amine_list, debug=True):
         amines_results.append( (best_conf, sim(best_candidate, raw_rxn), best_candidate) )
 
 
-    if debug: print amines_results
+    if debug or True:  #TODO
+      print "found {} possible recommendations.".format(len(amines_results))
+
     amines_results.sort(key=lambda x: x[0]*x[1], reverse=True)
   except Exception as e:
     raise Exception("Failed step 6...\n{}".format(e))
   return amines_results
 
 def constructRecsFromSeed(seed_pid):
+  from DRP.models import Lab_Group, CompoundEntry, Data
   #Load the default amines.
   try:
-    amine_lab = DRP.models.Lab_Group.objects.filter(lab_title = "default_amines")[0]
-    amines_raw = DRP.models.CompoundEntry.objects.filter(lab_group = amine_lab)
+    amine_lab = Lab_Group.objects.filter(lab_title = "default_amines")[0]
+    amines_raw = CompoundEntry.objects.filter(lab_group = amine_lab)
     amines_names = [c.compound for c in amines_raw]
   except Exception as e:
     raise Exception("Could not load default_amines...\n{}".format(e))
 
   #Get the datum and lab group
   try:
-    rxn = DRP.models.Data.objects.get(id=seed_pid)
+    rxn = Data.objects.get(id=seed_pid)
     lab = rxn.lab_group
   except Exception as e:
     raise Exception("Could not use Datum \"{}\" as seed...\n{}".format(seed_pid, e))
@@ -227,7 +216,7 @@ def constructRecsFromSeed(seed_pid):
       abbrev = getattr(rxn, field)
       if abbrev == "":
         continue
-      compound = DRP.models.CompoundEntry.objects.filter(abbrev=abbrev)[0].compound
+      compound = CompoundEntry.objects.filter(abbrev=abbrev)[0].compound
       setattr(rxn, field, compound)
 
     #Actually generate the recommendations.

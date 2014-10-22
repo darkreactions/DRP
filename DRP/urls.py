@@ -49,6 +49,7 @@ urlpatterns = patterns('',
     (r'^setup_graph/$', "DRP.views.explore_vis.store_graph"), 
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
+    (r'^seed/$', "DRP.views.seed_recommend.seed_recommend"),
     (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),
     (r'^check_seed_oven/$', "DRP.views.seed_recommend.check_seed_worker_cache"),
     (r'^recommend/$', recommend),

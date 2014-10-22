@@ -18,6 +18,7 @@ def fixmL(t):
     return o
 
 def parse_rxn(row, rxn_table, ml_convert):
+
     compound = ["x","x","x","x","x"]
     mass = ["-1","-1","-1","-1","-1"]
     unit = ["","","","",""]
@@ -37,6 +38,7 @@ def parse_rxn(row, rxn_table, ml_convert):
             mass[i] = '-1'
         if compound[i] == "":
             compound[i] = "x"
+
     mass = [float(m) for m in mass]
     Tmax = float(Tmax)
     time = float(time)
