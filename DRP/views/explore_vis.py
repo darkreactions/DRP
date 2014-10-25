@@ -57,9 +57,10 @@ def get_graph_data(request):
     votes = vote_on_inorgs(reduce_clusters(clusters), clusters)     
     clusters_with_colors = assign_colors_to_clusters(colors, clusters)
     final_clusters = make_clusters_into_single_list(clusters_with_colors) 
+    final_nodes = give_colors_to_nodes(nodes, final_clusters) 
     #hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii) 
     #small_clusters = check_size_of_clusters(clusters) 
-    response = {"nodes": nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
+    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
     return HttpResponse(json.dumps(response), content_type="application/json")   
   
   #If vis_data is not created or not up to date, write new vis_data with current data and return that
@@ -120,7 +121,7 @@ def create_vis_data_file(data_to_file):
 def create_node_clusters_for_labels(links, nodes):
   #first create a dictionary of nodes with ids, links (source, target values) and pageranks
   #because we need to sort the links(target, source values) by their associated pagerank and also
-  #have access to the link's associated node id (links is in the same order as nodes, as they are both  #a list of dictionaries/objects, but must be combined into one list of objects in order to 
+  #have access to the link's associated node id (links is in the same order as nodes, as they are both a list of dictionaries/objects, but must be combined into one list of objects in order to 
   # match pagerank and id with link information). 
   nodes_dict = [] 
   for i in range(len(nodes)):
@@ -190,8 +191,6 @@ def make_clusters_into_single_list(clusters):
       result.append(clusters[i][j])
   return result 
 
-#    neighbors.append([item for item in dictionary if item["target"] == centerNode["source"] and check_inorgs(centerNode, item, full_nodes) == True]) 
-    #remove these neighbors from the dictionary
 
 #This should find all the neighbors (nodes with direct links (targets match main node's source) and same inorg compounds of the main node, and then all the neighbors of each neighbor (only stopping when there are no more neighbors (and the length of neighbors should continue growing until all neighbors have been found)  
 
@@ -222,11 +221,18 @@ def store_graph(request):
 def give_positions_to_clusters(nodes, clusters):
   for i in xrange(len(clusters)):
     for j in xrange(len(clusters[i])):
-      id = clusters[i][j]["id"]
-      nodeWithPosition = next((x for x in nodes if x["id"] == id), None)
+      id_num = clusters[i][j]["id"]
+      nodeWithPosition = next((x for x in nodes if x["id"] == id_num), None)
       clusters[i][j]["x"] = nodeWithPosition["x"]
       clusters[i][j]["y"] = nodeWithPosition["y"] 
   return clusters 
+
+def give_colors_to_nodes(nodes, clusters):
+    for i in xrange(len(nodes)):
+      id_num = nodes[i]["id"]
+      nodes[i]["color"] = next((x["color"] for x in clusters if x["id"] == id_num), None)
+    return nodes 
+
 
 def reduce_clusters(clusters):
   reduced_clusters = [i[0] for i in clusters] 
@@ -267,13 +273,9 @@ def check_size_of_clusters(clusters):
   return small_clusters 
     
 
-import numpy as np
-import colorsys
-
 def assign_colors_to_clusters(colors, node_clusters):
   for i in xrange(len(node_clusters)):
     for j in xrange(len(node_clusters[i])):
       node_clusters[i][j]["color"] = colors[i%12] 
   return node_clusters
-
 
