@@ -60,6 +60,8 @@ def filter_existing_calcs(data):
 
 
 def filter_data(lab_group, query_list):
+ from DRP.models import get_lab_Data, get_model_field_names
+
  #Variable Setup
  data = get_lab_Data(lab_group)
  filters = {}

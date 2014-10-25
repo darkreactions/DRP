@@ -71,7 +71,7 @@ def get_amine_moles(reaction, amine_index):
 
 
 def get_amine_range(moles):
-	return [i/50.0 for i in range(11)]
+	return [moles*i/1000.0 for i in xrange(0,10)]
 
 def row_generator(reaction, indices, amine_moles, amine_list):
 
@@ -86,20 +86,22 @@ def row_generator(reaction, indices, amine_moles, amine_list):
 	water_mass = getattr(reaction,reactant_fields[indices["water"]][0])
 
 	amine_range = get_amine_range(amine_moles)
+
 	pH_range = [1,3,5]
 
 	for amine in amine_list:
 		if amine not in CG:
 			print "Not in CG: {0}".format(amine)
 			continue
-		for mass in amine_range:
-			for pH in pH_range:
+		for pH in pH_range:
+			for mass in amine_range:
 				yield ["--", metal_1, metal_1_mass, "g", metal_2, metal_2_mass,
 					"g", amine, mass, "g", water, water_mass, "g", "","","",
 					getattr(reaction,"temp"), getattr(reaction,"time"), pH, "yes", "no", 4, 2, ""]
 
 #TODO: Look here for where to change the amine molar mass, Casey.
 def get_candidates(results, idx, raw_rows):
+	print_error("{} results to check...".format(len(results))
 	candidates = []
 	for i in range(steps_per_amine):
 		if i + idx in results:
@@ -154,6 +156,7 @@ def generate_grid(reaction, amine_list, debug=True):
   try:
     row_gen = row_generator(reaction, indices, amine_moles, amine_list)
     raw_rows = [row for row in row_gen]
+
     rows = [parse_rxn.parse_rxn(row, CG, ml_convert) for row in raw_rows]
     cleaned = [mm.removeUnused(row, unused_indexes) for row in rows]
 
@@ -172,6 +175,7 @@ def generate_grid(reaction, amine_list, debug=True):
 
     # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
     results = mm.get_good_result_tuples(results_location, rows, debug=debug)
+    print_error("RESULTS: {}".format(results))
 
   except Exception as e:
     raise Exception("Failed step 3 ({})...\n{}".format(name, e))
