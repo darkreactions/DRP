@@ -322,7 +322,7 @@ def do_filter(candidate_triples, range_map):
   from DRP.model_building import load_cg
   ml_convert = json.load(open(django_path+"/DRP/model_building/mlConvert.json"))
 
-  write_debug_files = True
+  write_debug_files = False
   if write_debug_files:
     import time
     t = int(time.time())
@@ -417,7 +417,7 @@ if __name__ == "__main__":
 	#test_candidates()
         import json
         with open("tmp/candidate_triples_1414124946.tmp","r") as f:
-          candidates = json.load(f)
+          candidates = json.load(f)[:500]
         with open("tmp/range_map_1414124946.tmp","r") as f:
           range_map = json.load(f)
         results = do_filter(candidates, range_map)

@@ -186,31 +186,15 @@ def evaluate_fitness(new_combination, range_map, debug=True):
     return gathered
 
   import time, csv, random
+  from DRP.fileFunctions import createDirIfNecessary
 
   debug_samples = False
   return_limit=3
   search_space_max_size = 1000 #float("inf")
 
   # Variable and Directory Preparation.
-  mm.create_dir_if_necessary(TMP_DIR)
+  createDirIfNecessary(TMP_DIR)
   arff_fields, unused_indexes = mm.get_used_fields()
-
-  """
-  with open("{}.csv".format(csvFilename),"w") as f:
-    writer = csv.writer(f)
-    writer.writerow(rebuildCDT.headers)
-    for row in rows_generator:
-      calcs = parse_rxn.parse_rxn(row, cg_props, ml_convert)
-      writer.writerow([str(c).replace(",","c") for c in calcs])
-
-  #clean2arff.clean(csvFilename)
-  #move = "cd {};".format(django_path)
-  #args = " {1} {2}".format(name, mm.get_current_model())
-  #cmd = "sh {0}/DRP/model_building/make_predictions.sh".format(BASE_DIR)
-  #raw_results = subprocess.check_output(move + cmd + args, shell=True)
-  """
-
-
 
   # Generate different permutations of the new_combination of reactants.
   if debug:
@@ -555,7 +539,11 @@ def build_baseline(lab_group=None):
         # Remove the non-minimum/non-maximum masses from the range_map.
 	for k in range_map:
 		try:
-			range_map[k] = (min(range_map[k]), max(range_map[k]))
+                        radius = 0.15
+                        masses = sorted([float(elem) for elem in range_map[k]])
+                        minimum = masses[int(len(masses)*radius)]
+                        maximum = masses[int(len(masses)*(1-radius))]
+                        range_map[k] = (minimum, maximum)
 		except Exception as e:
 			range_map[k] = (0,0)
 
@@ -616,7 +604,7 @@ def combo_generator(seed):
 
 def rank_possibilities(seed, tried):
         scorer = score_maker(tried)
-	how_many_to_rate = 100 if test_variables else 5000
+	how_many_to_rate = 100 if test_variables else 500
         scores = []
 
         for combo in combo_generator(seed):
