@@ -30,7 +30,6 @@ def translate_reactants(lab_group, dataList, single=False, onlyAbbrevs=False, di
           dataList[i] = translation_table[abbrev]
         else:
           print "Compound '{}' not found in translation_table".format(abbrev)
-          dataList[i] = ""
 
     else:
       for (field, j) in zip(fields, range(len(reactionTuple[2][1:]))):

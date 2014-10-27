@@ -133,8 +133,6 @@ def find_best_row_for_delta_mut(triple_Muts, candidates):
 def find_delta_mut(triple_muts, candidate):
 	best_triple = None
 	best_prob = 0.0
-        print "HERE"
-        print "MUT: {}".format(triple_muts)
 	for triple in triple_muts:
 		prob = triple_muts[triple].pdf.p_feature(candidate)
 		if prob > best_prob:
@@ -144,7 +142,6 @@ def find_delta_mut(triple_muts, candidate):
                 print "WOMP"
 		return 0.0
 	delta_mut = triple_muts[best_triple].change_in_mutual(candidate)
-        print "DELTA: {}".format(delta_mut)
 	return delta_mut
 
 def clean_dataset_triples(dataset):
@@ -387,8 +384,9 @@ def build_row(triple, ranges, cg, ml_convert):
         m1 = getMeanAmount(c1, ranges)
         m2 = getMeanAmount(c2, ranges)
         m3 = getMeanAmount(c3, ranges)
+        water = getMeanAmount("water", ranges)
 
-	raw_row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water", 6, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""]
+	raw_row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water", water, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""]
 
 	row = load_data.convert_to_feature_vectors([raw_row], cg, ml_convert)[0][0]
 	clean_row(row)
@@ -398,17 +396,12 @@ def build_row(triple, ranges, cg, ml_convert):
 
 
 def build_mutual_calc():
-        # Returns a partial function #TODO: Make sensical.
+        # Returns a partial function
 	dataset = load_data.get_feature_vectors_by_triple()
-        #dataset = (u'ammonium metavanadate', u'piperazine', u'tellurium dioxide'): [], (u'2-(aminomethyl)piperidine', u'ammonium metavanadate', u'sodium tellurite', u'water'): [], (u'1,4-diaminobutane', u'LiVTeO5', u'ethanol'): [], (u'3-(dibutylamino)propylamine', u'Oxovanadium(2+) sulfate', u'Selenium dioxide', u'water'): [], (u'N-methylethylenediamine', u'sodium metavanadate', u'sodium tellurite', u'water'): []} #TODO
 	load_data.collapse_triples(dataset)
-        #dataset = {'unknown': []} #TODO
-        print ("dataset: {}".format(dataset))
-        raise Exception("TERMINATE") #TODO
 	triple_Muts = dict()
-	clean_dataset_triples(dataset) #RESULT: {'unknown': []}
-
-	for triple in dataset:
+	clean_dataset_triples(dataset)
+        for triple in dataset:
 		try:
 			triple_Muts[triple] = MutualInformation(dataset[triple])
 		except Exception as e:
@@ -428,6 +421,6 @@ if __name__ == "__main__":
         with open("tmp/range_map_1414124946.tmp","r") as f:
           range_map = json.load(f)
         results = do_filter(candidates, range_map)
-        print "Got results!"
+        if results: print "Got results!"
         print "Results: {}".format(len(results))
 

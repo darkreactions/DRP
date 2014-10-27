@@ -84,7 +84,7 @@ def parse_rxn(row, rxn_table, ml_convert):
             elif rxn_table[compound[i]]["type"] == "Ox":
                 oxalateList[i] = 1
                 nOxlike += 1
-            elif compound[i].lower() == "water":
+            elif compound[i].lower() in {"water", "h2o"}:
                 waterList[i] = 1
                 isWater = i
             else:

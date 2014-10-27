@@ -90,8 +90,8 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
     print "{0} failed out of {1} total".format(failed, len(raw))
   remove_XXX(transformed)
 
-  for r in transformed:
-    del r[-2]
+  #for r in transformed:
+  #  del r[-2]
 
   if keys:
     return transformed, keys
@@ -142,17 +142,14 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
 	transformed = []
 
 	triple_to_rxn_list = dict()
-
 	for rxn in raw:
 		try:
 			triple = rxn_to_triple(rxn, cg)
 		except Exception as e:
-			print "Ignoring for triple: {0}".format(e)
 			continue
 		if triple not in triple_to_rxn_list:
 			triple_to_rxn_list[triple] = []
 		triple_to_rxn_list[triple].append(rxn)
-	failed = 0
 	for triple in triple_to_rxn_list:
 		rxn_list = triple_to_rxn_list[triple]
 		transformed = []
@@ -160,20 +157,17 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
 			try:
 				transformed.append(parse_rxn.parse_rxn(row, cg, ml_convert))
 			except Exception as e:
-				failed += 1
+                                print "EXCEPTION: {}".format(e)
+
 		remove_XXX(transformed)
 		triple_to_rxn_list[triple] = transformed
 
-        print "--TRIP: {}".format(len(triple_to_rxn_list))
-        if failed>0:
-	  print "{0} failed out of {1} total".format(failed, len(raw))
 	return triple_to_rxn_list
 
 def collapse_triples(dataset):
 	unknown = []
 	del_triples = []
 	for triple in dataset:
-                print "TRIP: {} ({})".format(triple, len(dataset[triple]))
 		if len(dataset[triple]) < 6:
 			unknown += dataset[triple]
 			del_triples.append(triple)
