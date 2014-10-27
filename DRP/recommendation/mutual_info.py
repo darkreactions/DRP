@@ -416,6 +416,7 @@ if __name__ == "__main__":
 	#main_triples()
 	#test_candidates()
         import json
+        print "Loading candidate_triples and range_map from file..."
         with open("tmp/candidate_triples_1414124946.tmp","r") as f:
           candidates = json.load(f)[:500]
         with open("tmp/range_map_1414124946.tmp","r") as f:
