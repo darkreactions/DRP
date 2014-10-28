@@ -13,7 +13,7 @@ import load_cg,json
 
 def load(lab_group=None):
 	from DRP.models import get_good_rxns
-        rxns = get_good_rxns(lab_group=lab_group)  
+        rxns = get_good_rxns(lab_group=lab_group)
 	return rxns
 
 #Translate the abbrevs to the full compound names.
@@ -86,11 +86,12 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
     except Exception as e:
       failed += 1
       print "ERROR convert_to_feature_vectors: {}".format(e)
-  print "{0} failed out of {1} total".format(failed, len(raw))
+  if failed:
+    print "{0} failed out of {1} total".format(failed, len(raw))
   remove_XXX(transformed)
 
-  for r in transformed:
-    del r[-2]
+  #for r in transformed:
+  #  del r[-2]
 
   if keys:
     return transformed, keys
@@ -135,21 +136,20 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
 		cg = load_cg.get_cg()
 	if not ml_convert:
 		ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
+
 	raw = load(lab_group)
+        headers = raw.pop(0)
 	transformed = []
 
 	triple_to_rxn_list = dict()
-
 	for rxn in raw:
 		try:
 			triple = rxn_to_triple(rxn, cg)
 		except Exception as e:
-			print "Ignoring for triple: {0}".format(e)
 			continue
 		if triple not in triple_to_rxn_list:
 			triple_to_rxn_list[triple] = []
 		triple_to_rxn_list[triple].append(rxn)
-	failed = 0
 	for triple in triple_to_rxn_list:
 		rxn_list = triple_to_rxn_list[triple]
 		transformed = []
@@ -157,10 +157,11 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
 			try:
 				transformed.append(parse_rxn.parse_rxn(row, cg, ml_convert))
 			except Exception as e:
-				failed += 1
+                                print "EXCEPTION: {}".format(e)
+
 		remove_XXX(transformed)
 		triple_to_rxn_list[triple] = transformed
-	print "{0} failed out of {1} total".format(failed, len(raw))
+
 	return triple_to_rxn_list
 
 def collapse_triples(dataset):
@@ -177,8 +178,14 @@ def collapse_triples(dataset):
 
 
 def rxn_to_triple(rxn, cg):
+        from DRP.compoundGuideFunctions import translate_reactants
 	r = rxn
 	compounds = filter(lambda x: x != 'water' and x != '', [r[1], r[4], r[7], r[10], r[13]])
+
+        #TODO: Should pass the specific LabGroup into here!
+        compounds = translate_reactants("Norquist Lab", compounds,
+                                        onlyAbbrevs=True,
+                                        direction="abbrev to compound")
 	for compound in compounds:
 		if compound not in cg:
 			raise Exception("Unknown compound: {0}".format(compound))
@@ -194,4 +201,4 @@ def remove_XXX(row):
     if "XXX" in hdr:
       dist += 1
   row = row[dist:end]
-  return row       
+  return row

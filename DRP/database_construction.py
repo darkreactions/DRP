@@ -58,7 +58,7 @@ def get_vars_from_list(lst):
  return info
 
 #Creates the Recommendation entry, but does not store it in database.
-def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
+def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
  from DRP.models import Recommendation, get_model_field_names, get_atom_set_from_abbrevs, get_abbrevs_from_reaction
  import datetime
 
@@ -78,7 +78,10 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False):
    #Translate Booleans into Boolean values.
    if field in bool_fields:
     value = True if value[0].lower() in "1tyc" else False
-   print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
+
+   if debug:
+     print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
+
    setattr(new_rec, field, value)
 
   new_rec.atoms = "".join(get_atom_set_from_abbrevs(lab_group, get_abbrevs_from_reaction(new_rec)))

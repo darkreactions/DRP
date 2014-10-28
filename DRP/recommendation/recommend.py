@@ -186,31 +186,15 @@ def evaluate_fitness(new_combination, range_map, debug=True):
     return gathered
 
   import time, csv, random
+  from DRP.fileFunctions import createDirIfNecessary
 
   debug_samples = False
   return_limit=3
   search_space_max_size = 1000 #float("inf")
 
   # Variable and Directory Preparation.
-  mm.create_dir_if_necessary(TMP_DIR)
+  createDirIfNecessary(TMP_DIR)
   arff_fields, unused_indexes = mm.get_used_fields()
-
-  """
-  with open("{}.csv".format(csvFilename),"w") as f:
-    writer = csv.writer(f)
-    writer.writerow(rebuildCDT.headers)
-    for row in rows_generator:
-      calcs = parse_rxn.parse_rxn(row, cg_props, ml_convert)
-      writer.writerow([str(c).replace(",","c") for c in calcs])
-
-  #clean2arff.clean(csvFilename)
-  #move = "cd {};".format(django_path)
-  #args = " {1} {2}".format(name, mm.get_current_model())
-  #cmd = "sh {0}/DRP/model_building/make_predictions.sh".format(BASE_DIR)
-  #raw_results = subprocess.check_output(move + cmd + args, shell=True)
-  """
-
-
 
   # Generate different permutations of the new_combination of reactants.
   if debug:
@@ -220,7 +204,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   row_generator = generate_rows_molar(new_combination, range_map)
   rows = [row for row in row_generator]
 
-  # Shuffle the rows such that the search_space_max_size doesn't block combos. 
+  # Shuffle the rows such that the search_space_max_size doesn't block combos.
   random.shuffle(rows)
 
   # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
@@ -253,7 +237,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
   if not good_reactions:
     return [(0.0, [])]
   else:
-    good_reactions.sort(key=lambda tup: tup[0])  
+    good_reactions.sort(key=lambda tup: tup[0])
     result = getDifferentReactions(good_reactions, return_limit)
 
     if debug_samples:
@@ -261,8 +245,8 @@ def evaluate_fitness(new_combination, range_map, debug=True):
       for row in result[:3]:
         print row
 
-    return result 
- 
+    return result
+
   """
   if "EMPTY" in raw_results:
     return  (0.0, get_rxn_row(0, new_combination, range_map))
@@ -311,12 +295,12 @@ def get_rxn_row(cnt, new_combination, range_map):
 def generate_rows_molar(reactants, mass_map):
   def molarRange(compound, mass_map, steps):
     from DRP.compoundGuideFunctions import getMoles
-   
+
     min_mass = mass_map[compound][0] if compound in mass_map else 0.1
     max_mass = mass_map[compound][1] if compound in mass_map else 0.5
 
     # Don't let masses get *too* extreme.
-    if max_mass>8: 
+    if max_mass>8:
       max_mass = 8
 
     min_mols = getMoles(min_mass, compound)
@@ -334,14 +318,14 @@ def generate_rows_molar(reactants, mass_map):
     m2 = getMass(mols2, combo[1])
     m3 = getMass(mols3, combo[2])
     water_mass = getMass(water_mols, "water")
-    result = ["--", combo[0], m1, "g", combo[1], m2, "g", combo[2], m3, "g", 
-              "water", water_mass, "g", "", "","", temp, time, pH, 
+    result = ["--", combo[0], m1, "g", combo[1], m2, "g", combo[2], m3, "g",
+              "water", water_mass, "g", "", "","", temp, time, pH,
               "yes", "no", 4, 2,""]
     return result
 
   var_steps = 3
   amt_steps = 3 #4
-  for pH in frange(1,14, var_steps): 
+  for pH in frange(1,14, var_steps):
     for time in frange(24, 48, var_steps):
       for temp in frange(80, 130, var_steps):
         for mol1 in molarRange(reactants[0], mass_map, amt_steps):
@@ -349,7 +333,7 @@ def generate_rows_molar(reactants, mass_map):
             for mol3 in molarRange(reactants[2], mass_map, amt_steps):
               for water in molarRange("water", mass_map, amt_steps):
                 yield fillRow(reactants, mol1, mol2, mol3, water, pH, time, temp)
-                
+
 
 def generate_rows(new_combination, range_map):
 	from operator import mul
@@ -513,18 +497,18 @@ def build_sim_map(compound_guide):
 def build_baseline(lab_group=None):
 	#TODO: test this stuff, rewrite to optionally accept a seed set
 	# and, also, rewrite the test() method to use this.
-	def quality_metric(scores):
+	def average(scores):
 		return sum(scores) / float(len(scores))
 
 	def add_to_map(r_m, r):
 		idxes = [1,4,7,10,13]
 		for i in idxes:
-			if r[i] not in r_m:
-				r_m[r[i]] = set()
 			try:
 				float(r[i+1])
 			except Exception as e:
-				continue
+				continue # There is no mass (ie: the mass is empty)
+			if r[i] not in r_m:
+				r_m[r[i]] = set()
 			if float(r[i+1]) > 0:
 				r_m[r[i]].add(float(r[i+1]))
 
@@ -533,26 +517,40 @@ def build_baseline(lab_group=None):
 
 	combinations = set()
 	range_map = dict()
-	quality_map = dict()
+	quality_map = dict() # A map of reactants-->reaction outcomes (ie: 1,2,3,4).
+
+        debug_counter = 0
+
 	for rxn in rxns:
 		r = rxn[:23]
-		compoundss = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
-		if any([c not in cg_props for c in compoundss]):
-			continue
-		q_key = tuple(sorted(compoundss))
+		reactants = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
+
+		if any([c not in cg_props for c in reactants]):
+                  debug_counter += 1
+		  continue
+
+		q_key = tuple(sorted(reactants))
 		combinations.add(q_key)
 		add_to_map(range_map, r)
 		if q_key not in quality_map:
 			quality_map[q_key] = []
 		quality_map[q_key].append(int(r[-2]))
 
+        # Remove the non-minimum/non-maximum masses from the range_map.
 	for k in range_map:
 		try:
-			range_map[k] = (min(range_map[k]), max(range_map[k]))
+                        radius = 0.15
+                        masses = sorted([float(elem) for elem in range_map[k]])
+                        minimum = masses[int(len(masses)*radius)]
+                        maximum = masses[int(len(masses)*(1-radius))]
+                        range_map[k] = (minimum, maximum)
 		except Exception as e:
 			range_map[k] = (0,0)
+
 	for q_key in quality_map:
-		quality_map[q_key] = quality_metric(quality_map[q_key])
+		quality_map[q_key] = average(quality_map[q_key])
+
+        print "{} of {}".format(debug_counter, len(rxns))
 	return range_map, quality_map, combinations
 
 
@@ -621,7 +619,7 @@ def rank_possibilities(seed, tried):
 		reweight_restrict(score_tuple[1], scores)
 		scores.sort(key=lambda x: x[0], reverse=True)
 		results.append(score_tuple)
-
+        print "rank_possibilities: {}".format(len(results))
         return results
 
 def reweight_restrict(item, scores):
@@ -736,22 +734,21 @@ def build_diverse_org(max_results=250, debug=True):
 def recommendation_generator(use_lab_abbrevs=None, debug=False):
   def remove_empty(rxn):
     return [field if field!="-1" else "" for field in rxn]
-      
+
   from DRP.compoundGuideFunctions import translate_reactants
 
   # Variable Setup
   total_to_score = 50 # The number of possible combos to test.
 
   if debug: print "Building baseline..."
-
   range_map, quality_map, combinations = build_baseline()
 
   """
-  range_map = {'': (0, 0), 
-    u'hydrochloric acid': (0.0824, 2.0235), 
-    u'HIO3': (0.2149, 0.8759), 
-    u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219), 
-    u"N,N'-diisopropylethylenediamine": (0.1019, 0.6559), 
+  range_map = {'': (0, 0),
+    u'hydrochloric acid': (0.0824, 2.0235),
+    u'HIO3': (0.2149, 0.8759),
+    u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219),
+    u"N,N'-diisopropylethylenediamine": (0.1019, 0.6559),
     ...
     }
   """
@@ -769,9 +766,9 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
   if debug: print "Ranking possibilities..."
   scores = rank_possibilities(seed, combinations)
 
-  if debug: print "Filtering scores..."
-  #import DRP.research.mutual_info as mutual_info #TODO
-  #scores = mutual_info.do_filter(scores, range_map)
+  if debug: print "Filtering scores (via mutual info)..."
+  import DRP.recommendation.mutual_info as mutual_info
+  scores = mutual_info.do_filter(scores, range_map)
 
   if debug: print "Scores ({} Total):".format(len(scores))
   scores = scores[:total_to_score]
@@ -780,7 +777,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
   rescored = []
   for s in scores:
     try:
-      
+
       reaction_tuples = evaluate_fitness(s[1], range_map, debug=debug)
       if not reaction_tuples:
         yield (0, None)
@@ -823,7 +820,7 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
     mins = (time.clock()-tStart)/60.0
     print "-- Rec. pipeline complete (took {:.4} minutes)!".format(mins)
     print "-- Constructed {} new recommendations".format(total)
-  
+
 
 
 if __name__ == "__main__":

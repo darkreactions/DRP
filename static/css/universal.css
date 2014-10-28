@@ -1468,3 +1468,7 @@ color: #355A77;
   text-align: center; 
   font-size: 2em; 
 } 
+
+@media (max-width:600px) {
+ 
+}

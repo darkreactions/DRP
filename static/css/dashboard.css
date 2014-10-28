@@ -9,3 +9,8 @@
 .modelStatsEntry > span {
  display:block;
 }
+
+#chart svg {
+    height: 100%;
+    width: 100%;
+}
