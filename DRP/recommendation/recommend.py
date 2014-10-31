@@ -325,7 +325,7 @@ def generate_rows_molar(reactants, mass_map):
 
   var_steps = 3
   amt_steps = 3 #4
-  for pH in frange(1,14, var_steps):
+  for pH in frange(1,7, var_steps):
     for time in frange(24, 48, var_steps):
       for temp in frange(80, 130, var_steps):
         for mol1 in molarRange(reactants[0], mass_map, amt_steps):

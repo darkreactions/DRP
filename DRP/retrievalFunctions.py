@@ -34,15 +34,15 @@ def filter_by_date(lab_data, raw_date, direction="after"):
   import datetime, dateutil.relativedelta
   # Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
   date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
- 
+
   # Get the reactions before/after a specific date.
   if direction.lower() == "after":
     filtered_data = lab_data.filter(creation_time_dt__gte=date)
-  else: 
+  else:
     # Add a day to cover any times 00:00-23:59 on a given date.
     date += dateutil.relativedelta.relativedelta(days=1)
     filtered_data = lab_data.filter(creation_time_dt__lte=date)
- 
+
   return filtered_data
 
 
@@ -160,6 +160,7 @@ def get_expanded_headers():
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def get_recommendations(lab_group):
+ from DRP.models import Recommendation
  return Recommendation.objects.filter(lab_group=lab_group)
 
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
@@ -207,6 +208,10 @@ def get_recommendations_by_date(lab_group, date = "recent"):
 """
 
 def filter_recommendations(lab_group, query_list):
+ from DRP.models import get_model_field_names
+ from django.db.models import Q
+ import operator
+
  #Variable Setup
  recs = get_recommendations(lab_group)
  filters = {}
@@ -265,6 +270,7 @@ def filter_recommendations(lab_group, query_list):
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def get_CG_list(lab_group, headers=True):
+ from DRP.models import get_lab_Data, get_model_field_names
  #Variable Setup
  CG = get_lab_CG(lab_group)
  fields =  get_model_field_names(model="CompoundEntry", collect_ignored=True)
