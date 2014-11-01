@@ -304,13 +304,14 @@ class Data(models.Model):
     return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
 
-  def get_calculations_dict(self, include_lab_info=False, force_recalculate=False):
+  def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
+                            preloaded_cg=None):
     from DRP.model_building.load_data import create_expanded_datum_field_list
 
 
     if not self.calculations or force_recalculate:
       # Create the extended calculations.
-      calcList = create_expanded_datum_field_list(self)
+      calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg)
 
       from DRP.model_building.rxn_calculator import headers
       calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
@@ -341,14 +342,15 @@ class Data(models.Model):
 
     return final_dict
 
-  def get_calculations_list(self, include_lab_info=False):
+  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None):
     from DRP.model_building.rxn_calculator import headers
     try:
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info)
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
+                                            preloaded_cg=preloaded_cg)
       return [calcDict[field] for field in headers]
-    except:
+    except Exception as e:
       # If a field isn't present in the calcDict, update the calculation.
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True)
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True, preloaded_cg=preloaded_cg)
       return [calcDict[field] for field in headers]
 
 

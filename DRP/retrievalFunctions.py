@@ -139,11 +139,19 @@ def get_valid_data(lab_group=None):
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Given some 'data', returns a list of any DataCalc objects that can be gathered.
-def expand_data(data, include_lab_info=False):
+def expand_data(data, include_lab_info=False, make_new=False, debug=False):
+  from DRP.model_building.load_cg import get_cg
   calcList = []
-  for datum in data:
+
+  compound_guide = get_cg()
+
+  for i, datum in enumerate(data):
+    if debug and (i%100)==0: print "{}...".format(i)
     try:
-      calcList.append(datum.get_calculations_list(include_lab_info=include_lab_info))
+      if datum.calculations or make_new:
+        calcs = datum.get_calculations_list(include_lab_info=include_lab_info,
+                                            preloaded_cg=compound_guide)
+        calcList.append(calcs)
     except Exception as e:
       print e
       pass
