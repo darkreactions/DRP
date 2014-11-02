@@ -7,7 +7,11 @@ nv.addGraph(function() {
                   .x(function(d) { return d[0] })
                   .y(function(d) { return d[1] })
                   .yDomain([0,1])
-                  .useInteractiveGuideline(true)
+                  //.useInteractiveGuideline(true) // Can't use this and customized tooltips simultaneously
+                  .tooltips(true)
+                  .tooltipContent(function(key, x, y, e, graph) {
+                      return '<h3>' +  key + '</h3>' + '<p>' + y + ' at ' + x  + '</p>';
+                  })
                   .showXAxis(true)
                   ;
 
