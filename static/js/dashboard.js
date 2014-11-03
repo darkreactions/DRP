@@ -4,13 +4,14 @@ d3.json('/get_stats/', function(data) {
 nv.addGraph(function() {
   //var chart = nv.models.lineWithFocusChart()
   var chart = nv.models.lineChart()
-                  .x(function(d) { return d[0] })
-                  .y(function(d) { return d[1] })
+                  .x(function(d) { return d[0]; })
+                  .y(function(d) { return d[1]; })
                   .yDomain([0,1])
                   //.useInteractiveGuideline(true) // Can't use this and customized tooltips simultaneously
                   .tooltips(true)
                   .tooltipContent(function(key, x, y, e, graph) {
-                      return '<h3>' +  key + '</h3>' + '<p>' + y + ' at ' + x  + '</p>';
+                      // Default for custom tooltips:  return '<h3>' +  key + '</h3>' + '<p>' + y + ' at ' + x  + '</p>'
+                      return '<h3>Version ' + x + '</h3>' + '<p>' + key + ': ' + y  + '</p><p>' + data["model_labels"][x] + '</p>';
                   })
                   .showXAxis(true)
                   ;
@@ -31,6 +32,8 @@ nv.addGraph(function() {
   nv.utils.windowResize(chart.update);
 
   $("#loadingMessage").remove();
+  document.querySelectorAll(".nv-x.nv-axis g.nv-axisMaxMin text")[1].classList.add("lastVersion");
+  document.querySelectorAll(".nv-x.nv-axis g.nv-axisMaxMin text")[1].style.fontWeight = "bold";
 
 /* TODO: An array with the appropriate descriptions is in data["model_labels"]
 However, NVD3 (the library of nifty charts) doesn't seem to play nicely with
@@ -41,5 +44,4 @@ custom tooltips...
 });
 
 });
-
 

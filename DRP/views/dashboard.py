@@ -34,8 +34,18 @@ def get_fields_as_json(model_stats):
   #   },
   #   { ... }
   # ]
+
+  # TODO: rename the field 'performance' to 'accuracy' in DRP.models.ModelStats
+
+  # Hack to rename 'performance' to 'accuracy' until it's changed in the models:
+  #   Introduce stat_name variable. When model is changed, change all ocurrences of 
+  #   stat_name to stat in the following loop, and remove special handling
   for stat in stats_to_serialize:
-    key_dict = {"key":stat, 
+    stat_name = stat
+    if stat == "performance":
+        stat_name = "accuracy"
+
+    key_dict = {"key":stat_name, 
                 "values":[[i, getattr(entry,stat)] for i, entry in enumerate(model_stats)],
                }
     results_list.append(key_dict)
