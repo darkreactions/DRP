@@ -246,13 +246,11 @@
  display:inline-block;
  text-align:center;
  width:100%;
- border-bottom:2px solid black;
 }
 
 #mainPanel {
  display:inline-block;
  position:relative;
- height:100%;
  width:100%;
  float:left;
  overflow:hidden;
@@ -501,7 +499,6 @@ div.ui-tooltip {
  height:14%;
  background-color:#5087B3;
  border-top:2px black solid;
- border-bottom:2px black solid;
 
  text-align:center;
  overflow:hidden;
@@ -1154,7 +1151,7 @@ p.basicParagraph {
  text-indent:40px;
  line-height:20px;
  word-spacing:2px;
- padding: 0px 40px; 
+ padding: 0px 40px;
 }
 
 .pagesInfo {
@@ -1454,17 +1451,21 @@ color: #355A77;
  cursor:default;
 }
 
-/*############################ Single elements ######################### */ 
+/*############################ Single elements ######################### */
 
  #graph {
  width: 100%;
- height: 100%; 
+ height: 100%;
 }
 
  #loadingMessage {
   position:absolute;
-  top: 8em; 
+  top: 8em;
   width: 100%;
-  text-align: center; 
-  font-size: 2em; 
-} 
+  text-align: center;
+  font-size: 2em;
+}
+
+@media (max-width:600px) {
+
+}

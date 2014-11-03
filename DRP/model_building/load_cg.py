@@ -17,6 +17,7 @@ def get_cg(debug=False):
     if compound.calculations:
       #cg[compound.abbrev] = json.loads(compound.calculations.json_data)
       cg[compound.compound] = json.loads(compound.calculations.json_data)
+      cg[compound.abbrev] = cg[compound.compound]
     elif debug:
       print "No calculations: {0}".format(compound.compound)
 

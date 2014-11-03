@@ -1,4 +1,4 @@
-<div id="recContainer"> 
+<div id="recContainer">
 
 {% if fatal_message %}
  <p>{{ fatal_message }}</p>
@@ -8,7 +8,7 @@
 <div class="dataGroup dataGroup_shape genericContainer_inner recommendation{% if entry.nonsense %} badRecommendation{% endif %}{% if entry.saved %} savedRecommendation{% endif %}{% if entry.hidden %} hiddenRecommendation{%endif%}
 " pid="{{entry.id}}">
 
-<div class="dataIndex">{{ forloop.counter }}</div>
+<div class="dataIndex">{{ forloop.counter|add:counter_offset }}</div>
 <div class="dataSpecificButtonContainer"></div>
 <div class="dataEntry">
 
@@ -68,5 +68,10 @@
 {% endfor %}
 
 {% endif %}
+</div>
+
+<!-- PAGE INFORMATION -->
+<div id="pageContainer">
+ {% include "page_cell.html" %}
 </div>
 

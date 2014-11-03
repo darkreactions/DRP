@@ -64,6 +64,8 @@ def get_page_link_format(current, total):
   return page_links
 
 def get_pagified_data(page, lab_group=None, data=None):
+ from DRP.models import get_lab_Data
+
  #Variable Setup:
  data_per_page = CONFIG.data_per_page
 
@@ -85,6 +87,8 @@ def get_pagified_data(page, lab_group=None, data=None):
 
 #Returns the info that belongs on a specific page.
 def get_page_info(request, page = None, data=None):
+ from DRP.models import get_lab_Data
+
  try:
   #Gather necessary information from the user's session:
    #Get the user's current_page (or 1 if it is unknown.
@@ -149,6 +153,8 @@ def clear_page_cache_of_index(lab_group, indexChanged):
  clear_page_cache(lab_group, page)
 
 def clear_all_page_caches(lab_group, skip_data_check=False):
+ from DRP.models import get_lab_Data
+
  if skip_data_check:
   total_pages = get_cache(lab_group, "TOTALPAGES")
  else:
@@ -176,6 +182,9 @@ def database(request):
 @login_required
 @require_http_methods(["POST"])
 def data_transmit(request):
+ from DRP.models import get_lab_Data
+ from DRP.retrievalFunctions import filter_data
+
  try:
   try:
    #Variable Setup
@@ -193,6 +202,7 @@ def data_transmit(request):
     session = get_page_info(request, page=int(page), data=data)
    else:
     return HttpResponse("No data found!")
+
   except Exception as e:
    print e
    return HttpResponse("Page could not be loaded.")
@@ -203,6 +213,7 @@ def data_transmit(request):
    "data_on_page": data_package, #Includes data indexes
    "page_package": page_package, #Includes page links
    "total_data_size": total_data_size,
+   "template":"database",
   })
  except Exception as e:
   print e
@@ -212,32 +223,54 @@ def data_transmit(request):
 def recommend(request):
  #Get user data if it exists.
  u = request.user
+ recs_per_page = 10
 
  recommendations = None
  fatal_message = ""
  try:
   recommendations = get_recommendations_by_date(u.get_profile().lab_group)
+  total_data_size = recommendations.count()
+  total_pages = total_data_size/recs_per_page
+
   if not request.GET.get("show_hidden"):
    recommendations = recommendations.filter(hidden=False)
+
+  page = request.GET.get("rec_page", 1)
+  recommendations = recommendations[(page-1)*recs_per_page:(page)*recs_per_page]
 
  except Exception as e:
   print e
   fatal_message = "No recommendations available."
+  page = 1
+  recs_per_page = 1
+  page_links = []
+  total_pages = 1
 
  return render(request, 'global_page.html', {
   "template":"recommendations",
-  "recommendations": recommendations[:100],
+  "recommendations": recommendations,
   "fatal_message": fatal_message,
+  "total_data_size":total_data_size,
+  "counter_offset":recs_per_page*(page-1),
+  "page_package": {
+                    "data_per_page":recs_per_page,
+                    "current_page":page,
+                    "page_links":get_page_link_format(page, total_pages),
+                    }
  })
+
 
 @login_required
 @require_http_methods(["POST"])
 def recommendation_transmit(request, seeded=False):
+ from DRP.models import Recommendation
+
  try:
   #Variable Setup
   u = request.user
   body = json.loads(request.POST["body"], "utf-8")
   query_list = body.get("currentQuery")
+  page = int(body.get("page", 1))
 
   #Get either the Seed Recs or the general Recommendations.
   if seeded:
@@ -252,11 +285,24 @@ def recommendation_transmit(request, seeded=False):
    recs = get_recommendations_by_date(u.get_profile().lab_group)
 
   fatal_message = "" if recs.exists() else "No recommendations found."
+  total_data_size = recs.count()
+
+
+  recs_per_page = 10
+  recs = recs[(page-1)*recs_per_page:(page)*recs_per_page]
+  total_pages = total_data_size/recs_per_page
 
   template="seed_recommendations_entries.html" if seeded else "recommendations.html"
   return render(request, template, {
    "recommendations": recs,
-   "fatal_message": fatal_message
+   "fatal_message": fatal_message,
+   "total_data_size":total_data_size,
+   "counter_offset":recs_per_page*(page-1),
+   "page_package": {
+                    "data_per_page":recs_per_page,
+                    "current_page":page,
+                    "page_links":get_page_link_format(page, total_pages),
+                    }
   })
  except Exception as e:
   print e
@@ -457,6 +503,8 @@ def visuals(request):
 
 @login_required
 def search(request, model="Data", params={}):
+ from DRP.models import get_model_field_names
+
  u = request.user
  if request.method=="POST":
   try:
@@ -579,6 +627,8 @@ def compound_guide(request):
 @login_required
 @require_http_methods(["POST"])
 def compound_guide_entry(request):
+ from DRP.models import get_lab_Data
+
  u = request.user
  lab_group = u.get_profile().lab_group
  entry_info = json.loads(request.body, "utf-8")
@@ -606,6 +656,8 @@ def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
 @login_required
 @require_http_methods(["POST"])
 def edit_CG_entry(request):
+ from DRP.models import get_lab_Data
+
  u = request.user
  changesMade = request.POST
 
@@ -706,6 +758,8 @@ def guess_type(datum):
 ######################  Database Functions  ############################
 #Send/receive the data-entry form:
 def data_form(request): #If no data is entered, stay on the current page.
+ from DRP.models import get_lab_Data, get_model_field_names
+
  u = request.user
  success = False
  if request.method == 'POST' and u.is_authenticated():
@@ -752,6 +806,7 @@ def data_form(request): #If no data is entered, stay on the current page.
 @login_required
 @require_http_methods(["GET"])
 def transfer_rec(request):
+ from DRP.models import get_model_field_names
  try:
   u = request.user
   lab_group = u.get_profile().lab_group
@@ -1270,6 +1325,8 @@ def upload_CSV_bak(request, model="Data"): ###Not re-read.
 
 #Delete a reactant group from a datum.
 def add_reactant(request):
+ from DRP.models import get_lab_Data
+
  u = request.user
  if request.method=="POST" and u.is_authenticated():
   #Variable Setup
@@ -1329,6 +1386,8 @@ def add_reactant(request):
 @login_required
 @require_http_methods(["POST"])
 def delete_reactant(request):
+ from DRP.models import get_lab_Data
+
  u = request.user
  lab_group = u.get_profile().lab_group
  lab_data = get_lab_Data(lab_group)
@@ -1360,6 +1419,8 @@ def delete_reactant(request):
 @login_required
 @require_http_methods(["POST"])
 def delete_Data(request):
+ from DRP.models import get_lab_Data
+
  u = request.user
  #Variable Setup
  lab_group = u.get_profile().lab_group
@@ -1412,6 +1473,8 @@ def change_Recommendation(request):
 @login_required
 @require_http_methods(["POST"])
 def change_Data(request):
+ from DRP.models import get_lab_Data
+
  #Fields that may be changed via this script.
  whitelist = set(get_model_field_names())
 

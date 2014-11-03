@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     (r'^database/$', database), #Encompassing data view.
    #Change Page
     (r'^data_transmit/$', data_transmit), #Used for changing pages.
+    (r'^recommend_transmit/$', recommendation_transmit), #Used for changing pages
    #Upload/Download database.
     (r'^upload_prompt/$', upload_prompt),
     (r'^upload_data/$', upload_CSV),
@@ -46,7 +47,7 @@ urlpatterns = patterns('',
     (r'^send_CG_names/$', "DRP.views.jsonViews.send_CG_names"), #Send the CG name_pairs for client-side validation.
   #Visualization
     (r'^get_graph/$', "DRP.views.explore_vis.get_graph_data"),
-    (r'^setup_graph/$', "DRP.views.explore_vis.store_graph"), 
+    (r'^setup_graph/$', "DRP.views.explore_vis.store_graph"),
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
     (r'^seed/$', "DRP.views.seed_recommend.seed_recommend"),

@@ -34,15 +34,15 @@ def filter_by_date(lab_data, raw_date, direction="after"):
   import datetime, dateutil.relativedelta
   # Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
   date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
- 
+
   # Get the reactions before/after a specific date.
   if direction.lower() == "after":
     filtered_data = lab_data.filter(creation_time_dt__gte=date)
-  else: 
+  else:
     # Add a day to cover any times 00:00-23:59 on a given date.
     date += dateutil.relativedelta.relativedelta(days=1)
     filtered_data = lab_data.filter(creation_time_dt__lte=date)
- 
+
   return filtered_data
 
 
@@ -60,6 +60,8 @@ def filter_existing_calcs(data):
 
 
 def filter_data(lab_group, query_list):
+ from DRP.models import get_lab_Data, get_model_field_names
+
  #Variable Setup
  data = get_lab_Data(lab_group)
  filters = {}
@@ -137,11 +139,19 @@ def get_valid_data(lab_group=None):
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Given some 'data', returns a list of any DataCalc objects that can be gathered.
-def expand_data(data, include_lab_info=False):
+def expand_data(data, include_lab_info=False, make_new=False, debug=False):
+  from DRP.model_building.load_cg import get_cg
   calcList = []
-  for datum in data:
+
+  compound_guide = get_cg()
+
+  for i, datum in enumerate(data):
+    if debug and (i%100)==0: print "{}...".format(i)
     try:
-      calcList.append(datum.get_calculations_list(include_lab_info=include_lab_info))
+      if datum.calculations or make_new:
+        calcs = datum.get_calculations_list(include_lab_info=include_lab_info,
+                                            preloaded_cg=compound_guide)
+        calcList.append(calcs)
     except Exception as e:
       print e
       pass
@@ -158,6 +168,7 @@ def get_expanded_headers():
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def get_recommendations(lab_group):
+ from DRP.models import Recommendation
  return Recommendation.objects.filter(lab_group=lab_group)
 
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
@@ -205,6 +216,10 @@ def get_recommendations_by_date(lab_group, date = "recent"):
 """
 
 def filter_recommendations(lab_group, query_list):
+ from DRP.models import get_model_field_names
+ from django.db.models import Q
+ import operator
+
  #Variable Setup
  recs = get_recommendations(lab_group)
  filters = {}
@@ -263,6 +278,7 @@ def filter_recommendations(lab_group, query_list):
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def get_CG_list(lab_group, headers=True):
+ from DRP.models import get_lab_Data, get_model_field_names
  #Variable Setup
  CG = get_lab_CG(lab_group)
  fields =  get_model_field_names(model="CompoundEntry", collect_ignored=True)

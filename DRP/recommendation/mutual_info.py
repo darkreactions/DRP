@@ -13,7 +13,7 @@ import time
 
 
 def main():
-	time_struct = dict() 
+	time_struct = dict()
 	time_struct['start'] = time.time()
 	dataset = load_data.get_feature_vectors()
 	time_struct['dataset'] = time.time()
@@ -37,7 +37,7 @@ def main():
 def main_triples():
 	time_struct = dict()
 	time_struct['start'] = time.time()
-	
+
 	dataset = load_data.get_feature_vectors_by_triple()
 	load_data.collapse_triples(dataset)
 
@@ -65,8 +65,8 @@ def main_triples():
 
 	print triple_mut_inf
 
-	max_key = triple_mut_inf.keys()[0] 
-	min_key = triple_mut_inf.keys()[0] 
+	max_key = triple_mut_inf.keys()[0]
+	min_key = triple_mut_inf.keys()[0]
 
 	for key in triple_mut_inf:
 		if triple_mut_inf[key] > triple_mut_inf[max_key]:
@@ -76,8 +76,8 @@ def main_triples():
 
 	print max_key, min_key
 	print triple_mut_inf[max_key], triple_mut_inf[min_key]
-	 
-	print time_struct 
+
+	print time_struct
 
 
 def get_triple_mut_from_features(dataset):
@@ -139,6 +139,7 @@ def find_delta_mut(triple_muts, candidate):
 			best_triple = triple
 			best_prob = prob
 	if best_triple is None:
+                print "WOMP"
 		return 0.0
 	delta_mut = triple_muts[best_triple].change_in_mutual(candidate)
 	return delta_mut
@@ -158,7 +159,10 @@ def clean_row(row):
 		elif row[j] == '?' and j == 4:
 			row[j] = 0
 		else:
-			row[j] = float(row[j])
+                  try:
+		    row[j] = float(row[j])
+                  except:
+                    row[j] = 0
 
 def clean_dataset(dataset):
 	for i in range(len(dataset)):
@@ -169,7 +173,7 @@ def mutual_information(pdfs, dataset):
 	mut_inf = 0.0
 
 	if not pdfs.mut_inf:
-		return None 
+		return None
 
 	label = pdfs.four_mean
 	not_label = pdfs.not_four_mean
@@ -186,7 +190,7 @@ def mutual_information(pdfs, dataset):
 			mut_inf += joint*math.log(joint / (not_label*feature),2)
 
 	return mut_inf
-		
+
 
 
 class PDF:
@@ -283,16 +287,16 @@ class MutualInformation:
 			raise Exception("No mut_inf")
 
 	def change_in_mutual(self, row):
-		new_dataset = self.dataset + [ row ] 
+		new_dataset = self.dataset + [ row ]
 		new_pdfs = PDF(new_dataset)
 		mut_inf = mutual_information(new_pdfs, new_dataset)
 		if mut_inf is None:
 			raise Exception("No new mut_inf")
-		return self.mut_inf - mut_inf 
+		return self.mut_inf - mut_inf
 
 	def probability_of_row(self, row):
-		return self.pdf.p_feature(row) 
-		
+		return self.pdf.p_feature(row)
+
 
 def test_candidates():
 	dataset = load_data.get_feature_vectors_by_triple()
@@ -311,77 +315,98 @@ def test_candidates():
 	clean_dataset(candidates)
 	print  find_best_row_for_delta_mut(triple_Muts, candidates)
 
-	
+
 
 def do_filter(candidate_triples, range_map):
   import json
-  ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(django_path)))
+  from DRP.model_building import load_cg
+  ml_convert = json.load(open(django_path+"/DRP/model_building/mlConvert.json"))
 
-  print "Building Mutual Information Calculator"
-  mutual_calc = build_mutual_calc()
+  write_debug_files = False
+  if write_debug_files:
+    import time
+    t = int(time.time())
+    with open("tmp/range_map_{}.tmp".format(t),"w") as f:
+      json.dump(range_map, f)
+    with open("tmp/candidate_triples_{}.tmp".format(t),"w") as f:
+      json.dump(candidate_triples, f)
+
 
   print "Loading CG..."
   cg = load_cg.get_cg()
 
+  print "Building Mutual Information Calculator"
+  mutual_calc = build_mutual_calc()
+
+  good, bad, failed = 0, 0, 0
+
   results = []
-  for i in range(len(candidate_triples)):
+  for i, triple in enumerate(candidate_triples):
     try:
-      row = build_row(candidate_triples[i][1], range_map, cg, ml_convert)
-      print "GOT ROW"
-      #if abs(mutual_calc(row)) > 0.0:
-      if True: #TODO
-        print "______RESULLLLLTT!"
-        results.append(candidate_triples[i])
+      row = build_row(triple[1], range_map, cg, ml_convert)
+      mutual_info = abs(mutual_calc(row))
+      if mutual_info > 0.0:
+        results.append(triple)
+        good += 1
       else:
-        print "discarding {0}".format(candidate_triples[i])
+        bad += 1
     except Exception as e:
-      print "skipping {0} due to exception: {1}".format(str(candidate_triples[i]), e)
-  print len(results)
-  return results  
+      failed += 1
+      print "Skipping '{0}' due to exception: {1}".format(triple, e)
+
+  print "# Post-MI Results: {} ({} good; {} bad; {} failed)".format(len(results), good, bad, failed)
+  return results
 
 def build_row(triple, ranges, cg, ml_convert):
 	"""
 	Variable Examples
 	triple = (u'sodium vanadium trioxide', u'selenous acid', u'1-methylpiperazine')
-	range_map = {'': (0, 0), 
-		u'hydrochloric acid': (0.0824, 2.0235), 
-		u'HIO3': (0.2149, 0.8759), 
-		u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219), 
+	range_map = {'': (0, 0),
+		u'hydrochloric acid': (0.0824, 2.0235),
+		u'HIO3': (0.2149, 0.8759),
+		u'R-3-aminoquinuclidine dihydrochloride': (0.1266, 0.7219),
 		u"N,N'-diisopropylethylenediamine": (0.1019, 0.6559),
 		...
 		}
 	"""
+        def getMeanAmount(compound, ranges):
+          import random
+          try:
+            minimum, maximum = ranges[compound]
+	    return (maximum - minimum)*.5 + minimum
+          except:
+            general_average = 0.3
+            sign = -1 if random.random()>0.5 else 1
+            return general_average + sign*random.random()*general_average
+
+
 	c1, c2, c3 = triple
+        m1 = getMeanAmount(c1, ranges)
+        m2 = getMeanAmount(c2, ranges)
+        m3 = getMeanAmount(c3, ranges)
+        water = getMeanAmount("water", ranges)
 
-	minMax = ranges[c1]
-	m1 = (minMax[1] - minMax[0])*.5 + minMax[0]
-
-	minMax = ranges[c2]
-	m2 = (minMax[1] - minMax[0])*.5 + minMax[0]
-
-	minMax = ranges[c3]
-	m3 = (minMax[1] - minMax[0])*.5 + minMax[0]
-
-	raw_row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water", 6, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""] 
+	raw_row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water", water, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""]
 
 	row = load_data.convert_to_feature_vectors([raw_row], cg, ml_convert)[0][0]
 	clean_row(row)
-	return row 
-		
-		
+	return row
+
+
 
 
 def build_mutual_calc():
+        # Returns a partial function
 	dataset = load_data.get_feature_vectors_by_triple()
 	load_data.collapse_triples(dataset)
 	triple_Muts = dict()
 	clean_dataset_triples(dataset)
-	for triple in dataset:
+        for triple in dataset:
 		try:
 			triple_Muts[triple] = MutualInformation(dataset[triple])
 		except Exception as e:
 			print "failed to build mutual_info struct '{0}': {1}".format(str(triple), e)
-	return lambda x: find_delta_mut(triple_Muts, x)	
+	return lambda x: find_delta_mut(triple_Muts, x)
 
 
 
@@ -389,4 +414,14 @@ def build_mutual_calc():
 if __name__ == "__main__":
 	#main()
 	#main_triples()
-	test_candidates()
+	#test_candidates()
+        import json
+        print "Loading candidate_triples and range_map from file..."
+        with open("tmp/candidate_triples_1414124946.tmp","r") as f:
+          candidates = json.load(f)[:500]
+        with open("tmp/range_map_1414124946.tmp","r") as f:
+          range_map = json.load(f)
+        results = do_filter(candidates, range_map)
+        if results: print "Got results!"
+        print "Results: {}".format(len(results))
+
