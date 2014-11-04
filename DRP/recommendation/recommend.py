@@ -10,7 +10,6 @@ if django_path not in sys.path:
 
 import DRP.model_building.model_methods as mm
 from DRP.model_building import parse_rxn, load_cg, clean2arff
-from DRP.recommendation import rebuildCDT
 from DRP.settings import TMP_DIR, MODEL_DIR, BASE_DIR
 
 
@@ -154,7 +153,7 @@ def choose_center(rxns, new_combination):
 		center[2], center[3], center[4], center[5], center[6])
 
 
-def evaluate_fitness(new_combination, range_map, debug=True):
+def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   def getDifferentReactions(tuples, num_to_get):
     def difference(rxn1, rxn2):
       weights = [0,  0,20,0,  0,20,0,  0,20,0,  0,0.5,0]
@@ -201,7 +200,7 @@ def evaluate_fitness(new_combination, range_map, debug=True):
     print "___"*10
     print "Starting row generator..."
 
-  row_generator = generate_rows_molar(new_combination, range_map)
+  row_generator = generate_rows_molar(new_combination, range_map, var_ranges)
   rows = [row for row in row_generator]
 
   # Shuffle the rows such that the search_space_max_size doesn't block combos.
@@ -292,7 +291,7 @@ def get_rxn_row(cnt, new_combination, range_map):
 	return [mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]]
 
 
-def generate_rows_molar(reactants, mass_map):
+def generate_rows_molar(reactants, mass_map, var_ranges):
   def molarRange(compound, mass_map, steps):
     from DRP.compoundGuideFunctions import getMoles
 
@@ -312,6 +311,16 @@ def generate_rows_molar(reactants, mass_map):
     max_mols *= (1.0+radius)
     return frange(min_mols, max_mols, steps)
 
+  def lookupRange(field, var_ranges, var_steps):
+    minimum = var_ranges[field][0]
+    maximum = var_ranges[field][1]
+
+    step = float(maximum-minimum)/var_steps
+    current = minimum
+    while current <= maximum:
+      yield current
+      current += step
+
   def fillRow(combo, mols1, mols2, mols3, water_mols, pH, time, temp):
     from DRP.compoundGuideFunctions import getMass
     m1 = getMass(mols1, combo[0])
@@ -324,10 +333,10 @@ def generate_rows_molar(reactants, mass_map):
     return result
 
   var_steps = 3
-  amt_steps = 3 #4
-  for pH in frange(1,7, var_steps):
-    for time in frange(24, 48, var_steps):
-      for temp in frange(80, 130, var_steps):
+  amt_steps = 4
+  for pH in lookupRange("pH", var_ranges, var_steps):
+    for time in lookupRange("time", var_ranges, var_steps):
+      for temp in lookupRange("temp", var_ranges, var_steps):
         for mol1 in molarRange(reactants[0], mass_map, amt_steps):
           for mol2 in molarRange(reactants[1], mass_map, amt_steps):
             for mol3 in molarRange(reactants[2], mass_map, amt_steps):
@@ -370,12 +379,13 @@ def calc_score(score, similarity_map, combination, new_combination):
 
 
 def euclidean_similarity(reaction_one, reaction_two):
+        from DRP.model_building.rxn_calculator import headers
 	row_1 = parse_rxn.parse_rxn(reaction_one, cg_props, ml_convert)
 	row_2 = parse_rxn.parse_rxn(reaction_two, cg_props, ml_convert)
 	dist = 0
 	# TODO: need to mean center and divide by std for every prop
 	for i in range(len(row_1)):
-		if "XXX" in rebuildCDT.headers[i]:
+		if "XXX" in headers[i]:
 			continue
 		if row_1[i] in ["yes", "no"]:
 			if row_1[i] != row_2[i]: dist += 1
@@ -494,7 +504,7 @@ def build_sim_map(compound_guide):
 		similarity_map[r] = build_sim_list(r, oxs)
 	return similarity_map
 
-def build_baseline(lab_group=None):
+def build_baseline(lab_group=None, debug=False):
 	#TODO: test this stuff, rewrite to optionally accept a seed set
 	# and, also, rewrite the test() method to use this.
 	def average(scores):
@@ -512,17 +522,39 @@ def build_baseline(lab_group=None):
 			if float(r[i+1]) > 0:
 				r_m[r[i]].add(float(r[i+1]))
 
+        def is_numeric(elem):
+          try:
+            float(elem)
+            return True
+          except:
+            return False
+
 	from DRP.models import get_good_rxns
+        from DRP.model_building.rxn_calculator import headers
+        from DRP.models import get_model_field_names
+
+        headers = ["ref"]+get_model_field_names(model="Recommendation") # Must add "ref" since "ref" is not included as a default model_field.
 	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
 
 	combinations = set()
 	range_map = dict()
 	quality_map = dict() # A map of reactants-->reaction outcomes (ie: 1,2,3,4).
 
+        fields_to_range = ["pH", "time", "temp"]
+        indexes_to_range = [headers.index(field) for field in fields_to_range]
+
+        var_ranges = {field:[] for field in fields_to_range}
+
         debug_counter = 0
 
 	for rxn in rxns:
 		r = rxn[:23]
+
+                # Add the range variables to the data entry.
+                for index, field in zip(indexes_to_range, fields_to_range):
+                  if is_numeric( rxn[index] ):
+                    var_ranges[field].append( float(rxn[index]) )
+
 		reactants = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
 
 		if any([c not in cg_props for c in reactants]):
@@ -535,6 +567,8 @@ def build_baseline(lab_group=None):
 		if q_key not in quality_map:
 			quality_map[q_key] = []
 		quality_map[q_key].append(int(r[-2]))
+
+
 
         # Remove the non-minimum/non-maximum masses from the range_map.
 	for k in range_map:
@@ -550,8 +584,19 @@ def build_baseline(lab_group=None):
 	for q_key in quality_map:
 		quality_map[q_key] = average(quality_map[q_key])
 
-        print "{} of {}".format(debug_counter, len(rxns))
-	return range_map, quality_map, combinations
+
+        for field, values in var_ranges.items():
+          radius = 0.15
+          values.sort()
+          minimum = values[int(len(values)*radius)]
+          maximum = values[int(len(values)*(1-radius))]
+          var_ranges[field] = (minimum, maximum)
+
+
+        if debug:
+          print "{} of {}".format(debug_counter, len(rxns))
+
+	return range_map, quality_map, combinations, var_ranges
 
 
 def fix_abbrevs(rxns):
@@ -738,10 +783,10 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
   from DRP.compoundGuideFunctions import translate_reactants
 
   # Variable Setup
-  total_to_score = 50 # The number of possible combos to test.
+  total_to_score = 500 # The number of possible combos to test.
 
   if debug: print "Building baseline..."
-  range_map, quality_map, combinations = build_baseline()
+  range_map, quality_map, combinations, var_ranges = build_baseline(debug=debug)
 
   """
   range_map = {'': (0, 0),
@@ -778,7 +823,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False):
   for s in scores:
     try:
 
-      reaction_tuples = evaluate_fitness(s[1], range_map, debug=debug)
+      reaction_tuples = evaluate_fitness(s[1], range_map, var_ranges, debug=debug)
       if not reaction_tuples:
         yield (0, None)
       else:

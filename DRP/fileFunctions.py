@@ -32,6 +32,7 @@ def writeExpandedCSV(name):
 
   print "Writing data..."
   data = cleanData(data)
+
   writeCSV(name, data, headers=headers)
 
   print "Write complete!"
