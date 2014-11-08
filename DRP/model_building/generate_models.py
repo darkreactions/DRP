@@ -55,7 +55,7 @@ def retrogenerateModels():
     current = start
     while current < end:
       yield current
-      current += interval 
+      current += interval
     yield end # Finally, use *all* the data up to the current time.
 
   from DRP.models import Data
@@ -63,8 +63,9 @@ def retrogenerateModels():
   start = earliest_datum.creation_time_dt
 
   for date in dateRange(start, "months"):
+    print date
     date_string = date.strftime("%m-%d-%Y")
     print "Retrogenerating model from {}".format(date_string)
     retrogenerateModel(date_string)
- 
+
 

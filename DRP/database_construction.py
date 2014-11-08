@@ -123,9 +123,9 @@ def store_new_RankedReaction_list(list_of_rankedrxn_lists):
  print "Finished creating and storing {} of {} items!.".format(successes, count)
 
 
-def store_new_Recommendation_list(lab_group, recommendations, version_notes = "", seed_source=None, new_model=False, debug=True):
-  from DRP.models import get_Lab_Group, Model_Version
-  from DRP.retrievalFunctions import get_latest_Model_Version
+def store_new_Recommendation_list(lab_group, recommendations, version_notes = "", seed_source=None, debug=True):
+  from DRP.models import get_Lab_Group, ModelStats
+  from DRP.retrievalFunctions import get_latest_ModelStats
   import datetime
 
   lab_group = get_Lab_Group(lab_group)
@@ -134,15 +134,7 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
 
   #Either prepare a new "Model Version" or use the latest one for a lab group.
   try:
-    if new_model:
-      model = Model_Version()
-      model.model_type = "Recommendation"
-      model.date_dt = call_time
-      model.notes = version_notes
-      model.lab_group = lab_group
-      model.save()
-    else:
-      model = get_latest_Model_Version(lab_group)
+    model = get_latest_ModelStats(lab_group)
   except Exception as e:
     print_error("Model not gathered for the Recommendation list: {}".format(e))
 

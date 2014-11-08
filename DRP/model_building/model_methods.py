@@ -26,7 +26,7 @@ def makeBool(entry):
     return entry
 
 
-def gen_model(model_name, description, data=None, clock=True):
+def gen_model(model_name, description, data=None, clock=True, active=True):
   '''
   gen_model("5.8.2014.model", "Some description of the model version.")
   will generate a model as the file "5.8.2014.model" and store the
@@ -84,10 +84,12 @@ def gen_model(model_name, description, data=None, clock=True):
 
   #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
-  update_dashboard(false_positive = falsePositiveRate,
+  update_dashboard(false_positive = falsePositiveRate, #TODO: Change the name of `update_dashboard` to be more reflective of function purpose.
                    model_performance = truePositiveRate,
                    description=description,
-                   model_name = model_name)
+                   model_name = model_name,
+                   model_filename = modelFullName,
+                   active=active)
 
   print "Model generation successful..."
 
@@ -95,11 +97,9 @@ def gen_model(model_name, description, data=None, clock=True):
 
 
 def get_current_model():
-  models = [file for file in os.listdir(MODEL_DIR) if ".model" in file]
-  models.sort(key=lambda x: os.stat(os.path.join(MODEL_DIR, x)).st_mtime)
-  if len(models)==0:
-    raise Exception("No models found in '{}'".format(MODEL_DIR))
-  return models.pop()
+  from DRP.retrievalFunctions import get_latest_ModelStats
+  model = get_latest_ModelStats()
+  return model.filename
 
 
 def map_to_zero_one(v):
@@ -325,7 +325,7 @@ def removeUnused(row, unused_indexes=None):
   return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
 
 
-def get_good_result_tuples(results_location, rows, debug=False): 
+def get_good_result_tuples(results_location, rows, debug=False):
   reactions = []
   total = 0
   with open(results_location, "r") as results_file:
@@ -342,7 +342,7 @@ def get_good_result_tuples(results_location, rows, debug=False):
       total += 1
 
   if debug:
-    "{} of {} reactions are good.".format(len(reactions), total) 
+    "{} of {} reactions are good.".format(len(reactions), total)
 
   return reactions
 

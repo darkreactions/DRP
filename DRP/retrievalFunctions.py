@@ -187,33 +187,15 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
 
  return seed_recs
 
-def get_latest_Model_Version(lab_group):
-  from DRP.models import Model_Version
-  return Model_Version.objects.filter(lab_group=lab_group, model_type="Recommendation").order_by("-date_dt")[0]
+def get_latest_ModelStats(active=True):
+  from DRP.models import ModelStats
+  return ModelStats.objects.filter(active=active).order_by("-datetime")[0]
 
 
 def get_recommendations_by_date(lab_group, date = "recent"):
   from DRP.models import Recommendation
   return Recommendation.objects.order_by("-date_dt")
 
-"""
-def get_recommendations_by_date(lab_group, date = "recent"):
- if date=="recent":
-  #Get the most recent version of the model.
-  try:
-   version = get_latest_Model_Version(lab_group)
-   date = version.date_dt
-  except Exception as e:
-   raise Exception("Could not find any version of the model: {}".format(e))
-
- #Get the data associated with a specific date.
- try:
-  recommendations = get_recommendations(lab_group).filter(date_dt=date).order_by("-score")
- except Exception as e:
-  raise Exception("Could not find any version of the model: {}".format(e))
-
- return recommendations
-"""
 
 def filter_recommendations(lab_group, query_list):
  from DRP.models import get_model_field_names

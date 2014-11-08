@@ -225,7 +225,7 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
 
   # Run the reactions through the current WEKA model.
-  model_path = MODEL_DIR+mm.get_current_model()
+  model_path = mm.get_current_model()
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".

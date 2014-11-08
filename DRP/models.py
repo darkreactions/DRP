@@ -363,31 +363,45 @@ def make_float(string):
 
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):
-  # model false-positive on test set
-  false_positive_rate = models.FloatField()
 
-  # recommendation quality
-  actual_success_rate = models.FloatField()
+  # Model Statistics
+  false_positive = models.FloatField(default=0)
+  false_negative = models.FloatField(default=0)
+  true_positive = models.FloatField(default=0)
+  true_negative = models.FloatField(default=0)
 
-  # evaluation of similarity metric
-  estimated_success_rate = models.FloatField()
-
-  # model performance
-  performance = models.FloatField()
-  datetime = models.DateTimeField()
-
-  #Model Descriptors
+  # Model Descriptors
   title = models.CharField("Title", max_length=100, default="")
   description = models.TextField(default="")
+
+  # Model Status and Location
+  filename = models.CharField("Filename", max_length=64, default="untitled.model")
+  active = models.BooleanField("Active", default=True)
+  datetime = models.DateTimeField()
+
+  def total(self):
+    return self.true_positive + self.true_negative + self.false_positive + self.false_negative
+
+  def test_accuracy(self):
+    return (self.true_positive + self.true_negative)/self.total()
+
+  def test_precision(self):
+    return (self.true_positive)/(self.true_positive + self.false_positive)
+
+
+  def user_satisfaction(self):
+    #TODO: return the # of "nonsense" recommendations over number of recommendations total (associated with this model)
+    return 0 #TODO: Not this.
+
+  def pvalue(self):
+    #TODO: return the p-value for this model.
+    return float("inf") #TODO: Not this.
+
 
   def __unicode__(self):
     return "Performance:{} ({})".format(self.performance, self.datetime)
 
-class Model_Version(models.Model):
- model_type = models.CharField("Type", max_length=20)
- date_dt = models.DateTimeField("Date", null=True, blank=True)
- notes = models.CharField("Notes", max_length=200, blank=True)
- lab_group = models.ForeignKey(Lab_Group)
+
 
 class Recommendation(models.Model):
  #Reactant Fields
@@ -410,7 +424,7 @@ class Recommendation(models.Model):
  #Self-assigning Fields:
  atoms = models.CharField("Atoms", max_length=30, blank=True)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
- model_version = models.ForeignKey(Model_Version, unique=False)
+ model_version = models.ForeignKey(ModelStats, unique=False)
  user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="last_user")
  assigned_user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="assigned_user")
  seed = models.ForeignKey(Data, unique=False, null=True, blank=True, default=None)
