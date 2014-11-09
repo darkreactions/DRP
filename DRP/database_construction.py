@@ -10,30 +10,25 @@ from logPrinting import print_error, print_log
    # # # # # # # # # # # # #  Recommendations  # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-def store_ModelStats(falsePositive, actualSuccess, estimatedSuccess, modelPerformance, description, title, datetime_input=None):
+def store_ModelStats(model_name, model_description, filename, true_pos, true_neg, false_pos, false_neg, active=True):
+
   from DRP.models import ModelStats
   import datetime
 
   #Create an instance of the model.
-  model_stats = ModelStats()
+  model = ModelStats()
+  model.datetime = datetime.datetime.now()
 
-  #Set the fields of model_stats object.
-  model_stats.false_positive_rate = falsePositive
-  model_stats.actual_success_rate = actualSuccess
-  model_stats.estimated_success_rate = estimatedSuccess
-  model_stats.performance = modelPerformance
-  model_stats.description = description
-
-  if (not datetime_input):
-    datetime_input = datetime.datetime.now()
-
-
-  model_stats.datetime = datetime_input
+  model.set_values(false_neg, false_pos, true_neg, true_pos)
+  model.title = model_name
+  model.description = model_description
+  model.filename = filename
+  model.active = active
 
   #Save the model.
-  model_stats.save()
+  model.save()
 
-  return model_stats
+  return model
 
 #Organize the reactants into sublists: [[reactant, quantity, unit], ...]
 def partition_reactant_fields(lst):

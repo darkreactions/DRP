@@ -60,14 +60,18 @@ def parse_rxn(row, rxn_table, ml_convert):
     else:
         outcome = int(str(outcome) + str(purity))
 
+    # Variable Setup
     output = [title]
-    isWater = -1
+    isWater = -1 # The index of the compound which is water.
     keepList = [1,1,1,1,1]
     organicList = [0,0,0,0,0]
     inorganicList = [0,0,0,0,0]
     waterList = [0,0,0,0,0]
     oxalateList = [0,0,0,0,0]
-    (nInorg, nOrg, nOxlike) = (0,0,0)
+    solventList = [0,0,0,0,0]
+    (nInorg, nOrg, nOxLike, nSolLike) = (0,0,0,0)
+
+    # Categorize the compounds.
     for i in range(5):
         if compound[i].lower() == "water":
             isWater = i
@@ -83,12 +87,16 @@ def parse_rxn(row, rxn_table, ml_convert):
                 nOrg += 1
             elif rxn_table[compound[i]]["type"] == "Ox":
                 oxalateList[i] = 1
-                nOxlike += 1
+                nOxLike += 1
+            elif rxn_table[compound[i]]["type"] == "Sol":
+                solventList[i] = 1
+                nSolLike += 1
             elif compound[i].lower() in {"water", "h2o"}:
                 waterList[i] = 1
                 isWater = i
             else:
-                raise Exception("Unknown type: {0}".format(compound[i]))
+                raise Exception("Unknown type for '{0}': '{1}')".format(compound[i], rxn_table[compound[i]]["type"]))
+
     if isWater == -1:
         raise Exception("Lacks water")
     pH = math.ceil(float(pH))
@@ -118,13 +126,7 @@ def parse_rxn(row, rxn_table, ml_convert):
             orgDetails += r
         elif oxalateList[i]:
             oxlikeDetails += r
-        elif i != isWater:
-            print row
-            print inorganicList
-            print organicList
-            print oxalateList
-            print i
-            raise Exception("this should never happen... not inorg, not org, not oxalate? check the source code...")
+
     for i in [0,1,2]: #TODO: rewrite this to not be so dumb
         if len(inorgDetails) + 1 < 9:
             inorgDetails += [-1,-1,-1]
@@ -132,15 +134,16 @@ def parse_rxn(row, rxn_table, ml_convert):
             orgDetails += [-1,-1,-1]
         if len(oxlikeDetails) + 1 < 3:
             oxlikeDetails += [-1,-1,-1]
+
     output += inorgDetails + orgDetails + oxlikeDetails
-    output += [Tmax, time, slowCool.lower(), pH, leak.lower(), nInorg, nOrg, nOxlike, nInorg+nOrg+nOxlike]
+    output += [Tmax, time, slowCool.lower(), pH, leak.lower(), nInorg, nOrg, nOxLike, nInorg+nOrg+nOxLike]
     compoundProperties = [[] for k in range(5)]
     for j in range(5):
         if not keepList[j] or isWater == j:
             compoundProperties[j] = [-1 for k in range(19)]
             continue
         a = compound[j]
-        compoundProperties[j] += rxn_table[compound[j]]["NopH"]
+        compoundProperties[j] += rxn_table[compound[j]]["NopH"] # TODO: Need to re-calculate if not present? Probably...
         compoundProperties[j] += rxn_table[compound[j]]["projectionArea"]
         bar = rxn_table[compound[j]]["polsurf"]
         compoundProperties[j] += [bar[k] for k in range(9*int(pH) - 9, 9*int(pH))]
@@ -160,7 +163,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         output += rxn_calculator.distList(organicList, compoundProperties)
     else:
         output += [-1 for i in range(76)]
-    if nOxlike > 0:
+    if nOxLike > 0:
         output += rxn_calculator.distList(oxalateList, compoundProperties)
     else:
         output += [-1 for i in range(76)]

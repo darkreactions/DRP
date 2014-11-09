@@ -307,13 +307,13 @@ class Data(models.Model):
   def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
                             preloaded_cg=None):
     from DRP.model_building.load_data import create_expanded_datum_field_list
+    from DRP.model_building.rxn_calculator import headers
 
 
     if not self.calculations or force_recalculate:
       # Create the extended calculations.
       calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg)
 
-      from DRP.model_building.rxn_calculator import headers
       calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
 
       # Prepare a new DataCalc object.
@@ -325,11 +325,12 @@ class Data(models.Model):
       self.save()
 
       final_dict = calcDict
+
     else:
       # Load the result from the database if it is already present.
       final_dict = self.calculations.make_json()
 
-    if type(final_dict) != dict:
+    if type(final_dict)!=dict or set(final_dict.keys())!=set(headers):
       # If the final_dict is in the wrong format, recalculate it.
       return self.get_calculations_dict(include_lab_info=include_lab_info,
                                         force_recalculate=True)
@@ -379,6 +380,14 @@ class ModelStats(models.Model):
   active = models.BooleanField("Active", default=True)
   datetime = models.DateTimeField()
 
+  def set_values(self, fn, fp, tn, tp):
+    self.false_positive = fp
+    self.false_negative = fn
+    self.true_positive = tp
+    self.true_negative = tn
+    self.save()
+
+
   def total(self):
     return self.true_positive + self.true_negative + self.false_positive + self.false_negative
 
@@ -399,7 +408,7 @@ class ModelStats(models.Model):
 
 
   def __unicode__(self):
-    return "Performance:{} ({})".format(self.performance, self.datetime)
+    return "{} (Accuracy: {})".format(self.datetime, self.test_accuracy())
 
 
 
