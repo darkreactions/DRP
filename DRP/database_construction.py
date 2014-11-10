@@ -67,8 +67,6 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
   fields = get_model_field_names(model="Recommendation")
 
   for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
-   if "quantity" in field:
-    value = str(value)[:10] #TODO: change quantities to floats rather than strings.
 
    #Translate Booleans into Boolean values.
    if field in bool_fields:

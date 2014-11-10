@@ -63,7 +63,6 @@ def create_expanded_datum_field_list(datum, preloaded_cg=None):
 
   #Actually parse the reaction and spit out an "expanded" one.
   calculations = parse_rxn(datumList, compoundGuide, ml_convert)
-  #remove_XXX(calculations) #TODO: THIS SHOULDN'T EXIST; DON'T MAKE GARBAGE ENTRIES IN THE FIRST PLACE.
 
   return calculations
 

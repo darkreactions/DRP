@@ -56,7 +56,8 @@ def getMass(moles, compound):
   from DRP.models import CompoundEntry
   try:
     molar_mass = CompoundEntry.objects.filter(compound=compound)[0].mw
-    return moles*float(molar_mass)
+    value = moles*float(molar_mass)
+    return float("{:.5f}".format(value))
   except Exception as e:
     print e
     raise Exception("getMass: No molar mass available for {}".format(compound))

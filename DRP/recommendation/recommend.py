@@ -20,12 +20,16 @@ joint_sim = dict()
 restrict_lookup = dict()
 test_variables = False
 
-def frange(start, stop, steps):
+def frange(start, stop, steps, int_return=False):
   # Creates a float range with n=`steps` intervals between the `start` and `stop`.
   current = start
   step = (stop-start)/steps
   while current < stop:
-    yield current
+    value = float("{:.5f}".format(current)) # Round recommendations to a reasonable value. #TODO: STILL HERE, CASEY. Test if it works.
+
+    if int_return: yield int(value)
+    else: yield value
+
     current += step
 
 
@@ -226,6 +230,7 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
 
   # Run the reactions through the current WEKA model.
   model_path = mm.get_current_model()
+
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
@@ -311,15 +316,10 @@ def generate_rows_molar(reactants, mass_map, var_ranges):
     max_mols *= (1.0+radius)
     return frange(min_mols, max_mols, steps)
 
-  def lookupRange(field, var_ranges, var_steps):
+  def lookupRange(field, var_ranges, var_steps, int_return=False):
     minimum = var_ranges[field][0]
     maximum = var_ranges[field][1]
-
-    step = float(maximum-minimum)/var_steps
-    current = minimum
-    while current <= maximum:
-      yield current
-      current += step
+    return frange(minimum, maximum, var_steps, int_return=int_return)
 
   def fillRow(combo, mols1, mols2, mols3, water_mols, pH, time, temp):
     from DRP.compoundGuideFunctions import getMass
@@ -334,9 +334,9 @@ def generate_rows_molar(reactants, mass_map, var_ranges):
 
   var_steps = 3
   amt_steps = 4
-  for pH in lookupRange("pH", var_ranges, var_steps):
-    for time in lookupRange("time", var_ranges, var_steps):
-      for temp in lookupRange("temp", var_ranges, var_steps):
+  for pH in lookupRange("pH", var_ranges, var_steps, int_return=True):
+    for time in lookupRange("time", var_ranges, var_steps, int_return=True):
+      for temp in lookupRange("temp", var_ranges, var_steps, int_return=True):
         for mol1 in molarRange(reactants[0], mass_map, amt_steps):
           for mol2 in molarRange(reactants[1], mass_map, amt_steps):
             for mol3 in molarRange(reactants[2], mass_map, amt_steps):
@@ -776,14 +776,14 @@ def build_diverse_org(max_results=250, debug=True):
 	return results
 
 
-def recommendation_generator(use_lab_abbrevs=None, debug=False):
+def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False):
   def remove_empty(rxn):
     return [field if field!="-1" else "" for field in rxn]
 
   from DRP.compoundGuideFunctions import translate_reactants
 
   # Variable Setup
-  total_to_score = 500 # The number of possible combos to test.
+  total_to_score = 750 if not bare_debug else 50 # The number of possible combos to test.
 
   if debug: print "Building baseline..."
   range_map, quality_map, combinations, var_ranges = build_baseline(debug=debug)
@@ -846,10 +846,10 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
   # Variable Setup
   tStart = time.clock()
   total = 0
-  max_recs_per_call = 150
+  max_recs_per_call = 150 if not bare_debug else 5
 
   if debug: print "-- Creating recommendation generator..."
-  scored_reactions = recommendation_generator(use_lab_abbrevs=lab_group, debug=debug)
+  scored_reactions = recommendation_generator(use_lab_abbrevs=lab_group, debug=debug, bare_debug=bare_debug)
 
   if debug: print "-- Storing recommmendations..."
   for (conf, rec) in scored_reactions:
@@ -857,6 +857,7 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
       rec = map(str, rec)
       store_new_Recommendation_list(lab_group, [[conf]+rec], debug=debug)
       total += 1
+      if debug: print " ... Finished #{}!".format(total)
 
     if total>max_recs_per_call:
       break

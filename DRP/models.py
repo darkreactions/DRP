@@ -392,10 +392,18 @@ class ModelStats(models.Model):
     return self.true_positive + self.true_negative + self.false_positive + self.false_negative
 
   def test_accuracy(self):
-    return (self.true_positive + self.true_negative)/self.total()
+    denom = self.total()
+    if denom:
+      return (self.true_positive + self.true_negative)/denom
+    else:
+      return 0
 
   def test_precision(self):
-    return (self.true_positive)/(self.true_positive + self.false_positive)
+    denom = (self.true_positive + self.false_positive)
+    if denom:
+      return (self.true_positive)/denom
+    else:
+      return 0
 
 
   def user_satisfaction(self):

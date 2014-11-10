@@ -189,7 +189,8 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
 
 def get_latest_ModelStats(active=True):
   from DRP.models import ModelStats
-  return ModelStats.objects.filter(active=active).order_by("-datetime")[0]
+  models = ModelStats.objects.filter(active=active).order_by("-datetime")
+  return models.first()
 
 
 def get_recommendations_by_date(lab_group, date = "recent"):
