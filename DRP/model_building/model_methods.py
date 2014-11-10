@@ -26,7 +26,7 @@ def makeBool(entry):
     return entry
 
 
-def gen_model(model_name, description, data=None, clock=True, active=True, debug=True):
+def gen_model(model_name, description, data=None, clock=True, active=True, debug=False):
   '''
   gen_model("5.8.2014.model", "Some description of the model version.")
   will generate a model as the file "5.8.2014.model" and store the
@@ -54,7 +54,9 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   # Get the valid reactions across all lab groups.
   print "Loading data entries."
   if data==None:
-    data = get_valid_data()[:100]
+    data = get_valid_data()
+    if debug:
+      data = data[:100]
   print "... Loaded {} entries!".format(len(data))
 
   # Choose "training" and "test" data and construct a "sample model."

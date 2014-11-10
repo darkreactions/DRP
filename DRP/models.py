@@ -10,7 +10,7 @@ from uuid import uuid4
 from CGCalculator import CGCalculator
 from collections import defaultdict
 from subprocess import Popen
-from settings import LOG_DIR, BASE_DIR
+from settings import LOG_DIR, BASE_DIR, MODEL_DIR
 from cacheFunctions import get_cache, set_cache
 
 import json, random, string, datetime, operator
@@ -372,11 +372,12 @@ class ModelStats(models.Model):
   true_negative = models.FloatField(default=0)
 
   # Model Descriptors
-  title = models.CharField("Title", max_length=100, default="")
+  title = models.CharField("Title", max_length=100, default="untitled")
   description = models.TextField(default="")
 
   # Model Status and Location
-  filename = models.CharField("Filename", max_length=64, default="untitled.model")
+  filename = models.CharField("Filename", max_length=64,
+                                          default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
   datetime = models.DateTimeField()
 
@@ -405,10 +406,20 @@ class ModelStats(models.Model):
     else:
       return 0
 
+  def rate(self, field):
+    denom = float(self.total())
+    if denom:
+      return getattr(self, field)/denom
+    else:
+      return 0
+
 
   def user_satisfaction(self):
-    #TODO: return the # of "nonsense" recommendations over number of recommendations total (associated with this model)
-    return 0 #TODO: Not this.
+    recs = Recommendation.objects.filter(model_version=self)
+    if recs.exists():
+      return recs.filter(nonsense=False).count()/float(recs.count())
+    else:
+      return 0
 
   def pvalue(self):
     #TODO: return the p-value for this model.

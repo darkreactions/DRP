@@ -9,7 +9,7 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
-def build_previous_model(model_name, model_description, date, data=None):
+def build_previous_model(model_name, model_description, date, data=None, active=False):
   """
   Constructs a model from the data available on a given date.
   """
@@ -22,7 +22,7 @@ def build_previous_model(model_name, model_description, date, data=None):
     data = filter_existing_calcs(Data.objects.all())
 
   filtered = filter_by_date(data, date, "previous")
-  model_methods.gen_model(model_name, model_description, data=filtered)
+  model_methods.gen_model(model_name, model_description, data=filtered, active=active)
 
 
 def retrogenerateModel(date):
