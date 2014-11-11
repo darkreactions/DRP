@@ -2,13 +2,6 @@ $(document).ready(function() {
 //############ Variable Setup: #########################################
 var CGSelected = Array();
 
-//############ Dependent Functions: ####################################
-//Set the current_page cookie.
-function setPageCookie(page) {
- page = page !== undefined ? page : $("#pagesCurrent").html().trim();
- $.cookie("current_page", page,
-  {expires: 7}); //Set cookie to expire after one week.
-}
 
 //############ Data Selection: #########################################
 //Click Group to Select:
@@ -52,15 +45,15 @@ $("#leftMenu_selectPage").click(function() {
 $(document).on("mouseover", ".reactantField", function() {
  if ($(".reactantButton").length==0 ){
   if ($(this).children(".type_reactant").is(":empty")) {
-   $(this).append("<div id=\"addReactantGroup\" class=\"reactantAddButton reactantButton popupActivator genericButton\"" + 
-    "title=\"Add a reactant here.\">+</div>"); 
+   $(this).append("<div id=\"addReactantGroup\" class=\"reactantAddButton reactantButton popupActivator genericButton\"" +
+    "title=\"Add a reactant here.\">+</div>");
   } else {
-   $(this).append("<div class=\"reactantRemoveButton reactantButton genericButton\"" + 
-    "title=\"Delete this reactant.\">x</div>"); 
+   $(this).append("<div class=\"reactantRemoveButton reactantButton genericButton\"" +
+    "title=\"Delete this reactant.\">x</div>");
   }
  }
 });
- 
+
 $(document).on("mouseleave", ".reactantField", function() {
  $(".reactantButton").remove();
 })
@@ -86,7 +79,7 @@ $(document).on("click", ".reactantRemoveButton", function(event) {
     //Upload updated data
     showRibbon("Working...", neutralColor, "body");
     $.post("/delete_reactant/", {group:group, pid:pid}, function(response) {
-     if (response==0){ 
+     if (response==0){
       showRibbon("Data deleted!", goodColor, "body");
       $(reactantField).children(".dataField").empty();
      } else {
@@ -150,51 +143,4 @@ $("#leftMenu_delete").click(function() {
  }
 });
 
-//############## Change Pages: #########################################
-function changePageTo(page) {
- showRibbon("Loading!", "#FFC87C", "#mainPanel", false);
-
- //Send the currentQuery if it exists.
- JSONQuery = JSON.stringify({"currentQuery":currentQuery, "page":page});
-
- $.post("/data_transmit/", {"body":JSONQuery}, function(response) {
-  $("#mainPanel").html(response);
-  if ($(".dataGroup").length) {
-   setPageCookie(page)
-   restyleData();
-  $(".ribbonMessage").remove();
-  } else {
-   showRibbon("Page does not exist", badColor, "body");
-  }
- });
-}
-
-$(document).on("click", "#pagesInputButton", function() {
- var pageNum = $("#pagesInputText").val().trim();
-
- if (pageNum == $("#pageLinkCurrent").html().trim()) {
-  showRibbon("Already here!", "#99FF5E", "#dataContainer");
-  return false //Don't do anything else if page already is active.
- } else if ($.isNumeric(pageNum)
-  && parseInt(pageNum) <= parseInt($("#pagesTotal").html().trim())
-  && parseInt(pageNum) > 0) {
-  //Create a CSRF Token for Django authorization.
-  var csrftoken = $.cookie("csrftoken");
-  changePageTo(pageNum)
-  }
 });
-
-$(document).on("click", ".pageLink", function() {
- //If a valid page link has been clicked.
- var pageNum = $(this).html().trim();
- //If the link is a number (not an ellipsis) and not the current page:
- if ($.isNumeric(pageNum) && pageNum != $("#pageLinkCurrent").html().trim()) {
-  //Request the information about a page.
-  changePageTo(pageNum)
- }
-});
-
-
-//######################################################################
-});
-

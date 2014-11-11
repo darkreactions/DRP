@@ -35,10 +35,6 @@
  <div id="sidePanel"><div id="sidePanel_inner"></div></div>
 </div>
 
-<div id="bottomPanel">
- <!-- COPYRIGHT -->
- {% include "copyright.html" %}
-</div>
 
 </div>
 </div>
@@ -67,5 +63,6 @@
  {% with template|add:".js" as js_name %}
  <script type="text/javascript" src="{{ STATIC_URL }}js/{{ js_name }}" ></script>
  {% endwith %}
+ <script type="text/javascript" src="{{ STATIC_URL }}js/pages.js" ></script>
 
 </html>

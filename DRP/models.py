@@ -10,7 +10,7 @@ from uuid import uuid4
 from CGCalculator import CGCalculator
 from collections import defaultdict
 from subprocess import Popen
-from settings import LOG_DIR, BASE_DIR
+from settings import LOG_DIR, BASE_DIR, MODEL_DIR
 from cacheFunctions import get_cache, set_cache
 
 import json, random, string, datetime, operator
@@ -304,15 +304,16 @@ class Data(models.Model):
     return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
 
-  def get_calculations_dict(self, include_lab_info=False, force_recalculate=False):
+  def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
+                            preloaded_cg=None):
     from DRP.model_building.load_data import create_expanded_datum_field_list
+    from DRP.model_building.rxn_calculator import headers
 
 
     if not self.calculations or force_recalculate:
       # Create the extended calculations.
-      calcList = create_expanded_datum_field_list(self)
+      calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg)
 
-      from DRP.model_building.rxn_calculator import headers
       calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
 
       # Prepare a new DataCalc object.
@@ -324,11 +325,12 @@ class Data(models.Model):
       self.save()
 
       final_dict = calcDict
+
     else:
       # Load the result from the database if it is already present.
       final_dict = self.calculations.make_json()
 
-    if type(final_dict) != dict:
+    if type(final_dict)!=dict or set(final_dict.keys())!=set(headers):
       # If the final_dict is in the wrong format, recalculate it.
       return self.get_calculations_dict(include_lab_info=include_lab_info,
                                         force_recalculate=True)
@@ -341,14 +343,15 @@ class Data(models.Model):
 
     return final_dict
 
-  def get_calculations_list(self, include_lab_info=False):
+  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None):
     from DRP.model_building.rxn_calculator import headers
     try:
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info)
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
+                                            preloaded_cg=preloaded_cg)
       return [calcDict[field] for field in headers]
-    except:
+    except Exception as e:
       # If a field isn't present in the calcDict, update the calculation.
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True)
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True, preloaded_cg=preloaded_cg)
       return [calcDict[field] for field in headers]
 
 
@@ -361,31 +364,72 @@ def make_float(string):
 
 ############### RECOMMENDATIONS ########################
 class ModelStats(models.Model):
-  # model false-positive on test set
-  false_positive_rate = models.FloatField()
 
-  # recommendation quality
-  actual_success_rate = models.FloatField()
+  # Model Statistics
+  false_positive = models.FloatField(default=0)
+  false_negative = models.FloatField(default=0)
+  true_positive = models.FloatField(default=0)
+  true_negative = models.FloatField(default=0)
 
-  # evaluation of similarity metric
-  estimated_success_rate = models.FloatField()
-
-  # model performance
-  performance = models.FloatField()
-  datetime = models.DateTimeField()
-
-  #Model Descriptors
-  title = models.CharField("Title", max_length=100, default="")
+  # Model Descriptors
+  title = models.CharField("Title", max_length=100, default="untitled")
   description = models.TextField(default="")
 
-  def __unicode__(self):
-    return "Performance:{} ({})".format(self.performance, self.datetime)
+  # Model Status and Location
+  filename = models.CharField("Filename", max_length=64,
+                                          default=MODEL_DIR+"untitled.model")
+  active = models.BooleanField("Active", default=True)
+  datetime = models.DateTimeField()
 
-class Model_Version(models.Model):
- model_type = models.CharField("Type", max_length=20)
- date_dt = models.DateTimeField("Date", null=True, blank=True)
- notes = models.CharField("Notes", max_length=200, blank=True)
- lab_group = models.ForeignKey(Lab_Group)
+  def set_values(self, fn, fp, tn, tp):
+    self.false_positive = fp
+    self.false_negative = fn
+    self.true_positive = tp
+    self.true_negative = tn
+    self.save()
+
+
+  def total(self):
+    return self.true_positive + self.true_negative + self.false_positive + self.false_negative
+
+  def test_accuracy(self):
+    denom = self.total()
+    if denom:
+      return (self.true_positive + self.true_negative)/denom
+    else:
+      return 0
+
+  def test_precision(self):
+    denom = (self.true_positive + self.false_positive)
+    if denom:
+      return (self.true_positive)/denom
+    else:
+      return 0
+
+  def rate(self, field):
+    denom = float(self.total())
+    if denom:
+      return getattr(self, field)/denom
+    else:
+      return 0
+
+
+  def user_satisfaction(self):
+    recs = Recommendation.objects.filter(model_version=self)
+    if recs.exists():
+      return recs.filter(nonsense=False).count()/float(recs.count())
+    else:
+      return 0
+
+  def pvalue(self):
+    #TODO: return the p-value for this model.
+    return float("inf") #TODO: Not this.
+
+
+  def __unicode__(self):
+    return "{} (Accuracy: {})".format(self.datetime, self.test_accuracy())
+
+
 
 class Recommendation(models.Model):
  #Reactant Fields
@@ -408,7 +452,7 @@ class Recommendation(models.Model):
  #Self-assigning Fields:
  atoms = models.CharField("Atoms", max_length=30, blank=True)
  lab_group = models.ForeignKey(Lab_Group, unique=False)
- model_version = models.ForeignKey(Model_Version, unique=False)
+ model_version = models.ForeignKey(ModelStats, unique=False)
  user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="last_user")
  assigned_user = models.ForeignKey(User, unique=False, null=True, blank=True, default=None, related_name="assigned_user")
  seed = models.ForeignKey(Data, unique=False, null=True, blank=True, default=None)

@@ -10,30 +10,25 @@ from logPrinting import print_error, print_log
    # # # # # # # # # # # # #  Recommendations  # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-def store_ModelStats(falsePositive, actualSuccess, estimatedSuccess, modelPerformance, description, title, datetime_input=None):
+def store_ModelStats(model_name, model_description, filename, true_pos, true_neg, false_pos, false_neg, active=True):
+
   from DRP.models import ModelStats
   import datetime
 
   #Create an instance of the model.
-  model_stats = ModelStats()
+  model = ModelStats()
+  model.datetime = datetime.datetime.now()
 
-  #Set the fields of model_stats object.
-  model_stats.false_positive_rate = falsePositive
-  model_stats.actual_success_rate = actualSuccess
-  model_stats.estimated_success_rate = estimatedSuccess
-  model_stats.performance = modelPerformance
-  model_stats.description = description
-
-  if (not datetime_input):
-    datetime_input = datetime.datetime.now()
-
-
-  model_stats.datetime = datetime_input
+  model.set_values(false_neg, false_pos, true_neg, true_pos)
+  model.title = model_name
+  model.description = model_description
+  model.filename = filename
+  model.active = active
 
   #Save the model.
-  model_stats.save()
+  model.save()
 
-  return model_stats
+  return model
 
 #Organize the reactants into sublists: [[reactant, quantity, unit], ...]
 def partition_reactant_fields(lst):
@@ -72,8 +67,6 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
   fields = get_model_field_names(model="Recommendation")
 
   for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
-   if "quantity" in field:
-    value = str(value)[:10] #TODO: change quantities to floats rather than strings.
 
    #Translate Booleans into Boolean values.
    if field in bool_fields:
@@ -123,9 +116,9 @@ def store_new_RankedReaction_list(list_of_rankedrxn_lists):
  print "Finished creating and storing {} of {} items!.".format(successes, count)
 
 
-def store_new_Recommendation_list(lab_group, recommendations, version_notes = "", seed_source=None, new_model=False, debug=True):
-  from DRP.models import get_Lab_Group, Model_Version
-  from DRP.retrievalFunctions import get_latest_Model_Version
+def store_new_Recommendation_list(lab_group, recommendations, version_notes = "", seed_source=None, debug=True):
+  from DRP.models import get_Lab_Group, ModelStats
+  from DRP.retrievalFunctions import get_latest_ModelStats
   import datetime
 
   lab_group = get_Lab_Group(lab_group)
@@ -134,15 +127,7 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
 
   #Either prepare a new "Model Version" or use the latest one for a lab group.
   try:
-    if new_model:
-      model = Model_Version()
-      model.model_type = "Recommendation"
-      model.date_dt = call_time
-      model.notes = version_notes
-      model.lab_group = lab_group
-      model.save()
-    else:
-      model = get_latest_Model_Version(lab_group)
+    model = get_latest_ModelStats(lab_group)
   except Exception as e:
     print_error("Model not gathered for the Recommendation list: {}".format(e))
 

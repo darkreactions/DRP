@@ -9,7 +9,7 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
-def build_previous_model(model_name, model_description, date, data=None):
+def build_previous_model(model_name, model_description, date, data=None, active=False):
   """
   Constructs a model from the data available on a given date.
   """
@@ -22,7 +22,7 @@ def build_previous_model(model_name, model_description, date, data=None):
     data = filter_existing_calcs(Data.objects.all())
 
   filtered = filter_by_date(data, date, "previous")
-  model_methods.gen_model(model_name, model_description, data=filtered)
+  model_methods.gen_model(model_name, model_description, data=filtered, active=active)
 
 
 def retrogenerateModel(date):
@@ -55,7 +55,7 @@ def retrogenerateModels():
     current = start
     while current < end:
       yield current
-      current += interval 
+      current += interval
     yield end # Finally, use *all* the data up to the current time.
 
   from DRP.models import Data
@@ -63,8 +63,9 @@ def retrogenerateModels():
   start = earliest_datum.creation_time_dt
 
   for date in dateRange(start, "months"):
+    print date
     date_string = date.strftime("%m-%d-%Y")
     print "Retrogenerating model from {}".format(date_string)
     retrogenerateModel(date_string)
- 
+
 

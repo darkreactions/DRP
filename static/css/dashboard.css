@@ -14,3 +14,10 @@
     height: 100%;
     width: 100%;
 }
+
+.lastVersion {
+    font-weight: bold;
+    font-size: 24;
+    stroke: #FF0000;
+    fill: #FF0000;
+}

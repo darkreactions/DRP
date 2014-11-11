@@ -127,10 +127,7 @@ function getFormErrors(form) {
 }
 
 function loadPageFilters(){
-  console.log("HERE");
-  console.log($(".filterLoader").length);
   $(".filterLoader").each(function(i){
-    console.log($(this));
     currentQuery.push({
       "field":$(this).attr("field"),
       "match":"exact",
@@ -491,7 +488,6 @@ $(document).on("submit", ".downloadForm", function(event) {
  model=$(this).find("input[name=model]").val();
 
  loadPageFilters();
- console.log(currentQuery);
  //If filters are enabled, send them in the form.
  var filters = "";
  if ($(this).find("input[name=use_filters]").val()=="True"){

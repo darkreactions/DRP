@@ -1,5 +1,5 @@
 import  json, uuid, subprocess
-from DRP.research import metrics, load_cg, parse_rxn, clean2arff, rebuildCDT
+from DRP.research import metrics, load_cg, parse_rxn
 import sys, os
 
 django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
@@ -169,7 +169,7 @@ def generate_grid(reaction, amine_list, debug=True):
     raise Exception("Failed step 2...\n{}".format(e))
 
 
-  try: 
+  try:
     model_path = MODEL_DIR+mm.get_current_model()
     results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 

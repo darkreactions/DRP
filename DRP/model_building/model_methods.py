@@ -11,11 +11,11 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-from DRP.database_construction import store_ModelStats
 from DRP.retrievalFunctions import get_valid_data
 from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
 
-POSITIVE = "2:2"
+POSITIVE = "4:4"
+INCORRECT = "+"
 
 def makeBool(entry):
   if entry=="yes":
@@ -26,15 +26,16 @@ def makeBool(entry):
     return entry
 
 
-def gen_model(model_name, description, data=None, clock=True):
+def gen_model(model_name, description, data=None, clock=True, active=True, debug=False):
   '''
   gen_model("5.8.2014.model", "Some description of the model version.")
   will generate a model as the file "5.8.2014.model" and store the
   model's statistics in a ModelStats database entry.
 
-  Optionally, only certain data can be used to construct the model.
+  Optionally, only pre-specified data can be used to construct the model.
   '''
 
+  from DRP.database_construction import store_ModelStats
   from DRP.fileFunctions import createDirIfNecessary
   import time
 
@@ -54,19 +55,21 @@ def gen_model(model_name, description, data=None, clock=True):
   print "Loading data entries."
   if data==None:
     data = get_valid_data()
+    if debug:
+      data = data[:100]
   print "... Loaded {} entries!".format(len(data))
 
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.
   print "Creating a sample model to evaluate the model stats..."
-  truePositiveRate, falsePositiveRate = sample_model_quality(data, name, clock=clock)
+  true_pos, true_neg, false_pos, false_neg = sample_model_quality(data, name, clock=clock, debug=debug)
 
   print "Constructing the final ARFF file..."
   make_arff(name+"_final", data, clock=clock)
 
   #Using ALL of the data, now construct the full model.
   print "Building the actual model..."
-  modelFullName = MODEL_DIR + model_name + ".model"
+  model_file_location = MODEL_DIR + model_name + ".model"
   arffFullName = TMP_DIR+name+"_final.arff"
 
   createDirIfNecessary(TMP_DIR)
@@ -76,7 +79,7 @@ def gen_model(model_name, description, data=None, clock=True):
 
   move = "cd {};".format(django_path)
   command = "bash DRP/model_building/make_model.sh"
-  args = " {} {}".format(modelFullName, arffFullName)
+  args = " {} {}".format(model_file_location, arffFullName)
   print "SUBPROCESS:\n{}".format(move+command+args)
   subprocess.check_output(move+command+args, shell=True)
 
@@ -84,10 +87,9 @@ def gen_model(model_name, description, data=None, clock=True):
 
   #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
-  update_dashboard(false_positive = falsePositiveRate,
-                   model_performance = truePositiveRate,
-                   description=description,
-                   model_name = model_name)
+  store_ModelStats(model_name, description, model_file_location,
+                   true_pos, true_neg, false_pos, false_neg,
+                   active=active)
 
   print "Model generation successful..."
 
@@ -95,11 +97,9 @@ def gen_model(model_name, description, data=None, clock=True):
 
 
 def get_current_model():
-  models = [file for file in os.listdir(MODEL_DIR) if ".model" in file]
-  models.sort(key=lambda x: os.stat(os.path.join(MODEL_DIR, x)).st_mtime)
-  if len(models)==0:
-    raise Exception("No models found in '{}'".format(MODEL_DIR))
-  return models.pop()
+  from DRP.retrievalFunctions import get_latest_ModelStats
+  model = get_latest_ModelStats()
+  return model.filename
 
 
 def map_to_zero_one(v):
@@ -110,9 +110,9 @@ def map_to_zero_one(v):
 
 # Builds and evaluates a sample model given some input data to be partitioned
 #   into training and test data. Returns the stats of this sample model.
-from DRP.model_building.test_train_split import create_test_and_train_lists
-from DRP.model_building.load_data import create_reactant_keys
-def sample_model_quality(data, name, clock=False):
+def sample_model_quality(data, name, clock=False, debug=False):
+  from DRP.model_building.test_train_split import create_test_and_train_lists
+  from DRP.model_building.load_data import create_reactant_keys
   from DRP.fileFunctions import createDirIfNecessary
 
   # Create reactant-combination keys for each data entry.
@@ -125,8 +125,8 @@ def sample_model_quality(data, name, clock=False):
   #TODO: ORIGINAL:   rows = [r[:-1] + [ map_to_zero_one(r[-1]) ] for r in rows]
   #TODO: Incorporate map_to_zero_one??
   #TODO: Why? Isn't used in FINAL make_arff?
-  make_arff(name + "_test", test, clock=clock)
-  make_arff(name + "_train", train, clock=clock)
+  make_arff(name + "_test", test, clock=clock, debug=debug)
+  make_arff(name + "_train", train, clock=clock, debug=debug)
 
   #Give the temporary ARFF files and the model respectable names.
   tmpPrefix = TMP_DIR + name
@@ -139,15 +139,15 @@ def sample_model_quality(data, name, clock=False):
   move = "cd {};".format(django_path)
   command = "bash DRP/model_building/make_model.sh"
   args = " {} {}".format(modelFullName, tmpPrefix+"_train.arff")
-  print "SUBPROCESS:\n{}".format(move+command+args)
+  if debug:
+    print "SUBPROCESS:\n{}".format(move+command+args)
   subprocess.check_output(move+command+args, shell=True)
 
   # Use the test data to make samplePredictions that can gauge the model quality.
-  samplePredictions = make_predictions(tmpPrefix+"_test.arff", modelFullName)
+  samplePredictions = make_predictions(tmpPrefix+"_test.arff", modelFullName, debug=debug)
 
   #Now that the sample model is created, evaluate its performance.
-  truePositiveRate, falsePositiveRate = evaluate_results(samplePredictions)
-  return truePositiveRate, falsePositiveRate
+  return evaluate_results(samplePredictions)
 
 
 
@@ -176,29 +176,51 @@ def evaluate_model(rows,keys):
 
 
 def evaluate_results(results_location):
-	with open(results_location) as results_file:
-		for i in range(5):
-			results_file.next()
-		total = 0
-		incorrect = 0
-		false_positive = 0
-		true_negative = 0
-		for row in results_file:
-			if "\n" == row:
-				continue
-			total += 1
-			if "+" in row: #If it's "unrecommended"...
-				incorrect += 1
-				if row.split()[2] == POSITIVE:
-					false_positive += 1
-				else:
-					true_negative += 1
+  """
+  Sample structure of a results (tmp/*.out) file:
 
-	#Calculate the rates from the various counts.
-	falsePositiveRate = false_positive/float(true_negative+false_positive) if (true_negative + false_positive) else 0
-	truePositiveRate = (total - incorrect) / float(total) if total else 0
+    inst#     actual     predicted     error    prediction
+                         ...
+    16        4:4        3:3           +        0.5
+    17        3:3        3:3                    0.5
+    18        3:3        3:3                    0.5
+    19        3:3        3:3                    0.5
+    20        1:1        3:3           +        0.5
+    21        3:3        3:3                    0.5
+    22        3:3        3:3                    0.5
+    23        3:3        3:3                    0.5
+    24        4:4        3:3           +        0.5
+    25        4:4        4:4                    0.5
+    26        3:3        3:3                    0.5
+    27        2:2        4:4           +        0.5
+    28        2:2        4:4           +        0.5
+    29        4:4        4:4                    0.5
 
-	return truePositiveRate, falsePositiveRate
+  """
+  with open(results_location) as results_file:
+    for i in range(5):
+      results_file.next()
+
+    true_positive = 0
+    false_positive = 0
+    true_negative = 0
+    false_negative = 0
+
+    for row in results_file:
+      if "\n" == row:
+        continue
+      if INCORRECT in row: #WEKA uses a "+" to show incorrect predictions...
+        if row.split()[2] == POSITIVE:
+          false_positive += 1
+        else:
+          false_negative += 1
+      else:
+        if row.split()[2] == POSITIVE:  # IE: WEKA said it was good *and* it was.
+          true_positive += 1
+        else:
+          true_negative += 1
+
+  return true_positive, true_negative, false_positive, false_negative
 
 
 def remove_indexes(row, unused):
@@ -236,10 +258,7 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
           calcDict["outcome"] = max(1, int(calcDict["outcome"]))
           row = dict_to_list(calcDict, arff_fields)
 
-        #row = row[5:-2] + [max(1,row[-1])]
-        #row = remove_indexes(row, unused_indexes)
         #Write the row to the ARFF file.
-
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
       except Exception as e:
@@ -266,31 +285,6 @@ def make_predictions(target_file, model_location, debug=False):
   if debug: print "SUBPROCESS: {}".format(move+comm+args)
   subprocess.check_output(move+comm+args, shell=True)
   return results_location
-
-
-def update_dashboard(false_positive=None, model_performance=None,
-                     rec_estimate=None, empirical_success=None,
-                     description="", model_name=""):
-
-  from DRP.models import ModelStats
-
-  #If a specific datum is missing for some reason, use the previous one.
-  last = ModelStats.objects.last()
-  if false_positive is None:
-    false_positve = last.false_positive_rate
-  if model_performance is None:
-    model_performance = last.performance
-  if rec_estimate is None:
-    rec_estimate = last.estimated_success_rate
-  if empirical_success is None:
-    empirical_success, _ = evaluate_real_results()
-    empirical_success = empirical_success['correct'] / float(empirical_success['correct'] + empirical_success['incorrect'])
-
-  if not model_name:
-    model_name = "Automated update"
-
-        #Store these stats in the database
-  store_ModelStats(false_positive, empirical_success, rec_estimate, model_performance, description, model_name)
 
 
 #TODO: Rewrite this.
@@ -325,7 +319,7 @@ def removeUnused(row, unused_indexes=None):
   return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
 
 
-def get_good_result_tuples(results_location, rows, debug=False): 
+def get_good_result_tuples(results_location, rows, debug=False):
   reactions = []
   total = 0
   with open(results_location, "r") as results_file:
@@ -342,7 +336,7 @@ def get_good_result_tuples(results_location, rows, debug=False):
       total += 1
 
   if debug:
-    "{} of {} reactions are good.".format(len(reactions), total) 
+    "{} of {} reactions are good.".format(len(reactions), total)
 
   return reactions
 

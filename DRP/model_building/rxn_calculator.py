@@ -205,17 +205,17 @@ field_names = ["Actinide", "AlkaliMetal", "Lanthanide",
     "IonizationGeomWeighted", "EAGeomWeighted", "PaulingElectronegGeomWeighted", "PearsonElectronegGeomWeighted", "hardnessGeomWeighted", "AtomicRadiusGeomWeighted",
     ]
 
-atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O', 
-          'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs', 
+atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O',
+          'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs',
           'Cr', 'Cu']
 
 headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
             'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
-            'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles', 
+            'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles',
             'XXXorg1', 'XXXorg1mass',
             'XXXorg1moles', 'XXXorg2', 'XXXorg2mass',
             'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass',
-            'XXXoxlike1moles', 'Temp_max', 'time', 'slowCool', 'pH',
+            'XXXoxlike1moles', 'temp', 'time', 'slowCool', 'pH',
             'leak', 'numberInorg', 'numberOrg', 'numberOxlike',
             'numberComponents', 'orgavgpolMax', 'orgrefractivityMax',
             'orgmaximalprojectionareaMax',
