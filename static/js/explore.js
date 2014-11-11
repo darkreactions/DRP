@@ -1,4 +1,5 @@
 //var nodePositionsPath = "/home/ntien/workspace/dark-reaction-site/DRP/vis/nodePositions.json" 
+
 var width = parseInt(d3.select("#graph").style("width"), 10);
 var height = parseInt(d3.select("#graph").style("height"), 10); 
 d3.json("/get_graph/", function(graph) {
@@ -16,18 +17,26 @@ d3.json("/get_graph/", function(graph) {
     //declaring a variable that will serve to size the text boxes that appear upon hovering over the individual nodes
     var textPlacement = nodeTooltips.length*40;
     var boxLength = 130;
-    
 
-  var translateValue1 = 500;
-  var translateValue2 = 300;
-  var scaleValue =.2; 
+    translateValue1 = width/2.3 
+    translateValue2 = height/2.4
+    scaleValue = height/4500 
 
-  var zoom = d3.behavior.zoom()
+    //Here I am creating a zoom slider that will control the zoom level for the svg, and will also tie into which level of the cluster hierarchy is displayed
+    new Dragdealer('slider', {
+        horizontal: false,
+        vertical: true,
+        animationCallback: function(x, y) {
+            $('#slider .value').text(Math.round(y * 100)); 
+        }
+  }); 
+
+    var zoom = d3.behavior.zoom()
     .scaleExtent([1/10, 2])
     .on("zoom", zoomed)
     .translate([translateValue1, translateValue2]).scale(scaleValue); 
-
-  var drag = d3.behavior.drag()
+ 
+var drag = d3.behavior.drag()
       .origin(function(d) { return d; })
       .on("dragstart", dragstarted)
       .on("drag", dragged)
@@ -69,7 +78,7 @@ var force = d3.layout.force()
 var svg = d3.select("#graph").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .call(zoom);
+    
 
 var centerX = width / 2 
 var centerY = height / 2 
@@ -81,13 +90,16 @@ container.append("rect")
 	.attr("height", height)
 	.attr("fill", "white") 
 
-container.call(zoom).attr("transform","translate(" + translateValue1 +"," + translateValue2 +")scale(" + scaleValue +"," + scaleValue +")");
-
 
 function zoomed() {
   container.attr("transform", 
   "translate(" + d3.event.translate +")scale("+ d3.event.scale + ")");
 }
+
+zoom.translate([translateValue1, translateValue2]).scale(scaleValue); 
+
+container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
+
 
 // Use a timeout to allow the rest of the page to load first.
 setTimeout(function() {
@@ -102,7 +114,6 @@ var loadingBarMaxLength = loadingBar.parent().width();
 
 if (!preLoad) {
  console.log(preLoad) 
- console.log("made it to preload!")  
  force.on("tick", function() {
   nodes[0].x = width / 2;
   nodes[0].y = height / 2;
@@ -130,18 +141,9 @@ if (!preLoad) {
     .attr("y2", function(d) { return d.target.y; })
     .style("stroke-width", 0.06)
     .attr("stroke", "gray")
-/*
-  var circleClusters = container.selectAll(".clusters")
-      .data(clusters) 
-      .enter()
-      .append("circle") 
-      .attr("cx", function(d) {return d.x;})
-      .attr("cy", function(d) {return d.y;})
-      .attr("r", "20")
-      .attr("fill", function(d) {return d.color;})
-      .attr("opacity", "0.5") 
-*/ 
-container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove(); console.log("made it!");}); 
+
+container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove(); 
+}); 
  
     var nodeElements = container.selectAll(".node")
     .data(nodes.filter(function(d) { return d.outcome > 0;}))
@@ -149,10 +151,13 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
     .enter().append("g")
     .attr("class", "node"); 
 
-   
-    nodeElements.append("circle").attr("class", ".circleClusters").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 20) 
+//Here I am appending circles that represent the clusters of all the ndoes with the same SINGLE inorganic in common 
 
-    nodeElements.append("circle") 
+  //Here I am appending circles that represent the clusters of all the node with the same TWO inorganics in common 
+    nodeElements.append("circle").attr("class", "circleClusters").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 80); 
+
+    nodeElements.append("circle")
+    .attr("class", "nodeElements") 
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
       size = 10
@@ -263,14 +268,7 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
 		.attr("ry", "3");
 	//	.style("filter", "url(#drop-shadow)");
 	
-	seedRecButton.append("text")
-		.text("Generate seed recommendations")
-        .attr("class", "seedRecText")
-		.attr('x', "25px")
-		.attr('y', boxLength + 15) 
-		.append("rect")
-		.attr("fill","none"); 
- 	
+
 	var imageContainer = seedRecButton.append("g")
 	var seedButton = imageContainer.append("svg:image")
 	  .attr('x', textPlacement*1.7) 
@@ -279,7 +277,7 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
  	  .attr('height', 16)
  	  .attr('xlink:href', "/static/icons/seed.gif");
 	
-	seedRecButton.on("click", function(d) { 
+	seedButtonRect.on("click", function(d) { 
 		var url="/nd/make_seed_recommendations/";
 		var request = {"pid":d.id}; 
 		console.log(d.id); 
@@ -298,13 +296,32 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
 		};
 	   })
     ;})
+    seedButtonRect.append("rect").attr("class", "extraRect").append("text")
+		.text("Generate seed recommendations")
+        .attr("class", "seedRecText")
+		.attr('x', "25px")
+		.attr('y', boxLength + 15) 
+ 	
 	d3.event.stopPropagation();  
     })
-  
- 
+    
+
       nodeElements.attr("transform", function(d) {
 	return "translate(" + d.x + "," + d.y + ")";
-    });  
+    });
+
+//Here is the code to hide the nodes on the initial zoom level and, upon clicking a circleCluster, to zoom to that cluster and show the nodes again
+    d3.selectAll(".nodeElements").style("visibility", "hidden") 
+   /* 
+    d3.selectAll(".circleClusters").on("click", function(d) {
+            x = this.cx
+            y = this.cy
+            shiftX = centerX + x
+            shiftY = centerY + y  
+            container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(0.2)")  
+            d3.selectAll(".nodeElements").style("visibility", "visible")
+    ;});   
+*/ 
   $("#loadingMessage").remove()  
   function grabLinkIndices(links) {
 	var linkIndices = [] 

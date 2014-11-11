@@ -1,4 +1,3 @@
-
 /* SHADOW/GLOW TRANSITIONS */
 /* Glow */
 .glow {
@@ -26,6 +25,7 @@
  -webkit-box-shadow: 10px 10px 5px; 
  box-shadow: 10px 10px 5px; 
  fill: white; 
+ pointer-events: none;  
 } 
 
 .seedRecText {
@@ -35,9 +35,6 @@
  pointer-events: none;  
 }
 
-.extraRect {
- pointer-events: none;
-} 
 
 .seedImage {
  -webkit-filter: huerotate(180deg);
@@ -57,38 +54,3 @@
  opacity:0.5;
  text-anchor: left; 
 }
-
-#wrapper {
-position: relative;
-}
-
-#graph {
-float: left; 
-display: inline-block; 
-}
-
-#slider {
-position: relative; 
-margin-top: 10px; 
-margin-right: 10px; 
-width: 40px;
-height: 300px; 
-float: right; 
-display: inline-block;
-background: #e1e1e1; 
-border-radius: 2px;
-}
-
-.handle {
-width: 40px; 
-height: 50px;
-background: #CC0000;
-color: #FFF
-font-size: 14px;
-text-align: center;
-border-radius: 1px; 
-position: absolute; 
-line-height: 50px; 
-}
-
- 

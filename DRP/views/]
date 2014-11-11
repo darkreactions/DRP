@@ -52,16 +52,16 @@ def get_graph_data(request):
       with open(path_to_label_dict, "w") as outfile:
         json.dump(node_clusters, outfile) 
     
+    top_inorgs = grab_inorgs(node_clusters) 
+    single_inorganics = top_inorgs 
+    print single_inorganics 
+    firstCluster = first_cluster(nodes)
     clusters = give_positions_to_clusters(nodes, node_clusters)
     #clusters_with_radii = add_radii_to_clusters(clusters)
     #clusters that are objects in a list within a larger list 
     clusters_with_colors = assign_colors_to_clusters(colors, clusters)
     final_clusters = make_clusters_into_single_list(clusters_with_colors) 
     final_nodes = give_colors_to_nodes(nodes, final_clusters) 
-    
-    votes = vote_on_inorgs(final_clusters)  
-    top_inorgs = grab_inorgs(votes) 
-    firstCluster = first_cluster(nodes)
     #hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii) 
     #small_clusters = check_size_of_clusters(clusters) 
     response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
@@ -156,15 +156,49 @@ def create_node_clusters_for_labels(links, nodes):
   filtered_clusters = get_rid_of_single_item_clusters(clusters)
   return filtered_clusters 
 
-import re
 #grab all top-priority inorganics:
-def grab_inorgs(list_of_all_inorgs): 
-  mylist = ""  
-  for key in list_of_all_inorgs:
-    mylist = mylist + str(key) + ","  
-  list_of_top_inorgs = re.compile("va|mo|ga|Va|Mo|Ga")          
-  top_inorgs = list_of_top_inorgs.match(mylist) 
-  return top_inorgs
+def grab_inorgs(nodes):
+    inorgs = []
+    subset = []
+    for i in xrange(len(nodes)):
+      for j in xrange(len(nodes[i])): 
+        if "V" in nodes[i][j]["inorg1"] or "vanadium" in nodes[i][j]["inorg1"]:
+          subset.append(nodes[i][j]["inorg1"])
+          if ["inorg2"] in nodes[i]:
+            if"V" in nodes[i][j]["inorg2"] or "vanadium" in nodes[i][j]["inorg1"]:
+              subset.append(nodes[i][j]["inorg2"])
+    inorgs.append(subset) 
+    print len(subset)
+    print "Number 1!"
+    subset = []
+    for i in xrange(len(nodes)):
+      for j in xrange(len(nodes[i])): 
+        if "Ga" in nodes[i][j]["inorg1"] or "gallium" in nodes[i][j]["inorg1"]:
+          subset.append(nodes[i][j]["inorg1"])
+          if "inorg2" in nodes[i]:
+            if "Ga" in nodes[i][j]["inorg2"] or "gallium" in nodes[i][j]["inorg1"]:
+              subset.append(nodes[i][j]["inorg2"])
+    inorgs.append(subset)
+    print len(subset)
+    print "number 2" 
+    subset = []
+    for i in xrange(len(nodes)):
+      for j in xrange(len(nodes[i])):
+        if "Mo" in nodes[i][j]["inorg1"] or "molybdenum" in nodes[i][j]["inorg1"]:
+          subset.append(nodes[i][j]["inorg1"]) 
+          if "inorg2" in nodes[i]:
+            if "Mo" in nodes[i][j]["inorg2"] or "molybdenum" in nodes[i][j]["inorg2"]:
+              subset.append(nodes[i][j]["inorg2"])
+    inorgs.append(subset) 
+    print len(subset)
+    print "number 3" 
+    newlist = []
+    for i in xrange(len(inorgs)):
+      for j in xrange(len(inorgs[i])):
+        if inorgs[i][j] not in newlist:
+          newlist.append(inorgs[i][j])
+
+    return newlist 
 
 
 #Find all nodes that have the highest priority single organic compounds in common
@@ -269,20 +303,20 @@ def reduce_clusters(clusters):
   reduced_clusters = [i[0] for i in clusters] 
   return reduced_clusters
 
-def vote_on_inorgs(reduced_clusters):
+def vote_on_inorgs(reduced_clusters, full_clusters):
   inorg_Votes = {} 
   for i in xrange(len(reduced_clusters)): 
     inorg1 = reduced_clusters[i]["inorg1"]
     if inorg1 in inorg_Votes:
-      inorg_Votes[inorg1] += 1 
+      inorg_Votes[inorg1] += len(full_clusters[i]) 
     else:
       inorg_Votes[inorg1] = 1
     if "inorg2" in reduced_clusters[i]: 
       inorg2 = reduced_clusters[i]["inorg2"] 
       if inorg2 in inorg_Votes:
-        inorg_Votes[inorg2] += 1 
+        inorg_Votes[inorg2] += len(full_clusters[i]) 
       else:
-        inorg_Votes[inorg2] = 1
+        inorg_Votes[inorg2] = 1 
   return inorg_Votes 
 
 def check_size_of_clusters(clusters):
