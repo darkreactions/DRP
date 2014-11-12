@@ -17,18 +17,34 @@ d3.json("/get_graph/", function(graph) {
     //declaring a variable that will serve to size the text boxes that appear upon hovering over the individual nodes
     var textPlacement = nodeTooltips.length*40;
     var boxLength = 130;
-
+    var largeLabels = graph.largeLabels
     translateValue1 = width/2.3 
     translateValue2 = height/2.4
     scaleValue = height/4500 
+
 
     //Here I am creating a zoom slider that will control the zoom level for the svg, and will also tie into which level of the cluster hierarchy is displayed
     new Dragdealer('slider', {
         horizontal: false,
         vertical: true,
         animationCallback: function(x, y) {
-            $('#slider .value').text(Math.round(y * 100)); 
-        }
+            $('#slider .value').text(Math.round(y * 100));
+            var zoomScaleValue = y + 1
+            $('#graph').css("transform", "scale(" + zoomScaleValue + ")");//animate({'zoom': zoomScaleValue }, 400);   
+            if (y < 0.3) { 
+              d3.selectAll(".circleClusters1").style("visibility", "visible")
+              d3.selectAll(".circleClusters2").style("visibility", "hidden")
+              d3.selectAll(".nodeElements").style("visibility", "hidden")
+            } else if (y > 0.6) {
+              d3.selectAll(".circleClusters1").style("visibility", "hidden")
+              d3.selectAll(".circleClusters2").style("visibility", "visible")
+              d3.selectAll(".nodeElements").style("visibility", "hidden")
+            } else if (y >= 0.85) {
+              d3.selectAll(".circleClusters1").style("visibility", "hidden")
+              d3.selectAll(".circleClusters2").style("visibility", "hidden")
+              d3.selectAll(".nodeElements").style("visibility", "visible")
+            } 
+    } 
   }); 
 
     var zoom = d3.behavior.zoom()
@@ -151,10 +167,21 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
     .enter().append("g")
     .attr("class", "node"); 
 
-//Here I am appending circles that represent the clusters of all the ndoes with the same SINGLE inorganic in common 
+//Here I am appending circles that represent the clusters of all the nodes with the same SINGLE inorganic in common 
+   nodeElements.append("circle").attr("class", "circleClusters1").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 100);
 
+//Here I am trying to create a larger, encompassing text element/circle element in order to label the individual clusters(for the single inorg clusters, or circleClusters1
+ /*   container.selectAll("circle")
+      .data(largeLabels)
+      .enter().append("circle")
+        .attr("class", "largeLabels") 
+        .attr("cx", function(d) {return d.x/2;})
+        .attr("cy", function(d) {return d.y/2;})
+        .attr("r", function(d) {return d.r;})
+        .attr("fill", function(d) {return d.fill;}); 
+*/ 
   //Here I am appending circles that represent the clusters of all the node with the same TWO inorganics in common 
-    nodeElements.append("circle").attr("class", "circleClusters").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 80); 
+    nodeElements.append("circle").attr("class", "circleClusters2").attr("fill", function(d) {return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 80); 
 
     nodeElements.append("circle")
     .attr("class", "nodeElements") 
@@ -312,6 +339,8 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
 
 //Here is the code to hide the nodes on the initial zoom level and, upon clicking a circleCluster, to zoom to that cluster and show the nodes again
     d3.selectAll(".nodeElements").style("visibility", "hidden") 
+    d3.selectAll(".circleClusters1").style("visibility", "hidden") 
+    
    /* 
     d3.selectAll(".circleClusters").on("click", function(d) {
             x = this.cx

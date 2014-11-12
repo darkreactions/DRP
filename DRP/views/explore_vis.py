@@ -28,7 +28,6 @@ import csv, json, string
 #Global Variables  
 path_to_vis_data_file = BASE_DIR + "/DRP/views/vis_data.json" 
 colors =["#a6cee3", "#1f78b4"," #b2df8a"," #33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00"," #cab2d6","#6a3d9a", "#ffff99", "#b15928"] 
-single_inorganics = []
 @login_required
 def get_graph_data(request):
   import os.path 
@@ -55,16 +54,19 @@ def get_graph_data(request):
     clusters = give_positions_to_clusters(nodes, node_clusters)
     #clusters_with_radii = add_radii_to_clusters(clusters)
     #clusters that are objects in a list within a larger list 
-    clusters_with_colors = assign_colors_to_clusters(colors, clusters)
+    clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
     final_clusters = make_clusters_into_single_list(clusters_with_colors) 
     final_nodes = give_colors_to_nodes(nodes, final_clusters) 
-    
+    print final_clusters[:2] 
     votes = vote_on_inorgs(final_clusters)  
     top_inorgs = grab_inorgs(votes) 
-    firstCluster = first_cluster(nodes)
+    firstCluster = first_cluster(nodes, top_inorgs)
+    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color") 
+    largest_labels = make_larger_clusters(firstCluster, top_inorgs)
+    print largest_labels 
     #hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii) 
     #small_clusters = check_size_of_clusters(clusters) 
-    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
+    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True", "largeLabels": largest_labels} 
     return HttpResponse(json.dumps(response), content_type="application/json")   
   
   #If vis_data is not created or not up to date, write new vis_data with current data and return that
@@ -156,29 +158,39 @@ def create_node_clusters_for_labels(links, nodes):
   filtered_clusters = get_rid_of_single_item_clusters(clusters)
   return filtered_clusters 
 
-import re
 #grab all top-priority inorganics:
 def grab_inorgs(list_of_all_inorgs): 
-  mylist = ""  
+  mylist = []
+  top_inorgs = []
   for key in list_of_all_inorgs:
-    mylist = mylist + str(key) + ","  
-  list_of_top_inorgs = re.compile("va|mo|ga|Va|Mo|Ga")          
-  top_inorgs = list_of_top_inorgs.match(mylist) 
+    mylist.append(key)
+  for i in xrange(len(mylist)): 
+    if "va" in mylist[i] or "Va" in mylist[i]: 
+      top_inorgs.append(mylist[i])
+  for i in xrange(len(mylist)): 
+    if "ga" in mylist[i] or "Ga" in mylist[i]:
+      top_inorgs.append(mylist[i]) 
+  for i in xrange(len(mylist)): 
+    if "mo" in mylist[i] or "Mo" in mylist[i]:
+      top_inorgs.append(mylist[i])
   return top_inorgs
 
 
 #Find all nodes that have the highest priority single organic compounds in common
 #Looking at a ranked list of single organic compounds in order to create this first level of the hierarchy
-def first_cluster(dictionary_of_all_nodes): 
+def first_cluster(dictionary_of_all_nodes, singles): 
+ #singles is the list of all the single, most common/indicative single inorganic compounds 
  neighbors = []
- cluster = [] 
  nodedict = dictionary_of_all_nodes
- for i in xrange(len(single_inorganics)):
+ for i in xrange(len(singles)):
+    cluster = []  
     for j in xrange(len(nodedict)):
-        if nodedict[j]["inorg1"] == singles[i] or nodedict[j]["inorg2"] == singles[i]:
-            cluster.append(nodedict[j])
-            nodedict.remove(nodedict[j]) 
-    neighbors.append(cluster) 
+        if nodedict[j]["inorg1"] == singles[i]: 
+          cluster.append(nodedict[j])
+        elif "inorg2" in nodedict[j]:
+          if nodedict[j]["inorg2"] == singles[i]:
+            cluster.append(nodedict[j])     
+    neighbors.append(cluster)
  return neighbors 
 
 #Finding all nodes that are connected to each other and have both inorgs in common
@@ -235,7 +247,7 @@ def check_inorgs(mainNode, neighbor):
   return False 
 
 def store_graph(request):
-  print request.POST.keys()  
+  #print request.POST.keys()  
   nodeData = json.loads(request.POST["nodes"])
   linkData = json.loads(request.POST["links"]) 
   path_to_nodePositions = BASE_DIR + "/DRP/vis/nodePositions.json"
@@ -304,9 +316,41 @@ def check_size_of_clusters(clusters):
   return small_clusters 
     
 
-def assign_colors_to_clusters(colors, node_clusters):
+def assign_colors_to_clusters(colors, node_clusters, key):
   for i in xrange(len(node_clusters)):
     for j in xrange(len(node_clusters[i])):
-      node_clusters[i][j]["color"] = colors[i%12] 
+      node_clusters[i][j][key] = colors[i%12] 
   return node_clusters
+
+def make_larger_clusters(clusters, total_most_important_inorgs): 
+  main_clusters = []
+  inorgs = total_most_important_inorgs 
+  centerX = 0
+  centerY = 0
+  for i in xrange(len(inorgs)):
+    centerX = 0
+    centerY = 0
+    for j in xrange(len(clusters)):
+      for k in xrange(len(clusters[j])):
+        centerX = (centerX + clusters[j][k]["x"])/2
+        centerY = (centerY + clusters[j][k]["y"])/2
+        fill = clusters[j][k]["color"] 
+      if clusters[j][0]["inorg1"] in inorgs[i]:
+        main_clusters.append({
+          "label": clusters[j][0]["inorg1"], 
+          "x": centerX,
+          "y": centerY,
+          "r": 15 * len(clusters[j]),
+          "fill": fill
+        })  
+      elif "inorg2" in clusters[j] and clusters[j][0]["inorg2"] in inorgs[i]:  
+        main_clusters.append({
+          "label": clusters[j][0]["inorg2"],
+          "x": centerX,
+          "y": centerY,
+          "r": 15 * len(clusters[j]),
+          "fill": fill 
+          }) 
+  return main_clusters 
+
 
