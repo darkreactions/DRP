@@ -171,6 +171,11 @@ def get_recommendations(lab_group):
  from DRP.models import Recommendation
  return Recommendation.objects.filter(lab_group=lab_group)
 
+def get_active_recommendations():
+  from DRP.models import Recommendation
+  model = get_latest_ModelStats(active=True)
+  return Recommendation.objects.filter(model_version=model)
+
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
  seed_recs = Recommendation.objects.filter(seeded=True, lab_group=lab_group)
 

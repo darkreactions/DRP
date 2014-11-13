@@ -47,7 +47,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
     print "Called gen_model at {}".format(datetime.datetime.now())
 
   #Make sure the model_name has no spaces in it.
-  model_name = model_name.replace(" ","_")
+  model_name = model_name.replace(" ","_").replace("/","-")
   name = str(int(time.time()))
   print "Constructing model: {} ({})".format(model_name, name)
 

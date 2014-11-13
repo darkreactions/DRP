@@ -1,19 +1,16 @@
 #!/usr/local/bin/python
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
  # # #  Compound Calculate 'n Store  Worker Process  # # # #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-#Necessary Imports:
-import sys, os
-
-#Grab the Django settings if they aren't already set.
-django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
-django_path = "{}/DRP".format(django_dir)
+import os, sys
+full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+django_path = full_path[:full_path.rfind("/DRP/")]
 if django_path not in sys.path:
-  sys.path.append("{}/DRP".format(django_dir))
+  sys.path = [django_path] + sys.path
+  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 import django.db
 from DRP.settings import BASE_DIR, LOG_DIR
@@ -23,38 +20,41 @@ from DRP.emailFunctions import email_admins
 from DRP.logPrinting import print_error, print_log
 
 #An independent worker process for calculating compound properties.
-def compound_calc_worker(compound_id):
+def compound_calc_worker(compound_id, debug=False):
   print_log("Compound Calc: {}".format(compound_id))
   try:
     #Restart the database connection for this new process.
     django.db.close_connection()
 
+    #Get the object from the database (assuming already-valid compounds).
+    entry = CompoundEntry.objects.get(id=compound_id)
+
     try:
-      #Get the object from the database (assuming already-valid compounds).
-      entry = CompoundEntry.objects.get(id=compound_id)
       entry.compound = clean_compound(entry.compound)
       calc = create_CG_calcs_if_needed(entry.compound, entry.smiles, entry.compound_type)
       entry.calculations = calc
+      entry.calculations_failed = False
       status = "Passed"
-    except:
+    except Exception as e:
       status = "Failed"
       entry.calculations_failed = True
 
     #Save the calculation and mark it in the log.
-    entry.save
-    print_log("Compound Calc: {} ({})".format(compound_id, status))
+    entry.save()
+    if debug: print "#{} -- {}".format(compound_id, status)
   except Exception as e:
     #Log any errors that might have occurred.
-    print_error("Compound ID: {}".format(compound_id), details=e)
+    print_error("Compound ID Failed ({})".format(compound_id), details=e)
     email_admins("Fatal Failure: Compound Calc Worker",
                  "Compound ID \"{}\" failed auto-calculations.".format(compound_id))
 
 if __name__ == "__main__":
-  if len(sys.argv) != 2:
+  if not (1 < len(sys.argv) < 4):
     print "You probably want to let the site handle this..."
-    print "USAGE: python ./this_script.py compound_id"
+    print "USAGE: python ./calculate_compound_properties.py compound_id [debug]"
   else:
-    compound_calc_worker(sys.argv[1])
-    
+    debug = "debug" in sys.argv
+    compound_calc_worker(sys.argv[1], debug=debug)
+
 
 

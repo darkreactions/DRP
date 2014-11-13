@@ -16,6 +16,10 @@ from cacheFunctions import get_cache, set_cache
 import json, random, string, datetime, operator
 import chemspipy
 
+# Variable Setup
+TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
+
+
 
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
@@ -139,6 +143,7 @@ def get_atom_set_from_abbrevs(lab_group, abbrev_list):
 def get_atom_set_from_reaction(reaction):
  return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
+
 def update_compound_and_reactions(lab_group, entry):
  try:
   update_compound(entry)
@@ -147,26 +152,33 @@ def update_compound_and_reactions(lab_group, entry):
   print e
   raise Exception("Compound_and_reactions update failed!")
 
-def refresh_compound_guide(lab_group = None, verbose = False):
- #Either refresh all of the data or the data for a specific lab group.
- if lab_group:
-  query = get_lab_CG(lab_group)
- else:
-  query = CompoundEntry.objects.all()
 
- #Actually perform the refresh/update.
- i = 0
- for compound in query:
-  try:
-   if verbose:
-    i += 1
-    if i%10==0: print "... {}.".format(i)
-   update_compound(compound)
-  except Exception as e:
-   print "Could not update: {}".format(compound)
+def refresh_compound_guide(lab_group=None, verbose=False, debug=False, clear=False):
+  #Either refresh all of the data or the data for a specific lab group.
+  if lab_group:
+    query = get_lab_CG(lab_group)
+  else:
+    query = CompoundEntry.objects.all()
+
+  if clear:
+    if debug: print "Clearing all CG_calculations..."
+    CompoundEntry.objects.all().update(calculations=None)
+    CompoundEntry.objects.all().update(calculations_failed=False)
+    CG_calculations.objects.all().delete()
+
+  #Actually perform the refresh/update.
+  for i, compound in enumerate(query):
+    try:
+      if verbose and i%10==0: print "... {}.".format(i)
+      update_compound(compound, debug=debug)
+    except Exception as e:
+      if debug: print "Could not update: {}\n\t".format(compound, e)
+
 
 #Update the compound by reloading the ChemSpider search data.
-def update_compound(entry):
+def update_compound(entry, debug=False):
+  from DRP.fileFunctions import createDirIfNecessary
+
   try:
     if not entry.custom: #Only update compounds that are not custom.
       #Get the most up-to-date ChemSpider info for a given CAS/compound.
@@ -178,7 +190,9 @@ def update_compound(entry):
 
       else:
         perform_calcs = False
-        print "Found legacy entry that should be custom: {}".format(entry.compound)
+        if debug:
+          print "Found legacy entry (should be `custom`): {}".format(entry.compound)
+
     else:
         perform_calcs = False
         entry.calculations = None
@@ -186,17 +200,22 @@ def update_compound(entry):
     entry.save()
 
     if perform_calcs:
-      #Start a new compound-calc worker process to determine compound properties.
-      err_log = open(LOG_DIR+"/compound_calculations/error.log","a")
-      act_log = open(LOG_DIR+"/compound_calculations/process.log","a")
+
+      #Start a new compound-calc worker to determine compound properties.
+      comp_log_dir = LOG_DIR+"/compound_calculations"
+      createDirIfNecessary(comp_log_dir)
+
+      err_log = open(comp_log_dir+"/error.log","a")
+      act_log = open(comp_log_dir+"/process.log","a")
       worker_script = BASE_DIR+"/DRP/compound_calculations/calculate_compound_properties.py"
       command = "python {} {}".format(worker_script, entry.id)
       #Log to the files above and make the worker independent of the parent process.
       Popen(command.split(), stdout=act_log, stderr=err_log, close_fds=True)
 
   except Exception as e:
-    print e
-    raise Exception("Compound update failed!")
+    entry.calculations_failed = False
+    entry.save()
+    raise Exception("Compound update ({}) failed: {}".format(entry, e))
 
 def update_reaction(reaction, lab_group):
  #Store the atoms as a string -- not a set.
@@ -312,7 +331,7 @@ class Data(models.Model):
 
     if not self.calculations or force_recalculate:
       # Create the extended calculations.
-      calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg)
+      calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg) #TODO: Mark as Invalid?
 
       calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
 
@@ -370,6 +389,7 @@ class ModelStats(models.Model):
   false_negative = models.FloatField(default=0)
   true_positive = models.FloatField(default=0)
   true_negative = models.FloatField(default=0)
+  confusion_table = models.TextField(default="{}")
 
   # Model Descriptors
   title = models.CharField("Title", max_length=100, default="untitled")
@@ -387,6 +407,73 @@ class ModelStats(models.Model):
     self.true_positive = tp
     self.true_negative = tn
     self.save()
+
+  def set_confusion_table(self, conf_json): #TODO: Need to implement.
+    self.confusion_table = conf_json
+    self.save()
+
+  def load_confusion_table(self):
+    """
+    Confusion Dict:
+    Abstract Format:
+    {
+      "Actual Value": {"Predicted Val":amount, "Predicted Val2": amount2, ... }
+      ...
+    }
+
+    Actual Format:
+    {
+      "1":{"1":#, "2":#, "3":#, "4":#},
+      "2":{"1":#, "2":#, "3":#, "4":#},
+      "3":{"1":#, "2":#, "3":#, "4":#},
+      "4":{"1":#, "2":#, "3":#, "4":#},
+    }
+
+    Confusion Matrix:
+            __Predicted___
+      __    V1   V2   V3 ...
+      A  V1 #    #    #
+      c
+      t  V2 #    #    #
+      u
+      a  V3 #    #    #
+      l
+      __ ...
+    """
+    import json
+    try:
+      confusion_dict = json.loads(self.confusion_table)
+    except:
+      return []
+
+    values = sorted(confusion_dict.keys())
+    matrix = [[""]+values]
+
+    for value in values:
+      row = [value] + [confusion_dict[value][v] for v in values]
+      matrix.append(row)
+
+    return matrix
+
+
+
+  def print_confusion_table(self):
+    conf_table = self.load_confusion_table()
+    if conf_table:
+      for row in conf_table:
+        print "\t"+"\t".join(row)
+    else:
+      print "\t[ Confusion Matrix Unavailable ]"
+
+
+  def summary(self, prefix="\t"):
+    self.print_confusion_table()
+    print prefix+"Test Size: {}".format(self.total())
+    print prefix+"Accuracy: {}".format(self.test_accuracy())
+    print prefix+"Precision: {}".format(self.test_precision())
+    print prefix+"FP Rate: {}".format(self.rate("false_positive"))
+    print prefix+"User Satisfaction: {}".format(self.user_satisfaction())
+
 
 
   def total(self):
@@ -406,18 +493,17 @@ class ModelStats(models.Model):
     else:
       return 0
 
-  def rate(self, field):
-    denom = float(self.total())
-    if denom:
-      return getattr(self, field)/denom
-    else:
-      return 0
-
-
   def user_satisfaction(self):
     recs = Recommendation.objects.filter(model_version=self)
     if recs.exists():
       return recs.filter(nonsense=False).count()/float(recs.count())
+    else:
+      return 0
+
+  def rate(self, field):
+    denom = float(self.total())
+    if denom:
+      return getattr(self, field)/denom
     else:
       return 0
 
@@ -524,7 +610,7 @@ class CG_calculations(models.Model):
  def __unicode__(self):
   return u"{} ({})".format(self.compound, self.smiles)
 
-def create_CG_calcs_if_needed(compound, smiles, compound_type):
+def create_CG_calcs_if_needed(compound, smiles, compound_type, ):
     #Variable Setup
     jchem_path =  CONFIG.jchem_path
     sdf_path = "tmp"
@@ -534,8 +620,10 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
     #Only Organics that have smiles may have calculations.
     if compound_type not in {"Org", "Inorg"} or not smiles:
         return
+
     #Either return an old CG_calculation or a new one.
     print compound_type
+
     try:
         cgc = CG_calculations.objects.filter(smiles=smiles)[0]
     except Exception as e:
@@ -552,7 +640,7 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
 	CompoundEntry.objects.filter(smiles=smiles).update(calculations=cgc)
     return cgc
 
-def perform_CG_calculations(only_missing=True, lab_group=None, reattempt_failed = False, verbose=False):
+def perform_CG_calculations(only_missing=True, lab_group=None, attempt_failed = True, verbose=False):
  #Variable Setup
  success = 0
  i = 0
@@ -562,7 +650,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None, reattempt_failed 
   cg = cg.filter(calculations=None)
  if lab_group:
   cg = cg.filter(lab_group=lab_group)
- if not reattempt_failed:
+ if not attempt_failed:
   cg = cg.filter(calculations_failed=False)
 
  for entry in cg:
@@ -609,7 +697,8 @@ class CompoundEntry(models.Model):
    return u"{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
   return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)
 
-TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
+
+
 
 def parse_CAS_ID(CAS):
   CAS = CAS.replace(" ", "-").replace("/", "-").replace("_", "-")
