@@ -426,7 +426,7 @@ class ModelStats(models.Model):
     self.confusion_table = json.dumps(conf_json)
     self.save()
 
-  def load_confusion_table(self):
+  def load_confusion_table(self, normalize=True):
     """
     Confusion Dict:
     Abstract Format:
@@ -465,21 +465,34 @@ class ModelStats(models.Model):
     values = sorted(confusion_dict.keys())
     matrix = [[""]+values]
 
+    denom = self.total() if normalize else 1
+
     for value in values:
       guess_dict = confusion_dict[value]
-      row = [value] + [guess_dict[v] if v in guess_dict else 0 for v in values]
+      row = [value] + [guess_dict[v]/denom if v in guess_dict else 0 for v in values]
       matrix.append(row)
 
     return matrix
 
 
 
-  def print_confusion_table(self):
-    conf_table = self.load_confusion_table()
+  def print_confusion_table(self, normalize=True):
+    def truncate_floats(row):
+      cleaned = []
+      for elem in row:
+        try:
+          cleaned.append("{:.3f}".format(elem))
+        except:
+          cleaned.append(elem)
+      return cleaned
+
+    conf_table = self.load_confusion_table(normalize=normalize)
     if conf_table:
-      print "\t\t\tPredicted"
+      heading = "(%)" if normalize else ""
+      print "\t\t\tPredicted {}".format(heading)
       for row in conf_table:
-        print "\t"+"\t".join(map(str,row))
+        cleaned_row = map(str, truncate_floats(row) )
+        print "\t"+"\t".join( cleaned_row )
     else:
       print "\t[ Confusion Matrix Unavailable ]"
 
