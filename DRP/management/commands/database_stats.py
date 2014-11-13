@@ -24,6 +24,9 @@ class Command(BaseCommand):
     self.stdout.write("Data: {}".format(objects.count()))
     test_queries(objects, queries)
 
+    objects = DataCalc.objects.all()
+    self.stdout.write("DataCalc: {}".format(objects.count()))
+
     objects = CompoundEntry.objects.all()
     queries = [{"calculations_failed":True}]
     self.stdout.write("CompoundEntry: {}".format(objects.count()))

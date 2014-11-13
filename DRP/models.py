@@ -324,53 +324,66 @@ class Data(models.Model):
 
 
   def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
-                            preloaded_cg=None):
-    from DRP.model_building.load_data import create_expanded_datum_field_list
-    from DRP.model_building.rxn_calculator import headers
+                            preloaded_cg=None, debug=False,
+                            preloaded_abbrev_map=None):
+    from model_building.load_data import create_expanded_datum_field_list
+    from model_building.rxn_calculator import headers
 
 
-    if not self.calculations or force_recalculate:
-      # Create the extended calculations.
-      calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg) #TODO: Mark as Invalid?
+    try:
+      if not self.calculations or force_recalculate:
+        # Create the extended calculations.
+        calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg,
+                                                    preloaded_abbrev_map=preloaded_abbrev_map)
 
-      calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
+        calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
 
-      # Prepare a new DataCalc object.
-      newDataCalc = DataCalc(contents=json.dumps(calcDict))
-      newDataCalc.save()
+        # Prepare a new DataCalc object.
+        newDataCalc = DataCalc(contents=json.dumps(calcDict))
+        newDataCalc.save()
 
-      # Create the ForeignKey between the new DataCalc and this Datum.
-      self.calculations = newDataCalc
+        # Create the ForeignKey between the new DataCalc and this Datum.
+        self.calculations = newDataCalc
+        self.is_valid = True
+        self.save()
+
+        final_dict = calcDict
+
+      else:
+        # Load the result from the database if it is already present.
+        final_dict = self.calculations.make_json()
+
+      if type(final_dict)!=dict or set(final_dict.keys())!=set(headers):
+        # If the final_dict is in the wrong format, recalculate it.
+        return self.get_calculations_dict(include_lab_info=include_lab_info,
+                                          force_recalculate=True)
+
+      if include_lab_info:
+        final_dict.update({
+                          "lab_title":self.lab_group.lab_title,
+                          "creation_time_dt":str(self.creation_time_dt),
+                          })
+
+      return final_dict
+    except Exception as e:
+      self.is_valid = False
       self.save()
+      raise Exception("(get_calculations_dict) {}".format(e))
 
-      final_dict = calcDict
-
-    else:
-      # Load the result from the database if it is already present.
-      final_dict = self.calculations.make_json()
-
-    if type(final_dict)!=dict or set(final_dict.keys())!=set(headers):
-      # If the final_dict is in the wrong format, recalculate it.
-      return self.get_calculations_dict(include_lab_info=include_lab_info,
-                                        force_recalculate=True)
-
-    if include_lab_info:
-      final_dict.update({
-                         "lab_title":self.lab_group.lab_title,
-                         "creation_time_dt":str(self.creation_time_dt),
-                        })
-
-    return final_dict
-
-  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None):
+  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None,
+                           preloaded_abbrev_map=None):
     from DRP.model_building.rxn_calculator import headers
     try:
       calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
-                                            preloaded_cg=preloaded_cg)
+                                            preloaded_cg=preloaded_cg,
+                                            preloaded_abbrev_map=preloaded_abbrev_map)
       return [calcDict[field] for field in headers]
     except Exception as e:
       # If a field isn't present in the calcDict, update the calculation.
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True, preloaded_cg=preloaded_cg)
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
+                                            force_recalculate=True,
+                                            preloaded_cg=preloaded_cg,
+                                            preloaded_abbrev_map=preloaded_abbrev_map)
       return [calcDict[field] for field in headers]
 
 
@@ -409,7 +422,8 @@ class ModelStats(models.Model):
     self.save()
 
   def set_confusion_table(self, conf_json): #TODO: Need to implement.
-    self.confusion_table = conf_json
+    import json
+    self.confusion_table = json.dumps(conf_json)
     self.save()
 
   def load_confusion_table(self):
@@ -440,17 +454,20 @@ class ModelStats(models.Model):
       l
       __ ...
     """
+
     import json
+
     try:
       confusion_dict = json.loads(self.confusion_table)
-    except:
+    except Exception as e:
       return []
 
     values = sorted(confusion_dict.keys())
     matrix = [[""]+values]
 
     for value in values:
-      row = [value] + [confusion_dict[value][v] for v in values]
+      guess_dict = confusion_dict[value]
+      row = [value] + [guess_dict[v] if v in guess_dict else 0 for v in values]
       matrix.append(row)
 
     return matrix
@@ -460,8 +477,9 @@ class ModelStats(models.Model):
   def print_confusion_table(self):
     conf_table = self.load_confusion_table()
     if conf_table:
+      print "\t\t\tPredicted"
       for row in conf_table:
-        print "\t"+"\t".join(row)
+        print "\t"+"\t".join(map(str,row))
     else:
       print "\t[ Confusion Matrix Unavailable ]"
 
@@ -472,6 +490,9 @@ class ModelStats(models.Model):
     print prefix+"Accuracy: {}".format(self.test_accuracy())
     print prefix+"Precision: {}".format(self.test_precision())
     print prefix+"FP Rate: {}".format(self.rate("false_positive"))
+    print prefix+"FN Rate: {}".format(self.rate("false_negative"))
+    print prefix+"TP Rate: {}".format(self.rate("true_positive"))
+    print prefix+"TN Rate: {}".format(self.rate("true_negative"))
     print prefix+"User Satisfaction: {}".format(self.user_satisfaction())
 
 
@@ -480,14 +501,14 @@ class ModelStats(models.Model):
     return self.true_positive + self.true_negative + self.false_positive + self.false_negative
 
   def test_accuracy(self):
-    denom = self.total()
+    denom = float(self.total())
     if denom:
       return (self.true_positive + self.true_negative)/denom
     else:
       return 0
 
   def test_precision(self):
-    denom = (self.true_positive + self.false_positive)
+    denom = float(self.true_positive + self.false_positive)
     if denom:
       return (self.true_positive)/denom
     else:
@@ -766,35 +787,18 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
   query_list = []
 
  for entry in query:
-  sub_list = []
-  for field in headings:
-   sub_list.append(getattr(entry, field))
+  sub_list = [getattr(entry, field) for field in headings]
   query_list.append(sub_list)
 
  return query_list
 
 
-def convert_Data_to_list(dat, headings=None):
-	if not headings:
-		all_fields = get_model_field_names(model="Data", collect_ignored = True)
-		fields_to_exclude = {"lab_group", "atoms"}
-		headings = [field for field in all_fields if field not in fields_to_exclude]
+def convert_Datum_to_list(datum):
+  all_fields = get_model_field_names(model="Data", collect_ignored = True)
+  fields_to_exclude = {"lab_group", "atoms"}
+  headings = [field for field in all_fields if field not in fields_to_exclude]
 
-	r_heads = ["reactant_" + str(i) for i in range(1,6)]
-
-	results = []
-	for field in headings:
-		val = getattr(dat, field)
-		if field in r_heads and val != '':
-			new_val = CompoundEntry.objects.filter(abbrev=val).first()
-			if new_val is None:
-				new_val = CompoundEntry.objects.filter(compound=val).first()
-			new_val = new_val.compound
-			if new_val:
-				val = new_val
-		results.append(val)
-
-	return results
+  return [getattr(datum,field) for field in headings]
 
 
 def collect_reactions_as_lists(lab_group, with_headings=True):

@@ -62,7 +62,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.
   print "Creating a sample model to evaluate the model stats..."
-  true_pos, true_neg, false_pos, false_neg = sample_model_quality(data, name, clock=clock, debug=debug)
+  true_pos, true_neg, false_pos, false_neg, conf_json = sample_model_quality(data, name, clock=clock, debug=debug)
 
   print "Constructing the final ARFF file..."
   make_arff(name+"_final", data, clock=clock)
@@ -89,7 +89,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   print "Creating a ModelStats entry in the database..."
   store_ModelStats(model_name, description, model_file_location,
                    true_pos, true_neg, false_pos, false_neg,
-                   active=active)
+                   conf_json, active=active)
 
   print "Model generation successful..."
 
@@ -205,22 +205,37 @@ def evaluate_results(results_location):
     false_positive = 0
     true_negative = 0
     false_negative = 0
+    conf_json = {}
 
     for row in results_file:
       if "\n" == row:
         continue
-      if INCORRECT in row: #WEKA uses a "+" to show incorrect predictions...
-        if row.split()[2] == POSITIVE:
+
+      actual = row.split()[1]
+      guess = row.split()[2]
+
+      # Create the confusion-dictionary...
+      if actual in conf_json:
+        if guess in conf_json[actual]:
+          conf_json[actual][guess] += 1
+        else:
+          conf_json[actual][guess] = 1
+      else:
+        conf_json[actual] = {guess:1}
+
+      # And create summary statistics.
+      if guess != actual:
+        if guess==POSITIVE:
           false_positive += 1
         else:
           false_negative += 1
       else:
-        if row.split()[2] == POSITIVE:  # IE: WEKA said it was good *and* it was.
+        if guess == POSITIVE:  # IE: WEKA said it was good *and* it was.
           true_positive += 1
         else:
           true_negative += 1
 
-  return true_positive, true_negative, false_positive, false_negative
+  return true_positive, true_negative, false_positive, false_negative, conf_json
 
 
 def remove_indexes(row, unused):

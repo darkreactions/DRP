@@ -17,9 +17,10 @@ def load(lab_group=None):
 	return rxns
 
 #Translate the abbrevs to the full compound names.
-def fix_abbrevs(rxnList):
+def fix_abbrevs(rxnList, abbrev_map=None):
   # Create the "abbrev_map" which will translate
-  abbrev_map = get_abbrev_map()
+  if not abbrev_map:
+    abbrev_map = get_abbrev_map()
 
   indexes = [1,4,7,10,13]
   for i in indexes:
@@ -49,13 +50,16 @@ def get_feature_vectors(lab_group=None, cg = None, ml_convert = None, keys = Non
 
 
 
-def create_expanded_datum_field_list(datum, preloaded_cg=None):
-  from DRP.models import convert_Data_to_list
+def create_expanded_datum_field_list(datum, preloaded_cg=None,
+                                            preloaded_abbrev_map=None):
+  from DRP.models import convert_Datum_to_list
   from DRP.model_building.parse_rxn import parse_rxn
 
   #Convert the datum into a datumList (ie: a list of field values).
-  dirtyDatumList = convert_Data_to_list(datum, headings=None)
-  datumList = fix_abbrevs( dirtyDatumList ) #Ignore the "ref" field
+  dirtyDatumList = convert_Datum_to_list(datum)
+
+  #Ignore the "ref" field
+  datumList = fix_abbrevs( dirtyDatumList, abbrev_map=preloaded_abbrev_map )
 
   #Grab the Compound Guide and mL Conversion Guide for parse_rxn.
   compoundGuide = load_cg.get_cg() if not preloaded_cg else preloaded_cg
