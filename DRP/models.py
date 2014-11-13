@@ -398,11 +398,8 @@ def make_float(string):
 class ModelStats(models.Model):
 
   # Model Statistics
-  false_positive = models.FloatField(default=0)
-  false_negative = models.FloatField(default=0)
-  true_positive = models.FloatField(default=0)
-  true_negative = models.FloatField(default=0)
   confusion_table = models.TextField(default="{}")
+  correct_vals = models.CharField("Correct Values", max_length=100, default="[4:4]")
 
   # Model Descriptors
   title = models.CharField("Title", max_length=100, default="untitled")
@@ -414,17 +411,26 @@ class ModelStats(models.Model):
   active = models.BooleanField("Active", default=True)
   datetime = models.DateTimeField()
 
-  def set_values(self, fn, fp, tn, tp):
-    self.false_positive = fp
-    self.false_negative = fn
-    self.true_positive = tp
-    self.true_negative = tn
+  def set_correct_vals(self, correct_list):
+    import json
+    if not correct_list:
+      correct_list = ["4:4","3:3"]
+    self.correct_vals = json.dumps(correct_list)
     self.save()
 
-  def set_confusion_table(self, conf_json): #TODO: Need to implement.
+  def load_all_vals(self):
+    return self.load_confusion_dict().keys()
+
+  def load_correct_vals(self):
+    return sorted(json.loads(self.correct_vals))
+
+  def set_confusion_table(self, conf_json):
     import json
     self.confusion_table = json.dumps(conf_json)
     self.save()
+
+  def load_confusion_dict(self):
+    return json.loads(self.confusion_table)
 
   def load_confusion_table(self, normalize=True):
     """
@@ -458,7 +464,7 @@ class ModelStats(models.Model):
     import json
 
     try:
-      confusion_dict = json.loads(self.confusion_table)
+      confusion_dict = self.load_confusion_dict()
     except Exception as e:
       return []
 
@@ -474,7 +480,82 @@ class ModelStats(models.Model):
 
     return matrix
 
+  def count(self, value_list, true_guess=True, normalize=False, ranges=False):
+    conf_dict = self.load_confusion_dict()
+    c = 0
+    denom = self.total() if normalize else 1.0
 
+    if true_guess:
+      for value in value_list:
+        if not value in conf_dict:
+          raise Exception("Not in confusion-dict: '{}' ({})".format(value, self))
+        for guess in value_list:
+          if not ranges and guess!=value: continue
+
+          if guess in conf_dict[value]:
+            c += conf_dict[value][guess]
+    else:
+      non_values = [h for h in conf_dict.keys() if h not in value_list]
+      for value in non_values:
+        for guess in value_list:
+          if guess in conf_dict[value]:
+            c += conf_dict[value][guess]
+    return c/denom
+
+  def total(self):
+    conf_table = self.load_confusion_dict()
+    int_total = sum([int(val) for correct,guesses in conf_table.items()
+                              for key,val in guesses.items()])
+    return float(int_total)
+
+  # Convenience Wrappers #TODO: Clean these up...
+  def true_positives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    return self.count(correct_vals, true_guess=True, ranges=ranges)
+
+  def true_negatives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    incorrect_vals = [val for val in self.load_all_vals() if val not in correct_vals]
+    return self.count(incorrect_vals, true_guess=True, ranges=ranges)
+
+  def false_positives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    return self.count(correct_vals, true_guess=False, ranges=ranges)
+
+  def false_negatives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    incorrect_vals = [val for val in self.load_all_vals() if val not in correct_vals]
+    return self.count(correct_vals, true_guess=False, ranges=ranges)
+
+
+  def test_accuracy(self, correct_vals=None, ranges=False):
+    denom = float(self.total())
+    if denom:
+      tp = self.true_positives(correct_vals=correct_vals, ranges=ranges)
+      tn = self.true_negatives(correct_vals=correct_vals, ranges=ranges)
+      return (tp + tn)/denom
+    else:
+      return 0
+
+  def test_precision(self, correct_vals=None, ranges=False):
+    tp = self.true_positives(correct_vals=correct_vals, ranges=ranges)
+    fp = self.false_positives(correct_vals=correct_vals, ranges=ranges)
+    denom = float(tp + fp)
+    if denom:
+      return tp/denom
+    else:
+      return 0
+
+  def user_satisfaction(self):
+    recs = Recommendation.objects.filter(model_version=self)
+    if recs.exists():
+      return recs.filter(nonsense=False).count()/float(recs.count())
+    else:
+      return 0
+
+  def pvalue(self):
+    #TODO: return the p-value for this model.
+    return float("inf") #TODO: Not this.
 
   def print_confusion_table(self, normalize=True):
     def truncate_floats(row):
@@ -497,53 +578,29 @@ class ModelStats(models.Model):
       print "\t[ Confusion Matrix Unavailable ]"
 
 
-  def summary(self, prefix="\t"):
+  def summary(self, pre="\t"):
     self.print_confusion_table()
-    print prefix+"Test Size: {}".format(self.total())
-    print prefix+"Accuracy: {}".format(self.test_accuracy())
-    print prefix+"Precision: {}".format(self.test_precision())
-    print prefix+"FP Rate: {}".format(self.rate("false_positive"))
-    print prefix+"FN Rate: {}".format(self.rate("false_negative"))
-    print prefix+"TP Rate: {}".format(self.rate("true_positive"))
-    print prefix+"TN Rate: {}".format(self.rate("true_negative"))
-    print prefix+"User Satisfaction: {}".format(self.user_satisfaction())
+    print pre+"Test Size: {}".format(self.total())
 
+    correct_vals = self.load_correct_vals()
+    correct = [correct_vals[-1]]
 
+    print pre+"Accuracy ({}) (Dichotomous): {}".format(" & ".join(correct_vals),
+                                                self.test_accuracy(ranges=True))
 
-  def total(self):
-    return self.true_positive + self.true_negative + self.false_positive + self.false_negative
+    partial_accuracy = self.test_accuracy(correct_vals=correct)
+    print pre+"Accuracy ({}) (Quarterly): {}".format(str(correct[0]),
+                                                partial_accuracy)
 
-  def test_accuracy(self):
-    denom = float(self.total())
-    if denom:
-      return (self.true_positive + self.true_negative)/denom
-    else:
-      return 0
+    print pre+"Precision ({}) (Dichotomous): {}".format(" & ".join(correct_vals),
+                                                self.test_precision(ranges=True))
 
-  def test_precision(self):
-    denom = float(self.true_positive + self.false_positive)
-    if denom:
-      return (self.true_positive)/denom
-    else:
-      return 0
+    partial_precision = self.test_precision(correct_vals=correct)
+    print pre+"Precision ({}) (Quarterly): {}".format(str(correct[0]),
+                                                partial_precision)
 
-  def user_satisfaction(self):
-    recs = Recommendation.objects.filter(model_version=self)
-    if recs.exists():
-      return recs.filter(nonsense=False).count()/float(recs.count())
-    else:
-      return 0
+    print pre+"User Satisfaction: {}".format(self.user_satisfaction())
 
-  def rate(self, field):
-    denom = float(self.total())
-    if denom:
-      return getattr(self, field)/denom
-    else:
-      return 0
-
-  def pvalue(self):
-    #TODO: return the p-value for this model.
-    return float("inf") #TODO: Not this.
 
 
   def __unicode__(self):

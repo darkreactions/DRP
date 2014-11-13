@@ -39,6 +39,11 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   from DRP.fileFunctions import createDirIfNecessary
   import time
 
+  # Variable Setup
+  correct_vals = None # `None` defaults to ["4:4","3:3"]
+  name = str(int(time.time()))
+
+
   if not model_name or not description:
     raise Exception("Model needs a valid model_name and description!")
 
@@ -48,7 +53,6 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
 
   #Make sure the model_name has no spaces in it.
   model_name = model_name.replace(" ","_").replace("/","-")
-  name = str(int(time.time()))
   print "Constructing model: {} ({})".format(model_name, name)
 
   # Get the valid reactions across all lab groups.
@@ -62,7 +66,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.
   print "Creating a sample model to evaluate the model stats..."
-  true_pos, true_neg, false_pos, false_neg, conf_json = sample_model_quality(data, name, clock=clock, debug=debug)
+  conf_json = sample_model_quality(data, name, clock=clock, debug=debug)
 
   print "Constructing the final ARFF file..."
   make_arff(name+"_final", data, clock=clock)
@@ -88,8 +92,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
   store_ModelStats(model_name, description, model_file_location,
-                   true_pos, true_neg, false_pos, false_neg,
-                   conf_json, active=active)
+                   conf_json, correct_vals=correct_vals, active=active)
 
   print "Model generation successful..."
 
@@ -201,10 +204,6 @@ def evaluate_results(results_location):
     for i in range(5):
       results_file.next()
 
-    true_positive = 0
-    false_positive = 0
-    true_negative = 0
-    false_negative = 0
     conf_json = {}
 
     for row in results_file:
@@ -223,19 +222,7 @@ def evaluate_results(results_location):
       else:
         conf_json[actual] = {guess:1}
 
-      # And create summary statistics.
-      if guess != actual:
-        if guess==POSITIVE:
-          false_positive += 1
-        else:
-          false_negative += 1
-      else:
-        if guess == POSITIVE:  # IE: WEKA said it was good *and* it was.
-          true_positive += 1
-        else:
-          true_negative += 1
-
-  return true_positive, true_negative, false_positive, false_negative, conf_json
+  return conf_json
 
 
 def remove_indexes(row, unused):

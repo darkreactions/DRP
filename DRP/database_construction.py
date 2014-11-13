@@ -11,8 +11,7 @@ from logPrinting import print_error, print_log
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def store_ModelStats(model_name, model_description, filename,
-                     true_pos, true_neg, false_pos, false_neg,
-                     conf_json, active=True):
+                     conf_json, correct_vals=None, active=True):
 
   from models import ModelStats
   import datetime
@@ -21,8 +20,8 @@ def store_ModelStats(model_name, model_description, filename,
   model = ModelStats()
   model.datetime = datetime.datetime.now()
 
-  model.set_values(false_neg, false_pos, true_neg, true_pos)
   model.set_confusion_table(conf_json)
+  model.set_correct_vals(correct_vals)
 
   model.title = model_name
   model.description = model_description
