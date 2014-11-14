@@ -565,6 +565,25 @@ class ModelStats(models.Model):
     #TODO: return the p-value for this model.
     return float("inf") #TODO: Not this.
 
+
+  def stats(self):
+    return {
+      "Test Size":self.total(),
+      "Accuracy (Dichotomous)":self.test_accuracy(),
+
+      "Accuracy (Quarterly)":self.test_accuracy(ranges=False),
+      "Precision (Dichotomous)":self.test_precision(),
+      "Precision (Quarterly)":self.test_precision(ranges=False),
+
+      "Rate TP":self.true_positives(normalize=True),
+      "Rate FP":self.false_positives(normalize=True),
+      "Rate TN":self.true_negatives(normalize=True),
+      "Rate FN":self.false_negatives(normalize=True),
+
+      "User Satisfaction":self.user_satisfaction(),
+    }
+
+
   def print_confusion_table(self, normalize=True):
     def truncate_floats(row):
       cleaned = []
@@ -590,34 +609,18 @@ class ModelStats(models.Model):
     print prefix+"Description: '{}'".format(self.description)
     print prefix+"Created: {}".format(self.datetime)
     print prefix+"filename: '{}'".format(self.filename)
+    print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):
     self.print_model_info()
     print ""
     self.print_confusion_table()
-
-    print pre+"Test Size: {}".format(self.total())
-
-    print pre+"Correct Values: {}".format(" & ".join(self.load_correct_vals()))
-    print ""
-    print pre+"Accuracy (Dichotomous): {}".format(self.test_accuracy())
-
-    print pre+"Accuracy (Quarterly): {}".format(self.test_accuracy(ranges=False))
     print ""
 
-    print pre+"Precision (Dichotomous): {}".format(self.test_precision())
-
-    print pre+"Precision (Quarterly): {}".format(self.test_precision(ranges=False))
-    print ""
-
-    print pre+"TP Rate: {}".format(self.true_positives(normalize=True))
-    print pre+"FP Rate: {}".format(self.false_positives(normalize=True))
-    print pre+"TN Rate: {}".format(self.true_negatives(normalize=True))
-    print pre+"FN Rate: {}".format(self.false_negatives(normalize=True))
-    print ""
-
-    print pre+"User Satisfaction: {}".format(self.user_satisfaction())
-
+    stats = self.stats().items()
+    stats.sort(key=lambda tup: tup[0])
+    for stat, key in stats:
+      print "{}{}: {}".format(pre, stat, key)
 
 
   def __unicode__(self):
