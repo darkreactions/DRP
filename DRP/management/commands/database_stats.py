@@ -46,7 +46,9 @@ class Command(BaseCommand):
     test_queries(objects, queries)
 
     objects = ModelStats.objects.all()
+    queries = [{"active":True}]
     self.stdout.write("Models: {}".format(objects.count()))
+    test_queries(objects, queries)
 
     # Detail the statistics of the latest model.
     self.stdout.write("Current Active Model...")

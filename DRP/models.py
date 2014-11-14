@@ -519,22 +519,24 @@ class ModelStats(models.Model):
     return float(int_total)
 
   # Convenience Wrappers
-  def true_positives(self, ranges=False):
-    return self.count(true_guess=True, ranges=ranges)
+  def true_positives(self, ranges=True, normalize=False):
+    return self.count(true_guess=True, normalize=normalize, ranges=ranges)
 
-  def true_negatives(self, ranges=False):
+  def true_negatives(self, ranges=True, normalize=False):
     incorrect_vals = self.load_incorrect_vals()
-    return self.count(value_list=incorrect_vals, true_guess=True, ranges=ranges)
+    return self.count(value_list=incorrect_vals, true_guess=True,
+                      normalize=normalize, ranges=ranges)
 
-  def false_positives(self, ranges=False):
-    return self.count(true_guess=False, ranges=ranges)
+  def false_positives(self, ranges=True, normalize=False):
+    return self.count(true_guess=False, normalize=normalize, ranges=ranges)
 
-  def false_negatives(self, ranges=False):
-    incorrect_vals = self.load_invalue_list()
-    return self.count(value_list=incorrect_vals, true_guess=False, ranges=ranges)
+  def false_negatives(self, ranges=True, normalize=False):
+    incorrect_vals = self.load_incorrect_vals()
+    return self.count(value_list=incorrect_vals, true_guess=False,
+                      normalize=normalize, ranges=ranges)
 
 
-  def test_accuracy(self, ranges=False):
+  def test_accuracy(self, ranges=True):
     denom = float(self.total())
     if denom:
       tp = self.true_positives(ranges=ranges)
@@ -543,7 +545,7 @@ class ModelStats(models.Model):
     else:
       return 0
 
-  def test_precision(self, ranges=False):
+  def test_precision(self, ranges=True):
     tp = self.true_positives(ranges=ranges)
     fp = self.false_positives(ranges=ranges)
     denom = float(tp + fp)
@@ -583,19 +585,36 @@ class ModelStats(models.Model):
     else:
       print "\t[ Confusion Matrix Unavailable ]"
 
+  def print_model_info(self, prefix="\t"):
+    print prefix+"Name: '{}'".format(self.title)
+    print prefix+"Description: '{}'".format(self.description)
+    print prefix+"Created: {}".format(self.datetime)
+    print prefix+"filename: '{}'".format(self.filename)
 
   def summary(self, pre="\t"):
+    self.print_model_info()
+    print ""
     self.print_confusion_table()
+
     print pre+"Test Size: {}".format(self.total())
 
     print pre+"Correct Values: {}".format(" & ".join(self.load_correct_vals()))
-    print pre+"Accuracy (Dichotomous): {}".format(self.test_accuracy(ranges=True))
+    print ""
+    print pre+"Accuracy (Dichotomous): {}".format(self.test_accuracy())
 
     print pre+"Accuracy (Quarterly): {}".format(self.test_accuracy(ranges=False))
+    print ""
 
-    print pre+"Precision (Dichotomous): {}".format(self.test_precision(ranges=True))
+    print pre+"Precision (Dichotomous): {}".format(self.test_precision())
 
     print pre+"Precision (Quarterly): {}".format(self.test_precision(ranges=False))
+    print ""
+
+    print pre+"TP Rate: {}".format(self.true_positives(normalize=True))
+    print pre+"FP Rate: {}".format(self.false_positives(normalize=True))
+    print pre+"TN Rate: {}".format(self.true_negatives(normalize=True))
+    print pre+"FN Rate: {}".format(self.false_negatives(normalize=True))
+    print ""
 
     print pre+"User Satisfaction: {}".format(self.user_satisfaction())
 
