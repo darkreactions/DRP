@@ -16,6 +16,10 @@ from cacheFunctions import get_cache, set_cache
 import json, random, string, datetime, operator
 import chemspipy
 
+# Variable Setup
+TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
+
+
 
 #Basic Retrieval Functions Necessary in Models:
 #Get the data that belongs to a Lab_Group
@@ -139,6 +143,7 @@ def get_atom_set_from_abbrevs(lab_group, abbrev_list):
 def get_atom_set_from_reaction(reaction):
  return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
+
 def update_compound_and_reactions(lab_group, entry):
  try:
   update_compound(entry)
@@ -147,26 +152,33 @@ def update_compound_and_reactions(lab_group, entry):
   print e
   raise Exception("Compound_and_reactions update failed!")
 
-def refresh_compound_guide(lab_group = None, verbose = False):
- #Either refresh all of the data or the data for a specific lab group.
- if lab_group:
-  query = get_lab_CG(lab_group)
- else:
-  query = CompoundEntry.objects.all()
 
- #Actually perform the refresh/update.
- i = 0
- for compound in query:
-  try:
-   if verbose:
-    i += 1
-    if i%10==0: print "... {}.".format(i)
-   update_compound(compound)
-  except Exception as e:
-   print "Could not update: {}".format(compound)
+def refresh_compound_guide(lab_group=None, verbose=False, debug=False, clear=False):
+  #Either refresh all of the data or the data for a specific lab group.
+  if lab_group:
+    query = get_lab_CG(lab_group)
+  else:
+    query = CompoundEntry.objects.all()
+
+  if clear:
+    if debug: print "Clearing all CG_calculations..."
+    CompoundEntry.objects.all().update(calculations=None)
+    CompoundEntry.objects.all().update(calculations_failed=False)
+    CG_calculations.objects.all().delete()
+
+  #Actually perform the refresh/update.
+  for i, compound in enumerate(query):
+    try:
+      if verbose and i%10==0: print "... {}.".format(i)
+      update_compound(compound, debug=debug)
+    except Exception as e:
+      if debug: print "Could not update: {}\n\t".format(compound, e)
+
 
 #Update the compound by reloading the ChemSpider search data.
-def update_compound(entry):
+def update_compound(entry, debug=False):
+  from DRP.fileFunctions import createDirIfNecessary
+
   try:
     if not entry.custom: #Only update compounds that are not custom.
       #Get the most up-to-date ChemSpider info for a given CAS/compound.
@@ -178,7 +190,9 @@ def update_compound(entry):
 
       else:
         perform_calcs = False
-        print "Found legacy entry that should be custom: {}".format(entry.compound)
+        if debug:
+          print "Found legacy entry (should be `custom`): {}".format(entry.compound)
+
     else:
         perform_calcs = False
         entry.calculations = None
@@ -186,17 +200,22 @@ def update_compound(entry):
     entry.save()
 
     if perform_calcs:
-      #Start a new compound-calc worker process to determine compound properties.
-      err_log = open(LOG_DIR+"/compound_calculations/error.log","a")
-      act_log = open(LOG_DIR+"/compound_calculations/process.log","a")
+
+      #Start a new compound-calc worker to determine compound properties.
+      comp_log_dir = LOG_DIR+"/compound_calculations"
+      createDirIfNecessary(comp_log_dir)
+
+      err_log = open(comp_log_dir+"/error.log","a")
+      act_log = open(comp_log_dir+"/process.log","a")
       worker_script = BASE_DIR+"/DRP/compound_calculations/calculate_compound_properties.py"
       command = "python {} {}".format(worker_script, entry.id)
       #Log to the files above and make the worker independent of the parent process.
       Popen(command.split(), stdout=act_log, stderr=err_log, close_fds=True)
 
   except Exception as e:
-    print e
-    raise Exception("Compound update failed!")
+    entry.calculations_failed = False
+    entry.save()
+    raise Exception("Compound update ({}) failed: {}".format(entry, e))
 
 def update_reaction(reaction, lab_group):
  #Store the atoms as a string -- not a set.
@@ -305,53 +324,66 @@ class Data(models.Model):
 
 
   def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
-                            preloaded_cg=None):
-    from DRP.model_building.load_data import create_expanded_datum_field_list
-    from DRP.model_building.rxn_calculator import headers
+                            preloaded_cg=None, debug=False,
+                            preloaded_abbrev_map=None):
+    from model_building.load_data import create_expanded_datum_field_list
+    from model_building.rxn_calculator import headers
 
 
-    if not self.calculations or force_recalculate:
-      # Create the extended calculations.
-      calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg)
+    try:
+      if not self.calculations or force_recalculate:
+        # Create the extended calculations.
+        calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg,
+                                                    preloaded_abbrev_map=preloaded_abbrev_map)
 
-      calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
+        calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
 
-      # Prepare a new DataCalc object.
-      newDataCalc = DataCalc(contents=json.dumps(calcDict))
-      newDataCalc.save()
+        # Prepare a new DataCalc object.
+        newDataCalc = DataCalc(contents=json.dumps(calcDict))
+        newDataCalc.save()
 
-      # Create the ForeignKey between the new DataCalc and this Datum.
-      self.calculations = newDataCalc
+        # Create the ForeignKey between the new DataCalc and this Datum.
+        self.calculations = newDataCalc
+        self.is_valid = True
+        self.save()
+
+        final_dict = calcDict
+
+      else:
+        # Load the result from the database if it is already present.
+        final_dict = self.calculations.make_json()
+
+      if type(final_dict)!=dict or set(final_dict.keys())!=set(headers):
+        # If the final_dict is in the wrong format, recalculate it.
+        return self.get_calculations_dict(include_lab_info=include_lab_info,
+                                          force_recalculate=True)
+
+      if include_lab_info:
+        final_dict.update({
+                          "lab_title":self.lab_group.lab_title,
+                          "creation_time_dt":str(self.creation_time_dt),
+                          })
+
+      return final_dict
+    except Exception as e:
+      self.is_valid = False
       self.save()
+      raise Exception("(get_calculations_dict) {}".format(e))
 
-      final_dict = calcDict
-
-    else:
-      # Load the result from the database if it is already present.
-      final_dict = self.calculations.make_json()
-
-    if type(final_dict)!=dict or set(final_dict.keys())!=set(headers):
-      # If the final_dict is in the wrong format, recalculate it.
-      return self.get_calculations_dict(include_lab_info=include_lab_info,
-                                        force_recalculate=True)
-
-    if include_lab_info:
-      final_dict.update({
-                         "lab_title":self.lab_group.lab_title,
-                         "creation_time_dt":str(self.creation_time_dt),
-                        })
-
-    return final_dict
-
-  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None):
+  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None,
+                           preloaded_abbrev_map=None):
     from DRP.model_building.rxn_calculator import headers
     try:
       calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
-                                            preloaded_cg=preloaded_cg)
+                                            preloaded_cg=preloaded_cg,
+                                            preloaded_abbrev_map=preloaded_abbrev_map)
       return [calcDict[field] for field in headers]
     except Exception as e:
       # If a field isn't present in the calcDict, update the calculation.
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info, force_recalculate=True, preloaded_cg=preloaded_cg)
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
+                                            force_recalculate=True,
+                                            preloaded_cg=preloaded_cg,
+                                            preloaded_abbrev_map=preloaded_abbrev_map)
       return [calcDict[field] for field in headers]
 
 
@@ -366,10 +398,8 @@ def make_float(string):
 class ModelStats(models.Model):
 
   # Model Statistics
-  false_positive = models.FloatField(default=0)
-  false_negative = models.FloatField(default=0)
-  true_positive = models.FloatField(default=0)
-  true_negative = models.FloatField(default=0)
+  confusion_table = models.TextField(default="{}")
+  correct_vals = models.CharField("Correct Values", max_length=100, default="[4:4]")
 
   # Model Descriptors
   title = models.CharField("Title", max_length=100, default="untitled")
@@ -381,38 +411,140 @@ class ModelStats(models.Model):
   active = models.BooleanField("Active", default=True)
   datetime = models.DateTimeField()
 
-  def set_values(self, fn, fp, tn, tp):
-    self.false_positive = fp
-    self.false_negative = fn
-    self.true_positive = tp
-    self.true_negative = tn
+  def set_correct_vals(self, correct_list):
+    import json
+    if not correct_list:
+      correct_list = ["4:4","3:3"]
+    self.correct_vals = json.dumps(correct_list)
     self.save()
 
+  def load_all_vals(self):
+    return self.load_confusion_dict().keys()
+
+  def load_correct_vals(self):
+    return sorted(json.loads(self.correct_vals))
+
+  def set_confusion_table(self, conf_json):
+    import json
+    self.confusion_table = json.dumps(conf_json)
+    self.save()
+
+  def load_confusion_dict(self):
+    return json.loads(self.confusion_table)
+
+  def load_confusion_table(self, normalize=True):
+    """
+    Confusion Dict:
+    Abstract Format:
+    {
+      "Actual Value": {"Predicted Val":amount, "Predicted Val2": amount2, ... }
+      ...
+    }
+
+    Actual Format:
+    {
+      "1":{"1":#, "2":#, "3":#, "4":#},
+      "2":{"1":#, "2":#, "3":#, "4":#},
+      "3":{"1":#, "2":#, "3":#, "4":#},
+      "4":{"1":#, "2":#, "3":#, "4":#},
+    }
+
+    Confusion Matrix:
+            __Predicted___
+      __    V1   V2   V3 ...
+      A  V1 #    #    #
+      c
+      t  V2 #    #    #
+      u
+      a  V3 #    #    #
+      l
+      __ ...
+    """
+
+    import json
+
+    try:
+      confusion_dict = self.load_confusion_dict()
+    except Exception as e:
+      return []
+
+    values = sorted(confusion_dict.keys())
+    matrix = [[""]+values]
+
+    denom = self.total() if normalize else 1
+
+    for value in values:
+      guess_dict = confusion_dict[value]
+      row = [value] + [guess_dict[v]/denom if v in guess_dict else 0 for v in values]
+      matrix.append(row)
+
+    return matrix
+
+  def count(self, value_list, true_guess=True, normalize=False, ranges=False):
+    conf_dict = self.load_confusion_dict()
+    c = 0
+    denom = self.total() if normalize else 1.0
+
+    if true_guess:
+      for value in value_list:
+        if not value in conf_dict:
+          raise Exception("Not in confusion-dict: '{}' ({})".format(value, self))
+        for guess in value_list:
+          if not ranges and guess!=value: continue
+
+          if guess in conf_dict[value]:
+            c += conf_dict[value][guess]
+    else:
+      non_values = [h for h in conf_dict.keys() if h not in value_list]
+      for value in non_values:
+        for guess in value_list:
+          if guess in conf_dict[value]:
+            c += conf_dict[value][guess]
+    return c/denom
 
   def total(self):
-    return self.true_positive + self.true_negative + self.false_positive + self.false_negative
+    conf_table = self.load_confusion_dict()
+    int_total = sum([int(val) for correct,guesses in conf_table.items()
+                              for key,val in guesses.items()])
+    return float(int_total)
 
-  def test_accuracy(self):
-    denom = self.total()
-    if denom:
-      return (self.true_positive + self.true_negative)/denom
-    else:
-      return 0
+  # Convenience Wrappers #TODO: Clean these up...
+  def true_positives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    return self.count(correct_vals, true_guess=True, ranges=ranges)
 
-  def test_precision(self):
-    denom = (self.true_positive + self.false_positive)
-    if denom:
-      return (self.true_positive)/denom
-    else:
-      return 0
+  def true_negatives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    incorrect_vals = [val for val in self.load_all_vals() if val not in correct_vals]
+    return self.count(incorrect_vals, true_guess=True, ranges=ranges)
 
-  def rate(self, field):
+  def false_positives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    return self.count(correct_vals, true_guess=False, ranges=ranges)
+
+  def false_negatives(self, correct_vals=None, ranges=False):
+    if not correct_vals: correct_vals = self.load_correct_vals()
+    incorrect_vals = [val for val in self.load_all_vals() if val not in correct_vals]
+    return self.count(correct_vals, true_guess=False, ranges=ranges)
+
+
+  def test_accuracy(self, correct_vals=None, ranges=False):
     denom = float(self.total())
     if denom:
-      return getattr(self, field)/denom
+      tp = self.true_positives(correct_vals=correct_vals, ranges=ranges)
+      tn = self.true_negatives(correct_vals=correct_vals, ranges=ranges)
+      return (tp + tn)/denom
     else:
       return 0
 
+  def test_precision(self, correct_vals=None, ranges=False):
+    tp = self.true_positives(correct_vals=correct_vals, ranges=ranges)
+    fp = self.false_positives(correct_vals=correct_vals, ranges=ranges)
+    denom = float(tp + fp)
+    if denom:
+      return tp/denom
+    else:
+      return 0
 
   def user_satisfaction(self):
     recs = Recommendation.objects.filter(model_version=self)
@@ -424,6 +556,51 @@ class ModelStats(models.Model):
   def pvalue(self):
     #TODO: return the p-value for this model.
     return float("inf") #TODO: Not this.
+
+  def print_confusion_table(self, normalize=True):
+    def truncate_floats(row):
+      cleaned = []
+      for elem in row:
+        try:
+          cleaned.append("{:.3f}".format(elem))
+        except:
+          cleaned.append(elem)
+      return cleaned
+
+    conf_table = self.load_confusion_table(normalize=normalize)
+    if conf_table:
+      heading = "(%)" if normalize else ""
+      print "\t\t\tPredicted {}".format(heading)
+      for row in conf_table:
+        cleaned_row = map(str, truncate_floats(row) )
+        print "\t"+"\t".join( cleaned_row )
+    else:
+      print "\t[ Confusion Matrix Unavailable ]"
+
+
+  def summary(self, pre="\t"):
+    self.print_confusion_table()
+    print pre+"Test Size: {}".format(self.total())
+
+    correct_vals = self.load_correct_vals()
+    correct = [correct_vals[-1]]
+
+    print pre+"Accuracy ({}) (Dichotomous): {}".format(" & ".join(correct_vals),
+                                                self.test_accuracy(ranges=True))
+
+    partial_accuracy = self.test_accuracy(correct_vals=correct)
+    print pre+"Accuracy ({}) (Quarterly): {}".format(str(correct[0]),
+                                                partial_accuracy)
+
+    print pre+"Precision ({}) (Dichotomous): {}".format(" & ".join(correct_vals),
+                                                self.test_precision(ranges=True))
+
+    partial_precision = self.test_precision(correct_vals=correct)
+    print pre+"Precision ({}) (Quarterly): {}".format(str(correct[0]),
+                                                partial_precision)
+
+    print pre+"User Satisfaction: {}".format(self.user_satisfaction())
+
 
 
   def __unicode__(self):
@@ -524,7 +701,7 @@ class CG_calculations(models.Model):
  def __unicode__(self):
   return u"{} ({})".format(self.compound, self.smiles)
 
-def create_CG_calcs_if_needed(compound, smiles, compound_type):
+def create_CG_calcs_if_needed(compound, smiles, compound_type, ):
     #Variable Setup
     jchem_path =  CONFIG.jchem_path
     sdf_path = "tmp"
@@ -534,8 +711,10 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
     #Only Organics that have smiles may have calculations.
     if compound_type not in {"Org", "Inorg"} or not smiles:
         return
+
     #Either return an old CG_calculation or a new one.
     print compound_type
+
     try:
         cgc = CG_calculations.objects.filter(smiles=smiles)[0]
     except Exception as e:
@@ -552,7 +731,7 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type):
 	CompoundEntry.objects.filter(smiles=smiles).update(calculations=cgc)
     return cgc
 
-def perform_CG_calculations(only_missing=True, lab_group=None, reattempt_failed = False, verbose=False):
+def perform_CG_calculations(only_missing=True, lab_group=None, attempt_failed = True, verbose=False):
  #Variable Setup
  success = 0
  i = 0
@@ -562,7 +741,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None, reattempt_failed 
   cg = cg.filter(calculations=None)
  if lab_group:
   cg = cg.filter(lab_group=lab_group)
- if not reattempt_failed:
+ if not attempt_failed:
   cg = cg.filter(calculations_failed=False)
 
  for entry in cg:
@@ -609,7 +788,8 @@ class CompoundEntry(models.Model):
    return u"{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
   return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)
 
-TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
+
+
 
 def parse_CAS_ID(CAS):
   CAS = CAS.replace(" ", "-").replace("/", "-").replace("_", "-")
@@ -677,35 +857,18 @@ def convert_QuerySet_to_list(query, model, with_headings=True):
   query_list = []
 
  for entry in query:
-  sub_list = []
-  for field in headings:
-   sub_list.append(getattr(entry, field))
+  sub_list = [getattr(entry, field) for field in headings]
   query_list.append(sub_list)
 
  return query_list
 
 
-def convert_Data_to_list(dat, headings=None):
-	if not headings:
-		all_fields = get_model_field_names(model="Data", collect_ignored = True)
-		fields_to_exclude = {"lab_group", "atoms"}
-		headings = [field for field in all_fields if field not in fields_to_exclude]
+def convert_Datum_to_list(datum):
+  all_fields = get_model_field_names(model="Data", collect_ignored = True)
+  fields_to_exclude = {"lab_group", "atoms"}
+  headings = [field for field in all_fields if field not in fields_to_exclude]
 
-	r_heads = ["reactant_" + str(i) for i in range(1,6)]
-
-	results = []
-	for field in headings:
-		val = getattr(dat, field)
-		if field in r_heads and val != '':
-			new_val = CompoundEntry.objects.filter(abbrev=val).first()
-			if new_val is None:
-				new_val = CompoundEntry.objects.filter(compound=val).first()
-			new_val = new_val.compound
-			if new_val:
-				val = new_val
-		results.append(val)
-
-	return results
+  return [getattr(datum,field) for field in headings]
 
 
 def collect_reactions_as_lists(lab_group, with_headings=True):

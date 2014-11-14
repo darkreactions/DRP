@@ -15,9 +15,8 @@ def get_cg(debug=False):
   cg = dict()
   for compound in CompoundEntry.objects.all():
     if compound.calculations:
-      #cg[compound.abbrev] = json.loads(compound.calculations.json_data)
-      cg[compound.compound] = json.loads(compound.calculations.json_data)
-      cg[compound.abbrev] = cg[compound.compound]
+      cg[compound.compound.lower()] = json.loads(compound.calculations.json_data)
+      cg[compound.abbrev.lower()] = cg[compound.compound.lower()]
     elif debug:
       print "No calculations: {0}".format(compound.compound)
 

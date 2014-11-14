@@ -28,16 +28,15 @@ def parse_rxn(row, rxn_table, ml_convert):
         time,  pH, slowCool, leak, outcome, purity) = row[:23]
 
     for i in range(5):
-        if compound[i] == "water": continue
-        if compound[i] == "" or rxn_table[compound[i]]["type"] in ['pH']: # TODO: fix
+        cmpd = compound[i].lower()
+        if cmpd == "water": continue
+        if cmpd == "" or rxn_table[cmpd]["type"] in ['pH']:
             compound[i] = 'x'
             mass[i] = '-1'
         elif "mL" in unit[i]:
             mass[i] = float(mass[i])*ml_convert[compound[i]]
         elif mass[i] == '' or mass[i] == '?':
             mass[i] = '-1'
-        if compound[i] == "":
-            compound[i] = "x"
 
     mass = [float(m) for m in mass]
     Tmax = float(Tmax)
@@ -73,29 +72,31 @@ def parse_rxn(row, rxn_table, ml_convert):
 
     # Categorize the compounds.
     for i in range(5):
-        if compound[i].lower() == "water":
+        cmpd = compound[i].lower()
+        if cmpd == "water":
             isWater = i
-        elif compound[i] == "" or compound[i].lower() in ["x","?"]:
+        elif cmpd == "" or cmpd in ["x","?"]:
             keepList[i] = 0
     for i in range(5):
+        cmpd = compound[i].lower()
         if keepList[i]:
-            if rxn_table[compound[i]]["type"] == "Inorg":
+            if rxn_table[cmpd]["type"] == "Inorg":
                 inorganicList[i] = 1
                 nInorg += 1
-            elif rxn_table[compound[i]]["type"] == "Org":
+            elif rxn_table[cmpd]["type"] == "Org":
                 organicList[i] = 1
                 nOrg += 1
-            elif rxn_table[compound[i]]["type"] == "Ox":
+            elif rxn_table[cmpd]["type"] == "Ox":
                 oxalateList[i] = 1
                 nOxLike += 1
-            elif rxn_table[compound[i]]["type"] == "Sol":
+            elif rxn_table[cmpd]["type"] == "Sol":
                 solventList[i] = 1
                 nSolLike += 1
-            elif compound[i].lower() in {"water", "h2o"}:
+            elif cmpd.lower() in {"water", "h2o"}:
                 waterList[i] = 1
                 isWater = i
             else:
-                raise Exception("Unknown type for '{0}': '{1}')".format(compound[i], rxn_table[compound[i]]["type"]))
+                raise Exception("Unknown type for '{0}': '{1}')".format(cmpd, rxn_table[cmpd]["type"]))
 
     if isWater == -1:
         raise Exception("Lacks water")
@@ -111,9 +112,10 @@ def parse_rxn(row, rxn_table, ml_convert):
     oxlikeDetails = []
 
     for i in range(5):
+        cmpd = compound[i].lower()
         if not keepList[i]:
             continue
-        a = rxn_table[compound[i]]["mw"]
+        a = rxn_table[cmpd]["mw"]
         assert(a != 0)
         compoundMoles[i] = mass[i]/a
         if isWater == i and not compoundMoles[i]:
@@ -139,19 +141,20 @@ def parse_rxn(row, rxn_table, ml_convert):
     output += [Tmax, time, slowCool.lower(), pH, leak.lower(), nInorg, nOrg, nOxLike, nInorg+nOrg+nOxLike]
     compoundProperties = [[] for k in range(5)]
     for j in range(5):
+        cmpd = compound[j].lower()
         if not keepList[j] or isWater == j:
             compoundProperties[j] = [-1 for k in range(19)]
             continue
-        a = compound[j]
-        compoundProperties[j] += rxn_table[compound[j]]["NopH"] # TODO: Need to re-calculate if not present? Probably...
-        compoundProperties[j] += rxn_table[compound[j]]["projectionArea"]
-        bar = rxn_table[compound[j]]["polsurf"]
+        a = cmpd
+        compoundProperties[j] += rxn_table[cmpd]["NopH"] # TODO: Need to re-calculate if not present? Probably...
+        compoundProperties[j] += rxn_table[cmpd]["projectionArea"]
+        bar = rxn_table[cmpd]["polsurf"]
         compoundProperties[j] += [bar[k] for k in range(9*int(pH) - 9, 9*int(pH))]
-        bar = rxn_table[compound[j]]["msacc"]
+        bar = rxn_table[cmpd]["msacc"]
         compoundAcc[j] = bar[int(pH) -1] # TODO: what is this?
         #if abs(compoundAcc[j]) < 0.01:
         #    compoundAcc[j] = 0.0001 # TODO: is this _really_ valid?
-        bar = rxn_table[compound[j]]["msdon"]
+        bar = rxn_table[cmpd]["msdon"]
         compoundDon[j] = bar[int(pH) - 1] # TODO: same
         #if abs(compoundDon[j]) < 0.01:
         #    compoundDon[i] = 0.0001 # TODO: is this valid?
@@ -181,9 +184,10 @@ def parse_rxn(row, rxn_table, ml_convert):
     smiles = []
     atoms = []
     for j in range(5):
+        cmpd = compound[j].lower()
         if keepList[j] == 1 and isWater != j:
-            atoms += rxn_table[compound[j]]["atoms"]
-            smiles.append((rxn_table[compound[j]]["smiles"], compoundMoles[j]) )
+            atoms += rxn_table[cmpd]["atoms"]
+            smiles.append((rxn_table[cmpd]["smiles"], compoundMoles[j]) )
 	else:
 		smiles.append(None)
     atoms = set(atoms)
@@ -194,19 +198,20 @@ def parse_rxn(row, rxn_table, ml_convert):
            output.append("no")
 
     atom_counts = {}
-    for idx in range(len(keepList)):
-        if (not keepList[idx]) or (isWater == idx): continue
-        if compound[idx] in rxn_table and "atom_count" in rxn_table[compound[idx]]: #TODO: check name
-            atoms_info = rxn_table[compound[idx]]["atom_count"]
+    for i in range(len(keepList)):
+        cmpd = cmpd.lower()
+        if (not keepList[i]) or (isWater == i): continue
+        if cmpd in rxn_table and "atom_count" in rxn_table[cmpd]:
+            atoms_info = rxn_table[cmpd]["atom_count"]
         else:
-            at_list = rxn_calculator.atoms_from_smiles(smiles[idx][0])
+            at_list = rxn_calculator.atoms_from_smiles(smiles[i][0])
             atoms_info = {a: at_list.count(a) for a in at_list}
 
         for atom in atoms_info:
             if atom not in atom_counts:
-                atom_counts[atom] = atoms_info[atom]*compoundMoles[idx]
+                atom_counts[atom] = atoms_info[atom]*compoundMoles[i]
             else:
-                atom_counts[atom] += atoms_info[atom]*compoundMoles[idx]
+                atom_counts[atom] += atoms_info[atom]*compoundMoles[i]
 
 
     output += rxn_calculator.atomic_properties(atoms, smiles, atom_counts)

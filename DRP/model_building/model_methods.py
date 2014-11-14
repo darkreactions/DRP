@@ -39,6 +39,11 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   from DRP.fileFunctions import createDirIfNecessary
   import time
 
+  # Variable Setup
+  correct_vals = None # `None` defaults to ["4:4","3:3"]
+  name = str(int(time.time()))
+
+
   if not model_name or not description:
     raise Exception("Model needs a valid model_name and description!")
 
@@ -47,8 +52,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
     print "Called gen_model at {}".format(datetime.datetime.now())
 
   #Make sure the model_name has no spaces in it.
-  model_name = model_name.replace(" ","_")
-  name = str(int(time.time()))
+  model_name = model_name.replace(" ","_").replace("/","-")
   print "Constructing model: {} ({})".format(model_name, name)
 
   # Get the valid reactions across all lab groups.
@@ -62,7 +66,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.
   print "Creating a sample model to evaluate the model stats..."
-  true_pos, true_neg, false_pos, false_neg = sample_model_quality(data, name, clock=clock, debug=debug)
+  conf_json = sample_model_quality(data, name, clock=clock, debug=debug)
 
   print "Constructing the final ARFF file..."
   make_arff(name+"_final", data, clock=clock)
@@ -88,8 +92,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
   store_ModelStats(model_name, description, model_file_location,
-                   true_pos, true_neg, false_pos, false_neg,
-                   active=active)
+                   conf_json, correct_vals=correct_vals, active=active)
 
   print "Model generation successful..."
 
@@ -201,26 +204,25 @@ def evaluate_results(results_location):
     for i in range(5):
       results_file.next()
 
-    true_positive = 0
-    false_positive = 0
-    true_negative = 0
-    false_negative = 0
+    conf_json = {}
 
     for row in results_file:
       if "\n" == row:
         continue
-      if INCORRECT in row: #WEKA uses a "+" to show incorrect predictions...
-        if row.split()[2] == POSITIVE:
-          false_positive += 1
-        else:
-          false_negative += 1
-      else:
-        if row.split()[2] == POSITIVE:  # IE: WEKA said it was good *and* it was.
-          true_positive += 1
-        else:
-          true_negative += 1
 
-  return true_positive, true_negative, false_positive, false_negative
+      actual = row.split()[1]
+      guess = row.split()[2]
+
+      # Create the confusion-dictionary...
+      if actual in conf_json:
+        if guess in conf_json[actual]:
+          conf_json[actual][guess] += 1
+        else:
+          conf_json[actual][guess] = 1
+      else:
+        conf_json[actual] = {guess:1}
+
+  return conf_json
 
 
 def remove_indexes(row, unused):

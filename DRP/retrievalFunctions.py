@@ -127,7 +127,7 @@ def filter_data(lab_group, query_list):
 #Either get the valid Data entries for a lab group or get all valid data.
 #  Note: Accepts an actual LabGroup object.
 def get_valid_data(lab_group=None):
-  from DRP.models import Data
+  from models import Data
   if lab_group:
     return Data.objects.filter(is_valid=True, lab_group=lab_group)
   return Data.objects.filter(is_valid=True)
@@ -153,7 +153,7 @@ def expand_data(data, include_lab_info=False, make_new=False, debug=False):
                                             preloaded_cg=compound_guide)
         calcList.append(calcs)
     except Exception as e:
-      print e
+      print "(expand_data) {}".format(e)
       pass
   return calcList
 
@@ -168,8 +168,13 @@ def get_expanded_headers():
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def get_recommendations(lab_group):
- from DRP.models import Recommendation
+ from models import Recommendation
  return Recommendation.objects.filter(lab_group=lab_group)
+
+def get_active_recommendations():
+  from models import Recommendation
+  model = get_latest_ModelStats(active=True)
+  return Recommendation.objects.filter(model_version=model)
 
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
  seed_recs = Recommendation.objects.filter(seeded=True, lab_group=lab_group)
@@ -188,7 +193,7 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
  return seed_recs
 
 def get_latest_ModelStats(active=True):
-  from DRP.models import ModelStats
+  from models import ModelStats
   models = ModelStats.objects.filter(active=active).order_by("-datetime")
   return models.first()
 

@@ -4,6 +4,10 @@ from DRP.models import refresh_compound_guide
 class Command(BaseCommand):
   def handle(self, *args, **kwargs):
    self.stdout.write("Refresh started!")
-   refresh_compound_guide(verbose=True)
+
+   debug = "debug" in args
+   clear = "clear" in args
+   refresh_compound_guide(verbose=True, debug=debug, clear=clear)
+
    self.stdout.write("Refresh complete!")
 

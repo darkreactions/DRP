@@ -10,16 +10,19 @@ from logPrinting import print_error, print_log
    # # # # # # # # # # # # #  Recommendations  # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-def store_ModelStats(model_name, model_description, filename, true_pos, true_neg, false_pos, false_neg, active=True):
+def store_ModelStats(model_name, model_description, filename,
+                     conf_json, correct_vals=None, active=True):
 
-  from DRP.models import ModelStats
+  from models import ModelStats
   import datetime
 
   #Create an instance of the model.
   model = ModelStats()
   model.datetime = datetime.datetime.now()
 
-  model.set_values(false_neg, false_pos, true_neg, true_pos)
+  model.set_confusion_table(conf_json)
+  model.set_correct_vals(correct_vals)
+
   model.title = model_name
   model.description = model_description
   model.filename = filename
@@ -27,6 +30,8 @@ def store_ModelStats(model_name, model_description, filename, true_pos, true_neg
 
   #Save the model.
   model.save()
+
+  model.summary()
 
   return model
 
