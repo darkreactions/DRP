@@ -418,11 +418,18 @@ class ModelStats(models.Model):
     self.correct_vals = json.dumps(correct_list)
     self.save()
 
+
   def load_all_vals(self):
     return self.load_confusion_dict().keys()
 
   def load_correct_vals(self):
     return sorted(json.loads(self.correct_vals))
+
+  def load_incorrect_vals(self):
+    correct = set(self.load_correct_vals())
+    all_vals = self.load_all_vals()
+    return [val for val in all_vals if val not in correct]
+
 
   def set_confusion_table(self, conf_json):
     import json
@@ -480,10 +487,12 @@ class ModelStats(models.Model):
 
     return matrix
 
-  def count(self, value_list, true_guess=True, normalize=False, ranges=False):
+  def count(self, value_list=None, true_guess=True, normalize=False, ranges=False):
+    # Variable Setup
     conf_dict = self.load_confusion_dict()
     c = 0
     denom = self.total() if normalize else 1.0
+    if not value_list: value_list = self.load_correct_vals()
 
     if true_guess:
       for value in value_list:
@@ -502,44 +511,41 @@ class ModelStats(models.Model):
             c += conf_dict[value][guess]
     return c/denom
 
+
   def total(self):
     conf_table = self.load_confusion_dict()
     int_total = sum([int(val) for correct,guesses in conf_table.items()
                               for key,val in guesses.items()])
     return float(int_total)
 
-  # Convenience Wrappers #TODO: Clean these up...
-  def true_positives(self, correct_vals=None, ranges=False):
-    if not correct_vals: correct_vals = self.load_correct_vals()
-    return self.count(correct_vals, true_guess=True, ranges=ranges)
+  # Convenience Wrappers
+  def true_positives(self, ranges=False):
+    return self.count(true_guess=True, ranges=ranges)
 
-  def true_negatives(self, correct_vals=None, ranges=False):
-    if not correct_vals: correct_vals = self.load_correct_vals()
-    incorrect_vals = [val for val in self.load_all_vals() if val not in correct_vals]
-    return self.count(incorrect_vals, true_guess=True, ranges=ranges)
+  def true_negatives(self, ranges=False):
+    incorrect_vals = self.load_incorrect_vals()
+    return self.count(value_list=incorrect_vals, true_guess=True, ranges=ranges)
 
-  def false_positives(self, correct_vals=None, ranges=False):
-    if not correct_vals: correct_vals = self.load_correct_vals()
-    return self.count(correct_vals, true_guess=False, ranges=ranges)
+  def false_positives(self, ranges=False):
+    return self.count(true_guess=False, ranges=ranges)
 
-  def false_negatives(self, correct_vals=None, ranges=False):
-    if not correct_vals: correct_vals = self.load_correct_vals()
-    incorrect_vals = [val for val in self.load_all_vals() if val not in correct_vals]
-    return self.count(correct_vals, true_guess=False, ranges=ranges)
+  def false_negatives(self, ranges=False):
+    incorrect_vals = self.load_invalue_list()
+    return self.count(value_list=incorrect_vals, true_guess=False, ranges=ranges)
 
 
-  def test_accuracy(self, correct_vals=None, ranges=False):
+  def test_accuracy(self, ranges=False):
     denom = float(self.total())
     if denom:
-      tp = self.true_positives(correct_vals=correct_vals, ranges=ranges)
-      tn = self.true_negatives(correct_vals=correct_vals, ranges=ranges)
+      tp = self.true_positives(ranges=ranges)
+      tn = self.true_negatives(ranges=ranges)
       return (tp + tn)/denom
     else:
       return 0
 
-  def test_precision(self, correct_vals=None, ranges=False):
-    tp = self.true_positives(correct_vals=correct_vals, ranges=ranges)
-    fp = self.false_positives(correct_vals=correct_vals, ranges=ranges)
+  def test_precision(self, ranges=False):
+    tp = self.true_positives(ranges=ranges)
+    fp = self.false_positives(ranges=ranges)
     denom = float(tp + fp)
     if denom:
       return tp/denom
@@ -582,22 +588,14 @@ class ModelStats(models.Model):
     self.print_confusion_table()
     print pre+"Test Size: {}".format(self.total())
 
-    correct_vals = self.load_correct_vals()
-    correct = [correct_vals[-1]]
+    print pre+"Correct Values: {}".format(" & ".join(self.load_correct_vals()))
+    print pre+"Accuracy (Dichotomous): {}".format(self.test_accuracy(ranges=True))
 
-    print pre+"Accuracy ({}) (Dichotomous): {}".format(" & ".join(correct_vals),
-                                                self.test_accuracy(ranges=True))
+    print pre+"Accuracy (Quarterly): {}".format(self.test_accuracy(ranges=False))
 
-    partial_accuracy = self.test_accuracy(correct_vals=correct)
-    print pre+"Accuracy ({}) (Quarterly): {}".format(str(correct[0]),
-                                                partial_accuracy)
+    print pre+"Precision (Dichotomous): {}".format(self.test_precision(ranges=True))
 
-    print pre+"Precision ({}) (Dichotomous): {}".format(" & ".join(correct_vals),
-                                                self.test_precision(ranges=True))
-
-    partial_precision = self.test_precision(correct_vals=correct)
-    print pre+"Precision ({}) (Quarterly): {}".format(str(correct[0]),
-                                                partial_precision)
+    print pre+"Precision (Quarterly): {}".format(self.test_precision(ranges=False))
 
     print pre+"User Satisfaction: {}".format(self.user_satisfaction())
 
