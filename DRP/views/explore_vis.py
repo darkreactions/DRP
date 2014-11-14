@@ -27,7 +27,7 @@ import csv, json, string
 
 #Global Variables  
 path_to_vis_data_file = BASE_DIR + "/DRP/views/vis_data.json" 
-colors =["#a6cee3", "#1f78b4"," #b2df8a"," #33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00"," #cab2d6","#6a3d9a", "#ffff99", "#b15928"] 
+colors =["#a6cee3", "#1f78b4"," #b2df8a"," #33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#b15928", "#cab2d6","#6a3d9a", "#ffff99", "#ff7f00"]
 @login_required
 def get_graph_data(request):
   import os.path 
@@ -50,23 +50,25 @@ def get_graph_data(request):
       node_clusters = create_node_clusters_for_labels(links, nodes)
       with open(path_to_label_dict, "w") as outfile:
         json.dump(node_clusters, outfile) 
-    
+    #Clusters are the elements that contain all the nodes with matching inorganics (a list of lists of dictionaries)
+    #nodes are the original datum points corresponding to a single reaction( a list of dictionaries) 
+    #This is for the second tier clusters (clustered by two inorganics)
     clusters = give_positions_to_clusters(nodes, node_clusters)
-    #clusters_with_radii = add_radii_to_clusters(clusters)
     #clusters that are objects in a list within a larger list 
     clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
     final_clusters = make_clusters_into_single_list(clusters_with_colors) 
-    final_nodes = give_colors_to_nodes(nodes, final_clusters) 
-    print final_clusters[:2] 
+    almost_final_nodes = give_colors_to_nodes(nodes, final_clusters) 
+    #This is for the first tier clusters (clustered by single inorganic) 
     votes = vote_on_inorgs(final_clusters)  
     top_inorgs = grab_inorgs(votes) 
     firstCluster = first_cluster(nodes, top_inorgs)
     first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color") 
-    largest_labels = make_larger_clusters(firstCluster, top_inorgs)
-    print largest_labels 
+    final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors) 
+    final_nodes = give_colors_to_nodes2(almost_final_nodes, final_first_clusters)
+    #largest_labels = make_larger_clusters(firstCluster, top_inorgs)
     #hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii) 
     #small_clusters = check_size_of_clusters(clusters) 
-    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True", "largeLabels": largest_labels} 
+    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
     return HttpResponse(json.dumps(response), content_type="application/json")   
   
   #If vis_data is not created or not up to date, write new vis_data with current data and return that
@@ -77,7 +79,8 @@ def get_graph_data(request):
       deserialized_data = json.load(f)
        
     node_clusters = create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"]) 
-    firstCluster = first_cluster(node_clusters) 
+    top_inorgs = grab_inorgs(votes) 
+    firstCluster = first_cluster(node_clusters, top_inorgs) 
     #Make sure that appending node_clusters on the end results in a correctly formatted list (something the javascript can take and use)...alternativley put into list and then concatenate 
     response = deserialized_data + node_clusters 
     return HttpResponse(json.dumps(response), content_type="application/json") 
@@ -113,7 +116,8 @@ def get_graph_data(request):
         deserialized_data = json.load(f) 
 
     node_clusters= create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"]) 
-    firstCluster = first_cluster(node_clusters)
+    top_inorgs = grab_inorgs(votes) 
+    firstCluster = first_cluster(node_clusters, top_inorgs)
     #Same procedure as above--with luck, appending node_clusters onto the end of deserialized_data won't break anything
     response = deserialized_data + node_clusters
     return HttpResponse(json.dumps(response), content_type="application/json")   
@@ -276,6 +280,11 @@ def give_colors_to_nodes(nodes, clusters):
       nodes[i]["color"] = next((x["color"] for x in clusters if x["id"] == id_num), None)
     return nodes 
 
+def give_colors_to_nodes2(nodes, clusters):
+    for i in xrange(len(nodes)):
+      id_num = nodes[i]["id"]
+      nodes[i]["color2"] = next((x["color"] for x in clusters if x["id"] == id_num), None)
+    return nodes 
 
 def reduce_clusters(clusters):
   reduced_clusters = [i[0] for i in clusters] 
@@ -319,7 +328,7 @@ def check_size_of_clusters(clusters):
 def assign_colors_to_clusters(colors, node_clusters, key):
   for i in xrange(len(node_clusters)):
     for j in xrange(len(node_clusters[i])):
-      node_clusters[i][j][key] = colors[i%12] 
+      node_clusters[i][j][key] = colors[i%12]
   return node_clusters
 
 def make_larger_clusters(clusters, total_most_important_inorgs): 

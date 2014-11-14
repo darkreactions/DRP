@@ -13,11 +13,11 @@ d3.json("/get_graph/", function(graph) {
     var nodes = graph.nodes;   
     var preLoad = graph.skipTicks === "True";  
     var links = graph.links; 
-    var clusters = graph.clusters;
+    //var clusters = graph.clusters;
     //declaring a variable that will serve to size the text boxes that appear upon hovering over the individual nodes
     var textPlacement = nodeTooltips.length*40;
     var boxLength = 130;
-    var largeLabels = graph.largeLabels
+    //var largeLabels = graph.largeLabels
     translateValue1 = width/2.3 
     translateValue2 = height/2.4
     scaleValue = height/4500 
@@ -29,17 +29,17 @@ d3.json("/get_graph/", function(graph) {
         vertical: true,
         animationCallback: function(x, y) {
             $('#slider .value').text(Math.round(y * 100));
-            var zoomScaleValue = y + 1
+            var zoomScaleValue = y + 1 + y*1.5 + 0.1*y*20  
             $('#graph').css("transform", "scale(" + zoomScaleValue + ")");//animate({'zoom': zoomScaleValue }, 400);   
             if (y < 0.3) { 
               d3.selectAll(".circleClusters1").style("visibility", "visible")
               d3.selectAll(".circleClusters2").style("visibility", "hidden")
               d3.selectAll(".nodeElements").style("visibility", "hidden")
-            } else if (y > 0.6) {
+            } else if (y < 0.6) {
               d3.selectAll(".circleClusters1").style("visibility", "hidden")
               d3.selectAll(".circleClusters2").style("visibility", "visible")
               d3.selectAll(".nodeElements").style("visibility", "hidden")
-            } else if (y >= 0.85) {
+            } else if (y < 0.85) {
               d3.selectAll(".circleClusters1").style("visibility", "hidden")
               d3.selectAll(".circleClusters2").style("visibility", "hidden")
               d3.selectAll(".nodeElements").style("visibility", "visible")
@@ -60,7 +60,9 @@ var drag = d3.behavior.drag()
 
 //Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
 function dragstarted(d) {
+  d3.event.sourceEvent.stopPropagation();
   d3.select(this).classed("dragging", true);
+  console.log("Dragged!!"); 
 }
 
 function dragged(d) {
@@ -104,8 +106,8 @@ var container = svg.append("g")
 container.append("rect")
 	.attr("width", width)
 	.attr("height", height)
-	.attr("fill", "white") 
-
+	.attr("fill", "white");
+    //.call(drag); 
 
 function zoomed() {
   container.attr("transform", 
@@ -168,7 +170,7 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
     .attr("class", "node"); 
 
 //Here I am appending circles that represent the clusters of all the nodes with the same SINGLE inorganic in common 
-   nodeElements.append("circle").attr("class", "circleClusters1").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 100);
+   nodeElements.append("circle").attr("class", "circleClusters1").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 200);
 
 //Here I am trying to create a larger, encompassing text element/circle element in order to label the individual clusters(for the single inorg clusters, or circleClusters1
  /*   container.selectAll("circle")
@@ -339,8 +341,8 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
 
 //Here is the code to hide the nodes on the initial zoom level and, upon clicking a circleCluster, to zoom to that cluster and show the nodes again
     d3.selectAll(".nodeElements").style("visibility", "hidden") 
-    d3.selectAll(".circleClusters1").style("visibility", "hidden") 
-    
+    d3.selectAll(".circleClusters1").style("visibility", "visible") 
+    d3.selectAll(".circleClusters2").style("visibility", "hidden")     
    /* 
     d3.selectAll(".circleClusters").on("click", function(d) {
             x = this.cx

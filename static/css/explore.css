@@ -1,6 +1,8 @@
 
 /* SHADOW/GLOW TRANSITIONS */
 /* Glow */
+
+
 .glow {
   display: inline-block;
   -webkit-transition-duration: 0.3s;
@@ -59,30 +61,39 @@
 }
 
 #wrapper {
+}
+
+#graphWrapper {
 position: relative;
+float: left; 
+overflow: hidden;
+display: inline-block; 
+width: 97%;
+height:99%;
 }
 
 #graph {
-float: left; 
-display: inline-block; 
 }
 
 #slider {
 position: relative; 
-margin-top: 10px; 
-margin-right: 10px; 
-width: 40px;
-height: 300px; 
-float: right; 
+float: right;
+top: 0;
+right: 0;
+margin-top: 5px; 
+margin-right: 5px;
+width: 2%;  
+min-height: 300px; 
+height: 85%; 
 display: inline-block;
-background: #e1e1e1; 
+background: #e8f4ff; 
 border-radius: 2px;
 }
 
 .handle {
-width: 40px; 
+width: 100%; 
 height: 50px;
-background: #CC0000;
+background:#2c7fb8;
 color: #FFF
 font-size: 14px;
 text-align: center;
