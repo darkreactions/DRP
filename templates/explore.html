@@ -1,11 +1,12 @@
 {% if user.is_authenticated %} 
   <div class="infoContainer">
-   <div id="loadingMessage">Loading! Takes approximately 5 seconds. 
-   </div> 
- <div id="wrapper">
-   <div id="slider" class="dragdealer"><div class="handle"><span class="value"></span>%</div></div></div> 
-   <div id="graph"></div>
- </div>
+   <div id="loadingMessage">Loading! Takes approximately 5 seconds.</div> 
+   <div id="wrapper">
+     <div id="slider" class="dragdealer"><div class="handle"><span class="value"></span>%</div></div> 
+     <div id="graphWrapper">
+       <div id="graph"></div>
+     </div>  
+   </div>
    
 {% for circle in graph %} 
    <div class="dataSpecificButtonContainer"></div> 
