@@ -10,7 +10,7 @@ from logPrinting import print_error, print_log
    # # # # # # # # # # # # #  Recommendations  # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-def store_ModelStats(model_name, model_description, filename,
+def store_ModelStats(model_name, model_description, filename, model_fields,
                      conf_json, correct_vals=None, active=True):
 
   from models import ModelStats
@@ -22,6 +22,7 @@ def store_ModelStats(model_name, model_description, filename,
 
   model.set_confusion_table(conf_json)
   model.set_correct_vals(correct_vals)
+  model.set_used_fields(model_fields)
 
   model.title = model_name
   model.description = model_description

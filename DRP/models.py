@@ -353,7 +353,10 @@ class Data(models.Model):
         # Load the result from the database if it is already present.
         final_dict = self.calculations.make_json()
 
-      if type(final_dict)!=dict or set(final_dict.keys())!=set(headers):
+      # Make sure all of the keys are present.
+      missing_keys = not set(headers).issubset(set(final_dict.keys()))
+
+      if type(final_dict)!=dict or missing_keys:
         # If the final_dict is in the wrong format, recalculate it.
         return self.get_calculations_dict(include_lab_info=include_lab_info,
                                           force_recalculate=True)
@@ -399,6 +402,7 @@ class ModelStats(models.Model):
 
   # Model Statistics
   confusion_table = models.TextField(default="{}")
+  used_fields = models.TextField(default="[]")
   correct_vals = models.CharField("Correct Values", max_length=100, default="[4:4]")
 
   # Model Descriptors
@@ -431,12 +435,23 @@ class ModelStats(models.Model):
     return [val for val in all_vals if val not in correct]
 
 
+  def set_used_fields(self, field_list):
+    import json
+    self.used_fields = json.dumps(field_list)
+    self.save()
+
+  def load_used_fields(self):
+    import json
+    return json.loads(self.used_fields)
+
+
   def set_confusion_table(self, conf_json):
     import json
     self.confusion_table = json.dumps(conf_json)
     self.save()
 
   def load_confusion_dict(self):
+    import json
     return json.loads(self.confusion_table)
 
   def load_confusion_table(self, normalize=True):
@@ -608,7 +623,8 @@ class ModelStats(models.Model):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
     print prefix+"Created: {}".format(self.datetime)
-    print prefix+"filename: '{}'".format(self.filename)
+    print prefix+"Filename: '{}'".format(self.filename)
+    print prefix+"Used Fields: '{}'".format(len(self.load_used_fields()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):

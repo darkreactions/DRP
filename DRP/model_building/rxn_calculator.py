@@ -209,7 +209,7 @@ atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O',
           'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs',
           'Cr', 'Cu']
 
-headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
+orig_headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
             'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
             'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles',
             'XXXorg1', 'XXXorg1mass',
@@ -316,3 +316,20 @@ headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
             'org-water-moleratio', 'orgacc-waterdonratio',
             'orgdon-wateraccratio', 'inorg-org-moleratio',
             'notwater-water-moleratio'] + atomsz + field_names + ['purity', 'outcome']
+
+josh_serota_feature_selected = [
+  "orgvanderwaalsMin",
+  "orgASA+Min",
+  "orghbdamsdonGeomAvg",
+  "oxlikevanderwaalsMax",
+  "orgacc-waterdonratio",
+  "PaulingElectronegMean",
+  "hardnessMaxWeighted",
+  "AtomicRadiusMeanWeighted",
+  "outcome" #Added by Casey Falk since missing.
+]
+
+headers = josh_serota_feature_selected
+#headers = orig_headers
+
+
