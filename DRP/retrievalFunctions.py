@@ -299,6 +299,15 @@ def get_mass_range(compound):
     print e
     raise Exception("Compound not found!")
 
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # # # # #  MODEL   # # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+def get_usable_models():
+  from models import ModelStats
+  model_stats = ModelStats.objects.filter(usable=True).order_by("datetime")
+  return model_stats
+
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  LABS AND USERS  # # # # # # # # # # # # # # # # #

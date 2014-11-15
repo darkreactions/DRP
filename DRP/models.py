@@ -414,6 +414,7 @@ class ModelStats(models.Model):
                                           default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
   datetime = models.DateTimeField()
+  usable = models.BooleanField("Usable", default=True)
 
   def set_correct_vals(self, correct_list):
     import json
@@ -433,6 +434,21 @@ class ModelStats(models.Model):
     correct = set(self.load_correct_vals())
     all_vals = self.load_all_vals()
     return [val for val in all_vals if val not in correct]
+
+
+  def check_usability(self):
+    import os
+
+    try:
+      assert( len(self.load_all_vals()) > 0 )
+      assert( os.path.isfile(self.filename) )
+      self.usable = True
+    except:
+      self.usable = False
+
+    self.save()
+
+    return self.usable
 
 
   def set_used_fields(self, field_list):
@@ -640,7 +656,12 @@ class ModelStats(models.Model):
 
 
   def __unicode__(self):
-    return "{} (Accuracy: {})".format(self.datetime, self.test_accuracy())
+    return "Model {} (Active:{}; Usable:{})".format(self.datetime,
+                                                    self.active,
+                                                    self.usable)
+
+  def __repr__(self):
+    return self.__unicode__()
 
 
 

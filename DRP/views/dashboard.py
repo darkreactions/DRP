@@ -22,7 +22,7 @@ def get_field_tuple(stat, entry):
   return [seconds, value]
 """
 
-def get_fields_as_json(model_stats):
+def get_fields_as_json(models):
   #Variable Setup.
 
   # The D3 library needs the following format:
@@ -32,42 +32,35 @@ def get_fields_as_json(model_stats):
   #   { ... }
   # ]
 
-  results = [
-              {
-                "key":"Test Accuracy",
-                "values":[[i, model.test_accuracy()] for i, model in enumerate(model_stats)],
-              },
-              {
-                "key":"Test Precision",
-                "values":[[i, model.test_precision()] for i, model in enumerate(model_stats)],
-              },
-              {
-                "key":"False Positive Rate",
-                "values":[[i, model.rate("false_positive")] for i, model in enumerate(model_stats)],
-              },
-              {
-                "key":"False Negative Rate",
-                "values":[[i, model.rate("false_negative")] for i, model in enumerate(model_stats)],
-              },
-              {
-                "key":"User Satisfaction",
-                "values":[[i, model.user_satisfaction()] for i, model in enumerate(model_stats)],
-              },
-            ]
+  stat_counter = {}
+  for i, model in enumerate(models):
 
+    try:
+      stats =  model.stats()
+    except Exception as e:
+      # If the model isn't loadable, mark it as not loadable.
+      print "Model '{}' was not usable!".format(model)
+      model.check_usability()
+      continue
+
+    for stat, val in stats.items():
+      if stat not in stat_counter:
+        stat_counter[stat] = {"key":stat, "values":[]}
+
+      stat_counter[stat]["values"].append([i, val])
+
+  results = [key_vals for stat, key_vals in stat_counter.items()]
   return results
-
-def get_model_array(model_stats):
-  return [entry.description for entry in model_stats]
 
 def get_stats_json(request):
   #Grab all of the model_stats.
-  model_stats = ModelStats.objects.all().order_by("datetime")
+  from DRP.retrievalFunctions import get_usable_models
+  models = get_usable_models()
 
   #Convert the data into a JSON format.
-  lines = get_fields_as_json(model_stats)
-  model_labels = get_model_array(model_stats)
-  data = json.dumps({"lines":lines, "model_labels":model_labels})
+  lines = get_fields_as_json(models)
+  labels = [model.description for model in models]
+  data = json.dumps({"lines":lines, "model_labels":labels})
 
   #Send the JSON back to the client.
   return HttpResponse(data, mimetype="application/json")
