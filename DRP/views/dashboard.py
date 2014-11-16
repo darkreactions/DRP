@@ -39,7 +39,7 @@ def get_fields_as_json(models):
       stats =  model.stats()
     except Exception as e:
       # If the model isn't loadable, mark it as not loadable.
-      print "Model '{}' was not usable!".format(model)
+      print "{} was not usable: {}".format(model, e)
       model.check_usability()
       continue
 

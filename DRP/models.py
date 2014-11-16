@@ -441,14 +441,17 @@ class ModelStats(models.Model):
 
     try:
       assert( len(self.load_all_vals()) > 0 )
+      assert( len(self.load_correct_vals()) > 0 )
       assert( os.path.isfile(self.filename) )
-      self.usable = True
+      usable = True
     except:
-      self.usable = False
+      usable = False
 
-    self.save()
+    if usable!= self.usable:
+      self.usable = usable
+      self.save()
 
-    return self.usable
+    return usable
 
 
   def set_used_fields(self, field_list):
