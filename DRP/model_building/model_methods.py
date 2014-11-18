@@ -37,6 +37,7 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
 
   from DRP.database_construction import store_ModelStats
   from DRP.fileFunctions import createDirIfNecessary
+  from DRP.model_building.rxn_calculator import headers
   import time
 
   # Variable Setup
@@ -47,13 +48,16 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   if not model_name or not description:
     raise Exception("Model needs a valid model_name and description!")
 
+
+  #Make sure the model_name has no spaces in it.
+  model_name = model_name.replace(" ","_").replace("\t","_").replace("/","-")
+  print "Starting gen_model pipeline: {} ({})".format(model_name, name)
+
+
   if clock:
     import datetime
     print "Called gen_model at {}".format(datetime.datetime.now())
 
-  #Make sure the model_name has no spaces in it.
-  model_name = model_name.replace(" ","_").replace("/","-")
-  print "Constructing model: {} ({})".format(model_name, name)
 
   # Get the valid reactions across all lab groups.
   print "Loading data entries."
@@ -87,11 +91,13 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
   print "SUBPROCESS:\n{}".format(move+command+args)
   subprocess.check_output(move+command+args, shell=True)
 
+
   if clock: print "Took {} minutes.".format((time.clock()-tStart)/60.0)
+
 
   #Prepare a ModelStats entry and store it in the database.
   print "Creating a ModelStats entry in the database..."
-  store_ModelStats(model_name, description, model_file_location,
+  store_ModelStats(model_name, description, model_file_location, headers,
                    conf_json, correct_vals=correct_vals, active=active)
 
   print "Model generation successful..."
