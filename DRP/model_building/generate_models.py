@@ -30,7 +30,7 @@ def retrogenerateModel(date):
   A convenient wrapper to generate a model using data available on a given date.
   """
 
-  title = "Retrogenerated {}".format(date)
+  title = "Retrogenerated_{}".format(date.replace(" ","_").replace("-","_"))
   description = "A model retrogenerated from the data available on {}".format(date)
   build_previous_model(title, description, date)
 
@@ -63,9 +63,10 @@ def retrogenerateModels():
   start = earliest_datum.creation_time_dt
 
   for date in dateRange(start, "months"):
-    print date
     date_string = date.strftime("%m-%d-%Y")
     print "Retrogenerating model from {}".format(date_string)
     retrogenerateModel(date_string)
 
 
+if __name__=="__main__":
+  retrogenerateModels()
