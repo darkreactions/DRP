@@ -23,6 +23,10 @@ d3.json("/get_graph/", function(graph) {
     scaleValue = height/4500 
 
 
+firstCluster = d3.selectAll(".circleClusters1")
+secondCluster = d3.selectAll(".circleClusters2")
+tinyNodes = d3.selectAll(".nodeElements") 
+
     //Here I am creating a zoom slider that will control the zoom level for the svg, and will also tie into which level of the cluster hierarchy is displayed
     new Dragdealer('slider', {
         horizontal: false,
@@ -32,17 +36,17 @@ d3.json("/get_graph/", function(graph) {
             var zoomScaleValue = y + 1 + y*1.5 + 0.1*y*20  
             $('#graph').css("transform", "scale(" + zoomScaleValue + ")");//animate({'zoom': zoomScaleValue }, 400);   
             if (y < 0.3) { 
-              d3.selectAll(".circleClusters1").style("visibility", "visible")
-              d3.selectAll(".circleClusters2").style("visibility", "hidden")
-              d3.selectAll(".nodeElements").style("visibility", "hidden")
+              firstCluster.style("visibility", "visible")
+              secondCluster.style("visibility", "hidden")
+              tinyNodes.style("visibility", "hidden")
             } else if (y < 0.6) {
-              d3.selectAll(".circleClusters1").style("visibility", "hidden")
-              d3.selectAll(".circleClusters2").style("visibility", "visible")
-              d3.selectAll(".nodeElements").style("visibility", "hidden")
+              firstCluster.style("visibility", "hidden")
+              secondCluster.style("visibility", "visible")
+              tinyNodes.style("visibility", "hidden")
             } else if (y < 0.85) {
-              d3.selectAll(".circleClusters1").style("visibility", "hidden")
-              d3.selectAll(".circleClusters2").style("visibility", "hidden")
-              d3.selectAll(".nodeElements").style("visibility", "visible")
+              firstCluster.style("visibility", "hidden")
+              secondCluster.style("visibility", "hidden")
+              tinyNodes.style("visibility", "visible")
             } 
     } 
   }); 
@@ -62,7 +66,6 @@ var drag = d3.behavior.drag()
 function dragstarted(d) {
   d3.event.sourceEvent.stopPropagation();
   d3.select(this).classed("dragging", true);
-  console.log("Dragged!!"); 
 }
 
 function dragged(d) {
@@ -107,7 +110,7 @@ container.append("rect")
 	.attr("width", width)
 	.attr("height", height)
 	.attr("fill", "white");
-    //.call(drag); 
+    .call(drag); 
 
 function zoomed() {
   container.attr("transform", 
@@ -170,7 +173,16 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
     .attr("class", "node"); 
 
 //Here I am appending circles that represent the clusters of all the nodes with the same SINGLE inorganic in common 
-   nodeElements.append("circle").attr("class", "circleClusters1").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 200);
+
+	var filter =  container.append("filter") 
+	  .attr("id", "blur");
+	
+	filter.append("feGaussianBlur")
+	  .attr("stdDeviation", 100);
+
+
+
+   nodeElements.append("circle").attr("class", "circleClusters1").attr("fill", function(d) {return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 200).attr("filter", "url(#blur)");
 
 //Here I am trying to create a larger, encompassing text element/circle element in order to label the individual clusters(for the single inorg clusters, or circleClusters1
  /*   container.selectAll("circle")
@@ -241,19 +253,9 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
 	  .attr("width", "130%"); 
 	
 	filter.append("feGaussianBlur")
-	  .attr("in", "SourceAlpha")
-	  .attr("stdDeviation", 1)
+	  .attr("in", "SourceGraphic")
+	  .attr("stdDeviation", 10)
 	  .attr("result", "blur"); 
-	filter.append("feOffset")
-	  .attr("in", "blur")
-	  .attr("dx", 1)
-	  .attr("dy", 1)
-	  .attr("result", "offsetBlur");
-	var feMerge = filter.append("feMerge");
-	feMerge.append("feMergeNode")
-	  .attr("in", "offsetBlur")
-	feMerge.append("feMergeNode")
-	  .attr("in", "SourceGraphic");
 
 			
 	var textElement = textbox.append("text")
