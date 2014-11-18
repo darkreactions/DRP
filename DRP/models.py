@@ -410,7 +410,7 @@ class ModelStats(models.Model):
   description = models.TextField(default="")
 
   # Model Status and Location
-  filename = models.CharField("Filename", max_length=64,
+  filename = models.CharField("Filename", max_length=128,
                                           default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
   datetime = models.DateTimeField()
