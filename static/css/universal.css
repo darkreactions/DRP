@@ -329,22 +329,14 @@ select {
  outline:0;
 }
 
-input[type=text] {
- border:2px solid black;
- border-radius:5px;
- padding:2px;
- padding-left:5px;
-}
-
 input.shortText {
  width:80px;
 }
 
-input[type=password], input[type=email], textarea {
+input[type=text], input[type=password], input[type=email], textarea {
  border:2px solid black;
- border-radius:5px;
- padding:2px;
- padding-left:5px;
+ padding:0.4em;
+ margin:0.2em;
 }
 
 input[type=button] {
