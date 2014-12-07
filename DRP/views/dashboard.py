@@ -68,7 +68,8 @@ def get_class_stats_json(request, classes=4):
   raw = {
     "lines":get_fields_as_json(models, classes=classes),
     "descriptions":[model.description for model in models],
-    "titles":[model.title for model in models]
+    "titles":[model.title for model in models],
+    "confusionTables":[model.load_confusion_table(normalize=False) for model in models]
   }
 
   data = json.dumps(raw)

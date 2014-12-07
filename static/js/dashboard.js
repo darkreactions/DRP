@@ -5,9 +5,31 @@ function makeGraph(graphURL, svgContainer) {
       return String(Math.round(value * power) / power);
   }
 
+  function formatConfusionTable(jsonTable) {
+    var HTML = '<div class="modelConfusionTable">';
+
+    HTML += "<table>";
+    HTML += "<tr><td></td><td colspan=5><span class='confusionTableLabel'>Guesses</span></td></tr>";
+    HTML += "<tr><td rowspan=6><span class='confusionTableLabel'>Actual</span></td></tr>";
+
+    for (var i=0; i < jsonTable.length; i++) {
+
+      HTML += "<tr>";
+      for (var j=0; j < jsonTable.length; j++) {
+        HTML += "<td>"+jsonTable[i][j]+"</td>";
+      }
+      HTML += "</tr>";
+
+    }
+
+    HTML += "</table>";
+
+    HTML += "</div>";
+    return HTML;
+  }
+
   //Taken nearly entirely from: http://nvd3.org/examples/lineWithFocus.html
   d3.json(graphURL, function(data) {
-    console.log(data)
 
     nv.addGraph(function() {
       //var chart = nv.models.lineWithFocusChart()
@@ -18,7 +40,10 @@ function makeGraph(graphURL, svgContainer) {
           .tooltips(true)
           .tooltipContent(function(key, x, y, e, graph) {
               var HTML = "";
+
               HTML += '<div class="modelTitle">'+data["titles"][x]+'</div>';
+              HTML += '<div class="modelDescription">'+data["descriptions"][x] + '</div>';
+
               data["lines"] = data["lines"].sort(function(a,b) {
                 if (a["key"]===b["key"]) return 0;
                 if (a["key"]>b["key"]) return 1;
@@ -40,7 +65,7 @@ function makeGraph(graphURL, svgContainer) {
                   }
                 };
 
-              HTML += '</p><div class="modelDescription">'+data["descriptions"][x] + '</div>';
+              HTML += formatConfusionTable(data["confusionTables"][x]);
 
               return HTML
             })

@@ -39,3 +39,24 @@
   padding-bottom:1em;
 }
 
+.modelConfusionTable {
+ width:100%;
+ text-align:center;
+}
+
+.modelConfusionTable table {
+  width:100%;
+  text-align:center;
+}
+
+.modelConfusionTable tr:nth-child(1), .modelConfusionTable td:nth-child(1),
+.modelConfusionTable tr:nth-child(3) {
+ font-weight:bold;
+}
+
+.confusionTableLabel {
+ font-size:0.8em;
+}
+
+
+
