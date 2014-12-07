@@ -24,6 +24,7 @@
 
 .nvtooltip.xy-tooltip { /* NVD3's Tooltips */
  padding:0em 1em;
+ position:fixed;
 }
 
 .modelTitle {

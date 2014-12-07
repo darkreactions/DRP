@@ -19,6 +19,11 @@ function makeGraph(graphURL, svgContainer) {
           .tooltipContent(function(key, x, y, e, graph) {
               var HTML = "";
               HTML += '<div class="modelTitle">'+data["titles"][x]+'</div>';
+              data["lines"] = data["lines"].sort(function(a,b) {
+                if (a["key"]===b["key"]) return 0;
+                if (a["key"]>b["key"]) return 1;
+                if (a["key"]<b["key"]) return -1;
+              });
               for (i=0; i< data["lines"].length; i++) {
                   var cur_key = data["lines"][i]["key"];
                   var values = data["lines"][i]["values"];

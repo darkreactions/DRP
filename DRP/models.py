@@ -521,29 +521,43 @@ class ModelStats(models.Model):
 
     return matrix
 
-  def count(self, value_list=None, true_guess=True, normalize=False, ranges=True):
+  def count(self, normalize=False, guesses=None, actuals=None, ranges=True, false_guess=False):
     # Variable Setup
-    conf_dict = self.load_confusion_dict()
+    conf_table = self.load_confusion_table(normalize=normalize)
+
+    guess_headers = conf_table.pop(0)[1:] # Remove the empty cell in [0,0].
+    actual_headers = [row.pop(0) for row in conf_table]
+
+    if not actuals: actuals = actual_headers
+    if not guesses: guesses = guess_headers
+
     c = 0
-    denom = self.total() if normalize else 1.0
-    if not value_list: value_list = self.load_correct_vals()
 
-    if true_guess:
-      for value in value_list:
-        if not value in conf_dict:
-          raise Exception("Not in confusion-dict: '{}' ({})".format(value, self))
-        for guess in value_list:
-          if not ranges and guess!=value: continue
+    for value in (actuals+guesses):
+      if value not in guess_headers or value not in actual_headers:
+        raise Exception("Value '{}' not found in confusion table!".format(value))
 
-          if guess in conf_dict[value]:
-            c += conf_dict[value][guess]
-    else:
-      non_values = [h for h in conf_dict.keys() if h not in value_list]
-      for value in non_values:
-        for guess in value_list:
-          if guess in conf_dict[value]:
-            c += conf_dict[value][guess]
-    return c/denom
+    for i, guess in enumerate(guess_headers):
+      for j, actual in enumerate(actual_headers):
+        if ranges:
+          if false_guess:
+            if actual in actuals and guess in guesses and actual not in guesses:
+              c += conf_table[j][i]
+
+          else:
+            if actual in actuals and guess in guesses:
+              c += conf_table[j][i]
+
+        else:
+          if false_guess:
+            if actual!=guess and actual in actuals and guess in guesses:
+              c += conf_table[j][i]
+
+          else:
+            if actual==guess and actual in actuals and guess in guesses:
+              c += conf_table[j][i]
+
+    return c
 
 
   def total(self):
@@ -554,19 +568,23 @@ class ModelStats(models.Model):
 
   # Convenience Wrappers
   def true_positives(self, ranges=True, normalize=False):
-    return self.count(true_guess=True, normalize=normalize, ranges=ranges)
+    corrects = self.load_correct_vals()
+    return self.count(guesses=corrects, actuals=corrects,
+                      normalize=normalize, ranges=ranges)
 
   def true_negatives(self, ranges=True, normalize=False):
-    incorrect_vals = self.load_incorrect_vals()
-    return self.count(value_list=incorrect_vals, true_guess=True,
+    incorrects = self.load_incorrect_vals()
+    return self.count(guesses=incorrects, actuals=incorrects,
                       normalize=normalize, ranges=ranges)
 
   def false_positives(self, ranges=True, normalize=False):
-    return self.count(true_guess=False, normalize=normalize, ranges=ranges)
+    corrects = self.load_correct_vals()
+    return self.count(guesses=corrects, false_guess=True,
+                      normalize=normalize, ranges=ranges)
 
   def false_negatives(self, ranges=True, normalize=False):
-    incorrect_vals = self.load_incorrect_vals()
-    return self.count(value_list=incorrect_vals, true_guess=False,
+    incorrects = self.load_incorrect_vals()
+    return self.count(guesses=incorrects, false_guess=True,
                       normalize=normalize, ranges=ranges)
 
 
