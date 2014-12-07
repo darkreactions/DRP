@@ -521,7 +521,7 @@ class ModelStats(models.Model):
 
     return matrix
 
-  def count(self, value_list=None, true_guess=True, normalize=False, ranges=False):
+  def count(self, value_list=None, true_guess=True, normalize=False, ranges=True):
     # Variable Setup
     conf_dict = self.load_confusion_dict()
     c = 0
@@ -600,22 +600,37 @@ class ModelStats(models.Model):
     return float("inf") #TODO: Not this.
 
 
-  def stats(self):
-    return {
-      "Test Size":self.total(),
-      "Accuracy (Dichotomous)":self.test_accuracy(),
-
-      "Accuracy (Quarterly)":self.test_accuracy(ranges=False),
-      "Precision (Dichotomous)":self.test_precision(),
-      "Precision (Quarterly)":self.test_precision(ranges=False),
-
-      "Rate TP":self.true_positives(normalize=True),
-      "Rate FP":self.false_positives(normalize=True),
-      "Rate TN":self.true_negatives(normalize=True),
-      "Rate FN":self.false_negatives(normalize=True),
-
-      "User Satisfaction":self.user_satisfaction(),
+  def stats(self, classes=None):
+    tests = {
+      "2": {
+        "Test Size":self.total(),
+        "Accuracy":self.test_accuracy(ranges=True),
+        "Rate TP":self.true_positives(normalize=True, ranges=True),
+        "Rate FP":self.false_positives(normalize=True, ranges=True),
+        "Rate TN":self.true_negatives(normalize=True, ranges=True),
+        "Rate FN":self.false_negatives(normalize=True, ranges=True),
+        "Precision":self.test_precision(ranges=True),
+        "User Satisfaction":self.user_satisfaction(),
+      },
+      "4": {
+        "Test Size":self.total(),
+        "Accuracy":self.test_accuracy(ranges=False),
+        "Rate TP":self.true_positives(normalize=True, ranges=False),
+        "Rate FP":self.false_positives(normalize=True, ranges=False),
+        "Rate TN":self.true_negatives(normalize=True, ranges=False),
+        "Rate FN":self.false_negatives(normalize=True, ranges=False),
+        "Precision":self.test_precision(ranges=False),
+        "User Satisfaction":self.user_satisfaction(),
+      }
     }
+
+    if classes:
+      if type(classes) in {set, list}:
+        tests = {key:val for key,val in tests if key in classes}
+      else:
+        tests = tests[classes]
+
+    return tests
 
 
   def print_confusion_table(self, normalize=True):

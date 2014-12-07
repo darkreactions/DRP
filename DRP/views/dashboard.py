@@ -22,7 +22,7 @@ def get_field_tuple(stat, entry):
   return [seconds, value]
 """
 
-def get_fields_as_json(models):
+def get_fields_as_json(models, classes=4):
   #Variable Setup.
 
   # The D3 library needs the following format:
@@ -36,12 +36,13 @@ def get_fields_as_json(models):
   for i, model in enumerate(models):
 
     try:
-      stats =  model.stats()
+      stats =  model.stats(classes=classes)
     except Exception as e:
       # If the model isn't loadable, mark it as not loadable.
       print "{} was not usable: {}".format(model, e)
       model.check_usability()
       continue
+
 
     for stat, val in stats.items():
       if stat not in stat_counter:
@@ -49,21 +50,26 @@ def get_fields_as_json(models):
 
       stat_counter[stat]["values"].append([i, val])
 
-  results = [key_vals for stat, key_vals in stat_counter.items()]
-  return results
+  return stat_counter.values()
 
-def get_stats_json(request):
+
+def get_class_stats_json(request, classes=4):
   #Grab all of the model_stats.
   from DRP.retrievalFunctions import get_usable_models
   models = get_usable_models()
 
   #Convert the data into a JSON format.
-  lines = get_fields_as_json(models)
-  labels = [model.description for model in models]
-  data = json.dumps({"lines":lines, "model_labels":labels})
+  raw = {
+    "lines":get_fields_as_json(models, classes=classes),
+    "descriptions":[model.description for model in models],
+    "titles":[model.title for model in models]
+  }
+
+  data = json.dumps(raw)
 
   #Send the JSON back to the client.
   return HttpResponse(data, mimetype="application/json")
+
 
 @login_required
 def get_dashboard(request):

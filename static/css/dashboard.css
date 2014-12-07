@@ -10,14 +10,31 @@
  display:block;
 }
 
-#chart svg {
-    height: 100%;
+.fullInfoBar {
+ background-color:rgba(53, 90, 119, 0.75);
+ color:white;
+ padding:1em;
+ font-size:1.5em;
+}
+
+#chart2Class svg, #chart4Class svg {
+    height: 30%;
     width: 100%;
 }
 
-.lastVersion {
-    font-weight: bold;
-    font-size: 24;
-    stroke: #FF0000;
-    fill: #FF0000;
+.nvtooltip.xy-tooltip { /* NVD3's Tooltips */
+ padding:0em 1em;
 }
+
+.modelTitle {
+ font-size:1.2em;
+ padding:1em;
+ width:100%;
+ text-align:center;
+}
+
+.modelDescription {
+  font-size:0.8em;
+  padding-bottom:1em;
+}
+

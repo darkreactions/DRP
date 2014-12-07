@@ -17,10 +17,9 @@ urlpatterns = patterns('',
     (r'^contact/?$', info_page, {"page":"contact"}),
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
     (r'^explore/?$', global_page, {"page":"explore"}),
-    #(r'^help/?$', info_page, {"page":"help"}),
   #Dashboard
     url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
-    url(r'^get_stats/?$', "DRP.views.dashboard.get_stats_json"), #Actually loads the json.
+    url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
   #Database
     (r'^database/$', database), #Encompassing data view.
    #Change Page
