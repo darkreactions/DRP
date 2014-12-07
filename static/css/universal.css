@@ -1,16 +1,5 @@
 /* ############# EXTERNAL STYLE ################################## */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Nunito-Light'), url(http://themes.googleusercontent.com/static/fonts/nunito/v5/1TiHc9yag0wq3lDO9cw0vj8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
-}
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Nunito-Bold'), url(http://themes.googleusercontent.com/static/fonts/nunito/v5/TttUCfJ272GBgSKaOaD7Kj8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
-}
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
 /* ###############   BUTTONS   ###################################### */
 .popupActivator {
@@ -327,7 +316,7 @@ table {
 body {
  margin:0px;
  padding: 0px;
- font-family:'Nunito';
+ font-family:'Open Sans';
  background-color:#E8F4FF;
  min-width:750px;
 }
