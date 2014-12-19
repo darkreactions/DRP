@@ -418,12 +418,18 @@ class ModelStats(models.Model):
   usable = models.BooleanField("Usable", default=True)
 
   sklearn = models.BooleanField("Use sklearn", default=False)
+  weka = models.BooleanField("Use weka", default=False)
 
   def load_model(self):
+    #TODO: (1) Incorporate WEKA models.
+
     from sklearn.externals import joblib
 
     if self.sklearn:
       model = joblib.load(self.filename)
+    elif self.weka:
+      pass
+
     else:
       raise Exception("No model library specified! Aborting file-load!")
 
@@ -431,6 +437,8 @@ class ModelStats(models.Model):
 
   def save_model_file(self, model, use_sklearn=False, name=""):
     # Allow models to be saved for use later.
+
+    #TODO: (1) Incorporate WEKA models.
 
     from sklearn.externals import joblib
     import time
@@ -442,6 +450,9 @@ class ModelStats(models.Model):
     if use_sklearn:
       self.sklearn = True
       joblib.dump(model, self.filename)
+
+    elif use_weka:
+      pass
 
     else:
       raise Exception("No model library specified! Aborting file-save!")
