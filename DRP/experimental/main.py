@@ -10,4 +10,5 @@ if django_path not in sys.path:
 
 
 if __name__=="__main__":
-  print "No experiment set!"
+  from sklearnModels import main
+  main()
