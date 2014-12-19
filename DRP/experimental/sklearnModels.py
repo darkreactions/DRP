@@ -8,19 +8,27 @@ def load_data():
     data = [row for row in reader]
     headers = data.pop(0)
 
-  # Remove any columns that we don't want to use.
   blacklist = {}
+  cat_list = {"XXXtitle","XXXinorg1","XXXinorg2","XXXinorg3",
+              "XXXorg1","XXXorg2","XXXoxlike1"}
+
+  # Remove any columns that we don't want to use.
   i_to_remove = {i for i, header in enumerate(headers) if header in blacklist}
   headers = [h for i, h in enumerate(headers) if i not in i_to_remove]
   data = [[e for i, e in enumerate(row) if i not in i_to_remove] for row in data]
 
   # Categorize any non-numeric data.
+  h_to_categorize = {i for i, header in enumerate(headers) if header in cat_list}
+  value_map = {"yes":1, "no":0, "?":-1}
   c = 2
-  value_map = {"yes":1, "no":0}
   for i, row in enumerate(data):
     for j, elem in enumerate(row):
       if elem in value_map:
         data[i][j] = value_map[elem]
+      elif j in h_to_categorize:
+        value_map[elem] = c
+        data[i][j] = value_map[elem]
+        c += 1
 
   return data, headers
 
@@ -37,7 +45,7 @@ def get_model(model_type):
 
 def split_data(data, headers, response):
   from sklearn.cross_validation import train_test_split
-  test_size = 0.7
+  test_size = 0.3
 
   header_index = headers.index(response)
   X = [[elem for i, elem in enumerate(row) if i!=header_index] for row in data]
@@ -56,14 +64,30 @@ def test(model, predictors, responses):
 
   possible_vals = sorted(list(set(responses))) #Assume: all values in `responses`
   len_generator = xrange(len(possible_vals))
-  cm = [[0 for j in len_generator] for i in len_generator]
+  cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
 
   for guess, response in zip(guesses, responses):
-    g_index = possible_vals.index(guess)
-    r_index = possible_vals.index(response)
-    cm[r_index][g_index] += 1
+    cm[response][guess] += 1
 
   return cm
+
+
+def analyze(model):
+  model.graph_confusion_table()
+  model.pretty_stats()
+
+
+def make_sklearn_ModelStats(sklearn_model, cm, response, title="", discription=""):
+  from DRP.models import ModelStats
+  model = ModelStats()
+  model.autofill(title=title)
+
+  model.set_confusion_table(cm)
+  model.set_correct_vals(["3.0","4.0"])
+
+  model.save_model_file(sklearn_model, use_sklearn=True)
+
+  return model
 
 
 def main():
@@ -71,10 +95,13 @@ def main():
   response = "outcome"
 
   data, headers = load_data()
-  model = get_model(model_type)
-  X_train, y_train, X_test, y_test = split_data(data, headers, response)
-  prepare(model, X_train, y_train)
-  cm = test(model, X_test, y_test)
+  sklearn_model = get_model(model_type)
+  A_preds, B_preds, A_resps, B_resps = split_data(data, headers, response)
+  prepare(sklearn_model, A_preds, A_resps)
 
-  print cm
+  cm = test(sklearn_model, B_preds, B_resps)
+  title = "'{}' on '{}'".format(model_type, response)
+  model = make_sklearn_ModelStats(sklearn_model, cm, A_resps, title=title)
+
+  analyze(model)
 
