@@ -33,27 +33,23 @@ def load_data():
   return data, headers
 
 
-def get_model(model_type):
-  from sklearn.ensemble import RandomForestClassifier
-
-  if model_type=="random forest":
-    descriptors = {"n_estimators":500, "criterion":"gini"}
-    model = RandomForestClassifier(**descriptors)
-  else:
-    raise Exception("Model model_type '{}' unknown by get_model".format(model_type))
-
-  return model, descriptors
-
-
-def split_data(data, headers, response, split=0.5):
+def split_data(data, headers, response, split=0.5, PCs_to_use=0):
   from sklearn.cross_validation import train_test_split
+  from sklearn.decomposition import PCA
 
   header_index = headers.index(response)
   X = [[elem for i, elem in enumerate(row) if i!=header_index] for row in data]
   y = [row[header_index] for row in data]
 
+  if PCs_to_use>0:
+    pca = PCA(n_components=PCs_to_use)
+    X = pca.fit_transform(X)
+    updated_headers = ["PC{}" for i in xrange(PCs_to_use)]
+  else:
+    updated_headers = headers
+
   splits = train_test_split(X, y, train_size=split)
-  return splits
+  return splits, updated_headers
 
 
 def prepare(model, predictors, responses):
@@ -91,28 +87,66 @@ def make_sklearn_ModelStats(sklearn_model, cm, response, title="", description="
   return model
 
 
+def get_model(model_type):
+
+  if model_type=="random forest":
+    from sklearn.ensemble import RandomForestClassifier as model
+    descriptors = {"n_estimators":500, "criterion":"gini", "n_jobs":-1}
+
+  elif model_type=="linear regression": #TODO: "Cannot perform reduce with flexible type"
+    from sklearn.linear_model import LinearRegression as model
+    descriptors = dict()
+
+  elif model_type=="svc":
+    from sklearn.svm import SVC as model
+    descriptors = {"C":1, "kernel":"linear"}
+
+  elif model_type=="knn":
+    from sklearn.neighbors import KNeighborsClassifier as model
+    descriptors = {"p":3, "n_neighbors":1, "weights":"distance"}
+
+  else:
+    raise Exception("Model model_type '{}' unknown by get_model".format(model_type))
+
+  return model(**descriptors), descriptors
+
+
 def main():
+  import time
+
+  # Variable Setup
   model_type = "random forest"
   response = "outcome"
   train_percentage = 0.5
+  PCs_to_use = 0
 
   # Organize and split the data.
+  start_time = time.time()
   data, headers = load_data()
   sklearn_model, descriptors = get_model(model_type)
-  A_preds, B_preds, A_resps, B_resps = split_data(data, headers, response,
-                                                  split=train_percentage)
+  splits, headers = split_data(data, headers, response, split=train_percentage,
+                                                        PCs_to_use=PCs_to_use)
+  A_preds, B_preds, A_resps, B_resps = splits
+  gen_time = time.time()-start_time
 
   # Build and test the sklearn model.
+  start_time = time.time()
   prepare(sklearn_model, A_preds, A_resps)
   cm = test(sklearn_model, B_preds, B_resps)
+  test_time = time.time()-start_time
 
-  # Construct and store the model database entry.
+  # Record the parameters used in the `descriptors`
   descriptors["response"] = response
   descriptors["model_type"]=model_type
   descriptors["train percentage"]=train_percentage
+  descriptors["generation time"]=gen_time
+  descriptors["test time"]=test_time
+  descriptors["PCs_to_use"]=PCs_to_use
+
+
+  # Construct and store the model database entry.
   title = "'{}' on '{}'".format(model_type, response)
   description = ", ".join(["{}:{}".format(key,val) for key,val in descriptors.items()])
-
   model = make_sklearn_ModelStats(sklearn_model, cm, A_resps,
                                   title=title, description=description)
 
