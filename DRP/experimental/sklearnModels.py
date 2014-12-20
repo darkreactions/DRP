@@ -34,24 +34,25 @@ def load_data():
 
 
 def get_model(model_type):
+  from sklearn.ensemble import RandomForestClassifier
+
   if model_type=="random forest":
-    from sklearn.ensemble import RandomForestClassifier
-    model = RandomForestClassifier(n_estimators=100, criterion="gini")
+    descriptors = {"n_estimators":500, "criterion":"gini"}
+    model = RandomForestClassifier(**descriptors)
   else:
     raise Exception("Model model_type '{}' unknown by get_model".format(model_type))
 
-  return model
+  return model, descriptors
 
 
-def split_data(data, headers, response):
+def split_data(data, headers, response, split=0.5):
   from sklearn.cross_validation import train_test_split
-  test_size = 0.3
 
   header_index = headers.index(response)
   X = [[elem for i, elem in enumerate(row) if i!=header_index] for row in data]
   y = [row[header_index] for row in data]
 
-  splits = train_test_split(X, y, test_size=test_size)
+  splits = train_test_split(X, y, train_size=split)
   return splits
 
 
@@ -77,10 +78,10 @@ def analyze(model):
   model.pretty_stats()
 
 
-def make_sklearn_ModelStats(sklearn_model, cm, response, title="", discription=""):
+def make_sklearn_ModelStats(sklearn_model, cm, response, title="", description=""):
   from DRP.models import ModelStats
   model = ModelStats()
-  model.autofill(title=title)
+  model.autofill(title=title, description=description)
 
   model.set_confusion_table(cm)
   model.set_correct_vals(["3.0","4.0"])
@@ -93,15 +94,27 @@ def make_sklearn_ModelStats(sklearn_model, cm, response, title="", discription="
 def main():
   model_type = "random forest"
   response = "outcome"
+  train_percentage = 0.5
 
+  # Organize and split the data.
   data, headers = load_data()
-  sklearn_model = get_model(model_type)
-  A_preds, B_preds, A_resps, B_resps = split_data(data, headers, response)
-  prepare(sklearn_model, A_preds, A_resps)
+  sklearn_model, descriptors = get_model(model_type)
+  A_preds, B_preds, A_resps, B_resps = split_data(data, headers, response,
+                                                  split=train_percentage)
 
+  # Build and test the sklearn model.
+  prepare(sklearn_model, A_preds, A_resps)
   cm = test(sklearn_model, B_preds, B_resps)
+
+  # Construct and store the model database entry.
+  descriptors["response"] = response
+  descriptors["model_type"]=model_type
+  descriptors["train percentage"]=train_percentage
   title = "'{}' on '{}'".format(model_type, response)
-  model = make_sklearn_ModelStats(sklearn_model, cm, A_resps, title=title)
+  description = ", ".join(["{}:{}".format(key,val) for key,val in descriptors.items()])
+
+  model = make_sklearn_ModelStats(sklearn_model, cm, A_resps,
+                                  title=title, description=description)
 
   analyze(model)
 
