@@ -11,10 +11,9 @@ from DRP.settings import BASE_DIR
 from DRP.models import DataCalc
 import load_cg,json
 
-def load(lab_group=None):
+def load(lab_group=None, with_headings=True):
 	from DRP.models import get_good_rxns
-        rxns = get_good_rxns(lab_group=lab_group)
-	return rxns
+        return get_good_rxns(lab_group=lab_group, with_headings=with_headings)
 
 #Translate the abbrevs to the full compound names.
 def fix_abbrevs(rxnList, abbrev_map=None):
@@ -105,15 +104,25 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
 # Given a list/queryset of Data entries, constructs a sorted list
 #   of the non-empty and non-water entries to use as a "key".
 from DRP.data_config import CONFIG
-def create_reactant_keys(data):
+def create_reactant_keys(data, headers=None, reactants=None):
+  # If `headers` exist, use them to index each element of `data`.
+
   keys = []
-  reactantBlacklist = {"water", ""} #Should all be lowercase.
+  reactantBlacklist = {"water", "", -1} #Should all be lowercase.
+
+  if not reactants:
+    reactants = ["reactant_{}".format(i) for i in CONFIG.reactant_range()]
 
   for entry in data:
     key = []
-    for i in CONFIG.reactant_range():
-      #Get each reactant and add it to the key if it is not blacklisted.
-      reactant = getattr(entry, "reactant_{}".format(i)).lower()
+    for header in reactants:
+      if headers:
+        reactant_index = headers.index(header)
+        reactant = entry[reactant_index]
+      else:
+        #Get each reactant and add it to the key if it is not blacklisted.
+        reactant = getattr(entry, headers)
+
       if reactant not in reactantBlacklist:
         key.append(reactant)
 

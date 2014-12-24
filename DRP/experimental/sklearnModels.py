@@ -1,12 +1,21 @@
 
-def load_data():
+def load_data(csv_to_use=""):
   import csv
-  filemodel_type = "../../CSVs/12_19_14.csv"
+  from DRP.model_building.load_data import load
+  from DRP.retrievalFunctions import get_valid_data,expand_data,get_expanded_headers
 
-  with open(filemodel_type) as f:
-    reader = csv.reader(f)
-    data = [row for row in reader]
-    headers = data.pop(0)
+  # Variable Setup
+  categorize_nonnumeric = True
+
+  if csv_to_use:
+    with open(csv_to_use) as f:
+      reader = csv.reader(f)
+      data = [row for row in reader]
+      headers = data.pop(0)
+  else:
+    db_data = get_valid_data()
+    data = expand_data(db_data)
+    headers = get_expanded_headers()
 
   blacklist = {}
   cat_list = {"XXXtitle","XXXinorg1","XXXinorg2","XXXinorg3",
@@ -17,20 +26,26 @@ def load_data():
   headers = [h for i, h in enumerate(headers) if i not in i_to_remove]
   data = [[e for i, e in enumerate(row) if i not in i_to_remove] for row in data]
 
-  # Categorize any non-numeric data.
-  h_to_categorize = {i for i, header in enumerate(headers) if header in cat_list}
-  value_map = {"yes":1, "no":0, "?":-1}
-  c = 2
-  for i, row in enumerate(data):
-    for j, elem in enumerate(row):
-      if elem in value_map:
-        data[i][j] = value_map[elem]
-      elif j in h_to_categorize:
-        value_map[elem] = c
-        data[i][j] = value_map[elem]
-        c += 1
+  if categorize_nonnumeric:
+    h_to_categorize = {i for i, header in enumerate(headers) if header in cat_list}
+    value_map = {"yes":1, "no":0, "?":-1}
+    c = 2
+    for i, row in enumerate(data):
+      for j, elem in enumerate(row):
+        if elem in value_map:
+          data[i][j] = value_map[elem]
+        elif j in h_to_categorize:
+          value_map[elem] = c
+          data[i][j] = value_map[elem]
+          c += 1
 
   return data, headers
+
+def split_data_paul(data, headers, response, split=0.5, PCs_to_use=0):
+  # Calls Paul's splitter; need to implement split size and PCA.
+  from DRP.experimental.splitter import smart_split
+  reactants = ["XXXinorg1","XXXinorg2","XXXinorg3", "XXXorg1","XXXorg2","XXXoxlike1"]
+  return smart_split(data, headers, response, reactants)
 
 
 def split_data(data, headers, response, split=0.5, PCs_to_use=0):
