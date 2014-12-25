@@ -126,44 +126,54 @@ def get_model(model_type):
   return model(**descriptors), descriptors
 
 
-def main():
+def gen_sklearn_model(model_type, splits, headers, details={}, title=""):
   import time
 
   # Variable Setup
-  model_type = "random forest"
-  response = "outcome"
-  train_percentage = 0.5
-  PCs_to_use = 0
-
-  # Organize and split the data.
-  start_time = time.time()
-  data, headers = load_data()
-  sklearn_model, descriptors = get_model(model_type)
-  splits, headers = split_data(data, headers, response, split=train_percentage,
-                                                        PCs_to_use=PCs_to_use)
   A_preds, B_preds, A_resps, B_resps = splits
-  gen_time = time.time()-start_time
 
-  # Build and test the sklearn model.
+  # Build the sklearn model.
   start_time = time.time()
+  sklearn_model, descriptors = get_model(model_type)
   prepare(sklearn_model, A_preds, A_resps)
+  descriptors["generation time"]=time.time()-start_time
+
+  start_time = time.time()
   cm = test(sklearn_model, B_preds, B_resps)
-  test_time = time.time()-start_time
-
-  # Record the parameters used in the `descriptors`
-  descriptors["response"] = response
-  descriptors["model_type"]=model_type
-  descriptors["train percentage"]=train_percentage
-  descriptors["generation time"]=gen_time
-  descriptors["test time"]=test_time
-  descriptors["PCs_to_use"]=PCs_to_use
-
+  descriptors["test time"]=time.time()-start_time
 
   # Construct and store the model database entry.
-  title = "'{}' on '{}'".format(model_type, response)
+  descriptors.update(details)
   description = ", ".join(["{}:{}".format(key,val) for key,val in descriptors.items()])
+
+  if not title:
+    title = "{}_sklearn".format(str(int(time.time())))
+
   model = make_sklearn_ModelStats(sklearn_model, cm, A_resps,
                                   title=title, description=description)
+  return model, cm
+
+def main():
+  response = "outcome"
+  train_percentage = 0.5
+  model_type = "random forest"
+  PCs_to_use = 0
+
+  details = {
+    "model_type":model_type,
+    "response":response,
+    "PCs_to_use":PCs_to_use,
+    "train percentage":train_percentage
+  }
+
+  title = "'{}' on '{}'".format(model_type, response)
+
+  # Prepare the data to use in the model.
+  data, headers = load_data()
+  splits, headers = split_data(data, headers, response, split=train_percentage,
+                                                        PCs_to_use=PCs_to_use)
+
+  # Generate the model and store it in the database.
+  model, cm = gen_sklearn_model(model_type, splits, headers, details=details, title=title)
 
   analyze(model)
-
