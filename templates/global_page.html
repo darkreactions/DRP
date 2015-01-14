@@ -11,40 +11,49 @@
  {% endwith %}
 
  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataManipulationMenu.css" />
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/textFormatting.css" />
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/containers.css" />
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buttons.css" />
 
  <meta name="viewport" content="width=device-width, initial-scale=1">
 
  </head>
 
 <body>
- {% include "popupContainer.html" %}
 
-<div id="mainContainer">
+  {% include "popupContainer.html" %}
 
-  <div id="topPanel">
+  <div id="mainContainer">
 
-    {% include "main_logo.html" %}
-    {% include "main_menu.html" %}
+    <div id="topPanel">
 
-    <!-- Buttons used to manipulate the data presented on this page. -->
-    <div id="dataManipulationMenu">
-      {% include template|add:"_menu.html" %}
+      {% include "main_logo.html" %}
+      {% include "main_menu.html" %}
+
+      <!-- Buttons used to manipulate the data presented on this page. -->
+      <div id="dataManipulationMenu">
+        {% include template|add:"_menu.html" %}
+      </div>
+
+      {% include "user_control_container.html" %}
+
     </div>
 
-    {% include "user_control_container.html" %}
+    <div id="centerPanel">
+
+      <div id="mainPanel">
+        {% include template|add:".html" %}
+      </div>
+
+      <div id="sidePanel">
+        <div id="sidePanel_inner"></div>
+      </div>
+
+    </div>
 
   </div>
 
-<div id="centerPanel">
- <div id="mainPanel">{% include template|add:".html" %}</div>
- <div id="sidePanel"><div id="sidePanel_inner"></div></div>
-</div>
-
-
-</div>
-</div>
-
- </body>
+</body>
 
  <!-- SCRIPTS -->
 <!-- For production...

@@ -1,0 +1,106 @@
+.bannerText {
+  padding:1.25em 3em;
+  font-size:1.25em;
+  text-align:center;
+  background-color:#773539;
+  color:white;
+}
+
+.highlightText {
+  opacity:0.9;
+  font-weight:bold;
+}
+
+.basicParagraph {
+ font-size:1.1em;
+ text-align:justify;
+ padding: 1em 10%;
+}
+
+
+
+
+
+.subscript {
+ vertical-align:sub;
+ font-size:12px;
+}
+
+
+.pagesInfo {
+ font-weight:bold;
+ display:inline-block;
+ font-size:14px;
+ margin-top:12px;
+ color:white;
+}
+
+.pageLink {
+ background-color:#3B5D77;
+ padding-left:3px;
+ padding-right:3px;
+ border-radius:15px;
+}
+
+.pageLink:hover {
+ color:yellow;
+ padding-left:3px;
+ padding-right:3px;
+}
+
+#pageLinkCurrent {
+ border:2px solid #304B60;
+}
+
+/* Recommendation Groups */
+.recommendation {
+ background-color: #B5D0E8;
+}
+
+.badRecommendation {
+ background-color:#FF8080;
+ border-left-color: red;
+}
+
+.savedRecommendation {
+ background-color:#99FF99;
+}
+
+.hiddenRecommendation {
+ opacity:0.4;
+ background-color:white;
+}
+
+#popupContainer_inner > h1 {
+ margin:5px;
+ text-align:center;
+ color:white;
+ border-bottom:2px solid white;
+}
+
+#popupContainer_inner > a {
+ color:silver;
+}
+
+.subPopup > h1 {
+ margin:5px;
+ text-align:center;
+ padding-left:20px;
+}
+
+#changePassword {
+ cursor:pointer;
+ display:inline-block;
+ font-size:12px;
+ margin-bottom:4px;
+}
+
+#changePassword:hover {
+ font-weight:bold;
+}
+
+.userAuthLink {
+color: #355A77;
+}
+
+

@@ -152,11 +152,6 @@
 }
 
 /* ###############   TOP MENUS   ################################### */
-#topPanel{
- position:relative;
- display:block;
- background-color:#355A77;
-}
 
 .currentTitle {
  font-weight:bold;
@@ -164,45 +159,6 @@
 
 
 
-/* ########### MAIN AND SIDE PANELS ####################### */
-#infoPanel{
- position:relative;
- display:block;
- text-align:center;
- width:100%;
- height:675px;
- border-bottom:2px solid black;
-}
-
-#centerPanel {
- position:relative;
- display:inline-block;
- text-align:center;
- width:100%;
-}
-
-#mainPanel {
- display:inline-block;
- position:relative;
- width:100%;
- float:left;
- overflow:hidden;
-}
-
-#sidePanel {
- display:inline-block;
- position:relative;
- height:100%;
- width:0%;
- overflow:hidden;
- float:right;
- background-color:#355A77;
- color:white;
-}
-
-#bottomPanel {
- padding-top:10px;
-}
 /* ###############   UNIVERSAL   ################################### */
 label {
  cursor:pointer;
@@ -229,7 +185,6 @@ body {
  margin:0px;
  padding: 0px;
  font-family:'Open Sans';
- background-color:#E8F4FF;
  min-width:500px;
 }
 
@@ -278,12 +233,9 @@ select {
  border-top-right-radius:10px;
 }
 
-input:hover, textarea:hover, select:hover {
- background-color:#FFF1B5;
-}
-
+input:hover, textarea:hover, select:hover,
 input:focus, textarea:focus, select:focus {
- background-color:#FFD92E;
+ background-color:#FFF1B5;
 }
 
 option {
@@ -434,10 +386,9 @@ div.ui-tooltip {
 }
 
 #haverfordLogo {
- margin: 0 auto;
- margin-top:10px;
- width:125px;
  outline:none;
+
+ height:2em;
  -webkit-filter: invert(1);
  -moz-filter: invert(1);
  -ms-filter: invert(1);
@@ -475,7 +426,6 @@ div.ui-tooltip {
  position:relative;
  width:100%;
  height:100%;
- min-height:750px;
  z-index:1;
 }
 
@@ -486,11 +436,11 @@ div.ui-tooltip {
  height:100%;
  width:100%;
  background-color:black;
- opacity:0.3;
+ opacity:0.5;
  z-index:100;
 }
 
-.darkenedMask {!important //TODO: Make this less "hacky"
+.darkenedMask {!important
  opacity: 0.9;
 }
 
@@ -539,12 +489,13 @@ div.ui-tooltip {
 
 .inlineForm textarea {
  height:200px;
+ vertical-align:middle;
 }
 
 .inlineForm label {
  display:block;
  text-align:left;
- vertical-align:top;
+ vertical-align:middle;
 
  margin-bottom:20px;
  word-spacing:20px;
@@ -1026,101 +977,6 @@ height:10px;
  display:none;
 }
 
-/* ###############   TEXT   ######################################### */
-.subscript {
- vertical-align:sub;
- font-size:12px;
-}
-
-.separatedText {
- margin:20px;
- font-size:18px;
-}
-
-p.basicParagraph {
- margin: 10px;
- text-align:justify;
- text-indent:40px;
- line-height:20px;
- word-spacing:2px;
- padding: 0px 40px;
-}
-
-.pagesInfo {
- font-weight:bold;
- display:inline-block;
- font-size:14px;
- margin-top:12px;
- color:white;
-}
-
-.pageLink {
- background-color:#3B5D77;
- padding-left:3px;
- padding-right:3px;
- border-radius:15px;
-}
-
-.pageLink:hover {
- color:yellow;
- padding-left:3px;
- padding-right:3px;
-}
-
-#pageLinkCurrent {
- border:2px solid #304B60;
-}
-
-/* Recommendation Groups */
-.recommendation {
- background-color: #B5D0E8;
-}
-
-.badRecommendation {
- background-color:#FF8080;
- border-left-color: red;
-}
-
-.savedRecommendation {
- background-color:#99FF99;
-}
-
-.hiddenRecommendation {
- opacity:0.4;
- background-color:white;
-}
-
-#popupContainer_inner > h1 {
- margin:5px;
- text-align:center;
- color:white;
- border-bottom:2px solid white;
-}
-
-#popupContainer_inner > a {
- color:silver;
-}
-
-.subPopup > h1 {
- margin:5px;
- text-align:center;
- padding-left:20px;
-}
-
-#changePassword {
- cursor:pointer;
- display:inline-block;
- font-size:12px;
- margin-bottom:4px;
-}
-
-#changePassword:hover {
- font-weight:bold;
-}
-
-.userAuthLink {
-color: #355A77;
-}
 
 /* ###############   Specific Elements   ############################ */
 .tertiaryCornerButton {

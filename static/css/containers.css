@@ -1,0 +1,36 @@
+#topPanel{
+ display:block;
+ position:relative;
+ background-color:#355A77;
+}
+
+#centerPanel {
+ position:relative;
+ width:100%;
+}
+
+#mainPanel {
+ display:inline-block;
+ position:relative;
+ width:100%;
+ float:left;
+ overflow:hidden;
+}
+
+#sidePanel {
+ display:inline-block;
+ position:relative;
+ text-align:center;
+
+ height:100%;
+ width:0%;
+ overflow:hidden;
+
+ float:right;
+ background-color:#355A77;
+ color:white;
+}
+
+#bottomPanel {
+ padding-top:10px;
+}
