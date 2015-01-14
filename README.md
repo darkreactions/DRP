@@ -1,5 +1,5 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
- # # # # # #   Dark Reaction Project README    # # # # # # # # # 
+ # # # # # #   Dark Reaction Project README    # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 Last Updated by Casey Falk -- 6/23/14
 
@@ -17,19 +17,19 @@ Table of Contents:
   --Using the ORM
   --Getting a CSV File of a Database Table
   --Independent Processes
-  --Editing the Database Schema 
+  --Editing the Database Schema
   --Database Backups
 --Accounts
 
 _________________________________________________
- # # # # #   System Architecture   # # # # # # # 
+ # # # # #   System Architecture   # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
 The website can be accessed at "darkreactions.haverford.edu" -- this
 domain is managed by Haverford. The server itself (named "drp")
 is in the KINSC Server Room and can be accessed by SSH while on campus.
-Note that if you are off-campus and need to access drp, you will need 
-to tunnel through another server on campus, such as those hosted by FIG, 
+Note that if you are off-campus and need to access drp, you will need
+to tunnel through another server on campus, such as those hosted by FIG,
 or through a CS Lab Computer (that is, SSH there and THEN SSH into drp).
 
 
@@ -44,8 +44,8 @@ There are a few directories that are vital to hosting the site.
 Notably, these are the directories of NGINX and UWSGI -- respectively
 "/etc/nginx/" and "/etc/uwsgi/". NGINX is responsible for serving static
 files and distributing HTTP requests; UWSGI acts as the gateway from
-NGINX to the Django files (located in the home directory of the "drp" user: 
-"/home/drp/web/darkreactions.haverford.edu/app/"). 
+NGINX to the Django files (located in the home directory of the "drp" user:
+"/home/drp/web/darkreactions.haverford.edu/app/").
 
 
 __ Django Directory Architecture __
@@ -67,7 +67,7 @@ DRP/
       settings.py	#Contains settings for the database, admin emails, and more.
       urls.py		#Responsible for mapping a URL call to a function call.
       data_config.py	#Sets the license file, some static directories, and more.
-      <Many more files>.py	#The logging, email, and view helper functions (etc.). 
+      <Many more files>.py	#The logging, email, and view helper functions (etc.).
 
       research/		#Research files incorporated into the DRP scripts.
       management/	#Directory to add custom "python manage.py" commands.
@@ -77,7 +77,7 @@ DRP/
       migrations/		#South Migration Files -- don't modify manually.
       model_building/		#Scripts for building the model itself.
       recommendation/		#Scripts for calculating and storing recommendations.
-   logs/			#Directory for the log files of worker processes. 
+   logs/			#Directory for the log files of worker processes.
       compound_calculations/ 	#The worker process logs for compound property calcs.
       seed_recommend/		#"                " logs for seed recommendations.
    templates/	#The HTML templates for Django Views.
@@ -104,22 +104,22 @@ the files themselves.
 
 
 __ Creating a User __
-After logging in, you'll want to make another user. The command for 
-that is pretty simple: "sudo adduser <theNewUserName>". It should 
-prompt you then to make a password and for some other details 
-(which you can skip). 
+After logging in, you'll want to make another user. The command for
+that is pretty simple: "sudo adduser <theNewUserName>". It should
+prompt you then to make a password and for some other details
+(which you can skip).
 
-Next, give the account sudo access; to do so, all we need to do 
-is add the new user to the "sudo" group. Run the command: 
-"sudo adduser <theNewUserName> sudo". This change will take effect 
+Next, give the account sudo access; to do so, all we need to do
+is add the new user to the "sudo" group. Run the command:
+"sudo adduser <theNewUserName> sudo". This change will take effect
 the next time the new user logs in. Hurray!
 
 
 __ Connecting a User to BitBucket with an SSH Key __
 To start, hop over to BitBucket and log in to a user there. Then, follow
 the instructions in ".../DRP/HowToCommitToTheGitRepo.txt" to create and pair
-your development user with the BitBucket Repo. Note that to push, you'll 
-still need to be added to the BitBucket Organization. 
+your development user with the BitBucket Repo. Note that to push, you'll
+still need to be added to the BitBucket Organization.
 
 
 __ Using a Test Bed ON the DRP Server __
@@ -136,12 +136,12 @@ you perform any script that may modify the database in any way.
 With those warnings in place, setting up a test bed is simple. First,
 "cd" to your home directory and check BitBucket for the repository URL
 that you can use to copy the repository to your development directory with
-the command: "git clone <theOverlyLongURLForTheGitRepo>". 
+the command: "git clone <theOverlyLongURLForTheGitRepo>".
 
-There are a few settings you must change in ".../DRP/settings.py" 
+There are a few settings you must change in ".../DRP/settings.py"
 (notably the database password and the database name "DRP_db_test" is the
 test database, whereas "DRP_db" is the actual database.). Remember, data
-is gold. 
+is gold.
 
 Django provides a nifty test-server through the command:
 "python manage.py runserver <ip>:<port>". This "runserver" serves static
@@ -154,13 +154,13 @@ Check more out online: https://docs.djangoproject.com/en/dev/ref/django-admin/
 __ Using a Test Bed OFF of the DRP Server __
 This is CERTAINLY the recommended development strategy. Note that the
 same process as described above can be used to set up the Django Project.
-However, you'll want to SCP a version of the database over to your 
+However, you'll want to SCP a version of the database over to your
 development box and set up MySQL appropriately (see the setup.txt file above).
 Any of the backups in the DropBox backup folder should suffice.
 
 
 _____________________________________________________
- # # # # #   Django Management Commands  # # # # # #  
+ # # # # #   Django Management Commands  # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 Django management commands (that is, the commands that pass through
@@ -182,13 +182,13 @@ description, and unique ID. The estimated run time is ~20 minutes.
 
 
 _____________________________________
- # # # # #   Database  # # # # # # # 
+ # # # # #   Database  # # # # # # #
 # # # # # # # # # # # # # # # # # # #
 
 The DRP uses a MySQL database that should be accessed by running
-MySQL queries using the "root" MySQL user on the "DRP_db" database. 
-However, that being said, these queries should be performed by 
-utilizing the Django ORM (for documentation on how to use the ORM: 
+MySQL queries using the "root" MySQL user on the "DRP_db" database.
+However, that being said, these queries should be performed by
+utilizing the Django ORM (for documentation on how to use the ORM:
 https://docs.djangoproject.com/en/dev/topics/db/).
 
 
@@ -210,10 +210,10 @@ now just use:
 
 > Data.objects.all()
 
-For more complicated queries, check out the examples in 
+For more complicated queries, check out the examples in
 "retrievalFunctions.py" -- and likewise for information on how to
-create new entries in the database, check out "database_construction.py". 
-The ORM is flexible and capable of any query you should be making -- and 
+create new entries in the database, check out "database_construction.py".
+The ORM is flexible and capable of any query you should be making -- and
 allows us to abstract complicated MySQL queries out of our scripts.
 
 
@@ -232,7 +232,7 @@ entries from the database. Find examples in ".../DRP/views/jsonViews.py".
 
 __ Independent Processes __
 Often, you may want to run independent Python processes that access
-the database. This requires the Python Path to be set to the DRP 
+the database. This requires the Python Path to be set to the DRP
 project directory so that Django can include the appropriate files.
 To do so, just include the following lines to in top of the script:
 
@@ -245,12 +245,12 @@ To do so, just include the following lines to in top of the script:
 
 __ Editing the Database Schema  __
 Be wary about adding fields to the Django Models and adding new Models
-in general; there are a few steps that must be completed. The DRP 
+in general; there are a few steps that must be completed. The DRP
 uses a database migration tool called South which handles most
 schema migrations. First, modify the Django Model (in models.py) and save
 the file. Second, run the South command that detects model changes:
 "python manage.py schemamigration DRP --auto". Finally, perform
-the migration: "pyhton manage.py migrate DRP". 
+the migration: "pyhton manage.py migrate DRP".
 
 Functionally, South re-creates any database tables that are modified and
 migrates the data in the old table over to the new table. There is more that
@@ -259,7 +259,7 @@ control), but I leave that for the Documentation: http://south.aeracode.org/ .
 
 
 __ Database Backups __
-The database is dumped to a file and placed in a DropBox folder 
+The database is dumped to a file and placed in a DropBox folder
 every night. The DropBox folder can be found on the drp server at
 "/home/drp/database_backups/Dropbox/". The DropBox account
 uses the email "darkreactionsproject@gmail.com" and the standard
@@ -268,13 +268,13 @@ in this folder to avoid clutter.
 
 
 _____________________________________
- # # # # #   Accounts  # # # # # # # 
+ # # # # #   Accounts  # # # # # # #
 # # # # # # # # # # # # # # # # # # #
 There are a few accounts that are needed by the DRP to operate
 successfully -- they range from database accessors to mail serves.
 
 Google:
-darkreactionsproject@gmail.com -- Used to distribute automatic emails 
+darkreactionsproject@gmail.com -- Used to distribute automatic emails
 from the DRP site, such as error messages, contact form completions,
 and seed recommendation results.
 
@@ -296,8 +296,8 @@ a personal BitBucket account with read/write access to this team.
 
 
 _________________________________________________________________
-# # # # # # # # # # # # # # # # # # # # 
- # # # # #   TODO    # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # #
+ # # # # #   TODO    # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # #
 TODO for Paul and Casey before they leave for summer 2014
 
