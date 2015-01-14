@@ -1,0 +1,33 @@
+#userInfo {
+ position:absolute;
+ right:0px;
+ top:0px;
+}
+
+#userInfo_inner {
+ font-size:1em;
+ padding:0.5em 1em;
+ background-color:white;
+ border-bottom-left-radius:15px;
+
+ text-align:right;
+}
+
+#userUpdate {
+ display:inline-block;
+}
+
+#userUpdate:hover {
+ opacity:0.5;
+}
+
+#userLogOut {
+ font-size:0.8em;
+}
+
+@media (max-width:600px) {
+  #userInfo {
+    display:none;
+  }
+}
+

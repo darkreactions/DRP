@@ -9,14 +9,16 @@ handler500 = 'DRP.views.errors.display_500_error'
 handler404 = 'DRP.views.errors.display_404_error'
 
 urlpatterns = patterns('',
- #Home and info pages.
-    (r'^$', info_page, {"page":"home"}),
-    (r'^home/?$', info_page, {"page":"home"}),
-    (r'^papers/?$', info_page, {"page":"papers"}),
-    (r'^about/?$', global_page, {"page": "about"}),
-    (r'^contact/?$', info_page, {"page":"contact"}),
+ #Individual Pages.
+    (r'^$', page, {"template":"home"}),
+    (r'^home/?$', page, {"template":"home"}),
+    (r'^papers/?$', page, {"template":"papers"}),
+    (r'^about/?$', page, {"template": "about"}),
+    (r'^contact/?$', page, {"template":"contact"}),
+    (r'^explore/?$', page, {"template":"explore"}),
+    (r'^login/?$', page, {"template":"login_form"}),
+
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
-    (r'^explore/?$', global_page, {"page":"explore"}),
   #Dashboard
     url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
     url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
@@ -78,7 +80,6 @@ urlpatterns = patterns('',
    #Authentication
     (r'^user_logout/$', "DRP.views.user.user_logout"), #Log Out
     (r'^user_login/$', "DRP.views.user.user_login"), #Log In
-    (r'^login/?$', info_page, {"page":"login_form"}),
    #Registration
     (r'^user_license_agreement/$', "DRP.views.license_agreement.get_user_license_agreement"),
     (r'^update_user_license_agreement/$', "DRP.views.license_agreement.update_user_license_agreement"),

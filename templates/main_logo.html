@@ -1,48 +1,7 @@
-<style>
-#siteLogo {
- position:absolute;
- left:0px;
- top:0.5em;
- height:80px;
- width:100%;
- background-repeat:no-repeat;
-}
 
-.logoTextFirst{
- font-size:28px;
-}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/logo.css" />
 
-#logoText {
- position:absolute;
- display:inline-block;
- font-size:32px;
- font-family:arial;
- font-weight:bold;
- letter-spacing:-1px;
-
- -webkit-user-select: none;
- -moz-user-select: none;
- -ms-user-select: none;
- user-select: none;
-}
-</style>
-
-<div id="siteLogo" style="background-image: url({{ STATIC_URL }}images/mainLogo.png);">
+<div id="logoContainer-drp" class='unselectable'>
+  <img id="logoImage" src="{{ STATIC_URL }}images/mainLogo.png"></img>
+  <div id="logoText">Dark Reaction Project</div>
 </div>
-<svg class="backgroundSVG" height=55 width=400 xmlns="http://www.w3.org/2000/svg" version="1.1">
- <defs>
-  <linearGradient id="textGradient" x1="0%" x2="0%" y1="0%" y2="100%">
-      <stop stop-color="#3A6382" offset="0%"/>
-      <stop stop-color="#28445C" offset="100%"/>
-  </linearGradient>
-  <linearGradient id="textGradientFirst" x1="0%" x2="0%" y1="0%" y2="100%">
-      <stop stop-color="#3A6382" offset="0%"/>
-      <stop stop-color="#000000" offset="100%"/>
-  </linearGradient>
- </defs>
- <text id="logoText" x="0" y="45" fill="url(#textGradient)">
-  <tspan class="logoTextFirst" fill="url(#textGradientFirst)">D</tspan>ark
-  <tspan class="logoTextFirst" fill="url(#textGradientFirst)">R</tspan>eaction
-  <tspan class="logoTextFirst" fill="url(#textGradientFirst)">P</tspan>roject
- </text>
-</svg>

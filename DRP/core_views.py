@@ -19,11 +19,8 @@ from data_config import CONFIG
 # # # # # # # # # # # # # # # # # # #
 
 #Having issues with about page being rendered and reording the divs (namely, #bottomPanel div is being put inside #infoPanel instead of on the same level, so going to bypass the issue for now by not inheriting the index template
-def info_page(request, page):
- return render(request, 'index.html', {"template":page})
-
-def global_page(request, page):
- return render(request, 'global_page.html', {"template":page})
+def page(request, template):
+ return render(request, 'global_page.html', {"template":template})
 
 
 # # # # # # # # # # # # # # # # # # #

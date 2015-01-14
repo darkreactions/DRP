@@ -10,6 +10,8 @@
  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/{{ css_name }}" />
  {% endwith %}
 
+ <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataManipulationMenu.css" />
+
  <meta name="viewport" content="width=device-width, initial-scale=1">
 
  </head>
@@ -18,17 +20,20 @@
  {% include "popupContainer.html" %}
 
 <div id="mainContainer">
-<div id="topPanel">
- <div id="logoContainer">{% include "main_logo.html" %}</div>
 
- {% include "info_menu.html" %} <!--TODO: Change to db_menu.html when ready -->
+  <div id="topPanel">
 
- <!-- Buttons used to manipulate the data presented on this page. -->
- <div id="dataManipulationMenu">
-  {% include template|add:"_menu.html" %}
- </div>
- {% include "user_control_container.html" %}
-</div>
+    {% include "main_logo.html" %}
+    {% include "main_menu.html" %}
+
+    <!-- Buttons used to manipulate the data presented on this page. -->
+    <div id="dataManipulationMenu">
+      {% include template|add:"_menu.html" %}
+    </div>
+
+    {% include "user_control_container.html" %}
+
+  </div>
 
 <div id="centerPanel">
  <div id="mainPanel">{% include template|add:".html" %}</div>

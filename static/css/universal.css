@@ -155,70 +155,14 @@
 #topPanel{
  position:relative;
  display:block;
+ background-color:#355A77;
 }
 
 .currentTitle {
  font-weight:bold;
 }
 
-/* ###### NAVIGATION ####### */
-#navigationMenu {
- display:block;
- position:relative;
- width:100%;
- padding:10px 0px;
- text-align:center;
-}
 
-.navLink {
- font-size:20px;
- color:black;
- margin:0px 10px;
-}
-
-.navLink:hover {
- color:#444444;
-}
-
-/* ##### DATA MANIPULATION ##### */
-#dataManipulationMenu {
- border-top: 2px solid black;
- border-bottom: 2px solid black;
- text-align:center;
- padding:5px;
- background-color:#355A77;
-}
-
-.dataManipulationButton {
- height:30px;
- width:30px;
-
- background-repeat:no-repeat;
- background-position:center;
- background-size:80%;
- padding:5px;
-
- background-color:white;
- border-radius:15px;
- border: 2px solid black;
- display: inline-block;
- margin-right:10px;
- margin-left:10px;
-}
-
-.dataManipulationButton:hover {
- background-color:#FFE944;
- cursor:pointer;
-}
-
-/* ############### LOGO ######################################## */
-#logoContainer {
- position:relative;
- width:400px;
- padding-left:100px;
- margin-bottom:5px;
- display:block;
-}
 
 /* ########### MAIN AND SIDE PANELS ####################### */
 #infoPanel{
@@ -256,38 +200,6 @@
  color:white;
 }
 
-/*
-#leftPanel {
- height:100%;
- width:100px;
-
- position:fixed;
- margin-top:15px;
- left:0px;
-}
-
-#rightPanel {
- margin-left:130px;
- height:100%;
-}
-
-
-#topPanel {
- height:100px;
- position:absolute;
- border-bottom:2px solid black;
- min-width:500px;
-}
-
-#centerPanel {
- height:80%;
- min-height:510px;
- min-width:600px;
- position:relative;
- border-bottom:2px solid black;
-}
-
-*/
 #bottomPanel {
  padding-top:10px;
 }
@@ -318,7 +230,7 @@ body {
  padding: 0px;
  font-family:'Open Sans';
  background-color:#E8F4FF;
- min-width:750px;
+ min-width:500px;
 }
 
 input {
@@ -563,7 +475,6 @@ div.ui-tooltip {
  position:relative;
  width:100%;
  height:100%;
- min-width:730px;
  min-height:750px;
  z-index:1;
 }
@@ -1243,37 +1154,7 @@ color: #355A77;
  opacity: 0.5;
 }
 
-#userUpdate {
- display:inline-block;
-}
 
-#userUpdate:hover {
- font-weight:bold;
-}
-
-
-#userInfo {
- z-index:5;
- background-color:#A1C5E2;
- border-bottom-left-radius:15px;
- border: 2px solid black;
- position:absolute;
- right:0px;
- top:0px;
-
- text-align:center;
- padding:5px;
- min-width:100px;
-}
-
-#userInfo_inner {
- font-size:14px;
- padding:8px;
- margin-left:15px;
- background-color:white;
- border-radius:5px;
- border-bottom-left-radius:15px;
-}
 
 .ribbonMessage {
  font-size:18px;
@@ -1433,6 +1314,14 @@ color: #355A77;
 }
 
 /*############################ Single elements ######################### */
+
+.unselectable {
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
+ cursor:default;
+}
 
  #graph {
  width: 90%;
