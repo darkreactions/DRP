@@ -1,16 +1,15 @@
 Dark Reaction Project README
 ===========================
 
-######Last Updated by Casey Falk -- 6/23/14
+######Last Updated by Casey Falk -- 1/13/15
 
 1. **Setup and General Information**
-  1. System Architecture
-  2. Setup of the Server/a Test-bed
-  3. Important Directories
-  4. Django Directory Architecture
-  5. Creating a User
-  6. Connecting a User to BitBucket with an SSH Key
-  7. Using a Test Bed ON the DRP Server
+  1. Setup of the Server/a Test-bed
+  2. Important Directories
+  3. Django Directory Architecture
+  4. Creating a User
+  5. Connecting a User to BitBucket with an SSH Key
+  6. Using a Test Bed ON the DRP Server
 2. **Django Management Commands**
   1. generate_model
 3. **Database**
@@ -21,12 +20,12 @@ Dark Reaction Project README
   5. Database Backups
 4. **Accounts**
 
-System Architecture
-===================
+Setup and General Information
+=============================
 
 **Accessing the Server**
 
-The website can be accessed at [darkreactions.haverford.edu](http://darkreactions.haverford.edu) -- this domain is managed by Haverford. The server itself (named "drp") is in the KINSC Server Room and can be accessed by SSH while on campus.  Note that if you are off-campus and need to access drp, you will need to tunnel through another server on campus, such as those hosted by FIG, or through a CS Lab Computer (that is, SSH there and THEN SSH into drp).
+The website can be accessed at [darkreactions.haverford.edu](http://darkreactions.haverford.edu) -- this domain is managed by Haverford. The server itself (named "drp") is in the KINSC Server Room and can be accessed by SSH while on campus.  Note that if you are off-campus and need to access drp, you will need to tunnel through another server on campus -- such as those hosted by FIG or a CS Lab Computer. That is, SSH there and THEN SSH into drp.
 
 **Setup of the Server/a Test-bed**
 
@@ -61,7 +60,7 @@ The DRP Django Project is set up as follows inside the DRP directory:
   - [more files].py	*-- The logging, email, and view helper functions (etc.).*
 
   - research/		*-- Research files incorporated into the DRP scripts.*
-  - management/	*-- Directory to add custom "python manage.py" commands.*
+  - management/	*-- Directory to add custom `python manage.py` commands.*
   - templatetags/	*-- Directory to add custom Django template tags.*
   - views/		*-- Directory of various views sorted into different files.*
   - compound_calculations/
@@ -85,13 +84,9 @@ The DRP Django Project is set up as follows inside the DRP directory:
   5.  licenses/	*-- The current and past licenses.*
   6.  admin/	*-- CSS for the /admin/ page. Feel free to ignore.*
 6. **tmp**		*-- Calculation files for compounds. Don't modify manually.*
-7. **off_production_scripts** *Scripts that are meant to live off the production server.*
+7. **test_scripts** *-- Scripts that test site status (etc).*
 
-There are many files that are not listed above in order to illucidate
-the "framework" of the DRP Django Project succinctly. Notably, there
-are many python files in the views and research directories that are
-not listed above -- but which should contain explanatory comments in
-the files themselves.
+There are many files that are not listed above in order to elucidate the "framework" of the DRP Django Project succinctly. Notably, there are many python files in the views and research directories that are not listed above -- but which should contain explanatory comments in the files themselves.
 
 
 **Creating a User**
@@ -109,10 +104,7 @@ the next time the new user logs in. Hurray!
 
 **Connecting a User to BitBucket with an SSH Key**
 
-To start, hop over to BitBucket and log in to a user there. Then, follow
-the instructions in ".../DRP/HowToCommitToTheGitRepo.txt" to create and pair
-your development user with the BitBucket Repo. Note that to push, you'll
-still need to be added to the BitBucket Organization.
+To start, hop over to BitBucket and log in/make an account. Then, follow the instructions in ".../DRP/HowToCommitToTheGitRepo.txt" to create and pair your development user with the BitBucket Repo. Note that to push, you'll still need to be added to the BitBucket Organization.
 
 
 **Using a Test Bed ON the DRP Server**
@@ -138,7 +130,7 @@ test database, whereas "DRP_db" is the actual database.). Remember, data
 is gold.
 
 Django provides a nifty test-server through the command:
-"python manage.py runserver <ip>:<port>". This "runserver" serves static
+`python manage.py runserver <ip>:<port>`. This "runserver" serves static
 files and operates slowly -- but allows rapid prototyping and development.
 Definitely use this in development rather than NGINX and UWSGI, as it will
 remove many obstacles and allow you to work faster and more efficiently.
@@ -158,18 +150,18 @@ Django Management Commands
 =========================
 
 Django management commands (that is, the commands that pass through
-manage.py) can be called as "python manage.py <the command>" when
+manage.py) can be called as `python manage.py <the command>` when
 in the main DRP project directory. These commands are each stored in
 a separate python file in the .../DRP/management/commands directory. To
 add a new command, use the existing files as examples.
 
-It also should be noted that using "python manage.py help" will detail
+It also should be noted that using `python manage.py help` will detail
 all of the available management commands (of which there are many).
 
 **generate_model**
 
 To generate a new model using the current pipeline, run:
-"python manage.py generate_model '<Model_Title>' '<An explanatory description.>'"
+`python manage.py generate_model '<Model_Title>' '<An explanatory description.>'`
 The script encompasses the model construction, training, and testing
 stages and ultimately creates a new ModelStats entry in the Django database.
 This entry is complete with "stats" and a reference to the model name,
@@ -195,14 +187,14 @@ should be placed in "database_construction.py" so that they can
 be easily imported into Python scripts. For example, to import
 all of the retrieval and construction functions, just use:
 
-> from DRP.retrievalFunctions import *
-> from DRP.database_construction import *
+    from DRP.retrievalFunctions import *
+    from DRP.database_construction import *
 
 And now, to query the database for all of the reactions (which
 are stored as the Data model (aka Python "class" in models.py),
 now just use:
 
-> Data.objects.all()
+    Data.objects.all()
 
 For more complicated queries, check out the examples in
 "retrievalFunctions.py" -- and likewise for information on how to
@@ -232,11 +224,13 @@ the database. This requires the Python Path to be set to the DRP
 project directory so that Django can include the appropriate files.
 To do so, just include the following lines to in top of the script:
 
-    django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
-    django_path = "{}/DRP".format(django_dir)
+    import os, sys
+    full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+    django_path = full_path[:full_path.rfind("/DRP/")]
+
     if django_path not in sys.path:
-        sys.path.append("{}/DRP".format(django_dir))
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+      sys.path = [django_path] + sys.path
+      os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
 **Editing the Database Schema **
@@ -246,13 +240,18 @@ in general; there are a few steps that must be completed. The DRP
 uses a database migration tool called South which handles most
 schema migrations. First, modify the Django Model (in models.py) and save
 the file. Second, run the South command that detects model changes:
-"python manage.py schemamigration DRP --auto". Finally, perform
-the migration: "pyhton manage.py migrate DRP".
+`python manage.py schemamigration DRP --auto`. Finally, perform
+the migration: `python manage.py migrate DRP`.
+
+Note that if this is your first migration, you may need to "fake" an initial
+migration so South knows what fields to keep and what fields to change.
 
 Functionally, South re-creates any database tables that are modified and
 migrates the data in the old table over to the new table. There is more that
 goes on in the back-end of South (such as versioning and reverse-update
-control), but I leave that for the Documentation: http://south.aeracode.org/ .
+control), but I leave that to the [South Documentation.](http://south.aeracode.org/).
+
+***NOTE: South was EOL-ed since Django 1.7 will have [Migrations](https://docs.djangoproject.com/en/dev/topics/migrations/) built in. When we transition to 1.7, we'll most likely no longer need South.***
 
 
 **Database Backups**
@@ -271,23 +270,18 @@ Accounts
 There are a few accounts that are needed by the DRP to operate
 successfully -- they range from database accessors to mail serves.
 
-Google:
-darkreactionsproject@gmail.com -- Used to distribute automatic emails
+*Google:* darkreactionsproject@gmail.com -- Used to distribute automatic emails
 from the DRP site, such as error messages, contact form completions,
 and seed recommendation results.
 
-ChemSpider:
-darkreactionsproject@gmail.com -- Used to allow developer access
+*ChemSpider:* darkreactionsproject@gmail.com -- Used to allow developer access
 to the ChemSpider database; we query ChemSpider to get reactant
 images, molecular weights, and SMILES strings.
 
-ChemAxon:
-darkreactionsproject@gmail.com -- Used to perform chemical calculations
+*ChemAxon:* darkreactionsproject@gmail.com -- Used to perform chemical calculations
 on various reactants.
 
-BitBucket:
-"Dark Reaction Project" Team -- The BitBucket "team" (aka "organization")
-that controls the DRP site repository. Each developer should have
+*BitBucket:* "Dark Reaction Project" Team -- The BitBucket "team" (aka "organization") that controls the DRP site repository. Each developer should have
 a personal BitBucket account with read/write access to this team.
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
