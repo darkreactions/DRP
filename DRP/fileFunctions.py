@@ -15,7 +15,7 @@ def writeCSV(name, data, headers=[]):
     csvWriter.writerows(data)
 
 
-def writeExpandedCSV(name):
+def writeExpandedCSV(filename):
   def cleanData(matrix):
     def clean(elem):
       if type(elem)==str or type(elem)==unicode:
@@ -33,7 +33,7 @@ def writeExpandedCSV(name):
   print "Writing data..."
   data = cleanData(data)
 
-  writeCSV(name, data, headers=headers)
+  writeCSV(filename, data, headers=headers)
 
   print "Write complete!"
 

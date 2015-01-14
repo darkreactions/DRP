@@ -205,13 +205,19 @@ allows us to abstract complicated MySQL queries out of our scripts.
 
 ** Getting a CSV File of a Database Table **
 
-The best way to do this is to use the site interface, but you may need
-to load the data as a CSV temporarily for use with a library such as D3.
-To do so, use a Django view and stream the data directly in CSV format.
-The benefits of this are reduced file-clutter, the most up-to-date version
-of the database, and improved security (since we can enforce only users
-that are authenticated can access the database). For an example of using
-a view to download a CSV, check out ".../DRP/views/download.py".
+The best way to interact with the database is through the Python functions
+designed to retrieve, "expand", and send the data. However, there may be
+times when you wish to download a CSV; while the "simple" CSV (with the
+original input features) can be downloaded through the site interface, the
+"expanded" CSV is only accessible on the backend. For convenience, the
+"fileFunctions.py" python file contains a `writeExpandedCSV(filename)`
+function that will write a full, expanded CSV to the system.
+
+If you need to access the data in a CSV-like format through a library
+such as d3.js, it is recommended that you use a Django view and
+**stream** the data in CSV format directly where you need it.
+For an example of using a view to download a CSV, check out
+".../DRP/views/download.py".
 
 Note that the same process can and should be used to get JSON-formatted
 entries from the database. Find examples in ".../DRP/views/jsonViews.py".
