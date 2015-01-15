@@ -1,6 +1,6 @@
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
- # # # #  Seed Recommendation Views and Functions  # # # # # 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+ # # # #  Seed Recommendation Views and Functions  # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Necessary Imports:
 import django.db
@@ -50,7 +50,7 @@ def make_seed_recommendations(request):
 
     #Set the cache and get the appropriate data entry.
     cache_seed_rec_worker(lab_group, seed.ref)
-   
+
     # Prepare the log files for the seed-recommendation subprocess.
     err_dir = "seed_recommend"
     createDirIfNecessary(LOG_DIR)
@@ -68,7 +68,7 @@ def make_seed_recommendations(request):
   except Exception as e:
     print e
     return HttpResponse("1") #1: ERROR: General Failure!
-  
+
   return HttpResponse("0") #0: Success
 
 
@@ -85,31 +85,55 @@ def check_seed_worker_cache(request):
 
 
 @login_required
-def seed_recommend(request): 
-   #Get user data if it exists.
-   u = request.user
-   lab_group = u.get_profile().lab_group
-   fatal_message = ""
-  
-   try:
-     #Either get all of the recommendations or just the non-hidden ones.
-     show_hidden = request.GET.get("show_hidden")=="True"
-     recommendations = get_seed_recs(lab_group, show_hidden=show_hidden)[:200]
-     #TODO:Ideally, pagify this, Future Casey.
-  
-     #Get the active recommendations from the cache.
-     active_workers = get_seed_rec_worker_list(lab_group)
-  
-     assert recommendations.exists()
-   except Exception as e:
-     fatal_message = "No recommendations available."
-     active_workers = []
-     recommendations = []
-  
-   return render(request, 'global_page.html', {
+def seed_recommend(request, page_request=None):
+  from DRP.pagifier import get_page_link_format
+
+  # If a valid page number was given, use it.
+  try:
+    page = int(page_request)
+  except:
+    page = 1
+
+  # Variable Setup
+  u = request.user
+  lab_group = u.get_profile().lab_group
+  fatal_message = ""
+  recs_per_page = 15
+
+
+  try:
+    #Either get all of the recommendations or just the non-hidden ones.
+    show_hidden = request.GET.get("show_hidden")=="True"
+
+    recommendations = get_seed_recs(lab_group, show_hidden=show_hidden)
+
+    total_data_size = recommendations.count()
+
+    recommendations = recommendations[(page-1)*recs_per_page:(page)*recs_per_page]
+
+    #Get the active recommendations from the cache.
+    active_workers = get_seed_rec_worker_list(lab_group)
+
+  except Exception as e:
+    fatal_message = "No recommendations available."
+
+    recommendations = []
+    total_data_size = 0
+
+    active_workers = []
+    recommendations = []
+
+  total_pages = total_data_size/recs_per_page
+
+  return render(request, 'global_page.html', {
     "template":"seed_recommendations",
     "recommendations": recommendations,
     "fatal_message": fatal_message,
     "currently_running": active_workers,
-   })
-  
+    "page_package": {
+                      "data_per_page":recs_per_page,
+                      "current_page":page,
+                      "page_links":get_page_link_format(page, total_pages),
+                      }
+  })
+

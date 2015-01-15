@@ -7,23 +7,24 @@ from core_views import *
 admin.autodiscover()
 handler500 = 'DRP.views.errors.display_500_error'
 handler404 = 'DRP.views.errors.display_404_error'
-
+page = "(?P<page_request>\d+)"
 urlpatterns = patterns('',
  #Individual Pages.
-    (r'^$', page, {"template":"home"}),
-    (r'^home/?$', page, {"template":"home"}),
-    (r'^papers/?$', page, {"template":"papers"}),
-    (r'^about/?$', page, {"template": "about"}),
-    (r'^contact/?$', page, {"template":"contact"}),
-    (r'^explore/?$', page, {"template":"explore"}),
-    (r'^login/?$', page, {"template":"login_form"}),
+    (r'^$', "DRP.views.general.page", {"template":"home"}),
+    (r'^home/?$', "DRP.views.general.page", {"template":"home"}),
+    (r'^papers/?$', "DRP.views.general.page", {"template":"papers"}),
+    (r'^about/?$', "DRP.views.general.page", {"template": "about"}),
+    (r'^contact/?$', "DRP.views.general.page", {"template":"contact"}),
+    (r'^explore/?$', "DRP.views.general.page", {"template":"explore"}),
+    (r'^login/?$', "DRP.views.general.page", {"template":"login_form"}),
 
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
   #Dashboard
     url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
     url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
   #Database
-    (r'^database/$', database), #Encompassing data view.
+    (r'^database/?$', database), #Encompassing data view.
+    (r'^database/'+page+'/?$', database), #Encompassing data view.
    #Change Page
     (r'^data_transmit/$', data_transmit), #Used for changing pages.
     (r'^recommend_transmit/$', recommendation_transmit), #Used for changing pages
@@ -51,10 +52,16 @@ urlpatterns = patterns('',
     (r'^setup_graph/$', "DRP.views.explore_vis.store_graph"),
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
-    (r'^seed/$', "DRP.views.seed_recommend.seed_recommend"),
-    (r'^seed_recommend/$', "DRP.views.seed_recommend.seed_recommend"),
+
+    (r'^seeds?/?$', "DRP.views.seed_recommend.seed_recommend"),
+    (r'^seeds?/'+page+'/?$', "DRP.views.seed_recommend.seed_recommend"),
+    (r'^seed_?(recommendations?)/?$', "DRP.views.seed_recommend.seed_recommend"),
+    (r'^seed_?(recommendations?)/'+page+'/?$', "DRP.views.seed_recommend.seed_recommend"),
+
     (r'^check_seed_oven/$', "DRP.views.seed_recommend.check_seed_worker_cache"),
-    (r'^recommend/$', recommend),
+
+    (r'^recommend(ations?)?/?$', recommend),
+    (r'^recommend(ations?)?/'+page+'/?$', recommend),
     (r'^saved/$', saved),
     (r'^change_Recommendation/$', change_Recommendation), #[JSON] Edit Rec Entry
     (r'^assign_user/$', assign_user_to_rec),

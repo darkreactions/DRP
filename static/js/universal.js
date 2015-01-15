@@ -215,13 +215,7 @@ $(document).on("mouseover", ".type_reactant", function() {
 });
 //############  Side Container:  ####################################
 function toggleSideContainer() {
- if ($("#sidePanel").css("width")!="0px"){
-  $("#mainPanel").css("width","100%");
-  $("#sidePanel").css("width","0%");
- } else {
-  $("#mainPanel").css("width","50%");
-  $("#sidePanel").css("width","50%");
- }
+ $("#sidePanel").toggle();
 }
 
 //############   Ribbons:   #############################################

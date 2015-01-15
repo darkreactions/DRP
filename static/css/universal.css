@@ -206,7 +206,7 @@ input[type=text], input[type=password], input[type=email], textarea {
 input[type=radio] {
  display:none;
 }
-input[type=radio] + label {
+input[type=radio] label {
     padding: 4px;
     border-radius:5px;
     border: 2px solid black;
@@ -458,15 +458,12 @@ height:10px;
  width:100%;
  padding:6px;
  margin:0px;
- margin-bottom:20px;
  background-color:white;
 }
 
-.searchTab{
- margin-left:6px;
- margin-right:6px;
+.searchTab {
+ padding: 0em 1em;
  list-style:none;
- padding:0px;
  display:inline-block;
 }
 

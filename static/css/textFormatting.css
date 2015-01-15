@@ -32,29 +32,18 @@ a:hover, #changePassword:hover {
 
 
 .pagesInfo {
- font-weight:bold;
  display:inline-block;
- font-size:14px;
- margin-top:12px;
+ padding: 0em 0.5em;
+ font-size:0.9em;
  color:white;
-}
-
-.pageLink {
- background-color:#3B5D77;
- padding-left:3px;
- padding-right:3px;
- border-radius:15px;
-}
-
-.pageLink:hover {
- color:yellow;
- padding-left:3px;
- padding-right:3px;
+ outline:none;
 }
 
 #pageLinkCurrent {
- border:2px solid #304B60;
+ background-color:rgba(250,250,250,0.2);
 }
+
+#pagesTotal { display:none; }
 
 /* Recommendation Groups */
 .recommendation {

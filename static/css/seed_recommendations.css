@@ -1,10 +1,10 @@
 .infoBar {
- padding:20px 0px 20px 0px;
- margin: 0px 0px 0px 0px;
- background-color:white;
- 
+ padding:1.5em 0em;
+ text-align:center;
+ background-color:#4d82ac;
+ color:white;
+
  font-weight:bold;
- border-bottom:black 1px solid;
 }
 
 #seedRecOven{

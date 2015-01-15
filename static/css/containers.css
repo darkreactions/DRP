@@ -18,35 +18,20 @@
 }
 
 #sidePanel {
- display:inline-block;
  position:relative;
  text-align:center;
 
- height:100%;
- width:0%;
+ display:none;
  overflow:hidden;
 
- float:right;
  background-color:#355A77;
  color:white;
-}
-
-#bottomPanel {
- padding-top:10px;
 }
 
 .infoContainer {
  position:relative;
  overflow:auto;
 }
-
-
-
-
-
-
-
-
 
 #popupContainer {
   position:relative;
@@ -60,48 +45,23 @@
 }
 
 
-
+#copyrightContainer {
+ position:absolute;
+ font-size:0.8em;
+ right:1em;
+ top:0.2em;
+}
 
 #pageContainer {
  position:relative;
  text-align:center;
  background-color:#355A77;
+ color:white;
 }
 
-#pagesTotal {
- display:none;
-}
 
-#dataContainer {
+#dataContainer, #recContainer {
  position:relative;
- padding-left:10px;
- padding-right:10px;
- height:86%;
- overflow:auto;
+ padding:0em 1em;
 }
 
-#recContainer {
- position:relative;
- padding-left:10px;
- padding-right:10px;
- height:100%;
- overflow:auto;
-}
-
-#copyrightContainer {
- position:relative;
- margin-top:5px;
- padding-bottom:10px;
- font-size:12px;
- text-align:center;
-}
-
-#haverfordLogo {
- outline:none;
-
- height:2em;
- -webkit-filter: invert(1);
- -moz-filter: invert(1);
- -ms-filter: invert(1);
- filter: invert(1);
-}

@@ -1,4 +1,5 @@
-<h1>Search</h1>
+<div class='bannerText'>Search</div>
+
 <!-- Periodic Table -->
 <div id="tabs">
  <ul id="searchTabContainer">
@@ -30,21 +31,29 @@
   <form action="/search/{{model}}/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
    {% csrf_token %}
    <div class="blockElement">
-    <label for="field">Field:</label>
-    <select class="dropDownMenu" name="field">
-     {% for field in search_fields %}
-      <option value="{{field.raw}}">{{field.verbose}}</option>
-     {% endfor %}
-    </select><br/>
-    <label for="match">Match:</label>
-    <select class="dropDownMenu" name="match">
-     <option value="contain">Contains</option>
-     <option value="exact">Exactly</option>
-    </select><br/>
+    <label for="field">
+     Field:
+     <select class="dropDownMenu" name="field">
+      {% for field in search_fields %}
+        <option value="{{field.raw}}">{{field.verbose}}</option>
+      {% endfor %}
+     </select>
+    </label>
+
+    <label for="match">
+     Match:
+     <select class="dropDownMenu" name="match">
+      <option value="contain">Contains</option>
+      <option value="exact">Exactly</option>
+     </select>
+    </label>
+
    </div>
    <div class="blockElement">
-    <label for="value">Value:</label>
-    <input id="searchValue" class="autocomplete_reactant" type="text" name="value" value="">
+    <label for="value">
+     Value:
+     <input id="searchValue" class="autocomplete_reactant" type="text" name="value" value="">
+    </label>
    </div>
    <input type="button" value="Filter" class="search_filterButton"/>
    <input type="button" value="Back" class="search_backButton"/>

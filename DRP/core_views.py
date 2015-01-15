@@ -15,47 +15,12 @@ import string
 from data_config import CONFIG
 
 # # # # # # # # # # # # # # # # # # #
-  # # # # # # # # Basic Page Views # # # # # # # # # # #
-# # # # # # # # # # # # # # # # # # #
-
-#Having issues with about page being rendered and reording the divs (namely, #bottomPanel div is being put inside #infoPanel instead of on the same level, so going to bypass the issue for now by not inheriting the index template
-def page(request, template):
- return render(request, 'global_page.html', {"template":template})
-
-
-# # # # # # # # # # # # # # # # # # #
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
 def calc_total_pages(data_size):
  total_pages = 1 + int((data_size-1)/CONFIG.data_per_page)
  return total_pages if total_pages > 1 else 1
 
-def get_page_link_format(current, total):
- #Variable Setup:
- radius = CONFIG.current_page_radius
- data_per_page = CONFIG.data_per_page
-
- #Always display at least page one.
- page_set = {1}
- if total==1:
-  return list(page_set)
- else:
-  for i in xrange(current-radius, current+radius+1):
-   if (1 < i < total): page_set.add(i)
-  page_set.add(total) #Always show the last page.
-
-  #Convert page_links to an ordered list.
-  raw_page_links = list(page_set)
-  raw_page_links.sort()
-
-  page_links = []
-  for i in raw_page_links:
-   if page_links and i-page_links[-1]>1:
-    page_links.append("...")#Add an ellipsis between any pages that have a gap between them.
-    page_links.append(i)
-   else:
-    page_links.append(i)
-  return page_links
 
 def get_pagified_data(page, lab_group=None, data=None):
  from DRP.models import get_lab_Data
@@ -82,6 +47,7 @@ def get_pagified_data(page, lab_group=None, data=None):
 #Returns the info that belongs on a specific page.
 def get_page_info(request, page = None, data=None):
  from DRP.models import get_lab_Data
+ from DRP.pagifier import get_page_link_format
 
  try:
   #Gather necessary information from the user's session:
@@ -162,16 +128,25 @@ def clear_all_page_caches(lab_group, skip_data_check=False):
 # # # # # # # # # # # # # # # # # # #
 @login_required
 @require_http_methods(["GET"])
-def database(request):
- #Organize the session information.
- session = get_page_info(request)
- data_package, page_package, total_data_size = repackage_page_session(session)
- return render(request, 'global_page.html', {
-  "data_on_page": data_package, #Includes data and data_indexes.
-  "page_package": page_package,
-  "total_data_size": total_data_size,
-  "template": "database",
- })
+def database(request, page_request=None):
+
+  # If a valid page number was given, use it.
+  try:
+    page = int(page_request)
+  except:
+    page = None
+
+  # Organize the session information.
+  session = get_page_info(request, page=page)
+  data_package, page_package, total_data_size = repackage_page_session(session)
+
+  # Return a package of page information and data.
+  return render(request, 'global_page.html', {
+    "data_on_page": data_package, #Includes data and data_indexes.
+    "page_package": page_package,
+    "total_data_size": total_data_size,
+    "template": "database",
+  })
 
 @login_required
 @require_http_methods(["POST"])
@@ -214,33 +189,43 @@ def data_transmit(request):
   return HttpResponse("Page \"{}\" could not be loaded".format(page))
 
 @login_required
-def recommend(request):
- #Get user data if it exists.
- u = request.user
- recs_per_page = 10
+def recommend(request, page_request=None):
+  from DRP.pagifier import get_page_link_format
 
- recommendations = None
- fatal_message = ""
- try:
-  recommendations = get_recommendations_by_date(u.get_profile().lab_group)
-  total_data_size = recommendations.count()
-  total_pages = total_data_size/recs_per_page
+  # If a valid page number was given, use it.
+  try:
+    page = int(page_request)
+  except:
+    page = None
 
-  if not request.GET.get("show_hidden"):
-   recommendations = recommendations.filter(hidden=False)
+  #Get user data if it exists.
+  u = request.user
+  recs_per_page = 15
 
-  page = request.GET.get("rec_page", 1)
-  recommendations = recommendations[(page-1)*recs_per_page:(page)*recs_per_page]
+  recommendations = None
+  fatal_message = ""
+  try:
+    recommendations = get_recommendations_by_date(u.get_profile().lab_group)
+    total_data_size = recommendations.count()
+    total_pages = total_data_size/recs_per_page
 
- except Exception as e:
-  print e
-  fatal_message = "No recommendations available."
-  page = 1
-  recs_per_page = 1
-  page_links = []
-  total_pages = 1
+    if not request.GET.get("show_hidden"):
+      recommendations = recommendations.filter(hidden=False)
 
- return render(request, 'global_page.html', {
+    if not page:
+      page = request.GET.get("rec_page", 1)
+
+    recommendations = recommendations[(page-1)*recs_per_page:(page)*recs_per_page]
+
+  except Exception as e:
+    print e
+    fatal_message = "No recommendations available."
+    page = 1
+    recs_per_page = 1
+    page_links = []
+    total_pages = 1
+
+  return render(request, 'global_page.html', {
   "template":"recommendations",
   "recommendations": recommendations,
   "fatal_message": fatal_message,
