@@ -6,7 +6,14 @@ var CGSelected = Array();
 //############ Data Selection: #########################################
 //Click Group to Select:
 $(document).on("click", ".dataGroup", function() {
+ var edits = $(this).find(".cancelEditableButton")
+ if (edits.length) {
+   edits.trigger("click");
+   return false;
+ }
+
  $(this).toggleClass("dataSelected");
+
 
  //Get Index of Selected Data by Number
  var dataID = $(this).attr("pid");

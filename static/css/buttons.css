@@ -1,0 +1,9 @@
+input[type=button] {
+  background-color:white;
+  border:none;
+  height:2em;
+}
+input[type=button]:hover {
+  opacity:0.8;
+  cursor:pointer;
+}

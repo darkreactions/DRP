@@ -14,7 +14,7 @@ CGAbbrevs = undefined;
 //############   Dependent Functions  ##################################
 function adaptSize(element) {
  var numChars = $(element).val().length;
- var maxWidth = $(element).css("max-width") !== "none" ? parseInt($(element).css("max-width")) : 100;
+ var maxWidth = $(element).css("max-width") !== "none" ? parseInt($(element).css("max-width")) : 400 ;
  var proposedWidth = ((numChars*6)+35)
  if (proposedWidth < maxWidth) {
   var newWidth = proposedWidth;
@@ -1103,18 +1103,26 @@ $(document).on("click", ".ui-menu-item", function() {
 });
 
 //Make edit text fields auto-size and validate while typing.
-$(document).on("keyup", ".editText", function() {
- adaptSize($(this));
- if (parseInt($(this).closest(".reactantField").attr("group"))>2) {
-  var required = false;
- } else { var required = true; }
+$(document).on("keyup", ".editText", function(e) {
+  // Keyboard shortcuts.
+  if (e.keyCode==27) { // The `esc` key
+    $(this).siblings(".cancelEditableButton").trigger("click");
+  } else if (e.keyCode==13) { // The `enter` key
+    $(this).siblings(".editConfirm").trigger("click");
+  }
 
- if (!quickValidate(($(this).parent().attr("class").split(" ")[1]).substr(5),
-  $(this).val(), required)) {
-  $(this).addClass("badData");
- } else {
-  $(this).removeClass("badData");
- }
+  adaptSize($(this));
+
+  if (parseInt($(this).closest(".reactantField").attr("group"))>2) {
+    var required = false;
+  } else { var required = true; }
+
+  if (!quickValidate(($(this).parent().attr("class").split(" ")[1]).substr(5),
+    $(this).val(), required)) {
+    $(this).addClass("badData");
+  } else {
+    $(this).removeClass("badData");
+  }
 });
 
 function cancelEditables() {
@@ -1161,7 +1169,7 @@ $(document).on("click", ".editable", function() {
      newInnards += "<option value=\""+choice+"\">"+choice+"</option>";
     }
    }
-   newInnards += "</select> <input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
+   newInnards += "</select> <input class=\"editConfirm\" type=\"button\" value=\"&#10003;\" />"
    $(this).html(newInnards);
    $(this).children(".editMenu").focus();
    $(this).attr("title","");
@@ -1173,7 +1181,7 @@ $(document).on("click", ".editable", function() {
     + "oldVal=\""+ oldVal + "\" "
     + "value=\""+ oldVal + "\" />"
     + cancelButton
-    + "<input class=\"editConfirm\" type=\"button\" value=\"OK\" />"
+    + "<input class=\"editConfirm\" type=\"button\" value=\"&#10003;\" />"
     );
 
    $(this).html(inputFields);

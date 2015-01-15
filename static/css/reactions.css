@@ -1,0 +1,77 @@
+
+.dataIndex {
+ position:absolute;
+ right:0px;
+ top:0px;
+
+ padding:0.15em 0.5em;
+ font-size:0.7em;
+
+ background-color:#355A77;
+ color:white;
+}
+
+.dataGroup_shape {
+  position:relative;
+  max-width:900px;
+
+  font-size:0.9em;
+
+  margin:1em auto;
+  padding:1em 1em;
+  background-color:#DBE6EE;
+}
+
+.badData { background-color:#FF8080; }
+.dataSelected { background-color:#FFE944; }
+.dataSelected .dataIndex:before { content: "\2713 "; }
+
+
+.dataField {
+ position:relative;
+ padding:0.2em 0.3em;
+}
+.dataField:after, .dataField:before { font-weight:bold; }
+
+
+  /* ############### DIMENSION-SPECIFIC ############################# */
+.opaqueDatum { opacity:0.5; }
+.reactantField {
+  display: inline-block;
+  background:rgba(1, 1, 1, 0.05);
+  padding:0.25em 0em;
+}
+.type_user, .type_seed {
+  position:absolute;
+  right:0px;
+  bottom:0px;
+}
+
+  /* ############### :AFTER ############################# */
+.type_temp:after { content: "\2103"; }
+.type_time:after { content: " Hours"; }
+.type_notes:empty:after,
+.type_duplicate_of:empty:after,
+.type_abbrev:empty:after {
+  opacity:0.5;
+  content:"(None)";
+}
+
+  /* ############### :BEFORE ############################# */
+.type_slow_cool:before { content: "Slow Cooled: "; }
+.type_leak:before { content: "Leak: "; }
+.type_pH:before { content: "pH: "; }
+.type_purity:before { content: "Purity: "; }
+.type_outcome:before { content: "Outcome: "; }
+.type_notes:before { content: "Notes: "; }
+.type_ref:before { content: "Reference ID: "; }
+.type_duplicate_of:before { content: "Duplicate of: "; }
+.type_recommended:before { content: "Recommended: "; }
+.type_user:hover:before {
+ content:"Last Modified by ";
+ font-weight:bold;
+}
+.type_seed:before {
+ content:"Based on ";
+ font-weight:bold;
+}

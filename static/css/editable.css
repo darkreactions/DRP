@@ -1,0 +1,13 @@
+.editable {
+ position:relative
+}
+
+.cancelEditableButton {
+ position: absolute;
+ top:-12px;
+ left:-5px;
+
+ padding:2px;
+ font-weight:bold;
+ color:red;
+}
