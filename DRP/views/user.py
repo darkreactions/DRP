@@ -1,6 +1,6 @@
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
  # # # User Views and Functions  # #
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
 
 #Necessary Imports:
 from django.http import HttpResponse, HttpResponseRedirect
@@ -39,7 +39,7 @@ def change_password(request):
 #Given a user, change their password and email them the new password.
 def randomize_password(user):
  new_pass = get_random_code(15) #Generate a random password for the user.
- user.password = make_password(new_pass) #Hash the password. 
+ user.password = make_password(new_pass) #Hash the password.
  user.save()
  email_body = "Hello {},\n\n According to our records, you just requested a password change. We have changed your account information as follows:\nUsername: {}\nPassword: {}".format(user.first_name, user.username, new_pass)
  email_user(user, "Password Change Request", email_body)
@@ -61,7 +61,9 @@ def user_login(request):
     return HttpResponse(1);
 
    else:
-     return HttpResponse("Logged in successfully! <div class=reloadImmediately redirect=\""+redirect_URL+"\"></div>");
+     message = "<div class='centerMessage'>Success! Please wait...</div>"
+     reload_div = "<div class=reloadImmediately redirect=\""+redirect_URL+"\"></div>"
+     return HttpResponse(message+reload_div);
   else:
    login_fail = True #The login info is not correct.
  return render(request, "login_form.html", {

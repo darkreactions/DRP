@@ -16,9 +16,15 @@ a:hover, #changePassword:hover {
 }
 
 .basicParagraph {
- font-size:1.1em;
- text-align:justify;
- padding: 1em 10%;
+  font-size:1.1em;
+  text-align:justify;
+  padding: 1em 10%;
+}
+
+.centerMessage {
+  font-size:1.2em;
+  text-align:center;
+  padding:1em 0em;
 }
 
 
