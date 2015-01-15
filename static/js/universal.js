@@ -493,91 +493,91 @@ $(document).on("submit", ".downloadForm", function(event) {
 });
 
 $(document).on("submit", ".infoForm", function() {
- var form = $(this); //Keep a reference to the form inside the POST request.
- if ($(".warningIndicator").length){
-  showRibbon("Working...", neutralColor, $("#popupContainer_inner"), false);
- }
-
- var formName = $(form).attr("name");
- var formAction = $(form).attr("action");
-
- //Send any get-request params that might need to get through.
- var params = window.location.search;
- var paramsList = params.split("?").slice(1);
- for (var i=0; i < paramsList.length; i++){
-   var keyValPair = paramsList[i].split("=");
-   $(form).append("<input name=\""+keyValPair[0]+
-		"\" type=\"hidden\" value=\""+keyValPair[1]+"\" />");
- }
-
- var formContents = $(form).serialize();
-
- $.post(formAction, formContents, function(response) {
-  //Remove the loading wheel.
-  clearLoadingWheels(form)
-
-  //Translate server-responses to actions.
-  if (response=="0"){
-   showRibbon("Data added!", goodColor, $("#popupContainer_inner"));
-   refreshOnMaskFade();
-   return false;
-  } else if (response=="0_close"){
-   //If the form simply should close, do so.
-   refreshOnMaskFade();
-   $("#mask").trigger("click");
-   return false;
-  } else if (response=="1") {
-   getLicensePopup();
-   return false;
-  } else if (response=="2") {
-   showRibbon("Edit failed!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
-   return false;
-  } else if (response=="3") {
-   showRibbon("Info missing!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
-   return false;
-  } else if (response=="4") {
-   showRibbon("Invalid data!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
-   return false;
-  } else if (response=="5") {
-   showRibbon("Please select a file!", badColor, $("#popupContainer_inner"));
-   $(form).append("<input type=\"submit\" value=\"Upload\" class=\"button\"/>");
-   return false;
-  } else {
-   if ($("#popupContainer_inner").is(":visible")){
-    //Recreate the popup window with the server response.
-    $("#popupContainer_inner").html(response);
-    $(".subPopup").draggable();
-   } else {
-    $(".infoContainer").html(response);
-
-   }
+  var form = $(this); //Keep a reference to the form inside the POST request.
+  if ($(".warningIndicator").length){
+    showRibbon("Working...", neutralColor, $("#popupContainer_inner"), false);
   }
 
+  var formName = $(form).attr("name");
+  var formAction = $(form).attr("action");
 
-  //Reset the autocomplete if necessary.
-  $(".autocomplete_reactant").autocomplete({
-   source: CGAbbrevs,
-   messages: {
-    noResults: "",
-    results: function() {}
-   }
+  //Send any get-request params that might need to get through.
+  var params = window.location.search;
+  var paramsList = params.split("?").slice(1);
+  for (var i=0; i < paramsList.length; i++){
+    var keyValPair = paramsList[i].split("=");
+    $(form).append("<input name=\""+keyValPair[0]+
+                  "\" type=\"hidden\" value=\""+keyValPair[1]+"\" />");
+  }
+
+  var formContents = $(form).serialize();
+
+  $.post(formAction, formContents, function(response) {
+    //Remove the loading wheel.
+    clearLoadingWheels(form)
+
+    //Translate server-responses to actions.
+    if (response=="0"){
+      showRibbon("Data added!", goodColor, $("#popupContainer_inner"));
+      refreshOnMaskFade();
+      return false;
+    } else if (response=="0_close"){
+      //If the form simply should close, do so.
+      refreshOnMaskFade();
+      $("#mask").trigger("click");
+      return false;
+    } else if (response=="1") {
+      getLicensePopup();
+      return false;
+    } else if (response=="2") {
+      showRibbon("Edit failed!", badColor, $("#popupContainer_inner"));
+      $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
+      return false;
+    } else if (response=="3") {
+      showRibbon("Info missing!", badColor, $("#popupContainer_inner"));
+      $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
+      return false;
+    } else if (response=="4") {
+      showRibbon("Invalid data!", badColor, $("#popupContainer_inner"));
+      $(form).append("<input type=\"submit\" value=\"Save\" class=\"button\"/>");
+      return false;
+    } else if (response=="5") {
+      showRibbon("Please select a file!", badColor, $("#popupContainer_inner"));
+      $(form).append("<input type=\"submit\" value=\"Upload\" class=\"button\"/>");
+      return false;
+    } else {
+      if ($("#popupContainer_inner").is(":visible")){
+        //Recreate the popup window with the server response.
+        $("#popupContainer_inner").html(response);
+        $(".subPopup").draggable();
+      } else {
+        $("#mainPanel").html(response);
+      }
+    }
+
+    //Reset the autocomplete if necessary.
+    $(".autocomplete_reactant").autocomplete({
+      source: CGAbbrevs,
+      messages: {
+        noResults: "",
+        results: function() {}
+      }
+    });
+
+    reloadIfNeeded();
+
+    //Show the ribbon message if applicable.
+    if ($(".successActivator").length) {
+    showRibbon("Added!", goodColor, "#popupContainer_inner");
+    refreshOnMaskFade();
+    $(".successActivator").remove();
+    return false;
+    }
+
   });
 
-  reloadIfNeeded();
+  return false; //Do not continue or else the form will post again.
 
-  //Show the ribbon message if applicable.
-  if ($(".successActivator").length) {
-   showRibbon("Added!", goodColor, "#popupContainer_inner");
-   refreshOnMaskFade();
-   $(".successActivator").remove();
-   return false;
-  }
-
- });
- return false; //Do not continue or else the form will post again.
 });
 
 $(document).on("click", ".button[type=submit]", function() {

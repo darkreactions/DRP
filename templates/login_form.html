@@ -4,6 +4,12 @@
 </div>
 
 <div class='infoFormContainer'>
+  {% if login_fail %}
+    <br/>
+    <div class="error">
+    Invalid login credentials!
+    </div>
+  {% endif %}
 
   <form action="/user_login/" method="post" name="login" class="popupScreenForm infoForm">
   {% csrf_token %}
@@ -18,12 +24,6 @@
 
     <div id="changePassword" class="popupActivator">Change Password</div>
 
-  {% if login_fail %}
-    <br/>
-    <div class="error">
-    Invalid login credentials!
-    </div>
-  {% endif %}
     <input type="submit" value="Log In" class="button"/>
 
   </form>
