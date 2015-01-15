@@ -2,11 +2,8 @@
 Contact Us
 </div>
 
-<div id='contactFormContainer'>
-  <form action="/contact_form/" class="inlineForm infoForm" id='contactForm'>
-  <label for="email">Email:
-    <input id="email" name="email" type="email" placeholder="johnsmith@gmail.com" value="{{user.email}}" />
-  </label>
+<div class='infoFormContainer'>
+  <form action="/contact_form/" class="inlineForm infoForm">
 
   <label for="subject">Subject:
     <select id="subject" name="subject">
@@ -15,6 +12,10 @@ Contact Us
       <option  value="Bug/Error">Bug / Error</option>
       <option  value="Feature Request">Feature  Request</option>
     </select>
+  </label>
+
+  <label for="email">Email:
+    <input id="email" name="email" type="email" placeholder="johnsmith@gmail.com" value="{{user.email}}" />
   </label>
 
   <label for="content">Content:

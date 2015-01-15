@@ -35,25 +35,27 @@
  opacity:0.5;
 }
 
-.button {
+.button, .inlineButton {
  cursor:pointer;
 
  display:block;
 
- padding:10px;
+ padding:0.5em;
  margin:0 auto;
- margin-top:10px;
- margin-bottom:10px;
- border:2px solid black;
- border-radius:2px;
+ border:none;
  background-color:silver;
  color:black;
 
- font-size:16px;
+ font-size:1.1em;
+ cursor:pointer;
+}
+.inlineButton {
+ display:inline-block;
+ padding:0.25em;
 }
 
 .button:hover {
- background-color:#FFD92E;
+  opacity:0.8;
 }
 
 .dataSpecificButtonContainer {
@@ -101,27 +103,21 @@
 }
 
 .closeButton {
- background-color:white;
  cursor:pointer;
- font-size:12px;
- font-weight:bold;
- text-align:center;
-
- width:15px;
- height:15px;
- border:2px solid black;
- border-top-right-radius:10px;
- border-bottom-left-radius:10px;
- padding:2px;
-
+ font-size:1.1em;
  position:absolute;
- top:10px;
- right:10px;
+
+ top:0px;
+ right:0px;
  z-index:6;
+
+ padding:0.25em 1em;
+ color:white;
+ background-color:rgba(250,250,250,0.1);
 }
 
 .closeButton:hover {
- background-color:#FFD92E;
+ opacity:0.8;
 }
 
 .expandButton {
@@ -206,11 +202,6 @@ input[type=text], input[type=password], input[type=email], textarea {
  margin:0.2em;
 }
 
-input[type=button] {
- border:2px solid black;
- font-weight:bold;
- border-top-right-radius:10px;
-}
 
 input[type=radio] {
  display:none;
@@ -230,7 +221,6 @@ input[type=radio]:checked + label {
 select {
  border:2px solid black;
  font-weight:bold;
- border-top-right-radius:10px;
 }
 
 input:hover, textarea:hover, select:hover,
@@ -289,111 +279,12 @@ div.ui-tooltip {
  background-color:#404040;
  border-radius:15px;
  cursor:pointer;
- font-weight:bold;
 }
 
 .ui-menu-item .ui-state-focus:hover {
  background-color: #404040;
 }
 
-/* ###############   CONTAINERS   ################################### */
-.infoContainer {
- position:relative;
- font-size: 14px;
- background-color:white;
- overflow:auto;
- height:100%;
-}
-
-.genericContainer {
- background-color:#A1C5E2;
- border-radius:15px;
- border: 2px solid black;
-}
-
-.genericContainer_inner {
- background-color:white;
- border-radius:10px;
- padding:10px;
-}
-
-.genericContainer_inner_rec {
- position:relative;
- background-color:white;
- padding:10px;
- border-radius:10px;
- overflow: display;
-}
-
-
-#svgContainer {
- top:10px;
- bottom:10px;
- width:100%;
- position:absolute;
- overflow:hidden;
-
- border-top-right-radius:0px;
- border-bottom-right-radius:0px;
- margin-left:-20px;
- margin-right:20px;
-}
-
-#pageContainer {
- position:relative;
- height:14%;
- background-color:#5087B3;
- border-top:2px black solid;
-
- text-align:center;
- overflow:hidden;
-}
-
-#pagesTotal {
- display:none;
-}
-
-#pagesInputText {
- width:65px;
-}
-
-#pagesInputButton {
- cursor: pointer;
-}
-
-#dataContainer {
- position:relative;
- padding-left:10px;
- padding-right:10px;
- height:86%;
- overflow:auto;
-}
-
-#recContainer {
- position:relative;
- padding-left:10px;
- padding-right:10px;
- height:100%;
- overflow:auto;
-}
-
-#copyrightContainer {
- position:relative;
- margin-top:5px;
- padding-bottom:10px;
- font-size:12px;
- text-align:center;
-}
-
-#haverfordLogo {
- outline:none;
-
- height:2em;
- -webkit-filter: invert(1);
- -moz-filter: invert(1);
- -ms-filter: invert(1);
- filter: invert(1);
-}
 /* ################### POPUP STYLES ################################# */
 #popupGlobal {
  display:none;
@@ -402,24 +293,6 @@ div.ui-tooltip {
  width:100%;
 }
 
-#popupContainer {
- position:relative;
- height:auto;
- width:auto;
- z-index:101;
-}
-
-#popupContainer_inner {
- background-color:#355A77;
- margin:10px;
- border-top: 2px black solid;
- border-left: 2px black solid;
- border-radius:25px;
- padding:15px;
- overflow:hidden;
-
- color:#FFE98F;
-}
 
 #mainContainer {
  display:inline-block;
@@ -483,140 +356,9 @@ div.ui-tooltip {
  width:250px;
 }
 
-.inlineForm {
- display:inline-block;
-}
 
-.inlineForm textarea {
- height:200px;
- vertical-align:middle;
-}
-
-.inlineForm label {
- display:block;
- text-align:left;
- vertical-align:middle;
-
- margin-bottom:20px;
- word-spacing:20px;
-
- background-color:white;
-}
 
 /* ##################   SPECIFIC POPUPS   ########################### */
-#popupContainer[for="addReactantGroup"] {
- text-align:center;
- top:50px;
- left:20%;
- width:60%;
- min-width:300px;
-}
-
-#popupContainer[for="changePassword"] {
- text-align:center;
- top:50px;
- left:30%;
- width:40%;
- min-width:300px;
-}
-
-#popupContainer[for="userUpdate"] {
- text-align:center;
- top:50px;
- left:20%;
- width:60%;
- min-width:450px;
-}
-
-#popupContainer[for="userLogin"] {
- text-align:center;
- top:50px;
- left:30%;
- width:40%;
- min-width:300px;
-}
-
-#popupContainer[for="registrationPrompt"] {
- text-align:center;
- top:50px;
- left:30%;
- width:40%;
- min-width:300px;
-}
-
-#popupContainer[for="labRegistration"] {
- text-align:center;
- top:50px;
- left:20%;
- width:60%;
- min-width:400px;
-}
-
-#popupContainer[for="userRegistration"] {
- text-align:center;
- top:50px;
- left:20%;
- width:60%;
- min-width:400px;
-}
-
-#popupContainer[for="searchButton"] {
- text-align:center;
- top:50px;
- left:15%;
- width:70%;
- min-width:600px;
-}
-
-#popupContainer[for="userLicenseAgreement"] {
- text-align:center;
- top:50px;
- left:20%;
- width:60%;
- min-width:300px;
-}
-
-#popupContainer[for="leftMenu_addNew"],
-#popupContainer[for="transferRecommendation"] {
- text-align:center;
- top:50px;
- left:10%;
- width:80%;
- min-width:595px;
-}
-
-
-#popupContainer[for="leftMenu_uploadCSV"] {
- text-align:center;
- top:50px;
- left:25%;
- width:50%;
- min-width:400px;
-}
-
-#popupContainer[for="leftMenu_downloadCSV"] {
- text-align:center;
- top:50px;
- left:20%;
- width:60%;
- min-width:400px;
-}
-
-#popupContainer[for="CompoundGuide"] {
- text-align:center;
- top:50px;
- left:2.5%;
- width:95%;
- min-width:650px;
-}
-
-#popupContainer[for="CompoundGuide_form"] {
- text-align:center;
- top:50px;
- left:10%;
- width:80%;
- min-width:570px;
-}
 
 .subPopup { /* Right now, just used for errors. */
  position:absolute;
@@ -1138,10 +880,7 @@ height:10px;
 .error {
  display:inline-block;
  background-color: #F7605B;
- border-radius:5px;
- border: 2px solid #B35350;
- margin:2px;
- padding:5px;
+ padding:1em;
 }
 
 .error_label {

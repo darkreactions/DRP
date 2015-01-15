@@ -25,6 +25,10 @@
  font-size:0.8em;
 }
 
+#userInfo a {
+  color: #355A77;
+}
+
 @media (max-width:600px) {
   #userInfo {
     display:none;

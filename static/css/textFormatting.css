@@ -1,3 +1,7 @@
+a:hover, #changePassword:hover {
+  opacity:0.8;
+}
+
 .bannerText {
   padding:1.25em 3em;
   font-size:1.25em;
@@ -71,12 +75,6 @@
  background-color:white;
 }
 
-#popupContainer_inner > h1 {
- margin:5px;
- text-align:center;
- color:white;
- border-bottom:2px solid white;
-}
 
 #popupContainer_inner > a {
  color:silver;
@@ -95,12 +93,5 @@
  margin-bottom:4px;
 }
 
-#changePassword:hover {
- font-weight:bold;
-}
-
-.userAuthLink {
-color: #355A77;
-}
 
 

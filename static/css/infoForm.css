@@ -1,0 +1,40 @@
+.infoFormContainer {
+  margin: 0 auto;
+  text-align:center;
+}
+
+.infoForm {
+  margin: 0 auto;
+  padding:1em;
+  text-align:center;
+}
+
+.infoForm textarea {
+  height:5em;
+  vertical-align:middle;
+  resize:vertical;
+}
+
+.infoForm label {
+  display:block;
+  vertical-align:middle;
+
+  padding: 0.5em 0em;
+}
+
+.infoForm label input, .infoForm label textarea, .infoForm label select {
+  margin-left:2em;
+}
+
+.infoForm input, .infoForm textarea, .infoForm select {
+  border:none;
+  background-color:#d8e5ee;
+  padding:1em;;
+}
+
+.infoForm input:focus, .infoForm textarea:focus, .infoForm select:focus {
+  background-color:#fff6cf;
+  outline: 2px solid #fff1b6;
+}
+
+

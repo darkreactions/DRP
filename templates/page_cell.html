@@ -1,19 +1,24 @@
 {% if user.is_authenticated %}
  <span class="pagesInfo" model="{{template}}">
   Pages:
+
  <span id="pagesTotal" total_data_size="{{total_data_size}}"
   data_per_page="{{page_package.data_per_page}}">
   {{page_package.total_pages}}
  </span>
+
   {% for page in page_package.page_links %}
    <a class="pageLink pagesInfo {% if page == page_package.current_page %}"
    id="pageLinkCurrent{% endif %}">
     {{page}}
     </a>
   {% endfor %}
+
  <br/>
+
  Jump:
- <input id="pagesInputText" type="text" />
- <input id="pagesInputButton" type="button" value="Go!"/>
+ <input id="pagesInputText" class='form_text_short' type="text" />
+ <input id="pagesInputButton" type="button" value="Go!" class='inlineButton'/>
+
  </span>
 {% endif %}

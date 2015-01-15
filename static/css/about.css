@@ -1,4 +1,4 @@
-.drpGroup {
+.contributor {
   padding:1em 2em;
   margin: 0 auto;
   text-align:center;
@@ -12,6 +12,23 @@
 }
 
 .groupPicture {
+  width:25em;
+  border-radius:5px;
+}
+
+.contributor a:hover {
+  opacity:0.8;
+}
+.contributor a {
+ font-size:inherit;
+ color:inherit;
+}
+
+.groupInfo {
+  font-size:0.9em;
+}
+
+.soloPicture {
   box-sizing:border-box;
   height:7em;
   display:inline-block;
@@ -19,7 +36,7 @@
   border-radius:5px;
 }
 
-.groupInfo {
+.soloInfo {
   box-sizing:border-box;
   width:18em;
   padding:0em 1em;
