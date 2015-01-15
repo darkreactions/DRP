@@ -1,0 +1,19 @@
+.fieldWrapper {
+ display: inline-block;
+
+ padding:5px;
+ margin:5px;
+ min-width:8em;
+
+ background-color:#75ADE6;
+ color:black;
+}
+
+.hiddenField { display:none; }
+
+.reactionWrapper { display:inline-block; }
+
+
+
+
+

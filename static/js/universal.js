@@ -30,6 +30,8 @@ function formatText(text) {
  return text.replace(/_{(.*?)}/g, function(r,m){return "<span class=\"subscript\">"+m+"</span>"});
 }
 window.applyTickingDots = function(location) {
+  if ($(location).length===0) return false;
+
   var interval = setInterval(function(){
     content = $(location).html();
     dotCount = content.split(".");
@@ -38,7 +40,7 @@ window.applyTickingDots = function(location) {
     } else {
       $(location).append(" .");
     }
-  }, 1*1000);
+  }, 1000);
 
   //Bind the loading animation to this specific entry.
   $(location).data("timer", interval);
@@ -789,11 +791,17 @@ window.setReactantAutoComplete = function() {
  //Get the auto-complete options form the CG guide. ###SOME ERROR HERE, CASEY
  if (CGAbbrevs == undefined) {
   $.get("/send_CG_names/", function(response) {
+   // Response Format: { "abbrev":"full", "abbrev2":"full2", ... }
    CGEntries = response;
+
+   // Collect the CGAbbrevs and sort them for the autocomplete menu.
    CGAbbrevs = Array();
-   for (var key in CGEntries) {
+   for (var key in response) {
     CGAbbrevs.push(key);
    }
+
+   CGAbbrevs.sort();
+
    $(".autocomplete_reactant").autocomplete({
     source: CGAbbrevs,
     messages: {

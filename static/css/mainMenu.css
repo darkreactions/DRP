@@ -12,7 +12,6 @@
  margin:0px 10px;
 }
 
-.navLink:hover {
- opacity:0.8;
-}
+.navLink:hover { opacity:0.8; }
 
+.currentTitle { font-weight:bold; }

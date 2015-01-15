@@ -1,0 +1,43 @@
+#popupGlobal {
+ display:none;
+ position:absolute;
+ z-index:101;
+ width:100%;
+}
+
+#mask {
+ position:fixed;
+ top:0px;
+ left:0px;
+ height:100%;
+ width:100%;
+ background-color:black;
+ opacity:0.5;
+ z-index:100;
+}
+
+.darkenedMask {!important
+ opacity: 0.9;
+}
+
+.cover {
+ position:fixed;
+ top:0px;
+ left:0px;
+ height:100%;
+ width:100%;
+}
+
+.subPopup { /* Right now, just used for errors. */
+ position:absolute;
+ background-color: #FFD6D6;
+
+ width:550px;
+ z-index:103;
+ padding:0px;
+ padding-bottom:5px;
+
+ color:black;
+}
+
+

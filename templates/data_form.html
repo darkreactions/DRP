@@ -7,7 +7,7 @@
    <div class="error">
     <div class="error_label">{{ field.label_tag }}</div>
     <div class="error_message">{{ field.errors.as_text }}</div>
-   </div> 
+   </div>
   {% endif %}
   {% endfor %}
  </div>
@@ -22,23 +22,23 @@
 <form id="dataEntryForm" method="post" action="/data_form/" class="popupScreenForm infoForm">
  {% csrf_token %}
  {% for field in form %}
-  {# Assumes reactants are first #}
+
   {% if 15 > forloop.counter0  %}
+
+   {# Place reactants in groups #}
    {% if forloop.first or forloop.counter0|divisibleby:"3" %}
     <div class="reactionWrapper">
         <div class="fieldWrapper">
             {{ field.label_tag }} {{ field }}
-           </div>
     {% elif forloop.counter|divisibleby:"3" %}
           {{ field }}
           </div>
-          </div>
          {% else %}
-       <div class="fieldWrapper">
-          {{ field.label_tag }} {{ field }}
+          {{ field }}
          {% endif %}
-  {% else %} 
-      <div class="fieldWrapper"> 
+
+  {% else %}
+      <div class="fieldWrapper">
           {{ field.label_tag }} {{ field }}
    </div>
   {% endif %}
@@ -52,6 +52,6 @@
    </center>
   {% else %}
    <p> Please log in to submit data. </p>
-  {% endif %}   
- </div>  
+  {% endif %}
+ </div>
 </form>
