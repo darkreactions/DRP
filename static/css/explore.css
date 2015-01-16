@@ -18,46 +18,46 @@
 }
 
 .tooltip {
- fill: black;  
+ fill: black;
  stroke: black;
- stroke-width: 0.3; 
- pointer-events: none; 
-} 
+ stroke-width: 0.3;
+ pointer-events: none;
+}
 
 .seedButtonRect {
- -webkit-box-shadow: 10px 10px 5px; 
- box-shadow: 10px 10px 5px; 
- fill: white; 
-} 
+ -webkit-box-shadow: 10px 10px 5px;
+ box-shadow: 10px 10px 5px;
+ fill: white;
+}
 
 .seedRecText {
- fill: #2E6809; 
+ fill: #2E6809;
  stroke: #0066CC;
  stroke-width: 0.3;
- pointer-events: none;  
+ pointer-events: none;
 }
 
 .extraRect {
  pointer-events: none;
-} 
+}
 
 .seedImage {
  -webkit-filter: huerotate(180deg);
- pointer-events: none;  
-} 
+ pointer-events: none;
+}
 
 #loadingMessage {
- padding 30px auto; 
+ padding 30px auto;
  width: 100%;
- text-align-center; 
+ text-align-center;
  font-size: 24px;
-} 
+}
 
 .tooltipBackground {
  stroke-width: 1px;
  fill: #CCE6FF;
  opacity:0.5;
- text-anchor: left; 
+ text-anchor: left;
 }
 
 #wrapper {
@@ -65,9 +65,9 @@
 
 #graphWrapper {
 position: relative;
-float: left; 
+float: left;
 overflow: hidden;
-display: inline-block; 
+display: inline-block;
 width: 97%;
 height:99%;
 }
@@ -76,30 +76,34 @@ height:99%;
 }
 
 #slider {
-position: relative; 
+position: relative;
 float: right;
 top: 0;
 right: 0;
-margin-top: 5px; 
+margin-top: 5px;
 margin-right: 5px;
-width: 2%;  
-min-height: 300px; 
-height: 85%; 
+width: 2%;
+min-height: 300px;
+height: 85%;
 display: inline-block;
-background: #e8f4ff; 
+background: #e8f4ff;
 border-radius: 2px;
 }
 
 .handle {
-width: 100%; 
-height: 50px;
-background:#2c7fb8;
-color: #FFF;
-font-size: 14px;
-text-align: center;
-border-radius: 1px; 
-position: absolute; 
-line-height: 50px; 
+  width: 100%;
+  height: 50px;
+  background:#2c7fb8;
+  color: #FFF;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 1px;
+  position: absolute;
+  line-height: 50px;
+  cursor:default;
+  opacity:0.8;
+}
+.handle:hover {
+  opacity:1;
 }
 
- 
