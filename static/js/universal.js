@@ -1081,12 +1081,6 @@ $(document).on("click", ".closeButton", function() {
  }
 });
 
-//Shrink the slide container on contractButton clicks.
-$(document).on("click", ".contractButton", function() {
- $("#sidePanelWarning").hide();
- toggleSideContainer();
-});
-
 //############ Forced Editable Changes #################################
 
 $(document).on("change", ".editable_assignedUser", function() {
