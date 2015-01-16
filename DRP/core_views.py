@@ -243,6 +243,7 @@ def recommend(request, page_request=None):
 @require_http_methods(["POST"])
 def recommendation_transmit(request, seeded=False):
  from DRP.models import Recommendation
+ from DRP.pagifier import get_page_link_format
 
  try:
   #Variable Setup
