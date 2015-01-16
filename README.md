@@ -211,7 +211,10 @@ times when you wish to download a CSV; while the "simple" CSV (with the
 original input features) can be downloaded through the site interface, the
 "expanded" CSV is only accessible on the backend. For convenience, the
 "fileFunctions.py" python file contains a `writeExpandedCSV(filename)`
-function that will write a full, expanded CSV to the system.
+function that will write a full, expanded CSV to the system. For even more
+convenience, this function is wrapped by a management command:
+
+> python manage.py writeCSV filename.csv
 
 If you need to access the data in a CSV-like format through a library
 such as d3.js, it is recommended that you use a Django view and

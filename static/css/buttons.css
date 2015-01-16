@@ -1,5 +1,5 @@
 input[type=button] {
-  background-color:white;
+  background-color:#d8e5ee;
   border:none;
   padding:0.5em;
   cursor:pointer;
@@ -33,7 +33,7 @@ input[type=button] {
  padding:0.5em;
  margin:0 auto;
  border:none;
- background-color:silver;
+ background-color:#d8e5ee;
  color:black;
 
  font-size:1.1em;
@@ -79,6 +79,12 @@ input[type=button] {
 .subPopup .closeButton {
  color:red;
  background-color:rgba(150,0,0,0.1);
+}
+
+
+.formButton {
+ margin:0.5em auto;
+ max-width:10em;
 }
 
 .genericButton, .button {

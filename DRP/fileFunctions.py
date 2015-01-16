@@ -15,7 +15,7 @@ def writeCSV(name, data, headers=[]):
     csvWriter.writerows(data)
 
 
-def writeExpandedCSV(filename):
+def writeExpandedCSV(filename, debug=True, include_lab_info=True):
   def cleanData(matrix):
     def clean(elem):
       if type(elem)==str or type(elem)==unicode:
@@ -26,16 +26,23 @@ def writeExpandedCSV(filename):
 
   from DRP.retrievalFunctions import expand_data,get_expanded_headers,get_valid_data
 
-  print "Gathering data..."
-  headers = get_expanded_headers() + ["Lab", "Date Entered"]
-  data = expand_data(get_valid_data(),include_lab_info=True, make_new=True, debug=True)
+  if debug: print "Gathering data..."
 
-  print "Writing data..."
+  headers = get_expanded_headers()
+
+  if include_lab_info:
+    headers.extend(["Lab", "Date Entered"])
+
+  data = expand_data(get_valid_data(), include_lab_info=include_lab_info,
+                                       make_new=True,
+                                       debug=debug)
+
+  if debug: print "Writing data..."
   data = cleanData(data)
 
   writeCSV(filename, data, headers=headers)
 
-  print "Write complete!"
+  if debug: print "Write complete!"
 
 
 def createDirIfNecessary(directory):

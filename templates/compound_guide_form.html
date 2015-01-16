@@ -36,7 +36,7 @@
  <div class="fieldWrapper hiddenField">
   <label for="id_atoms">Elements: </label>
   <input class="form_text" id="id_atoms" name="atoms" title="What elements are present in this compound? Separate with spaces." type="text" />
- </div> 
+ </div>
  <div class="fieldWrapper hiddenField">
   <label for="id_mw">Molecular Weight: </label>
   <input class="form_text form_text_short numericValue" id="id_mw" name="mw" title="What is the molecular weight of this compound (in g/mol)?" type="text" />
@@ -49,8 +49,14 @@
 
  {% if user.is_authenticated %}
   <center>
-  <div title="Search for this compound." class="button checkCompoundButton">Search ChemSpider</div>
-  <div title="Input a compound without searching." class="button customCompoundButton">Search failed?</div>
+  <div title="Search for this compound."
+       class="button checkCompoundButton formButton">
+    Search ChemSpider
+  </div>
+  <div title="Input a compound without searching."
+       class="button customCompoundButton formButton">
+    Search failed?
+  </div>
   <div class="compoundCheckResults"></div>
   </center>
  {% else %}
