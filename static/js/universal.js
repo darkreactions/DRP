@@ -179,7 +179,7 @@ $(document).tooltip({
  content: function() {
   return $(this).attr("title")
   },
- fade: 400
+ fade: 0
  });
 
 //Disable the tooltips when a text-input is selected.

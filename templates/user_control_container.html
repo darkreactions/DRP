@@ -4,12 +4,12 @@
  <div id = "userInfo_inner">
 
   {% if user.is_authenticated %}
-    Hello,
-    <span id="userUpdate" class="popupActivator" title="Update Account">
-      {{ user.first_name }}
-    </span>
 
-    <br />
+    <div>
+      <span>Hello, {{ user.first_name }}</span>
+      <img id="userUpdate" class="popupActivator" title="Update Account"
+          src="{{STATIC_URL}}icons/gear.png">
+    </div>
 
     <a id="userLogOut" class="userAuthLink">Log Out</a>
 
