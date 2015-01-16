@@ -220,49 +220,6 @@ input:focus, textarea:focus, select:focus {
 option {
  background-color:inherit;
 }
-/* #################    Periodic Table    ####################### */
-#periodicTableContainer {
- position:relative;
- display:inline-block;
- text-align:center;
- width:100%;
-}
-
-.PT_spacer{
-height:10px;
-}
-
-.PT_element {
- cursor:pointer;
- text-align:center;
- padding:1.5px;
- color:black;
- font-size:10px;
- border-radius:5px;
-
- user-select: none;
- -webkit-user-select: none;
- -moz-user-select: none;
- -ms-user-select: none;
-}
-
-.PT_element:hover {
-
-}
-/* Table partitions */
-.PT_hydrogen { background-color:#EBD8FF; }
-.PT_alkaliMetal { background-color:#FFB459; }
-.PT_alkaliEarth { background-color:#FFEE93; }
-.PT_transitionMetal { background-color:#C381EA; }
-.PT_poorMetal { background-color:#96C3FF; }
-.PT_nonmetal { background-color:#8FD892; }
-.PT_nobleGas { background-color:#BBAFFF; }
-.PT_lanthanide { background-color:#FFCCF2; }
-.PT_actinide { background-color:#C6905D; }
-
-.PT_selected {
- background-color:#FFD92E;
-}
 
 #label_and {
  margin:0 auto;
@@ -425,7 +382,7 @@ height:10px;
 
 .ribbonMessage {
  font-size:18px;
- position:absolute;
+ position:fixed;
  width:100%;
  top:40%;
  left:0px;
@@ -434,10 +391,8 @@ height:10px;
  background-color:white;
  color:black;
 
- border-top:2px solid black;
- border-bottom:3px solid black;
- padding-top:5px;
- padding-bottom:5px;
+ border:2px solid rgba(0,0,0,0.2);
+ padding:1.5em 0em;
  z-index:9999;
 }
 
@@ -540,36 +495,14 @@ height:10px;
 .type_compound {
  min-width:100px;
 }
-/* #####################   ERROR STYLE   ############################ */
-.error {
- display:inline-block;
- background-color: #F7605B;
- padding:1em;
-}
-
-.error_label {
- display:inline-block;
- background-color: #E65140;
- border-radius:15px;
- padding:5px;
- font-weight:bold;
- opacity:0.8;
-}
-.error_label:hover {
- opacity:1;
-}
-
-.error_message {
- display:inline-block;
-}
 
 .loadingWheel {
- user-select: none;
- -webkit-user-select: none;
- -moz-user-select: none;
- -ms-user-select: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 
- cursor:default;
+  cursor:default;
 }
 
 /*############################ Single elements ######################### */
@@ -587,14 +520,10 @@ height:10px;
  height: 100%;
 }
 
- #loadingMessage {
+#loadingMessage {
   position:absolute;
   top: 8em;
   width: 100%;
   text-align: center;
   font-size: 2em;
-}
-
-@media (max-width:600px) {
-
 }

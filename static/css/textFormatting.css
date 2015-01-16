@@ -27,6 +27,16 @@ a:hover, #changePassword:hover {
   padding:1em 0em;
 }
 
+.infoBar {
+ padding:1.5em 0em;
+ text-align:center;
+ background-color:#4d82ac;
+ color:white;
+
+ font-weight:bold;
+}
+
+
 
 
 

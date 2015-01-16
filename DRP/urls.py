@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
   #Dashboard
-    url(r'^dashboard/?$', "DRP.views.dashboard.get_dashboard"), #Displays the empty dashboard.
+    url(r'^dash(?:board)?/?$', "DRP.views.dashboard.get_dashboard"),
     url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
   #Database
     (r'^database/?$', database), #Encompassing data view.
@@ -53,15 +53,14 @@ urlpatterns = patterns('',
   #Recommendations
     (r'^make_seed_recommendations/$', "DRP.views.seed_recommend.make_seed_recommendations"),
 
-    (r'^seeds?/?$', "DRP.views.seed_recommend.seed_recommend"),
-    (r'^seeds?/'+page+'/?$', "DRP.views.seed_recommend.seed_recommend"),
-    (r'^seed_?(recommendations?)/?$', "DRP.views.seed_recommend.seed_recommend"),
-    (r'^seed_?(recommendations?)/'+page+'/?$', "DRP.views.seed_recommend.seed_recommend"),
+    (r'^seeds?(?:_recommend(?:ations?)?)?/?$', "DRP.views.seed_recommend.seed_recommend"),
+    (r'^seeds?(?:_recommend(?:ations?)?)?/'+page+'/?$', "DRP.views.seed_recommend.seed_recommend"),
 
     (r'^check_seed_oven/$', "DRP.views.seed_recommend.check_seed_worker_cache"),
 
-    (r'^recommend(ations?)?/?$', recommend),
-    (r'^recommend(ations?)?/'+page+'/?$', recommend),
+    (r'^rec(?:ommend(?:ation)?)?s?/?$', recommend),
+    (r'^rec(?:ommend(?:ation)?)?s?/'+page+'/?$', recommend),
+
     (r'^saved/$', saved),
     (r'^change_Recommendation/$', change_Recommendation), #[JSON] Edit Rec Entry
     (r'^assign_user/$', assign_user_to_rec),

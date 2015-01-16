@@ -1,7 +1,7 @@
 input[type=button] {
   background-color:white;
   border:none;
-  height:2em;
+  padding:0.5em;
 }
 input[type=button]:hover {
   opacity:0.8;

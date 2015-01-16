@@ -549,8 +549,10 @@ $(document).on("submit", ".infoForm", function() {
       return false;
     } else {
       if ($("#popupContainer_inner").is(":visible")){
+
         //Recreate the popup window with the server response.
         $("#popupContainer_inner").html(response);
+
         $(".subPopup").draggable();
       } else {
         $("#mainPanel").html(response);

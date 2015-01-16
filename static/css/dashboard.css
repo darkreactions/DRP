@@ -10,13 +10,6 @@
  display:block;
 }
 
-.fullInfoBar {
- background-color:rgba(53, 90, 119, 0.75);
- color:white;
- padding:1em;
- font-size:1.5em;
-}
-
 #chart2Class svg, #chart4Class svg {
     height: 30%;
     width: 100%;

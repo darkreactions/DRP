@@ -6,7 +6,7 @@
   {% if field.errors %}
    <div class="error">
     <div class="error_label">{{ field.label_tag }}</div>
-    <div class="error_message">{{ field.errors.as_text }}</div>
+    <div class="error_message">{{ field.errors.as_text|cut:"*" }}</div>
    </div>
   {% endif %}
   {% endfor %}

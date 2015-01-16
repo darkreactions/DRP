@@ -40,4 +40,7 @@
  color:black;
 }
 
-
+.subPopup .closeButton {
+ color:red;
+ background-color:rgba(150,0,0,0.1);
+}
