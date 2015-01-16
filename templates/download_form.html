@@ -1,4 +1,4 @@
-<h1>Download {{model_verbose}}:</h1>
+<h1>Download {{model_verbose}}</h1>
 <form id="CSVForm" method="POST" enctype="multipart/form-data" action="/download_data/" class="popupScreenForm downloadForm">
  {% csrf_token %}
 
@@ -14,7 +14,7 @@
   <label class="button radioLabel" for="radio_no_filters">No</label>
  </input>
  </div>
- 
+
  <input type="hidden" name="filters" value="">
  {% endif %}
 

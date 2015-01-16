@@ -2,8 +2,10 @@ a:hover, #changePassword:hover {
   opacity:0.8;
 }
 
+h1,
 .bannerText {
   padding:1.25em 3em;
+  margin: 0px;
   font-size:1.25em;
   text-align:center;
   background-color:#773539;
@@ -83,12 +85,6 @@ a:hover, #changePassword:hover {
 
 #popupContainer_inner > a {
  color:silver;
-}
-
-.subPopup > h1 {
- margin:5px;
- text-align:center;
- padding-left:20px;
 }
 
 #changePassword {

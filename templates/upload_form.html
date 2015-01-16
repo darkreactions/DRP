@@ -1,4 +1,4 @@
-<h1>Upload {{model_verbose}}:</h1>
+<h1>Upload {{model_verbose}}</h1>
 <form id="CSVForm" method="post" enctype="multipart/form-data" action="/upload_data/" class="popupScreenForm uploadForm">
  {% csrf_token %}
  <input type="hidden" name="model" value="{{model}}">
@@ -11,5 +11,5 @@
   <input name="submit" id="uploadCSVSubmit" type="submit" value="Upload" class="button"/>
  {% else %}
   <p> Please sign in to submit data. </p>
- {% endif %} 
+ {% endif %}
 </form>

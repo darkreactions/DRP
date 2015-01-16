@@ -484,6 +484,7 @@ $(document).on("submit", ".downloadForm", function(event) {
  model=$(this).find("input[name=model]").val();
 
  loadPageFilters();
+
  //If filters are enabled, send them in the form.
  var filters = "";
  if ($(this).find("input[name=use_filters]").val()=="True"){
