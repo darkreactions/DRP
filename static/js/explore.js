@@ -307,7 +307,7 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
  	  .attr('y', boxLength + 5)
  	  .attr('width', 22)
  	  .attr('height', 16)
- 	  .attr('xlink:href', "/static/icons/seed.gif");
+ 	  .attr('xlink:href', "/static/icons/seed.png");
 
 	seedButtonRect.on("click", function(d) {
 		var url="/nd/make_seed_recommendations/";

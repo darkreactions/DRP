@@ -304,7 +304,7 @@ $(document).on("mouseover", ".dataGroup", function() {
    addDataSpecificButton(this, "leftMenu_addNew", "add.png",
     "Copy this reaction to the data form.",
     "popupActivator duplicateSpecificDataButton");
-   addDataSpecificButton(this, "makeSeedRecommendations", "seed.gif",
+   addDataSpecificButton(this, "makeSeedRecommendations", "seed.png",
     "Generate recommendations based on this datum.",
     "");
 

@@ -26,10 +26,12 @@
 /* # # # # # # # # #   Specific Fields   # # # # # # # # # # # # # # # # #  */
 #uploadCSV_display {
  position:relative;
- padding:5px;
+
+ padding:2em;
+ max-width:40em;
+ margin: 0 auto;
  margin-bottom:10px;
- border:2px black solid;
- border-radius:5px;
+
  background-color:#EFEFA9;
 
  color:black;

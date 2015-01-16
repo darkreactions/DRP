@@ -197,37 +197,6 @@ option {
 
 
 /* ###############   Specific Elements   ############################ */
-.tertiaryCornerButton {
- z-index:4; /*Must be less than #secondaryPopupCornerButton */
- width:45px;
-}
-
-.secondaryCornerButton {
- z-index:5; /*Must be less than .closeButton */
- width:25px;
-}
-
-.popupCornerButton {
- background-color:white;
- cursor:pointer;
- font-size:12px;
- font-weight:bold;
- text-align:center;
-
- top:10px;
- right:20px;
- height:15px;
- border:2px solid black;
- border-bottom-left-radius:10px;
- padding:2px;
-
- background-size:contain;
- background-repeat:no-repeat;
-
- position:absolute;
- opacity: 0.5;
-}
-
 
 
 .ribbonMessage {
