@@ -10,6 +10,8 @@ Dark Reaction Project README
   4. Creating a User
   5. Connecting a User to BitBucket with an SSH Key
   6. Using a Test Bed ON the DRP Server
+  7. Using a Test Bed OFF of the DRP Server
+  8. Accessing the GitHub Repo
 2. **Django Management Commands**
   1. generate_model
 3. **Database**
@@ -144,6 +146,17 @@ same process as described above can be used to set up the Django Project.
 However, you'll want to SCP a version of the database over to your
 development box and set up MySQL appropriately (see the setup.txt file above).
 Any of the backups in the DropBox backup folder should suffice.
+
+** Accessing the GitHub Repo **
+
+Firstly, you'll need a GitHub account and you'll need someone with access to
+the repo to grant your account access (though if you can view this README without
+access to the GitHub repo, you should tell someone). Then, you should be able to
+use `git clone https://github.com/cfalk/DRP.git` to copy the repository to
+your workstation. Note that if you have a branch set up using the old BitBucket,
+you'll want to delete that section in your ".../.git/config" file and use
+`git remote add <branch> https://github.com/cfalk/DRP.git` to transition smoothly
+to the new repo.
 
 
 Django Management Commands
