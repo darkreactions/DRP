@@ -18,8 +18,8 @@ from data_config import CONFIG
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
 def calc_total_pages(data_size):
- total_pages = 1 + int((data_size-1)/CONFIG.data_per_page)
- return total_pages if total_pages > 1 else 1
+  total_pages = 1 + int((data_size-1)/CONFIG.data_per_page)
+  return total_pages if total_pages > 1 else 1
 
 
 def get_pagified_data(page, lab_group=None, data=None):
@@ -355,20 +355,37 @@ def saved(request):
 @login_required
 @require_http_methods(["GET"])
 def rank(request):
- #Variable Setup:
- u = request.user
- unranked_rxn = get_random_unranked_reaction_or_none()
+  def get_random_unranked_reaction_or_none(seed=None):
+    def get_unranked_reactions(seed=None):
+      from DRP.models import RankedReactionList
+      unranked = RankedReactionList.objects.filter(ranker=None)
+      #If a seed is specified, apply it to the filter.
+      if seed:
+        #Convert any lists to strings to allow filtering.
+        seed = json.dumps(seed) if type(seed)==list else seed
+        unranked = unranked.filter(seed=seed)
+      return unranked
 
- if not unranked_rxn:
-  fatal_message = "No unranked reactions available!"
- else :
-  fatal_message = ""
+    unranked_rxns = get_unranked_reactions(seed=seed)
+    if unranked_rxns.exists():
+      random_index = random.randrange(unranked_rxns.count())
+      return unranked_rxns[random_index]
+    return None
 
- return render(request, 'global_page.html', {
-  "template":"unranked_reaction",
-  "unranked_rxn": unranked_rxn,
-  "fatal_message": fatal_message,
- })
+  #Variable Setup:
+  u = request.user
+  unranked_rxn = get_random_unranked_reaction_or_none()
+
+  if not unranked_rxn:
+    fatal_message = "No unranked reactions available!"
+  else :
+    fatal_message = ""
+
+  return render(request, 'global_page.html', {
+    "template":"unranked_reaction",
+    "unranked_rxn": unranked_rxn,
+    "fatal_message": fatal_message,
+  })
 
 
 # # # # # # # # # # # # # # # # # # #
@@ -577,7 +594,10 @@ def compound_guide_form(request):
    if not entry.custom:
     #Apply calculations to the compound.
     entry.save()
-    update_compound_and_reactions(lab_group, entry)
+
+    #TODO: MODIFY shouldn't be necessary after database migration. Maybe refresh?
+    update_reactions_with_compound(lab_group, entry)
+
     success = True #Used to display the ribbonMessage.
    elif atoms and mw.replace(".","",1).isdigit():
     entry.smiles = atoms
@@ -637,7 +657,7 @@ def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
    affected_data.update(**{reactant:new_abbrev})
 
 
-### EDIT ME
+#TODO: HOPEFULLY WILL MOSTLY DEPRECATE ON DB MIGRATION.
 @login_required
 @require_http_methods(["POST"])
 def edit_CG_entry(request):
@@ -1022,7 +1042,7 @@ def add_reactant(request):
 
   #Attempt to update/re-validate the full datum (but don't die on fail).
   try:
-   update_reaction(datum, lab_group)
+   datum.refresh()
   except:
    pass
   return HttpResponse("0_close")
@@ -1064,7 +1084,7 @@ def delete_reactant(request):
 
   #Attempt to update/re-validate the full datum (but don't die on fail).
   try:
-   update_reaction(datum, lab_group)
+   datum.refresh()
   except:
    pass
 
@@ -1179,7 +1199,7 @@ def change_Data(request):
    lab_data.filter(duplicate_of=oldValue).update(duplicate_of=newValue)
   elif fieldChanged[:8]=="reactant":
    #Update the atom information and any other information that may need updating.
-   update_reaction(datum, lab_group)
+   datum.refresh()
   return HttpResponse(0)
 
  except Exception as e:

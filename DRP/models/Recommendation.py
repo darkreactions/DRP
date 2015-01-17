@@ -9,6 +9,9 @@ from Data import Data
 
 
 class Recommendation(models.Model):
+  class Meta:
+    app_label = "DRP"
+
   #Reactant Fields
   for i in CONFIG.reactant_range():
     exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))

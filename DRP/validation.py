@@ -234,3 +234,67 @@ def validate_name(abbrev_to_check, lab_group):
  abbrevs = collect_CG_name_pairs(lab_group)
  return abbrev_to_check in abbrevs
 
+
+def clean_compound(compound):
+  #Remove any non-printable characters.
+  return filter(lambda x: x in string.printable, compound)
+
+
+def validate_CG(dirty_data, lab_group, editing_this=False):
+  def parse_CAS_ID(CAS):
+    CAS = CAS.replace(" ", "-").replace("/", "-").replace("_", "-")
+
+    #Check that the CAS ID has three hyphen-delineated parts.
+    if len(CAS.split("-")) != 3:
+      raise Exception("CAS ID requires three distinct parts.")
+
+    #Check that only numbers are present.
+    elif not CAS.replace("-","").isdigit():
+      raise Exception("CAS ID may only have numeric characters.")
+
+    return CAS
+
+  from DRP.chemspider import search_chemspider
+
+  #Variable Setup
+  clean_data = dirty_data
+  errors = {}
+
+  for field in ["compound", "abbrev", "compound_type"]:
+    if not dirty_data.get(field):
+      errors[field] = "Field required."
+
+  #Get the CAS_ID if applicable.
+  raw_CAS = dirty_data.get("CAS_ID")
+  try:
+    clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
+  except Exception as e:
+    errors["CAS_ID"] = e
+
+  #If the data is custom, don't query ChemSpider.
+  if dirty_data.get("custom"):
+    clean_data["custom"]=True
+    clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = "","",""
+  else: #But if it is normal, get extra data from the query.
+    try:
+      search_fields = [dirty_data.get("CAS_ID"), dirty_data.get("compound")]
+      query = search_chemspider(search_fields)
+      clean_data["image_url"] = query.imageurl
+      clean_data["smiles"] = query.smiles
+      clean_data["mw"] = query.molecularweight
+
+    except:
+      if search_fields[0]:
+        errors["CAS_ID"] = "Could not find a molecule with this CAS ID."
+      else:
+        errors["compound"] = "Could not find this compound."
+
+  #Prevent duplicate abbrevs.
+
+  if not errors.get("abbrev"):
+    clean_data["abbrev"] = dirty_data["abbrev"]
+    if not editing_this:
+      if get_lab_CG(lab_group).filter(abbrev=clean_data["abbrev"]).exists():
+        errors["abbrev"] = "Abbreviation already used."
+
+  return clean_data, errors

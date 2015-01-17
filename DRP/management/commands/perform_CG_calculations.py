@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
-from DRP.models import perform_CG_calculations
+from DRP.adminFunctions import perform_CG_calculations
 
 class Command(BaseCommand):
   option_list = BaseCommand.option_list + (
@@ -18,8 +18,11 @@ class Command(BaseCommand):
   )
 
   def handle(self, *args, **options):
-   #Translate arguments
    self.stdout.write("Calculations started!")
-   perform_CG_calculations(only_missing=options["only_missing"], attempt_failed=options["attempt_failed"],verbose=True)
+
+   perform_CG_calculations(only_missing=options["only_missing"],
+                           attempt_failed=options["attempt_failed"],
+                           verbose=True)
+
    self.stdout.write("CG_calculations construction complete!")
 

@@ -74,16 +74,16 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
 
     for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
 
-    #Translate Booleans into Boolean values.
-    if field in bool_fields:
-      value = True if value[0].lower() in "1tyc" else False
+      #Translate Booleans into Boolean values.
+      if field in bool_fields:
+        value = True if value[0].lower() in "1tyc" else False
 
-    if debug:
-      print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
+      if debug:
+        print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
 
-    setattr(new_rec, field, value)
+      setattr(new_rec, field, value)
 
-    new_rec.atoms = "".join(new_rec.get_atoms()))
+    new_rec.atoms = "".join(new_rec.get_atoms())
 
     if not in_bulk:
       new_rec.date_dt = datetime.datetime.now()

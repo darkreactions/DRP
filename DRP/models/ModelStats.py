@@ -2,6 +2,8 @@ from django.db import models
 from DRP.settings import MODEL_DIR
 
 class ModelStats(models.Model):
+  class Meta:
+    app_label = "DRP"
 
   # Model Statistics
   confusion_table = models.TextField(default="{}")

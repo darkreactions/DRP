@@ -57,6 +57,15 @@ class Data(models.Model):
   def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
                             preloaded_cg=None, debug=False,
                             preloaded_abbrev_map=None):
+
+    def _make_float(raw):
+      # Convert any number-like strings to floats.
+      try:
+        return float(raw)
+      except:
+        return raw
+
+
     from model_building.load_data import create_expanded_datum_field_list
     from model_building.rxn_calculator import headers
 
@@ -66,7 +75,7 @@ class Data(models.Model):
         calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg,
                                                     preloaded_abbrev_map=preloaded_abbrev_map)
 
-        calcDict = {key:make_float(val) for key,val in zip(headers, calcList)}
+        calcDict = {key:_make_float(val) for key,val in zip(headers, calcList)}
 
         # Prepare a new DataCalc object.
         newDataCalc = DataCalc(contents=json.dumps(calcDict))
@@ -170,6 +179,14 @@ class Data(models.Model):
       return json.loads(self.atoms)
 
 
+  def refresh(self):
+    #Store the atoms as a string -- not a set.
+    self.get_atoms(refresh=True)
+
+    #Revalidate and save the datum.
+    revalidate_datum(self, self.lab_group)
+
+
 
 
 
@@ -178,6 +195,20 @@ def get_lab_Data(lab_group):
   from DRP.models import get_Lab_Group
   lab_group = get_Lab_Group(lab_group)
   return Data.objects.filter(lab_group=lab_group).order_by("creation_time_dt")
+
+
+def get_good_rxns(lab_group=None, with_headings=True):
+  #Collect a list of all valid data either globally or for a specific lab.
+
+  from DRP.models import get_Lab_Group, convert_QuerySet_to_list
+
+  if lab_group:
+    lab_group = get_Lab_Group(lab_group)
+    query = get_lab_Data(lab_group).filter(is_valid=True)
+  else:
+    query = Data.objects.filter(is_valid=True)
+
+  return convert_QuerySet_to_list(query, "Data", with_headings=with_headings)
 
 
 def get_ref_set(lab_group, reset_cache=True):
@@ -189,3 +220,11 @@ def get_ref_set(lab_group, reset_cache=True):
     set_cache(lab_group, "DATAREFS", ref_set)
 
   return ref_set
+
+
+def get_Data_with_compound(compound, lab_group):
+  from django.db.models import Q
+  Q_list = [Q(("reactant_{}".format(i),compound)) for i in CONFIG.reactant_range()]
+  return Data.objects.filter(reduce(operator.or_, Q_list))
+
+
