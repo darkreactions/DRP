@@ -1,3 +1,38 @@
+def migrateModelFields():
+  from DRP.models import *
+  from data_config import CONFIG
+
+  database = Data.objects.all()
+
+  for i, entry in enumerate(database):
+    print "{}...".format(i)
+
+    for i in CONFIG.reactant_range():
+
+      old_field = "reactant_{}".format(i)
+      new_field = "reactant_fk_{}".format(i)
+
+      abbrev = getattr(entry, old_field)
+
+      try:
+        comp = CompoundEntry.get(abbrev=abbrev)
+
+      except:
+        comp = CompoundEntry()
+        comp.abbrev = abbrev
+        comp.compound = compound
+        comp.custom = True
+        comp.save()
+
+
+      setattr(entry, new_field, comp)
+
+      entry.save()
+
+  print "FINISHED!"
+
+
+
 def update_all_reactions(lab_group):
   from DRP.models import get_lab_Data
   data = get_lab_Data(lab_group)
@@ -7,6 +42,7 @@ def update_all_reactions(lab_group):
     except:
       print "--could not update reaction: {}".format(entry)
   print "Finished data validation."
+
 
 
 def perform_CG_calculations(only_missing=True, lab_group=None,
@@ -47,6 +83,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None,
       print "ERROR: {}".format(e)
 
   print "CG_calculations complete! ({} of {} entries changed)".format(success, cg.count())
+
 
 
 def refresh_compound_guide(lab_group=None, verbose=False, debug=False, clear=False):

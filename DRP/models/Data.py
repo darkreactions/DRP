@@ -3,6 +3,8 @@ from DRP.data_config import CONFIG
 
 from Lab_Group import Lab_Group
 from DataCalc import DataCalc
+from CompoundEntry import CompoundEntry
+
 from django.contrib.auth.models import User
 
 import json
@@ -17,6 +19,8 @@ class Data(models.Model):
   #List Fields
   for i in CONFIG.reactant_range():
     exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
+    exec("reactant_fk_{0} = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_{0}')".format(i))
+
     exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
     exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
 

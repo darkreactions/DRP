@@ -20,10 +20,12 @@ class CompoundEntry(models.Model):
   calculations = models.ForeignKey(CG_calculations, unique=False, null=True, default=None)
   calculations_failed = models.BooleanField(default=False)
 
+
   def __unicode__(self):
     if self.compound == self.abbrev:
       return u"{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
     return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)
+
 
   def get_atoms(self):
     import rdkit.Chem as Chem
