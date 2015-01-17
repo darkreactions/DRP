@@ -43,6 +43,7 @@ def translate_reactants(lab_group, dataList, single=False, onlyAbbrevs=False, di
 
   return dataList
 
+
 def getMoles(mass, compound):
   from DRP.models import CompoundEntry
   try:
@@ -51,6 +52,7 @@ def getMoles(mass, compound):
   except Exception as e:
     print e
     raise Exception("getMoles: No molar mass available for {}".format(compound))
+
 
 def getMass(moles, compound):
   from DRP.models import CompoundEntry

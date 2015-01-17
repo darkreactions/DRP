@@ -149,24 +149,18 @@ class Data(models.Model):
     return [getattr(datum,field) for field in headings]
 
 
-  def get_abbrevs(self):
-    from DRP.data_config import CONFIG
-
-    abbrevs = []
-    for i in CONFIG.reactant_range():
-      abbrev = getattr(reaction, "reactant_{}".format(i))
-      if abbrev:
-        abbrevs.append(abbrev)
-
-    return abbrevs_list
-
-
   def get_compounds(self):
     comps = []
-    for abbrev in get_abbrevs():
-      comp = CompoundEntry.objects.get(abbrev=abbrev, lab_group=self.lab_group)
-      comps.append(comp)
+    for i in CONFIG.reactant_range():
+      comp = getattr(self, "reactant_{}".format(i))
+      if comp:
+        comps.append(comp)
     return comps
+
+
+  def get_abbrevs(self):
+    comps = self.get_compounds()
+    return map(lambda comp: comp.abbrev, comps)
 
 
   def get_atoms(self, refresh=False):

@@ -7,16 +7,8 @@ from models import *
 
 #Returns a specific datum if it is public or if it belongs to a lab_group.
 def get_public_data():
- from DRP.models import Data
- #Only show the public data that is_valid.
- return Data.objects.filter(public=True, is_valid=True).order_by("creation_time_dt")
-
-def get_datum_by_ref(lab_group, ref):
- data = get_lab_Data(lab_group)
- datum = data.filter(ref=ref)
- if not datum.exists():
-  raise Exception("Datum not found!")
- return datum[0]
+  from DRP.models import Data
+  return Data.objects.filter(public=True, is_valid=True).order_by("creation_time_dt")
 
 
 def get_lab_Data_size(lab_group):
@@ -169,8 +161,8 @@ def get_expanded_headers():
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def get_recommendations(lab_group):
- from models import Recommendation
- return Recommendation.objects.filter(lab_group=lab_group)
+  from models import Recommendation
+  return Recommendation.objects.filter(lab_group=lab_group)
 
 def get_active_recommendations():
   from models import Recommendation
@@ -192,11 +184,6 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
    seed_recs = seed_recs.order_by("-date_dt")
 
  return seed_recs
-
-def get_latest_ModelStats(active=True):
-  from models import ModelStats
-  models = ModelStats.objects.filter(active=active).order_by("-datetime")
-  return models.first()
 
 
 def get_recommendations_by_date(lab_group, date = "recent"):
@@ -260,46 +247,6 @@ def filter_recommendations(lab_group, query_list):
   recs = recs.filter(**filters)
  return recs
 
-
-
-   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-   # # # # # # # # # # # # #  COMPOUND GUIDE # # # # # # # # # # # # # # # # #
-   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-def get_CG_list(lab_group, headers=True):
- from DRP.models import get_lab_Data, get_model_field_names
- #Variable Setup
- CG = get_lab_CG(lab_group)
- fields =  get_model_field_names(model="CompoundEntry", collect_ignored=True)
- fields.remove("lab_group")
- CG_list = []
-
- #Apply headers to the list.
- if headers:
-  CG_list = fields
-
- #Get the entries' fields.
- CG_list += [getattr(entry, field) for entry in CG for field in fields]
- return CG_list
-
-def get_CG_list_dict(headers=True):
- labs = Lab_Group.objects.all()
- CG_list_dict = {lab.lab_title:get_CG_list(lab, headers=headers) for lab in labs}
- return CG_list_dict
-
-def get_mass_range(compound):
-  #TODO: Turn Quantity Charfields into DecimalFields
-  try:
-    from DRP.models import get_Data_with_compound
-    data = get_Data_with_compound(compound)
-    maximum = max([data.aggregate(Max("quantity_{}".format(i))) for i in CONFIG.reactant_range()])
-    minimum = min([data.aggregate(Min("quantity_{}".format(i))) for i in CONFIG.reactant_range()])
-    print maximum
-    return (minimum, maximum)
-  except Exception as e:
-    print e
-    raise Exception("Compound not found!")
-
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # #  MODEL   # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -308,6 +255,12 @@ def get_usable_models():
   from models import ModelStats
   model_stats = ModelStats.objects.filter(usable=True).order_by("datetime")
   return model_stats
+
+
+def get_latest_ModelStats(active=True):
+  from models import ModelStats
+  models = ModelStats.objects.filter(active=active).order_by("-datetime")
+  return models.first()
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

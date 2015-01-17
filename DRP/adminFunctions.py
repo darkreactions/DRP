@@ -1,11 +1,7 @@
 def migrateModelFields():
-  from DRP.models import *
-  from data_config import CONFIG
-
-  database = Data.objects.all()
-
-  for i, entry in enumerate(database):
-    print "{}...".format(i)
+  def migrate(elem):
+    from DRP.models import CompoundEntry
+    from data_config import CONFIG
 
     for i in CONFIG.reactant_range():
 
@@ -14,20 +10,29 @@ def migrateModelFields():
 
       abbrev = getattr(entry, old_field)
 
-      try:
-        comp = CompoundEntry.get(abbrev=abbrev)
+      comp = CompoundEntry.objects.filter(abbrev=abbrev).first()
 
-      except:
+      if not comp:
         comp = CompoundEntry()
         comp.abbrev = abbrev
-        comp.compound = compound
+        comp.compound = abbrev
+        comp.lab_group = entry.lab_group
         comp.custom = True
         comp.save()
-
 
       setattr(entry, new_field, comp)
 
       entry.save()
+
+  from DRP.models import Data
+
+  database = Data.objects.all()
+
+  for i, entry in enumerate(database):
+    if (i%10==0):
+      print "{}...".format(i)
+
+    migrate(entry)
 
   print "FINISHED!"
 
