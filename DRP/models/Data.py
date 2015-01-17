@@ -5,6 +5,8 @@ from Lab_Group import Lab_Group
 from DataCalc import DataCalc
 from django.contrib.auth.models import User
 
+import json
+
 #Many data are saved per lab group. Each data represents one submission.
 class Data(models.Model):
   class Meta:
@@ -36,7 +38,7 @@ class Data(models.Model):
   calculated_temp = models.BooleanField(default=False)
   calculated_time = models.BooleanField(default=False)
 
-  atoms = models.CharField("Atoms", max_length=30, blank=True)
+  atoms = models.CharField("Atoms", max_length=100, blank=True)
 
   user = models.ForeignKey(User, unique=False)
   lab_group = models.ForeignKey(Lab_Group, unique=False)
@@ -132,6 +134,43 @@ class Data(models.Model):
     headings = [field for field in all_fields if field not in fields_to_exclude]
 
     return [getattr(datum,field) for field in headings]
+
+
+  def get_abbrevs(self):
+    from DRP.data_config import CONFIG
+
+    abbrevs = []
+    for i in CONFIG.reactant_range():
+      abbrev = getattr(reaction, "reactant_{}".format(i))
+      if abbrev:
+        abbrevs.append(abbrev)
+
+    return abbrevs_list
+
+
+  def get_compounds(self):
+    comps = []
+    for abbrev in get_abbrevs():
+      comp = CompoundEntry.objects.get(abbrev=abbrev, lab_group=self.lab_group)
+      comps.append(comp)
+    return comps
+
+
+  def get_atoms(self, refresh=False):
+    if refresh or not self.atoms:
+      atoms = {comp.get_atoms() for comp in self.get_compounds()}
+
+      # Store `atoms` so that reactions can be efficiently searched by atoms.
+      self.atoms = dumps(atoms)
+      self.save()
+
+      return atoms
+
+    else:
+      return json.loads(self.atoms)
+
+
+
 
 
 

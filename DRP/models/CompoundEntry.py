@@ -25,6 +25,31 @@ class CompoundEntry(models.Model):
       return u"{} (--> same) (LAB: {})".format(self.abbrev, self.lab_group.lab_title)
     return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)
 
+  def get_atoms(self):
+    import rdkit.Chem as Chem
+
+    if self.custom and not self.smiles:
+      message = "Cannot get SMILES of custom compound: '{}'".format(self.abbrev)
+      raise Exception(message)
+    elif not self.smiles:
+      message = "Compound has no SMILES: '{}'".format(self.abbrev)
+      raise Exception(message)
+
+
+    mols = Chem.MolFromSmiles(self.smiles,sanitize=False)
+    if mols == None:
+      return []
+
+    #TODO: Incorporate hydrogens into model.
+    #if show_hydrogen:
+    # try:
+    #  mols = Chem.AddHs(mols) ###PRECONDITION?
+    # except:
+    #  pass
+
+    return [atom.GetSymbol() for atom in mols.GetAtoms()]
+
+
 
 def get_lab_CG(lab_query):
   lab_group = get_Lab_Group(lab_query)

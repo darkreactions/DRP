@@ -193,7 +193,8 @@ class DataEntryForm(ModelForm):
   datum.lab_group = self.lab_group
   datum.creation_time_dt = self.creation_time_dt
   datum.is_valid = True #If validation succeeded and data is saved, then it is_valid.
-  datum.atoms = "".join(get_atom_set_from_reaction(datum))
+
+  datum.get_atoms(refresh=True)
 
   if commit:
    datum.save()

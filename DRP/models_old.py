@@ -14,103 +14,6 @@ from settings import LOG_DIR, BASE_DIR, MODEL_DIR
 from cacheFunctions import get_cache, set_cache
 
 import json, random, string, datetime, operator
-import chemspipy
-
-
-
-# # # # # # # # # # # # # # # # # # #
-  # # # # # # # # RDKIT and ChemSpider Functions # # # # # # # # # # #
-# # # # # # # # # # # # # # # # # # #
-def get_first_chemspider_entry(search_fields):
- for i in search_fields:
-  try:
-   query = chemspipy.find_one(i)
-   return query
-  except Exception as e:
-   pass
- return None
-
-def chemspider_lookup(val):
- chemspi_query = ""
- #Accept either a CompoundEntry object or a dict with the valid fields
- search_fields = ["CAS_ID", "compound"]
- if type(val)==dict:
-  query_criteria = [val.get(i) for i in search_fields if val.get(i)]
- elif type(val)==CompoundEntry:
-  query_criteria = [getattr(val, i) for i in search_fields]
- else:
-  query_criteria = [val]
-
- try:
-  query = get_first_chemspider_entry(search_fields)
-  assert query
-  return query
- except:
-  raise Exception("Could not find compound on ChemSpider!")
-
-def get_atoms_from_compound(CG_entry = None):
- return get_atoms_from_smiles(CG_entry.smiles)
-
-def get_atoms_from_smiles(smiles, show_hydrogen=False):
- import rdkit.Chem as Chem
- if not smiles:
-  raise Exception("SMILES cannot be None!")
-
- mols = Chem.MolFromSmiles(str(smiles),sanitize=False)
- if mols == None:
-  return []
- #TODO: Incorporate hydrogens into model.
- #if show_hydrogen:
- # try:
- #  mols = Chem.AddHs(mols) ###PRECONDITION?
- # except:
- #  pass
- atoms = mols.GetAtoms()
- return [atom.GetSymbol() for atom in atoms]
-
-def get_atom_count_from_smiles(smiles):
- atom_list = get_atoms_from_smiles(smiles)
-
- #Count the number of occurances of each atom.
- atom_count = defaultdict(int)
- for atom in atom_list:
-  atom_count[atom] += 1
-
- return dict(atom_count) #Return a normal dictionary, not a defaultdict.
-
-def collect_CGs_by_abbrevs(lab_group, abbrev_list):
- CG_list = []
- for i in abbrev_list:
-  query = get_lab_CG(lab_group).filter(abbrev=i)
-  if query.exists():
-   CG_list.append(query[0])
- return CG_list
-
-def get_smiles_from_CG_list(CG_list, allow_custom=True):
- smiles_list = [i.smiles for i in CG_list if (not i.custom or allow_custom)]
- return smiles_list
-
-def condense_smiles_list_to_atoms(smiles_list):
- atoms_list = []
- for i in smiles_list:
-  if i:
-   atoms_list += get_atoms_from_smiles(i)
- return set(atoms_list)
-
-def get_abbrevs_from_reaction(reaction):
- from DRP.data_config import CONFIG
- abbrevs_list = [getattr(reaction, "reactant_{}".format(i)) for i in CONFIG.reactant_range() if getattr(reaction, "reactant_{}".format(i))]
- return abbrevs_list
-
-def get_atom_set_from_abbrevs(lab_group, abbrev_list):
- return condense_smiles_list_to_atoms(
-  get_smiles_from_CG_list(
-   collect_CGs_by_abbrevs(lab_group, abbrev_list),
-   allow_custom=False
-   ))
-
-def get_atom_set_from_reaction(reaction):
- return get_atom_set_from_abbrevs(reaction.lab_group, get_abbrevs_from_reaction(reaction))
 
 
 def update_compound_and_reactions(lab_group, entry):
@@ -147,11 +50,12 @@ def refresh_compound_guide(lab_group=None, verbose=False, debug=False, clear=Fal
 #Update the compound by reloading the ChemSpider search data.
 def update_compound(entry, debug=False):
   from DRP.fileFunctions import createDirIfNecessary
+  from DRP.chemspider import search_chemspider
 
   try:
     if not entry.custom: #Only update compounds that are not custom.
       #Get the most up-to-date ChemSpider info for a given CAS/compound.
-      query = get_first_chemspider_entry([entry.CAS_ID, entry.compound])
+      query = search_chemspider([entry.CAS_ID, entry.compound])
       if query:
         #Update the entry.
         entry.image_url, entry.smiles, entry.mw = query.imageurl, query.smiles, query.molecularweight
@@ -187,10 +91,11 @@ def update_compound(entry, debug=False):
     raise Exception("Compound update ({}) failed: {}".format(entry, e))
 
 def update_reaction(reaction, lab_group):
- #Store the atoms as a string -- not a set.
- reaction.atoms = "".join(get_atom_set_from_reaction(reaction))
- #Revalidate and save the datum.
- revalidate_datum(reaction, lab_group)
+  #Store the atoms as a string -- not a set.
+  reaction.get_atoms(refresh=True)
+
+  #Revalidate and save the datum.
+  revalidate_datum(reaction, lab_group)
 
 def update_reactions_with_compound(lab_group, compound):
  #Update the individual "atom" records on each reaction.
@@ -317,45 +222,47 @@ def parse_CAS_ID(CAS):
   return CAS
 
 def validate_CG(dirty_data, lab_group, editing_this=False):
- #Variable Setup
- clean_data = dirty_data
- errors = {}
+  from DRP.chemspider import search_chemspider
 
- for field in ["compound", "abbrev", "compound_type"]:
-  if not dirty_data.get(field):
-   errors[field] = "Field required."
+  #Variable Setup
+  clean_data = dirty_data
+  errors = {}
 
- #Get the CAS_ID if applicable.
- raw_CAS = dirty_data.get("CAS_ID")
- try:
-  clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
- except Exception as e:
-  errors["CAS_ID"] = e
+  for field in ["compound", "abbrev", "compound_type"]:
+    if not dirty_data.get(field):
+    errors[field] = "Field required."
 
- #If the data is custom, don't query ChemSpider.
- if dirty_data.get("custom"):
-  clean_data["custom"]=True
-  clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = "","",""
- else: #But if it is normal, get extra data from the query.
+  #Get the CAS_ID if applicable.
+  raw_CAS = dirty_data.get("CAS_ID")
   try:
-   search_fields = [dirty_data.get("CAS_ID"), dirty_data.get("compound")]
-   query = get_first_chemspider_entry(search_fields)
-   clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = query.imageurl, query.smiles, query.molecularweight
-  except:
-   if search_fields[0]:
-    errors["CAS_ID"] = "Could not find a molecule with this CAS ID."
-   else:
-    errors["compound"] = "Could not find this compound."
+    clean_data["CAS_ID"] = parse_CAS_ID(raw_CAS) if raw_CAS else ""
+  except Exception as e:
+    errors["CAS_ID"] = e
 
- #Prevent duplicate abbrevs.
+  #If the data is custom, don't query ChemSpider.
+  if dirty_data.get("custom"):
+    clean_data["custom"]=True
+    clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = "","",""
+  else: #But if it is normal, get extra data from the query.
+    try:
+    search_fields = [dirty_data.get("CAS_ID"), dirty_data.get("compound")]
+    query = search_chemspider(search_fields)
+    clean_data["image_url"], clean_data["smiles"], clean_data["mw"] = query.imageurl, query.smiles, query.molecularweight
 
- if not errors.get("abbrev"):
-  print errors
-  clean_data["abbrev"] = dirty_data["abbrev"]
-  if not editing_this:
-   if get_lab_CG(lab_group).filter(abbrev=clean_data["abbrev"]).exists():
-    errors["abbrev"] = "Abbreviation already used."
- return clean_data, errors
+    except:
+    if search_fields[0]:
+      errors["CAS_ID"] = "Could not find a molecule with this CAS ID."
+    else:
+      errors["compound"] = "Could not find this compound."
+
+  #Prevent duplicate abbrevs.
+
+  if not errors.get("abbrev"):
+    clean_data["abbrev"] = dirty_data["abbrev"]
+    if not editing_this:
+    if get_lab_CG(lab_group).filter(abbrev=clean_data["abbrev"]).exists():
+      errors["abbrev"] = "Abbreviation already used."
+  return clean_data, errors
 
 
 
@@ -398,18 +305,6 @@ def get_good_rxns(lab_group=None, with_headings=True):
 
 
 
-def validate_name(abbrev_to_check, lab_group):
- #Get the cached set of abbreviations.
- abbrevs = collect_CG_name_pairs(lab_group)
- return abbrev_to_check in abbrevs
-
-
-#TODO:
-def calculate_pH_from_CG(entry):
- pass
-
-def calculate_pH_from_reaction(reaction_info):
- pass
 
 #Add specified entries to a datum. Assume fields are now valid.
 def new_Data_entry(user, **kwargs): ###Not re-read yet.
@@ -439,225 +334,3 @@ def new_Data_entry(user, **kwargs): ###Not re-read yet.
  except Exception as e:
   raise Exception("Data construction failed!")
 
-def get_model_field_names(both=False, verbose=False, model="Data", unique_only=False, collect_ignored=False, for_upload=False):
- clean_fields = []
-
- if model=="Data":
-  if collect_ignored:
-   fields_to_ignore = {u"id", "creation_time_dt", "calculations"}
-  else:
-   fields_to_ignore = {u"id","user","lab_group", "atoms", "creation_time_dt",
-                       "calculations", "calculated_temp", "calculated_time",
-                       "calculated_pH", "is_valid", "public"}
-  dirty_fields = [field for field in Data._meta.fields if field.name not in fields_to_ignore]
- elif model=="Recommendation":
-  if collect_ignored:
-   fields_to_ignore = {u"id", "creation_time_dt"}
-  else:
-   fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved",
-                       "model_version", "atoms", "creation_time_dt", "nonsense",
-                       "complete", "score", "date_dt", "hidden", "seed", "seeded"}
-  dirty_fields = [field for field in Recommendation._meta.fields if field.name not in fields_to_ignore]
- elif model=="CompoundEntry":
-  if collect_ignored:
-   fields_to_ignore = {u"id", "image_url", "custom", "calculations"}
-  else:
-   fields_to_ignore = {u"id","lab_group", "smiles", "mw", "custom",
-                       "calculations", "calculations_failed"}
-  dirty_fields = [field for field in CompoundEntry._meta.fields if field.name not in fields_to_ignore]
- else:
-  raise Exception("Unknown model specified.")
-
- #Ignore any field that is in fields_to_ignore.
- for field in dirty_fields:
-  #Return the non list-fields:
-  if unique_only and field.name[-1].isdigit(): continue
-
-  #Return either the verbose names or the non-verbose names.
-  if both:
-   clean_fields += [{"verbose":field.verbose_name, "raw":field.name}] ###Make verbose names pretty
-  elif verbose:
-   clean_fields += [field.verbose_name] ###Make verbose names pretty
-  else:
-   clean_fields += [field.name]
- return clean_fields
-
-def revalidate_datum(datum, lab_group):
- #Collect the data to validate
- dirty_data = {field:getattr(datum, field) for field in get_model_field_names()}
- #Validate and collect any errors
- (clean_data, errors) = full_validation(dirty_data, lab_group, revalidating=True)
-
- setattr(datum, "is_valid", clean_data["is_valid"])
- datum.save()
-
- return (clean_data, errors)
-
-def full_validation(dirty_data, lab_group, revalidating=False):
- parsed_data = {} #Data that needs to be checked.
- clean_data = {} #Keep track of cleaned fields
- errors = {}
-
- fields = get_model_field_names()
- clean_data["is_valid"] = True
-
- #Gather the "coupled" fields (ie, the fields ending in a similar number)
- for field in list_fields:
-  exec("{} = [[]]*{}".format(field, CONFIG.num_reactants)) #### {field: [[]]*CONFIG.num_reactants for field in list_fields} {field:
-  parsed_data[field] = [[]]*CONFIG.num_reactants
-  clean_data[field] = []
- ###fields = {field: [[]]*CONFIG.num_reactants for field in list_fields} ###CHANGE INTO ME, Future Casey
- ###parsed_data = {field: [[]]*CONFIG.num_reactants for field in list_fields}
- ###clean_data = {field: [] for field in list_fields}
-
- #Visible fields that are not required (not including rxn info).
- not_required = { ###Auto-generate?
-  "notes", "duplicate_of"
- }
-
- for field in dirty_data:
-  if field[-1].isdigit():
-   #Put the data in its respective list.
-   rel_list = eval("{}".format(field[:-2]))
-   rel_list[int(field[-1])-1] = (dirty_data[field])
-  else:
-   try:
-    assert(dirty_data[field]) #Assert that data was entered.
-    parsed_data[field] = dirty_data[field]
-   except:
-    if field in not_required:
-     clean_data[field] = "" #If nothing was entered, store nothing.
-    else:
-     errors[field] = "Field required."
-
- #Check that equal numbers of fields are present in each list
- for i in xrange(CONFIG.num_reactants):
-  x = 0
-  if reactant[i]:
-   x+=2
-   parsed_data["reactant"][i] = reactant[i]
-  if quantity[i]:
-   x+=3
-   parsed_data["quantity"][i] = quantity[i]
-  if x==5:
-   parsed_data["unit"][i] = unit[i] #Menu, so no reason to check in form.
-
-  #Unit is added automatically, so don't check it.
-  if x == 3:
-   errors["reactant_"+str(i+1)] = "Info missing."
-  elif x == 2:
-   errors["quantity_"+str(i+1)] = "Info missing."
-
- for field in parsed_data:
-  #Make sure each reactant name is valid.
-  if field=="reactant":
-   for i in xrange(len(parsed_data[field])):
-    if not parsed_data[field][i]: continue #Don't validate empty values.
-    try:
-     dirty_datum = str(parsed_data[field][i])
-     if not clean_compound(dirty_datum)==dirty_datum:
-      errors["{}_{}".format(field,i+1)] = "Contains illegal characters!"
-     assert(validate_name(dirty_datum, lab_group))
-     clean_data["{}_{}".format(field,i+1)] = dirty_datum #Add the filtered value to the clean values dict.
-    except:
-     errors["{}_{}".format(field,i+1)] = "Not in compound guide!"
-
-  #Numeric fields:
-  elif field in float_fields or field in int_fields:
-   if field in float_fields: field_type="float"
-   else: field_type="int"
-
-   if field in list_fields:
-    for i in xrange(len(parsed_data[field])):
-     if not parsed_data[field][i]: continue #Don't validate empty values.
-     try:
-      dirty_datum = eval("{}(parsed_data[field][i])".format(field_type))
-      assert(quick_validation(field, dirty_datum))
-      clean_data["{}_{}".format(field,i+1)] = dirty_datum
-     except:
-      errors["{}_{}".format(field,i+1)] = "Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])
-   else:
-    try:
-     dirty_datum = eval("{}(parsed_data[field])".format(field_type))
-     assert(quick_validation(field, dirty_datum))
-     parsed_data[field] = dirty_datum #Add the filtered mass to clean_data
-     clean_data[field] = parsed_data[field]
-    except:
-     errors[field] = "Must be between {} and {}.".format(data_ranges[field][0], data_ranges[field][1])
-
-  #Option fields:
-  elif field in opt_fields:
-   if field in list_fields:
-    for i in xrange(len(parsed_data[field])):
-     if not parsed_data[field][i]: continue #Don't validate empty values.
-     try:
-      dirty_datum = str(parsed_data[field][i])
-      assert(quick_validation(field, dirty_datum))
-      clean_data["{}_{}".format(field,i+1)] = dirty_datum
-     except:
-      if field in bool_fields:
-       category="boolChoices"
-      else:
-       category = field+"Choices"
-
-      errors["{}_{}".format(field,i+1)] = "Field must be one of: {}".format(edit_choices[category])
-   else:
-    try:
-     dirty_datum = str(parsed_data[field])
-     assert(quick_validation(field, dirty_datum))
-     if clean_data["is_valid"]:
-      clean_data["is_valid"] = CONFIG.unknown_label != dirty_datum
-     clean_data[field] = dirty_datum
-    except:
-     if field in bool_fields:
-      category="boolChoices"
-     else:
-      category = field+"Choices"
-
-     errors[field] = "Field must be one of: {}".format(edit_choices[category])
-
-  #Text fields.
-  elif field in {"ref","notes", "duplicate_of"}:
-   try:
-    dirty_datum = str(parsed_data[field])
-    assert(quick_validation(field, dirty_datum))
-
-    #The "ref" already exists in the saved datum, so ignore it upon re-validation.
-    if field=="ref" and not revalidating:
-     try:
-      #Gather the reference_set to make sure references are unique.
-      ref_set = get_ref_set(lab_group)
-
-      #Check to make sure the ref isn't in the ref_set.
-      assert(not dirty_datum in ref_set)
-      clean_data[field] = dirty_datum
-     except:
-      errors[field] = "Already in use."
-
-    elif field=="duplicate_of":
-     try:
-      #Gather the reference_set to make sure references are unique.
-      ref_set = get_ref_set(lab_group)
-
-      #Check to make sure the ref isn't in the ref_set.
-      assert(dirty_datum in ref_set)
-      clean_data[field] = dirty_datum
-     except:
-      errors[field] = "Nonexistent reference."
-    else:
-     clean_data[field] = dirty_datum
-   except:
-    errors[field] = "Cannot exceed {} characters.".format(data_ranges[field][1])
-
- return (clean_data, errors)
-
-######################  Developer Functions  ###########################
-
-def update_all_reactions(lab_group):
- data = get_lab_Data(lab_group)
- for entry in data:
-  try:
-   update_reaction(reaction, lab_group)
-  except:
-   print "--could not update reaction: {}".format(entry)
- print "Finished data validation."

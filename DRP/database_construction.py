@@ -60,37 +60,37 @@ def get_vars_from_list(lst):
 
 #Creates the Recommendation entry, but does not store it in database.
 def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
- from DRP.models import Recommendation, get_model_field_names, get_atom_set_from_abbrevs, get_abbrevs_from_reaction
- import datetime
+  from DRP.models import Recommendation, get_model_field_names
+  import datetime
 
- try:
-  new_rec = Recommendation()
-  #Set the self-assigning fields:
-  setattr(new_rec, "lab_group", lab_group)
-  setattr(new_rec, "score", float(lst[0]))
+  try:
+    new_rec = Recommendation()
+    #Set the self-assigning fields:
+    setattr(new_rec, "lab_group", lab_group)
+    setattr(new_rec, "score", float(lst[0]))
 
-  #Set the non-user field values.
-  fields = get_model_field_names(model="Recommendation")
+    #Set the non-user field values.
+    fields = get_model_field_names(model="Recommendation")
 
-  for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
+    for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
 
-   #Translate Booleans into Boolean values.
-   if field in bool_fields:
-    value = True if value[0].lower() in "1tyc" else False
+    #Translate Booleans into Boolean values.
+    if field in bool_fields:
+      value = True if value[0].lower() in "1tyc" else False
 
-   if debug:
-     print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
+    if debug:
+      print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
 
-   setattr(new_rec, field, value)
+    setattr(new_rec, field, value)
 
-  new_rec.atoms = "".join(get_atom_set_from_abbrevs(lab_group, get_abbrevs_from_reaction(new_rec)))
+    new_rec.atoms = "".join(new_rec.get_atoms()))
 
-  if not in_bulk:
-    new_rec.date_dt = datetime.datetime.now()
+    if not in_bulk:
+      new_rec.date_dt = datetime.datetime.now()
 
-  return new_rec
- except Exception as e:
-  raise Exception("Recommendation construction failed: {}".format(e))
+    return new_rec
+  except Exception as e:
+    raise Exception("Recommendation construction failed: {}".format(e))
 
 def store_new_RankedReaction(json_input):
  #Allow either valid json/dicts or strings that can be loaded as such.
