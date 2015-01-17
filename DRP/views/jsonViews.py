@@ -10,6 +10,7 @@ from django.views.decorators.http import require_http_methods
 
 from DRP.retrievalFunctions import *
 from DRP.models import convert_QuerySet_to_list
+
 ######################  Data Transmit ##################################
 #Send the CG name pairs to the client.
 @login_required

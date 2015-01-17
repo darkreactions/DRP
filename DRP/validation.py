@@ -15,6 +15,7 @@ OUTCOME_CHOICES = [[opt,opt] for opt in edit_choices["outcomeChoices"]]
 PURITY_CHOICES = [[opt,opt] for opt in edit_choices["purityChoices"]]
 UNIT_CHOICES = [[opt,opt] for opt in edit_choices["unitChoices"]]
 BOOL_CHOICES = [[opt,opt] for opt in edit_choices["boolChoices"]]
+TYPE_CHOICES = [[opt,opt] for opt in edit_choices["typeChoices"]]
 
 #Fields that are allowed to be stored as listy_strings.
 list_fields = ["reactant", "quantity", "unit"]

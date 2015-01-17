@@ -51,11 +51,10 @@ def get_feature_vectors(lab_group=None, cg = None, ml_convert = None, keys = Non
 
 def create_expanded_datum_field_list(datum, preloaded_cg=None,
                                             preloaded_abbrev_map=None):
-  from DRP.models import convert_Datum_to_list
   from DRP.model_building.parse_rxn import parse_rxn
 
   #Convert the datum into a datumList (ie: a list of field values).
-  dirtyDatumList = convert_Datum_to_list(datum)
+  dirtyDatumList = datum.to_list()
 
   #Ignore the "ref" field
   datumList = fix_abbrevs( dirtyDatumList, abbrev_map=preloaded_abbrev_map )

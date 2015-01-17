@@ -1,6 +1,10 @@
-from models import *
-
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+from django.forms import *
+from DRP.models import *
+from DRP.validation import *
+
 
 class UserForm(ModelForm):
  username = CharField(label="Username", required=True,
@@ -57,7 +61,7 @@ class LabForm(ModelForm):
 
  def save(self, commit=True):
   lab_group = super(LabForm, self).save(commit=False)
-  lab_group.access_code = get_random_code() 
+  lab_group.access_code = get_random_code()
   if commit:
    lab_group.save()
   return lab_group
@@ -81,7 +85,7 @@ class CompoundGuideForm(ModelForm):
 
  class Meta:
   model = CompoundEntry
-  exclude = ("lab_group", "calculations", "image_url", "smiles", 
+  exclude = ("lab_group", "calculations", "image_url", "smiles",
              "mw", "calculations", "calculations_failed")
 
  def __init__(self, lab_group=None, *args, **kwargs):

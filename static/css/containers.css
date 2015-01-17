@@ -40,9 +40,10 @@
   z-index:101;
 
   background-color:#355A77;
-  overflow:hidden;
   color:white;
+  box-shadow: black 0px 0px 2px;
 }
+
 
 
 #copyrightContainer {

@@ -963,7 +963,7 @@ def upload_CSV(request, model="Data"):
  return render(request, 'upload_form.html')
 
 #TODO: Remo this. This is a legacy versino of the upload script for specifically data.
-def upload_CSV_bak(request, model="Data"): ###Not re-read.
+def upload_CSV_bak(request, model="Data"): ###Not re-read. #TODO: Scrap 'n rewrite
  u = request.user
 
  #Variable setup.
