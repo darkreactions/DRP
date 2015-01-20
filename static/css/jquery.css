@@ -33,6 +33,14 @@ div.ui-tooltip {
   line-height:1.5em;
 }
 
+.ui-corner-all[role="dialog"] {
+  color:black;
+}
+
+.ui-corner-all[role="dialog"] button {
+  color: black;
+}
+
 .ui-menu-item {
   padding:0.5em;
 }

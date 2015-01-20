@@ -34,10 +34,10 @@ urlpatterns = patterns('',
     (r'^download_prompt/$', "DRP.views.download.download_prompt"),
     (r'^download_data/$', "DRP.views.download.download_CSV"),
    #Modify Data
-    (r'^change_Data/$', change_Data), #[JSON] Edit Data Entry
-    (r'^delete_Data/$', delete_Data), #[JSON] Delete Data Entries
-    (r'^add_reactant/$', add_reactant), #[JSON] Add Reactant Group
-    (r'^delete_reactant/$', delete_reactant), #[JSON] Delete Reactant Group
+    (r'^change_Data/$', "DRP.views.data_editing.change_Data"), #[JSON] Edit Data Entry
+    (r'^delete_Data/$', "DRP.views.data_editing.delete_Data"), #[JSON] Delete Data Entries
+    (r'^add_reactant/$', "DRP.views.data_editing.add_reactant"), #[JSON] Add Reactant Group
+    (r'^delete_reactant/$', "DRP.views.data_editing.delete_reactant"), #[JSON] Delete Reactant Group
     (r'^data_form/$', data_form), #Form for adding new data.
    #Add Compound Entries
     (r'^check_compound/$', check_compound), #Form for adding new CG abbreviations.

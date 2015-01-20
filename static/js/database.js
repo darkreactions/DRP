@@ -74,7 +74,7 @@ $(document).on("click", ".reactantRemoveButton", function(event) {
  createPopupConfirmation("Erase these reactant fields?");
  $(".popupConfirmation").dialog({
   resizable: false,
-  height: 150,
+  height: 150, //TODO Seems to be something wrong UI-wise here. Needs debugging.
   position:{
    my:"center",
    at:"center",
