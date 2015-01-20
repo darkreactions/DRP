@@ -37,7 +37,8 @@ class Data(models.Model):
   notes = models.CharField("Notes", max_length=200, blank=True)
 
   #Self-assigning Fields:
-  calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True)
+  calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True,
+                                   on_delete=models.SET_NULL)
   calculated_pH = models.BooleanField(default=False)
   calculated_temp = models.BooleanField(default=False)
   calculated_time = models.BooleanField(default=False)
@@ -149,12 +150,17 @@ class Data(models.Model):
     return [getattr(datum,field) for field in headings]
 
 
-  def get_compounds(self):
+  def get_compounds(self, objects=True):
+    # Returns either the `CompoundEntry` objects or the `compound` property
+    # thereof from the compounds used in this reaction.
     comps = []
     for i in CONFIG.reactant_range():
-      comp = getattr(self, "reactant_{}".format(i))
+      comp = getattr(self, "reactant_fk_{}".format(i))
       if comp:
-        comps.append(comp)
+        if objects:
+          comps.append(comp)
+        else:
+          comps.append(comp.compound)
     return comps
 
 
