@@ -15,8 +15,9 @@ urlpatterns = patterns('',
     (r'^papers/?$', "DRP.views.general.page", {"template":"papers"}),
     (r'^about/?$', "DRP.views.general.page", {"template": "about"}),
     (r'^contact/?$', "DRP.views.general.page", {"template":"contact"}),
-    (r'^explore/?$', "DRP.views.general.page", {"template":"explore"}),
     (r'^login/?$', "DRP.views.general.page", {"template":"login_form"}),
+
+    (r'^explore/?$', "DRP.views.general.locked_page", {"template":"explore"}),
 
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
   #Dashboard
@@ -41,7 +42,7 @@ urlpatterns = patterns('',
     (r'^data_form/$', data_form), #Form for adding new data.
    #Add Compound Entries
     (r'^check_compound/$', check_compound), #Form for adding new CG abbreviations.
-    (r'^compound_guide/$', compound_guide), #Form for adding new CG abbreviations.
+    (r'^compound_guide/$', "DRP.views.compound_guide.compound_guide"), #Form for adding new CG abbreviations.
     (r'^compound_guide_form/$', compound_guide_form), #Form for adding new CG abbreviations.
     (r'^compound_guide_entry/$', compound_guide_entry), #Return a single CG table entry.
     (r'^edit_CG_entry/$', edit_CG_entry), #Edit a CG entry.

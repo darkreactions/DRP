@@ -619,15 +619,6 @@ def compound_guide_form(request):
    "success": success,
  })
 
-#Send/receive the compound guide:
-@login_required
-def compound_guide(request):
- u = request.user
- lab_group = u.get_profile().lab_group
- guide = list(get_lab_CG(lab_group))
- return render(request, 'compound_guide.html', {
-  "guide": guide,
- })
 
 @login_required
 @require_http_methods(["POST"])

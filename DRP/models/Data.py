@@ -71,8 +71,8 @@ class Data(models.Model):
         return raw
 
 
-    from model_building.load_data import create_expanded_datum_field_list
-    from model_building.rxn_calculator import headers
+    from DRP.model_building.load_data import create_expanded_datum_field_list
+    from DRP.model_building.rxn_calculator import headers
 
     try:
       if not self.calculations or force_recalculate:

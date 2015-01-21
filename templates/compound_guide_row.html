@@ -2,16 +2,21 @@
  {% if entry.image_url %}<img class="CG_image" src="{{ entry.image_url }}" />{% endif %}
 </td>
 
-
 <td>
- <div class="editable type_abbrev" editAs="text">{% spaceless %}
- {% if entry.abbrev != entry.compound %}
-  {{ entry.abbrev }}
- {% endif %}
- {% endspaceless %}</div>
+ <div class="editable type_abbrev" editAs="text">
+   {% spaceless %}
+     {% if entry.abbrev != entry.compound %}
+       {{ entry.abbrev }}
+     {% endif %}
+   {% endspaceless %}
+ </div>
 </td>
 
-<td class="CG_compound"><div class="editable type_compound" editAs="text">{{ entry.compound }}</div></td>
+<td class="CG_compound">
+  <div class="editable type_compound" editAs="text">
+    {{ entry.compound }}
+  </div>
+</td>
 
 {% spaceless %}
 <td class="CG_CAS"><div class="editable type_CAS_ID" editAs="text">

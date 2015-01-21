@@ -58,14 +58,15 @@ def get_lab_CG(lab_query):
   return CompoundEntry.objects.filter(lab_group=lab_group).order_by("compound")
 
 
-def collect_CG_name_pairs(lab_group, overwrite=False):
+def collect_CG_name_pairs(lab_group, reset_cache=False):
   from DRP.cacheFunctions import get_cache, set_cache
 
   pairs = get_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS")
-  if not pairs or overwrite:
+  if not pairs or reset_cache:
     compound_guide = get_lab_CG(lab_group)
     pairs = {entry.abbrev: entry.compound for entry in compound_guide}
     set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", pairs)
+
   return pairs
 
 

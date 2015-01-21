@@ -21,7 +21,7 @@ def send_CG_names(request):
 
   u = request.user
   lab_group = u.get_profile().lab_group
-  name_pairs = collect_CG_name_pairs(lab_group, overwrite=False)
+  name_pairs = collect_CG_name_pairs(lab_group)
   return HttpResponse(json.dumps(name_pairs), mimetype="application/json")
 
 #TODO: Nora, this is where I'd throw the functions that you want to _send_
