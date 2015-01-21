@@ -40,6 +40,15 @@
      </select>
     </label>
 
+    <label for="subField">
+     Sub-Field:
+     <select class="dropDownMenu" name="subField">
+      {% for field in search_sub_fields %}
+        <option value="{{field.raw}}">{{field.verbose}}</option>
+      {% endfor %}
+     </select>
+    </label>
+
     <label for="match">
      Match:
      <select class="dropDownMenu" name="match">

@@ -67,6 +67,9 @@ def filter_data(lab_group, query_list):
  reactant_fields = ["reactant","quantity","unit"]
  legal_fields = set(non_reactant_fields+reactant_fields+foreign_fields+["atoms", "public","is_valid"])
 
+ legal_sub_fields = set(get_model_field_names(model="CompoundEntry"))
+
+
  #Check the query_list input before performing any database requests.
  for query in query_list:
   try:
@@ -74,11 +77,16 @@ def filter_data(lab_group, query_list):
    assert query.get(u"field") in legal_fields
    assert query.get(u"match") in {"contain","exact"}
    assert query.get(u"value")
+
+   if query.get(u"sub-field"):
+     assert query.get(u"sub-field") in legal_sub_fields
+
   except:
    raise Exception("One or more inputs is illegal")
 
  for query in query_list:
   field = query[u"field"]
+  sub_field = query[u"sub-field"] if u"sub-field" in query else ""
   match = "__icontains" if query[u"match"] == "contain" else ""
   value = query[u"value"]
   if field in foreign_fields:
@@ -92,7 +100,7 @@ def filter_data(lab_group, query_list):
   if field in reactant_fields:
    or_Qs = []
    for i in CONFIG.reactant_range():
-    temp = {field+"_{}".format(i)+match: value}
+    temp = {field+"_fk_{}".format(i)+"__"+sub_field+match: value}
     or_Qs.append(Q(**temp))
 
    Q_list.append(reduce(operator.or_, or_Qs))

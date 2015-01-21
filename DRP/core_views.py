@@ -500,51 +500,58 @@ def visuals(request):
 
 @login_required
 def search(request, model="Data", params={}):
- from DRP.models import get_model_field_names
+  from DRP.models import get_model_field_names
 
- u = request.user
- if request.method=="POST":
-  try:
+  u = request.user
+  if request.method=="POST":
+    try:
+      #Get the appropriate data for the appropriate model.
+      if model=="Data":
+        #Pass the request on to data_transmit.
+        return data_transmit(request)
 
-   #Get the appropriate data for the appropriate model.
-   if model=="Data":
-    #Pass the request on to data_transmit.
-    return data_transmit(request)
+      elif model=="Recommendation":
+        #If applicable, only show reactions that are from seeds.
+        seeded = params["seeded"]==True if "seeded" in params else False
+        return recommendation_transmit(request, seeded=seeded)
 
-   elif model=="Recommendation":
-    #If applicable, only show reactions that are from seeds.
-    seeded = params["seeded"]==True if "seeded" in params else False
-    return recommendation_transmit(request, seeded=seeded)
+    except:
+      return HttpResponse("Woops! A problem occurred.")
 
-  except:
-   return HttpResponse("Woops! A problem occurred.")
- else:
+  else:
+    search_fields = get_model_field_names(both=True, unique_only=True, model=model)
+    if model=="Data":
+      #Collect the fields that will be displayed in the Search "Fields" tab.
+      search_fields = get_model_field_names(both=True, unique_only=True)
+      search_fields = [
+      {"raw":"reactant", "verbose":"Reactant"},
+      {"raw":"quantity", "verbose":"Quantity"},
+      {"raw":"unit", "verbose":"Unit"},
+      {"raw":"is_valid", "verbose":"Is Valid"},
+      {"raw":"user", "verbose":"User"},
+      {"raw":"public", "verbose":"Public"}] + search_fields
+    elif model=="Recommendation":
+      #Collect the fields that will be displayed in the Search "Fields" tab.
+      search_fields = [
+      {"raw":"reactant", "verbose":"Reactant"},
+      {"raw":"quantity", "verbose":"Quantity"},
+      {"raw":"unit", "verbose":"Unit"},
+      {"raw":"assigned_user", "verbose":"Assigned User"}] + search_fields
 
-  search_fields = get_model_field_names(both=True, unique_only=True, model=model)
-  if model=="Data":
-   #Collect the fields that will be displayed in the Search "Fields" tab.
-   search_fields = get_model_field_names(both=True, unique_only=True)
-   search_fields = [
-   {"raw":"reactant", "verbose":"Reactant"},
-   {"raw":"quantity", "verbose":"Quantity"},
-   {"raw":"unit", "verbose":"Unit"},
-   {"raw":"is_valid", "verbose":"Is Valid"},
-   {"raw":"user", "verbose":"User"},
-   {"raw":"public", "verbose":"Public"}] + search_fields
-  elif model=="Recommendation":
-   #Collect the fields that will be displayed in the Search "Fields" tab.
-   search_fields = [
-   {"raw":"reactant", "verbose":"Reactant"},
-   {"raw":"quantity", "verbose":"Quantity"},
-   {"raw":"unit", "verbose":"Unit"},
-   {"raw":"assigned_user", "verbose":"Assigned User"}] + search_fields
+      if "seeded" in params and params["seeded"]:
+        model = "SeedRecommendation"
+        search_fields += [{"raw":"seed", "verbose":"Seed is..."}]
 
-   if "seeded" in params and params["seeded"]:
-    model = "SeedRecommendation"
-    search_fields += [{"raw":"seed", "verbose":"Seed is..."}]
+
+  search_sub_fields = [
+    {"raw":"abbrev", "verbose":"Abbrev"},
+    {"raw":"compound", "verbose":"Compound"},
+    {"raw":"compound_type", "verbose":"Type"}
+  ]
 
   return render(request, 'search_global.html', {
    "search_fields": search_fields,
+   "search_sub_fields": search_sub_fields,
    "model": model,
   })
 

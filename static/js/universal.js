@@ -640,22 +640,36 @@ function sendSearchQuery(currentQuery, destination) {
  });
 }
 
+function searchString(queryObj) {
+  var result = make_name_verbose(queryObj["field"]);
+  if (queryObj["sub-field"]){
+    result += " " + make_name_verbose(queryObj["sub-field"]);
+  }
+  result += ": " + queryObj["value"]
+  return result;
+}
+
 //Back button tooltip
 $(document).on("mouseover", ".search_backButton", function() {
- if (currentQuery.length){
-  //Get the previously used filters.
-  var filter_string = "Filters:"
-  for (var i in currentQuery.slice(0,-1)) {
-   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": " + currentQuery[i]["value"]
+  if (currentQuery.length){
+    // Get the previously used filters.
+    var filter_string = "Filters:"
+
+    for (var i in currentQuery.slice(0,-1)) {
+      filter_string += "<br/>" + (parseInt(i)+1) + ".) ";
+      filter_string += searchString(currentQuery[i]);
+    }
+
+    // Add the new filter.
+    filter_string += "<br/><div class=\"search_backText\">";
+    filter_string += parseInt(currentQuery.length)+".) ";
+    filter_string += searchString(currentQuery[currentQuery.length-1]);
+    filter_string += "</div>";
+
+    $(this).attr("title", filter_string);
+  } else {
+    $(this).attr("title", "Remove the last filter.");
   }
-
-  //Add the new filter.
-  filter_string += "<br/><div class=\"search_backText\">"+parseInt(currentQuery.length)+".) "+make_name_verbose(currentQuery[currentQuery.length-1]["field"])+": "+currentQuery[currentQuery.length-1]["value"]+"</div>"
-
-  $(this).attr("title", filter_string);
- } else {
-  $(this).attr("title", "Remove the last filter.");
- }
 });
 
 //Filter button tooltip
@@ -688,16 +702,24 @@ $(document).on("change", ".dropDownMenu[name=field]", function() {
  }
 });
 
+$(document).on("change", "#searchForm .dropDownMenu[name=field]", function(){
+  var val = $(this).find("option:selected").val();
+
+  if (val==="reactant") {
+    $("#searchForm label[for=subField]").show();
+  } else {
+    $("#searchForm label[for=subField]").hide();
+  }
+});
+
 $(document).on("mouseover", ".search_filterButton", function() {
  //Get the previously used filters.
- var filter_string = "Filters:"
- for (var i in currentQuery) {
-  if (currentQuery[i]["field"]=="atoms"){
-   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": "+currentQuery[i]["value"];
-  } else {
-   filter_string += "<br/>"+(parseInt(i)+1)+".) "+make_name_verbose(currentQuery[i]["field"])+": \""+currentQuery[i]["value"]+"\" ("+currentQuery[i]["match"]+")</div>";
+  var filter_string = "Filters:"
+
+  for (var i in currentQuery.slice(0,-1)) {
+    filter_string += "<br/>" + (parseInt(i)+1) + ".) ";
+    filter_string += searchString(currentQuery[i]);
   }
- }
 
  //If "Atoms" search is active.
  if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
@@ -708,10 +730,21 @@ $(document).on("mouseover", ".search_filterButton", function() {
 
  } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
    field = $(".dropDownMenu[name=field] option:selected").val();
+   if ($("label[for='subField']").is(":visible")) {
+     subField = $(".dropDownMenu[name=subField] option:selected").val();
+   } else {
+     subField = "";
+   }
    match = $(".dropDownMenu[name=match] option:selected").val();
    value = $("#searchValue").val();
    //Add the new filter.
-   filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(currentQuery.length)+1)+".) "+make_name_verbose(field)+": \""+value+"\" ("+match+")</div>";
+   filter_string += "<br/><div class=\"search_filterText\">";
+   filter_string += (parseInt(currentQuery.length)+1)+".) ";
+   filter_string += make_name_verbose(field);
+   if (subField) {
+     filter_string += " " + make_name_verbose(subField);
+   }
+   filter_string += ": \""+value+"\" ("+match+")</div>";
  } else {
   filter_string = "Enter a query!";
  }
@@ -746,6 +779,10 @@ $(document).on("click", ".search_filterButton", function() {
   //If "Fields" search is active.
   } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
    field = $(".dropDownMenu[name=field] option:selected").val()
+   subField = "";
+   if ($("label[for='subField']").is(":visible")) {
+     subField = $(".dropDownMenu[name=subField] option:selected").val()
+   }
    match = $(".dropDownMenu[name=match] option:selected").val()
    value = $("#searchValue").val()
    //Make sure the query was not already searched.
@@ -761,6 +798,7 @@ $(document).on("click", ".search_filterButton", function() {
 
    currentQuery.push({
     "field":field,
+    "sub-field":subField,
     "match":match,
     "value":value,
    });
