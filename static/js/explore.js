@@ -10,9 +10,9 @@ d3.json("/get_graph/", function(graph) {
 			["Inorg1", "inorg1"],
 			];
 
-    var nodes = graph.nodes;
+    var nodes = graph.nodes.slice(0, 10);
     var preLoad = graph.skipTicks === "True";
-    var links = graph.links;
+    var links = graph.links.slice(0,10);
     //var clusters = graph.clusters;
     //declaring a variable that will serve to size the text boxes that appear upon hovering over the individual nodes
     var textPlacement = nodeTooltips.length*40;
@@ -162,6 +162,7 @@ if (!preLoad) {
     .attr("y2", function(d) { return d.target.y; })
     .style("stroke-width", 0.06)
     .attr("stroke", "gray")
+    .attr("class", "lines") 
 
 container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove();
 });
@@ -346,7 +347,9 @@ container.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove()
     d3.selectAll(".nodeElements").style("visibility", "hidden")
     d3.selectAll(".circleClusters1").style("visibility", "visible")
     d3.selectAll(".circleClusters2").style("visibility", "hidden")
-   /*
+    d3.selectAll(".nodeElements").remove() 
+    d3.selectAll(".lines").remove()
+    /*
     d3.selectAll(".circleClusters").on("click", function(d) {
             x = this.cx
             y = this.cy
