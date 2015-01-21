@@ -87,6 +87,7 @@ class ModelStats(models.Model):
     return sorted(self.load_confusion_dict().keys())
 
   def load_correct_vals(self):
+    import json
     return sorted(json.loads(self.correct_vals))
 
   def load_incorrect_vals(self):
@@ -288,6 +289,7 @@ class ModelStats(models.Model):
       return 0
 
   def user_satisfaction(self):
+    from DRP.models import Recommendation
     recs = Recommendation.objects.filter(model_version=self)
     if recs.exists():
       return recs.filter(nonsense=False).count()/float(recs.count())

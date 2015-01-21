@@ -23,6 +23,9 @@ def get_model_field_names(both=False, verbose=False, model="Data",
   clean_fields = []
 
   if model=="Data":
+    from DRP.models.Data import Data
+    all_fields = Data._meta.fields
+
     if collect_ignored:
       fields_to_ignore = {u"id", "creation_time_dt", "calculations"}
     else:
@@ -31,6 +34,9 @@ def get_model_field_names(both=False, verbose=False, model="Data",
                           "calculated_pH", "is_valid", "public"}
 
   elif model=="Recommendation":
+    from DRP.models.Recommendation import Recommendation
+    all_fields = Recommendation._meta.fields
+
     if collect_ignored:
       fields_to_ignore = {u"id", "creation_time_dt"}
     else:
@@ -38,6 +44,9 @@ def get_model_field_names(both=False, verbose=False, model="Data",
                           "model_version", "atoms", "creation_time_dt", "nonsense",
                           "complete", "score", "date_dt", "hidden", "seed", "seeded"}
   elif model=="CompoundEntry":
+    from DRP.models.CompoundEntry import CompoundEntry
+    all_fields = CompoundEntry._meta.fields
+
     if collect_ignored:
       fields_to_ignore = {u"id", "image_url", "custom", "calculations"}
     else:
@@ -46,7 +55,8 @@ def get_model_field_names(both=False, verbose=False, model="Data",
   else:
     raise Exception("Unknown model specified.")
 
-  dirty_fields = [field for field in CompoundEntry._meta.fields
+
+  dirty_fields = [field for field in all_fields
                                   if field.name not in fields_to_ignore]
 
   #Ignore any field that is in fields_to_ignore.

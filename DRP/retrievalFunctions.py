@@ -53,6 +53,7 @@ def filter_existing_calcs(data):
 
 def filter_data(lab_group, query_list):
  from DRP.models import get_lab_Data, get_model_field_names
+ from DRP.validation import bool_fields
  import operator
 
  #Variable Setup
