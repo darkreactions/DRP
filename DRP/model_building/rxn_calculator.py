@@ -326,7 +326,7 @@ josh_serota_feature_selected = [
   "PaulingElectronegMean",
   "hardnessMaxWeighted",
   "AtomicRadiusMeanWeighted",
-  "outcome" #Added by Casey Falk since missing.
+  "outcome" #Added to feature-set by Casey Falk since missing.
 ]
 
 #headers = josh_serota_feature_selected

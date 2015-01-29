@@ -1,3 +1,13 @@
+def clean_data(data, headers):
+  cloned_data = [row[:] for row in data]
+
+  outcome_index = headers.index("outcome")
+
+  for i, row in enumerate(data):
+    cloned_data[i][outcome_index] = row[outcome_index] if row[outcome_index] else 1
+
+  return cloned_data
+
 
 def load_data(csv_to_use=""):
   import csv
@@ -38,6 +48,8 @@ def load_data(csv_to_use=""):
           value_map[elem] = c
           data[i][j] = value_map[elem]
           c += 1
+
+  data = clean_data(data, headers)
 
   return data, headers
 

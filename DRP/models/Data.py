@@ -16,16 +16,37 @@ class Data(models.Model):
 
   ref = models.CharField("Reference", max_length=12)
 
-  #List Fields
-  for i in CONFIG.reactant_range():
-    exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
-    exec("reactant_fk_{0} = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_{0}')".format(i))
+  ###################################
+  #         Reactant Fields         #
+  ###################################
+  reactant_1 = models.CharField("Reactant 1", max_length=30)
+  reactant_fk_1 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_1')
+  quantity_1 = models.CharField("Quantity 1", max_length=10)
+  unit_1 = models.CharField("Unit 1", max_length=4)
 
-    exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))
-    exec("unit_{0} = models.CharField(\"Unit {0}\", max_length=4)".format(i))
+  reactant_2 = models.CharField("Reactant 2", max_length=30)
+  reactant_fk_2 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_2')
+  quantity_2 = models.CharField("Quantity 2", max_length=10)
+  unit_2 = models.CharField("Unit 2", max_length=4)
+
+  reactant_3 = models.CharField("Reactant 3", max_length=30)
+  reactant_fk_3 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_3')
+  quantity_3 = models.CharField("Quantity 3", max_length=10)
+  unit_3 = models.CharField("Unit 3", max_length=4)
+
+  reactant_4 = models.CharField("Reactant 4", max_length=30)
+  reactant_fk_4 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_4')
+  quantity_4 = models.CharField("Quantity 4", max_length=10)
+  unit_4 = models.CharField("Unit 4", max_length=4)
+
+  reactant_5 = models.CharField("Reactant 5", max_length=30)
+  reactant_fk_5 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_5')
+  quantity_5 = models.CharField("Quantity 5", max_length=10)
+  unit_5 = models.CharField("Unit 5", max_length=4)
+
 
   temp = models.CharField("Temperature", max_length=10)
-  time = models.CharField("Time", max_length=10) ###
+  time = models.CharField("Time", max_length=10)
   pH = models.CharField("pH", max_length=5)
 
   #Yes/No/? Fields:
@@ -34,7 +55,7 @@ class Data(models.Model):
   outcome = models.CharField("Outcome", max_length=1)
   purity = models.CharField("Purity", max_length=1)
 
-  notes = models.CharField("Notes", max_length=200, blank=True)
+  notes = models.TextField("Notes", blank=True)
 
   #Self-assigning Fields:
   calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True,
@@ -133,7 +154,7 @@ class Data(models.Model):
                                             preloaded_abbrev_map=preloaded_abbrev_map)
       return [calcDict[field] for field in headers]
 
-    except Exception as e:
+    except:
       # If a field isn't present in the calcDict, update the calculation.
       calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
                                             force_recalculate=True,
@@ -143,11 +164,12 @@ class Data(models.Model):
 
 
   def to_list(self):
+    from DRP.retrievalFunctions import get_model_field_names
     all_fields = get_model_field_names(model="Data", collect_ignored = True)
     fields_to_exclude = {"lab_group", "atoms"}
     headings = [field for field in all_fields if field not in fields_to_exclude]
 
-    return [getattr(datum,field) for field in headings]
+    return [getattr(self,field) for field in headings]
 
 
   def get_compounds(self, objects=True):
@@ -174,7 +196,7 @@ class Data(models.Model):
       atoms = {comp.get_atoms() for comp in self.get_compounds()}
 
       # Store `atoms` so that reactions can be efficiently searched by atoms.
-      self.atoms = dumps(atoms)
+      self.atoms = json.dumps(atoms)
       self.save()
 
       return atoms
@@ -184,6 +206,7 @@ class Data(models.Model):
 
 
   def refresh(self):
+    from DRP.validation import revalidate_datum
     #Store the atoms as a string -- not a set.
     self.get_atoms(refresh=True)
 
@@ -228,6 +251,7 @@ def get_ref_set(lab_group, reset_cache=True):
 
 def get_Data_with_compound(compound, lab_group):
   from django.db.models import Q
+  import operator
   Q_list = [Q(("reactant_{}".format(i),compound)) for i in CONFIG.reactant_range()]
   return Data.objects.filter(reduce(operator.or_, Q_list))
 

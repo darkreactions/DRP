@@ -1,5 +1,4 @@
-from django.db.models import Q, Max, Min
-from models import *
+from django.db.models import Q
 
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # DATA  # # # # # # # # # # # # # # # # # #
@@ -53,6 +52,7 @@ def filter_existing_calcs(data):
 
 def filter_data(lab_group, query_list):
  from DRP.models import get_lab_Data, get_model_field_names
+ from DRP.data_config import CONFIG
  from DRP.validation import bool_fields
  import operator
 
@@ -179,6 +179,7 @@ def get_active_recommendations():
   return Recommendation.objects.filter(model_version=model)
 
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
+ from DRP.models import Recommendation, Data
  seed_recs = Recommendation.objects.filter(seeded=True, lab_group=lab_group)
 
  #If given a seed ref, only yield those recommendations that are seeded from it.
@@ -202,6 +203,7 @@ def get_recommendations_by_date(lab_group, date = "recent"):
 
 def filter_recommendations(lab_group, query_list):
  from DRP.models import get_model_field_names
+ from DRP.data_config import CONFIG
  from django.db.models import Q
  import operator
 
@@ -277,6 +279,7 @@ def get_latest_ModelStats(active=True):
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 def get_lab_users(lab_group):
+  from DRP.models import Lab_Member
   lab_members = Lab_Member.filter(lab_group=lab_group)
   users = lab_members.values_list("user", flat=True)
   return users

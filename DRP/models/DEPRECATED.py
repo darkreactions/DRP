@@ -1,4 +1,9 @@
 def get_Data_with_abbrev(lab_data, abbrev):
+  from DRP.models import CompoundEntry
+  from DRP.data_config import CONFIG
+  from DRP.db.models import Q
+  import operator
+
   if type(abbrev)==CompoundEntry:
     abbrev = abbrev.abbrev #Meta...
 
@@ -9,6 +14,7 @@ def get_Data_with_abbrev(lab_data, abbrev):
 def update_reactions_with_compound(lab_group, compound):
   #TODO: DEPRECATE ME
   #Update the individual "atom" records on each reaction.
+  from DRP.models import get_lab_Data
 
   from DRP.models import get_Data_with_abbrev
 
@@ -26,7 +32,7 @@ def update_compound(entry, debug=False):
   from DRP.fileFunctions import createDirIfNecessary
   from DRP.chemspider import search_chemspider
   from subprocess import Popen
-  from settings import LOG_DIR, BASE_DIR, MODEL_DIR
+  from settings import LOG_DIR, BASE_DIR
 
   try:
     if not entry.custom: #Only update compounds that are not custom.

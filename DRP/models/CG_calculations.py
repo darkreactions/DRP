@@ -15,6 +15,9 @@ class CG_calculations(models.Model):
 
 def create_CG_calcs_if_needed(compound, smiles, compound_type, ):
   from CGCalculator import CGCalculator
+  from DRP.data_config import CONFIG
+  from DRP.models import CompoundEntry
+  import time, json
 
   #Variable Setup
   jchem_path =  CONFIG.jchem_path
@@ -31,9 +34,9 @@ def create_CG_calcs_if_needed(compound, smiles, compound_type, ):
 
   try:
     cgc = CG_calculations.objects.filter(smiles=smiles)[0]
-  except Exception as e:
+  except:
     #Calculate properties for the CGEntry
-    sdf_filename = str(uuid4()) + filter(str.isalnum, compound)
+    sdf_filename = str(int(time.time())) + filter(str.isalnum, compound)
     #TODO: Speed this up? This is dreadfully slow.
     props = CGCalculator(compound, sdf_filename, smiles, compound_type, jchem_path, sdf_path).get_properties()
     props = json.dumps(props)

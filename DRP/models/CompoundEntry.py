@@ -52,6 +52,32 @@ class CompoundEntry(models.Model):
     return [atom.GetSymbol() for atom in mols.GetAtoms()]
 
 
+def get_compound(abbrev, lab_group):
+  """
+  Returns the CompoundEntry object with a given `abbrev`.
+  """
+
+  compounds = CompoundEntry.objects.all()
+
+  if lab_group:
+    lab_group = get_Lab_Group(lab_group)
+    compounds = compounds.filter(lab_group=lab_group)
+
+  return compounds.filter(abbrev=abbrev).first()
+
+
+def compound_exists(abbrev, lab_group=""):
+  """
+  Returns  `True` if a compound is found and `False` if it is not.
+  """
+
+  try:
+    comp = get_compound(abbrev, lab_group=lab_group)
+    return comp is not None
+  except Exception as e:
+    print e
+    return False
+
 
 def get_lab_CG(lab_query):
   lab_group = get_Lab_Group(lab_query)

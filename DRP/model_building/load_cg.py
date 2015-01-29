@@ -15,6 +15,7 @@ def get_cg(debug=False):
   cg = dict()
   for compound in CompoundEntry.objects.all():
     if compound.calculations:
+      # Allow a compound's properties to be accessed through abbrevs or full names.
       cg[compound.compound.lower()] = json.loads(compound.calculations.json_data)
       cg[compound.abbrev.lower()] = cg[compound.compound.lower()]
     elif debug:
