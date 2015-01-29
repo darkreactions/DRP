@@ -1,15 +1,9 @@
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth.hashers import *
 from django.shortcuts import render
 
-from database_construction import *
-from forms import *
-from validation import *
-
 import json
-import csv
 import string
 
 from data_config import CONFIG
@@ -47,6 +41,7 @@ def get_pagified_data(page, lab_group=None, data=None):
 #Returns the info that belongs on a specific page.
 def get_page_info(request, page = None, data=None):
  from DRP.models import get_lab_Data
+ from DRP.retrievalFunctions import get_public_data
  from DRP.pagifier import get_page_link_format
 
  try:
@@ -101,27 +96,6 @@ def repackage_page_session(session):
   "page_links":page_links,
   }
  return data_package, page_package, total_data_size
-
-# # # # # # # # # # # # # # # # # # #
-  # # # # # # # # Caching Functions # # # # # # # # # # #
-# # # # # # # # # # # # # # # # # # #
-def clear_page_cache(lab_group, page):
- set_cache(lab_group, "PAGEDATA|{}".format(page), None)
-
-def clear_page_cache_of_index(lab_group, indexChanged):
- page = (indexChanged/CONFIG.data_per_page) + 1
- clear_page_cache(lab_group, page)
-
-def clear_all_page_caches(lab_group, skip_data_check=False):
- from DRP.models import get_lab_Data
-
- if skip_data_check:
-  total_pages = get_cache(lab_group, "TOTALPAGES")
- else:
-  total_pages = calc_total_pages(get_lab_Data(lab_group).count())
- for i in xrange(1, total_pages+1):
-  clear_page_cache(lab_group, i)
-
 
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
@@ -191,6 +165,7 @@ def data_transmit(request):
 @login_required
 def recommend(request, page_request=None):
   from DRP.pagifier import get_page_link_format
+  from DRP.retrievalFunctions import get_recommendations_by_date
 
   # If a valid page number was given, use it.
   try:
@@ -222,7 +197,6 @@ def recommend(request, page_request=None):
     fatal_message = "No recommendations available."
     page = 1
     recs_per_page = 1
-    page_links = []
     total_pages = 1
 
   return render(request, 'global_page.html', {
@@ -242,8 +216,8 @@ def recommend(request, page_request=None):
 @login_required
 @require_http_methods(["POST"])
 def recommendation_transmit(request, seeded=False):
- from DRP.models import Recommendation
  from DRP.pagifier import get_page_link_format
+ from DRP.retrievalFunctions import get_recommendations_by_date, filter_recommendations
 
  try:
   #Variable Setup
@@ -291,6 +265,8 @@ def recommendation_transmit(request, seeded=False):
 @login_required
 @require_http_methods(["POST"])
 def edit_recommendation(request, action):
+ from DRP.retrievalFunctions import get_recommendations
+
  try:
   u = request.user
   pid = request.POST["pid"]
@@ -325,6 +301,9 @@ def edit_recommendation(request, action):
 @login_required
 @require_http_methods(["GET"])
 def saved(request):
+ from DRP.retrievalFunctions import get_recommendations
+ from DRP.models import User
+
  #Variable Setup
  u = request.user
  recommendations = None
@@ -355,6 +334,7 @@ def saved(request):
 @login_required
 @require_http_methods(["GET"])
 def rank(request):
+  import random
   def get_random_unranked_reaction_or_none(seed=None):
     def get_unranked_reactions(seed=None):
       from DRP.models import RankedReactionList
@@ -373,7 +353,6 @@ def rank(request):
     return None
 
   #Variable Setup:
-  u = request.user
   unranked_rxn = get_random_unranked_reaction_or_none()
 
   if not unranked_rxn:
@@ -395,6 +374,9 @@ def rank(request):
 @login_required
 @require_http_methods(["POST"])
 def assign_user_to_rec(request):
+ from DRP.retrievalFunctions import get_recommendations
+ from DRP.models import User
+
  u = request.user
  try:
   lab_group = u.get_profile().lab_group
@@ -420,46 +402,6 @@ def assign_user_to_rec(request):
   print e
   return HttpResponse(1)
 
-@login_required
-@require_http_methods(["POST"])
-def send_and_receive_rank(request):
- u = request.user
- #Get PIDs from the request.
- pid = request.POST["pid"]
- new_order = request.POST["newOrder"]
-
- #Get the recommendation to change.
- rxnlist = RankedReactionList.objects.get(id=pid)
-
- #Assign the change in the database.
- rxnlist.ranked_list = new_order
- rxnlist.ranker = u
- rxnlist.save()
-
- #Get a new (un)RankedReaction
- unranked_rxn = get_random_unranked_reaction_or_none()
- if not unranked_rxn:
-  return HttpResponse("All unranked reactions now ranked!")
-
- return render(request, 'unranked_reaction_list.html', {
-  "unranked_rxn": unranked_rxn,
- })
-
-def save_recommmendation(request):
- u = request.user
- if request.method=="POST":
-  try:
-   lab_group = u.get_profile().lab_group
-   rec_info = json.loads(request.POST.get("rec_info"))
-   if not rec["date"]:
-    #If no date is specified, assume the latest data is what is being changed.
-    rec["date"] = get_recommendations_by_date(lab_group).get().date
-   rec = Recommendation.objects.filter(date=date).get()
-
-  except:
-   return HttpResponse("<p>Your request could not be completed. Please try again.</p>")
- else:
-  return HttpResponse("<p>Please log in to save recommendations.</p>")
 
 ####################################################
 ####################################################
@@ -472,12 +414,10 @@ def save_recommmendation(request):
 ####################################################
 
 ######################  Core Views  ####################################
-import time
 
 @login_required
 def visuals(request):
  #Variable Setup
- u = request.user
  fatal_message = ""
 
  #TODO: Nora, you'll want to have some "loading page" that uses JavaScript
@@ -502,7 +442,6 @@ def visuals(request):
 def search(request, model="Data", params={}):
   from DRP.models import get_model_field_names
 
-  u = request.user
   if request.method=="POST":
     try:
       #Get the appropriate data for the appropriate model.
@@ -564,8 +503,6 @@ def search(request, model="Data", params={}):
 def check_compound(request):
   from DRP.chemspider import search_chemspider
 
-  u = request.user
-
   #Search through each available ChemSpider field.
   search_fields = [request.GET.get("CAS_ID"), request.GET.get("compound")]
   query = search_chemspider(search_fields)
@@ -585,6 +522,9 @@ def check_compound(request):
 #Ask for a confirmation whether a CG is correct or not.
 @login_required
 def compound_guide_form(request):
+ from DRP.forms import CompoundGuideForm
+ from DRP.cacheFunctions import set_cache
+
  u = request.user
  success = False
  lab_group = u.get_profile().lab_group
@@ -601,11 +541,8 @@ def compound_guide_form(request):
    if not entry.custom:
     #Apply calculations to the compound.
     entry.save()
-
-    #TODO: MODIFY shouldn't be necessary after database migration. Maybe refresh?
-    update_reactions_with_compound(lab_group, entry)
-
     success = True #Used to display the ribbonMessage.
+
    elif atoms and mw.replace(".","",1).isdigit():
     entry.smiles = atoms
     entry.mw = mw
@@ -630,7 +567,7 @@ def compound_guide_form(request):
 @login_required
 @require_http_methods(["POST"])
 def compound_guide_entry(request):
- from DRP.models import get_lab_Data
+ from DRP.models import get_lab_CG
 
  u = request.user
  lab_group = u.get_profile().lab_group
@@ -643,23 +580,14 @@ def compound_guide_entry(request):
  else:
   return HttpResponse("<p>No CG found. Please refresh page.</p>")
 
-def change_Data_abbrev(lab_group, old_abbrev, new_abbrev):
- if old_abbrev=="":
-  raise Exception("Abbrev cannot be an empty string.")
-
- lab_data = get_lab_Data(lab_group)
- for i in CONFIG.reactant_range():
-  reactant = "reactant_{}".format(i)
-  affected_data = lab_data.filter(Q((reactant, old_abbrev)))
-  if affected_data.exists():
-   affected_data.update(**{reactant:new_abbrev})
-
 
 #TODO: HOPEFULLY WILL MOSTLY DEPRECATE ON DB MIGRATION.
 @login_required
 @require_http_methods(["POST"])
 def edit_CG_entry(request):
- from DRP.models import get_lab_Data
+ from DRP.models import get_lab_CG, get_lab_Data, get_Data_with_Compound
+ from DRP.cacheFunctions import set_cache
+ from DRP.validation import validate_CG
 
  u = request.user
  changesMade = request.POST
@@ -675,7 +603,7 @@ def edit_CG_entry(request):
    for pid in changesMade.getlist("pids[]"):
     #Mark any entry that uses this datum is now invalid.
     entry = CG_data.get(id=pid)
-    affected_data = get_Data_with_abbrev(lab_data, entry.abbrev)
+    affected_data = get_Data_with_Compound(lab_data, entry.abbrev)
     affected_data.update(is_valid=False)
 
     #Now delete the CG entry.
@@ -692,7 +620,6 @@ def edit_CG_entry(request):
 
    #Collect the datum to be changed and the old value.
    changed_entry = CG_data.get(id=pid)
-   old_val = getattr(changed_entry, field)
 
    #Make sure the compound/abbrev isn't already being used.
    possible_entry = None
@@ -706,9 +633,7 @@ def edit_CG_entry(request):
     return HttpResponse("Already used!")
 
    #Make sure the new value does not invalidate the entry.
-   dirty_data = model_to_dict(changed_entry)
-   dirty_data[field] = new_val
-   clean_data, errors = validate_CG(dirty_data, lab_group, editing_this=True)
+   clean_data, errors = validate_CG(changed_entry, lab_group, editing_this=True)
    new_val = clean_data[field]
    if errors:
     raise Exception("Validation of datum failed.")
@@ -719,16 +644,9 @@ def edit_CG_entry(request):
    #TODO:Remove this and make more "function" in style?
    set_cache(lab_group, "COMPOUNDGUIDE|NAMEPAIRS", None)
 
-   #Change the occurrences of the old abbrev to the new abbrev.
-   if field=="abbrev":
-    change_Data_abbrev(lab_group, old_val, new_val)
-
    #If no inorganic was found, ask the user for its identity.
    if changed_entry.compound_type=="Inorg":
     return HttpResponse("Inorganic not found!") #TODO: Add this.
-
-   #Lookup fresh data from ChemSpider and RDKit
-   update_compound(changed_entry)
 
   except Exception as e:
    print e
@@ -745,23 +663,25 @@ def edit_CG_entry(request):
 
  ##################  Helper Functions ###############################
 def guess_type(datum):
- guess = ""
- datum=datum.lower()
- if "wat" in datum or "h2o" in datum:
-  return "Water"
- if "oxa" in datum:
-  return "Ox"
- if ("eth" in datum or "prop" in datum or "but" in datum or "amin" in datum
-  or "pip" in datum or ("c" in datum and not "cl" in datum)):
-  return "Org"
- if "ol" in datum:
-  return "Sol"
- return "Inorg" #Default to inorganic if no guess is uncovered.
+  datum=datum.lower()
+  if "wat" in datum or "h2o" in datum:
+    return "Water"
+  if "oxa" in datum:
+    return "Ox"
+  if ("eth" in datum or "prop" in datum or "but" in datum or "amin" in datum
+    or "pip" in datum or ("c" in datum and not "cl" in datum)):
+    return "Org"
+  if "ol" in datum:
+    return "Sol"
+  return "Inorg" #Default to inorganic if no guess is uncovered.
 
 ######################  Database Functions  ############################
 #Send/receive the data-entry form:
 def data_form(request): #If no data is entered, stay on the current page.
  from DRP.models import get_lab_Data, get_model_field_names
+ from DRP.forms import DataEntryForm
+ from DRP.retrievalFunctions import get_lab_Data_size, get_recommendations
+ from DRP.cacheFunctions import set_cache
 
  u = request.user
  success = False
@@ -775,7 +695,6 @@ def data_form(request): #If no data is entered, stay on the current page.
 
    #Clear the cache of the last page.
    old_data_size = get_lab_Data_size(lab_group)
-   clear_page_cache_of_index(lab_group, old_data_size)
 
    #Refresh the TOTALSIZE cache.
    set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
@@ -794,6 +713,11 @@ def data_form(request): #If no data is entered, stay on the current page.
     data = get_lab_Data(lab_group).get(id=pid)
     init_fields = {field:getattr(data, field) for field in get_model_field_names()}
 
+    # Replace compound entries with an `abbrev`.
+    for field, val in init_fields.items():
+      if "reactant" in field:
+        init_fields[field] = getattr(val, "abbrev")
+
   except Exception as e:
    print e
    init_fields = {"leak":"No"}
@@ -810,6 +734,8 @@ def data_form(request): #If no data is entered, stay on the current page.
 @require_http_methods(["GET"])
 def transfer_rec(request):
  from DRP.models import get_model_field_names
+ from DRP.retrievalFunctions import get_recommendations
+ from DRP.forms import DataEntryForm
  try:
   u = request.user
   lab_group = u.get_profile().lab_group
@@ -897,7 +823,6 @@ def get_related_field(heading, model="Data"): ###Not re-read.
 @login_required
 @require_http_methods(["POST"])
 def upload_prompt(request):
- u = request.user
  model = request.POST.get("model")
  if model == "Data":
   return render(request, 'upload_form.html', {
@@ -913,83 +838,16 @@ def upload_prompt(request):
  return HttpResponse("Request illegal!")
 
 @login_required
+@require_http_methods(["POST"])
 def upload_CSV(request, model="Data"):
- u = request.user
- if request.method=="POST":
-  #Variable Setup:
-  lab_group = u.get_profile().lab_group
-  fatal_message =""
-  error_log=[]
-  successes, fails, success_percent = 0, 0, 0
-
-  #Attempt to get the data from the request
-  print request.FILES #TODO DECLUTTER ME.
   return HttpResponse("Feature not added yet.")
-  try:
-   model=request.POST["model"]
-   assert model in {"CompoundEntry", "Data"}
-   uploaded_file = request.FILES["file"]
-  except:
-   return HttpResponse("5") #TODO: Add different types of responses.
-
-  #More Variable Setup
-  true_cols = get_model_field_names(model=model)
-  file_fields = []
-  auto_added_fields = {}
-  list_field_nums = {field:1 for field in list_fields}
-  current_row = 0
-  current_col = 0
-
-  return HttpResponse("Feature not added yet.")
-  #Get the fields that are not required.
-  not_required = get_not_required_fields(model=model) #TODO: WRITE ME.
-
-  #Get the correct headings for the file.
-  content = csv.reader(uploaded_file, delimiter=",")
-
-  #Attempt to figure out the field order based on the headers in the file.
-  for col in content[0]:
-   try:
-    field = get_related_field(col, model=model, for_upload=True)
-
-    #Add the field number if it is missing.
-    if field in list_fields:
-     field += list_field_nums[field]
-     list_field_nums[field] += 1
-
-    true_cols.remove(field)
-    file_fields.append(field) #Remember the order of fields in the file.
-
-   except Exception as e:
-    print e
-    return HttpResponse("Valid headers were not found.")
-
-  #Add the auto-add fields.
-  auto_added_fields = set(true_fields)
-
-  print field_fields
-  print auto_added_fields
-
-  #Make sure no vital fields are missed.
-  for field in true_fields:
-   assert field in not_required
-
-#############################################################
-  success_percent = 1 if not (fails+successes) else successes/(fails+successes)
-  return render(request, 'upload_results.html', {
-   "fatal_message": fatal_message, #Includes data and data_indexes.
-   "error_log": error_log,
-   "added_quantity": added_quantity,
-   "error_quantity": error_quantity,
-   "success_percent": success_percent,
-  })
- return render(request, 'upload_form.html')
 
 ######################  Update Data ####################################
 
 @login_required
 @require_http_methods(["POST"])
 def change_Recommendation(request):
+ from DRP.retrievalFunctions import get_recommendations
  u = request.user
  try:
   #Variable Setup

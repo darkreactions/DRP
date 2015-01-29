@@ -64,14 +64,22 @@ def full_validation(dirty_data, lab_group, revalidating=False):
 
   clean_data["is_valid"] = True
 
+  for i in CONFIG.reactant_range():
+    clean_data["unit_{}".format(i)] = "g"
+
   reactants = []
+  used_abbrevs = set()
 
   for i in CONFIG.reactant_range():
-    if "reactant_{}".format(i) in dirty_data:
-      abbrev = dirty_data["reactant_{}".format(i)]
+    reactant = "reactant_fk_{}".format(i)
+    if reactant in dirty_data:
+      abbrev = dirty_data[reactant]
+
+      if abbrev in used_abbrevs:
+        errors[reactant] = "Compound already used!"
 
       if not compound_exists(abbrev, lab_group=lab_group):
-        errors["reactant_{}".format(i)] = "Compound not found!"
+        errors[reactant] = "Compound not found!"
 
       if "quantity_{}".format(i) in dirty_data:
         quantity = dirty_data["quantity_{}".format(i)]
@@ -80,13 +88,16 @@ def full_validation(dirty_data, lab_group, revalidating=False):
           errors["quantity_{}".format(i)] = "Must be a numeric value."
 
         if "unit_{}".format(i) in dirty_data:
+          unit = dirty_data["unit_{}".format(i)]
+          used_abbrevs.add(abbrev)
 
           reactants.append({
             "reactant":get_compound(abbrev, lab_group=lab_group),
             "quantity":quantity,
-            "unit":dirty_data["unit_{}".format(i)],
+            "unit":unit,
           })
 
+      del dirty_data[reactant]
 
   # Apply the reactants to the clean data.
   for i, reactant in enumerate(reactants):
@@ -95,6 +106,18 @@ def full_validation(dirty_data, lab_group, revalidating=False):
     clean_data["unit_"+str(i+1)] = reactant["unit"]
 
 
+  for key, val in clean_data.items():
+    if not quick_validation(key, val):
+      errors[key] = "Invalid value!"
+
+  # Make sure the `ref` isn't duplicated.
+
+  # Add any remaining field that don't require special processing.
+  all_fields = get_model_field_names()
+  for field in all_fields:
+    if field not in clean_data and field in dirty_data:
+      if quick_validation(field, dirty_data[field]):
+        clean_data[field] = dirty_data[field]
 
   print "CLEANED___________________"
   print clean_data
@@ -115,6 +138,7 @@ def quick_validation(field, dirty_datum, model="Data"):
    else: category = field+"Choices"
    return dirty_datum in edit_choices[category]
   return True
+
  if model=="CompoundEntry":
   if field=="CAS_ID":
    length_valid = (len(dirty_datum.split("-"))==3)

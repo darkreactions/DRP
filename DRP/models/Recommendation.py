@@ -16,7 +16,6 @@ class Recommendation(models.Model):
 
   #Reactant Fields
   for i in CONFIG.reactant_range():
-    exec("reactant_{0} = models.CharField(\"Reactant {0}\", max_length=30)".format(i))
     exec("reactant_fk_{0} = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='rec_reactant_key_{0}')".format(i))
 
     exec("quantity_{0} = models.CharField(\"Quantity {0}\", max_length=10)".format(i))

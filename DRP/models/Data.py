@@ -14,35 +14,30 @@ class Data(models.Model):
   class Meta:
     app_label = "DRP"
 
-  ref = models.CharField("Reference", max_length=12)
+  ref = models.CharField("Reference", max_length=30, unique=True)
 
   ###################################
   #         Reactant Fields         #
   ###################################
-  reactant_1 = models.CharField("Reactant 1", max_length=30)
   reactant_fk_1 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_1')
   quantity_1 = models.CharField("Quantity 1", max_length=10)
   unit_1 = models.CharField("Unit 1", max_length=4)
 
-  reactant_2 = models.CharField("Reactant 2", max_length=30)
   reactant_fk_2 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_2')
   quantity_2 = models.CharField("Quantity 2", max_length=10)
   unit_2 = models.CharField("Unit 2", max_length=4)
 
-  reactant_3 = models.CharField("Reactant 3", max_length=30)
   reactant_fk_3 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_3')
-  quantity_3 = models.CharField("Quantity 3", max_length=10)
-  unit_3 = models.CharField("Unit 3", max_length=4)
+  quantity_3 = models.CharField("Quantity 3", max_length=10, blank=True)
+  unit_3 = models.CharField("Unit 3", max_length=4, blank=True)
 
-  reactant_4 = models.CharField("Reactant 4", max_length=30)
   reactant_fk_4 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_4')
-  quantity_4 = models.CharField("Quantity 4", max_length=10)
-  unit_4 = models.CharField("Unit 4", max_length=4)
+  quantity_4 = models.CharField("Quantity 4", max_length=10, blank=True)
+  unit_4 = models.CharField("Unit 4", max_length=4, blank=True)
 
-  reactant_5 = models.CharField("Reactant 5", max_length=30)
   reactant_fk_5 = models.ForeignKey(CompoundEntry, max_length=30, default=None, null=True, blank=True, related_name='reactant_key_5')
-  quantity_5 = models.CharField("Quantity 5", max_length=10)
-  unit_5 = models.CharField("Unit 5", max_length=4)
+  quantity_5 = models.CharField("Quantity 5", max_length=10, blank=True)
+  unit_5 = models.CharField("Unit 5", max_length=4, blank=True)
 
 
   temp = models.CharField("Temperature", max_length=10)
@@ -193,16 +188,16 @@ class Data(models.Model):
 
   def get_atoms(self, refresh=False):
     if refresh or not self.atoms:
-      atoms = {comp.get_atoms() for comp in self.get_compounds()}
+      atoms = {comp.get_atoms(fail_soft=True) for comp in self.get_compounds()}
 
       # Store `atoms` so that reactions can be efficiently searched by atoms.
-      self.atoms = json.dumps(atoms)
+      self.atoms = json.dumps(list(atoms))
       self.save()
 
       return atoms
 
     else:
-      return json.loads(self.atoms)
+      return set(json.loads(self.atoms))
 
 
   def refresh(self):
@@ -249,10 +244,15 @@ def get_ref_set(lab_group, reset_cache=True):
   return ref_set
 
 
-def get_Data_with_compound(compound, lab_group):
+def get_Data_with_compound(comp, lab_group):
   from django.db.models import Q
+  from DRP.models import get_compound
   import operator
-  Q_list = [Q(("reactant_{}".format(i),compound)) for i in CONFIG.reactant_range()]
+
+  if type(comp)==str:
+    comp = get_comp(comp, lab_group = lab_group)
+
+  Q_list = [Q(("reactant_fk_{}".format(i),comp)) for i in CONFIG.reactant_range()]
   return Data.objects.filter(reduce(operator.or_, Q_list))
 
 

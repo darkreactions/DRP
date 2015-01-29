@@ -125,35 +125,35 @@ class DataEntryForm(forms.ModelForm):
    'title':'\"g\": gram <br/> \"mL\": milliliter <br/> \"d\": drop'}
 
 
-  reactant_1 = forms.CharField(required=True, label='Reactant 1.',
+  reactant_fk_1 = forms.CharField(required=True, label='Reactant 1',
                     widget=forms.TextInput( attrs=reactant_attrs))
   quantity_1 = forms.CharField(required=True, label='Quantity 1',
                      widget=forms.TextInput( attrs=quantity_attrs))
   unit_1 = forms.ChoiceField(required=True, choices = UNIT_CHOICES,
                  widget=forms.Select( attrs=unit_attrs))
 
-  reactant_2 = forms.CharField(required=True, label='Reactant 2',
+  reactant_fk_2 = forms.CharField(required=True, label='Reactant 2',
                     widget=forms.TextInput( attrs=reactant_attrs))
   quantity_2 = forms.CharField(required=True, label='Quantity 2',
                      widget=forms.TextInput( attrs=quantity_attrs))
   unit_2 = forms.ChoiceField(required=True, choices = UNIT_CHOICES,
                  widget=forms.Select( attrs=unit_attrs))
 
-  reactant_3 = forms.CharField(required=True, label='Reactant 3',
+  reactant_fk_3 = forms.CharField(required=True, label='Reactant 3',
                     widget=forms.TextInput( attrs=reactant_attrs))
   quantity_3 = forms.CharField(required=True, label='Quantity 3',
                      widget=forms.TextInput( attrs=quantity_attrs))
   unit_3 = forms.ChoiceField(required=True, choices = UNIT_CHOICES,
                  widget=forms.Select( attrs=unit_attrs))
 
-  reactant_4 = forms.CharField(required=True, label='Reactant 4',
+  reactant_fk_4 = forms.CharField(required=True, label='Reactant 4',
                     widget=forms.TextInput( attrs=reactant_attrs))
   quantity_4 = forms.CharField(required=True, label='Quantity 4',
                      widget=forms.TextInput( attrs=quantity_attrs))
   unit_4 = forms.ChoiceField(required=True, choices = UNIT_CHOICES,
                  widget=forms.Select( attrs=unit_attrs))
 
-  reactant_5 = forms.CharField(required=True, label='Reactant 5',
+  reactant_fk_5 = forms.CharField(required=True, label='Reactant 5',
                     widget=forms.TextInput( attrs=reactant_attrs))
   quantity_5 = forms.CharField(required=True, label='Quantity 5',
                      widget=forms.TextInput( attrs=quantity_attrs))
@@ -202,11 +202,11 @@ class DataEntryForm(forms.ModelForm):
     exclude = ("user","lab_group", "creation_time_dt")
     #Set the field order.
     fields = [
-    "reactant_1", "quantity_1", "unit_1",
-    "reactant_2", "quantity_2", "unit_2",
-    "reactant_3", "quantity_3", "unit_3",
-    "reactant_4", "quantity_4", "unit_4",
-    "reactant_5", "quantity_5", "unit_5",
+    "reactant_fk_1", "quantity_1", "unit_1",
+    "reactant_fk_2", "quantity_2", "unit_2",
+    "reactant_fk_3", "quantity_3", "unit_3",
+    "reactant_fk_4", "quantity_4", "unit_4",
+    "reactant_fk_5", "quantity_5", "unit_5",
     "ref", "temp", "time", "pH", "slow_cool",
     "leak", "outcome", "purity",
     "duplicate_of", "recommended","notes"
@@ -229,7 +229,7 @@ class DataEntryForm(forms.ModelForm):
     datum.creation_time_dt = self.creation_time_dt
     datum.is_valid = True #If validation succeeded and data is saved, then it is_valid.
 
-    datum.get_atoms(refresh=True)
+    #datum.get_atoms(refresh=True)
 
     if commit:
       datum.save()
@@ -246,7 +246,7 @@ class DataEntryForm(forms.ModelForm):
     form_errors = {field: self.error_class([message]) for (field, message) in gathered_errors.iteritems()}
 
     #Apply the errors to the form.
-    self._errors.update(form_errors)
+    self._errors = form_errors
 
     #Add the non-input information to the clean data package:
     clean_data["lab_group"] = self.lab_group

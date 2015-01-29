@@ -70,9 +70,6 @@ urlpatterns = patterns('',
     (r'^unsave_recommendation/$', edit_recommendation, {"action":"unsave"}),
     (r'^sensical_recommendation/$', edit_recommendation, {"action":"sense"}),
     (r'^nonsensical_recommendation/$', edit_recommendation, {"action":"nonsense"}),
-  #Rank Recommendations
-    (r'^rank/$', rank),
-    (r'^send_and_receive_rank/$', send_and_receive_rank),
   #Searching
     (r'^search/$', search, {"model":"Data"}),
     (r'^search/Data/?$', search, {"model":"Data"}),
