@@ -3,20 +3,19 @@
 
 <div id="pageContainer">
 
-  {% if user.is_authenticated %}
+  {% if user.is_authenticated and data %}
 
-    <span id="pagesTotal" total_data_size="{{total_data_size}}"
-    data_per_page="{{page_package.data_per_page}}">
-    {{page_package.total_pages}}
+    <span id="pagesTotal" total_data_size="{{total_data_size}}">
+    {{total_pages}}
     </span>
 
-    {% for page in page_package.page_links %}
+    {% for page in page_links %}
       {% if page|is_number %}
         <a class="pagesInfo"
-        {% if page == page_package.current_page %}
+        {% if page == current_page %}
           id="pageLinkCurrent"
         {% endif %}
-        href='/{{template}}/{{page}}/'>
+        href='/{{template}}/{{page}}/{{query}}'>
 
         {{page}}
 

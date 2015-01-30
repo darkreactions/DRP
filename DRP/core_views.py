@@ -11,156 +11,12 @@ from data_config import CONFIG
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # Data and Page Helper Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-def calc_total_pages(data_size):
-  total_pages = 1 + int((data_size-1)/CONFIG.data_per_page)
-  return total_pages if total_pages > 1 else 1
 
 
-def get_pagified_data(page, lab_group=None, data=None):
- from DRP.models import get_lab_Data
-
- #Variable Setup:
- data_per_page = CONFIG.data_per_page
-
- #Get the Lab's data if data is not specified.
- if not data:
-  try:
-   data = get_lab_Data(lab_group)
-  except:
-   raise Exception("No data nor lab_group was specified.")
- total_pages = calc_total_pages(data.count())
-
- #Check that the page request is valid.
- if not (0<page<=total_pages):
-  raise Exception("Page requested is outside of page range.")
-
- #Return the data that would be contained on the requested page.
- page_data = data[(page-1)*data_per_page:page*data_per_page]
- return page_data
-
-#Returns the info that belongs on a specific page.
-def get_page_info(request, page = None, data=None):
- from DRP.models import get_lab_Data
- from DRP.retrievalFunctions import get_public_data
- from DRP.pagifier import get_page_link_format
-
- try:
-  #Gather necessary information from the user's session:
-   #Get the user's current_page (or 1 if it is unknown.
-  if not page:
-    page = int(request.COOKIES.get("current_page", 1))
-
-  if not data:
-   u = request.user
-   if u.is_authenticated():
-    data = get_lab_Data(u.get_profile().lab_group) ###TODO: Union this with public_data for lab_group?
-   else:
-    data = get_public_data()
-
-  total_data_size = data.count()
-  total_pages = calc_total_pages(total_data_size)
-
-  #Make sure the page is a valid page. If not, go to the last page.
-  if not (0 < page <= total_pages):
-   page = total_pages
-
-  #Pack up the session info:
-  session = {
-   "page_data": get_pagified_data(page, data=data),
-   "total_data_size": total_data_size,
-   "total_pages": total_pages,
-   "page_links": get_page_link_format(page, total_pages),
-   "current_page": page,
-  }
-  return session
- except Exception as e:
-  raise Exception("Data could not be retrieved for page {}:\n--{}.".format(page, e))
-
-def repackage_page_session(session):
- data = session["page_data"]
- total_pages = session["total_pages"]
- page_links = session["page_links"]
- current_page = session["current_page"]
- total_data_size = session["total_data_size"]
-
- #Show the overall index of each datum.
- start_index = (current_page-1)*CONFIG.data_per_page + 1
- end_index = (current_page)*CONFIG.data_per_page + 1
-
- #Prepare packages.
- data_package = zip(data, range(start_index, end_index))
- page_package = {
-  "current_page":current_page,
-  "total_pages":total_pages,
-  "data_per_page":CONFIG.data_per_page,
-  "page_links":page_links,
-  }
- return data_package, page_package, total_data_size
 
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
-@login_required
-@require_http_methods(["GET"])
-def database(request, page_request=None):
-
-  # If a valid page number was given, use it.
-  try:
-    page = int(page_request)
-  except:
-    page = None
-
-  # Organize the session information.
-  session = get_page_info(request, page=page)
-  data_package, page_package, total_data_size = repackage_page_session(session)
-
-  # Return a package of page information and data.
-  return render(request, 'global_page.html', {
-    "data_on_page": data_package, #Includes data and data_indexes.
-    "page_package": page_package,
-    "total_data_size": total_data_size,
-    "template": "database",
-  })
-
-@login_required
-@require_http_methods(["POST"])
-def data_transmit(request):
- from DRP.models import get_lab_Data
- from DRP.retrievalFunctions import filter_data
-
- try:
-  try:
-   #Variable Setup
-   u = request.user
-   body = json.loads(request.POST["body"], "utf-8")
-   query_list = body.get("currentQuery")
-   page = body.get("page")
-
-   if query_list:
-    data = filter_data(u.get_profile().lab_group, query_list)
-   else:
-    data = get_lab_Data(u.get_profile().lab_group)
-
-   if data.count():
-    session = get_page_info(request, page=int(page), data=data)
-   else:
-    return HttpResponse("No data found!")
-
-  except Exception as e:
-   print e
-   return HttpResponse("Page could not be loaded.")
-
-  #Organize the data for the template.
-  data_package, page_package, total_data_size = repackage_page_session(session)
-  return render(request, 'database.html', {
-   "data_on_page": data_package, #Includes data indexes
-   "page_package": page_package, #Includes page links
-   "total_data_size": total_data_size,
-   "template":"database",
-  })
- except Exception as e:
-  print e
-  return HttpResponse("Page \"{}\" could not be loaded".format(page))
 
 @login_required
 def recommend(request, page_request=None):
@@ -205,7 +61,7 @@ def recommend(request, page_request=None):
   "fatal_message": fatal_message,
   "total_data_size":total_data_size,
   "counter_offset":recs_per_page*(page-1),
-  "page_package": {
+  "page_info": {
                     "data_per_page":recs_per_page,
                     "current_page":page,
                     "page_links":get_page_link_format(page, total_pages),
@@ -252,7 +108,7 @@ def recommendation_transmit(request, seeded=False):
    "fatal_message": fatal_message,
    "total_data_size":total_data_size,
    "counter_offset":recs_per_page*(page-1),
-   "page_package": {
+   "page_info": {
                     "data_per_page":recs_per_page,
                     "current_page":page,
                     "page_links":get_page_link_format(page, total_pages),

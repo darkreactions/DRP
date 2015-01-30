@@ -68,10 +68,8 @@ class CompoundEntry(models.Model):
       return
 
     #Either return an old CG_calculation or a new one.
-    print compound_type
-
     try:
-      cgc = CG_calculations.objects.filter(smiles=smiles)[0]
+      cgc = CG_calculations.objects.filter(smiles=self.smiles)[0]
     except:
       #Calculate properties for the CGEntry
       sdf_filename = str(int(time.time())) + filter(str.isalnum, self.compound)

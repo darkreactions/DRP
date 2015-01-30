@@ -54,7 +54,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None,
                             attempt_failed = True, verbose=False):
 
   from DRP.validation import clean_compound
-  from DRP.models import create_CG_calcs_if_needed
+  from DRP.models import create_CG_calcs_if_needed, CompoundEntry
 
   #Variable Setup
   success = 0
@@ -115,3 +115,18 @@ def refresh_compound_guide(lab_group=None, verbose=False, debug=False, clear=Fal
     except Exception as e:
       if debug: print "Could not update: {}\n\t".format(compound, e)
 
+
+
+
+def recalculate_usable_models():
+  from DRP.models import ModelStats
+
+  # Variable Setup
+  all_models = ModelStats.objects.all()
+  good = 0
+
+  for model in all_models:
+    usable = model.check_usability()
+    if usable: good += 1
+
+  print "{} of {} models usable!".format(good, all_models.count())

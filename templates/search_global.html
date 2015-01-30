@@ -1,72 +1,29 @@
+<script src='{{STATIC_URL}}js/search.js'></script>
+
 <div class='bannerText'>Search</div>
 
-<!-- Periodic Table -->
-<div id="tabs">
- <ul id="searchTabContainer">
- {% if model == "Data" %}
- <li class="searchTab"><a href="#tabs-1">Atoms</a></li>
- {% endif %}
- <li class="searchTab"><a href="#tabs-2">Fields</a></li>
- </ul>
- {% if model == "Data" %}
- <div id="tabs-1">
-  <div id="periodicTableContainer"> {% include "periodic_table.html" %}
-  <form action="/search/{{model}}/" method="post" name="login" id="searchForm_atom" class="popupScreenForm infoForm">
-   {% csrf_token %}
-   <input id="radio_and" type="radio" class="radioSearch" name="condition" value="and" checked>
-    <label id="label_and" class="button" for="radio_and">And</label>
-   </input>
-   <input id="radio_or" type="radio" class="radioSearch" name="condition" value="or">
-    <label id="label_or" class="button" for="radio_or">Or</label>
-   </input>
-   <input type="button" value="Filter" class="search_filterButton"/>
-   <input type="button" value="Back" class="search_backButton"/>
-   <input title="Remove all filters." type="button" value="Clear" class="search_clearButton"/>
-  </form>
-  </div>
- </div>
- {% endif %}
-
- <div id="tabs-2">
-  <form action="/search/{{model}}/" method="post" name="login" id="searchForm" class="popupScreenForm infoForm">
-   {% csrf_token %}
-   <div class="blockElement">
-    <label for="field">
-     Field:
-     <select class="dropDownMenu" name="field">
+<form method="post" id="searchForm" class="popupScreenForm infoForm">
+  {% csrf_token %}
+  <div class="blockElement">
+    <select class="dropDownMenu" name="field">
       {% for field in search_fields %}
         <option value="{{field.raw}}">{{field.verbose}}</option>
       {% endfor %}
-     </select>
-    </label>
+    </select>
 
-    <label for="subField">
-     Sub-Field:
-     <select class="dropDownMenu" name="subField">
+    <select class="dropDownMenu" name="subfield">
       {% for field in search_sub_fields %}
         <option value="{{field.raw}}">{{field.verbose}}</option>
       {% endfor %}
-     </select>
-    </label>
+    </select>
 
-    <label for="match">
-     Match:
-     <select class="dropDownMenu" name="match">
-      <option value="contain">Contains</option>
-      <option value="exact">Exactly</option>
-     </select>
-    </label>
+    <select class="dropDownMenu" name="match">
+      <option value="icontains">contains</option>
+      <option value="iexact">is</option>
+    </select>
 
-   </div>
-   <div class="blockElement">
-    <label for="value">
-     Value:
-     <input id="searchValue" class="autocomplete_reactant" type="text" name="value" value="">
-    </label>
-   </div>
-   <input type="button" value="Filter" class="search_filterButton"/>
-   <input type="button" value="Back" class="search_backButton"/>
-   <input title="Remove all filters." type="button" value="Clear" class="search_clearButton"/>
-  </form>
- </div>
-</div>
+    <input id="searchValue" placeholder='Value' class="autocomplete_reactant" type="text" name="value" value="">
+
+  </div>
+  <input type="button" value="Search" class="search_filterButton"/>
+</form>

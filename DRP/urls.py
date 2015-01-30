@@ -23,10 +23,9 @@ urlpatterns = patterns('',
     url(r'^dash(?:board)?/?$', "DRP.views.dashboard.get_dashboard"),
     url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
   #Database
-    (r'^database/?$', database), #Encompassing data view.
-    (r'^database/'+page+'/?$', database), #Encompassing data view.
+    (r'^database/?$', "DRP.views.database.database"), #Encompassing data view.
+    (r'^database/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.
    #Change Page
-    (r'^data_transmit/$', data_transmit), #Used for changing pages.
     (r'^recommend_transmit/$', recommendation_transmit), #Used for changing pages
    #Upload/Download database.
     (r'^upload_prompt/$', upload_prompt),

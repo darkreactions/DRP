@@ -49,8 +49,74 @@ def filter_existing_calcs(data):
 
   return data
 
+def filter_data(data, queries):
+  from django.db.models import Q
+  from DRP.data_config import CONFIG
+  import operator
 
-def filter_data(lab_group, query_list):
+  multifields = {"reactant", "quantity", "unit"}
+  mapper = {
+    "reactant": "reactant_fk",
+   }
+  default_suffix = {
+    "reactant":"abbrev",
+    "user":"username",
+  }
+
+  ors = []
+
+  for field, val_list in queries.items():
+    # Read the "field.subfield.match" syntax correctly.
+    if field.count(".")==2:
+      field, suffix, suffix2 = field.split(".")
+    elif field.count(".")==1:
+      field, suffix = field.split(".")
+      suffix2 = ""
+    else:
+      suffix = ""
+      suffix2 = ""
+
+    # Flip the suffix2 and suffix if no true subfield was specified.
+    if not suffix2 and ("contains" in suffix or "exact" in suffix):
+      suffix2 = suffix
+      suffix = ""
+
+
+    if not suffix and field in default_suffix:
+      suffix = default_suffix[field]
+
+    cleaned_suffix = "__{}".format(suffix) if suffix else ""
+    cleaned_suffix += "__{}".format(suffix2) if suffix2 else "__icontains"
+
+    cleaned = mapper[field] if field in mapper else field
+
+    query = []
+
+    for val in val_list:
+      if field in multifields:
+        for i in CONFIG.reactant_range():
+          actual_field = "{}_{}{}".format(cleaned, i, cleaned_suffix)
+          query.append( Q(**{actual_field:val}) )
+
+      else:
+        actual_field = "{}{}".format(cleaned, cleaned_suffix)
+        query.append( Q(**{actual_field:val}) )
+
+    if query:
+      query = reduce(operator.or_, query)
+      ors.append(query)
+
+  if ors:
+    ands = reduce(operator.and_, ors)
+    data = data.filter(ands)
+
+  print ands
+  print data.count()
+
+  return data
+
+
+def form_filter_data(lab_group, query_list):
  from DRP.models import get_lab_Data, get_model_field_names
  from DRP.data_config import CONFIG
  from DRP.validation import bool_fields
