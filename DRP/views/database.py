@@ -4,9 +4,13 @@ from django.shortcuts import render
 
 @login_required
 @require_http_methods(["GET"])
-def database(request, page_request=None):
-  from DRP.models import get_lab_Data
-  from DRP.retrievalFunctions import filter_data
+def database(request, page_request=None, model="database"):
+  """
+  The main view for interacting with Data-like elements (including Recommendations).
+  """
+
+  from DRP.models import get_lab_Data, get_recommendations
+  from DRP.filters import apply_filters
   from DRP.pagifier import pagify_data, calc_total_pages, get_page_links
 
   # If a valid page number was given, use it.
@@ -17,29 +21,22 @@ def database(request, page_request=None):
 
   # Get that data that this lab group is allowed to see.
   lab = request.user.get_profile().lab_group
-  data = get_lab_Data(lab)
 
-  filters = {}
-  for key, val in request.GET.items():
-    try:
-      filters[key] = request.GET.getlist(key)
-    except:
-      filters[key] = request.GET[key]
+  if model=="database":
+    data = get_lab_Data(lab)
+  elif model=="recommendations":
+    data = get_recommendations(lab)
+  else:
+    raise Exception("Invalid model specified!")
 
-  # If filters exist, apply them!
-  if filters:
-    data = filter_data(data, filters)
+  data = apply_filters(request, data)
 
   # Calculate the page information.
   num_data = data.count()
   total_pages = calc_total_pages(num_data)
 
-  # Prepare the data on a given page.
-  data = pagify_data(data, page)
-
-  from DRP.data_config import CONFIG
-  start_index = (page-1) * CONFIG.data_per_page
-  data_tups = [(elem, start_index+i+1) for i, elem in enumerate(data)]
+  # Prepare the data on a given page as (index, datum) tuples.
+  data_tups = pagify_data(data, page)
 
   # Return a package of page information and data.
   return render(request, 'global_page.html', {
@@ -49,7 +46,7 @@ def database(request, page_request=None):
     "total_pages": total_pages,
     "page_links": get_page_links(page, total_pages),
     "query":"?"+request.GET.urlencode(),
-    "template": "database",
+    "template": model,
   })
 
 

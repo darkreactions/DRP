@@ -235,10 +235,6 @@ def get_expanded_headers():
    # # # # # # # # # # # # RECOMMENDATIONS # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-def get_recommendations(lab_group):
-  from models import Recommendation
-  return Recommendation.objects.filter(lab_group=lab_group)
-
 def get_active_recommendations():
   from models import Recommendation
   model = get_latest_ModelStats(active=True)
@@ -262,67 +258,6 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
  return seed_recs
 
 
-def get_recommendations_by_date(lab_group, date = "recent"):
-  from DRP.models import Recommendation
-  return Recommendation.objects.order_by("-date_dt")
-
-
-def filter_recommendations(lab_group, query_list):
- from DRP.models import get_model_field_names
- from DRP.data_config import CONFIG
- from django.db.models import Q
- import operator
-
- #Variable Setup
- recs = get_recommendations(lab_group)
- filters = {}
- Q_list = []
-  #Collect all the valid search options
- non_reactant_fields = get_model_field_names(model="Recommendation", unique_only=True)
- #Keep track of what field of the ForeignKey should be used to search...
- foreign_fields = {"user":"username",
-                   "assigned_user":"username",
-                   "seed":"ref"}
- reactant_fields = ["reactant","quantity","unit"]
- legal_fields = set(non_reactant_fields+reactant_fields+["seeded", "saved"]+
-                    foreign_fields.keys())
-
- #Check the query_list input before performing any database requests.
- for query in query_list:
-  try:
-   #Make sure values are provided.
-   assert query.get(u"field") in legal_fields
-   assert query.get(u"match") in {"contain","exact"}
-   assert query.get(u"value")
-  except:
-   raise Exception("One or more inputs is illegal")
-
- for query in query_list:
-  field = query[u"field"]
-  match = "__icontains" if query[u"match"] == "contain" else ""
-  value = query[u"value"]
-
-  #If the field is a ForeignKey, query a field of THAT object.
-  if field in foreign_fields:
-   field += "__{}".format(foreign_fields[field])
-
-  #Apply the filter or a Q object with a range of filters.
-  if field in reactant_fields:
-   or_Qs = []
-   for i in CONFIG.reactant_range():
-    temp = {field+"_{}".format(i)+match: value}
-    or_Qs.append(Q(**temp))
-
-   Q_list.append(reduce(operator.or_, or_Qs))
-  else:
-   filters[field+match] = value
-
- #Apply the Q objects and the filters.
- if Q_list:
-  recs = recs.filter(reduce(operator.and_, Q_list))
- if filters:
-  recs = recs.filter(**filters)
- return recs
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # #  MODEL   # # # # # # # # # # # # # # # # # #

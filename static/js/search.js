@@ -13,13 +13,20 @@ $(document).on("click", ".search_filterButton", function() {
   var match = $form.find("select[name='match']").val();
   var value = $form.find("#searchValue").val();
 
-  var key = field;
-  if (subfield!==undefined) key += "."+subfield;
-  if (match!==undefined) key += "."+match;
+  if (value!=="" && value!==undefined) {
 
-  // Set the new querystring and reload the page.
-  var newQueryParam = "&" + window.encodeURI(key+"="+value)
-  location.search += newQueryParam;
+    var key = field;
+    if (subfield!==undefined) key += "."+subfield;
+    if (match!==undefined) key += "."+match;
+
+    // Set the new querystring and reload the page.
+    var newQueryParam = "&" + window.encodeURI(key+"="+value)
+    location.search += newQueryParam;
+
+  } else {
+    var failureMessage = "No query entered!"
+    showRibbon(failureMessage, badColor, "#mainPanel");
+  }
 
 });
 

@@ -54,3 +54,11 @@ class Recommendation(models.Model):
                                                        self.lab_group.lab_title,
                                                        self.saved)
 
+
+def get_recommendations(lab_group):
+  return Recommendation.objects.filter(lab_group=lab_group)
+
+
+def get_recommendations_by_date(lab_group):
+  return get_recommendations(lab_group).order_by("-date_dt")
+

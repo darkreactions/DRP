@@ -44,7 +44,7 @@ def pagify_data(data, page):
 
     #Variable Setup:
     data_per_page = CONFIG.data_per_page
-
+    start_index = (page-1) * CONFIG.data_per_page
     total_pages = calc_total_pages(data.count())
 
     #Check that the page request is valid.
@@ -52,8 +52,11 @@ def pagify_data(data, page):
         return []
 
     #Return the data that would be contained on the requested page.
-    page_data = data[(page-1)*data_per_page:page*data_per_page]
-    return page_data
+    data = data[(page-1) * data_per_page : page * data_per_page]
+
+    data_tups = [(elem, start_index+i+1) for i, elem in enumerate(data)]
+
+    return data_tups
 
 
 

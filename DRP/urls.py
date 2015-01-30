@@ -25,8 +25,6 @@ urlpatterns = patterns('',
   #Database
     (r'^database/?$', "DRP.views.database.database"), #Encompassing data view.
     (r'^database/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.
-   #Change Page
-    (r'^recommend_transmit/$', recommendation_transmit), #Used for changing pages
    #Upload/Download database.
     (r'^upload_prompt/$', upload_prompt),
     (r'^upload_data/$', upload_CSV),
@@ -57,8 +55,8 @@ urlpatterns = patterns('',
 
     (r'^check_seed_oven/$', "DRP.views.seed_recommend.check_seed_worker_cache"),
 
-    (r'^rec(?:ommend(?:ation)?)?s?/?$', recommend),
-    (r'^rec(?:ommend(?:ation)?)?s?/'+page+'/?$', recommend),
+    (r'^rec(?:ommend(?:ation)?)?s?/?$', "DRP.views.database.database", {"model":"recommendations"}),
+    (r'^rec(?:ommend(?:ation)?)?s?/'+page+'/?$',"DRP.views.database.database", {"model":"recommendations"}),
 
     (r'^saved/$', saved),
     (r'^change_Recommendation/$', change_Recommendation), #[JSON] Edit Rec Entry
