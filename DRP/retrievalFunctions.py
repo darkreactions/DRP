@@ -110,9 +110,6 @@ def filter_data(data, queries):
     ands = reduce(operator.and_, ors)
     data = data.filter(ands)
 
-  print ands
-  print data.count()
-
   return data
 
 

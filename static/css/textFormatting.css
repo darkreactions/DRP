@@ -63,25 +63,6 @@ h1,
 
 #pagesTotal { display:none; }
 
-/* Recommendation Groups */
-.recommendation {
- background-color: #B5D0E8;
-}
-
-.badRecommendation {
- background-color:#FF8080;
- border-left-color: red;
-}
-
-.savedRecommendation {
- background-color:#99FF99;
-}
-
-.hiddenRecommendation {
- opacity:0.4;
- background-color:white;
-}
-
 
 #popupContainer_inner > a {
  color:silver;

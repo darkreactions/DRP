@@ -4,7 +4,6 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 
 import json
-import string
 
 # # # # # # # # # # # # # # # # # # #
   # # # # # # # # View Functions # # # # # # # # # # #
@@ -13,7 +12,7 @@ import string
 @login_required
 @require_http_methods(["POST"])
 def edit_recommendation(request, action):
- from DRP.retrievalFunctions import get_recommendations
+ from DRP.models import get_recommendations
 
  try:
   u = request.user
@@ -46,75 +45,6 @@ def edit_recommendation(request, action):
   print e
   return HttpResponse(1)
 
-@login_required
-@require_http_methods(["GET"])
-def saved(request):
- from DRP.retrievalFunctions import get_recommendations
- from DRP.models import User
-
- #Variable Setup
- u = request.user
- recommendations = None
- user_list = None
-
- fatal_message = ""
- try:
-  #Get the recommendations that are saved for the lab.
-  lab_group = u.get_profile().lab_group
-
-  recommendations = get_recommendations(lab_group).filter(saved=True)
-  assert recommendations.count()
-
-  #Get the lab users for the select field.
-  user_list = User.objects.filter(profile__lab_group=lab_group)
-
-  #Get users
- except:
-  fatal_message = "No saved recommendations available."
-
- return render(request, 'global_page.html', {
-  "template":"saved",
-  "recommendations": recommendations,
-  "fatal_message": fatal_message,
-  "users":user_list,
- })
-
-@login_required
-@require_http_methods(["GET"])
-def rank(request):
-  import random
-  def get_random_unranked_reaction_or_none(seed=None):
-    def get_unranked_reactions(seed=None):
-      from DRP.models import RankedReactionList
-      unranked = RankedReactionList.objects.filter(ranker=None)
-      #If a seed is specified, apply it to the filter.
-      if seed:
-        #Convert any lists to strings to allow filtering.
-        seed = json.dumps(seed) if type(seed)==list else seed
-        unranked = unranked.filter(seed=seed)
-      return unranked
-
-    unranked_rxns = get_unranked_reactions(seed=seed)
-    if unranked_rxns.exists():
-      random_index = random.randrange(unranked_rxns.count())
-      return unranked_rxns[random_index]
-    return None
-
-  #Variable Setup:
-  unranked_rxn = get_random_unranked_reaction_or_none()
-
-  if not unranked_rxn:
-    fatal_message = "No unranked reactions available!"
-  else :
-    fatal_message = ""
-
-  return render(request, 'global_page.html', {
-    "template":"unranked_reaction",
-    "unranked_rxn": unranked_rxn,
-    "fatal_message": fatal_message,
-  })
-
-
 # # # # # # # # # # # # # # # # # # #
    # # # # # Sub-view Functions (eg, Javascript response views) # # # # # # # #
 # # # # # # # # # # # # # # # # # # #
@@ -122,8 +52,7 @@ def rank(request):
 @login_required
 @require_http_methods(["POST"])
 def assign_user_to_rec(request):
- from DRP.retrievalFunctions import get_recommendations
- from DRP.models import User
+ from DRP.models import User, get_recommendations
 
  u = request.user
  try:
@@ -149,33 +78,6 @@ def assign_user_to_rec(request):
  except Exception as e:
   print e
   return HttpResponse(1)
-
-
-####################################################
-####################################################
-####################################################
-####################################################
-############   REWRITTEN THUS FAR ##################
-####################################################
-####################################################
-####################################################
-####################################################
-
-######################  Core Views  ####################################
-
-@login_required
-def visuals(request):
- #Variable Setup
- fatal_message = ""
-
- #TODO: Nora, you'll want to have some "loading page" that uses JavaScript
- #  to load the data via JSON. D3 makes this nifty easy. You'll want to make
- #  sure that a lab only can view THEIR OWN data (and eventually public data --
- #  but ignore this for now).
-
- return render(request, 'predictions_global.html', {
-  "fatal_message": fatal_message,
- })
 
 ######################  Searching  #####################################
   #Rules:
@@ -352,25 +254,13 @@ def edit_CG_entry(request):
 	 pass#Add "smiles" and "mw" info.
 
  ##################  Helper Functions ###############################
-def guess_type(datum):
-  datum=datum.lower()
-  if "wat" in datum or "h2o" in datum:
-    return "Water"
-  if "oxa" in datum:
-    return "Ox"
-  if ("eth" in datum or "prop" in datum or "but" in datum or "amin" in datum
-    or "pip" in datum or ("c" in datum and not "cl" in datum)):
-    return "Org"
-  if "ol" in datum:
-    return "Sol"
-  return "Inorg" #Default to inorganic if no guess is uncovered.
 
 ######################  Database Functions  ############################
 #Send/receive the data-entry form:
 def data_form(request): #If no data is entered, stay on the current page.
- from DRP.models import get_lab_Data, get_model_field_names
+ from DRP.models import get_lab_Data, get_model_field_names,get_recommendations
  from DRP.forms import DataEntryForm
- from DRP.retrievalFunctions import get_lab_Data_size, get_recommendations
+ from DRP.retrievalFunctions import get_lab_Data_size
  from DRP.cacheFunctions import set_cache
 
  u = request.user
@@ -403,111 +293,25 @@ def data_form(request): #If no data is entered, stay on the current page.
     data = get_lab_Data(lab_group).get(id=pid)
     init_fields = {field:getattr(data, field) for field in get_model_field_names()}
 
-    # Replace compound entries with an `abbrev`.
-    for field, val in init_fields.items():
-      if "reactant" in field:
-        init_fields[field] = getattr(val, "abbrev")
+   # Replace compound entries with an `abbrev`.
+   for field, val in init_fields.items():
+    if "reactant" in field:
+     init_fields[field] = getattr(val, "abbrev")
 
-  except Exception as e:
-   print e
+  except:
    init_fields = {"leak":"No"}
+
   form = DataEntryForm(
    initial=init_fields
   )
+
  return render(request, 'data_form.html', {
   "form": form,
   "success": success,
  })
 
-#Send/receive the data-entry form: #TODO: Merge with the field above.
-@login_required
-@require_http_methods(["GET"])
-def transfer_rec(request):
- from DRP.models import get_model_field_names
- from DRP.retrievalFunctions import get_recommendations
- from DRP.forms import DataEntryForm
- try:
-  u = request.user
-  lab_group = u.get_profile().lab_group
-  pid = request.GET["pid"]
-  rec = get_recommendations(lab_group).get(id=pid)
-
-  initial_fields = {field:getattr(rec, field) for field in get_model_field_names(model="Recommendation")}
-  form = DataEntryForm(
-   initial=initial_fields
-  )
-  return render(request, 'data_form.html', {
-   "form": form,
-  })
- except:
-  return HttpResponse("<p>Request failed!</p>")
-
  ##################  Helper Functions ###############################
 
-#Returns a related data entry field (eg, "reactant 1 name" --> "reactant_1")
-def get_related_field(heading, model="Data"): ###Not re-read.
- #Strip all punctuation, capitalization, and spacing from the header.
- stripped_heading = heading.translate(None, string.punctuation)
- stripped_heading = stripped_heading.translate(None, " ").lower()
- stripped_heading = stripped_heading[:20] #Limit the checked heading (saves time if super long).
-
- if model=="Data":
-  if ("reacta" in stripped_heading or "mass" in stripped_heading
-   or "unit" in stripped_heading or "vol" in stripped_heading
-   or "amou" in stripped_heading or "name" in stripped_heading
-   or "qua" in stripped_heading):
-   if ("mass" in stripped_heading or "quantity" in stripped_heading
-    or "vol" in stripped_heading or "amount" in stripped_heading):
-    related_field = "quantity_"
-   elif "unit" in stripped_heading:
-    related_field = "unit_"
-   else:
-    related_field = "reactant_"
-   for i in range(5): #ie, 1-5
-    if str(i+1) in stripped_heading:
-     related_field += str(i+1)
-     break; #Only add 1 number to the data form.
-  elif "temp" in stripped_heading:
-   related_field = "temp"
-  elif "dupl" in stripped_heading:
-   related_field = "duplicate_of"
-  elif "recom" in stripped_heading:
-   related_field = "recommended"
-  elif "time" in stripped_heading:
-   related_field = "time"
-  elif "cool" in stripped_heading or "slow" in stripped_heading:
-   related_field = "slow_cool"
-  elif "pur" in stripped_heading:
-   related_field = "purity"
-  elif "leak" in stripped_heading or "error" in stripped_heading:
-   related_field = "leak"
-  elif ("ref" in stripped_heading or "cont" in stripped_heading
-   or "num" in stripped_heading):
-   related_field = "ref"
-  elif "out" in stripped_heading or "res" in stripped_heading:
-   related_field = "outcome"
-  elif ("note" in stripped_heading or "other" in stripped_heading
-   or "info" in stripped_heading):
-   related_field = "notes"
-  elif "ph" in stripped_heading:
-   related_field = "pH"
-  else: #ie, related_field is unchanged.
-   raise Exception("Not a valid heading: <div class=failedUploadData>{}</div>".format(heading))
- elif model=="CompoundEntry":
-  if "cas" in stripped_heading:
-   related_field = "CAS_ID"
-  elif "type" in stripped_heading:
-   related_field = "compound_type"
-  elif ("comp" in stripped_heading or "full" in stripped_heading
-   or "name" in stripped_heading):
-   related_field = "compound"
-  elif "abbr" in stripped_heading or "short" in stripped_heading:
-   related_field = "abbrev"
-  else:
-   raise Exception("Not a valid heading: <div class=failedUploadData>{}</div>".format(heading))
- else:
-  raise Exception("Unknown model specification for relations.")
- return related_field
 
 ######################  Upload/Download   ##############################
 @login_required
@@ -537,7 +341,7 @@ def upload_CSV(request, model="Data"):
 @login_required
 @require_http_methods(["POST"])
 def change_Recommendation(request):
- from DRP.retrievalFunctions import get_recommendations
+ from DRP.models import get_recommendations
  u = request.user
  try:
   #Variable Setup

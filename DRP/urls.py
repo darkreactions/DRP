@@ -1,6 +1,8 @@
-from django.conf.urls import *
+from django.conf.urls import patterns, url, include
 from django.contrib import admin
-from core_views import *
+
+#TODO: Abstract these out/remove these.
+from core_views import upload_prompt, upload_CSV, data_form, check_compound, compound_guide_form, compound_guide_entry, edit_CG_entry, change_Recommendation, assign_user_to_rec, edit_recommendation
 
 # Uncomment the next two lines to enable the admin: ###C
 admin.autodiscover()
@@ -23,8 +25,19 @@ urlpatterns = patterns('',
     url(r'^dash(?:board)?/?$', "DRP.views.dashboard.get_dashboard"),
     url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
   #Database
-    (r'^database/?$', "DRP.views.database.database"), #Encompassing data view.
-    (r'^database/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.
+    (r'^data(?:base)?/?$', "DRP.views.database.database"), #Encompassing data view.
+    (r'^data(?:base)?/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.
+
+  # Searching
+    (r'^search/$', "DRP.views.search.search", {"model":"Data"}),
+    (r'^search/Data/?$', "DRP.views.search.search", {"model":"Data"}),
+    (r'^search/Recommendation/?$', "DRP.views.search.search", {"model":"Recommendation"}),
+    (r'^search/SeedRecommendation/?$', "DRP.views.search.search", {
+      "model":"Recommendation",
+      "params":{"seeded":True}
+    }),
+
+
    #Upload/Download database.
     (r'^upload_prompt/$', upload_prompt),
     (r'^upload_data/$', upload_CSV),
@@ -58,7 +71,9 @@ urlpatterns = patterns('',
     (r'^rec(?:ommend(?:ation)?)?s?/?$', "DRP.views.database.database", {"model":"recommendations"}),
     (r'^rec(?:ommend(?:ation)?)?s?/'+page+'/?$',"DRP.views.database.database", {"model":"recommendations"}),
 
-    (r'^saved/$', saved),
+    (r'^saved/?$', "DRP.views.database.database", {"model":"saved"}),
+    (r'^saved/'+page+'/?$',"DRP.views.database.database", {"model":"saved"}),
+
     (r'^change_Recommendation/$', change_Recommendation), #[JSON] Edit Rec Entry
     (r'^assign_user/$', assign_user_to_rec),
     (r'^show_recommendation/$', edit_recommendation, {"action":"show"}),
@@ -67,14 +82,6 @@ urlpatterns = patterns('',
     (r'^unsave_recommendation/$', edit_recommendation, {"action":"unsave"}),
     (r'^sensical_recommendation/$', edit_recommendation, {"action":"sense"}),
     (r'^nonsensical_recommendation/$', edit_recommendation, {"action":"nonsense"}),
-  #Searching
-    (r'^search/$', search, {"model":"Data"}),
-    (r'^search/Data/?$', search, {"model":"Data"}),
-    (r'^search/Recommendation/?$', search, {"model":"Recommendation"}),
-    (r'^search/SeedRecommendation/?$', search, {
-		"model":"Recommendation",
-		"params":{"seeded":True}
-		}),
 
   #Users and Labs
    #Authentication
