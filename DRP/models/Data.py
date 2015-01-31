@@ -218,7 +218,7 @@ class Data(models.Model):
 def get_lab_Data(lab_group):
   from DRP.models import get_Lab_Group
   lab_group = get_Lab_Group(lab_group)
-  return Data.objects.filter(lab_group=lab_group).order_by("creation_time_dt")
+  return Data.objects.filter(lab_group=lab_group).order_by("ref")
 
 
 def get_good_rxns(lab_group=None, with_headings=True):

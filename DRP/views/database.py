@@ -20,7 +20,7 @@ def database(request, page_request=None, model="database"):
     page = 1
 
   formatting_info = {}
-  current_query = "?"+request.GET.urlencode(),
+  current_query = "?"+request.GET.urlencode()
 
   # Get that data that this lab group is allowed to see.
   lab = request.user.get_profile().lab_group
@@ -56,7 +56,6 @@ def database(request, page_request=None, model="database"):
   if not data_tups and page>1:
     new_url = "/database/"
     return redirect(new_url)
-
 
   # Return a package of page information and data.
   return render(request, 'global_page.html', {
