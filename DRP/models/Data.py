@@ -71,6 +71,8 @@ class Data(models.Model):
   duplicate_of = models.CharField("Duplicate", max_length=12, null=True, blank=True)
   recommended = models.CharField("Recommended", max_length=10)
 
+  persistent_homologies = models.TextField("Persistent Homologies", blank=True, default="[]")
+
   def __unicode__(self):
     return u"{} -- (LAB: {})".format(self.ref, self.lab_group.lab_title)
 
@@ -250,7 +252,7 @@ def get_Data_with_compound(comp, lab_group):
   import operator
 
   if type(comp)==str:
-    comp = get_comp(comp, lab_group = lab_group)
+    comp = get_compound(comp, lab_group = lab_group)
 
   Q_list = [Q(("reactant_fk_{}".format(i),comp)) for i in CONFIG.reactant_range()]
   return Data.objects.filter(reduce(operator.or_, Q_list))
