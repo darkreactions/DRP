@@ -8,7 +8,7 @@ from ModelStats import ModelStats
 
 from Data import Data
 from CompoundEntry import CompoundEntry
-
+from DataCalc import DataCalc
 
 class Recommendation(models.Model):
   class Meta:
@@ -50,8 +50,32 @@ class Recommendation(models.Model):
   hidden = models.BooleanField("Hidden", default=False)
   notes = models.CharField("Notes", max_length=200, blank=True)
 
-  def __unicode__(self):
-    return u"REC: {} -- (LAB: {} -- Saved: {})".format(self.score,
-                                                       self.lab_group.lab_title,
-                                                       self.saved)
+
+  #Foreign Key field
+  calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True,
+                                   on_delete=models.SET_NULL)
+
+    
+
+def gather_all_nonsense_recs():
+  from DRP.model_building.load_data import create_expanded_datum_field_list
+  from DRP.model_building.rxn_calculator import headers
+  from model_building.load_cg import get_cg
+  from model_building.load_data import get_abbrev_map
+
+  nonsense = Recommendation.objects.filter(nonsense=True)
+  cg = get_cg()
+  abbrev_map = get_abbrev_map()
+
+  for i, elem in enumerate(nonsense):
+    nonsenseObjectList = create_expanded_datum_field_list(elem, preloaded_cg=cg,preloaded_abbrev_map=abbrev_map) 
+    nonsenseDict = {key:_make_float(val) for key, al in zip(headers, nonsenseObjectListi)} 
+    nonsenseDict["outcome"] = 0
+    newDataCalc = DataCalc(contents=json.dumps(nonsenseDict))
+    newDataCalc.save() 
+    elem.calculations = newDataCalc
+  return nonsense 
+
+      
+
 
