@@ -250,7 +250,7 @@ def dict_to_list(calcDict, listFields):
   return [calcDict[field] for field in listFields]
 
 # Creates ARFF contents given data and writes the contents to a file ('name').
-def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
+def make_arff(name, data, clock=False, raw_list_input=False, debug=True, response="outcome"):
   import time
   from DRP.fileFunctions import createDirIfNecessary
 
@@ -278,7 +278,8 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
           row = datum
         else:
           calcDict = datum.get_calculations_dict()
-          calcDict["outcome"] = max(1, int(calcDict["outcome"]))
+          if response=="outcome":
+            calcDict[response] = max(1, int(calcDict[response]))
           row = dict_to_list(calcDict, arff_fields)
 
         #Write the row to the ARFF file.

@@ -9,7 +9,7 @@ class ModelStats(models.Model):
   confusion_table = models.TextField(default="{}")
   used_fields = models.TextField(default="[]")
   correct_vals = models.CharField("Correct Values", max_length=100,
-                                  default="[\"3:3\",\"4:4\"]")
+                                  default="[\"3\",\"4\"]")
 
   # Model Descriptors
   title = models.CharField("Title", max_length=100, default="untitled")
@@ -24,15 +24,22 @@ class ModelStats(models.Model):
 
   # Available model types.
   library = models.CharField("Library", max_length=128, default="weka")
-  tool = models.CharField("Tool", max_length=128, default="svm")
-
+  tool = models.CharField("Tool", max_length=128, default="random forest")
+  response = models.CharField("Response", max_length=128, default="outcome")
 
   def construct(self, filename, data, description="", library="sklearn",
-                                     tool="svm",
+                                     tool="random forest",
                                      usable=True, active=True,
                                      splitter=None):
 
     from DRP.model_building.load_data import test_split
+    import json
+
+    if not splitter:
+      splitter = test_split
+
+    headers = data.pop(0)
+    self.used_fields = json.dumps(headers)
 
     self.filename = filename
     self.description = description
@@ -41,19 +48,18 @@ class ModelStats(models.Model):
     self.library = library
     self.tool = tool
 
-    setattr(self, library, True) # `model` must be one of { "weka", "sklearn" }
-
     # Split the data.
-    split_data = splitter(data) if splitter else test_split(data)
+    split_data = splitter(data)
 
-    # Construct any necessary ARFF files (etc).
+    # Construct any necessary ARFF files
+    #  and do any other such data preparation.
     self._prepare_data(split_data)
 
-    # Train the model
+    # Train/fit the model
     self._train_model(split_data["train"])
 
     # Set the confusion table for a given data-set.
-    self._test_model(split_data["test"])
+    self._test_model(split_data["train"])
 
     self.save()
 
@@ -65,66 +71,113 @@ class ModelStats(models.Model):
     return MODEL_DIR + self.filename
 
 
-  def _train_model(self, data, suffix="_train"):
-    from DRP.model_building.model_methods import generate_weka_model
+  def _separate_response(self, data):
+    headers = self.get_headers()
+    print headers
+    resp = headers.index(self.response)
 
+    preds = [[elem for i, elem in enumerate(row) if i!=resp] for row in data]
+    resps = [row[resp] for row in data]
+
+    return preds, resps
+
+
+  def predict_bulk(self, predictors):
+    guesses = []
+
+    if self.library == "weka":
+      pass #TODO
+
+    elif self.library == "sklearn":
+      model = self._load_model()
+      return model.predict(predictors)
+
+    else:
+      raise Exception("Unknown library specified in predict_bulk!")
+
+    return guesses
+
+
+  def _load_model(self):
+    from sklearn.externals import joblib
+
+    if self.library == "sklearn":
+      return joblib.load(self.get_path())
+
+    else:
+      raise Exception("Illegal model library specified! Aborting file-load!")
+
+  def _test_model(self, data):
     if self.library=="weka":
-      generate_weka_model(self.filename+suffix, self.get_path()+suffix)
+      pass
 
     elif self.library=="sklearn":
-      pass
+      predictors, responses = self._separate_response(data)
+      guesses = self.predict(predictors)
+
+    possible_vals = sorted(list(set(guesses)))
+    cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
+
+    for guess, response in zip(guesses, responses):
+      cm[response][guess] += 1
+
+    self.set_confusion_table(cm)
+
+
+  def _train_model(self, data):
+    from DRP.model_building.sklearn_methods import get_model
+    from sklearn.externals import joblib
+
+    if self.library=="weka":
       #TODO
+      pass
+
+    elif self.library=="sklearn":
+      model = get_model(self.tool)
+      predictors, responses = self._separate_response(data)
+      model.fit(predictors, responses)
+
+      # Save the model to a file.
+      joblib.dump(model, self.get_path())
+
+
+  def get_headers(self):
+    import json
+    return json.loads(self.used_fields)
+
+
+  def _make_arff(self, key, data, headers):
+    from DRP.fileFunctions import createDirIfNecessary
+    from DRP.model_building.model_methods import preface
+    from DRP.settings import TMP_DIR
+
+    createDirIfNecessary(TMP_DIR)
+    full_name = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
+
+    with open(full_name, "w") as f:
+      f.write(preface(headers) + "\n")
+      for row in data:
+        f.write(",".join([str(entry) for entry in row]) + "\n")
 
 
   def _prepare_data(self, split_data):
-    from DRP.model_building import make_arff
-
-    test = split_data["test"]
-    train = split_data["train"]
+    headers = self.get_headers()
 
     if self.library=="weka":
-      make_arff(self.filename + "_test", test)
-      make_arff(self.filename + "_train", train)
+      for key, data in split_data.items():
+        self._make_arff(key, data, headers)
 
     elif self.library=="sklearn":
       pass
 
-
-
-
-  def load_model(self):
-    import os
-    from sklearn.externals import joblib
-
-    model = None
-
-    if self.library=="sklearn":
-      model = joblib.load(self.filename)
-
-    elif self.library=="weka":
-      if not os.path.isfile(self.filename):
-        raise Exception("Cannot find model file!")
-
     else:
-      raise Exception("No model library specified! Aborting file-load!")
+      raise Exception("Unknown library `{}` specified.".format(self.library))
 
-    return model
-
-
-  def autofill(self, title="autogenerated", description="", sklearn=False):
-    import datetime
-    self.title = title
-    self.description = description
-
-    self.usable=True
-    self.active=False
-    self.datetime = datetime.datetime.now()
-    self.save()
 
   def set_correct_vals(self, correct_list):
     import json
     if not correct_list:
-      correct_list = ["4:4","3:3"]
+      correct_list = ["4","3"]
     self.correct_vals = json.dumps(correct_list)
     self.save()
 
@@ -148,7 +201,7 @@ class ModelStats(models.Model):
     try:
       assert( len(self.load_all_vals()) > 0 )
       assert( len(self.load_correct_vals()) > 0 )
-      assert( os.path.isfile(self.filename) )
+      assert( os.path.isfile(self.get_path()) )
       usable = True
     except:
       usable = False
@@ -438,3 +491,9 @@ class ModelStats(models.Model):
 
 
 
+
+"""
+Current copy-paste test.
+from DRP.model_building.rxn_calculator import *; from DRP.models import *; ModelStats().construct("name", [headers, [u'jho210.1', u'ammonium metavanadate', 0.1198, 0.001, u'Selenium dioxide', 0.6782, 0.0061, -1.0, -1.0, -1.0, u'1,4-diazabicyclo[2.2.2]octane', 0.1197, 0.0011, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 90.0, 48.0, u'yes', 2.0, u'no', 2.0, 1.0, 0.0, 3.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.0196, 0.0029, -0.0, -0.0059, 6.6875, 0.0225, u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'yes', u'yes', u'no', u'no', u'yes', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'yes', u'no', 941.0, 195.0, 2.55, 568.0, 373.0, 171.0, 650.9, 50.6, 1.63, 350.7, 300.1, 103.0, 795.95, 122.8, 2.09, 459.35, 336.55, 137.0, 782.6218, 99.3328, 2.0387, 446.3156, 334.5703, 132.714, 5.7515, 1.1919, 0.0156, 3.4717, 2.2798, 0.6295, 0.6666, 0.0518, 0.0017, 0.3592, 0.3073, 0.1751, 3.209, 0.6218, 0.0086, 1.9154, 1.2936, 0.4023, 1.958, 0.2485, 0.0051, 1.1166, 0.8371, 0.332, 1.0, 3.0]])
+
+"""
