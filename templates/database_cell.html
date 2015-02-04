@@ -1,19 +1,31 @@
 {% if user.is_authenticated %}
- {% if data_on_page %}
-  {% for entry, entryID in data_on_page %}
-   <div class="dataGroup dataGroup_shape genericContainer_inner copyable 
-   {% if not entry.is_valid %}badData{% endif %}" pid="{{entry.id}}">
-    <div class="dataIndex">{{ entryID }}</div>
-    <div class="dataSpecificButtonContainer"></div>
-    <div class="dataEntry">
-      <!-- REACTION -->
-     {% include "full_datum.html" %}
-    </div>
-   </div>
-  {% endfor %}
- {% else %}
-  <p>No data is available!</p>
- {% endif %}
+  {% if data %}
+    {% for entry, entryID in data %}
+
+<div class="dataGroup dataGroup_shape genericContainer_inner
+{% if formatting.recommendations %} recommendations{% endif %}
+{% if formatting.copyable %} copyable{% endif %}
+{% if formatting.transferable%} transferable{% endif %}
+
+{% if entry.saved == True %} savedRecommendation{% endif %}
+{% if entry.nonsense == True %} badRecommendation{% endif %}
+{% if entry.saved == True %} savedRecommendation{% endif %}
+{% if entry.hidden == True %} hiddenRecommendation{%endif%}
+{% if entry.is_valid == False %} badData{% endif %}
+
+" pid="{{entry.id}}">
+
+  <div class="dataIndex">{{ entryID }}</div>
+  <div class="dataSpecificButtonContainer"></div>
+  <div class="dataEntry">
+    {% include "full_datum.html" %}
+  </div>
+</div>
+
+    {% endfor %}
+  {% else %}
+    <p>No data available!</p>
+  {% endif %}
 {% else %}
- <p>Please log in to see your data.</p>
+  <p>Please log in to see your data.</p>
 {% endif %}

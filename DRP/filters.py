@@ -1,24 +1,21 @@
-import os, sys
-full_path = os.path.dirname(os.path.realpath(__file__))+"/"
-django_path = full_path[:full_path.rfind("/DRP/")]
-if django_path not in sys.path:
-  sys.path = [django_path] + sys.path
-  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
+def apply_filters(request, data):
+  """
+  Reads a `request`/dictionary to parse filters and applies those filters
+  on some `data` QuerySet.
+  """
 
-def recalculate_usable_models():
-  from DRP.models import ModelStats
+  from DRP.retrievalFunctions import filter_data
 
-  # Variable Setup
-  all_models = ModelStats.objects.all()
-  good = 0
+  filters = {}
+  for key, val in request.GET.items():
+    try:
+      filters[key] = request.GET.getlist(key)
+    except:
+      filters[key] = request.GET[key]
 
-  for model in all_models:
-    usable = model.check_usability()
-    if usable: good += 1
+  # If filters exist, apply them!
+  if filters:
+    data = filter_data(data, filters)
 
-  print "{} of {} models usable!".format(good, all_models.count())
-
-if __name__=="__main__":
-  recalculate_usable_models()
-
+  return data

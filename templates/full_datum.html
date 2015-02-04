@@ -1,6 +1,9 @@
  <!-- Reaction -->
-<span class="dataField type_ref editable" editAs="text">{{entry.ref}}</span>
-<br />
+{% if entry.ref %}
+  <span class="dataField type_ref editable" editAs="text">{{entry.ref}}</span>
+  <br />
+{% endif %}
+
 <div class="reactantField" group="1">
 <span class="dataField type_reactant editable" editAs="text">{{entry.reactant_fk_1.abbrev}}</span>
 <span class="dataDecorator">(</span>
@@ -53,6 +56,28 @@
 <br/>
 <span class="dataField type_notes editable" editAs="text">{{entry.notes}}</span>
 <br/>
-<span class="dataField type_duplicate_of editable opaqueDatum" editAs="text">{{entry.duplicate_of}}</span>
-<span class="dataField type_recommended editable opaqueDatum boolField" editAs="select">{{entry.recommended}}</span>
-<span class="type_user opaqueDatum">{{entry.user}}</span>
+
+{% if formatting.show_logistics %}
+  <span class="dataField type_duplicate_of editable opaqueDatum" editAs="text">{{entry.duplicate_of}}</span>
+
+  <span class="dataField type_recommended editable opaqueDatum boolField" editAs="select">{{entry.recommended}}</span>
+{% endif %}
+
+{% if formatting.users %}
+  <span class="dataField type_assigned_user">
+    Assigned User:
+    <select name="assigned_user" class="editable_assignedUser">
+      <option val="">None</option>
+      {% for u in formatting.users %}
+        <option val="{{u.id}}"
+          {% if entry.assigned_user == u %} selected {% endif %}>
+          {{u.first_name}} {{u.last_name}}
+        </option>
+      {% endfor %}
+    </select>
+  </span>
+{% endif %}
+
+{% if entry.user %}
+  <span class="type_user opaqueDatum">{{entry.user}}</span>
+{% endif %}

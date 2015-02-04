@@ -8,8 +8,20 @@ if django_path not in sys.path:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.settings import BASE_DIR
-from DRP.models import DataCalc
 import load_cg,json
+
+
+def test_split(data, headers=None):
+  from DRP.model_building.test_train_split import create_test_and_train_lists
+
+  # Create reactant-combination keys for each data entry.
+  dataKeys = create_reactant_keys(data, headers=headers)
+
+  # Partitions the data/keys into separate test/training datasets.
+  test, train = create_test_and_train_lists(data, dataKeys)
+
+  return {"test":test, "train":train, "all":data}
+
 
 def load(lab_group=None, with_headings=True):
 	from DRP.models import get_good_rxns

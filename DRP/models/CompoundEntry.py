@@ -27,15 +27,18 @@ class CompoundEntry(models.Model):
     return u"{} --> {} (LAB: {})".format(self.abbrev, self.compound, self.lab_group.lab_title)
 
 
-  def get_atoms(self):
+  def get_atoms(self, fail_soft=False):
     import rdkit.Chem as Chem
 
+    error = ""
+
     if self.custom and not self.smiles:
-      message = "Cannot get SMILES of custom compound: '{}'".format(self.abbrev)
-      raise Exception(message)
+      error = "Cannot get SMILES of custom compound: '{}'".format(self.abbrev)
     elif not self.smiles:
-      message = "Compound has no SMILES: '{}'".format(self.abbrev)
-      raise Exception(message)
+      error = "Compound has no SMILES: '{}'".format(self.abbrev)
+
+    if error and not fail_soft:
+      raise Exception(error)
 
 
     mols = Chem.MolFromSmiles(self.smiles,sanitize=False)
@@ -51,6 +54,70 @@ class CompoundEntry(models.Model):
 
     return [atom.GetSymbol() for atom in mols.GetAtoms()]
 
+  def create_CG_calcs_if_needed(self):
+    from CGCalculator import CGCalculator
+    from DRP.data_config import CONFIG
+    import time, json
+
+    #Variable Setup
+    jchem_path =  CONFIG.jchem_path
+    sdf_path = "tmp"
+
+    #Only Organics that have smiles may have calculations.
+    if self.compound_type not in {"Org", "Inorg"} or not self.smiles:
+      return
+
+    #Either return an old CG_calculation or a new one.
+    try:
+      cgc = CG_calculations.objects.filter(smiles=self.smiles)[0]
+    except:
+      #Calculate properties for the CGEntry
+      sdf_filename = str(int(time.time())) + filter(str.isalnum, self.compound)
+      #TODO: Speed this up? This is dreadfully slow.
+      props = CGCalculator(self.compound, sdf_filename, self.smiles, self.compound_type, jchem_path, sdf_path).get_properties()
+      props = json.dumps(props)
+      #Store the actual CG_calculation in the database.
+      cgc = CG_calculations(json_data=props, compound=self.compound, smiles=self.smiles)
+      cgc.save()
+
+      #Set the calculations field in each CompoundEntry.
+      self.calculations=cgc
+      self.save()
+
+    return cgc
+
+
+
+
+
+
+
+
+def get_compound(abbrev, lab_group):
+  """
+  Returns the CompoundEntry object with a given `abbrev`.
+  """
+
+  compounds = CompoundEntry.objects.all()
+
+  if lab_group:
+    lab_group = get_Lab_Group(lab_group)
+    compounds = compounds.filter(lab_group=lab_group)
+
+  return compounds.filter(abbrev=abbrev).first()
+
+
+def compound_exists(abbrev, lab_group=""):
+  """
+  Returns  `True` if a compound is found and `False` if it is not.
+  """
+
+  try:
+    comp = get_compound(abbrev, lab_group=lab_group)
+    return comp is not None
+  except Exception as e:
+    print e
+    return False
 
 
 def get_lab_CG(lab_query):

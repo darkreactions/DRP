@@ -82,10 +82,12 @@
  </script>
 
  <script type="text/javascript" src="{{ STATIC_URL }}js/clientValidate.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/showRibbon.js" ></script>
  <script type="text/javascript" src="{{ STATIC_URL }}js/universal.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/pages.js" ></script>
+
  {% with template|add:".js" as js_name %}
  <script type="text/javascript" src="{{ STATIC_URL }}js/{{ js_name }}" ></script>
  {% endwith %}
- <script type="text/javascript" src="{{ STATIC_URL }}js/pages.js" ></script>
 
 </html>

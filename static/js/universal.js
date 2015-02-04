@@ -221,26 +221,6 @@ function toggleSideContainer() {
 }
 
 //############   Ribbons:   #############################################
-window.showRibbon = function(message, color, location, timeout) {
- //Assume that the ribbon should time out.
- timeout = timeout !== undefined ? timeout : true
- //Remove any extra
- $(".ribbonMessage").remove();
-
- $(location).append(
-  "<div class=\"ribbonMessage\" style=\"background-color:" + color +
-   ";\">" + message + "</div>"
- );
- if (timeout) {
-  setTimeout(function() {
-   $(location).children(".ribbonMessage").fadeOut(1000, function()
-   {
-    $(".ribbonMessage").remove();
-   });
-
-  },500+15*message.length);
- }
-}
 
 //############  Mask Interactions:  ####################################
 function darkenMask() {
@@ -623,23 +603,6 @@ $(document).on("click", ".PT_element", function() {
  }
 });
 
-function sendSearchQuery(currentQuery, destination) {
- JSONQuery = JSON.stringify({"currentQuery":currentQuery,"page":"1"});
- $.ajax({
-  url:destination,
-  method:"post",
-  data: {"body":JSONQuery},
-  traditional: true,
-  success: function(response) {
-   var infoBars = $(".infoBar") //Rescue any infoBars that may exist.
-   $("#mainPanel").html(response)
-
-   $("#mainPanel").prepend(infoBars)
-   restyleData();
-  }
- });
-}
-
 function searchString(queryObj) {
   var result = make_name_verbose(queryObj["field"]);
   if (queryObj["sub-field"]){
@@ -649,28 +612,6 @@ function searchString(queryObj) {
   return result;
 }
 
-//Back button tooltip
-$(document).on("mouseover", ".search_backButton", function() {
-  if (currentQuery.length){
-    // Get the previously used filters.
-    var filter_string = "Filters:"
-
-    for (var i in currentQuery.slice(0,-1)) {
-      filter_string += "<br/>" + (parseInt(i)+1) + ".) ";
-      filter_string += searchString(currentQuery[i]);
-    }
-
-    // Add the new filter.
-    filter_string += "<br/><div class=\"search_backText\">";
-    filter_string += parseInt(currentQuery.length)+".) ";
-    filter_string += searchString(currentQuery[currentQuery.length-1]);
-    filter_string += "</div>";
-
-    $(this).attr("title", filter_string);
-  } else {
-    $(this).attr("title", "Remove the last filter.");
-  }
-});
 
 //Filter button tooltip
 function get_atom_query() {
@@ -691,141 +632,6 @@ function get_atom_query() {
 
  return current_atom_query.replace(/ +/g, " ")
 }
-
-//Set the autocomplete box on reactants if needed.
-$(document).on("change", ".dropDownMenu[name=field]", function() {
- if ($(this).val()=="reactant"){
-  $(".autocomplete_reactant").autocomplete("enable")
-  $("#searchValue").addClass("autocomplete_reactant")
- } else {
-  $(".autocomplete_reactant").autocomplete("disable")
- }
-});
-
-$(document).on("change", "#searchForm .dropDownMenu[name=field]", function(){
-  var val = $(this).find("option:selected").val();
-
-  if (val==="reactant") {
-    $("#searchForm label[for=subField]").show();
-  } else {
-    $("#searchForm label[for=subField]").hide();
-  }
-});
-
-$(document).on("mouseover", ".search_filterButton", function() {
- //Get the previously used filters.
-  var filter_string = "Filters:"
-
-  for (var i in currentQuery.slice(0,-1)) {
-    filter_string += "<br/>" + (parseInt(i)+1) + ".) ";
-    filter_string += searchString(currentQuery[i]);
-  }
-
- //If "Atoms" search is active.
- if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
-  current_atom_query = get_atom_query();
-
-  //Add the new filter.
-  filter_string += "<br/><div class=\"search_filterText\">"+(parseInt(currentQuery.length)+1)+".) "+"Atoms: "+current_atom_query+"</div>"
-
- } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
-   field = $(".dropDownMenu[name=field] option:selected").val();
-   if ($("label[for='subField']").is(":visible")) {
-     subField = $(".dropDownMenu[name=subField] option:selected").val();
-   } else {
-     subField = "";
-   }
-   match = $(".dropDownMenu[name=match] option:selected").val();
-   value = $("#searchValue").val();
-   //Add the new filter.
-   filter_string += "<br/><div class=\"search_filterText\">";
-   filter_string += (parseInt(currentQuery.length)+1)+".) ";
-   filter_string += make_name_verbose(field);
-   if (subField) {
-     filter_string += " " + make_name_verbose(subField);
-   }
-   filter_string += ": \""+value+"\" ("+match+")</div>";
- } else {
-  filter_string = "Enter a query!";
- }
- //Apply the title.
- $(this).attr("title", filter_string);
-});
-
-$(document).on("click", ".search_filterButton", function() {
- if ($(".dataGroup").length != 0) {
-  //If "Atoms" search is active.
-  if ($(".ui-state-active").children().html()=="Atoms" && $(".PT_selected").length>0) {
-   field = "atoms";
-   value = get_atom_query().replace(/,/g,"");
-   //Make sure the query was not already searched.
-   if (currentQuery){
-    for (var i in currentQuery) {
-     if (currentQuery[i]["field"] == field && currentQuery[i]["value"] == value) {
-      showRibbon("Already queried!", neutralColor,"#sidePanel", true);
-      return false //Don't continue if query is already present.
-     }
-    }
-   }
-   showRibbon("Searching!", goodColor,"#sidePanel", true);
-
-   currentQuery.push({
-    "field":field,
-    "match":"exact",
-    "value":value,
-   });
-   sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
-
-  //If "Fields" search is active.
-  } else if ($(".ui-state-active").children().html()=="Fields" && $("#searchValue").val()){
-   field = $(".dropDownMenu[name=field] option:selected").val()
-   subField = "";
-   if ($("label[for='subField']").is(":visible")) {
-     subField = $(".dropDownMenu[name=subField] option:selected").val()
-   }
-   match = $(".dropDownMenu[name=match] option:selected").val()
-   value = $("#searchValue").val()
-   //Make sure the query was not already searched.
-   if (currentQuery){
-    for (var i in currentQuery) {
-     if (currentQuery[i]["field"] == field && currentQuery[i]["value"] == value) {
-      showRibbon("Already queried!", neutralColor,"#sidePanel", true);
-      return false //Don't continue if query is already present.
-     }
-    }
-   }
-   showRibbon("Searching!", goodColor,"#sidePanel", true);
-
-   currentQuery.push({
-    "field":field,
-    "sub-field":subField,
-    "match":match,
-    "value":value,
-   });
-   sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
-  } else {
-   showRibbon("Nothing entered!", badColor, $("#sidePanel"), true);
-  }
- } else {
-  showRibbon("No data to filter!", badColor, $("#sidePanel"), true);
- }
-});
-
-$(document).on("click", ".search_backButton", function() {
- if (currentQuery.length){
-  currentQuery.pop();
-  showRibbon("Removing last filter!", goodColor,"#sidePanel", true);
-  sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
- } else {
-  showRibbon("No filters present!", badColor, $("#sidePanel"), true);
- }
-});
-
-$(document).on("click", ".search_clearButton", function() {
- currentQuery = Array();
- sendSearchQuery(currentQuery, $(this).closest("form").attr("action"));
- showRibbon("Filters emptied", goodColor,"#sidePanel", true);
-});
 
  //################   Autocompleting Search   ####################### //###
 window.setReactantAutoComplete = function() {

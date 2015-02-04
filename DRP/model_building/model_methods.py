@@ -159,6 +159,18 @@ def sample_model_quality(data, name, clock=False, debug=False):
   return evaluate_results(samplePredictions)
 
 
+def generate_weka_model(model_name, model_filepath):
+  from DRP.settings import TMP_DIR
+  import subprocess
+
+  # Start a new process to actually construct the model from the training data.
+  move = "cd {};".format(django_path)
+  command = "bash DRP/model_building/make_model.sh"
+  arff_filepath = TMP_DIR + model_name + "_train.arff"
+
+  args = " {} {}".format(model_filepath, arff_filepath)
+  subprocess.check_output(move+command+args, shell=True)
+
 
 
 def evaluate_model(rows,keys):
@@ -238,8 +250,9 @@ def dict_to_list(calcDict, listFields):
   return [calcDict[field] for field in listFields]
 
 # Creates ARFF contents given data and writes the contents to a file ('name').
-def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
+def make_arff(name, data, clock=False, raw_list_input=False, debug=True, response="outcome"):
   import time
+  from DRP.fileFunctions import createDirIfNecessary
 
   if clock and debug: tStart = time.clock()
 
@@ -247,7 +260,9 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
   failed = 0
   i = 0
 
+  createDirIfNecessary(TMP_DIR)
   fullFileName = TMP_DIR+name+".arff"
+
   if debug: print "Constructing: {}".format(fullFileName)
 
   with open(fullFileName, "w") as f:
@@ -263,7 +278,8 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True):
           row = datum
         else:
           calcDict = datum.get_calculations_dict()
-          calcDict["outcome"] = max(1, int(calcDict["outcome"]))
+          if response=="outcome":
+            calcDict[response] = max(1, int(calcDict[response]))
           row = dict_to_list(calcDict, arff_fields)
 
         #Write the row to the ARFF file.

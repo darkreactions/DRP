@@ -20,3 +20,5 @@ class Lab_Member(models.Model):
     return self.user.username
 
 
+def get_users(lab):
+  return User.objects.filter(profile__lab_group=lab).order_by("first_name")

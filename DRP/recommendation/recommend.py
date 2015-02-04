@@ -1,4 +1,4 @@
-import uuid,json,subprocess,math
+import json,math
 
 
 import os, sys
@@ -9,8 +9,8 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 import DRP.model_building.model_methods as mm
-from DRP.model_building import parse_rxn, load_cg, clean2arff
-from DRP.settings import TMP_DIR, MODEL_DIR, BASE_DIR
+from DRP.model_building import parse_rxn, load_cg
+from DRP.settings import TMP_DIR
 
 
 # Variable Setup
@@ -120,7 +120,7 @@ def explore(combination, explored,similarity_map, range_map):
 	total_sims = similarity_lengths[0]*similarity_lengths[1]*similarity_lengths[2]
 	recs = []
 	import multiprocessing
-	pool = multiprocessingPool(processes=5)
+	pool = multiprocessing.Pool(processes=5)
 	recs = pool.map(do_get_evaluate_result, args_yielder(similarity_map, combination, explored))
 	return recs
 
@@ -188,7 +188,7 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
 
     return gathered
 
-  import time, csv, random
+  import time, random
   from DRP.fileFunctions import createDirIfNecessary
 
   debug_samples = False
@@ -251,49 +251,7 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
 
     return result
 
-  """
-  if "EMPTY" in raw_results:
-    return  (0.0, get_rxn_row(0, new_combination, range_map))
-  else:
-    results = raw_results.split()
-    print results
-    result = [results[0], results[1].split(",")]
-  """
 
-  # I can reverse engineer it!
-  """
-  if len(result) != 2:
-    raise Exception("Failed to check output: {0}".format(str(result)))
-  conf, rxn_idxes = result
-  """
-
-  #rxns = [get_rxn_row(int(rxn_idx) - 1, new_combination, range_map) for rxn_idx in rxn_idxes]
-  # -1 because weka isn't zero indexed.
-
-  #rxn = choose_center(rxns, new_combination)
-
-  #cmd = "sh /home/drp/research/chemml-research-streamlined/scripts/test_prior.sh {0}".format(name)
-
-  #result = subprocess.check_output(cmd, shell=True)
-
-  """
-  #if float(result) < 0.2:
-  #  print "prior does not like"
-  #  return (-1.0, [])
-
-  return (float(conf),rxn)
-  """
-
-
-
-
-
-def get_rxn_row(cnt, new_combination, range_map):
-	ranges = range_map[new_combination[0]], range_map[new_combination[1]], range_map[new_combination[2]], range_map['water']
-	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))]
-	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
-	(mass1, mass2, mass3, mass4, pH, time, temp) = calculate_indices(i, len_list)
-	return [mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp]]
 
 
 def generate_rows_molar(reactants, mass_map, var_ranges):
@@ -343,24 +301,6 @@ def generate_rows_molar(reactants, mass_map, var_ranges):
               for water in molarRange("water", mass_map, amt_steps):
                 yield fillRow(reactants, mol1, mol2, mol3, water, pH, time, temp)
 
-
-def generate_rows(new_combination, range_map):
-	from operator import mul
-	ranges = [range_map['water']]
-	for comb in new_combination:
-		if comb in range_map:
-			ranges.append(range_map[comb])
-		else:
-			range_map[comb] = [0.001, 0.005]
-			ranges.append( [0.001, 0.005] )
-
-	# Ranges:[(0.0064, 32.995), (0.0151, 0.94), (0.1671, 2.2604), [0.001, 0.005]]
-	mass_base = [(ranges[i][0], (ranges[i][1] - ranges[i][0])/float(steps)) for i in range(len(ranges))]
-	len_list = [steps, steps, steps, steps, len(pH_range), len(time_range), len(temp_range)]
-	#print reduce(mul, len_list)
-	for i in range(reduce(mul, len_list)):
-		(mass1, mass2, mass3, mass4, pH, time, temp) = calculate_indices(i, len_list)
-		yield make_row(new_combination, mass_base[0][0] + mass_base[0][1]*mass1, mass_base[1][0] + mass_base[1][1]*mass2, mass_base[2][0] + mass_base[2][1]*mass3, mass_base[3][1]*mass4 +mass_base[3][0], pH_range[pH], time_range[time], temp_range[temp])
 
 
 def make_row(combination, m1, m2, m3, m4, pH, time, temp):
@@ -448,7 +388,7 @@ def build_sim_list(name, cg_targets, count=5):
 			sim = DataStructs.FingerprintSimilarity(fp, fp2)
 			sims.append( (compound, sim, sim) )
 
-		except Exception as e:
+		except:
 			continue
 
 	if len(sims) == 0:
@@ -515,7 +455,7 @@ def build_baseline(lab_group=None, debug=False):
 		for i in idxes:
 			try:
 				float(r[i+1])
-			except Exception as e:
+			except:
 				continue # There is no mass (ie: the mass is empty)
 			if r[i] not in r_m:
 				r_m[r[i]] = set()
@@ -530,7 +470,6 @@ def build_baseline(lab_group=None, debug=False):
             return False
 
 	from DRP.models import get_good_rxns
-        from DRP.model_building.rxn_calculator import headers
         from DRP.models import get_model_field_names
 
         headers = ["ref"]+get_model_field_names(model="Recommendation") # Must add "ref" since "ref" is not included as a default model_field.
@@ -578,7 +517,7 @@ def build_baseline(lab_group=None, debug=False):
                         minimum = masses[int(len(masses)*radius)]
                         maximum = masses[int(len(masses)*(1-radius))]
                         range_map[k] = (minimum, maximum)
-		except Exception as e:
+		except:
 			range_map[k] = (0,0)
 
 	for q_key in quality_map:
@@ -819,7 +758,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
   scores = scores[:total_to_score]
 
   if debug: print "Rescoring..."
-  rescored = []
+
   for s in scores:
     try:
 

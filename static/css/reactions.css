@@ -33,6 +33,18 @@
 }
 .dataField:after, .dataField:before { font-weight:bold; }
 
+.recommendation { background-color: #B5D0E8; }
+.savedRecommendation { background-color:#99FF99; }
+
+.badRecommendation {
+ background-color:#FF8080;
+ border-left-color: red;
+}
+
+.hiddenRecommendation {
+ opacity:0.3;
+}
+
 
   /* ############### DIMENSION-SPECIFIC ############################# */
 .opaqueDatum { opacity:0.5; }
