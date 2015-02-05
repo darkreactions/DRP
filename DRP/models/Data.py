@@ -161,7 +161,7 @@ class Data(models.Model):
 
 
   def to_list(self):
-    from DRP.retrievalFunctions import get_model_field_names
+    from methods import get_model_field_names
     all_fields = get_model_field_names(model="Data", collect_ignored = True)
     fields_to_exclude = {"lab_group", "atoms"}
     headings = [field for field in all_fields if field not in fields_to_exclude]

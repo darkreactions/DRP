@@ -192,7 +192,7 @@ def is_salt(fragment_smiles):
 
 
 def atoms_from_smiles(smiles):
-    mols = Chem.MolFromSmiles(smiles,sanitize=False)
+    mols = Chem.MolFromSmiles(str(smiles),sanitize=False)
     if mols == None:
         return []
     atoms = mols.GetAtoms()
