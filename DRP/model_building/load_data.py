@@ -112,35 +112,17 @@ def convert_to_feature_vectors(raw, cg = None, ml_convert = None, keys = None):
   return transformed
 
 
-# Given a list/queryset of Data entries, constructs a sorted list
-#   of the non-empty and non-water entries to use as a "key".
-from DRP.data_config import CONFIG
-def create_reactant_keys(data, headers=None, reactants=None):
-  # If `headers` exist, use them to index each element of `data`.
+def create_reactant_keys(data, headers):
+  from DRP.model_building.rxn_calculator import reactant_fields
 
+  # Variable Setup
+  blacklist = {"water", "", -1}
   keys = []
-  reactantBlacklist = {"water", "", -1} #Should all be lowercase.
 
-  if not reactants:
-    reactants = ["reactant_fk_{}".format(i) for i in CONFIG.reactant_range()]
-
-  for entry in data:
-    key = []
-    for header in reactants:
-      if headers:
-        reactant_index = headers.index(header)
-        reactant = entry[reactant_index]
-      else:
-        #Get each reactant and add it to the key if it is not blacklisted.
-        reactant = getattr(entry, header)
-
-      if reactant not in reactantBlacklist:
-        key.append(reactant)
-
-    # Sort the keys so that two Data entries with similar reactants but
-    #   a different order thus have the same key.
-    key.sort()
-    keys.append( tuple(key) ) #Use a tuple since hashable and can check containment.
+  reactant_indexes = [i for i, h in enumerate(headers) if h in reactant_fields]
+  for row in data:
+    reactants = [row[i] for i in reactant_indexes if row[i] not in blacklist]
+    keys.append( tuple(sorted(reactants)) )
 
   return keys
 

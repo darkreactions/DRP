@@ -27,39 +27,63 @@ class ModelStats(models.Model):
   tool = models.CharField("Tool", max_length=128, default="random forest")
   response = models.CharField("Response", max_length=128, default="outcome")
 
-  def construct(self, filename, data, description="", library="sklearn",
-                                     tool="random forest",
+  def construct(self, title, data, description="", library="sklearn",
+                                     tool="random forest", response="outcome",
+                                     filename="",
                                      usable=True, active=True,
-                                     splitter=None):
+                                     preprocessor=None,
+                                     splitter=None, debug=False):
 
-    from DRP.model_building.load_data import test_split
 
+    # Use a custom splitter-function if specified.
     if not splitter:
-      splitter = test_split
+      from DRP.model_building.load_data import test_split as splitter
 
-    self.filename = filename
+    # If specified, pre-process the data.
+    if preprocessor:
+      data = preprocessor(data)
+
+    if not filename:
+      filename = "".join(filter(str.isalnum, title))
+
+    # Save the description and fields of this model.
+    self.title = title
     self.description = description
     self.usable = usable
     self.active = active
     self.library = library
+    self.response = response
     self.tool = tool
+    self.filename = filename
 
     headers = data.pop(0)
+
+    if self.response not in headers:
+      raise Exception("Response '{}' not found in headers!".format(self.response))
+
     self.set_headers(headers)
 
-
     # Split the data.
+    if debug: print "Splitting data..."
+
     split_data = splitter(data, headers=headers)
 
+    if debug:
+      print "Split Sizes: {}".format(
+                               {key:len(val) for key, val in split_data.items()}
+                              )
+
     # Train/fit the model
+    if debug: print "Training model..."
     self._train_model(split_data["train"])
 
     # Set the confusion table for a given data-set.
+    if debug: print "Testing model..."
     self._test_model(split_data["train"])
 
-    # TODO: Datetime
     self.save()
 
+    if debug: print "Complete!"
     return self
 
 
@@ -109,6 +133,12 @@ class ModelStats(models.Model):
       raise Exception("Illegal model library specified! Aborting file-load!")
 
   def _make_confusion_table(self, guesses, responses):
+    if len(guesses)==0 or len(responses)==0:
+      raise Exception("Either `guesses` or `responses` is empty!")
+
+    if not (len(guesses)==len(responses)):
+      raise Exception("`guesses` and `responses` are of different sizes!")
+
     possible_vals = sorted(list(set(guesses)))
     cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
 
@@ -125,6 +155,10 @@ class ModelStats(models.Model):
       self._make_arff("test", data)
 
     guesses = self.predict_bulk(predictors)
+
+    if self.library =="sklearn":
+      guesses = map(int, guesses)
+      responses = map(int, responses)
 
     cm = self._make_confusion_table(guesses, responses)
     self.set_confusion_table(cm)
@@ -144,7 +178,7 @@ class ModelStats(models.Model):
       subprocess.check_output(move+command+args, shell=True)
 
     elif self.library=="sklearn":
-      model = get_model(self.tool)
+      model, description = get_model(self.tool)
       predictors, responses = self._separate_response(data)
       model.fit(predictors, responses)
 
@@ -293,6 +327,7 @@ class ModelStats(models.Model):
       matrix.append(row)
 
     return matrix
+
 
   def count(self, normalize=False, guesses=None, actuals=None, ranges=True, false_guess=False):
     # Variable Setup
@@ -454,12 +489,13 @@ class ModelStats(models.Model):
     else:
       print "\t[ Confusion Matrix Unavailable ]"
 
+
   def print_model_info(self, prefix="\t"):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
     print prefix+"Created: {}".format(self.datetime)
     print prefix+"Filename: '{}'".format(self.filename)
-    print prefix+"Headers: '{}'".format(len(self.load_headers()))
+    print prefix+"Headers: '{}'".format(len(self.get_headers()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):
@@ -484,10 +520,3 @@ class ModelStats(models.Model):
 
 
 
-
-
-"""
-Current copy-paste test.
-from DRP.model_building.rxn_calculator import *; from DRP.models import *; ModelStats().construct("name", [headers, [u'jho210.1', u'ammonium metavanadate', 0.1198, 0.001, u'Selenium dioxide', 0.6782, 0.0061, -1.0, -1.0, -1.0, u'1,4-diazabicyclo[2.2.2]octane', 0.1197, 0.0011, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 90.0, 48.0, u'yes', 2.0, u'no', 2.0, 1.0, 0.0, 3.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.0196, 0.0029, -0.0, -0.0059, 6.6875, 0.0225, u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'yes', u'yes', u'no', u'no', u'yes', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'yes', u'no', 941.0, 195.0, 2.55, 568.0, 373.0, 171.0, 650.9, 50.6, 1.63, 350.7, 300.1, 103.0, 795.95, 122.8, 2.09, 459.35, 336.55, 137.0, 782.6218, 99.3328, 2.0387, 446.3156, 334.5703, 132.714, 5.7515, 1.1919, 0.0156, 3.4717, 2.2798, 0.6295, 0.6666, 0.0518, 0.0017, 0.3592, 0.3073, 0.1751, 3.209, 0.6218, 0.0086, 1.9154, 1.2936, 0.4023, 1.958, 0.2485, 0.0051, 1.1166, 0.8371, 0.332, 1.0, 3.0]])
-
-"""
