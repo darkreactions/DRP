@@ -7,7 +7,7 @@ class ModelStats(models.Model):
 
   # Model Statistics
   confusion_table = models.TextField(default="{}")
-  used_fields = models.TextField(default="[]")
+  headers = models.TextField(default="[]")
   correct_vals = models.CharField("Correct Values", max_length=100,
                                   default="[\"3\",\"4\"]")
 
@@ -19,7 +19,7 @@ class ModelStats(models.Model):
   filename = models.CharField("Filename", max_length=128,
                                           default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
-  datetime = models.DateTimeField()
+  datetime = models.DateTimeField(auto_now_add=True, blank=True)
   usable = models.BooleanField("Usable", default=True)
 
   # Available model types.
@@ -27,42 +27,63 @@ class ModelStats(models.Model):
   tool = models.CharField("Tool", max_length=128, default="random forest")
   response = models.CharField("Response", max_length=128, default="outcome")
 
-  def construct(self, filename, data, description="", library="sklearn",
-                                     tool="random forest",
+  def construct(self, title, data, description="", library="sklearn",
+                                     tool="random forest", response="outcome",
+                                     filename="",
                                      usable=True, active=True,
-                                     splitter=None):
+                                     preprocessor=None,
+                                     splitter=None, debug=False):
 
-    from DRP.model_building.load_data import test_split
-    import json
 
+    # Use a custom splitter-function if specified.
     if not splitter:
-      splitter = test_split
+      from DRP.model_building.load_data import test_split as splitter
 
-    headers = data.pop(0)
-    self.used_fields = json.dumps(headers)
+    # If specified, pre-process the data.
+    if preprocessor:
+      data = preprocessor(data)
 
-    self.filename = filename
+    if not filename:
+      filename = "".join(filter(str.isalnum, title))
+
+    # Save the description and fields of this model.
+    self.title = title
     self.description = description
     self.usable = usable
     self.active = active
     self.library = library
+    self.response = response
     self.tool = tool
+    self.filename = filename
+
+    headers = data.pop(0)
+
+    if self.response not in headers:
+      raise Exception("Response '{}' not found in headers!".format(self.response))
+
+    self.set_headers(headers)
 
     # Split the data.
-    split_data = splitter(data)
+    if debug: print "Splitting data..."
 
-    # Construct any necessary ARFF files
-    #  and do any other such data preparation.
-    self._prepare_data(split_data)
+    split_data = splitter(data, headers=headers)
+
+    if debug:
+      print "Split Sizes: {}".format(
+                               {key:len(val) for key, val in split_data.items()}
+                              )
 
     # Train/fit the model
+    if debug: print "Training model..."
     self._train_model(split_data["train"])
 
     # Set the confusion table for a given data-set.
+    if debug: print "Testing model..."
     self._test_model(split_data["train"])
 
     self.save()
 
+    if debug: print "Complete!"
     return self
 
 
@@ -70,10 +91,14 @@ class ModelStats(models.Model):
     from DRP.settings import MODEL_DIR
     return MODEL_DIR + self.filename
 
+  def get_headers(self):
+    import json
+    return json.loads(self.headers)
+
+
 
   def _separate_response(self, data):
     headers = self.get_headers()
-    print headers
     resp = headers.index(self.response)
 
     preds = [[elem for i, elem in enumerate(row) if i!=resp] for row in data]
@@ -83,10 +108,12 @@ class ModelStats(models.Model):
 
 
   def predict_bulk(self, predictors):
-    guesses = []
-
     if self.library == "weka":
-      pass #TODO
+      # TODO: Construct the predictors ARFF
+      # TODO: Parse the result file
+      # TODO: Return the results.
+      pass
+
 
     elif self.library == "sklearn":
       model = self._load_model()
@@ -94,8 +121,6 @@ class ModelStats(models.Model):
 
     else:
       raise Exception("Unknown library specified in predict_bulk!")
-
-    return guesses
 
 
   def _load_model(self):
@@ -107,13 +132,12 @@ class ModelStats(models.Model):
     else:
       raise Exception("Illegal model library specified! Aborting file-load!")
 
-  def _test_model(self, data):
-    if self.library=="weka":
-      pass
+  def _make_confusion_table(self, guesses, responses):
+    if len(guesses)==0 or len(responses)==0:
+      raise Exception("Either `guesses` or `responses` is empty!")
 
-    elif self.library=="sklearn":
-      predictors, responses = self._separate_response(data)
-      guesses = self.predict(predictors)
+    if not (len(guesses)==len(responses)):
+      raise Exception("`guesses` and `responses` are of different sizes!")
 
     possible_vals = sorted(list(set(guesses)))
     cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
@@ -121,32 +145,51 @@ class ModelStats(models.Model):
     for guess, response in zip(guesses, responses):
       cm[response][guess] += 1
 
+    return cm
+
+
+  def _test_model(self, data):
+    predictors, responses = self._separate_response(data)
+
+    if self.library=="weka":
+      self._make_arff("test", data)
+
+    guesses = self.predict_bulk(predictors)
+
+    if self.library =="sklearn":
+      guesses = map(int, guesses)
+      responses = map(int, responses)
+
+    cm = self._make_confusion_table(guesses, responses)
     self.set_confusion_table(cm)
 
 
   def _train_model(self, data):
     from DRP.model_building.sklearn_methods import get_model
+    from DRP.fileFunctions import get_django_path
     from sklearn.externals import joblib
+    import subprocess
 
     if self.library=="weka":
-      #TODO
-      pass
+      arff_name = self._make_arff("train", data)
+      move = "cd {}; ".format(get_django_path())
+      command = "bash DRP/model_building/make_model.sh "
+      args = "{} {}".format(self.get_path(), arff_name)
+      subprocess.check_output(move+command+args, shell=True)
 
     elif self.library=="sklearn":
-      model = get_model(self.tool)
+      model, description = get_model(self.tool)
       predictors, responses = self._separate_response(data)
       model.fit(predictors, responses)
 
       # Save the model to a file.
       joblib.dump(model, self.get_path())
 
-
-  def get_headers(self):
-    import json
-    return json.loads(self.used_fields)
+    else:
+      raise Exception("_train_model called with illegal library!")
 
 
-  def _make_arff(self, key, data, headers):
+  def _make_arff(self, key, data):
     from DRP.fileFunctions import createDirIfNecessary
     from DRP.model_building.model_methods import preface
     from DRP.settings import TMP_DIR
@@ -155,23 +198,12 @@ class ModelStats(models.Model):
     full_name = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
 
     with open(full_name, "w") as f:
-      f.write(preface(headers) + "\n")
+      header_content = preface(self.get_headers())
+      f.write(header_content + "\n")
       for row in data:
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
-
-  def _prepare_data(self, split_data):
-    headers = self.get_headers()
-
-    if self.library=="weka":
-      for key, data in split_data.items():
-        self._make_arff(key, data, headers)
-
-    elif self.library=="sklearn":
-      pass
-
-    else:
-      raise Exception("Unknown library `{}` specified.".format(self.library))
+    return full_name
 
 
   def set_correct_vals(self, correct_list):
@@ -213,14 +245,10 @@ class ModelStats(models.Model):
     return usable
 
 
-  def set_used_fields(self, field_list):
+  def set_headers(self, field_list):
     import json
-    self.used_fields = json.dumps(field_list)
+    self.headers = json.dumps(field_list)
     self.save()
-
-  def load_used_fields(self):
-    import json
-    return json.loads(self.used_fields)
 
 
   def set_confusion_table(self, conf_json):
@@ -299,6 +327,7 @@ class ModelStats(models.Model):
       matrix.append(row)
 
     return matrix
+
 
   def count(self, normalize=False, guesses=None, actuals=None, ranges=True, false_guess=False):
     # Variable Setup
@@ -460,12 +489,13 @@ class ModelStats(models.Model):
     else:
       print "\t[ Confusion Matrix Unavailable ]"
 
+
   def print_model_info(self, prefix="\t"):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
     print prefix+"Created: {}".format(self.datetime)
     print prefix+"Filename: '{}'".format(self.filename)
-    print prefix+"Used Fields: '{}'".format(len(self.load_used_fields()))
+    print prefix+"Headers: '{}'".format(len(self.get_headers()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):
@@ -490,10 +520,3 @@ class ModelStats(models.Model):
 
 
 
-
-
-"""
-Current copy-paste test.
-from DRP.model_building.rxn_calculator import *; from DRP.models import *; ModelStats().construct("name", [headers, [u'jho210.1', u'ammonium metavanadate', 0.1198, 0.001, u'Selenium dioxide', 0.6782, 0.0061, -1.0, -1.0, -1.0, u'1,4-diazabicyclo[2.2.2]octane', 0.1197, 0.0011, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 90.0, 48.0, u'yes', 2.0, u'no', 2.0, 1.0, 0.0, 3.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, 12.65, 34.07, 34.07, 3.56, 6.62, 27.24, 3.36, 6.58, 13.36, 13.25, 211.8, 211.8, 211.8, 0.0, 194.04, 17.76, 8.88, 0.0, 2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.0196, 0.0029, -0.0, -0.0059, 6.6875, 0.0225, u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'yes', u'yes', u'no', u'no', u'yes', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'no', u'no', u'no', u'no', u'no', u'no', u'no', u'yes', u'yes', u'no', 941.0, 195.0, 2.55, 568.0, 373.0, 171.0, 650.9, 50.6, 1.63, 350.7, 300.1, 103.0, 795.95, 122.8, 2.09, 459.35, 336.55, 137.0, 782.6218, 99.3328, 2.0387, 446.3156, 334.5703, 132.714, 5.7515, 1.1919, 0.0156, 3.4717, 2.2798, 0.6295, 0.6666, 0.0518, 0.0017, 0.3592, 0.3073, 0.1751, 3.209, 0.6218, 0.0086, 1.9154, 1.2936, 0.4023, 1.958, 0.2485, 0.0051, 1.1166, 0.8371, 0.332, 1.0, 3.0]])
-
-"""

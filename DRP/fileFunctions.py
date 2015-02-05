@@ -48,3 +48,9 @@ def writeExpandedCSV(filename, debug=True, include_lab_info=True):
 def createDirIfNecessary(directory):
   if not os.path.exists(directory):
     os.makedirs(directory)
+
+def get_django_path():
+  import os
+  full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+  django_path = full_path[:full_path.rfind("/DRP/")]
+  return django_path

@@ -7,7 +7,6 @@ if django_path not in sys.path:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.model_building import rxn_calculator
-import traceback
 
 def fixmL(t):
     o = ''

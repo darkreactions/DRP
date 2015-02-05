@@ -209,6 +209,14 @@ atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O',
           'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs',
           'Cr', 'Cu']
 
+reactant_fields = {
+  "XXXinorg1",
+  "XXXinorg2",
+  "XXXorg1",
+  "XXXorg2",
+  "XXXoxlike1",
+}
+
 orig_headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
             'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
             'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles',
