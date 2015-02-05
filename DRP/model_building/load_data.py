@@ -120,6 +120,9 @@ def create_reactant_keys(data, headers):
   keys = []
 
   reactant_indexes = [i for i, h in enumerate(headers) if h in reactant_fields]
+  if not reactant_indexes:
+    raise Exception("No `reactant_indexes` specified. Splitting aborted.")
+
   for row in data:
     reactants = [row[i] for i in reactant_indexes if row[i] not in blacklist]
     keys.append( tuple(sorted(reactants)) )

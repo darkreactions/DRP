@@ -9,10 +9,9 @@ if django_path not in sys.path:
 
 def main():
   def _cleaner(data):
-    cut = 20
-
-    headers = data.pop(0)[cut:]
-    matrix = [datum.get_calculations_list()[cut:] for datum in data]
+    headers = data.pop(0)
+    print data[0]
+    matrix = [datum.get_calculations_list() for datum in data]
 
     mapper = {
       "yes":1,
@@ -24,17 +23,26 @@ def main():
 
     return [headers] + matrix
 
+
+  def _stripper(splits, headers):
+    cut = 20
+    headers = headers[cut:]
+    new_splits = {key:[row[cut:] for row in data] for key, data in splits.items()}
+    return (new_splits, headers)
+
+
   from DRP.models import ModelStats
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
 
-  subset_size = 200
+  subset_size = 100
   data = [headers] + list(get_valid_data()[:subset_size])
 
   model = ModelStats()
   model.construct("Pipeline Test",
                   data,
                   preprocessor=_cleaner,
+                  postprocessor=_stripper,
                   debug=True)
 
   model.summary()

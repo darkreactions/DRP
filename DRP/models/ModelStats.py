@@ -31,7 +31,7 @@ class ModelStats(models.Model):
                                      tool="random forest", response="outcome",
                                      filename="",
                                      usable=True, active=True,
-                                     preprocessor=None,
+                                     preprocessor=None, postprocessor=None,
                                      splitter=None, debug=False):
 
 
@@ -41,7 +41,9 @@ class ModelStats(models.Model):
 
     # If specified, pre-process the data.
     if preprocessor:
+      if debug: print "Pre-processing..."
       data = preprocessor(data)
+
 
     if not filename:
       filename = "".join(filter(str.isalnum, title))
@@ -58,28 +60,35 @@ class ModelStats(models.Model):
 
     headers = data.pop(0)
 
-    if self.response not in headers:
-      raise Exception("Response '{}' not found in headers!".format(self.response))
-
-    self.set_headers(headers)
-
     # Split the data.
     if debug: print "Splitting data..."
-
     split_data = splitter(data, headers=headers)
 
     if debug:
-      print "Split Sizes: {}".format(
-                               {key:len(val) for key, val in split_data.items()}
-                              )
+      splits = {key:len(val) for key, val in split_data.items()}
+      print "Splits: {}".format(splits)
+
+
+    # If specified, post-process the data after splitting.
+    if postprocessor:
+      if debug: print "Post-processing..."
+      split_data, headers = postprocessor(split_data, headers)
+
+
+    # Save the headers now that the data has successfully been split.
+    if self.response not in headers:
+      raise Exception("Response '{}' not found in headers!".format(self.response))
+    self.set_headers(headers)
+
 
     # Train/fit the model
     if debug: print "Training model..."
     self._train_model(split_data["train"])
 
+
     # Set the confusion table for a given data-set.
     if debug: print "Testing model..."
-    self._test_model(split_data["train"])
+    self._test_model(split_data["test"])
 
     self.save()
 
@@ -98,6 +107,9 @@ class ModelStats(models.Model):
 
 
   def _separate_response(self, data):
+    if len(data)==0:
+      raise Exception("`data` cannot be empty!")
+
     headers = self.get_headers()
     resp = headers.index(self.response)
 
@@ -139,7 +151,7 @@ class ModelStats(models.Model):
     if not (len(guesses)==len(responses)):
       raise Exception("`guesses` and `responses` are of different sizes!")
 
-    possible_vals = sorted(list(set(guesses)))
+    possible_vals = sorted(list(set(guesses+responses)))
     cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
 
     for guess, response in zip(guesses, responses):
