@@ -52,9 +52,16 @@ class Recommendation(models.Model):
 
   #Foreign Key field
   calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True,
-                                   on_delete=models.SET_NULL)
 
-    
+                                   on_delete=models.SET_NULL)
+  #Give Recommendation a 'to_list' attribute
+  def to_list(self):
+    from DRP.retrievalFunctions import get_model_field_names
+    all_fields = get_model_field_names(model="Data", collect_ignored = True)
+    fields_to_exclude = {"lab_group", "atoms"}
+    headings = [field for field in all_fields if field not in fields_to_exclude]
+
+    return [getattr(self,field) for field in headings]
 
 def gather_all_nonsense_recs():
   from DRP.model_building.load_data import create_expanded_datum_field_list
