@@ -62,7 +62,6 @@ class Recommendation(models.Model):
     all_fields = get_model_field_names(model="Recommendation", collect_ignored = True)
     fields_to_exclude = {"lab_group", "atoms"}
     headings = [field for field in all_fields if field not in fields_to_exclude]
-    print headings 
     result = [getattr(self,field) for field in headings]
     for i, elem in enumerate(result):
        if type(elem) == CompoundEntry:
@@ -70,33 +69,32 @@ class Recommendation(models.Model):
     return result  
       
 
-def gather_all_nonsense_recs():
-  from DRP.model_building.load_data import create_expanded_datum_field_list
-  from DRP.model_building.rxn_calculator import headers
-  from DRP.model_building.load_cg import get_cg
-  from DRP.model_building.load_data import get_abbrev_map
+  def gather_all_nonsense_recs(self):
+    from DRP.model_building.load_data import create_expanded_datum_field_list
+    from DRP.model_building.rxn_calculator import headers
+    from DRP.model_building.load_cg import get_cg
+    from DRP.model_building.load_data import get_abbrev_map
 
-  nonsense = Recommendation.objects.filter(nonsense=True)
-  nonsense_list = []
-  cg = get_cg()
-  abbrev_map = get_abbrev_map()
-  errors = 0
-  outcome = headers.index("outcome")
+    nonsense = Recommendation.objects.filter(nonsense=True)
+    nonsense_list = []
+    cg = get_cg()
+    abbrev_map = get_abbrev_map()
+    errors = 0
+    outcome = headers.index("outcome")
 
-  for i, elem in enumerate(nonsense):
-    try:
-      expanded_row = create_expanded_datum_field_list(elem, preloaded_cg=cg,
-                                                            preloaded_abbrev_map=abbrev_map) 
-      expanded_row[outcome] = 0
-      nonsense_list.append(expanded_row)
-    except Exception as e:
-      print e 
-      errors += 1
+    for i, elem in enumerate(nonsense):
+      try:
+        expanded_row = create_expanded_datum_field_list(elem, preloaded_cg=cg, preloaded_abbrev_map=abbrev_map) 
+        expanded_row[outcome] = 0
+        nonsense_list.append(expanded_row)
+      except Exception as e:
+        #print e  
+        errors += 1
     #newDataCalc = DataCalc(contents=json.dumps(nonsenseDict))
     #newDataCalc.save() 
     #elem.calculations = newDataCalc
-  print "Failed {} of {}".format(errors, nonsense.count())
-  return nonsense_list 
+    print "Failed {} of {}".format(errors, nonsense.count())
+    return nonsense_list 
 
       
 
