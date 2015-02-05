@@ -9,7 +9,7 @@ from ModelStats import ModelStats
 from Data import Data
 from CompoundEntry import CompoundEntry
 from DataCalc import DataCalc
-
+from DRP.retrievalFunctions import get_model_field_names
 class Recommendation(models.Model):
   class Meta:
     app_label = "DRP"
@@ -56,7 +56,6 @@ class Recommendation(models.Model):
                                    on_delete=models.SET_NULL)
   #Give Recommendation a 'to_list' attribute
   def to_list(self):
-    from DRP.retrievalFunctions import get_model_field_names
     all_fields = get_model_field_names(model="Data", collect_ignored = True)
     fields_to_exclude = {"lab_group", "atoms"}
     headings = [field for field in all_fields if field not in fields_to_exclude]
