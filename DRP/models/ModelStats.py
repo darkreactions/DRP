@@ -7,7 +7,7 @@ class ModelStats(models.Model):
 
   # Model Statistics
   confusion_table = models.TextField(default="{}")
-  used_fields = models.TextField(default="[]")
+  headers = models.TextField(default="[]")
   correct_vals = models.CharField("Correct Values", max_length=100,
                                   default="[\"3\",\"4\"]")
 
@@ -19,7 +19,7 @@ class ModelStats(models.Model):
   filename = models.CharField("Filename", max_length=128,
                                           default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
-  datetime = models.DateTimeField()
+  datetime = models.DateTimeField(auto_now_add=True, blank=True)
   usable = models.BooleanField("Usable", default=True)
 
   # Available model types.
@@ -33,13 +33,9 @@ class ModelStats(models.Model):
                                      splitter=None):
 
     from DRP.model_building.load_data import test_split
-    import json
 
     if not splitter:
       splitter = test_split
-
-    headers = data.pop(0)
-    self.used_fields = json.dumps(headers)
 
     self.filename = filename
     self.description = description
@@ -48,12 +44,12 @@ class ModelStats(models.Model):
     self.library = library
     self.tool = tool
 
-    # Split the data.
-    split_data = splitter(data)
+    headers = data.pop(0)
+    self.set_headers(headers)
 
-    # Construct any necessary ARFF files
-    #  and do any other such data preparation.
-    self._prepare_data(split_data)
+
+    # Split the data.
+    split_data = splitter(data, headers=headers)
 
     # Train/fit the model
     self._train_model(split_data["train"])
@@ -61,6 +57,7 @@ class ModelStats(models.Model):
     # Set the confusion table for a given data-set.
     self._test_model(split_data["train"])
 
+    # TODO: Datetime
     self.save()
 
     return self
@@ -70,10 +67,14 @@ class ModelStats(models.Model):
     from DRP.settings import MODEL_DIR
     return MODEL_DIR + self.filename
 
+  def get_headers(self):
+    import json
+    return json.loads(self.headers)
+
+
 
   def _separate_response(self, data):
     headers = self.get_headers()
-    print headers
     resp = headers.index(self.response)
 
     preds = [[elem for i, elem in enumerate(row) if i!=resp] for row in data]
@@ -83,10 +84,12 @@ class ModelStats(models.Model):
 
 
   def predict_bulk(self, predictors):
-    guesses = []
-
     if self.library == "weka":
-      pass #TODO
+      # TODO: Construct the predictors ARFF
+      # TODO: Parse the result file
+      # TODO: Return the results.
+      pass
+
 
     elif self.library == "sklearn":
       model = self._load_model()
@@ -94,8 +97,6 @@ class ModelStats(models.Model):
 
     else:
       raise Exception("Unknown library specified in predict_bulk!")
-
-    return guesses
 
 
   def _load_model(self):
@@ -107,30 +108,40 @@ class ModelStats(models.Model):
     else:
       raise Exception("Illegal model library specified! Aborting file-load!")
 
-  def _test_model(self, data):
-    if self.library=="weka":
-      pass
-
-    elif self.library=="sklearn":
-      predictors, responses = self._separate_response(data)
-      guesses = self.predict(predictors)
-
+  def _make_confusion_table(self, guesses, responses):
     possible_vals = sorted(list(set(guesses)))
     cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
 
     for guess, response in zip(guesses, responses):
       cm[response][guess] += 1
 
+    return cm
+
+
+  def _test_model(self, data):
+    predictors, responses = self._separate_response(data)
+
+    if self.library=="weka":
+      self._make_arff("test", data)
+
+    guesses = self.predict_bulk(predictors)
+
+    cm = self._make_confusion_table(guesses, responses)
     self.set_confusion_table(cm)
 
 
   def _train_model(self, data):
     from DRP.model_building.sklearn_methods import get_model
+    from DRP.fileFunctions import get_django_path
     from sklearn.externals import joblib
+    import subprocess
 
     if self.library=="weka":
-      #TODO
-      pass
+      arff_name = self._make_arff("train", data)
+      move = "cd {}; ".format(get_django_path())
+      command = "bash DRP/model_building/make_model.sh "
+      args = "{} {}".format(self.get_path(), arff_name)
+      subprocess.check_output(move+command+args, shell=True)
 
     elif self.library=="sklearn":
       model = get_model(self.tool)
@@ -140,13 +151,11 @@ class ModelStats(models.Model):
       # Save the model to a file.
       joblib.dump(model, self.get_path())
 
-
-  def get_headers(self):
-    import json
-    return json.loads(self.used_fields)
+    else:
+      raise Exception("_train_model called with illegal library!")
 
 
-  def _make_arff(self, key, data, headers):
+  def _make_arff(self, key, data):
     from DRP.fileFunctions import createDirIfNecessary
     from DRP.model_building.model_methods import preface
     from DRP.settings import TMP_DIR
@@ -155,23 +164,12 @@ class ModelStats(models.Model):
     full_name = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
 
     with open(full_name, "w") as f:
-      f.write(preface(headers) + "\n")
+      header_content = preface(self.get_headers())
+      f.write(header_content + "\n")
       for row in data:
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
-
-  def _prepare_data(self, split_data):
-    headers = self.get_headers()
-
-    if self.library=="weka":
-      for key, data in split_data.items():
-        self._make_arff(key, data, headers)
-
-    elif self.library=="sklearn":
-      pass
-
-    else:
-      raise Exception("Unknown library `{}` specified.".format(self.library))
+    return full_name
 
 
   def set_correct_vals(self, correct_list):
@@ -213,14 +211,10 @@ class ModelStats(models.Model):
     return usable
 
 
-  def set_used_fields(self, field_list):
+  def set_headers(self, field_list):
     import json
-    self.used_fields = json.dumps(field_list)
+    self.headers = json.dumps(field_list)
     self.save()
-
-  def load_used_fields(self):
-    import json
-    return json.loads(self.used_fields)
 
 
   def set_confusion_table(self, conf_json):
@@ -465,7 +459,7 @@ class ModelStats(models.Model):
     print prefix+"Description: '{}'".format(self.description)
     print prefix+"Created: {}".format(self.datetime)
     print prefix+"Filename: '{}'".format(self.filename)
-    print prefix+"Used Fields: '{}'".format(len(self.load_used_fields()))
+    print prefix+"Headers: '{}'".format(len(self.load_headers()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):

@@ -122,7 +122,7 @@ def create_reactant_keys(data, headers=None, reactants=None):
   reactantBlacklist = {"water", "", -1} #Should all be lowercase.
 
   if not reactants:
-    reactants = ["reactant_{}".format(i) for i in CONFIG.reactant_range()]
+    reactants = ["reactant_fk_{}".format(i) for i in CONFIG.reactant_range()]
 
   for entry in data:
     key = []
@@ -132,7 +132,7 @@ def create_reactant_keys(data, headers=None, reactants=None):
         reactant = entry[reactant_index]
       else:
         #Get each reactant and add it to the key if it is not blacklisted.
-        reactant = getattr(entry, headers)
+        reactant = getattr(entry, header)
 
       if reactant not in reactantBlacklist:
         key.append(reactant)
@@ -161,7 +161,6 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
 		ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
 
 	raw = load(lab_group)
-        headers = raw.pop(0)
 	transformed = []
 
 	triple_to_rxn_list = dict()
