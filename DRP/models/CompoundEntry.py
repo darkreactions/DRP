@@ -40,8 +40,8 @@ class CompoundEntry(models.Model):
     if error and not fail_soft:
       raise Exception(error)
 
-
-    mols = Chem.MolFromSmiles(self.smiles,sanitize=False)
+    print "I made it" 
+    mols = Chem.MolFromSmiles(str(self.smiles),sanitize=False)
     if mols == None:
       return []
 
@@ -55,14 +55,14 @@ class CompoundEntry(models.Model):
     return [atom.GetSymbol() for atom in mols.GetAtoms()]
 
   def create_CG_calcs_if_needed(self):
-    from CGCalculator import CGCalculator
+    from DRP.CGCalculator import CGCalculator
     from DRP.data_config import CONFIG
     import time, json
-
+    from DRP.fileFunctions import createDirIfNecessary
     #Variable Setup
     jchem_path =  CONFIG.jchem_path
     sdf_path = "tmp"
-
+    createDirIfNecessary(sdf_path) 
     #Only Organics that have smiles may have calculations.
     if self.compound_type not in {"Org", "Inorg"} or not self.smiles:
       return
@@ -72,7 +72,7 @@ class CompoundEntry(models.Model):
       cgc = CG_calculations.objects.filter(smiles=self.smiles)[0]
     except:
       #Calculate properties for the CGEntry
-      sdf_filename = str(int(time.time())) + filter(str.isalnum, self.compound)
+      sdf_filename = str(int(time.time())) + "".join(filter(str.isalnum, str(self.compound)))
       #TODO: Speed this up? This is dreadfully slow.
       props = CGCalculator(self.compound, sdf_filename, self.smiles, self.compound_type, jchem_path, sdf_path).get_properties()
       props = json.dumps(props)

@@ -54,7 +54,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None,
                             attempt_failed = True, verbose=False):
 
   from DRP.validation import clean_compound
-  from DRP.models import create_CG_calcs_if_needed, CompoundEntry
+  from DRP.models import CompoundEntry
 
   #Variable Setup
   success = 0
@@ -75,11 +75,11 @@ def perform_CG_calculations(only_missing=True, lab_group=None,
         if i%5==0: print "... {}.".format(i)
 
       try:
-        entry.compound = clean_compound(entry.compound)
-        calc = create_CG_calcs_if_needed(entry.compound, entry.smiles, entry.compound_type)
-        entry.calculations = calc
-      except:
+        entry.create_CG_calcs_if_needed()
+      
+      except Exception as e:
         entry.calculations_failed = True
+        print e
 
       entry.save
       success += 1

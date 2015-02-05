@@ -9,10 +9,13 @@ from ModelStats import ModelStats
 from Data import Data
 from CompoundEntry import CompoundEntry
 from DataCalc import DataCalc
-from DRP.retrievalFunctions import get_model_field_names
+from methods import get_model_field_names
 class Recommendation(models.Model):
   class Meta:
     app_label = "DRP"
+
+  #Giving Rec objects a ref field  
+  ref = models.CharField("Reference", max_length=30, unique=False, default="")
 
   #Reactant Fields
   for i in CONFIG.reactant_range():
@@ -54,13 +57,18 @@ class Recommendation(models.Model):
   calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True,
 
                                    on_delete=models.SET_NULL)
-  #Give Recommendation a 'to_list' attribute
+    #Give Recommendation a 'to_list' attribute
   def to_list(self):
-    all_fields = get_model_field_names(model="Data", collect_ignored = True)
+    all_fields = get_model_field_names(model="Recommendation", collect_ignored = True)
     fields_to_exclude = {"lab_group", "atoms"}
     headings = [field for field in all_fields if field not in fields_to_exclude]
-
-    return [getattr(self,field) for field in headings]
+    print headings 
+    result = [getattr(self,field) for field in headings]
+    for i, elem in enumerate(result):
+       if type(elem) == CompoundEntry:
+         result[i] = elem.abbrev 
+    return result  
+      
 
 def gather_all_nonsense_recs():
   from DRP.model_building.load_data import create_expanded_datum_field_list
@@ -69,17 +77,26 @@ def gather_all_nonsense_recs():
   from DRP.model_building.load_data import get_abbrev_map
 
   nonsense = Recommendation.objects.filter(nonsense=True)
+  nonsense_list = []
   cg = get_cg()
   abbrev_map = get_abbrev_map()
+  errors = 0
+  outcome = headers.index("outcome")
 
   for i, elem in enumerate(nonsense):
-    nonsenseObjectList = create_expanded_datum_field_list(elem, preloaded_cg=cg,preloaded_abbrev_map=abbrev_map) 
-    nonsenseDict = {key:_make_float(val) for key, al in zip(headers, nonsenseObjectListi)} 
-    nonsenseDict["outcome"] = 0
-    newDataCalc = DataCalc(contents=json.dumps(nonsenseDict))
-    newDataCalc.save() 
-    elem.calculations = newDataCalc
-  return nonsense 
+    try:
+      expanded_row = create_expanded_datum_field_list(elem, preloaded_cg=cg,
+                                                            preloaded_abbrev_map=abbrev_map) 
+      expanded_row[outcome] = 0
+      nonsense_list.append(expanded_row)
+    except Exception as e:
+      print e 
+      errors += 1
+    #newDataCalc = DataCalc(contents=json.dumps(nonsenseDict))
+    #newDataCalc.save() 
+    #elem.calculations = newDataCalc
+  print "Failed {} of {}".format(errors, nonsense.count())
+  return nonsense_list 
 
       
 
