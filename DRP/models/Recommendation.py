@@ -59,8 +59,8 @@ class Recommendation(models.Model):
 def gather_all_nonsense_recs():
   from DRP.model_building.load_data import create_expanded_datum_field_list
   from DRP.model_building.rxn_calculator import headers
-  from model_building.load_cg import get_cg
-  from model_building.load_data import get_abbrev_map
+  from DRP.model_building.load_cg import get_cg
+  from DRP.model_building.load_data import get_abbrev_map
 
   nonsense = Recommendation.objects.filter(nonsense=True)
   cg = get_cg()
