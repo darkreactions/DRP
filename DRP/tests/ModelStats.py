@@ -10,7 +10,6 @@ if django_path not in sys.path:
 def main():
   def _cleaner(data):
     headers = data.pop(0)
-    print data[0]
     matrix = [datum.get_calculations_list() for datum in data]
 
     mapper = {
@@ -41,6 +40,7 @@ def main():
   model = ModelStats()
   model.construct("Pipeline Test",
                   data,
+                  force = True,
                   preprocessor=_cleaner,
                   postprocessor=_stripper,
                   debug=True)

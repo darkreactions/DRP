@@ -29,24 +29,31 @@ class ModelStats(models.Model):
 
   def construct(self, title, data, description="", library="sklearn",
                                      tool="random forest", response="outcome",
-                                     filename="",
+                                     filename="", force=False,
                                      usable=True, active=True,
                                      preprocessor=None, postprocessor=None,
                                      splitter=None, debug=False):
 
+    from DRP.fileFunctions import file_exists
 
     # Use a custom splitter-function if specified.
     if not splitter:
       from DRP.model_building.load_data import test_split as splitter
 
-    # If specified, pre-process the data.
-    if preprocessor:
-      if debug: print "Pre-processing..."
-      data = preprocessor(data)
-
-
+    # Make sure we can actually write the model file.
     if not filename:
       filename = "".join(filter(str.isalnum, title))
+    filename += "__{}__{}".format(library, tool)
+    self.filename = filename
+
+    # Don't overwrite models unless "force=True" is specified.
+    if file_exists(self.get_path()) and not force:
+      message = "Model '{}' already exists: use 'force=True'".format(self.get_path())
+      raise Exception(message)
+
+    if force and debug:
+      print "Forcing overwrite: {}".format(self.get_path())
+
 
     # Save the description and fields of this model.
     self.title = title
@@ -58,12 +65,16 @@ class ModelStats(models.Model):
     self.tool = tool
     self.filename = filename
 
+    # If specified, pre-process the data.
+    if preprocessor:
+      if debug: print "Pre-processing..."
+      data = preprocessor(data)
+
     headers = data.pop(0)
 
     # Split the data.
     if debug: print "Splitting data..."
     split_data = splitter(data, headers=headers)
-
     if debug:
       splits = {key:len(val) for key, val in split_data.items()}
       print "Splits: {}".format(splits)
@@ -74,10 +85,10 @@ class ModelStats(models.Model):
       if debug: print "Post-processing..."
       split_data, headers = postprocessor(split_data, headers)
 
-
     # Save the headers now that the data has successfully been split.
     if self.response not in headers:
       raise Exception("Response '{}' not found in headers!".format(self.response))
+
     self.set_headers(headers)
 
 
