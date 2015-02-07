@@ -33,7 +33,7 @@ def get_user_license_agreement(request):
 
  return render(request, 'user_license_form.html', {
   "license_changed": license_changed,
-  "license_file": CONFIG.license_file,
+  "license_file": CONFIG.license_url(),
   "license_date": CONFIG.license_date,
  })
 

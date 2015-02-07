@@ -13,7 +13,7 @@ strptime = datetime.datetime.strptime
 class ConfigManager(object):
   def __init__(self):
     from DRP.fileFunctions import file_exists
-    from DRP.settings import LICENSE_DIR, LIBRARY_DIR
+    from DRP.settings import LIBRARY_DIR
 
     validate_config = True
 
@@ -35,7 +35,7 @@ class ConfigManager(object):
     # Licensing/legal Setup
     self.raw_license_date = "2014-01-20 01:00:00.000000"
     self.license_date = strptime(self.raw_license_date, "%Y-%m-%d %X.%f")
-    self.license_file = LICENSE_DIR + "/01_20_14.pdf"
+    self.license_file = "01_20_14.pdf"
 
     # Path Setup
     self.jchem_path = LIBRARY_DIR+"/ChemAxon/JChem/bin"
@@ -44,13 +44,21 @@ class ConfigManager(object):
 
     if validate_config:
       # Make sure all the hard-coded paths are valid.
-      for path in [self.jchem_path, self.weka_path, self.license_file]:
+      for path in [self.jchem_path, self.weka_path, self._license_path()]:
         if not file_exists(path):
           raise Exception("Path `{}` not found!".format(path))
 
 
   def reactant_range(self):
     return xrange(1,self.num_reactants+1)
+
+  def _license_path(self):
+    from DRP.settings import LICENSE_DIR
+    return LICENSE_DIR + self.license_file
+
+  def license_url(self):
+    from DRP.settings import LICENSE_URL
+    return LICENSE_URL + self.license_file
 
 
 CONFIG = ConfigManager()

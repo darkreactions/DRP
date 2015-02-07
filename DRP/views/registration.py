@@ -1,13 +1,11 @@
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
  # # #  Registration Views   # # # #
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
 
 #Necessary Imports:
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from DRP.retrievalFunctions import *
-from DRP.emailFunctions import *
 
 from DRP.forms import UserProfileForm, UserForm, LabForm
 from django.contrib import auth
@@ -17,14 +15,16 @@ def registration_prompt(request):
  return render(request, "registration_cell.html", {})
 
 def user_registration(request):
+ from DRP.emailFunctions import email_user
+ from DRP.models import get_Lab_Group
  if request.method == "POST":
   form = [UserForm(data = request.POST), UserProfileForm(data = request.POST)]
   if form[0].is_valid() and form[1].is_valid():
    #Check that the access_code query for the Lab_Group is correct.
-   lab_group = form[1].cleaned_data["lab_group"]
-   access_code = Lab_Group.objects.filter(lab_title=lab_group)[0].access_code
+   raw_lab_group = form[1].cleaned_data["lab_group"]
+   lab_group = get_Lab_Group(raw_lab_group)
 
-   if form[1].cleaned_data["access_code"] == access_code:
+   if form[1].cleaned_data["access_code"] == lab_group.access_code:
     #Create the user to be associated with the profile.
     new_user = form[0].save()
     #Save the profile
@@ -53,12 +53,12 @@ def user_registration(request):
  })
 
 def lab_registration(request):
+ from DRP.emailFunctions import email_lab, alert_about_new_lab
  if request.method=="POST":
   form = LabForm(data = request.POST)
   if form.is_valid():
    lab_group = form.save()
-   access_code = lab_group.access_code
-   
+
    #Send a "confirmation" email to the new lab email.
    email_body = "Thank you for joining the Dark Reaction Project!\n\nPlease continue by creating a \"user\" for your lab. Simply...\n\t1.) Keep this \"access code\" for your lab in a safe place: {}\n\t2.) Click \"Register\" and create a user using the access code above.\n\t3.) Start uploading data!\n\nWe wish you all the best,\nThe Dark Reaction Project Team".format(lab_group.access_code)
 
@@ -67,7 +67,7 @@ def lab_registration(request):
    #Send the DRP Admins an email about the new Lab Registration.
    #TODO:Remove this when we scale to unmanageable quantities of labs.
    alert_about_new_lab(lab_group)
- 
+
    return HttpResponse("<p>Registration Successful! Please check your email.</p>")
  else:
   form = LabForm()
