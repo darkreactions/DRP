@@ -40,6 +40,7 @@ def main():
                     postprocessor=_stripper,
                     debug=True)
     model.summary()
+    model.delete()
 
   def weka_test(data):
     model = ModelStats()
@@ -52,6 +53,7 @@ def main():
                     tool="svc",
                     debug=True)
     model.summary()
+    model.delete()
 
   from DRP.models import ModelStats
   from DRP.retrievalFunctions import get_valid_data
@@ -66,7 +68,8 @@ def main():
   for function in tests:
     try:
       function(data)
-    except:
+    except Exception as e:
+      print "ERROR: {}".format(e)
       errors += 1
 
   print "______"*10
