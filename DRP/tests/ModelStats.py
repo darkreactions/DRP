@@ -29,24 +29,48 @@ def main():
     new_splits = {key:[row[cut:] for row in data] for key, data in splits.items()}
     return (new_splits, headers)
 
+  def sklearn_test(data):
+    model = ModelStats()
+    model.construct("Pipeline Test",
+                    data,
+                    force = True,
+                    tool="random forest",
+                    library="sklearn",
+                    preprocessor=_cleaner,
+                    postprocessor=_stripper,
+                    debug=True)
+    model.summary()
+
+  def weka_test(data):
+    model = ModelStats()
+    model.construct("Pipeline Test",
+                    data,
+                    force = True,
+                    preprocessor=_cleaner,
+                    postprocessor=_stripper,
+                    library="weka",
+                    tool="svc",
+                    debug=True)
+    model.summary()
 
   from DRP.models import ModelStats
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
 
-  subset_size = 100
+  tests = [sklearn_test, weka_test]
+  errors = 0
+
+  subset_size = 50
   data = [headers] + list(get_valid_data()[:subset_size])
 
-  model = ModelStats()
-  model.construct("Pipeline Test",
-                  data,
-                  force = True,
-                  preprocessor=_cleaner,
-                  postprocessor=_stripper,
-                  debug=True)
+  for function in tests:
+    try:
+      function(data)
+    except:
+      errors += 1
 
-  model.summary()
-
+  print "______"*10
+  print "{}/{} successes".format(len(tests)-errors, len(tests))
 
 
 if __name__=="__main__":
