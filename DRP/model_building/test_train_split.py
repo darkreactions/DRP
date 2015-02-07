@@ -35,7 +35,6 @@ def create_key_in_test_map(data_list):
 	test_total = 0
 	max_test = int(TEST_PERCENT*float(number_of_reactions))
 
-	i = 0
 	for key in key_list:
 		if test_total < max_test and key_count_map[key] <= MAX_PARTITION_SIZE:
 			key_in_test[key] = True
@@ -50,7 +49,6 @@ def build_key_in_test_map(keys): #TODO: Expand to allow custom "splits"
   key_in_test = dict()
   test_total = 0
   max_test = int(TEST_PERCENT*len(keys))
-  i = 0
   for key in key_list:
     if test_total < max_test and key_counts[key] <= MAX_PARTITION_SIZE:
       key_in_test[key] = True

@@ -65,15 +65,18 @@ class ModelStats(models.Model):
     self.tool = tool
     self.filename = filename
 
+    # Don't let the original data be modified in any way.
+    data = data[:]
+
     # If specified, pre-process the data.
     if preprocessor:
-      if debug: print "Pre-processing..."
+      if debug: print "Pre-processing... ({})".format(preprocessor.__name__)
       data = preprocessor(data)
 
     headers = data.pop(0)
 
     # Split the data.
-    if debug: print "Splitting data..."
+    if debug: print "Splitting data... ({})".format(splitter.__name__)
     split_data = splitter(data, headers=headers)
     if debug:
       splits = {key:len(val) for key, val in split_data.items()}
@@ -82,7 +85,7 @@ class ModelStats(models.Model):
 
     # If specified, post-process the data after splitting.
     if postprocessor:
-      if debug: print "Post-processing..."
+      if debug: print "Post-processing... ({})".format(postprocessor.__name__)
       split_data, headers = postprocessor(split_data, headers)
 
     # Save the headers now that the data has successfully been split.
@@ -534,7 +537,7 @@ class ModelStats(models.Model):
 
 
   def __unicode__(self):
-    return "Model {} (Active:{}; Usable:{})".format(self.datetime,
+    return "Model {} (Active:{}; Usable:{})".format(self.title,
                                                     self.active,
                                                     self.usable)
 

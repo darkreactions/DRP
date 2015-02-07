@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
-export CLASSPATH=$CLASSPATH:/home/drp/weka/weka.jar
+
+# Get the weka path specified by data_config.
+WEKA_PATH=`python DRP/data_config.py weka_path`
+
+# Add that path to the classpath.
+export CLASSPATH=$CLASSPATH:$WEKA_PATH
 
