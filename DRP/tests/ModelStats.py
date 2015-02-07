@@ -62,11 +62,14 @@ def main():
   tests = [sklearn_test, weka_test]
   errors = 0
 
+  print "__ Preparing Tests _________"
+
   subset_size = 50
   data = [headers] + list(get_valid_data()[:subset_size])
 
-  for function in tests:
+  for i, function in enumerate(tests):
     try:
+      print "\n__ Test {} _______________".format(i)
       function(data)
     except Exception as e:
       print "ERROR: {}".format(e)
