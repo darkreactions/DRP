@@ -62,8 +62,11 @@ def filter_data(data, queries):
     "reactant":"abbrev",
     "user":"username",
   }
+  op_map = {
+    "reactant":operator.and_,
+  }
 
-  ors = []
+  Qs = []
 
   for field, val_list in queries.items():
     # Read the "field.subfield.match" syntax correctly.
@@ -94,20 +97,26 @@ def filter_data(data, queries):
 
     for val in val_list:
       if field in multifields:
+        multifield_query = []
+
         for i in CONFIG.reactant_range():
           actual_field = "{}_{}{}".format(cleaned, i, cleaned_suffix)
-          query.append( Q(**{actual_field:val}) )
+          multifield_query.append( Q(**{actual_field:val}) )
+
+        query.append( reduce(operator.or_, multifield_query) )
 
       else:
         actual_field = "{}{}".format(cleaned, cleaned_suffix)
         query.append( Q(**{actual_field:val}) )
 
     if query:
-      query = reduce(operator.or_, query)
-      ors.append(query)
+      op = op_map[field] if field in op_map else operator.or_
+      query = reduce(op, query)
+      print query
+      Qs.append(query)
 
-  if ors:
-    ands = reduce(operator.and_, ors)
+  if queries:
+    ands = reduce(operator.and_, Qs)
     data = data.filter(ands)
 
   return data

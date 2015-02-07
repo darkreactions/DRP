@@ -54,7 +54,7 @@ def database(request, page_request=None, model="database"):
   data_tups = pagify_data(data, page)
 
   if not data_tups and page>1:
-    new_url = "/database/"
+    new_url = "/database/"+current_query
     return redirect(new_url)
 
   # Return a package of page information and data.
