@@ -22,6 +22,14 @@ def main():
 
     return [headers] + matrix
 
+  def _cleaner_classifier(data):
+    data = _cleaner(data)
+    headers = data.pop(0)
+    class_fields = {"outcome", "purity", "leak", "slowCool"}
+    matrix = [[str(e) if h in class_fields else e for h, e in zip(headers, row)]
+              for row in data]
+    return [headers] + matrix
+
 
   def _stripper(splits, headers):
     cut = 20
@@ -47,7 +55,7 @@ def main():
     model.construct("Pipeline Test",
                     data,
                     force = True,
-                    preprocessor=_cleaner,
+                    preprocessor=_cleaner_classifier,
                     postprocessor=_stripper,
                     library="weka",
                     tool="svc",
@@ -64,7 +72,7 @@ def main():
 
   print "__ Preparing Tests _________"
 
-  subset_size = 50
+  subset_size = 100
   data = [headers] + list(get_valid_data()[:subset_size])
 
   for i, function in enumerate(tests):

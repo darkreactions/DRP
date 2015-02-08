@@ -377,21 +377,21 @@ def get_arff_headers(zero_one=False):
 	return res
 """
 
-def gen_specials(zero_one=False):
+def gen_specials():
+	import rxn_calculator
+
 	specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",
 		"leak": "{yes,no}"}
 
-	if zero_one:
-		specials["outcome"] = "{1,2}"
-	import rxn_calculator
 	for bool_field in rxn_calculator.atomsz + rxn_calculator.bools:
 		specials[bool_field] = "{yes,no}"
+
 	return specials
 
 
-def preface(headers, outcome = True, prefix = "", zero_one = False):
-    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system" + prefix
-    specials = gen_specials(zero_one)
+def preface(headers, data):
+    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
+    specials = gen_specials()
     for header in headers:
         if header in specials.keys():
             res += "\n@ATTRIBUTE " + header + " " + specials[header]

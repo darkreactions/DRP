@@ -94,21 +94,28 @@ class ModelStats(models.Model):
 
     self.set_headers(headers)
 
+    # Get the temporary value-sets of each field.
+    self.val_map = self._get_val_map(split_data["all"])
 
     # Train/fit the model
     if debug: print "Training model..."
-    self._train_model(split_data["train"])
+    self._train_model(split_data["train"], debug=debug)
 
 
     # Set the confusion table for a given data-set.
     if debug: print "Testing model..."
-    self._test_model(split_data["test"])
+    self._test_model(split_data["test"], debug=debug)
 
     self.save()
 
     if debug: print "Complete!"
     return self
 
+
+  def _get_val_map(self, data):
+    fields = self.get_headers()
+    val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
+    return val_dict
 
   def get_path(self):
     from DRP.settings import MODEL_DIR
@@ -120,7 +127,11 @@ class ModelStats(models.Model):
 
 
 
-  def _separate_response(self, data):
+  def _strip_response(self, data):
+    """
+    Separates the predictors in a data matrix from the response.
+    """
+
     if len(data)==0:
       raise Exception("`data` cannot be empty!")
 
@@ -132,21 +143,58 @@ class ModelStats(models.Model):
 
     return preds, resps
 
+  def _read_weka_output(self, filepath):
+    def _is_number(elem):
+      try:
+        float(elem)
+        return True
+      except:
+        return False
 
-  def predict_bulk(self, predictors):
+    predicted_index = 2
+    with open(filepath) as f:
+      # Get the `raw_predictions` from the file, but ignore the headings/footings.
+      content = f.readlines()
+      raw_predictions = content[5:-1]
+
+      predictions = [entry.split()[predicted_index] for entry in raw_predictions]
+
+      # WEKA's predictions are in the format: "class_num:value".
+      # Note that class_num is arbitrary, thus we only need "value".
+      predictions = [prediction.split(":")[1] for prediction in predictions]
+
+      return predictions
+
+
+  def predict_bulk(self, predictors, debug=False):
+    from DRP.fileFunctions import get_django_path
+    import subprocess
+
     if self.library == "weka":
-      # TODO: Construct the predictors ARFF
-      # TODO: Parse the result file
-      # TODO: Return the results.
-      pass
+      arff_path = self._make_arff("test", predictors, debug=debug)
 
+      # Results path will be named *.out instead of *.arff.
+      results_path = "out".join(arff_path.rsplit("arff", 1))
+
+      move = "cd {};".format(get_django_path())
+      comm = "bash DRP/model_building/make_predictions.sh"
+      args = " {} {} {}".format(arff_path, self.get_path(), results_path)
+
+      subprocess.check_output(move+comm+args, shell=True)
+      predictions = self._read_weka_output(results_path)
 
     elif self.library == "sklearn":
       model = self._load_model()
-      return model.predict(predictors)
+      predictions = model.predict(predictors)
 
     else:
       raise Exception("Unknown library specified in predict_bulk!")
+
+
+    if self.library in {"sklearn", "weka"}:
+      predictions = map(int, map(float, predictions))
+
+    return predictions
 
 
   def _load_model(self):
@@ -157,6 +205,7 @@ class ModelStats(models.Model):
 
     else:
       raise Exception("Illegal model library specified! Aborting file-load!")
+
 
   def _make_confusion_table(self, guesses, responses):
     if len(guesses)==0 or len(responses)==0:
@@ -174,38 +223,47 @@ class ModelStats(models.Model):
     return cm
 
 
-  def _test_model(self, data):
-    predictors, responses = self._separate_response(data)
+  def _test_model(self, data, debug=False):
 
     if self.library=="weka":
-      self._make_arff("test", data)
+      predictors = data
+      index = self.get_headers().index(self.response)
+      responses = [row[index] for row in data]
 
-    guesses = self.predict_bulk(predictors)
+    else:
+      predictors, responses = self._strip_response(data)
 
-    if self.library =="sklearn":
-      guesses = map(int, guesses)
-      responses = map(int, responses)
+    guesses = self.predict_bulk(predictors, debug=debug)
+
+    if self.library in {"sklearn", "weka"}:
+      responses = map(int, map(float, responses))
 
     cm = self._make_confusion_table(guesses, responses)
     self.set_confusion_table(cm)
 
 
-  def _train_model(self, data):
+
+  def _train_model(self, data, debug=False):
     from DRP.model_building.sklearn_methods import get_model
     from DRP.fileFunctions import get_django_path
     from sklearn.externals import joblib
     import subprocess
 
     if self.library=="weka":
-      arff_name = self._make_arff("train", data)
+      if self.tool!="svc":
+        raise Exception("Only svc supported in WEKA currently.")
+
+      arff_name = self._make_arff("train", data, debug=debug)
+
       move = "cd {}; ".format(get_django_path())
       command = "bash DRP/model_building/make_model.sh "
       args = "{} {}".format(self.get_path(), arff_name)
-      subprocess.check_output(move+command+args, shell=True)
+      subprocess.check_output(move + command + args, shell=True,
+                                       stderr=subprocess.STDOUT)
 
     elif self.library=="sklearn":
       model, description = get_model(self.tool)
-      predictors, responses = self._separate_response(data)
+      predictors, responses = self._strip_response(data)
       model.fit(predictors, responses)
 
       # Save the model to a file.
@@ -214,21 +272,62 @@ class ModelStats(models.Model):
     else:
       raise Exception("_train_model called with illegal library!")
 
+  def _get_weka_value_map(self):
+    def _is_string(elem):
+      return type(elem)==str
 
-  def _make_arff(self, key, data):
+    val_dict = {}
+
+    for field, val_set in self.val_map.items():
+      if any(map(_is_string, val_set)):
+        if field in self.val_map:
+          val_set = self.val_map[field]
+
+        # EG: convert {"hello", 1, u"world"} to {hello,1,world}.
+        innards = ",".join(map(str,val_set)).replace("\"","")
+        val_dict[field] = "{"+innards+"}"
+
+      else:
+        val_dict[field] = "NUMERIC"
+
+    return val_dict
+
+  def _weka_header(self, data):
+    headers = self.get_headers()
+    value_map = self._get_weka_value_map()
+
+    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
+    for header in headers:
+        if header in value_map:
+            res += "\n@ATTRIBUTE " + header + " " + value_map[header]
+        else:
+            res += "\n@ATTRIBUTE " + header + " NUMERIC"
+    res += "\n\n@DATA\n"
+    return res
+
+
+  def _make_arff(self, key, data, debug=False):
+    """
+    Saves the data to an ARFF file.
+
+    Numeric values are given NUMERIC headings and non-numeric values
+    are treated as classes. Passing a value as a `str` will cause it to
+    be treated as a class (such as for "outcome").
+    """
+
     from DRP.fileFunctions import createDirIfNecessary
-    from DRP.model_building.model_methods import preface
     from DRP.settings import TMP_DIR
 
     createDirIfNecessary(TMP_DIR)
     full_name = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
 
     with open(full_name, "w") as f:
-      header_content = preface(self.get_headers())
+      header_content = self._weka_header(data)
       f.write(header_content + "\n")
       for row in data:
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
+    if debug: print "\tARFF: {}".format(full_name)
     return full_name
 
 
