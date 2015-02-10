@@ -19,7 +19,8 @@ class ModelStats(models.Model):
   filename = models.CharField("Filename", max_length=128,
                                           default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
-  datetime = models.DateTimeField(auto_now_add=True, blank=True)
+  start_time = models.DateTimeField(blank=True, null=True)
+  end_time = models.DateTimeField(blank=True, null=True)
   usable = models.BooleanField("Usable", default=True)
 
   # Available model types.
@@ -27,14 +28,17 @@ class ModelStats(models.Model):
   tool = models.CharField("Tool", max_length=128, default="random forest")
   response = models.CharField("Response", max_length=128, default="outcome")
 
+
+
   def construct(self, title, data, description="", library="sklearn",
                                      tool="random forest", response="outcome",
                                      filename="", force=False,
-                                     usable=True, active=True,
+                                     usable=True, active=False,
                                      preprocessor=None, postprocessor=None,
                                      splitter=None, debug=False):
 
     from DRP.fileFunctions import file_exists
+    import datetime
 
     # Use a custom splitter-function if specified.
     if not splitter:
@@ -51,9 +55,16 @@ class ModelStats(models.Model):
       message = "Model '{}' already exists: use 'force=True'".format(self.get_path())
       raise Exception(message)
 
-    if force and debug:
-      print "Forcing overwrite: {}".format(self.get_path())
+    if file_exists(self.get_path()) and force:
+      if debug:
+        print "Forcing file overwrite: {}".format(self.get_path())
 
+      # Disable any models that point to this file since they can no longer be used.
+      others = get_models_from_filename(self.filename)
+      others.update(usable = False)
+
+
+    self.start_time = datetime.datetime.now()
 
     # Save the description and fields of this model.
     self.title = title
@@ -67,6 +78,9 @@ class ModelStats(models.Model):
 
     # Don't let the original data be modified in any way.
     data = data[:]
+
+    if debug:
+      print "Starting generation of '{}' using '{}' on {} entries".format(self.tool, self.library, len(data))
 
     # If specified, pre-process the data.
     if preprocessor:
@@ -106,11 +120,15 @@ class ModelStats(models.Model):
     if debug: print "Testing model..."
     self._test_model(split_data["test"], debug=debug)
 
+    self.end_time = datetime.datetime.now()
     self.save()
 
-    if debug: print "Complete!"
+    if debug:
+      print "Complete! Took {} seconds.".format(self._construction_time())
     return self
 
+  def _construction_time(self):
+    return self.end_time-self.start_time
 
   def _get_val_map(self, data):
     fields = self.get_headers()
@@ -166,7 +184,7 @@ class ModelStats(models.Model):
       return predictions
 
 
-  def predict_bulk(self, predictors, debug=False):
+  def predict(self, predictors, debug=False):
     from DRP.fileFunctions import get_django_path
     import subprocess
 
@@ -188,7 +206,7 @@ class ModelStats(models.Model):
       predictions = model.predict(predictors)
 
     else:
-      raise Exception("Unknown library specified in predict_bulk!")
+      raise Exception("Unknown library specified in predict!")
 
 
     if self.library in {"sklearn", "weka"}:
@@ -233,7 +251,7 @@ class ModelStats(models.Model):
     else:
       predictors, responses = self._strip_response(data)
 
-    guesses = self.predict_bulk(predictors, debug=debug)
+    guesses = self.predict(predictors, debug=debug)
 
     if self.library in {"sklearn", "weka"}:
       responses = map(int, map(float, responses))
@@ -618,7 +636,7 @@ class ModelStats(models.Model):
   def print_model_info(self, prefix="\t"):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
-    print prefix+"Created: {}".format(self.datetime)
+    print prefix+"Created: {}".format(self.end_time)
     print prefix+"Filename: '{}'".format(self.filename)
     print prefix+"Headers: '{}'".format(len(self.get_headers()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
@@ -644,4 +662,7 @@ class ModelStats(models.Model):
     return self.__unicode__()
 
 
+
+def get_models_from_filename(filename):
+  return ModelStats.objects.filter(filename=filename)
 

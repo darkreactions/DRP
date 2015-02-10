@@ -1,7 +1,5 @@
 import subprocess
 import uuid
-import time
-import load_data
 import rxn_calculator
 
 import os, sys
@@ -12,7 +10,7 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.retrievalFunctions import get_valid_data
-from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
+from DRP.settings import MODEL_DIR, TMP_DIR
 
 POSITIVE = "4:4"
 INCORRECT = "+"
@@ -300,7 +298,6 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True, respons
 
 
 def make_predictions(target_file, model_location, debug=False):
-  import time
   results_location = "out".join(target_file.rsplit("arff", 1)) # Results file will be *.arff --> *.out
   move = "cd {};".format(django_path)
   comm = "bash DRP/model_building/make_predictions.sh"

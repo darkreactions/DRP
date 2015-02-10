@@ -8,6 +8,13 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
+def gen_model(title, descr, data=None, debug=False):
+  from DRP.models import ModelStats
+  model = ModelStats()
+  model.construct(title, data, descr=descr, active=False, debug=debug)
+  model.summary()
+  return model
+
 
 def build_previous_model(model_name, model_description, date, data=None, active=False):
   """

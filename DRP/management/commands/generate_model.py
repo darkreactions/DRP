@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from DRP.model_building.model_methods import gen_model
 
 class Command(BaseCommand):
