@@ -20,8 +20,7 @@ def main():
     Recommendation.gather_all_nonsense_recs()
      
   except Exception as e:
-    #print "ERROR: {}".format(e)
-    error = e 
+    print "ERROR: {}".format(e)
 
 if __name__=="__main__":
   main()

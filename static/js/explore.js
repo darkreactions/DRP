@@ -368,8 +368,8 @@ d3.json("/get_graph/", function(graph) {
 
     // Hide nodes on the initial zoom level.
     // Upon clicking a circleCluster zoom to that cluster and show the nodes again.
-    d3.selectAll(".nodeElements").style("visibility", "hidden")
-    d3.selectAll(".circleClusters1").style("visibility", "visible")
+    d3.selectAll(".nodeElements").style("visibility", "visible")
+    d3.selectAll(".circleClusters1").style("visibility", "hidden")
     d3.selectAll(".circleClusters2").style("visibility", "hidden")
 
     d3.selectAll(".circleClusters").on("click", function(d) {

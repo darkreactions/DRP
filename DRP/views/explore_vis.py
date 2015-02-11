@@ -200,6 +200,8 @@ def first_cluster(dictionary_of_all_nodes, singles):
 #Finding all nodes that are connected to each other and have both inorgs in common
 #Also, finding most common inorgs (single, not in pairs),
 def find_node_clusters(dictionary):
+  print len(dictionary) 
+  print len(dictionary[1]) 
   neighbors = []
   while len(dictionary) > 1:
     for element in dictionary:
