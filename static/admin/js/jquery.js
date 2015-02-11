@@ -778,7 +778,7 @@ function evalScript( i, elem ) {
 	if ( elem.src ) {
 		jQuery.ajax({
 			url: elem.src,
-			async: false,
+			async: true,
 			dataType: "script"
 		});
 	} else {

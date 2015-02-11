@@ -63,7 +63,7 @@ d3.json("/get_graph/", function(graph) {
   var firstCluster = d3.selectAll(".circleClusters1");
   var secondCluster = d3.selectAll(".circleClusters2");
   var tinyNodes = d3.selectAll(".nodeElements");
-
+/*DELETE...also delete dragger.js file!!
   //Here I am creating a zoom slider that will control the zoom level for the svg, and will also tie into which level of the cluster hierarchy is displayed
   var dragger = new Dragdealer('slider', {
       horizontal: false,
@@ -89,6 +89,7 @@ d3.json("/get_graph/", function(graph) {
           }
       }
   });
+*/
 
   var zoom = d3.behavior.zoom()
                 .scaleExtent([1/10, 2])

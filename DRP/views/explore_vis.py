@@ -77,9 +77,11 @@ def get_graph_data(request):
     print "vis_data exists"
     with open(path_to_vis_data_file, "r") as f:
       deserialized_data = json.load(f)
-
+    
     node_clusters = create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"])
+    print "node_clusters exists" 
     top_inorgs = grab_inorgs(votes)
+    print "to_inorgs exists" 
     firstCluster = first_cluster(node_clusters, top_inorgs)
     #Make sure that appending node_clusters on the end results in a correctly formatted list (something the javascript can take and use)...alternativley put into list and then concatenate
     response = deserialized_data + node_clusters
@@ -187,46 +189,47 @@ def first_cluster(dictionary_of_all_nodes, singles):
  neighbors = []
  nodedict = dictionary_of_all_nodes
  for i in xrange(len(singles)):
-    cluster = []
-    for j in xrange(len(nodedict)):
-        if nodedict[j]["inorg1"] == singles[i]:
-          cluster.append(nodedict[j])
-        elif "inorg2" in nodedict[j]:
-          if nodedict[j]["inorg2"] == singles[i]:
-            cluster.append(nodedict[j])
-    neighbors.append(cluster)
+  cluster = []
+  for j in xrange(len(nodedict)):
+   if nodedict[j]["inorg1"] == singles[i]:
+    cluster.append(nodedict[j])
+   elif "inorg2" in nodedict[j]:
+    if nodedict[j]["inorg2"] == singles[i]:
+     cluster.append(nodedict[j])
+  neighbors.append(cluster)
  return neighbors
 
 #Finding all nodes that are connected to each other and have both inorgs in common
 #Also, finding most common inorgs (single, not in pairs),
 def find_node_clusters(dictionary):
-  print len(dictionary) 
-  print len(dictionary[1]) 
   neighbors = []
+  print "making neighbors" 
   while len(dictionary) > 1:
+    print "into while"
     for element in dictionary:
+      "into first for loop" 
       cluster = []
       centerNode = dictionary.pop(0)
       for item in dictionary:
-   #     if check_inorgs(centerNode, item) == True:
+        if check_inorgs(centerNode, item) == True:
           if item["target"] == centerNode["source"]:
-	    cluster.append(item)
-	    dictionary.pop(dictionary.index(item))
-	  else:
-	    for entry in cluster:
+            cluster.append(item)
+            dictionary.pop(dictionary.index(item)) 
+          else:
+            for entry in cluster:
               if item["target"] == entry["source"]:
                 cluster.append(item)
-	        index = dictionary.index(item)
-	        dictionary.pop(index)
-	        item = dictionary[index]
-      for entry in cluster:
-        for item in dictionary:
-   	  if item["target"] == entry["source"] and check_inorgs(entry, item) == True:
-	    cluster.append(item)
-	    dictionary.remove(item)
-      cluster.append(centerNode)
-      neighbors.append(cluster)
+                dictionary.pop(dictionary.index(item))#this is where the item already doesn't exist (being removed earlier somehow??)  
+        else:
+          for entry in cluster:
+            for item in dictionary:
+   	          if item["target"] == entry["source"] and check_inorgs(entry, item) == True:
+	            cluster.append(item)
+	            dictionary.pop(dictionary.index(item)) 
+    cluster.append(centerNode)
+    neighbors.append(cluster)
   else:
+   print "here" 
    return neighbors
 
 def get_rid_of_single_item_clusters(cluster):
