@@ -44,6 +44,19 @@ def writeExpandedCSV(filename, debug=True, include_lab_info=True):
 
   if debug: print "Write complete!"
 
+
+def delete_tmp_file(filepath):
+  from DRP.settings import TMP_DIR
+
+  # Only allow file within the Django TMP directory to be deleted.
+  if not filepath.startswith(TMP_DIR):
+    raise Exception("Files outside of the `TMP_DIR` may not be deleted.")
+
+  if file_exists(filepath):
+    os.remove(filepath)
+
+
+
 def file_exists(filepath):
   return os.path.exists(filepath)
 

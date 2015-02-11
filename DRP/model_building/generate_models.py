@@ -17,23 +17,34 @@ def _default_preprocessor(data):
       return False
 
   def norm(elems):
+    import operator
     elems = map(float,elems)
-    minimum = min(elems)
-    maximum = max(elems)
-    diff = float(maximum-minimum)
+    avg = float(reduce(operator.add, elems))/len(elems)
 
-    return [(maximum-elem)/diff for elem in elems]
+    return [elem/avg for elem in elems]
 
   # Variable Setup
   normalize = True
-  response = "outcome"
 
   headers = data.pop(0)
-  resp_index = headers.index(response)
+
+  # Set outcomes of 0 to be 1.
+  outcome_index = headers.index("outcome")
+  outcomes = [int(row[outcome_index]) for row in data]
+  outcomes = [elem if elem>0 else 1 for elem in outcomes]
+  for i, outcome in enumerate(outcomes):
+    data[i][outcome_index] = str(outcome)
+
+  # Normalize everything except the categorized columns.
+  categories = [
+    "outcome", "purity"
+  ]
+
+  cat_indexes = {headers.index(cat) for cat in categories if cat in headers}
 
   if normalize:
-    cols = [[row[i] for row in data] for i, h in enumerate(headers)]
-    cols = [norm(col) if (all(map(is_num, col)) and i!=resp_index) else col
+    cols = [[unicode(row[i]) for row in data] for i, h in enumerate(headers)]
+    cols = [norm(col) if (all(map(is_num, col)) and i not in cat_indexes) else col
                     for i, col in enumerate(cols)]
     data = [[col[i] for col in cols] for i in xrange(len(data))]
 
@@ -52,6 +63,7 @@ def _default_postprocessor(splits, headers):
   "XXXtitle", "XXXinorg1", "XXXinorg2", "XXXinorg3",
   "XXXorg1", "XXXorg2", "XXXoxlike1"
   ]
+
   blacklist = {headers.index(field)
                  for field in blacklist_fields if field in headers}
 
@@ -104,7 +116,7 @@ def gen_model(title, description, data=None, debug=False, active=False):
                   postprocessor=_default_postprocessor,
                   splitter=splitter,
                   tool="svc",
-                  library="weka",
+                  library="sklearn",
                   debug=debug)
   model.summary()
 

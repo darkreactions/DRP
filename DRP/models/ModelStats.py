@@ -35,7 +35,9 @@ class ModelStats(models.Model):
                                      filename="", force=False,
                                      usable=True, active=False,
                                      preprocessor=None, postprocessor=None,
-                                     splitter=None, debug=False):
+                                     splitter=None,
+                                     clean_tmp=True,
+                                     debug=False):
     """
     Using the headers and rows specified in `data`, train and test a model.
 
@@ -133,12 +135,18 @@ class ModelStats(models.Model):
     self.end_time = datetime.datetime.now()
     self.save()
 
+    if clean_tmp:
+      self._delete_any_arffs()
+
     if debug:
       print "Complete! Took {} seconds.".format(self._construction_time())
+
     return self
+
 
   def _construction_time(self):
     return self.end_time-self.start_time
+
 
   def _get_val_map(self, data):
     fields = self.get_headers()
@@ -321,7 +329,7 @@ class ModelStats(models.Model):
 
   def _get_weka_value_map(self):
     def _is_string(elem):
-      return type(elem)==str
+      return type(elem)==str or type(elem)==unicode
 
     val_dict = {}
 
@@ -344,13 +352,21 @@ class ModelStats(models.Model):
     value_map = self._get_weka_value_map()
 
     res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
+
     for header in headers:
-        if header in value_map:
-            res += "\n@ATTRIBUTE " + header + " " + value_map[header]
-        else:
-            res += "\n@ATTRIBUTE " + header + " NUMERIC"
+      res += "\n@ATTRIBUTE " + header + " " + value_map[header]
+
     res += "\n\n@DATA\n"
     return res
+
+  def _delete_any_arffs(self):
+    from DRP.settings import TMP_DIR
+    from DRP.fileFunctions import delete_tmp_file
+    auto_deleted_keys = ["test", "train"]
+
+    for key in auto_deleted_keys:
+      filepath = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
+      delete_tmp_file(filepath)
 
 
   def _make_arff(self, key, data, debug=False):
