@@ -243,7 +243,7 @@ def get_expanded_headers():
 
 def get_active_recommendations():
   from models import Recommendation
-  model = get_latest_ModelStats(active=True)
+  model = get_latest_ModelStats()
   return Recommendation.objects.filter(model_version=model)
 
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
@@ -275,9 +275,9 @@ def get_usable_models():
   return model_stats
 
 
-def get_latest_ModelStats(active=True):
+def get_latest_ModelStats():
   from models import ModelStats
-  models = ModelStats.objects.filter(active=active).order_by("-datetime")
+  models = ModelStats.objects.filter(active=True).order_by("-datetime")
   return models.first()
 
 

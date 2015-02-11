@@ -36,13 +36,23 @@ class ModelStats(models.Model):
                                      usable=True, active=False,
                                      preprocessor=None, postprocessor=None,
                                      splitter=None, debug=False):
+    """
+    Using the headers and rows specified in `data`, train and test a model.
+
+    Description of the options are below:
+
+    force -- Forces the overwrite of any models using the same filepath.
+    usable -- Whether this model can be used for predictions.
+    active -- Whether this model is viewable in the dashboard.
+    debug -- Enables/disables helpful stdout messages. Does not affect errors.
+    """
 
     from DRP.fileFunctions import file_exists
     import datetime
 
     # Use a custom splitter-function if specified.
     if not splitter:
-      from DRP.model_building.load_data import test_split as splitter
+      from DRP.model_building.load_data import default_split as splitter
 
     # Make sure we can actually write the model file.
     if not filename:
@@ -187,6 +197,9 @@ class ModelStats(models.Model):
   def predict(self, predictors, debug=False):
     from DRP.fileFunctions import get_django_path
     import subprocess
+
+    if not self.usable:
+      raise Exception("ModelStats is set to 'unusable' and cannot use `predict`.")
 
     if self.library == "weka":
       arff_path = self._make_arff("test", predictors, debug=debug)
@@ -662,7 +675,7 @@ class ModelStats(models.Model):
     return self.__unicode__()
 
 
-
 def get_models_from_filename(filename):
   return ModelStats.objects.filter(filename=filename)
+
 

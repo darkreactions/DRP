@@ -11,7 +11,7 @@ from DRP.settings import BASE_DIR
 import load_cg,json
 
 
-def test_split(data, headers=None):
+def default_split(data, headers=None):
   from DRP.model_building.test_train_split import create_test_and_train_lists
 
   # Create reactant-combination keys for each data entry.
