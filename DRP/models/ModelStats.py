@@ -52,7 +52,7 @@ class ModelStats(models.Model):
 
     # Use a custom splitter-function if specified.
     if not splitter:
-      from DRP.model_building.load_data import default_split as splitter
+      from DRP.model_building.splitters import default_split as splitter
 
     # Make sure we can actually write the model file.
     if not filename:
@@ -147,6 +147,10 @@ class ModelStats(models.Model):
 
   def get_path(self):
     from DRP.settings import MODEL_DIR
+    from DRP.fileFunctions import createDirIfNecessary
+
+    createDirIfNecessary(MODEL_DIR)
+
     return MODEL_DIR + self.filename
 
   def get_headers(self):
@@ -195,11 +199,15 @@ class ModelStats(models.Model):
 
 
   def predict(self, predictors, debug=False):
-    from DRP.fileFunctions import get_django_path
+    from DRP.fileFunctions import get_django_path, file_exists
     import subprocess
 
     if not self.usable:
       raise Exception("ModelStats is set to 'unusable' and cannot use `predict`.")
+
+    if not file_exists(self.get_path()):
+      raise Exception("Filepath to model is invalid: '{}'".format(self.get_path()))
+
 
     if self.library == "weka":
       arff_path = self._make_arff("test", predictors, debug=debug)
@@ -289,8 +297,16 @@ class ModelStats(models.Model):
       move = "cd {}; ".format(get_django_path())
       command = "bash DRP/model_building/make_model.sh "
       args = "{} {}".format(self.get_path(), arff_name)
-      subprocess.check_output(move + command + args, shell=True,
+
+      if debug:
+        print "\tShell: {} {} {}".format(move, command, args)
+
+      output = subprocess.check_output(move + command + args, shell=True,
                                        stderr=subprocess.STDOUT)
+
+      # If WEKA raised an error, throw that error.
+      if "Exception" in output:
+        raise Exception(output)
 
     elif self.library=="sklearn":
       model, description = get_model(self.tool)
@@ -649,9 +665,13 @@ class ModelStats(models.Model):
   def print_model_info(self, prefix="\t"):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
-    print prefix+"Created: {}".format(self.end_time)
+    print prefix+"Finished: {}".format(self.end_time)
+    print prefix+"Construction Time: {}".format(self._construction_time())
+    print
     print prefix+"Filename: '{}'".format(self.filename)
-    print prefix+"Headers: '{}'".format(len(self.get_headers()))
+    print prefix+"Library: '{}'".format(self.library)
+    print prefix+"Tool: '{}'".format(self.tool)
+    print prefix+"# Headers: '{}'".format(len(self.get_headers()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):
