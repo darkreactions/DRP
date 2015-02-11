@@ -19,7 +19,8 @@ class ModelStats(models.Model):
   filename = models.CharField("Filename", max_length=128,
                                           default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
-  datetime = models.DateTimeField(auto_now_add=True, blank=True)
+  start_time = models.DateTimeField(blank=True, null=True)
+  end_time = models.DateTimeField(blank=True, null=True)
   usable = models.BooleanField("Usable", default=True)
 
   # Available model types.
@@ -27,24 +28,43 @@ class ModelStats(models.Model):
   tool = models.CharField("Tool", max_length=128, default="random forest")
   response = models.CharField("Response", max_length=128, default="outcome")
 
+
+
   def construct(self, title, data, description="", library="sklearn",
                                      tool="random forest", response="outcome",
-                                     filename="",
-                                     usable=True, active=True,
-                                     preprocessor=None,
+                                     filename="", force=False,
+                                     usable=True, active=False,
+                                     preprocessor=None, postprocessor=None,
                                      splitter=None, debug=False):
 
+    from DRP.fileFunctions import file_exists
+    import datetime
 
     # Use a custom splitter-function if specified.
     if not splitter:
       from DRP.model_building.load_data import test_split as splitter
 
-    # If specified, pre-process the data.
-    if preprocessor:
-      data = preprocessor(data)
-
+    # Make sure we can actually write the model file.
     if not filename:
       filename = "".join(filter(str.isalnum, title))
+    filename += "__{}__{}".format(library, tool)
+    self.filename = filename
+
+    # Don't overwrite models unless "force=True" is specified.
+    if file_exists(self.get_path()) and not force:
+      message = "Model '{}' already exists: use 'force=True'".format(self.get_path())
+      raise Exception(message)
+
+    if file_exists(self.get_path()) and force:
+      if debug:
+        print "Forcing file overwrite: {}".format(self.get_path())
+
+      # Disable any models that point to this file since they can no longer be used.
+      others = get_models_from_filename(self.filename)
+      others.update(usable = False)
+
+
+    self.start_time = datetime.datetime.now()
 
     # Save the description and fields of this model.
     self.title = title
@@ -56,36 +76,64 @@ class ModelStats(models.Model):
     self.tool = tool
     self.filename = filename
 
+    # Don't let the original data be modified in any way.
+    data = data[:]
+
+    if debug:
+      print "Starting generation of '{}' using '{}' on {} entries".format(self.tool, self.library, len(data))
+
+    # If specified, pre-process the data.
+    if preprocessor:
+      if debug: print "Pre-processing... ({})".format(preprocessor.__name__)
+      data = preprocessor(data)
+
     headers = data.pop(0)
 
+    # Split the data.
+    if debug: print "Splitting data... ({})".format(splitter.__name__)
+    split_data = splitter(data, headers=headers)
+    if debug:
+      splits = {key:len(val) for key, val in split_data.items()}
+      print "Splits: {}".format(splits)
+
+
+    # If specified, post-process the data after splitting.
+    if postprocessor:
+      if debug: print "Post-processing... ({})".format(postprocessor.__name__)
+      split_data, headers = postprocessor(split_data, headers)
+
+    # Save the headers now that the data has successfully been split.
     if self.response not in headers:
       raise Exception("Response '{}' not found in headers!".format(self.response))
 
     self.set_headers(headers)
 
-    # Split the data.
-    if debug: print "Splitting data..."
-
-    split_data = splitter(data, headers=headers)
-
-    if debug:
-      print "Split Sizes: {}".format(
-                               {key:len(val) for key, val in split_data.items()}
-                              )
+    # Get the temporary value-sets of each field.
+    self.val_map = self._get_val_map(split_data["all"])
 
     # Train/fit the model
     if debug: print "Training model..."
-    self._train_model(split_data["train"])
+    self._train_model(split_data["train"], debug=debug)
+
 
     # Set the confusion table for a given data-set.
     if debug: print "Testing model..."
-    self._test_model(split_data["train"])
+    self._test_model(split_data["test"], debug=debug)
 
+    self.end_time = datetime.datetime.now()
     self.save()
 
-    if debug: print "Complete!"
+    if debug:
+      print "Complete! Took {} seconds.".format(self._construction_time())
     return self
 
+  def _construction_time(self):
+    return self.end_time-self.start_time
+
+  def _get_val_map(self, data):
+    fields = self.get_headers()
+    val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
+    return val_dict
 
   def get_path(self):
     from DRP.settings import MODEL_DIR
@@ -97,7 +145,14 @@ class ModelStats(models.Model):
 
 
 
-  def _separate_response(self, data):
+  def _strip_response(self, data):
+    """
+    Separates the predictors in a data matrix from the response.
+    """
+
+    if len(data)==0:
+      raise Exception("`data` cannot be empty!")
+
     headers = self.get_headers()
     resp = headers.index(self.response)
 
@@ -106,21 +161,58 @@ class ModelStats(models.Model):
 
     return preds, resps
 
+  def _read_weka_output(self, filepath):
+    def _is_number(elem):
+      try:
+        float(elem)
+        return True
+      except:
+        return False
 
-  def predict_bulk(self, predictors):
+    predicted_index = 2
+    with open(filepath) as f:
+      # Get the `raw_predictions` from the file, but ignore the headings/footings.
+      content = f.readlines()
+      raw_predictions = content[5:-1]
+
+      predictions = [entry.split()[predicted_index] for entry in raw_predictions]
+
+      # WEKA's predictions are in the format: "class_num:value".
+      # Note that class_num is arbitrary, thus we only need "value".
+      predictions = [prediction.split(":")[1] for prediction in predictions]
+
+      return predictions
+
+
+  def predict(self, predictors, debug=False):
+    from DRP.fileFunctions import get_django_path
+    import subprocess
+
     if self.library == "weka":
-      # TODO: Construct the predictors ARFF
-      # TODO: Parse the result file
-      # TODO: Return the results.
-      pass
+      arff_path = self._make_arff("test", predictors, debug=debug)
 
+      # Results path will be named *.out instead of *.arff.
+      results_path = "out".join(arff_path.rsplit("arff", 1))
+
+      move = "cd {};".format(get_django_path())
+      comm = "bash DRP/model_building/make_predictions.sh"
+      args = " {} {} {}".format(arff_path, self.get_path(), results_path)
+
+      subprocess.check_output(move+comm+args, shell=True)
+      predictions = self._read_weka_output(results_path)
 
     elif self.library == "sklearn":
       model = self._load_model()
-      return model.predict(predictors)
+      predictions = model.predict(predictors)
 
     else:
-      raise Exception("Unknown library specified in predict_bulk!")
+      raise Exception("Unknown library specified in predict!")
+
+
+    if self.library in {"sklearn", "weka"}:
+      predictions = map(int, map(float, predictions))
+
+    return predictions
 
 
   def _load_model(self):
@@ -132,6 +224,7 @@ class ModelStats(models.Model):
     else:
       raise Exception("Illegal model library specified! Aborting file-load!")
 
+
   def _make_confusion_table(self, guesses, responses):
     if len(guesses)==0 or len(responses)==0:
       raise Exception("Either `guesses` or `responses` is empty!")
@@ -139,7 +232,7 @@ class ModelStats(models.Model):
     if not (len(guesses)==len(responses)):
       raise Exception("`guesses` and `responses` are of different sizes!")
 
-    possible_vals = sorted(list(set(guesses)))
+    possible_vals = sorted(list(set(guesses+responses)))
     cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
 
     for guess, response in zip(guesses, responses):
@@ -148,38 +241,47 @@ class ModelStats(models.Model):
     return cm
 
 
-  def _test_model(self, data):
-    predictors, responses = self._separate_response(data)
+  def _test_model(self, data, debug=False):
 
     if self.library=="weka":
-      self._make_arff("test", data)
+      predictors = data
+      index = self.get_headers().index(self.response)
+      responses = [row[index] for row in data]
 
-    guesses = self.predict_bulk(predictors)
+    else:
+      predictors, responses = self._strip_response(data)
 
-    if self.library =="sklearn":
-      guesses = map(int, guesses)
-      responses = map(int, responses)
+    guesses = self.predict(predictors, debug=debug)
+
+    if self.library in {"sklearn", "weka"}:
+      responses = map(int, map(float, responses))
 
     cm = self._make_confusion_table(guesses, responses)
     self.set_confusion_table(cm)
 
 
-  def _train_model(self, data):
+
+  def _train_model(self, data, debug=False):
     from DRP.model_building.sklearn_methods import get_model
     from DRP.fileFunctions import get_django_path
     from sklearn.externals import joblib
     import subprocess
 
     if self.library=="weka":
-      arff_name = self._make_arff("train", data)
+      if self.tool!="svc":
+        raise Exception("Only svc supported in WEKA currently.")
+
+      arff_name = self._make_arff("train", data, debug=debug)
+
       move = "cd {}; ".format(get_django_path())
       command = "bash DRP/model_building/make_model.sh "
       args = "{} {}".format(self.get_path(), arff_name)
-      subprocess.check_output(move+command+args, shell=True)
+      subprocess.check_output(move + command + args, shell=True,
+                                       stderr=subprocess.STDOUT)
 
     elif self.library=="sklearn":
       model, description = get_model(self.tool)
-      predictors, responses = self._separate_response(data)
+      predictors, responses = self._strip_response(data)
       model.fit(predictors, responses)
 
       # Save the model to a file.
@@ -188,21 +290,62 @@ class ModelStats(models.Model):
     else:
       raise Exception("_train_model called with illegal library!")
 
+  def _get_weka_value_map(self):
+    def _is_string(elem):
+      return type(elem)==str
 
-  def _make_arff(self, key, data):
+    val_dict = {}
+
+    for field, val_set in self.val_map.items():
+      if any(map(_is_string, val_set)):
+        if field in self.val_map:
+          val_set = self.val_map[field]
+
+        # EG: convert {"hello", 1, u"world"} to {hello,1,world}.
+        innards = ",".join(map(str,val_set)).replace("\"","")
+        val_dict[field] = "{"+innards+"}"
+
+      else:
+        val_dict[field] = "NUMERIC"
+
+    return val_dict
+
+  def _weka_header(self, data):
+    headers = self.get_headers()
+    value_map = self._get_weka_value_map()
+
+    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
+    for header in headers:
+        if header in value_map:
+            res += "\n@ATTRIBUTE " + header + " " + value_map[header]
+        else:
+            res += "\n@ATTRIBUTE " + header + " NUMERIC"
+    res += "\n\n@DATA\n"
+    return res
+
+
+  def _make_arff(self, key, data, debug=False):
+    """
+    Saves the data to an ARFF file.
+
+    Numeric values are given NUMERIC headings and non-numeric values
+    are treated as classes. Passing a value as a `str` will cause it to
+    be treated as a class (such as for "outcome").
+    """
+
     from DRP.fileFunctions import createDirIfNecessary
-    from DRP.model_building.model_methods import preface
     from DRP.settings import TMP_DIR
 
     createDirIfNecessary(TMP_DIR)
     full_name = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
 
     with open(full_name, "w") as f:
-      header_content = preface(self.get_headers())
+      header_content = self._weka_header(data)
       f.write(header_content + "\n")
       for row in data:
         f.write(",".join([str(entry) for entry in row]) + "\n")
 
+    if debug: print "\tARFF: {}".format(full_name)
     return full_name
 
 
@@ -493,7 +636,7 @@ class ModelStats(models.Model):
   def print_model_info(self, prefix="\t"):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
-    print prefix+"Created: {}".format(self.datetime)
+    print prefix+"Created: {}".format(self.end_time)
     print prefix+"Filename: '{}'".format(self.filename)
     print prefix+"Headers: '{}'".format(len(self.get_headers()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
@@ -511,7 +654,7 @@ class ModelStats(models.Model):
 
 
   def __unicode__(self):
-    return "Model {} (Active:{}; Usable:{})".format(self.datetime,
+    return "Model {} (Active:{}; Usable:{})".format(self.title,
                                                     self.active,
                                                     self.usable)
 
@@ -519,4 +662,7 @@ class ModelStats(models.Model):
     return self.__unicode__()
 
 
+
+def get_models_from_filename(filename):
+  return ModelStats.objects.filter(filename=filename)
 

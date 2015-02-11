@@ -1,6 +1,6 @@
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
  # # # License Views and Functions  # #
-# # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # #
 
 #Necessary Imports:
 from django.http import HttpResponse
@@ -12,12 +12,11 @@ from DRP.retrievalFunctions import *
 from DRP.emailFunctions import *
 
 from DRP.data_config import CONFIG
-import datetime
 
 #Return whether the user_license is valid (True) or invalid/missing (False)
 def user_license_is_valid(user):
  try:
-  return user.get_profile().license_agreement_date_dt > CONFIG.current_license_date
+  return user.get_profile().license_agreement_date_dt > CONFIG.license_date
  except:
   #Assume that if the query fails, the user is not licensed.
   return False
@@ -31,15 +30,15 @@ def get_user_license_agreement(request):
    license_changed = True
  else:
   license_changed = False
-  
+
  return render(request, 'user_license_form.html', {
   "license_changed": license_changed,
-  "license_file": CONFIG.current_license_file,
-  "license_date": CONFIG.current_license_date, 
+  "license_file": CONFIG.license_url(),
+  "license_date": CONFIG.license_date,
  })
 
 def update_user_license_agreement(request):
- u = request.user 
+ u = request.user
  if request.method=="POST":
   try:
    u.get_profile().update_license()

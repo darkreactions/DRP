@@ -1,7 +1,5 @@
 import subprocess
 import uuid
-import time
-import load_data
 import rxn_calculator
 
 import os, sys
@@ -12,7 +10,7 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.retrievalFunctions import get_valid_data
-from DRP.settings import BASE_DIR, MODEL_DIR, TMP_DIR
+from DRP.settings import MODEL_DIR, TMP_DIR
 
 POSITIVE = "4:4"
 INCORRECT = "+"
@@ -300,7 +298,6 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True, respons
 
 
 def make_predictions(target_file, model_location, debug=False):
-  import time
   results_location = "out".join(target_file.rsplit("arff", 1)) # Results file will be *.arff --> *.out
   move = "cd {};".format(django_path)
   comm = "bash DRP/model_building/make_predictions.sh"
@@ -377,21 +374,21 @@ def get_arff_headers(zero_one=False):
 	return res
 """
 
-def gen_specials(zero_one=False):
+def gen_specials():
+	import rxn_calculator
+
 	specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",
 		"leak": "{yes,no}"}
 
-	if zero_one:
-		specials["outcome"] = "{1,2}"
-	import rxn_calculator
 	for bool_field in rxn_calculator.atomsz + rxn_calculator.bools:
 		specials[bool_field] = "{yes,no}"
+
 	return specials
 
 
-def preface(headers, outcome = True, prefix = "", zero_one = False):
-    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system" + prefix
-    specials = gen_specials(zero_one)
+def preface(headers, data):
+    res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
+    specials = gen_specials()
     for header in headers:
         if header in specials.keys():
             res += "\n@ATTRIBUTE " + header + " " + specials[header]

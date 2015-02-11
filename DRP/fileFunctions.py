@@ -44,9 +44,12 @@ def writeExpandedCSV(filename, debug=True, include_lab_info=True):
 
   if debug: print "Write complete!"
 
+def file_exists(filepath):
+  return os.path.exists(filepath)
+
 
 def createDirIfNecessary(directory):
-  if not os.path.exists(directory):
+  if not file_exists(directory):
     os.makedirs(directory)
 
 def get_django_path():
