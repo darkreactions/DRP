@@ -41,18 +41,17 @@ def default_preprocessor(data):
   return [headers]+data
 
 
+# TODO: Un-tested and perhaps unnecessary...
 def purging_preprocessor(data):
   def remover(row):
     to_remove = {
-      "lithium vanadium trioxide",
+      "water"
     }
     return not any(unicode(elem).lower() in to_remove for elem in row)
 
   headers = data.pop(0)
 
-  print len(data)
   data = filter(remover, data)
-  print len(data)
 
   return [headers] + data
 

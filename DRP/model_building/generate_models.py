@@ -8,6 +8,21 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
+def research_data_filter(data):
+  """
+  Allows easily filtering operations on the data.
+  Use for research but not in the standard model pipeline.
+
+  Make sure you take note of the purpose of this filter
+  in the model description!
+  """
+
+
+  # Developers: Put any processing steps here.
+
+
+  return data
+
 
 def gen_model(title, description, data=None, debug=False, active=False):
 
@@ -20,6 +35,10 @@ def gen_model(title, description, data=None, debug=False, active=False):
     if debug:
       print "Gathering default data..."
     data = get_valid_data()
+
+    # Make sure you remark on the filter you're using in the description!
+    data = research_data_filter(data)
+
     data = [headers]+[d.get_calculations_list() for d in data]
 
 

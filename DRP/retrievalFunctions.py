@@ -61,6 +61,7 @@ def atom_filter(atoms, data=None, op="and", negative=False):
 #Get data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
   import datetime, dateutil.relativedelta
+
   # Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
   date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
 
