@@ -21,7 +21,7 @@ def default_splitter(data, headers=None):
   return {"test":test, "train":train, "all":data}
 
 
-def naive_split(data, headers=None):
+def naive_splitter(data, headers=None):
   import random
 
   test_fraction = 0.3
