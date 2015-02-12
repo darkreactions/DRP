@@ -20,6 +20,19 @@ def get_lab_Data_size(lab_group):
   return size
 
 
+def get_data_with_atoms(atoms, data=None, op="and"):
+  import operator
+
+  op_map = {
+    "and":operator.and_,
+    "or":operator.or_,
+  }
+
+  if data is None: data = get_public_data()
+
+
+
+
 #Get data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
   import datetime, dateutil.relativedelta
