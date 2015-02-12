@@ -176,6 +176,7 @@ class Data(models.Model):
     # Convert CompoundEntry ForeignKeys to their respective "compounds".
     if not keep_foreign_keys:
       row = [elem if type(elem)!=CompoundEntry else elem.compound for elem in row]
+      row = map(lambda elem: elem if elem is not None else "", row)
 
     return row
 

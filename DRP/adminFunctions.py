@@ -38,14 +38,21 @@ def migrateModelFields():
 
 
 
-def update_all_reactions(lab_group):
-  from DRP.models import get_lab_Data
-  data = get_lab_Data(lab_group)
-  for entry in data:
+def update_all_reactions(lab_group=None):
+  from DRP.models import get_lab_Data, Data
+
+  if lab_group:
+    data = get_lab_Data(lab_group)
+  else:
+    data = Data.objects.all()
+
+  for i, entry in enumerate(data):
+    if (i%250==0): print "{}...".format(i+1)
     try:
       entry.refresh()
     except:
       print "--could not update reaction: {}".format(entry)
+
   print "Finished data validation."
 
 
@@ -76,7 +83,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None,
 
       try:
         entry.create_CG_calcs_if_needed()
-      
+
       except Exception as e:
         entry.calculations_failed = True
         print e
@@ -116,6 +123,24 @@ def refresh_compound_guide(lab_group=None, verbose=False, debug=False, clear=Fal
       if debug: print "Could not update: {}\n\t".format(compound, e)
 
 
+def recalculate_valid_data():
+  from DRP.models import Data
+
+  data = Data.objects.all()
+
+  for i, datum in enumerate(data):
+    if (i%250)==0: print "{}".format(i+1)
+    try:
+      datum.get_calculations_list()
+      datum.is_valid = True
+    except Exception as e:
+      print e
+      datum.is_valid = False
+    print "{} {}".format(i, datum.is_valid)
+    datum.save()
+
+  print "{} Data valid.".format(Data.objects.filter(is_valid=True).count())
+  print "{} Data invalid.".format(Data.objects.filter(is_valid=False).count())
 
 
 def recalculate_usable_models():
