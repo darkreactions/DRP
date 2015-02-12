@@ -24,7 +24,7 @@ def _default_preprocessor(data):
     return [elem/avg for elem in elems]
 
   # Variable Setup
-  normalize = True
+  normalize = False
 
   headers = data.pop(0)
 
@@ -61,7 +61,11 @@ def _default_postprocessor(splits, headers):
   # Remove unnecessary fields from the data.
   blacklist_fields = [
   "XXXtitle", "XXXinorg1", "XXXinorg2", "XXXinorg3",
-  "XXXorg1", "XXXorg2", "XXXoxlike1"
+  "XXXorg1", "XXXorg2", "XXXoxlike1", "XXXinorg1mass",
+  "XXXinorg1moles", "XXXinorg2mass", "XXXinorg2moles",
+  "XXXinorg3mass", "XXXinorg3moles", "XXXorg1mass",
+  "XXXorg1moles", "XXXorg2mass", "XXXorg2moles",
+  "XXXoxlike1mass", "XXXoxlike1moles",
   ]
 
   blacklist = {headers.index(field)
@@ -116,7 +120,8 @@ def gen_model(title, description, data=None, debug=False, active=False):
                   postprocessor=_default_postprocessor,
                   splitter=splitter,
                   tool="svc",
-                  library="sklearn",
+                  library="weka",
+                  clean_tmp_files=False,
                   debug=debug)
   model.summary()
 

@@ -36,7 +36,7 @@ class ModelStats(models.Model):
                                      usable=True, active=False,
                                      preprocessor=None, postprocessor=None,
                                      splitter=None,
-                                     clean_tmp=True,
+                                     clean_tmp_files=True,
                                      debug=False):
     """
     Using the headers and rows specified in `data`, train and test a model.
@@ -135,8 +135,8 @@ class ModelStats(models.Model):
     self.end_time = datetime.datetime.now()
     self.save()
 
-    if clean_tmp:
-      self._delete_any_arffs()
+    if clean_tmp_files:
+      self._delete_tmp_files()
 
     if debug:
       print "Complete! Took {} seconds.".format(self._construction_time())
@@ -359,14 +359,18 @@ class ModelStats(models.Model):
     res += "\n\n@DATA\n"
     return res
 
-  def _delete_any_arffs(self):
+  def _delete_tmp_files(self):
     from DRP.settings import TMP_DIR
     from DRP.fileFunctions import delete_tmp_file
-    auto_deleted_keys = ["test", "train"]
 
-    for key in auto_deleted_keys:
-      filepath = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
-      delete_tmp_file(filepath)
+    # Variable Setup
+    auto_deleted_keys = ["test", "train"]
+    auto_deleted_exts = ["arff", "out"]
+
+    for ext in auto_deleted_exts:
+      for key in auto_deleted_keys:
+        filepath = "{}{}_{}.{}".format(TMP_DIR, self.filename, key, ext)
+        delete_tmp_file(filepath)
 
 
   def _make_arff(self, key, data, debug=False):

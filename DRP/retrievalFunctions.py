@@ -271,7 +271,7 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
 
 def get_usable_models():
   from models import ModelStats
-  model_stats = ModelStats.objects.filter(usable=True).order_by("datetime")
+  model_stats = ModelStats.objects.filter(usable=True).order_by("end_time")
   return model_stats
 
 
