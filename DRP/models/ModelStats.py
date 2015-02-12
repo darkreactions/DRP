@@ -14,6 +14,7 @@ class ModelStats(models.Model):
   # Model Descriptors
   title = models.CharField("Title", max_length=100, default="untitled")
   description = models.TextField(default="")
+  tags = models.TextField(default="")
 
   # Model Status and Location
   filename = models.CharField("Filename", max_length=128,
@@ -30,8 +31,9 @@ class ModelStats(models.Model):
 
 
 
-  def construct(self, title, data, description="", library="sklearn",
-                                     tool="random forest", response="outcome",
+  def construct(self, title, data, description="", tags="",
+                                     library="sklearn", tool="random forest",
+                                     response="outcome",
                                      filename="", force=False,
                                      usable=True, active=False,
                                      preprocessor=None, postprocessor=None,
@@ -92,6 +94,7 @@ class ModelStats(models.Model):
     # Save the description and fields of this model.
     self.title = title
     self.description = description
+    self.tags = tags
     self.usable = usable
     self.active = active
     self.library = library
@@ -332,8 +335,8 @@ class ModelStats(models.Model):
       predictors, responses = self._strip_response(data)
       model.fit(predictors, responses)
 
-      # Save the model to a file.
-      joblib.dump(model, self.get_path())
+      # Save the sklearn model to a file (with maximum compression).
+      joblib.dump(model, self.get_path(), compress=9)
 
     else:
       raise Exception("_train_model called with illegal library!")

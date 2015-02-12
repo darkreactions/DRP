@@ -24,7 +24,7 @@ def research_data_filter(data):
   return data
 
 
-def gen_model(title, description, data=None, debug=False, active=False):
+def gen_model(title, description, data=None, debug=False, active=False, tags=""):
 
   from DRP.models import ModelStats
   from DRP.retrievalFunctions import get_valid_data
@@ -50,6 +50,7 @@ def gen_model(title, description, data=None, debug=False, active=False):
   model = ModelStats()
   model.construct(title, data,
                   description=description,
+                  tags=tags,
                   active=active,
                   preprocessor=preprocessor,
                   postprocessor=postprocessor,
