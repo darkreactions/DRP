@@ -15,7 +15,7 @@ class Command(BaseCommand):
       title = args[0]
       description = args[1]
 
-      if "datetime_title" in args:
+      if "datetime" in args:
         title += "_{}".format(int(time.time()))
 
       gen_model(title, description, active=active, debug=debug)

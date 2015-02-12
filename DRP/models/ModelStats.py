@@ -65,7 +65,7 @@ class ModelStats(models.Model):
 
     # Use a custom splitter-function if specified.
     if not splitter:
-      from DRP.model_building.splitters import default_split as splitter
+      from DRP.model_building.splitters import default_splitter as splitter
 
     # Make sure we can actually write the model file.
     if not filename:

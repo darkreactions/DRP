@@ -8,7 +8,7 @@ if django_path not in sys.path:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
-def default_split(data, headers=None):
+def default_splitter(data, headers=None):
   from DRP.model_building.test_train_split import create_test_and_train_lists
   from DRP.model_building.load_data import create_reactant_keys
 
