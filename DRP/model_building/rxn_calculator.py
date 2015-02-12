@@ -337,7 +337,6 @@ josh_serota_feature_selected = [
   "outcome" #Added to feature-set by Casey Falk since missing.
 ]
 
-#headers = josh_serota_feature_selected
 headers = orig_headers
 
 

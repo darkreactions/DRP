@@ -25,7 +25,7 @@ def gen_model(title, description, data=None, debug=False, active=False):
 
   # If `splitter` is set to `None`, the default splitter will be used.
   from DRP.preprocessors import default_preprocessor as preprocessor
-  from DRP.postprocessors import default_postprocessor as postprocessor
+  from DRP.postprocessors import reduce_features as postprocessor
   from DRP.model_building.splitters import default_splitter as splitter
 
   model = ModelStats()
@@ -35,8 +35,8 @@ def gen_model(title, description, data=None, debug=False, active=False):
                   preprocessor=preprocessor,
                   postprocessor=postprocessor,
                   splitter=splitter,
-                  tool="random forest",
-                  library="sklearn",
+                  tool="svc",
+                  library="weka",
                   debug=debug)
   model.summary()
 

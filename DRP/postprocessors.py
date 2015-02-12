@@ -42,3 +42,20 @@ def default_postprocessor(splits, headers):
   return (splits, headers)
 
 
+def reduce_features(splits, headers):
+  from DRP.model_building.rxn_calculator import josh_serota_feature_selected
+
+  headers_to_keep = josh_serota_feature_selected
+  indexes = {headers.index(header) for header in headers_to_keep}
+
+  # Remove the dimensions that are not selected.
+  headers = [elem for i, elem in enumerate(headers) if i in indexes]
+
+  splits = { key:[ [e for i,e in enumerate(row) if i in indexes]
+                        for row in data]
+                          for key, data in splits.items()}
+
+  return default_postprocessor(splits, headers)
+
+
+
