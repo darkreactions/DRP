@@ -20,9 +20,7 @@ from DRP.data_config import CONFIG
 
 import csv, json, string
 
-# This view should get the data requested by the user (either the lab group's data, public data, or
-# both), use jsonViews to convert it to a CSV/json (in the right format for the d3 visualization), and# then render the template with that data. The template, in turn, will render the javascript (d3 vis)
-# with the CSV/json file passed to it (the template).
+# This view should get the data requested by the user (either the lab group's data, public data, or both), use jsonViews to convert it to a CSV/json (in the right format for the d3 visualization), and# then render the template with that   data. The template, in turn, will render the javascript (d3 vis) with the CSV/json file passed to it (the template).
 
 
 #Global Variables
@@ -54,21 +52,21 @@ def get_graph_data(request):
     #nodes are the original datum points corresponding to a single reaction( a list of dictionaries)
     #This is for the second tier clusters (clustered by two inorganics)
     clusters = give_positions_to_clusters(nodes, node_clusters)
+
     #clusters that are objects in a list within a larger list
     clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
     final_clusters = make_clusters_into_single_list(clusters_with_colors)
-    almost_final_nodes = give_colors_to_nodes(nodes, final_clusters)
+
+    #Here we are going to make NEW nodes based on final_clusters!!! Necessary because final_cluster are missing nodes that don't fall into any of the clusters, but still needed in vis (must grab x,y coords, inorgs, etc) 
+    almost_final_nodes = combine_final_clusters_and_nodes(nodes, final_clusters, links)
     #This is for the first tier clusters (clustered by single inorganic)
     votes = vote_on_inorgs(final_clusters)
     top_inorgs = grab_inorgs(votes)
-    firstCluster = first_cluster(nodes, top_inorgs)
-    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")
+    firstCluster = first_cluster(almost_final_nodes, top_inorgs)
+    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")    
     final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
-    final_nodes = give_colors_to_nodes2(almost_final_nodes, final_first_clusters)
-    #largest_labels = make_larger_clusters(firstCluster, top_inorgs)
-    #hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii)
-    #small_clusters = check_size_of_clusters(clusters)
-    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"}
+    final_nodes = give_colors_to_nodes(almost_final_nodes, final_first_clusters)
+    response = {"nodes": final_nodes, "nodes2": final_nodes, "links": links, "skipTicks": "True"}
     return HttpResponse(json.dumps(response), content_type="application/json")
 
   #If vis_data is not created or not up to date, write new vis_data with current data and return that
@@ -77,14 +75,25 @@ def get_graph_data(request):
     print "vis_data exists"
     with open(path_to_vis_data_file, "r") as f:
       deserialized_data = json.load(f)
-    
+
     node_clusters = create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"])
-    print "node_clusters exists" 
+    links = deserialized_data["links"]
+    nodes = deserialized_data["nodes"] 
+    print nodes[0] #has no x, y attribute
+    print node_clusters[0] 
+    clusters = give_positions_to_clusters(nodes, node_clusters)
+    clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
+    final_clusters = make_clusters_into_single_list(clusters_with_colors)
+    almost_final_nodes = give_colors_to_nodes(nodes, final_clusters)
+    votes = vote_on_inorgs(final_clusters)
     top_inorgs = grab_inorgs(votes)
-    print "to_inorgs exists" 
-    firstCluster = first_cluster(node_clusters, top_inorgs)
+    firstCluster = first_cluster(nodes, top_inorgs)
+    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")
+    final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
+    final_nodes = give_colors_to_nodes2(almost_final_nodes, final_first_clusters)
+ 
     #Make sure that appending node_clusters on the end results in a correctly formatted list (something the javascript can take and use)...alternativley put into list and then concatenate
-    response = deserialized_data + node_clusters
+    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
     return HttpResponse(json.dumps(response), content_type="application/json")
   else:
     print "vis_data does not exist"
@@ -117,11 +126,21 @@ def get_graph_data(request):
     with open(path_to_vis_data_file, "r") as f:
         deserialized_data = json.load(f)
 
-    node_clusters= create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"])
+    node_clusters = create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"])
+    links = deserialized_data["links"]
+    nodes = deserialized_data["nodes"] 
+    clusters = give_positions_to_clusters(nodes, node_clusters)
+    clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
+    final_clusters = make_clusters_into_single_list(clusters_with_colors)
+    almost_final_nodes = give_colors_to_nodes(nodes, final_clusters)
+    votes = vote_on_inorgs(final_clusters)
     top_inorgs = grab_inorgs(votes)
-    firstCluster = first_cluster(node_clusters, top_inorgs)
-    #Same procedure as above--with luck, appending node_clusters onto the end of deserialized_data won't break anything
-    response = deserialized_data + node_clusters
+    firstCluster = first_cluster(nodes, top_inorgs)
+    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")
+    final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
+    final_nodes = give_colors_to_nodes2(almost_final_nodes, final_first_clusters)
+ 
+    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
@@ -146,7 +165,10 @@ def create_node_clusters_for_labels(links, nodes):
      "x": 0,
      "y": 0,
      "color": "none",
-     "color2": "none"
+     "color2": "none",
+     "label1": "none",
+     "label2": "none",
+     "ref": nodes[i]["ref"]
      })
     #if nodes[i]["inorg1"] != "-1":
      #  nodes_dict.append({"inorg1": nodes[i]["inorg1"]
@@ -197,39 +219,49 @@ def first_cluster(dictionary_of_all_nodes, singles):
     if nodedict[j]["inorg2"] == singles[i]:
      cluster.append(nodedict[j])
   neighbors.append(cluster)
+
+ for i in xrange(len(neighbors)):
+    if neighbors[i][0]["inorg1"] in singles:
+      neighbors[i][0]["label1"] = neighbors[i][0]["inorg1"]
+    elif "inorg2" in neighbors[i][0]:
+      if neighbors[i][0]["inorg2"] in singles:
+       neighbors[i][0]["label1"] = neighbors[i][0]["inorg2"] 
+
  return neighbors
 
 #Finding all nodes that are connected to each other and have both inorgs in common
 #Also, finding most common inorgs (single, not in pairs),
 def find_node_clusters(dictionary):
   neighbors = []
-  print "making neighbors" 
   while len(dictionary) > 1:
-    print "into while"
     for element in dictionary:
-      "into first for loop" 
       cluster = []
       centerNode = dictionary.pop(0)
+      if "inorg2" in centerNode and centerNode["inorg2"] != -1.0: 
+        centerNode["label2"] = centerNode["inorg1"] + ", " + centerNode["inorg2"] 
+      else:
+        centerNode["label2"] = centerNode["inorg1"]  
       for item in dictionary:
-        if check_inorgs(centerNode, item) == True:
-          if item["target"] == centerNode["source"]:
-            cluster.append(item)
-            dictionary.pop(dictionary.index(item)) 
-          else:
-            for entry in cluster:
-              if item["target"] == entry["source"]:
-                cluster.append(item)
-                dictionary.pop(dictionary.index(item))#this is where the item already doesn't exist (being removed earlier somehow??)  
+        #if check_inorgs(centerNode, item) == True:
+        if item["target"] == centerNode["source"]:
+          cluster.append(item)
+          dictionary.pop(dictionary.index(item)) 
         else:
           for entry in cluster:
-            for item in dictionary:
-   	          if item["target"] == entry["source"] and check_inorgs(entry, item) == True:
-	            cluster.append(item)
-	            dictionary.pop(dictionary.index(item)) 
-    cluster.append(centerNode)
-    neighbors.append(cluster)
+            if item["target"] == entry["source"]:
+              cluster.append(item)
+              index = dictionary.index(item)
+              dictionary.pop(index)
+              if index < len(dictionary):
+                item = dictionary[index] #doing this so the for loop doesn't skip over an element after one is removed
+      for entry in cluster:
+        for item in dictionary:
+   	      if item["target"] == entry["source"] and check_inorgs(entry, item) == True:
+	        cluster.append(item)
+	        dictionary.remove(item) 
+      cluster.insert(0,centerNode)
+      neighbors.append(cluster)
   else:
-   print "here" 
    return neighbors
 
 def get_rid_of_single_item_clusters(cluster):
@@ -256,7 +288,6 @@ def check_inorgs(mainNode, neighbor):
   return False
 
 def store_graph(request):
-  #print request.POST.keys()
   nodeData = json.loads(request.POST["nodes"])
   linkData = json.loads(request.POST["links"])
   path_to_nodePositions = BASE_DIR + "/DRP/vis/nodePositions.json"
@@ -279,17 +310,41 @@ def give_positions_to_clusters(nodes, clusters):
       clusters[i][j]["y"] = nodeWithPosition["y"]
   return clusters
 
+#This function is looking at all the clusters for the first level hiearchy (so not all the nodes), and appending a color to the nodes for the nodes that are in the cluster based on 1 single inorganic
 def give_colors_to_nodes(nodes, clusters):
     for i in xrange(len(nodes)):
       id_num = nodes[i]["id"]
-      nodes[i]["color"] = next((x["color"] for x in clusters if x["id"] == id_num), None)
+      colorAndLabel = next((x["color"] + "," + x["label1"] for x in clusters if x["id"] == id_num), None)
+      if colorAndLabel != None:
+        x = colorAndLabel.index(",") 
+        nodes[i]["color"] = colorAndLabel[0:x]
+        nodes[i]["label1"] = colorAndLabel[x+1:] 
     return nodes
 
-def give_colors_to_nodes2(nodes, clusters):
-    for i in xrange(len(nodes)):
-      id_num = nodes[i]["id"]
-      nodes[i]["color2"] = next((x["color"] for x in clusters if x["id"] == id_num), None)
-    return nodes
+#This is doing the same as the above function except for the second level of clusters (based on two inorganics) 
+def combine_final_clusters_and_nodes(nodes, clusters, links):
+    new_nodes = clusters
+    for i in range(len(nodes)):
+        if nodes[i]["id"] not in [x["id"] for x in clusters]: 
+            new_node = {
+            "id":nodes[i]["id"],
+            "source": links[i]["source"], #I am assuming here that links and nodes are in the same order in terms of id numbers **crucial
+            "target": links[i]["target"],
+            "pagerank": nodes[i]["pagerank"],
+            "x": nodes[i]["x"],
+            "y": nodes[i]["y"],
+            "color": "none",
+            "color2": "none",
+            "label1": "none",
+            "label2": "none",
+            "inorg1": nodes[i]["inorg1"], 
+            "inorg2": "none", 
+            "ref": nodes[i]["ref"]
+            }
+            if "inorg2" in nodes[i]:
+                new_node["inorg2"] = nodes[i]["inorg2"]
+            new_nodes.append(new_node)
+    return new_nodes
 
 def reduce_clusters(clusters):
   reduced_clusters = [i[0] for i in clusters]

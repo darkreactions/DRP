@@ -38,8 +38,8 @@ class ConfigManager(object):
     self.license_file = "01_20_14.pdf"
 
     # Path Setup
-    self.jchem_path = LIBRARY_DIR+"/ChemAxon/JChem/bin"
-    self.weka_path = LIBRARY_DIR+"/weka/weka.jar"
+    self.jchem_path = LIBRARY_DIR+"/workspace/dark-reaction-site/ChemAxon/JChem/bin"
+    self.weka_path = LIBRARY_DIR+"/workspace/dark-reaction-site/weka/weka.jar"
 
 
     if validate_config:
