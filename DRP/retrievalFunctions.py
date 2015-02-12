@@ -20,9 +20,48 @@ def get_lab_Data_size(lab_group):
   return size
 
 
+def atom_filter(atoms, data=None, op="and", negative=False):
+  """
+  Applies a containment search on the `data` for each atom in `atoms`;
+  thus, it can be used to find any reaction that contains any/all atoms
+  in a list.
+
+  op = The operator to use for the query.
+  negative = Enable to *remove* anything from `data` that matches the query.
+  """
+
+  import operator
+  from django.db.models import Q
+
+  op_map = {
+    "and":operator.and_,
+    "or":operator.or_,
+  }
+
+  # Variable Setup
+  if data is None: data = get_valid_data()
+  if type(atoms)!=list: atoms = list(atoms)
+  op = op_map[op]
+
+  # Construct the query.
+  Qs = [Q(atoms__contains=atom) for atom in atoms]
+  filters = reduce(op, Qs)
+
+  # Apply the filter.
+  if negative:
+    data = data.filter(~filters)
+  else:
+    data = data.filter(filters)
+
+  return data
+
+
+
+
 #Get data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
   import datetime, dateutil.relativedelta
+
   # Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
   date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
 
@@ -243,7 +282,7 @@ def get_expanded_headers():
 
 def get_active_recommendations():
   from models import Recommendation
-  model = get_latest_ModelStats(active=True)
+  model = get_latest_ModelStats()
   return Recommendation.objects.filter(model_version=model)
 
 def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True):
@@ -271,13 +310,13 @@ def get_seed_recs(lab_group, seed_ref=None, show_hidden=False, latest_first=True
 
 def get_usable_models():
   from models import ModelStats
-  model_stats = ModelStats.objects.filter(usable=True).order_by("datetime")
+  model_stats = ModelStats.objects.filter(usable=True).order_by("end_time")
   return model_stats
 
 
-def get_latest_ModelStats(active=True):
+def get_latest_ModelStats():
   from models import ModelStats
-  models = ModelStats.objects.filter(active=active).order_by("-datetime")
+  models = ModelStats.objects.filter(active=True).order_by("-datetime")
   return models.first()
 
 

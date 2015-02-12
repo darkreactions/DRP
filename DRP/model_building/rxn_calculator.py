@@ -1,5 +1,5 @@
-import sys, os, subprocess
-import json, csv, math
+import sys, os
+import json
 import rdkit.Chem as Chem
 
 django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
@@ -176,7 +176,7 @@ def atomic_properties(atom_list, smiles_pairs, counts = None):
     try:
         props += distList(indicator, numeric_props)
         props += distList(indicator, numeric_props_weighted)
-    except Exception as e:
+    except:
 	err = str(atom_list) + " not interesting?"
         #raise Exception()
 	print err
@@ -337,7 +337,6 @@ josh_serota_feature_selected = [
   "outcome" #Added to feature-set by Casey Falk since missing.
 ]
 
-#headers = josh_serota_feature_selected
 headers = orig_headers
 
 

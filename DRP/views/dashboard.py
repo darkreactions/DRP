@@ -6,21 +6,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-import json, datetime
 
-from DRP.retrievalFunctions import *
-from DRP.models import *
-
-
-"""
-#LEGACY: Used to return dashboard info based on time rather than on version.
-#Helper function for get_fields_as_json.
-def get_field_tuple(stat, entry):
-  #Note: in order to get milliseconds since the epoch, we need a TimeDelta object.
-  seconds = int((entry.datetime - datetime.datetime(1970,1,1)).total_seconds()*1000)
-  value = getattr(entry, stat)
-  return [seconds, value]
-"""
 
 def get_fields_as_json(models, classes=4):
   #Variable Setup.
@@ -60,8 +46,10 @@ def get_fields_as_json(models, classes=4):
 
 
 def get_class_stats_json(request, classes=4):
-  #Grab all of the model_stats.
+
   from DRP.retrievalFunctions import get_usable_models
+  import json
+
   models = get_usable_models()
 
   #Convert the data into a JSON format.

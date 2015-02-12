@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import django.forms as forms
 
 from DRP.models import Data, Lab_Group, Lab_Member, CompoundEntry
-from DRP.settings import ACCESS_CODE_MAX_LENGTH
+from DRP.settings import ACCESS_CODE_LENGTH
 from DRP.validation import validate_CG, full_validation
 from DRP.validation import TYPE_CHOICES, UNIT_CHOICES
 from DRP.validation import BOOL_CHOICES, PURITY_CHOICES, OUTCOME_CHOICES
@@ -41,7 +41,7 @@ class UserProfileForm(forms.ModelForm):
               label="Lab Group", required=True,
               widget=forms.Select(attrs={'class':'form_text', 'title':'Choose which lab you would like to join.'}))
   access_code = forms.CharField(label="Access Code", required=True,
-                max_length = ACCESS_CODE_MAX_LENGTH,
+                max_length = ACCESS_CODE_LENGTH,
                 widget=forms.TextInput(attrs={'class':'form_text', 'title':'The unique code given to you by a lab administrator.'}))
 
   class Meta:
@@ -63,8 +63,9 @@ class LabForm(forms.ModelForm):
     fields = ("lab_title", "lab_address", "lab_email")
 
   def save(self, commit=True):
+    from DRP.models import get_random_code
     lab_group = super(LabForm, self).save(commit=False)
-    lab_group.access_code = self.get_random_code()
+    lab_group.access_code = get_random_code()
     if commit:
       lab_group.save()
     return lab_group

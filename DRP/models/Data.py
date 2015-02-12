@@ -160,13 +160,25 @@ class Data(models.Model):
       return [calcDict[field] for field in headers]
 
 
-  def to_list(self):
+  def to_list(self, keep_foreign_keys=True):
+    from DRP.models import CompoundEntry
     from methods import get_model_field_names
-    all_fields = get_model_field_names(model="Data", collect_ignored = True)
+
+    # Variable Setup
     fields_to_exclude = {"lab_group", "atoms"}
+
+    # Get the relevant headings.
+    all_fields = get_model_field_names(model="Data", collect_ignored = True)
     headings = [field for field in all_fields if field not in fields_to_exclude]
 
-    return [getattr(self,field) for field in headings]
+    row = [getattr(self,field) for field in headings]
+
+    # Convert CompoundEntry ForeignKeys to their respective "compounds".
+    if not keep_foreign_keys:
+      row = [elem if type(elem)!=CompoundEntry else elem.compound for elem in row]
+      row = map(lambda elem: elem if elem is not None else "", row)
+
+    return row
 
 
   def get_compounds(self, objects=True):

@@ -14,6 +14,7 @@ class ModelStats(models.Model):
   # Model Descriptors
   title = models.CharField("Title", max_length=100, default="untitled")
   description = models.TextField(default="")
+  tags = models.TextField(default="")
 
   # Model Status and Location
   filename = models.CharField("Filename", max_length=128,
@@ -30,19 +31,43 @@ class ModelStats(models.Model):
 
 
 
-  def construct(self, title, data, description="", library="sklearn",
-                                     tool="random forest", response="outcome",
+  def construct(self, title, data, description="", tags="",
+                                     library="sklearn", tool="random forest",
+                                     response="outcome",
                                      filename="", force=False,
                                      usable=True, active=False,
                                      preprocessor=None, postprocessor=None,
-                                     splitter=None, debug=False):
+                                     splitter=None,
+                                     clean_tmp_files=True,
+                                     debug=False):
+    """
+    Using the headers and rows specified in `data`, train and test a model.
+
+    Description of the options are below:
+
+    force -- Forces the overwrite of any models using the same filepath.
+    usable -- Whether this model can be used for predictions.
+    active -- Whether this model is viewable in the dashboard.
+    debug -- Enables/disables helpful stdout messages. Does not affect errors.
+    clean_tmp_files -- Enable/disable the auto-deletion of temporary files
+                       that are generated (Eg: *.arff, *.out).
+
+    preprocessor -- A function that will be passed the uncleaned data
+                    *before* splitting.
+    postprocessor -- A function that will be passed the data returned from
+                     the `splitter` function and the headers. Should return
+                     a tuple with (data, headers).
+    splitter -- A function that may be passed the kwarg "headers" and the
+                preprocessed data. Should return a dictionary with the split
+                data (eg: {"all":data_1, "train":data_2, "test":data_3}).
+    """
 
     from DRP.fileFunctions import file_exists
     import datetime
 
     # Use a custom splitter-function if specified.
     if not splitter:
-      from DRP.model_building.load_data import test_split as splitter
+      from DRP.model_building.splitters import default_splitter as splitter
 
     # Make sure we can actually write the model file.
     if not filename:
@@ -69,6 +94,7 @@ class ModelStats(models.Model):
     # Save the description and fields of this model.
     self.title = title
     self.description = description
+    self.tags = tags
     self.usable = usable
     self.active = active
     self.library = library
@@ -123,12 +149,18 @@ class ModelStats(models.Model):
     self.end_time = datetime.datetime.now()
     self.save()
 
+    if clean_tmp_files:
+      self._delete_tmp_files()
+
     if debug:
       print "Complete! Took {} seconds.".format(self._construction_time())
+
     return self
+
 
   def _construction_time(self):
     return self.end_time-self.start_time
+
 
   def _get_val_map(self, data):
     fields = self.get_headers()
@@ -137,6 +169,10 @@ class ModelStats(models.Model):
 
   def get_path(self):
     from DRP.settings import MODEL_DIR
+    from DRP.fileFunctions import createDirIfNecessary
+
+    createDirIfNecessary(MODEL_DIR)
+
     return MODEL_DIR + self.filename
 
   def get_headers(self):
@@ -185,8 +221,15 @@ class ModelStats(models.Model):
 
 
   def predict(self, predictors, debug=False):
-    from DRP.fileFunctions import get_django_path
+    from DRP.fileFunctions import get_django_path, file_exists
     import subprocess
+
+    if not self.usable:
+      raise Exception("ModelStats is set to 'unusable' and cannot use `predict`.")
+
+    if not file_exists(self.get_path()):
+      raise Exception("Filepath to model is invalid: '{}'".format(self.get_path()))
+
 
     if self.library == "weka":
       arff_path = self._make_arff("test", predictors, debug=debug)
@@ -276,23 +319,31 @@ class ModelStats(models.Model):
       move = "cd {}; ".format(get_django_path())
       command = "bash DRP/model_building/make_model.sh "
       args = "{} {}".format(self.get_path(), arff_name)
-      subprocess.check_output(move + command + args, shell=True,
+
+      if debug:
+        print "\tShell: {} {} {}".format(move, command, args)
+
+      output = subprocess.check_output(move + command + args, shell=True,
                                        stderr=subprocess.STDOUT)
+
+      # If WEKA raised an error, throw that error.
+      if "Exception" in output:
+        raise Exception(output)
 
     elif self.library=="sklearn":
       model, description = get_model(self.tool)
       predictors, responses = self._strip_response(data)
       model.fit(predictors, responses)
 
-      # Save the model to a file.
-      joblib.dump(model, self.get_path())
+      # Save the sklearn model to a file (with maximum compression).
+      joblib.dump(model, self.get_path(), compress=9)
 
     else:
       raise Exception("_train_model called with illegal library!")
 
   def _get_weka_value_map(self):
     def _is_string(elem):
-      return type(elem)==str
+      return type(elem)==str or type(elem)==unicode
 
     val_dict = {}
 
@@ -315,13 +366,25 @@ class ModelStats(models.Model):
     value_map = self._get_weka_value_map()
 
     res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
+
     for header in headers:
-        if header in value_map:
-            res += "\n@ATTRIBUTE " + header + " " + value_map[header]
-        else:
-            res += "\n@ATTRIBUTE " + header + " NUMERIC"
+      res += "\n@ATTRIBUTE " + header + " " + value_map[header]
+
     res += "\n\n@DATA\n"
     return res
+
+  def _delete_tmp_files(self):
+    from DRP.settings import TMP_DIR
+    from DRP.fileFunctions import delete_tmp_file
+
+    # Variable Setup
+    auto_deleted_keys = ["test", "train"]
+    auto_deleted_exts = ["arff", "out"]
+
+    for ext in auto_deleted_exts:
+      for key in auto_deleted_keys:
+        filepath = "{}{}_{}.{}".format(TMP_DIR, self.filename, key, ext)
+        delete_tmp_file(filepath)
 
 
   def _make_arff(self, key, data, debug=False):
@@ -584,20 +647,20 @@ class ModelStats(models.Model):
       "2": {
         "Test Size":self.total(),
         "Accuracy":self.test_accuracy(ranges=True),
-        "Rate TP":self.true_positives(normalize=True, ranges=True),
-        "Rate FP":self.false_positives(normalize=True, ranges=True),
-        "Rate TN":self.true_negatives(normalize=True, ranges=True),
-        "Rate FN":self.false_negatives(normalize=True, ranges=True),
+        "% TP":self.true_positives(normalize=True, ranges=True),
+        "% FP":self.false_positives(normalize=True, ranges=True),
+        "% TN":self.true_negatives(normalize=True, ranges=True),
+        "% FN":self.false_negatives(normalize=True, ranges=True),
         "Precision":self.test_precision(ranges=True),
         "User Satisfaction":self.user_satisfaction(),
       },
       "4": {
         "Test Size":self.total(),
         "Accuracy":self.test_accuracy(ranges=False),
-        "Rate TP":self.true_positives(normalize=True, ranges=False),
-        "Rate FP":self.false_positives(normalize=True, ranges=False),
-        "Rate TN":self.true_negatives(normalize=True, ranges=False),
-        "Rate FN":self.false_negatives(normalize=True, ranges=False),
+        "% TP":self.true_positives(normalize=True, ranges=False),
+        "% FP":self.false_positives(normalize=True, ranges=False),
+        "% TN":self.true_negatives(normalize=True, ranges=False),
+        "% FN":self.false_negatives(normalize=True, ranges=False),
         "Precision":self.test_precision(ranges=False),
         "User Satisfaction":self.user_satisfaction(),
       }
@@ -636,9 +699,13 @@ class ModelStats(models.Model):
   def print_model_info(self, prefix="\t"):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
-    print prefix+"Created: {}".format(self.end_time)
+    print prefix+"Finished: {}".format(self.end_time)
+    print prefix+"Construction Time: {}".format(self._construction_time())
+    print
     print prefix+"Filename: '{}'".format(self.filename)
-    print prefix+"Headers: '{}'".format(len(self.get_headers()))
+    print prefix+"Library: '{}'".format(self.library)
+    print prefix+"Tool: '{}'".format(self.tool)
+    print prefix+"# Headers: '{}'".format(len(self.get_headers()))
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):
@@ -662,7 +729,7 @@ class ModelStats(models.Model):
     return self.__unicode__()
 
 
-
 def get_models_from_filename(filename):
   return ModelStats.objects.filter(filename=filename)
+
 

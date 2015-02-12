@@ -2,7 +2,7 @@ def get_model(model_type):
 
   if model_type=="random forest":
     from sklearn.ensemble import RandomForestClassifier as model
-    descriptors = {"n_estimators":500, "criterion":"gini", "n_jobs":-1}
+    descriptors = {"n_estimators":500, "criterion":"entropy", "n_jobs":-1}
 
   elif model_type=="linear regression": #TODO: "Cannot perform reduce with flexible type"
     from sklearn.linear_model import LinearRegression as model

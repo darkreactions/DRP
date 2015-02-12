@@ -29,8 +29,7 @@ def parse_rxn(row, rxn_table, ml_convert):
     for i in range(5):
         cmpd = compound[i].lower()
         if cmpd == "water": continue
-        print cmpd in rxn_table 
-        if cmpd == "" or rxn_table[cmpd]["type"] in ['pH']:
+        if not cmpd or rxn_table[cmpd]["type"] in ['pH']:
             compound[i] = 'x'
             mass[i] = '-1'
         elif "mL" in unit[i]:
@@ -302,7 +301,6 @@ def build_prior(rows):
     prior = []
     ranges = find_ranges(rows)
     combos = find_combinations(rows)
-    print ranges
     for combo in combos:
         try:
             pH_max = 0

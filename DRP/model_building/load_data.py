@@ -11,18 +11,6 @@ from DRP.settings import BASE_DIR
 import load_cg,json
 
 
-def test_split(data, headers=None):
-  from DRP.model_building.test_train_split import create_test_and_train_lists
-
-  # Create reactant-combination keys for each data entry.
-  dataKeys = create_reactant_keys(data, headers=headers)
-
-  # Partitions the data/keys into separate test/training datasets.
-  test, train = create_test_and_train_lists(data, dataKeys)
-
-  return {"test":test, "train":train, "all":data}
-
-
 def load(lab_group=None, with_headings=True):
 	from DRP.models import get_good_rxns
         return get_good_rxns(lab_group=lab_group, with_headings=with_headings)
@@ -66,7 +54,7 @@ def create_expanded_datum_field_list(datum, preloaded_cg=None,
   from DRP.model_building.parse_rxn import parse_rxn
 
   #Convert the datum into a datumList (ie: a list of field values).
-  dirtyDatumList = datum.to_list()
+  dirtyDatumList = datum.to_list(keep_foreign_keys=False)
 
   #Ignore the "ref" field
   datumList = fix_abbrevs( dirtyDatumList, abbrev_map=preloaded_abbrev_map )

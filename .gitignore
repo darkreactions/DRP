@@ -11,4 +11,5 @@ dynamic/*
 *.sql
 *.sw*
 *.log
+*.cxl
 
