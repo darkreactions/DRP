@@ -109,7 +109,8 @@ def gen_model(title, description, data=None, debug=False, active=False):
     data = [headers]+[d.get_calculations_list() for d in data]
 
 
-  splitter = None # Enables the "default" splitter.
+  # If `splitter` is set to `None`, the default splitter will be used.
+  splitter = None
   #from DRP.model_building.splitters import naive_split as splitter
 
   model = ModelStats()
@@ -121,7 +122,6 @@ def gen_model(title, description, data=None, debug=False, active=False):
                   splitter=splitter,
                   tool="svc",
                   library="weka",
-                  clean_tmp_files=False,
                   debug=debug)
   model.summary()
 

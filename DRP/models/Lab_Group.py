@@ -1,5 +1,17 @@
 from django.db import models
-from DRP.settings import ACCESS_CODE_MAX_LENGTH
+from DRP.settings import ACCESS_CODE_LENGTH
+
+
+# Helper function for creating random access codes for Lab Groups.
+def get_random_code():
+  #Create a random alphanumeric code of specified length.
+  import random, string
+  options = string.letters + string.digits
+  chars = [random.choice(options) for i in xrange(ACCESS_CODE_LENGTH)]
+  return "".join(chars)
+
+
+
 
 class Lab_Group(models.Model):
   class Meta:
@@ -9,16 +21,8 @@ class Lab_Group(models.Model):
   lab_address = models.CharField(max_length=200)
   lab_email = models.CharField(max_length=254) #Maximum length of email address
 
-
-  def get_random_code(length = ACCESS_CODE_MAX_LENGTH):
-    #Create a random alphanumeric code of specified length.
-    import random, string
-    options = string.letters + string.digits
-    chars = [random.choice(options) for i in range(length)]
-    return "".join(chars)
-
-  access_code = models.CharField(max_length=ACCESS_CODE_MAX_LENGTH,
-    default=get_random_code)
+  access_code = models.CharField(max_length=ACCESS_CODE_LENGTH,
+                                 default=get_random_code)
 
   def __unicode__(self):
     return self.lab_title

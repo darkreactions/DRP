@@ -47,6 +47,17 @@ class ModelStats(models.Model):
     usable -- Whether this model can be used for predictions.
     active -- Whether this model is viewable in the dashboard.
     debug -- Enables/disables helpful stdout messages. Does not affect errors.
+    clean_tmp_files -- Enable/disable the auto-deletion of temporary files
+                       that are generated (Eg: *.arff, *.out).
+
+    preprocessor -- A function that will be passed the uncleaned data
+                    *before* splitting.
+    postprocessor -- A function that will be passed the data returned from
+                     the `splitter` function and the headers. Should return
+                     a tuple with (data, headers).
+    splitter -- A function that may be passed the kwarg "headers" and the
+                preprocessed data. Should return a dictionary with the split
+                data (eg: {"all":data_1, "train":data_2, "test":data_3}).
     """
 
     from DRP.fileFunctions import file_exists
