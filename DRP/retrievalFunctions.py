@@ -20,15 +20,40 @@ def get_lab_Data_size(lab_group):
   return size
 
 
-def get_data_with_atoms(atoms, data=None, op="and"):
+def atom_filter(atoms, data=None, op="and", negative=False):
+  """
+  Applies a containment search on the `data` for each atom in `atoms`;
+  thus, it can be used to find any reaction that contains any/all atoms
+  in a list.
+
+  op = The operator to use for the query.
+  negative = Enable to *remove* anything from `data` that matches the query.
+  """
+
   import operator
+  from django.db.models import Q
 
   op_map = {
     "and":operator.and_,
     "or":operator.or_,
   }
 
-  if data is None: data = get_public_data()
+  # Variable Setup
+  if data is None: data = get_valid_data()
+  if type(atoms)!=list: atoms = list(atoms)
+  op = op_map[op]
+
+  # Construct the query.
+  Qs = [Q(atoms__contains=atom) for atom in atoms]
+  filters = reduce(op, Qs)
+
+  # Apply the filter.
+  if negative:
+    data = data.filter(~filters)
+  else:
+    data = data.filter(filters)
+
+  return data
 
 
 
