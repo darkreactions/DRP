@@ -54,7 +54,7 @@ def create_expanded_datum_field_list(datum, preloaded_cg=None,
   from DRP.model_building.parse_rxn import parse_rxn
 
   #Convert the datum into a datumList (ie: a list of field values).
-  dirtyDatumList = datum.to_list()
+  dirtyDatumList = datum.to_list(keep_foreign_keys=False)
 
   #Ignore the "ref" field
   datumList = fix_abbrevs( dirtyDatumList, abbrev_map=preloaded_abbrev_map )
