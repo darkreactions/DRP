@@ -75,12 +75,14 @@ def learning_curve(name, description, curve_tag, data=None,
                                                  gen_debug=False,
                                                  debug=False):
   def curve_generator(total_size, step):
-    current = 0
-    i = 0
+    current = step*total_size
+    i = 1
     while total_size > current:
+
+      yield i, int(current)
+
       current += (step*total_size)
       i += 1
-      yield i, int(current)
 
     yield i, int(total_size)
 

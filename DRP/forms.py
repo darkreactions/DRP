@@ -182,10 +182,10 @@ class DataEntryForm(forms.ModelForm):
       "title":"Was a leak present during the reaction?"}))
   outcome = forms.ChoiceField(choices = OUTCOME_CHOICES, widget=forms.Select(
       attrs={'class':'form_text dropDownMenu',
-      "title":"0: No Data Available <br/> 1: No Solid<br/> 2: Noncrystalline/Brown<br/>3: Powder/Crystallites<br/>4: Large Single Crystals"}))
+      "title":"?: Missing<br/> 1: No Solid<br/> 2: Noncrystalline/Brown<br/>3: Powder/Crystallites<br/>4: Large Single Crystals"}))
   purity = forms.ChoiceField(choices = PURITY_CHOICES, widget=forms.Select(
       attrs={'class':'form_text dropDownMenu',
-      "title":"0: No Data Available<br/> 1: Multiphase<br/> 2: Single Phase"}))
+      "title":"?: Missing<br/> 1: Multiphase<br/> 2: Single Phase"}))
   notes = forms.CharField(required = False, widget=forms.TextInput(
       attrs={'class':'form_text form_text_long',
       "title":"Additional notes about the reaction."}))
