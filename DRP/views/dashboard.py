@@ -19,6 +19,11 @@ def get_fields_as_json(models, classes=4):
   # ]
 
   stat_counter = {}
+
+  if not models:
+    # If no models are specified, return an empty list of values.
+    return []
+
   for i, model in enumerate(models):
 
     try:

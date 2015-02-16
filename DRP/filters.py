@@ -5,7 +5,7 @@ def apply_filters(request, queryset, model="Data"):
   on some `data` QuerySet.
   """
 
-  from DRP.retrievalFunctions import filter_data, filter_models
+  from DRP.retrievalFunctions import filter_data
 
   filters = {}
   for key, val in request.GET.items():
@@ -22,3 +22,20 @@ def apply_filters(request, queryset, model="Data"):
       queryset = filter_models(queryset, filters)
 
   return queryset
+
+
+def filter_models(models, filters):
+  from django.db.models import Q
+  import operator
+
+  queries = []
+  for key, vals in filters.items():
+    Qs = [Q(**{key:val}) for val in vals]
+    query = reduce(operator.or_, Qs)
+    queries.append(query)
+
+  overall_query = reduce(operator.and_, queries)
+  models = models.filter(overall_query)
+  return models
+
+
