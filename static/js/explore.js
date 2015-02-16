@@ -36,10 +36,12 @@ function grabLinkIndices(links) {
 }
 
 
+console.log(parseInt(d3.select("#graph").style("width")))
 var width = parseInt(d3.select("#graph").style("width"), 10);
 var height = parseInt(d3.select("#graph").style("height"), 10);
 d3.json("/get_graph/", function(graph) {
-
+var centerX = width/2
+var centerY = height/2
   var nodeTooltips = [["Purity", "purity"],
       		["Outcome", "outcome"],
       		["Reference Number", "ref"],
@@ -49,8 +51,8 @@ d3.json("/get_graph/", function(graph) {
   var nodes = graph.nodes;
   var preLoad = graph.skipTicks === "True";
   var links = graph.links;
+  var nodes2 = graph.nodes2;
 
-  console.log(links);
   // Size of the text boxes that appear upon hovering over individual nodes.
   var textPlacement = nodeTooltips.length*40;
   var boxLength = 130;
@@ -58,37 +60,6 @@ d3.json("/get_graph/", function(graph) {
   var translateValue1 = width/2.3
   var translateValue2 = height/2.4
   var scaleValue = height/4500
-
-
-  var firstCluster = d3.selectAll(".circleClusters1");
-  var secondCluster = d3.selectAll(".circleClusters2");
-  var tinyNodes = d3.selectAll(".nodeElements");
-
-  //Here I am creating a zoom slider that will control the zoom level for the svg, and will also tie into which level of the cluster hierarchy is displayed
-  var dragger = new Dragdealer('slider', {
-      horizontal: false,
-      vertical: true,
-      animationCallback: function(x, y) {
-          $('#slider .value').text(Math.round(y * 100));
-          var zoomScaleValue = y + 1 + y*1.5 + 0.1*y*20
-
-          $('#graph').css("transform", "scale(" + zoomScaleValue + ")");
-
-          if (y < 0.3) {
-            firstCluster.style("visibility", "visible")
-            secondCluster.style("visibility", "hidden")
-            tinyNodes.style("visibility", "hidden")
-          } else if (y < 0.6) {
-            firstCluster.style("visibility", "hidden")
-            secondCluster.style("visibility", "visible")
-            tinyNodes.style("visibility", "hidden")
-          } else if (y < 0.85) {
-            firstCluster.style("visibility", "hidden")
-            secondCluster.style("visibility", "hidden")
-            tinyNodes.style("visibility", "visible")
-          }
-      }
-  });
 
   var zoom = d3.behavior.zoom()
                 .scaleExtent([1/10, 2])
@@ -138,8 +109,6 @@ d3.json("/get_graph/", function(graph) {
                 .linkDistance(100)
                 .size([width, height]);
   console.log("3.5");
-  console.log(force);
-  console.log(links);
 
   if (!preLoad) {
     console.log("3.6A")
@@ -171,6 +140,7 @@ d3.json("/get_graph/", function(graph) {
     .data(links)
     .enter()
     .append("line")
+    .attr("class", "lines") 
     .attr("x1", function(d) { return d.source.x; })
     .attr("y1", function(d) { return d.source.y; })
     .attr("x2", function(d) { return d.target.x; })
@@ -184,7 +154,7 @@ d3.json("/get_graph/", function(graph) {
     d3.selectAll(".tooltipContainer").remove();
   });
 
-  var nodeElements = container.selectAll(".node")
+  var baseNodes = container.selectAll("g")
                               .data(nodes.filter(function(d) {
                                 return d.outcome > 0;
                               }))
@@ -193,36 +163,45 @@ d3.json("/get_graph/", function(graph) {
   .attr("class", "node");
 
   // Clusters of all the nodes with the same SINGLE inorganic in common
-
-  var filter =  container.append("filter").attr("id", "blur")
-                         .append("feGaussianBlur")
-                         .attr("stdDeviation", 0);
-
-
-
-  nodeElements.append("circle")
+  var circleClusters1 = container.selectAll("circle")
+              .data(nodes)
+              .enter().append("circle") 
               .attr("class", "circleClusters1")
               .attr("fill", function(d) {
                 return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";
               })
               .attr("opacity", 0.4)
-              .attr("r", 200)
-              .attr("filter", "url(#blur)");
+              .attr("cx", function(d) { return d.x;})
+              .attr("cy", function(d) { return d.y;}) 
+              .attr("r", 200) 
+              .on("click", function(d) {
+                console.log("clicked!") 
+                var x = this.cx    
+                var y = this.cy
+                var shiftX = (centerX + x)
+                var shiftY = (centerY + y)
+                container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(0.4)")
+                d3.selectAll(".circleClusters1").attr("fill", function(d) { return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)"; 
+    ;})
+    }); 
 
-//Here I am trying to create a larger, encompassing text element/circle element in order to label the individual clusters(for the single inorg clusters, or circleClusters1
- /*   container.selectAll("circle")
-      .data(largeLabels)
-      .enter().append("circle")
-        .attr("class", "largeLabels")
-        .attr("cx", function(d) {return d.x/2;})
-        .attr("cy", function(d) {return d.y/2;})
-        .attr("r", function(d) {return d.r;})
-        .attr("fill", function(d) {return d.fill;});
-*/
-  //Here I am appending circles that represent the clusters of all the node with the same TWO inorganics in common
-    nodeElements.append("circle").attr("class", "circleClusters2").attr("fill", function(d) {return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)";}).attr("opacity", 0.4).attr("r", 80);
+/*
+  //Clusters of all nodes with both inorganics in common  
+   var circleClusters2 = container.selectAll("circle")
+              .data(nodes)
+              .append("circle") 
+              .attr("class", "circleClusters2")
+              .attr("fill", function(d) {
+                return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)";
+              })
+              .attr("opacity", 0.4)
+              .attr("cx", function(d) { return d.x;})
+              .attr("cy", function(d) { return d.y;}) 
+              .attr("r", 80); 
+*/  
 
-    nodeElements.append("circle")
+//Nodes representing each individual reactions 
+  baseNodes.append("circle")
     .attr("class", "nodeElements")
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
@@ -362,24 +341,45 @@ d3.json("/get_graph/", function(graph) {
     })
 
 
-      nodeElements.attr("transform", function(d) {
+      baseNodes.attr("transform", function(d) {
 	return "translate(" + d.x + "," + d.y + ")";
     });
 
     // Hide nodes on the initial zoom level.
     // Upon clicking a circleCluster zoom to that cluster and show the nodes again.
-    d3.selectAll(".nodeElements").style("visibility", "hidden")
-    d3.selectAll(".circleClusters1").style("visibility", "visible")
-    d3.selectAll(".circleClusters2").style("visibility", "hidden")
 
-    d3.selectAll(".circleClusters").on("click", function(d) {
-            x = this.cx
-            y = this.cy
-            shiftX = centerX + x
-            shiftY = centerY + y
-            container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(0.2)")
-            d3.selectAll(".nodeElements").style("visibility", "visible")
-    ;});
+    
+    var label1s = container.selectAll("label1")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .attr("class", "label1")
+                .attr("x", function(d) { return d.x;})
+                .attr("y", function(d) { return d.y;}) 
+                .attr("fill", "black")
+                .attr("font-size", "50px")
+                .text(function(d) { 
+                return (d.label1!="none") ? d.label1 : "";
+              });
+
+    var label2s = container.selectAll("label2")
+                .data(nodes)
+                .enter()
+                .append("text")
+                .attr("class", "label2")
+                .attr("x", function(d) { return d.x;})
+                .attr("y", function(d) { return d.y;}) 
+                .attr("fill", "black")
+                .attr("font-size", "34px")
+                .text(function(d) { 
+                return (d.label2!="none") ? d.label2 : "";
+              });
+
+    $(".nodeElements").remove()  
+    $(".lines").remove()
+    $(".label2").remove()
+    $(".label1").remove() 
+        
 
   $("#loadingMessage").remove();
 

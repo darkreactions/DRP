@@ -1,7 +1,7 @@
 //Load necessary JSON files.
 var dataRanges;
 $.ajax({
- "async": false,
+ "async": true,
  "dataType": "json",
  "url":STATIC_URL+"/js/dataRanges.json",
  "success": function(json) {
@@ -11,7 +11,7 @@ $.ajax({
 
 var editChoices;
 $.ajax({
- "async": false,
+ "async": true,
  "dataType": "json",
  "url":STATIC_URL+"/js/editChoices.json",
  "success": function(json) {
