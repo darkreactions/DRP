@@ -88,6 +88,13 @@ def filter_existing_calcs(data):
 
   return data
 
+def filter_models(models, filters):
+  print "filtering..."
+  for key,val in filters.items():
+    print "{}:{}".format(key,val)
+  return models
+
+
 def filter_data(data, queries):
   from django.db.models import Q
   from DRP.data_config import CONFIG

@@ -21,10 +21,12 @@ def research_data_filter(data):
   # Developers: Put any processing steps here.
 
 
+
   return data
 
 
-def gen_model(title, description, data=None, debug=False, active=False, tags=""):
+def gen_model(title, description, data=None, force=False, debug=False,
+                                             active=False, tags=""):
 
   from DRP.models import ModelStats
   from DRP.retrievalFunctions import get_valid_data
@@ -55,16 +57,79 @@ def gen_model(title, description, data=None, debug=False, active=False, tags="")
                   preprocessor=preprocessor,
                   postprocessor=postprocessor,
                   splitter=splitter,
-                  tool="svc",
-                  library="weka",
+                  tool="random forest",
+                  library="sklearn",
+                  force=force,
                   debug=debug)
-  model.summary()
+
+  if debug:
+    model.summary()
 
   return model
 
 
 
-def build_model_from_date(model_name, model_description, date, batch_tag, data=None, active=False):
+def learning_curve(name, description, curve_tag, data=None,
+                                                 force=True,
+                                                 step=0.05,
+                                                 gen_debug=False,
+                                                 debug=False):
+  def curve_generator(total_size, step):
+    current = 0
+    i = 0
+    while total_size > current:
+      current += (step*total_size)
+      i += 1
+      yield i, int(current)
+
+    yield i, int(total_size)
+
+  from DRP.retrievalFunctions import get_valid_data
+  from DRP.model_building.rxn_calculator import headers
+  import random, math, datetime
+
+  if data is None:
+    data = get_valid_data()
+
+    # Prepare the default data if it is unavailable.
+    if debug:
+        print "Gathering default data..."
+
+    # Make sure you remark on the filter you're using in the description!
+    data = research_data_filter(data)
+
+    data = [headers]+[d.get_calculations_list() for d in data]
+
+  else:
+    data = list(data)
+
+  headers = data.pop(0)
+
+  total_iters = int(math.ceil(1.0/step))
+
+  for i, sample_size in curve_generator( len(data), step):
+
+    model_name = "{}__{}_of_{}".format(name, i, total_iters)
+    model_tag = "learning_curve {} {}".format(curve_tag, i)
+
+    # Grab a random sampling of the data to use.
+    iteration_data = [headers] + random.sample(data, sample_size)
+
+    if debug:
+      print "Generating: {}".format(model_name),
+
+    # Generate the model.
+    gen_model(model_name, description, tags=model_tag,
+                                       force=force,
+                                       data=iteration_data,
+                                       debug=gen_debug)
+
+    if debug:
+      print " ({})".format(datetime.datetime.now().time())
+
+
+
+def build_model_from_date(model_name, model_description, date, batch_tag, data=None):
   """
   Constructs a model from the data available on a given date.
   """
@@ -78,9 +143,7 @@ def build_model_from_date(model_name, model_description, date, batch_tag, data=N
   filtered = filter_by_date(data, date, "previous")
   tags = "retrogenerated {}".format(batch_tag)
 
-  gen_model(model_name, model_description, data=filtered,
-                        active=active, tags=tags)
-
+  gen_model(model_name, model_description, data=filtered, tags=tags)
 
 
 

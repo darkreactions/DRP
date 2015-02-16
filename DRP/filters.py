@@ -1,11 +1,11 @@
 
-def apply_filters(request, data):
+def apply_filters(request, queryset, model="Data"):
   """
   Reads a `request`/dictionary to parse filters and applies those filters
   on some `data` QuerySet.
   """
 
-  from DRP.retrievalFunctions import filter_data
+  from DRP.retrievalFunctions import filter_data, filter_models
 
   filters = {}
   for key, val in request.GET.items():
@@ -16,6 +16,9 @@ def apply_filters(request, data):
 
   # If filters exist, apply them!
   if filters:
-    data = filter_data(data, filters)
+    if model=="Data":
+      queryset = filter_data(queryset, filters)
+    elif model=="ModelStats":
+      queryset = filter_models(queryset, filters)
 
-  return data
+  return queryset

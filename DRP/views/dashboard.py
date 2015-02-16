@@ -48,9 +48,11 @@ def get_fields_as_json(models, classes=4):
 def get_class_stats_json(request, classes=4):
 
   from DRP.retrievalFunctions import get_usable_models
+  from DRP.filters import apply_filters
   import json
 
   models = get_usable_models()
+  models = apply_filters(request, models, model="ModelStats")
 
   #Convert the data into a JSON format.
   raw = {
@@ -68,6 +70,11 @@ def get_class_stats_json(request, classes=4):
 
 @login_required
 def get_dashboard(request):
+
+  # Pass the query through the template into the JS.
+  current_query = "?"+request.GET.urlencode()
+
   return render(request, 'global_page.html', {
    "template": "dashboard",
+   "current_query": current_query,
   })
