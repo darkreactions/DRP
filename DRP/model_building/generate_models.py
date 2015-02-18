@@ -24,11 +24,72 @@ def research_data_filter(data):
 
   return data
 
+def generate_avg(self, title, data, iterations=3, only_keep_avg=True,
+                                     construct_kwargs={}):
+  def _get_avg_confusion_dict(model_stats):
+    """
+    Returns an average confusion dict from a list of model_stats
+    """
 
-def gen_model(title, description, data=None, force=False, debug=False,
-                                             active=False, tags=""):
+    conf_dicts = [m.load_confusion_dict for m in model_stats]
+    avg_dict = {}
+    for conf_dict in conf_dicts:
+      for guess, actuals in conf_dict.items():
+
+        if not guess in avg_dict:
+          avg_dict[guess] = {}
+
+        for actual, occurrences in actuals.items():
+          if not actual in avg_dict[guess]:
+            avg_dict[guess][actual] = 0
+
+          avg_dict[guess][actual] += occurrences
+
+    num_models = float(len(model_stats))
+    avg_dict ={guess:{actual:count/num_models for actual,count in actuals.items()}
+                     for guess, actuals in avg_dict.items()}
+
+    return avg_dict
 
   from DRP.models import ModelStats
+
+  # Construct multiple `iterations` of models
+  model_stats = [ModelStats().construct(title+str(i), data, **construct_kwargs)
+                   for i in xrange(iterations)]
+
+  best_model = max(model_stats, key=lambda model: model.test_accuracy)
+
+  avg_model = ModelStats()
+  avg_model.title = title
+
+  # Copy some stats directly from the `best_model`.
+  copy_from_best = ["headers", "correct_vals", "description", "tags",
+                    "filename", "active", "usable", "library", "tool",
+                    "response"]
+  for field in copy_from_best:
+    value = getattr(best_model, field)
+    setattr(avg_model, field, value)
+
+  # Set the start and end times of this model as the time taken
+  # for the entire sequence of iterations to complete.
+  avg_model.start_time = model_stats[0].start_time
+  avg_model.end_time = model_stats[-1].end_time
+
+  avg_model.set_confusion_table(_get_avg_confusion_dict(model_stats))
+  avg_model.save()
+
+  if only_keep_avg:
+    for model in model_stats:
+      model.delete()
+
+  return avg_model
+
+
+
+def gen_model(title, description, data=None, force=False, debug=False,
+                                             iterations=1,
+                                             active=False, tags=""):
+
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
 
@@ -49,18 +110,21 @@ def gen_model(title, description, data=None, force=False, debug=False,
   from DRP.postprocessors import default_postprocessor as postprocessor
   from DRP.model_building.splitters import default_splitter as splitter
 
-  model = ModelStats()
-  model.construct(title, data,
-                  description=description,
-                  tags=tags,
-                  active=active,
-                  preprocessor=preprocessor,
-                  postprocessor=postprocessor,
-                  splitter=splitter,
-                  tool="random forest",
-                  library="sklearn",
-                  force=force,
-                  debug=debug)
+  construct_kwargs = {
+                  "description":description,
+                  "tags":tags,
+                  "active":active,
+                  "preprocessor":preprocessor,
+                  "postprocessor":postprocessor,
+                  "splitter":splitter,
+                  "tool":"random forest",
+                  "library":"sklearn",
+                  "force":force,
+                  "debug":debug
+                  }
+
+  model = generate_avg(title, data, iterations=iterations,
+                                    construct_kwargs=construct_kwargs)
 
   if debug:
     model.summary()

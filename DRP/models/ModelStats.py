@@ -32,7 +32,7 @@ class ModelStats(models.Model):
 
 
   def construct(self, title, data, description="", tags="",
-                                     library="sklearn", tool="random forest",
+                                     library="weka", tool="svc",
                                      response="outcome",
                                      filename="", force=False,
                                      usable=True, active=False,
