@@ -1,5 +1,3 @@
-<script src='{{STATIC_URL}}js/search.js'></script>
-
 <div class='bannerText'>Search</div>
 
 <form method="post" id="searchForm" class="popupScreenForm infoForm">
@@ -25,5 +23,9 @@
     <input id="searchValue" placeholder='Value' class="autocomplete_reactant" type="text" name="value" value="">
 
   </div>
-  <input type="button" value="Search" class="search_filterButton"/>
+  <input type="button" value="Filter" class="search_filterButton"/>
+  <input type="button" value="Reset" class="search_resetFiltersButton"/>
 </form>
+
+<script src='{{STATIC_URL}}js/search.js'></script>
+

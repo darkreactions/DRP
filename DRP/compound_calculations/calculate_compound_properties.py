@@ -13,7 +13,6 @@ if django_path not in sys.path:
 
 
 import django.db
-from DRP.settings import BASE_DIR, LOG_DIR
 from DRP.models import CompoundEntry, clean_compound, create_CG_calcs_if_needed
 
 from DRP.emailFunctions import email_admins

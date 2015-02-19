@@ -60,7 +60,6 @@ def update_all_reactions(lab_group=None):
 def perform_CG_calculations(only_missing=True, lab_group=None,
                             attempt_failed = True, verbose=False):
 
-  from DRP.validation import clean_compound
   from DRP.models import CompoundEntry
 
   #Variable Setup

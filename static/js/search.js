@@ -5,6 +5,10 @@ $(document).on("keyup", "#searchValue", function(e) {
   }
 })
 
+$(document).on("click", ".search_resetFiltersButton", function() {
+  location.search = "";
+});
+
 $(document).on("click", ".search_filterButton", function() {
 
   var $form = $(this).closest("form");
@@ -52,5 +56,4 @@ $(document).on("change", "#searchForm .dropDownMenu[name=field]", function(){
     $("#searchForm select[name=subfield]").hide();
   }
 });
-
 
