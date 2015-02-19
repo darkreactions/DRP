@@ -46,17 +46,20 @@ def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs
           avg_dict[guess][actual] += occurrences
 
     num_models = float(len(model_stats))
-    avg_dict ={guess:{actual:count/num_models for actual,count in actuals.items()}
-                     for guess, actuals in avg_dict.items()}
+    trunc_divide = lambda x,y: float("{:.3f}".format(x/y))
+
+    avg_dict ={guess:{actual:trunc_divide(count,num_models)
+                        for actual,count in actuals.items()}
+                          for guess, actuals in avg_dict.items()}
 
     return avg_dict
 
   from DRP.models import ModelStats
 
-  debug = "debug" in construct_kwargs
+  debug = "debug" in construct_kwargs and construct_kwargs["debug"]==True
 
   if debug:
-    print "Averaging {} model iterations.".format(iterations)
+    print "Performing {} model-gen iterations...".format(iterations)
 
   # Construct multiple `iterations` of models
   model_stats = []
@@ -70,7 +73,9 @@ def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs
 
 
   best_model = max(model_stats, key=lambda model: model.test_accuracy())
-  print [m.test_accuracy() for m in model_stats]
+
+  if debug:
+    print "Preparing average model..."
 
   avg_model = ModelStats()
   avg_model.title = title

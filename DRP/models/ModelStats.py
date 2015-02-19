@@ -64,7 +64,7 @@ class ModelStats(models.Model):
     """
 
     from DRP.fileFunctions import file_exists
-    import datetime
+    import datetime, random
 
     # Use a custom splitter-function if specified.
     if not splitter:
@@ -115,6 +115,7 @@ class ModelStats(models.Model):
       data = preprocessor(data)
 
     headers = data.pop(0)
+    random.shuffle(data) #Randomize the data before splitting.
 
     # Split the data.
     if debug: print "Splitting data... ({})".format(splitter.__name__)
