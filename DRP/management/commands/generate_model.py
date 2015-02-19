@@ -11,6 +11,7 @@ class Command(BaseCommand):
     if 2<= len(args) <= 2+len(valid_options):
       active = not "inactive" in args
       debug = "debug" in args
+      force = "force" in args
 
       title = args[0]
       description = args[1]
@@ -18,7 +19,7 @@ class Command(BaseCommand):
       if "datetime" in args:
         title += "_{}".format(int(time.time()))
 
-      gen_model(title, description, active=active, debug=debug)
+      gen_model(title, description, active=active, debug=debug, force=force)
 
     else:
       self.stdout.write("\n--Oops! Check your syntax.")

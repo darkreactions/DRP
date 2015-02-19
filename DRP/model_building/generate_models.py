@@ -24,15 +24,15 @@ def research_data_filter(data):
 
   return data
 
-def generate_avg(self, title, data, iterations=3, only_keep_avg=True,
-                                     construct_kwargs={}):
+def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
   def _get_avg_confusion_dict(model_stats):
     """
     Returns an average confusion dict from a list of model_stats
     """
 
-    conf_dicts = [m.load_confusion_dict for m in model_stats]
+    conf_dicts = [m.load_confusion_dict() for m in model_stats]
     avg_dict = {}
+
     for conf_dict in conf_dicts:
       for guess, actuals in conf_dict.items():
 
@@ -53,14 +53,28 @@ def generate_avg(self, title, data, iterations=3, only_keep_avg=True,
 
   from DRP.models import ModelStats
 
-  # Construct multiple `iterations` of models
-  model_stats = [ModelStats().construct(title+str(i), data, **construct_kwargs)
-                   for i in xrange(iterations)]
+  debug = "debug" in construct_kwargs
 
-  best_model = max(model_stats, key=lambda model: model.test_accuracy)
+  if debug:
+    print "Averaging {} model iterations.".format(iterations)
+
+  # Construct multiple `iterations` of models
+  model_stats = []
+  for i in xrange(iterations):
+    model_title = "{}_{}".format(title, i)
+    new_model = ModelStats()
+    new_model.construct(model_title, data, **construct_kwargs)
+    model_stats.append(new_model)
+    if debug:
+      print ""
+
+
+  best_model = max(model_stats, key=lambda model: model.test_accuracy())
+  print [m.test_accuracy() for m in model_stats]
 
   avg_model = ModelStats()
   avg_model.title = title
+  avg_model.iterations=iterations
 
   # Copy some stats directly from the `best_model`.
   copy_from_best = ["headers", "correct_vals", "description", "tags",
@@ -69,6 +83,8 @@ def generate_avg(self, title, data, iterations=3, only_keep_avg=True,
   for field in copy_from_best:
     value = getattr(best_model, field)
     setattr(avg_model, field, value)
+
+  avg_model.tags += " averaged"
 
   # Set the start and end times of this model as the time taken
   # for the entire sequence of iterations to complete.
@@ -87,7 +103,6 @@ def generate_avg(self, title, data, iterations=3, only_keep_avg=True,
 
 
 def gen_model(title, description, data=None, force=False, debug=False,
-                                             iterations=1,
                                              active=False, tags=""):
 
   from DRP.retrievalFunctions import get_valid_data
@@ -120,13 +135,13 @@ def gen_model(title, description, data=None, force=False, debug=False,
                   "tool":"random forest",
                   "library":"sklearn",
                   "force":force,
-                  "debug":debug
+                  "debug":debug,
                   }
 
-  model = generate_avg(title, data, iterations=iterations,
-                                    construct_kwargs=construct_kwargs)
+  model = generate_avg(title, data, construct_kwargs=construct_kwargs)
 
   if debug:
+    print "Average model produced:"
     model.summary()
 
   return model
