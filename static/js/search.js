@@ -35,7 +35,6 @@ $(document).on("click", ".search_filterButton", function() {
 });
 
 
-
 // Set the autocomplete box on reactants if needed.
 $(document).on("change", ".dropDownMenu[name=field]", function() {
   if ($(this).val()=="reactant"){
