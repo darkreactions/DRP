@@ -41,12 +41,6 @@ def get_fields_as_json(models, classes=4):
 
       stat_counter[stat]["values"].append([i, val])
 
-  size_tups = stat_counter["Test Size"]["values"]
-  max_size = float(max([size for index, size in size_tups]))
-  new_size_tups = [(index, size/max_size) for index, size in size_tups]
-  stat_counter["Test Size"]["values"] = new_size_tups
-
-
   return stat_counter.values()
 
 

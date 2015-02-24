@@ -30,13 +30,17 @@ function makeGraph(graphURL, svgContainer) {
 
   //Taken nearly entirely from: http://nvd3.org/examples/lineWithFocus.html
   d3.json(graphURL, function(data) {
+    var sizeLine = data.filter(function(obj) {
+      return obj["key"]==="Test Size";
+    });
+    console.log(sizeLine);
+
 
     nv.addGraph(function() {
       //var chart = nv.models.lineWithFocusChart()
       var chart = nv.models.lineChart()
           .x(function(d) { return d[0]; })
           .y(function(d) { return d[1]; })
-          .yDomain([0,1])
           .tooltips(true)
           .tooltipContent(function(key, x, y, e, graph) {
               var HTML = "";

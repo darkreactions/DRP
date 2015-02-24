@@ -43,6 +43,7 @@ def get_model_field_names(both=False, verbose=False, model="Data",
       fields_to_ignore = {u"id","user", "assigned_user", "lab_group", "saved",
                           "model_version", "atoms", "creation_time_dt", "nonsense",
                           "complete", "score", "date_dt", "hidden", "seed", "seeded"}
+
   elif model=="CompoundEntry":
     from DRP.models.CompoundEntry import CompoundEntry
     all_fields = CompoundEntry._meta.fields

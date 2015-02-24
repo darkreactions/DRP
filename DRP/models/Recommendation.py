@@ -9,12 +9,12 @@ from ModelStats import ModelStats
 from Data import Data
 from CompoundEntry import CompoundEntry
 from DataCalc import DataCalc
-from methods import get_model_field_names
+
 class Recommendation(models.Model):
   class Meta:
     app_label = "DRP"
 
-  #Giving Rec objects a ref field  
+  #Giving Rec objects a ref field
   ref = models.CharField("Reference", max_length=30, unique=False, default="")
 
   #Reactant Fields
@@ -55,49 +55,90 @@ class Recommendation(models.Model):
 
   #Foreign Key field
   calculations = models.ForeignKey(DataCalc, unique=False, blank=True, null=True,
-
                                    on_delete=models.SET_NULL)
-    #Give Recommendation a 'to_list' attribute
-  def to_list(self):
-    all_fields = get_model_field_names(model="Recommendation", collect_ignored = True)
-    fields_to_exclude = {"lab_group", "atoms"}
-    headings = [field for field in all_fields if field not in fields_to_exclude]
-    result = [getattr(self,field) for field in headings]
-    for i, elem in enumerate(result):
-       if type(elem) == CompoundEntry:
-         result[i] = elem.abbrev 
-    return result  
-      
 
-  def gather_all_nonsense_recs(self):
+  def to_list(self, keep_foreign_keys=True):
+    from methods import get_model_field_names
+
+    # Variable Setup
+    fields_to_exclude = {"lab_group", "atoms"}
+
+    # Get the relevant headings.
+    all_fields = get_model_field_names(model="Data",
+                                       collect_ignored = True)
+    headings = [field for field in all_fields if field not in fields_to_exclude]
+
+    row = [getattr(self,field) for field in headings if hasattr(self,field)]
+
+    # Convert CompoundEntry ForeignKeys to their respective "compounds".
+    if not keep_foreign_keys:
+      row = [elem if type(elem)!=CompoundEntry else elem.compound for elem in row]
+      row = map(lambda elem: elem if elem is not None else "", row)
+
+    return row
+
+  def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
+                            preloaded_cg=None, debug=False,
+                            preloaded_abbrev_map=None):
+
+    def _make_float(raw):
+      # Convert any number-like strings to floats.
+      try:
+        return float(raw)
+      except:
+        return raw
+
+
     from DRP.model_building.load_data import create_expanded_datum_field_list
     from DRP.model_building.rxn_calculator import headers
-    from DRP.model_building.load_cg import get_cg
-    from DRP.model_building.load_data import get_abbrev_map
+    import json
 
-    nonsense = Recommendation.objects.filter(nonsense=True)
-    nonsense_list = []
-    cg = get_cg()
-    abbrev_map = get_abbrev_map()
-    errors = 0
-    outcome = headers.index("outcome")
+    try:
+      if not self.calculations or force_recalculate:
+        # Create the extended calculations.
+        calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg,
+                                                    preloaded_abbrev_map=preloaded_abbrev_map)
 
-    for i, elem in enumerate(nonsense):
-      try:
-        expanded_row = create_expanded_datum_field_list(elem, preloaded_cg=cg, preloaded_abbrev_map=abbrev_map) 
-        expanded_row[outcome] = 0
-        nonsense_list.append(expanded_row)
-      except Exception as e:
-        #print e  
-        errors += 1
-    #newDataCalc = DataCalc(contents=json.dumps(nonsenseDict))
-    #newDataCalc.save() 
-    #elem.calculations = newDataCalc
-    print "Failed {} of {}".format(errors, nonsense.count())
-    return nonsense_list 
+        calcDict = {key:_make_float(val) for key,val in zip(headers, calcList)}
 
-      
+        # Prepare a new DataCalc object.
+        newDataCalc = DataCalc(contents=json.dumps(calcDict))
+        newDataCalc.save()
 
+        # Create the ForeignKey between the new DataCalc and this Datum.
+        self.calculations = newDataCalc
+        self.is_valid = True
+        self.save()
+
+        final_dict = calcDict
+
+      else:
+        # Load the result from the database if it is already present.
+        print "6"
+        final_dict = self.calculations.make_json()
+
+
+      if include_lab_info:
+        print "7"
+        final_dict.update({
+                          "lab_title":self.lab_group.lab_title,
+                          "creation_time_dt":str(self.creation_time_dt),
+                          })
+
+      # Make sure all of the keys are present.
+      missing_keys = not set(headers).issubset(set(final_dict.keys()))
+
+      if type(final_dict)!=dict or missing_keys:
+        # If the final_dict is in the wrong format, recalculate it.
+        return self.get_calculations_dict(include_lab_info=include_lab_info,
+                                          force_recalculate=True)
+
+      return final_dict
+
+    except Exception as e:
+      self.is_valid = False
+      self.save()
+      raise Exception("(get_calculations_dict) {}".format(e))
 
 
 def get_recommendations(lab_group):

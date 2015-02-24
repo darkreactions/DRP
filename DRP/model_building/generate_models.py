@@ -17,9 +17,10 @@ def research_data_filter(data):
   in the model description!
   """
 
-
   # Developers: Put any processing steps here.
 
+  recs = []
+  data += recs
 
 
   return data
@@ -117,12 +118,15 @@ def gen_model(title, description, data=None, force=False, debug=False,
   if data is None:
     if debug:
       print "Gathering default data..."
-    data = get_valid_data()
+    data = list(get_valid_data())
 
     # Make sure you remark on the filter you're using in the description!
     data = research_data_filter(data)
 
     data = [headers]+[d.get_calculations_list() for d in data]
+
+    if debug:
+      print "Found {} data...".format(len(data)-1)
 
 
   # If `splitter` is set to `None`, the default splitter will be used.
