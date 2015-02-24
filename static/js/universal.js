@@ -704,6 +704,22 @@ function loadSideBar(response, kwargs){
     if (kwargs["autocomplete"]){
        setReactantAutoComplete();
     }
+
+
+    function displayFilter() {
+      var container = $("#searchFilters");
+      var keyVals = location.search.replace("?","").split("&");
+      for (var i=0; i<keyVals.length; i++) {
+        var key = keyVals[i].split("=")[0];
+        var val = keyVals[i].split("=")[1];
+        if (key!=="") {
+          container.append(key + " = '" + val + "'<br/>");
+        }
+      }
+    }
+
+
+    displayFilter();
   }
 }
 
@@ -1226,6 +1242,15 @@ $(document).on("click", ".CG_saveButton", function() {
   }
  });
 });
+
+
+//############   Optional Startup ###############################
+var searchButton = $("#searchButton");
+if (searchButton.length) {
+  if (location.search!=="") {
+    searchButton.trigger("click");
+  }
+}
 
 
 //############   Upload   ########################################

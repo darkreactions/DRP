@@ -31,12 +31,11 @@ function makeGraph(graphURL, svgContainer) {
   //Taken nearly entirely from: http://nvd3.org/examples/lineWithFocus.html
   d3.json(graphURL, function(data) {
 
+
     nv.addGraph(function() {
-      //var chart = nv.models.lineWithFocusChart()
       var chart = nv.models.lineChart()
           .x(function(d) { return d[0]; })
           .y(function(d) { return d[1]; })
-          .yDomain([0,1])
           .tooltips(true)
           .tooltipContent(function(key, x, y, e, graph) {
               var HTML = "";
@@ -80,8 +79,14 @@ function makeGraph(graphURL, svgContainer) {
       chart.yAxis
           .tickFormat(d3.format(',.1%'));
 
+      // Remove the "Test Size" line from the lines to graph.
+      var lines = data["lines"].filter(function(obj) {
+        return obj["key"]!=="Test Size";
+      });
+
+
       d3.select(svgContainer)
-          .datum(data["lines"])
+          .datum(lines)
           .transition().duration(500)
           .call(chart);
 
@@ -96,5 +101,8 @@ function makeGraph(graphURL, svgContainer) {
   });
 }
 
-makeGraph("/get_class_stats/2","#chart2Class svg");
-makeGraph("/get_class_stats/4","#chart4Class svg");
+var query2 =  $("#chart2Class").attr("query");
+var query4 =  $("#chart4Class").attr("query");
+
+makeGraph("/get_class_stats/2"+query2,"#chart2Class svg");
+makeGraph("/get_class_stats/4"+query4,"#chart4Class svg");

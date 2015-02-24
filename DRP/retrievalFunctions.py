@@ -151,7 +151,6 @@ def filter_data(data, queries):
     if query:
       op = op_map[field] if field in op_map else operator.or_
       query = reduce(op, query)
-      print query
       Qs.append(query)
 
   if queries:

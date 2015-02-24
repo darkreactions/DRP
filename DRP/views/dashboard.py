@@ -19,6 +19,11 @@ def get_fields_as_json(models, classes=4):
   # ]
 
   stat_counter = {}
+
+  if not models:
+    # If no models are specified, return an empty list of values.
+    return []
+
   for i, model in enumerate(models):
 
     try:
@@ -36,21 +41,17 @@ def get_fields_as_json(models, classes=4):
 
       stat_counter[stat]["values"].append([i, val])
 
-  size_tups = stat_counter["Test Size"]["values"]
-  max_size = float(max([size for index, size in size_tups]))
-  new_size_tups = [(index, size/max_size) for index, size in size_tups]
-  stat_counter["Test Size"]["values"] = new_size_tups
-
-
   return stat_counter.values()
 
 
 def get_class_stats_json(request, classes=4):
 
   from DRP.retrievalFunctions import get_usable_models
+  from DRP.filters import apply_filters
   import json
 
   models = get_usable_models()
+  models = apply_filters(request, models, model="ModelStats")
 
   #Convert the data into a JSON format.
   raw = {
@@ -68,6 +69,11 @@ def get_class_stats_json(request, classes=4):
 
 @login_required
 def get_dashboard(request):
+
+  # Pass the query through the template into the JS.
+  current_query = "?"+request.GET.urlencode()
+
   return render(request, 'global_page.html', {
    "template": "dashboard",
+   "current_query": current_query,
   })

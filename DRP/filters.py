@@ -1,5 +1,5 @@
 
-def apply_filters(request, data):
+def apply_filters(request, queryset, model="Data"):
   """
   Reads a `request`/dictionary to parse filters and applies those filters
   on some `data` QuerySet.
@@ -16,6 +16,26 @@ def apply_filters(request, data):
 
   # If filters exist, apply them!
   if filters:
-    data = filter_data(data, filters)
+    if model=="Data":
+      queryset = filter_data(queryset, filters)
+    elif model=="ModelStats":
+      queryset = filter_models(queryset, filters)
 
-  return data
+  return queryset
+
+
+def filter_models(models, filters):
+  from django.db.models import Q
+  import operator
+
+  queries = []
+  for key, vals in filters.items():
+    Qs = [Q(**{key:val}) for val in vals]
+    query = reduce(operator.or_, Qs)
+    queries.append(query)
+
+  overall_query = reduce(operator.and_, queries)
+  models = models.filter(overall_query)
+  return models
+
+

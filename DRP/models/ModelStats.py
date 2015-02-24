@@ -15,6 +15,7 @@ class ModelStats(models.Model):
   title = models.CharField("Title", max_length=100, default="untitled")
   description = models.TextField(default="")
   tags = models.TextField(default="")
+  iterations = models.IntegerField("iterations", default=1)
 
   # Model Status and Location
   filename = models.CharField("Filename", max_length=128,
@@ -26,13 +27,13 @@ class ModelStats(models.Model):
 
   # Available model types.
   library = models.CharField("Library", max_length=128, default="weka")
-  tool = models.CharField("Tool", max_length=128, default="random forest")
+  tool = models.CharField("Tool", max_length=128, default="svc")
   response = models.CharField("Response", max_length=128, default="outcome")
 
 
 
   def construct(self, title, data, description="", tags="",
-                                     library="sklearn", tool="random forest",
+                                     library="weka", tool="svc",
                                      response="outcome",
                                      filename="", force=False,
                                      usable=True, active=False,
@@ -63,7 +64,7 @@ class ModelStats(models.Model):
     """
 
     from DRP.fileFunctions import file_exists
-    import datetime
+    import datetime, random
 
     # Use a custom splitter-function if specified.
     if not splitter:
@@ -114,6 +115,7 @@ class ModelStats(models.Model):
       data = preprocessor(data)
 
     headers = data.pop(0)
+    random.shuffle(data) #Randomize the data before splitting.
 
     # Split the data.
     if debug: print "Splitting data... ({})".format(splitter.__name__)

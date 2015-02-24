@@ -17,16 +17,100 @@ def research_data_filter(data):
   in the model description!
   """
 
-
   # Developers: Put any processing steps here.
+
+  recs = []
+  data += recs
 
 
   return data
 
+def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
+  def _get_avg_confusion_dict(model_stats):
+    """
+    Returns an average confusion dict from a list of model_stats
+    """
 
-def gen_model(title, description, data=None, debug=False, active=False, tags=""):
+    conf_dicts = [m.load_confusion_dict() for m in model_stats]
+    avg_dict = {}
+
+    for conf_dict in conf_dicts:
+      for guess, actuals in conf_dict.items():
+
+        if not guess in avg_dict:
+          avg_dict[guess] = {}
+
+        for actual, occurrences in actuals.items():
+          if not actual in avg_dict[guess]:
+            avg_dict[guess][actual] = 0
+
+          avg_dict[guess][actual] += occurrences
+
+    num_models = float(len(model_stats))
+    trunc_divide = lambda x,y: float("{:.3f}".format(x/y))
+
+    avg_dict ={guess:{actual:trunc_divide(count,num_models)
+                        for actual,count in actuals.items()}
+                          for guess, actuals in avg_dict.items()}
+
+    return avg_dict
 
   from DRP.models import ModelStats
+
+  debug = "debug" in construct_kwargs and construct_kwargs["debug"]==True
+
+  if debug:
+    print "Performing {} model-gen iterations...".format(iterations)
+
+  # Construct multiple `iterations` of models
+  model_stats = []
+  for i in xrange(iterations):
+    model_title = "{}_{}".format(title, i)
+    new_model = ModelStats()
+    new_model.construct(model_title, data, **construct_kwargs)
+    model_stats.append(new_model)
+    if debug:
+      print ""
+
+
+  best_model = max(model_stats, key=lambda model: model.test_accuracy())
+
+  if debug:
+    print "Preparing average model..."
+
+  avg_model = ModelStats()
+  avg_model.title = title
+  avg_model.iterations=iterations
+
+  # Copy some stats directly from the `best_model`.
+  copy_from_best = ["headers", "correct_vals", "description", "tags",
+                    "filename", "active", "usable", "library", "tool",
+                    "response"]
+  for field in copy_from_best:
+    value = getattr(best_model, field)
+    setattr(avg_model, field, value)
+
+  avg_model.tags += " averaged"
+
+  # Set the start and end times of this model as the time taken
+  # for the entire sequence of iterations to complete.
+  avg_model.start_time = model_stats[0].start_time
+  avg_model.end_time = model_stats[-1].end_time
+
+  avg_model.set_confusion_table(_get_avg_confusion_dict(model_stats))
+  avg_model.save()
+
+  if only_keep_avg:
+    for model in model_stats:
+      model.delete()
+
+  return avg_model
+
+
+
+def gen_model(title, description, data=None, force=False, debug=False,
+                                             active=False, tags=""):
+
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
 
@@ -34,12 +118,15 @@ def gen_model(title, description, data=None, debug=False, active=False, tags="")
   if data is None:
     if debug:
       print "Gathering default data..."
-    data = get_valid_data()
+    data = list(get_valid_data())
 
     # Make sure you remark on the filter you're using in the description!
     data = research_data_filter(data)
 
     data = [headers]+[d.get_calculations_list() for d in data]
+
+    if debug:
+      print "Found {} data...".format(len(data)-1)
 
 
   # If `splitter` is set to `None`, the default splitter will be used.
@@ -47,24 +134,92 @@ def gen_model(title, description, data=None, debug=False, active=False, tags="")
   from DRP.postprocessors import default_postprocessor as postprocessor
   from DRP.model_building.splitters import default_splitter as splitter
 
-  model = ModelStats()
-  model.construct(title, data,
-                  description=description,
-                  tags=tags,
-                  active=active,
-                  preprocessor=preprocessor,
-                  postprocessor=postprocessor,
-                  splitter=splitter,
-                  tool="svc",
-                  library="weka",
-                  debug=debug)
-  model.summary()
+  construct_kwargs = {
+                  "description":description,
+                  "tags":tags,
+                  "active":active,
+                  "preprocessor":preprocessor,
+                  "postprocessor":postprocessor,
+                  "splitter":splitter,
+                  "tool":"random forest",
+                  "library":"sklearn",
+                  "force":force,
+                  "debug":debug,
+                  }
+
+  model = generate_avg(title, data, construct_kwargs=construct_kwargs)
+
+  if debug:
+    print "Average model produced:"
+    model.summary()
 
   return model
 
 
 
-def build_model_from_date(model_name, model_description, date, batch_tag, data=None, active=False):
+def learning_curve(name, description, curve_tag, data=None,
+                                                 force=True,
+                                                 step=0.05,
+                                                 gen_debug=False,
+                                                 debug=False):
+  def curve_generator(total_size, step):
+    current = step*total_size
+    i = 1
+    while total_size > current:
+
+      yield i, int(current)
+
+      current += (step*total_size)
+      i += 1
+
+    yield i, int(total_size)
+
+  from DRP.retrievalFunctions import get_valid_data
+  from DRP.model_building.rxn_calculator import headers
+  import random, math, datetime
+
+  if data is None:
+    data = get_valid_data()
+
+    # Prepare the default data if it is unavailable.
+    if debug:
+        print "Gathering default data..."
+
+    # Make sure you remark on the filter you're using in the description!
+    data = research_data_filter(data)
+
+    data = [headers]+[d.get_calculations_list() for d in data]
+
+  else:
+    data = list(data)
+
+  headers = data.pop(0)
+
+  total_iters = int(math.ceil(1.0/step))
+
+  for i, sample_size in curve_generator( len(data), step):
+
+    model_name = "{}__{}_of_{}".format(name, i, total_iters)
+    model_tag = "learning_curve {} {}".format(curve_tag, i)
+
+    # Grab a random sampling of the data to use.
+    iteration_data = [headers] + random.sample(data, sample_size)
+
+    if debug:
+      print "Generating: {}".format(model_name),
+
+    # Generate the model.
+    gen_model(model_name, description, tags=model_tag,
+                                       force=force,
+                                       data=iteration_data,
+                                       debug=gen_debug)
+
+    if debug:
+      print " ({})".format(datetime.datetime.now().time())
+
+
+
+def build_model_from_date(model_name, model_description, date, batch_tag, data=None):
   """
   Constructs a model from the data available on a given date.
   """
@@ -78,9 +233,7 @@ def build_model_from_date(model_name, model_description, date, batch_tag, data=N
   filtered = filter_by_date(data, date, "previous")
   tags = "retrogenerated {}".format(batch_tag)
 
-  gen_model(model_name, model_description, data=filtered,
-                        active=active, tags=tags)
-
+  gen_model(model_name, model_description, data=filtered, tags=tags)
 
 
 

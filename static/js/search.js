@@ -5,6 +5,10 @@ $(document).on("keyup", "#searchValue", function(e) {
   }
 })
 
+$(document).on("click", ".search_resetFiltersButton", function() {
+  location.search = "";
+});
+
 $(document).on("click", ".search_filterButton", function() {
 
   var $form = $(this).closest("form");
@@ -31,7 +35,6 @@ $(document).on("click", ".search_filterButton", function() {
 });
 
 
-
 // Set the autocomplete box on reactants if needed.
 $(document).on("change", ".dropDownMenu[name=field]", function() {
   if ($(this).val()=="reactant"){
@@ -52,5 +55,4 @@ $(document).on("change", "#searchForm .dropDownMenu[name=field]", function(){
     $("#searchForm select[name=subfield]").hide();
   }
 });
-
 

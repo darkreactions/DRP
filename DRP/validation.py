@@ -29,9 +29,10 @@ limit_fields = {"ref", "notes"}
 #Fields that must be a specific option:
 opt_fields = {"unit", "slow_cool", "leak", "recommended"} #Note: slow_cool gains the general name of "slow"
 bool_fields = {"slow_cool", "leak", "public", "is_valid", "recommended"}
+allow_unknown = {"outcome","purity","slow_cool","leak","recommended"}
 
 #Type Groupings
-int_fields = {"temp", "time",  "outcome", "purity"}
+int_fields = {"temp", "time"}
 float_fields = {"quantity", "pH"}
 
 
@@ -125,28 +126,30 @@ def full_validation(dirty_data, lab_group, revalidating=False):
 
 
 def quick_validation(field, dirty_datum, model="Data"):
- if model=="Data":
-  if field in data_ranges:
-   data_range = data_ranges[field]
+    if model=="Data":
+        if dirty_datum=="?" and field in allow_unknown:
+            return True
+        if field in data_ranges:
+            data_range = data_ranges[field]
 
-  if field in range_fields:
-   return (data_range[0] <= float(dirty_datum) <= data_range[1])
-  if field in limit_fields:
-   return (data_range[0] <= len(dirty_datum) <= data_range[1])
-  if field in opt_fields:
-   if field in bool_fields: category = "boolChoices"
-   else: category = field+"Choices"
-   return dirty_datum in edit_choices[category]
-  return True
+        if field in range_fields:
+            return (data_range[0] <= float(dirty_datum) <= data_range[1])
+        if field in limit_fields:
+            return (data_range[0] <= len(dirty_datum) <= data_range[1])
+        if field in opt_fields:
+            if field in bool_fields: category = "boolChoices"
+            else: category = field+"Choices"
+            return dirty_datum in edit_choices[category]
+        return True
 
- if model=="CompoundEntry":
-  if field=="CAS_ID":
-   length_valid = (len(dirty_datum.split("-"))==3)
-   elements_valid = dirty_datum.translate(None, "-").isdigit()
-   return length_valid and elements_valid
-  if field=="compound_type":
-   return dirty_datum in edit_choices["typeChoices"]
-  return True
+    if model=="CompoundEntry":
+        if field=="CAS_ID":
+            length_valid = (len(dirty_datum.split("-"))==3)
+            elements_valid = dirty_datum.translate(None, "-").isdigit()
+            return length_valid and elements_valid
+        if field=="compound_type":
+            return dirty_datum in edit_choices["typeChoices"]
+        return True
 
 
 
