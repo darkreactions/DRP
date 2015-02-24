@@ -57,10 +57,15 @@ var centerY = height/2
   var textPlacement = nodeTooltips.length*40;
   var boxLength = 130;
 
+  var zoomLevel = "circles1"
   var translateValue1 = width/2.3
   var translateValue2 = height/2.4
   var scaleValue = height/4500
-
+  console.log(scaleValue)
+  //var firstCluster = d3.selectAll(".circleClusters1");
+  var secondCluster = d3.selectAll(".circleClusters2");
+  var tinyNodes = d3.selectAll(".nodeElements");
+ 
   var zoom = d3.behavior.zoom()
                 .scaleExtent([1/10, 2])
                 .on("zoom", zoomed)
@@ -83,7 +88,7 @@ var centerY = height/2
               .attr("width", width)
               .attr("height", height);
 
-  var container = svg.append("g");
+  var container = svg.append("g")//.call(drag); 
 
   console.log("2");
 
@@ -163,7 +168,7 @@ var centerY = height/2
   .attr("class", "node");
 
   // Clusters of all the nodes with the same SINGLE inorganic in common
-  var circleClusters1 = container.selectAll("circle")
+  /*var circleClusters1 = container.selectAll("circle")
               .data(nodes)
               .enter().append("circle") 
               .attr("class", "circleClusters1")
@@ -175,30 +180,40 @@ var centerY = height/2
               .attr("cy", function(d) { return d.y;}) 
               .attr("r", 200) 
               .on("click", function(d) {
-                console.log("clicked!") 
-                var x = this.cx    
-                var y = this.cy
-                var shiftX = (centerX + x)
-                var shiftY = (centerY + y)
-                container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(0.4)")
+                var x = Math.round(d3.select(this).attr("cx"))
+                var y = Math.round(d3.select(this).attr("cy"))
+                var shiftX = -((centerX + x)*2)
+                var shiftY = -((centerY + y)*2)
+                console.log(shiftX)
+                console.log(shiftY)
+                container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(1,1)")
                 d3.selectAll(".circleClusters1").attr("fill", function(d) { return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)"; 
     ;})
     }); 
+*/
 
-/*
   //Clusters of all nodes with both inorganics in common  
-   var circleClusters2 = container.selectAll("circle")
+  var circleClusters2 = container.selectAll("circle")
               .data(nodes)
-              .append("circle") 
+              .enter().append("circle") 
               .attr("class", "circleClusters2")
               .attr("fill", function(d) {
-                return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)";
+                return (d.color2!=undefined) ? d.color : "rgba(0,0,0,0)";
               })
               .attr("opacity", 0.4)
               .attr("cx", function(d) { return d.x;})
               .attr("cy", function(d) { return d.y;}) 
-              .attr("r", 80); 
-*/  
+              .attr("r", 200) 
+              .on("click", function(d) {
+                var x = Math.round(d3.select(this).attr("cx"))
+                var y = Math.round(d3.select(this).attr("cy"))
+                var shiftX = -((centerX + x)*2)
+                var shiftY = -((centerY + y)*2)
+                console.log(shiftX)
+                console.log(shiftY)
+                container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(1,1)")
+                d3.selectAll(".circleClusters1").attr("fill", function(d) { return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)"; 
+    ;})});
 
 //Nodes representing each individual reactions 
   baseNodes.append("circle")
@@ -374,12 +389,13 @@ var centerY = height/2
                 .text(function(d) { 
                 return (d.label2!="none") ? d.label2 : "";
               });
-
+    //$(".circleClusters2").remove()
     $(".nodeElements").remove()  
     $(".lines").remove()
-    $(".label2").remove()
-    $(".label1").remove() 
-        
+    $(".label2").remove() 
+    $(".circleClusters1").remove()    
+
+  $("#reset").on("click", function() { container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")"); }); 
 
   $("#loadingMessage").remove();
 
