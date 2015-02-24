@@ -24,7 +24,10 @@ urlpatterns = patterns('',
   #Dashboard
     url(r'^dash(?:board)?/?$', "DRP.views.dashboard.get_dashboard"),
     url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
+
     url(r'^graphs?/?$', "DRP.views.graph.graph"),
+    url(r'^graphs?/(?:sizes?|tests?)/?$', "DRP.views.graph.graph", {"base":"size"}),
+    url(r'^graphs?/(?:dates?|times?)/?$', "DRP.views.graph.graph", {"base":"time"}),
 
   #Database
     (r'^data(?:base)?/?$', "DRP.views.database.database"), #Encompassing data view.

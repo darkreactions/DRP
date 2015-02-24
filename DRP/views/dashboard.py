@@ -44,6 +44,7 @@ def get_fields_as_json(models, classes=4):
   return stat_counter.values()
 
 
+@login_required
 def get_class_stats_json(request, classes=4):
 
   from DRP.retrievalFunctions import get_usable_models
