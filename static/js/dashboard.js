@@ -30,14 +30,9 @@ function makeGraph(graphURL, svgContainer) {
 
   //Taken nearly entirely from: http://nvd3.org/examples/lineWithFocus.html
   d3.json(graphURL, function(data) {
-    var sizeLine = data.filter(function(obj) {
-      return obj["key"]==="Test Size";
-    });
-    console.log(sizeLine);
 
 
     nv.addGraph(function() {
-      //var chart = nv.models.lineWithFocusChart()
       var chart = nv.models.lineChart()
           .x(function(d) { return d[0]; })
           .y(function(d) { return d[1]; })
@@ -84,8 +79,14 @@ function makeGraph(graphURL, svgContainer) {
       chart.yAxis
           .tickFormat(d3.format(',.1%'));
 
+      // Remove the "Test Size" line from the lines to graph.
+      var lines = data["lines"].filter(function(obj) {
+        return obj["key"]!=="Test Size";
+      });
+
+
       d3.select(svgContainer)
-          .datum(data["lines"])
+          .datum(lines)
           .transition().duration(500)
           .call(chart);
 
