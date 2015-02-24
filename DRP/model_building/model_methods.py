@@ -1,5 +1,4 @@
 import subprocess
-import uuid
 import rxn_calculator
 
 import os, sys
@@ -170,26 +169,6 @@ def generate_weka_model(model_name, model_filepath):
   subprocess.check_output(move+command+args, shell=True)
 
 
-
-def evaluate_model(rows,keys):
-
-	rows = [r[:-1] + [ map_to_zero_one(r[-1]) ] for r in rows]
-	test,train = splitter.create_test_and_train_lists(rows, keys)
-
-
-	name = str(uuid.uuid4())
-	make_arff(name + "_test", test, True)
-	make_arff(name + "_train", train, True)
-
-
-	move = "cd {};".format(django_path)
-	command = "bash DRP/model_building/make_model.sh"
-	args = " {} {}".format(MODEL_DIR + name , TMP_DIR + name + "_train" + ".arff")
-	subprocess.check_output(move+command+args, shell=True)
-	results = make_predictions(TMP_DIR + name + "_test.arff", MODEL_DIR + name)
-
-	performance, falsePositiveRate = evaluate_results(results)
-	return performance, falsePositiveRate
 
 
 

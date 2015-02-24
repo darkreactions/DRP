@@ -24,6 +24,8 @@ urlpatterns = patterns('',
   #Dashboard
     url(r'^dash(?:board)?/?$', "DRP.views.dashboard.get_dashboard"),
     url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
+    url(r'^graphs?/?$', "DRP.views.graph.graph"),
+
   #Database
     (r'^data(?:base)?/?$', "DRP.views.database.database"), #Encompassing data view.
     (r'^data(?:base)?/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.
