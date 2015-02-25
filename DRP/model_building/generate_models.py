@@ -25,7 +25,7 @@ def research_data_filter(data):
 
   return data
 
-def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
+def generate_avg(title, data, iterations=10, only_keep_avg=True, construct_kwargs={}):
   def _get_avg_confusion_dict(model_stats):
     """
     Returns an average confusion dict from a list of model_stats
@@ -130,9 +130,9 @@ def gen_model(title, description, data=None, force=False, debug=False,
 
 
   # If `splitter` is set to `None`, the default splitter will be used.
-  from DRP.preprocessors import category_preprocessor as preprocessor
+  from DRP.preprocessors import default_preprocessor as preprocessor
   from DRP.postprocessors import default_postprocessor as postprocessor
-  from DRP.model_building.splitters import category_splitter as splitter
+  from DRP.model_building.splitters import default_splitter as splitter
 
   construct_kwargs = {
                   "description":description,
@@ -178,6 +178,9 @@ def learning_curve(name, description, curve_tag, data=None,
   from DRP.model_building.rxn_calculator import headers
   import random, math, datetime
 
+  if debug:
+    print "Starting at {}".format(datetime.datetime.now().time())
+
   if data is None:
     if debug:
         print "Gathering default data..."
@@ -197,14 +200,14 @@ def learning_curve(name, description, curve_tag, data=None,
 
   for i, sample_size in curve_generator( len(data), step):
 
-    model_name = "{}__{}_of_{}".format(name, i, total_iters)
+    model_name = "{} ({} of {})".format(name, i, total_iters)
     model_tag = "learning_curve {} {}".format(curve_tag, i)
 
     # Grab a random sampling of the data to use.
     iteration_data = [headers] + random.sample(data, sample_size)
 
     if debug:
-      print "Generating: {}".format(model_name),
+      print "Generating: \"{}\"".format(model_name),
 
     # Generate the model.
     gen_model(model_name, description, tags=model_tag,
@@ -213,7 +216,7 @@ def learning_curve(name, description, curve_tag, data=None,
                                        debug=gen_debug)
 
     if debug:
-      print " ({})".format(datetime.datetime.now().time())
+      print " (Done: {})".format(datetime.datetime.now().time())
 
 
 

@@ -650,6 +650,7 @@ class ModelStats(models.Model):
     tests = {
       "2": {
         "Test Size":self.total(),
+        "Train Size":self.train_size,
         "Accuracy":self.test_accuracy(ranges=True),
         "% TP":self.true_positives(normalize=True, ranges=True),
         "% FP":self.false_positives(normalize=True, ranges=True),
