@@ -97,6 +97,8 @@ def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs
   avg_model.start_time = model_stats[0].start_time
   avg_model.end_time = model_stats[-1].end_time
 
+  avg_model.train_size = sum(m.train_size for m in model_stats)/float(iterations)
+
   avg_model.set_confusion_table(_get_avg_confusion_dict(model_stats))
   avg_model.save()
 
@@ -121,18 +123,16 @@ def gen_model(title, description, data=None, force=False, debug=False,
     data = list(get_valid_data())
 
     # Make sure you remark on the filter you're using in the description!
-    data = research_data_filter(data)
-
-    data = [headers]+[d.get_calculations_list() for d in data]
+    data = [headers]+research_data_filter(data)
 
     if debug:
       print "Found {} data...".format(len(data)-1)
 
 
   # If `splitter` is set to `None`, the default splitter will be used.
-  from DRP.preprocessors import default_preprocessor as preprocessor
+  from DRP.preprocessors import category_preprocessor as preprocessor
   from DRP.postprocessors import default_postprocessor as postprocessor
-  from DRP.model_building.splitters import default_splitter as splitter
+  from DRP.model_building.splitters import category_splitter as splitter
 
   construct_kwargs = {
                   "description":description,
@@ -141,8 +141,8 @@ def gen_model(title, description, data=None, force=False, debug=False,
                   "preprocessor":preprocessor,
                   "postprocessor":postprocessor,
                   "splitter":splitter,
-                  "tool":"random forest",
-                  "library":"sklearn",
+                  "tool":"svc",
+                  "library":"weka",
                   "force":force,
                   "debug":debug,
                   }
@@ -179,16 +179,14 @@ def learning_curve(name, description, curve_tag, data=None,
   import random, math, datetime
 
   if data is None:
-    data = get_valid_data()
-
-    # Prepare the default data if it is unavailable.
     if debug:
         print "Gathering default data..."
 
-    # Make sure you remark on the filter you're using in the description!
-    data = research_data_filter(data)
+    # Prepare the default data if it is unavailable.
+    data = list(get_valid_data())
 
-    data = [headers]+[d.get_calculations_list() for d in data]
+    # Make sure you remark on the filter you're using in the description!
+    data = [headers]+research_data_filter(data)
 
   else:
     data = list(data)

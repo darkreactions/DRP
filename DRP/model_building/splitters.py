@@ -29,8 +29,21 @@ def naive_splitter(data, headers=None):
 
   random.shuffle(data)
 
-  return{"all":data, "test":data[:split_index], "train":data[split_index:]}
+  return {"all":data, "test":data[:split_index], "train":data[split_index:]}
 
+def category_splitter(data, headers=None):
+
+  # If the last field in a datum is `True` let it be in the `test` set.
+
+  test, train = [], []
+  for datum in data:
+    if datum.pop(-1)==True:
+      test.append(datum)
+
+    else:
+      train.append(datum)
+
+  return {"test":test, "train":train, "all":data}
 
 
 

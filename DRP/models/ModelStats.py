@@ -16,6 +16,7 @@ class ModelStats(models.Model):
   description = models.TextField(default="")
   tags = models.TextField(default="")
   iterations = models.IntegerField("iterations", default=1)
+  train_size = models.IntegerField("train_size", default=0)
 
   # Model Status and Location
   filename = models.CharField("Filename", max_length=128,
@@ -142,6 +143,7 @@ class ModelStats(models.Model):
     # Train/fit the model
     if debug: print "Training model..."
     self._train_model(split_data["train"], debug=debug)
+    self.train_size = len(split_data["train"])
 
 
     # Set the confusion table for a given data-set.
