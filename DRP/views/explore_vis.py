@@ -48,6 +48,45 @@ def get_graph_data(request):
       node_clusters = create_node_clusters_for_labels(links, nodes)
       with open(path_to_label_dict, "w") as outfile:
         json.dump(node_clusters, outfile)
+
+    with open(path_to_vis_data_file, "r") as f:
+        deserialized_data = json.load(f)
+    nodez = deserialized_data[nodes]
+   
+    n = nodes 
+    print "here" 
+    new_nodez = []
+    for i in xrange(len(n)):
+      id_num = n[i]["id"]
+      id_node = []  
+      for i in xrange(len(nodez)):
+       if nodez[i]["id"] == id_num:
+         id_node = nodez[i] 
+      new_nodez.append({
+      "index": n[i]["index"],
+      "target": n[i]["target"],
+      "weight": n[i]["weight"],
+      "color": n[i]["color"],
+      "label1": n[i]["label1"],
+      "label2": n[i]["label2"],
+      "source": n[i]["source"],
+      "color2": n[i]["color2"],
+      "inorg1": n[i]["inorg1"],
+      "inorg2": n[i]["inorg2"],
+      "y": n[i]["y"],
+      "x": n[i]["x"],
+      "pagerank": n[i]["pagerank"],
+      "px": n[i]["px"],
+      "py": n[i]["py"],
+      "id": n[i]["id"],
+      "outcome": id_node["outcome"]
+      })
+    
+    with open(BASE_DIR + "/DRP/vis/nodePosOutcome.json", "w") as outfile:
+        json.dump(new_nodez, outfile)
+
+
+           
     #Clusters are the elements that contain all the nodes with matching inorganics (a list of lists of dictionaries)
     #nodes are the original datum points corresponding to a single reaction( a list of dictionaries)
     #This is for the second tier clusters (clustered by two inorganics)
@@ -66,7 +105,8 @@ def get_graph_data(request):
     first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")    
     final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
     final_nodes = give_colors_to_nodes(almost_final_nodes, final_first_clusters)
-    response = {"nodes": final_nodes, "nodes2": final_nodes, "links": links, "skipTicks": "True"}
+    print final_nodes[0]
+    response = {"nodes": final_nodes, "links": links, "skipTicks": "True"}
     return HttpResponse(json.dumps(response), content_type="application/json")
 
   #If vis_data is not created or not up to date, write new vis_data with current data and return that
@@ -139,7 +179,9 @@ def get_graph_data(request):
     first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")
     final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
     final_nodes = give_colors_to_nodes2(almost_final_nodes, final_first_clusters)
- 
+    print final_nodes[0] 
+    print final_nodes[0][0]
+    print "hello"   
     response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
     return HttpResponse(json.dumps(response), content_type="application/json")
 
@@ -168,7 +210,8 @@ def create_node_clusters_for_labels(links, nodes):
      "color2": "none",
      "label1": "none",
      "label2": "none",
-     "ref": nodes[i]["ref"]
+     #"outcome": nodes[i]["outcome"],
+     #"ref": nodes[i]["ref"]
      })
     #if nodes[i]["inorg1"] != "-1":
      #  nodes_dict.append({"inorg1": nodes[i]["inorg1"]
@@ -339,6 +382,7 @@ def combine_final_clusters_and_nodes(nodes, clusters, links):
             "label2": "none",
             "inorg1": nodes[i]["inorg1"], 
             "inorg2": "none", 
+            "outcome":nodes[i]["outcome"], 
             "ref": nodes[i]["ref"]
             }
             if "inorg2" in nodes[i]:
