@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 
-def get_fields_as_json(models, classes=4):
+def get_fields_as_json(models, category="2-test"):
   #Variable Setup.
 
   # The D3 library needs the following format:
@@ -27,7 +27,7 @@ def get_fields_as_json(models, classes=4):
   for i, model in enumerate(models):
 
     try:
-      stats =  model.stats(classes=classes)
+      stats =  model.stats(category=category)
     except Exception as e:
       # If the model isn't loadable, mark it as not loadable.
       print "{} was not usable: {}".format(model, e)
@@ -45,7 +45,7 @@ def get_fields_as_json(models, classes=4):
 
 
 @login_required
-def get_class_stats_json(request, classes=4):
+def get_class_stats_json(request, category="2-test"):
 
   from DRP.retrievalFunctions import get_usable_models
   from DRP.filters import apply_filters
@@ -56,7 +56,7 @@ def get_class_stats_json(request, classes=4):
 
   #Convert the data into a JSON format.
   raw = {
-    "lines":get_fields_as_json(models, classes=classes),
+    "lines":get_fields_as_json(models, category=category),
     "descriptions":[model.description for model in models],
     "titles":[model.title for model in models],
     "confusionTables":[model.load_confusion_table(normalize=False) for model in models]

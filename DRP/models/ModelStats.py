@@ -669,7 +669,7 @@ class ModelStats(models.Model):
         print "\t{}: {}".format(stat, val)
 
 
-  def stats(self, classes=None):
+  def stats(self, category=None):
 
     tests = {
       "2-test": {
@@ -714,11 +714,12 @@ class ModelStats(models.Model):
       },
     }
 
-    if classes:
-      if type(classes) in {set, list}:
-        tests = {key:val for key,val in tests if key in classes}
+    if category:
+      if type(category) in {set, list}:
+        tests = {key:val for key,val in tests if key in category}
+
       else:
-        tests = tests[classes]
+        tests = tests[category]
 
     return tests
 

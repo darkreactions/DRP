@@ -104,5 +104,5 @@ function makeGraph(graphURL, svgContainer) {
 var query2 =  $("#chart2Class").attr("query");
 var query4 =  $("#chart4Class").attr("query");
 
-makeGraph("/get_class_stats/2"+query2,"#chart2Class svg");
-makeGraph("/get_class_stats/4"+query4,"#chart4Class svg");
+makeGraph("/get_class_stats/2-test"+query2,"#chart2Class svg");
+makeGraph("/get_class_stats/4-test"+query4,"#chart4Class svg");
