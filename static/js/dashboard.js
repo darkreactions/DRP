@@ -81,7 +81,7 @@ function makeGraph(graphURL, svgContainer) {
 
       // Remove the "Test Size" line from the lines to graph.
       var lines = data["lines"].filter(function(obj) {
-        return obj["key"]!=="Test Size";
+        return obj["key"]!=="Test Size" && obj["key"]!=="Train Size";
       });
 
 

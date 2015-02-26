@@ -238,11 +238,27 @@ def form_filter_data(lab_group, query_list):
 
 #Either get the valid Data entries for a lab group or get all valid data.
 #  Note: Accepts an actual LabGroup object.
-def get_valid_data(lab_group=None):
+def get_valid_data(lab_group=None, clean=True):
   from models import Data
+  data = Data.objects.filter(is_valid=True)
+
   if lab_group:
-    return Data.objects.filter(is_valid=True, lab_group=lab_group)
-  return Data.objects.filter(is_valid=True)
+    data= data.filter(lab_group=lab_group)
+
+  # If new data exists, check if it is valid or not.
+  if clean:
+    new = data.filter(calculations=None)
+
+    for entry in new:
+      try:
+        entry.get_calculations_dict()
+      except Exception as e:
+        entry.is_valid = False
+        entry.save()
+
+  data = data.filter(is_valid=True)
+
+  return data
 
 
 
