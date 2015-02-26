@@ -39,36 +39,9 @@ def research_data_filter(data):
 
   return data
 
-def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs={}):
-  def _get_avg_confusion_dict(model_stats, table="test"):
-    """
-    Returns an average confusion dict from a list of model_stats
-    """
+def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
 
-    conf_dicts = [m.load_confusion_dict(table=table) for m in model_stats]
-    avg_dict = {}
-
-    for conf_dict in conf_dicts:
-      for guess, actuals in conf_dict.items():
-
-        if not guess in avg_dict:
-          avg_dict[guess] = {}
-
-        for actual, occurrences in actuals.items():
-          if not actual in avg_dict[guess]:
-            avg_dict[guess][actual] = 0
-
-          avg_dict[guess][actual] += occurrences
-
-    num_models = float(len(model_stats))
-    trunc_divide = lambda x,y: float("{:.3f}".format(x/y))
-
-    avg_dict ={guess:{actual:trunc_divide(count,num_models)
-                        for actual,count in actuals.items()}
-                          for guess, actuals in avg_dict.items()}
-
-    return avg_dict
-
+  from DRP.model_building.confusion_table import get_avg_confusion_dict
   from DRP.models import ModelStats
 
   debug = "debug" in construct_kwargs and construct_kwargs["debug"]==True
@@ -87,7 +60,7 @@ def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs
       print ""
 
 
-  best_model = max(model_stats, key=lambda model: model.test_accuracy())
+  best_model = max(model_stats, key=lambda model: model.accuracy())
 
   if debug:
     print "Preparing average model..."
@@ -111,10 +84,10 @@ def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs
   avg_model.start_time = model_stats[0].start_time
   avg_model.end_time = model_stats[-1].end_time
 
-  train_cm = _get_avg_confusion_dict(model_stats, table="train")
+  train_cm = get_avg_confusion_dict(model_stats, table="train")
   avg_model.set_confusion_table(train_cm, table="train")
 
-  test_cm = _get_avg_confusion_dict(model_stats, table="test")
+  test_cm = get_avg_confusion_dict(model_stats, table="test")
   avg_model.set_confusion_table(test_cm, table="test")
 
   avg_model.save()
@@ -127,8 +100,14 @@ def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs
 
 
 
-def gen_model(title, description, data=None, force=False, debug=False,
-                                  active=False, tags="", pipeline_test=False):
+def gen_model(title, description, data=None, test_set=None, force=False,
+                                  debug=False, pipeline_test=False,
+                                  active=False, tags=""):
+  """
+  Note: `test_set` is an optional list of data entries that are assumed
+        to be pre-processed. If it is set, a test set will not be sampled
+        from `data` further on in the pipeline.
+  """
 
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
@@ -141,7 +120,7 @@ def gen_model(title, description, data=None, force=False, debug=False,
     data = list(get_valid_data())
 
     # Make sure you remark on the filter you're using in the description!
-    data = [headers]+research_data_filter(data)
+    data = [headers] + research_data_filter(data)
 
     if debug:
       print "Found {} data...".format(len(data)-1)
@@ -159,6 +138,7 @@ def gen_model(title, description, data=None, force=False, debug=False,
                   "preprocessor":preprocessor,
                   "postprocessor":postprocessor,
                   "splitter":splitter,
+                  "test_set":test_set,
                   "tool":"svc",
                   "library":"weka",
                   "force":force,
@@ -200,7 +180,9 @@ def learning_curve(name, description, curve_tag, data=None,
 
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
-  import random, math, datetime
+  from DRP.preprocessors import default_preprocessor
+  from DRP.model_building.splitters import default_splitter
+  import math, datetime, random
 
   if debug:
     print "Starting at {}".format(datetime.datetime.now().time())
@@ -213,34 +195,50 @@ def learning_curve(name, description, curve_tag, data=None,
     data = list(get_valid_data())
 
     # Make sure you remark on the filter you're using in the description!
-    data = [headers]+research_data_filter(data)
+    data = [headers] + research_data_filter(data)
+
+    # Take the test-set out of the data (to set aside for the learning curve).
+    data = default_preprocessor(data)
+    splits = default_splitter(data, headers=headers)
+    data = splits["train"]
+    test_set = splits["test"]
 
   else:
     data = list(data)
+    test_set = None
 
   headers = data.pop(0)
 
-  total_iters = int(math.ceil(1.0/step))
+  # Randomize the data so that any pre-existing order is not a variable
+  #  in experimentation.
+  random.shuffle(data)
 
-  for i, sample_size in curve_generator( len(data), step):
+  bucket_size = int(len(data)*step)
+  num_buckets = int(math.ceil(len(data)/float(bucket_size)))
 
-    model_name = "{} ({} of {})".format(name, i, total_iters)
+  all_buckets = [data[x:x+bucket_size] for x in xrange(0,len(data),bucket_size)]
+
+  for i in xrange(1, num_buckets):
+
+    model_name = "{} ({} of {})".format(name, i, num_buckets)
     model_tag = "learning_curve {} {}".format(curve_tag, i)
 
     # Grab a random sampling of the data to use.
-    iteration_data = [headers] + random.sample(data, sample_size)
+    union = [bucket for buckets in all_buckets[:i] for bucket in buckets]
+    iteration_data = [headers] + union
 
     if debug:
-      print "Generating: \"{}\"".format(model_name)
+      print "Generating: \"{}\" (size: {})".format(model_name, len(union))
 
     # Generate the model.
     gen_model(model_name, description, tags=model_tag,
                                        force=force,
                                        data=iteration_data,
+                                       test_set=test_set,
                                        debug=gen_debug)
 
     if debug:
-      print "\tDone: {}".format(datetime.datetime.now().time())
+      print "\tDone: {}\n".format(datetime.datetime.now().time())
 
 
 

@@ -450,6 +450,6 @@ limited_features = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
             'leak', "outcome"]
 
 # The headers that future generated models will use are specified by `headers`:
-headers = limited_features
+headers = orig_headers
 
 
