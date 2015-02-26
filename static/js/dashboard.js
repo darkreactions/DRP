@@ -65,6 +65,7 @@ function makeGraph(graphURL, svgContainer) {
                 };
 
               HTML += formatConfusionTable(data["confusionTables"][x]);
+              HTML += '<div class="modelID">ID: '+data["ids"][x] + '</div>';
 
               return HTML
             })
@@ -81,7 +82,7 @@ function makeGraph(graphURL, svgContainer) {
 
       // Remove the "Test Size" line from the lines to graph.
       var lines = data["lines"].filter(function(obj) {
-        return obj["key"]!=="Test Size";
+        return obj["key"]!=="Test Size" && obj["key"]!=="Train Size";
       });
 
 
@@ -104,5 +105,5 @@ function makeGraph(graphURL, svgContainer) {
 var query2 =  $("#chart2Class").attr("query");
 var query4 =  $("#chart4Class").attr("query");
 
-makeGraph("/get_class_stats/2"+query2,"#chart2Class svg");
-makeGraph("/get_class_stats/4"+query4,"#chart4Class svg");
+makeGraph("/get_class_stats/2-test"+query2,"#chart2Class svg");
+makeGraph("/get_class_stats/4-test"+query4,"#chart4Class svg");

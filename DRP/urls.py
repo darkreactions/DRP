@@ -23,8 +23,14 @@ urlpatterns = patterns('',
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
   #Dashboard
     url(r'^dash(?:board)?/?$', "DRP.views.dashboard.get_dashboard"),
-    url(r'^get_class_stats/(?P<classes>[24])/?$', "DRP.views.dashboard.get_class_stats_json"),
+    url(r'^get_class_stats/(?P<category>[24]-(?:test|train))/?$', "DRP.views.dashboard.get_class_stats_json"),
+
     url(r'^graphs?/?$', "DRP.views.graph.graph"),
+    url(r'^graphs?/test[s_]?(?:sizes?)?/?$',"DRP.views.graph.graph",{"base":"test"}),
+    url(r'^graphs?/train[s_]?(?:sizes?)?/?$',"DRP.views.graph.graph",{"base":"train"}),
+    url(r'^graphs?/(?:dates?|times?)/?$', "DRP.views.graph.graph", {"base":"time"}),
+
+    url(r'^models?/(?P<model_id>\d+)/?$', "DRP.views.stats.model_stats"),
 
   #Database
     (r'^data(?:base)?/?$', "DRP.views.database.database"), #Encompassing data view.

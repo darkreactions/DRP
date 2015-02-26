@@ -228,12 +228,17 @@ class DataEntryForm(forms.ModelForm):
     datum.user = self.user
     datum.lab_group = self.lab_group
     datum.creation_time_dt = self.creation_time_dt
-    datum.is_valid = True #If validation succeeded and data is saved, then it is_valid.
 
-    #datum.get_atoms(refresh=True)
+    try:
+      datum.get_calculations_list()
+      datum.is_valid = True
+    except:
+      datum.is_valid = False
+
 
     if commit:
       datum.save()
+
     return datum
 
 

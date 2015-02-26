@@ -19,19 +19,33 @@ def research_data_filter(data):
 
   # Developers: Put any processing steps here.
 
-  recs = []
-  data += recs
+  """
+  # Add bad recommendations to the dataset as 0-outcome reactions.
+  from DRP.models import Recommendation
+  recs = Recommendation.objects.filter(nonsense=True)
+  clean_recs = []
+  for i, rec in enumerate(recs):
+
+    try:
+      rec.get_calculations_list()
+      clean_recs.append(rec)
+    except Exception as e:
+      pass
+
+  print "NUM CLEAN RECS: {} / {}".format(len(clean_recs), len(recs))
+  data += clean_recs
+  """
 
 
   return data
 
-def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
-  def _get_avg_confusion_dict(model_stats):
+def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs={}):
+  def _get_avg_confusion_dict(model_stats, table="test"):
     """
     Returns an average confusion dict from a list of model_stats
     """
 
-    conf_dicts = [m.load_confusion_dict() for m in model_stats]
+    conf_dicts = [m.load_confusion_dict(table=table) for m in model_stats]
     avg_dict = {}
 
     for conf_dict in conf_dicts:
@@ -97,7 +111,12 @@ def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs
   avg_model.start_time = model_stats[0].start_time
   avg_model.end_time = model_stats[-1].end_time
 
-  avg_model.set_confusion_table(_get_avg_confusion_dict(model_stats))
+  train_cm = _get_avg_confusion_dict(model_stats, table="train")
+  avg_model.set_confusion_table(train_cm, table="train")
+
+  test_cm = _get_avg_confusion_dict(model_stats, table="test")
+  avg_model.set_confusion_table(test_cm, table="test")
+
   avg_model.save()
 
   if only_keep_avg:
@@ -109,10 +128,11 @@ def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs
 
 
 def gen_model(title, description, data=None, force=False, debug=False,
-                                             active=False, tags=""):
+                                  active=False, tags="", pipeline_test=False):
 
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
+  import random
 
   # Prepare the default data if it is unavailable.
   if data is None:
@@ -121,9 +141,7 @@ def gen_model(title, description, data=None, force=False, debug=False,
     data = list(get_valid_data())
 
     # Make sure you remark on the filter you're using in the description!
-    data = research_data_filter(data)
-
-    data = [headers]+[d.get_calculations_list() for d in data]
+    data = [headers]+research_data_filter(data)
 
     if debug:
       print "Found {} data...".format(len(data)-1)
@@ -141,13 +159,19 @@ def gen_model(title, description, data=None, force=False, debug=False,
                   "preprocessor":preprocessor,
                   "postprocessor":postprocessor,
                   "splitter":splitter,
-                  "tool":"random forest",
-                  "library":"sklearn",
+                  "tool":"svc",
+                  "library":"weka",
                   "force":force,
                   "debug":debug,
                   }
 
-  model = generate_avg(title, data, construct_kwargs=construct_kwargs)
+  if pipeline_test:
+    headers = data.pop(0)
+    data = [headers] + random.sample(data, len(data)/50)
+    model = generate_avg(title, data, construct_kwargs=construct_kwargs,
+                         iterations=1)
+  else:
+    model = generate_avg(title, data, construct_kwargs=construct_kwargs)
 
   if debug:
     print "Average model produced:"
@@ -178,17 +202,18 @@ def learning_curve(name, description, curve_tag, data=None,
   from DRP.model_building.rxn_calculator import headers
   import random, math, datetime
 
-  if data is None:
-    data = get_valid_data()
+  if debug:
+    print "Starting at {}".format(datetime.datetime.now().time())
 
-    # Prepare the default data if it is unavailable.
+  if data is None:
     if debug:
         print "Gathering default data..."
 
-    # Make sure you remark on the filter you're using in the description!
-    data = research_data_filter(data)
+    # Prepare the default data if it is unavailable.
+    data = list(get_valid_data())
 
-    data = [headers]+[d.get_calculations_list() for d in data]
+    # Make sure you remark on the filter you're using in the description!
+    data = [headers]+research_data_filter(data)
 
   else:
     data = list(data)
@@ -199,14 +224,14 @@ def learning_curve(name, description, curve_tag, data=None,
 
   for i, sample_size in curve_generator( len(data), step):
 
-    model_name = "{}__{}_of_{}".format(name, i, total_iters)
+    model_name = "{} ({} of {})".format(name, i, total_iters)
     model_tag = "learning_curve {} {}".format(curve_tag, i)
 
     # Grab a random sampling of the data to use.
     iteration_data = [headers] + random.sample(data, sample_size)
 
     if debug:
-      print "Generating: {}".format(model_name),
+      print "Generating: \"{}\"".format(model_name)
 
     # Generate the model.
     gen_model(model_name, description, tags=model_tag,
@@ -215,7 +240,7 @@ def learning_curve(name, description, curve_tag, data=None,
                                        debug=gen_debug)
 
     if debug:
-      print " ({})".format(datetime.datetime.now().time())
+      print "\tDone: {}".format(datetime.datetime.now().time())
 
 
 

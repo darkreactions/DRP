@@ -7,6 +7,7 @@ class ModelStats(models.Model):
 
   # Model Statistics
   confusion_table = models.TextField(default="{}")
+  train_confusion_table = models.TextField(default="{}")
   headers = models.TextField(default="[]")
   correct_vals = models.CharField("Correct Values", max_length=100,
                                   default="[\"3\",\"4\"]")
@@ -136,6 +137,9 @@ class ModelStats(models.Model):
 
     self.set_headers(headers)
 
+    if debug:
+      print "Using {} headers...".format(len(headers))
+
     # Get the temporary value-sets of each field.
     self.val_map = self._get_val_map(split_data["all"])
 
@@ -146,7 +150,7 @@ class ModelStats(models.Model):
 
     # Set the confusion table for a given data-set.
     if debug: print "Testing model..."
-    self._test_model(split_data["test"], debug=debug)
+    self._test_model(split_data["test"], debug=debug, table="test")
 
     self.end_time = datetime.datetime.now()
     self.save()
@@ -222,7 +226,7 @@ class ModelStats(models.Model):
       return predictions
 
 
-  def predict(self, predictors, debug=False):
+  def predict(self, predictors, debug=False, table="test"):
     from DRP.fileFunctions import get_django_path, file_exists
     import subprocess
 
@@ -234,7 +238,7 @@ class ModelStats(models.Model):
 
 
     if self.library == "weka":
-      arff_path = self._make_arff("test", predictors, debug=debug)
+      arff_path = self._make_arff(table, predictors, debug=debug)
 
       # Results path will be named *.out instead of *.arff.
       results_path = "out".join(arff_path.rsplit("arff", 1))
@@ -286,7 +290,7 @@ class ModelStats(models.Model):
     return cm
 
 
-  def _test_model(self, data, debug=False):
+  def _test_model(self, data, debug=False, table="test"):
 
     if self.library=="weka":
       predictors = data
@@ -296,13 +300,13 @@ class ModelStats(models.Model):
     else:
       predictors, responses = self._strip_response(data)
 
-    guesses = self.predict(predictors, debug=debug)
+    guesses = self.predict(predictors, debug=debug, table=table)
 
     if self.library in {"sklearn", "weka"}:
       responses = map(int, map(float, responses))
 
     cm = self._make_confusion_table(guesses, responses)
-    self.set_confusion_table(cm)
+    self.set_confusion_table(cm, table=table)
 
 
 
@@ -331,6 +335,10 @@ class ModelStats(models.Model):
       # If WEKA raised an error, throw that error.
       if "Exception" in output:
         raise Exception(output)
+
+      if debug:
+        print "Testing against training data..."
+      self._test_model(data, debug=debug, table="train")
 
     elif self.library=="sklearn":
       model, description = get_model(self.tool)
@@ -459,16 +467,25 @@ class ModelStats(models.Model):
     self.save()
 
 
-  def set_confusion_table(self, conf_json):
+  def set_confusion_table(self, conf_json, table="test"):
     import json
-    self.confusion_table = json.dumps(conf_json)
+
+    cm = json.dumps(conf_json)
+
+    if table=="test":
+      self.confusion_table = cm
+    elif table=="train":
+      self.train_confusion_table = cm
+    else:
+      raise Exception("Illegal confusion table specified!")
+
     self.save()
 
-  def graph_confusion_table(self):
+  def graph_confusion_table(self, table="test"):
     import matplotlib.pyplot as plt
     ticks = self.load_all_vals()
 
-    raw_cm = self.load_confusion_table(normalize=False, headers=False)
+    raw_cm = self.load_confusion_table(normalize=False, headers=False, table=table)
     cm = [map(float,row) for row in raw_cm]
 
     plt.matshow(cm, cmap=plt.cm.OrRd)
@@ -484,11 +501,19 @@ class ModelStats(models.Model):
     plt.show()
 
 
-  def load_confusion_dict(self):
+  def load_confusion_dict(self, table="test"):
     import json
-    return json.loads(self.confusion_table)
 
-  def load_confusion_table(self, normalize=True, headers=True):
+    if table=="test":
+      cm = self.confusion_table
+    elif table=="train":
+      cm = self.train_confusion_table
+    else:
+      raise Exception("Illegal confusion table specified!")
+
+    return json.loads(cm)
+
+  def load_confusion_table(self, normalize=True, headers=True, table="test"):
     """
     Confusion Dict:
     Abstract Format:
@@ -518,7 +543,7 @@ class ModelStats(models.Model):
     """
 
     try:
-      confusion_dict = self.load_confusion_dict()
+      confusion_dict = self.load_confusion_dict(table=table)
     except:
       return []
 
@@ -537,9 +562,9 @@ class ModelStats(models.Model):
     return matrix
 
 
-  def count(self, normalize=False, guesses=None, actuals=None, ranges=True, false_guess=False):
+  def count(self, normalize=False, guesses=None, actuals=None, ranges=True, false_guess=False, table="test"):
     # Variable Setup
-    conf_table = self.load_confusion_table(normalize=normalize)
+    conf_table = self.load_confusion_table(normalize=normalize, table=table)
 
     guess_headers = conf_table.pop(0)[1:] # Remove the empty cell in [0,0].
     actual_headers = [row.pop(0) for row in conf_table]
@@ -576,46 +601,46 @@ class ModelStats(models.Model):
     return c
 
 
-  def total(self):
-    conf_table = self.load_confusion_dict()
+  def total(self, table="test"):
+    conf_table = self.load_confusion_dict(table=table)
     int_total = sum([int(val) for correct,guesses in conf_table.items()
                               for key,val in guesses.items()])
     return float(int_total)
 
   # Convenience Wrappers
-  def true_positives(self, ranges=True, normalize=False):
+  def true_positives(self, ranges=True, normalize=False, table="test"):
     corrects = self.load_correct_vals()
     return self.count(guesses=corrects, actuals=corrects,
-                      normalize=normalize, ranges=ranges)
+                      normalize=normalize, ranges=ranges, table=table)
 
-  def true_negatives(self, ranges=True, normalize=False):
+  def true_negatives(self, ranges=True, normalize=False, table="test"):
     incorrects = self.load_incorrect_vals()
     return self.count(guesses=incorrects, actuals=incorrects,
-                      normalize=normalize, ranges=ranges)
+                      normalize=normalize, ranges=ranges, table=table)
 
-  def false_positives(self, ranges=True, normalize=False):
+  def false_positives(self, ranges=True, normalize=False, table="test"):
     corrects = self.load_correct_vals()
     return self.count(guesses=corrects, false_guess=True,
-                      normalize=normalize, ranges=ranges)
+                      normalize=normalize, ranges=ranges, table=table)
 
-  def false_negatives(self, ranges=True, normalize=False):
+  def false_negatives(self, ranges=True, normalize=False, table="test"):
     incorrects = self.load_incorrect_vals()
     return self.count(guesses=incorrects, false_guess=True,
-                      normalize=normalize, ranges=ranges)
+                      normalize=normalize, ranges=ranges, table=table)
 
 
-  def test_accuracy(self, ranges=True):
-    denom = float(self.total())
+  def accuracy(self, ranges=True, table="test"):
+    denom = float(self.total(table=table))
     if denom:
-      tp = self.true_positives(ranges=ranges)
-      tn = self.true_negatives(ranges=ranges)
+      tp = self.true_positives(ranges=ranges,table=table)
+      tn = self.true_negatives(ranges=ranges,table=table)
       return (tp + tn)/denom
     else:
       return 0
 
-  def test_precision(self, ranges=True):
-    tp = self.true_positives(ranges=ranges)
-    fp = self.false_positives(ranges=ranges)
+  def precision(self, ranges=True, table="test"):
+    tp = self.true_positives(ranges=ranges,table=table)
+    fp = self.false_positives(ranges=ranges,table=table)
     denom = float(tp + fp)
     if denom:
       return tp/denom
@@ -644,40 +669,62 @@ class ModelStats(models.Model):
         print "\t{}: {}".format(stat, val)
 
 
-  def stats(self, classes=None):
+  def stats(self, category=None):
+
     tests = {
-      "2": {
-        "Test Size":self.total(),
-        "Accuracy":self.test_accuracy(ranges=True),
+      "2-test": {
+        "Test Size":self.total(table="test"),
+        "Train Size":self.total(table="train"),
+        "Accuracy":self.accuracy(ranges=True),
+        "Precision":self.precision(ranges=True),
         "% TP":self.true_positives(normalize=True, ranges=True),
         "% FP":self.false_positives(normalize=True, ranges=True),
         "% TN":self.true_negatives(normalize=True, ranges=True),
         "% FN":self.false_negatives(normalize=True, ranges=True),
-        "Precision":self.test_precision(ranges=True),
-        "User Satisfaction":self.user_satisfaction(),
       },
-      "4": {
-        "Test Size":self.total(),
-        "Accuracy":self.test_accuracy(ranges=False),
+      "4-test": {
+        "Test Size":self.total(table="test"),
+        "Train Size":self.total(table="train"),
+        "Accuracy":self.accuracy(ranges=False),
+        "Precision":self.precision(ranges=False),
         "% TP":self.true_positives(normalize=True, ranges=False),
         "% FP":self.false_positives(normalize=True, ranges=False),
         "% TN":self.true_negatives(normalize=True, ranges=False),
         "% FN":self.false_negatives(normalize=True, ranges=False),
-        "Precision":self.test_precision(ranges=False),
-        "User Satisfaction":self.user_satisfaction(),
-      }
+      },
+      "2-train": {
+        "Test Size":self.total(table="test"),
+        "Train Size":self.total(table="train"),
+        "Accuracy":self.accuracy(ranges=True, table="train"),
+        "Precision":self.precision(ranges=True, table="train"),
+        "% TP":self.true_positives(normalize=True, ranges=True, table="train"),
+        "% FP":self.false_positives(normalize=True, ranges=True, table="train"),
+        "% TN":self.true_negatives(normalize=True, ranges=True, table="train"),
+        "% FN":self.false_negatives(normalize=True, ranges=True, table="train"),
+      },
+      "4-train": {
+        "Test Size":self.total(table="test"),
+        "Train Size":self.total(table="train"),
+        "Accuracy":self.accuracy(ranges=True, table="train"),
+        "Precision":self.precision(ranges=True, table="train"),
+        "% TP":self.true_positives(normalize=True, ranges=False, table="train"),
+        "% FP":self.false_positives(normalize=True, ranges=False, table="train"),
+        "% TN":self.true_negatives(normalize=True, ranges=False, table="train"),
+        "% FN":self.false_negatives(normalize=True, ranges=False, table="train"),
+      },
     }
 
-    if classes:
-      if type(classes) in {set, list}:
-        tests = {key:val for key,val in tests if key in classes}
+    if category:
+      if type(category) in {set, list}:
+        tests = {key:val for key,val in tests if key in category}
+
       else:
-        tests = tests[classes]
+        tests = tests[category]
 
     return tests
 
 
-  def print_confusion_table(self, normalize=True):
+  def print_confusion_table(self, normalize=True, table="test"):
     def truncate_floats(row):
       cleaned = []
       for elem in row:
@@ -687,7 +734,8 @@ class ModelStats(models.Model):
           cleaned.append(elem)
       return cleaned
 
-    conf_table = self.load_confusion_table(normalize=normalize)
+    print "{} Confusion Table:".format(table.capitalize())
+    conf_table = self.load_confusion_table(normalize=normalize, table=table)
     if conf_table:
       heading = "(%)" if normalize else ""
       print "\t\t\tPredicted {}".format(heading)
@@ -701,6 +749,7 @@ class ModelStats(models.Model):
   def print_model_info(self, prefix="\t"):
     print prefix+"Name: '{}'".format(self.title)
     print prefix+"Description: '{}'".format(self.description)
+    print prefix+"ID: {}".format(self.id)
     print prefix+"Finished: {}".format(self.end_time)
     print prefix+"Construction Time: {}".format(self._construction_time())
     print
@@ -708,12 +757,15 @@ class ModelStats(models.Model):
     print prefix+"Library: '{}'".format(self.library)
     print prefix+"Tool: '{}'".format(self.tool)
     print prefix+"# Headers: '{}'".format(len(self.get_headers()))
+    print prefix+"# Iterations: '{}'".format(self.iterations)
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):
     self.print_model_info()
     print ""
-    self.print_confusion_table()
+    self.print_confusion_table(table="train")
+    print ""
+    self.print_confusion_table(table="test")
     print ""
 
     stats = self.stats().items()

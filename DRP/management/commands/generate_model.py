@@ -8,7 +8,11 @@ class Command(BaseCommand):
   def handle(self, *args, **options):
     valid_options = ["inactive", "debug", "library"]
 
-    if 2<= len(args) <= 2+len(valid_options):
+    if "test" in args:
+      gen_model("Test", "A basic test to make sure the pipeline completes",
+                active=False, debug=True, force=True, pipeline_test=True)
+
+    elif 2<= len(args) <= 2+len(valid_options):
       active = not "inactive" in args
       debug = "debug" in args
       force = "force" in args

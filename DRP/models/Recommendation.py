@@ -114,12 +114,10 @@ class Recommendation(models.Model):
 
       else:
         # Load the result from the database if it is already present.
-        print "6"
         final_dict = self.calculations.make_json()
 
 
       if include_lab_info:
-        print "7"
         final_dict.update({
                           "lab_title":self.lab_group.lab_title,
                           "creation_time_dt":str(self.creation_time_dt),
@@ -133,12 +131,36 @@ class Recommendation(models.Model):
         return self.get_calculations_dict(include_lab_info=include_lab_info,
                                           force_recalculate=True)
 
+      if self.nonsense and "outcome" in final_dict:
+        final_dict["outcome"] = 0
+
       return final_dict
 
     except Exception as e:
       self.is_valid = False
       self.save()
       raise Exception("(get_calculations_dict) {}".format(e))
+
+  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None,
+                           preloaded_abbrev_map=None):
+    from DRP.model_building.rxn_calculator import headers
+
+    if include_lab_info:
+      headers.extend(["lab_title", "creation_time_dt"])
+
+    try:
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
+                                            preloaded_cg=preloaded_cg,
+                                            preloaded_abbrev_map=preloaded_abbrev_map)
+      return [calcDict[field] for field in headers]
+
+    except:
+      # If a field isn't present in the calcDict, update the calculation.
+      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
+                                            force_recalculate=True,
+                                            preloaded_cg=preloaded_cg,
+                                            preloaded_abbrev_map=preloaded_abbrev_map)
+      return [calcDict[field] for field in headers]
 
 
 def get_recommendations(lab_group):

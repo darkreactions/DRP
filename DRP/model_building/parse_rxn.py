@@ -44,7 +44,6 @@ def parse_rxn(row, rxn_table, ml_convert):
     pH = float(pH)
     if not (pH > 0 and pH <= 14): #TODO: fix to allow 0 and 14
         raise Exception("pH {0} is out of bounds: {1}".format(str(pH), title))
-    print "-4"
 
     if not purity:
         purity = 1
