@@ -137,6 +137,9 @@ class ModelStats(models.Model):
 
     self.set_headers(headers)
 
+    if debug:
+      print "Using {} headers...".format(len(headers))
+
     # Get the temporary value-sets of each field.
     self.val_map = self._get_val_map(split_data["all"])
 
@@ -711,6 +714,7 @@ class ModelStats(models.Model):
     print prefix+"Library: '{}'".format(self.library)
     print prefix+"Tool: '{}'".format(self.tool)
     print prefix+"# Headers: '{}'".format(len(self.get_headers()))
+    print prefix+"# Iterations: '{}'".format(self.iterations)
     print prefix+"Correct Values: {}".format(self.load_correct_vals())
 
   def summary(self, pre="\t"):

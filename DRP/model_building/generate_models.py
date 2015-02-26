@@ -19,13 +19,27 @@ def research_data_filter(data):
 
   # Developers: Put any processing steps here.
 
-  recs = []
-  data += recs
+  """
+  # Add bad recommendations to the dataset as 0-outcome reactions.
+  from DRP.models import Recommendation
+  recs = Recommendation.objects.filter(nonsense=True)
+  clean_recs = []
+  for i, rec in enumerate(recs):
+
+    try:
+      rec.get_calculations_list()
+      clean_recs.append(rec)
+    except Exception as e:
+      pass
+
+  print "NUM CLEAN RECS: {} / {}".format(len(clean_recs), len(recs))
+  data += clean_recs
+  """
 
 
   return data
 
-def generate_avg(title, data, iterations=10, only_keep_avg=True, construct_kwargs={}):
+def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs={}):
   def _get_avg_confusion_dict(model_stats):
     """
     Returns an average confusion dict from a list of model_stats
@@ -130,9 +144,9 @@ def gen_model(title, description, data=None, force=False, debug=False,
 
 
   # If `splitter` is set to `None`, the default splitter will be used.
-  from DRP.preprocessors import default_preprocessor as preprocessor
+  from DRP.preprocessors import category_preprocessor as preprocessor
   from DRP.postprocessors import default_postprocessor as postprocessor
-  from DRP.model_building.splitters import default_splitter as splitter
+  from DRP.model_building.splitters import category_splitter as splitter
 
   construct_kwargs = {
                   "description":description,

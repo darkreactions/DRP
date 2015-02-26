@@ -31,7 +31,7 @@ def naive_splitter(data, headers=None):
 
   return {"all":data, "test":data[:split_index], "train":data[split_index:]}
 
-def category_splitter(data, headers=None):
+def strict_category_splitter(data, headers=None):
 
   # If the last field in a datum is `True` let it be in the `test` set.
 
@@ -46,5 +46,29 @@ def category_splitter(data, headers=None):
   return {"test":test, "train":train, "all":data}
 
 
+def category_splitter(data, headers=None):
 
+  # Remove any entries from the "test" data that are not in the category.
+
+  splits = default_splitter(data, headers=headers)
+
+  non_category_test = []
+  category_test = []
+
+  for datum in splits["test"]:
+    if datum[-1]==True:
+      category_test.append(datum)
+    else:
+      non_category_test.append(datum)
+
+
+  remove_last = lambda row: row[:-1]
+
+  splits = {
+    "all": map(remove_last, splits["all"]),
+    "train": map(remove_last, splits["train"]+non_category_test),
+    "test": map(remove_last, category_test),
+  }
+
+  return splits
 
