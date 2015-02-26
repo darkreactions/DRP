@@ -61,7 +61,7 @@ def graph(request, base="test"):
   if models.count()==0:
     return HttpResponseNotFound()
 
-  classes = "2"
+  category = "2-test"
   to_ignore = {
     "% TP",
     "% TN",
@@ -74,12 +74,10 @@ def graph(request, base="test"):
   baseline = []
   for model in models:
     try:
-      this_stats = model.stats()[classes]
+      this_stats = model.stats()[category]
 
-      if base=="train":
-        x_val = model.train_size
-      elif base=="test":
-        x_val = model.total()
+      if base=="train" or base=="test":
+        x_val = model.total(table=base)
 
       elif base=="time":
         import datetime
