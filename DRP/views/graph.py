@@ -44,7 +44,7 @@ def get_graph(lines, base, xLabel="Percentage"):
 
 
 @login_required
-def graph(request, base="size"):
+def graph(request, base="test"):
   import matplotlib
   matplotlib.use("Agg")
   matplotlib.rc("font", size=14)
@@ -76,7 +76,9 @@ def graph(request, base="size"):
     try:
       this_stats = model.stats()[classes]
 
-      if base=="size":
+      if base=="train":
+        x_val = model.train_size
+      elif base=="test":
         x_val = model.total()
 
       elif base=="time":
@@ -87,6 +89,7 @@ def graph(request, base="size"):
         return HttpResponseNotFound()
 
       del this_stats["Test Size"]
+      del this_stats["Train Size"]
 
       stats.append( this_stats )
       baseline.append( x_val )
