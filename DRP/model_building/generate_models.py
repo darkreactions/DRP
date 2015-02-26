@@ -40,12 +40,12 @@ def research_data_filter(data):
   return data
 
 def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs={}):
-  def _get_avg_confusion_dict(model_stats):
+  def _get_avg_confusion_dict(model_stats, table="test"):
     """
     Returns an average confusion dict from a list of model_stats
     """
 
-    conf_dicts = [m.load_confusion_dict() for m in model_stats]
+    conf_dicts = [m.load_confusion_dict(table=table) for m in model_stats]
     avg_dict = {}
 
     for conf_dict in conf_dicts:
@@ -111,9 +111,12 @@ def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs
   avg_model.start_time = model_stats[0].start_time
   avg_model.end_time = model_stats[-1].end_time
 
-  avg_model.train_size = sum(m.train_size for m in model_stats)/float(iterations)
+  train_cm = _get_avg_confusion_dict(model_stats, table="train")
+  avg_model.set_confusion_table(train_cm, table="train")
 
-  avg_model.set_confusion_table(_get_avg_confusion_dict(model_stats))
+  test_cm = _get_avg_confusion_dict(model_stats, table="test")
+  avg_model.set_confusion_table(test_cm, table="test")
+
   avg_model.save()
 
   if only_keep_avg:
@@ -125,10 +128,11 @@ def generate_avg(title, data, iterations=5, only_keep_avg=True, construct_kwargs
 
 
 def gen_model(title, description, data=None, force=False, debug=False,
-                                             active=False, tags=""):
+                                  active=False, tags="", pipeline_test=False):
 
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
+  import random
 
   # Prepare the default data if it is unavailable.
   if data is None:
@@ -161,7 +165,13 @@ def gen_model(title, description, data=None, force=False, debug=False,
                   "debug":debug,
                   }
 
-  model = generate_avg(title, data, construct_kwargs=construct_kwargs)
+  if pipeline_test:
+    headers = data.pop(0)
+    data = [headers] + random.sample(data, len(data)/50)
+    model = generate_avg(title, data, construct_kwargs=construct_kwargs,
+                         iterations=1)
+  else:
+    model = generate_avg(title, data, construct_kwargs=construct_kwargs)
 
   if debug:
     print "Average model produced:"
