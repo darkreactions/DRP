@@ -1,27 +1,4 @@
-//Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
-function dragstarted(d) {
-  d3.event.sourceEvent.stopPropagation();
-  d3.select(this).classed("dragging", true);
-}
-
-
-function dragged(d) {
-  d3.select(this)
-    .attr("cx", d.x = d3.event.x)
-    .attr("cy", d.y = d3.event.y);
-}
-
-
-function dragended(d) {
-  d3.select(this).classed("dragging", false);
-}
-
-
-function zoomed() {
-  container.attr("transform",
-  "translate(" + d3.event.translate +")scale("+ d3.event.scale + ")");
-}
-
+$(document).ready(function() {
 
 function grabLinkIndices(links) {
   var linkIndices = []
@@ -51,7 +28,6 @@ var centerY = height/2
   var nodes = graph.nodes;
   var preLoad = graph.skipTicks === "True";
   var links = graph.links;
-  var nodes2 = graph.nodes2;
 
   // Size of the text boxes that appear upon hovering over individual nodes.
   var textPlacement = nodeTooltips.length*40;
@@ -62,21 +38,9 @@ var centerY = height/2
   var translateValue2 = height/2.4
   var scaleValue = height/4500
   console.log(scaleValue)
-  //var firstCluster = d3.selectAll(".circleClusters1");
+  var firstCluster = d3.selectAll(".circleClusters1");
   var secondCluster = d3.selectAll(".circleClusters2");
   var tinyNodes = d3.selectAll(".nodeElements");
- 
-  var zoom = d3.behavior.zoom()
-                .scaleExtent([1/10, 2])
-                .on("zoom", zoomed)
-                .translate([translateValue1, translateValue2]).scale(scaleValue);
-
-
-  var drag = d3.behavior.drag()
-               .origin(function(d) { return d; })
-               .on("dragstart", dragstarted)
-               .on("drag", dragged)
-               .on("dragend", dragended);
 
   console.log("1");
   //Add a default weight of   1   for each connection.
@@ -86,11 +50,56 @@ var centerY = height/2
 
   var svg = d3.select("#graph").append("svg")
               .attr("width", width)
-              .attr("height", height);
+              .attr("height", height)
 
-  var container = svg.append("g")//.call(drag); 
+  var container = svg.append("g") 
 
   console.log("2");
+
+//Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
+  function dragstarted(d) {
+  d3.event.sourceEvent.stopPropagation();
+  d3.select(this).classed("dragging", true);
+}
+
+
+  function dragged(d) {
+  d3.select(this)
+    .attr("cx", d.x = d3.event.x)
+    .attr("cy", d.y = d3.event.y);
+}
+
+
+  function dragended(d) {
+  d3.select(this).classed("dragging", false);
+}
+
+
+  function zoomed() {
+  container.attr("transform",
+  "translate(" + d3.event.translate +")scale("+ d3.event.scale + ")");
+}
+
+ 
+  var zoomInitial = d3.behavior.zoom()
+                .scaleExtent([1/10, 2])
+                .on("zoom", zoomed)
+                .translate([translateValue1, translateValue2]).scale(scaleValue);
+
+  var zoom = d3.behavior.zoom()
+        .translate([0,0])
+        .scale(1)
+        .scaleExtent([1, 8])
+        .on("zoom", zoomed);
+
+  var drag = d3.behavior.drag()
+               .origin(function(d) { return d; })
+               .on("dragstart", dragstarted)
+               .on("drag", dragged)
+               .on("dragend", dragended);
+
+
+  svg.call(zoom).call(zoom.event); 
 
   container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
 
@@ -140,19 +149,19 @@ var centerY = height/2
 
   console.log("4");
 
-
-  container.selectAll("line")
-    .data(links)
-    .enter()
-    .append("line")
-    .attr("class", "lines") 
-    .attr("x1", function(d) { return d.source.x; })
-    .attr("y1", function(d) { return d.source.y; })
-    .attr("x2", function(d) { return d.target.x; })
-    .attr("y2", function(d) { return d.target.y; })
-    .style("stroke-width", 0.06)
-    .attr("stroke", "gray")
-
+  function createLinks() {
+    container.selectAll("line")
+     .data(links)
+     .enter()
+     .append("line")
+     .attr("class", "lines") 
+     .attr("x1", function(d) { return d.source.x; })
+     .attr("y1", function(d) { return d.source.y; })
+     .attr("x2", function(d) { return d.target.x; })
+     .attr("y2", function(d) { return d.target.y; })
+     .style("stroke-width", 0.06)
+     .attr("stroke", "gray")
+}
   console.log("5");
 
   container.on("mouseover", function() {
@@ -168,7 +177,8 @@ var centerY = height/2
   .attr("class", "node");
 
   // Clusters of all the nodes with the same SINGLE inorganic in common
-  /*var circleClusters1 = container.selectAll("circle")
+  function createCircleClusters1() {
+        var circleClusters1 = container.selectAll("circle")
               .data(nodes)
               .enter().append("circle") 
               .attr("class", "circleClusters1")
@@ -179,21 +189,13 @@ var centerY = height/2
               .attr("cx", function(d) { return d.x;})
               .attr("cy", function(d) { return d.y;}) 
               .attr("r", 200) 
-              .on("click", function(d) {
-                var x = Math.round(d3.select(this).attr("cx"))
-                var y = Math.round(d3.select(this).attr("cy"))
-                var shiftX = -((centerX + x)*2)
-                var shiftY = -((centerY + y)*2)
-                console.log(shiftX)
-                console.log(shiftY)
-                container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(1,1)")
-                d3.selectAll(".circleClusters1").attr("fill", function(d) { return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)"; 
-    ;})
-    }); 
-*/
+              .on("click", clicked); 
+  }; 
+
 
   //Clusters of all nodes with both inorganics in common  
-  var circleClusters2 = container.selectAll("circle")
+  function createCircleClusters2() {
+              var circleClusters2 = container.selectAll("circle")
               .data(nodes)
               .enter().append("circle") 
               .attr("class", "circleClusters2")
@@ -204,19 +206,19 @@ var centerY = height/2
               .attr("cx", function(d) { return d.x;})
               .attr("cy", function(d) { return d.y;}) 
               .attr("r", 200) 
-              .on("click", function(d) {
-                var x = Math.round(d3.select(this).attr("cx"))
-                var y = Math.round(d3.select(this).attr("cy"))
-                var shiftX = -((centerX + x)*2)
-                var shiftY = -((centerY + y)*2)
-                console.log(shiftX)
-                console.log(shiftY)
-                container.attr("transform", "translate(" + shiftX + "," + shiftY + ")scale(1,1)")
-                d3.selectAll(".circleClusters1").attr("fill", function(d) { return (d.color2!=undefined) ? d.color2 : "rgba(0,0,0,0)"; 
-    ;})});
+              .on("click", clicked);
+   }; 
+
 
 //Nodes representing each individual reactions 
-  baseNodes.append("circle")
+function createNodeElements() {
+    console.log("nodesss") 
+    var nodeElements = container.selectAll("circle")
+        .data(nodes.filter(function(d) {
+          console.log(d.outcome) 
+          return d.outcome > 0;}))
+        .enter()
+        .append("circle")
     .attr("class", "nodeElements")
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
@@ -226,8 +228,11 @@ var centerY = height/2
       size = 0.5;
       }
       return size
-      })
-    .style("fill", function(d) {if (d.outcome == 4){
+      });
+    console.log(nodeElements)
+    nodeElements
+        .style("fill", function(d) {if (d.outcome == 4){
+                    console.log("made it here") 
                     return "#1a9641";
                     }
                   else if (d.outcome == 3){
@@ -262,7 +267,6 @@ var centerY = height/2
 	  .attr("height", boxLength * 1.3)
       .on("mouseover", function() {
 	d3.event.stopPropagation()})
-
 
 	var defs = container.append("defs");
 
@@ -354,6 +358,39 @@ var centerY = height/2
 
 	d3.event.stopPropagation();
     })
+}
+
+function reset() { 
+    console.log("reset")
+    zoomLevel = "second"
+    container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
+    $(".nodeElements").remove() 
+    createCircleClusters2();
+    createLabel2s(); 
+    }; 
+
+  
+function clicked(d) {
+        if (zoomLevel === "second") {
+          zoomLevel = "third" 
+          console.log(zoomLevel) 
+          var dx = Math.round(d3.select(this).attr("r")) * 2,
+              dy = dx,
+              x = Math.round(d3.select(this).attr("cx")),
+              y = Math.round(d3.select(this).attr("cy")),
+              scale = .9 / Math.max( dx / width, dy / height),
+              translate = [width /2 - scale* x, height/2 - scale*y];
+          $(".circleClusters2").remove()
+          $(".label1").remove()
+          svg.transition()
+            .duration(750)
+            .call(zoom.translate(translate).scale(scale).event);
+          createNodeElements(); 
+         } else {
+         return reset() 
+         }
+         
+}
 
 
       baseNodes.attr("transform", function(d) {
@@ -364,6 +401,7 @@ var centerY = height/2
     // Upon clicking a circleCluster zoom to that cluster and show the nodes again.
 
     
+  function createLabel1s() {
     var label1s = container.selectAll("label1")
                 .data(nodes)
                 .enter()
@@ -376,7 +414,9 @@ var centerY = height/2
                 .text(function(d) { 
                 return (d.label1!="none") ? d.label1 : "";
               });
+}
 
+  function createLabel2s() {
     var label2s = container.selectAll("label2")
                 .data(nodes)
                 .enter()
@@ -389,20 +429,20 @@ var centerY = height/2
                 .text(function(d) { 
                 return (d.label2!="none") ? d.label2 : "";
               });
-    //$(".circleClusters2").remove()
-    $(".nodeElements").remove()  
-    $(".lines").remove()
-    $(".label2").remove() 
-    $(".circleClusters1").remove()    
-
-  $("#reset").on("click", function() { container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")"); }); 
+} 
+     
+  $("#reset").on("click", reset);
 
   $("#loadingMessage").remove();
-
+  container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")"); 
+  //createCircleClusters2();  
+  //createLabel2s();
+  createNodeElements();
+  createLinks();  
   var data = {
               "nodes": JSON.stringify(nodes),
               "links": JSON.stringify(grabLinkIndices(links))
              };
   $.post('/setup_graph/', data);
  });
-
+}); 
