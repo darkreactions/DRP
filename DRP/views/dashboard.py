@@ -59,6 +59,7 @@ def get_class_stats_json(request, category="2-test"):
     "lines":get_fields_as_json(models, category=category),
     "descriptions":[model.description for model in models],
     "titles":[model.title for model in models],
+    "ids":[model.id for model in models],
     "confusionTables":[model.load_confusion_table(normalize=False) for model in models]
   }
 

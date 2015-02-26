@@ -629,7 +629,7 @@ class ModelStats(models.Model):
                       normalize=normalize, ranges=ranges, table=table)
 
 
-  def test_accuracy(self, ranges=True, table="test"):
+  def accuracy(self, ranges=True, table="test"):
     denom = float(self.total(table=table))
     if denom:
       tp = self.true_positives(ranges=ranges,table=table)
@@ -638,7 +638,7 @@ class ModelStats(models.Model):
     else:
       return 0
 
-  def test_precision(self, ranges=True, table="test"):
+  def precision(self, ranges=True, table="test"):
     tp = self.true_positives(ranges=ranges,table=table)
     fp = self.false_positives(ranges=ranges,table=table)
     denom = float(tp + fp)
@@ -675,8 +675,8 @@ class ModelStats(models.Model):
       "2-test": {
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
-        "Accuracy":self.test_accuracy(ranges=True),
-        "Precision":self.test_precision(ranges=True),
+        "Accuracy":self.accuracy(ranges=True),
+        "Precision":self.precision(ranges=True),
         "% TP":self.true_positives(normalize=True, ranges=True),
         "% FP":self.false_positives(normalize=True, ranges=True),
         "% TN":self.true_negatives(normalize=True, ranges=True),
@@ -685,8 +685,8 @@ class ModelStats(models.Model):
       "4-test": {
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
-        "Accuracy":self.test_accuracy(ranges=False),
-        "Precision":self.test_precision(ranges=False),
+        "Accuracy":self.accuracy(ranges=False),
+        "Precision":self.precision(ranges=False),
         "% TP":self.true_positives(normalize=True, ranges=False),
         "% FP":self.false_positives(normalize=True, ranges=False),
         "% TN":self.true_negatives(normalize=True, ranges=False),
@@ -695,22 +695,22 @@ class ModelStats(models.Model):
       "2-train": {
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
-        "Accuracy":self.test_accuracy(ranges=True, table="test"),
-        "Precision":self.test_precision(ranges=True, table="test"),
-        "% TP":self.true_positives(normalize=True, ranges=True, table="test"),
-        "% FP":self.false_positives(normalize=True, ranges=True, table="test"),
-        "% TN":self.true_negatives(normalize=True, ranges=True, table="test"),
-        "% FN":self.false_negatives(normalize=True, ranges=True, table="test"),
+        "Accuracy":self.accuracy(ranges=True, table="train"),
+        "Precision":self.precision(ranges=True, table="train"),
+        "% TP":self.true_positives(normalize=True, ranges=True, table="train"),
+        "% FP":self.false_positives(normalize=True, ranges=True, table="train"),
+        "% TN":self.true_negatives(normalize=True, ranges=True, table="train"),
+        "% FN":self.false_negatives(normalize=True, ranges=True, table="train"),
       },
       "4-train": {
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
-        "Accuracy":self.test_accuracy(ranges=True, table="test"),
-        "Precision":self.test_precision(ranges=True, table="test"),
-        "% TP":self.true_positives(normalize=True, ranges=False, table="test"),
-        "% FP":self.false_positives(normalize=True, ranges=False, table="test"),
-        "% TN":self.true_negatives(normalize=True, ranges=False, table="test"),
-        "% FN":self.false_negatives(normalize=True, ranges=False, table="test"),
+        "Accuracy":self.accuracy(ranges=True, table="train"),
+        "Precision":self.precision(ranges=True, table="train"),
+        "% TP":self.true_positives(normalize=True, ranges=False, table="train"),
+        "% FP":self.false_positives(normalize=True, ranges=False, table="train"),
+        "% TN":self.true_negatives(normalize=True, ranges=False, table="train"),
+        "% FN":self.false_negatives(normalize=True, ranges=False, table="train"),
       },
     }
 

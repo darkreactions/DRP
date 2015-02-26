@@ -65,6 +65,7 @@ function makeGraph(graphURL, svgContainer) {
                 };
 
               HTML += formatConfusionTable(data["confusionTables"][x]);
+              HTML += '<div class="modelID">ID: '+data["ids"][x] + '</div>';
 
               return HTML
             })

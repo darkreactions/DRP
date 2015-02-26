@@ -231,7 +231,7 @@ def learning_curve(name, description, curve_tag, data=None,
     iteration_data = [headers] + random.sample(data, sample_size)
 
     if debug:
-      print "Generating: \"{}\"".format(model_name),
+      print "Generating: \"{}\"".format(model_name)
 
     # Generate the model.
     gen_model(model_name, description, tags=model_tag,
@@ -240,7 +240,7 @@ def learning_curve(name, description, curve_tag, data=None,
                                        debug=gen_debug)
 
     if debug:
-      print " (Done: {})".format(datetime.datetime.now().time())
+      print "\tDone: {}".format(datetime.datetime.now().time())
 
 
 

@@ -30,6 +30,8 @@ urlpatterns = patterns('',
     url(r'^graphs?/train[s_]?(?:sizes?)?/?$',"DRP.views.graph.graph",{"base":"train"}),
     url(r'^graphs?/(?:dates?|times?)/?$', "DRP.views.graph.graph", {"base":"time"}),
 
+    url(r'^models?/(?P<model_id>\d+)/?$', "DRP.views.stats.model_stats"),
+
   #Database
     (r'^data(?:base)?/?$', "DRP.views.database.database"), #Encompassing data view.
     (r'^data(?:base)?/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.

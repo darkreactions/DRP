@@ -440,6 +440,16 @@ blacklist = {
 }
 casey_feature_selected = [f for f in casey_feature_selected if f not in blacklist]
 
-headers = orig_headers
+limited_features = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
+            'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
+            'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles',
+            'XXXorg1', 'XXXorg1mass',
+            'XXXorg1moles', 'XXXorg2', 'XXXorg2mass',
+            'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass',
+            'XXXoxlike1moles', 'temp', 'time', 'slowCool', 'pH',
+            'leak', "outcome"]
+
+# The headers that future generated models will use are specified by `headers`:
+headers = limited_features
 
 

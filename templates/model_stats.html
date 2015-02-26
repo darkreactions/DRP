@@ -1,0 +1,56 @@
+
+{% for category, stat in model.stats.items %}
+  <div>{{category}}:</div>
+  <ul>
+  {% for key, val in stat.items %}
+    <li>{{key}}: {{val}}</li>
+  {% endfor %}
+  </ul>
+  <br/>
+{% endfor %}
+
+<style>
+td {
+ padding-left:1em;
+ padding-right:1em;
+}
+</style>
+
+<script>
+  function toFixed(value, precision) {
+      var power = Math.pow(10, precision || 0);
+      return String(Math.round(value * power) / power);
+  }
+
+  function formatConfusionTable(jsonTable) {
+    var HTML = '<div class="modelConfusionTable">';
+
+    HTML += "<table>";
+    HTML += "<tr><td></td><td colspan=5><span class='confusionTableLabel'>Guesses</span></td></tr>";
+    HTML += "<tr><td rowspan=6><span class='confusionTableLabel'>Actual</span></td></tr>";
+
+    for (var i=0; i < jsonTable.length; i++) {
+
+      HTML += "<tr>";
+      for (var j=0; j < jsonTable.length; j++) {
+        var val = jsonTable[i][j];
+
+        if (val<=1.0 && val>=0.0) {
+          val = toFixed(val*100, 1);
+        }
+
+        HTML += "<td>"+val+"</td>";
+      }
+      HTML += "</tr>";
+
+    }
+
+    HTML += "</table>";
+
+    HTML += "</div>";
+    return HTML;
+  }
+
+document.write(formatConfusionTable({{train_cm|safe}}));
+document.write(formatConfusionTable({{test_cm|safe}}));
+</script>
