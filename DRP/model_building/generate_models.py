@@ -94,7 +94,9 @@ def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs
 
   if only_keep_avg:
     for model in model_stats:
-      model.delete()
+      model.active = False
+      model.usable = False
+      model.save()
 
   return avg_model
 

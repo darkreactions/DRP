@@ -593,7 +593,7 @@ class ModelStats(models.Model):
 
   def total(self, table="test"):
     conf_table = self.load_confusion_dict(table=table)
-    int_total = sum([int(val) for correct,guesses in conf_table.items()
+    int_total = sum([float(val) for correct,guesses in conf_table.items()
                               for key,val in guesses.items()])
     return float(int_total)
 
@@ -629,6 +629,10 @@ class ModelStats(models.Model):
       return 0
 
   def precision(self, ranges=True, table="test"):
+
+    # Note that averaging precision is dangerous if no false-positives
+    # are found for any of the models-to-average.
+
     tp = self.true_positives(ranges=ranges,table=table)
     fp = self.false_positives(ranges=ranges,table=table)
     denom = float(tp + fp)
