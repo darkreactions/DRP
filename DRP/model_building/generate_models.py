@@ -20,6 +20,14 @@ def research_data_filter(data):
   # Developers: Put any processing steps here.
 
   """
+  # Only retain reactions that contain certain atoms.
+  from DRP.retrievalFunctions import atom_filter
+  atoms = ["V", "Se"]
+  data = atom_filter(atoms, data=data)
+  """
+
+
+  """
   # Add bad recommendations to the dataset as 0-outcome reactions.
   from DRP.models import Recommendation
   recs = Recommendation.objects.filter(nonsense=True)
@@ -39,7 +47,7 @@ def research_data_filter(data):
 
   return data
 
-def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
+def generate_avg(title, data, iterations=1, only_keep_avg=True, construct_kwargs={}):
 
   from DRP.model_building.confusion_table import get_avg_confusion_dict
   from DRP.models import ModelStats
@@ -119,10 +127,10 @@ def gen_model(title, description, data=None, test_set=None, force=False,
   if data is None:
     if debug:
       print "Gathering default data..."
-    data = list(get_valid_data())
+    data = get_valid_data()
 
     # Make sure you remark on the filter you're using in the description!
-    data = [headers] + research_data_filter(data)
+    data = [headers] + list(research_data_filter(data))
 
     if debug:
       print "Found {} data...".format(len(data)-1)
@@ -165,7 +173,7 @@ def gen_model(title, description, data=None, test_set=None, force=False,
 
 def learning_curve(name, description, curve_tag, data=None,
                                                  force=True,
-                                                 step=0.05,
+                                                 step=100,
                                                  gen_debug=False,
                                                  debug=False):
   def curve_generator(total_size, step):
@@ -182,9 +190,9 @@ def learning_curve(name, description, curve_tag, data=None,
 
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
-  from DRP.preprocessors import default_preprocessor
-  from DRP.model_building.splitters import default_splitter
-  import math, datetime, random
+  from DRP.preprocessors import category_preprocessor as preprocessor
+  from DRP.model_building.splitters import category_splitter as splitter
+  import math, datetime, random, time
 
   if debug:
     print "Starting at {}".format(datetime.datetime.now().time())
@@ -194,39 +202,41 @@ def learning_curve(name, description, curve_tag, data=None,
         print "Gathering default data..."
 
     # Prepare the default data if it is unavailable.
-    data = list(get_valid_data())
+    data = get_valid_data()
 
     # Make sure you remark on the filter you're using in the description!
-    data = [headers] + research_data_filter(data)
+    data = [headers] + list(research_data_filter(data))
 
     # Take the test-set out of the data (to set aside for the learning curve).
-    data = default_preprocessor(data)
-    splits = default_splitter(data, headers=headers)
+    data = preprocessor(data)
+    headers = data.pop(0)
+
+    splits = splitter(data, headers=headers)
     data = splits["train"]
     test_set = splits["test"]
 
   else:
     data = list(data)
+    headers = data.pop(0)
     test_set = None
 
-  headers = data.pop(0)
 
   # Randomize the data so that any pre-existing order is not a variable
   #  in experimentation.
   random.shuffle(data)
 
-  bucket_size = int(len(data)*step)
-  num_buckets = int(math.ceil(len(data)/float(bucket_size)))
+  all_buckets = [data[x:x+step] for x in xrange(0,len(data), step)]
+  num_buckets = len(all_buckets)
 
-  all_buckets = [data[x:x+bucket_size] for x in xrange(0,len(data),bucket_size)]
+  call_time = int(time.time())
 
-  for i in xrange(1, num_buckets):
+  for i in xrange(0, num_buckets):
 
     model_name = "{} ({} of {})".format(name, i, num_buckets)
-    model_tag = "learning_curve {} {}".format(curve_tag, i)
+    model_tag = "learning_curve {} {} {}".format(call_time, curve_tag, i)
 
     # Grab a random sampling of the data to use.
-    union = [bucket for buckets in all_buckets[:i] for bucket in buckets]
+    union = [bucket for buckets in all_buckets[:i+1] for bucket in buckets]
     iteration_data = [headers] + union
 
     if debug:
@@ -240,7 +250,7 @@ def learning_curve(name, description, curve_tag, data=None,
                                        debug=gen_debug)
 
     if debug:
-      print "\tDone: {}\n".format(datetime.datetime.now().time())
+      print "\tFinished: {}\n".format(datetime.datetime.now().time())
 
 
 

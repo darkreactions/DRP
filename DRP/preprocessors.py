@@ -60,7 +60,7 @@ def purging_preprocessor(data):
 
 def category_preprocessor(data):
   def categorize(data):
-    return "Te" in data.atoms
+    return "Se" in data.atoms and "V" in data.atoms
 
   new_data = default_preprocessor(data)
 
