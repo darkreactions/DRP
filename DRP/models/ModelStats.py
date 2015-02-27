@@ -40,6 +40,7 @@ class ModelStats(models.Model):
                                      usable=True, active=False,
                                      preprocessor=None, postprocessor=None,
                                      splitter=None,
+                                     test_set=None,
                                      clean_tmp_files=True,
                                      debug=False):
     """
@@ -110,20 +111,24 @@ class ModelStats(models.Model):
     if debug:
       print "Starting generation of '{}' using '{}' on {} entries".format(self.tool, self.library, len(data))
 
-    # If specified, pre-process the data.
-    if preprocessor:
+    # Pre-process the data if it is not already processed.
+    if preprocessor and not test_set:
       if debug: print "Pre-processing... ({})".format(preprocessor.__name__)
       data = preprocessor(data)
 
     headers = data.pop(0)
     random.shuffle(data) #Randomize the data before splitting.
 
-    # Split the data.
-    if debug: print "Splitting data... ({})".format(splitter.__name__)
-    split_data = splitter(data, headers=headers)
-    if debug:
-      splits = {key:len(val) for key, val in split_data.items()}
-      print "Splits: {}".format(splits)
+    if not test_set:
+      # Split the data.
+      if debug: print "Splitting data... ({})".format(splitter.__name__)
+      split_data = splitter(data, headers=headers)
+      if debug:
+        splits = {key:len(val) for key, val in split_data.items()}
+        print "Splits: {}".format(splits)
+    else:
+      if debug: print "Using predefined test data..."
+      split_data = {"all":data+test_set, "test":test_set, "train":data}
 
 
     # If specified, post-process the data after splitting.
@@ -274,23 +279,8 @@ class ModelStats(models.Model):
       raise Exception("Illegal model library specified! Aborting file-load!")
 
 
-  def _make_confusion_table(self, guesses, responses):
-    if len(guesses)==0 or len(responses)==0:
-      raise Exception("Either `guesses` or `responses` is empty!")
-
-    if not (len(guesses)==len(responses)):
-      raise Exception("`guesses` and `responses` are of different sizes!")
-
-    possible_vals = sorted(list(set(guesses+responses)))
-    cm = {r1:{r2:0 for r2 in possible_vals} for r1 in possible_vals}
-
-    for guess, response in zip(guesses, responses):
-      cm[response][guess] += 1
-
-    return cm
-
-
   def _test_model(self, data, debug=False, table="test"):
+    from DRP.model_building.confusion_table import make_confusion_dict
 
     if self.library=="weka":
       predictors = data
@@ -305,7 +295,7 @@ class ModelStats(models.Model):
     if self.library in {"sklearn", "weka"}:
       responses = map(int, map(float, responses))
 
-    cm = self._make_confusion_table(guesses, responses)
+    cm = make_confusion_dict(guesses, responses)
     self.set_confusion_table(cm, table=table)
 
 
@@ -647,6 +637,15 @@ class ModelStats(models.Model):
     else:
       return 0
 
+  def recall(self, ranges=True, table="test"):
+    tp = self.true_positives(ranges=ranges,table=table)
+    fn = self.false_negatives(ranges=ranges,table=table)
+    denom = float(tp + fn)
+    if denom:
+      return tp/denom
+    else:
+      return 0
+
   def user_satisfaction(self):
     from DRP.models import Recommendation
     recs = Recommendation.objects.filter(model_version=self)
@@ -677,6 +676,7 @@ class ModelStats(models.Model):
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=True),
         "Precision":self.precision(ranges=True),
+        "Recall":self.recall(ranges=True),
         "% TP":self.true_positives(normalize=True, ranges=True),
         "% FP":self.false_positives(normalize=True, ranges=True),
         "% TN":self.true_negatives(normalize=True, ranges=True),
@@ -687,6 +687,7 @@ class ModelStats(models.Model):
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=False),
         "Precision":self.precision(ranges=False),
+        "Recall":self.recall(ranges=False),
         "% TP":self.true_positives(normalize=True, ranges=False),
         "% FP":self.false_positives(normalize=True, ranges=False),
         "% TN":self.true_negatives(normalize=True, ranges=False),
@@ -696,7 +697,8 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=True, table="train"),
-        "Precision":self.precision(ranges=True, table="train"),
+        "Precision":self.precision(ranges =True, table="train"),
+        "Recall":self.recall(ranges=True, table="train"),
         "% TP":self.true_positives(normalize=True, ranges=True, table="train"),
         "% FP":self.false_positives(normalize=True, ranges=True, table="train"),
         "% TN":self.true_negatives(normalize=True, ranges=True, table="train"),
@@ -705,8 +707,9 @@ class ModelStats(models.Model):
       "4-train": {
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
-        "Accuracy":self.accuracy(ranges=True, table="train"),
-        "Precision":self.precision(ranges=True, table="train"),
+        "Accuracy":self.accuracy(ranges=False, table="train"),
+        "Precision":self.precision(ranges=False, table="train"),
+        "Recall":self.recall(ranges=False, table="train"),
         "% TP":self.true_positives(normalize=True, ranges=False, table="train"),
         "% FP":self.false_positives(normalize=True, ranges=False, table="train"),
         "% TN":self.true_negatives(normalize=True, ranges=False, table="train"),

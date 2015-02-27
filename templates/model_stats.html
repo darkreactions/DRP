@@ -51,6 +51,9 @@ td {
     return HTML;
   }
 
+document.write("Train CM");
 document.write(formatConfusionTable({{train_cm|safe}}));
+
+document.write("Test CM");
 document.write(formatConfusionTable({{test_cm|safe}}));
 </script>
