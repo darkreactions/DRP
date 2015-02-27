@@ -49,44 +49,6 @@ def get_graph_data(request):
       with open(path_to_label_dict, "w") as outfile:
         json.dump(node_clusters, outfile)
 
-    with open(path_to_vis_data_file, "r") as f:
-        deserialized_data = json.load(f)
-    nodez = deserialized_data[nodes]
-   
-    n = nodes 
-    print "here" 
-    new_nodez = []
-    for i in xrange(len(n)):
-      id_num = n[i]["id"]
-      id_node = []  
-      for i in xrange(len(nodez)):
-       if nodez[i]["id"] == id_num:
-         id_node = nodez[i] 
-      new_nodez.append({
-      "index": n[i]["index"],
-      "target": n[i]["target"],
-      "weight": n[i]["weight"],
-      "color": n[i]["color"],
-      "label1": n[i]["label1"],
-      "label2": n[i]["label2"],
-      "source": n[i]["source"],
-      "color2": n[i]["color2"],
-      "inorg1": n[i]["inorg1"],
-      "inorg2": n[i]["inorg2"],
-      "y": n[i]["y"],
-      "x": n[i]["x"],
-      "pagerank": n[i]["pagerank"],
-      "px": n[i]["px"],
-      "py": n[i]["py"],
-      "id": n[i]["id"],
-      "outcome": id_node["outcome"]
-      })
-    
-    with open(BASE_DIR + "/DRP/vis/nodePosOutcome.json", "w") as outfile:
-        json.dump(new_nodez, outfile)
-
-
-           
     #Clusters are the elements that contain all the nodes with matching inorganics (a list of lists of dictionaries)
     #nodes are the original datum points corresponding to a single reaction( a list of dictionaries)
     #This is for the second tier clusters (clustered by two inorganics)
@@ -466,4 +428,43 @@ def make_larger_clusters(clusters, total_most_important_inorgs):
           })
   return main_clusters
 
+def make_new_nodePositions(): 
 
+  with open(path_to_vis_data_file, "r") as f:
+    deserialized_data = json.load(f)
+  nodez = deserialized_data["nodes"]
+  n = nodes 
+  print "here" 
+  new_nodez = []
+  for i in xrange(len(n)):
+    id_num = n[i]["id"]
+    id_node = []  
+    for j in xrange(len(nodez)):
+      if nodez[j]["id"] == id_num:
+        id_node = nodez[j] 
+    new_nodez.append({
+    "index": n[i]["index"],
+    "target": n[i]["target"],
+    "weight": n[i]["weight"],
+    "color": n[i]["color"],
+    "label1": n[i]["label1"],
+    "label2": n[i]["label2"],
+    "source": n[i]["source"],
+    "color2": n[i]["color2"],
+    "y": n[i]["y"],
+    "x": n[i]["x"],
+    "pagerank": n[i]["pagerank"],
+    "px": n[i]["px"],
+    "py": n[i]["py"],
+    "id": n[i]["id"],
+    "outcome": id_node["outcome"],
+    "ref": id_node["ref"]
+    })
+    if "inorg1" in n[i]:
+      new_nodez[i]["inorg1"] = n[i]["inorg1"]
+    if "inorg2" in n[i]:
+      new_nodez[i]["inorg2"] = nodes[i]["inorg2"]
+      
+  with open(BASE_DIR + "/DRP/vis/nodePosOutcome.json", "w") as outfile:
+    json.dump(new_nodez, outfile) 
+  return HttpResponse("OkeyDokey") 

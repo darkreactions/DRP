@@ -365,6 +365,8 @@ function reset() {
     zoomLevel = "second"
     container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
     $(".nodeElements").remove() 
+    $(".circleClusters2").remove()
+    $(".label1").remove() 
     createCircleClusters2();
     createLabel2s(); 
     }; 
