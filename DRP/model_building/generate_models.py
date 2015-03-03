@@ -145,9 +145,9 @@ def gen_model(title, description, data=None, test_set=None, force=False,
 
 
   # If `splitter` is set to `None`, the default splitter will be used.
-  from DRP.preprocessors import category_preprocessor as preprocessor
+  from DRP.preprocessors import default_preprocessor as preprocessor
   from DRP.postprocessors import default_postprocessor as postprocessor
-  from DRP.model_building.splitters import category_splitter as splitter
+  from DRP.model_building.splitters import default_splitter as splitter
 
   construct_kwargs = {
                   "description":description,
@@ -184,23 +184,15 @@ def learning_curve(name, description, curve_tag, data=None,
                                                  step=200,
                                                  gen_debug=False,
                                                  debug=False):
-  def curve_generator(total_size, step):
-    current = step*total_size
-    i = 1
-    while total_size > current:
-
-      yield i, int(current)
-
-      current += (step*total_size)
-      i += 1
-
-    yield i, int(total_size)
-
+  import math, datetime, random, time
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
+
   from DRP.preprocessors import category_preprocessor as preprocessor
-  from DRP.model_building.splitters import category_splitter as splitter
-  import math, datetime, random, time
+  from DRP.model_building.splitters import strict_category_splitter as splitter
+
+  distribute_test_set = True
+  force_num_buckets=10
 
   if debug:
     print "Starting at {}".format(datetime.datetime.now().time())
@@ -213,7 +205,13 @@ def learning_curve(name, description, curve_tag, data=None,
     data = get_valid_data()
 
     # Make sure you remark on the filter you're using in the description!
-    data = [headers] + list(research_data_filter(data))
+    data = list(research_data_filter(data))
+
+    # Randomize the data so that any pre-existing order is not a variable
+    #  in experimentation.
+    random.shuffle(data)
+
+    data = [headers] + data
 
     # Take the test-set out of the data (to set aside for the learning curve).
     data = preprocessor(data)
@@ -224,19 +222,40 @@ def learning_curve(name, description, curve_tag, data=None,
     test_set = splits["test"]
 
   else:
+    #TODO: Does this still work? If so, what do?
     data = list(data)
     headers = data.pop(0)
     test_set = None
 
-
-  # Randomize the data so that any pre-existing order is not a variable
-  #  in experimentation.
-  random.shuffle(data)
-
-  all_buckets = [data[x:x+step] for x in xrange(0,len(data), step)]
-  num_buckets = len(all_buckets)
-
   call_time = int(time.time())
+
+
+  # If a specific number of buckets is to be used, calculate the `step`.
+  if force_num_buckets:
+    step = int(math.ceil(len(data)/float(force_num_buckets)))
+    test_step = int(math.ceil(len(test_set)/float(force_num_buckets)))
+
+  main_bin = [data[x:x+step] for x in xrange(0,len(data), step)]
+  test_bin = [test_set[x:x+test_step] for x in xrange(0,len(test_set), test_step)]
+  num_buckets = len(main_bin)
+
+  if distribute_test_set:
+    test_set = test_bin.pop(0) # Take one bucket for testing.
+
+    # With the n-1 buckets worth of data, recreate n buckets.
+    redistribute = [entry for bucket in test_bin for entry in bucket]
+    red_step = int(math.ceil(len(redistribute)/float(num_buckets)))
+
+    red_bin = [redistribute[x:x+red_step]
+               for x in xrange(0,len(redistribute), red_step)]
+
+    if debug:
+      print "Red Bin Sizes: {}".format(map(len, red_bin))
+      print "Main Bin Sizes: {}".format(map(len, main_bin))
+      print "Test Size: {}".format(len(test_set))
+
+    # Distribute the redistribution bins across the `main_bin`.
+    main_bin = [main+red for main, red in zip(main_bin, red_bin)]
 
   for i in xrange(0, num_buckets):
 
@@ -244,7 +263,7 @@ def learning_curve(name, description, curve_tag, data=None,
     model_tag = "learning_curve {} {} {}".format(call_time, curve_tag, i)
 
     # Grab a random sampling of the data to use.
-    union = [bucket for buckets in all_buckets[:i+1] for bucket in buckets]
+    union = [bucket for buckets in main_bin[:i+1] for bucket in buckets]
     iteration_data = [headers] + union
 
     if debug:
