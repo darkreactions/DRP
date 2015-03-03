@@ -19,13 +19,21 @@ def research_data_filter(data):
 
   # Developers: Put any processing steps here.
 
+  from django.db.models import Q
+
+  # Remove any data that doesn't have a valid outcome.
+  data = data.filter(~Q(outcome=0))
+
+  # Only utilize the data that was available before June 1st.
+  from DRP.retrievalFunctions import filter_by_date
+  data = filter_by_date(data, "06-01-2014", "before")
+
   """
   # Only retain reactions that contain certain atoms.
   from DRP.retrievalFunctions import atom_filter
   atoms = ["V", "Se"]
   data = atom_filter(atoms, data=data)
   """
-
 
   """
   # Add bad recommendations to the dataset as 0-outcome reactions.
@@ -137,9 +145,9 @@ def gen_model(title, description, data=None, test_set=None, force=False,
 
 
   # If `splitter` is set to `None`, the default splitter will be used.
-  from DRP.preprocessors import default_preprocessor as preprocessor
+  from DRP.preprocessors import category_preprocessor as preprocessor
   from DRP.postprocessors import default_postprocessor as postprocessor
-  from DRP.model_building.splitters import default_splitter as splitter
+  from DRP.model_building.splitters import category_splitter as splitter
 
   construct_kwargs = {
                   "description":description,
@@ -173,7 +181,7 @@ def gen_model(title, description, data=None, test_set=None, force=False,
 
 def learning_curve(name, description, curve_tag, data=None,
                                                  force=True,
-                                                 step=100,
+                                                 step=200,
                                                  gen_debug=False,
                                                  debug=False):
   def curve_generator(total_size, step):
