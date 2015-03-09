@@ -1,5 +1,5 @@
 
-import sys, os, math, json
+import sys, os, math
 django_dir = os.path.dirname(os.path.realpath(__file__)).split("DRP")[0]
 django_path = "{}/DRP".format(django_dir)
 if django_path not in sys.path:
@@ -7,7 +7,6 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.model_building import load_cg
-from DRP.settings import BASE_DIR
 
 global_cg = None
 
@@ -17,25 +16,46 @@ def get_cg():
 
 
 class Euclidean:
-  def __init__(self, msm = None):
+  def __init__(self):
     self.cg_props = get_cg()
+    self.headers = None
+    self.skipped_headers = set()
     self.euclid_map = dict()
 
-    if not msm:
-      msm = json.load(open(BASE_DIR+"/DRP/research/mean_std_map.json"))
-    self.mean_std_map, self.center_list = msm
+    # Caches for the means/standard deviations for each field.
+    self.field_means = dict()
+    self.field_stds = dict()
+
+
+  def setup(self, headers, universe, debug=True):
+
+    self.headers = headers
+
+    field_totals = {header:0.0 for header in headers}
+
+    for i, header in enumerate(headers):
+      for datum in universe:
+        try:
+          field_totals[header] += float(datum[i])
+        except:
+          self.skipped_headers.add(header)
+
 
   def apply_center(self, row):
+    if not self.headers:
+      raise Exception("Call the `setup` method on this metric before use!")
+
     new_row = []
-    for i in range(len(self.headers)):
-      if self.center_list[i]:
-        mean, std = self.mean_std_map[self.headers[i]]
-        if (mean == 0 and std > 0.0001) or ( mean != 0 and abs(std / mean) > 0.0001):
-          new_row.append( (float(row[i]) - float(mean)) / float(std))
-        else:
-          new_row.append(float(row[i]))
+    for i, header in enumerate(self.headers):
+      if header in self.skipped_headers: new_row.append(None)
+
+      mean = self.field_means[header]
+      std = self.field_stds[header]
+      if (mean == 0 and std > 0.0001) or ( mean != 0 and abs(std / mean) > 0.0001):
+        new_row.append( (float(row[i]) - float(mean)) / float(std))
       else:
-        new_row.append(row[i])
+        new_row.append(float(row[i]))
+
     return new_row
 
   def dissimilarity(self, row_1, row_2):
@@ -50,15 +70,16 @@ class Euclidean:
   def distance(self, row_1, row_2):
     dist = 0.0
 
-    for i in range(len(row_1)):
+    for i, header in enumerate(self.headers):
+      if header in self.skipped_headers: continue
+
       if row_1[i] in {"yes", "no", True, False}:
         if row_1[i] != row_2[i]: dist += 1.0
       else:
         try:
           dist += (float(row_1[i]) - float(row_2[i]))**2
         except Exception as e:
-          print row_1, row_2
-          print i
+          print "-- Euclidean `distance` calculation failed."
           raise e
 
     dist = math.sqrt(dist)
@@ -147,5 +168,23 @@ class Tanimoto:
     return fp
 
 
-default_metric = Euclidean().distance
+def get_default_metric(data=None, test=False):
+
+  from DRP.model_building.rxn_calculator import headers
+  from DRP.retrievalFunctions import get_valid_data
+  import random
+
+  if not data:
+    data = list(get_valid_data())
+
+    if test:
+      random.shuffle(data)
+      data = data[:100]
+
+    data = [d.get_calculations_list() for d in data]
+
+  metric = Euclidean()
+  metric.setup(headers, data)
+
+  return metric.distance, data
 

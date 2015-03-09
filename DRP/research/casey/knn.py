@@ -6,9 +6,8 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
-def distance(point, other):
-  from DRP.recommendation.metrics import default_metric
-  return default_metric(point, other)
+from DRP.recommendation.metrics import get_default_metric
+distance, universe = get_default_metric()
 
 
 def get_knn_tuples(point, universe, k):
@@ -33,7 +32,9 @@ def average_knn_distance(point, universe, k):
 
 
 def main():
-  print "Here!"
+  for i in range(5):
+    avg_dist = average_knn_distance(universe[i], universe, 3)
+    print "Average k=3 distance for {}th point: {}".format(i, avg_dist)
 
 
 
