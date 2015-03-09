@@ -102,12 +102,6 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
 
 
 
-def get_current_model():
-  from DRP.retrievalFunctions import get_latest_ModelStats
-  model = get_latest_ModelStats()
-  return model.filename
-
-
 def map_to_zero_one(v):
 	if v < 3:
 		return 1

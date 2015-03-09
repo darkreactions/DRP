@@ -220,7 +220,7 @@ def learning_curve(name, description, curve_tag, data=None,
 
   all_buckets = [data[x:x+bucket_size] for x in xrange(0,len(data),bucket_size)]
 
-  for i in xrange(1, num_buckets):
+  for i in xrange(1, num_buckets+1):
 
     model_name = "{} ({} of {})".format(name, i, num_buckets)
     model_tag = "learning_curve {} {}".format(curve_tag, i)
