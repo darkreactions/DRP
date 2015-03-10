@@ -7,17 +7,18 @@ if django_path not in sys.path:
 
 
 def get_data_from_ref_file(filename):
-  from DRP.retrievalFunctions import get_valid_data
+  from DRP.models import Data
 
   with open(django_path+"/"+filename) as f:
-    contents = f.read()
+    contents = f.read().replace("\n"," ")
+
+    # Create a lower-cased set of refs that we can use for the query.
     refs = contents.split(" ")
+    ref_set = set([ref.lower() for ref in refs if ref])
 
-    ref_set = set(refs)
-
-  data = get_valid_data()
-
-  data = filter(lambda datum: datum.ref in ref_set, data)
+  # Note: does not guarantee that all data will be found.
+  data = Data.objects.all()
+  data = filter(lambda datum: datum.ref.lower() in ref_set, data)
 
   return data
 

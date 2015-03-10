@@ -170,12 +170,12 @@ class Tanimoto:
 
 def collect_universe(debug=False):
   from DRP.retrievalFunctions import get_valid_data
-  import random
 
   universe = list(get_valid_data())
 
   """
   if debug:
+    import random
     print "-- Using debug mode..."
     random.shuffle(universe)
     universe = universe[:100]

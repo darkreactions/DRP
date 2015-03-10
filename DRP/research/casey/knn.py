@@ -69,13 +69,18 @@ def average_knn_distance(point, others, k):
   knn = get_knn_tuples(point, others, k)
   distances = map(lambda tup: tup[1], knn)
   total = float(sum(distances))
+
+  if point[0] in {"jk252.5","jho252.5"} :
+    print "{} Nearest Neighbors of {}:".format(k, point[0])
+    print "\n".join(["\t{} : {}".format(tup[0][0], tup[1]) for tup in knn])
+
   return total/len(knn)
 
 
 def get_research_points():
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
 
-  data = get_data_from_ref_file("DRP/research/casey/030915_datums.csv")
+  data = get_data_from_ref_file("DRP/research/casey/raw/030915_seeds.txt")
 
   """
   #TODO: quickie-info
@@ -101,7 +106,7 @@ def get_research_others():
   from DRP.retrievalFunctions import filter_by_date
 
   data = get_valid_data()
-  data = filter_by_date(data, "07-25-2014", "before")
+  data = filter_by_date(data, "05-21-2014", "before")
   data = [d.get_calculations_list(debug=True) for d in data]
 
   return data
@@ -113,8 +118,11 @@ def knn_research_graphs(low, high):
 
   if debug: print "Gathering research points..."
   points = get_research_points()
+  if not points: raise Exception("No research points found!")
+
   if debug: print "Gathering other research points..."
   others = get_research_others()
+  if not others: raise Exception("No \"other\" research points found!")
 
   k_range = xrange(low, high+1)
 
@@ -148,6 +156,7 @@ def knn_research_graphs(low, high):
 
       buckets[key][point][k-1] = dist
 
+
   for key, bucket in buckets.items():
     if bucket:
       print "Graphing {}... ({})".format(key, len(bucket))
@@ -162,15 +171,16 @@ def knn_research_graphs(low, high):
                         yLabel="Average KNN Distance",
                         tick_range=(0,max_dist),
                         major_tick=max_dist/10.0,
-                        show_legend=False,
+                        show_legend=True,
                         show_minor=False)
       graph.show()
       raw_input("Press enter to continue...")
-
+    else:
+      print "Skipping empty bucket `{}`...".format(key)
 
 
 def main():
-  knn_research_graphs(1,20)
+  knn_research_graphs(1,10)
 
 
 
