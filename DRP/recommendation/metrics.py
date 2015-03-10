@@ -26,7 +26,6 @@ class Euclidean:
     self.field_means = dict()
     self.field_stds = dict()
 
-
   def setup(self, headers, universe, debug=True):
 
     self.headers = headers
@@ -40,6 +39,7 @@ class Euclidean:
         except:
           self.skipped_headers.add(header)
 
+      self.field_means[header] = field_totals[header]/len(universe)
 
   def apply_center(self, row):
     if not self.headers:
@@ -101,10 +101,10 @@ class Tanimoto:
     self.compound_smiles = dict()
     self.joint_sim = dict()
     self.weird_count = 0
-    from rdkit import DataStructs
+    from rdkit import universeStructs
     from rdkit.Chem.Fingerprints import FingerprintMols
     from rdkit import Chem
-    self.ds = DataStructs
+    self.ds = universeStructs
     self.FPM = FingerprintMols
     self.Chem = Chem
 
@@ -168,23 +168,31 @@ class Tanimoto:
     return fp
 
 
-def get_default_metric(data=None, test=False):
-
-  from DRP.model_building.rxn_calculator import headers
+def collect_universe(debug=False):
   from DRP.retrievalFunctions import get_valid_data
   import random
 
-  if not data:
-    data = list(get_valid_data())
+  universe = list(get_valid_data())
 
-    if test:
-      random.shuffle(data)
-      data = data[:100]
+  if debug:
+    random.shuffle(universe)
+    universe = universe[:100]
 
-    data = [d.get_calculations_list() for d in data]
+  universe = [d.get_calculations_list() for d in universe]
+
+  return universe
+
+def get_default_metric(universe=None, debug=False):
+  from DRP.model_building.rxn_calculator import headers
+
+  if debug: print "Preparing the default metric..."
+
+  if not universe: universe = collect_universe(debug=debug)
 
   metric = Euclidean()
-  metric.setup(headers, data)
+  metric.setup(headers, universe)
 
-  return metric.distance, data
+  if debug: print "-- Finished!"
+
+  return metric.distance
 

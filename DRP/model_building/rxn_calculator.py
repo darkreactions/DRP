@@ -217,7 +217,7 @@ reactant_fields = {
   "XXXoxlike1",
 }
 
-orig_headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
+orig_headers = ['ref', 'XXXinorg1', 'XXXinorg1mass',
             'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
             'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass','XXXinorg3moles',
             'XXXorg1', 'XXXorg1mass',
