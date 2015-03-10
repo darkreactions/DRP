@@ -6,7 +6,8 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
-debug = True
+DEBUG = True
+PRINT_DETAILS = False
 
 
 #If `universe is 'None', then the default universe is specified in the metric.
@@ -14,7 +15,7 @@ universe = None
 
 # Prepare the metric.
 from DRP.recommendation.metrics import get_default_metric
-metric = get_default_metric(universe=universe, debug=debug)
+metric = get_default_metric(universe=universe, debug=DEBUG)
 
 
 from DRP.model_building.rxn_calculator import headers
@@ -70,9 +71,10 @@ def average_knn_distance(point, others, k):
   distances = map(lambda tup: tup[1], knn)
   total = float(sum(distances))
 
-  if point[0] in {"jk252.5","jho252.5"} :
-    print "{} Nearest Neighbors of {}:".format(k, point[0])
-    print "\n".join(["\t{} : {}".format(tup[0][0], tup[1]) for tup in knn])
+  if PRINT_DETAILS:
+    if point[0] in {"jk252.5","jho252.5"} :
+      print "{} Nearest Neighbors of {}:".format(k, point[0])
+      print "\n".join(["\t{} : {}".format(tup[0][0], tup[1]) for tup in knn])
 
   return total/len(knn)
 
@@ -116,11 +118,11 @@ def get_research_others():
 def knn_research_graphs(low, high):
   from DRP.graph import get_graph
 
-  if debug: print "Gathering research points..."
+  if DEBUG: print "Gathering research points..."
   points = get_research_points()
   if not points: raise Exception("No research points found!")
 
-  if debug: print "Gathering other research points..."
+  if DEBUG: print "Gathering other research points..."
   others = get_research_others()
   if not others: raise Exception("No \"other\" research points found!")
 
@@ -142,7 +144,7 @@ def knn_research_graphs(low, high):
         results[k].append( (point, avg_dist) )
 
   # Sort the reactions and their distances into Se/Te buckets.
-  buckets = {"Te":{}, "Se":{}}
+  buckets = {"Te":{}, "Se":{}, "Both":{}}
 
   for k, reactions in results.items():
     for point, dist in reactions:
@@ -153,26 +155,46 @@ def knn_research_graphs(low, high):
 
       if point not in buckets[key]:
         buckets[key][point] = [None for i in k_range]
+        buckets["Both"][point] = [None for i in k_range]
 
       buckets[key][point][k-1] = dist
+      buckets["Both"][point][k-1] = dist
 
 
   for key, bucket in buckets.items():
     if bucket:
       print "Graphing {}... ({})".format(key, len(bucket))
 
-      max_dist = 0
+      # Rename the keys so the lines are identified by the seed "ref".
+      bucket = {seed.ref:k_vals for seed, k_vals in bucket.items()}
+
+      # Graph Options
+      padding = 0.01 # percent of graph to use as padding.
+      num_major_ticks = 10.0
+      num_minor_ticks = 50.0
+
+      max_dist = 0.0
+      min_dist = float("inf")
       for point, dists in bucket.items():
         for dist in dists:
           if dist>max_dist: max_dist = dist
+          if dist<min_dist: min_dist = dist
+
+      # Calculate padding for the graph.
+      pre_tick_dist = (max_dist-min_dist)/num_major_ticks
+      top = max_dist * (1 + pre_tick_dist*padding)
+      bottom = min_dist * (1 - pre_tick_dist*padding)
+      if bottom<0: bottom = 0
 
       graph = get_graph(bucket, list(k_range),
                         xLabel="# Nearest Neighbors (K)",
                         yLabel="Average KNN Distance",
-                        tick_range=(0,max_dist),
-                        major_tick=max_dist/10.0,
+                        tick_range=(bottom, top),
+                        major_tick=(top-bottom)/num_major_ticks,
+                        minor_tick=(top-bottom)/num_minor_ticks,
                         show_legend=True,
-                        show_minor=False)
+                        show_minor=True
+                        )
       graph.show()
       raw_input("Press enter to continue...")
     else:
@@ -180,7 +202,7 @@ def knn_research_graphs(low, high):
 
 
 def main():
-  knn_research_graphs(1,10)
+  knn_research_graphs(1,20)
 
 
 

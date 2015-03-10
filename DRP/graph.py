@@ -35,12 +35,14 @@ def get_graph(lines, base,
 
   if yLabel: plt.ylabel(yLabel)
 
+  ax.get_yaxis().get_major_formatter().set_useOffset(False)
+
   ax.set_yticks(list(frange(major_tick)))
   ax.grid(which='major', alpha=0.5)
 
   if show_minor:
     ax.set_yticks(list(frange(minor_tick)), minor=True)
-    ax.grid(which='minor', alpha=0.2)
+    ax.grid(which='minor', alpha=0.3)
 
   return figure
 
