@@ -78,8 +78,8 @@ class Data(models.Model):
 
 
   def get_calculations_dict(self, include_lab_info=False, force_recalculate=False,
-                            preloaded_cg=None, debug=False,
-                            preloaded_abbrev_map=None):
+                            cached_cg=None, debug=False,
+                            cached_abbrev_map=None):
 
     def _make_float(raw):
       # Convert any number-like strings to floats.
@@ -95,8 +95,9 @@ class Data(models.Model):
     try:
       if not self.calculations or force_recalculate:
         # Create the extended calculations.
-        calcList = create_expanded_datum_field_list(self, preloaded_cg=preloaded_cg,
-                                                    preloaded_abbrev_map=preloaded_abbrev_map)
+        calcList = create_expanded_datum_field_list(self,
+                                                    preloaded_cg=cached_cg,
+                                                    preloaded_abbrev_map=cached_abbrev_map)
 
         calcDict = {key:_make_float(val) for key,val in zip(headers, calcList)}
 
@@ -115,6 +116,8 @@ class Data(models.Model):
         # Load the result from the database if it is already present.
         final_dict = self.calculations.make_json()
 
+      # Make sure all of the keys are present.
+      missing_keys = not set(headers).issubset(set(final_dict.keys()))
 
       if include_lab_info:
         final_dict.update({
@@ -122,12 +125,13 @@ class Data(models.Model):
                           "creation_time_dt":str(self.creation_time_dt),
                           })
 
-      # Make sure all of the keys are present.
-      missing_keys = not set(headers).issubset(set(final_dict.keys()))
-
       if type(final_dict)!=dict or missing_keys:
+
+        if debug: print "Recalculating `{}`".format(self.ref)
+
         # If the final_dict is in the wrong format, recalculate it.
         return self.get_calculations_dict(include_lab_info=include_lab_info,
+                                          debug=debug,
                                           force_recalculate=True)
 
       return final_dict
@@ -138,26 +142,18 @@ class Data(models.Model):
       raise Exception("(get_calculations_dict) {}".format(e))
 
 
-  def get_calculations_list(self, include_lab_info=False, preloaded_cg=None,
-                           preloaded_abbrev_map=None):
+  def get_calculations_list(self, include_lab_info=False, cached_cg=None,
+                           cached_abbrev_map=None, debug=False):
     from DRP.model_building.rxn_calculator import headers
 
     if include_lab_info:
       headers.extend(["lab_title", "creation_time_dt"])
 
-    try:
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
-                                            preloaded_cg=preloaded_cg,
-                                            preloaded_abbrev_map=preloaded_abbrev_map)
-      return [calcDict[field] for field in headers]
-
-    except:
-      # If a field isn't present in the calcDict, update the calculation.
-      calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
-                                            force_recalculate=True,
-                                            preloaded_cg=preloaded_cg,
-                                            preloaded_abbrev_map=preloaded_abbrev_map)
-      return [calcDict[field] for field in headers]
+    calcDict = self.get_calculations_dict(include_lab_info=include_lab_info,
+                                          cached_cg=cached_cg,
+                                          cached_abbrev_map=cached_abbrev_map,
+                                          debug=debug)
+    return [calcDict[field] for field in headers]
 
 
   def to_list(self, keep_foreign_keys=True):

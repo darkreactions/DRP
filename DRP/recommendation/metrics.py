@@ -174,9 +174,12 @@ def collect_universe(debug=False):
 
   universe = list(get_valid_data())
 
+  """
   if debug:
+    print "-- Using debug mode..."
     random.shuffle(universe)
     universe = universe[:100]
+  """
 
   universe = [d.get_calculations_list() for d in universe]
 
