@@ -252,7 +252,7 @@ def get_valid_data(lab_group=None, clean=True):
     for entry in new:
       try:
         entry.get_calculations_dict()
-      except Exception as e:
+      except:
         entry.is_valid = False
         entry.save()
 
@@ -331,8 +331,8 @@ def get_usable_models():
 
 def get_latest_ModelStats():
   from models import ModelStats
-  models = ModelStats.objects.filter(active=True).order_by("-datetime")
-  return models.first()
+  models = ModelStats.objects.filter(usable=True, active=True)
+  return models.last()
 
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

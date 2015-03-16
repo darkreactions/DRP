@@ -1,4 +1,5 @@
 
+
 # Set the Python path so that it has access to the Django settings.
 import os, sys
 full_path = os.path.dirname(os.path.realpath(__file__))+"/"
@@ -92,17 +93,33 @@ def test4():
   return result
 
 def test5():
-  guesses = [1,1,1,1,1,0,0,0,0,0]
-  actual = [1,1,1,1,1,1,1,1,1,1]
+  guesses = [1,1,1,1,1]
+  actual = [1,1,1,1,1]
   cm1 =  make_confusion_dict(guesses, actual)
 
-  guesses = [0,0,0,0,0,0,0,0,0,0]
-  actual = [1,1,1,1,1,1,1,1,1,1]
+  guesses = [0,0,0,0,0]
+  actual = [1,1,1,1,1]
   cm2 =  make_confusion_dict(guesses, actual)
 
   avg = _avg_confusion_dicts([cm1, cm2])
 
-  print avg
+  m = ModelStats()
+  m.set_correct_vals(["1"])
+  m.set_confusion_table(avg)
+
+  print "avg", avg
+  print "TP", m.true_positives()
+  print "FP", m.false_positives()
+  print "acc", m.accuracy()
+  print "prec", m.precision()
+  result = m.accuracy()==0.5 and m.recall()==0.5 and m.precision()==1
+
+  m.save()
+  m.delete()
+
+  return result
+
+
 
 
 def main():

@@ -1,11 +1,8 @@
 #!/usr/local/bin/python
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
  # # Seed Recommendation Gen 'n Store  Worker Process  # # #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
-#Necessary Imports:
-import sys, os
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Grab the Django settings if they aren't already set.
 import os, sys
@@ -16,13 +13,11 @@ if django_path not in sys.path:
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 
-from DRP.retrievalFunctions import *
-from DRP.database_construction import *
-from DRP.cacheFunctions import *
-
 #An independent worker process for generating and storing seeds in the database.
 def seed_rec_worker(lab_id, seed_id, user_id):
   from DRP.models import Data, Lab_Group, User
+  from DRP.cacheFunctions import remove_seed_rec_worker_from_cache
+  from DRP.database_construction import store_new_Recommendation_list
   from DRP.compoundGuideFunctions import translate_reactants
   from DRP.recommendation.seed_rec import constructRecsFromSeed
   from DRP.recommendation.filter_seed_recs import filterSeedRecList
@@ -45,28 +40,23 @@ def seed_rec_worker(lab_id, seed_id, user_id):
     print_error("Can't load entries: {} {} {}\n{}".format(lab_id, seed_id, user_id, e))
 
   try:
-    print_log("--1")
     #Actually create new recommendations...
     try:
       recList = constructRecsFromSeed(seed_id)
     except Exception as e:
       raise Exception("constructRecsFromSeed failed: {}".format(e))
 
-    print_log("--2")
     try:
       recList = filterSeedRecList(lab_group, recList)[:max_recs_per_seed]
     except Exception as e:
       raise Exception("filterSeedRecList failed: {}".format(e))
 
-    print_log("--3")
     #Translate any compounds in the recList to abbrevs.
     recList = translate_reactants(lab_group, recList)
 
-    print_log("--4")
     #And store them in the database.
     store_new_Recommendation_list(lab_group, recList, seed_source=seed)
 
-    print_log("--5")
     email_body = "The recommendations based on Reaction \"{}\" have finished!".format(seed.ref)
     email_user(user, "Seed Recommendations Ready", email_body)
 
@@ -96,5 +86,5 @@ if __name__ == "__main__":
     print "python ./this_script.py lab_id seed_data_id user_id"
   else:
     seed_rec_worker(sys.argv[1], sys.argv[2], sys.argv[3])
-    
+
 

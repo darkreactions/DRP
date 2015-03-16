@@ -100,7 +100,7 @@ def perform_CG_calculations(only_missing=True, lab_group=None,
 def refresh_compound_guide(lab_group=None, verbose=False, debug=False, clear=False):
   #Either force-refresh all of the data or the data for a specific lab group.
 
-  from DRP.models import *
+  from DRP.models import CompoundEntry, CG_calculations, get_lab_CG, update_compound
 
   if lab_group:
     query = get_lab_CG(lab_group)
@@ -154,3 +154,24 @@ def recalculate_usable_models():
     if usable: good += 1
 
   print "{} of {} models usable!".format(good, all_models.count())
+
+
+
+def translate_calculation_header(old, new):
+  from django.db.models import Q
+  from DRP.models import DataCalc
+
+  calcs = DataCalc.objects.filter(~(Q(contents="")|Q(contents="{}")))
+  changed = 0
+
+  for calc in calcs:
+    if calc.contents[0]=="{":
+      contents = calc.make_json()
+      if old in contents:
+        contents[new] = contents[old]
+        calc.save()
+
+        changed += 1
+
+  print "Changed {}".format(changed)
+
