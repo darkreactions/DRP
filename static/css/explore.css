@@ -24,6 +24,23 @@
  pointer-events: none;
 }
 
+div.clusterTooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 60px;                  
+  height: 28px;                 
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: lightsteelblue;   
+  border: 0px;      
+  border-radius: 8px;           
+  fill: blue; 
+  opacity: 0.1;
+  stroke: black;
+  stroke-width: 0.3; 
+  pointer-events: none; 
+}
+
 .seedButtonRect {
  -webkit-box-shadow: 10px 10px 5px;
  box-shadow: 10px 10px 5px;

@@ -1,58 +1,31 @@
-//var nodePositionsPath = "/home/ntien/workspace/dark-reaction-site/DRP/vis/nodePositions.json" 
 var width = parseInt(d3.select("#graph").style("width"), 10);
 var height = parseInt(d3.select("#graph").style("height"), 10); 
+console.log(width + "," + height) 
+
 d3.json("/get_graph/", function(graph) {
     
-    var nodeTooltips = [["Purity", "purity"],
-			["Outcome", "outcome"],
-			["Reference Number", "ref"], 
-			["Inorg1", "inorg1"],
-			]; 
-    
-    var nodes = graph.nodes;   
-    var preLoad = graph.skipTicks === "True";  
-    var links = graph.links; 
-    var labels = graph.clusters;
-    //declaring a variable that will serve to size the text boxes that appear upon hovering over the individual nodes
-    var textPlacement = nodeTooltips.length*40;
-    var boxLength = 130;
-    
+    var nodeTooltips = [["Reference Number", "ref"],
+            ["Pagerank", "pagerank"],
+            ["Purity", "purity"],
+            ["Outcome", "outcome"],
+            ["Inorg1", "inorg1"],
+            ["Inorg2", "inorg2"],
+            ["Org1", "org1"] 
+            ]; 
+    var n = 100;
+    var nodes = graph.nodes;
+    var links = graph.links;
 
-    /*var labels = []; 
-    for (var i=0; i < clusters.length; i++) { 
-        var id = clusters[i]["id"]
-	var cluster = clusters[i];
-	var nodeWithPositions= $.grep(nodes, function(d) {return d.id == id; })  
-	var x = nodeWithPositions[0].x;
-	var y = nodeWithPositions[0].y;
-	cluster.x = x;
-	cluster.y = y;
-	labels.push(cluster)  
-     };
-    */ 
- 
-/*  var saveFile = function() {$.ajax({
-	type: 'POST', 
-	data: nodes, 
-	success: success,
-	dataType: json
-  	});
- }; 
- */
-  var translateValue1 = 800;
-  var translateValue2 = 300;
-  var scaleValue =.25; 
+    var zoom = d3.behavior.zoom()
+    .scaleExtent([1/3, 8])
+    .on("zoom", zoomed);
 
-  var zoom = d3.behavior.zoom()
-    .scaleExtent([1/10, 2])
-    .on("zoom", zoomed)
-    .translate([translateValue1, translateValue2]).scale(scaleValue); 
-
-  var drag = d3.behavior.drag()
+    var drag = d3.behavior.drag()
       .origin(function(d) { return d; })
       .on("dragstart", dragstarted)
       .on("drag", dragged)
       .on("dragend", dragended);
+
 
 //Needed for zooming and dragging (http://bl.ocks.org/mbostock/6123708).
 function dragstarted(d) {
@@ -77,7 +50,7 @@ function dragended(d) {
       connection["weight"] = 1;
       return connection;
     })
-  
+
 var force = d3.layout.force()
   .nodes(nodes)
   .links(links)
@@ -86,25 +59,22 @@ var force = d3.layout.force()
   .gravity(0.4)
   .linkDistance(100)
   .size([width, height]);
- 
+
 var svg = d3.select("#graph").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .call(zoom);
-
-var centerX = width / 2 
-var centerY = height / 2 
+    .call(zoom);  
 
 var container = svg.append("g")
 
 container.append("rect")
-	.attr("width", width)
-	.attr("height", height)
-	.attr("fill", "white") 
-	.on("mouseover", function() {d3.selectAll(".tooltipContainer").remove();}); 
+    .attr("width", width)
+    .attr("height", height)
+    .attr("fill", "white") 
+    .on("click", function() { console.log("Clicked the container"); d3.selectAll(".tooltipContainer").remove();}); 
 
-container.call(zoom).attr("transform","translate(" + translateValue1 +"," + translateValue2 +")scale(" + scaleValue +"," + scaleValue +")");
 
+ 
 function zoomed() {
   container.attr("transform", 
   "translate(" + d3.event.translate +")scale("+ d3.event.scale + ")");
@@ -116,32 +86,15 @@ setTimeout(function() {
   // Run the layout a fixed number of times.
   // The ideal number of times scales with graph complexity.
   // Of course, don't run too long—you'll hang the page!
-var maxIterations = parseFloat(100); 
-var loadingBar = $("#innerLoadingBar");
-var loadingBarMaxLength = loadingBar.parent().width();
-
-
-if (!preLoad) {
- console.log(preLoad) 
- console.log("made it to preload!")  
  force.on("tick", function() {
   nodes[0].x = width / 2;
-  nodes[0].y = height / 2;
- }); 
+  nodes[0].y = height / 2; 
+}); 
 
   force.start();
-  for (var i = 0; i < maxIterations; i++) {
-	force.tick()
-  }
-  force.stop();  
-  } else {
-   force.start();  
-   force.tick();
-   force.stop();
-  } 
-    
-    
- 
+  for (var i = n*n; i > 0; --i) force.tick();
+  force.stop();
+
   container.selectAll("line")
     .data(links)
   .enter().append("line")
@@ -150,25 +103,15 @@ if (!preLoad) {
     .attr("x2", function(d) { return d.target.x; })
     .attr("y2", function(d) { return d.target.y; })
     .style("stroke-width", 0.06)
-    .attr("stroke", "gray");
+     .attr("stroke", "gray");
 
-var clusterLabels = container.selectAll("circle")
-	.data(labels) 
-	.enter().append("circle")  
-	  .attr("r", function(d) {return d.r;}) 
-	  .attr("cx", function(d) {return d.x;}) 
-	  .attr("cy", function(d) {return d.y;}) 
-	  .attr("class", "labelBackground")
-      .append("text")
-      .text("help")//function(d) {return d.inorg1 + "/n" + d.inorg2;}) 
-	 
   var nodeElements = container.selectAll(".node")
     .data(nodes.filter(function(d) { return d.outcome > 0;}))
 
     .enter().append("g")
     .attr("class", "node"); 
  
-      nodeElements.append("circle") 
+    nodeElements.append("circle") 
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
       size = 10
@@ -194,139 +137,76 @@ var clusterLabels = container.selectAll("circle")
                     return "purple";
                     }
                   })
-    .on("mouseover", function() {
-	d3.event.stopPropagation()})
+    .on("mousedown", function() {
+    d3.event.stopPropagation()})
 
-    .on("mouseover", function() {
-	d3.selectAll(".tooltipContainer").remove(); 
-	var thisGroup = this.parentNode;
-	this.parentNode.parentNode.appendChild(thisGroup); 
-    	
-	var currentCircle = d3.select(thisGroup);  
-	
-	var textbox = currentCircle.append("g")
-	  .attr("class", "tooltipContainer") 
+    .on("click", function() {
+    d3.selectAll(".tooltipContainer").remove(); 
+    var thisGroup = this.parentNode;
+    this.parentNode.parentNode.appendChild(thisGroup); 
+    
+    var currentCircle = d3.select(thisGroup);  
+    console.log("Made it to mouseover")  
+    
+    var textbox = currentCircle.append("g")
+      .attr("class", "tooltipContainer") 
         
-	textbox.append("rect")
-	  .attr("class", "tooltipBackground")
-	  .attr("width", 350)
-	  .attr("height", boxLength * 1.3)
-	  
-	var defs = container.append("defs"); 
+    textbox.append("rect")
+      .attr("class", "tooltipBackground") 
+      .attr("width", 300)
+      .attr("height", nodeTooltips.length*35);
+    
+    var textElement = textbox.append("text")
+      .attr("class", "tooltip")
+    
+    var d = thisGroup.__data__
+    for (var i=0; i < nodeTooltips.length; i++) { 
 
-	var filter = defs.append("filter") 
-	  .attr("id", "drop-shadow")
-	  .attr("height", "130%")
-	  .attr("width", "130%"); 
-	
-	filter.append("feGaussianBlur")
-	  .attr("in", "SourceAlpha")
-	  .attr("stdDeviation", 1)
-	  .attr("result", "blur"); 
-	filter.append("feOffset")
-	  .attr("in", "blur")
-	  .attr("dx", 1)
-	  .attr("dy", 1)
-	  .attr("result", "offsetBlur");
-	var feMerge = filter.append("feMerge");
-	feMerge.append("feMergeNode")
-	  .attr("in", "offsetBlur")
-	feMerge.append("feMergeNode")
-	  .attr("in", "SourceGraphic");
-
-			
-	var textElement = textbox.append("text")
-	  .attr("class", "tooltip")
-	
-	var d = thisGroup.__data__
-	for (var i=0; i < nodeTooltips.length; i++) { 
-
-	  var fieldName = nodeTooltips[i][0] 
-	  var fieldValue = d[nodeTooltips[i][1]]
-	  var textField = fieldName + ": " + fieldValue 
- 	  textElement.append("tspan")
-		   .text(textField) 
-		   .attr("x", "20px")
-		   .attr("dy", "2em"); 
-	  }; 
-	var inorg2 = d["inorg2"];
-	if(typeof inorg2 !== "undefined") 
-	  {textElement.append("tspan")
-		.text("Inorg2: " + inorg2)
-		.attr("x", "20px")
-		.attr("dy", "2em")
-       boxLength = 160;
-	} else {
-    boxLength = 130; 
-	}; 
-    var seedRecButton = textbox.append("g")
-		.attr('cursor', 'pointer')
-		.on("mouseover", function() {
-		seedRecButton.select("rect").style("filter","url(#drop-shadow)");}) 
-		.on("mouseout", function() { 
-		seedRecButton.select("rect").style("filter", "none");}) 
-
-	seedRecButton.append("rect")
-		.attr("id", "seedButtonRect")  
-		.attr('width', 310)
-		.attr('height', 25)  
-		.attr('x', "20px")
-		.attr('y', boxLength)
-		.attr("rx", "3")
-		.attr("ry", "3");
-	//	.style("filter", "url(#drop-shadow)");
-	
-	seedRecButton.append("text")
-		.text("Generate seed recommendations")
-		.attr('x', "25px")
-		.attr('y', boxLength + 15) 
-		.attr("id", "seedRecText")
-		.append("rect")
-		.attr("fill","none"); 
- 	
-	var imageContainer = seedRecButton.append("g")
-	var seedButton = imageContainer.append("svg:image")
- 	  .attr("id", "seedImage") 
-	  .attr('x', textPlacement*1.7) 
- 	  .attr('y', boxLength + 5)
- 	  .attr('width', 22)
- 	  .attr('height', 16)
- 	  .attr('xlink:href', "/static/icons/seed.gif");
-	
-	seedRecButton.on("click", function(d) { 
-		var url="/make_seed_recommendations/";
-		var request = {"pid":d.id}; 
-		console.log(d.id); 
-		$.post(url, request, function(response) {
-  		if (response=='0') {
-    			var comment = "Making recommendations based on seed!"; 
-    			showRibbon(commend, goodColor, "#mainPanel"); 
-    		} else {
-      		var failureMessage;
-        	if (response=="2") {
-          		failureMessage = "Still working on the last batch of recommendations!";
-    		} else {
-      		failureMessage = "Could not make recommendations from seed!";
-    		}			
-    		showRibbon(failureMessage, badColor, "#mainPanel"); 
-		};
-	   });}) 
-	d3.event.stopPropagation();  
-    }) 
-      nodeElements.attr("transform", function(d) {
-	return "translate(" + d.x + "," + d.y + ")";
-    });  
-  $("#loadingMessage").remove()  
-  function grabLinkIndices(links) {
-	var linkIndices = [] 
-	for (var i=0; i < links.length; i++) { 
-		var newSet = {"source": links[i].source.index, "target": links[i].target.index} 
-		linkIndices.push(newSet)
+      var fieldName = nodeTooltips[i][0] 
+      var fieldValue = d[nodeTooltips[i][1]]
+      var textField = fieldName + ": " + fieldValue 
+      textElement.append("tspan")
+           .text(textField) 
+           .attr("x", "20px")
+           .attr("dy", "2em") 
         }
-	return linkIndices
-  }
-  var data = {"nodes": JSON.stringify(nodes), "links": JSON.stringify(grabLinkIndices(links))};  
-  $.post('/setup_graph/', data);
+    textbox.append("text").text("Click to generate seed recs: ") 
+        .attr("id", "seedRecText") 
+        .attr('x', "20px") 
+        .attr('y', nodeTooltips.length*32) 
+ 
+    var imageContainer = textbox.append("g")
+    var seedButton = imageContainer.append("svg:image")
+      .attr("id", "seedImage") 
+      .attr('x', nodeTooltips.length*30) 
+      .attr('y', nodeTooltips.length*30)
+      .attr('width', 20)
+      .attr('height', 20)
+      .attr('xlink:href', "/static/icons/seed.gif")
+      .on("click", function(d) { 
+        var url="/make_seed_recommendations/";
+        var request = {"pid":d.id}
+        console.log(d.id);  
+        $.post(url, request, function(response) {
+        if (response=='0') {
+                var comment = "Making recommendations based on seed!"; 
+                showRibbon(commend, goodColor, "#mainPanel"); 
+            } else {
+            var failureMessage;
+            if (response=="2") {
+                failureMessage = "Still working on the last batch of recommendations!";
+            } else {
+            failureMessage = "Could not make recommendations from seed!";
+            }           
+            showRibbon(failureMessage, badColor, "#mainPanel"); 
+        };
+       });}) 
+    d3.event.stopPropagation();  
+    }) 
+    nodeElements.attr("transform", function(d) {
+    return "translate(" + d.x + "," + d.y + ")";
+    });  
+  $("#loadingMessage").remove()   
 }, 10);
  });
 
