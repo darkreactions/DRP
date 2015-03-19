@@ -125,6 +125,7 @@ def get_graph_data(request):
         if raw_outcomes[j]["id"] == id_:
           outcome_node = raw_outcomes[j] 
       with_outcomes.append({
+        "purity": outcome_node["purity"], 
         "target": no_outcome[i]["target"],
         "color": no_outcome[i]["color"],
         "label1": no_outcome[i]["label1"],
