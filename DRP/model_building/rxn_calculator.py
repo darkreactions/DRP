@@ -9,7 +9,7 @@ if django_path not in sys.path:
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-from DRP.settings import RESEARCH_DIR
+from DRP.settings import BASE_DIR
 
 class PropertiesCalculator:
     def __init__(self, compoundMoles, inorganicList, compoundAcc, compoundDon, organicList, isWater):
@@ -183,7 +183,7 @@ def atomic_properties(atom_list, smiles_pairs, counts = None):
 	props += [0 for i in range(48)]
     return props
 
-properties = json.load(open(RESEARCH_DIR + "scripts/atomic_props.json"))
+properties = json.load(open(BASE_DIR+"/scripts/atomic_props.json"))
 
 
 bools = ["Actinide", "AlkaliMetal", "Lanthanide",

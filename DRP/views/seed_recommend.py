@@ -3,17 +3,12 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Necessary Imports:
-import django.db
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
-import json
 from subprocess import Popen
-
-from DRP.retrievalFunctions import *
-from DRP.cacheFunctions import *
 
 @login_required
 @require_http_methods(["POST"])
@@ -21,6 +16,7 @@ def make_seed_recommendations(request):
   from DRP.settings import BASE_DIR, LOG_DIR
   from DRP.fileFunctions import createDirIfNecessary
   from DRP.models import Data
+  from DRP.cacheFunctions import get_seed_rec_worker_list, cache_seed_rec_worker
 
   u = request.user
   lab_group = u.get_profile().lab_group
@@ -74,6 +70,8 @@ def make_seed_recommendations(request):
 
 @login_required
 def check_seed_worker_cache(request):
+  from DRP.cacheFunctions import get_seed_rec_worker_list
+
   #Get any seed_workers that are in the cache.
   lab_group = request.user.get_profile().lab_group
   active_workers = get_seed_rec_worker_list(lab_group)
@@ -87,6 +85,8 @@ def check_seed_worker_cache(request):
 @login_required
 def seed_recommend(request, page_request=None):
   from DRP.pagifier import get_page_link_format
+  from DRP.cacheFunctions import get_seed_rec_worker_list
+  from DRP.retrievalFunctions import get_seed_recs
 
   # If a valid page number was given, use it.
   try:
@@ -114,7 +114,7 @@ def seed_recommend(request, page_request=None):
     #Get the active recommendations from the cache.
     active_workers = get_seed_rec_worker_list(lab_group)
 
-  except Exception as e:
+  except:
     fatal_message = "No recommendations available."
 
     recommendations = []

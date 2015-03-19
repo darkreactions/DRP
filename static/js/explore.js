@@ -26,18 +26,21 @@ var centerY = height/2
       		];
 
   var nodes = graph.nodes;
+  //var clusterNodes = graph.clusterNodes;
   var preLoad = graph.skipTicks === "True";
   var links = graph.links;
-
+  var clusters1 = graph.clusters1;
+  var clusters2 = graph.clusters2; 
   // Size of the text boxes that appear upon hovering over individual nodes.
   var textPlacement = nodeTooltips.length*40;
   var boxLength = 130;
 
+  var nodesHidden = "False" 
   var zoomLevel = "circles1"
-  var translateValue1 = width/2.3
-  var translateValue2 = height/2.4
-  var scaleValue = height/4500
-  console.log(scaleValue)
+  var translateValue1 = width/3.2
+  var translateValue2 = height/2.3 //this controls up and down
+  var scaleValue = height/2700 
+  console.log(translateValue2)
   var firstCluster = d3.selectAll(".circleClusters1");
   var secondCluster = d3.selectAll(".circleClusters2");
   var tinyNodes = d3.selectAll(".nodeElements");
@@ -82,14 +85,14 @@ var centerY = height/2
 
  
   var zoomInitial = d3.behavior.zoom()
-                .scaleExtent([1/10, 2])
+                .scaleExtent([1/25, 3])
                 .on("zoom", zoomed)
                 .translate([translateValue1, translateValue2]).scale(scaleValue);
 
   var zoom = d3.behavior.zoom()
         .translate([0,0])
         .scale(1)
-        .scaleExtent([1, 8])
+        .scaleExtent([1/7, 10])
         .on("zoom", zoomed);
 
   var drag = d3.behavior.drag()
@@ -101,7 +104,7 @@ var centerY = height/2
 
   svg.call(zoom).call(zoom.event); 
 
-  container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
+  //container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
 
 
   // Use a timeout to allow the rest of the page to load first.
@@ -149,8 +152,59 @@ var centerY = height/2
 
   console.log("4");
 
-  function createLinks() {
-    container.selectAll("line")
+  container.on("click", function() {
+    d3.selectAll(".tooltipContainer").remove();
+  });
+
+  var tip = d3.tip()
+      .attr("class", "d3-tip")
+      .html(function(d) {
+        return d.label;
+      });
+
+svg.call(tip);
+
+    // Clusters of all the nodes with the same SINGLE inorganic in common
+  function createCircleClusters1() {
+        var circleClusters1 = container.selectAll("circle")
+              .data(clusters1)
+              .enter().append("circle") 
+              .attr("class", "circleClusters1")
+              .attr("fill", function(d) {
+                return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";
+              })
+              .attr("opacity", 0.4)
+              .attr("cx", function(d) { return d.x;})
+              .attr("cy", function(d) { return d.y;}) 
+              .attr("r", 40) 
+              .on("mouseover", tip.show)
+              .on("mouseout", tip.hide) 
+              .on("click", clicked); 
+  }; 
+
+
+  //Clusters of all nodes with both inorganics in common  
+  function createCircleClusters2() {
+              var circleClusters2 = container.selectAll("circle")
+              .data(clusters2)
+              .enter().append("circle") 
+              .attr("class", "circleClusters2")
+              .attr("fill", function(d) {
+                return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";
+              })
+              circleClusters2
+              .attr("opacity", 0.4)
+              .attr("cx", function(d) { return d.x;})
+              .attr("cy", function(d) { return d.y;}) 
+              .attr("r", 60) 
+              .on("mouseover", tip.show) 
+              .on("mouseout", tip.hide) 
+              .on("click", clicked);
+   }; 
+
+//Nodes representing each individual reactions 
+function createNodeElements() {
+  container.selectAll("line")
      .data(links)
      .enter()
      .append("line")
@@ -160,65 +214,16 @@ var centerY = height/2
      .attr("x2", function(d) { return d.target.x; })
      .attr("y2", function(d) { return d.target.y; })
      .style("stroke-width", 0.06)
-     .attr("stroke", "gray")
-}
-  console.log("5");
+     .attr("stroke", "gray") 
+  
+   var baseNodes = container.selectAll("g")
+    .data(nodes.filter(function(d) {
+            return d.outcome > 0;
+    }))
+    .enter().append("g")
+    .attr("class", "node");
 
-  container.on("mouseover", function() {
-    d3.selectAll(".tooltipContainer").remove();
-  });
-
-  var baseNodes = container.selectAll("g")
-                              .data(nodes.filter(function(d) {
-                                return d.outcome > 0;
-                              }))
-
-  .enter().append("g")
-  .attr("class", "node");
-
-  // Clusters of all the nodes with the same SINGLE inorganic in common
-  function createCircleClusters1() {
-        var circleClusters1 = container.selectAll("circle")
-              .data(nodes)
-              .enter().append("circle") 
-              .attr("class", "circleClusters1")
-              .attr("fill", function(d) {
-                return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";
-              })
-              .attr("opacity", 0.4)
-              .attr("cx", function(d) { return d.x;})
-              .attr("cy", function(d) { return d.y;}) 
-              .attr("r", 200) 
-              .on("click", clicked); 
-  }; 
-
-
-  //Clusters of all nodes with both inorganics in common  
-  function createCircleClusters2() {
-              var circleClusters2 = container.selectAll("circle")
-              .data(nodes)
-              .enter().append("circle") 
-              .attr("class", "circleClusters2")
-              .attr("fill", function(d) {
-                return (d.color2!=undefined) ? d.color : "rgba(0,0,0,0)";
-              })
-              .attr("opacity", 0.4)
-              .attr("cx", function(d) { return d.x;})
-              .attr("cy", function(d) { return d.y;}) 
-              .attr("r", 200) 
-              .on("click", clicked);
-   }; 
-
-
-//Nodes representing each individual reactions 
-function createNodeElements() {
-    console.log("nodesss") 
-    var nodeElements = container.selectAll("circle")
-        .data(nodes.filter(function(d) {
-          console.log(d.outcome) 
-          return d.outcome > 0;}))
-        .enter()
-        .append("circle")
+    baseNodes.append("circle")
     .attr("class", "nodeElements")
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
@@ -228,11 +233,8 @@ function createNodeElements() {
       size = 0.5;
       }
       return size
-      });
-    console.log(nodeElements)
-    nodeElements
-        .style("fill", function(d) {if (d.outcome == 4){
-                    console.log("made it here") 
+      })
+      .style("fill", function(d) {if (d.outcome == 4){
                     return "#1a9641";
                     }
                   else if (d.outcome == 3){
@@ -312,12 +314,12 @@ function createNodeElements() {
 		.on("mouseout", function() {
 		seedRecButton.select("rect").style("filter", "none");})
 
-	seedRecButton.append("rect")
+	var seedButtonRect = seedRecButton.append("rect")
 		.attr("class", "seedButtonRect")
 		.attr('width', 310)
 		.attr('height', 25)
 		.attr('x', "20px")
-		.attr('y', boxLength)
+		.attr('y', boxLength + 5)
 		.attr("rx", "3")
 		.attr("ry", "3");
 	//	.style("filter", "url(#drop-shadow)");
@@ -325,20 +327,20 @@ function createNodeElements() {
 
 	var imageContainer = seedRecButton.append("g")
 	var seedButton = imageContainer.append("svg:image")
-	  .attr('x', textPlacement*1.7)
- 	  .attr('y', boxLength + 5)
+	  .attr('x', textPlacement*1.7 + 10)
+ 	  .attr('y', boxLength + 10)
  	  .attr('width', 22)
  	  .attr('height', 16)
  	  .attr('xlink:href', "/static/icons/seed.png");
 
 	seedButtonRect.on("click", function(d) {
-		var url="/nd/make_seed_recommendations/";
+		var url="/make_seed_recommendations/";
 		var request = {"pid":d.id};
 		console.log(d.id);
 		$.post(url, request, function(response) {
   		if (response=='0') {
     			var comment = "Making recommendations based on seed!";
-    			showRibbon(commend, goodColor, "#mainPanel");
+    			showRibbon(comment, goodColor, "#mainPanel");
     		} else {
       		var failureMessage;
         	if (response=="2") {
@@ -350,95 +352,105 @@ function createNodeElements() {
 		};
 	   })
     ;})
-    seedButtonRect.append("rect").attr("class", "extraRect").append("text")
+    seedRecButton.append("text")
 		.text("Generate seed recommendations")
         .attr("class", "seedRecText")
 		.attr('x', "25px")
-		.attr('y', boxLength + 15)
+		.attr('y', boxLength + 22)
 
 	d3.event.stopPropagation();
     })
-}
 
-function reset() { 
-    console.log("reset")
-    zoomLevel = "second"
-    container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
-    $(".nodeElements").remove() 
-    createCircleClusters2();
-    createLabel2s(); 
-    }; 
+    baseNodes.attr("transform", function(d) {
+	return "translate(" + d.x + "," + d.y + ")";
+    });
+}
 
   
 function clicked(d) {
-        if (zoomLevel === "second") {
-          zoomLevel = "third" 
-          console.log(zoomLevel) 
+        if (zoomLevel == "first") {
+          zoomLevel = "second" 
           var dx = Math.round(d3.select(this).attr("r")) * 2,
               dy = dx,
               x = Math.round(d3.select(this).attr("cx")),
               y = Math.round(d3.select(this).attr("cy")),
-              scale = .9 / Math.max( dx / width, dy / height),
+              scale = .9 / Math.max( dx / width, dy / height) * 0.3,
               translate = [width /2 - scale* x, height/2 - scale*y];
-          $(".circleClusters2").remove()
-          $(".label1").remove()
+          $(".circleClusters1").remove()
           svg.transition()
             .duration(750)
             .call(zoom.translate(translate).scale(scale).event);
-          createNodeElements(); 
+          createCircleClusters2();
+        } else if (zoomLevel == "second") {
+          zoomLevel = "third" 
+          var dx = Math.round(d3.select(this).attr("r")) * 2,
+              dy = dx,
+              x = Math.round(d3.select(this).attr("cx")),
+              y = Math.round(d3.select(this).attr("cy")),
+              scale = .9 / Math.max( dx / width, dy / height) * 0.3,
+              translate = [width /2 - scale* x, height/2 - scale*y];
+          $(".circleClusters2").remove()
+          svg.transition()
+            .duration(750)
+            .call(zoom.translate(translate).scale(scale).event);
+            createNodeElements();
          } else {
-         return reset() 
+         return reset()  
          }
-         
 }
 
+function level1() {
+    zoomLevel = "first"
+    var scale = scaleValue,
+        translate = [translateValue1, translateValue2];
+    $(".circleClusters2").remove() 
+    $(".lines").remove()
+    $(".node").remove() 
+    svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event); 
+    createCircleClusters1();
+    }; 
 
-      baseNodes.attr("transform", function(d) {
-	return "translate(" + d.x + "," + d.y + ")";
-    });
+function level2() {
+    zoomLevel = "second"
+    var scale = scaleValue,
+        translate = [translateValue1, translateValue2];
+    $(".circleClusters1").remove() 
+    $(".lines").remove()
+    $(".node").remove() 
+    svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event); 
+    createCircleClusters2();
+    }; 
 
-    // Hide nodes on the initial zoom level.
-    // Upon clicking a circleCluster zoom to that cluster and show the nodes again.
+function level3() {
+    zoomLevel = "third"
+    var scale = scaleValue,
+        translate = [translateValue1, translateValue2];
+    $(".circleClusters2").remove() 
+    $(".circleClusters1").remove() 
+    svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event); 
+    createNodeElements();
+    }; 
 
-    
-  function createLabel1s() {
-    var label1s = container.selectAll("label1")
-                .data(nodes)
-                .enter()
-                .append("text")
-                .attr("class", "label1")
-                .attr("x", function(d) { return d.x;})
-                .attr("y", function(d) { return d.y;}) 
-                .attr("fill", "black")
-                .attr("font-size", "50px")
-                .text(function(d) { 
-                return (d.label1!="none") ? d.label1 : "";
-              });
-}
 
-  function createLabel2s() {
-    var label2s = container.selectAll("label2")
-                .data(nodes)
-                .enter()
-                .append("text")
-                .attr("class", "label2")
-                .attr("x", function(d) { return d.x;})
-                .attr("y", function(d) { return d.y;}) 
-                .attr("fill", "black")
-                .attr("font-size", "34px")
-                .text(function(d) { 
-                return (d.label2!="none") ? d.label2 : "";
-              });
-} 
-     
-  $("#reset").on("click", reset);
+
+
+
+       
+  $("#level1").on("click", level1);
+  $("#level2").on("click", level2);
+  $("#level3").on("click", level3); 
 
   $("#loadingMessage").remove();
   container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")"); 
   //createCircleClusters2();  
-  //createLabel2s();
-  createNodeElements();
-  createLinks();  
+  //createNodeElements();
+  createCircleClusters1(); 
   var data = {
               "nodes": JSON.stringify(nodes),
               "links": JSON.stringify(grabLinkIndices(links))

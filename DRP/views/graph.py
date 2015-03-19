@@ -7,42 +7,6 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-
-def get_graph(lines, base, xLabel="Percentage"):
-  def frange(step):
-    bottom = 0
-    top = 1
-
-    while bottom<top:
-      yield bottom
-      bottom += step
-
-    yield top
-
-  import matplotlib.pyplot as plt
-  plt.ioff()
-
-  figure = plt.figure(figsize=(20,10))
-  figure.patch.set_alpha(0)
-
-  ax = figure.add_subplot(1,1,1)
-
-  for header, y in lines.items():
-    plt.plot(base, y, label=header)
-
-    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
-            fancybox=True, shadow=True, ncol=10)
-
-  plt.xlabel(xLabel.capitalize())
-
-  ax.set_yticks(list(frange(0.1)))
-  ax.set_yticks(list(frange(0.025)), minor=True)
-  ax.grid(which='minor', alpha=0.2)
-  ax.grid(which='major', alpha=0.5)
-
-  return figure
-
-
 @login_required
 def graph(request, base="test"):
   import matplotlib
@@ -54,6 +18,7 @@ def graph(request, base="test"):
   from django.http import HttpResponse, HttpResponseNotFound
   from DRP.retrievalFunctions import get_usable_models
   from DRP.filters import apply_filters
+  from DRP.graph import get_graph
 
   models = get_usable_models()
   models = apply_filters(request, models, model="ModelStats")

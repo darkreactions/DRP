@@ -1,3 +1,15 @@
+'''
+This view should get the data requested by the user (either the lab group's data, public data, or both), use jsonViews to convert it to a CSV/json (in the right format for the d3 visualization), and then render the template with that    data. The template, in turn, will render the javascript (d3 vis) with the CSV/json file passed to it (the template). Currently, however, a lot of this is hardcoded. 
+
+vis_data.json ----> has all of the nodes and links created by the KDtree nearest neighbor file from the data (so new data is not included/graph is not dynamic) because it takes forever to create the nodes/links from the database. Should look at KDtree code to speed it up. The links are the target and sources (the edges between nodes/which nodes are linked). The nodes have all the desired attributes EXCEPT x and y positions (which were stored in a file generated from a run of the D3.js graph in order to avoid needing to recalculate positions every time). 
+
+nodePositions.json ---->
+
+linkIndices.json ----->
+
+label_node_dict.json -----> 
+'''
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.static import serve
@@ -18,128 +30,192 @@ from DRP.validation import *
 
 from DRP.data_config import CONFIG
 
+from DRP.compoundGuideFunctions import translate_reactants  
+
 import csv, json, string
 
-# This view should get the data requested by the user (either the lab group's data, public data, or both), use jsonViews to convert it to a CSV/json (in the right format for the d3 visualization), and# then render the template with that   data. The template, in turn, will render the javascript (d3 vis) with the CSV/json file passed to it (the template).
-
-
 #Global Variables
-path_to_vis_data_file = BASE_DIR + "/DRP/vis/vis_data.json"
-colors =["#a6cee3", "#1f78b4"," #b2df8a"," #33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#b15928", "#cab2d6","#6a3d9a", "#ffff99", "#ff7f00"]
+FIRST_CLUSTER_ABBREVS = {"Oxovanadium(2+) sulfate": "VOSO4", "sodium metavanadate": "NaVO3", "ammonium metavanadate": "NH4VO3", "vanadium(V) oxide": "V2O5", "molybdenum trioxide": "MoO3", "gallium trinitrate": "Ga(NO3)3", "sodium molybdate": "Na2MoO4", "potassium vanadium trioxide": "Potassium Vanadium Trioxide", "sodium vanadium trioxide": "Sodium Vanadium Trioxide", "Ga2O3": "Ga2O3", "potassium metavanadate": "KO3"}
+
+SECOND_CLUSTER_ABBREVS = {
+"Oxovanadium(2+) sulfate Selenium dioxide": "VOSO4 + SeO2",
+"sodium tellurite sodium metavanadate": "Na2TeO3 + NaVO3",
+"molybdenum trioxide": "MoO3",
+"sodium metavanadate": "NaVO3",
+"sodium metavanadate sodium tellurite": "NaVO3 + Na2TeO3",
+"ammonium metavanadate Selenium dioxide": "NH4VO3 + SeO2",
+"sodium metavanadate Selenium dioxide": "NaVO3 + SeO2",
+"sodium tellurite ammonium metavanadate": "Na2TeO3 + NH4VO3",
+"sodium metavanadate tellurium dioxide": "NaVO3 + TeO2",
+"Ga2O3": "Ga2O3",
+"vanadium(V) oxide sodium tellurite": "V2O5 + Na2TeO3", 
+"vanadium(V) oxide Selenium dioxide": "V2O5 + SeO2",
+"ZnO": "ZnO","Zn(NO3)2": "Zn(NO3)2",
+"gallium trinitrate": "Ga(NO3)3",
+"potassium vanadium trioxide Selenium dioxide": "Potassium Vanadium Trioxide + SeO2",
+"sodium molybdate": "Na2MoO4","sodium tellurite vanadium(V) oxide": "Na2TeO3 + V2O5",
+"sodium vanadium trioxide Selenium dioxide": "Sodium Vanadium Trioxide + SeO2",
+"Oxovanadium(2+) sulfate Potassium Dichromate": "VOSO4 + K2Cr2O7",
+"sodium fluoride Selenium dioxide": "Sodium Fluoride + SeO2",
+"Oxovanadium(2+) sulfate sodium tellurite": "VOSO4 + Na2TeO3",
+"vanadium(V) oxide": "V2O5",
+"sodium metavanadate Potassium Dichromate": "NaVO3 + K2Cr2O7", 
+"Oxovanadium(2+) sulfate": "VOSO4",
+"ammonium metavanadate": "NH4VO3",
+"Selenium dioxide": "SeO3"
+}
+
+
+VIS_DATA_PATH = BASE_DIR + "/DRP/vis/vis_data.json"
+NODEPOSITIONS_PATH  = BASE_DIR + "/DRP/vis/nodePositions.json"
+NODENOOUTCOMES = BASE_DIR + "/DRP/vis/nodePosNoOutcome.json"
+LINKS_PATH = BASE_DIR + "/DRP/vis/new_linkIndices.json"
+LABEL_DICT_PATH = BASE_DIR + "/DRP/vis/label_node_dict.json"
+
+COLORS =["#a6cee3", "#1f78b4"," #b2df8a"," #33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#b15928", "#cab2d6","#6a3d9a", "#ffff99", "#ff7f00"]
+
 @login_required
 def get_graph_data(request):
   import os.path
-
-  path_to_nodePositions = BASE_DIR + "/DRP/vis/nodePositions.json"
-  path_to_links = BASE_DIR + "/DRP/vis/linkIndices.json"
-  path_to_label_dict = BASE_DIR + "/DRP/vis/label_node_dict.json"
+  
   #If vis_data is already created and up to date, just return that file
-  if os.path.exists(path_to_nodePositions) and os.path.exists(path_to_links):
-    with open(path_to_nodePositions, "r") as f:
+  if os.path.exists(NODENOOUTCOMES) and os.path.exists(LINKS_PATH):
+    with open(NODENOOUTCOMES, "r") as f:
       nodes = json.load(f)
-
-    with open(path_to_links, "r") as f:
-      links = json.load(f)
-
-    if os.path.exists(path_to_label_dict):
-      with open(path_to_label_dict, "r") as f:
+    with open(LINKS_PATH, "r") as f:
+      links = json.load(f)  
+    #If the node clusters have already been created, load that file. Otherwise, create node clusters for second and first tier clusters 
+    if os.path.exists(LABEL_DICT_PATH):
+      with open(LABEL_DICT_PATH, "r") as f:
         node_clusters = json.load(f)
     else:
       node_clusters = create_node_clusters_for_labels(links, nodes)
-      with open(path_to_label_dict, "w") as outfile:
+      with open(LABEL_DICT_PATH, "w") as outfile:
         json.dump(node_clusters, outfile)
-
-    with open(path_to_vis_data_file, "r") as f:
-        deserialized_data = json.load(f)
-    nodez = deserialized_data[nodes]
-   
-    n = nodes 
-    print "here" 
-    new_nodez = []
-    for i in xrange(len(n)):
-      id_num = n[i]["id"]
-      id_node = []  
-      for i in xrange(len(nodez)):
-       if nodez[i]["id"] == id_num:
-         id_node = nodez[i] 
-      new_nodez.append({
-      "index": n[i]["index"],
-      "target": n[i]["target"],
-      "weight": n[i]["weight"],
-      "color": n[i]["color"],
-      "label1": n[i]["label1"],
-      "label2": n[i]["label2"],
-      "source": n[i]["source"],
-      "color2": n[i]["color2"],
-      "inorg1": n[i]["inorg1"],
-      "inorg2": n[i]["inorg2"],
-      "y": n[i]["y"],
-      "x": n[i]["x"],
-      "pagerank": n[i]["pagerank"],
-      "px": n[i]["px"],
-      "py": n[i]["py"],
-      "id": n[i]["id"],
-      "outcome": id_node["outcome"]
-      })
     
-    with open(BASE_DIR + "/DRP/vis/nodePosOutcome.json", "w") as outfile:
-        json.dump(new_nodez, outfile)
+    #This should definitely exist if nodePositions and links exist/this is just here because nodeElements were acting funky when using nodePositions data in the javascript  
+  if os.path.exists(VIS_DATA_PATH):
+    with open(VIS_DATA_PATH, "r") as f:
+      deserialized_data = json.load(f)  
+    rawNodes = deserialized_data["nodes"] 
+    #links = deserialized_data["links"] 
+    if os.path.exists(LINKS_PATH):
+      with open(LINKS_PATH, "r") as f:
+        links = json.load(f)  
+    #Here is the code that deals with the randomly missing outcome attributes in nodePositions  
+    no_outcome = []
+    for i in xrange(len(nodes)):
+      if "outcome" not in nodes[i]: 
+        no_outcome.append(nodes[i])
+    
+    no_outcome_ids = []
+    for i in xrange(len(no_outcome)):
+      no_outcome_ids.append(no_outcome[i]["id"])
+    
+    raw_outcomes = []
+    for i in xrange(len(rawNodes)):
+      if rawNodes[i]["id"] in no_outcome_ids:
+        raw_outcomes.append(rawNodes[i])
 
 
-           
-    #Clusters are the elements that contain all the nodes with matching inorganics (a list of lists of dictionaries)
+    with_outcomes = []
+    for i in xrange(len(no_outcome)):
+      id_ = no_outcome[i]["id"]
+      for j in xrange(len(raw_outcomes)):
+        if raw_outcomes[j]["id"] == id_:
+          outcome_node = raw_outcomes[j] 
+      with_outcomes.append({
+        "purity": outcome_node["purity"], 
+        "target": no_outcome[i]["target"],
+        "color": no_outcome[i]["color"],
+        "label1": no_outcome[i]["label1"],
+        "label2": no_outcome[i]["label2"],
+        "source": no_outcome[i]["source"],
+        "color2": no_outcome[i]["color2"],
+        "inorg1": no_outcome[i]["inorg1"],
+        "y": no_outcome[i]["y"],
+        "x": no_outcome[i]["x"],
+        "pagerank": no_outcome[i]["pagerank"],
+        "id": no_outcome[i]["id"], 
+        "outcome": outcome_node["outcome"], 
+        "ref": outcome_node["ref"]
+        })
+      if "inorg2" in no_outcome[i]:
+        with_outcomes.append({
+        "inorg2": no_outcome[i]["inorg2"]})   
+    
+    if os.path.exists(LABEL_DICT_PATH):
+      with open(LABEL_DICT_PATH, "r") as f:
+        clusters_with_source_target = json.load(f)
+    
+    with_outcomes[:] = [ x for x in with_outcomes if "id" in x ]
+    with_outcomes[:] = [ x for x in with_outcomes if "target" in x ]
+    with_outcomes[:] = [ x for x in with_outcomes if "source" in x ] 
+
+    
+
+    nodes = with_outcomes
+
+     #Clusters are the elements that contain all the nodes with matching inorganics (a list of lists of dictionaries)i
     #nodes are the original datum points corresponding to a single reaction( a list of dictionaries)
     #This is for the second tier clusters (clustered by two inorganics)
     clusters = give_positions_to_clusters(nodes, node_clusters)
 
     #clusters that are objects in a list within a larger list
-    clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
+    clusters_with_colors = assign_colors_to_clusters(COLORS, clusters, "color2")
     final_clusters = make_clusters_into_single_list(clusters_with_colors)
-
+    
     #Here we are going to make NEW nodes based on final_clusters!!! Necessary because final_cluster are missing nodes that don't fall into any of the clusters, but still needed in vis (must grab x,y coords, inorgs, etc) 
-    almost_final_nodes = combine_final_clusters_and_nodes(nodes, final_clusters, links)
+    almost_final_nodes = combine_final_clusters_and_nodes(nodes, final_clusters, links) #This seems to be working (color2 appended correctly) 
+    doublelist = []
+    for i in xrange(len(almost_final_nodes)):
+      label = almost_final_nodes[i]["label2"]
+      if label != "none" and label not in doublelist:
+        doublelist.append(label) 
+    
     #This is for the first tier clusters (clustered by single inorganic)
     votes = vote_on_inorgs(final_clusters)
     top_inorgs = grab_inorgs(votes)
     firstCluster = first_cluster(almost_final_nodes, top_inorgs)
-    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")    
+    first_clusters_with_colors = assign_colors_to_clusters(COLORS, firstCluster, "color")    
     final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
-    final_nodes = give_colors_to_nodes(almost_final_nodes, final_first_clusters)
-    print final_nodes[0]
-    response = {"nodes": final_nodes, "links": links, "skipTicks": "True"}
-    return HttpResponse(json.dumps(response), content_type="application/json")
-
-  #If vis_data is not created or not up to date, write new vis_data with current data and return that
-  elif os.path.exists(path_to_vis_data_file):
-
-    print "vis_data exists"
-    with open(path_to_vis_data_file, "r") as f:
-      deserialized_data = json.load(f)
-
-    node_clusters = create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"])
-    links = deserialized_data["links"]
-    nodes = deserialized_data["nodes"] 
-    print nodes[0] #has no x, y attribute
-    print node_clusters[0] 
-    clusters = give_positions_to_clusters(nodes, node_clusters)
-    clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
-    final_clusters = make_clusters_into_single_list(clusters_with_colors)
-    almost_final_nodes = give_colors_to_nodes(nodes, final_clusters)
-    votes = vote_on_inorgs(final_clusters)
-    top_inorgs = grab_inorgs(votes)
-    firstCluster = first_cluster(nodes, top_inorgs)
-    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")
-    final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
-    final_nodes = give_colors_to_nodes2(almost_final_nodes, final_first_clusters)
+    final_nodes = give_colors_to_nodes(almost_final_nodes, final_first_clusters) #This also seems to be working as expected, appending color and label1 
+    singlelist = [] 
+    for i in xrange(len(final_nodes)):
+      label = final_nodes[i]["label1"]
+      if label != "none" and label not in singlelist:
+        singlelist.append(label)
+    
+    final_nodes = with_outcomes 
+    #Here I am replacing the labels with the abbreviated compounds  
+    for i in xrange(len(final_nodes)):
+      label1 = final_nodes[i]["label1"]
+      label2 = final_nodes[i]["label2"]
+      if label1 in FIRST_CLUSTER_ABBREVS:
+        final_nodes[i]["label1"] = FIRST_CLUSTER_ABBREVS[label1]
+      if label2 in SECOND_CLUSTER_ABBREVS:
+        final_nodes[i]["label2"] = SECOND_CLUSTER_ABBREVS[label2] 
+    
+    with open(BASE_DIR + "/DRP/vis/completeNodes.json", "w") as outfile:
+      dump = json.dump(final_nodes, outfile)
+    
+    
+    clusters = createClusters(final_nodes) 
+    clusters1 = clusters[0]
+    clusters2 = clusters[1] 
+    label1 = [x["label"] for x in clusters1 if x["label"] != "none" ]
+    print len(label1) 
  
-    #Make sure that appending node_clusters on the end results in a correctly formatted list (something the javascript can take and use)...alternativley put into list and then concatenate
-    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
+    response = {"nodes": final_nodes, "links": links, "skipTicks": "True", "clusters1": clusters1, "clusters2": clusters2}
+
     return HttpResponse(json.dumps(response), content_type="application/json")
+   
+
   else:
     print "vis_data does not exist"
     #Only grab reactions that have DataCalc objects already generated
-    data = Data.objects.filter(~Q(calculations=None))
-
+    all_data = Data.objects.filter(~Q(calculations=None))
+    data = all_data[:200] 
     #Grab all data ids
     dids= [datum.id for datum in data]
     print "just  finished querying for data objects and appending dids"
@@ -163,31 +239,12 @@ def get_graph_data(request):
     vis_file = create_vis_data_file(matrix_prepped_for_json)
     print "just finished creating vis_data file"
 
-    with open(path_to_vis_data_file, "r") as f:
+    with open(VIS_DATA_PATH, "r") as f:
         deserialized_data = json.load(f)
-
-    node_clusters = create_node_clusters_for_labels(deserialized_data["links"], deserialized_data["nodes"])
-    links = deserialized_data["links"]
-    nodes = deserialized_data["nodes"] 
-    clusters = give_positions_to_clusters(nodes, node_clusters)
-    clusters_with_colors = assign_colors_to_clusters(colors, clusters, "color2")
-    final_clusters = make_clusters_into_single_list(clusters_with_colors)
-    almost_final_nodes = give_colors_to_nodes(nodes, final_clusters)
-    votes = vote_on_inorgs(final_clusters)
-    top_inorgs = grab_inorgs(votes)
-    firstCluster = first_cluster(nodes, top_inorgs)
-    first_clusters_with_colors = assign_colors_to_clusters(colors, firstCluster, "color")
-    final_first_clusters = make_clusters_into_single_list(first_clusters_with_colors)
-    final_nodes = give_colors_to_nodes2(almost_final_nodes, final_first_clusters)
-    print final_nodes[0] 
-    print final_nodes[0][0]
-    print "hello"   
-    response = {"nodes": final_nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"} 
-    return HttpResponse(json.dumps(response), content_type="application/json")
 
 
 def create_vis_data_file(data_to_file):
-  with open(path_to_vis_data_file, "w") as outfile:
+  with open(VIS_DATA_PATH, "w") as outfile:
     dump = json.dump(data_to_file, outfile)
   return dump
 
@@ -210,12 +267,9 @@ def create_node_clusters_for_labels(links, nodes):
      "color2": "none",
      "label1": "none",
      "label2": "none",
-     #"outcome": nodes[i]["outcome"],
-     #"ref": nodes[i]["ref"]
+     "outcome": nodes[i]["outcome"],
+     "ref": nodes[i]["ref"]
      })
-    #if nodes[i]["inorg1"] != "-1":
-     #  nodes_dict.append({"inorg1": nodes[i]["inorg1"]
-    # })
     if "inorg1" in nodes[i]:
       nodes_dict[i]["inorg1"] = nodes[i]["inorg1"]
     if "inorg2" in nodes[i]:
@@ -236,14 +290,11 @@ def grab_inorgs(list_of_all_inorgs):
   for key in list_of_all_inorgs:
     mylist.append(key)
   for i in xrange(len(mylist)):
-    if "va" in mylist[i] or "Va" in mylist[i]:
-      top_inorgs.append(mylist[i])
+    if mylist[i] == -1:
+      mylist.pop(i) 
   for i in xrange(len(mylist)):
-    if "ga" in mylist[i] or "Ga" in mylist[i]:
-      top_inorgs.append(mylist[i])
-  for i in xrange(len(mylist)):
-    if "mo" in mylist[i] or "Mo" in mylist[i]:
-      top_inorgs.append(mylist[i])
+    if "va" in mylist[i] or "Va" in mylist[i] or "ga" in mylist[i] or "Ga" in mylist[i] or "mo" in mylist[i] or "Mo" in mylist[i]:
+        top_inorgs.append(mylist[i])
   return top_inorgs
 
 
@@ -333,13 +384,13 @@ def check_inorgs(mainNode, neighbor):
 def store_graph(request):
   nodeData = json.loads(request.POST["nodes"])
   linkData = json.loads(request.POST["links"])
-  path_to_nodePositions = BASE_DIR + "/DRP/vis/nodePositions.json"
-  path_to_links = BASE_DIR + "/DRP/vis/linkIndices.json"
+  NODEPOSITIONS_PATH = BASE_DIR + "/DRP/vis/nodePositions.json"
+  LINKS_PATH = BASE_DIR + "/DRP/vis/linkIndices.json"
 
-  with open(path_to_nodePositions, "w") as f:
+  with open(NODEPOSITIONS_PATH, "w") as f:
     json.dump(nodeData, f)
 
-  with open(path_to_links, "w") as f:
+  with open(LINKS_PATH, "w") as f:
     json.dump(linkData, f)
 
   return HttpResponse("OkeyDokey")
@@ -466,4 +517,69 @@ def make_larger_clusters(clusters, total_most_important_inorgs):
           })
   return main_clusters
 
+def make_new_nodePositions(): 
+
+  with open(VIS_DATA_PATH, "r") as f:
+    deserialized_data = json.load(f)
+  nodez = deserialized_data["nodes"]
+  n = nodes 
+  print "here" 
+  new_nodez = []
+  for i in xrange(len(n)):
+    id_num = n[i]["id"]
+    id_node = []  
+    for j in xrange(len(nodez)):
+      if nodez[j]["id"] == id_num:
+        id_node = nodez[j] 
+    new_nodez.append({
+    "index": n[i]["index"],
+    "target": n[i]["target"],
+    "weight": n[i]["weight"],
+    "color": n[i]["color"],
+    "label1": n[i]["label1"],
+    "label2": n[i]["label2"],
+    "source": n[i]["source"],
+    "color2": n[i]["color2"],
+    "y": n[i]["y"],
+    "x": n[i]["x"],
+    "pagerank": n[i]["pagerank"],
+    "px": n[i]["px"],
+    "py": n[i]["py"],
+    "id": n[i]["id"],
+    "outcome": id_node["outcome"],
+    "ref": id_node["ref"]
+    })
+    if "inorg1" in n[i]:
+      new_nodez[i]["inorg1"] = n[i]["inorg1"]
+    if "inorg2" in n[i]:
+      new_nodez[i]["inorg2"] = nodes[i]["inorg2"]
+      
+  with open(BASE_DIR + "/DRP/vis/nodePosOutcome.json", "w") as outfile:
+    json.dump(new_nodez, outfile) 
+  return HttpResponse("OkeyDokey") 
+
+def createClusters(final_nodes):
+  nodes = final_nodes 
+  clusters1 = []
+  clusters2 = [] 
+  for i in xrange(len(nodes)):
+    if nodes[i]["label1"] != "none": 
+      clusters1.append({
+        "color": nodes[i]["color"],
+        "x": nodes[i]["x"],
+        "y": nodes[i]["y"],
+        "id": nodes[i]["id"],
+        "label": nodes[i]["label1"]  
+      }) 
+    if nodes[i]["label2"] != "none": 
+      clusters2.append({
+        "color": nodes[i]["color2"],
+        "x": nodes[i]["x"],
+        "y": nodes[i]["y"],
+        "id": nodes[i]["id"],
+        "label": nodes[i]["label2"]  
+      }) 
+
+  return clusters1, clusters2
+  
 
