@@ -35,6 +35,7 @@ var centerY = height/2
   var textPlacement = nodeTooltips.length*40;
   var boxLength = 130;
 
+  var nodesHidden = "False" 
   var zoomLevel = "circles1"
   var translateValue1 = width/3.2
   var translateValue2 = height/2.3 //this controls up and down
@@ -84,14 +85,14 @@ var centerY = height/2
 
  
   var zoomInitial = d3.behavior.zoom()
-                .scaleExtent([1/20, 2])
+                .scaleExtent([1/25, 3])
                 .on("zoom", zoomed)
                 .translate([translateValue1, translateValue2]).scale(scaleValue);
 
   var zoom = d3.behavior.zoom()
         .translate([0,0])
         .scale(1)
-        .scaleExtent([1/2, 8])
+        .scaleExtent([1/7, 10])
         .on("zoom", zoomed);
 
   var drag = d3.behavior.drag()
@@ -103,7 +104,7 @@ var centerY = height/2
 
   svg.call(zoom).call(zoom.event); 
 
-  container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
+  //container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
 
 
   // Use a timeout to allow the rest of the page to load first.
@@ -151,13 +152,12 @@ var centerY = height/2
 
   console.log("4");
 
-  container.on("mouseover", function() {
+  container.on("click", function() {
     d3.selectAll(".tooltipContainer").remove();
   });
 
   var tip = d3.tip()
       .attr("class", "d3-tip")
-      .offset([-10,0])
       .html(function(d) {
         return d.label;
       });
@@ -196,8 +196,8 @@ svg.call(tip);
               .attr("opacity", 0.4)
               .attr("cx", function(d) { return d.x;})
               .attr("cy", function(d) { return d.y;}) 
-              .attr("r", 200) 
-              .on("mouseover", tip.show)
+              .attr("r", 60) 
+              .on("mouseover", tip.show) 
               .on("mouseout", tip.hide) 
               .on("click", clicked);
    }; 
@@ -319,7 +319,7 @@ function createNodeElements() {
 		.attr('width', 310)
 		.attr('height', 25)
 		.attr('x', "20px")
-		.attr('y', boxLength)
+		.attr('y', boxLength + 5)
 		.attr("rx", "3")
 		.attr("ry", "3");
 	//	.style("filter", "url(#drop-shadow)");
@@ -327,20 +327,20 @@ function createNodeElements() {
 
 	var imageContainer = seedRecButton.append("g")
 	var seedButton = imageContainer.append("svg:image")
-	  .attr('x', textPlacement*1.7)
- 	  .attr('y', boxLength + 5)
+	  .attr('x', textPlacement*1.7 + 10)
+ 	  .attr('y', boxLength + 10)
  	  .attr('width', 22)
  	  .attr('height', 16)
  	  .attr('xlink:href', "/static/icons/seed.png");
 
 	seedButtonRect.on("click", function(d) {
-		var url="/nd/make_seed_recommendations/";
+		var url="/make_seed_recommendations/";
 		var request = {"pid":d.id};
 		console.log(d.id);
 		$.post(url, request, function(response) {
   		if (response=='0') {
     			var comment = "Making recommendations based on seed!";
-    			showRibbon(commend, goodColor, "#mainPanel");
+    			showRibbon(comment, goodColor, "#mainPanel");
     		} else {
       		var failureMessage;
         	if (response=="2") {
@@ -352,11 +352,11 @@ function createNodeElements() {
 		};
 	   })
     ;})
-    seedButtonRect.append("rect").attr("class", "extraRect").append("text")
+    seedRecButton.append("text")
 		.text("Generate seed recommendations")
         .attr("class", "seedRecText")
 		.attr('x', "25px")
-		.attr('y', boxLength + 15)
+		.attr('y', boxLength + 22)
 
 	d3.event.stopPropagation();
     })
@@ -366,20 +366,6 @@ function createNodeElements() {
     });
 }
 
-function reset() {
-    console.log("reset")
-    zoomLevel = "first"
-    container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")");
-    $(".links").remove() 
-    $(".nodeElements").remove() 
-    $(".circleClusters1").remove()
-    $(".label1").remove()
-    $(".label2").remove()
-    $(".circleClusters2").remove()  
-    createCircleClusters1();
-    }; 
-
-
   
 function clicked(d) {
         if (zoomLevel == "first") {
@@ -388,42 +374,81 @@ function clicked(d) {
               dy = dx,
               x = Math.round(d3.select(this).attr("cx")),
               y = Math.round(d3.select(this).attr("cy")),
-              scale = .9 / Math.max( dx / width, dy / height),
+              scale = .9 / Math.max( dx / width, dy / height) * 0.3,
               translate = [width /2 - scale* x, height/2 - scale*y];
           $(".circleClusters1").remove()
-          $(".label1").remove()
           svg.transition()
             .duration(750)
             .call(zoom.translate(translate).scale(scale).event);
           createCircleClusters2();
-        } else if (zoomLevel === "second") {
+        } else if (zoomLevel == "second") {
           zoomLevel = "third" 
-          console.log(zoomLevel) 
           var dx = Math.round(d3.select(this).attr("r")) * 2,
               dy = dx,
               x = Math.round(d3.select(this).attr("cx")),
               y = Math.round(d3.select(this).attr("cy")),
-              scale = .9 / Math.max( dx / width, dy / height),
+              scale = .9 / Math.max( dx / width, dy / height) * 0.3,
               translate = [width /2 - scale* x, height/2 - scale*y];
           $(".circleClusters2").remove()
-          $(".label2").remove()
           svg.transition()
             .duration(750)
             .call(zoom.translate(translate).scale(scale).event);
-         createNodeElements(); 
+            createNodeElements();
          } else {
-         return reset() 
+         return reset()  
          }
 }
 
+function level1() {
+    zoomLevel = "first"
+    var scale = scaleValue,
+        translate = [translateValue1, translateValue2];
+    $(".circleClusters2").remove() 
+    $(".lines").remove()
+    $(".node").remove() 
+    svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event); 
+    createCircleClusters1();
+    }; 
+
+function level2() {
+    zoomLevel = "second"
+    var scale = scaleValue,
+        translate = [translateValue1, translateValue2];
+    $(".circleClusters1").remove() 
+    $(".lines").remove()
+    $(".node").remove() 
+    svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event); 
+    createCircleClusters2();
+    }; 
+
+function level3() {
+    zoomLevel = "third"
+    var scale = scaleValue,
+        translate = [translateValue1, translateValue2];
+    $(".circleClusters2").remove() 
+    $(".circleClusters1").remove() 
+    svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event); 
+    createNodeElements();
+    }; 
+
+
+
+
 
        
-  $("#reset").on("click", reset);
+  $("#level1").on("click", level1);
+  $("#level2").on("click", level2);
+  $("#level3").on("click", level3); 
 
   $("#loadingMessage").remove();
   container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")"); 
   //createCircleClusters2();  
-  //createLabel2s();
   //createNodeElements();
   createCircleClusters1(); 
   var data = {

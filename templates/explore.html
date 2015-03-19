@@ -1,8 +1,12 @@
 {% if user.is_authenticated %} 
   <div class="infoContainer">
-   <div id="loadingMessage">Loading! Takes approximately 5 seconds.</div> 
+   <div id="loadingMessage"><div class="pace"></div></div> 
    <div id="wrapper">
-     <div id="reset">Reset</div>
+     <div id="controlsContainer">
+         <div id="level1" class="control" title="Reactions clustered by single inorganic compound">Large Clusters</div>
+         <div id="level2" class="control" title="Reactions clustered by two matching inorganic compounds">Medium Clusters</div>
+         <div id="level3" class="control" title="All reactions, clustered by similarity from one another">Nodes</div> 
+     </div>
      <div id="graphWrapper">
        <div id="graph"></div>
      </div>  
@@ -14,7 +18,8 @@
    </div>
 <script type="text/javascript" src="{{ STATIC_URL }}js/d3.js"></script>  
 <script type="text/javascript" src="{{ STATIC_URL }}js/dragdealerLibrary.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script type="text/javascript" src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/pace.js"></script> 
 {% else %}
 <p>Please log in to see your visualization.</p> 
 {% endif %} 
