@@ -26,7 +26,7 @@ def research_data_filter(data):
 
   # Only utilize the data that was available before June 1st.
   from DRP.retrievalFunctions import filter_by_date
-  data = filter_by_date(data, "06-01-2014", "before")
+  data = filter_by_date(data, "05-21-2014", "before")
 
   """
   # Only retain reactions that contain certain atoms.
