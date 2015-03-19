@@ -26,14 +26,15 @@ def default_preprocessor(data):
   for i, outcome in enumerate(outcomes):
     data[i][outcome_index] = str(outcome)
 
-  # Normalize everything except the categorized columns.
-  categories = [
-    "outcome", "purity"
-  ]
-
-  cat_indexes = {headers.index(cat) for cat in categories if cat in headers}
 
   if normalize:
+
+    # Normalize everything except the categorized columns.
+    categories = [
+        "outcome", "purity"
+    ]
+    cat_indexes = {headers.index(cat) for cat in categories if cat in headers}
+
     cols = [[unicode(row[i]) for row in data] for i, h in enumerate(headers)]
     cols = [norm(col) if (all(map(is_num, col)) and i not in cat_indexes) else col
                     for i, col in enumerate(cols)]

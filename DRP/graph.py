@@ -5,6 +5,7 @@ def get_graph(lines, base,
               major_tick=0.1, minor_tick=0.025,
               show_minor=True,
               show_legend=True,
+              show_mean=False,
               ):
 
   def frange(step):
@@ -26,6 +27,16 @@ def get_graph(lines, base,
 
   for header, y in lines.items():
     plt.plot(base, y, label=header)
+
+    if show_mean:
+      y_mean = [sum(y)/float(len(y))]*len(base)
+      offset_index = int(len(base)/10)
+
+      plt.plot(base, y_mean, linestyle='--')
+
+      plt.annotate("Mean={}".format(y_mean[offset_index]),
+                   (base[offset_index], y_mean[offset_index]),
+                   textcoords='offset points')
 
     if show_legend:
       plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
