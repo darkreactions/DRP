@@ -259,7 +259,7 @@ def learning_curve(name, description, curve_tag, data=None,
 
   for i in xrange(0, num_buckets):
 
-    model_name = "{} ({} of {})".format(name, i, num_buckets)
+    model_name = "{} ({} of {})".format(name, i+1, num_buckets)
     model_tag = "learning_curve {} {} {}".format(call_time, curve_tag, i)
 
     # Grab a random sampling of the data to use.

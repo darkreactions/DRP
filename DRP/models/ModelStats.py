@@ -8,6 +8,7 @@ class ModelStats(models.Model):
   # Model Statistics
   confusion_table = models.TextField(default="{}")
   train_confusion_table = models.TextField(default="{}")
+  tmp_confusion_table = models.TextField(default="{}")
   headers = models.TextField(default="[]")
   correct_vals = models.CharField("Correct Values", max_length=100,
                                   default="[\"3\",\"4\"]")
@@ -146,7 +147,7 @@ class ModelStats(models.Model):
       print "Using {} headers...".format(len(headers))
 
     # Get the temporary value-sets of each field.
-    self.val_map = self._get_val_map(split_data["all"])
+    self._set_val_map(split_data["all"])
 
     # Train/fit the model
     if debug: print "Training model..."
@@ -173,9 +174,17 @@ class ModelStats(models.Model):
     return self.end_time-self.start_time
 
 
-  def _get_val_map(self, data):
+  def get_val_map(self):
     fields = self.get_headers()
     val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
+    return val_dict
+
+  def _set_val_map(self, all_data):
+    #TODO: Finish me.
+    import json
+    fields = self.get_headers()
+    val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
+    self.val_map = json.dumps
     return val_dict
 
   def get_path(self):
@@ -341,16 +350,18 @@ class ModelStats(models.Model):
     else:
       raise Exception("_train_model called with illegal library!")
 
-  def _get_weka_value_map(self):
+  def _get_weka_value_map(self, data):
     def _is_string(elem):
       return type(elem)==str or type(elem)==unicode
 
     val_dict = {}
 
-    for field, val_set in self.val_map.items():
+    val_map = self._get_weka_value_map(data)
+
+    for field, val_set in val_map:
       if any(map(_is_string, val_set)):
-        if field in self.val_map:
-          val_set = self.val_map[field]
+        if field in val_map:
+          val_set = val_map[field]
 
         # EG: convert {"hello", 1, u"world"} to {hello,1,world}.
         innards = ",".join(map(str,val_set)).replace("\"","")
@@ -363,7 +374,7 @@ class ModelStats(models.Model):
 
   def _weka_header(self, data):
     headers = self.get_headers()
-    value_map = self._get_weka_value_map()
+    value_map = self._get_weka_value_map(data)
 
     res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
 
@@ -378,7 +389,7 @@ class ModelStats(models.Model):
     from DRP.fileFunctions import delete_tmp_file
 
     # Variable Setup
-    auto_deleted_keys = ["test", "train"]
+    auto_deleted_keys = ["test", "train", "tmp"]
     auto_deleted_exts = ["arff", "out"]
 
     for ext in auto_deleted_exts:
@@ -466,6 +477,8 @@ class ModelStats(models.Model):
       self.confusion_table = cm
     elif table=="train":
       self.train_confusion_table = cm
+    elif table=="tmp":
+      self.tmp_confusion_table = cm
     else:
       raise Exception("Illegal confusion table specified!")
 
@@ -498,6 +511,8 @@ class ModelStats(models.Model):
       cm = self.confusion_table
     elif table=="train":
       cm = self.train_confusion_table
+    elif table=="tmp":
+      cm = self.tmp_confusion_table
     else:
       raise Exception("Illegal confusion table specified!")
 
