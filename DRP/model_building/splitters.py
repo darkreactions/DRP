@@ -11,6 +11,9 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 def default_splitter(data, headers=None):
   from DRP.model_building.test_train_split import create_test_and_train_lists
   from DRP.model_building.load_data import create_reactant_keys
+  import random
+
+  random.shuffle(data)
 
   # Create reactant-combination keys for each data entry.
   dataKeys = create_reactant_keys(data, headers=headers)

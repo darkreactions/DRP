@@ -62,6 +62,16 @@ def get_knn_tuples(point, others, k):
   return neighbors[:k]
 
 
+def exact_knn_distance(point, others, k):
+  """
+  Return the exact distance from a `point` to its Kth nearest neighbor.
+  """
+
+  knn = get_knn_tuples(point, others, k)
+  _, knn_dist = knn[k-1]
+  return knn_dist
+
+
 def average_knn_distance(point, others, k):
   """
   Calculate the average distance to the k-nearest neighbors for some `point`.
@@ -71,18 +81,30 @@ def average_knn_distance(point, others, k):
   distances = map(lambda tup: tup[1], knn)
   total = float(sum(distances))
 
-  if PRINT_DETAILS:
-    if point[0] in {"jk252.5","jho252.5"} :
-      print "{} Nearest Neighbors of {}:".format(k, point[0])
-      print "\n".join(["\t{} : {}".format(tup[0][0], tup[1]) for tup in knn])
-
   return total/len(knn)
 
 
 def get_research_points():
-  from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
 
+  # Used to grab the data used in Alex's 03-09-15 spreadsheet.
+  from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
+  data = get_data_from_ref_file("DRP/research/casey/raw/030915_datums.txt")
+
+  """
+  # Used for the seed KNN graphs.
+  from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_seeds.txt")
+  """
+
+  """
+  # Used for the average KNN distance calculations.
+  from DRP.retrievalFunctions import get_valid_data
+  from DRP.retrievalFunctions import filter_by_date
+
+  data = get_valid_data()
+  data = filter_by_date(data, "05-21-2014", "before")
+  """
+
 
   """
   #TODO: quickie-info
@@ -114,9 +136,7 @@ def get_research_others():
   return data
 
 
-
-def knn_research_graphs(low, high):
-  from DRP.graph import get_graph
+def get_knn_research_results(k_range, mode):
 
   if DEBUG: print "Gathering research points..."
   points = get_research_points()
@@ -126,10 +146,18 @@ def knn_research_graphs(low, high):
   others = get_research_others()
   if not others: raise Exception("No \"other\" research points found!")
 
-  k_range = xrange(low, high+1)
-
   results = {k:[] for k in k_range}
   calc_cache = {}
+
+
+  if mode=="exact":
+    knn_distance = exact_knn_distance
+
+  elif mode=="average":
+    knn_distance = average_knn_distance
+
+  else:
+    raise Exception("Unknown `mode` specified!")
 
 
   for k in k_range:
@@ -140,8 +168,60 @@ def knn_research_graphs(low, high):
         if point not in calc_cache:
           calc_cache[point] = point.get_calculations_list()
 
-        avg_dist = average_knn_distance(calc_cache[point], others, k)
-        results[k].append( (point, avg_dist) )
+        dist = knn_distance(calc_cache[point], others, k)
+        results[k].append( (point, dist) )
+
+  return results
+
+
+def calculate_avg_distance(low, high):
+  from DRP.graph import get_graph
+
+  k_range = xrange(low, high+1)
+  results = get_knn_research_results(k_range, "average")
+
+
+  for k, reactions in results.items():
+    dists = [dist for p, dist in reactions]
+    dists.sort()
+
+    # Graph Options
+    padding = 0.01 # percent of graph to use as padding.
+    num_major_ticks = 10.0
+    num_minor_ticks = 50.0
+
+    max_dist = max(dists)
+    min_dist = min(dists)
+
+    # Calculate padding for the graph.
+    pre_tick_dist = (max_dist-min_dist)/num_major_ticks
+    top = max_dist * (1 + pre_tick_dist*padding)
+    bottom = min_dist * (1 - pre_tick_dist*padding)
+    if bottom<0: bottom = 0
+
+    line = {"K={}".format(k) : dists}
+    percentage_baseline = range(len(dists))
+
+    graph = get_graph(line, percentage_baseline,
+                        xLabel="# of Reactions",
+                        yLabel="Average KNN Distance",
+                        tick_range=(bottom, top),
+                        major_tick=(top-bottom)/num_major_ticks,
+                        minor_tick=(top-bottom)/num_minor_ticks,
+                        show_legend=True,
+                        show_minor=True,
+                        show_mean=True,
+                        )
+
+    graph.show()
+    raw_input("Press Enter to continue.")
+
+
+def knn_research_graphs(low, high):
+  from DRP.graph import get_graph
+
+  k_range = xrange(low, high+1)
+  results = get_knn_research_results(k_range, "average")
 
   # Sort the reactions and their distances into Se/Te buckets.
   buckets = {"Te":{}, "Se":{}, "Both":{}}
@@ -188,7 +268,7 @@ def knn_research_graphs(low, high):
 
       graph = get_graph(bucket, list(k_range),
                         xLabel="# Nearest Neighbors (K)",
-                        yLabel="Average KNN Distance",
+                        yLabel="Average Distance of K Nearest Neighbors",
                         tick_range=(bottom, top),
                         major_tick=(top-bottom)/num_major_ticks,
                         minor_tick=(top-bottom)/num_minor_ticks,
@@ -196,15 +276,62 @@ def knn_research_graphs(low, high):
                         show_minor=True
                         )
       graph.show()
-      raw_input("Press enter to continue...")
+      raw_input("Press Enter to continue...")
     else:
       print "Skipping empty bucket `{}`...".format(key)
 
+def matrix_to_csv(matrix, filename):
+  import csv
+  with open(filename,"w") as f:
+    writer = csv.writer(f)
+    for line in matrix:
+      writer.writerow(line)
+
+  print "'{}' written!".format(filename)
+
+
+def make_distance_csv(low, high):
+  k_range = xrange(low, high+1)
+  results = get_knn_research_results(k_range, "exact")
+
+  # Load the sets of points so we can check which point belongs in which class.
+  with open(django_path+"/DRP/research/casey/raw/030915_intuition.txt") as f:
+    int_set = f.read().lower().split(" ")
+  with open(django_path+"/DRP/research/casey/raw/030915_model.txt") as f:
+    model_set = f.read().lower().split(" ")
+
+
+  final = {}
+  for k, point_tups in results.items():
+    for point, dist in point_tups:
+
+      if point not in final: final[point] = {
+        "outcome":point.outcome,
+        "ref": point.ref,
+        "Te": "Te" in point.atoms,
+        "Se": "Se" in point.atoms,
+        "Intuition": point.ref.lower() in int_set,
+        "Model": point.ref.lower() in model_set,
+      }
+
+      final[point]["Distance K={}".format(k)] = dist
+
+  columns = sorted(final[final.keys()[0]].keys(), reverse=True)
+
+  matrix = [columns]
+  matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
+
+  filename = "{}/DRP/research/casey/results/knn_calculations.csv".format(django_path)
+  matrix_to_csv(matrix, filename)
+
+
+
+
 
 def main():
-  knn_research_graphs(1,20)
-
-
+  #knn_research_graphs(1, 40)
+  #calculate_avg_distance(1,20)
+  make_distance_csv(1,15)
 
 if __name__=="__main__":
   main()

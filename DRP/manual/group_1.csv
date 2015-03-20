@@ -1,0 +1,39 @@
+ref,reactant_3.abbrev,reactant_3.compound,outcome,reactant_3.smiles
+ke17.1,5-atmchma,"5-amino-1,3,3-trimethylcyclohexamethylamine, mix of cis and trans",3,CC1(CC(CC(C1)(C)CN)N)C
+ke17.2,3-dbapa,3-(dibutylamino)propylamine,3,CCCCN(CCCC)CCCN
+ke17.3,"1,3-chbma","1,3-cyclohexanebis(methylamine), mix of isomers",4,NCC1CCCC(CN)C1
+ke17.4,3-deap,3-(diethylamino)propylamine,2,CCN(CC)CCCN
+ke17.5,tmpda,"N,N,N',N'-tetramethyl-1,3-propanediamine",3,CN(C)CCCN(C)C
+ke17.6,tmdp,"4,4'-trimethylenedipiperidine",3,C1CNCCC1CCCC2CCNCC2
+ke17.8,tmbda,"N,N,N',N'-tetramethyl-1,3-butanediamine",3,CC(CCN(C)C)N(C)C
+ke17.9,"4,4'-mbmcha","4,4'-methylenebis(2-methylcyclohexylamine), mixture of isomers",3,NC2CCC(CC1CCC(N)C(C)C1)CC2C
+ke17.10,2-amp,2-(aminomethyl)piperidine,2,C1=CC=NC(=C1)CN
+ke17.11,3-dmpa,3-(dimethylamino)-1-propylamine,3,CN(C)CCCN
+ke17.12,"N,N,2,2-tmpd","N,N,2,2-tetramethyl-1,3-propanediamine",4,CC(C)(CN)CN(C)C
+ke22.1,2-adeap,2-Amino-5-diethylaminopentane,4,CCN(CC)CCCC(C)N
+ke22.2,N-peda,N-propylethylenediamine,4,CCCNCCN
+ke22.3,1-chp,1-cyclohexylpiperazine,2,C1=CC=C(C=C1)OC(=O)N
+ke22.4,3-mapa,3-(methylamino)propylamine,4,CNCCCN
+ke22.5,4-1-pp,4-(1-pyrrolidinyl)piperidine,2,C1CCN(C1)C2CCNCC2
+ke22.6,3-apdhcl,3-Aminopyrrolidine dihydrochloride,4,C1CNCC1N
+ke22.7,4-apip,4-Aminopiperidine,4,C1=CN=CC=C1N
+ke22.8,"N,N'-dipeda","N,N'-diisopropylethylenediamine",3,CC(C)NCCNC(C)C
+ke22.9,1-2-aep,1-(2-Aminoethyl)pyrrolidine,2,C1CCN(C1)CCN
+ke22.10,"N,N'-dmhda","N,N'-dimethyl-1,6-hexanediamine",2,N(CCCCCCNC)C
+ke22.11,"2,3-dmp","2,3-dimethylpiperazine",3,CC1C(NCCN1)C
+ke22.12,N-ippda,"N-isopropyl-1,3-propanediamine",3,CC(C)NCCCN
+ke22.13,N-ppda,"N-propyl-1,3-propanediamine",4,NCCCNCCC
+ke22.14,"N,N,N',N'-tmbd","N,N,N',N'-tetramethyl-1,4-butanediamine",3,CN(C)CCCCN(C)C
+ke22.15,N-meda,N-methylethylenediamine,3,CNCCN
+ke22.16,2-aemp,2-(2-Aminoethyl)-1-methylpyrrolidine,3,CN1CCCC1CCN
+ke22.17,"4-a-2,2,6,6-tmp","4-Amino-2,2,6,6-tetramethylpiperidine",3,CC1(CC(CC(N1)(C)C)N)C
+ke22.18,2-amep,2-aminomethyl-1-ethylpyrrolidine,3,C1CCN(C1)CCCN
+ke22.19,1-2-aep,1-(2-Aminoethyl)pyrrolidine,2,C1CCN(C1)CCN
+ke22.20,4-ampip,4-(aminomethyl)piperidine,3,C1CNCCC1CN
+ke22.21,"N,N,N'-tmpda","N,N,N'-trimethyl-1,3-propanediamine",3,CNCCCN(C)C
+ke22.22,"N,N'-dmpda","N,N'-dimethyl-1,3-propanediamine",3,CN(C)CCCN
+ke22.23,2-amp,2-(aminomethyl)piperidine,3,C1=CC=NC(=C1)CN
+ke22.24,1-3-app,1-(3-aminopropyl)pyrrolidine,3,C1CCN(C1)CCCN
+ke22.25,2-apip,2-aminopiperidine,3,C1CCNC(C1)N
+ke22.26,1-bpip,1-butylpiperazine,3,CCCCN1CCNCC1
+ke22.27,"N,N-dm-3-pa","N,N-dimethyl-3-pyrrolidinamine",2,CN(C)C1CCNC1
