@@ -208,7 +208,7 @@ def get_graph_data(request):
  
     response = {"nodes": final_nodes, "links": links, "skipTicks": "True", "clusters1": clusters1, "clusters2": clusters2}
 
-    return HttpResponse(json.dumps(response), content_type="application/json")
+  return HttpResponse(json.dumps(response), content_type="application/json")
    
 
   else:
