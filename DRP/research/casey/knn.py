@@ -62,6 +62,16 @@ def get_knn_tuples(point, others, k):
   return neighbors[:k]
 
 
+def exact_knn_distance(point, others, k):
+  """
+  Return the exact distance from a `point` to its Kth nearest neighbor.
+  """
+
+  knn = get_knn_tuples(point, others, k)
+  _, knn_dist = knn[k-1]
+  return knn_dist
+
+
 def average_knn_distance(point, others, k):
   """
   Calculate the average distance to the k-nearest neighbors for some `point`.
@@ -71,16 +81,12 @@ def average_knn_distance(point, others, k):
   distances = map(lambda tup: tup[1], knn)
   total = float(sum(distances))
 
-  if PRINT_DETAILS:
-    if point[0] in {"jk252.5","jho252.5"} :
-      print "{} Nearest Neighbors of {}:".format(k, point[0])
-      print "\n".join(["\t{} : {}".format(tup[0][0], tup[1]) for tup in knn])
-
   return total/len(knn)
 
 
 def get_research_points():
 
+  # Used to grab the data used in Alex's 03-09-15 spreadsheet.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_datums.txt")
 
@@ -130,7 +136,7 @@ def get_research_others():
   return data
 
 
-def get_knn_research_results(k_range):
+def get_knn_research_results(k_range, mode):
 
   if DEBUG: print "Gathering research points..."
   points = get_research_points()
@@ -143,6 +149,17 @@ def get_knn_research_results(k_range):
   results = {k:[] for k in k_range}
   calc_cache = {}
 
+
+  if mode=="exact":
+    knn_distance = exact_knn_distance
+
+  elif mode=="average":
+    knn_distance = average_knn_distance
+
+  else:
+    raise Exception("Unknown `mode` specified!")
+
+
   for k in k_range:
     print "Average k={} distance...".format(k)
     for i, point in enumerate(points):
@@ -151,8 +168,8 @@ def get_knn_research_results(k_range):
         if point not in calc_cache:
           calc_cache[point] = point.get_calculations_list()
 
-        avg_dist = average_knn_distance(calc_cache[point], others, k)
-        results[k].append( (point, avg_dist) )
+        dist = knn_distance(calc_cache[point], others, k)
+        results[k].append( (point, dist) )
 
   return results
 
@@ -161,7 +178,7 @@ def calculate_avg_distance(low, high):
   from DRP.graph import get_graph
 
   k_range = xrange(low, high+1)
-  results = get_knn_research_results(k_range)
+  results = get_knn_research_results(k_range, "average")
 
 
   for k, reactions in results.items():
@@ -204,7 +221,7 @@ def knn_research_graphs(low, high):
   from DRP.graph import get_graph
 
   k_range = xrange(low, high+1)
-  results = get_knn_research_results(k_range)
+  results = get_knn_research_results(k_range, "average")
 
   # Sort the reactions and their distances into Se/Te buckets.
   buckets = {"Te":{}, "Se":{}, "Both":{}}
@@ -251,7 +268,7 @@ def knn_research_graphs(low, high):
 
       graph = get_graph(bucket, list(k_range),
                         xLabel="# Nearest Neighbors (K)",
-                        yLabel="Average KNN Distance",
+                        yLabel="Average Distance of K Nearest Neighbors",
                         tick_range=(bottom, top),
                         major_tick=(top-bottom)/num_major_ticks,
                         minor_tick=(top-bottom)/num_minor_ticks,
@@ -275,19 +292,29 @@ def matrix_to_csv(matrix, filename):
 
 def make_distance_csv(low, high):
   k_range = xrange(low, high+1)
-  results = get_knn_research_results(k_range)
+  results = get_knn_research_results(k_range, "exact")
+
+  # Load the sets of points so we can check which point belongs in which class.
+  with open(django_path+"/DRP/research/casey/raw/030915_intuition.txt") as f:
+    int_set = f.read().lower().split(" ")
+  with open(django_path+"/DRP/research/casey/raw/030915_model.txt") as f:
+    model_set = f.read().lower().split(" ")
+
 
   final = {}
-
   for k, point_tups in results.items():
     for point, dist in point_tups:
 
       if point not in final: final[point] = {
         "outcome":point.outcome,
         "ref": point.ref,
+        "Te": "Te" in point.atoms,
+        "Se": "Se" in point.atoms,
+        "Intuition": point.ref.lower() in int_set,
+        "Model": point.ref.lower() in model_set,
       }
 
-      final[point]["k={}".format(k)] = dist
+      final[point]["Distance K={}".format(k)] = dist
 
   columns = sorted(final[final.keys()[0]].keys(), reverse=True)
 
@@ -302,7 +329,7 @@ def make_distance_csv(low, high):
 
 
 def main():
-  #knn_research_graphs(1,20)
+  #knn_research_graphs(1, 40)
   #calculate_avg_distance(1,20)
   make_distance_csv(1,15)
 

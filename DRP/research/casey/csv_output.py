@@ -38,7 +38,6 @@ def split_and_write():
   from DRP.model_building.rxn_calculator import headers
   from DRP.models import Recommendation
 
-  from django.db.models import Q
   import time
 
   num_splits = 10
@@ -49,22 +48,11 @@ def split_and_write():
   data = preprocessor(data)
 
   print "Calculating train_supplement"
-  calculated = ~Q(calculations=None)
-  nonsense_recs = Recommendation.objects.filter(Q(nonsense=True), calculated)
-
-  clean_recs = []
-  for i, rec in enumerate(nonsense_recs):
-
-    try:
-      rec.get_calculations_list()
-      clean_recs.append(rec)
-    except Exception as e:
-      pass
-
-  nonsense_recs = preprocessor([headers]+clean_recs)
+  nonsense_recs = Recommendation.objects.filter(nonsense=True)
+  nonsense_recs = preprocessor([headers]+list(nonsense_recs))
   nonsense_recs, _ = postprocessor({"all":nonsense_recs}, headers)
-  train_supplement = nonsense_recs["all"][1:] # Ignore the duplicate headers
-  print len(train_supplement)
+  train_supplement = nonsense_recs["all"][1:] # Remove the "headers"
+
 
   write_uniq_csv(data, "all.csv")
 
