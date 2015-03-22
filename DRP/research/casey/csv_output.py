@@ -47,24 +47,24 @@ def split_and_write():
   data = [headers] + list(research_data_filter(data))
   data = preprocessor(data)
 
-  print "Calculating train_supplement"
+  print "Calculating test_supplement"
   nonsense_recs = Recommendation.objects.filter(nonsense=True)
-  nonsense_recs = preprocessor([headers]+list(nonsense_recs))
-  nonsense_recs, _ = postprocessor({"all":nonsense_recs}, headers)
-  train_supplement = nonsense_recs["all"][1:] # Remove the "headers"
-  print len(train_supplement)
+  pre_nonsense_recs = preprocessor([headers]+list(nonsense_recs))
+  nonsense_recs, _ = postprocessor({"all":pre_nonsense_recs}, headers)
+  # Change nonsense recs to 0-outcome:
+  nonsense_recs = [row[:-1] + [0] for row in nonsense_recs["all"]]
+  test_supplement = nonsense_recs[1:] # Remove the "headers"
 
-
-  write_uniq_csv(data, "all.csv")
+  write_uniq_csv(data + pre_nonsense_recs[1:], "all.csv")
 
   for i in xrange(num_splits):
     split_data = splitter(data, headers=headers)
     split_data, new_headers = postprocessor(split_data, headers)
 
     timestamp = int(time.time())
-    write_uniq_csv([new_headers]+split_data["train"]+train_supplement,
+    write_uniq_csv([new_headers]+split_data["train"],
                    "train_{}.csv".format(timestamp))
-    write_uniq_csv([new_headers]+split_data["test"]+train_supplement,
+    write_uniq_csv([new_headers]+split_data["test"]+test_supplement,
                    "test_{}.csv".format(timestamp))
 
 
