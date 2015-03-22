@@ -52,6 +52,7 @@ def split_and_write():
   nonsense_recs = preprocessor([headers]+list(nonsense_recs))
   nonsense_recs, _ = postprocessor({"all":nonsense_recs}, headers)
   train_supplement = nonsense_recs["all"][1:] # Remove the "headers"
+  print len(train_supplement)
 
 
   write_uniq_csv(data, "all.csv")

@@ -86,15 +86,15 @@ def average_knn_distance(point, others, k):
 
 def get_research_points():
 
+  """
   # Used to grab the data used in Alex's 03-09-15 spreadsheet.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_datums.txt")
-
   """
+
   # Used for the seed KNN graphs.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_seeds.txt")
-  """
 
   """
   # Used for the average KNN distance calculations.
@@ -292,7 +292,8 @@ def matrix_to_csv(matrix, filename):
 
 def make_distance_csv(low, high):
   k_range = xrange(low, high+1)
-  results = get_knn_research_results(k_range, "exact")
+  exact_results = get_knn_research_results(k_range, "exact")
+  avg_results = get_knn_research_results(k_range, "average")
 
   # Load the sets of points so we can check which point belongs in which class.
   with open(django_path+"/DRP/research/casey/raw/030915_intuition.txt") as f:
@@ -300,10 +301,11 @@ def make_distance_csv(low, high):
   with open(django_path+"/DRP/research/casey/raw/030915_model.txt") as f:
     model_set = f.read().lower().split(" ")
 
-
   final = {}
-  for k, point_tups in results.items():
-    for point, dist in point_tups:
+  for k, point_tups in exact_results.items():
+    avg_tups = avg_results[k]
+    for (point, exact_dist), (point2, avg_dist) in zip(point_tups, avg_tups):
+      if point != point2: raise Exception("Order is wrong!")
 
       if point not in final: final[point] = {
         "outcome":point.outcome,
@@ -314,14 +316,19 @@ def make_distance_csv(low, high):
         "Model": point.ref.lower() in model_set,
       }
 
-      final[point]["Distance K={}".format(k)] = dist
+      final[point]["Exact Distance K={}".format(k)] = exact_dist
+      final[point]["Average Distance K={}".format(k)] = avg_dist
 
-  columns = sorted(final[final.keys()[0]].keys(), reverse=True)
+  keys = [key for key in final[final.keys()[0]].keys() if "Dist" not in key]
+  columns = sorted(keys, reverse=True)
+  columns += ["Exact Distance K={}".format(k) for k in k_range]
+  columns += ["Average Distance K={}".format(k) for k in k_range]
 
   matrix = [columns]
   matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
 
-  filename = "{}/DRP/research/casey/results/knn_calculations.csv".format(django_path)
+
+  filename = "{}/DRP/research/casey/results/knn_calculations_seeds_big.csv".format(django_path)
   matrix_to_csv(matrix, filename)
 
 
@@ -331,7 +338,7 @@ def make_distance_csv(low, high):
 def main():
   #knn_research_graphs(1, 40)
   #calculate_avg_distance(1,20)
-  make_distance_csv(1,15)
+  make_distance_csv(1,40)
 
 if __name__=="__main__":
   main()

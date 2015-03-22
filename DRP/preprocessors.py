@@ -17,7 +17,15 @@ def default_preprocessor(data):
   normalize = False
 
   headers = data.pop(0)
-  data = [d.get_calculations_list() for d in data]
+
+  expanded = []
+  for d in data:
+    try:
+      expanded.append(d.get_calculations_list())
+    except:
+      pass
+
+  data = expanded
 
   # Set outcomes of 0 to be 1.
   outcome_index = headers.index("outcome")

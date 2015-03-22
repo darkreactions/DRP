@@ -26,13 +26,64 @@ def get_compound_map():
                                        for row in matrix}
 
 
+def fix_wrong():
+  from DRP.models import CompoundEntry
+  update_refs("Diisopropyl-1,5-pentan", CompoundEntry.objects.get(id=216))
+
+
+def update_refs(name, new_comp):
+    from DRP.models import Recommendation
+
+    Recommendation.objects.filter(reactant_fk_1__compound__icontains=name).update(reactant_fk_1=new_comp)
+    Recommendation.objects.filter(reactant_fk_2__compound__icontains=name).update(reactant_fk_2=new_comp)
+    Recommendation.objects.filter(reactant_fk_3__compound__icontains=name).update(reactant_fk_3=new_comp)
+    Recommendation.objects.filter(reactant_fk_4__compound__icontains=name).update(reactant_fk_4=new_comp)
+    Recommendation.objects.filter(reactant_fk_5__compound__icontains=name).update(reactant_fk_5=new_comp)
+
+
 def update_compounds():
+
+
   from DRP.models import Recommendation
   compound_map = get_compound_map()
+  compound_names = compound_map.keys()
+  changed = 0
 
-  recs = Recommendation.objects.filter()
+  ignore = {"piperazine", "ethylenediamine", "diethylamine", "1-methylpiperazine",
+            "1,5-diaminopentane", "1,6-diaminohexane", "2-methylpiperazine",
+            "1,6-hexanediamine", "4-Aminopiperidine"}
 
+  recs = Recommendation.objects.all()
+  for rec in recs:
+
+    compounds = [rec.reactant_fk_1, rec.reactant_fk_2, rec.reactant_fk_3,
+                 rec.reactant_fk_4, rec.reactant_fk_5]
+    compounds = [c for c in compounds if c is not None]
+
+    for comp in compounds:
+
+      for name in compound_names:
+
+        if (comp.compound.lower() in name.lower() and comp.compound != name and
+           len(comp.compound)>5 and comp.compound not in ignore and
+           comp.compound[-3:] not in {"ine", "ane"}):
+
+          print "{} --> {}".format(comp.compound, name)
+
+
+          comp.compound = name
+          comp.abbrev = name
+
+          update_refs(name, comp)
+
+          comp.save()
+
+          changed += 1
+          break
+
+  print "Fixed {}".format(changed)
 
 
 if __name__=="__main__":
-  update_compounds()
+  #update_compounds()
+  fix_wrong()
