@@ -39,6 +39,7 @@ def countif(all_data, lower_dist, upper_dist, k, avg_exact, se_te, desired_outco
       continue
 
     count = count + 1
+
   return count
 
 def experiment_equal_sized_buckets(all_data, min, max, bucket_size, k, se_te, model_intuition, rows):
@@ -132,8 +133,6 @@ def make_3d_plot(matrix_tups):
   import matplotlib.pyplot as plt
   import numpy as np
 
-  matrix_tups = matrix_tups[0:1]
-
   for matrix, title in matrix_tups:
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -158,13 +157,16 @@ def make_3d_plot(matrix_tups):
     ax.set_ylabel('Outcome')
     ax.set_zlabel('% of Total')
 
+    ax.view_init(elev=70, azim=315) # Set the camera position.
+
     plt.show()
 
 
 
 def experiment(all_data, min, max, num_buckets, k):
 
-  bucketer = experiment_equal_num_in_buckets
+  # supports: experiment_sete_fixed or experiment_equal_num_in_buckets
+  bucketer = experiment_sete_fixed
 
   rows = []
 
@@ -172,8 +174,7 @@ def experiment(all_data, min, max, num_buckets, k):
     for division in ["all", "Se", "Te"]:
       key = "{} {}".format(division, option)
 
-      print key
-      matrix = bucketer(all_data, min, max, num_buckets, k, 'all', 'model')
+      matrix = bucketer(all_data, min, max, num_buckets, k, division, option)
       rows.append( (matrix, key) )
 
   make_3d_plot(rows)
@@ -196,5 +197,5 @@ for line in f:
 
 f.close()
 
-experiment(all_data, 0, 300, 5, 20)
+experiment(all_data, 0, 300, 10, 10)
 
