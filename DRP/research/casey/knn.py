@@ -86,6 +86,10 @@ def average_knn_distance(point, others, k):
 
 def get_research_points():
 
+  # Used to grab the data .
+  from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
+  data = get_data_from_ref_file("DRP/research/casey/raw/033115_datums.txt")
+
   """
   # Used to grab the data used in Alex's 03-09-15 spreadsheet.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
@@ -100,11 +104,12 @@ def get_research_points():
   # Used for the average KNN distance calculations.
   from DRP.retrievalFunctions import get_valid_data
   from DRP.retrievalFunctions import filter_by_date
-
-  data = get_valid_data()
-  data = filter_by_date(data, "05-21-2014", "before")
   """
 
+  """
+  data = get_valid_data()
+  data = filter_by_date(data, "04-02-2014", "before")
+  """
 
   """
   #TODO: quickie-info
@@ -130,7 +135,7 @@ def get_research_others():
   from DRP.retrievalFunctions import filter_by_date
 
   data = get_valid_data()
-  data = filter_by_date(data, "05-21-2014", "before")
+  data = filter_by_date(data, "04-02-2014", "before")
   data = [d.get_calculations_list(debug=True) for d in data]
 
   return data
@@ -161,7 +166,7 @@ def get_knn_research_results(k_range, mode):
 
 
   for k in k_range:
-    print "Average k={} distance...".format(k)
+    print "{} k={} distance...".format(mode, k)
     for i, point in enumerate(points):
 
         # Store the `calculations_list` of each point for speed-up.
@@ -178,7 +183,7 @@ def calculate_avg_distance(low, high):
   from DRP.graph import get_graph
 
   k_range = xrange(low, high+1)
-  results = get_knn_research_results(k_range, "average")
+  results = get_knn_research_results(k_range, "exact")
 
 
   for k, reactions in results.items():
@@ -204,7 +209,7 @@ def calculate_avg_distance(low, high):
 
     graph = get_graph(line, percentage_baseline,
                         xLabel="# of Reactions",
-                        yLabel="Average KNN Distance",
+                        yLabel="Exact KNN Distance",
                         tick_range=(bottom, top),
                         major_tick=(top-bottom)/num_major_ticks,
                         minor_tick=(top-bottom)/num_minor_ticks,
@@ -221,7 +226,7 @@ def knn_research_graphs(low, high):
   from DRP.graph import get_graph
 
   k_range = xrange(low, high+1)
-  results = get_knn_research_results(k_range, "average")
+  results = get_knn_research_results(k_range, "exact")
 
   # Sort the reactions and their distances into Se/Te buckets.
   buckets = {"Te":{}, "Se":{}, "Both":{}}
@@ -268,7 +273,7 @@ def knn_research_graphs(low, high):
 
       graph = get_graph(bucket, list(k_range),
                         xLabel="# Nearest Neighbors (K)",
-                        yLabel="Average Distance of K Nearest Neighbors",
+                        yLabel="Exact Distance of K Nearest Neighbors",
                         tick_range=(bottom, top),
                         major_tick=(top-bottom)/num_major_ticks,
                         minor_tick=(top-bottom)/num_minor_ticks,
@@ -298,7 +303,7 @@ def make_distance_csv(low, high):
   # Load the sets of points so we can check which point belongs in which class.
   with open(django_path+"/DRP/research/casey/raw/030915_intuition.txt") as f:
     int_set = f.read().lower().split(" ")
-  with open(django_path+"/DRP/research/casey/raw/030915_model.txt") as f:
+  with open(django_path+"/DRP/research/casey/raw/033115_model.txt") as f:
     model_set = f.read().lower().split(" ")
 
   final = {}
@@ -328,17 +333,22 @@ def make_distance_csv(low, high):
   matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
 
 
-  filename = "{}/DRP/research/casey/results/knn_calculations_seeds_big.csv".format(django_path)
+  filename = "{}/DRP/research/casey/results/knn_calculations_allseeds_big.csv".format(django_path)
   matrix_to_csv(matrix, filename)
 
 
 
+def get_research_point_time_range():
+  data = get_research_points()
+  data.sort(key=lambda datum: datum.creation_time_dt)
+  print list(data)[0].creation_time_dt
+  print list(data)[-1].creation_time_dt
 
 
 def main():
-  #knn_research_graphs(1, 40)
-  #calculate_avg_distance(1,20)
-  make_distance_csv(1,40)
+  knn_research_graphs(1, 30)
+  #calculate_avg_distance(1,25)
+  #make_distance_csv(1,25)
 
 if __name__=="__main__":
   main()

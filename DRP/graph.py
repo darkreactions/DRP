@@ -32,6 +32,8 @@ def get_graph(lines, base,
       y_mean = [sum(y)/float(len(y))]*len(base)
       offset_index = int(len(base)/10)
 
+      print "{}: {}".format(header, y_mean)
+
       plt.plot(base, y_mean, linestyle='--')
 
       plt.annotate("Mean={}".format(y_mean[offset_index]),
