@@ -55,11 +55,57 @@ def experiment_equal_sized_buckets(all_data, min, max, bucket_size, k, se_te, mo
       rows[outcome].append(str(percent_for_outcome))
     min = min + bucket_size
 
-def experiment_equal_num_in_buckets(all_data, min, max, num_buckets, k, se_te, model_intuition):
-  # TODO
-  pass
 
-def experiment_sete_fixed(all_data, min, max, bucket_size, k, se_te, model_intuition):
+def experiment_equal_num_in_buckets(all_data, min, max, num_buckets, k, se_te, model_intuition):
+  import math
+
+  row0 = ['k=' + str(k)]
+  row1 = ['1']
+  row2 = ['2']
+  row3 = ['3']
+  row4 = ['4']
+  rows = []
+  rows.append(row0)
+  rows.append(row1)
+  rows.append(row2)
+  rows.append(row3)
+  rows.append(row4)
+
+
+  # Collect Bucket Sizes (by avg KNN distance)
+  dists = sorted([float(row[31:][k-1]) for row in all_data])
+  bucket_size = int(math.ceil(float(len(dists)/num_buckets)))
+  bucket_sizes = [dists[i] for i in xrange(bucket_size, len(dists), bucket_size)]
+
+  trimmer = 6
+
+  while min < max and bucket_sizes:
+    upper = bucket_sizes.pop(0)
+
+    rows[0].append(str(min)[:trimmer] + '-' + str(upper)[:trimmer])
+    total_for_range = countif(all_data, min, upper, k, 'avg', se_te, 'all', model_intuition)
+
+    for outcome in range(1,5):
+      total_for_outcome = countif(all_data, min, upper, k, 'avg', se_te, outcome, model_intuition)
+      if total_for_outcome == 0 or total_for_range == 0:
+        percent_for_outcome = 0
+      else:
+        percent_for_outcome = (float(total_for_outcome) / float(total_for_range)) * 100
+      rows[outcome].append(str(percent_for_outcome))
+
+    min = upper
+
+  for i in range(0,5):
+    print rows[i]
+  print "\n"
+
+  return rows
+
+
+def experiment_sete_fixed(all_data, min, max, num_buckets, k, se_te, model_intuition):
+
+  bucket_size = (max - min) / float(num_buckets)
+
   row0 = ['k=' + str(k)]
   row1 = ['1']
   row2 = ['2']
@@ -105,22 +151,21 @@ def make_3d_plot(matrix_tups):
 
         ax.bar(xs, ys, zs=i, zdir='y', alpha=0.5)
 
-    xlocs = ax.xaxis.get_majorticklocs()
-    plt.xticks(xlocs, groups)
-
+    plt.xticks(np.arange(len(groups)), groups)
     plt.yticks(np.arange(len(matrix)), outcomes)
 
-    ax.set_xlabel('Groups')
-    ax.set_ylabel('Models')
-    ax.set_zlabel('Values')
-
+    ax.set_xlabel('Distances')
+    ax.set_ylabel('Outcome')
+    ax.set_zlabel('% of Total')
 
     plt.show()
 
 
 
 def experiment(all_data, min, max, num_buckets, k):
-  bucket_size = (max - min) / float(num_buckets)
+
+  bucketer = experiment_equal_num_in_buckets
+
   rows = []
 
   for option in ["model", "intuition"]:
@@ -128,8 +173,7 @@ def experiment(all_data, min, max, num_buckets, k):
       key = "{} {}".format(division, option)
 
       print key
-      matrix = experiment_sete_fixed(all_data, min, max,
-                                     bucket_size, k, 'all', 'model')
+      matrix = bucketer(all_data, min, max, num_buckets, k, 'all', 'model')
       rows.append( (matrix, key) )
 
   make_3d_plot(rows)
@@ -152,5 +196,5 @@ for line in f:
 
 f.close()
 
-experiment(all_data, 0, 300, 10, 20)
+experiment(all_data, 0, 300, 5, 20)
 
