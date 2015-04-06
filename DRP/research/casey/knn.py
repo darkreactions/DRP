@@ -86,9 +86,11 @@ def average_knn_distance(point, others, k):
 
 def get_research_points():
 
+  """
   # Used to grab the data .
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/033115_datums.txt")
+  """
 
   """
   # Used to grab the data used in Alex's 03-09-15 spreadsheet.
@@ -132,8 +134,7 @@ def get_research_points():
 
   # Get the spawned reactions from a given seed.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
-  data = get_data_from_ref_file("DRP/research/casey/raw/jho252_spawn.txt")
-
+  data = get_data_from_ref_file("DRP/research/casey/raw/jho148_spawn.txt")
 
 
   return data
@@ -142,18 +143,17 @@ def get_research_points():
 def get_research_others():
   from DRP.retrievalFunctions import get_valid_data
 
-  """
   from DRP.retrievalFunctions import filter_by_date
-
   data = get_valid_data()
   data = filter_by_date(data, "04-02-2014", "before")
   data = [d.get_calculations_list(debug=True) for d in data]
+
   """
-
-
+  # Graph a single reaction with a specific ref.
   data = get_valid_data()
   data = filter(lambda datum: datum.ref.lower() == "jho252.5", data)
   data = [d.get_calculations_list(debug=True) for d in data]
+  """
 
 
   return data
@@ -246,6 +246,10 @@ def knn_research_graphs(low, high):
   k_range = xrange(low, high+1)
   results = get_knn_research_results(k_range, "exact")
 
+
+  avg_knns = [5.194197804006795, 7.851154223519654, 10.677970358510896, 13.098825144713174, 15.099215272149994, 17.076092152819708, 18.83869789239702, 20.667272234897535, 22.337225833299854, 23.890516919818378, 25.298903290533215, 26.658937852608542, 27.933267945624692, 29.222964970803336, 30.4560767090209, 31.707189448822476, 32.961694348397394, 34.17702733060862, 35.35083762301906, 36.57910436293802, 37.80752994184361, 39.00382654917672, 40.16058837999255, 41.2826247179147, 42.3565848495279]
+
+
   # Sort the reactions and their distances into Se/Te buckets.
   buckets = {"Te":{}, "Se":{}, "Both":{}}
 
@@ -270,6 +274,7 @@ def knn_research_graphs(low, high):
 
       # Rename the keys so the lines are identified by the seed "ref".
       bucket = {seed.ref:k_vals for seed, k_vals in bucket.items()}
+      bucket["Average"] = avg_knns[low-1:high+1]
 
       # Graph Options
       padding = 0.01 # percent of graph to use as padding.
@@ -372,7 +377,7 @@ def make_distance_csv(low, high):
   matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
 
 
-  filename = "knn_calculations_seedSpawn_jho252.csv"
+  filename = "knn_calculations_seedSpawn_jho148_toAll.csv"
   filepath = "{}/DRP/research/casey/results/{}".format(django_path, filename)
   matrix_to_csv(matrix, filepath)
 
@@ -386,9 +391,9 @@ def get_research_point_time_range():
 
 
 def main():
-  #knn_research_graphs(1, 30)
+  #knn_research_graphs(1, 25)
   #calculate_avg_distance(1,25)
-  make_distance_csv(1,1)
+  make_distance_csv(1,30)
 
 if __name__=="__main__":
   main()

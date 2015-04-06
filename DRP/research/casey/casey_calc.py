@@ -146,7 +146,7 @@ def make_3d_plot(matrix_tups):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    plt.title(title)
+    plt.title(filename)
 
     groups = matrix.pop(0)[1:]
     outcomes = []
@@ -212,5 +212,5 @@ for line in f:
 
 f.close()
 
-experiment(all_data, 0, 300, 5, 1)
+experiment(all_data, 0, 300, 5, 20)
 

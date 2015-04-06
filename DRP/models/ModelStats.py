@@ -69,6 +69,8 @@ class ModelStats(models.Model):
     from DRP.fileFunctions import file_exists
     import datetime, random
 
+    data = data[:100]
+
     # Use a custom splitter-function if specified.
     if not splitter:
       from DRP.model_building.splitters import default_splitter as splitter
@@ -146,9 +148,6 @@ class ModelStats(models.Model):
     if debug:
       print "Using {} headers...".format(len(headers))
 
-    # Get the temporary value-sets of each field.
-    self._set_val_map(split_data["all"])
-
     # Train/fit the model
     if debug: print "Training model..."
     self._train_model(split_data["train"], debug=debug)
@@ -174,18 +173,11 @@ class ModelStats(models.Model):
     return self.end_time-self.start_time
 
 
-  def get_val_map(self):
+  def get_val_map(self, data):
     fields = self.get_headers()
     val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
     return val_dict
 
-  def _set_val_map(self, all_data):
-    #TODO: Finish me.
-    import json
-    fields = self.get_headers()
-    val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
-    self.val_map = json.dumps
-    return val_dict
 
   def get_path(self):
     from DRP.settings import MODEL_DIR
@@ -356,9 +348,9 @@ class ModelStats(models.Model):
 
     val_dict = {}
 
-    val_map = self._get_weka_value_map(data)
+    val_map = self.get_val_map(data)
 
-    for field, val_set in val_map:
+    for field, val_set in val_map.items():
       if any(map(_is_string, val_set)):
         if field in val_map:
           val_set = val_map[field]
@@ -569,6 +561,7 @@ class ModelStats(models.Model):
 
   def count(self, normalize=False, guesses=None, actuals=None, ranges=True, false_guess=False, table="test"):
     # Variable Setup
+    FAIL_ON_UNKNOWN = False # Set to `True` to allow unknown values to be counted.
     conf_table = self.load_confusion_table(normalize=normalize, table=table)
 
     guess_headers = conf_table.pop(0)[1:] # Remove the empty cell in [0,0].
@@ -581,7 +574,10 @@ class ModelStats(models.Model):
 
     for value in (actuals+guesses):
       if value not in guess_headers or value not in actual_headers:
-        raise Exception("Value '{}' not found in confusion table!".format(value))
+        print value, "(",type(value),")", actuals+guesses
+        if FAIL_ON_UNKNOWN:
+          raise Exception("Value '{}' not found in confusion table!".format(value))
+        return 0 # If we don't "know" a response, then we can't have seen it before.
 
     for i, guess in enumerate(guess_headers):
       for j, actual in enumerate(actual_headers):

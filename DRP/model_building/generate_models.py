@@ -160,7 +160,7 @@ def gen_model(title, description, data=None, test_set=None, force=False,
                   "splitter":splitter,
                   "test_set":test_set,
                   "tool":"svc",
-                  "library":"weka",
+                  "library":"sklearn",
                   "force":force,
                   "debug":debug,
                   }
