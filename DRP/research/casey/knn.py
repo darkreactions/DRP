@@ -96,9 +96,11 @@ def get_research_points():
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_datums.txt")
   """
 
+  """
   # Used for the seed KNN graphs.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_seeds.txt")
+  """
 
   """
   # Used for the average KNN distance calculations.
@@ -127,16 +129,32 @@ def get_research_points():
   print "neither: {}".format(len(neither))
   """
 
+
+  # Get the spawned reactions from a given seed.
+  from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
+  data = get_data_from_ref_file("DRP/research/casey/raw/jho252_spawn.txt")
+
+
+
   return data
 
 
 def get_research_others():
   from DRP.retrievalFunctions import get_valid_data
+
+  """
   from DRP.retrievalFunctions import filter_by_date
 
   data = get_valid_data()
   data = filter_by_date(data, "04-02-2014", "before")
   data = [d.get_calculations_list(debug=True) for d in data]
+  """
+
+
+  data = get_valid_data()
+  data = filter(lambda datum: datum.ref.lower() == "jho252.5", data)
+  data = [d.get_calculations_list(debug=True) for d in data]
+
 
   return data
 
@@ -302,9 +320,21 @@ def make_distance_csv(low, high):
 
   # Load the sets of points so we can check which point belongs in which class.
   with open(django_path+"/DRP/research/casey/raw/030915_intuition.txt") as f:
-    int_set = f.read().lower().split(" ")
+    int_set = f.read().lower().replace("\n","").split(" ")
   with open(django_path+"/DRP/research/casey/raw/033115_model.txt") as f:
-    model_set = f.read().lower().split(" ")
+    model_set = f.read().lower().replace("\n","").split(" ")
+
+
+  # Model seed sets.
+  with open(django_path+"/DRP/research/casey/raw/ms115_spawn.txt") as f:
+    ms115_set = f.read().lower().replace("\n","").split(" ")
+  with open(django_path+"/DRP/research/casey/raw/jho148_spawn.txt") as f:
+    jho148_set = f.read().lower().replace("\n","").split(" ")
+  with open(django_path+"/DRP/research/casey/raw/jho213_spawn.txt") as f:
+    jho213_set = f.read().lower().replace("\n","").split(" ")
+  with open(django_path+"/DRP/research/casey/raw/jho252_spawn.txt") as f:
+    jho252_set = f.read().lower().replace("\n","").split(" ")
+
 
   final = {}
   for k, point_tups in exact_results.items():
@@ -312,13 +342,22 @@ def make_distance_csv(low, high):
     for (point, exact_dist), (point2, avg_dist) in zip(point_tups, avg_tups):
       if point != point2: raise Exception("Order is wrong!")
 
+      # Get the ref of the seed from which this reaction was spawned.
+      ref = point.ref.lower()
+      seed = ""
+      if ref in ms115_set: seed = "ms115.6"
+      if ref in jho148_set: seed = "jho148.2"
+      if ref in jho213_set: seed = "jho213.20"
+      if ref in jho252_set: seed = "jho252.5"
+
       if point not in final: final[point] = {
         "outcome":point.outcome,
         "ref": point.ref,
+        "seed": seed,
         "Te": "Te" in point.atoms,
         "Se": "Se" in point.atoms,
-        "Intuition": point.ref.lower() in int_set,
-        "Model": point.ref.lower() in model_set,
+        "Intuition": ref in int_set,
+        "Model": ref in model_set,
       }
 
       final[point]["Exact Distance K={}".format(k)] = exact_dist
@@ -333,8 +372,9 @@ def make_distance_csv(low, high):
   matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
 
 
-  filename = "{}/DRP/research/casey/results/knn_calculations_allseeds_big.csv".format(django_path)
-  matrix_to_csv(matrix, filename)
+  filename = "knn_calculations_seedSpawn_jho252.csv"
+  filepath = "{}/DRP/research/casey/results/{}".format(django_path, filename)
+  matrix_to_csv(matrix, filepath)
 
 
 
@@ -346,9 +386,9 @@ def get_research_point_time_range():
 
 
 def main():
-  knn_research_graphs(1, 30)
+  #knn_research_graphs(1, 30)
   #calculate_avg_distance(1,25)
-  #make_distance_csv(1,25)
+  make_distance_csv(1,1)
 
 if __name__=="__main__":
   main()

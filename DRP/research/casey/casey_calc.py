@@ -6,12 +6,15 @@ import sys
 def countif(all_data, lower_dist, upper_dist, k, avg_exact, se_te, desired_outcome, model_intuition):
   count = 0
   for data in all_data:
-    outcome = int(data[1])
-    isTe = data[2]
-    isSe = data[3]
-    fromModel = data[4]
-    exactDists = data[6:31]
-    avgDists = data[31:]
+    outcome = int(data[2])
+    isTe = data[3]
+    isSe = data[4]
+    fromModel = data[5]
+    exactDists = data[7:7+exact_K]
+    avgDists = data[7+avg_K:]
+
+    if k>exact_K or k>avg_K:
+      raise Exception("Data for K={} not found in CSV!".format(k))
 
     if model_intuition == 'model' and fromModel != 'True':
       continue
@@ -74,13 +77,17 @@ def experiment_equal_num_in_buckets(all_data, min, max, num_buckets, k, se_te, m
 
 
   # Collect Bucket Sizes (by avg KNN distance)
-  dists = sorted([float(row[31:][k-1]) for row in all_data])
-  bucket_size = int(math.ceil(float(len(dists)/num_buckets)))
-  bucket_sizes = [dists[i] for i in xrange(bucket_size, len(dists), bucket_size)]
+  avg_k_index = 7+exact_K+(k-1)
+  dists = sorted([float(row[avg_k_index]) for row in all_data])
+  bucket_size = int(math.ceil(float(len(dists)/(num_buckets-1))))
+  bucket_sizes = [dists[i] for i in xrange(bucket_size, len(dists), bucket_size)] + [dists[-1]]
+
+  if dists[0]>min: min = dists[0]
 
   trimmer = 6
+  ignore_boundaries = True
 
-  while min < max and bucket_sizes:
+  while (min < max or ignore_boundaries) and bucket_sizes:
     upper = bucket_sizes.pop(0)
 
     rows[0].append(str(min)[:trimmer] + '-' + str(upper)[:trimmer])
@@ -133,6 +140,8 @@ def make_3d_plot(matrix_tups):
   import matplotlib.pyplot as plt
   import numpy as np
 
+  matrix_tups = [matrix_tups[0]]
+
   for matrix, title in matrix_tups:
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -166,7 +175,7 @@ def make_3d_plot(matrix_tups):
 def experiment(all_data, min, max, num_buckets, k):
 
   # supports: experiment_sete_fixed or experiment_equal_num_in_buckets
-  bucketer = experiment_sete_fixed
+  bucketer = experiment_equal_num_in_buckets
 
   rows = []
 
@@ -188,14 +197,20 @@ filename = sys.argv[1]
 f = open(filename, 'r')
 
 all_data = []
+exact_K = 0
+avg_K = 0
 
+#Discard the headers, but count how many K are allowed.
 for line in f:
   data = line.split(",")
-  if data[0] == 'ref':
+  if data[0] == 'ref' or data[0]=="seed":
+    for header in data:
+      if "exact distance k=" in header.lower(): exact_K += 1
+      if "average distance k=" in header.lower(): avg_K += 1
     continue
   all_data.append(data)
 
 f.close()
 
-experiment(all_data, 0, 300, 10, 10)
+experiment(all_data, 0, 300, 5, 1)
 
