@@ -26,11 +26,17 @@ def get_graph(lines, base,
   ax = figure.add_subplot(1,1,1)
 
   for header, y in lines.items():
-    plt.plot(base, y, label=header)
+
+    if header.lower() == "average":
+      plt.plot(base, y, label=header, linestyle="--")
+    else:
+      plt.plot(base, y, label=header)
 
     if show_mean:
       y_mean = [sum(y)/float(len(y))]*len(base)
       offset_index = int(len(base)/10)
+
+      print "{}: {}".format(header, y_mean)
 
       plt.plot(base, y_mean, linestyle='--')
 
