@@ -183,7 +183,7 @@ class ModelStats(models.Model):
     #TODO: Finish me.
     import json
     fields = self.get_headers()
-    val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
+    val_dict = {field:{row[i] for row in all_data} for i, field in enumerate(fields)}
     self.val_map = json.dumps
     return val_dict
 

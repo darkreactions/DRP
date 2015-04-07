@@ -152,7 +152,7 @@ border-radius: 2px;
   background-clip: padding-box;
 
   z-index: 2000;
-  position: fixed;
+  position: relative;  
   margin: auto;
   top: 13%;
   left: 0;
