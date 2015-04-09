@@ -69,7 +69,7 @@ class ModelStats(models.Model):
     from DRP.fileFunctions import file_exists
     import datetime, random
 
-    data = data[:100]
+    data = data
 
     # Use a custom splitter-function if specified.
     if not splitter:

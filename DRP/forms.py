@@ -171,7 +171,7 @@ class DataEntryForm(forms.ModelForm):
   time = forms.CharField(widget=forms.TextInput(
     attrs={'class':'form_text form_text_short', 'placeholder':'Hours',
     "title":"How long the reaction was allowed to occur."}))
-  pH = forms.CharField(label="pH", widget=forms.TextInput(
+  pH = forms.CharField(label="pH", required=False, widget=forms.TextInput(
       attrs={'class':'form_text form_text_short', 'placeholder':'0 - 14',
       "title":"The pH at which the reaction occurred."}))
   slow_cool = forms.ChoiceField(label="Slow Cool", choices = BOOL_CHOICES,
