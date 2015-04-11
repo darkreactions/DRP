@@ -138,11 +138,16 @@ def delete_Data(request):
  return HttpResponse(0);
 
 
+def model_to_dict(datum, fields):
+  return {field: getattr(datum, field) for field in fields}
+
+
 # Used to change fields in Data objects.
 @login_required
 @require_http_methods(["POST"])
 def change_Data(request):
- from DRP.models import get_lab_Data
+ from DRP.models import get_lab_Data, get_model_field_names
+ from DRP.validation import full_validation
 
  #Fields that may be changed via this script.
  whitelist = set(get_model_field_names())
@@ -168,7 +173,7 @@ def change_Data(request):
  try:
   oldValue = getattr(datum, fieldChanged)
   setattr(datum, fieldChanged, newValue)
-  dirty_data = model_to_dict(datum, fields=get_model_field_names())
+  dirty_data = model_to_dict(datum, get_model_field_names())
   if fieldChanged=="ref":
    clean_data, errors = full_validation(dirty_data, lab_group)
   else:

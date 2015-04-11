@@ -85,5 +85,5 @@ def update_compounds():
 
 
 if __name__=="__main__":
-  #update_compounds()
+  update_compounds()
   fix_wrong()

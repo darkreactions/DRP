@@ -269,6 +269,7 @@ def data_form(request): #If no data is entered, stay on the current page.
   #Bind the user's data and verify that it is legit.
   form = DataEntryForm(user=u, data=request.POST)
   if form.is_valid():
+   print "VALID"
    #If all data is valid, save the entry.
    form.save()
    lab_group = u.get_profile().lab_group
@@ -280,6 +281,7 @@ def data_form(request): #If no data is entered, stay on the current page.
    set_cache(lab_group, "TOTALSIZE", old_data_size + 1)
    success = True #Used to display the ribbonMessage.
  else:
+  print "INVALID"
   try:
    lab_group = u.get_profile().lab_group
    model = request.GET["model"]

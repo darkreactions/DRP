@@ -26,11 +26,9 @@ def research_data_filter(data):
   data = data.filter(~Q(outcome=0))
   """
 
-  """
   # Only utilize the data that was available before June 1st.
   from DRP.retrievalFunctions import filter_by_date
-  data = filter_by_date(data, "05-21-2014", "before")
-  """
+  data = filter_by_date(data, "04-02-2014", "before")
 
   """
   # Only retain reactions that contain certain atoms.
@@ -164,7 +162,7 @@ def gen_model(title, description, data=None, test_set=None, force=False,
                   "test_set":test_set,
                   "tool":"svc",
                   "library":"weka",
-                  "clean_tmp_files":False,
+                  "clean_tmp_files":True,
                   "force":force,
                   "debug":debug,
                   }

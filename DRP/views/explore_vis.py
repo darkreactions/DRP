@@ -211,7 +211,6 @@ def get_graph_data(request):
   return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-
 def create_vis_data_file(data_to_file):
   with open(VIS_DATA_PATH, "w") as outfile:
     dump = json.dump(data_to_file, outfile)

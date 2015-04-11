@@ -1,4 +1,5 @@
 
+
 {% for category, stat in model.stats.items %}
   <div>{{category}}:</div>
   <ul>
@@ -9,6 +10,8 @@
   <br/>
 {% endfor %}
 
+<div>Model Title: {{model.title}}</div>
+<div>Model Description: {{model.description}}</div>
 <div>Model ID: {{model.id}}</div>
 <div>Tags: {{model.tags}}</div>
 
@@ -41,7 +44,7 @@ td {
       for (var j=0; j < jsonTable.length; j++) {
         var val = jsonTable[i][j];
 
-        if (val<=1.0 && val>=0.0) {
+        if (i>0 && j>0 && val<=1.0 && val>=0.0) {
           val = toFixed(val*100, 1);
         }
 
