@@ -57,12 +57,15 @@ def gen_model(model_name, description, data=None, clock=True, active=True, debug
 
 
   # Get the valid reactions across all lab groups.
-  print "Loading data entries."
   if data==None:
+    print "Loading data entries."
     data = get_valid_data()
-    if debug:
-      data = data[:100]
-  print "... Loaded {} entries!".format(len(data))
+
+    print "... Loaded {} entries!".format(len(data))
+  else:
+    print "... Using {} entries!".format(len(data))
+
+
 
   # Choose "training" and "test" data and construct a "sample model."
   #   From that sample model, see how well the actual model will perform.

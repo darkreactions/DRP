@@ -69,8 +69,6 @@ class ModelStats(models.Model):
     from DRP.fileFunctions import file_exists
     import datetime, random
 
-    data = data[:100]
-
     # Use a custom splitter-function if specified.
     if not splitter:
       from DRP.model_building.splitters import default_splitter as splitter
@@ -112,7 +110,7 @@ class ModelStats(models.Model):
     data = data[:]
 
     if debug:
-      print "Starting generation of '{}' using '{}' on {} entries".format(self.tool, self.library, len(data))
+      print "Starting generation of '{}' using '{}' on {} entries".format(self.tool, self.library, len(data)-1)
 
     # Pre-process the data if it is not already processed.
     if preprocessor and not test_set:
@@ -150,12 +148,12 @@ class ModelStats(models.Model):
 
     # Train/fit the model
     if debug: print "Training model..."
-    self._train_model(split_data["train"], debug=debug)
+    self._train_model(split_data["train"], split_data["all"], debug=debug)
 
 
     # Set the confusion table for a given data-set.
     if debug: print "Testing model..."
-    self._test_model(split_data["test"], debug=debug, table="test")
+    self._test_model(split_data["test"], split_data["all"], debug=debug, table="test")
 
     self.end_time = datetime.datetime.now()
     self.save()
@@ -232,7 +230,7 @@ class ModelStats(models.Model):
       return predictions
 
 
-  def predict(self, predictors, debug=False, table="test"):
+  def predict(self, predictors, all_data, debug=False, table="test"):
     from DRP.fileFunctions import get_django_path, file_exists
     import subprocess
 
@@ -244,7 +242,7 @@ class ModelStats(models.Model):
 
 
     if self.library == "weka":
-      arff_path = self._make_arff(table, predictors, debug=debug)
+      arff_path = self._make_arff(table, predictors, all_data, debug=debug)
 
       # Results path will be named *.out instead of *.arff.
       results_path = "out".join(arff_path.rsplit("arff", 1))
@@ -280,7 +278,7 @@ class ModelStats(models.Model):
       raise Exception("Illegal model library specified! Aborting file-load!")
 
 
-  def _test_model(self, data, debug=False, table="test"):
+  def _test_model(self, data, all_data, debug=False, table="test"):
     from DRP.model_building.confusion_table import make_confusion_dict
 
     if self.library=="weka":
@@ -291,7 +289,7 @@ class ModelStats(models.Model):
     else:
       predictors, responses = self._strip_response(data)
 
-    guesses = self.predict(predictors, debug=debug, table=table)
+    guesses = self.predict(predictors, all_data, debug=debug, table=table)
 
     if self.library in {"sklearn", "weka"}:
       responses = map(int, map(float, responses))
@@ -301,7 +299,7 @@ class ModelStats(models.Model):
 
 
 
-  def _train_model(self, data, debug=False):
+  def _train_model(self, data, all_data, debug=False):
     from DRP.model_building.sklearn_methods import get_model
     from DRP.fileFunctions import get_django_path
     from sklearn.externals import joblib
@@ -311,7 +309,7 @@ class ModelStats(models.Model):
       if self.tool!="svc":
         raise Exception("Only svc supported in WEKA currently.")
 
-      arff_name = self._make_arff("train", data, debug=debug)
+      arff_name = self._make_arff("train", data, all_data, debug=debug)
 
       move = "cd {}; ".format(get_django_path())
       command = "bash DRP/model_building/make_model.sh "
@@ -329,7 +327,7 @@ class ModelStats(models.Model):
 
       if debug:
         print "Testing against training data..."
-      self._test_model(data, debug=debug, table="train")
+      self._test_model(data, all_data, debug=debug, table="train")
 
     elif self.library=="sklearn":
       model, description = get_model(self.tool)
@@ -390,7 +388,7 @@ class ModelStats(models.Model):
         delete_tmp_file(filepath)
 
 
-  def _make_arff(self, key, data, debug=False):
+  def _make_arff(self, key, data, all_data, debug=False):
     """
     Saves the data to an ARFF file.
 
@@ -406,7 +404,7 @@ class ModelStats(models.Model):
     full_name = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
 
     with open(full_name, "w") as f:
-      header_content = self._weka_header(data)
+      header_content = self._weka_header(all_data)
       f.write(header_content + "\n")
       for row in data:
         f.write(",".join([str(entry) for entry in row]) + "\n")

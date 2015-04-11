@@ -24,6 +24,27 @@ def default_splitter(data, headers=None):
   return {"test":test, "train":train, "all":data}
 
 
+def add_nonsense_to_test(data, headers=None):
+  from DRP.models import Recommendation
+  from DRP.preprocessors import default_preprocessor
+
+  splits = default_splitter(data, headers=headers)
+
+  print "Calculating test supplement..."
+  nonsense_recs = Recommendation.objects.filter(nonsense=True)
+  nonsense = default_preprocessor([headers]+list(nonsense_recs))
+  nonsense = [row[:-1] + [0] for row in nonsense]
+  print "Supplement size: {}".format(len(nonsense))
+
+
+  splits["test"].extend(nonsense[1:])
+  splits["all"].extend(nonsense[1:])
+
+  return splits
+
+
+
+
 def naive_splitter(data, headers=None):
   import random
 
