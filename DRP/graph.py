@@ -25,18 +25,45 @@ def get_graph(lines, base,
 
   ax = figure.add_subplot(1,1,1)
 
+  colors = {
+            "ms115.6":"r",
+            "Average ms115.6 Spawn":"r",
+
+            "jho213.20":"b",
+            "Average jho213.20 Spawn":"b",
+
+            "jho252.5":"c",
+            "Average jho252.5 Spawn":"c",
+
+            "jho148.2":"g",
+            "Average jho148.2 Spawn":"g",
+
+            "jho148.2":"g",
+            "Average jho148.2 Spawn":"g",
+
+            "Average Overall":"k",
+           }
+
+
   for header, y in lines.items():
 
-    if header.lower() == "average":
-      plt.plot(base, y, label=header, linestyle="--")
+    color = colors[header] if header in colors else None
+
+    if "overall" in header.lower():
+      linestyle = "-."
+      weight = 2.0
+    elif "average" in header.lower():
+      linestyle = "--"
+      weight = 1.0
     else:
-      plt.plot(base, y, label=header)
+      linestyle = "-"
+      weight = 1.0
+
+    plt.plot(base, y, label=header, linestyle=linestyle, linewidth=weight, c=color)
 
     if show_mean:
       y_mean = [sum(y)/float(len(y))]*len(base)
       offset_index = int(len(base)/10)
-
-      print "{}: {}".format(header, y_mean)
 
       plt.plot(base, y_mean, linestyle='--')
 
@@ -45,8 +72,17 @@ def get_graph(lines, base,
                    textcoords='offset points')
 
     if show_legend:
-      plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
-                 fancybox=True, shadow=True, ncol=10)
+      plt.legend(ncol=1, bbox_to_anchor=(1,1),
+                 loc="upper right", borderaxespad=0.0,
+                 )
+
+
+  # Taken mostly from: http://stackoverflow.com/questions/22263807/how-is-order-of-items-in-matplotlib-legend-determined
+  handles, labels = ax.get_legend_handles_labels()
+  labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0], reverse=True))
+  ax.legend(handles, labels)
+
+
 
   if xLabel: plt.xlabel(xLabel)
 
@@ -60,6 +96,8 @@ def get_graph(lines, base,
   if show_minor:
     ax.set_yticks(list(frange(minor_tick)), minor=True)
     ax.grid(which='minor', alpha=0.3)
+
+  plt.tight_layout()
 
   return figure
 
