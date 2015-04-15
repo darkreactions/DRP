@@ -12,7 +12,7 @@ PRINT_DETAILS = False
 #Seeds: ms115.6 jho213.20 jho148.2 jho252.5 (NOTE)
 #SPECIFIC_SEED = "ms115.6"
 #SEED = SPECIFIC_SEED.split(".")[0]
-SEED = "all"
+SEED = "VSeOx_model"
 
 #If `universe is 'None', then the default universe is specified in the metric.
 universe = None
@@ -113,11 +113,19 @@ def get_research_points():
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_seeds.txt")
 
   """
+  # Used for the seed intuition.
+  from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
+  data = get_data_from_ref_file("DRP/research/casey/raw/033115_model.txt")
+  data = filter(lambda d: "Se" in d.atoms and "V" in d.atoms, data)
+  """
+
+  """
   # Used for the average KNN distance calculations.
   from DRP.retrievalFunctions import get_valid_data
   from DRP.retrievalFunctions import filter_by_date
   data = get_valid_data()
   data = filter_by_date(data, "04-02-2014", "before")
+  data = filter(lambda d: "Te" in d.atoms and "V" in d.atoms, data)
   """
 
   """
@@ -302,6 +310,13 @@ def knn_research_graphs(low, high):
   prefix = "results/knn_calculations_averages_"
   extras = {
     "Average Overall": get_k_avgs(prefix + "all_1To30.csv", mode),
+
+    "Average VSeOx (Model)": get_k_avgs(prefix + "VSeOx_model_1To30.csv", mode),
+    "Average VSeOx (Intuition)": get_k_avgs(prefix + "VSeOx_intuition_1To30.csv", mode),
+
+    "Average VTeOx (Model)": get_k_avgs(prefix + "VTeOx_model_1To30.csv", mode),
+    "Average VTeOx (Intuition)": get_k_avgs(prefix + "VTeOx_intuition_1To30.csv", mode),
+
     "Average ms115.6 Spawn": get_k_avgs(prefix + "ms115_1To30.csv", mode),
     "Average jho213.20 Spawn": get_k_avgs(prefix + "jho213_1To30.csv", mode),
     "Average jho148.2 Spawn": get_k_avgs(prefix + "jho148_1To30.csv", mode),
