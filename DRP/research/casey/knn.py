@@ -284,7 +284,7 @@ def get_k_avgs(filename, mode):
 def knn_research_graphs(low, high):
   from DRP.graph import get_graph
 
-  mode = "average"
+  mode = "exact"
 
   k_range = xrange(low, high+1)
   results = get_knn_research_results(k_range, mode)
@@ -310,6 +310,9 @@ def knn_research_graphs(low, high):
   prefix = "results/knn_calculations_averages_"
   extras = {
     "Average Overall": get_k_avgs(prefix + "all_1To30.csv", mode),
+
+    "Average VTeOx Overall": get_k_avgs(prefix + "VSeOx_1To30.csv", mode),
+    "Average VSeOx Overall": get_k_avgs(prefix + "VTeOx_1To30.csv", mode),
 
     "Average VSeOx (Model)": get_k_avgs(prefix + "VSeOx_model_1To30.csv", mode),
     "Average VSeOx (Intuition)": get_k_avgs(prefix + "VSeOx_intuition_1To30.csv", mode),
