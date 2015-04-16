@@ -278,13 +278,28 @@ def get_k_avgs(filename, mode):
   return avgs
 
 
+def write_bucket_to_CSV(filename, bucket, x_axis, mode):
+  import csv
+
+  with open(filename, "w") as f:
+    writer = csv.writer(f)
+
+    headers = ["Series"] + map(lambda k: "k={} {}".format(k, mode), x_axis)
+    writer.writerow(headers)
+
+    for label, values in bucket.items():
+      row = [label] + values
+      writer.writerow(row)
+
+  print "KNN chart CSV written: {}".format(filename)
+
 
 
 
 def knn_research_graphs(low, high):
   from DRP.graph import get_graph
 
-  mode = "exact"
+  mode = "average"
 
   k_range = xrange(low, high+1)
   results = get_knn_research_results(k_range, mode)
@@ -356,7 +371,11 @@ def knn_research_graphs(low, high):
       bottom = min_dist * (1 - pre_tick_dist*padding)
       if bottom<0: bottom = 0
 
-      graph = get_graph(bucket, list(k_range),
+      x_range = list(k_range)
+      write_bucket_to_CSV("results/KNN_distance_chart_average.csv", bucket, x_range, mode)
+
+
+      graph = get_graph(bucket, x_range,
                         xLabel="# Nearest Neighbors (K)",
                         yLabel="{} Distance of K Nearest Neighbors".format(mode.capitalize()),
                         tick_range=(bottom, top),
