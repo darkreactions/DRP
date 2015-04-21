@@ -26,22 +26,30 @@ def get_graph(lines, base,
   ax = figure.add_subplot(1,1,1)
 
   colors = {
-            "ms115.6":"r",
-            "Average ms115.6 Spawn":"r",
+            "ms115.6":"#1f78b4",
+            "Average ms115.6 Spawn":"#1f78b4",
 
-            "jho213.20":"b",
-            "Average jho213.20 Spawn":"b",
+            "jho213.20":"#33a02c",
+            "Average jho213.20 Spawn":"#33a02c",
 
-            "jho252.5":"c",
-            "Average jho252.5 Spawn":"c",
+            "jho252.5":"#e31a1c",
+            "Average jho252.5 Spawn":"#e31a1c",
 
-            "jho148.2":"g",
-            "Average jho148.2 Spawn":"g",
+            "jho148.2":"#ff7f00",
+            "Average jho148.2 Spawn":"#ff7f00",
 
-            "jho148.2":"g",
-            "Average jho148.2 Spawn":"g",
+            "jho148.2":"#6a3d9a",
+            "Average jho148.2 Spawn":"#6a3d9a",
 
-            "Average Overall":"k",
+            "Average VSeOx (Intuition)":"#b15928",
+            "Average VSeOx (Model)":"#b15928",
+            "Average VSeOx Overall":"#b15928",
+
+            "Average VTeOx (Intuition)":"#a6cee3",
+            "Average VTeOx (Model)":"#a6cee3",
+            "Average VTeOx Overall":"#a6cee3",
+
+            "Average Overall":"#000000",
            }
 
 
@@ -49,17 +57,24 @@ def get_graph(lines, base,
 
     color = colors[header] if header in colors else None
 
+
     if "overall" in header.lower():
       linestyle = "-."
       weight = 2.0
-    elif "average" in header.lower():
+    elif "intuition" in header.lower():
+      linestyle = ":"
+      weight = 2.0
+    elif "average" in header.lower() or "model" in header.lower():
       linestyle = "--"
       weight = 1.0
     else:
       linestyle = "-"
       weight = 1.0
 
-    plt.plot(base, y, label=header, linestyle=linestyle, linewidth=weight, c=color)
+    if color:
+      plt.plot(base, y, label=header, linestyle=linestyle, linewidth=weight, c=color)
+    else:
+      plt.plot(base, y, label=header, linestyle=linestyle, linewidth=weight)
 
     if show_mean:
       y_mean = [sum(y)/float(len(y))]*len(base)

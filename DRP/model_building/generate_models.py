@@ -162,7 +162,7 @@ def gen_model(title, description, data=None, test_set=None, force=False,
                   "test_set":test_set,
                   "tool":"svc",
                   "library":"weka",
-                  "clean_tmp_files":True,
+                  "clean_tmp_files":False,
                   "force":force,
                   "debug":debug,
                   }
