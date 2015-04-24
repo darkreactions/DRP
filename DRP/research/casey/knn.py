@@ -10,9 +10,9 @@ DEBUG = True
 PRINT_DETAILS = False
 
 #Seeds: ms115.6 jho213.20 jho148.2 jho252.5 (NOTE)
-#SPECIFIC_SEED = "ms115.6"
+#SPECIFIC_SEED = "jho252.5"
 #SEED = SPECIFIC_SEED.split(".")[0]
-SEED = "VSeOx_model"
+SEED = "VTeOx_intuition"
 
 #If `universe is 'None', then the default universe is specified in the metric.
 universe = None
@@ -113,10 +113,17 @@ def get_research_points():
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_seeds.txt")
 
   """
-  # Used for the seed intuition.
+  # Used for the seed model.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/033115_model.txt")
   data = filter(lambda d: "Se" in d.atoms and "V" in d.atoms, data)
+  """
+
+  """
+  # Used for the seed model.
+  from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
+  data = get_data_from_ref_file("DRP/research/casey/raw/030915_intuition.txt")
+  data = filter(lambda d: "Te" in d.atoms and "V" in d.atoms, data)
   """
 
   """
@@ -250,8 +257,8 @@ def calculate_avg_distance(low, high):
 def get_k_avgs(filename, mode):
   import csv
 
-  exact_K = 30
-  avg_K = 30
+  exact_K = 50
+  avg_K = 50
 
   with open(filename, "r") as f:
     reader = csv.reader(f)
@@ -322,23 +329,23 @@ def knn_research_graphs(low, high):
       buckets[key][point][k-1] = dist
       buckets["Both"][point][k-1] = dist
 
-  prefix = "results/knn_calculations_averages_"
+  prefix = "results/knn_calculations_"
   extras = {
-    "Average Overall": get_k_avgs(prefix + "all_1To30.csv", mode),
+    "Average Overall": get_k_avgs(prefix + "all_1To50.csv", mode),
 
-    "Average VTeOx Overall": get_k_avgs(prefix + "VSeOx_1To30.csv", mode),
-    "Average VSeOx Overall": get_k_avgs(prefix + "VTeOx_1To30.csv", mode),
+    "Average VTeOx Overall": get_k_avgs(prefix + "VSeOx_1To50.csv", mode),
+    "Average VSeOx Overall": get_k_avgs(prefix + "VTeOx_1To50.csv", mode),
 
-    "Average VSeOx (Model)": get_k_avgs(prefix + "VSeOx_model_1To30.csv", mode),
-    "Average VSeOx (Intuition)": get_k_avgs(prefix + "VSeOx_intuition_1To30.csv", mode),
+    "Average VSeOx (Model)": get_k_avgs(prefix + "VSeOx_model_1To50.csv", mode),
+    "Average VSeOx (Intuition)": get_k_avgs(prefix + "VSeOx_intuition_1To50.csv", mode),
 
-    "Average VTeOx (Model)": get_k_avgs(prefix + "VTeOx_model_1To30.csv", mode),
-    "Average VTeOx (Intuition)": get_k_avgs(prefix + "VTeOx_intuition_1To30.csv", mode),
+    "Average VTeOx (Model)": get_k_avgs(prefix + "VTeOx_model_1To50.csv", mode),
+    "Average VTeOx (Intuition)": get_k_avgs(prefix + "VTeOx_intuition_1To50.csv", mode),
 
-    "Average ms115.6 Spawn": get_k_avgs(prefix + "ms115_1To30.csv", mode),
-    "Average jho213.20 Spawn": get_k_avgs(prefix + "jho213_1To30.csv", mode),
-    "Average jho148.2 Spawn": get_k_avgs(prefix + "jho148_1To30.csv", mode),
-    "Average jho252.5 Spawn": get_k_avgs(prefix + "jho252_1To30.csv", mode),
+    "Average ms115.6 Spawn": get_k_avgs(prefix + "ms115_1To50.csv", mode),
+    "Average jho213.20 Spawn": get_k_avgs(prefix + "jho213_1To50.csv", mode),
+    "Average jho148.2 Spawn": get_k_avgs(prefix + "jho148_1To50.csv", mode),
+    "Average jho252.5 Spawn": get_k_avgs(prefix + "jho252_1To50.csv", mode),
   }
 
 
@@ -459,7 +466,7 @@ def make_distance_csv(low, high):
   matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
 
 
-  filename = "knn_calculations_averages_{}_{}To{}.csv".format(SEED, low, high)
+  filename = "knn_calculations_{}_{}To{}.csv".format(SEED, low, high)
   filepath = "{}/DRP/research/casey/results/{}".format(django_path, filename)
   matrix_to_csv(matrix, filepath)
 
@@ -473,9 +480,9 @@ def get_research_point_time_range():
 
 
 def main():
-  knn_research_graphs(1, 30)
+  knn_research_graphs(1, 50)
   #calculate_avg_distance(1,25)
-  #make_distance_csv(1,30)
+  #make_distance_csv(1,50)
 
 if __name__=="__main__":
   main()

@@ -153,7 +153,11 @@ class ModelStats(models.Model):
 
     # Set the confusion table for a given data-set.
     if debug: print "Testing model..."
-    self._test_model(split_data["test"], split_data["all"], debug=debug, table="test")
+    if "test" in split_data:
+      self._test_model(split_data["test"],
+                       split_data["all"],
+                       debug=debug,
+                       table="test")
 
     self.end_time = datetime.datetime.now()
     self.save()
@@ -544,6 +548,10 @@ class ModelStats(models.Model):
 
     values = sorted(confusion_dict.keys())
 
+    # If no `test` is saved, return an empty matrix.
+    if not values:
+      return []
+
     matrix = [[""]+values] if headers else []
 
     denom = self.total() if normalize else 1
@@ -627,6 +635,9 @@ class ModelStats(models.Model):
     return self.count(guesses=incorrects, false_guess=True,
                       normalize=normalize, ranges=ranges, table=table)
 
+  def BCR(self, ranges=True, normalize=False, table="test"):
+    return 0
+
 
   def accuracy(self, ranges=True, table="test"):
     denom = float(self.total(table=table))
@@ -688,6 +699,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=True),
+        "BCR":self.BCR(ranges=True),
         "Precision":self.precision(ranges=True),
         "Recall":self.recall(ranges=True),
         "% TP":self.true_positives(normalize=True, ranges=True),
@@ -699,6 +711,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=False),
+        "BCR":self.BCR(ranges=False),
         "Precision":self.precision(ranges=False),
         "Recall":self.recall(ranges=False),
         "% TP":self.true_positives(normalize=True, ranges=False),
@@ -710,6 +723,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=True, table="train"),
+        "BCR":self.BCR(ranges=True, table="train"),
         "Precision":self.precision(ranges =True, table="train"),
         "Recall":self.recall(ranges=True, table="train"),
         "% TP":self.true_positives(normalize=True, ranges=True, table="train"),
@@ -721,6 +735,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=False, table="train"),
+        "BCR":self.BCR(ranges=False, table="train"),
         "Precision":self.precision(ranges=False, table="train"),
         "Recall":self.recall(ranges=False, table="train"),
         "% TP":self.true_positives(normalize=True, ranges=False, table="train"),

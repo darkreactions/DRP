@@ -96,3 +96,12 @@ def category_splitter(data, headers=None):
 
   return splits
 
+
+def no_test_splitter(data, headers=None):
+
+  splits = {
+    "all": data,
+    "train": data,
+  }
+
+  return splits
