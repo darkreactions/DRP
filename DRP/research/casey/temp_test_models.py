@@ -12,14 +12,15 @@ from DRP.retrievalFunctions import filter_by_date
 data = get_valid_data()
 date_data = filter_by_date(data, "04-02-2014", "before")
 
-filename = "DRP/research/casey/raw/033115_model.txt"
+filename = "DRP/research/casey/raw/033115_datums.txt"
 atoms = ["V", "Te"]
 
 
 # Used to grab the data .
-filtered = get_data_from_ref_file(filename)
+pre_filtered = get_data_from_ref_file(filename)
 #filtered = [entry for entry in pre_filtered
 #              if all(atom in entry.atoms for atom in atoms)]
+filtered = pre_filtered
 
 
 all_data = list(filtered) + list(date_data)

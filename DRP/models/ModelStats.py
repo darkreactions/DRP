@@ -554,7 +554,7 @@ class ModelStats(models.Model):
 
     matrix = [[""]+values] if headers else []
 
-    denom = self.total() if normalize else 1
+    denom = self.total(table=table) if normalize else 1
 
     for value in values:
       guess_dict = confusion_dict[value]
@@ -755,7 +755,7 @@ class ModelStats(models.Model):
     return tests
 
 
-  def print_confusion_table(self, normalize=True, table="test"):
+  def print_confusion_table(self, normalize=False, table="test"):
     def truncate_floats(row):
       cleaned = []
       for elem in row:
