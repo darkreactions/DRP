@@ -10,9 +10,10 @@ DEBUG = True
 PRINT_DETAILS = False
 
 #Seeds: ms115.6 jho213.20 jho148.2 jho252.5 (NOTE)
-#SPECIFIC_SEED = "jho252.5"
+#SPECIFIC_SEED = "ms115.6"
 #SEED = SPECIFIC_SEED.split(".")[0]
-SEED = "VTeOx_intuition"
+SEED = "SeFailuresToSeFailures"
+SUFFIX = ""
 
 #If `universe is 'None', then the default universe is specified in the metric.
 universe = None
@@ -91,9 +92,10 @@ def average_knn_distance(point, others, k):
 def get_research_points():
 
   """
-  # Used to grab the data .
+  # Used to grab the seed spawn.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
-  data = get_data_from_ref_file("DRP/research/casey/raw/033115_datums.txt")
+  data = get_data_from_ref_file("DRP/research/casey/raw/033115_model.txt")
+  data = filter(lambda d: "Te" in d.atoms and "V" in d.atoms, data)
   """
 
   """
@@ -108,9 +110,12 @@ def get_research_points():
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_datums.txt")
   """
 
+  """
   # Used for the seed KNN graphs.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_seeds.txt")
+  data = filter(lambda d: "Se" in d.atoms and "V" in d.atoms, data)
+  """
 
   """
   # Used for the seed model.
@@ -123,17 +128,16 @@ def get_research_points():
   # Used for the seed model.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
   data = get_data_from_ref_file("DRP/research/casey/raw/030915_intuition.txt")
-  data = filter(lambda d: "Te" in d.atoms and "V" in d.atoms, data)
   """
 
-  """
   # Used for the average KNN distance calculations.
   from DRP.retrievalFunctions import get_valid_data
   from DRP.retrievalFunctions import filter_by_date
   data = get_valid_data()
   data = filter_by_date(data, "04-02-2014", "before")
-  data = filter(lambda d: "Te" in d.atoms and "V" in d.atoms, data)
-  """
+  outcomes = {"1","2"}
+  data = filter(lambda entry: entry.outcome in outcomes, data)
+  data = filter(lambda d: "Se" in d.atoms and "V" in d.atoms, data)
 
   """
   #TODO: quickie-info
@@ -156,10 +160,13 @@ def get_research_points():
 
 def get_research_others():
   from DRP.retrievalFunctions import get_valid_data
-
   from DRP.retrievalFunctions import filter_by_date
+
   data = get_valid_data()
   data = filter_by_date(data, "04-02-2014", "before")
+  outcomes = {"1","2"}
+  data = filter(lambda entry: entry.outcome in outcomes, data)
+  data = filter(lambda d: "Se" in d.atoms and "V" in d.atoms, data)
   data = [d.get_calculations_list(debug=True) for d in data]
 
   """
@@ -254,33 +261,38 @@ def calculate_avg_distance(low, high):
     raw_input("Press Enter to continue.")
 
 
-def get_k_avgs(filename, mode):
+def get_k_avgs(csv_filename_or_content, mode):
   import csv
 
   exact_K = 50
   avg_K = 50
 
-  with open(filename, "r") as f:
-    reader = csv.reader(f)
-    matrix = [row for row in reader]
-    data = matrix[1:]
+  if type(csv_filename_or_content) == str:
+    with open(csv_filename_or_content, "r") as f:
+      reader = csv.reader(f)
+      matrix = [row for row in reader]
+      data = matrix[1:]
 
-    if mode == "exact":
-      data = [row[7:7+exact_K] for row in data]
+  else:
+    data = csv_filename_or_content[1:]
 
-    elif mode == "average":
-      data = [row[7+avg_K:] for row in data]
 
-    else:
-      raise Exception("Invalid mode specified!")
+  if mode == "exact":
+    data = [row[7:7+exact_K] for row in data]
 
-    totals = [0.0 for elem in data[0]]
-    for row in data:
-      for i, elem in enumerate(row):
-        totals[i] += float(elem)
+  elif mode == "average":
+    data = [row[7+avg_K:] for row in data]
 
-    num_entries = len(data)
-    avgs = [total/num_entries for total in totals]
+  else:
+    raise Exception("Invalid mode specified!")
+
+  totals = [0.0 for elem in data[0]]
+  for row in data:
+    for i, elem in enumerate(row):
+      totals[i] += float(elem)
+
+  num_entries = len(data)
+  avgs = [total/num_entries for total in totals]
 
   return avgs
 
@@ -306,96 +318,99 @@ def write_bucket_to_CSV(filename, bucket, x_axis, mode):
 def knn_research_graphs(low, high):
   from DRP.graph import get_graph
 
-  mode = "average"
+  mode = "exact"
 
   k_range = xrange(low, high+1)
-  results = get_knn_research_results(k_range, mode)
-
-
-  # Sort the reactions and their distances into Se/Te buckets.
-  buckets = {"Te":{}, "Se":{}, "Both":{}}
-
-  for k, reactions in results.items():
-    for point, dist in reactions:
-      if "Te" in point.atoms:
-        key = "Te"
-      elif "Se" in point.atoms:
-        key = "Se"
-
-      if point not in buckets[key]:
-        buckets[key][point] = [None for i in k_range]
-        buckets["Both"][point] = [None for i in k_range]
-
-      buckets[key][point][k-1] = dist
-      buckets["Both"][point][k-1] = dist
 
   prefix = "results/knn_calculations_"
-  extras = {
-    "Average Overall": get_k_avgs(prefix + "all_1To50.csv", mode),
 
-    "Average VTeOx Overall": get_k_avgs(prefix + "VSeOx_1To50.csv", mode),
-    "Average VSeOx Overall": get_k_avgs(prefix + "VTeOx_1To50.csv", mode),
+  # Gather the Se and Te reactions.
+  import csv
 
-    "Average VSeOx (Model)": get_k_avgs(prefix + "VSeOx_model_1To50.csv", mode),
-    "Average VSeOx (Intuition)": get_k_avgs(prefix + "VSeOx_intuition_1To50.csv", mode),
+  outcome = 2
+  is_te = 3
+  is_se = 4
 
-    "Average VTeOx (Model)": get_k_avgs(prefix + "VTeOx_model_1To50.csv", mode),
-    "Average VTeOx (Intuition)": get_k_avgs(prefix + "VTeOx_intuition_1To50.csv", mode),
+  with open(prefix + "all_1To50.csv") as f:
+    reader = csv.reader(f)
+    data = [row for row in reader]
+    headers = data.pop(0)
 
-    "Average ms115.6 Spawn": get_k_avgs(prefix + "ms115_1To50.csv", mode),
-    "Average jho213.20 Spawn": get_k_avgs(prefix + "jho213_1To50.csv", mode),
-    "Average jho148.2 Spawn": get_k_avgs(prefix + "jho148_1To50.csv", mode),
-    "Average jho252.5 Spawn": get_k_avgs(prefix + "jho252_1To50.csv", mode),
+    bad_outcomes = {"1", "2"}
+    good_outcomes = {"3", "4"}
+
+    te = filter(lambda row: row[is_te]=="True", data)
+    se = filter(lambda row: row[is_se]=="True", data)
+
+    te_bad = filter(lambda row: row[outcome] in bad_outcomes, te)
+    te_good = filter(lambda row: row[outcome] in good_outcomes, te)
+
+    se_bad = filter(lambda row: row[outcome] in bad_outcomes, se)
+    se_good = filter(lambda row: row[outcome] in good_outcomes, se)
+
+
+  buckets = {
+    #"Average": get_k_avgs(prefix + "AllSuccess_1To50.csv", mode),
+    "Se Fail to Se Failures": get_k_avgs(prefix + "SeFailuresToSeFailures_1To50.csv", mode),
+    "Se Fail to Te Success": get_k_avgs(prefix + "SeFailuresToTeSuccesses_1To50.csv", mode),
+    #"Te Fail": get_k_avgs([headers]+te_bad, mode),
+    #"Te Success": get_k_avgs([headers]+te_good, mode),
+    #"Se Fail": get_k_avgs([headers]+se_bad, mode),
+    #"Se Success": get_k_avgs([headers]+se_good, mode),
   }
 
 
+  """
+  with open(prefix + "SeSuccess_1To50.csv") as f:
+    reader = csv.reader(f)
+    data = [row for row in reader]
+    headers = data.pop(0)
+    ref = 1
+    for row in data:
+      buckets[row[ref]] = get_k_avgs([headers]+[row], mode)
 
-  for key, bucket in buckets.items():
-    if bucket:
-      print "Graphing {}... ({})".format(key, len(bucket))
+  with open(prefix + "TeSuccess_1To50.csv") as f:
+    reader = csv.reader(f)
+    data = [row for row in reader]
+    headers = data.pop(0)
+    ref = 1
+    for row in data:
+      buckets[row[ref]] = get_k_avgs([headers]+[row], mode)
+  """
 
-      # Rename the keys so the lines are identified by the seed "ref".
-      bucket = {seed.ref:k_vals for seed, k_vals in bucket.items()}
+  # Graph Options
+  padding = 0.01 # percent of graph to use as padding.
+  num_major_ticks = 10.0
+  num_minor_ticks = 50.0
 
-      for extra, Ks in extras.items():
-        bucket[extra] = Ks[low-1:high+1]
+  max_dist = 0.0
+  min_dist = float("inf")
+  for point, dists in buckets.items():
+    for dist in dists:
+      if dist>max_dist: max_dist = dist
+      if dist<min_dist: min_dist = dist
 
-      # Graph Options
-      padding = 0.01 # percent of graph to use as padding.
-      num_major_ticks = 10.0
-      num_minor_ticks = 50.0
+  # Calculate padding for the graph.
+  pre_tick_dist = (max_dist-min_dist)/num_major_ticks
+  top = max_dist * (1 + pre_tick_dist*padding)
+  bottom = min_dist * (1 - pre_tick_dist*padding)
+  if bottom<0: bottom = 0
 
-      max_dist = 0.0
-      min_dist = float("inf")
-      for point, dists in bucket.items():
-        for dist in dists:
-          if dist>max_dist: max_dist = dist
-          if dist<min_dist: min_dist = dist
-
-      # Calculate padding for the graph.
-      pre_tick_dist = (max_dist-min_dist)/num_major_ticks
-      top = max_dist * (1 + pre_tick_dist*padding)
-      bottom = min_dist * (1 - pre_tick_dist*padding)
-      if bottom<0: bottom = 0
-
-      x_range = list(k_range)
-      write_bucket_to_CSV("results/KNN_distance_chart_average.csv", bucket, x_range, mode)
+  x_range = list(k_range)
+  write_bucket_to_CSV("results/KNN_distance_chart_{}.csv".format(mode), buckets, x_range, mode)
 
 
-      graph = get_graph(bucket, x_range,
-                        xLabel="# Nearest Neighbors (K)",
-                        yLabel="{} Distance of K Nearest Neighbors".format(mode.capitalize()),
-                        tick_range=(bottom, top),
-                        major_tick=(top-bottom)/num_major_ticks,
-                        minor_tick=(top-bottom)/num_minor_ticks,
-                        show_legend=True,
-                        show_minor=True
-                        )
-      graph.show()
-      raw_input("Press Enter to continue...")
-      break
-    else:
-      print "Skipping empty bucket `{}`...".format(key)
+  graph = get_graph(buckets, x_range,
+                    xLabel="# Nearest Neighbors (K)",
+                    yLabel="{} Distance of K Nearest Neighbors".format(mode.capitalize()),
+                    tick_range=(bottom, top),
+                    major_tick=(top-bottom)/num_major_ticks,
+                    minor_tick=(top-bottom)/num_minor_ticks,
+                    show_legend=True,
+                    show_minor=True
+                    )
+  graph.show()
+  raw_input("Press Enter to continue...")
 
 def matrix_to_csv(matrix, filename):
   import csv
@@ -466,7 +481,7 @@ def make_distance_csv(low, high):
   matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
 
 
-  filename = "knn_calculations_{}_{}To{}.csv".format(SEED, low, high)
+  filename = "knn_calculations_{}_{}To{}{}.csv".format(SEED, low, high, SUFFIX)
   filepath = "{}/DRP/research/casey/results/{}".format(django_path, filename)
   matrix_to_csv(matrix, filepath)
 

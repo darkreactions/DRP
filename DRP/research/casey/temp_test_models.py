@@ -18,10 +18,8 @@ atoms = ["V", "Te"]
 
 # Used to grab the data .
 pre_filtered = get_data_from_ref_file(filename)
-#filtered = [entry for entry in pre_filtered
-#              if all(atom in entry.atoms for atom in atoms)]
-filtered = pre_filtered
-
+filtered = [entry for entry in pre_filtered
+              if all(atom in entry.atoms for atom in atoms)]
 
 all_data = list(filtered) + list(date_data)
 
@@ -35,7 +33,7 @@ all_set, _ = postprocessor({"all":preprocessor([headers]+all_data)[1:]}, headers
 
 
 from DRP.models import ModelStats
-model = ModelStats.objects.get(id=2646)
+model = ModelStats.objects.get(id=2654)
 model._test_model(filtered_set["test"],
                   all_set["all"],
                   debug=True)
