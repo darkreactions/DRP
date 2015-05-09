@@ -57,17 +57,13 @@ def naive_splitter(data, headers=None):
 
 def strict_category_splitter(data, headers=None):
 
-  # If the last field in a datum is `True` let it be in the `test` set.
+  # If the last field in a datum is `True` let it remain in the test set.
 
-  test, train = [], []
-  for datum in data:
-    if datum.pop(-1)==True:
-      test.append(datum)
+  splits = default_splitter(data, headers=headers)
 
-    else:
-      train.append(datum)
+  test = [datum for datum in splits["test"] if datum.pop()==True]
 
-  return {"test":test, "train":train, "all":data}
+  return {"test":test, "train":splits["train"], "all":splits["all"]}
 
 
 def category_splitter(data, headers=None):

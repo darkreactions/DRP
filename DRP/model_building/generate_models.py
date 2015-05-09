@@ -57,7 +57,7 @@ def research_data_filter(data):
 
   return data
 
-def generate_avg(title, data, iterations=1, only_keep_avg=True, construct_kwargs={}):
+def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
 
   from DRP.model_building.confusion_table import get_avg_confusion_dict
   from DRP.models import ModelStats
@@ -148,9 +148,12 @@ def gen_model(title, description, data=None, test_set=None, force=False,
 
   # If `splitter` is set to `None`, the default splitter will be used.
   from DRP.preprocessors import default_preprocessor as preprocessor
-  from DRP.postprocessors import default_postprocessor as postprocessor
-  from DRP.model_building.splitters import no_test_splitter as splitter
   #from DRP.model_building.splitters import default_splitter as splitter
+  from DRP.postprocessors import default_postprocessor as postprocessor
+
+  #from DRP.preprocessors import category_preprocessor as preprocessor
+  from DRP.model_building.splitters import no_test_splitter as splitter
+  #from DRP.model_building.splitters import strict_category_splitter as splitter
 
   construct_kwargs = {
                   "description":description,

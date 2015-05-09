@@ -13,7 +13,7 @@ data = get_valid_data()
 date_data = filter_by_date(data, "04-02-2014", "before")
 
 filename = "DRP/research/casey/raw/033115_datums.txt"
-atoms = ["V", "Te"]
+atoms = ["V", "Se"]
 
 
 # Used to grab the data .
@@ -23,6 +23,7 @@ filtered = [entry for entry in pre_filtered
 
 all_data = list(filtered) + list(date_data)
 
+all_data = [datum for datum in all_data if datum.leak != "?" and datum.slow_cool != "?"]
 
 from DRP.preprocessors import default_preprocessor as preprocessor
 from DRP.postprocessors import default_postprocessor as postprocessor
@@ -33,10 +34,14 @@ all_set, _ = postprocessor({"all":preprocessor([headers]+all_data)[1:]}, headers
 
 
 from DRP.models import ModelStats
-model = ModelStats.objects.get(id=2654)
+model = ModelStats.objects.get(id=2655)
 model._test_model(filtered_set["test"],
                   all_set["all"],
                   debug=True)
+
+if not model.load_confusion_table(table="train"):
+  model.train_confusion_table = model.confusion_table
+  print "WARNING: Replaced empty train-table with test-table!"
 
 model.summary()
 print "Test size: {}".format(model.total(table="test"))

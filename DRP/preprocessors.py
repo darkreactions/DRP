@@ -46,7 +46,7 @@ def default_preprocessor(data):
 
     # Normalize everything except the categorized columns.
     categories = [
-        "outcome", "purity"
+        "outcome",
     ]
     cat_indexes = {headers.index(cat) for cat in categories if cat in headers}
 
@@ -76,7 +76,7 @@ def purging_preprocessor(data):
 
 def category_preprocessor(data):
   def categorize(data):
-    return "Se" in data.atoms and "V" in data.atoms
+    return "Te" in data.atoms and "V" in data.atoms
 
   new_data = default_preprocessor(data)
 

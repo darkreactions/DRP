@@ -286,6 +286,10 @@ class ModelStats(models.Model):
     from DRP.model_building.confusion_table import make_confusion_dict
 
     if self.library=="weka":
+
+      if len(self.get_headers()) != len(data[0]):
+        raise Exception("Test data and headers do not match!")
+
       predictors = data
       index = self.get_headers().index(self.response)
       responses = [row[index] for row in data]
@@ -358,7 +362,13 @@ class ModelStats(models.Model):
           val_set = val_map[field]
 
         # EG: convert {"hello", 1, u"world"} to {hello,1,world}.
-        innards = ",".join(map(str,val_set)).replace("\"","")
+        values = sorted(map(str,val_set))
+
+        # Make sure all boolean options are available in the value-map.
+        if values == ["no"] or values == ["yes"] or values == ["no", "yes"]:
+          values = ["yes", "no"]
+
+        innards = ",".join( values ).replace("\"","")
         val_dict[field] = "{"+innards+"}"
 
       else:
@@ -569,6 +579,9 @@ class ModelStats(models.Model):
     # Variable Setup
     FAIL_ON_UNKNOWN = False # Set to `True` to allow unknown values to be counted.
     conf_table = self.load_confusion_table(normalize=normalize, table=table)
+
+    if not conf_table:
+      raise Exception("No '{}' table available!".format(table))
 
     guess_headers = conf_table.pop(0)[1:] # Remove the empty cell in [0,0].
     actual_headers = [row.pop(0) for row in conf_table]

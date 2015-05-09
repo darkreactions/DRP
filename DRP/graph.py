@@ -28,26 +28,31 @@ def get_graph(lines, base,
   colors = {
             "ms115.6":"#1f78b4",
             "Average ms115.6 Spawn":"#1f78b4",
+            "ms115.6 To Success":"#1f78b4",
 
             "jho213.20":"#33a02c",
             "Average jho213.20 Spawn":"#33a02c",
+            "jho213.20 To Success":"#33a02c",
 
             "jho252.5":"#e31a1c",
             "Average jho252.5 Spawn":"#e31a1c",
-
-            "jho148.2":"#ff7f00",
-            "Average jho148.2 Spawn":"#ff7f00",
+            "jho252.5 To Success":"#e31a1c",
 
             "jho148.2":"#6a3d9a",
             "Average jho148.2 Spawn":"#6a3d9a",
+            "jho148.2 To Success":"#6a3d9a",
 
             "Average VSeOx (Intuition)":"#b15928",
             "Average VSeOx (Model)":"#b15928",
             "Average VSeOx Overall":"#b15928",
+            "Se Success":"#b15928",
+            "Se Fail":"#b15928",
 
-            "Average VTeOx (Intuition)":"#a6cee3",
-            "Average VTeOx (Model)":"#a6cee3",
-            "Average VTeOx Overall":"#a6cee3",
+            "Average VTeOx (Intuition)":"#ff7f00",
+            "Average VTeOx (Model)":"#ff7f00",
+            "Average VTeOx Overall":"#ff7f00",
+            "Te Success":"#ff7f00",
+            "Te Fail":"#ff7f00",
 
             "Average Overall":"#000000",
            }
@@ -61,7 +66,7 @@ def get_graph(lines, base,
     if "overall" in header.lower():
       linestyle = "-."
       weight = 2.0
-    elif "intuition" in header.lower():
+    elif "intuition" in header.lower():# or "fail" in header.lower():
       linestyle = ":"
       weight = 2.0
     elif "average" in header.lower() or "model" in header.lower():
