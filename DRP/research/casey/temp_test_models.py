@@ -12,8 +12,8 @@ from DRP.retrievalFunctions import filter_by_date
 data = get_valid_data()
 date_data = filter_by_date(data, "04-02-2014", "before")
 
-filename = "DRP/research/casey/raw/033115_datums.txt"
-atoms = ["V", "Se"]
+filename = "DRP/research/casey/raw/033115_model.txt"
+atoms = ["V", "Te"]
 
 
 # Used to grab the data .
@@ -23,7 +23,6 @@ filtered = [entry for entry in pre_filtered
 
 all_data = list(filtered) + list(date_data)
 
-all_data = [datum for datum in all_data if datum.leak != "?" and datum.slow_cool != "?"]
 
 from DRP.preprocessors import default_preprocessor as preprocessor
 from DRP.postprocessors import default_postprocessor as postprocessor
