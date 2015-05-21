@@ -348,3 +348,19 @@ border-radius: 2px;
  cursor: pointer;  
 } 
 
+#exploreSearchButton {
+ position: absolute; 
+ right: 0px; 
+ top: 10px;
+} 
+
+.explore_filterButton {
+ display: inline-block;
+}
+
+.explore_filterText {
+ font-weight: bold;
+ color:#99FF5E;
+}
+
+
