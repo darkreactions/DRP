@@ -12,7 +12,7 @@ def default_postprocessor(splits, headers):
   "XXXinorg1moles", "XXXinorg2mass", "XXXinorg2moles",
   "XXXinorg3mass", "XXXinorg3moles", "XXXorg1mass",
   "XXXorg1moles", "XXXorg2mass", "XXXorg2moles",
-  "XXXoxlike1mass", "XXXoxlike1moles",
+  "XXXoxlike1mass", "XXXoxlike1moles", "purity",
   ]
 
   blacklist = {headers.index(field)
@@ -25,19 +25,20 @@ def default_postprocessor(splits, headers):
 
 
   # Convert any stringy-bools in the data to integers.
+  #TODO: Erase
+  """
   bool_map = {
   "yes":1,
   "no":0,
   "?":-1
   }
 
-
   for key, data in splits.items():
     for i, row in enumerate(data):
       for j, elem in enumerate(row):
         if elem in bool_map:
           splits[key][i][j] = bool_map[elem]
-
+  """
 
   return (splits, headers)
 

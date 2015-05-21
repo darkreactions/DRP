@@ -17,7 +17,6 @@ urlpatterns = patterns('',
     (r'^about/?$', "DRP.views.general.page", {"template": "about"}),
     (r'^contact/?$', "DRP.views.general.page", {"template":"contact"}),
     (r'^login/?$', "DRP.views.general.page", {"template":"login_form"}),
-
     (r'^explore/?$', "DRP.views.general.page", {"template":"explore"}),
 
     (r'^contact_form/?$', "DRP.views.contact.contact_form"),
@@ -38,7 +37,6 @@ urlpatterns = patterns('',
 
   # Searching
     (r'^search/$', "DRP.views.search.search", {"model":"Data"}),
-    (r'^search/Explore/?$' ,"DRP.views.explore_search.search", {"model":"Data"}), 
     (r'^search/Data/?$', "DRP.views.search.search", {"model":"Data"}),
     (r'^search/Recommendation/?$', "DRP.views.search.search", {"model":"Recommendation"}),
     (r'^search/SeedRecommendation/?$', "DRP.views.search.search", {

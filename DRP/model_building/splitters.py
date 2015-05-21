@@ -11,6 +11,9 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 def default_splitter(data, headers=None):
   from DRP.model_building.test_train_split import create_test_and_train_lists
   from DRP.model_building.load_data import create_reactant_keys
+  import random
+
+  random.shuffle(data)
 
   # Create reactant-combination keys for each data entry.
   dataKeys = create_reactant_keys(data, headers=headers)
@@ -19,6 +22,27 @@ def default_splitter(data, headers=None):
   test, train = create_test_and_train_lists(data, dataKeys)
 
   return {"test":test, "train":train, "all":data}
+
+
+def add_nonsense_to_test(data, headers=None):
+  from DRP.models import Recommendation
+  from DRP.preprocessors import default_preprocessor
+
+  splits = default_splitter(data, headers=headers)
+
+  print "Calculating test supplement..."
+  nonsense_recs = Recommendation.objects.filter(nonsense=True)
+  nonsense = default_preprocessor([headers]+list(nonsense_recs))
+  nonsense = [row[:-1] + [0] for row in nonsense]
+  print "Supplement size: {}".format(len(nonsense))
+
+
+  splits["test"].extend(nonsense[1:])
+  splits["all"].extend(nonsense[1:])
+
+  return splits
+
+
 
 
 def naive_splitter(data, headers=None):
@@ -33,17 +57,13 @@ def naive_splitter(data, headers=None):
 
 def strict_category_splitter(data, headers=None):
 
-  # If the last field in a datum is `True` let it be in the `test` set.
+  # If the last field in a datum is `True` let it remain in the test set.
 
-  test, train = [], []
-  for datum in data:
-    if datum.pop(-1)==True:
-      test.append(datum)
+  splits = default_splitter(data, headers=headers)
 
-    else:
-      train.append(datum)
+  test = [datum for datum in splits["test"] if datum.pop()==True]
 
-  return {"test":test, "train":train, "all":data}
+  return {"test":test, "train":splits["train"], "all":splits["all"]}
 
 
 def category_splitter(data, headers=None):
@@ -72,3 +92,12 @@ def category_splitter(data, headers=None):
 
   return splits
 
+
+def no_test_splitter(data, headers=None):
+
+  splits = {
+    "all": data,
+    "train": data,
+  }
+
+  return splits

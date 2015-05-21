@@ -7,7 +7,7 @@ if django_path not in sys.path:
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 import DRP.models
-from DRP.recommendation.metrics import default_metric
+from DRP.recommendation.metrics import get_default_metric
 from DRP.model_building import load_cg
 from DRP.logPrinting import print_error
 
@@ -162,7 +162,7 @@ def generate_grid(reaction, amine_list, debug=True):
                                                 predictors)
     if best_candidate:
       amine_tuple = (best_conf,
-                     default_metric(best_candidate, raw_rxn),
+                     get_default_metric(best_candidate, raw_rxn),
                      best_candidate)
       amines_results.append(amine_tuple)
 

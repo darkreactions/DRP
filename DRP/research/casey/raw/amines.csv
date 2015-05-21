@@ -1,0 +1,1678 @@
+SMILES,SUPPLIER_NAME,CATALOG_NUMBER,CAS,CHEMICAL_NAME,EMOLECULES_ID
+NCCN1CCCCC1.Cl,ChemiK,CHH15527,27578-60-5,1-(2'-Aminoethyl)-piperidine hydrochloride,45989407
+CC1CCN(CC1)C1CCN(CC1)C,ChemBridge,5463643,,,2074155
+N1CCC(CC1)C1CCNCC1.Cl,TimTec,ST070931,,,8316915
+CN(CC1CCC=CC1)CCN(C)C,ChemBridge,5431361,,,2073139
+CCN(CC1CCCCC1)CCN(CC)CC,ChemBridge,5429492,,,2072863
+CCCCNc1ccc(cc1)NCCCC,Sigma Aldrich,R466557,,"N,N'-DIBUTYL-BENZENE-1,4-DIAMINE",636956
+CC([C@H]1NC[C@H](NC1)C(C)C)C,Anichem,31421,,"(2R,5R)-2,5-Diisopropyl-piperazine",44825621
+C1CN[C@@H](CN1)C1CC1,Anichem,31390,,(S)-2-Cyclopropyl-piperazine,44825449
+CC1CCCC(N1CC1CCCCCN1)C,Vitas M Labs,STK893743,,"2-[(2,6-dimethylpiperidin-1-yl)methyl]azepane",30519044
+CCN(CCN(C1CCC(CC1)CC)C)CC,ChemBridge,5416620,,,2071388
+CCCN1CCC(CC1)CN1CCCC1,Enamine,Z433796480,,,36271453
+CCCCN1CCC(CC1)CN.Cl.Cl,AstaTech,51924,62281-15-6,4-AMINOMETHYL-1-N-BUTYLPIPERIDINE 2HCL,17413246
+CNCCCCCCCCCCCCNC,Apollo Scientific,OR0811,56992-91-7,"N,N'-Dimethyldodecane-1,12-diamine 97%",933294
+FC(CNC1CCN(CC1)C)F,Zelinsky Institute,B039722,,"N-(2,2-difluoroethyl)-1-methylpiperidin-4-amine",31654426
+NCCNCC1CC(C1)C,Princeton BioMolecular Research,PBMR160177,,"N*1*-(3-Methyl-cyclobutylmethyl)-ethane-1,2-diamine",44152936
+CNCC1CCCCN1C,Matrix Scientific,040296,184637-50-1,N-Methyl-1-(1-methylpiperidin-2-yl)methanamine,3724971
+C1CCC2(CN1)CNCC2,Bepharm,B215911,40865-50-7,"2,7-Diazaspiro[4.5]decane",44151931
+CCCCN1CC2CNCC(C1)C2,Princeton BioMolecular Research,PBMR168762,,"3-Butyl-3,7-diaza-bicyclo[3.3.1]nonane",44786397
+CCCCCCCN1CCNCC1,Apollo Scientific,OR6894,82502-77-0,1-(Hept-1-yl)piperazine 97%,919147
+N1CCN(CC1)C1CCCC1,Matrix Scientific,008540,21043-40-3,1-Cyclopentyl-piperazine,918656
+NCC1CCN1,Oakwood Products (Non-EU Customers),048104,103550-76-1,2-Aminomethylazetidine,36251933
+CNCC1(C)CCN(C1)C,ChemBridge,4002993,938458-86-7,"1-(1,3-dimethylpyrrolidin-3-yl)-N-methylmethanamine",15211952
+CN(CC#CCCCCCCC#CCN(C)C)C,InterBioScreen,STOCK3S-11095,,"N1,N1,N12,N12-tetramethyldodeca-2,10-diyne-1,12-diamine",4481388
+NCCCN(C1CCCCC1)C,Matrix Scientific,026885,26735-20-6,"N1-Cyclohexyl-N1-methyl-1,3-propanediamine",13075359
+CC[C@@H]1NCCNC1.Cl.Cl,Acesys Pharmatech,A1633S,128427-05-4,(S)-2-ETHYL-PIPERAZINE-2HCl,29372436
+NCC1CCCCN1,Bosche Scientific,A4969,22990-77-8,2-(Aminomethyl)piperidine,891071
+NCC1CCCN(C1)CC(C)C,Enamine BB,EN300-114128,,[1-(2-methylpropyl)piperidin-3-yl]methanamine,30488732
+CNCC1CCNCC1,ChemDiv BB,BB53-1681,,N-methyl-N-(piperidin-4-ylmethyl)amine,30488703
+NCCC1CCCNC1,Matrix Scientific,062984,90000-30-9,(2-Piperidin-3-ylethyl)amine,30488433
+NC(=N)CC1CCCC1.Cl,Enamine BB,EN300-125877,,2-cyclopentylethanimidamide hydrochloride,45957635
+C[N+](C1CCCCC1)(CCCCCCCCCC[N+](C1CCCCC1)(C)C)C.[I-].[I-],InterBioScreen,STOCK1S-64705,,"N1,N10-dicyclohexyl-N1,N1,N10,N10-tetramethyldecane-1,10-diaminium iodide",33580117
+CN1CC2CNCC(C1)C2,Princeton BioMolecular Research,PBMR101386,,"3-Methyl-3,7-diaza-bicyclo[3.3.1]nonane",42804641
+CN(CC#CCCCCCCCCCCC#CCN(C)C)C,InterBioScreen,STOCK2S-96403,,"N1,N1,N16,N16-tetramethylhexadeca-2,14-diyne-1,16-diamine",4471314
+CC(CN[C@H]1CCCNC1)C.Cl.Cl,Oakwood Products (Non-EU Customers),069536,,(S)-N-(2-Methylpropyl)piperidin-3-aminedihydrochloride,36770581
+CCN1CCCCC1CN,Matrix Scientific,020670,37782-46-0,C-(1-Ethyl-piperidin-2-yl)-methylamine,1523027
+CCNC1CCN(CC1)C,Matrix Scientific,020458,876717-32-7,Ethyl-(1-methyl-piperidin-4-yl)-amine,1522947
+N[C@H]1CCN(C1)C(C)C,Oakwood Products (Non-EU Customers),064210,,(S)-1-Isopropylpyrrolidin-3-amine,36769703
+C1CCCN(CC1)CCC1CCNCC1,Matrix Scientific,037320,96901-05-2,1-(2-Piperidin-4-ylethyl)azepane,6254546
+NCC1CCCC(C1)N,Enamine BB,EN300-74792,,3-(aminomethyl)cyclohexan-1-amine,36085267
+CC(CNC1CCNCC1)C.Cl.Cl,Oakwood Products (Non-EU Customers),063366,,N-Isobutylpiperidine-4-amine dihydrochloride,36768289
+NCC(CC(C)C)N,Enamine BB,EN300-73871,,"4-methylpentane-1,2-diamine",36084651
+CCNCCNC1CCCCC1,Matrix Scientific,054641,41239-36-5,"N-Cyclohexyl-N'-ethyl-1,2-ethanediamine",6252298
+CCCNCCNC,Oakwood Products (Non-EU Customers),024573,,N-Methyl-N'-propyl ethylenediamine,6252272
+CC(CCC=C(C)C)NCCCCN1CCCC1,ChemBridge,40955884,,"(1,5-dimethyl-4-hexen-1-yl)[4-(1-pyrrolidinyl)butyl]amine",25611707
+CCN(CCN(C1CCCC(C1)C)C)CC,ChemBridge,5463171,,,2355148
+CCCN1CCC(CC1)N1CCCCC1CC.Cl,ChemBridge,5456890,,,2354760
+NCCN1CCCC(C1)C,Matrix Scientific,008511,85723-75-7,2-(3-Methyl-piperidin-1-yl)-ethylamine,861279
+C[C@]1(N)CC[C@H](CC1)C(N)(C)C,Sigma Aldrich,469564,54166-24-4,"cis-1,8-Diamino-p-menthane",207299371
+NC(=N)C1CCC1.Cl,Matrix Scientific,094297,71690-89-6,Cyclobutanecarboximidamide hydrochloride,16815446
+C1CCCN(CC1)CC1CCNCC1,Enamine BB,EN300-39526,,1-(piperidin-4-ylmethyl)azepane,9782676
+N[C@@H]1CCCC[C@H]1N.Cl,Oakwood Products (Non-EU Customers),012708,191480-63-4,"(R,R)-(-)-1,2-Diaminocyclohexane hydrochloride",36762735
+NCCCN(CC)C,Matrix Scientific,064347,,"N-Ethyl-N-methylpropane-1,3-diamine",32175469
+NCCCN.Cl.Cl,TCI America,T0613,10517-44-9,"1,3-Diaminopropane Dihydrochloride",6875947
+CNCCCNC(CC)C,Matrix Scientific,027007,,"N1-(sec-Butyl)-N3-methyl-1,3-propanediamine",18625210
+CCCCCCCNCCCNCC,Matrix Scientific,026948,,"N1-Ethyl-N3-heptyl-1,3-propanediamine",18625114
+NCCCCCN.Cl.Cl,TCI America,D0099,1476-39-7,"1,5-Diaminopentane Dihydrochloride",6187660
+C1CNC2C(C1)NCCC2,Princeton BioMolecular Research,PBMR044872,,"decahydro-1,5-naphthyridine",42791486
+CCCCNCC1CCCCN1CC,Exclusive Chemistry,EC-000.1319,,N-[(1-ethyl-2-piperidinyl)methyl]-1-butanamine,33371893
+CCCCN1CCCCC1CNCC,Exclusive Chemistry,EC-000.1311,,N-[(1-butyl-2-piperidinyl)methyl]ethanamine,33371877
+CCCCNCC1CCCN1C(C)C,Exclusive Chemistry,EC-000.1302,,N-[(1-isopropyl-2-pyrrolidinyl)methyl]-1-butanamine,33371861
+CCCNCC1CCCN1CC,Exclusive Chemistry,EC-000.1294,,N-[(1-ethyl-2-pyrrolidinyl)methyl]-1-propanamine,33371845
+CCCCN1CCCC1CNC,Exclusive Chemistry,EC-000.1286,,(1-butyl-2-pyrrolidinyl)-N-methylmethanamine,33371829
+NCCCCN(CC)CC.Cl.Cl,Enamine BB,EN300-52585,,(4-aminobutyl)diethylamine dihydrochloride,29706288
+CN(CC1CCCCN1)C.Cl.Cl,Matrix Scientific,021107,1185304-33-9,Dimethyl-piperidin-2-ylmethyl-amine dihydrochloride,18622757
+CN1CCC[C@@H]1CN1CCCCC1,Matrix Scientific,074802,155726-05-9,(R)-1-((1-Methylpyrrolidin-2-yl)methyl)piperidine,36750696
+CC1CCN(CC1)CC1CNCC1.Cl.Cl,Matrix Scientific,051648,,4-Methyl-1-(3-pyrrolidinylmethyl)piperidine dihydrochloride,30420337
+C1CCN(CC1)CC1CNCC1.Cl.Cl,Matrix Scientific,051640,,1-(3-Pyrrolidinylmethyl)piperidine dihydrochloride,30420321
+C=CCN(CCC1CCNCC1)CC=C.Cl.Cl,Matrix Scientific,051616,1219961-11-1,N-Allyl-N-[2-(4-piperidinyl)ethyl]-2-propen-1-amine dihydrochloride,30420280
+CN(CCC1CCNCC1)C.Cl.Cl,Matrix Scientific,051608,106024-58-2,"N,N-Dimethyl-2-(4-piperidinyl)-1-ethanamine dihydrochloride",30420267
+CCCN(CCC1CCCCN1)CCC.Cl.Cl,Matrix Scientific,051568,,N-[2-(2-Piperidinyl)ethyl]-N-propyl-1-propanamine dihydrochloride,30420190
+CC1CCCCN1CCC1CCCCN1.Cl.Cl,Matrix Scientific,051560,109100-18-7,2-Methyl-1-[2-(2-piperidinyl)ethyl]piperidine dihydrochloride,30420178
+C=CCN1CCC(C1)CN,ChemBridge,4026449,90346-05-7,1-(1-allyl-3-pyrrolidinyl)methanamine,29703590
+CCCCCN(CC(N)C)CCCCC,Zelinsky Institute,B006827,869945-05-1,"N~1~,N~1~-dipentylpropane-1,2-diamine",846923
+CCCN(CC1CCCNC1)CCC.Cl.Cl,Matrix Scientific,051427,,N-(3-Piperidinylmethyl)-N-propyl-1-propanamine dihydrochloride,30419969
+CCN(CC1CCCNC1)CC.Cl.Cl,Matrix Scientific,051411,1220021-29-3,N-Ethyl-N-(3-piperidinylmethyl)-1-ethanamine dihydrochloride,30419939
+CCN(CC1CCC=CC1)CCN(C)C,ChemBridge,5425829,,,2015878
+CN(C1CCCC1N)C,Enamine BB,EN300-85878,,"1-N,1-N-dimethylcyclopentane-1,2-diamine",36748729
+CC(N1CCC(CC1)N)C,Matrix Scientific,019601,127285-08-9,1-Isopropyl-piperidin-4-ylamine,842357
+NC[C@@H]1CCCN(C1)C,Synthonix,M7515,1217604-20-0,(S)-1-Methyl-3-aminomethyl-piperidine,42768414
+NCCCCCN1CCCCC1,Enamine BB,EN300-74241,,5-(piperidin-1-yl)pentan-1-amine,24703776
+CNCCCN1CCCCC1,Matrix Scientific,018963,86010-41-5,Methyl-(3-piperidin-1-yl-propyl)-amine,5769142
+CCC(CN1CCCCC1)N,Matrix Scientific,020836,,1-Piperidin-1-ylmethyl-propylamine,834617
+NCC(CCC=C)N.Cl.Cl,Enamine BB,EN300-103676,,"hex-5-ene-1,2-diamine dihydrochloride",43361793
+CCCCNCCNCCCC,Matrix Scientific,007552,4013-95-0,"N,N'-Di-n-butylethylenediamine",5759215
+N1CC2CCC(C1)N2,Bepharm,B208390,280-06-8,"3,8-Diazabicyclo[3.2.1]octane",44471176
+CCCN(CCN)CCC,Matrix Scientific,007226,14165-22-1,2-(Di-n-propylamino)ethylamine,5759088
+N[C@H]([C@H](C1CCCCC1)N)C1CCCCC1,AstaTech,60146,179337-54-3,"(1S,2S)-1,2-DICYCLOHEXYLETHANE-1,2-DIAMINE",28302448
+NCCCN1CCCCCC1.Cl.Cl,Life Chemicals,F2187-2242,3437-33-0,(3-azepan-1-ylpropyl)amine dihydrocloride,28301818
+CC(C1CC1)NC1CCN(CC1)CC(C)C,Enamine,Z1341420790,,,45659217
+CC1CCN(CC1)CCNC(C)C,Matrix Scientific,027630,915924-65-1,N-[2-(4-Methylpiperidin-1-yl)ethyl]propan-2-amine,11489626
+NCCC(N(C)C)C,Matrix Scientific,036108,60978-33-8,"N-(3-Amino-1-methylpropyl)-N,N-dimethylamine",18189179
+CCCN1CCC(CC1)NC1CCCCCC1,ChemBridge,5461802,,,22205297
+NCCCN1CCCCCC1,Matrix Scientific,018645,3437-33-0,3-(1-Azepanyl)-1-propanamine,815539
+CCC1CCCCN1CCNC(C)C,Matrix Scientific,027663,933738-34-2,N-[2-(2-Ethylpiperidin-1-yl)ethyl]-N-isopropylamine,18186556
+CCCCCCCCNCCN,Sigma Aldrich,PH000414,,"N(1)-OCTYL-1,2-ETHANEDIAMINE",28290680
+N[C@@H]1C[C@@H]2CCC[C@H](C1)N2C,AK Scientific,K306,76272-56-5,Endo-3-amino-9-methyl-9-azabicyclo[3.3.1]nonane,31526836
+ClCCCNCCCN1CCCCCC1,ChemDiv BB,BB53-1160,,N-(3-azepan-1-ylpropyl)-N-(3-chloropropyl)amine,31525827
+CCCN1CCC(C1)CN,Matrix Scientific,026827,959239-12-4,(1-Propyl-3-pyrrolidinyl)methanamine,17925316
+CCC1NCC(NC1)CC,Enamine BB,EN300-83449,,"2,5-diethylpiperazine",36726160
+CCNCCN1CCCCC1C,ChemDiv BB,BB53-0608,,N-ethyl-N-[2-(2-methylpiperidin-1-yl)ethyl]amine,31524983
+NCCCCC1CCNCC1,Matrix Scientific,081954,,4-Piperidin-4-ylbutan-1-amine,11474040
+CNCCN1CCCCC1CC,ChemDiv BB,BB52-9195,,N-[2-(2-ethylpiperidin-1-yl)ethyl]-N-methylamine,31522840
+CN1CCNCC1CC,ChemBridge,4016224,4791-32-6,2-ethyl-1-methylpiperazine,20306671
+CCNCC1CCN(C1)C,Matrix Scientific,026835,959239-24-8,N-[(1-Methyl-3-pyrrolidinyl)methyl]-1-ethanamine,14063817
+NCCCNC1CCCCC1,Matrix Scientific,026875,3312-60-5,"N1-Cyclohexyl-1,3-propanediamine",535729
+CCCCCCN1CCNCC1,Matrix Scientific,037425,51619-55-7,1-Hexylpiperazine,533224
+CCNCCN1CCCCCC1.Cl,ChemBridge,4013118,,,32355723
+NCC1CCC(CC1)CN,Acros Organics (US),40603,2549-93-1,"1,4-Cyclohexanebis(methylamine), 95%, pract. cis and trans mixture",717998
+CC1CCCCN1CCCNC1CCCCCC1,Enamine,Z90622736,,,33335163
+NCCC(C(N)C)C,Princeton BioMolecular Research,PBMR156344,,"3-Methyl-pentane-1,4-diamine",43304366
+CC1CCN(CC1)C1CCN(CC1)C1CCCCCC1,Zelinsky Institute,UZI/1935246,,,6116151
+CN1CCC(CC1)C1CCCN1,ACB Blocks ,C5A-0181,,1-methyl-4-(2-pyrrolidinyl)piperidine,707842
+NC1CCCCN(C1)C,ChemBridge,4036522,188192-55-4,1-methyl-3-azepanamine,36551336
+CN1CCCC2(C1)CCNCC2,ChemBridge,4043100,,"2-methyl-2,9-diazaspiro[5.5]undecane",36551318
+C1NCC(C1)CNC1CC1,CombiPhos Catalysts,MPC-1145,,Cyclopropyl-pyrrolidin-3-ylmethyl-amine,39529320
+CC(CNCCN(C)C)C,Enamine BB,EN300-29888,,"N'-isobutyl-N,N-dimethylethane-1,2-diamine",13749040
+C[C@@H]1CCC[C@@H](N1CC1CCCCCN1)C,ACB Blocks ,C7A-0341,,"2-{[(2R,6S)-2,6-dimethylpiperidinyl]methyl}azepane",706111
+N[C@@H]1CC[C@@H](CC1)N(C)C,ChemDiv BB,BB60-9595,,"(1R,4R)-N,N-Dimethyl-cyclohexane-1,4-diamine",206912436
+CCC1CNCCN1,ChemBridge,4029768,13961-37-0,2-ethylpiperazine,2724424
+N[C@@H]1CC[C@H](CC1)N(C)C,Activate Scientific,AS62855,,"(1R,4R)-N,N-Dimethyl-cyclohexane-1,4-diamine",39375479
+CC(NCC1CCCN1C)C,Oakwood Products (Non-EU Customers),087886,,Isopropyl-(1-methyl-pyrrolidin-2-ylmethyl)-amine,39193335
+CN1CCCC2(C1)CCCNC2,Matrix Scientific,062362,845290-58-6,"2-Methyl-2,8-diazaspiro[5.5]undecane",6793107
+CCCCCCCN1CCNCCC1,EvoBlocks,EB30070,,"1-heptyl-1,4-diazepane",32283795
+CC1(N)CCC(CC1)C(N)(C)C,InterBioScreen,BB_SC-0050,,4-(2-aminopropan-2-yl)-1-methylcyclohexanamine,512036
+CCCCCCCCCN1CCNCC1C,EvoBlocks,EB29569,,2-methyl-1-nonylpiperazine,32283566
+CCCCCN1CCNCC1C,EvoBlocks,EB29543,,2-methyl-1-pentylpiperazine,32283520
+CCCC(N1CCNCC1)CC,Oakwood Products (Non-EU Customers),061971,,1-(1-Ethylbutyl)piperazine,32283424
+CCNCC1CCCN(C1)C,Oakwood Products (Non-EU Customers),087878,,Ethyl-(1-methyl-piperidin-3-ylmethyl)-amine,38591354
+CCNC1CCCCC1N(C)C,Oakwood Products (Non-EU Customers),087882,,"N-Ethyl-N',N'-dimethyl-cyclohexane-1,2-diamine",38558845
+NC[C@@H]1CCCN1,Maybridge,AC34838,,(S)-(+)-2-(Aminomethyl)pyrrolidine,506860
+CC(C(=N)N)C,Enamine BB,EN300-51233,,2-methylpropanimidamide,31238612
+NC[C@H]1CCCN(C1)C.Cl.Cl,Synthonix,M7251,1400744-18-4,(R)-1-Methyl-3-aminomethyl-piperidine dihydrochloride,43677719
+CC(NCCNC1CC1)C,Life Chemicals,F2147-1529,,"N-cyclopropyl-N'-isopropylethane-1,2-diamine",38100467
+CCCCCCCCCCCCCCCCCCN1CCN(CC1)CCCCCCCCCCCCCCCCCC,Sigma Aldrich,S983306,,"1,4-DIOCTADECYLPIPERAZINE",10976231
+N1CC2C(C1)CNC2,Ark Pharm,AK-64425,5840-00-6,"Octahydropyrrolo[3,4-c]pyrrole",37939293
+CC(CNCC1CCN(C1)C)C,Princeton BioMolecular Research,PBMR178927,,Isobutyl-(1-methyl-pyrrolidin-3-ylmethyl)-amine,37894287
+CC(C[C@H]1NCCNC1)C,Sigma Aldrich,CDS015703,,r-2-isobutyl-piperazine,43468488
+CCCC(=N)N,Enamine BB,EN300-56500,,butanimidamide,4355086
+NCC1(CCC1)CN(C)C,Princeton BioMolecular Research,PBMR158848,,[1-(dimethylaminomethyl)cyclobutyl]methanamine,43467335
+C1CCN(C1)C[C@H]1CCCN1,Matrix Scientific,071748,60419-23-0,(R)-(-)-1-(2-Pyrrolidinylmethyl)pyrrolidine,4352510
+CCCNCCCN,Matrix Scientific,026899,23764-31-0,"N1-Propyl-1,3-propanediamine",496778
+CCNC1CCNCC1,CombiPhos Catalysts,MPB-11223,,Ethyl-piperidin-4-yl-amine,37625564
+CN1CCC(CC1)[C@@H](N)C,Enamine BB,EN300-89244,,(1S)-1-(1-methylpiperidin-4-yl)ethan-1-amine,31422283
+CN(C1CC1)C1CCNCC1,Toronto Research Chemicals,C988770,1197237-40-3,N-Cyclopropyl-N-methyl-,37591455
+CN([C@@H]1CCCNC1)C,Oakwood Products (Non-EU Customers),088183,,Dimethyl-(R)-piperidin-3-yl-amine,43464070
+CN1CC[C@H](C1)NC1CC1,Oakwood Products (Non-EU Customers),087900,,Cyclopropyl-((R)-1-methyl-pyrrolidin-3-yl)-amine,43463692
+CCN[C@H]1CCCN(C1)C,Oakwood Products (Non-EU Customers),087875,,Ethyl-((S)-1-methyl-piperidin-3-yl)-amine,43463676
+CN[C@H]1CCN(C1)C,ChemDiv BB,BB60-6383,,Methyl-((S)-1-methyl-pyrrolidin-3-yl)-amine,43463660
+CCCCCCCCCCCCN1CCN(CC1)CCCCCCCCCCCC,Sigma Aldrich,S234915,,"1,4-DIDODECYL-PIPERAZINE",7353092
+NCC1CCCCN1C(C)C,Enamine BB,EN300-114632,,[1-(propan-2-yl)piperidin-2-yl]methanamine,37416649
+N[C@@H]1CC[C@@H](CC1)N,Matrix Scientific,089449,15827-56-2,"cis-1,4-Diaminocyclohexane",206845597
+CN(C(C)C)CC1CCCCN1,Oakwood Products (Non-EU Customers),088197,,Isopropyl-methyl-piperidin-2-ylmethyl-amine,37406883
+NCCCN(C)C,AK Scientific,H305,109-55-7,3-Dimethylaminopropylamine,490954
+NC1CCC(CC1)N,Enamine BB,EN300-20273,,"cyclohexane-1,4-diamine",206842884
+NCCC12CC3(CN)CC(C2)(CC(C1)(C3)C)C,Chemical Block,A2396/0101480,,,6773188
+CNCCCNC1CCCCC1,Matrix Scientific,026963,90853-13-7,"N1-Cyclohexyl-N3-methyl-1,3-propanediamine",10216365
+N[C@@H]1CC[C@@H](C1)N.Cl.Cl,Ark Pharm,AK130844,63591-57-1,"cis-Cyclopentane-1,3-diamine dihydrochloride",46015583
+CN1CCC(CC1)CCCC1CCN(CC1)C,AK Scientific,V2063,64168-11-2,"4,4''4,4''4,4''4,4''-Trimethylenebis(1-methylpiperidine)",487099
+NCCCN1CCCCC1C,Matrix Scientific,079872,25560-00-3,[3-(2-Methylpiperidin-1-yl)propyl]amine,486522
+CCCCCCCCCCCC[N+](CCCC[N+](CCCCCCCCCCCC)(C)C)(C)C.[I-].[I-],Sigma Aldrich,R737755,,"N(1),N(4)-DIDODECYL-N(1),N(1),N(4),N(4)-TETRAMETHYL-1,4-BUTANEDIAMINIUM DIIODIDE",670884
+N1CCN(CC1)CC1CCCC1.Cl,Bepharm,B241919,1215167-72-8,1-(Cyclopentylmethyl)piperazine hydrochloride,44392524
+CCCCNC1CC(C)(C)NC(C1)(C)C,Enamine BB,EN300-55660,,"N-butyl-2,2,6,6-tetramethylpiperidin-4-amine",31412247
+NCCCCN(C(C)C)C.Cl.Cl,Enamine BB,EN300-53561,,(4-aminobutyl)(methyl)propan-2-ylamine dihydrochloride,31411319
+NCCC1CCCN1C,AK Scientific,67534,51387-90-7,1-Methyl-2-(2-aminoethyl)pyrrolidine,481450
+CCCCN(CC1CCNCC1)C,Enamine BB,EN300-49803,,butyl(methyl)(piperidin-4-ylmethyl)amine,31410283
+CC1CCN(CC1)CC1CCNCC1,Enamine BB,EN300-49541,926259-42-9,4-methyl-1-(piperidin-4-ylmethyl)piperidine,31410195
+NCC(C1CC1)N(C)C,Enamine BB,EN300-49092,,(2-amino-1-cyclopropylethyl)dimethylamine,31410150
+C[N+]([C@@H]1CCCC[C@@H](CCCC1)[N+](C)(C)C)(C)C.[I-].[I-],Molecular Diversity Preservation,16151,,"N~1~,N~1~,N~1~,N~6~,N~6~,N~6~-hexamethylcyclodecane-1,6-diaminium diiodide (en)",5862162
+NC1CCCC1N1CCCC1,Enamine BB,EN300-43774,,2-(pyrrolidin-1-yl)cyclopentan-1-amine,31409707
+CCN1CCC(CC1)NC1CC1,Enamine BB,EN300-52814,,N-cyclopropyl-1-ethylpiperidin-4-amine,13335907
+CN(CCC(N)C)C.Cl.Cl,Enamine BB,EN300-39597,,"N-(3-aminobutyl)-N,N-dimethylamine dihydrochloride",31408394
+CNC1CCCCNC1,AstaTech,M59314,124695-93-8,AZEPAN-3-YL-METHYL-AMINE,1838484
+NCC1(C)CNC1,Pharmablock (USA) Inc,PB118285,96308-73-5,3-METHYL-3-AMINOMETHYLAZETIDINE DIHYDROCHLORIDE,44385895
+CN(CCCCCCCCCCN(C)C)C,Enamine BB,EN300-18447,,"N,N,N',N'-tetramethyldecane-1,10-diamine",31405542
+C1CCN(CC1)CCNC1CC1,Princeton BioMolecular Research,PBMR120087,,Cyclopropyl-(2-piperidin-1-yl-ethyl)-amine,36859591
+C1CC2C(C1)NCCN2,Princeton BioMolecular Research,PBMR168225,,Octahydro-cyclopentapyrazine,44687682
+CN[C@@H]1CNCC1,TCI America,M1108,139015-32-0,(3S)-(-)-3-(Methylamino)pyrrolidine,26947864
+CN([C@H]1CCCC[C@@H]1N)C,Acesys Pharmatech,A1014,894493-95-9,"(1S,2S)-N1,N1-dimethylcyclohexane-1,2-diamine",26947648
+CCCN1CCC(CC1)N1CCCCC1,ChemBridge,5460223,,,13320550
+CCN(C1CCCCCCC1)CCN(C)C,ChemBridge,5456534,,,13320342
+CN1C[C@]2(C)CNC[C@](C1)(C2)C,InterBioScreen,STOCK1N-70557,,"(1R,5S)-1,3,5-trimethyl-3,7-diazabicyclo[3.3.1]nonane",26436519
+C1CC2C(N1)CCN2,Enamine BB,EN300-89803,,"octahydropyrrolo[3,2-b]pyrrole",32444843
+NC1CC(C)N(CC1C)C,Enamine BB,EN300-69930,,"1,2,5-trimethylpiperidin-4-amine",32443600
+CCC(CN)N.Cl.Cl,Enamine BB,EN300-69267,,"butane-1,2-diamine dihydrochloride",32442996
+CC[C@H]1CN[C@@H](CN1)C,Ark Pharm,AK122418,907207-97-0,"(2S,5R)-2-Ethyl-5-methylpiperazine",44834213
+CCNC(C1CCCNC1)C(C)C,Enamine BB,EN300-89678,,ethyl[2-methyl-1-(piperidin-3-yl)propyl]amine,32442534
+CN1CC2(C)CNCC(C1)(C2)C,Matrix Scientific,020621,169177-35-9,"1,3,5-Trimethyl-3,7-diaza-bicyclo[3.3.1]nonane",1197286
+CC[C@H]1NCCN(C1)C,Anichem,INT-1156,,(R)-3-Ethyl-1-methyl-piperazine,44826613
+CCN1CCC(CC1)N1CCCC(C1)C,ChemBridge,5461764,,,2074021
+CC(CNC1CCN(CC1)C)C,Enamine BB,EN300-53273,,1-methyl-N-(2-methylpropyl)piperidin-4-amine,29963648
+N1CC2CC1CN2,Anichem,T18009,672-28-6,"2,5-Diaza-bicyclo[2.2.1]heptane",44825650
+CC([C@@H]1NC[C@@H](NC1)C(C)C)C,Anichem,31420,,"(2S,5S)-2,5-Diisopropyl-piperazine",44825619
+CC1CCN(CC1)CC1CCCCN1,Vitas M Labs,STK893922,,4-methyl-1-(piperidin-2-ylmethyl)piperidine,30519090
+NCCC1=CCN(CC1)CC=C(C)C,Alinda Chemical,ALBB-022860,,"{2-[1-(3-methylbut-2-en-1-yl)-1,2,3,6-tetrahydropyridin-4-yl]ethyl}amine dihydrochloride",45987486
+CN1CCC(CC1)N1CCCCCC1,Matrix Scientific,081029,,1-(1-Methylpiperidin-4-yl)azepane,43619300
+CN(CCNC1CCCCC1)C,Matrix Scientific,020950,99178-21-9,"N'-Cyclohexyl-N,N-dimethyl-ethane-1,2-diamine",1556668
+NCC1CCCN(C1)C.Cl,Anichem,A82051,14613-37-7,"C-(1-Methyl-piperidin-3-yl)-methylamine, HCl",44824430
+CCCCCCCCCCCCCCCCCCNCCN,Sigma Aldrich,PH003617,,"N(1)-octadecyl-1,2-ethanediamine",35865409
+C1CCC(CC1)NC1CCNCC1.Cl.Cl,Matrix Scientific,037311,,N-Cyclohexylpiperidin-4-amine dihydrochloride,45984060
+CCC1NCCNC1.Cl.Cl,AK Scientific,W6296,438050-52-3,2-Ethylpiperazine dihydrochloride,35862450
+CC1CCN(CC1)CC1CCCNC1,Enamine BB,EN300-61091,,4-methyl-1-(piperidin-3-ylmethyl)piperidine,31372658
+CC(CCC(=N)N)C.Cl,Oakwood Products (Non-EU Customers),061468,,4-Methylpentanimidamide hydrochloride,32231871
+NC1CCN(C1)CC1CCCC1,Enamine BB,EN300-93475,,1-(cyclopentylmethyl)pyrrolidin-3-amine,37000191
+CN1CCCC(C1)N,Matrix Scientific,027094,42389-57-1,1-Methylpiperidin-3-amine,1548173
+N1CCC(CC1)CCN1CCCC1,Apollo Scientific,OR0806,14759-08-1,4-[2-(Pyrrolidin-1-yl)ethyl]piperidine 98%,933290
+C1CCN(CC1)CCC1CCNCC1,Matrix Scientific,019668,14759-09-2,1-Piperidino-2-[4]piperidyl-ethane,1542144
+CCCCCCCCCCCCCCCCCCNC(=N)C,ChemBridge,5105146,,,2047585
+CNCC1CCN(C1)CC(C)C,Matrix Scientific,063322,887405-45-0,[(1-Isobutylpyrrolidin-3-yl)methyl]methylamine,3725336
+CNCC1CCCN1CC,Enamine BB,EN300-71750,,[(1-ethylpyrrolidin-2-yl)methyl](methyl)amine,3724933
+NC1CCNCC1.Cl.Cl,Oakwood Products (Non-EU Customers),048139,35621-01-3,4-Aminopiperidine dihydrochloride,36253605
+N[C@@H]1CCCCNC1,AK Scientific,W5158,28957-33-7,(R)-3-Aminohexahydro-1H-azepin,36252186
+CNCCCN1CCCCCC1,Matrix Scientific,026943,938459-01-9,N-[3-(1-Azepanyl)propyl]-N-methylamine,15212136
+CNCCCN1CCCC1,Matrix Scientific,026952,99114-68-8,N-Methyl-3-(1-pyrrolidinyl)-1-propanamine,15212035
+NCC1(C)CCN(C1)C,ChemBridge,4002992,912771-31-4,"1-(1,3-dimethylpyrrolidin-3-yl)methanamine",15211950
+CNCC(CN1CCCC1)C,ChemBridge,4002508,938458-84-5,"N,2-dimethyl-3-pyrrolidin-1-ylpropan-1-amine",15211934
+CC[C@H]1NCCNC1.Cl.Cl,AK Scientific,W6295,438050-07-8,(R)-2-Ethylpiperazine dihydrochloride,29372435
+CC(CC1NCCNC1)C.Cl.Cl,AK Scientific,W8832,859140-29-7,2-Isobutylpiperazine dihydrochloride,29372417
+CNC1CNC1,Matrix Scientific,069365,247069-31-4,N-Methylazetidin-3-amine,29372109
+CCCNCCNCCC,Matrix Scientific,007584,14165-22-1,"N,N'-Di(n-propyl)ethylenediamine",892144
+CCCCN(CCCC)CCN,Matrix Scientific,079915,3529-09-7,"N,N-Dibutylethane-1,2-diamine",890084
+NCC(C1CCNCC1)CC(CC)C,Enamine BB,EN300-76808,,4-methyl-2-(piperidin-4-yl)hexan-1-amine,36086972
+CCCC(CC(C1CCCCN1)CN)C,Enamine BB,EN300-76783,,4-methyl-2-(piperidin-2-yl)heptan-1-amine,36086940
+NCC(C1CCCCN1)CC(CC)C,Enamine BB,EN300-76762,,4-methyl-2-(piperidin-2-yl)hexan-1-amine,36086908
+CCCN1CCCCC1C1CCCNC1,Enamine BB,EN300-76671,,2-(piperidin-3-yl)-1-propylpiperidine,36086801
+CN(CCCNC1CCCCCCCCCCC1)C,Enamine,Z56778545,,,1344804
+CCCN1CCC(CC1)CN,Matrix Scientific,021079,392691-05-3,C-(1-Propyl-piperidin-4-yl)-methylamine,1522993
+CCN(CC1CCCNC1)CC,Matrix Scientific,019200,120990-84-3,Diethyl-piperidin-3-ylmethyl-amine,1522792
+NCC1CCN(CC1)CC1CCCCC1.Cl.Cl,Oakwood Products (Non-EU Customers),064325,,[1-(Cyclohexylmethyl)piperidin-4-yl]methanamine dihydrochloride,36769920
+C1NCC(C1)N1CCCC1,Matrix Scientific,037319,267241-99-6,"1,3'-Bipyrrolidine",6254248
+CCNCCNC1CC1,Life Chemicals,F2147-1528,,"N-cyclopropyl-N'-ethylethane-1,2-diamine",6252296
+NC[C@H]1CCCN1,Tyger Scientific,A120905,72300-69-7,(R)-2-(Aminomethyl)pyrrolidine,33511366
+CCCN(C1CCN(CC1)CC)CC1CC1,ChemBridge,5459972,,,2354962
+CCN(CCN(C1CCCCCC1)C)CC,ChemBridge,5454969,,,2354658
+CCN1CCN(CC1)C1CCCCCC1,ChemBridge,5453292,,,2354557
+NCCN1CCC(CC1)C,Matrix Scientific,008503,14156-95-7,2-(4-Methyl-piperidin-1-yl)-ethylamine,861277
+CCC1CCC(CC1)N(CCN(C)C)C,ChemBridge,5419376,,,2353272
+NCCNC(CC)C,Sigma Aldrich,S516414,,N-(SEC-BUTYL)-ETHYLENEDIAMINE,6208224
+C[C@@H]1CNC[C@H](N1)C,Anichem,31434,,"(2S,6S)-2,6-Dimethyl-piperazine",32176151
+N[C@@H]1CNCC1.Cl.Cl,AK Scientific,U244,116183-83-6,(S)-(+)-3-Aminopyrrolidine dihydrochloride,6876366
+CCNCCCN(CCC)CCC,Matrix Scientific,026975,,"N1-Ethyl-N3,N3-dipropyl-1,3-propanediamine",18625160
+CCCCCCCNCCCNC,Matrix Scientific,026947,,"N1-Heptyl-N3-methyl-1,3-propanediamine",18625112
+NCCCNC(CC)C,Matrix Scientific,026778,854650-36-5,"N1-(sec-Butyl)-1,3-propanediamine",18624907
+CCCCCCCCN1CCC(CC1)CCCC1CCN(CC1)CCCCCCCC,Maybridge,NRB02533,,1-octyl-4-[3-(1-octyl-4-piperidyl)propyl]piperidine,5779288
+CCNCC(N1CCCCC1)C,Exclusive Chemistry,EC-000.1351,,N-ethyl-2-(1-piperidinyl)-1-propanamine,33371923
+CCCCNCC1CCCCN1C,Exclusive Chemistry,EC-000.1318,,N-[(1-methyl-2-piperidinyl)methyl]-1-butanamine,33371891
+CCNCC1CCCCN1CCC,Exclusive Chemistry,EC-000.1310,,N-[(1-propyl-2-piperidinyl)methyl]ethanamine,33371875
+CCCCNCC1CCCN1CCCC,Exclusive Chemistry,EC-000.1301,,N-[(1-butyl-2-pyrrolidinyl)methyl]-1-butanamine,33371859
+CCCNCC1CCCN1C,Exclusive Chemistry,EC-000.1293,,N-[(1-methyl-2-pyrrolidinyl)methyl]-1-propanamine,33371843
+CCCN1CCCC1CNC,Exclusive Chemistry,EC-000.1285,,N-methyl(1-propyl-2-pyrrolidinyl)methanamine,33371827
+CCCN(CC1CCCN1)CCC.Cl.Cl,Matrix Scientific,051711,,N-Propyl-N-(2-pyrrolidinylmethyl)-1-propanamine dihydrochloride,30420446
+CCN(CC1CCCN1)CC.Cl.Cl,Matrix Scientific,051695,1220027-24-6,N-Ethyl-N-(2-pyrrolidinylmethyl)-1-ethanamine dihydrochloride,30420420
+C1CCC(NC1)CN1CCCCCC1.Cl.Cl,Matrix Scientific,051679,,1-(2-Piperidinylmethyl)azepane dihydrochloride,30420391
+CCCCN(CC1CCCCN1)C.Cl.Cl,Matrix Scientific,051671,,N-Methyl-N-(2-piperidinylmethyl)-1-butanamine dihydrochloride,30420379
+CC1CCCN(C1)CC1CNCC1.Cl.Cl,Matrix Scientific,051647,1219964-31-4,3-Methyl-1-(3-pyrrolidinylmethyl)piperidine dihydrochloride,30420335
+CC1CCN(CC1)CCC1CCCNC1.Cl.Cl,Matrix Scientific,051591,,4-Methyl-1-[2-(3-piperidinyl)ethyl]piperidine dihydrochloride,30420234
+C1CCC(CN1)CCN1CCCCC1.Cl.Cl,Matrix Scientific,051583,,1-[2-(3-Piperidinyl)ethyl]piperidine dihydrochloride,30420218
+NCC1CCN(C1)CC,Matrix Scientific,021487,51388-01-3,C-(1-Ethyl-pyrrolidin-3-yl)-methylamine,1508623
+CC(CN1CCC(CC1)C)N,Enamine BB,EN300-62744,,1-(4-methylpiperidin-1-yl)propan-2-amine,846921
+C1CCC(CN1)CN1CCCC1.Cl.Cl,Matrix Scientific,051410,514842-98-9,3-(1-Pyrrolidinylmethyl)piperidine dihydrochloride,30419938
+CCN(CC(N)C)CC,Enamine BB,EN300-56494,,(2-aminopropyl)diethylamine,846677
+CN(C1CCNCC1)C.Cl.Cl,Matrix Scientific,051494,4876-59-9,"N,N-Dimethylpiperidin-4-amine dihydrochloride",24825334
+CC(N(C1CCNCC1)C)C.Cl.Cl,Enamine BB,EN300-51890,,N-methyl-N-(propan-2-yl)piperidin-4-amine dihydrochloride,29697373
+C#CCN1CCCC(C1)N,Enamine BB,EN300-85023,,1-(prop-2-yn-1-yl)piperidin-3-amine,36748194
+CNC1CCN(C(C1)C)C,Enamine BB,EN300-84973,,"N,1,2-trimethylpiperidin-4-amine",36748164
+N1CCC(CC1)NC1CC1.Cl.Cl,Enamine BB,EN300-84896,,N-cyclopropylpiperidin-4-amine dihydrochloride,36748133
+CCCN1CCC(CC1)N,Matrix Scientific,028775,42389-59-3,1-Propylpiperidin-4-amine,842356
+CC(CNC1CC(C)N(CC1C)C)C,InterBioScreen,STOCK5S-00432,,"N-isobutyl-1,2,5-trimethylpiperidin-4-amine",4645698
+CCCN1CCNCC1,Matrix Scientific,079833,21867-64-1,1-Propylpiperazine,837762
+NCCCCN(C(C)C)C,Enamine BB,EN300-56313,,(4-aminobutyl)(methyl)propan-2-ylamine,30415200
+NCC1CCCN(C1)C1CCCCC1,Matrix Scientific,016361,883533-78-6,[(1-Cyclohexylpiperidin-3-yl)methyl]amine,5766386
+CN[C@@H](C(C)C)CN1CCCC1,AstaTech,68542,,"(S)-N,3-DIMETHYL-1-(PYRROLIDIN-1-YL)BUTAN-2-AMINE",44472642
+CN1CCC(CC1)N,Matrix Scientific,072008,41838-46-4,4-Amino-1-methylpiperidine,832940
+C(CN1CC1)CCN1CC1,InterBioScreen,STOCK4S-92955,,"1,4-di(aziridin-1-yl)butane",4640073
+C1CCC(NC1)C1CCCCN1.Cl.Cl,Bepharm,B238745,51591-01-6,"2,2'-Bipiperidine dihydrochloride",44471457
+NCCCCCN(CC(C)C)CC(C)C,Matrix Scientific,007225,209803-39-4,5-(Diisobutylamino)amylamine,5759086
+CNCCN1CCCCC1C,ChemBridge,4015189,915922-23-5,N-methyl-2-(2-methylpiperidin-1-yl)ethanamine,11489709
+CCCN1CCCC(C1)CN,ChemBridge,4014886,915924-85-5,1-(1-propylpiperidin-3-yl)methanamine,11489694
+CC(NCCN1CCCCCC1)C,Matrix Scientific,027629,532407-05-9,N-(2-Azepan-1-ylethyl)-N-isopropylamine,11489624
+NCC1(CC1)CN1CCCC1,ChemBridge,4027514,1001345-81-8,1-[1-(1-pyrrolidinylmethyl)cyclopropyl]methanamine,18189275
+C1CCN(CC1)C1CNC1,Matrix Scientific,053920,138022-86-3,1-(3-Azetidinyl)piperidine,18189113
+NC1(CC1)CN1CCCCC1,ChemBridge,4026347,1015846-25-9,1-(piperidin-1-ylmethyl)cyclopropanamine,18189059
+CCNCCN1CCC(CC1)C,Matrix Scientific,027631,915923-35-2,N-Ethyl-N-[2-(4-methylpiperidin-1-yl)ethyl]amine,11488770
+CC(C1CCNCC1)N(C)C,ChemBridge,4004382,,"N,N-dimethyl-1-piperidin-4-ylethanamine",11488494
+NCCCN1CCCCC1,Enamine BB,EN300-13955,3529-08-6,3-piperidin-1-ylpropan-1-amine,815533
+CC(NCCN1CCCCC1C)C,Matrix Scientific,027662,,N-[2-(2-Methylpiperidin-1-yl)ethyl]propan-2-amine,18186554
+CN(NC1CCCCC1)C,Sigma Aldrich,PH001375,,"2-CYCLOHEXYL-1,1-DIMETHYLHYDRAZINE",28292206
+CN1CCC(C1)N,Matrix Scientific,068515,13220-27-4,1-Methylpyrrolidin-3-amine,18186424
+NCCC1CCCCN1C1CCCC1,Alinda Chemical,ALBB-018056,915924-33-3,[2-(1-cyclopentylpiperidin-2-yl)ethyl]amine,36728699
+CCCCCCCCCC(NCCCN)C,Sigma Aldrich,PH000876,,"N(1)-(1-METHYLDECYL)-1,3-PROPANEDIAMINE",28291316
+NC1CC(C)(C)NC(C1)(C)C.Cl.Cl,Sigma Aldrich,L161489,,"2,2,6,6-TETRAMETHYL-4-PIPERIDINAMINE DIHYDROCHLORIDE",549939
+CCCNCCN1CCC(CC1)C,ChemDiv BB,BB53-0940,,N-[2-(4-methylpiperidin-1-yl)ethyl]-N-propylamine,31525489
+CCCC(CN)(N)C,Enamine BB,EN300-83775,,"2-methylpentane-1,2-diamine",36726173
+CCN1CCCC(C1)N.Cl.Cl,Enamine BB,EN300-82510,,1-ethylpiperidin-3-amine dihydrochloride,36725912
+CCCNCCN1CCCC1,ChemDiv BB,BB53-0673,,N-(2-pyrrolidin-1-ylethyl)propan-1-amine,31525092
+CCC(N=C=NC(CC)C)C,Matrix Scientific,086021,66006-67-5,"N,N'-Di-sec-butylcarbodiimide",11474262
+ClCCNCCN1CCCCC1,ChemDiv BB,BB52-9720,,N-(2-chloroethyl)-N-(2-piperidin-1-ylethyl)amine,31523623
+CCCNCCN1CCCCCC1,ChemDiv BB,BB52-9194,,N-(2-azepan-1-ylethyl)-N-propylamine,31522838
+NC1=NCCCCC1,InterBioScreen,BB_SC-9557,,"3,4,5,6-tetrahydro-2H-azepin-7-amine",31521452
+C[N+](CCCCCC[N+](C)(C)C)(C)C.[Cl-].[Cl-],TCI America,H0090,60-25-3,Hexamethonium Chloride,539026
+NCC1CCCCN1C,Matrix Scientific,020649,5298-72-6,C-(1-Methyl-piperidin-2-yl)-methylamine,724500
+NCC(CN1CCCCCC1)(C)C,Maybridge,MO01190,,"3-(1-azepanyl)-2,2-dimethylpropylamine",724445
+NCCN(C1CCCC1)C.Cl.Cl,Matrix Scientific,033498,,"N*1*-Cyclopentyl-N*1*-methyl-ethane-1,2-diamine dihydrochloride",25054917
+N[C@@H]1CCCCC[C@H]1N.Cl.Cl,Enamine BB,EN300-124377,,"(1R,2R)-cycloheptane-1,2-diamine dihydrochloride",45773317
+NC[C@H]1CCCC[C@H]1N,Enamine BB,EN300-81627,,cis-2-(aminomethyl)cyclohexan-1-amine,36560151
+CNCCCCN(C)C,Enamine BB,EN300-80694,,[4-(dimethylamino)butyl](methyl)amine,36559630
+CC(N1CCC(CC1)NC1CCCC1)C,ChemDiv BB,BB51-1693,,N-cyclopentyl-1-isopropylpiperidin-4-amine,31511094
+NCC1(N)CCC1,Bepharm,B238020,780747-61-7,1-(Aminomethyl)cyclobutanamine,40896933
+NC1CCC(C1)N(C)C,Enamine BB,EN300-102069,,"N,N-dimethylcyclopentane-1,3-diamine",40332114
+NC1C(C)(C)C(C1(C)C)N,Enamine BB,EN300-98881,,"2,2,4,4-tetramethylcyclobutane-1,3-diamine",40331398
+CC(CN1CCC(CC1)NC1CCCCCC1)C,Enamine,Z401843386,,,45636671
+NC1CCCC(C1)N(C)C,Enamine BB,EN300-100113,,"1-N,1-N-dimethylcyclohexane-1,3-diamine",40295876
+NCCCCCNC,Princeton BioMolecular Research,PBMR166923,,"N'-methylpentane-1,5-diamine",40217044
+C1CCC(CC1)C1CNCCN1,Anichem,31398,,2-Cyclohexyl-piperazine,40193015
+CNC(C1CC1)CN(CC)CC,Matrix Scientific,080400,,"1-Cyclopropyl-N~2~,N~2~-diethyl-N~1~-methylethane-1,2-diamine",40116357
+CC(C1CCCNC1)N,Oakwood Products (Non-EU Customers),080076,1314919-71-5,1-Piperidin-3-yl-ethylamine,40076831
+NC1CN(C(C1)C)C1CC1,Enamine BB,EN300-103786,,1-cyclopropyl-5-methylpyrrolidin-3-amine,43295886
+C1CCC(NC1)CN1CCCCC1,Matrix Scientific,019801,81310-55-6,Piperidino-[2]piperidyl-methane,710121
+NC1CC2CCCC(C1)N2C,Matrix Scientific,074391,76272-56-5,"Endo-3-Amine-9-methyl-9-azabicyclo[3,3,1]nonane",2733251
+CC[N+](CCCCCCCCCC[N+](CC)(C)C)(C)C,Princeton BioMolecular Research,OSSL_297366,,,30082868
+CC(NCC1CNCC1)C,CombiPhos Catalysts,MPC-11241,,Isopropyl-pyrrolidin-3-ylmethyl-amine,39529314
+C1CCCN(CC1)CC1CCCCCN1,ACB Blocks ,C7A-0340,,1-(2-azepanylmethyl)azepane,706109
+[C-]#[N+]CCCN(C)C,ACB Blocks ,ISN-0100,,"3-isocyano-N,N-dimethylpropan-1-amine",705882
+CN(CCCNC(CCC=C(C)C)C)C,InterBioScreen,STOCK1N-00033,,"N1,N1-dimethyl-N3-(6-methylhept-5-en-2-yl)propane-1,3-diamine",4781677
+CN1CCC(CC1)C1CCCCN1,ACB Blocks ,C6A-0153,,"1'-methyl-2,4'-bipiperidine",705782
+NC1CCC(CC1)N1CCCCC1,Enamine BB,EN300-101265,,4-(piperidin-1-yl)cyclohexan-1-amine,39375451
+CC1NCCNC1C,Matrix Scientific,024769,84468-52-0,"2,3-Dimethyl-piperazine",1884918
+C1CCC(CN1)C1CCCN1,Sigma Aldrich,T317209,,3-(2-PYRROLIDINYL)PIPERIDINE,1884779
+CCCCCCCCCN1CCNCCC1,EvoBlocks,EB30069,,"1-nonyl-1,4-diazepane",32283793
+NCC[C@@H]1CCCN1C,Activate Scientific,AS3244,422545-95-7,(S)-2-(1-Methylpyrrolidin-2-yl)ethanamine,43214859
+CC(CCN1CCNCCC1)C,EvoBlocks,EB30054,,"1-(3-methylbutyl)-1,4-diazepane",32283771
+CCCCCC(N1CCNCC1C)C,EvoBlocks,EB29597,,1-(heptan-2-yl)-2-methylpiperazine,32283610
+NCC1(N)CCCCCC1,EvoBlocks,EB60575,,1-(aminomethyl)cycloheptan-1-amine,1884505
+CCCCCCCCCCCCCCN1CCNCC1C,EvoBlocks,EB29568,,2-methyl-1-tetradecylpiperazine,32283564
+NCCN.I.I,Sigma Aldrich,S573019,,ETHYLENEDIAMINE DIHYDROIODIDE,43213794
+N1CCC(CC1)CCCN1CCCC1,Enamine BB,EN300-115907,,4-[3-(pyrrolidin-1-yl)propyl]piperidine,38858393
+CN1CCCC(C1)CNC(C)C,Oakwood Products (Non-EU Customers),087894,,Isopropyl-(1-methyl-piperidin-3-ylmethyl)-amine,38591348
+CNC1CCCCC1N(C)C,Oakwood Products (Non-EU Customers),087867,,"N,N,N'-Trimethyl-cyclohexane-1,2-diamine",38558751
+CCC(N1CCN(CC1)C1CCCCC1)C,Zelinsky Institute,UZI/1934568,,,1453608
+NC[C@@H]1CCCN(C1)C.Cl.Cl,Synthonix,M7250,1400744-19-5,(S)-1-Methyl-3-aminomethyl-piperidine dihydrochloride,43677718
+CN1CCC[C@@H](C1)N.Cl,Synthonix,A1654,1157849-51-8,(S)-3-Amino-1-methyl-piperidine hydrochloride,43677421
+CNCC(CC(C)C)N,Enamine BB,EN300-120434,,(2-amino-4-methylpentyl)(methyl)amine,38100931
+CC(NCC1CCCCN1)C,CombiPhos Catalysts,MPB-11247,,Isopropyl-piperidin-2-ylmethyl-amine,38100419
+NCCC(CC)N,TCI America,D2252,589-37-7,"1,3-Diaminopentane",503157
+NC1CCC(CC1C)CC1CCC(C(C1)C)N,TCI America,M1422,6864-37-5,"4,4'-Methylenebis(2-methylcyclohexylamine)",501987
+NCCCN1CCC(CC1)C,Matrix Scientific,008502,6241-30-1,3-(4-Methyl-piperidin-1-yl)-propylamine,1445607
+C1CCC(CN1)N1CCCC1,Enamine BB,EN300-42929,144243-28-7,3-(pyrrolidin-1-yl)piperidine,10884823
+CC(C[C@@H]1NCCNC1)C,Bepharm,B163691,106576-37-8,(S)-2-Isobutylpiperazine,43468487
+N1CCC2(CC1)CNC2,Ark Pharm,AK133117,136098-14-1,"2,7-Diazaspiro[3.5]nonane",46023675
+NC(=N)C1CCCCCC1,Tyger Scientific,C33056,,Cycloheptanecarboxamidine,4355402
+C1CCN(C1)C[C@@H]1CCCN1,ChemBridge,3002833,51207-66-0,1-[(2S)-pyrrolidin-2-ylmethyl]pyrrolidine,497610
+C[N+](CCCCCCC[N+](C)(C)C)(C)C,Toronto Research Chemicals,B586975,56971-24-5,"Bis-1,7-(trimethylammonium)hepyl Dibromide",31224995
+CCCNCCN,AK Scientific,X3272,111-39-7,N-(N-Propyl)ethylenediamine,496776
+NCCCNC(C)C,Matrix Scientific,026882,3360-16-5,"N1-Isopropyl-1,3-propanediamine",496514
+NCCCCCN(CC)CC,Matrix Scientific,007559,34987-15-0,5-(Diethylamino)pentylamine,4352163
+NCC1(N)CCCC1,Fluorochem (Non-US Customers),238189,5062-66-8,1-(Aminomethyl)cyclopentanamine,37562722
+NCCC1CCN(CC1)C,Enamine BB,EN300-62032,,2-(1-methylpiperidin-4-yl)ethan-1-amine,4348320
+CCN(CCCC#CCN1CCCCC1)CC,Sigma Aldrich,S345989,,6-DIETHYLAMINO-1-PIPERIDINO-2-HEXYNE,7384407
+NCCN1CCCCCC1,Matrix Scientific,010564,51388-00-2,2-Azepan-1-yl-ethylamine,2874189
+CCCN(CCCN)CCC,Matrix Scientific,026887,6345-82-0,"N1,N1-Dipropyl-1,3-propanediamine",7369261
+CN(C[C@@H]1CCCN1)C,Oakwood Products (Non-EU Customers),088181,29618-57-3,Dimethyl-(S)-1-pyrrolidin-2-ylmethyl-amine,43464068
+CC(NC1CCCCC1N(C)C)C,Oakwood Products (Non-EU Customers),087898,,"N-Isopropyl-N',N'-dimethyl-cyclohexane-1,2-diamine",43463690
+CCN[C@@H]1CCCN(C1)C,Oakwood Products (Non-EU Customers),087874,,Ethyl-((R)-1-methyl-piperidin-3-yl)-amine,43463674
+CN[C@@H]1CCN(C1)C,Oakwood Products (Non-EU Customers),087855,,Methyl-((R)-1-methyl-pyrrolidin-3-yl)-amine,43463658
+CCN(C1CCC(CC1)N)CC,Chem-Impex,19459,42389-54-8,"N,N-Diethyl-cyclohexane-1,4-diamine",37451107
+CN[C@@H]1CC[C@H](CC1)N(C1CC1)C,Oakwood Products (Non-EU Customers),088217,,"(1R,4R)-N-Cyclopropyl-N,N'-dimethyl-cyclohexane-1,4-diamine",46018594
+NCC(CN(C)C)C,ChemBridge,4027503,6105-72-2,(3-amino-2-methylpropyl)dimethylamine,10463505
+NC1CCN(C1)C1CCCCCC1,Enamine BB,EN300-64261,,1-cycloheptylpyrrolidin-3-amine,31416689
+N[C@@H]1CC[C@H](C1)N,Ark Pharm,AK130843,573704-66-2,"trans-Cyclopentane-1,3-diamine",46015582
+CC(NC1CCNCC1)C,Enamine BB,EN300-62678,,N-(propan-2-yl)piperidin-4-amine,31416178
+C1CC2(CC1CC2)/N=N/C12CCC(C2)CC1,Molecular Diversity Preservation,20258,,,5868269
+CC(C1CCCCN1)N,Matrix Scientific,039729,15932-66-8,(1-Piperidin-2-ylethyl)amine,27334902
+CCC(CN)(N)C,Enamine BB,EN300-59895,,"2-methylbutane-1,2-diamine",31413866
+CN(CCCNC1CCCCC1)C,UORSY,PB90589956,,,37250332
+NCC(CN(CC)C)C,Matrix Scientific,036097,1060817-17-5,N-(3-Amino-2-methylpropyl)-N-ethyl-N-methylamine,23805558
+CNC(C1CCN(CC1)C)C,Enamine BB,EN300-55298,,methyl[1-(1-methylpiperidin-4-yl)ethyl]amine,31412037
+CC(C1CCCN1)N,Enamine BB,EN300-55191,,1-(pyrrolidin-2-yl)ethan-1-amine,31411949
+NCCN1CCCCC1,Enamine BB,EN300-21749,,2-(piperidin-1-yl)ethan-1-amine,481596
+CCCCN(CCCN)CC,Matrix Scientific,079873,,"N-Butyl-N-ethylpropane-1,3-diamine",31210388
+NC1CCN(CC1)CC1CC1,Enamine BB,EN300-45410,,1-(cyclopropylmethyl)piperidin-4-amine,31410056
+CCCN1CCN(CC1)CC1CCCCC1,Enamine,Z143762284,,,35685120
+CCN(CC1CCNCC1)CC,Enamine BB,EN300-42644,116905-90-9,diethyl(piperidin-4-ylmethyl)amine,31409312
+CC(CC(CN(C)C)N)C,Enamine BB,EN300-41634,,(2-amino-4-methylpentyl)dimethylamine,31409024
+NCCCCN1CCCC(C1)C,Enamine BB,EN300-41121,,4-(3-methylpiperidin-1-yl)butan-1-amine,31408835
+NCC(N1CCCC(C1)C)C,Enamine BB,EN300-40202,,2-(3-methylpiperidin-1-yl)propan-1-amine,31408584
+CCC(N(C)C)(CN)CC,Enamine BB,EN300-39214,,"N-[1-(aminomethyl)-1-ethylpropyl]-N,N-dimethylamine",31408285
+CN(CCCCCCN(C)C)C.Cl.Cl,Ark Pharm,AK104861,1938-71-2,"N1,N1,N6,N6-Tetramethylhexane-1,6-diamine dihydrochloride",44845449
+NCCN(C1CCCC1)C,Enamine BB,EN300-70103,,N-(2-aminoethyl)-N-methylcyclopentanamine,17089465
+CN1CCC[C@@H](C1)N.Cl.Cl,Pharmablock (USA) Inc,PB00823-01,1157849-51-8,(S)-3-Amino-1-methyl-piperidine dihydrochloride,44385858
+NCCCCN1CCC(CC1)(F)F,Oakwood Products (Non-EU Customers),214366,,"4-(4,4-Difluoro-piperidin-1-yl)-butylamine",44385650
+CCCN1CCCC1CN,Princeton BioMolecular Research,PBMR122002,,(1-propylpyrrolidin-2-yl)methanamine,36862779
+CCN[C@@H]1CNCC1,Broadpharm,BP-11299,381670-31-1,(3S)-(-)-3-(Ethylamino)pyrrolidine,27322317
+CC(CCN1CCCC(C1)C)N,Princeton BioMolecular Research,PBMR103143,,1-Methyl-3-(3-methyl-piperidin-1-yl)-propylamine,36844338
+CC(CCN1CCCCC1)N,Princeton BioMolecular Research,PBMR103130,,1-Methyl-3-piperidin-1-yl-propylamine,36844316
+CNC1CCN(CC1)CC,Matrix Scientific,065625,864247-56-3,1-Ethyl-N-methylpiperidin-4-amine,13575156
+C[C@@H](CN1CCCCC1)N,CHESS Fine Organic,X2915,N.N.,(S)-1-(2-Amino-propan-1-yl)-piperidine,44683715
+C1CCC(CN1)N1CCCCC1,Enamine BB,EN300-72388,,3-(piperidin-1-yl)piperidine,32445865
+CN(CCNC1CCCCCCC1)C,ChemBridge,5452773,,,13320116
+CCC1CCC(CC1)NCCN(C)C,ChemBridge,5419745,,,13319305
+NCC1CN2CCC1CC2,Princeton BioMolecular Research,PBMR044903,,1-(1-azabicyclo[2.2.2]oct-3-yl)methanamine,36825261
+CCN(CC1CCCCC1N)CC,Enamine BB,EN300-101045,,2-[(diethylamino)methyl]cyclohexan-1-amine,36813619
+CCN(CCC(N)C)CC,Sigma Aldrich,PH010254,,"N(1),N(1)-diethyl-1,3-butanediamine",35875259
+CCCCCCC(Nc1ccc(cc1)NC(CCCCCC)C)C,Sigma Aldrich,S358762,,"N,N'-BIS-(1-METHYLHEPTYL)-1,4-PHENYLENEDIAMINE",1014209
+CN(CCC1CCNCC1)C,Matrix Scientific,020420,102308-48-5,Dimethyl-(2-piperidin-4-yl-ethyl)-amine,1012979
+NCCCN1CC(CC)CCC1C,Sigma Aldrich,PH007642,,3-(5-ethyl-2-methyl-1-piperidinyl)-1-propanamine,35871602
+NCCC(CN)C,Alinda Chemical,ALBB-008794,,"2-methylbutane-1,4-diamine dihydrochloride",986996
+FC(CN1CCC(CC1)N)F,Enamine BB,EN300-59999,,"1-(2,2-difluoroethyl)piperidin-4-amine",22999314
+CCN(CC(CCC=C(C)C)C)CCN(C)C,ChemBridge,5428355,,,2072695
+CCC(N1CCC(C1)CN)C,Vitas M Labs,STK894452,,1-[1-(butan-2-yl)pyrrolidin-3-yl]methanamine,30519258
+C[N+](CCCCCC[N+](C)(C)C)(C)C.[I-].[I-],MP Biomedicals,05207555,870-62-2,HEXAMETHONIUM IODIDE,979657
+CC[C@@H]1NC[C@H](NC1)CC,Anichem,31416,,"(2S,5R)-2,5-Diethyl-piperazine",44825617
+CN(CC1CCCN1)C,Vitas M Labs,STK893970,,"N,N-dimethyl-1-(pyrrolidin-2-yl)methanamine",30519100
+CN(CCNC1CCCC1)C,Matrix Scientific,020949,,"N'-Cyclopentyl-N,N-dimethyl-ethane-1,2-diamine",1556666
+NCC(CNC)(C)C,Enamine BB,EN300-97455,,"(3-amino-2,2-dimethylpropyl)(methyl)amine",37155563
+NC[C@@H](N)C,Enamine BB,EN300-96086,,"(2S)-propane-1,2-diamine",37155236
+NCC1(C)CC(CC(C1)(C)C)N(C)C,AstaTech,54097,,"3-(AMINOMETHYL)-N,N,3,5,5-PENTAMETHYLCYCLOHEXANAMINE",37154510
+CC(C1CCCCN1CCC1CCCCN1)C,Princeton BioMolecular Research,PBMR177594,,2-Isopropyl-1-(2-piperidin-2-yl-ethyl)-piperidine,46113768
+CN(C1CCNCC1)C.Cl,Matrix Scientific,016365,50533-97-6,"N,N-Dimethylpiperidin-4-amine hydrochloride",13169027
+CCCN1CCC(CC1)N.Cl.Cl,Combi-Blocks,OR-6332,42389-59-3,"4-Amino-1-propylpiperidine di, HCl",44815161
+CN(CCCNC1CCCC1)C,ChemBridge,9240622,,,17011820
+CCCCC(N1CCNCC1)CCCC,Oakwood Products (Non-EU Customers),018131,83655-59-8,1-(5-Nonyl)-piperazine,933379
+CN1CCCC(C1)N.Cl.Cl,Matrix Scientific,068620,894808-73-2,3-Amino-1-methylpiperidine dihydrochloride,933312
+N1CCN(CC1)CCCC1CCCC1,Apollo Scientific,OR0855,827614-49-3,1-(3-Cyclopentylprop-1-yl)piperazine 97%,933288
+C1CN[C@H]2[C@@H](C1)NCCC2,Enamine BB,EN300-90625,,"(4aR,8aR)-decahydro-1,5-naphthyridine",36790686
+N[C@@H]1[C@@H]2CC[C@H]([C@H]1N)C2,Enamine BB,EN300-90546,,"(1R,2R,3R,4S)-bicyclo[2.2.1]heptane-2,3-diamine",36790623
+CN(CC1CCCNC1)C,Matrix Scientific,016368,90203-05-7,"N,N-Dimethyl-1-piperidin-3-ylmethanamine",1542142
+NC1CCN(C(C1)C)C,Enamine BB,EN300-86329,,"1,2-dimethylpiperidin-4-amine",36789927
+CNCC1CCCN1C,ChemBridge,4100050,23210-47-1,N-methyl-1-(1-methylpyrrolidin-2-yl)methanamine,3724931
+N1CCC2(CC1)CNCC2,Enamine BB,EN300-136719,,"2,8-diazaspiro[4.5]decane",44151929
+CC(CN1CC2CNCC(C1)C2)C,Princeton BioMolecular Research,PBMR168760,,"3-Isobutyl-3,7-diaza-bicyclo[3.3.1]nonane",44786393
+C1CCCCC(CC1)N1CCNCC1,Apollo Scientific,OR6902,21043-43-6,1-(Cyclooctyl)piperazine 97%,918652
+CCCCCCN(C1CCCN(C1)C)C,Enamine,Z1540602256,,,45696057
+CNCCC(N1CCCC1)C,ChemBridge,4002505,1177352-54-3,N-methyl-3-pyrrolidin-1-ylbutan-1-amine,15211932
+NCCCCCCN1CCCCC1,Specs,AQ-387/41149334,,6-(1-piperidinyl)hexylamine,13075443
+NCCN(C1CCCCC1)C,Matrix Scientific,033499,245487-33-6,"N*1*-Cyclohexyl-N*1*-methyl-ethane-1,2-diamine",13075317
+NC[C@@H]1CCCN1C,Matrix Scientific,068633,66411-54-9,(S)-(-)-1-Methyl-2-aminomethylpyrrolidine,36413699
+C1CCC(CN1)CN1CCCCCC1,Enamine BB,EN300-68810,,1-(piperidin-3-ylmethyl)azepane,30488713
+NCC1CCCNC1.Cl.Cl,Matrix Scientific,081957,23099-21-0,3-(Aminomethyl)piperidine dihydrochloride,17253097
+NCC1CCN(CC1)CC.Cl.Cl,Oakwood Products (Non-EU Customers),032203,,C-(1-Ethyl-piperidin-4-yl)-methylamine dihydrochloride,17252585
+CN([C@H]1CCCCNC1)C,ChemBridge,4045210,,"(3S)-N,N-dimethyl-3-azepanamine",36092798
+CN(C[C@@H]1[C@@H]2[C@H]1CNC2)C,ChemBridge,4042480,,"rac-1-[(1R,5S,6r)-3-azabicyclo[3.1.0]hex-6-yl]-N,N-dimethylmethanamine",36092571
+CN1CCCC(CC1)N,Matrix Scientific,068513,933741-93-6,1-Methylazepan-4-amine,29916063
+CC(CC(NC(C1CCCNC1)C)C)C,ChemBridge,92524354,,"(1,3-dimethylbutyl)[1-(3-piperidinyl)ethyl]amine",25617273
+CC(N[C@H]1CCCNC1)C.Cl.Cl,Oakwood Products (Non-EU Customers),069534,,(S)-N-(Propan-2-yl)piperidin-3-amine dihydrochloride,36770577
+CC(CN[C@@H]1CCCNC1)C.Cl.Cl,Oakwood Products (Non-EU Customers),069458,,(R)-N-(2-Methylpropyl)piperidin-3-amine dihydrochloride,36770434
+NCCC12CC3CC(C1)CC(C2)(C3)CCN,ChemDiv,C588-0034,,,1345149
+CC(N[C@@H]1CCCNC1)C.Cl.Cl,Oakwood Products (Non-EU Customers),064417,,(R)-N-(Propan-2-yl)piperidin-3-amine dihydrochloride,36770090
+CC1CCCN(C1)CC(N)(C)C,Matrix Scientific,019228,,"1,1-Dimethyl-2-(3-methyl-piperidin-1-yl)-ethylamine",1522959
+CCCCCC[N+](CCCCCCCCCC[N+](CCCCCC)(C)C)(C)C.[I-].[I-],InterBioScreen,STOCK1S-57130,,"N1,N10-dihexyl-N1,N1,N10,N10-tetramethyldecane-1,10-diaminium iodide",33572019
+CCN(CCC1CCCCN1)CC,Matrix Scientific,020455,100158-62-1,Diethyl-(2-piperidin-2-yl-ethyl)-amine,1522790
+NCC1CCN(CC1)CC1CCCC1.Cl.Cl,Oakwood Products (Non-EU Customers),064324,,[1-(Cyclopentylmethyl)piperidin-4-yl]methanamine dihydrochloride,36769918
+CCCCNCCNC(C)C,Oakwood Products (Non-EU Customers),024758,886503-66-8,N-Butyl-N'-isopropyl ethylenediamine,6254821
+NCCCCN1CCCCC1,Matrix Scientific,033460,74247-30-6,4-Piperidin-1-yl-butylamine,1522652
+N[C@H]1CCN(C1)CC1CCCCC1,Oakwood Products (Non-EU Customers),064216,,(S)-1-(Cyclohexylmethyl)pyrrolidin-3-amine,36769715
+CCCCCCCCCCCC[N+](CCCCCC[N+](CCCCCCCCCCCC)(C)C)(C)C.[I-].[I-],Sigma Aldrich,L497193,,"N(1),N(6)-DIDODECYL-N(1),N(1),N(6),N(6)-TETRAMETHYL-1,6-HEXANEDIAMINIUM DIIODIDE",590952
+CCC(NC1CCNCC1)CC.Cl.Cl,Oakwood Products (Non-EU Customers),063525,,N-(Pentan-3-yl)piperidin-4-amine dihydrochloride,36768530
+NCC1(N)CCCCC1C,Enamine BB,EN300-73360,,1-(aminomethyl)-2-methylcyclohexan-1-amine,36084415
+C(CN1CCCCC1)CN1CCCCC1,SynQuest,3H32-1-45,16898-52-5,"1,3-Di(4-piperidyl)propane",6895134
+CN(C1CCN(CC1)C)CCCC1CCCC1,ChemBridge,45910016,,"N-(3-cyclopentylpropyl)-N,1-dimethyl-4-piperidinamine",25612279
+CN(CC(CNC1CCCCCC1)(C)C)C,ChemBridge,5453223,,,2354555
+NCC1CCN(C1)C1CCCCC1,ChemBridge,4021233,914202-86-1,1-(1-cyclohexyl-3-pyrrolidinyl)methanamine,25607159
+NC1CNCC1,Matrix Scientific,037415,79286-79-6,Pyrrolidin-3-amine,6885652
+C1CCCC(CC1)NCC1CCN(CC1)C1CCCC1,ChemBridge,40349682,,N-[(1-cyclopentylpiperidin-4-yl)methyl]cycloheptanamine,32391658
+CN[C@@H]1CCCC[C@H]1NC.Cl,Oakwood Products (Non-EU Customers),035879,,"trans-(1R,2R)-N,N'-Bismethyl-1,2-cyclohexane diamine hydrochloride",36763036
+CNCCCN(CC)CC,Matrix Scientific,027015,5459-95-0,"N1,N1-Diethyl-N3-methyl-1,3-propanediamine",6883259
+CCCN1CCC(C1)CCN,Matrix Scientific,053980,,2-(1-Propyl-3-pyrrolidinyl)ethylamine,30423951
+CCC(N1CCC(CC1)C)CN,Matrix Scientific,064443,,[2-(4-Methylpiperidin-1-yl)butyl]amine,32175575
+N[C@H]1CNCC1.Cl.Cl,AK Scientific,R061,116183-81-4,(R)-(+)-3-Aminopyrrolidine 2HCl,6876365
+CCNCCCNCCC,Matrix Scientific,026984,1040691-95-9,"N1-Ethyl-N3-propyl-1,3-propanediamine",18625174
+CCCN(CCCNC)CCC,Matrix Scientific,026974,858941-97-6,"N1-Methyl-N3,N3-dipropyl-1,3-propanediamine",18625158
+CCNCCCNC(C)(C)C,Matrix Scientific,026936,28286-19-3,"N1-(tert-Butyl)-N3-ethyl-1,3-propanediamine",18625094
+CCCN1CCC(CC1)N(CC1CC1)CCC,ChemBridge,5462279,,,24836872
+CNCC(N1CCCCC1)C,Exclusive Chemistry,EC-000.1350,,N-methyl-2-(1-piperidinyl)-1-propanamine,33371921
+CCCNCC1CCCCN1C(C)C,Exclusive Chemistry,EC-000.1317,,N-[(1-isopropyl-2-piperidinyl)methyl]-1-propanamine,33371889
+CCNCC1CCCCN1CC,Exclusive Chemistry,EC-000.1309,,N-[(1-ethyl-2-piperidinyl)methyl]ethanamine,33371873
+CCCCNCC1CCCN1CCC,Exclusive Chemistry,EC-000.1300,,N-[(1-propyl-2-pyrrolidinyl)methyl]-1-butanamine,33371857
+CCNCC1CCCN1C(C)C,Exclusive Chemistry,EC-000.1292,,N-[(1-isopropyl-2-pyrrolidinyl)methyl]ethanamine,33371841
+CCC1CCC(CC1)N(C1CCN(CC1)C)C,ChemBridge,5415234,,,24833989
+CNCC1CCN(C1)C.Cl.Cl,Matrix Scientific,019128,1185042-30-1,Methyl-(1-methyl-pyrrolidin-3-ylmethyl)-amine dihydrochloride,18622738
+C1CCN(C1)CC1CCCN1.Cl.Cl,Matrix Scientific,051694,,1-(2-Pyrrolidinylmethyl)pyrrolidine dihydrochloride,30420419
+C1CCC(NC1)CCN1CCCCC1.Cl.Cl,Matrix Scientific,051554,6295-79-0,1-[2-(2-Piperidinyl)ethyl]piperidine dihydrochloride,5777162
+CCCN(CC1CNCC1)CCC.Cl.Cl,Matrix Scientific,051654,,N-Propyl-N-(3-pyrrolidinylmethyl)-1-propanamine dihydrochloride,30420349
+CCN(CC1CNCC1)CC.Cl.Cl,Matrix Scientific,051638,1219981-40-4,N-Ethyl-N-(3-pyrrolidinylmethyl)-1-ethanamine dihydrochloride,30420317
+C1CCCN(CC1)CCC1CCNCC1.Cl.Cl,Matrix Scientific,051622,1220035-80-2,1-[2-(4-Piperidinyl)ethyl]azepane dihydrochloride,30420287
+CCCCN(CCC1CCNCC1)C.Cl.Cl,Matrix Scientific,051614,,N-Methyl-N-[2-(4-piperidinyl)ethyl]-1-butanamine dihydrochloride,30420276
+C1CCC(CN1)CN1CCCC1,Matrix Scientific,018972,514842-98-9,3-Pyrrolidin-1-ylmethyl-piperidine,1508700
+CC1CCCN(C1)CCC1CCCNC1.Cl.Cl,Matrix Scientific,051590,,3-Methyl-1-[2-(3-piperidinyl)ethyl]piperidine dihydrochloride,30420232
+NCC1CCCN(C1)C(C)C,Matrix Scientific,018968,875400-96-7,C-(1-Isopropyl-piperidin-3-yl)-methylamine,1508684
+CCC1CCCCN1C1CCNCC1.Cl.Cl,Matrix Scientific,051512,,4-(2-Ethyl-1-piperidinyl)piperidine dihydrochloride,30420106
+CC1CCN(CC1)CC1CCNCC1.Cl.Cl,Matrix Scientific,051450,,4-Methyl-1-(4-piperidinylmethyl)piperidine dihydrochloride,30420006
+CN(CC1CCCNC1)C.Cl.Cl,Matrix Scientific,051409,90203-05-7,"N,N-Dimethyl(3-piperidinyl)methanamine dihydrochloride",30419937
+CC(CN1CCCCC1)N,Matrix Scientific,021536,34217-60-2,1-Methyl-2-piperidin-1-yl-ethylamine,846675
+CN(CC(CNC1CCC(C1)C)(C)C)C,ChemBridge,5420652,,,2015569
+CCC1CCC(CC1)NCC(CN(C)C)(C)C,ChemBridge,5418134,,,2015543
+CCCNC/C=C/CN,Sigma Aldrich,S621390,,"N-PROPYL-1,4-DIAMINO-2-BUTENE",207289372
+C[N+](CCCC#CC#CCCC[N+](C)(C)C)(C)C,Princeton BioMolecular Research,OSSL_489318,,,36009841
+CNCC1CCC(CC1)N,Enamine BB,EN300-78975,,4-[(methylamino)methyl]cyclohexan-1-amine,36364514
+NC1CCN(CC1)CC1CCCCC1,Matrix Scientific,020850,64306-77-0,1-Cyclohexylmethyl-piperidin-4-ylamine,5769505
+CNCC1CCCN(C1)C.Cl.Cl,CHESS Fine Organic,2520,N.N.,1-Methyl-3-(methylaminomethyl)-piperidine x 2 HCl,24192304
+NCC1CCCN(C1)C1CCCC1,Matrix Scientific,016360,883521-63-9,[(1-Cyclopentylpiperidin-3-yl)methyl]amine,5766384
+N1CCC(CC1)CN1CCCC1,Matrix Scientific,016344,683772-11-4,4-(Pyrrolidin-1-ylmethyl)piperidine,5766368
+NC12CC3CC(C1)CC(C2)(C3)N,Synthon-Lab,SL080224,10303-95-4,3-amino-1-adamantylamine,6164129
+NCCCCCCCN(CC)CC,MP Biomedicals,05202947,20526-69-6,7-DIETHYLAMINOHEPTYLAMINE,5759227
+NCCCNC(C)(C)C,Matrix Scientific,007526,52198-64-8,3-tert-Butylaminopropylamine,5759195
+NCCC1CCN(C1)C,Enamine BB,EN300-83005,,2-(1-methylpyrrolidin-3-yl)ethan-1-amine,28304725
+CN1CC[C@@H](C1)N,Matrix Scientific,068517,214357-95-6,(3S)-1-Methylpyrrolidin-3-amine,28301626
+CNCCN1CCCC1.Cl.Cl,Life Chemicals,F2150-0025,32776-22-0,N-methyl-2-pyrrolidin-1-ylethanamine dihydrocloride,37095756
+CN(CC1CC1)CC1CNCC1,Enamine BB,EN300-96715,,(cyclopropylmethyl)(methyl)(pyrrolidin-3-ylmethyl)amine,37095140
+CNC1C[C@@H]2CCCN(C1)C2,Enamine BB,EN300-118482,,(5S)-N-methyl-1-azabicyclo[3.3.1]nonan-3-amine,44465556
+CC(CCC(=N)N)C,ChemBridge,4012910,857809-03-1,4-methylpentanimidamide,11489622
+CCN(CC1CNCC1)C,Enamine BB,EN300-94943,,ethyl(methyl)(pyrrolidin-3-ylmethyl)amine,37094391
+CNCCN1CCC(CC1)C,Matrix Scientific,027632,915924-43-5,N-Methyl-N-[2-(4-methylpiperidin-1-yl)ethyl]amine,11489118
+CCN(CC1(N)CC1)CC,ChemBridge,4026345,1015846-24-8,1-[(diethylamino)methyl]cyclopropanamine,18189057
+CCNCCN1CCCCCC1,Matrix Scientific,027628,55543-73-2,N-(2-Azepan-1-ylethyl)-N-ethylamine,11488768
+CCCCN(CN(CCCC)CCCC)CCCC,Sigma Aldrich,S388602,,"N,N,N',N'-TETRABUTYLMETHANEDIAMINE",1109035
+CCCN1CCC(CC1)CCN,ChemBridge,4009834,915922-52-0,2-(1-propylpiperidin-4-yl)ethanamine,11488355
+NCCCCN1CCCCCC1,ChemBridge,4011826,1565-55-5,(4-azepan-1-ylbutyl)amine,11488287
+CNCCN1CC(C)CC(C1)C,Matrix Scientific,027661,,"N-[2-(3,5-Dimethylpiperidin-1-yl)ethyl]-N-methylamine",18186552
+CCNCCCN(CC)CC,Matrix Scientific,026928,22268-51-5,"N1,N1,N3-Triethyl-1,3-propanediamine",14111919
+CNCCN1CCCCCC1,ChemBridge,4010632,118808-13-2,(2-azepan-1-ylethyl)methylamine,14110518
+CCCCCCCCNCCCN,Enamine BB,EN300-93369,,(3-aminopropyl)(octyl)amine,28290692
+CC(NCCN1[C@H](C)CCC[C@@H]1C)C,ChemDiv BB,BB53-1035,,"N-{2-[(2R,6S)-2,6-dimethylpiperidin-1-yl]ethyl}-N-isopropylamine",31525631
+CC1CCNCC1N,Enamine BB,EN300-84017,,4-methylpiperidin-3-amine,36726249
+ClCCNCCCN1CCCCCC1,ChemDiv BB,BB52-9748,,N-(3-azepan-1-ylpropyl)-N-(2-chloroethyl)amine,31523669
+ClCCCNCCN1CCCCCC1,ChemDiv BB,BB52-9308,,N-(2-azepan-1-ylethyl)-N-(3-chloropropyl)amine,31523014
+CC1CCCN(C1)C1CCN(CC1)C1CCCCC1,ChemBridge,6755116,,,2172219
+CNCCCCN.Cl.Cl,Santa Cruz Biotechnology,sc-212242,89690-09-5,"N-Methylbutane-1,4-diamine, Dihydrochloride",45917096
+CC1CNCC(N1)C,Enamine BB,EN300-59818,,"2,6-dimethylpiperazine",537062
+NCC1CCN(CC1)C,Matrix Scientific,074379,7149-42-0,1-Methyl-piperidin-4-methylamine,724498
+NCC(CN)C,TCI America,M1657,2400-78-4,"2-Methyl-1,3-propanediamine",28204331
+NCCCCCCN.Cl.Cl,AK Scientific,Q356,6055-52-3,"1,6-Hexanediamine 2HCl",718204
+CC(CC1NCCN(C1)C)C,Life Chemicals,F2147-0835,,3-isobutyl-1-methylpiperazine,40810469
+CNC1CCCCC1NC,Matrix Scientific,073610,68173-05-7,"N,N'-Dimethylcyclohexane-1,2-diamine",525142
+CCCCCCCCCCCC(=N)N,Tyger Scientific,D33006,100392-19-6,Dodecanamidine,44228661
+CC1CCN(CC1)C1CCN(CC1)C1CCCC1,Zelinsky Institute,UZI/1935587,,,6116147
+C1CCN(CC1)CCN1CCCCC1,Acros Organics (US),18511,1932-04-3,"1,2-Dipiperidinoethane, 98%",712356
+NCCCC(N)C,AK Scientific,U481,591-77-5,"1,4-Diaminopentane",40256398
+NCC1CC(C)CCN1C,Enamine BB,EN300-101293,,"(1,4-dimethylpiperidin-2-yl)methanamine",40072067
+CN(CCCN(C)C)C,Apollo Scientific,OR18301,110-95-2,"N,N,N',N'-Tetramethylpropane-1,3-diamine 98%",519791
+CNC1CCCNC1.Cl.Cl,Matrix Scientific,074600,127294-77-3,3-Methylaminopiperidine dihydrochloride,2735196
+CN(C[C@@H]1CCCN1)C.Cl,Matrix Scientific,069178,1152113-36-4,"(S)-N,N-Dimethyl(pyrrolidin-2-yl)methanamine hydrochloride",36553242
+CC(CCN(CC1CCCCCN1)CCC(C)C)C,ACB Blocks ,C7A-0345,,N-(2-azepanylmethyl)-N-isopentyl-3-methyl-1-butanamine,706287
+C1CCC(NC1)CN1CCCCCC1,Matrix Scientific,021086,,1-Piperidin-2-ylmethyl-azepane,706107
+C1CCC(NC1)CN1CCCC1,Matrix Scientific,021532,100158-63-2,2-Pyrrolidin-1-ylmethyl-piperidine,705945
+CC1CCN(CC1)C1CCC(CC1)N,Enamine BB,EN300-116070,,4-(4-methylpiperidin-1-yl)cyclohexan-1-amine,39375429
+C1CCNC(CC1)CN1CCCC1,ACB Blocks ,C7A-0335,,2-(1-pyrrolidinylmethyl)azepane,705650
+C1CCCN(CC1)C1CCNCC1,ChemBridge,4030374,436099-86-4,1-(4-piperidinyl)azepane,1459248
+CN1CCCCC1CNC1CC1,Oakwood Products (Non-EU Customers),087908,,Cyclopropyl-(1-methyl-piperidin-2-ylmethyl)-amine,39193827
+C1CCNC(CC1)C1CCCNC1,Alfa Aesar (US),H26042,912771-29-0,"2-(3-Piperidinyl)azepane, tech. 90%",1884777
+CCCCCCC(N1CCNCCC1)C,EvoBlocks,EB30105,,"1-(octan-2-yl)-1,4-diazepane",32283841
+CCCCCCCCCCCCCCN1CCCNCC1,EvoBlocks,EB30068,,"1-tetradecyl-1,4-diazepane",32283791
+CCCCC(CN1CCNCCC1)CC,EvoBlocks,EB30005,,"1-(2-ethylhexyl)-1,4-diazepane",32283711
+CCCC(N1CCNCC1C)CC,Oakwood Products (Non-EU Customers),062471,,1-(1-Ethylbutyl)-2-methylpiperazine,32283608
+CCCCC(N1CCNCC1C)C,Oakwood Products (Non-EU Customers),063068,,2-Methyl-1-(1-methylpentyl)piperazine,32283457
+CCC(N1CCN(CC1)C1CCCC1)CC,Zelinsky Institute,UZI/1936148,,,1453606
+CC(C(=N)N)CC.Cl,Enamine BB,EN300-54760,,2-methylbutanimidamide hydrochloride,18924086
+CN1CCC2(CC1)CCCNC2,Matrix Scientific,064149,,"9-Methyl-2,9-diazaspiro[5.5]undecane",31239348
+CCNC1CCCNC1,CombiPhos Catalysts,MPB-11224,,Ethyl-piperidin-3-yl-amine,38465536
+NC(=N)CC1CC1.Cl,Matrix Scientific,097090,21572-79-2,2-Cyclopropylacetimidamide hydrochloride,43677373
+CNCC1CCCCN1,CombiPhos Catalysts,MPB-1171,,Methyl-piperidin-2-ylmethyl-amine,38100925
+CC(NCC1CCNCC1)C,CombiPhos Catalysts,MPB-11245,,Isopropyl-piperidin-4-ylmethyl-amine,38100417
+CC(CN1CCC(CC1)C1CNCC1)C,ChemBridge,87403677,,1-isobutyl-4-(3-pyrrolidinyl)piperidine,43207945
+N1CCC(CC1)NC1CC1,CombiPhos Catalysts,MPB-1147,,Cyclopropyl-piperidin-4-yl-amine,38021234
+NCCCN1CCCCC1CC,Matrix Scientific,038327,13901-38-7,3-(2-Ethylpiperidin-1-yl)propan-1-amine,1445605
+N[C@H]1CC=CC[C@@H]1N,Sigma Aldrich,726338,1241684-26-3,"(1S,2S)-4-Cyclohexene-1,2-diamine",31430402
+CC(CC(=N)N)C,ChemBridge,4012906,67777-12-2,3-methylbutanimidamide,4355764
+CNCCCN(C)C,Matrix Scientific,081514,4543-96-8,"N,N,N-Trimethyl-1,3-propanediamine",498297
+CCCCCCCCCCCCCCCCNCCCN,Matrix Scientific,026872,7173-60-6,"N1-Hexadecyl-1,3-propanediamine",7477581
+N=C1CCCCN1,Enamine BB,EN300-77982,,piperidin-2-imine,31226601
+CCC1CN(CCC2CCCCCC2)CCN1C,ChemBridge,49599020,,4-(2-cycloheptylethyl)-2-ethyl-1-methylpiperazine,23820582
+NCCCC(CN)C,TCI America,M0205,15520-10-2,"2-Methyl-1,5-diaminopentane",497442
+NCCCCCN(C)C,Matrix Scientific,007229,3209-46-9,5-(Dimethylamino)amylamine,4352161
+CC1CCCCN1CCN1CCCCC1C,Fluorochem (Non-US Customers),032617,,"1,2-Bis(2-methylpiperid-1-yl)ethane",4349067
+CCC(=N)N,WuXi AppTec,WX619910,39800-84-5,PROPIONAMIDINE,7389166
+CCN(CCCC#CCN(CC)CC)CC,Sigma Aldrich,S342203,,"1,6-BIS-(DIETHYLAMINO)-2-HEXYNE",7384401
+CN([C@H]1CCCNC1)C(C)C,Oakwood Products (Non-EU Customers),088195,,Isopropyl-methyl-(S)-piperidin-3-yl-amine,43464082
+CC(NC1CCC(CC1)N(C)C)C,Oakwood Products (Non-EU Customers),087896,,"N-Isopropyl-N',N'-dimethyl-cyclohexane-1,4-diamine",43463688
+CCNC[C@@H]1CCCN1C,Oakwood Products (Non-EU Customers),087872,,Ethyl-((S)-1-methyl-pyrrolidin-2-ylmethyl)-amine,43463672
+CN[C@@H]1CC[C@H](CC1)N(C(C)C)C,Oakwood Products (Non-EU Customers),088201,,"(1R,4R)-N-Isopropyl-N,N'-dimethyl-cyclohexane-1,4-diamine",46018592
+CN([C@@H]1CC[C@H](CC1)NC1CC1)C,Oakwood Products (Non-EU Customers),087912,,"(1R,4R)-N-Cyclopropyl-N',N'-dimethyl-cyclohexane-1,4-diamine",46018560
+N[C@@H]1CC=CC[C@H]1N,Sigma Aldrich,726311,208533-40-8,"(1R,2R)-4-Cyclohexene-1,2-diamine",31216946
+CN(C1CCCC1)C1CCNCC1,ChemDiv BB,BB01-7978,,N-cyclopentyl-N-methylpiperidin-4-amine,37037527
+CC1(C)CCC(N=N1)(C)C,Molecular Diversity Preservation,20246,,,5868251
+C1CCN(CC1)C/C=C/CN1CCCCC1,ChemDiv,3455-0111,,,1237411
+CCCCN1CCCCC1CN,Enamine BB,EN300-60770,,(1-butylpiperidin-2-yl)methanamine,31414578
+NC1CC(C1)N.Cl.Cl,Enamine BB,EN300-117833,,"cyclobutane-1,3-diamine dihydrochloride",36469349
+CCCNCCN(C)C,Enamine BB,EN300-56402,,[2-(dimethylamino)ethyl](propyl)amine,31412785
+NC[C@@H]1CCCC[C@@H]1N.Cl.Cl,BioBlocks,AA114-1,1212366-42-1,cis-2-Aminomethyl-cyclohexylamine dihydrochloride,26984579
+CC1(N)CCNCC1.Cl.Cl,Bepharm,B241793,483366-98-9,4-Methylpiperidin-4-amine dihydrochloride,44392379
+CC(NCC1CCCNC1)C.Cl,Enamine BB,EN300-55429,,(piperidin-3-ylmethyl)(propan-2-yl)amine hydrochloride,31412131
+CNCCCCCCNC,TCI America,D1298,13093-04-4,"N,N'-Dimethyl-1,6-diaminohexane",482640
+C1CC2CNC1CN2,"J & W PharmLab, LLC",65-0432,658-24-2,"2,5-Diaza-bicyclo[2.2.2]octane",44693910
+CN(CCNCC1CCC1)C,Princeton BioMolecular Research,PBMR151905,,"N'-Cyclobutylmethyl-N,N-dimethyl-ethane-1,2-diamine",37180629
+CN(CCCCN(C)C)C,Acros Organics (US),15560,111-51-3,"N,N,N',N'-Tetramethyl-1,4-butanediamine, 97%",480048
+NCCCCN1CCCCC1C,Enamine BB,EN300-41120,,4-(2-methylpiperidin-1-yl)butan-1-amine,31408833
+NCC(N1CCCCC1C)C,Enamine BB,EN300-39751,,2-(2-methylpiperidin-1-yl)propan-1-amine,31408448
+CCC(N1CCCC1)CN,Enamine BB,EN300-36232,,2-pyrrolidin-1-ylbutan-1-amine,31407778
+CCC(=N)N.Cl,Matrix Scientific,090341,3599-89-1,Propioamidine hydrochloride,1837474
+C[C@@H]1CNC[C@@H](N1)C,Matrix Scientific,085687,1013625-96-1,"(2R,6S)-2,6-Dimethylpiperazine",25717801
+N[C@H]1CCCNC1.Cl.Cl,Matrix Scientific,074191,334618-07-4,(S)-(+)-3-Aminopiperidine dihydrochloride,1835892
+C=CCN1CCCCC1CN,Princeton BioMolecular Research,PBMR126014,,(1-allyl-2-piperidyl)methanamine,36864933
+NCCCCCCN(CC)CC,Otava,7020210370,,,37174913
+CCN[C@H]1CNCC1,TCI America,E0433,381670-30-0,(3R)-(+)-3-(Ethylamino)pyrrolidine,27322315
+NCC1CN2CC[C@H]1CC2,Advanced ChemBlocks,F-4397,75936-99-1,(1-AZABICYCLO[2.2.2]OCT-3-YLMETHYL)AMINE,44841096
+N[C@@H]1CCCC[C@@H]1N.Cl.Cl,Bepharm,B226125,10027-80-2,"(1R,2S)-Cyclohexane-1,2-diamine dihydrochloride",44683642
+NC1CCN(CC1)CC=C(C)C,Enamine BB,EN300-72167,,1-(3-methylbut-2-en-1-yl)piperidin-4-amine,32445672
+CCCCCNCCN,Princeton BioMolecular Research,PBMR063167,,"N*1*-Pentyl-ethane-1,2-diamine",36831598
+N1CC2CC(C1)N2,Enamine BB,EN300-89801,,"3,6-diazabicyclo[3.1.1]heptane",32444839
+C=CCN1CCC(CC1)N,Enamine BB,EN300-70537,,1-(prop-2-en-1-yl)piperidin-4-amine,32444057
+CNC(C1CCCNC1)C(C)C,Enamine BB,EN300-89666,,methyl[2-methyl-1-(piperidin-3-yl)propyl]amine,32442512
+CN(CC1CCCCC1N)C,Princeton BioMolecular Research,PBMR013852,,2-Dimethylaminomethyl-cyclohexylamine,36813617
+NCC(N)(C)C,TCI America,D2102,811-93-8,"1,2-Diamino-2-methylpropane",1012320
+CC1CCCN(C1)CC1CCCCCN1,Vitas M Labs,STK894450,,2-[(3-methylpiperidin-1-yl)methyl]azepane,30519257
+CN(CC1CCCCCN1)C,Vitas M Labs,STK893999,,"1-(azepan-2-yl)-N,N-dimethylmethanamine",30519118
+N1CCC(CC1)C1CCCN1,Vitas M Labs,STK893481,,4-(pyrrolidin-2-yl)piperidine,30518994
+CC1CCCC(N1CC1CCCN1)C,Vitas M Labs,STK891517,,"2,6-dimethyl-1-(pyrrolidin-2-ylmethyl)piperidine",30518897
+C1CCCCCCC/N=C/c2ccc(/C=N/CCCC1)cc2,Sigma Aldrich,S764221,,"N,N'-(TEREPHTHALYLIDENE)DODECAMETHYLENEDIAMINE",13176062
+NCCC1(N)CC1,Enamine BB,EN300-95769,,1-(2-aminoethyl)cyclopropan-1-amine,37155189
+N(CC1CCCCC1)C[C@@H]1CC[C@@H](CC1)CNCC1CCCCC1,Sigma Aldrich,PH003223,,N-(cyclohexylmethyl)-N-[(4-{[(cyclohexylmethyl)amino]methyl}cyclohexyl)methyl]amine,35864857
+CC1CCN(CC1)CC1(N)CCCCC1,Matrix Scientific,019992,,1-(4-Methyl-piperidin-1-ylmethyl)-cyclohexylamine,1553647
+CC(=C)CN1CCC(CC1)CN1CCCC1,Enamine,Z433798476,,,36271463
+NCCCCN1CCCCCC1.Cl,Sigma Aldrich,CBR01023,,(4-Azepan-1-ylbutyl)amine hydrochloride,35862500
+NCC1CCN(CC1)C.Cl,Matrix Scientific,042491,1187582-53-1,[(1-Methylpiperidin-4-yl)methyl]amine hydrochloride,30512383
+CCN1CCC(CC1)N.Cl.Cl,Combi-Blocks,SH-5135,357935-97-8,"1-Ethylpiperidin-4-amine, HCl",44816025
+CCCCCCCCCCCCCCN1CCN(CC1)CCCCCCCCCCCCCC,Sigma Aldrich,S234923,,"1,4-DITETRADECYL-PIPERAZINE",13166398
+CN1CCC(CC1)NC(C)C,ChemDiv,K783-4743,,,32864696
+C1CCN(CC1)CC1CNCC1,Enamine BB,EN300-91361,,1-(pyrrolidin-3-ylmethyl)piperidine,36790856
+N[C@@H]1C[C@H]2[C@@H](C1)C[C@H](C2)N,Enamine BB,EN300-90544,,"octahydropentalene-2,5-diamine",36790621
+NCC1(CN)CC(C1)C,Princeton BioMolecular Research,PBMR160208,,C-(1-Aminomethyl-3-methyl-cyclobutyl)-methylamine,44152994
+CC1CC(C1)CN1CCNCCC1,Princeton BioMolecular Research,PBMR160200,,"1-(3-Methyl-cyclobutylmethyl)-[1,4]diazepane",44152978
+CCCCCCCCCN1CCNCC1,Apollo Scientific,OR6896,82394-25-0,1-(Non-1-yl)piperazine 98%,919615
+CCCN1CC2CNCC(C1)C2,Princeton BioMolecular Research,PBMR168759,,"3-Propyl-3,7-diaza-bicyclo[3.3.1]nonane",44786391
+CCCCCCCCCCN1CCNCC1,Apollo Scientific,OR6897,63207-03-4,1-(Dec-1-yl)piperazine 97%,918678
+C1CCC(CC1)CCN1CCNCC1,Apollo Scientific,OR6906,132800-12-5,1-(2-Cyclohexylethyl)piperazine 97%,918650
+NCCN1CCCCC1.Cl.Cl,Bepharm,B227923,100911-49-7,2-(Piperidin-1-yl)ethanamine dihydrochloride,36253574
+NCCCN1C2CCC1CC2,Princeton BioMolecular Research,PBMR117430,,3-(7-azabicyclo[2.2.1]heptan-7-yl)propan-1-amine,42816526
+CCC(C(N(C)C)CN)CC,Enamine BB,EN300-28775,,"N-[1-(aminomethyl)-2-ethylbutyl]-N,N-dimethylamine",15212702
+NCCCN(C1CCCC1)C,Matrix Scientific,033563,53485-06-6,"N*1*-Cyclopentyl-N*1*-methyl-propane-1,3-diamine",15212249
+NCCCCCCN1CCCC1,Specs,AQ-387/42302713,,6-(1-pyrrolidinyl)hexylamine,13075441
+CCN1CC2(C)CNCC(C1)(C2)C,Matrix Scientific,034410,,"3-Ethyl-1,5-dimethyl-3,7-diaza-bicyclo[3.3.1]-nonane",12607131
+N[C@@H]1CC[C@H](CC1)N(C)C.Cl,Oakwood Products (Non-EU Customers),087853,,"rel-(1R,4R)-N,N-Dimethyl-cyclohexane-1,4-diamine hydrochloride",46226285
+CCCN1CCC(C1)N,ChemBridge,4044403,,1-propyl-3-pyrrolidinamine,36092744
+CC(NCC1CCCNC1)C.Cl.Cl,Enamine BB,EN300-55582,,(piperidin-3-ylmethyl)(propan-2-yl)amine dihydrochloride,30179713
+C(CN1CCCCCC1)CCN1CCCCCC1.Cl.Cl,InterBioScreen,STOCK1S-11175,,"1,4-di(azepan-1-yl)butane dihydrochloride",35775221
+NC1CC(C1)CN1CCCC1,Broadpharm,BP-11843,,3-((pyrrolidin-1-yl)methyl)cyclobutanamine,30177203
+NCC1CN(C1)C,Pharmblock,efj-57,,(1-methylazetidin-3-yl)methanamine,29916162
+NCCCN1CC2CCCC(C1)C2,Princeton BioMolecular Research,PBMR101391,,3-(3-Aza-bicyclo[3.3.1]non-3-yl)-propylamine,42804651
+NC1CCN(C1)C1CCCCC1,ChemDiv BB,BB54-3735,,1-Cyclohexyl-3-pyrrolidinylamine dihydrochloride,25618078
+NCC(C1CCNCC1)CC(CCC)C,Enamine BB,EN300-76833,,4-methyl-2-(piperidin-4-yl)heptan-1-amine,36087000
+NCC(C1CCCCN1)CC(CC)CC,Enamine BB,EN300-76768,,4-ethyl-2-(piperidin-2-yl)hexan-1-amine,36086920
+NCC(C1CCCCN1)CC(C)C,Enamine BB,EN300-76727,,4-methyl-2-(piperidin-2-yl)pentan-1-amine,36086874
+CCN1CCCCC1C1CCCNC1,Enamine BB,EN300-76669,,1-ethyl-2-(piperidin-3-yl)piperidine,36086797
+CC1CCCCN1CC(N)(C)C,Santa Cruz Biotechnology,sc-303878,,"1,1-Dimethyl-2-(2-methyl-piperidin-1-yl)-ethylamine 2HCl",1522957
+NCC1CCN(CC1)CC1CCC1.Cl.Cl,Oakwood Products (Non-EU Customers),064323,,[1-(Cyclobutylmethyl)piperidin-4-yl]methanamine dihydrochloride,36769916
+CNCC1CCCN(C1)C(C)C,Matrix Scientific,019173,876716-01-7,(1-Isopropyl-piperidin-3-ylmethyl)-methyl-amine,1522668
+N[C@H]1CCN(C1)CC1CCCC1,Oakwood Products (Non-EU Customers),064215,,(S)-1-(Cyclopentylmethyl)pyrrolidin-3-amine,36769713
+NCCCN1CCC(CC1)CC,Oakwood Products (Non-EU Customers),030106,,3-(4-Ethyl-piperidin-1-yl)-propylamine,6253816
+C[N+]1(CCCCCCC[N+]2(C)CCCCCC2)CCCCCC1.[I-].[I-],InterBioScreen,STOCK1S-11453,,"1,1'-(heptane-1,7-diyl)bis(1-methylazepan-1-ium) iodide",33567048
+CC(N1CCC(CC1)N)C.Cl.Cl,Matrix Scientific,026555,534596-29-7,1-Isopropyl-piperidin-4-ylamine dihydrochloride,589828
+CC(NC)CN,Enamine BB,EN300-74123,,(1-aminopropan-2-yl)(methyl)amine,36084785
+CCN(CCNCC1CCCCC1)CC,Specs,AN-465/43422201,,N-(cyclohexylmethyl)-N-[2-(diethylamino)ethyl]amine,6898148
+CCC(NCCNC(CC)C)C,Oakwood Products (Non-EU Customers),024600,,"N,N'-Bis-2-butyl ethylenediamine",6252322
+CNCCNC(C)C,Life Chemicals,F2147-1526,,"N-isopropyl-N'-methylethane-1,2-diamine",6252286
+CN(CCN(C1CCC(C1)C)C)C,ChemBridge,5512521,,,2357833
+CCCCN(C1CCN(CC1)CCC)C,ChemBridge,5465728,,,2355321
+CCCN1CCC(CC1)N1CCC(CC1)C,ChemBridge,5465072,,,2355279
+CNC1CCN(C1)C,Matrix Scientific,069372,13005-11-3,"N,1-Dimethylpyrrolidin-3-amine",6249079
+CN(C1CCCNC1)C,Enamine BB,EN300-66435,,"N,N-dimethylpiperidin-3-amine",2791377
+C1CCC(CN1)CN1CCCCC1,ChemBridge,4010587,81310-56-7,1-(piperidin-3-ylmethyl)piperidine,9800217
+C1NC[C@H](C1)NC1CC1,Ark Pharm,AK-53211,1289584-81-1,(S)-N-Cyclopropylpyrrolidin-3-amine,46342660
+CN1CCC[C@H]1CC1CCCCN1,Sigma Aldrich,CDS000060,,2-{[(2S)-1-Methyl-2-pyrrolidinyl]methyl}piperidine,36760346
+NCCC1CCN(C1)CC,Matrix Scientific,053979,,2-(1-Ethyl-3-pyrrolidinyl)ethylamine,30423949
+CNCCC1CCCN(C1)C,Matrix Scientific,053967,807297-46-7,N-Methyl-2-(1-methyl-3-piperidinyl)-1-ethanamine,30423928
+CCCNCCCNC,Matrix Scientific,026983,50910-71-9,"N1-Methyl-N3-propyl-1,3-propanediamine",18625172
+CCNCCCN(C1CCCCC1)C,Matrix Scientific,026973,,"N1-Cyclohexyl-N3-ethyl-N1-methyl-1,3-propanediamine",18625156
+CCNCCCNC1CCCCC1,Matrix Scientific,026964,,"N1-Cyclohexyl-N3-ethyl-1,3-propanediamine",18625140
+CNCCCNC(C)(C)C,Matrix Scientific,026935,28286-18-2,"N1-(tert-Butyl)-N3-methyl-1,3-propanediamine",18625092
+CCCCCCCNCCCN,Matrix Scientific,026855,63888-10-8,"N1-Heptyl-1,3-propanediamine",18624998
+CCNC(CN1CCCCC1)C,Exclusive Chemistry,EC-000.1363,,N-ethyl-1-(1-piperidinyl)-2-propanamine,33371935
+CCCNCC1CCCCN1CCCC,Exclusive Chemistry,EC-000.1316,,N-[(1-butyl-2-piperidinyl)methyl]-1-propanamine,33371887
+CCNCC1CCCCN1C,Exclusive Chemistry,EC-000.1308,,N-[(1-methyl-2-piperidinyl)methyl]ethanamine,33371871
+CCCCNCC1CCCN1CC,Exclusive Chemistry,EC-000.1299,,N-[(1-ethyl-2-pyrrolidinyl)methyl]-1-butanamine,33371855
+CCCCN1CCCC1CNCC,Exclusive Chemistry,EC-000.1291,,N-[(1-butyl-2-pyrrolidinyl)methyl]ethanamine,33371839
+CN1CCC(CC1)N(CC1CCCCC1)C,ChemBridge,5421919,,,24834655
+CC1CCC(C1)NCCN1CCCCC1,ChemBridge,5419997,,,24834411
+CNC1CCCCC1NC.Cl.Cl,AK Scientific,W8000,70708-33-7,"N1,N2-dimethylcyclohexane-1,2-diamine dihydrochloride",36751241
+CN1CCCC1CCNC1CCCCCC1,ChemBridge,5412709,,,24833690
+CN(CC1CCCN1)C.Cl.Cl,Matrix Scientific,051693,,"N,N-Dimethyl(2-pyrrolidinyl)methanamine dihydrochloride",30420418
+CNC1CCN(CC1)C.Cl.Cl,CHESS Fine Organic,2785,99709-59-8,1-Methyl-4-methylamino-piperidine x 2 HCl,30156732
+C1NCC(C1)CN1CCCC1.Cl.Cl,Matrix Scientific,051637,1219981-46-0,1-(3-Pyrrolidinylmethyl)pyrrolidine dihydrochloride,30420315
+NCCC(N1CCCC1)C,Matrix Scientific,063395,893644-50-3,(3-Pyrrolidin-1-ylbutyl)amine,29703768
+CCCN(CCC1CCCNC1)CCC.Cl.Cl,Matrix Scientific,051597,1220035-65-3,N-[2-(3-Piperidinyl)ethyl]-N-propyl-1-propanamine dihydrochloride,30420246
+CCN(CCC1CCCNC1)CC.Cl.Cl,Matrix Scientific,051581,,"N,N-Diethyl-2-(3-piperidinyl)-1-ethanamine dihydrochloride",30420214
+C1CCC(NC1)CCN1CCCCCC1.Cl.Cl,Matrix Scientific,051565,1219957-63-7,1-[2-(2-Piperidinyl)ethyl]azepane dihydrochloride,30420184
+CCCCN(CCC1CCCCN1)C.Cl.Cl,Matrix Scientific,051557,,N-Methyl-N-[2-(2-piperidinyl)ethyl]-1-butanamine dihydrochloride,30420173
+CC1CCCN(C1)CC1CCNCC1.Cl.Cl,Matrix Scientific,051449,,3-Methyl-1-(4-piperidinylmethyl)piperidine dihydrochloride,30420005
+CCN(CC1CCNCC1)CC.Cl.Cl,Matrix Scientific,051440,614746-18-8,N-Ethyl-N-(4-piperidinylmethyl)-1-ethanamine dihydrochloride,30419992
+C1CCC(CN1)CN1CCCCCC1.Cl.Cl,Matrix Scientific,051424,1211495-72-5,1-(3-Piperidinylmethyl)azepane dihydrochloride,30419963
+CCCCN(CC1CCCNC1)C.Cl.Cl,Matrix Scientific,051416,,N-Methyl-N-(3-piperidinylmethyl)-1-butanamine dihydrochloride,30419947
+C=CCN1CCN(C(C1)CCC)CC=C,Enamine,Z1416612751,,,45669723
+CN(CCC(C(C)(C)C)N)C,Enamine BB,EN300-79211,,"(3-amino-4,4-dimethylpentyl)dimethylamine",36364665
+CN[C@@H]1CNCC[C@@H]1C,Advanced ChemBlocks,F-4019,,"(3S,4S)-N,4-dimethyl-piperidin-3-amine",43367333
+NC[C@H]1CCCN1C,Synthonix,M8172,66411-53-8,(R)-1-Methyl-2-aminomethylpyrrolidine,43367165
+CCC(CN1CCCC1)N,Matrix Scientific,020835,883547-04-4,1-Pyrrolidin-1-ylmethyl-propylamine,834633
+NCC1CCCN(C1)C,Matrix Scientific,054426,14613-37-7,C-(1-Methyl-piperidin-3-yl)-methylamine,5766382
+CN[C@@H]([C@@H](CC)C)CN1CCCC1,AstaTech,68742,,"(2S,3R)-N,3-DIMETHYL-1-(PYRROLIDIN-1-YL)PENTAN-2-AMINE",44472765
+C1CCN(CC1)CC1CCNCC1,Matrix Scientific,016343,32470-52-3,1-(Piperidin-4-ylmethyl)piperidine,5766366
+N[C@@H]1CC[C@@H](CC1)N.Cl.Cl,Fluorochem (Non-US Customers),234312,2121-79-1,"cis-Cyclohexane-1,4-diamine dihydrochloride",44471347
+NCCCCCNC(C)C,Matrix Scientific,007608,162713-22-6,5-Isopropylaminoamylamine,5759247
+CC([N+](CCCCC[N+](C(C)C)(C)C)(C)C)C,ChemDiv,0342-0233,,,6150637
+NC1C[C@@H]2CCCN(C1)C2,Enamine BB,EN300-118481,,(5S)-1-azabicyclo[3.3.1]nonan-3-amine,44465554
+CC(CC)CC(=N)N,ChemBridge,4012909,817552-66-2,3-methylpentanimidamide,11489620
+CN(CC1CCN(CC1)CC=C(C)C)C,Enamine,Z1088120794,,,36945440
+CN1CCC(CC1)C(N)C,Enamine BB,EN300-62088,,1-(1-methylpiperidin-4-yl)ethan-1-amine,18188894
+NC[C@H]1CCCN1CC(C)C,Enamine BB,EN300-115957,,[(2R)-1-(2-methylpropyl)pyrrolidin-2-yl]methanamine,44464651
+NCCCN(CC(C)C)CC(C)C,Matrix Scientific,079904,,"N,N-Diisobutylpropane-1,3-diamine",28292514
+CN(CC1(N)CC1)C,Alinda Chemical,ALBB-018282,,[(1-aminocyclopropyl)methyl]dimethylamine dihydrochloride,36728843
+CCNCCCN1CCCCC1,Matrix Scientific,026937,77052-06-3,N-Ethyl-3-(1-piperidinyl)-1-propanamine,14111917
+CCNC1CCC(CC1)N(C)C.Cl,Activate Scientific,AS62856,,"N1-ethyl-N4,N4-dimethylcyclohexane-1,4-diamine hydrochloride",44462868
+CCCCCCCCCCNCCCCCC[N+](C)(C)C.Cl.[Cl-],Toronto Research Chemicals,D226995,,"6-(Decylamino)-N,N,N-trimethyl-1-hexanaminium Chloride Hydrochloride",43549375
+CC1(N)CNCC1,Enamine BB,EN300-84376,,3-methylpyrrolidin-3-amine,36726388
+NC1CCN(CC1)CCC#C.Cl.Cl,Enamine BB,EN300-83439,,1-(but-3-yn-1-yl)piperidin-4-amine dihydrochloride,36726154
+CCCNCCN1CCCCC1C,ChemDiv BB,BB53-0861,,N-[2-(2-methylpiperidin-1-yl)ethyl]-N-propylamine,31525374
+CCCNCCN1[C@H](C)CCC[C@@H]1C,ChemDiv BB,BB53-0306,,"N-{2-[(2R,6S)-2,6-dimethylpiperidin-1-yl]ethyl}-N-propylamine",31524513
+CC(NCCN1CCCC1)C,ChemDiv BB,BB52-9992,,N-(2-pyrrolidin-1-ylethyl)propan-2-amine,31524035
+C[C@@H]1NCCN(C1)C1CCCCC1,Bepharm,B24023,1187930-87-5,(S)-1-Cyclohexyl-3-methylpiperazine,44455612
+NCC1CCN(C1)C1CCCC1,Matrix Scientific,079952,933714-21-7,[(1-Cyclopentylpyrrolidin-3-yl)methyl]amine,28218597
+NCCN1CCCC1,Matrix Scientific,037612,7154-73-6,2-Pyrrolidin-1-ylethanamine,534359
+CCN(CCNCC1CCCCC1)CC.Cl.Cl,ChemBridge,9158156,,,21917560
+C[N+](C1CCCCC1)(CCCCCCCCCC[N+](C1CCCCC1)(C)C)C,Vitas M Labs,STK700257,,"N,N'-dicyclohexyl-N,N,N',N'-tetramethyldecane-1,10-diaminium",4401024
+CCNCCN1CCCCC1.Cl.Cl,ChemBridge,4011015,,,32355712
+NC[C@@H]1CCCN1CC,AK Scientific,H551,22795-99-9,(S)-2-(Aminomethyl)-1-ethylpyrrolidine,526823
+NCC1CCC(CC1)N.Cl.Cl,Enamine BB,EN300-123420,,4-(aminomethyl)cyclohexan-1-amine dihydrochloride,45773091
+C1NC[C@@H]2[C@H](C1)CNC2,Tyger Scientific,O121002,1212823-21-6,"cis-Octahydro-pyrrolo[3,4-c]pyridine",44230952
+NCCC(C(N)(C)C)C,Princeton BioMolecular Research,PBMR156340,,"3,4-Dimethyl-pentane-1,4-diamine",43304360
+C=CCN(CC=C)CCCN(CC=C)CC=C,Tyger Scientific,OM0121,54391-07-0,"1,3-Bis(diallylamino) propane",44230513
+CN1CCCC(C1C)N,Enamine BB,EN300-132388,,"1,2-dimethylpiperidin-3-amine",46306477
+CN(C1CCNCC1C)C,Enamine BB,EN300-109766,,"N,N,3-trimethylpiperidin-4-amine",40335940
+NCCCCN.Cl,BetaPharma,86-43302,333-93-7,"1,4-Diaminobutane Dihydrochloride",46305231
+CCCCCCCCCCCCCCCCCC(=N)N,BetaPharma,50-52177,14587-26-9,Octadecanamidine,46305136
+CCC(N1CCC(CC1)N1CCC(CC1)C)C,Zelinsky Institute,UZI/1937392,,,6116145
+C1CCC(CC1)N1CCNCC1,Enamine BB,EN300-110637,,1-cyclohexylpiperazine,711652
+CCN(CC1CC1)CCC1CCNCC1,Enamine BB,EN300-124887,,(cyclopropylmethyl)(ethyl)[2-(piperidin-4-yl)ethyl]amine,40132475
+CC1NCC(NC1)C,AK Scientific,X7143,106-55-8,"2,5-Dimethylpiperazine",711400
+CCCCC(CNC1CCN(CC1)C(C)C)CC,Enamine,Z90501550,,,29642533
+NC[C@@H]1CCCNC1,Enamine BB,EN300-101231,,(3S)-piperidin-3-ylmethanamine,43295601
+CC1CCCCN1CC1CCCN1,ACB Blocks ,C5A-0374,,2-methyl-1-(2-pyrrolidinylmethyl)piperidine,710090
+NCC1(C)CNCC1.Cl,Matrix Scientific,069176,1313738-93-0,(3-Methylpyrrolidin-3-yl)methanamine hydrochloride,36553240
+CN1CCCC(C1)C1CCCN1,ACB Blocks ,C5A-0185,,1-methyl-3-(2-pyrrolidinyl)piperidine,707576
+CN(CCNC1CCC(CC1)C)C,ChemBridge,5513839,,,13744852
+CC1CCCCN1CC1CCCCCN1,ACB Blocks ,C7A-0344,,2-[(2-methyl-1-piperidinyl)methyl]azepane,706285
+CCN(CC1CCCCCN1)CC,ACB Blocks ,C7A-0339,,N-(2-azepanylmethyl)-N-ethylethanamine,706053
+C1CCCN(CC1)CC1CCCN1,ACB Blocks ,C5A-0369,,1-(2-pyrrolidinylmethyl)azepane,705943
+C1CCNC(CC1)CN1CCCCC1,ACB Blocks ,C7A-0043,,2-(1-piperidinylmethyl)azepane,705648
+NC(=N)C1CCCC1,Princeton BioMolecular Research,PBMR044405,,cyclopentanecarboximidamide,37057158
+CN1CCC2(CC1)CCNCC2,Bepharm,B88011,13323-45-0,"3-Methyl-3,9-diazaspiro[5,5]undecane",39305791
+CCCCCCN1CCNCCC1,EvoBlocks,EB30100,,"1-hexyl-1,4-diazepane",32283839
+N1CCCN(CC1)CC1CCC1,Princeton BioMolecular Research,PBMR135708,,"1-Cyclobutylmethyl-[1,4]diazepane",32283815
+NCC[C@H]1CCCN1C,Activate Scientific,AS3257,422545-96-8,(R)-2-(1-Methylpyrrolidin-2-yl)ethanamine,43214871
+CCC(N1CCNCCC1)CC,EvoBlocks,EB30026,,"1-(pentan-3-yl)-1,4-diazepane",32283733
+CCC(N1CCNCC1C)CC,EvoBlocks,EB29526,,2-methyl-1-(pentan-3-yl)piperazine,32283492
+CCCCCCCCCCCCCCN1CCNCC1,EvoBlocks,EB29068,,1-tetradecylpiperazine,32283409
+CNC1CCCCC1N(C(C)C)C,Oakwood Products (Non-EU Customers),088202,,"N-Isopropyl-N,N'-dimethyl-cyclohexane-1,2-diamine",38558299
+CC(N1CCN(CC1)C1CCCCCC1)C,Zelinsky Institute,UZI/1935183,,,1453604
+NCCCC1CCCNC1,Tyger Scientific,P57143,,3-Piperidin-3-yl-propylamine,38523830
+NCC1CNCC1C.Cl.Cl,Tyger Scientific,M33000,,C-(4-Methyl-pyrrolidin-3-yl)-methylamine 2HCl,18924085
+CN1CCC(CC1)C1CCNCC1.Cl,Fluorochem (Non-US Customers),031972,,"1-Methyl-[4,4']bipiperidinyl hydrochloride",43474351
+CNC1CCCNC1,CombiPhos Catalysts,MPB-1168,,Methyl-piperidin-3-yl-amine,38465526
+NCCCCCN1CCCC1,Ark Pharm,AK-36186,71302-71-1,5-(Pyrrolidin-1-yl)pentan-1-amine,38366928
+NC[C@@H]1CCCN1.Cl.Cl,Synthonix,A7822,103382-84-9,(S)-2-(Aminomethyl)pyrrolidine dihydrochloride,43677458
+NC1CNCC1.Cl.Cl,Matrix Scientific,081418,103831-11-4,Pyrrolidin-3-amine dihydrochloride,504647
+CCCCC(CN)N,Enamine BB,EN300-106018,,"hexane-1,2-diamine",38101319
+CCNCC(CC(C)C)N,Enamine BB,EN300-115412,,(2-amino-4-methylpentyl)(ethyl)amine,38101003
+CNCC1CCCN1,CombiPhos Catalysts,MPC-1166,,Methyl-pyrrolidin-2-ylmethyl-amine,38100923
+CC(NCC1CCCN1)C,CombiPhos Catalysts,MPC-11242,,Isopropyl-pyrrolidin-2-ylmethyl-amine,38100415
+CCN1CCC(CC1)N1CCCCCCC1,ChemBridge,5452347,,,1254844
+CC1CCCN1C1CCNCC1,Enamine BB,EN300-113808,,4-(2-methylpyrrolidin-1-yl)piperidine,37984678
+C1CCC(NC1)C1CCCCN1,AK Scientific,W6764,531-67-9,2-(Piperidin-2-yl)piperidine,43469326
+NCCN1CCCCC1CC,Matrix Scientific,020257,22014-04-6,2-(2-Ethyl-piperidin-1-yl)-ethylamine,1445603
+NCCNC1CCCC1,Otava,1206151,,,31467279
+NC1CCC(CC1)CN(C)C,Enamine BB,EN300-105023,,4-[(dimethylamino)methyl]cyclohexan-1-amine,37889942
+CNCCCCN(CC)CC,Enamine BB,EN300-101379,,[4-(diethylamino)butyl](methyl)amine,37881372
+CCN(C1CCC(CC1)N)CC.Cl.Cl,"J & W PharmLab, LLC",20-0249S,,"N,N-Diethyl-cyclohexane-1,4-diamine dihydrochloride",43467914
+CCCCC(=N)N,ChemBridge,4012905,109-51-3,pentanimidamide,4355897
+NC1CCCCN1,Sigma Aldrich,CDS003210,,2-aminopiperidine,43467628
+CC(NCCCNC(C)C)C,Matrix Scientific,064583,63737-71-3,"N,N'-Diisopropylpropane-1,3-diamine",498293
+N[C@@H]1CC[C@H](CC1)N,Matrix Scientific,075009,2615-25-0,"trans-1,4-Diaminocyclohexane",497945
+NCCCN(CC)CC,Matrix Scientific,026779,104-78-9,"N1,N1-Diethyl-1,3-propanediamine",497120
+NCCCCCCN(C)C,Matrix Scientific,007575,1938-58-5,6-(Dimethylamino)hexylamine,4352159
+CN(C1CCCNC1)C(C)C,Oakwood Products (Non-EU Customers),088193,,Isopropyl-methyl-piperidin-3-yl-amine,37626988
+CCCCCCCCCCCCCCNCCN,Sigma Aldrich,PH000759,,"N(1)-TETRADECYL-1,2-ETHANEDIAMINE",7417835
+CCN(CC(C)C)CCC1CCNCC1,Enamine BB,EN300-124888,,ethyl(2-methylpropyl)[2-(piperidin-4-yl)ethyl]amine,37600713
+CN([C@@H]1CCCNC1)C(C)C,Oakwood Products (Non-EU Customers),088194,,Isopropyl-methyl-(R)-piperidin-3-yl-amine,43464080
+CN(C1CCC(CC1)NC1CC1)C,Oakwood Products (Non-EU Customers),087911,,"N-Cyclopropyl-N',N'-dimethyl-cyclohexane-1,4-diamine",43463702
+CN1CCC[C@@H](C1)NC(C)C,Oakwood Products (Non-EU Customers),087891,,Isopropyl-((S)-1-methyl-piperidin-3-yl)-amine,43463686
+CCN[C@H]1CCN(C1)C,Oakwood Products (Non-EU Customers),087870,,Ethyl-((S)-1-methyl-pyrrolidin-3-yl)-amine,43463670
+CC(N[C@@H]1CC[C@H](CC1)N(C)C)C,Oakwood Products (Non-EU Customers),087897,,"(1R,4R)-N-Isopropyl-N',N'-dimethyl-cyclohexane-1,4-diamine",46018558
+NCCCN1CCC1,Enamine BB,EN300-123463,,3-(azetidin-1-yl)propan-1-amine,37396168
+NCC(CN(C)C)(C)C,Enamine,Z104479404,,,489957
+Nc1ccc(cc1)NCC1CCCC1,Enamine BB,EN300-64422,,"1-N-(cyclopentylmethyl)benzene-1,4-diamine",31416813
+N1CCC(CC1)CCC1CCNCC1.Cl.Cl,Sigma Aldrich,214140,84473-84-7,"4,4'-Ethylenedipiperidine dihydrochloride",488855
+NCC[C@H]1CCCCN1,Ark Pharm,AK130853,1262326-82-8,(R)-2-(Piperidin-2-yl)ethanamine,46015593
+C=CCC1(NCCNC1)CC=C,Princeton BioMolecular Research,OSSK_565334,,,8615765
+CN(C(C)C)CC1CCCNC1,Enamine BB,EN300-59148,,methyl(piperidin-3-ylmethyl)propan-2-ylamine,31413401
+NC1CCN(C1)C(C)C,Enamine BB,EN300-56574,,1-(propan-2-yl)pyrrolidin-3-amine,31412906
+CCCCNC1CCN(CC1)CC,Matrix Scientific,037765,,N-Butyl-1-ethylpiperidin-4-amine,27332979
+NC[C@@H]1CC[C@H]1CN,Matrix Scientific,081965,1731-23-3,"[(1R,2R)-2-(Aminomethyl)cyclobutyl]methylamine",26983377
+C1CCN(CC1)C1CCNCC1,Matrix Scientific,073487,4897-50-1,4-Piperidinopiperidine,482584
+CN1CCC[C@@H](C1)N,Synthonix,A7504,902152-76-5,(S)-3-Amino-1-methyl-piperidine,37181446
+CC(NCC1CCCNC1)C,Enamine BB,EN300-44117,,(piperidin-3-ylmethyl)(propan-2-yl)amine,31409839
+NC1CCCC[C@H](CCCC1)N.Cl.Cl,Molecular Diversity Preservation,16142,,"cyclodecane-1,6-diamine dihydrochloride (en)",5862156
+NCCCCN1CCC(CC1)C,Enamine BB,EN300-41260,,4-(4-methylpiperidin-1-yl)butan-1-amine,31408907
+NCC1(N)CCCCC1,Enamine BB,EN300-40797,,1-(aminomethyl)cyclohexan-1-amine,31408710
+CN(CC(C(C)C)N)C,Enamine BB,EN300-40147,,"N-(2-amino-3-methylbutyl)-N,N-dimethylamine",31408566
+CCCCCCN1CCN(CC1)CC1CC1,Enamine,Z1252512510,,,37028972
+CCN1CCC(CC1)C1CCNCC1,"J & W PharmLab, LLC",60-0494,,"1-Ethyl-[4,4']bipiperidinyl",44691548
+CCC(N(C)C)CN.Cl.Cl,Enamine BB,EN300-36389,,"N-[1-(aminomethyl)propyl]-N,N-dimethylamine dihydrochloride",31407847
+CN1CCC[C@H](C1)N.Cl.Cl,"J & W PharmLab, LLC",60-0901S,,(R)-1-Methyl-piperidin-3-ylamine dihydrochloride,44691306
+NC1CCCCNC1,Matrix Scientific,075008,69154-03-6,3-Aminohomopiperidine,1838386
+C=C=CCNCCCCNCC=C=C.Cl.Cl,Matrix Scientific,094007,93565-01-6,"N1,N4-Di(buta-2,3-dien-1-yl)butane-1,4-diamine dihydrochloride",31206163
+CC(CN1CCC(CC1)N)C.Cl,Enamine BB,EN300-27283,,1-isobutylpiperidin-4-amine hydrochloride,31406265
+CN1CC[C@H](C1)N,Matrix Scientific,068516,457097-75-5,(3R)-1-Methylpyrrolidin-3-amine,26942252
+CCCN1CCC(CC1)N1CCCCCC1,ChemBridge,5464835,,,13320858
+CN1CCC(CC1)N(C1CCCC(C1)C)C,ChemBridge,5454725,,,13320240
+NCC1CCN(CC1)CC1CC1,Matrix Scientific,048746,1017400-92-8,1-[1-(Cyclopropylmethyl)-4-piperidinyl]methanamine,25678441
+CNCCCCCCN1CCCCC1,Specs,AQ-387/42302685,,N-methyl-N-[6-(1-piperidinyl)hexyl]amine,23280844
+CC1CCC(CC1)N1CCC(CC1)N,Enamine BB,EN300-69403,,1-(4-methylcyclohexyl)piperidin-4-amine,32443127
+CC1CNCCC1N,Princeton BioMolecular Research,PBMR018474,,3-methylpiperidin-4-amine,36814640
+C1NCC2(C1)CNCC2,Tyger Scientific,D60130,,"2,7-Diaza-spiro[4.4]nonane",13192336
+NCC1CCN(C1)C,Matrix Scientific,021489,1284226-96-5,C-(1-Methyl-pyrrolidin-3-yl)-methylamine,1014037
+NCC1CCN(CC1)C.Cl.Cl,Matrix Scientific,016352,1187582-53-1,[(1-Methylpiperidin-4-yl)methyl]amine dihydrochloride,23018825
+CC(CCCC(=N)N)C,Princeton BioMolecular Research,PBMR144347,,5-Methyl-hexanamidine,42839498
+CNC1CCN(C(C1)C)CC,Enamine BB,EN300-83446,,"1-ethyl-N,2-dimethylpiperidin-4-amine",36647324
+CCCCCCCCCCCCCCNCCCN,Sigma Aldrich,PH003653,,"N(1)-tetradecyl-1,3-propanediamine",35865458
+CC1CCC(CC1)C(=N)N.Cl,Enamine BB,EN300-109740,,4-methylcyclohexane-1-carboximidamide hydrochloride,43617822
+NCCN1CCCC1C,Enamine BB,EN300-93370,,2-(2-methylpyrrolidin-1-yl)ethan-1-amine,37005120
+NCC1CC(CC(C1)(C)C)N(C)C,AstaTech,54103,,"5-(AMINOMETHYL)-N,N,3,3-TETRAMETHYLCYCLOHEXANAMINE",37154522
+CC(CN1CCCCCC1)(N)C,Matrix Scientific,019991,21404-91-1,"2-Azepan-1-yl-1,1-dimethyl-ethylamine",1553645
+CC(CN1CCC(CC1)CN1CCCC1)C,Enamine,Z433803918,,,36271493
+CNCCCCC1CCCNC1,Princeton BioMolecular Research,PBMR177726,,Methyl-(4-piperidin-3-yl-butyl)-amine,46114003
+CCCCCCCCCCCCCCC(CN)N,Sigma Aldrich,S235903,,"HEXADECANE-1,2-DIAMINE",13166469
+CN1CCC(CC1)(C)NC1CC1,Princeton BioMolecular Research,PBMR136252,,"Cyclopropyl-(1,4-dimethyl-piperidin-4-yl)-amine",42825353
+CC1CCN(CC1)C1CCNCC1,Apollo Scientific,OR0887,116797-02-5,"4-Methyl-1,4'-bipiperidine",933375
+CN(C1CCNCC1)C,Enamine BB,EN300-36888,50533-97-6,"N,N-dimethylpiperidin-4-amine",933358
+CC(C(=N)N)C1CC1,Princeton BioMolecular Research,PBMR135687,,2-Cyclopropyl-propionamidine,42824800
+CN(CCCNC1CCCC1)C.Cl.Cl,Matrix Scientific,060850,,"N'-Cyclopentyl-N,N-dimethylpropane-1,3-diamine dihydrochloride",31660933
+CNCCC1CCCCN1C,Enamine BB,EN300-91612,,methyl[2-(1-methylpiperidin-2-yl)ethyl]amine,36790987
+NCC1(CN)CCC1,Princeton BioMolecular Research,PBMR160232,,C-(1-Aminomethyl-cyclobutyl)-methylamine,44153040
+NCC1CCN(C1)CC(C)C,Matrix Scientific,079650,910442-14-7,[(1-Isobutylpyrrolidin-3-yl)methyl]amine,3725314
+CCNCCN1CCCCC1,ChemBridge,4011015,32776-21-9,N-ethyl-2-piperidin-1-ylethanamine,3725037
+CCN(CCCCCCCCN(CC)CC)CC,Sigma Aldrich,CCA007549,,"N(1),N(1),N(8),N(8)-tetraethyl-1,8-octanediamine",36787637
+NCCN1CCCCCC1.Cl.Cl,AK Scientific,W5245,300578-40-9,2-(Azepan-1-yl)ethanamine dihydrochloride,32219624
+N[C@H]1CCCCNC1,Bepharm,B208324,107885-67-6,(S)-Azepan-3-amine,44151635
+CCCN1CCC(CC1)NC1CC1,Matrix Scientific,006981,387358-45-4,1-n-Propyl-4-cyclopropylaminopiperidine,919727
+CCC(N1CCNCC1)CC,Matrix Scientific,085695,373356-51-5,1-(1-Ethylpropyl)piperazine,919631
+C1CCCC(CC1)N1CCNCC1,Matrix Scientific,085680,21043-42-5,1-Cycloheptylpiperazine,918645
+CCN(CCCNC1CCCC1)CC,Enamine,Z90524953,,,3524527
+CNCCN(C1CCCC1)C,ChemBridge,4011958,938459-03-1,"N-cyclopentyl-N,N'-dimethylethane-1,2-diamine",15212178
+N[C@H]1CCC[C@@H]1N.Cl.Cl,Sigma Aldrich,670219,477873-22-6,"(1S,2S)-trans-1,2-Cyclopentanediamine dihydrochloride",26754320
+CC(CN1CC(C)CC(C1)C)N,Enamine BB,EN300-54197,,"1-(3,5-dimethylpiperidin-1-yl)propan-2-amine",30178660
+CCCC(CN)N,Enamine BB,EN300-53976,,"pentane-1,2-diamine",30178476
+CCCCN(CCN)CC,Matrix Scientific,007231,19435-65-5,N-Ethyl-N-butylethylenediamine,887641
+NCCCCCN(C(C)C)C(C)C,Matrix Scientific,007569,209803-40-7,5-(Diisopropylamino)amylamine,887607
+NCCCCN(CC)CC,Matrix Scientific,007561,27431-62-5,4-(Diethylamino)butylamine,887591
+C[N+](CCCCCCCCCC[N+](C)(C)C)(C)C.[I-].[I-],TCI America,D1315,1420-40-2,Decamethonium Iodide,4928531
+NCC(C(C)C)(N)C,Enamine BB,EN300-77550,,"2,3-dimethylbutane-1,2-diamine",36087478
+CCN[C@@H]1CCCNC1.Cl.Cl,Oakwood Products (Non-EU Customers),069516,,(R)-N-Ethylpiperidin-3-amine dihydrochloride,36770541
+NCC(C1CCNCC1)CC(C)C,Enamine BB,EN300-76726,,4-methyl-2-(piperidin-4-yl)pentan-1-amine,36086872
+CN1CCCCC1C1CCCNC1,Enamine BB,EN300-76668,,1-methyl-2-(piperidin-3-yl)piperidine,36086795
+NCC(N1CCCCCC1)C,Matrix Scientific,021519,,2-Azepan-1-yl-propylamine,1523085
+NCC(N1CCCC1)C,Matrix Scientific,021517,50998-07-7,2-Pyrrolidin-1-yl-propylamine,1522971
+NCC1CCN(CC1)CC(C)(C)C.Cl.Cl,Oakwood Products (Non-EU Customers),064322,,(1-Neopentylpiperidin-4-yl)methanamine dihydrochloride,36769914
+CC(CCN1CCCCCC1)N,Matrix Scientific,033474,876716-37-9,3-Azepan-1-yl-1-methyl-propylamine,1522754
+N[C@@H]1CCN(C1)C1CCCC1,Oakwood Products (Non-EU Customers),064238,,(R)-1-Cyclopentylpyrrolidin-3-amine,36769759
+N1CCC(CC1)NC1CCCC1,Enamine BB,EN300-73798,,N-cyclopentylpiperidin-4-amine,6254539
+C1CCN(CC1)C1CNCC1,Enamine BB,EN300-68734,,1-(pyrrolidin-3-yl)piperidine,6254265
+NCC(C(C)C)N.Cl.Cl,Enamine BB,EN300-74908,,"3-methylbutane-1,2-diamine dihydrochloride",36085348
+CC(NC1CCNCC1)C.Cl.Cl,Oakwood Products (Non-EU Customers),063469,,N-Isopropylpiperidine-4-amine dihydrochloride,36768436
+NCCNC1CCCCCCCCCCC1.Cl,InterBioScreen,STOCK3S-32785,,"N1-cyclododecylethane-1,2-diamine hydrochloride",33563733
+CC(NCCNC1CCCCC1)(C)C,Oakwood Products (Non-EU Customers),024611,886501-01-5,N-tert-Butyl-N'-cyclohexyl ethylenediamine,6252344
+CCC(NCCNC(C)C)C,Oakwood Products (Non-EU Customers),024599,4014-00-0,N-2-Butyl-N'-isopropyl ethylenediamine,6252320
+CNCCNC1CCCCC1,Oakwood Products (Non-EU Customers),024579,,N-Methyl-N'-cyclohexyl ethylenediamine,6252284
+NC(=N)CC1CCC1.Cl,Enamine BB,EN300-128884,,2-cyclobutylethanimidamide hydrochloride,46218145
+CC(CCC(NC1CCCNC1)C)C,ChemBridge,15758989,,"N-(1,4-dimethylpentyl)-3-piperidinamine",25608821
+CN(C1CNCC1)C,Enamine BB,EN300-68386,,"N,N-dimethylpyrrolidin-3-amine",6249077
+CN1CCN(CC1)C1CCCCCCC1,ChemBridge,5459878,,,2354956
+CCN(CC1CCN(CC1)CC#C)CC,Enamine,Z644471868,,,32027450
+CN(CC(CN(C)C)(C)C)C,TCI Europe,T1008,53369-79-2,"N,N,N',N'-Tetramethyl-2,2-dimethyl-1,3-propanediamine",6883094
+C1NC[C@@H](C1)NC1CC1,Ark Pharm,AK-53210,577776-80-8,(R)-N-Cyclopropylpyrrolidin-3-amine,46342658
+C1CCC(CN1)CCN1CCCC1,Matrix Scientific,053988,,3-[2-(1-Pyrrolidinyl)ethyl]piperidine,30423961
+CNCCCN(C1CCCCC1)C,Matrix Scientific,026972,,"N1-Cyclohexyl-N1,N3-dimethyl-1,3-propanediamine",18625154
+CCNCCCN1CCCCCC1,Matrix Scientific,026944,,3-(1-Azepanyl)-N-ethyl-1-propanamine,18625106
+C1CCN(CC1)C1CCN(CC1)C1CCCC1,ChemBridge,5925691,,,1328998
+CNC(CN1CCCCC1)C,Enamine BB,EN300-75518,,methyl[1-(piperidin-1-yl)propan-2-yl]amine,33371933
+CCCNCC1CCCCN1CCC,Exclusive Chemistry,EC-000.1315,,N-[(1-propyl-2-piperidinyl)methyl]-1-propanamine,33371885
+CNCC1CCCCN1C(C)C,Exclusive Chemistry,EC-000.1307,,N-[(1-isopropyl-2-piperidinyl)methyl]-N-methylamine,33371869
+CCCCNCC1CCCN1C,Exclusive Chemistry,EC-000.1298,,N-[(1-methyl-2-pyrrolidinyl)methyl]-1-butanamine,33371853
+CCNCC1CCCN1CCC,Exclusive Chemistry,EC-000.1290,,N-[(1-propyl-2-pyrrolidinyl)methyl]ethanamine,33371837
+CC(C1CCCN1)N.Cl.Cl,Enamine BB,EN300-52358,,1-(pyrrolidin-2-yl)ethan-1-amine dihydrochloride,29706176
+C1CCCN(CC1)CC1CCCN1.Cl.Cl,Matrix Scientific,051708,,1-(2-Pyrrolidinylmethyl)azepane dihydrochloride,30420440
+CCCCN(CC1CCCN1)C.Cl.Cl,Matrix Scientific,051700,1220027-32-6,N-Methyl-N-(2-pyrrolidinylmethyl)-1-butanamine dihydrochloride,30420428
+CC1CCN(CC1)CC1CCCCN1.Cl.Cl,Matrix Scientific,051676,,4-Methyl-1-(2-piperidinylmethyl)piperidine dihydrochloride,30420386
+C1CCC(NC1)CN1CCCCC1.Cl.Cl,Matrix Scientific,051668,,1-(2-Piperidinylmethyl)piperidine dihydrochloride,30420374
+CN(CC1CNCC1)C.Cl.Cl,Matrix Scientific,051636,208711-42-6,"N,N-Dimethyl(3-pyrrolidinyl)methanamine dihydrochloride",30420313
+CN(CCC1CCCNC1)C,Matrix Scientific,053888,933684-70-9,"N,N-Dimethyl-2-(3-piperidinyl)-1-ethanamine",29703797
+C1CCN(CC1)CCC1CCNCC1.Cl.Cl,Matrix Scientific,051612,,1-[2-(4-Piperidinyl)ethyl]piperidine dihydrochloride,30420272
+C=CCN(CCC1CCCNC1)CC=C.Cl.Cl,Matrix Scientific,051588,,N-Allyl-N-[2-(3-piperidinyl)ethyl]-2-propen-1-amine dihydrochloride,30420228
+C1CCC(CN1)CCN1CCCC1.Cl.Cl,Matrix Scientific,051580,,3-[2-(1-Pyrrolidinyl)ethyl]piperidine dihydrochloride,30420212
+CCCN(C1CCNCC1)CCC.Cl.Cl,Matrix Scientific,051510,1220037-98-8,"N,N-Dipropyl-4-piperidinamine dihydrochloride",30420102
+CCCCN(C1CCNCC1)C.Cl.Cl,Matrix Scientific,051500,1220035-47-1,N-Butyl-N-methyl-4-piperidinamine dihydrochloride,30420091
+CCC(CN(C)C)N,ChemBridge,4026183,74247-34-0,(2-aminobutyl)dimethylamine,29703582
+CCCN(CC1CCNCC1)CCC.Cl.Cl,Matrix Scientific,051456,,N-(4-Piperidinylmethyl)-N-propyl-1-propanamine dihydrochloride,30420015
+N1CCC(CC1)CN1CCCC1.Cl.Cl,Matrix Scientific,051439,780756-54-9,4-(1-Pyrrolidinylmethyl)piperidine dihydrochloride,30419991
+C1CN[C@@H](C1)[C@@H]1CCCN1,Strem Chemicals,07-0093,124779-66-4,"(2S,2'S)-(+)-2,2'-Bipyrrolidine, 99%",31585818
+CCN1CCC(CC1)N,Matrix Scientific,028774,50534-45-7,1-Ethylpiperidin-4-amine,842350
+CN(C1CCCCNCC1)C.Cl.Cl,Sigma Aldrich,T300047,,"N,N-DIMETHYL-4-AZOCANAMINE DIHYDROCHLORIDE",24280352
+NCCCCCN(C1CCCCC1)C,Otava,7020210363,,"N-cyclohexyl-N-methylpentane-1,5-diamine",24703784
+CN[C@H]1CNCC[C@H]1C,Advanced ChemBlocks,F-4018,1354469-76-3,"(3R,4R)-N,4-dimethyl-piperidin-3-amine",43367331
+CNC1CCN(CC1)C(C)C,Matrix Scientific,019225,503126-34-9,(1-Isopropyl-piperidin-4-yl)-methyl-amine,5769168
+NCCCN1CC(C)CC(C1)C,Matrix Scientific,018904,878657-11-5,"3-(3,5-Dimethyl-piperidin-1-yl)-propylamine",5769134
+C1CCC(NC1)CCN1CCCC1,Matrix Scientific,021191,25082-00-2,2-(2-Pyrrolidin-1-yl-ethyl)-piperidine,834599
+CN(CC1CCNCC1)C,Matrix Scientific,016367,138022-00-1,"N,N-Dimethyl-1-piperidin-4-ylmethanamine",5766395
+CNCC1CCN(CC1)C,Matrix Scientific,016357,405928-19-0,N-Methyl-1-(1-methylpiperidin-4-yl)methanamine,5766380
+C[C@H]1CNC[C@@H](N1)C,Bepharm,B232649,402832-69-3,"(2S,6S)-2,6-Dimethylpiperazine",44471422
+N1CC2CNCC(C1)C2,Enamine BB,EN300-90605,,"3,7-diazabicyclo[3.3.1]nonane",28305138
+CCCCC(=N)N.Cl,Tyger Scientific,P33001,,Pentanamidine HCl,24632121
+CC1CN(CCNC(C)C)CC(C1)C,Matrix Scientific,027659,915921-72-1,"N-[2-(3,5-Dimethylpiperidin-1-yl)ethyl]-N-isopropylamine",11489906
+CNCC1CCCN(C1)CC,ChemBridge,4009636,937648-03-8,1-(1-ethylpiperidin-3-yl)-N-methylmethanamine,7864226
+CNC1CC2CCCC(C1)N2C,Accela ChemBio,SY002945,123259-33-6,"endo-N,9-Dimethyl-9-azabicyclo[3.3.1]nonan-3-amine",22244364
+NCCC1CCN(CC1)C1CCCC1,Matrix Scientific,077437,132740-61-5,[2-(1-Cyclopentylpiperidin-4-yl)ethyl]amine,11489550
+CCCC(N(C)C)CN,Matrix Scientific,036304,19764-60-4,"N-[1-(Aminomethyl)butyl]-N,N-dimethylamine",18189430
+NCCN1CCC(CC1)CC,ChemBridge,4014889,1177306-60-3,2-(4-ethylpiperidin-1-yl)ethanamine,18188798
+NCCC1CCCCN1C(C)C,Matrix Scientific,077431,915922-79-1,[2-(1-Isopropylpiperidin-2-yl)ethyl]amine,11488520
+NC[C@H]1CCCN1.Cl.Cl,Enamine BB,EN300-114810,,(2R)-pyrrolidin-2-ylmethanamine dihydrochloride,44464324
+CCNCCN1CCCCC1CC,Matrix Scientific,027658,,N-Ethyl-N-[2-(2-ethylpiperidin-1-yl)ethyl]amine,18186548
+NCCCCNC(CC(C)(C)C)(C)C,Sigma Aldrich,PH001157,,"N(1)-(1,1,3,3-TETRAMETHYLBUTYL)-1,4-BUTANEDIAMINE",28291800
+CN(CC1CNCC1)C,Matrix Scientific,034873,99724-17-1,"N,N-Dimethyl(3-pyrrolidinyl)methanamine",14112486
+CCCCCCCCCCCCN(CCN(C)C)C,Sigma Aldrich,PH000873,,"N(1)-DODECYL-N(1),N(2),N(2)-TRIMETHYL-1,2-ETHANEDIAMINE",28291310
+CCCCCCCCCCCCCCCCNCCN,Sigma Aldrich,PH000856,,"N(1)-HEXADECYL-1,2-ETHANEDIAMINE",28291278
+NC1CCCCNC1.Cl.Cl,AstaTech,51996,,3-AMINO-HOMOPIPERIDINE 2HCL,31526942
+CCCCCCNCCN,Chem-Impex,18212,7261-70-3,N-Hexylethylenediamine,28290481
+CC(NCCN1CCCCC1)C,ChemDiv BB,BB53-1155,,N-(2-piperidin-1-ylethyl)propan-2-amine,31525817
+ClCCCNCCCN1CCCCC1,ChemDiv BB,BB53-1104,,N-(3-chloropropyl)-N-(3-piperidin-1-ylpropyl)amine,31525738
+NC1CC1N,Enamine BB,EN300-84375,,"cyclopropane-1,2-diamine",36726386
+CNCCN1CCCC(C1)C,ChemDiv BB,BB52-9374,,N-methyl-N-[2-(3-methylpiperidin-1-yl)ethyl]amine,31523106
+CCCCN(CCCN)CCCC,AK Scientific,L373,102-83-0,3-(Di-n-butylamino)propylamine,537380
+C[C@@H]1NC[C@H](NC1)C,Matrix Scientific,072795,2815-34-1,"trans-2,5-Dimethylpiperazine",537058
+NCC1CCN1.Cl.Cl,AstaTech,20184,103550-76-1,2-AMINOMETHYLAZETIDINE 2HCL,43337550
+C1CCN(CC1)[C@H]1CNCC1,Anichem,K10860,,(R)-1-Pyrrolidin-3-yl-piperidine,36561067
+NC1CCCC(C1)N,Acros Organics (US),37024,3385-21-5,"1,3-Diaminocyclohexane, 95+%, mixture of cis and trans isomers",718986
+NCC1CCCN1CC,Matrix Scientific,037486,26116-12-1,(1-Ethylpyrrolidin-2-yl)methylamine,527711
+CC(C1CNCCN1)CC,Enamine BB,EN300-114556,,2-(butan-2-yl)piperazine,40837684
+CCN1CCNC(C1)CC(C)C,Life Chemicals,F2147-0836,,1-ethyl-3-isobutylpiperazine,40810427
+NCC(CC=CC)N.Cl.Cl,Enamine BB,EN300-132774,,"hex-4-ene-1,2-diamine dihydrochloride",46306539
+NCCNC(C)C,Matrix Scientific,037619,19522-67-9,N-(2-Aminoethyl)-N-isopropylamine,523948
+CN1CCCC(C1)NC1CC1,Oakwood Products (Non-EU Customers),087905,,Cyclopropyl-(1-methyl-piperidin-3-yl)-amine,40401998
+CCCC1CNCCN1,Enamine BB,EN300-103036,,2-propylpiperazine,40335693
+CCCCCCCCN1CCNCC1,Apollo Scientific,OR6895,54256-45-0,1-(n-Octyl)piperazine 97%,522200
+C1CCC(CC1)CN1CCNCC1,Matrix Scientific,085675,57184-23-3,1-(Cyclohexylmethyl)piperazine,521958
+CC1CCN(CC1)C1CCN(CC1)C(C)C,Zelinsky Institute,UZI/1935320,,,6116143
+NC1CNC1,Matrix Scientific,090481,102065-86-1,Azetidin-3-amine,40295992
+C1CCCC(CC1)N1CCN(CC1)C1CCCC1,Zelinsky Institute,UZI/1935429,,,6115776
+CN(CC1CCN(C1)C)C,Matrix Scientific,069174,1313738-92-9,"N,N-Dimethyl(1-methylpyrrolidin-3-yl)methanamine",36553238
+N[C@@H]1CNCC1,AK Scientific,N118,128345-57-3,(S)-3-Aminopyrrolidine,519011
+CC1CCN(CC1)N,Synthon-Lab,SL100497,19107-42-7,4-methylpiperidin-1-amine,44221572
+CCCC[N+]1(CCCC)CC[N+](CC1)(CCCC)CCCC,TimTec,ST088008,,,30082795
+CNCC1CCCNC1.Cl.Cl,Matrix Scientific,060491,,N-Methyl-1-piperidin-3-ylmethanamine dihydrochloride,36552449
+CCCN1CCC(CC1)CN(CC)CC,Enamine,Z433808150,,,31974060
+CC1CCN(CC1)CC1CCCN1,ACB Blocks ,C5A-0380,,4-methyl-1-(2-pyrrolidinylmethyl)piperidine,706399
+CC1CCCCN1CC1CCCCN1,ACB Blocks ,C6A-0349,,2-methyl-1-(2-piperidinylmethyl)piperidine,706283
+C[C@@H]1CCC[C@@H](N1CC1CCCN1)C,ACB Blocks ,C5A-0371,,"(2R,6S)-2,6-dimethyl-1-(2-pyrrolidinylmethyl)piperidine",706103
+CCN(CC1CCCCN1)CC,ACB Blocks ,C6A-0345,,N-ethyl-N-(2-piperidinylmethyl)ethanamine,706051
+C1CCN(C1)CC1CCCN1,Matrix Scientific,027121,195311-28-5,1-(Pyrrolidin-2-ylmethyl)pyrrolidine,705941
+CN1CCC(CC1)CNC1CC1,Oakwood Products (Non-EU Customers),087910,,Cyclopropyl-(1-methyl-piperidin-4-ylmethyl)-amine,39194513
+CN(CC1CCN(CC1)C)C.Cl.Cl,Bellen Chem,Bellen008823,1170171-39-7,"N,N-dimethyl(1-methylpiperidin-4-yl)methanamine dihydrochloride",43479373
+CN1CCC(C1)CNC1CC1,Oakwood Products (Non-EU Customers),087904,,Cyclopropyl-(1-methyl-pyrrolidin-3-ylmethyl)-amine,39129545
+CCCCC(N1CCNCCC1)C,Oakwood Products (Non-EU Customers),061972,,"1-(1-Methylpentyl)-1,4-diazepane",32283707
+CCCC(N1CCNCC1C)C,EvoBlocks,EB29591,,2-methyl-1-(pentan-2-yl)piperazine,32283604
+NCCCC1CCNCC1,Bepharm,B236639,860229-31-8,3-(Piperidin-4-yl)propan-1-amine,38858709
+CC(NCC1CCCCN1C)C,Oakwood Products (Non-EU Customers),087893,,Isopropyl-(1-methyl-piperidin-2-ylmethyl)-amine,38593221
+C1CCC(CC1)N1CCN(CC1)C1CCCCC1,Zelinsky Institute,UZI/1936639,,,1453618
+N1CCC(CC1)N1CCCC1,Matrix Scientific,075162,5004-07-9,4-(1-Pyrrolidinyl)piperidine,507947
+C1CCC(CN1)NC1CC1,Bellen Chem,Bellen008355,1251083-96-1,N-cyclopropylpiperidin-3-amine,38465521
+CCNCC1CCCCN1,CombiPhos Catalysts,MPB-11227,,Ethyl-piperidin-2-ylmethyl-amine,38100993
+C1CCC(NC1)CNC1CC1,Bellen Chem,Bellen008358,1250526-55-6,N-((piperidin-2-yl)methyl)cyclopropanamine,38100665
+NC[C@@H](N)C.Cl,Enamine BB,EN300-107937,,"(2S)-propane-1,2-diamine hydrochloride",43470113
+NCCC(N1CCCCC1)C,Enamine BB,EN300-132986,,3-(piperidin-1-yl)butan-1-amine,37923749
+NCCN1CCCCC1C,Matrix Scientific,008501,768-08-1,2-(2-Methyl-piperidin-1-yl)-ethylamine,1445601
+CCCC[N+](CC[N+](CCCC)(C)C)(C)C.[I-].[I-],Otava,7211970030,,,1871465
+NCC1CNCC1,Tyger Scientific,P33000,,C-Pyrrolidin-3-yl-methylamine,4355895
+CNCC(CNC)C,Sigma Aldrich,S388688,,"N,N',2-TRIMETHYL-1,3-PROPANEDIAMINE",7484391
+NCCC1CCCNC1.Cl.Cl,Tyger Scientific,A40280,90000-30-9,3-(2-Aminoethyl)piperidine 2HCl,4354385
+NCCCNC(CC(CC(C)(C)C)(C)C)(C)C,Sigma Aldrich,S366048,,3-(TERT.-DODECYLAMINO)-PROPYLAMINE,7482323
+NCC(NC)(C)C,Enamine BB,EN300-42393,,(1-amino-2-methylpropan-2-yl)(methyl)amine,37686306
+CNCCCNC,Enamine BB,EN300-93444,,methyl[3-(methylamino)propyl]amine,496770
+CN(C1CC1)CC1CCCN1,Oakwood Products (Non-EU Customers),088206,,Cyclopropyl-methyl-pyrrolidin-2-ylmethyl-amine,37591525
+CNC1CCC(CC1)N(C1CC1)C,Oakwood Products (Non-EU Customers),088216,,"N-Cyclopropyl-N,N'-dimethyl-cyclohexane-1,4-diamine",43464094
+CN(C(C)C)C[C@@H]1CCCN1,Oakwood Products (Non-EU Customers),088191,,Isopropyl-methyl-(S)-1-pyrrolidin-2-ylmethyl-amine,43464078
+CC1CCCCN1CCC1CCNCC1,Enamine BB,EN300-109385,,2-methyl-1-[2-(piperidin-4-yl)ethyl]piperidine,37508434
+CN1CCC[C@@H](C1)NC1CC1,Oakwood Products (Non-EU Customers),087907,,Cyclopropyl-((S)-1-methyl-piperidin-3-yl)-amine,43463700
+CN1CCC[C@H](C1)NC(C)C,Oakwood Products (Non-EU Customers),087890,,Isopropyl-((R)-1-methyl-piperidin-3-yl)-amine,43463684
+CCN[C@@H]1CCN(C1)C,Oakwood Products (Non-EU Customers),087869,,Ethyl-((R)-1-methyl-pyrrolidin-3-yl)-amine,43463668
+CCN(CCC(N)C)CC.Cl.Cl,Enamine BB,EN300-39590,,"N-(3-aminobutyl)-N,N-diethylamine dihydrochloride",24463253
+CCN[C@@H]1CC[C@H](CC1)N(C)C,Oakwood Products (Non-EU Customers),087881,,"(1R,4R)-N-Ethyl-N',N'-dimethyl-cyclohexane-1,4-diamine",46018556
+NCC1CCN(CC1)CCC(C)C,Enamine BB,EN300-101807,,[1-(3-methylbutyl)piperidin-4-yl]methanamine,37416502
+NC1CCCNC1,Matrix Scientific,081404,54012-73-6,3-Aminopiperidine,31709096
+NCCC1CCNCC1,Enamine BB,EN300-64907,,2-(piperidin-4-yl)ethan-1-amine,31417298
+NCC(CN)(C)C,TCI America,D1570,7328-91-8,"2,2-Dimethyl-1,3-propanediamine",489907
+NCC[C@@H]1CCCCN1,Ark Pharm,AK130852,1309563-39-0,(S)-2-(Piperidin-2-yl)ethanamine,46015591
+NCCNC1CC1,Enamine BB,EN300-61312,,N-(2-aminoethyl)cyclopropanamine,31415063
+NCC1CCCC(C1)CN,Acros Organics (US),17748,2579-20-6,"1,3-Cyclohexanebis(methylamine), 99%, mixture of cis and trans",485634
+NC1CCN(CC1)CC1CCCC1,Enamine BB,EN300-59308,,1-(cyclopentylmethyl)piperidin-4-amine,31413506
+NCCCCCCCN(C)C,Enamine BB,EN300-56229,,(7-aminoheptyl)dimethylamine,31412677
+CCC1CCN(CC1)CCC1CCNCC1,Matrix Scientific,037301,1000958-55-3,4-Ethyl-1-(2-piperidin-4-ylethyl)piperidine,27332806
+CN(CCC(N)C)C,Matrix Scientific,077546,18246-86-1,"N~1~,N~1~-dimethylbutane-1,3-diamine",31411868
+CCCN1CCC(CC1)NC,Enamine BB,EN300-50474,,N-methyl-1-propylpiperidin-4-amine,31410467
+CN1CCC[C@H](C1)N,Synthonix,A1653,1001353-92-9,(R)-3-Amino-1-methyl-piperidine,37181445
+CN(CCCNCC1CCC1)C,Princeton BioMolecular Research,PBMR151302,,"N'-Cyclobutylmethyl-N,N-dimethyl-propane-1,3-diamine",37180237
+NC1C/C=C\C[C@H](C/C=C\C1)N,Molecular Diversity Preservation,16128,,"cyclodeca-3,8-diene-1,6-diamine (en)",5862140
+C(CC1CCNCC1)CC1CCNCC1,Enamine BB,EN300-20616,,4-[3-(piperidin-4-yl)propyl]piperidine,479515
+CN([C@@H]1CCCC[C@H]1N(C)C)C,SynQuest,3232-1-RR,53152-69-5,"(1R,2R)-1N,1N,2N,2N-Tetramethylcyclohexane-1,2-diamine",37178090
+NCC(C1CCCCC1)N(C)C,Enamine BB,EN300-39705,,"N-(2-amino-1-cyclohexylethyl)-N,N-dimethylamine",31408429
+CCN1CCC(CC1)C1CCNCC1.Cl.Cl,"J & W PharmLab, LLC",60-0494S,,"1-Ethyl-[4,4']bipiperidinyl dihydrochloride",44691547
+C=CCNC1CCN(CC1)C,Zelinsky Institute,B038075,,N-allyl-1-methylpiperidin-4-amine,17095041
+CN[C@H]1CCCC[C@@H]1NC,Matrix Scientific,076456,87583-89-9,"trans-(1S,2S)-N,N'-Dimethylcyclohexane-1,2-diamine",1837616
+NCCC12CC3CC(C1)CC(C2)(C3)CN,Specs,AG-670/25001061,,[3-(2-aminoethyl)-1-adamantyl]methylamine,3801238
+NCC1CCCN1.Cl.Cl,AK Scientific,W7375,6149-92-4,2-(Aminomethyl)pyrrolidine dihydrochloride,42857635
+CC(C1CNCC1)N,Princeton BioMolecular Research,PBMR166997,,1-Pyrrolidin-3-yl-ethylamine,44686662
+CCCCN(CCC(N)C)CCCC,Princeton BioMolecular Research,PBMR103139,,"N*1*,N*1*-Dibutyl-butane-1,3-diamine",36844330
+CC(CCN1CCCC1)N,Enamine BB,EN300-71662,,4-(pyrrolidin-1-yl)butan-2-amine,32445295
+NC1CCN(CC1)CC(=C)C,Enamine BB,EN300-70651,,1-(2-methylprop-2-en-1-yl)piperidin-4-amine,32444159
+NC1CCNC(C1)C,Princeton BioMolecular Research,PBMR018473,,2-methylpiperidin-4-amine,36814638
+C1NCC(C1)CN1CCCC1,Enamine BB,EN300-82889,,3-(pyrrolidin-1-ylmethyl)pyrrolidine,36654995
+NCCN(C1CCCCC1)C1CCCCC1,Sigma Aldrich,PH010281,,"N(1),N(1)-dicyclohexyl-1,2-ethanediamine",35875285
+CCN1CCC(CC1)C(N)C,Sigma Aldrich,PH010176,,1-(1-ethyl-4-piperidinyl)ethanamine,35875191
+NCC1CCN(CC1)C1CCCC1,Matrix Scientific,018957,132864-60-9,C-(1-Cyclopentyl-piperidin-4-yl)-methylamine,1014036
+NCCN1C(C)CCCC1C,Matrix Scientific,008507,1788-35-8,"2-(2,6-Dimethyl-piperidin-1-yl)-ethylamine",1557317
+NCCC1CCCN(C1)C.Cl,Matrix Scientific,068331,,2-(1-Methyl-piperidin-3-yl)-ethylamine hydrochloride,45985229
+NCC1CC(C)(C)NC(C1)(C)C,AstaTech,54156,,"4-AMINOMETHYL-2,2,6,6-TETRAMETHYLPIPERIDINE",37154598
+CN(C[C@@H](CC(C)(C)C)N)C.Cl.Cl,AstaTech,53135,,"(R)-N1,N1,4,4-TETRAMETHYLPENTANE-1,2-DIAMINE 2HCL",37154254
+CCCCN(CCCC)CCCNC,Sigma Aldrich,S563285,,"N,N-DIBUTYL-N'-METHYL-1,3-PROPANEDIAMINE",13172092
+CC(CCN1CCC(CC1)N)C.Cl.Cl,Combi-Blocks,SH-5252,1355247-69-6,"1-(3-Methylbutyl)piperidin-4-amine, HCl",44816115
+CCCCCCCCNCCN.Cl.Cl,Sigma Aldrich,S235881,,"N-1-OCTYL-ETHANE-1,2-DIAMINE, DIHYDROCHLORIDE",13166467
+CNC1(C)CCN(CC1)C,Princeton BioMolecular Research,PBMR136251,,"(1,4-Dimethyl-piperidin-4-yl)-methyl-amine",42825351
+CC1CCCN(C1)C1CCNCC1,CHESS Fine Organic,1713,551923-14-9,4-(3-Methyl-piperidin-1-yl)-piperidine,933373
+CCN(C1CCNCC1)CC,Matrix Scientific,033539,143300-64-5,Diethyl-piperidin-4-yl-amine,933354
+NC(=N)CC1CCCCC1.Cl,Enamine BB,EN300-52145,,2-cyclohexylethanimidamide hydrochloride,17003535
+CN(CCNC1CCCC1)C.Cl.Cl,InterBioScreen,BB_SC-4851,,"N1-cyclopentyl-N2,N2-dimethylethane-1,2-diamine dihydrochloride",31660932
+NC1CCC2C(C1)CCCN2,Enamine BB,EN300-90552,,decahydroquinolin-6-amine,36790633
+CNC1CCCN(C1)C,Enamine BB,EN300-64207,,"N,1-dimethylpiperidin-3-amine",36789703
+CCCCCCCC[N+]1(C)CC[N+](CC1)(C)CCCCCCCC,Princeton BioMolecular Research,OSSL_297256,,,1161681
+NCC1CCN(C1)C(C)C,Matrix Scientific,027468,90203-08-0,(1-Isopropylpyrrolidin-3-yl)methylamine,3725312
+CCNCCN1CCCC1,Matrix Scientific,061092,138356-55-5,N-Ethyl-2-pyrrolidin-1-ylethanamine,3725027
+CCC(N1CCCCC1)CN,Matrix Scientific,036314,857243-06-2,2-Piperidin-1-ylbutan-1-amine,17364350
+CN1CCC(CC1)C1CCNCC1,ChemBridge,4018200,122373-80-2,"1-methyl-4,4'-bipiperidine",17364217
+C1CCC(CC1)CCCN1CCNCC1,Apollo Scientific,OR0082,800372-97-8,1-(3-Cyclohexylprop-1-yl)piperazine 98%,919875
+CCCC(N1CCNCC1)C,Apollo Scientific,OR4169,82499-96-5,1-(2-Pentyl)piperazine,919629
+CC1NCC2CC1CNC2,Princeton BioMolecular Research,PBMR168789,,"2-Methyl-3,7-diaza-bicyclo[3.3.1]nonane",44786451
+NC(=N)C1CCCCC1,Enamine BB,EN300-58685,,cyclohexanecarboximidamide,36254682
+C1CCC(CC1)N1CCNCCC1,ChemBridge,4004635,59039-67-7,"1-cyclohexyl-1,4-diazepane",15212058
+CC(CN1CCCCCC1)N,Oakwood Products (Non-EU Customers),060963,,2-Azepan-1-yl-1-methyl-ethylamine,13083476
+CCCCN1CCC(CC1)CN,AstaTech,46078,65017-57-4,4-AMINOMETHYL-1-N-BUTYLPIPERIDINE,892411
+CN[C@@H]1CCCC[C@H]1NC.Cl.Cl,Matrix Scientific,075629,70708-33-7,"trans-(1R,2R)-N,N'-Bismethyl-1,2-cyclohexane diamine dihydrochloride",17252832
+CN(C1CCCCNC1)C,ChemBridge,4016778,933733-52-9,"N,N-dimethyl-3-azepanamine",36092501
+C1CCN(CC1)CC1CCNCC1.Cl.Cl,Matrix Scientific,051442,32832-17-0,1-(4-Piperidinylmethyl)piperidine dihydrochloride,30179233
+CC(CCN(CCC(N)C)CCC(C)C)C,Princeton BioMolecular Research,PBMR103140,,"N1,N1-diisopentylbutane-1,3-diamine",42805875
+CN[C@H]1CNCC1.Cl.Cl,WuXi AppTec,WX600300,139015-33-1,(3R)-(+)-3-(METHYLAMINO)PYRROLIDINE DIHYDROCHLORIDE,45956914
+NCCCCN1CCCC1,Matrix Scientific,007650,24715-90-0,4-(1-Pyrrolidino)butylamine,887639
+NCCCCN(C)C,Matrix Scientific,007572,3529-10-0,4-(Dimethylamino)butylamine,887589
+CCCC(NC1CCNCC1)CCC,ChemBridge,92269432,,N-(1-propylbutyl)-4-piperidinamine,25617263
+NCC(C1CCNCC1)CC(C)(C)C,Enamine BB,EN300-76818,,"4,4-dimethyl-2-(piperidin-4-yl)pentan-1-amine",36086980
+CC(CNCCCCCCNCC(C)C)C,Alfa Aesar (UK),B21024,16121-92-9,"N,N'-Diisobutyl-1,6-hexanediamine, 97%",885633
+NCC1CCN(CC1)CC(C)C.Cl.Cl,Oakwood Products (Non-EU Customers),064321,,(1-Isobutylpiperidin-4-yl)methanamine dihydrochloride,36769912
+NC1CCN(CC1)C1CCCCC1,Enamine BB,EN300-97846,,1-cyclohexylpiperidin-4-amine,6254671
+CC(CN1CC[C@@H](C1)N)C,Oakwood Products (Non-EU Customers),064213,,(S)-1-Isobutylpyrrolidin-3-amine,36769709
+C1CCC(CC1)NC1CCNCC1,Alinda Chemical,ALBB-005795,,N-cyclohexylpiperidin-4-amine,6254537
+CC1CCN(CC1)CCC1CCNCC1,Matrix Scientific,036889,,4-Methyl-1-(2-piperidin-4-ylethyl)piperidine,6254520
+CCN(C1CCNCC1)C.Cl,Oakwood Products (Non-EU Customers),063522,,N-Ethyl-N-methylpiperidin-4-amine hydrochloride,36768524
+CCNC1CCNCC1.Cl.Cl,Oakwood Products (Non-EU Customers),063467,,N-Ethylpiperidine-4-amine dihydrochloride,36768435
+CN(CCNCC1CCCCC1)C,Enamine BB,EN300-52433,,(cyclohexylmethyl)[2-(dimethylamino)ethyl]amine,6898185
+CN1CCNC(CC1)C,Enamine BB,EN300-72677,,"1,5-dimethyl-1,4-diazepane",36084350
+CCC(NCCNC1CCCCC1)C,Oakwood Products (Non-EU Customers),024598,886500-62-5,N-2-Butyl-N'-cyclohexyl ethylenediamine,6252318
+CNCCNC1CC1,Life Chemicals,F2147-1527,,"N-cyclopropyl-N'-methylethane-1,2-diamine",6252282
+CC(CC)CC(=N)N.Cl,Oakwood Products (Non-EU Customers),061467,817552-66-2,3-Methylpentanimidamide hydrochloride,36767279
+NCC1(C)CCN(CC1)C,Enamine BB,EN300-128738,,"(1,4-dimethylpiperidin-4-yl)methanamine",46218114
+NCCC12CC3CC(C1)(CN)CC(C2)(C3)C,Alinda Chemical,ALBB-016011,,{[3-(2-aminoethyl)-5-methyl-1-adamantyl]methyl}amine dihydrochloride,36027819
+C1CCCC(CC1)NCCN1CCCCC1,ChemBridge,5464914,,,2355273
+CN(CC(CNC1CCCC(C1)C)(C)C)C,ChemBridge,5458439,,,2354855
+C1CCCC(CCC1)NCCN1CCCCC1,ChemBridge,5453765,,,2354586
+CN1CCCN(CC1)CC1CCCCC1,ChemBridge,5429791,,,2354258
+CCCCN1CCNCCC1,Matrix Scientific,101165,3619-75-8,"1-Butyl-1,4-diazepane",6247665
+CNC1CNCC1,TCI Europe,M1106,83030-08-4,3-(Methylamino)pyrrolidine,6885895
+NC1CCCN(C1)C1CCCC1,ChemBridge,4018208,,,30474255
+CCN(C1CNCC1)CC,Enamine BB,EN300-68733,,"N,N-diethylpyrrolidin-3-amine",6879669
+CCCCCCCCCCCCCCCCCCNCCCN,Sigma Aldrich,PH000570,,"N(1)-OCTADECYL-1,3-PROPANEDIAMINE",6207195
+CCN(CCC1CCCNC1)CC,Matrix Scientific,053987,122374-01-0,"N,N-Diethyl-2-(3-piperidinyl)-1-ethanamine",30423960
+CCNCCCN1CCC(CC1)C,Matrix Scientific,026951,1040690-68-3,N-Ethyl-3-(4-methyl-1-piperidinyl)-1-propanamine,18625120
+CCNCCCCCCNCC,TCI America,D1305,13093-05-5,"N,N'-Diethyl-1,6-diaminohexane",6191746
+NCC(N)C.Cl.Cl,ChemPacific,10457,19777-66-3,(S)-(-)-Diaminopropane dihydrochloride,6187817
+CN1CCC(CC1)N1CC(C)CC(C1)C,ChemBridge,5458264,,,24836488
+CC(N1CCC(CC1)N1CCCCC1)C,ChemBridge,5927805,,,1328996
+CCNCC(N1CCCC1)C,Exclusive Chemistry,EC-000.1343,,N-ethyl-2-(1-pyrrolidinyl)-1-propanamine,33371915
+CCCCNCC1CCCCN1C(C)C,Exclusive Chemistry,EC-000.1322,,N-[(1-isopropyl-2-piperidinyl)methyl]-1-butanamine,33371899
+CCCNCC1CCCCN1CC,Exclusive Chemistry,EC-000.1314,,N-[(1-ethyl-2-piperidinyl)methyl]-1-propanamine,33371883
+CCCCN1CCCCC1CNC,Exclusive Chemistry,EC-000.1306,,(1-butyl-2-piperidinyl)-N-methylmethanamine,33371867
+CCCNCC1CCCN1C(C)C,Exclusive Chemistry,EC-000.1297,,N-[(1-isopropyl-2-pyrrolidinyl)methyl]-1-propanamine,33371851
+CCNCC1CCCN1CC,Exclusive Chemistry,EC-000.1289,,N-[(1-ethyl-2-pyrrolidinyl)methyl]ethanamine,33371835
+CC1CCCN(C1)CC1CCCCN1.Cl.Cl,Matrix Scientific,051675,,3-Methyl-1-(2-piperidinylmethyl)piperidine dihydrochloride,30420385
+C1CCCN(CC1)CC1CNCC1.Cl.Cl,Matrix Scientific,051651,,1-(3-Pyrrolidinylmethyl)azepane dihydrochloride,30420343
+CCCCN(CC1CNCC1)C.Cl.Cl,Matrix Scientific,051643,1219964-16-5,N-Methyl-N-(3-pyrrolidinylmethyl)-1-butanamine dihydrochloride,30420327
+CC1CCN(CC1)CCC1CCNCC1.Cl.Cl,Matrix Scientific,051619,30131-19-2,4-Methyl-1-[2-(4-piperidinyl)ethyl]piperidine dihydrochloride,30420283
+CCN1CCC(C1)N,ChemBridge,4035338,7791-89-1,1-ethyl-3-pyrrolidinamine,29703734
+CN(CCC1CCCNC1)C.Cl.Cl,Matrix Scientific,051579,1219960-73-2,"N,N-Dimethyl-2-(3-piperidinyl)-1-ethanamine dihydrochloride",30420210
+CNCCN1CCCCC1,Matrix Scientific,018964,41239-39-8,Methyl-(2-piperidin-1-yl-ethyl)-amine,1508662
+CC(CN(CCN(C)C)C)CCC=C(C)C,ChemBridge,5430333,,,2016057
+CC(N1CCNCC1)CC(C)C,ChemBridge,3020248,1171587-00-0,"1-(1,3-dimethylbutyl)piperazine",29703518
+C=CCN(CC1CCNCC1)CC=C.Cl.Cl,Matrix Scientific,051447,,N-Allyl-N-(4-piperidinylmethyl)-2-propen-1-amine dihydrochloride,30420002
+CN(CC1CCNCC1)C.Cl.Cl,Matrix Scientific,051438,172281-72-0,"N,N-Dimethyl(4-piperidinyl)methanamine dihydrochloride",30419990
+CCC1CCC(CC1)N(CCN(C)C)CC,ChemBridge,5410907,,,2015444
+C1CCC(NC1)CCN1CCCC1.Cl.Cl,Matrix Scientific,051551,69484-99-7,2-[2-(1-Pyrrolidinyl)ethyl]piperidine dihydrochloride,24825274
+CCCCCCCCCCCCCCCCCC(=N)N(C)C,Princeton BioMolecular Research,OSSL_123747,,,25564171
+C1CN[C@H](C1)[C@H]1CCCN1,Strem Chemicals,07-0092,107886-22-6,"(2R,2'R)-(-)-2,2'-Bipyrrolidine, 99%",31585817
+CNC1CCN(CC1C)CC,Enamine BB,EN300-84851,,"1-ethyl-N,3-dimethylpiperidin-4-amine",36748093
+NCC1(N)CC1,Enamine BB,EN300-84793,,1-(aminomethyl)cyclopropan-1-amine,36748060
+NC[C@@H]1CCCC[C@H]1N,BioBlocks,AA116,24716-89-0,trans-2-Aminomethyl-cyclohexylamine,31550778
+CC1(N)CCNCC1,Bepharm,B98899,196614-16-1,4-Methyl-4-piperidinamine,42768466
+NCCCCCN1CCCCCC1,Otava,7020210362,,(5-azepan-1-ylpentyl)amine,24703782
+CCN1CCC(CC1C)N,Enamine BB,EN300-78981,,1-ethyl-2-methylpiperidin-4-amine,36364524
+NC1CCN(CC1)C1CC1,Enamine BB,EN300-26574,62813-02-9,1-cyclopropylpiperidin-4-amine,11649504
+CNCC1CCN(CC1)C(C)C,Matrix Scientific,019174,,(1-Isopropyl-piperidin-4-ylmethyl)-methyl-amine,5769164
+CCN1CCCC1C1CCCN1,Enamine BB,EN300-71186,,1-ethyl-2-(pyrrolidin-2-yl)pyrrolidine,36363848
+C1CCC(NC1)CCCC1CCCCN1,Ark Pharm,AK-60417,16898-53-6,"1,3-Di(piperidin-2-yl)propane",44471133
+C(CN1CC1)CN1CC1,InterBioScreen,STOCK4S-87382,,"1,3-di(aziridin-1-yl)propane",4635886
+CC(CC(=N)N)C.Cl,Enamine BB,EN300-100194,,3-methylbutanimidamide hydrochloride,24632120
+CNCC1CCN(CC1)CC,ChemBridge,4010585,,1-(1-ethylpiperidin-4-yl)-N-methylmethanamine,7864224
+NC[C@@H]1CCCN1CC(C)C,Enamine BB,EN300-115955,,[(2S)-1-(2-methylpropyl)pyrrolidin-2-yl]methanamine,44464647
+CCCN1CCCC(C1)N,ChemBridge,4014926,51388-02-4,1-propylpiperidin-3-amine,11488583
+NCCC1CCN(CC1)CC,Enamine BB,EN300-90312,,2-(1-ethylpiperidin-4-yl)ethan-1-amine,11488330
+CCCN1CCCN(CC1)CC1CCC1,Enamine,Z1289499842,,,45656709
+CC1CCCN(C1)CCNC1CCCC1,Enamine,Z594256808,,,33353690
+CNCCN(C1CCCCC1)CC,Matrix Scientific,027668,,"N-Cyclohexyl-N-ethyl-N'-methylethane-1,2-diamine",18186562
+CCNCCN1CC(C)CC(C1)C,Matrix Scientific,027656,,"N-[2-(3,5-Dimethylpiperidin-1-yl)ethyl]-N-ethylamine",18186546
+CCC(CN1CCNCC1)CC,Matrix Scientific,029376,57184-38-0,1-(2-Ethylbutyl)piperazine,14108226
+CCCCCCCCCCNCCN,Enamine BB,EN300-82408,,(2-aminoethyl)(decyl)amine,28291080
+CC(CCN1CCNCC1)C,Matrix Scientific,029375,34581-23-2,1-(3-Methylbutyl)piperazine,11483830
+CNCCN1[C@H](C)CCC[C@@H]1C,ChemDiv BB,BB53-0935,,"N-{2-[(2R,6S)-2,6-dimethylpiperidin-1-yl]ethyl}-N-methylamine",31525481
+CCCNCCN1CCCC(C1)C,ChemDiv BB,BB53-0513,,N-[2-(3-methylpiperidin-1-yl)ethyl]-N-propylamine,31524829
+ClCCNCCCN1CCCCC1,ChemDiv BB,BB52-9458,,N-(2-chloroethyl)-N-(3-piperidin-1-ylpropyl)amine,31523232
+CCCN(CCC)CCN(CCC)CCC,AK Scientific,X0063,102-60-3,"N,N,N',N'-Tetra (2-hydropropyl)ethylene diamine",43540009
+NCCC(N(CC)C)C,Matrix Scientific,036098,1033693-03-6,N-(3-Amino-1-methylpropyl)-N-ethyl-N-methylamine,20306679
+CN1CCC(CC1)NC(C)C.Cl.Cl,Oakwood Products (Non-EU Customers),087892,,Isopropyl-(1-methyl-piperidin-4-yl)-amine dihydrochloride,46574176
+NCC1(N)CC1.Cl.Cl,Enamine BB,EN300-134780,,1-(aminomethyl)cyclopropan-1-amine dihydrochloride,46573886
+NC1CCCN(C1)C1CCCCC1,Enamine BB,EN300-73603,,1-cyclohexylpiperidin-3-amine,35732811
+CCC(N1CCC(CC1)N1CCCCC1)C,Princeton BioMolecular Research,OSSK_732746,,,6134198
+CC1CCN(CC1)C1CCN(CC1)C1CCCCC1,Zelinsky Institute,UZI/1936975,,,2172913
+C1CCCN(CC1)C1CCN(CC1)C1CCCC1,ChemBridge,6749257,,,2171991
+CCCCN1CCNCC1,Matrix Scientific,029394,5610-49-1,1-Butylpiperazine,530626
+CCCCN1CCC(CC1)N.Cl.Cl,Enamine BB,EN300-42920,,1-butylpiperidin-4-amine dihydrochloride,20842091
+CCCCCC[N+](CCCCCCCCCC[N+](CCCCCC)(C)C)(C)C,Vitas M Labs,STK700510,,"N,N'-dihexyl-N,N,N',N'-tetramethyldecane-1,10-diaminium",4396655
+N[C@@H]1CCCNC1.Cl.Cl,Matrix Scientific,074192,334618-23-4,(R)-(-)-3-Aminopiperidine dihydrochloride,528752
+C1CCN(CC1)[C@@H]1CNCC1,Anichem,K10861,,(S)-1-Pyrrolidin-3-yl-piperidine,36561065
+CN([C@H]1CNCC1)C,Matrix Scientific,072717,132958-72-6,(R)-3-Dimethylaminopyrrolidine,527830
+CC1CCCCN1CCNC1CCCC1,Enamine,Z594256792,,,35722156
+NC[C@H]1CCCN1CC,AK Scientific,70506,22795-97-7,(R)-2-(Aminomethyl)-1-ethylpyrrolidine,717228
+C1CNC(CN1)C1CC1,Anichem,31389,,2-Cyclopropyl-piperazine,40837678
+CC1CN(C1)C1CCNCC1,Bepharm,B224309,864494-21-3,4-(3-Methylazetidin-1-yl)piperidine,40298029
+NCC1(N)CCCCC1.Cl.Cl,Enamine BB,EN300-27093,5062-67-9,(1-aminocyclohexyl)methylamine dihydrochloride,13454892
+CNC1CCNCCC1,Enamine BB,EN300-117547,,N-methylazepan-4-amine,40095649
+CCCN1CCC(CC1)NC(CCCC(C)C)C,Enamine,Z90516863,,,29642545
+N[C@H]1CNCC1,AK Scientific,N110,116183-82-5,(R)-3-Aminopyrrolidine,519009
+NCCC1CCN(CC1)C.Cl.Cl,Matrix Scientific,061035,20845-38-9,[2-(1-Methylpiperidin-4-yl)ethyl]amine dihydrochloride,36552821
+[C-]#[N+]CCN1CCCC1,ACB Blocks ,ISN-0157,,1-(2-isocyanoethyl)pyrrolidine,706727
+CC1CCCC(N1CC1CCCCN1)C,ACB Blocks ,C6A-0348,,"2,6-dimethyl-1-(2-piperidinylmethyl)piperidine",706281
+CCN(CC1CCCN1)CC,ChemBridge,4014382,121053-95-0,N-ethyl-N-(pyrrolidin-2-ylmethyl)ethanamine,706049
+CCCCNCCN,AK Scientific,X3356,19522-69-1,2-(Butylamino)ethylamine,513766
+CN1CCCCC1C1CCCCN1,Vitas M Labs,STK893389,,"1-methyl-2,2'-bipiperidine",704731
+CCCCCC(N1CCNCCC1)C,EvoBlocks,EB30097,,"1-(heptan-2-yl)-1,4-diazepane",32283835
+CCCCCN1CCNCCC1,EvoBlocks,EB30043,,"1-pentyl-1,4-diazepane",32283753
+CCCCCCC(N1CCNCC1C)C,EvoBlocks,EB29605,,2-methyl-1-(octan-2-yl)piperazine,32283620
+C1CCN(CC1)CC1CCCN1,ACB Blocks ,C5A-0053,,1-(2-pyrrolidinylmethyl)piperidine,703640
+CCCCCCCCCCCN1CCNCC1,EvoBlocks,EB29061,,1-undecylpiperazine,32283401
+CCCCC(CN1CCNCC1)CC,EvoBlocks,EB29005,,1-(2-ethylhexyl)piperazine,32283367
+CN(C(C)C)CC1CNCC1,Oakwood Products (Non-EU Customers),088192,,Isopropyl-methyl-pyrrolidin-3-ylmethyl-amine,38978723
+NCC1CCCN(C1)CC,Matrix Scientific,016359,102459-02-9,[(1-Ethylpiperidin-3-yl)methyl]amine,2720961
+CN(C1CNCC1)C(C)C,Oakwood Products (Non-EU Customers),088187,,Isopropyl-methyl-pyrrolidin-3-yl-amine,38955731
+C[N+]1(CCCCCCC[N+]2(C)CCCCCC2)CCCCCC1,Vitas M Labs,STL058847,,"1,1'-heptane-1,7-diylbis(1-methylazepanium)",4375576
+CCNCCCC1CCNCC1,Enamine BB,EN300-123466,,ethyl[3-(piperidin-4-yl)propyl]amine,38858693
+CCCC(NC1CCN(CC1)CC(C)C)CCC,Enamine,Z1341420797,,,44578130
+CCNCC1CCN(CC1)C,Oakwood Products (Non-EU Customers),087879,,Ethyl-(1-methyl-piperidin-4-ylmethyl)-amine,38588959
+CCC(N1CCC(CC1)CN)C,Bepharm,B238090,1247409-53-5,(1-(sec-Butyl)piperidin-4-yl)methanamine,38588121
+CCN1CCC2(C1)CNCC2,Chemical Block,A2949/0124234,,,6789246
+CCN1CCC2(CC1)CCCNC2,ChemBridge,4039904,1227465-74-8,"9-ethyl-2,9-diazaspiro[5.5]undecane",31238714
+CC([C@H]1NCCNC1)C,AK Scientific,W4351,207284-25-1,(R)-2-Isopropylpiperazine,43472967
+NC1CCCN(C1)C1CCCCCC1,ChemBridge,24545068,,1-cycloheptyl-3-piperidinamine,38202029
+CCNCC1CCCNC1,CombiPhos Catalysts,MPB-11226,,Ethyl-piperidin-3-ylmethyl-amine,38100991
+C1CCC(CN1)CNC1CC1,Bellen Chem,Bellen008357,1226016-69-8,N-((piperidin-3-yl)methyl)cyclopropanamine,38100663
+CNC(CCCN(CC)CC)C,Sigma Aldrich,PH000552,,"N(1),N(1)-DIETHYL-N(4)-METHYL-1,4-PENTANEDIAMINE",7603583
+CCC(N(C)C)CN,Matrix Scientific,036310,19764-59-1,"N-[1-(Aminomethyl)propyl]-N,N-dimethylamine",10861756
+CCCCCC(=N)N,ChemBridge,4012907,5547-54-6,hexanimidamide,4356266
+NCC(N(C)C)C,Matrix Scientific,035787,19764-58-0,"N-(2-Amino-1-methylethyl)-N,N-dimethylamine",7484389
+NCCC1CCCCN1.Cl.Cl,Tyger Scientific,A40270,15932-66-8,2-(2-Aminoethyl)piperidine 2HCl,4354383
+NCC1(CC1)CN1CCCCC1,Princeton BioMolecular Research,PBMR158842,,[1-(1-piperidylmethyl)cyclopropyl]methanamine,43467325
+NCCCCCCCCCCCCN,AK Scientific,K836,2783-17-7,"1,12-Diaminododecane",498067
+NC1CCN(CC1)CCC#C,Sigma Aldrich,CDS019201,,1-(But-3-yn-1-yl)piperidin-4-amine,37716206
+CN1CCC[C@@H]1CN1CCCC1,"SynChem, Inc.",SC-10877,1217638-41-9,(R)-N-Methyl-2-pyrrolidin-1-ylmethyl-pyrrolidine,4352293
+NCCC1CCNCC1.Cl.Cl,Focus Synthesis,FS003011,90000-31-0,4-(2'-Aminoethyl)piperidine dihydrochloride,4351199
+CN(C1CC(C)(C)NC(C1)(C)C)C,Sigma Aldrich,298573,32327-90-5,"4-Dimethylamino-2,2,6,6-tetramethylpiperidine",495879
+CN(C1CC1)CC1CCNCC1,Oakwood Products (Non-EU Customers),088215,,Cyclopropyl-methyl-piperidin-4-ylmethyl-amine,37591523
+NC1CC2(C1)CC(C2)N.Cl.Cl,Enamine BB,EN300-88455,,6-aminospiro[3.3]hept-2-ylamine dihydrochloride,31421144
+CN(C1CC1)[C@H]1CCCNC1,Oakwood Products (Non-EU Customers),088211,,Cyclopropyl-methyl-(S)-piperidin-3-yl-amine,43464092
+CN([C@@H]1CNCC1)C(C)C,Oakwood Products (Non-EU Customers),088189,,Isopropyl-methyl-(S)-pyrrolidin-3-yl-amine,43464076
+CCN(CCC1CCNCC1)CC,Matrix Scientific,007221,64168-10-1,4-(2-Diethylaminoethyl)piperidine,37508432
+CC(CCC(N)(C)C)(N)C,Manchester Organics,N31500,23578-35-0,"2,5-Dimethylhexane-2,5-diamine",46019664
+CN1CCC[C@H](C1)NC1CC1,Oakwood Products (Non-EU Customers),087906,,Cyclopropyl-((R)-1-methyl-piperidin-3-yl)-amine,43463698
+CC(NC[C@@H]1CCCN1C)C,Oakwood Products (Non-EU Customers),087887,,Isopropyl-((S)-1-methyl-pyrrolidin-2-ylmethyl)-amine,43463682
+CN[C@H]1CCCN(C1)C,ChemDiv BB,BB60-4373,,Methyl-((S)-1-methyl-piperidin-3-yl)-amine,43463666
+CN[C@@H]1CC[C@H](CC1)N(C)C,Oakwood Products (Non-EU Customers),087866,,"(1R,4R)-N,N,N'-Trimethyl-cyclohexane-1,4-diamine",46018554
+CCCNCCCN(C)C,Otava,1366733,,,37431332
+NCC1CCCCN1CC(C)C,Enamine BB,EN300-115069,,[1-(2-methylpropyl)piperidin-2-yl]methanamine,37416446
+CCCCN1CCC(C1)CN,Alinda Chemical,ALBB-022669,,[(1-butylpyrrolidin-3-yl)methyl]amine dihydrochloride,37404170
+NCC1CCN(CC1)CC.Cl,Fluorochem (Non-US Customers),032203,21168-71-8,C-(1-Ethyl-piperidin-4-yl)-methylamine hydrochloride,46017548
+N1CCN(CC1)CC1CCCC1,Matrix Scientific,054616,82500-22-9,1-(Cyclopentylmethyl)piperazine,8619576
+N1CC(C1)CN1CCCC1,Ark Pharm,AK131364,1180505-00-3,1-(Azetidin-3-ylmethyl)pyrrolidine,46016187
+CCC(C(CN)N)CC,UORSY,PB246149944,,,37351951
+CC([C@@H]1NCCNC1)C,Oakwood Products (Non-EU Customers),208755,133181-64-3,(S)-2-Isopropylpiperazine,27528142
+CC(C(NC(C)(C)C)C)NC(C)(C)C,Ark Pharm,AK131022,1167987-07-6,"N2,N3-Di-tert-butylbutane-2,3-diamine",46015761
+CC(NC1CCCNC1)C,Enamine BB,EN300-61495,,N-(propan-2-yl)piperidin-3-amine,31415264
+CN1CCC(C(C1)C)N,Enamine BB,EN300-60979,,"1,3-dimethylpiperidin-4-amine",31414762
+CCN(C(CN)CC)C,Matrix Scientific,036303,1060817-31-3,N-[1-(Aminomethyl)propyl]-N-ethyl-N-methylamine,23805581
+CCCCNC1CCN(CC1)C,Matrix Scientific,038518,1019619-07-8,N-Butyl-1-methylpiperidin-4-amine,27333505
+CC[C@@H]1CNCCN1,Toronto Research Chemicals,E925610,438050-07-8,(R)-2-Ethylpiperazine Dihydrochloride,26985268
+CN(CCC(N(C)C)C)C,TCI America,T0524,97-84-7,"N,N,N',N'-Tetramethyl-1,3-diaminobutane",482284
+CN(CCNCC1CCCCC1)C.Cl,Enamine BB,EN300-52892,,(cyclohexylmethyl)[2-(dimethylamino)ethyl]amine hydrochloride,31411094
+NCCC(N1CCCCCC1)C,Matrix Scientific,079985,,(3-Azepan-1-ylbutyl)amine,31210524
+NC1CCN2C(C1)CCCC2,Enamine BB,EN300-51852,,octahydro-1H-quinolizin-2-amine,31410807
+CCNCCCNCC,Matrix Scientific,026995,10061-68-4,"N1,N3-Diethyl-1,3-propanediamine",481351
+C1CCC(CC1)CN1CCNCCC1,Enamine BB,EN300-50640,,"1-(cyclohexylmethyl)-1,4-diazepane",31410527
+C[C@H]1CNCCN1C1CCCCC1,"J & W PharmLab, LLC",65-0020,1135185-61-3,(S)-1-Cyclohexyl-2-methyl-piperazine,44693157
+NCC1CCCN1,AK Scientific,W7106,57734-57-3,Pyrrolidin-2-ylmethanamine,6759646
+NCC1(C)CC(N)CC(C1)(C)C,Acros Organics (US),35294,2855-13-2,"Isophorondiamine, 99+%, mixture of cis and trans",479353
+NCCCCN1CC(C)CC(C1)C,Enamine BB,EN300-41324,,"4-(3,5-dimethylpiperidin-1-yl)butan-1-amine",31408931
+CCN(CCNCC(C)C)CC,Enamine BB,EN300-39063,,"N,N-diethyl-N'-isobutylethane-1,2-diamine",31408233
+NC1CCCC(C1)N(C)C.Cl.Cl,"J & W PharmLab, LLC",20-0251S,,"N,N-Dimethyl-cyclohexane-1,3-diamine dihydrochloride",44691636
+CN(CCCCCCN(C)C)C,AK Scientific,R371,111-18-2,"N,N,N',N'-Tetramethyl-1,6-hexanediamine",477969
+N[C@@H]1C[C@@H]2CCC[C@@H](C1)N2C,Pharmablock (USA) Inc,PBY2010316,76272-41-8,exo-3-Amino-9-methyl-9-azabicyclo[3.3.1]nonane,44385970
+NC1CCN(CC1)CC(C)(C)C,ChemBridge,4029810,1014695-10-3,"1-(2,2-dimethylpropyl)-4-piperidinamine",32478451
+NCC12CC3CC(C1)CC(C2)(C3)CN,ChemDiv,8012-9927,,,3801236
+CC(CN1CCCC(C1)C)N,Enamine BB,EN300-53856,,1-(3-methylpiperidin-1-yl)propan-2-amine,29996538
+C1CCN(CC1)C1CCNCC1.Cl.Cl,Matrix Scientific,051497,4876-60-2,4-(1-Piperidinyl)piperidine dihydrochloride,1835987
+NCC1CNC1,Fluorochem (Non-US Customers),238018,116770-48-0,Azetidin-3-ylmethanamine,44689063
+NC[C@@H](N)C.Cl.Cl,Matrix Scientific,076394,19777-66-3,"(S)-Propane-1,2-diamine dihydrochloride",25691896
+CN1CCC[C@H]1CN1CCCCC1,TCI America,M1183,84466-85-3,(S)-(-)-1-Methyl-2-(1-piperidinomethyl)pyrrolidine,25685716
+Nc1cccc(c1)NC1CCCC1,Enamine BB,EN300-72892,,"1-N-cyclopentylbenzene-1,3-diamine",32446292
+C1CNCC(CC1)N1CCCC1,Enamine BB,EN300-62223,,3-(pyrrolidin-1-yl)azepane,32445158
+CCCN(CC1CNCC1)C,Enamine BB,EN300-94729,,methyl(propyl)(pyrrolidin-3-ylmethyl)amine,37015695
+ClCCCCC(=N)N.Cl,Tyger Scientific,C60065,164982-33-6,5-Chloropentanamidine HCl,13192094
+NC(=N)C1CCCCC1.Cl,Enamine BB,EN300-54701,,cyclohexanecarboximidamide hydrochloride,13191958
+CCCCCCCCCN(CCN(C)C)CC,Sigma Aldrich,PH007810,,"N(1)-ethyl-N(2),N(2)-dimethyl-N(1)-nonyl-1,2-ethanediamine",35871910
+CCCCCCN(CCCCCC)N,Sigma Aldrich,PH007222,,"1,1-dihexylhydrazine",35870882
+N1CCN(CC1)CC1CCC1,ChemBridge,4015497,82534-54-1,1-(cyclobutylmethyl)piperazine,3762915
+CCCN1CCC(CC1)N1CCCC(C1)C,ChemBridge,5461617,,,2074011
+CN(CC(CNC1CCC(CC1)C)(C)C)C,ChemBridge,5461211,,,2073989
+CCN1CCC(CC1)N1CCCCC1,ChemBridge,5455156,,,2073541
+CCN(C1CCCC(C1)C)CCN(CC)CC,ChemBridge,5452195,,,2073311
+CCCN1CC2CN(CC(C1)C2)CCC,Shanghai SpecBioChem,es00449,909037-18-9,"3,7-dipropyl-3,7-diazabicyclo[3.3.1]nonane",43633619
+CC1CCCN(C1)CC1CCCCN1,Vitas M Labs,STK894381,,3-methyl-1-(piperidin-2-ylmethyl)piperidine,30519237
+CC1CCN(CC1)CC1CCCCCN1,Vitas M Labs,STK893938,,2-[(4-methylpiperidin-1-yl)methyl]azepane,30519094
+NCCCCCNCCC(C)C,Princeton BioMolecular Research,OSSL_123865,,,975460
+CC(CN1CCC(CC1)NC1CCCC1)C,Enamine,Z401843384,,,44529476
+NCC1C(C)CCC1N,Enamine BB,EN300-99620,,2-(aminomethyl)-3-methylcyclopentan-1-amine,37156471
+CN(C[C@H](CC(C)(C)C)N)C.Cl.Cl,AstaTech,53134,,"(S)-N1,N1,4,4-TETRAMETHYLPENTANE-1,2-DIAMINE 2HCL",37154252
+C[C@@H]1CCCN1C[C@@H]1CCCN1,Bepharm,B215924,867256-73-3,(R)-2-Methyl-1-((S)-pyrrolidin-2-ylmethyl)pyrrolidine,43607295
+NCC1CCCN1C(C)C,Matrix Scientific,077883,26116-15-4,[(1-Isopropylpyrrolidin-2-yl)methyl]amine,8294742
+CC1CC1CN1CCNCCC1,Princeton BioMolecular Research,PBMR135842,,"1-(2-Methyl-cyclopropylmethyl)-[1,4]diazepane",42825035
+NC1CCC2CC1CCC2N,Enamine BB,EN300-90551,,"bicyclo[3.3.1]nonane-2,6-diamine",36790631
+NCC1CCCC1N,Enamine BB,EN300-86474,,2-(aminomethyl)cyclopentan-1-amine,36789998
+CC1CC(C1)CN1CCNCC1,Princeton BioMolecular Research,PBMR160254,,1-(3-Methyl-cyclobutylmethyl)-piperazine,44153084
+CNCC1CCN(C1)CC,Matrix Scientific,063324,884504-74-9,[(1-Ethylpyrrolidin-3-yl)methyl]methylamine,3725342
+CNCC1CCN(CC1)CC(C)C,Matrix Scientific,027467,887405-46-1,N-[(1-Isobutylpiperidin-4-yl)methyl]-N-methylamine,3725326
+CNCCN1CCCC1,Enamine BB,EN300-69078,,methyl[2-(pyrrolidin-1-yl)ethyl]amine,3725025
+CCCCCN1CCNCC1,Matrix Scientific,029387,50866-75-6,1-Pentylpiperazine,919627
+CC1CC(N)CC(N1C)C,Princeton BioMolecular Research,PBMR121459,,"1,2,6-Trimethyl-piperidin-4-ylamine",42819580
+CN1CCC(CC1)NC1CCCCC1,InterBioScreen,BB_SC-9601,,N-cyclohexyl-1-methylpiperidin-4-amine,35780973
+NCCC1CCCCN1CC(C)C,ChemBridge,4011858,938459-02-0,2-(1-isobutylpiperidin-2-yl)ethanamine,15212174
+NCCC1CCN(CC1)C(C)C,Matrix Scientific,033464,132740-59-1,2-(1-Isopropyl-piperidin-4-yl)-ethylamine,15212121
+NCC1CCN(CC1)CC(C)C,ChemBridge,4009646,258345-24-3,1-(1-isobutylpiperidin-4-yl)methanamine,15212105
+N1CCCN(CC1)C1CCCC1,Enamine BB,EN300-82382,,"1-cyclopentyl-1,4-diazepane",15212056
+CNCC1CCCNC1,Alinda Chemical,ALBB-013243,,N-methyl-1-piperidin-3-ylmethanamine dihydrochloride,30488707
+CN(C1CCNCCC1)C,ChemBridge,4038770,,"N,N-dimethyl-4-azepanamine",36092708
+ClCCCC(=N)N,ChemDiv BB,BB54-4116,,"Butanimidamide, 4-chloro- hydrochloride",25618090
+NCC(C1CCCCN1)CC(C)(C)C,Enamine BB,EN300-76765,,"4,4-dimethyl-2-(piperidin-2-yl)pentan-1-amine",36086914
+CC1CCCCN1CC1CCCNC1,Enamine BB,EN300-76664,,2-methyl-1-(piperidin-3-ylmethyl)piperidine,36086791
+CCC(CN)(CC)N,Enamine BB,EN300-76378,,3-(aminomethyl)pentan-3-amine,36086622
+NC1(CCCCC1)CN1CCCCC1,Matrix Scientific,019958,220137-70-2,1-Piperidin-1-ylmethyl-cyclohexylamine,1522999
+NCC(N1CCC(CC1)C)C,Matrix Scientific,021515,,2-(4-Methyl-piperidin-1-yl)-propylamine,1522967
+N[C@@H]1CCN(C1)CC1CCCCC1,Oakwood Products (Non-EU Customers),064244,,(R)-1-(Cyclohexylmethyl)pyrrolidin-3-amine,36769771
+C1CCN(CC1)C1CCNCC1.Cl,Matrix Scientific,021524,,"[1,4']Bipiperidinyl hydrochloride",12598948
+NC1CCN(CC1)C1CCCC1,Enamine BB,EN300-31878,132740-50-2,1-cyclopentylpiperidin-4-amine,6254670
+C1CCCC(CC1)NC1CCNCC1,ChemBridge,67389382,,N-cycloheptyl-4-piperidinamine,6254535
+CC(CNC1CCNCC1)(C)C.Cl.Cl,Oakwood Products (Non-EU Customers),063401,,N-Neopentylpiperidine-4-amine dihydrochloride,36768337
+CCC(NCCNC1CC1)C,Oakwood Products (Non-EU Customers),024597,886500-58-9,N-2-Butyl-N'-cyclopropyl ethylenediamine,6252316
+CCCCCCCCNCCNC,Fluorochem (Non-US Customers),024577,886499-97-4,N-Methyl-N'-octyl ethylenediamine,6252280
+CCCCCC(=N)N.Cl,Oakwood Products (Non-EU Customers),061466,,Hexanamidine hydrochloride,36767278
+CCN1CCC(CC1)NC1CCCCCC1,ChemBridge,5464491,,,2355247
+CCCN1CCC(CC1)NC1CCCCCCC1,ChemBridge,5462888,,,2355134
+CCN(CCN(C1CCC(CC1)C)C)CC,ChemBridge,5461629,,,2355056
+CCCN1CCC(CC1)NC1CCCC1,ChemBridge,5460112,,,2354972
+CCN(CCN(CC1CCC=CC1)C)CC,ChemBridge,5427223,,,2353946
+NCCCCCCCCCCCN,TCI America,D2075,822-08-2,"1,11-Diaminoundecane",6885840
+CN(C1CCCCC1N)C,Enamine BB,EN300-74885,,"1-N,1-N-dimethylcyclohexane-1,2-diamine",25585513
+CN(C1CCCCCC1)CC1CCNCC1,ChemBridge,71496723,,N-methyl-N-(piperidin-4-ylmethyl)cycloheptanamine,36601133
+CCCC(=N)N.Cl,Enamine BB,EN300-55168,,butanimidamide hydrochloride,6880866
+N[C@@H]1CC=CC[C@H]1N.Cl.Cl,Sigma Aldrich,726184,108796-57-2,"trans-4-Cyclohexene-1,2-diamine dihydrochloride",30424502
+CCCCCCCC(=N)N,Tyger Scientific,O33001,,Octanamidine,36760455
+CCNCCCNC(C)C,Matrix Scientific,026970,78706-89-5,"N1-Ethyl-N3-isopropyl-1,3-propanediamine",18625150
+CCCCCCCCCCCCCCCCNCCCNCC,Matrix Scientific,026960,,"N1-Ethyl-N3-hexadecyl-1,3-propanediamine",18625134
+CNCCCN1CCC(CC1)C,Matrix Scientific,026950,1040690-61-6,N-Methyl-3-(4-methyl-1-piperidinyl)-1-propanamine,18625118
+C1CCN(CC1)C1CCN(CC1)C1CCCCC1,Zelinsky Institute,UZI/9049051,,,1328994
+CNCC(N1CCCC1)C,Exclusive Chemistry,EC-000.1342,,N-methyl-2-(1-pyrrolidinyl)-1-propanamine,33371913
+CCCCNCC1CCCCN1CCCC,Exclusive Chemistry,EC-000.1321,,N-[(1-butyl-2-piperidinyl)methyl]-1-butanamine,33371897
+CCCNCC1CCCCN1C,Exclusive Chemistry,EC-000.1313,,N-[(1-methyl-2-piperidinyl)methyl]-1-propanamine,33371881
+CNCC1CCCCN1CCC,Exclusive Chemistry,EC-000.1305,,N-methyl(1-propyl-2-piperidinyl)methanamine,33371865
+CCCNCC1CCCN1CCCC,Exclusive Chemistry,EC-000.1296,,N-[(1-butyl-2-pyrrolidinyl)methyl]-1-propanamine,33371849
+CCNCC1CCCN1C,Exclusive Chemistry,EC-000.1288,,N-[(1-methyl-2-pyrrolidinyl)methyl]ethanamine,33371833
+CC(CCN1CCNCC1)(C)C,Enamine BB,EN300-51703,,"1-(3,3-dimethylbutyl)piperazine",29705862
+NCC(CN1CCCCC1)C,Enamine BB,EN300-50081,,2-methyl-3-(piperidin-1-yl)propan-1-amine,29705348
+NCC(CN1CCCC1)C,Enamine BB,EN300-45230,,2-methyl-3-(pyrrolidin-1-yl)propan-1-amine,29705016
+CCCN(CC1CCCCN1)CCC.Cl.Cl,Matrix Scientific,051682,1220018-78-9,N-(2-Piperidinylmethyl)-N-propyl-1-propanamine dihydrochloride,30420397
+CCN(CC1CCCCN1)CC.Cl.Cl,Matrix Scientific,051666,1219964-56-3,N-Ethyl-N-(2-piperidinylmethyl)-1-ethanamine dihydrochloride,30420371
+CC1CCCN(C1)CCC1CCNCC1.Cl.Cl,Matrix Scientific,051618,,3-Methyl-1-[2-(4-piperidinyl)ethyl]piperidine dihydrochloride,30420282
+CCN(CCC1CCNCC1)CC.Cl.Cl,Matrix Scientific,051610,106594-18-7,"N,N-Diethyl-2-(4-piperidinyl)-1-ethanamine dihydrochloride",30420269
+C1CCC(CN1)CCN1CCCCCC1.Cl.Cl,Matrix Scientific,051594,1220018-06-3,1-[2-(3-Piperidinyl)ethyl]azepane dihydrochloride,30420240
+CCCCN(CCC1CCCNC1)C.Cl.Cl,Matrix Scientific,051586,,N-Methyl-N-[2-(3-piperidinyl)ethyl]-1-butanamine dihydrochloride,30420224
+CCC1CCCCN1CCC1CCCCN1.Cl.Cl,Matrix Scientific,051570,1219964-00-7,2-Ethyl-1-[2-(2-piperidinyl)ethyl]piperidine dihydrochloride,30420193
+CC1CCN(CC1)CCC1CCCCN1.Cl.Cl,Matrix Scientific,051562,,4-Methyl-1-[2-(2-piperidinyl)ethyl]piperidine dihydrochloride,30420180
+CCN(C1CCNCC1)CC.Cl.Cl,Matrix Scientific,051496,50534-25-3,"N,N-Diethyl-4-piperidinamine dihydrochloride",30420087
+NCCC1CCCN(C1)C,Matrix Scientific,053966,53295-72-0,2-(1-Methyl-3-piperidinyl)ethylamine,29703548
+CC1CCN(CC1)CC1CCCNC1.Cl.Cl,Matrix Scientific,051421,,4-Methyl-1-(3-piperidinylmethyl)piperidine dihydrochloride,30419957
+C1CCC(CN1)CN1CCCCC1.Cl.Cl,Matrix Scientific,051413,81310-57-8,1-(3-Piperidinylmethyl)piperidine dihydrochloride,30419942
+CN[C@@H]1CCCC[C@@H]1NC,AOKBIO,AC2042,67579-81-1,"trans-N,N'-Dimethylcyclohexane-1,2-diamine",36366061
+CNCC1CCN(C1)C,Enamine BB,EN300-69741,,methyl[(1-methylpyrrolidin-3-yl)methyl]amine,5769162
+CCC(CN1CCC(CC1)C)N,Matrix Scientific,020837,,1-(4-Methyl-piperidin-1-ylmethyl)-propylamine,834625
+CN(CCC1CCCCN1)C,Matrix Scientific,020777,60717-49-9,Dimethyl-(2-piperidin-2-yl-ethyl)-amine,834595
+CNCC1CCCN(C1)C,Matrix Scientific,016364,639078-61-8,N-Methyl-1-(1-methylpiperidin-3-yl)methanamine,5766392
+C1CCC(NC1)CCN1CCCCC1,Matrix Scientific,019806,14759-07-0,1-Piperidino-2-[2]piperidyl-ethane,832877
+CCCN(CCN)CC,Enamine BB,EN300-97647,,(2-aminoethyl)(ethyl)propylamine,37095386
+NCC1CCN(CC1)C(C)C,Matrix Scientific,062400,132740-52-4,[(1-Isopropylpiperidin-4-yl)methyl]amine,7864222
+CNC1CC(C)(C)NC(C1)(C)C,ChemBridge,4012656,62995-79-3,"N,2,2,6,6-pentamethylpiperidin-4-amine",11489614
+CCC1CNCCN1C(C)C,ChemBridge,4016251,915923-03-4,2-ethyl-1-isopropylpiperazine,11488641
+CC1CCN(CC1)CCNC1CCCC1,Enamine,Z594256776,,,33353688
+CCNCCCN1CCCC1,Matrix Scientific,026953,,N-Ethyl-3-(1-pyrrolidinyl)-1-propanamine,18186544
+CC[C@H]1CNCCN1,ChemPacific,58043,207284-20-6,(S)-2-ethylpiperazine,44463969
+CN1CCN(CC1)CC1CCCCC1,ChemBridge,5431906,,,1489671
+CCN1CCCC(C1)N.Cl,Toronto Research Chemicals,E923900,,1-Ethyl-3-piperidinamine Hydrochloride,43550169
+CCCNCCN1CCCCC1,ChemDiv BB,BB52-9621,,N-(2-piperidin-1-ylethyl)-N-propylamine,31523470
+ClCCNCCN1CCCCCC1,ChemDiv BB,BB52-9393,,N-(2-azepan-1-ylethyl)-N-(2-chloroethyl)amine,31523134
+ClCCCNCCN1CCCCC1,ChemDiv BB,BB52-9097,,N-(3-chloropropyl)-N-(2-piperidin-1-ylethyl)amine,31522700
+CN[C@H]1CCCN(C1)C.Cl,Oakwood Products (Non-EU Customers),087862,,Methyl-((S)-1-methyl-piperidin-3-yl)-amine hydrochloride,46574175
+NCC1CCN(C1)C.Cl.Cl,Bepharm,B215129,1284226-96-5,(1-Methylpyrrolidin-3-yl)methanamine dihydrochloride,44454436
+CC1CCCC(C1)N1CCC(CC1)N1CCCCC1,Princeton BioMolecular Research,OSSK_732745,,,6134196
+CCCCN1C[C@@H]2CN(C[C@@H](C1)C2)CCCC,Matrix Scientific,047775,,"3,7-Dibutyl-3,7-diazabicyclo[3.3.1]nonane",12033802
+C1CCN(C1)CC#CCN1CCCC1,TimTec,ST078043,,,1989320
+CC(CN1CCCC1)(N)C,Matrix Scientific,036871,34155-39-0,"1,1-Dimethyl-2-pyrrolidin-1-ylethylamine",725146
+CC1CCN(CC1)CC(N)(C)C,Matrix Scientific,019039,690632-11-2,"1,1-Dimethyl-2-(4-methyl-piperidin-1-yl)-ethylamine",724962
+NCC1CCN(CC1)CC,Enamine BB,EN300-52876,,(1-ethylpiperidin-4-yl)methanamine,724336
+CN(CCCNCC1CCCCC1)C.Cl.Cl,ChemBridge,9155363,,,21917653
+CCN(CCCC(N)C)CC,Enamine BB,EN300-20266,,(4-aminopentyl)diethylamine,534254
+CN1CCC(CC1)C1CCNCC1.Cl.Cl,Matrix Scientific,060388,122373-80-2,"1-Methyl-4,4'-bipiperidine dihydrochloride",32355758
+CNC1CCC(CC1)N(C(C)C)C,Oakwood Products (Non-EU Customers),088200,,"N-Isopropyl-N,N'-dimethyl-cyclohexane-1,4-diamine",42034278
+CC1CC(C)CN(C1)C1CCNCC1,ChemDiv BB,BB51-3098,,"3,5-dimethyl-1,4'-bipiperidine",31513309
+C1NC[C@@H](C1)N1CCCC1,Ark Pharm,AK129128,900164-95-6,"(R)-1,3'-Bipyrrolidine",36561063
+N1CCN(CC1)CC1CC1,Matrix Scientific,024199,4572-03-6,1-(Cyclopropylmethyl)piperazine,528088
+CC(CN)CNC,TCI Europe,D3617,1251384-75-4,"N,2-Dimethyl-1,3-propanediamine",28204940
+CN([C@@H]1CNCC1)C,Apollo Scientific,OR4629,132883-44-4,(3S)-3-(Dimethylamino)pyrrolidine,527826
+NCCCN1CCCC1,Matrix Scientific,007649,23159-07-1,3-(1-Pyrrolidino)propylamine,718978
+CC1CCN(CC1)CCCNC1CCCCCC1,Enamine,Z102829584,,,33336110
+NC1CCN(C1)C1CCCC1,Enamine BB,EN300-70803,,1-cyclopentylpyrrolidin-3-amine,31256351
+CNCCCCNC,Enamine BB,EN300-80667,,methyl[4-(methylamino)butyl]amine,36559606
+CN[C@@H]1CCCC[C@H]1NC,Matrix Scientific,075971,68737-65-5,"(1R,2R)-N1,N2-Dimethylcyclohexane-1,2-diamine",716244
+CNC1CCC(CC1)NC,Enamine BB,EN300-116003,,"1-N,4-N-dimethylcyclohexane-1,4-diamine",40335790
+CNC1CCC(CC1)N(C)C,Oakwood Products (Non-EU Customers),087865,,"N,N,N'-Trimethyl-cyclohexane-1,4-diamine",40297828
+C(CCCN1CCCCCC1)CCCCN1CCCCCC1,InterBioScreen,STOCK4S-49892,,"1,8-di(azepan-1-yl)octane",4600372
+CC1CCN(CC1)C1CCN(CC1)C1CCC(CC1)C,Zelinsky Institute,UZI/1936042,,,6116155
+CCC1(CC)NCCNC1,Anichem,31025,,"2,2-Diethyl-piperazine",40296005
+CCC(N1CCN(CC1)C1CCCCC1)CC,Zelinsky Institute,UZI/1934611,,,6115772
+CC(C1NCCNC1)C,Matrix Scientific,056351,84468-53-1,2-Isopropylpiperazine,31505660
+CN(CC1CCCCN1)C,Enamine BB,EN300-56885,,dimethyl(piperidin-2-ylmethyl)amine,710143
+CC(NCCCNC(C)(C)C)(C)C,Matrix Scientific,007553,22687-38-3,"N,N'-Di-tert-butyl-1,3-propanediamine",2908553
+NCC(C(C)(C)C)N,Chemical Block,A3301/0140281,,,6797051
+C1NCC(C1)NC1CC1,Enamine BB,EN300-114026,,N-cyclopropylpyrrolidin-3-amine,39628216
+NCC#CCN1CCCCCC1.Cl.Cl,Life Chemicals,F2147-1066,,(4-azepan-1-ylbut-2-yn-1-yl)amine dihydrochloride,43482526
+N[C@@H]1CCCNC1,Oakwood Products (Non-EU Customers),093046,127294-73-9,(R)-3-Aminopiperidine,43219319
+CCNCC1CNCC1,CombiPhos Catalysts,MPC-11221,,Ethyl-pyrrolidin-3-ylmethyl-amine,39529328
+CN1CCCC(C1)CNC1CC1,Oakwood Products (Non-EU Customers),087909,,Cyclopropyl-(1-methyl-piperidin-3-ylmethyl)-amine,39194175
+CN1CCCC1CNC1CC1,Oakwood Products (Non-EU Customers),087902,,Cyclopropyl-(1-methyl-pyrrolidin-2-ylmethyl)-amine,39193417
+N1CCC(CC1)C1CCNCC1,Matrix Scientific,036894,15336-72-8,"4,4'-Bipiperidine",2721797
+CCCC(N1CCNCCC1)CC,Oakwood Products (Non-EU Customers),061969,,"1-(1-Ethylbutyl)-1,4-diazepane",32283833
+CCCCCCCCCCCN1CCCNCC1,EvoBlocks,EB30061,,"1-undecyl-1,4-diazepane",32283781
+CCCCC(N1CCNCCC1)CC,Oakwood Products (Non-EU Customers),062253,,"1-(1-Ethyl-pentyl)-[1,4]diazepane",32283723
+CCCCCCN1CCNCC1C,EvoBlocks,EB29600,,1-hexyl-2-methylpiperazine,32283616
+CCCCCCCCN1CCNCC1C,EvoBlocks,EB29571,,2-methyl-1-octylpiperazine,32283570
+CCCCCCCCCCCN1CCNCC1C,EvoBlocks,EB29561,,2-methyl-1-undecylpiperazine,32283552
+C=CCN1CCCC1CN,AK Scientific,W7743,66411-51-6,N-Allyl-2-(aminomethyl)pyrrolidne,39012053
+CCCCN1CCNCC1C,EvoBlocks,EB29545,,1-butyl-2-methylpiperazine,32283524
+CCCCCCC(N1CCNCC1)C,EvoBlocks,EB29105,,1-(octan-2-yl)piperazine,32283428
+FCCCCN1CCNCC1,Oakwood Products (Non-EU Customers),062994,,1-(4-Fluorobutyl)piperazine,32283397
+CN(CCCC1CCNCC1)C,Enamine BB,EN300-123458,,dimethyl[3-(piperidin-4-yl)propyl]amine,38858469
+CCCC[N+](CCCC)(CCCC)CCCC.CCCC[N+](CCCC)(CCCC)CCCC.[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Cl-].[Re+3].[Re+3],Sigma Aldrich,250201,14023-10-0,Tetrabutylammonium octachlorodirhenate(III),13732240
+CN1CCC(CC1)CNC(C)C,Oakwood Products (Non-EU Customers),087895,,Isopropyl-(1-methyl-piperidin-4-ylmethyl)-amine,38588953
+NC1CC(C1)N,Annova Chem,L01801,91301-66-5,"1,3-cyclobutanediamine",38581548
+CC(N1CCN(CC1)C1CCCC1)C,Zelinsky Institute,UZI/1936427,,,1453598
+CN(C1CC1)C1CCCNC1,Oakwood Products (Non-EU Customers),088209,,Cyclopropyl-methyl-piperidin-3-yl-amine,38498440
+CN(CCNC1CCCCC1)C.Cl.Cl,Enamine BB,EN300-49973,,[2-(cyclohexylamino)ethyl]dimethylamine dihydrochloride,29627264
+NC1CCN(CC1C)C(C)C,"J & W PharmLab, LLC",60-0401,,1-Isopropyl-3-methyl-piperidin-4-ylamine,38391294
+CN(CC(N)C)C,Matrix Scientific,007576,108-15-6,1-(Dimethylamino)isopropylamine,504152
+CCNC1CCCN(C1)C,Oakwood Products (Non-EU Customers),087873,,Ethyl-(1-methyl-piperidin-3-yl)-amine,38140701
+CC(CN1CCC(C1)C1CCNCC1)(C)C,ChemBridge,87643721,,"4-[1-(2,2-dimethylpropyl)-3-pyrrolidinyl]piperidine",43208073
+CCNCC1CCNCC1,CombiPhos Catalysts,MPB-11225,,Ethyl-piperidin-4-ylmethyl-amine,38100989
+N1CCC(CC1)CNC1CC1,Bellen Chem,Bellen008356,1225472-72-9,N-((piperidin-4-yl)methyl)cyclopropanamine,38100661
+CN(C1CCNCCC1)C.Cl.Cl,Sigma Aldrich,CBR01719,,"N,N-Dimethyl-4-azepanamine dihydrochloride",43469181
+NCCCN1CCCC(C1)C,Matrix Scientific,008510,14156-91-3,3-(3-Methyl-piperidin-1-yl)-propylamine,1445613
+CCCC[N+]1(CCCCC[N+]2(CCCC)CCCC2)CCCC1.[F-].[F-],Sigma Aldrich,56618,1245190-20-8,"1,5-Pentanediyl-bis(1-butylpyrrolidinium) difluoride solution",31430360
+CCCCCCCCCCCCCCCCN1CCN(CC1)CCCCCCCCCCCCCCCC,Sigma Aldrich,S234931,,"1,4-DIHEXADECYL-PIPERAZINE",7498975
+NCC1(CCC1)CN1CCCCC1,Princeton BioMolecular Research,PBMR158850,,[1-(1-piperidylmethyl)cyclobutyl]methanamine,43467339
+NCC1(CC1)CN(C)C,Princeton BioMolecular Research,PBMR158840,,[1-(dimethylaminomethyl)cyclopropyl]methanamine,43467323
+CCCNCCCCCCNCCC,Sigma Aldrich,S393959,,"N,N'-DIPROPYL-1,6-HEXANEDIAMINE",7462158
+NC1CCCC1N,Princeton BioMolecular Research,PBMR168170,,"Cyclopentane-1,2-diamine",37637162
+CC(NCCNC(C)C)C,AK Scientific,V0539,4013-94-9,"N,N'-Diisopropylethylenediamine",495911
+CN(C1CC1)CC1CCCNC1,Oakwood Products (Non-EU Customers),088214,,Cyclopropyl-methyl-piperidin-3-ylmethyl-amine,37591521
+CCCC1CCN(CC1)CCCN,Oakwood Products (Non-EU Customers),024701,,3-(4-Propyl-piperidin-1-yl)-propylamine,4348950
+CCCN1C2CCCC1CC(C2)N,Enamine BB,EN300-88988,,9-propyl-9-azabicyclo[3.3.1]nonan-3-amine,31421825
+CN(C1CC1)[C@@H]1CCCNC1,Oakwood Products (Non-EU Customers),088210,,Cyclopropyl-methyl-(R)-piperidin-3-yl-amine,43464090
+CN([C@H]1CNCC1)C(C)C,Oakwood Products (Non-EU Customers),088188,,Isopropyl-methyl-(R)-pyrrolidin-3-yl-amine,43464074
+CC(CN1CCC(CC1)N)C,Enamine BB,EN300-30377,,1-(2-methylpropyl)piperidin-4-amine,2873160
+CN1CCC[C@H]1CNC1CC1,Oakwood Products (Non-EU Customers),087903,,Cyclopropyl-((S)-1-methyl-pyrrolidin-2-ylmethyl)-amine,43463696
+CN1CC[C@@H](C1)NC(C)C,Oakwood Products (Non-EU Customers),087885,,Isopropyl-((S)-1-methyl-pyrrolidin-3-yl)-amine,43463680
+NCC(N(C)C)C(C)C,Matrix Scientific,036316,19764-61-5,"N-[1-(Aminomethyl)-2-methylpropyl]-N,N-dimethylamine",2872987
+CN[C@@H]1CCCN(C1)C,Oakwood Products (Non-EU Customers),087861,,Methyl-((R)-1-methyl-piperidin-3-yl)-amine,43463664
+N[C@@H]1CCCC[C@H]1N,AK Scientific,X6009,1121-22-8,"trans-1,2-Diaminocyclohexane",492981
+NCCCC1(C)CCCN1.Cl.Cl,Focus Synthesis,FS024753,1438858-82-2,\u00a03-(2-methylpyrrolidin-2-yl)propan-1-amine dihydrochloride,46019294
+NC1CCC(CC1)N(C)C,Chem-Impex,19461,42389-50-4,"N,N-Dimethyl-cyclohexane-1,4-diamine",206845674
+NCC1CCN(C1)CC1CC1,Princeton BioMolecular Research,PBMR178923,,[1-(cyclopropylmethyl)pyrrolidin-3-yl]methanamine,37404142
+NCCCCNCC,AK Scientific,L714,64429-16-9,4-Ethylamino-1-butylamine,37395262
+CC[C@@H]1CNC[C@H](N1)CC,Ark Pharm,AK130928,682740-57-4,"(2R,6R)-2,6-Diethylpiperazine",46015665
+NCCN(C(CC)C)C,Enamine BB,EN300-66178,,(2-aminoethyl)(butan-2-yl)methylamine,31706799
+CCNCCCN(C)C,Accela ChemBio,SY023941,19475-27-5,1-(Ethylamino)-3-(dimethylamino)propane,37299512
+CNC1CCN(CC1)C1CCC(CC1)C,Enamine BB,EN300-60321,,N-methyl-1-(4-methylcyclohexyl)piperidin-4-amine,31414254
+CC1CCN(CC1)CCCNC1CCCC1,UORSY,PB102907054,,,37266378
+CC(C[C@@H]1NCCNC1)C.Cl.Cl,Acesys Pharmatech,A1623S,1240620-73-8,S-2-ISOBUTYL-PIPERAZINE-2HCl,36469209
+CCCCN(CCCN)C,Matrix Scientific,038372,13595-43-2,N-(3-Aminopropyl)-N-butyl-N-methylamine,27333341
+CC(CN1CCC(CC1)N)C.Cl.Cl,Enamine BB,EN300-55233,,1-(2-methylpropyl)piperidin-4-amine dihydrochloride,31411983
+NCCCCCCCN1CCCC1,Enamine BB,EN300-52741,,7-(pyrrolidin-1-yl)heptan-1-amine,30008939
+N1CCC(CC1)C1CCNCC1.Cl.Cl,AK Scientific,I308,78619-84-8,"4,4'-Bipiperidyl dihydrochloride",481877
+C[C@@H]1CNCCN1C1CCCCC1,"J & W PharmLab, LLC",65-0021,1134675-36-7,(R)-1-Cyclohexyl-2-methyl-piperazine,44693156
+NCC1CCN1.Cl,"J & W PharmLab, LLC",25-0013S,,C-Azetidin-2-yl-methylamine hydrochloride,44693144
+CNCCCN,Enamine BB,EN300-21155,,(3-aminopropyl)(methyl)amine,480040
+NCC(N)C,Enamine,Z104474490,,,478448
+CNC(C1CCCCC1)CN1CCCC1,AstaTech,78352,672310-00-8,(1-CYCLOHEXYL-2-PYRROLIDIN-1-YL-ETHYL)-METHYL-AMINE,17095423
+CCC1NCCNC1.C.C,Manchester Organics,B22425,13961-37-0,2-ethylpiperazine dihydrochloride,43450030
+CCC1CNCCN1.Cl,Manchester Organics,S20737,259808-09-8,"2-Ethylpiperazine hydrochloride, 95%",43449681
+NCC(N1CCCC1)CC(C)C,Enamine BB,EN300-28554,,4-methyl-2-pyrrolidin-1-ylpentan-1-amine,31406545
+NCC1CCN(CC1)CC=C,Princeton BioMolecular Research,PBMR122010,,(1-allyl-4-piperidyl)methanamine,36862791
+NC1CC(C)NC(C1)C,Enamine BB,EN300-115467,,"2,6-dimethylpiperidin-4-amine",36861860
+C(NC1CC1)CN1CCCC1,Princeton BioMolecular Research,PBMR120090,,Cyclopropyl-(2-pyrrolidin-1-yl-ethyl)-amine,36859597
+C1CCC(NC1)CCN1CCCCCC1,Matrix Scientific,020664,,1-(2-Piperidin-2-yl-ethyl)-azepane,4736720
+NC[C@@H](N)C.C.C,AK Scientific,Q793,19777-66-3,"(S)-1,2-Diaminopropane 2HCl",43441857
+NC[C@H](N)C.Cl.Cl,AK Scientific,Q792,19777-67-4,"(R)-1,2-Diaminopropane 2HCl",25692104
+N[C@@H]1CCCC[C@@H]1N,TCI America,C1463,1436-59-5,"cis-1,2-Cyclohexanediamine",25688937
+CC(CCN1CCC(CC1)C)N,Princeton BioMolecular Research,PBMR103136,,1-Methyl-3-(4-methyl-piperidin-1-yl)-propylamine,36844324
+CN[C@H]1CNCC1,AK Scientific,X6025,139015-33-1,(3R)-(+)-3-(Methylamino)pyrrolidine,25685585
+CNC1CCN(C1)CC,Enamine BB,EN300-73238,,1-ethyl-N-methylpyrrolidin-3-amine,32446606
+C[C@@H](CN1CCCC1)N,CHESS Fine Organic,X2867,N.N.,1-(S)-1-Methyl-2-pyrrolidin-1-yl-ethylamine,44683815
+C1CCC(CN1)N1CCCCCC1,Enamine BB,EN300-72294,,1-(piperidin-3-yl)azepane,32445796
+CCCCN(C1CCN(CC1)CC)C,ChemBridge,5463588,,,13320776
+NC(=N)C1CC1,WuXi AppTec,WX619908,54070-74-5,CYCLOPROPANECARBOXAMIDINE,30274737
+CCCN1CCC(CC1)N(C1CCCCC1)C,ChemBridge,5461128,,,13320608
+CCN(CC1CNCC1)CC,Enamine BB,EN300-93937,,diethyl(pyrrolidin-3-ylmethyl)amine,37015693
+CC1NC(C)C(NC1C)C,Sigma Aldrich,S413712,,"2,3,5,6-TETRAMETHYLPIPERAZINE",1017546
+CNC1(CCCCC1)CN1CCCC1,AstaTech,79232,675602-55-8,METHYL-(1-PYRROLIDIN-1-YLMETHYL-CYCLOHEXYL)-AMINE,1014622
+NC(=N)C1CCCC1.Cl,Matrix Scientific,085859,81303-69-7,Cyclopentanecarboximidamide hydrochloride,13191957
+[C-]#[N+]CCCN(CC)CC,TosLab,TOS-BB-0769,,"N,N-diethyl-N-(3-isocyanopropyl)amine",8324064
+Nc1ccc(cc1)NC1CCCCC1,Enamine BB,EN300-61546,,"1-N-cyclohexylbenzene-1,4-diamine",8323833
+CC(C[C@H]1NC[C@H](NC1)CC(C)C)C,Anichem,31423,,"(2S,5S)-2,5-Diisobutyl-piperazine",44825623
+CC1CCCN(C1)CC1CCCN1,Vitas M Labs,STK894380,,3-methyl-1-(pyrrolidin-2-ylmethyl)piperidine,30519236
+C1CN[C@@H](CN1)C1CCC1,Anichem,31394,,(R)-2-Cyclobutyl-piperazine,44825451
+CC(CN1CCC(CC1)NC1CCCCC1)C,Enamine,Z401843382,,,44529474
+CCCCCCCCCCCCCCCCN(CCN(C)C)C,Sigma Aldrich,PH003649,,"N(1)-hexadecyl-N(1),N(2),N(2)-trimethyl-1,2-ethanediamine",35865452
+NCCC1CCN(CC1)CC.Cl,Matrix Scientific,079821,720001-91-2,[2-(1-Ethylpiperidin-4-yl)-ethyl]amine hydrochloride,45985775
+C[NH+2](CCCCCCCCCC[NH+2](C)(C)C)(C)C.[I-],Sigma Aldrich,S714364,,"N,N'-DECAMETHYLENEBIS(TRIMETHYLAMMONIUM IODIDE)",13175132
+C1CCCC(CC1)N1CCC(CC1)N1CCCCC1,ChemBridge,5412050,,,1390939
+CN1CCC(CC1)N.Cl,Matrix Scientific,007267,1193-03-9,4-Amino-1-methylpiperidine hydrochloride,45983972
+NC1CCC[C@@]21CCC[C@@H]2N,Enamine BB,EN300-90549,,"(1S)-spiro[4.4]nonane-1,6-diamine",36790629
+NCCCCN(C(C)C)C(C)C,MP Biomedicals,05204039,,4-DIISOPROPYLAMINOBUTYLAMINE,29481722
+CNCC1CCN(C1)C(C)C,Matrix Scientific,063286,884504-73-8,[(1-Isopropylpyrrolidin-3-yl)methyl]methylamine,3725340
+NCC1CCCN(C1)CC.Cl.Cl,Enamine BB,EN300-59753,,(1-ethylpiperidin-3-yl)methanamine dihydrochloride,30738982
+CN1CCC(CC1)NC1CC1,Matrix Scientific,006987,387358-48-7,4-Cyclopropylamino-1-methylpiperidine,918660
+N[C@@H]1C[C@H]2CCC[C@@H](C1)N2C,Synthonix,A8192,76272-41-8,exo-3-Amino-9-methyl-9-azabicyclo[3.3.1]nonane,36252355
+NCC(N(CC)CC)CC(C)C,Enamine BB,EN300-28606,,"N-[1-(aminomethyl)-3-methylbutyl]-N,N-diethylamine",15212684
+N1CCN(CC1)CC1CCCC1.Cl.Cl,Life Chemicals,F1618-0586,,,2040627
+NCC(N1CCCC1)C(CC)CC,Enamine BB,EN300-28553,,3-ethyl-2-pyrrolidin-1-ylpentan-1-amine,15212654
+N[C@@H]1CCC[C@H]1N.Cl.Cl,Sigma Aldrich,670324,1030390-38-5,"(1R,2R)-trans-1,2-Cyclopentanediamine dihydrochloride",26757058
+C[C@H]([C@H]1CNCCN1)CC,Acesys Pharmatech,A1625S,681484-77-5,(S)-2-((S)-SEC-BUTYL)-PIPERAZINE,29372425
+NCC1CCCNC1,AK Scientific,U802,23099-21-0,3-Aminomethylpiperidine,891073
+CC(CCN(C1CCCCC1)C1CCCCC1)N,Princeton BioMolecular Research,PBMR103134,,"N*1*,N*1*-Dicyclohexyl-butane-1,3-diamine",42805871
+CCN1CC2CNCC(C1)C2,Princeton BioMolecular Research,PBMR101387,,"3-Ethyl-3,7-diaza-bicyclo[3.3.1]nonane",42804643
+NCC(CC(C)C)(N)C,Enamine BB,EN300-77371,,"2,4-dimethylpentane-1,2-diamine",36087362
+NCC(C1CCNCC1)CC(CC)CC,Enamine BB,EN300-76826,,4-ethyl-2-(piperidin-4-yl)hexan-1-amine,36086992
+NC1(CCCCC1)CN1CCCC1,Matrix Scientific,019232,876717-44-1,1-Pyrrolidin-1-ylmethyl-cyclohexylamine,1522997
+NCC(N1CCCCC1)C,Matrix Scientific,021514,54151-70-1,2-Piperidin-1-yl-propylamine,1522965
+CCCCNCCNC1CCCCC1,Oakwood Products (Non-EU Customers),024812,886502-85-8,N-Butyl-N'-cyclohexyl ethylenediamine,6255041
+CCCCNCCNC1CC1,Oakwood Products (Non-EU Customers),024762,886503-53-3,N-Butyl-N'-cyclopropyl ethylenediamine,6254827
+CCC(N1CC[C@@H](C1)N)CC,Oakwood Products (Non-EU Customers),064211,,(S)-1-(Pentan-3-yl)pyrrolidin-3-amine,36769705
+C[N+](CCCC#CC#CCCC[N+](C)(C)C)(C)C.[I-].[I-],InterBioScreen,STOCK1S-40329,,"N1,N1,N1,N10,N10,N10-hexamethyldeca-4,6-diyne-1,10-diaminium iodide",33568537
+CCC(N1CCC(CC1)N)CC.Cl.Cl,Oakwood Products (Non-EU Customers),063786,,1-(Pentan-3-yl)piperidin-4-amine dihydrochloride,36768991
+NCC(C1CCCCC1)N,Enamine BB,EN300-74242,,"1-cyclohexylethane-1,2-diamine",36084885
+CN(CCCNCC1CCCCC1)C,Princeton BioMolecular Research,PBMR061498,,"N'-Cyclohexylmethyl-N,N-dimethyl-propane-1,3-diamine",6898349
+CN1CCCC1C1CCCN1,Enamine BB,EN300-71185,,1-methyl-2-(pyrrolidin-2-yl)pyrrolidine,36084303
+CCCCCNCCNC,Oakwood Products (Non-EU Customers),024575,,N-Methyl-N'-pentyl ethylenediamine,6252276
+CN(CC1CNCC1)C.Cl,Enamine BB,EN300-129669,,dimethyl(pyrrolidin-3-ylmethyl)amine hydrochloride,46218378
+N1CCC2C(C1)CNCC2,Sigma Aldrich,CDS015416,,"decahydro-2,7-naphthyridine",33511019
+CCN(C1CCC(CC1)C)CCN(C)C,ChemBridge,5462877,,,2355132
+CCN(CCN(C1CCCCCCC1)C)CC,ChemBridge,5453726,,,2354582
+NCCN1CC(C)CC(C1)C,Matrix Scientific,027620,876716-58-4,"2-(3,5-Dimethylpiperidin-1-yl)ethanamine",861281
+C[N+](CCCCC[N+](C)(C)C)(C)C.[I-].[I-],Sigma Aldrich,S765740,,"N,N-PENTAMETHYLENEBIS(TRIMETHYLAMMONIUM IODIDE)",6883290
+CCCCCCCCC(=N)N,Tyger Scientific,N31000,,Nonanamidine,36760453
+C1CCC(CN1)CCN1CCCCC1,Matrix Scientific,053985,,1-[2-(3-Piperidinyl)ethyl]piperidine,30423958
+NCCCNCC,Matrix Scientific,026918,10563-23-2,"N1-Ethyl-1,3-propanediamine",6205786
+CNC1CCNCC1.Cl.Cl,Enamine BB,EN300-114562,,N-methylpiperidin-4-amine dihydrochloride,36759727
+CCNC1CNCC1,TCI Europe,E0431,111390-22-8,3-(Ethylamino)pyrrolidine,6876209
+CCNCCCNC(CC)C,Matrix Scientific,027008,,"N1-(sec-Butyl)-N3-ethyl-1,3-propanediamine",18625212
+CNCCCNC(C)C,Matrix Scientific,026969,15937-57-2,"N1-Isopropyl-N3-methyl-1,3-propanediamine",18625148
+CCCCCCCCCCCCCCCCNCCCNC,Matrix Scientific,026949,,"N1-Hexadecyl-N3-methyl-1,3-propanediamine",18625116
+CCCCCCCCNc1ccc(cc1)NCCCCCCCC.Cl.Cl,Sigma Aldrich,S681741,,"N,N'-DIOCTYL-1,4-PHENYLENEDIAMINE DIHYDROCHLORIDE",6187670
+CCN1CCC(CC1)N1CCCCC1C,ChemBridge,5460190,,,24836684
+CCCCNCC1CCCCN1CCC,Exclusive Chemistry,EC-000.1320,,N-[(1-propyl-2-piperidinyl)methyl]-1-butanamine,33371895
+CCNCC1CCCCN1C(C)C,Exclusive Chemistry,EC-000.1312,,N-[(1-isopropyl-2-piperidinyl)methyl]ethanamine,33371879
+CNCC1CCCCN1CC,Exclusive Chemistry,EC-000.1304,,(1-ethyl-2-piperidinyl)-N-methylmethanamine,33371863
+CCCNCC1CCCN1CCC,Exclusive Chemistry,EC-000.1295,,N-[(1-propyl-2-pyrrolidinyl)methyl]-1-propanamine,33371847
+CNCC1CCCN1C(C)C,Exclusive Chemistry,EC-000.1287,,(1-isopropyl-2-pyrrolidinyl)-N-methylmethanamine,33371831
+CCCN(CCC1CCNCC1)CCC.Cl.Cl,Matrix Scientific,051625,,N-[2-(4-Piperidinyl)ethyl]-N-propyl-1-propanamine dihydrochloride,30420293
+N1CCC(CC1)CCN1CCCC1.Cl.Cl,Matrix Scientific,051609,14759-08-1,4-[2-(1-Pyrrolidinyl)ethyl]piperidine dihydrochloride,30420268
+NCCN1[C@H](C)CCC[C@@H]1C,ChemBridge,4035990,1788-35-8,"2-[cis-2,6-dimethyl-1-piperidinyl]ethanamine",29703776
+CC1CCCN(C1)CCC1CCCCN1.Cl.Cl,Matrix Scientific,051561,,3-Methyl-1-[2-(2-piperidinyl)ethyl]piperidine dihydrochloride,30420179
+CCN(CCC1CCCCN1)CC.Cl.Cl,Matrix Scientific,051552,1219980-63-8,"N,N-Diethyl-2-(2-piperidinyl)-1-ethanamine dihydrochloride",30420167
+NCCN(CC(C)C)CC(C)C,Matrix Scientific,079910,14156-98-0,"N,N-Diisobutylethane-1,2-diamine",29703531
+C1CCCN(CC1)CC1CCNCC1.Cl.Cl,Matrix Scientific,051453,1211466-39-5,1-(4-Piperidinylmethyl)azepane dihydrochloride,30420009
+CCCCN(CC1CCNCC1)C.Cl.Cl,Matrix Scientific,051445,,N-Methyl-N-(4-piperidinylmethyl)-1-butanamine dihydrochloride,30419998
+CCN(CCN(CC1CCCCC1)C)CC,ChemBridge,5426655,,,2015918
+CC1CCCN(C1)CC1CCCNC1.Cl.Cl,Matrix Scientific,051420,1211487-38-5,3-Methyl-1-(3-piperidinylmethyl)piperidine dihydrochloride,30419955
+CNCCCCN,Enamine BB,EN300-115101,,(4-aminobutyl)(methyl)amine,31589104
+CN(CCC1CCCCN1)C.Cl.Cl,Enamine BB,EN300-110468,,dimethyl[2-(piperidin-2-yl)ethyl]amine dihydrochloride,24825379
+CNC1CCN(CC1C)C,Enamine BB,EN300-84669,,"N,1,3-trimethylpiperidin-4-amine",36747976
+CC1CCN(CC1)CCC1CCCCN1,Matrix Scientific,020851,,4-Methyl-1-(2-piperidin-2-yl-ethyl)-piperidine,834591
+NCC1CCN(CC1)C1CCCCC1,Matrix Scientific,016354,132740-53-5,[(1-Cyclohexylpiperidin-4-yl)methyl]amine,5766374
+NCC1CCCCN1.Cl.Cl,Bepharm,B239098,56098-52-3,Piperidin-2-ylmethanamine dihydrochloride,44471775
+NCCCN1C(C)CCCC1C,Matrix Scientific,008506,85723-72-4,"3-(2,6-Dimethyl-piperidin-1-yl)-propylamine",5759357
+CCCCN(CCN)C,Enamine BB,EN300-75354,,(2-aminoethyl)(butyl)methylamine,5759090
+C1CCC2(CN1)CCCNC2,Enamine BB,EN300-90607,,"2,8-diazaspiro[5.5]undecane",36000049
+NCCN1CCCC1.Cl.Cl,Enamine BB,EN300-53596,,2-(pyrrolidin-1-yl)ethan-1-amine dihydrochloride,28303565
+NCCN1CCC(C1)C,Enamine BB,EN300-96279,,2-(3-methylpyrrolidin-1-yl)ethan-1-amine,37094880
+NCCC1CCCCN1C,Matrix Scientific,027075,18128-28-4,2-(1-Methylpiperidin-2-yl)ethanamine,11489486
+CC1CCCCN1C1CNC1,ChemBridge,4026698,959239-81-7,1-(3-azetidinyl)-2-methylpiperidine,18189117
+NCC(CN1CCCCCC1)C,Matrix Scientific,033473,893644-62-7,3-Azepan-1-yl-2-methyl-propylamine,815543
+NCCCCNC(C)(C)C,Sigma Aldrich,PH001116,,"N(1)-(TERT-BUTYL)-1,4-BUTANEDIAMINE",28291728
+CN1CCC2(C1)CNCC2,Oakwood Products (Non-EU Customers),036224,135380-53-9,"2-Methyl-2,7-diazaspiro[4.4]nonane",31526779
+CCNCCN1[C@H](C)CCC[C@@H]1C,ChemDiv BB,BB53-0942,,"N-{2-[(2R,6S)-2,6-dimethylpiperidin-1-yl]ethyl}-N-ethylamine",31525493
+NCCC(N)C.Cl.Cl,Enamine BB,EN300-83450,,"butane-1,3-diamine dihydrochloride",36726162
+NCCC(CN)C.Cl.Cl,Matrix Scientific,039861,111469-11-5,"2-Methylbutane-1,4-diamine dihydrochloride",28289545
+NCCCCCC[N+](C)(C)C.Cl.[Cl-],Toronto Research Chemicals,A611085,,(6-Aminohexyl)trimethylammonium Chloride Hydrochloride,43548201
+CCCNCCN1CC(C)CC(C1)C,ChemDiv BB,BB53-0300,,"N-[2-(3,5-dimethylpiperidin-1-yl)ethyl]-N-propylamine",31524505
+CCCNCCN1CCCCC1CC,ChemDiv BB,BB53-0089,,N-[2-(2-ethylpiperidin-1-yl)ethyl]-N-propylamine,31524186
+CCNCCN1CCCC(C1)C,ChemDiv BB,BB53-0050,,N-ethyl-N-[2-(3-methylpiperidin-1-yl)ethyl]amine,31524123
+CC1CCCN(C1)CCNC(C)C,ChemDiv BB,BB52-9848,,N-[2-(3-methylpiperidin-1-yl)ethyl]propan-2-amine,31523803
+C1CCCN(CC1)CCNC1CCCC1,Enamine,Z369553320,,,33347107
+C1CCN(C1)C1CCN(CC1)C1CCCC1,Zelinsky Institute,UZI/1936368,,,2172366
+CCNCC1CCN(C1)CC,Matrix Scientific,026833,959239-18-0,N-[(1-Ethyl-3-pyrrolidinyl)methyl]-1-ethanamine,14063835
+C1CCCN(CC1)C1CCN(CC1)C1CCCCCC1,Zelinsky Institute,UZI/1936197,,,2172155
+CN(CC#CCCCCC#CCN(C)C)C,InterBioScreen,STOCK1S-75770,,"N1,N1,N10,N10-tetramethyldeca-2,8-diyne-1,10-diamine",4407034
+CC(CN1CCCCC1)(N)C,Maybridge,MO01185,,2-methyl-1-piperidino-2-propanamine,724960
+NCC1CCNCC1,Matrix Scientific,081956,7144-05-0,1-Piperidin-4-ylmethanamine,534490
+CN(CCNCC1CCCCC1)C.Cl.Cl,ChemBridge,9130836,,,21917578
+CC1(C)CC(NC2CCCCC2)CC(N1)(C)C,ChemDiv,8012-5526,,,2168475
+CC(NCCN1CCCCCC1)C.Cl,ChemBridge,4013119,,,32355724
+CCNC1CCC(CC1)N(C)C,Oakwood Products (Non-EU Customers),087880,,"N-Ethyl-N',N'-dimethyl-cyclohexane-1,4-diamine",42034206
+CCN1CCCC(C1)N,Enamine BB,EN300-52215,,1-ethylpiperidin-3-amine,1967800
+C1NC[C@H](C1)N1CCCC1,Ark Pharm,AK129127,859282-12-5,"(S)-1,3'-Bipyrrolidine",36561061
+N1CCCC(CC1)N1CCCC1,Enamine BB,EN300-81924,,4-(pyrrolidin-1-yl)azepane,36560463
+CC1CCCCN1CCCNC1CCCC1,Enamine,Z90622737,,,33335165
+CN1CCC(CC1)C1CNCC1,Enamine BB,EN300-118113,,1-methyl-4-(pyrrolidin-3-yl)piperidine,40505583
+CC(CC(C)(C)C)(N=NC(CC(C)(C)C)(C)C)C,Organix,O-319,39198-34-0,Azo-t-octane,31254321
+NCCN1CCC1,Enamine BB,EN300-114312,,2-(azetidin-1-yl)ethan-1-amine,40331514
+CN(CCC(N)(C)C)C,Ark Pharm,AK122804,933738-55-7,"N1,N1,3-Trimethylbutane-1,3-diamine",40317406
+CC1CCN(CC1)C1CCN(CC1)C1CCCC(C1)C,Zelinsky Institute,UZI/1935820,,,6116153
+CC1CCC(CC1)N1CCC(CC1)N1CCCCC1,Zelinsky Institute,UZI/1938415,,,6116137
+CC(CC1NCCNC1)C,Life Chemicals,F2147-0834,84477-68-9,2-isobutylpiperazine,40296003
+NC1CCNCC1,Matrix Scientific,081403,13035-19-3,4-Aminopiperidine,521539
+CC(N1CCN(CC1)C1CCCCC1)C,Zelinsky Institute,UZI/1938535,,,6115770
+NCC1CCCCCN1,Enamine BB,EN300-130611,,azepan-2-ylmethanamine,40193027
+CC1NCCNCC1,AK Scientific,W4646,22777-05-5,"5-Methyl-[1,4]diazepane",40128673
+CCCCCCC(NC1CCN(CC1)CCC)C,Enamine,Z90525677,,,29642541
+CN1CCC(CC1)C1CCCCCN1,ACB Blocks ,C7A-0151,,2-(1-methyl-4-piperidinyl)azepane,707850
+CC(NC1CNCC1)C,CombiPhos Catalysts,MPC-11240,,Isopropyl-pyrrolidin-3-yl-amine,39628214
+NCC#CCN1CCCCC1.Cl.Cl,Life Chemicals,F2147-1065,,(4-piperidin-1-ylbut-2-yn-1-yl)amine dihydrochloride,43482525
+CNCC1CNCC1,CombiPhos Catalysts,MPC-1165,,Methyl-pyrrolidin-3-ylmethyl-amine,39529326
+CN1CCC(C1)NC1CC1,Oakwood Products (Non-EU Customers),087899,,Cyclopropyl-(1-methyl-pyrrolidin-3-yl)-amine,39507981
+CCCN1CCC(CC1)N1CCCCCCC1,ChemBridge,5452153,,,1267147
+CNCCCCCCCCNC,Sigma Aldrich,493775,33563-54-1,"N,N'-Dimethyl-1,8-octanediamine",514772
+CCCC(N1CCNCCC1)C,EvoBlocks,EB30091,,"1-(pentan-2-yl)-1,4-diazepane",32283829
+CCCCCCCCN1CCNCCC1,EvoBlocks,EB30071,,"1-octyl-1,4-diazepane",32283797
+FCCCCN1CCNCCC1,Oakwood Products (Non-EU Customers),062469,,"1-(4-Fluorobutyl)-1,4-diazepane",32283777
+CCCCCCCN1CCNCC1C,EvoBlocks,EB29570,,1-heptyl-2-methylpiperazine,32283568
+CCCCC(CN1CCNCC1C)CC,EvoBlocks,EB29505,,1-(2-ethylhexyl)-2-methylpiperazine,32283463
+CCCCCC(N1CCNCC1)C,EvoBlocks,EB29097,,1-(heptan-2-yl)piperazine,32283426
+C(CN1CCCCCC1)CCN1CCCCCC1,Vitas M Labs,STK526153,,"1,1'-butane-1,4-diyldiazepane",4375425
+CCN(CCCC1CCNCC1)CC,Enamine BB,EN300-131771,,diethyl[3-(piperidin-4-yl)propyl]amine,38858401
+CC(CN1CCCC1)N,Matrix Scientific,033492,50998-03-3,1-Methyl-2-pyrrolidin-1-yl-ethylamine,2719702
+C1CCC(C1)N1CCN(CC1)C1CCCC1,Zelinsky Institute,UZI/1935624,,,1453612
+CCN1CCCC2(C1)CCCNC2,ChemBridge,4002270,1083216-68-5,"2-ethyl-2,8-diazaspiro[5.5]undecane",31238449
+CN1CCC(C1)NC(C)C,Oakwood Products (Non-EU Customers),087883,,Isopropyl-(1-methyl-pyrrolidin-3-yl)-amine,38322619
+C=C=CCNCCCCNCC=C=C,AK Scientific,W9621,93565-01-6,"N1,N4-Di(buta-2,3-dienyl)butane-1,4-diamine",43472911
+CN1CCCC(C1)NC(C)C,Oakwood Products (Non-EU Customers),087889,,Isopropyl-(1-methyl-piperidin-3-yl)-amine,38140675
+CCNCC1CCCN1,CombiPhos Catalysts,MPC-11222,,Ethyl-pyrrolidin-2-ylmethyl-amine,38100987
+C1CNC(C1)CNC1CC1,Bellen Chem,Bellen008375,1226215-03-7,N-((pyrrolidin-2-yl)methyl)cyclopropanamine,38100659
+C1CCC(CC1)N=C=NC1CCCCC1,AK Scientific,65063,538-75-0,"N,N'-Dicyclohexylcarbodiimide (DCC)",501464
+CC1CCN(CC1)CC1CCN(CC1)CC#C,Enamine,Z645078090,,,45754844
+CN1CCC(C1)CNC(C)C,Oakwood Products (Non-EU Customers),087888,,Isopropyl-(1-methyl-pyrrolidin-3-ylmethyl)-amine,37894381
+NC1CCC(CC1)N(C)C.Cl.Cl,Ark Pharm,AK125041,1031289-75-4,"N1,N1-Dimethylcyclohexane-1,4-diamine dihydrochloride",43468150
+C1CCC2(CN1)CNC2,Ark Pharm,AK133121,885482-15-5,"2,6-Diazaspiro[3.5]nonane",46023678
+NCC1(CCC1)CN1CCCC1,Princeton BioMolecular Research,PBMR158849,,[1-(pyrrolidin-1-ylmethyl)cyclobutyl]methanamine,43467337
+NC1CCC(CC1)CC1CCC(CC1)N,AK Scientific,Q354,1761-71-3,"4,4'-Diaminodicyclohexylmethane",497989
+N[C@H]1CCCC[C@@H]1N,Matrix Scientific,075881,21436-03-3,"(1S,2S)-(+)-1,2-Diaminocyclohexane",497937
+NCCCCN.Cl.Cl,Matrix Scientific,075325,333-93-7,"1,4-Diaminobutane dihydrochloride",497899
+CCN(CCCN(CC)CC)CC,Alfa Aesar (UK),A17680,60558-96-5,"N,N,N',N'-Tetraethyl-1,3-propanediamine, 97%",496780
+N[C@H]1CCCNC1,Toronto Research Chemicals,A627935,334618-07-4,(S)-(+)-3-Aminopiperidine Dihydrochloride,31224669
+[C-]#[N+]CCCCCC[N+]#[C-],Sigma Aldrich,306819,929-57-7,"1,6-Diisocyanohexane",496625
+CNC1CCNCC1,AK Scientific,V0325,45584-07-4,4-Methylaminopiperidine,37625565
+CCNC1CCN(C1)C,Oakwood Products (Non-EU Customers),087868,,Ethyl-(1-methyl-pyrrolidin-3-yl)-amine,37624878
+CN1CCC(CC1)[C@H](N)C,Enamine BB,EN300-89245,,(1R)-1-(1-methylpiperidin-4-yl)ethan-1-amine,31422285
+CN(C1CC1)CC1CCCCN1,Oakwood Products (Non-EU Customers),088213,,Cyclopropyl-methyl-piperidin-2-ylmethyl-amine,37591519
+NC1CC2CCCC(C1)N2C(C)C,Enamine BB,EN300-88987,,9-(propan-2-yl)-9-azabicyclo[3.3.1]nonan-3-amine,31421823
+NC1CCCNC1.Cl.Cl,Enamine BB,EN300-136385,,piperidin-3-amine dihydrochloride,495437
+CC1CCN(CC1)CN1CCC(CC1)C,Oakwood Products (Non-EU Customers),032549,63963-56-4,"1,1-Bis-(4-methylpiperid-1-yl)methane",4348348
+CN(C1CC1)C[C@@H]1CCCN1,Oakwood Products (Non-EU Customers),088207,477576-70-8,Cyclopropyl-methyl-(S)-1-pyrrolidin-2-ylmethyl-amine,43464088
+CN([C@H]1CCCNC1)C,Oakwood Products (Non-EU Customers),088184,,Dimethyl-(S)-piperidin-3-yl-amine,43464072
+CN1CC[C@@H](C1)NC1CC1,Oakwood Products (Non-EU Customers),087901,,Cyclopropyl-((S)-1-methyl-pyrrolidin-3-yl)-amine,43463694
+CN1CC[C@H](C1)NC(C)C,Oakwood Products (Non-EU Customers),087884,,Isopropyl-((R)-1-methyl-pyrrolidin-3-yl)-amine,43463678
+NCC(N(C)C)CC(C)C,Enamine BB,EN300-27721,,"N-[1-(aminomethyl)-3-methylbutyl]-N,N-dimethylamine",2872985
+CNC[C@@H]1CCCN1C,Oakwood Products (Non-EU Customers),087858,175417-85-3,Methyl-((S)-1-methyl-pyrrolidin-2-ylmethyl)-amine,43463662
+CCCCCCCCCCCCNCCCN,Matrix Scientific,098447,5538-95-4,"N1-Dodecylpropane-1,3-diamine",7352924
+CN(C(C)C)CC1CCCN1,Oakwood Products (Non-EU Customers),088190,,Isopropyl-methyl-pyrrolidin-2-ylmethyl-amine,37437972
+NCC1CCCN1C,Matrix Scientific,027074,26171-06-2,(1-Methylpyrrolidin-2-yl)methylamine,10472406
+CC(N(C1CCNCC1)C)C,Oakwood Products (Non-EU Customers),088196,,Isopropyl-methyl-piperidin-4-yl-amine,37410270
+CCC(N1CCC(CC1)N)CC,Alinda Chemical,ALBB-022688,,1-(1-ethylpropyl)piperidin-4-amine dihydrochloride,37397171
+CNC1CCN(CC1)C,Matrix Scientific,027116,73579-08-5,"N,1-Dimethylpiperidin-4-amine",489463
+NCC(C1CC1)N,Enamine BB,EN300-62200,,"1-cyclopropylethane-1,2-diamine",31415833
+CNCC1CNC1,Ark Pharm,AK129388,91196-81-5,1-(Azetidin-3-yl)-N-methylmethanamine,46014737
+C[N+]1(CC[N+]2(C)CCCCC2)CCCCC1,TimTec,ST072598,,,6771120
+C1CC2CCC1N=N2,Molecular Diversity Preservation,20241,,,5868241
+N[C@@H]1CC[C@@H](C1)N,Ark Pharm,AK129108,63486-45-3,"cis-Cyclopentane-1,3-diamine",46014614
+CC(C[C@H]1NCCNC1)C.Cl.Cl,AK Scientific,W8809,853730-57-1,(R)-2-Isobutylpiperazine dihydrochloride,36469208
+C1CCN(CC1)CN1CCCCC1,Manchester Organics,Z35650,880-09-1,1-(1-piperidylmethyl)piperidine,485022
+CC1CCCN(C1)CC1CCNCC1,Matrix Scientific,038525,926254-81-1,3-Methyl-1-(piperidin-4-ylmethyl)piperidine,27333517
+CN1CCC(C1)C1CCNCC1,ChemBridge,56281021,,4-(1-methyl-3-pyrrolidinyl)piperidine,43190613
+NCC1(N)CCCC1.Cl.Cl,Enamine BB,EN300-52195,,1-(aminomethyl)cyclopentan-1-amine dihydrochloride,31410912
+NCCCN(C1CCCCC1)C(C)C,Matrix Scientific,079949,,"N-Cyclohexyl-N-isopropylpropane-1,3-diamine",31210472
+CCN1CCC(CC1)CC1CCNCC1,"J & W PharmLab, LLC",60-0659,,1-Ethyl-4-piperidin-4-ylmethyl-piperidine,44693788
+CC1CCCCN1C1CCNCC1.Cl.Cl,Matrix Scientific,051503,,4-(2-Methyl-1-piperidinyl)piperidine dihydrochloride,29599029
+CC(N(CC1CCNCC1)C)C,Enamine BB,EN300-50077,,methyl(piperidin-4-ylmethyl)propan-2-ylamine,31410378
+CNCCN,Acros Organics (US),15556,109-81-9,"N-Methylethylenediamine, 95%",480036
+NC1CC(C)(C)NC(C1)(C)C,Matrix Scientific,075353,36768-62-4,"4-Amino-2,2,6,6-tetramethylpiperidine",477231
+C[C@H]1NCCN(C1)C1CCCCC1,"J & W PharmLab, LLC",65-0018,182141-99-7,(R)-1-Cyclohexyl-3-methyl-piperazine,44690430
+NCCCCCN1CCC(CC1)(F)F,Oakwood Products (Non-EU Customers),214368,,"5-(4,4-Difluoro-piperidin-1-yl)-pentylamine",44385654
+C[C@H]1NC[C@H](NC1)C,Anichem,31414,,"(2R,5R)-2,5-Dimethyl-piperazine",44689306
+NCC1CCN(CC1)CC#C,Princeton BioMolecular Research,PBMR122008,,(1-prop-2-ynyl-4-piperidyl)methanamine,36862789
+CN(CCCN(CC1CCC(=CC1)C)CC1CCC(=CC1)C)C,ChemBridge,5747447,,,2100472
+C1CCCN(CC1)CCNC1CC1,Princeton BioMolecular Research,PBMR120116,,(2-Azepan-1-yl-ethyl)-cyclopropyl-amine,36859647
+CCCCN1CCC(CC1)N,Enamine BB,EN300-58151,,1-butylpiperidin-4-amine,32445141
+N[C@@H]1CCC[C@@H](C1)N.Cl.Cl,Ark Pharm,AK124383,498532-32-4,"(1R,3S)-Cyclohexane-1,3-diamine dihydrochloride",44835204

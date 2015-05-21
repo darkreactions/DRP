@@ -38,6 +38,8 @@ def _avg_confusion_dicts(conf_dicts):
 
 def make_confusion_dict(guesses, actuals):
   if len(guesses)==0 or len(actuals)==0:
+    print "Guesses: {}".format(len(guesses))
+    print "Actuals: {}".format(len(actuals))
     raise Exception("Either `guesses` or `actuals` is empty!")
 
   if not (len(guesses)==len(actuals)):

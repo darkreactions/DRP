@@ -17,7 +17,15 @@ def default_preprocessor(data):
   normalize = False
 
   headers = data.pop(0)
-  data = [d.get_calculations_list() for d in data]
+
+  expanded = []
+  for d in data:
+    try:
+      expanded.append(d.get_calculations_list())
+    except:
+      pass
+
+  data = expanded
 
   # Set outcomes of 0 to be 1.
   outcome_index = headers.index("outcome")
@@ -26,14 +34,22 @@ def default_preprocessor(data):
   for i, outcome in enumerate(outcomes):
     data[i][outcome_index] = str(outcome)
 
-  # Normalize everything except the categorized columns.
-  categories = [
-    "outcome", "purity"
-  ]
 
-  cat_indexes = {headers.index(cat) for cat in categories if cat in headers}
+  # Remove weird unicode characters.
+  for i, entry in enumerate(data):
+    for j, elem in enumerate(entry):
+      if type(elem)==str or type(elem)==unicode:
+        data[i][j] = elem.replace(u"\u2019", "'")
+
 
   if normalize:
+
+    # Normalize everything except the categorized columns.
+    categories = [
+        "outcome",
+    ]
+    cat_indexes = {headers.index(cat) for cat in categories if cat in headers}
+
     cols = [[unicode(row[i]) for row in data] for i, h in enumerate(headers)]
     cols = [norm(col) if (all(map(is_num, col)) and i not in cat_indexes) else col
                     for i, col in enumerate(cols)]
@@ -60,7 +76,7 @@ def purging_preprocessor(data):
 
 def category_preprocessor(data):
   def categorize(data):
-    return "Se" in data.atoms and "V" in data.atoms
+    return "Te" in data.atoms and "V" in data.atoms
 
   new_data = default_preprocessor(data)
 

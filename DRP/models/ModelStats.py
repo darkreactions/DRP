@@ -110,7 +110,7 @@ class ModelStats(models.Model):
     data = data[:]
 
     if debug:
-      print "Starting generation of '{}' using '{}' on {} entries".format(self.tool, self.library, len(data))
+      print "Starting generation of '{}' using '{}' on {} entries".format(self.tool, self.library, len(data)-1)
 
     # Pre-process the data if it is not already processed.
     if preprocessor and not test_set:
@@ -146,17 +146,18 @@ class ModelStats(models.Model):
     if debug:
       print "Using {} headers...".format(len(headers))
 
-    # Get the temporary value-sets of each field.
-    self._set_val_map(split_data["all"])
-
     # Train/fit the model
     if debug: print "Training model..."
-    self._train_model(split_data["train"], debug=debug)
+    self._train_model(split_data["train"], split_data["all"], debug=debug)
 
 
     # Set the confusion table for a given data-set.
     if debug: print "Testing model..."
-    self._test_model(split_data["test"], debug=debug, table="test")
+    if "test" in split_data:
+      self._test_model(split_data["test"],
+                       split_data["all"],
+                       debug=debug,
+                       table="test")
 
     self.end_time = datetime.datetime.now()
     self.save()
@@ -174,18 +175,11 @@ class ModelStats(models.Model):
     return self.end_time-self.start_time
 
 
-  def get_val_map(self):
+  def get_val_map(self, data):
     fields = self.get_headers()
     val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
     return val_dict
 
-  def _set_val_map(self, all_data):
-    #TODO: Finish me.
-    import json
-    fields = self.get_headers()
-    val_dict = {field:{row[i] for row in data} for i, field in enumerate(fields)}
-    self.val_map = json.dumps
-    return val_dict
 
   def get_path(self):
     from DRP.settings import MODEL_DIR
@@ -240,7 +234,7 @@ class ModelStats(models.Model):
       return predictions
 
 
-  def predict(self, predictors, debug=False, table="test"):
+  def predict(self, predictors, all_data, debug=False, table="test"):
     from DRP.fileFunctions import get_django_path, file_exists
     import subprocess
 
@@ -252,7 +246,7 @@ class ModelStats(models.Model):
 
 
     if self.library == "weka":
-      arff_path = self._make_arff(table, predictors, debug=debug)
+      arff_path = self._make_arff(table, predictors, all_data, debug=debug)
 
       # Results path will be named *.out instead of *.arff.
       results_path = "out".join(arff_path.rsplit("arff", 1))
@@ -288,10 +282,14 @@ class ModelStats(models.Model):
       raise Exception("Illegal model library specified! Aborting file-load!")
 
 
-  def _test_model(self, data, debug=False, table="test"):
+  def _test_model(self, data, all_data, debug=False, table="test"):
     from DRP.model_building.confusion_table import make_confusion_dict
 
     if self.library=="weka":
+
+      if len(self.get_headers()) != len(data[0]):
+        raise Exception("Test data and headers do not match!")
+
       predictors = data
       index = self.get_headers().index(self.response)
       responses = [row[index] for row in data]
@@ -299,7 +297,7 @@ class ModelStats(models.Model):
     else:
       predictors, responses = self._strip_response(data)
 
-    guesses = self.predict(predictors, debug=debug, table=table)
+    guesses = self.predict(predictors, all_data, debug=debug, table=table)
 
     if self.library in {"sklearn", "weka"}:
       responses = map(int, map(float, responses))
@@ -309,7 +307,7 @@ class ModelStats(models.Model):
 
 
 
-  def _train_model(self, data, debug=False):
+  def _train_model(self, data, all_data, debug=False):
     from DRP.model_building.sklearn_methods import get_model
     from DRP.fileFunctions import get_django_path
     from sklearn.externals import joblib
@@ -319,7 +317,7 @@ class ModelStats(models.Model):
       if self.tool!="svc":
         raise Exception("Only svc supported in WEKA currently.")
 
-      arff_name = self._make_arff("train", data, debug=debug)
+      arff_name = self._make_arff("train", data, all_data, debug=debug)
 
       move = "cd {}; ".format(get_django_path())
       command = "bash DRP/model_building/make_model.sh "
@@ -337,7 +335,7 @@ class ModelStats(models.Model):
 
       if debug:
         print "Testing against training data..."
-      self._test_model(data, debug=debug, table="train")
+      self._test_model(data, all_data, debug=debug, table="train")
 
     elif self.library=="sklearn":
       model, description = get_model(self.tool)
@@ -356,15 +354,21 @@ class ModelStats(models.Model):
 
     val_dict = {}
 
-    val_map = self._get_weka_value_map(data)
+    val_map = self.get_val_map(data)
 
-    for field, val_set in val_map:
+    for field, val_set in val_map.items():
       if any(map(_is_string, val_set)):
         if field in val_map:
           val_set = val_map[field]
 
         # EG: convert {"hello", 1, u"world"} to {hello,1,world}.
-        innards = ",".join(map(str,val_set)).replace("\"","")
+        values = sorted(map(str,val_set))
+
+        # Make sure all boolean options are available in the value-map.
+        if values == ["no"] or values == ["yes"] or values == ["no", "yes"]:
+          values = ["yes", "no"]
+
+        innards = ",".join( values ).replace("\"","")
         val_dict[field] = "{"+innards+"}"
 
       else:
@@ -398,7 +402,7 @@ class ModelStats(models.Model):
         delete_tmp_file(filepath)
 
 
-  def _make_arff(self, key, data, debug=False):
+  def _make_arff(self, key, data, all_data, debug=False):
     """
     Saves the data to an ARFF file.
 
@@ -414,7 +418,7 @@ class ModelStats(models.Model):
     full_name = "{}{}_{}.arff".format(TMP_DIR, self.filename, key)
 
     with open(full_name, "w") as f:
-      header_content = self._weka_header(data)
+      header_content = self._weka_header(all_data)
       f.write(header_content + "\n")
       for row in data:
         f.write(",".join([str(entry) for entry in row]) + "\n")
@@ -554,9 +558,13 @@ class ModelStats(models.Model):
 
     values = sorted(confusion_dict.keys())
 
+    # If no `test` is saved, return an empty matrix.
+    if not values:
+      return []
+
     matrix = [[""]+values] if headers else []
 
-    denom = self.total() if normalize else 1
+    denom = self.total(table=table) if normalize else 1
 
     for value in values:
       guess_dict = confusion_dict[value]
@@ -569,7 +577,11 @@ class ModelStats(models.Model):
 
   def count(self, normalize=False, guesses=None, actuals=None, ranges=True, false_guess=False, table="test"):
     # Variable Setup
+    FAIL_ON_UNKNOWN = False # Set to `True` to allow unknown values to be counted.
     conf_table = self.load_confusion_table(normalize=normalize, table=table)
+
+    if not conf_table:
+      raise Exception("No '{}' table available!".format(table))
 
     guess_headers = conf_table.pop(0)[1:] # Remove the empty cell in [0,0].
     actual_headers = [row.pop(0) for row in conf_table]
@@ -581,7 +593,10 @@ class ModelStats(models.Model):
 
     for value in (actuals+guesses):
       if value not in guess_headers or value not in actual_headers:
-        raise Exception("Value '{}' not found in confusion table!".format(value))
+        print value, "(",type(value),")", actuals+guesses
+        if FAIL_ON_UNKNOWN:
+          raise Exception("Value '{}' not found in confusion table!".format(value))
+        return 0 # If we don't "know" a response, then we can't have seen it before.
 
     for i, guess in enumerate(guess_headers):
       for j, actual in enumerate(actual_headers):
@@ -632,6 +647,9 @@ class ModelStats(models.Model):
     incorrects = self.load_incorrect_vals()
     return self.count(guesses=incorrects, false_guess=True,
                       normalize=normalize, ranges=ranges, table=table)
+
+  def BCR(self, ranges=True, normalize=False, table="test"):
+    return 0
 
 
   def accuracy(self, ranges=True, table="test"):
@@ -694,6 +712,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=True),
+        "BCR":self.BCR(ranges=True),
         "Precision":self.precision(ranges=True),
         "Recall":self.recall(ranges=True),
         "% TP":self.true_positives(normalize=True, ranges=True),
@@ -705,6 +724,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=False),
+        "BCR":self.BCR(ranges=False),
         "Precision":self.precision(ranges=False),
         "Recall":self.recall(ranges=False),
         "% TP":self.true_positives(normalize=True, ranges=False),
@@ -716,6 +736,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=True, table="train"),
+        "BCR":self.BCR(ranges=True, table="train"),
         "Precision":self.precision(ranges =True, table="train"),
         "Recall":self.recall(ranges=True, table="train"),
         "% TP":self.true_positives(normalize=True, ranges=True, table="train"),
@@ -727,6 +748,7 @@ class ModelStats(models.Model):
         "Test Size":self.total(table="test"),
         "Train Size":self.total(table="train"),
         "Accuracy":self.accuracy(ranges=False, table="train"),
+        "BCR":self.BCR(ranges=False, table="train"),
         "Precision":self.precision(ranges=False, table="train"),
         "Recall":self.recall(ranges=False, table="train"),
         "% TP":self.true_positives(normalize=True, ranges=False, table="train"),
@@ -746,7 +768,7 @@ class ModelStats(models.Model):
     return tests
 
 
-  def print_confusion_table(self, normalize=True, table="test"):
+  def print_confusion_table(self, normalize=False, table="test"):
     def truncate_floats(row):
       cleaned = []
       for elem in row:
