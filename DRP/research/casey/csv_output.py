@@ -5,6 +5,10 @@ if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
+
+filename = "dataset_2.csv"
+
+
 def write_uniq_csv(matrix, filename):
   def cleanMatrix(matrix):
     def clean(elem):
@@ -36,17 +40,42 @@ def split_and_write():
   from DRP.model_building.generate_models import research_data_filter
   from DRP.retrievalFunctions import get_valid_data
   from DRP.model_building.rxn_calculator import headers
-  from DRP.models import Recommendation
+  from DRP.models import Recommendation, Data
 
   import time
 
   num_splits = 10
 
-  data = get_valid_data()
+  init_data = get_valid_data()
 
-  data = [headers] + list(research_data_filter(data))
-  data = preprocessor(data)
+  orig_data = [headers] + list(research_data_filter(init_data))
+  data = preprocessor(orig_data)
 
+  print "All: {}".format(Data.objects.count())
+  print "Filtered: {}".format(len(research_data_filter(Data.objects.all())))
+
+  print "All Valid: {}".format(len(get_valid_data()))
+  print "Filtered Valid: {}".format(len(orig_data))
+
+  print
+  print "Valid..."
+  print "Te: {}".format(len([row for row in orig_data if "Te" in row.atoms]))
+  print "VTe: {}".format(len([row for row in orig_data if "Te" in row.atoms and "V" in row.atoms]))
+
+  print "Se: {}".format(len([row for row in orig_data if "Se" in row.atoms]))
+  print "VSe: {}".format(len([row for row in orig_data if "Se" in row.atoms and "V" in row.atoms]))
+
+  print "Neither: {}".format(len([row for row in orig_data if (not ("Se" in row.atoms and "V" in row.atoms)) and (not ("Te" in row.atoms and "V" in row.atoms))]))
+
+  # Add the Se and Te data.
+  headers = data.pop(0) + ["VTe?", "VSe?"]
+  data = [row + ["Te" in orig_data[i].atoms and "V" in orig_data[i].atoms,
+                 "Se" in orig_data[i].atoms and "V" in orig_data[i].atoms]
+          for i, row in enumerate(data)]
+  data = [headers] + data
+
+
+  """
   print "Calculating test_supplement"
   nonsense_recs = Recommendation.objects.filter(nonsense=True)
   pre_nonsense_recs = preprocessor([headers]+list(nonsense_recs))
@@ -55,8 +84,12 @@ def split_and_write():
   nonsense_recs = [row[:-1] + [0] for row in nonsense_recs["all"]]
   test_supplement = nonsense_recs[1:] # Remove the "headers"
 
-  write_uniq_csv(data + pre_nonsense_recs[1:], "all.csv")
+  data = data + pre_nonsense_recs[1:]
+  """
 
+  write_uniq_csv(data, filename)
+
+  """
   for i in xrange(num_splits):
     split_data = splitter(data, headers=headers)
     split_data, new_headers = postprocessor(split_data, headers)
@@ -66,7 +99,7 @@ def split_and_write():
                    "train_{}.csv".format(timestamp))
     write_uniq_csv([new_headers]+split_data["test"]+test_supplement,
                    "test_{}.csv".format(timestamp))
-
+  """
 
 if __name__=="__main__":
   split_and_write()

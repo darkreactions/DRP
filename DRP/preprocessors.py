@@ -35,11 +35,18 @@ def default_preprocessor(data):
     data[i][outcome_index] = str(outcome)
 
 
+  # Remove weird unicode characters.
+  for i, entry in enumerate(data):
+    for j, elem in enumerate(entry):
+      if type(elem)==str or type(elem)==unicode:
+        data[i][j] = elem.replace(u"\u2019", "'")
+
+
   if normalize:
 
     # Normalize everything except the categorized columns.
     categories = [
-        "outcome", "purity"
+        "outcome",
     ]
     cat_indexes = {headers.index(cat) for cat in categories if cat in headers}
 
@@ -69,7 +76,7 @@ def purging_preprocessor(data):
 
 def category_preprocessor(data):
   def categorize(data):
-    return "Se" in data.atoms and "V" in data.atoms
+    return "Te" in data.atoms and "V" in data.atoms
 
   new_data = default_preprocessor(data)
 

@@ -34,9 +34,9 @@ var centerY = height/2
   // Size of the text boxes that appear upon hovering over individual nodes.
   var textPlacement = nodeTooltips.length*40;
   var boxLength = 130;
-
+  var value = "none"; 
   var nodesHidden = "False" 
-  var zoomLevel = "circles1"
+  var zoomLevel = "second"
   var translateValue1 = width/3.2
   var translateValue2 = height/2.3 //this controls up and down
   var scaleValue = height/2700 
@@ -166,10 +166,16 @@ svg.call(tip);
 
     // Clusters of all the nodes with the same SINGLE inorganic in common
   function createCircleClusters1() {
+    var undef = "True";
+    if (value  === "none") { undef = "True"; 
+    } else if (value !== "none") { undef = "False";} 
+    if (undef === "True") {
         var circleClusters1 = container.selectAll("circle")
-              .data(clusters1)
-              .enter().append("circle") 
-              .attr("class", "circleClusters1")
+            .data(clusters1)
+            .enter().append("circle")
+            .attr("class", "circleClusters1");
+
+    circleClusters1 
               .attr("fill", function(d) {
                 return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";
               })
@@ -180,18 +186,37 @@ svg.call(tip);
               .on("mouseover", tip.show)
               .on("mouseout", tip.hide) 
               .on("click", clicked); 
+
+
+    } else if (undef === "False") { 
+        console.log("should be defined")  
+        console.log(value)
+        var circleClusters1 = container.selectAll("circle")
+            .data(clusters1.filter(function(d){ 
+                return d.inorg1.match(value) !== null ||    
+                (d.hasOwnProperty("inorg2") && d.inorg2.match(value) !== null) || 
+                d.label.match(value) !== null; }))
+            .exit().remove()
+        
+        }
   }; 
 
 
   //Clusters of all nodes with both inorganics in common  
   function createCircleClusters2() {
-              var circleClusters2 = container.selectAll("circle")
-              .data(clusters2)
-              .enter().append("circle") 
-              .attr("class", "circleClusters2")
-              .attr("fill", function(d) {
-                return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";
-              })
+    var undef = "True";
+    if (value  === "none") { undef = "True"; 
+    } else if (value !== "none") { undef = "False";} 
+    if (undef === "True") { 
+       var circleClusters2 = container.selectAll("circle")
+          .data(clusters2)
+          .enter().append("circle") 
+          .attr("class", "circleClusters2")
+
+    circleClusters2
+          .attr("fill", function(d) {
+          return (d.color!=undefined) ? d.color : "rgba(0,0,0,0)";
+          })
               circleClusters2
               .attr("opacity", 0.4)
               .attr("cx", function(d) { return d.x;})
@@ -200,30 +225,45 @@ svg.call(tip);
               .on("mouseover", tip.show) 
               .on("mouseout", tip.hide) 
               .on("click", clicked);
-   }; 
+   }else if (undef === "False") {
+        console.log(value) 
+        var circleClusters2 = container.selectAll("circle")
+            .data(clusters2.filter(function(d){ 
+                return d.inorg1.match(value) !== null || 
+                (d.hasOwnProperty("inorg2") && d.inorg2.match(value) !== null) || 
+                d.label.match(value) !== null; }))
+            .exit().remove() 
+    }
+     }; 
+    
 
 //Nodes representing each individual reactions 
 function createNodeElements() {
-  container.selectAll("line")
-     .data(links)
-     .enter()
-     .append("line")
-     .attr("class", "lines") 
-     .attr("x1", function(d) { return d.source.x; })
-     .attr("y1", function(d) { return d.source.y; })
-     .attr("x2", function(d) { return d.target.x; })
-     .attr("y2", function(d) { return d.target.y; })
-     .style("stroke-width", 0.06)
-     .attr("stroke", "gray") 
-  
-   var baseNodes = container.selectAll("g")
-    .data(nodes.filter(function(d) {
+    var undef = "True";
+    if (value  === "none") { undef = "True"; 
+    } else if (value !== "none") { undef = "False";} 
+    if (undef === "True") { 
+        container.selectAll("line")
+            .data(links)
+            .enter()
+            .append("line")
+            .attr("class", "lines") 
+            .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; })
+            .style("stroke-width", 0.06)
+            .attr("stroke", "gray") 
+    
+
+        var baseNodes = container.selectAll("g")
+            .data(nodes.filter(function(d) {
             return d.outcome > 0;
-    }))
+        }))
     .enter().append("g")
     .attr("class", "node");
-
-    baseNodes.append("circle")
+    
+        baseNodes.append("circle")
     .attr("class", "nodeElements")
     .attr("r", function(d) { var size = Math.abs(Math.log(d.pagerank))/3 + d.pagerank*450;
     if (size > 10){
@@ -335,7 +375,6 @@ function createNodeElements() {
 
 	seedButtonRect.on("click", function(d) {
 		var url="/make_seed_recommendations/";
-		var request = {"pid":d.id};
 		console.log(d.id);
 		$.post(url, request, function(response) {
   		if (response=='0') {
@@ -364,8 +403,50 @@ function createNodeElements() {
     baseNodes.attr("transform", function(d) {
 	return "translate(" + d.x + "," + d.y + ")";
     });
-}
 
+
+  } else if (value !== "none") {
+        var baseNodes = container.selectAll("g")
+            .data(nodes.filter(function(d) {
+            return (d.inorg1.match(value)) !== null || 
+            (d.hasOwnProperty("inorg2") && d.inorg2.match(value) !== null) || 
+            d.inorg1_abbrev.match(value) !== null || 
+            (d.hasOwnProperty("inorg2_abbrev") && d.inorg2_abbrev.match(value) !== null);
+            }))
+            .exit().remove();
+       
+       var newNodes = nodes.filter(function(d) {
+            return (d.inorg1.match(value)) !== null || 
+            (d.hasOwnProperty("inorg2") && d.inorg2.match(value) !== null) || 
+            d.inorg1_abbrev.match(value) !== null || 
+            (d.hasOwnProperty("inorg2_abbrev") && d.inorg2_abbrev.match(value) !== null);
+            })
+ 
+       console.log(newNodes.length)
+      
+       var newLinks = links.filter(function(d) {
+            return (newNodes.indexOf(d.source) !== -1 && newNodes.indexOf(d.target) !== -1)})
+
+       
+      console.log(links.length) 
+       console.log(newLinks.length) 
+       $(".lines").remove(); 
+       $(".newLines").remove(); 
+       container.selectAll("line")
+            .data(newLinks)
+            .enter()
+            .append("line")
+            .attr("class", "newLines") 
+            .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; })
+            .style("stroke-width", 0.1)
+            .attr("stroke", "gray") 
+        
+
+  }
+}
   
 function clicked(d) {
         if (zoomLevel == "first") {
@@ -394,12 +475,11 @@ function clicked(d) {
             .duration(750)
             .call(zoom.translate(translate).scale(scale).event);
             createNodeElements();
-         } else {
-         return reset()  
          }
-}
+       }
 
 function level1() {
+    var filter = filter 
     zoomLevel = "first"
     var scale = scaleValue,
         translate = [translateValue1, translateValue2];
@@ -409,10 +489,11 @@ function level1() {
     svg.transition()
       .duration(750)
       .call(zoom.translate(translate).scale(scale).event); 
-    createCircleClusters1();
+    createCircleClusters1(filter);
     }; 
 
 function level2() {
+    var filter = filter 
     zoomLevel = "second"
     var scale = scaleValue,
         translate = [translateValue1, translateValue2];
@@ -422,10 +503,11 @@ function level2() {
     svg.transition()
       .duration(750)
       .call(zoom.translate(translate).scale(scale).event); 
-    createCircleClusters2();
+    createCircleClusters2(filter);
     }; 
 
 function level3() {
+    var filter = filter; 
     zoomLevel = "third"
     var scale = scaleValue,
         translate = [translateValue1, translateValue2];
@@ -434,12 +516,8 @@ function level3() {
     svg.transition()
       .duration(750)
       .call(zoom.translate(translate).scale(scale).event); 
-    createNodeElements();
+    createNodeElements(filter);
     }; 
-
-
-
-
 
        
   $("#level1").on("click", level1);
@@ -450,11 +528,54 @@ function level3() {
   container.attr("transform","translate(" + translateValue1 +"," + translateValue2 + ")scale(" + scaleValue +"," + scaleValue +")"); 
   //createCircleClusters2();  
   //createNodeElements();
-  createCircleClusters1(); 
+  createCircleClusters2(); 
+
+  $(document).on("click", ".explore_filterButton", function() {
+
+  var $form = $(this).closest("form");
+  var field = $form.find("select[name='field']").val();
+  var subfield = $form.find("select[name='subfield']:visible").val();
+  var match = $form.find("select[name='match']").val();
+  value = $form.find("#searchValue").val();
+
+  if (value!=="" && value!==undefined) {
+
+    var key = field;
+    if (subfield!==undefined) key += "."+subfield;
+    if (match!==undefined) key += "."+match;
+
+   //reload page elements
+   console.log(zoomLevel)
+    
+   if (zoomLevel === "first") {level1(); }
+   else if (zoomLevel === "second") { level2(); }
+   else if (zoomLevel === "third") {level3();} 
+    //console.log(newQueryParam); 
+   var container = $("#searchFilters"); 
+   if (value!=="") { container.append("Filter for " + value + "<br/>");
+     } else {
+    var failureMessage = "No query entered!"
+    showRibbon(failureMessage, badColor, "#mainPanel");
+     }
+   }  
+ });
+
+  $(document).on("click", ".explore_resetFiltersButton", function() {
+  $("#searchFilters").empty(); 
+  console.log("reset explore");
+  value = "none" 
+  console.log(zoomLevel);
+  if (zoomLevel === "first") { level1(); }
+  if (zoomLevel === "second") { level2();}
+  if (zoomLevel === "third") { level3();} 
+   
+});
+
   var data = {
               "nodes": JSON.stringify(nodes),
               "links": JSON.stringify(grabLinkIndices(links))
              };
+
   $.post('/setup_graph/', data);
  });
 }); 

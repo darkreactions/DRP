@@ -17,8 +17,13 @@ def get_data_from_ref_file(filename):
     ref_set = set([ref.lower() for ref in refs if ref])
 
   # Note: does not guarantee that all data will be found.
-  data = Data.objects.all()
-  data = filter(lambda datum: datum.ref.lower() in ref_set, data)
+  data = []
+  for datum in Data.objects.all():
+    if datum.ref.lower() in ref_set:
+      ref_set.remove(datum.ref.lower())
+      data.append(datum)
+
+  print ref_set
 
   return data
 
