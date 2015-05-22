@@ -25,7 +25,7 @@ var centerY = height/2
       		["Inorg1", "inorg1"],
       		];
 
-  var nodes = graph.nodes;
+  //var nodes = graph.nodes;
   //var clusterNodes = graph.clusterNodes;
   var preLoad = graph.skipTicks === "True";
   var links = graph.links;
