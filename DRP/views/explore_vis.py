@@ -215,6 +215,7 @@ def get_graph_data(request):
     clusters = createClusters(final_nodes) 
     clusters1 = clusters[1]
     clusters2 = clusters[0] 
+    print len(clusters1)
     labelled_clusters1 = assign_labels_to_all_clusters(node_clusters, clusters1, "label2")
     labelled_clusters2 = assign_labels_to_all_clusters(firstCluster, clusters2, "label1") 
 
@@ -586,8 +587,8 @@ def createClusters(final_nodes):
   clusters1 = []
   clusters2 = []
   for i in xrange(len(nodes)):
-    #if nodes[i]["label1"] != "none": 
-    clusters1.append({
+    if nodes[i]["label1"] != "none": 
+      clusters1.append({
         "color": nodes[i]["color"],
         "x": nodes[i]["x"],
         "y": nodes[i]["y"],
@@ -595,22 +596,14 @@ def createClusters(final_nodes):
         "inorg1": nodes[i]["inorg1"],
         "label": nodes[i]["label1"]  
       })
-    if "inorg2" in nodes[i]:
-        clusters1.append({
-            "inorg2": nodes[i]["inorg2"] 
-        }) 
+    if nodes[i]["label2"] != "none": 
       clusters2.append({
-    clusters2.append({
         "color": nodes[i]["color2"],
         "x": nodes[i]["x"],
         "y": nodes[i]["y"],
         "id": nodes[i]["id"],
         "inorg1": nodes[i]["inorg1"],
         "label": nodes[i]["label2"]  
-      }) 
-    if "inorg2" in nodes[i]:
-        clusters1.append({
-            "inorg2": nodes[i]["inorg2"] 
         }) 
 
   return clusters1, clusters2
@@ -626,5 +619,4 @@ def assign_labels_to_all_clusters(node_dict, cluster, label):
   for i in xrange(len(cluster)):
     for j in xrange(len(node_dict_list)):
       if cluster[i]["id"] == node_dict_list[j]["id"]:
-
-  return cluster 
+        return cluster 
