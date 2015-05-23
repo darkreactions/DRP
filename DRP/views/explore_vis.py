@@ -405,8 +405,8 @@ def check_inorgs(mainNode, neighbor):
   return False
 
 def store_graph(request):
-  nodeData = json.loads(request.POST["nodes"])
-  linkData = json.loads(request.POST["links"])
+  nodeData = json.loads(request.POST.get("nodes"))
+  linkData = json.loads(request.POST.get("links"))
   NODEPOSITIONS_PATH = BASE_DIR + "/DRP/vis/nodePositions.json"
   LINKS_PATH = BASE_DIR + "/DRP/vis/linkIndices.json"
 
