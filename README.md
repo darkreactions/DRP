@@ -149,7 +149,8 @@ Any of the backups in the DropBox backup folder should suffice.
 
 If you do not set up ChemAxon or WEKA, the ConfigManager in `data_config.py` will
 throw errors when you try to start the project. This error-checking can be disabled
-by using `validate_config=False` instead of `True` in [data_config.py](https://github.com/cfalk/DRP/blob/master/DRP/data_config.py#L45-L49).
+by using `validate_config=False` instead of `True` in [data_config.py](https://github.com/cfalk/DRP/blob/master/DRP/data_config.py#L18).
+
 
 ** Accessing the GitHub Repo **
 
