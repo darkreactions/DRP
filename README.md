@@ -152,7 +152,7 @@ throw errors when you try to start the project. This error-checking can be disab
 by using `validate_config=False` instead of `True` in [data_config.py](https://github.com/cfalk/DRP/blob/master/DRP/data_config.py#L18).
 
 
-** Accessing the GitHub Repo **
+**Accessing the GitHub Repo**
 
 Firstly, you'll need a GitHub account and you'll need someone with access to
 the repo to grant your account access (though if you can view this README without
