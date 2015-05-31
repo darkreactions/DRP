@@ -147,7 +147,12 @@ However, you'll want to SCP a version of the database over to your
 development box and set up MySQL appropriately (see the setup.txt file above).
 Any of the backups in the DropBox backup folder should suffice.
 
-** Accessing the GitHub Repo **
+If you do not set up ChemAxon or WEKA, the ConfigManager in `data_config.py` will
+throw errors when you try to start the project. This error-checking can be disabled
+by using `validate_config=False` instead of `True` in [data_config.py](https://github.com/cfalk/DRP/blob/master/DRP/data_config.py#L18).
+
+
+**Accessing the GitHub Repo**
 
 Firstly, you'll need a GitHub account and you'll need someone with access to
 the repo to grant your account access (though if you can view this README without
