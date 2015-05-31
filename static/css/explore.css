@@ -3,6 +3,17 @@
 /* Glow */
 
 
+#mainContainer, html {
+margin: 0;
+padding: 0; 
+}
+
+.infoContainer {
+ margin: 0 0 0 0;
+
+}
+
+
 .glow {
   display: inline-block;
   -webkit-transition-duration: 0.3s;
@@ -67,12 +78,6 @@ div.clusterTooltip {
  pointer-events: none;
 }
 
-#loadingMessage {
- padding 30px auto;
- width: 100%;
- text-align-center;
- font-size: 24px;
-}
 
 .tooltipBackground {
  stroke-width: 1px;
@@ -152,13 +157,13 @@ border-radius: 2px;
   background-clip: padding-box;
 
   z-index: 2000;
-  position: relative;  
+  position: fixed;
   margin: auto;
-  top: 13%;
+  top: 12px;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 500px;
+  width: 375px;
   height: 50px;
   overflow: hidden;
 }
@@ -185,12 +190,12 @@ border-radius: 2px;
   position: absolute;
   right: 100%;
   margin-right: -7px;
-  width: 98%;
+  width: 93%;
   top: 7px;
   height: 14px;
   font-size: 12px;
-  background: #355a77;
-  color: #355a77;  
+  background: #145c87;
+  color: #145c87;
   line-height: 60px;
   font-weight: bold;
   font-family: Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -319,7 +324,7 @@ border-radius: 2px;
   width: 100%;
   height: 28px;
   z-index: 2001;
-  box-shadow: inset 0 0 0 2px #355a77, inset 0 0 0 7px #FFF;
+  box-shadow: inset 0 0 0 2px #145c87, inset 0 0 0 7px #FFF;
   border-radius: 10px;
 }
 
@@ -363,4 +368,40 @@ border-radius: 2px;
  color:#99FF5E;
 }
 
+
+#controlsContainer {
+ display: inline-block; 
+ position: relative; 
+ width: 100%;
+ height: 30px;
+ background: #8DAAE2; 
+ padding-top: 5px; 
+ box-shadow: 5px 2px 5px #888888; 
+}
+
+#controlsContainer .control {
+ display: inline-block;
+ position: relative; 
+ width: 33%;
+ height: 30px; 
+ color: white;
+ margin: 0 auto;
+ text-align: center;  
+ cursor: pointer;  
+} 
+
+#exploreSearchButton {
+ position: absolute; 
+ right: 0px; 
+ top: 10px;
+} 
+
+.explore_filterButton {
+ display: inline-block;
+}
+
+.explore_filterText {
+ font-weight: bold;
+ color:#99FF5E;
+}
 
