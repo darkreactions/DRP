@@ -691,6 +691,22 @@ function loadPopup(response, kwargs){
   }
 }
 
+function exploreLoadSideBar(response, kwargs){
+  //If the user needs to be logged in, send them to a prettier login form.
+  if (response.indexOf("/user_login/")>0){
+    window.location.href = "/login/";
+  } else {
+    $("#sidePanel_inner").html(response);
+    toggleSideContainer();
+    $("#tabs").tabs({active: 1});
+
+    //Allow optional popup features.
+    if (kwargs["autocomplete"]){
+       setReactantAutoComplete();
+    }
+  }
+}
+
 function loadSideBar(response, kwargs){
   //If the user needs to be logged in, send them to a prettier login form.
   if (response.indexOf("/user_login/")>0){
@@ -722,6 +738,10 @@ function loadSideBar(response, kwargs){
     displayFilter();
   }
 }
+
+
+
+
 
 //Activate specified popup:
 $(document).on("click", ".popupActivator", function(event) {
@@ -791,6 +811,12 @@ $(document).on("click", ".popupActivator", function(event) {
    });
    activatorID = "leftMenu_downloadCSV";
    break;
+  case "exploreSearchButton":
+   $.get("/search/Explore", function(response) {
+    exploreLoadSideBar(response, {"autocomplete":true})
+   });
+   return false;
+   break;  
   case "searchButton":
    PT_selected = Array();
    $.get("/search/Data", function(response) {

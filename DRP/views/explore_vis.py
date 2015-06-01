@@ -117,6 +117,15 @@ def get_graph_data(request):
       if rawNodes[i]["id"] in no_outcome_ids:
         raw_outcomes.append(rawNodes[i])
 
+    #Here I am grabbing list of all abbreviated compounds 
+     
+    from DRP.models import collect_CG_name_pairs
+    u = request.user
+    lab_group = u.get_profile().lab_group
+  
+    name_pairs = collect_CG_name_pairs(lab_group)
+    name_pairs = { value:key for key,value in name_pairs.items() }    
+
 
     with_outcomes = []
     for i in xrange(len(no_outcome)):
@@ -133,6 +142,7 @@ def get_graph_data(request):
         "source": no_outcome[i]["source"],
         "color2": no_outcome[i]["color2"],
         "inorg1": no_outcome[i]["inorg1"],
+        "inorg1_abbrev": name_pairs[no_outcome[i]["inorg1"]],
         "y": no_outcome[i]["y"],
         "x": no_outcome[i]["x"],
         "pagerank": no_outcome[i]["pagerank"],
@@ -141,9 +151,11 @@ def get_graph_data(request):
         "ref": outcome_node["ref"]
         })
       if "inorg2" in no_outcome[i]:
-        with_outcomes.append({
-        "inorg2": no_outcome[i]["inorg2"]})
-
+        if no_outcome[i]["inorg2"] != "none":
+          with_outcomes.append({
+          "inorg2": no_outcome[i]["inorg2"],
+          "inorg2_abbrev": name_pairs[no_outcome[i]["inorg2"]]})   
+    
     if os.path.exists(LABEL_DICT_PATH):
       with open(LABEL_DICT_PATH, "r") as f:
         clusters_with_source_target = json.load(f)
@@ -198,15 +210,57 @@ def get_graph_data(request):
 
     with open(BASE_DIR + "/DRP/vis/completeNodes.json", "w") as outfile:
       dump = json.dump(final_nodes, outfile)
+    
+    
+    clusters = createClusters(final_nodes) 
+    clusters1 = clusters[1]
+    clusters2 = clusters[0] 
+    print len(clusters1)
+    labelled_clusters1 = assign_labels_to_all_clusters(node_clusters, clusters1, "label2")
+    labelled_clusters2 = assign_labels_to_all_clusters(firstCluster, clusters2, "label1") 
 
+    for i in xrange(len(labelled_clusters1)):
+      label = labelled_clusters1[i]["label"]
+      if label in SECOND_CLUSTER_ABBREVS:
+        labelled_clusters1[i]["label"] = SECOND_CLUSTER_ABBREVS[label]
 
-    clusters = createClusters(final_nodes)
-    clusters1 = clusters[0]
-    clusters2 = clusters[1]
-    label1 = [x["label"] for x in clusters1 if x["label"] != "none" ]
-    print len(label1)
+    for i in xrange(len(labelled_clusters2)):
+      label = labelled_clusters2[i]["label"]
+      if label in FIRST_CLUSTER_ABBREVS:
+        labelled_clusters2[i]["label"] = FIRST_CLUSTER_ABBREVS[label]
 
-    response = {"nodes": final_nodes, "links": links, "skipTicks": "True", "clusters1": clusters1, "clusters2": clusters2}
+    response = {"nodes": final_nodes, "links": links, "skipTicks": "True", "clusters1": labelled_clusters2, "clusters2": labelled_clusters1}
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+   
+
+  else:
+    print "vis_data does not exist"
+    #Only grab reactions that have DataCalc objects already generated
+    all_data = Data.objects.filter(~Q(calculations=None))
+    data = all_data[:200] 
+    #Grab all data ids
+    dids= [datum.id for datum in data]
+    print "just  finished querying for data objects and appending dids"
+    #Append the data id of each Reaction(DataCalc object) to the end of the row (will be the last field)
+    #Works because data ids' and expanded_data's reactions are in the same order.
+    expanded_data = expand_data(data)
+    for i in xrange(len(expanded_data)):
+      expanded_data[i] = expanded_data[i] + [dids[i]]
+    #Send headers and expanded data in rough CSV form to datamatrix.py.dataMatrix function (cleans data) in preparation to be put into JSON object form
+    headers = get_expanded_headers() + ["id"]
+    cleaned_matrix = dataMatrix([headers] + expanded_data)
+    cleaned_matrix.removeCorrelatedLinregs(0,0)
+    #Send cleaned matrix to dataMatrixToGraph.myGraph (puts into correct "object" format for  d3 graph)
+    print "Just finished creating dataMatrix to graph"
+    matrix_formatted_for_vis = myGraph(cleaned_matrix)
+    matrix_prepped_for_json = matrix_formatted_for_vis.writeJson()
+    #this_file_path = os.path.dirname(os.path.realpath((__file__)))
+    #completeName = os.path.join(this_file_path, "vis_data")
+    print "Just finished creating myGraph object"
+
+    vis_file = create_vis_data_file(matrix_prepped_for_json)
+    print "just finished creating vis_data file"
 
   return HttpResponse(json.dumps(response), content_type="application/json")
 
@@ -241,7 +295,8 @@ def create_node_clusters_for_labels(links, nodes):
     if "inorg1" in nodes[i]:
       nodes_dict[i]["inorg1"] = nodes[i]["inorg1"]
     if "inorg2" in nodes[i]:
-      nodes_dict[i]["inorg2"] = nodes[i]["inorg2"]
+      if nodes[i]["inorg2"] != "none":
+        nodes_dict[i]["inorg2"] = nodes[i]["inorg2"]
   from operator import itemgetter
   #now the dict has been created, sort it by pagerank (denotes the most "common" reactions/the ones
   #with the most links that should therefore be in the center for labelling purposes
@@ -299,8 +354,8 @@ def find_node_clusters(dictionary):
     for element in dictionary:
       cluster = []
       centerNode = dictionary.pop(0)
-      if "inorg2" in centerNode and centerNode["inorg2"] != -1.0:
-        centerNode["label2"] = centerNode["inorg1"] + ", " + centerNode["inorg2"]
+      if "inorg2" in centerNode and centerNode["inorg2"] != -1.0 and centerNode["inorg2"] != "none": 
+        centerNode["label2"] = centerNode["inorg1"] + ", " + centerNode["inorg2"] 
       else:
         centerNode["label2"] = centerNode["inorg1"]
       for item in dictionary:
@@ -350,8 +405,8 @@ def check_inorgs(mainNode, neighbor):
   return False
 
 def store_graph(request):
-  nodeData = json.loads(request.POST["nodes"])
-  linkData = json.loads(request.POST["links"])
+  nodeData = json.loads(request.POST.get("nodes"))
+  linkData = json.loads(request.POST.get("links"))
   NODEPOSITIONS_PATH = BASE_DIR + "/DRP/vis/nodePositions.json"
   LINKS_PATH = BASE_DIR + "/DRP/vis/linkIndices.json"
 
@@ -399,13 +454,12 @@ def combine_final_clusters_and_nodes(nodes, clusters, links):
             "color2": "none",
             "label1": "none",
             "label2": "none",
-            "inorg1": nodes[i]["inorg1"],
-            "inorg2": "none",
-            "outcome":nodes[i]["outcome"],
+            "inorg1": nodes[i]["inorg1"], 
+            "outcome":nodes[i]["outcome"], 
             "ref": nodes[i]["ref"]
             }
-            if "inorg2" in nodes[i]:
-                new_node["inorg2"] = nodes[i]["inorg2"]
+            if "inorg2" in nodes[i] and nodes[i]["inorg2"] != "-1" and nodes[i]["inorg2"] != "none":
+              new_node.append({ "inorg2": nodes[i]["inorg2"]}) 
             new_nodes.append(new_node)
     return new_nodes
 
@@ -518,10 +572,12 @@ def make_new_nodePositions():
     "ref": id_node["ref"]
     })
     if "inorg1" in n[i]:
-      new_nodez[i]["inorg1"] = n[i]["inorg1"]
+      if n[i]["inorg1"] != "none":
+        new_nodez[i]["inorg1"] = n[i]["inorg1"]
     if "inorg2" in n[i]:
-      new_nodez[i]["inorg2"] = nodes[i]["inorg2"]
-
+      if n[i]["inorg2"] != "none":
+        new_nodez[i]["inorg2"] = nodes[i]["inorg2"]
+      
   with open(BASE_DIR + "/DRP/vis/nodePosOutcome.json", "w") as outfile:
     json.dump(new_nodez, outfile)
   return HttpResponse("OkeyDokey")
@@ -531,23 +587,36 @@ def createClusters(final_nodes):
   clusters1 = []
   clusters2 = []
   for i in xrange(len(nodes)):
-    if nodes[i]["label1"] != "none":
+    if nodes[i]["label1"] != "none": 
       clusters1.append({
         "color": nodes[i]["color"],
         "x": nodes[i]["x"],
         "y": nodes[i]["y"],
         "id": nodes[i]["id"],
-        "label": nodes[i]["label1"]
+        "inorg1": nodes[i]["inorg1"],
+        "label": nodes[i]["label1"]  
       })
-    if nodes[i]["label2"] != "none":
+    if nodes[i]["label2"] != "none": 
       clusters2.append({
         "color": nodes[i]["color2"],
         "x": nodes[i]["x"],
         "y": nodes[i]["y"],
         "id": nodes[i]["id"],
-        "label": nodes[i]["label2"]
-      })
+        "inorg1": nodes[i]["inorg1"],
+        "label": nodes[i]["label2"]  
+        }) 
 
   return clusters1, clusters2
-
-
+  
+def assign_labels_to_all_clusters(node_dict, cluster, label):
+  for i in xrange(len(node_dict)):
+    for j in xrange(len(node_dict[i])): 
+      if node_dict[i][j][label] == "none":
+        node_dict[i][j][label] = node_dict[i][0][label]
+        
+  node_dict_list = make_clusters_into_single_list(node_dict)
+  
+  for i in xrange(len(cluster)):
+    for j in xrange(len(node_dict_list)):
+      if cluster[i]["id"] == node_dict_list[j]["id"]:
+        return cluster 

@@ -38,6 +38,7 @@ urlpatterns = patterns('',
   # Searching
     (r'^search/$', "DRP.views.search.search", {"model":"Data"}),
     (r'^search/Data/?$', "DRP.views.search.search", {"model":"Data"}),
+    (r'^search/Explore/?$', "DRP.views.explore_search.search", {"model":"Data"}),
     (r'^search/Recommendation/?$', "DRP.views.search.search", {"model":"Recommendation"}),
     (r'^search/SeedRecommendation/?$', "DRP.views.search.search", {
       "model":"Recommendation",

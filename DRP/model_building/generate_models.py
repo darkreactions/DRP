@@ -26,9 +26,11 @@ def research_data_filter(data):
   data = data.filter(~Q(outcome=0))
   """
 
+  """
   # Only utilize the data that was available before June 1st.
   from DRP.retrievalFunctions import filter_by_date
   data = filter_by_date(data, "04-02-2014", "before")
+  """
 
   """
   # Only retain reactions that contain certain atoms.
@@ -57,7 +59,7 @@ def research_data_filter(data):
 
   return data
 
-def generate_avg(title, data, iterations=1, only_keep_avg=True, construct_kwargs={}):
+def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
 
   from DRP.model_building.confusion_table import get_avg_confusion_dict
   from DRP.models import ModelStats
