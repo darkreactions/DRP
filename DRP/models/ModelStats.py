@@ -368,6 +368,9 @@ class ModelStats(models.Model):
         if values == ["no"] or values == ["yes"] or values == ["no", "yes"]:
           values = ["yes", "no"]
 
+        if field in {"slowCool", "leak"}:
+          values = ["yes", "no"]
+
         innards = ",".join( values ).replace("\"","")
         val_dict[field] = "{"+innards+"}"
 

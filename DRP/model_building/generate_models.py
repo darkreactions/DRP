@@ -57,7 +57,7 @@ def research_data_filter(data):
 
   return data
 
-def generate_avg(title, data, iterations=3, only_keep_avg=True, construct_kwargs={}):
+def generate_avg(title, data, iterations=1, only_keep_avg=True, construct_kwargs={}):
 
   from DRP.model_building.confusion_table import get_avg_confusion_dict
   from DRP.models import ModelStats

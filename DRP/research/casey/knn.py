@@ -12,7 +12,7 @@ PRINT_DETAILS = False
 #Seeds: ms115.6 jho213.20 jho148.2 jho252.5 (NOTE)
 #SPECIFIC_SEED = "ms115.6"
 #SEED = SPECIFIC_SEED.split(".")[0]
-SEED = "SameCategoryCount_ToSuccess"
+SEED = "Spreadsheet"
 SUFFIX = ""
 
 #If `universe is 'None', then the default universe is specified in the metric.
@@ -116,7 +116,7 @@ def get_research_points():
 
   # Used to grab the seed spawn.
   from DRP.research.casey.retrievalFunctions import get_data_from_ref_file
-  data = get_data_from_ref_file("DRP/research/casey/raw/033115_model.txt")
+  data = get_data_from_ref_file("DRP/research/casey/raw/033115_datums.txt")
   #data = filter(lambda d: "Te" in d.atoms and "V" in d.atoms, data)
 
   """
@@ -528,7 +528,7 @@ def get_research_point_time_range():
 def main():
   #knn_research_graphs(1, 50)
   #calculate_avg_distance(1,25)
-  make_distance_csv(1,50)
+  make_distance_csv(1,1)
 
 if __name__=="__main__":
   main()

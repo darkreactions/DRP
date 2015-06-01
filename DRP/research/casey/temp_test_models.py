@@ -13,13 +13,11 @@ data = get_valid_data()
 date_data = filter_by_date(data, "04-02-2014", "before")
 
 filename = "DRP/research/casey/raw/033115_model.txt"
-atoms = ["V", "Te"]
-
 
 # Used to grab the data .
 pre_filtered = get_data_from_ref_file(filename)
 filtered = [entry for entry in pre_filtered
-              if all(atom in entry.atoms for atom in atoms)]
+              if "V" in entry.atoms and ("Te" in entry.atoms or "Se" in entry.atoms)]
 
 all_data = list(filtered) + list(date_data)
 
@@ -33,7 +31,7 @@ all_set, _ = postprocessor({"all":preprocessor([headers]+all_data)[1:]}, headers
 
 
 from DRP.models import ModelStats
-model = ModelStats.objects.get(id=2655)
+model = ModelStats.objects.get(id=2674)
 model._test_model(filtered_set["test"],
                   all_set["all"],
                   debug=True)
