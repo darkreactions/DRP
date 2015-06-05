@@ -44,7 +44,12 @@ calc_cache = {}
 
 def distance(point, other):
 
+  if point not in calc_cache:
+    calc_cache[point] = point.get_calculations_list()
   point_calcs = calc_cache[point]
+
+  if other not in calc_cache:
+    calc_cache[other] = other.get_calculations_list()
   other_calcs = calc_cache[other]
 
   key = (point_calcs[id_index], other_calcs[id_index])
@@ -65,7 +70,7 @@ def distance(point, other):
 def filter_out_identical(point, others):
   from DRP.models import Data
   if type(point) == Data:
-    others = filter(lambda other: other is not point, others)
+    others = filter(lambda other: other.ref != point.ref, others)
   else:
     point_id = point[id_index]
     others = filter(lambda other: other[id_index]!=point_id, others)
@@ -188,8 +193,8 @@ def get_research_others():
 
   data = get_valid_data()
   data = filter_by_date(data, "04-02-2014", "before")
-  outcomes = {"1","2"}
-  data = filter(lambda entry: entry.outcome in outcomes, data)
+  #outcomes = {"1","2"}
+  #data = filter(lambda entry: entry.outcome in outcomes, data)
 
   """
   data = filter(lambda d: "Se" in d.atoms and "V" in d.atoms, data)
