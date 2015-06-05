@@ -21,6 +21,11 @@ Dark Reaction Project README
   4. Editing the Database Schema
   5. Database Backups
 4. **Accounts**
+5. **Machine Learning Models**
+  1. Creating a Model
+  2. Testing a Model
+  3. Getting/Setting the "Current" Model
+
 
 Setup and General Information
 =============================
@@ -312,3 +317,32 @@ on various reactants.
 a personal BitBucket account with read/write access to this team.
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+
+
+Machine Learning Models
+========
+
+The machine learning models ("ML models") are the calculated models that predict a set of responses from a set of observations; for DRP, the ML models predict the "outcome" of a reaction based on the reaction's expanded feature-set. These models are *not* the same as the Django models that can be found and edited in the `.../DRP/models` directory; however, you *should* use the `ModelStats` Django model when interacting with the ML models.
+
+
+**Creating a Model**
+
+If you want to create a model, use the `generate_model` management command (refer to the section on the `generate_model` management command for details). Feature usage or modifications should be handled in the pre-/post-processing functions, **however**, do not edit such functions that already exist as this will cause confusion when looking at previous models. Instead, create a new pre-/post-processing function. Likewise, if you are making substantial changes to the splitting method, just create a new function. To "choose" which functions are used in the model-generation, change the respective import in [.../DRP/model_building/generate_models.py](https://github.com/cfalk/DRP/blob/master/DRP/model_building/generate_models.py#L152-L154) before running `generate_model`. Please document all of your model-generation functions, especially.
+
+
+**Testing a Model**
+
+It is recommended that you test the model using Django's Python Shell. This can be done by calling `python manage.py shell` in the main project directory. Then, import the `ModelStats` objects using `from DRP.models import ModelStats`; this allows us to access all of the ML model information stored in the database. You can then use Django's ORM to retrieve the ModelStats object for the ML model that you want to test. For example, to grab the latest ML model, you could just use `model = ModelStats.objects.last()`. Finally, pass the data you want to test against to the `_test_model` method of the `ModelStats` object: `model._test_model(test_data, all_data)`. Note that the `test_data` should have been pre-processed and post-processed into a matrix (a list of observations) with features in the same order as the model's stored headers; to check what headers were used in a model, print the result of `model.get_headers()`. To see the results of the test, call `model.summary()` and look for the "test" section.
+
+Note that one current limitation of this implementation is that *all* of the data must be present (in `all_data`, above) for WEKA to know all possible values of a given feature; what we **should** do is store these feature-value sets in the `ModelStats` object itself -- though this has not been implemented yet. This makes retro-generation of a model slightly more involved. Another limitation is that only the latest test is stored in the database for any given model.
+
+For a complete (though somewhat more complex than necessary) example, see [here](https://github.com/cfalk/DRP/blob/master/DRP/research/casey/temp_test_models.py).
+
+
+**Getting/Setting the "Current" Model**
+
+To get the current model, simply query for the latest "active" model: `ModelStats.objects.filter(active=True).order_by("end_time").last()`. In that query, the `order_by("end_time")` makes sure we are sorting the list in chronological order based on the time that model-generation was completed (the "end time"). Likewise, to "set" a model, just make it the latest active model.
+
+Currently, if you want to set an old model to be the latest "active" model, you'd need to modify the "end_time" of that ModelStats object in the database. In the future, we should just add an additional feature to the `ModelStats` Django model so that we can just toggle any ML model "on" or "off" (with only one model being "on" at any time), but as of yet this has not been implemented.
+
+To re-create the current model, you should only need to call `generate_model` using the default pre-/post-processors and the default split on the entire dataset. Make sure to double-check that no [research filters](https://github.com/cfalk/DRP/blob/master/DRP/model_building/generate_models.py#L11) are being applied to the dataset; specifically, make sure no data is being removed in the `research_data_filter` function in `.../DRP/model_building/generate_models.py` and that [all valid data](https://github.com/cfalk/DRP/blob/master/DRP/model_building/generate_models.py#L139-L142) is being used in `gen_model`.
