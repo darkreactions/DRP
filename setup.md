@@ -31,6 +31,10 @@ Install a virtualenv if you are on the production server. This helps prevent hac
 The URL below might change depending on your username.
 > git clone git@bitbucket.org:darkreactionproject/dark-reaction-site.git
 
+#Set up the settings.py file
+
+In DRP/DRP, there is a file called 'settings_example.py'. This must be moved/copied to 'settings.py', and the settings therein set to the appropriate values for your server. At present, the available fields should be fairly self explanatory and are well commented. 
+
 #Set up Nginx and uWSGI (Not necessary if you develop with Django's runserver).
 Move the Nginx and uWSGI files to their appropriate directories. Note that in development, you can just the the Django runserver (command: "python manage.py runserver") and thus can skip anything related to nginx/uwsgi.
 > sudo mv DRP_nginx aetc/nginx/sites-available/DRP_nginx
