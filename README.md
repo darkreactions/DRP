@@ -174,6 +174,7 @@ whilst developing with the code, please ensure that you update the
 file settings_example.py in step.
 
 Lastly, the repository utilises branches heavily. At present:
+    
     - Release-1.0 is for bugfixing our next stable release version.
     - dev contains our development versions of code.
     - master has been frozen excepting documentation changes.
