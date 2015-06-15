@@ -175,9 +175,9 @@ file settings_example.py in step.
 
 Lastly, the repository utilises branches heavily. At present:
     
-    - Release-1.0 is for bugfixing our next stable release version.
-    - dev contains our development versions of code.
-    - master has been frozen excepting documentation changes.
+- Release-1.0 is for bugfixing our next stable release version.
+- dev contains our development versions of code.
+- master has been frozen excepting documentation changes.
 
 The branching scheme follows recommendations made [here](http://nvie.com/posts/a-successful-git-branching-model/).
 
