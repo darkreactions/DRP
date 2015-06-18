@@ -1,19 +1,18 @@
 import os, sys
-full_path = os.path.dirname(os.path.realpath(__file__))+"/"
-django_path = full_path[:full_path.rfind("/DRP/")]
+from DRP.fileFunctions import file_exists
+from DRP.settings import CHEMAXON_DIR, WEKA_PATH
+import datetime
+
+full_path = os.path.dirname(os.path.realpath(__file__))+os.sep
+django_path = full_path[:full_path.rfind(os.sep + "DRP" + os.sep)]
 if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
-
-
-import datetime
 strptime = datetime.datetime.strptime
 
 class ConfigManager(object):
   def __init__(self):
-    from DRP.fileFunctions import file_exists
-    from DRP.settings import LIBRARY_DIR
 
     validate_config = True
 
@@ -38,8 +37,8 @@ class ConfigManager(object):
     self.license_file = "01_20_14.pdf"
 
     # Path Setup
-    self.jchem_path = LIBRARY_DIR+"/ChemAxon/JChem/bin"
-    self.weka_path = LIBRARY_DIR+"/weka/weka.jar"
+    self.jchem_path = CHEMAXON_DIR
+    self.weka_path = WEKA_PATH
 
 
     if validate_config:
