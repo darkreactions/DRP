@@ -16,10 +16,10 @@ Note which version of Django gets installed.
 
 `sudo easy_install South`
 
-#Skip if you don't need model-building.
+###Skip if you don't need model-building.
 Install [ChemAxon](http://www.chemaxon.com/)'s JChem and Marvin. These do intense, high-level chem-calcs for us. Note that these DON'T need to be installed on a test-bed if you don't need to test the compound property calculators. Also note that ChemAxon requires an install key in order to run.
 
-#Skip if you don't want backups.
+###Skip if you don't want backups.
 On a production server, use a "cron" job to back up the database (the command "sudo scrontab -e" initiates crontab editor). Note that the password needs to change from what it is below. Ideally the password will be stored more discretely in one place on the server. Add the following line to dump the database to a unique file every day in a DropBox backup folder:
 `30 3 * * * mysqldump -uroot -p SecurePassword DRP_db > /home/drp/database_backups/Dropbox/DRP_db__$(date +\%m_\%d_\%y).sql`
 
@@ -30,17 +30,17 @@ And back up the models directory each day:
 `0 3 * * * cp -rn /home/drp/web/darkreactions.haverford.edu/app/DRP/models/* /home/drp/model_backups/`
 
 
-#Set up a virtual environment.
+###Set up a virtual environment.
 Install a virtualenv if you are on the production server. This helps prevent hackers from accessing file and system information outside of the directory of the projects. There are also other perks (which can be researched online).
 
 The URL below might change depending on your username.
 `git clone git@bitbucket.org:darkreactionproject/dark-reaction-site.git`
 
-#Set up the settings.py file
+###Set up the settings.py file
 
 In DRP/DRP, there is a file called 'settings_example.py'. This must be moved/copied to 'settings.py', and the settings therein set to the appropriate values for your server. At present, the available fields should be fairly self explanatory and are well commented. 
 
-#Set up Nginx and uWSGI (Not necessary if you develop with Django's runserver).
+###Set up Nginx and uWSGI (Not necessary if you develop with Django's runserver).
 Move the Nginx and uWSGI files to their appropriate directories. Note that in development, you can just the the Django runserver (command: "python manage.py runserver") and thus can skip anything related to nginx/uwsgi.
 
 `sudo mv DRP_nginx aetc/nginx/sites-available/DRP_nginx`
@@ -57,7 +57,7 @@ Restart nginx and uwsgi so that they know that we changed files. If we don't, th
 
 `sudo services uwsgi restart`
 
-#Set up the MySQL database.
+###Set up the MySQL database.
 Copy over a version of the database from the production server or a backup. Choose the most recent mysqldump file to avoid data-loss.
 ` scp drp@darkreactions.haverford.edu:/home/drp/database_backups/Dropbox/DRP_db__03_30_14.sql ./database.sql`
 
@@ -91,10 +91,10 @@ When you change a model changes or add a field, you must run the following two c
 
 `python manage.py migrate DRP`
 
-#In Production
+###In Production
 At this point, you should have a fully-functional production-bed or test-bed. Verify by going to wherever the webapp is hosted ([darkreactions.haverford.edu](http://darkreactions.haverford.edu)).
 
-#In Development:
+###In Development:
 Verify by running `python manage.py runserver 0.0.0.0:8000` and going to port 8000 of the server hosting your workspace (ie: if you're on drp, go to [darkreactions.haverford.edu:8000](http://darkreactions.haverford.edu:8000)). Note that you may not be able to view ports other than port 80 while outside of campus.
 
 ##OS X
@@ -124,9 +124,11 @@ Edit the file _mysql.c (lines 37,38 and 39):
 
 Edit _mysql.c lines 37, 38 and 39 as follows:
 
-`//#ifndef uint
-//#define uint unsigned int
-//#endif`
+`//#ifndef uint`
+
+`//#define uint unsigned int`
+
+`//#endif`
 
 Then open setup_posix.py and edit line 27 (or wherever the variable `mysql_config.path` occurs:
 
@@ -135,7 +137,8 @@ Then open setup_posix.py and edit line 27 (or wherever the variable `mysql_confi
 Then run:
 
 `sudo python setup.py build`
-`sydo python setup.py install`
+
+`sudo python setup.py install`
 
 Having done this, add the following symlinks to your system:
 
@@ -158,7 +161,9 @@ Copies of the MySQL database are available from the DRP server for use to setup 
 To get Apache and Python to play nicely together, we must install mod_wsgi. Clone the package at [github](https://github.com/GrahamDumpleton/mod_wsgi) to obtain the source code, then, at a command prompt and in the code directory:
 
 `./configure`
+
 `make`
+
 `sudo make install`
 
 Then, open /private/etc/apache2/httpd.conf, and add, beneath the other default module loading statements:
@@ -169,6 +174,7 @@ In terms of configuring the virtualhost configuration, this depends heavily on h
 
 The line `WSGIPythonPath /directory/drp/DRP` Cannot occur inside the virtualhost statement, and must be placed outside of the virtualhost environment.
 You need to set up additional aliases, one each for:
+
 - The `/static/` directory
 - The `/media/` directory
 - The `/favicon.ico` file
