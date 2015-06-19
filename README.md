@@ -36,7 +36,7 @@ The website can be accessed at [darkreactions.haverford.edu](http://darkreaction
 
 **Setup of the Server/a Test-bed**
 
-For a complete, step-by-step guide on this, please check out "setup.py". I leave the installation process for that process and will focus on the actual architecture of the system here. Also note that you can use `git clone https://github.com/cfalk/DRP.git` to clone the repo to your machine if you have been granted read-access to the the private GitHub repo.
+For a complete, step-by-step guide on this, please check out "setup.md". I leave the installation process for that process and will focus on the actual architecture of the system here. Also note that you can use `git clone https://github.com/cfalk/DRP.git` to clone the repo to your machine if you have been granted read-access to the the private GitHub repo.
 
 
 **Important Directories**
