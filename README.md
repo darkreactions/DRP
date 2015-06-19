@@ -11,7 +11,7 @@ Dark Reaction Project README
   5. Connecting a User to BitBucket with an SSH Key
   6. Using a Test Bed ON the DRP Server
   7. Using a Test Bed OFF of the DRP Server
-  8. Accessing the GitHub Repo
+  8. Accessing the GitHub Repo and notes on the Repo Structure
 2. **Django Management Commands**
   1. generate_model
 3. **Database**
@@ -36,7 +36,7 @@ The website can be accessed at [darkreactions.haverford.edu](http://darkreaction
 
 **Setup of the Server/a Test-bed**
 
-For a complete, step-by-step guide on this, please check out "setup.py". I leave the installation process for that process and will focus on the actual architecture of the system here. Also note that you can use `git clone https://github.com/cfalk/DRP.git` to clone the repo to your machine if you have been granted read-access to the the private GitHub repo.
+For a complete, step-by-step guide on this, please check out "setup.md". I leave the installation process for that process and will focus on the actual architecture of the system here. Also note that you can use `git clone https://github.com/cfalk/DRP.git` to clone the repo to your machine if you have been granted read-access to the the private GitHub repo.
 
 
 **Important Directories**
@@ -157,7 +157,7 @@ throw errors when you try to start the project. This error-checking can be disab
 by using `validate_config=False` instead of `True` in [data_config.py](https://github.com/cfalk/DRP/blob/master/DRP/data_config.py#L18).
 
 
-**Accessing the GitHub Repo**
+**Accessing the GitHub Repo and Notes on the Repo Structure**
 
 Firstly, you'll need a GitHub account and you'll need someone with access to
 the repo to grant your account access (though if you can view this README without
@@ -168,6 +168,17 @@ you'll want to delete that section in your ".../.git/config" file and use
 `git remote add <branch> https://github.com/cfalk/DRP.git` to transition smoothly
 to the new repo.
 
+Django has an important file, settings.py, which is not tracked by this git
+repository for security reasons. If you add or remove items in this file
+whilst developing with the code, please ensure that you update the
+file settings_example.py in step.
+
+Lastly, the repository utilises branches heavily. At present:
+    Release-1.0 is for bugfixing our next stable release version.
+    dev contains our development versions of code.
+    master has been frozen excepting documentation changes.
+
+The branching scheme follows recommendations made [here](http://nvie.com/posts/a-successful-git-branching-model/).
 
 Django Management Commands
 =========================

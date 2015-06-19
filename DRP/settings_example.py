@@ -19,7 +19,8 @@ RESEARCH_DIR = BASE_DIR + "/research/"
 LOG_DIR = BASE_DIR + "/logs/"
 MODEL_DIR = BASE_DIR + "/models/"
 LICENSE_DIR = STATIC_DIR + "/licenses/"
-LIBRARY_DIR = os.path.expanduser("~") #Defaults to "home"
+CHEMAXON_DIR = ""
+WEKA_PATH = ""
 
 STATICFILES_DIRS = (STATIC_DIR,)
 
