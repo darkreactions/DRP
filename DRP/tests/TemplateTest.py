@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 #This file contains a (very) loose framework from which others can base their test files and be
 #conformant with the local arrangement of test cases.
