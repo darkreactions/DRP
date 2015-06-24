@@ -3,6 +3,7 @@
 
 1. **Ubuntu**
 2. **OS X** 
+3. **Git Hooks**
 
 ##Ubuntu
 
@@ -76,7 +77,7 @@ Load the mysqldump into this empty DRP database. Note that "SecurePassword" shou
 Remove any migration history that might exist. ALWAYS BE CAREFUL WHAT YOU DELETE.
 `rm -r DRP/migrations/`
 
-#Set up South for Database Migrations (see README.md for more).
+###Set up South for Database Migrations (see README.md for more).
 Convert the database to be managed by South. The last "--fake" and "--delete-ghost-migrations" options specify that the database version that South has stored in its personal database tables should be ignored.
 `python manage.py syncdb`
 
@@ -98,7 +99,7 @@ At this point, you should have a fully-functional production-bed or test-bed. Ve
 Verify by running `python manage.py runserver 0.0.0.0:8000` and going to port 8000 of the server hosting your workspace (ie: if you're on drp, go to [darkreactions.haverford.edu:8000](http://darkreactions.haverford.edu:8000)). Note that you may not be able to view ports other than port 80 while outside of campus.
 
 ##OS X
-This has been tested on OS X Mavericks, but has not been tested on any other OS X version.
+This has been tested on OS X Mavericks, but has not been tested on any other OS X version. This may not be complete as yet.
 
 First and foremost, obtain the Django code by cloning the git repository, and placing the code in the desired location. Move the settings_example.py file to settings.py without changing it's directory.
 
@@ -178,3 +179,11 @@ You need to set up additional aliases, one each for:
 - The `/static/` directory
 - The `/media/` directory
 - The `/favicon.ico` file
+
+##Git Hooks
+
+Git permits the use of certain hooks to automate certain behaviours. It is now policy that the code in the repo must pass the test suite before it is allowed to be pushed to the githib. The easiest way to ensure this is to use the hooks previded in the repo in the directory entitled drp_hooks. **Copy** these files to the .git/hooks directory in your local development repo to use them. They should be compatible with any *nix system (Windows currently awaits testing). **Do not under any circumstances symlink to these files from the .git folder**.
+
+Hooks currently present include:
+- pre-push: this hook runs before pushing changes to the server. In our instance, it runs the test-suite code.
+- drp_server_hooks/post-merge: this is designed to be placed (as just post-merge) into the .git directory on the production server only- it forces the refresh of the code on the pull of a new version.

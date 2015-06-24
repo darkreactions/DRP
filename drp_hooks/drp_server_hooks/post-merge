@@ -1,0 +1,6 @@
+#!/bin/sh
+#This hook is to be placed on the dark reactions server. COPY (do not symlink) this file into the .git/hooks directory on the production server.
+echo "\033[0;31mPLEASE CHECK settings.py for corrections from settings_example.py. If settings.py is missing please either recreate it using settings_example.py OR find a backup called settings.bak in the drp home directory.\033[0m";
+echo "Restarting Servers and Services";
+sudo service nginx restart;
+sudo service uwsgi restart DRP_uwsgi;
