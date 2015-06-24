@@ -1,0 +1,4 @@
+#!/bin/sh
+
+../../DRP/tests/AllTests.py
+exit $?

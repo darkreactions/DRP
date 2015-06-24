@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "\033[0;31mPLEASE CHECK settings.py for corrections from settings_example.py. If settings.py is missing please either recreate it using settings_example.py OR find a backup called settings.bak in the drp home directory.\033[0m";
+echo "Restarting Servers and Services";
+sudo service nginx restart;
+sudo service uwsgi restart DRP_uwsgi;
