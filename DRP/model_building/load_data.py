@@ -134,7 +134,7 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
         if not ml_convert:
                 ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
 
-        raw = load(lab_group)[1:] (taking out the headers)
+        raw = load(lab_group)[1:] #(taking out the headers)
         def rect(arr_2d):
             return all(len(i) == len(arr_2d[0]) for i in arr_2d)
 

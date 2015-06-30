@@ -1,4 +1,20 @@
 def default_preprocessor(data):
+  # Takes a list of Data objects prepended by the headers
+  headers = data.pop(0)
+
+  expanded = []
+  for d in data:
+    try:
+      expanded.append(d.get_calculations_list())
+    except:
+      pass
+
+  data = [headers] + expanded
+
+  return default_calc_list_preprocessor(data)
+
+def default_calc_list_preprocessor(data):
+  # Takes a list of calculations lists prepended by the headers
   def is_num(elem):
     try:
       float(elem)
@@ -17,15 +33,6 @@ def default_preprocessor(data):
   normalize = False
 
   headers = data.pop(0)
-
-  expanded = []
-  for d in data:
-    try:
-      expanded.append(d.get_calculations_list())
-    except:
-      pass
-
-  data = expanded
 
   # Set outcomes of 0 to be 1.
   outcome_index = headers.index("outcome")
