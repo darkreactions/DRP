@@ -30,7 +30,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         compound[2], mass[2], unit[2], compound[3], mass[3],
         unit[3], compound[4], mass[4], unit[4], Tmax,
         time,  pH, slowCool, leak, outcome, purity) = row[:23]
-    compound = [x if x is not None else '' for x in compound] #daniel
+    compound = [x if x is not None else '' for x in compound]
 
     for i in range(5):
         cmpd = compound[i].lower()

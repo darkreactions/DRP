@@ -196,15 +196,16 @@ def mutual_information(pdfs, dataset):
 class PDF:
         def __init__(self, dataset):
                 self.dataset = numpy.array(dataset)
-                try: #daniel added try-catch block around line
+                # Try-catch around line is for debugging purposes, can be removed at other times
+                try:
                     self.labels = self.dataset[:, -1] # I believe these are the outcomes
-                except: #daniel
-                    #sys.stdout.write("self.dataset: " + str(self.dataset) + "\n") #daniel
-                    #sys.stdout.write("self.dataset.shape: " + str(self.dataset.shape) + "\n") #daniel
-                    #sys.stdout.write("rectangular?: " + str(all(len(i) == len(dataset[0]) for i in dataset)) + "\n") #daniel
-                    #sys.stdout.flush() #daniel
-                    ttype, value, traceback = sys.exc_info() #daniel
-                    raise ttype, value, traceback #daniel
+                except:
+                    #sys.stdout.write("self.dataset: " + str(self.dataset) + "\n")
+                    #sys.stdout.write("self.dataset.shape: " + str(self.dataset.shape) + "\n")
+                    #sys.stdout.write("rectangular?: " + str(all(len(i) == len(dataset[0]) for i in dataset)) + "\n")
+                    #sys.stdout.flush()
+                    ttype, value, traceback = sys.exc_info()
+                    raise ttype, value, traceback
                 self.rows = self.dataset[:, :-1] # ...and this is the rest of the data
 
                 four_size = len(self.labels[self.labels == 4])
@@ -221,22 +222,21 @@ class PDF:
                         self.feature_cov = numpy.cov(self.rows.T)
                         numpy.set_printoptions(threshold=numpy.nan)
 
+                        # TODO: Try catch is normally here, removed and code unindented for debugging purposes. Fix when code works. Same for print statements
+                        #try:
 
-                        #try: #daniel
-
-                        #daniel unindented
                         print dataset
                         print "self.feature_cov shape: " + str(self.feature_cov.shape)
                         print "self.feature_cov determinant: " + str(numpy.linalg.det(self.feature_cov))
-                        #print "self.dataset.shape: " + str(self.dataset.shape) #daniel
-                        #print "self.labels" + str(self.labels) #daniel
-                        #print "self.dataset: " + str(self.dataset) #daniel
-                        #print "self.rows: " + str(self.rows) #daniel
+                        #print "self.dataset.shape: " + str(self.dataset.shape)
+                        #print "self.labels" + str(self.labels)
+                        #print "self.dataset: " + str(self.dataset)
+                        #print "self.rows: " + str(self.rows)
                         self.feature_normal = multivariate_normal(mean=self.feature_mean, cov = self.feature_cov)
 
-                        #except Exception as e: #daniel
-                                #print dataset #daniel
-                                #raise e #daniel
+                        #except Exception as e:
+                                #print dataset
+                                #raise e
 
                         self.cond_fours, self.cond_not_fours = make_joint_pdf(self.dataset)
 
@@ -356,17 +356,19 @@ def do_filter(candidate_triples, range_map):
   print "Building Mutual Information Calculator"
   mutual_calc = build_mutual_calc()
 
-  import sys, os #daniel
-  blah = "in mutual_info.do_filter" #daniel
-  sys.stdout.write(blah + "\n") #daniel
-  os.system('echo "' + blah + '"|espeak') #daniel
+  # For debugging:
+  import sys, os
+  blah = "in mutual_info.do_filter"
+  sys.stdout.write(blah + "\n")
+  os.system('echo "' + blah + '"|espeak')
   sys.stdout.flush()
 
   good, bad, failed = 0, 0, 0
 
   results = []
   for i, triple in enumerate(candidate_triples):
-    #try: #daniel
+    # TODO: try-catch only removed for debugging purposes. Put it back when code works.
+    #try:
       row = build_row(triple[1], range_map, cg, ml_convert)
       sys.stdout.write("row: " + str(row) + "\n")
       sys.stdout.flush()
@@ -378,9 +380,9 @@ def do_filter(candidate_triples, range_map):
         good += 1
       else:
         bad += 1
-    #except Exception as e: #daniel
-      #failed += 1 #daniel
-      #print "Skipping '{0}' due to exception: {1}".format(triple, e) #daniel
+    #except Exception as e:
+      #failed += 1
+      #print "Skipping '{0}' due to exception: {1}".format(triple, e)
 
   print "# Post-MI Results: {} ({} good; {} bad; {} failed)".format(len(results), good, bad, failed)
   return results
@@ -425,52 +427,63 @@ def build_row(triple, ranges, cg, ml_convert):
 
 def build_mutual_calc():
         # Returns a partial function
-        def rect(arr_2d): #daniel
-            return all(len(i) == len(arr_2d[0]) for i in arr_2d) #daniel
 
-        import sys, os #daniel
-        blah = "here in DRP recommendation mutual_info build_mutual_calc" #daniel
-        sys.stdout.write(blah + "\n") #daniel
-        os.system('echo "' + blah + '"|espeak') #daniel
-        sys.stdout.flush() #daniel
+        def rect(arr_2d):
+            return all(len(i) == len(arr_2d[0]) for i in arr_2d)
+
+        # For debugging:
+        import sys, os
+        blah = "here in DRP recommendation mutual_info build_mutual_calc"
+        sys.stdout.write(blah + "\n")
+        os.system('echo "' + blah + '"|espeak')
+        sys.stdout.flush()
 
         dataset = load_data.get_feature_vectors_by_triple()
-        #sys.stdout.write("all rectangular?: " + str(all(rect(item) for item in dataset.items())) + "\n") #daniel
+        #sys.stdout.write("all rectangular?: " + str(all(rect(item) for item in dataset.items())) + "\n")
         load_data.collapse_triples(dataset)
-        #sys.stdout.write("all rectangular?: " + str(all(rect(item) for item in dataset.items())) + "\n") #daniel
-        #raise(Exception("just need to take a look")) #daniel
+        #sys.stdout.write("all rectangular?: " + str(all(rect(item) for item in dataset.items())) + "\n")
+        #raise(Exception("just need to take a look"))
         triple_Muts = dict()
         clean_dataset_triples(dataset)
-        os.system('echo "' + "here successfully" + '"|espeak') #daniel
-        tried = 0 # daniel
-        failed = 0 # daniel
-        exc = None #daniel
-        exn_cnts = {} #daniel
-        syst_errs = [] #daniel
+
+        #For debugging:
+        os.system('echo "' + "here successfully" + '"|espeak')
+        tried = 0
+        failed = 0
+        exc = None
+        exn_cnts = {}
+        syst_errs = []
+
         for triple in dataset:
-                tried = tried + 1 #daniel
+                tried = tried + 1 # for above debugging code
                 try:
                         triple_Mut[triple] = MutualInformation(dataset[triple])
-                #except SystemError: # daniel
-                #        ttype, value, traceback = sys.exc_info() #daniel
-                #        raise ttype, value, traceback #daniel
+                # More debugging code
+                #except SystemError:
+                #        ttype, value, traceback = sys.exc_info()
+                #        raise ttype, value, traceback
                 except Exception as e:
                         print "failed to build mutual_info struct '{0}': {1}".format(str(triple), e)
-                        failed = failed + 1 #daniel
-                        exc = e #daniel
-                        e_type = (type(e), e.message[:19]) #daniel
-                        if e_type not in exn_cnts: #daniel
-                            exn_cnts[e_type] = 1 #daniel
-                        else: #daniel
-                            exn_cnts[e_type] += 1 #daniel
-                        if type(e) == SystemError: # daniel
-                            syst_errs.append(e.message) #daniel
-        if failed != 0: #daniel
-            sys.stdout.write("tried: " + str(tried) + "; failed: " + str(failed) + "\n") #daniel
-            sys.stdout.write("exception types and amounts: " + str(exn_cnts) + "\n") #daniel
-            sys.stdout.write("system errors: " + str(syst_errs) + "\n") # daniel
-            sys.stdout.flush() #daniel
-            raise(exc) #daniel
+
+                        # for above debugging code
+                        failed = failed + 1
+                        exc = e
+                        e_type = (type(e), e.message[:19])
+                        if e_type not in exn_cnts:
+                            exn_cnts[e_type] = 1
+                        else:
+                            exn_cnts[e_type] += 1
+                        if type(e) == SystemError:
+                            syst_errs.append(e.message)
+
+        # for above debugging code
+        if failed != 0:
+            sys.stdout.write("tried: " + str(tried) + "; failed: " + str(failed) + "\n")
+            sys.stdout.write("exception types and amounts: " + str(exn_cnts) + "\n")
+            sys.stdout.write("system errors: " + str(syst_errs) + "\n")
+            sys.stdout.flush()
+            raise(exc)
+
         return lambda x: find_delta_mut(triple_Muts, x)
 
 

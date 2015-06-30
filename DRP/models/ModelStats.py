@@ -367,8 +367,8 @@ class ModelStats(models.Model):
         # Make sure all boolean options are available in the value-map.
         #if values == ["no"] or values == ["yes"] or values == ["no", "yes"]:
           #values = ["yes", "no"]
-        if any(val in ["?", "no", "yes"] for val in values): #daniel
-          values = ["?", "no", "yes"] #daniel
+        if any(val in ["?", "no", "yes"] for val in values):
+          values = ["?", "no", "yes"]
 
         innards = ",".join( values ).replace("\"","")
         val_dict[field] = "{"+innards+"}"

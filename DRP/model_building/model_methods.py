@@ -309,7 +309,7 @@ def get_used_fields(by_current_model=False):
   if by_current_model:
     from DRP.retrievalFunctions import get_latest_ModelStats
     from DRP.models import ModelStats
-    model = ModelStats.objects.last() # THIS SHOULD ACTUALLY BE get_latest_ModelStats() CHANGE BEFORE COMMITTING #daniel
+    model = ModelStats.objects.last() # TODO: THIS SHOULD ACTUALLY BE get_latest_ModelStats() when live CHANGE BEFORE RELEASE #daniel
     for i, header in enumerate(rxn_calculator.headers):
       if header not in model.headers: # Don't use fields marked with an "XXX"
         unused_indexes.add(i)
@@ -369,8 +369,8 @@ def gen_specials():
 
 	###specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",
 	###	"leak": "{yes,no}"}
-	specials = {"outcome": "{1,2,3,4}", "slowCool": "{?,no,yes}", #daniel
-		"leak": "{?,no,yes}"} #daniel
+	specials = {"outcome": "{1,2,3,4}", "slowCool": "{?,no,yes}",
+		"leak": "{?,no,yes}"}
 
 	for bool_field in rxn_calculator.atomsz + rxn_calculator.bools:
 		#specials[bool_field] = "{yes,no}"

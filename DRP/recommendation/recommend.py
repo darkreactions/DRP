@@ -205,12 +205,14 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
     print "___"*10
     print "Starting row generator..."
 
-  import sys #daniel
-  #sys.stdout.write("new_combination: " + str(new_combination) + "\n") #daniel
+  import sys
+  #if debug:
+  #  sys.stdout.write("new_combination: " + str(new_combination) + "\n")
   row_generator = generate_rows_molar(new_combination, range_map, var_ranges)
   rows = [row for row in row_generator]
-  #sys.stdout.write("rows: " + str(rows) + "\n") #daniel
-  #sys.stdout.write("row len in rows: " + str(len(rows[0])) + "\n") #daniel
+  #if debug:
+  #  sys.stdout.write("rows: " + str(rows) + "\n")
+  #  sys.stdout.write("row len in rows: " + str(len(rows[0])) + "\n")
 
   # Shuffle the rows such that the search_space_max_size doesn't block combos.
   random.shuffle(rows)
@@ -219,14 +221,16 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   cleaned = []
   for i, row in enumerate(rows[:search_space_max_size]):
     expanded = parse_rxn.parse_rxn(row, cg_props, ml_convert)
-    #sys.stdout.write("expanded row len: " + str(len(expanded)) + "\n") #daniel
+    #if debug:
+    #  sys.stdout.write("expanded row len: " + str(len(expanded)) + "\n")
     cleaned.append( mm.removeUnused(expanded, unused_indexes) )
-    #sys.stdout.write("cleaned row len: " + str(len(cleaned[-1])) + "\n") #daniel
+    #if debug:
+    #  sys.stdout.write("cleaned row len: " + str(len(cleaned[-1])) + "\n")
 
-  import sys #daniel
-  rect = all(len(cleaned[i]) == len(cleaned[0]) for i in range(len(cleaned))) #daniel
-  #sys.stdout.write("data for arff rectangular? " + str(rect) + "\n") #daniel
-  sys.stdout.flush() #daniel
+  #if debug:
+  #  rect = all(len(cleaned[i]) == len(cleaned[0]) for i in range(len(cleaned)))
+  #  sys.stdout.write("data for arff rectangular? " + str(rect) + "\n")
+  #  sys.stdout.flush()
 
   if debug:
     print "Search-space size: {} of {}".format(len(cleaned), len(rows))
@@ -237,18 +241,20 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
-  sys.stdout.write("name of generated arff: " + repr(name) + "\n") #daniel
-  #sys.stdout.write("row length of cleaned: " + str(len(cleaned[0])) + "\n") #daniel
-  sys.stdout.flush() #daniel
+  if debug:
+    sys.stdout.write("name of generated arff: " + repr(name) + "\n")
+    #sys.stdout.write("row length of cleaned: " + str(len(cleaned[0])) + "\n")
+    sys.stdout.flush()
   mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
 
   # Run the reactions through the current WEKA model.
-  import os #daniel
-  os.system('echo "' + "about to try the path" + '"|espeak') #daniel
-  current_model = ModelStats.objects.last() #ModelStats.objects.filter(active=True).last() #daniel
-  model_path = current_model.get_path() # mm.get_current_model() #daniel
+  if debug:
+    import os
+    os.system('echo "' + "about to try the path" + '"|espeak')
+  current_model = ModelStats.objects.last() # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE MAKING THIS LIVE #daniel
+  model_path = current_model.get_path() # used to be mm.get_current_model()
 
-  #name = "_changed" #daniel: temporary, to see if things run with properly configured arff
+  #name = "_changed" # temporary, to see if things run with properly configured arff
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
@@ -310,8 +316,11 @@ def generate_rows_molar(reactants, mass_map, var_ranges):
 
   var_steps = 3
   amt_steps = 4
-  import sys #daniel
-  sys.stdout.write("in generate_rows_molar: reactants: " + str(reactants) + "\n") #daniel
+
+  # For debugging:
+  import sys
+  sys.stdout.write("in generate_rows_molar: reactants: " + str(reactants) + "\n")
+
   for pH in lookupRange("pH", var_ranges, var_steps, int_return=True):
     for time in lookupRange("time", var_ranges, var_steps, int_return=True):
       for temp in lookupRange("temp", var_ranges, var_steps, int_return=True):
@@ -369,7 +378,7 @@ def calc_similarity(compound_one, compound_two):
 	if compound_two not in joint_sim:
 		joint_sim[compound_two] = dict()
 
-        if cg_props[compound_one.lower()]["type"] != cg_props[compound_one.lower()]["type"]: #Daniel: added.lower()
+        if cg_props[compound_one.lower()]["type"] != cg_props[compound_one.lower()]["type"]:
 		joint_sim[compound_one][compound_two] = 0.0
 		joint_sim[compound_two][compound_one] = 0.0
 		return 0.0
@@ -378,8 +387,8 @@ def calc_similarity(compound_one, compound_two):
 	from rdkit.Chem.Fingerprints import FingerprintMols
 	from rdkit import Chem
 
-        mol_one = Chem.MolFromSmiles(str(cg_props[compound_one.lower()]["smiles"])) #Daniel: added.lower()
-	mol_two = Chem.MolFromSmiles(str(cg_props[compound_two.lower()]["smiles"])) #Daniel: added.lower()
+        mol_one = Chem.MolFromSmiles(str(cg_props[compound_one.lower()]["smiles"]))
+	mol_two = Chem.MolFromSmiles(str(cg_props[compound_two.lower()]["smiles"]))
 	fp_1 = FingerprintMols.FingerprintMol(mol_one)
 	fp_2 = FingerprintMols.FingerprintMol(mol_two)
 	similarity = DataStructs.FingerprintSimilarity(fp_1, fp_2)
@@ -491,11 +500,11 @@ def build_baseline(lab_group=None, debug=False):
 	from DRP.models import get_good_rxns
         from DRP.models import get_model_field_names
 
-        current_model = ModelStats.objects.last() #ModelStats.objects.filter(active=True).last() #daniel
-        if not "ref" in get_model_field_names(model="Recommendation"): #Daniel
+        current_model = ModelStats.objects.last() # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE MAKING THIS LIVE #daniel
+        if not "ref" in get_model_field_names(model="Recommendation"):
             headers = ["ref"]+get_model_field_names(model="Recommendation") # Must add "ref" since "ref" is not included as a default model_field.
-        else: #Daniel
-            headers = get_model_field_names(model="Recommendation") #Daniel
+        else:
+            headers = get_model_field_names(model="Recommendation")
 
 	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
 
@@ -679,7 +688,7 @@ def score_combo(combo_one, combo_two):
                         c_one.append(c)
                 elif c in class_map['Se'] or c in class_map['Te']:
                         c_two.append(c)
-                elif cg_props[c.lower()]['type'] == "Org": # Daniel: added .lower()
+                elif cg_props[c.lower()]['type'] == "Org":
                         c_three.append(c)
         if not (len(c_one) == len(c_two) == len(c_three) == 1):
 		restrict_lookup[p] = 0.0
@@ -689,7 +698,7 @@ def score_combo(combo_one, combo_two):
                         c_one.append(c)
                 elif c in class_map['Se'] or c in class_map['Te']:
                         c_two.append(c)
-                elif cg_props[c.lower()]['type'] == "Org":  #Daniel: added .lower()
+                elif cg_props[c.lower()]['type'] == "Org":
                         c_three.append(c)
 
         if not (len(c_one) == len(c_two) == len(c_three) == 2):
@@ -753,8 +762,8 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Building baseline..."
   range_map, quality_map, combinations, var_ranges = build_baseline(debug=debug)
-  #sys.stdout.write("type(combinations): " + str(type(combinations)) + "\n") #daniel
-  #sys.stdout.write("combinations: " + str(combinations) + "\n") #daniel
+  #if debug: sys.stdout.write("type(combinations): " + str(type(combinations)) + "\n")
+  #if debug: sys.stdout.write("combinations: " + str(combinations) + "\n")
 
   """
   range_map = {'': (0, 0),
@@ -768,8 +777,9 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Finding distinct recommendations..."
   seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug) )
-  #sys.stdout.write("type(seed): " + str(type(seed)) + "\n") #daniel
-  #sys.stdout.write("seed: " + str(seed) + "\n") #daniel
+  #if debug: sys.stdout.write("type(seed): " + str(type(seed)) + "\n")
+  #if debug: sys.stdout.write("seed: " + str(seed) + "\n")
+  #if debug: sys.stdout.flush()
 
   if debug: print "Making abbrev_map..."
   abbrev_map, cs = get_abbrev_map()
@@ -779,13 +789,14 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
         seed[i][j] = abbrev_map[seed[i][j]]
 
   if debug: print "Ranking possibilities..."
-  #Scores: a list of (score, triple) tuples. (A score is an integer, a triple is a tuple of 3 rxn strings) #daniel
+  #Scores: a list of (score, triple) tuples. (A score is an integer, a triple is a tuple of 3 rxn strings)
   scores = rank_possibilities(seed, combinations)
-  #sys.stdout.write("scores total: " + str(scores) + "\n") #daniel
+  #if debug: sys.stdout.write("scores total: " + str(scores) + "\n")
 
-  import os, sys #daniel
-  sys.stdout.write("here2\n") #daniel
-  sys.stdout.flush()
+  if debug:
+    import os, sys
+    sys.stdout.write("here2\n")
+    sys.stdout.flush()
 
   # A filter for redudant simplifications, using mutual information. Commenting out until fixed.
   ## if debug: print "Filtering scores (via mutual info)..."
@@ -794,7 +805,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Scores ({} Total):".format(len(scores))
   scores = scores[:total_to_score]
-  #sys.stdout.write("scores total: " + str(scores) + "\n") #daniel
+  #if debug: sys.stdout.write("scores total: " + str(scores) + "\n")
 
   if debug: print "Rescoring..."
 
@@ -803,23 +814,24 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
       reaction_tuples = evaluate_fitness(s[1], range_map, var_ranges, debug=debug)
       if not reaction_tuples:
-        sys.stdout.write("branch 1 of recommendation generator\n") #daniel
-        sys.stdout.flush() #daniel
+        if debug:
+          sys.stdout.write("branch 1 of recommendation generator\n")
+          sys.stdout.flush()
         yield (0, None)
       else:
         for score, rxn in reaction_tuples:
           if use_lab_abbrevs:
             rxn = translate_reactants(use_lab_abbrevs, rxn, single=True)
           rxn = remove_empty(rxn)
-          sys.stdout.write("branch 2 of recommendation generator\n") #daniel
-          sys.stdout.write("score, s[0], score*s[0]: " + str(score) + ", " + str(s[0]) + ", " + str(score*s[0]) + "\n") #daniel
-          sys.stdout.flush() #daniel
+          if debug: sys.stdout.write("branch 2 of recommendation generator\n")
+          if debug: sys.stdout.write("score, s[0], score*s[0]: " + str(score) + ", " + str(s[0]) + ", " + str(score*s[0]) + "\n")
+          if debug: sys.stdout.flush()
 
           yield (score*s[0], rxn)
 
     except Exception as e:
-      sys.stdout.write("exception branch of recommendation generator\n") #daniel
-      sys.stdout.flush() #daniel
+      if debug: sys.stdout.write("exception branch of recommendation generator\n")
+      if debug: sys.stdout.flush()
       print "{} failed with {}: {}".format(s, e, type(e))
       yield (0, None)
 
@@ -839,15 +851,16 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
   if debug: print "-- Storing recommmendations..."
   for (conf, rec) in scored_reactions:
     if conf>0:
-      sys.stdout.write("in create_new_recommendations: conf>0\n") #daniel
-      sys.stdout.flush() #daniel
+      if debug: sys.stdout.write("in create_new_recommendations: conf>0\n")
+      if debug: sys.stdout.flush()
       rec = map(str, rec)
       store_new_Recommendation_list(lab_group, [[conf]+rec], debug=debug)
       total += 1
       if debug: print " ... Finished #{}!".format(total)
-    else: # daniel
-      sys.stdout.write("in create_new_recommendations: conf not >0\n") #daniel
-      sys.stdout.flush() #daniel
+    else:
+      if debug:
+        sys.stdout.write("in create_new_recommendations: conf not >0\n")
+        sys.stdout.flush()
 
     if total>max_recs_per_call:
       break

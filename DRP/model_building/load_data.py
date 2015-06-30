@@ -134,21 +134,27 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
         if not ml_convert:
                 ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
 
-        raw = load(lab_group)[1:] #daniel (taking out the headers)
-        def rect(arr_2d): #daniel
-            return all(len(i) == len(arr_2d[0]) for i in arr_2d) #daniel
-        import sys, os #daniel
-        sys.stdout.write("all rectangular?: " + str(all(rect(item) for item in raw)) + "\n") #daniel
-        os.system('echo "' + "are they rectangular?" + '"|espeak') #daniel
-        raise(Exception("are they rectangular?")) #daniel
+        raw = load(lab_group)[1:] (taking out the headers)
+        def rect(arr_2d):
+            return all(len(i) == len(arr_2d[0]) for i in arr_2d)
+
+        # For debugging
+        import sys, os
+        sys.stdout.write("all rectangular?: " + str(all(rect(item) for item in raw)) + "\n")
+        os.system('echo "' + "are they rectangular?" + '"|espeak')
+        raise(Exception("Vector not rectangular?"))
+
         transformed = []
 
         triple_to_rxn_list = dict()
-        import sys, os #daniel
-        blahh = "here in get_feature_vectors_by_triple in DRP model_building load_data dot py" #daniel
-        sys.stdout.write(blahh + "\n") #daniel
-        os.system('echo "' + blahh + '"|espeak') #daniel
-        sys.stdout.flush() #daniel
+
+        # For debugging
+        import sys, os
+        blahh = "here in get_feature_vectors_by_triple in DRP model_building load_data dot py"
+        sys.stdout.write(blahh + "\n")
+        os.system('echo "' + blahh + '"|espeak')
+        sys.stdout.flush()
+
         for rxn in raw:
                 try:
                         triple = rxn_to_triple(rxn, cg)
@@ -162,7 +168,7 @@ def get_feature_vectors_by_triple(lab_group=None, cg = None, ml_convert = None):
                 transformed = []
                 for row in rxn_list:
                         try:
-                                row_w_cmpd_strs = [x.compound if type(x) == CompoundEntry else x for x in row] #daniel
+                                row_w_cmpd_strs = [x.compound if type(x) == CompoundEntry else x for x in row]
                                 transformed.append(parse_rxn.parse_rxn(row_w_cmpd_strs, cg, ml_convert))
                         except Exception as e:
                                 print "EXCEPTION: {}".format(e)
@@ -190,24 +196,24 @@ def collapse_triples(dataset):
 def rxn_to_triple(rxn, cg):
         from DRP.compoundGuideFunctions import translate_reactants
         r = rxn
-        #import sys #daniel
-        #sys.stdout.write("rxn: " + str(r) + "\n") #daniel
-        compounds = filter(lambda x: x != None and x.compound.lower() != 'water' and x.compound.lower() != '', [r[1], r[4], r[7], r[10], r[13]]) #daniel
-        #sys.stdout.write("compounds: " + str(compounds) + "\n") # daniel
-        #sys.stdout.write("compounds type: " + str(type(compounds[0])) + "\n") #daniel
+
+        # For debugging
+        #import sys
+        #sys.stdout.write("rxn: " + str(r) + "\n")
+
+        compounds = filter(lambda x: x != None and x.compound.lower() != 'water' and x.compound.lower() != '', [r[1], r[4], r[7], r[10], r[13]])
+
+        #For debugging
+        #sys.stdout.write("compounds: " + str(compounds) + "\n")
+        #sys.stdout.write("compounds type: " + str(type(compounds[0])) + "\n")
 
         #TODO: Should pass the specific LabGroup into here!
         # Daniel: this appears to be pointless now that it takes CompoundEntries?
-        #compounds = translate_reactants("Norquist Lab", compounds, #daniel
-        #                                onlyAbbrevs=True, #daniel
-        #                                direction="abbrev to compound") #daniel
-        #sys.stdout.write("compounds after translate: " + str(compounds) + "\n") #daniel
-        #sys.stdout.write("compounds type after translate: " + str(type(compounds[0])) + "\n") #daniel
-        #sys.stdout.flush()
-        #import sys, os #daniel
-        #sys.stdout.write("translate_reactants completes successfully" + "\n") #daniel
+        #compounds = translate_reactants("Norquist Lab", compounds,
+        #                                onlyAbbrevs=True,
+        #                                direction="abbrev to compound")
         for compound in compounds:
-                if compound.compound.lower() not in cg: #daniel; added .compound.lower()
+                if compound.compound.lower() not in cg:
                         raise Exception("Unknown compound: {0}".format(compound))
         return tuple(sorted(compounds))
 
