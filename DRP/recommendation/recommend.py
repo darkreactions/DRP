@@ -11,6 +11,7 @@ if django_path not in sys.path:
 import DRP.model_building.model_methods as mm
 from DRP.model_building import parse_rxn, load_cg
 from DRP.settings import TMP_DIR
+from DRP.models import ModelStats #TODO: more fully rewrite to use ModelStats objects
 
 
 # Variable Setup
@@ -197,15 +198,19 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
 
   # Variable and Directory Preparation.
   createDirIfNecessary(TMP_DIR)
-  arff_fields, unused_indexes = mm.get_used_fields()
+  arff_fields, unused_indexes = mm.get_used_fields(by_current_model=True)
 
   # Generate different permutations of the new_combination of reactants.
   if debug:
     print "___"*10
     print "Starting row generator..."
 
+  import sys #daniel
+  #sys.stdout.write("new_combination: " + str(new_combination) + "\n") #daniel
   row_generator = generate_rows_molar(new_combination, range_map, var_ranges)
   rows = [row for row in row_generator]
+  #sys.stdout.write("rows: " + str(rows) + "\n") #daniel
+  #sys.stdout.write("row len in rows: " + str(len(rows[0])) + "\n") #daniel
 
   # Shuffle the rows such that the search_space_max_size doesn't block combos.
   random.shuffle(rows)
@@ -214,8 +219,14 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   cleaned = []
   for i, row in enumerate(rows[:search_space_max_size]):
     expanded = parse_rxn.parse_rxn(row, cg_props, ml_convert)
+    #sys.stdout.write("expanded row len: " + str(len(expanded)) + "\n") #daniel
     cleaned.append( mm.removeUnused(expanded, unused_indexes) )
+    #sys.stdout.write("cleaned row len: " + str(len(cleaned[-1])) + "\n") #daniel
 
+  import sys #daniel
+  rect = all(len(cleaned[i]) == len(cleaned[0]) for i in range(len(cleaned))) #daniel
+  #sys.stdout.write("data for arff rectangular? " + str(rect) + "\n") #daniel
+  sys.stdout.flush() #daniel
 
   if debug:
     print "Search-space size: {} of {}".format(len(cleaned), len(rows))
@@ -226,11 +237,18 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
+  sys.stdout.write("name of generated arff: " + repr(name) + "\n") #daniel
+  #sys.stdout.write("row length of cleaned: " + str(len(cleaned[0])) + "\n") #daniel
+  sys.stdout.flush() #daniel
   mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
 
   # Run the reactions through the current WEKA model.
-  model_path = mm.get_current_model()
+  import os #daniel
+  os.system('echo "' + "about to try the path" + '"|espeak') #daniel
+  current_model = ModelStats.objects.last() #ModelStats.objects.filter(active=True).last() #daniel
+  model_path = current_model.get_path() # mm.get_current_model() #daniel
 
+  #name = "_changed" #daniel: temporary, to see if things run with properly configured arff
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
@@ -292,6 +310,8 @@ def generate_rows_molar(reactants, mass_map, var_ranges):
 
   var_steps = 3
   amt_steps = 4
+  import sys #daniel
+  sys.stdout.write("in generate_rows_molar: reactants: " + str(reactants) + "\n") #daniel
   for pH in lookupRange("pH", var_ranges, var_steps, int_return=True):
     for time in lookupRange("time", var_ranges, var_steps, int_return=True):
       for temp in lookupRange("temp", var_ranges, var_steps, int_return=True):
@@ -349,7 +369,7 @@ def calc_similarity(compound_one, compound_two):
 	if compound_two not in joint_sim:
 		joint_sim[compound_two] = dict()
 
-	if cg_props[compound_one]["type"] != cg_props[compound_one]["type"]:
+        if cg_props[compound_one.lower()]["type"] != cg_props[compound_one.lower()]["type"]: #Daniel: added.lower()
 		joint_sim[compound_one][compound_two] = 0.0
 		joint_sim[compound_two][compound_one] = 0.0
 		return 0.0
@@ -358,8 +378,8 @@ def calc_similarity(compound_one, compound_two):
 	from rdkit.Chem.Fingerprints import FingerprintMols
 	from rdkit import Chem
 
-	mol_one = Chem.MolFromSmiles(str(cg_props[compound_one]["smiles"]))
-	mol_two = Chem.MolFromSmiles(str(cg_props[compound_two]["smiles"]))
+        mol_one = Chem.MolFromSmiles(str(cg_props[compound_one.lower()]["smiles"])) #Daniel: added.lower()
+	mol_two = Chem.MolFromSmiles(str(cg_props[compound_two.lower()]["smiles"])) #Daniel: added.lower()
 	fp_1 = FingerprintMols.FingerprintMol(mol_one)
 	fp_2 = FingerprintMols.FingerprintMol(mol_two)
 	similarity = DataStructs.FingerprintSimilarity(fp_1, fp_2)
@@ -442,7 +462,6 @@ def build_sim_map(compound_guide):
 		similarity_map[r] = build_sim_list(r, inorgs)
 	for r in oxs:
 		similarity_map[r] = build_sim_list(r, oxs)
-	return similarity_map
 
 def build_baseline(lab_group=None, debug=False):
 	#TODO: test this stuff, rewrite to optionally accept a seed set
@@ -472,7 +491,12 @@ def build_baseline(lab_group=None, debug=False):
 	from DRP.models import get_good_rxns
         from DRP.models import get_model_field_names
 
-        headers = ["ref"]+get_model_field_names(model="Recommendation") # Must add "ref" since "ref" is not included as a default model_field.
+        current_model = ModelStats.objects.last() #ModelStats.objects.filter(active=True).last() #daniel
+        if not "ref" in get_model_field_names(model="Recommendation"): #Daniel
+            headers = ["ref"]+get_model_field_names(model="Recommendation") # Must add "ref" since "ref" is not included as a default model_field.
+        else: #Daniel
+            headers = get_model_field_names(model="Recommendation") #Daniel
+
 	rxns = fix_abbrevs(get_good_rxns(lab_group=lab_group)[1:])
 
 	combinations = set()
@@ -486,26 +510,27 @@ def build_baseline(lab_group=None, debug=False):
 
         debug_counter = 0
 
-	for rxn in rxns:
-		r = rxn[:23]
+        for rxn in rxns:
+                r = rxn[:23]
 
                 # Add the range variables to the data entry.
                 for index, field in zip(indexes_to_range, fields_to_range):
                   if is_numeric( rxn[index] ):
                     var_ranges[field].append( float(rxn[index]) )
 
-		reactants = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
+                reactants = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
 
-		if any([c not in cg_props for c in reactants]):
+                if any([c not in cg_props for c in reactants]):
                   debug_counter += 1
-		  continue
+                  continue
 
-		q_key = tuple(sorted(reactants))
-		combinations.add(q_key)
-		add_to_map(range_map, r)
-		if q_key not in quality_map:
-			quality_map[q_key] = []
-		quality_map[q_key].append(int(r[-2]))
+                q_key = tuple(sorted(reactants))
+                combinations.add(q_key)
+                add_to_map(range_map, r)
+                if q_key not in quality_map:
+                        quality_map[q_key] = []
+                quality_map[q_key].append(int(r[-2]))
+
 
 
 
@@ -654,7 +679,7 @@ def score_combo(combo_one, combo_two):
                         c_one.append(c)
                 elif c in class_map['Se'] or c in class_map['Te']:
                         c_two.append(c)
-                elif cg_props[c]['type'] == "Org":
+                elif cg_props[c.lower()]['type'] == "Org": # Daniel: added .lower()
                         c_three.append(c)
         if not (len(c_one) == len(c_two) == len(c_three) == 1):
 		restrict_lookup[p] = 0.0
@@ -664,7 +689,7 @@ def score_combo(combo_one, combo_two):
                         c_one.append(c)
                 elif c in class_map['Se'] or c in class_map['Te']:
                         c_two.append(c)
-                elif cg_props[c]['type'] == "Org":
+                elif cg_props[c.lower()]['type'] == "Org":  #Daniel: added .lower()
                         c_three.append(c)
 
         if not (len(c_one) == len(c_two) == len(c_three) == 2):
@@ -716,16 +741,20 @@ def build_diverse_org(max_results=250, debug=True):
 
 
 def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False):
+  import sys
+  sys.stdout.write("here1\n")
   def remove_empty(rxn):
     return [field if field!="-1" else "" for field in rxn]
 
   from DRP.compoundGuideFunctions import translate_reactants
 
   # Variable Setup
-  total_to_score = 750 if not bare_debug else 50 # The number of possible combos to test.
+  total_to_score = 1000 if not bare_debug else 50 # The number of possible combos to test.
 
   if debug: print "Building baseline..."
   range_map, quality_map, combinations, var_ranges = build_baseline(debug=debug)
+  #sys.stdout.write("type(combinations): " + str(type(combinations)) + "\n") #daniel
+  #sys.stdout.write("combinations: " + str(combinations) + "\n") #daniel
 
   """
   range_map = {'': (0, 0),
@@ -739,6 +768,8 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Finding distinct recommendations..."
   seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug) )
+  #sys.stdout.write("type(seed): " + str(type(seed)) + "\n") #daniel
+  #sys.stdout.write("seed: " + str(seed) + "\n") #daniel
 
   if debug: print "Making abbrev_map..."
   abbrev_map, cs = get_abbrev_map()
@@ -748,14 +779,22 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
         seed[i][j] = abbrev_map[seed[i][j]]
 
   if debug: print "Ranking possibilities..."
+  #Scores: a list of (score, triple) tuples. (A score is an integer, a triple is a tuple of 3 rxn strings) #daniel
   scores = rank_possibilities(seed, combinations)
+  #sys.stdout.write("scores total: " + str(scores) + "\n") #daniel
 
-  if debug: print "Filtering scores (via mutual info)..."
-  import DRP.recommendation.mutual_info as mutual_info
-  scores = mutual_info.do_filter(scores, range_map)
+  import os, sys #daniel
+  sys.stdout.write("here2\n") #daniel
+  sys.stdout.flush()
+
+  # A filter for redudant simplifications, using mutual information. Commenting out until fixed.
+  ## if debug: print "Filtering scores (via mutual info)..."
+  ## import DRP.recommendation.mutual_info as mutual_info
+  ## scores = mutual_info.do_filter(scores, range_map)
 
   if debug: print "Scores ({} Total):".format(len(scores))
   scores = scores[:total_to_score]
+  #sys.stdout.write("scores total: " + str(scores) + "\n") #daniel
 
   if debug: print "Rescoring..."
 
@@ -764,16 +803,23 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
       reaction_tuples = evaluate_fitness(s[1], range_map, var_ranges, debug=debug)
       if not reaction_tuples:
+        sys.stdout.write("branch 1 of recommendation generator\n") #daniel
+        sys.stdout.flush() #daniel
         yield (0, None)
       else:
         for score, rxn in reaction_tuples:
           if use_lab_abbrevs:
             rxn = translate_reactants(use_lab_abbrevs, rxn, single=True)
           rxn = remove_empty(rxn)
+          sys.stdout.write("branch 2 of recommendation generator\n") #daniel
+          sys.stdout.write("score, s[0], score*s[0]: " + str(score) + ", " + str(s[0]) + ", " + str(score*s[0]) + "\n") #daniel
+          sys.stdout.flush() #daniel
 
           yield (score*s[0], rxn)
 
     except Exception as e:
+      sys.stdout.write("exception branch of recommendation generator\n") #daniel
+      sys.stdout.flush() #daniel
       print "{} failed with {}: {}".format(s, e, type(e))
       yield (0, None)
 
@@ -785,7 +831,7 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
   # Variable Setup
   tStart = time.clock()
   total = 0
-  max_recs_per_call = 150 if not bare_debug else 5
+  max_recs_per_call = 200 if not bare_debug else 5
 
   if debug: print "-- Creating recommendation generator..."
   scored_reactions = recommendation_generator(use_lab_abbrevs=lab_group, debug=debug, bare_debug=bare_debug)
@@ -793,10 +839,15 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
   if debug: print "-- Storing recommmendations..."
   for (conf, rec) in scored_reactions:
     if conf>0:
+      sys.stdout.write("in create_new_recommendations: conf>0\n") #daniel
+      sys.stdout.flush() #daniel
       rec = map(str, rec)
       store_new_Recommendation_list(lab_group, [[conf]+rec], debug=debug)
       total += 1
       if debug: print " ... Finished #{}!".format(total)
+    else: # daniel
+      sys.stdout.write("in create_new_recommendations: conf not >0\n") #daniel
+      sys.stdout.flush() #daniel
 
     if total>max_recs_per_call:
       break

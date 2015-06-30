@@ -365,11 +365,10 @@ class ModelStats(models.Model):
         values = sorted(map(str,val_set))
 
         # Make sure all boolean options are available in the value-map.
-        if values == ["no"] or values == ["yes"] or values == ["no", "yes"]:
-          values = ["yes", "no"]
-
-        if field in {"slowCool", "leak"}:
-          values = ["yes", "no"]
+        #if values == ["no"] or values == ["yes"] or values == ["no", "yes"]:
+          #values = ["yes", "no"]
+        if any(val in ["?", "no", "yes"] for val in values): #daniel
+          values = ["?", "no", "yes"] #daniel
 
         innards = ",".join( values ).replace("\"","")
         val_dict[field] = "{"+innards+"}"
@@ -652,7 +651,14 @@ class ModelStats(models.Model):
                       normalize=normalize, ranges=ranges, table=table)
 
   def BCR(self, ranges=True, normalize=False, table="test"):
-    return 0
+    if ranges:
+      recall = self.recall(ranges=True, table=table)
+      specificity = self.specificity(ranges=True, table=table)
+      return (recall+specificity)*0.5
+    else:
+        conf_table = self.load_confusion_table(normalize=normalize, table=table)
+        conf_table_no_labels = [row[1:] for row in conf_table[1:]]
+        return sum([pred[i]/sum(pred) for (i, pred) in enumerate(conf_table_no_labels)])/len(conf_table_no_labels)
 
 
   def accuracy(self, ranges=True, table="test"):
@@ -683,6 +689,15 @@ class ModelStats(models.Model):
     denom = float(tp + fn)
     if denom:
       return tp/denom
+    else:
+      return 0
+
+  def specificity(self, ranges=True, table="test"):
+    tn = self.true_negatives(ranges=ranges,table=table)
+    fp = self.false_positives(ranges=ranges,table=table)
+    denom = float(tn + fp)
+    if denom:
+      return tn/denom
     else:
       return 0
 

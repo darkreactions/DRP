@@ -17,6 +17,11 @@ def fixmL(t):
     return o
 
 def parse_rxn(row, rxn_table, ml_convert):
+    """Generates the FULL calculations list for a rxn list. If a model or method has specific 
+         fields it expects, they will be a subset of these. This is where all the hard work of a 
+         Data object's get_calculations_list method happens."""
+    # Note: this function expects compound strings, not CompoundEntry objects. If you have CompoundEntry objects
+    # in your 'row' argument, feed it their .compound attributes (the string name of the compound) instead of themselves
 
     compound = ["x","x","x","x","x"]
     mass = ["-1","-1","-1","-1","-1"]
@@ -25,6 +30,7 @@ def parse_rxn(row, rxn_table, ml_convert):
         compound[2], mass[2], unit[2], compound[3], mass[3],
         unit[3], compound[4], mass[4], unit[4], Tmax,
         time,  pH, slowCool, leak, outcome, purity) = row[:23]
+    compound = [x if x is not None else '' for x in compound] #daniel
 
     for i in range(5):
         cmpd = compound[i].lower()

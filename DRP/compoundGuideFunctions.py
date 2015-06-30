@@ -9,7 +9,7 @@ def translate_reactants(lab_group, dataList, single=False, onlyAbbrevs=False, di
 
   #Create a map from compounds to abbrevs.
   #(Note that duplicate compounds end up being given the "latest" abbrev.)
-  compoundGuide = get_lab_CG(lab_group)
+  compoundGuide = get_lab_CG(lab_group) #daniel
 
   #TODO: Don't grab EVERYTHING if not needed...
   if direction=="compound to abbrev":
@@ -26,6 +26,9 @@ def translate_reactants(lab_group, dataList, single=False, onlyAbbrevs=False, di
   for i, reactionTuple in enumerate(dataList):
     if onlyAbbrevs:
         abbrev = reactionTuple
+        #import sys #daniel
+        #sys.stdout.write("abbrev, translation_table: " + str(abbrev) + ", " + str(translation_table) + "\n") #daniel
+        #sys.stdout.flush() #daniel
         if abbrev in translation_table:
           dataList[i] = translation_table[abbrev]
         else:
@@ -43,24 +46,37 @@ def translate_reactants(lab_group, dataList, single=False, onlyAbbrevs=False, di
 
   return dataList
 
+def getMolarMass(compound): #compound string or abbrev string #daniel
+  from DRP.models import CompoundEntry #daniel
+  import sys #daniel
+  #sys.stdout.write("in getMoles: compound: " + str(compound) + "\n") #daniel
+  compound_lookup = list(CompoundEntry.objects.filter(compound=compound)) #daniel
+  abbrev_lookup = list(CompoundEntry.objects.filter(abbrev=compound)) #daniel
+  if len(compound_lookup)>0: #daniel
+      return compound_lookup[0].mw #daniel
+  else: #daniel
+      return abbrev_lookup[0].mw #daniel
 
+# Rewriting to take compound or abbrev
 def getMoles(mass, compound):
   from DRP.models import CompoundEntry
+  import sys #daniel
+  #sys.stdout.write("in getMoles: compound: " + str(compound) + "\n") #daniel
   try:
-    molar_mass = CompoundEntry.objects.filter(compound=compound)[0].mw
+    molar_mass = getMolarMass(compound)
     return mass/float(molar_mass)
   except Exception as e:
     print e
-    raise Exception("getMoles: No molar mass available for {}".format(compound))
+    raise Exception("getMoles: No molar mass available for {}: {}, {}".format(compound, e))
 
 
 def getMass(moles, compound):
   from DRP.models import CompoundEntry
   try:
-    molar_mass = CompoundEntry.objects.filter(compound=compound)[0].mw
+    molar_mass = getMolarMass(compound) #daniel
     value = moles*float(molar_mass)
     return float("{:.5f}".format(value))
   except Exception as e:
     print e
-    raise Exception("getMass: No molar mass available for {}".format(compound))
+    raise Exception("getMoles: No molar mass available for {}: {}, {}".format(compound, e))
 

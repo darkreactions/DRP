@@ -101,10 +101,10 @@ class Tanimoto:
     self.compound_smiles = dict()
     self.joint_sim = dict()
     self.weird_count = 0
-    from rdkit import DataStructs
+    from rdkit import universeStructs
     from rdkit.Chem.Fingerprints import FingerprintMols
     from rdkit import Chem
-    self.ds = DataStructs
+    self.ds = universeStructs
     self.FPM = FingerprintMols
     self.Chem = Chem
 
@@ -139,8 +139,14 @@ class Tanimoto:
     if compound_two not in self.joint_sim:
       self.joint_sim[compound_two] = dict()
 
-    fp_one = self.get_fp(str(compound_one.smiles))
-    fp_two = self.get_fp(str(compound_two.smiles))
+    if self.cg_props[compound_one]["type"] != self.cg_props[compound_one]["type"]:
+      self.joint_sim[compound_one][compound_two] = 0.0
+      self.joint_sim[compound_two][compound_one] = 0.0
+      return 0.0
+
+
+    fp_one = self.get_fp(str(self.cg_props[compound_one]["smiles"]))
+    fp_two = self.get_fp(str(self.cg_props[compound_two]["smiles"]))
     if fp_one is None or fp_two is None:
       similarity = 0.0
       self.weird_count += 1

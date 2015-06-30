@@ -13,9 +13,9 @@ class Command(BaseCommand):
                 active=False, debug=True, force=True, pipeline_test=True)
 
     elif 2<= len(args) <= 2+len(valid_options):
-      active = "active" in args # Make this model "active".
-      debug = "debug" in args # Display progress in STDOUT.
-      force = "force" in args # Force file overwriting if necessary.
+      active = not "inactive" in args
+      debug = "debug" in args
+      force = "force" in args
 
       title = args[0]
       description = args[1]
@@ -27,5 +27,5 @@ class Command(BaseCommand):
 
     else:
       self.stdout.write("\n--Oops! Check your syntax.")
-      self.stdout.write("--Usage: python manage.py generate_model \"Model Name\" \"A brief description of the model.\" [active] [debug] [force]")
+      self.stdout.write("--Usage: python manage.py generate_model \"Model Name\" \"A brief description of the model.\" [inactive] [debug]")
 
