@@ -1,3 +1,12 @@
+from DRP.settings import BASE_DIR
+
+import os, sys
+full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+django_path = full_path[:full_path.rfind("/DRP/")]
+if django_path not in sys.path:
+  sys.path = [django_path] + sys.path
+  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
 def default_preprocessor(data):
   # Takes a list of Data objects prepended by the headers
   headers = data.pop(0)
@@ -13,8 +22,33 @@ def default_preprocessor(data):
 
   return default_calc_list_preprocessor(data)
 
+def default_row_preprocessor(data):
+  # EXPERIMENTAL, not yet working
+  # Takes a list of raw rows of the features prior to expansion, prepended by the headers
+
+  from DRP.model_building import parse_rxn, load_cg
+  import json
+  cg_props = load_cg.get_cg()
+  ml_convert = json.load(open("{}/DRP/model_building/mlConvert.json".format(BASE_DIR)))
+  #ml_convert = json.load(open(django_path+"/DRP/model_building/mlConvert.json"))
+
+  headers = data.pop(0)
+
+  expanded = []
+  for d in data:
+    try:
+      d_expanded = parse_rxn.parse_rxn(d, cg_props, ml_convert)
+      expanded.append(d_expanded)
+    except:
+      pass
+
+  data = [headers] + expanded
+
+  return default_calc_list_preprocessor(data)
+
 def default_calc_list_preprocessor(data):
   # Takes a list of calculations lists prepended by the headers
+  # (this is the internals of the default_preprocessor, where all the work is done)
   def is_num(elem):
     try:
       float(elem)
