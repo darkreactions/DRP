@@ -519,6 +519,13 @@ def build_baseline(lab_group=None, debug=False):
 
         debug_counter = 0
 
+        if debug:
+            import sys
+            #sys.stdout.write("blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n")
+            #sys.stdout.write("len(rxns): " + str(len(rxns)) + "\n")
+            #sys.stdout.write("type(rxns[0]: " + str(type(rxns[0])) + "\n")
+            #sys.stdout.write("rxns: " + str(rxns) + "\n")
+            sys.stdout.flush()
         for rxn in rxns:
                 r = rxn[:23]
 
@@ -527,12 +534,22 @@ def build_baseline(lab_group=None, debug=False):
                   if is_numeric( rxn[index] ):
                     var_ranges[field].append( float(rxn[index]) )
 
-                reactants = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
+                # reactants = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
+                reactants = [x for x in [ r[1], r[4], r[7], r[10], r[13]] if x is not None]
+                reactants = [x.compound.lower() for x in reactants]
+                reactants = filter(lambda x: x != 'water' and x != '', reactants)
 
                 if any([c not in cg_props for c in reactants]):
                   debug_counter += 1
+                  if debug: sys.stdout.write("bleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n")
+                  if debug: sys.stdout.write("[c for c in reactants if c not in cg_props]: " + str([c for c in reactants if c not in cg_props]) + "\n")
+                  raise(Exception("Stop! HAMMERTIME!"))
                   continue
 
+                #if debug: sys.stdout.write("reactants: " + str(reactants) + "\n")
+                #if debug: sys.stdout.write("asdf len(reactants): " + str(len(reactants)) + "\n")
+                #if debug: sys.stdout.write("reactants[0]: " + str(reactants[0]) + "\n")
+                #if debug: sys.stdout.flush()
                 q_key = tuple(sorted(reactants))
                 combinations.add(q_key)
                 add_to_map(range_map, r)
@@ -567,7 +584,7 @@ def build_baseline(lab_group=None, debug=False):
 
 
         if debug:
-          print "{} of {}".format(debug_counter, len(rxns))
+          print "{} of {} rxns having problems in build_baseline".format(debug_counter, len(rxns))
 
 	return range_map, quality_map, combinations, var_ranges
 
@@ -779,7 +796,7 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
   seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug) )
   #if debug: sys.stdout.write("type(seed): " + str(type(seed)) + "\n")
   #if debug: sys.stdout.write("seed: " + str(seed) + "\n")
-  #if debug: sys.stdout.flush()
+  if debug: sys.stdout.flush()
 
   if debug: print "Making abbrev_map..."
   abbrev_map, cs = get_abbrev_map()
@@ -790,6 +807,10 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Ranking possibilities..."
   #Scores: a list of (score, triple) tuples. (A score is an integer, a triple is a tuple of 3 rxn strings)
+  #if debug: sys.stdout.write("seed: " + str(seed) + "\n")
+  #if debug: sys.stdout.write("type(seed): " + str(type(seed)) + "\n")
+  #if debug: sys.stdout.write("combinations: " + str(combinations) + "\n")
+  #if debug: sys.stdout.flush()
   scores = rank_possibilities(seed, combinations)
   #if debug: sys.stdout.write("scores total: " + str(scores) + "\n")
 
