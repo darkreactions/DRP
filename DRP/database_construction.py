@@ -1,5 +1,7 @@
 from retrievalFunctions import *
+from DRP.validation import bool_fields
 from logPrinting import print_error, print_log
+import sys
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  CG_calculations  # # # # # # # # # # # # # # # #
@@ -64,6 +66,9 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
   import datetime
 
   try:
+    debug=True
+    if debug: sys.stdout.write("asdf bluuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuurrrrrrrrrrrrrrrrrrrggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+    if debug: sys.stdout.flush()
     new_rec = Recommendation()
     #Set the self-assigning fields:
     setattr(new_rec, "lab_group", lab_group)
@@ -75,13 +80,21 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
     for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
 
       #Translate Booleans into Boolean values.
-      if field in bool_fields:
+      if field in bool_fields: # Assuming this was supposed to be the bool_fields in DRP.validation and adding import to top of file
         value = True if value[0].lower() in "1tyc" else False
 
       if debug:
         print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
 
+      if debug: sys.stdout.write("asdf blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrrrrrrrrggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+      if debug: sys.stdout.flush()
+      import os
+      os.system('echo "' + "debug point" + '"|espeak')
+
       setattr(new_rec, field, value)
+
+      if debug: sys.stdout.write("asdf bleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeearrrrrrrrrrrrrrrrrrrggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+      if debug: sys.stdout.flush()
 
     new_rec.atoms = "".join(new_rec.get_atoms())
 
@@ -131,9 +144,13 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
 
   call_time = datetime.datetime.now()
 
+  # I believe the following comment is no longer applicable to post-ModelStats refactoring code...
   #Either prepare a new "Model Version" or use the latest one for a lab group.
   try:
-    model = get_latest_ModelStats(lab_group)
+    # Was `model = get_latest_ModelStats(lab_group)`, but get_latest_ModelStats takes no argument.
+    # Removing argument. Should get_latest_ModelStats have an optional lab_group argument or was this a
+    # refactoring mistake?
+    model = get_latest_ModelStats()
   except Exception as e:
     print_error("Model not gathered for the Recommendation list: {}".format(e))
 
