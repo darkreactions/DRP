@@ -1,6 +1,41 @@
 from django.core.management.base import BaseCommand
 from optparse import make_option
-from DRP.adminFunctions import perform_CG_calculations
+
+def perform_CG_calculations(only_missing=True, lab_group=None,
+                            attempt_failed = True, verbose=False):
+
+  from DRP.models import CompoundEntry
+
+  #Variable Setup
+  success = 0
+  i = 0
+
+  cg = CompoundEntry.objects.all()
+  if only_missing:
+    cg = cg.filter(calculations=None)
+  if lab_group:
+    cg = cg.filter(lab_group=lab_group)
+  if not attempt_failed:
+    cg = cg.filter(calculations_failed=False)
+
+  for entry in cg:
+    try:
+      if verbose:
+        i+=1
+        if i%5==0: print "... {}.".format(i)
+
+      try:
+        entry.create_CG_calcs_if_needed()
+
+      except Exception as e:
+        entry.calculations_failed = True
+        print e
+
+      entry.save
+      success += 1
+    except Exception as e:
+      print "CG_calculation construction failed: {}".format(entry.compound)
+      print "ERROR: {}".format(e)
 
 class Command(BaseCommand):
   option_list = BaseCommand.option_list + (
