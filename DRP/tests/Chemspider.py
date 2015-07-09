@@ -1,24 +1,21 @@
 #!/usr/bin/env python
 
-#This file contains a (very) loose framework from which others can base their test files and be
-#conformant with the local arrangement of test cases.
-#For more information about the structure of tests, consult the python documentation at
-#https://docs.python.org/2/library/unittest.html
-
 #REMEMBER when you create a new test case to add it to the suite() method, and then
 #to have that suite method called in AllTests.py
-
+import TestConfig
+import chemspider
 import unittest
 loadTests = unittest.TestLoader.loadTestsFromTestCase
 
-class RidiculousTestCaseOne(unittest.testcase):
+class ChemspiderFind (unittest.testcase):
     #This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
 
     def setUp(self):
         pass
 
     def runTest(self):
-        pass
+        chemspider.chemspider_find(['ethanol'])
+	
 
     def tearDown(self):
         pass
