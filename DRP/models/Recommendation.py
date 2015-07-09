@@ -183,13 +183,13 @@ class Recommendation(models.Model):
 
   def get_atoms(self, refresh=False):
     if refresh or not self.atoms:
-      #atoms = {comp.get_atoms(fail_soft=False) for comp in self.get_compounds()} # TODO: CHANGE BACK TO fail_soft=True #daniel
+      #atoms = {comp.get_atoms(fail_soft=False) for comp in self.get_compounds()}
       #Grabs each x in the .get_atoms() of each comp in self.get_compounds(), puts em in a set
-      atoms = {x for comp in self.get_compounds() for x in comp.get_atoms(fail_soft=False)} # TODO: CHANGE BACK TO fail_soft=True #daniel
+      atoms = {x for comp in self.get_compounds() for x in comp.get_atoms(fail_soft=True)}
 
       # Store `atoms` so that reactions can be efficiently searched by atoms.
       self.atoms = json.dumps(list(atoms))
-      #self.save() # Temporary? Causing error in initial recommendation-building
+      #self.save() # Temporary? Causing error in initial recommendation-building #daniel
 
       return atoms
 

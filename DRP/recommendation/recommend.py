@@ -205,14 +205,8 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
     print "___"*10
     print "Starting row generator..."
 
-  import sys
-  #if debug:
-  #  sys.stdout.write("new_combination: " + str(new_combination) + "\n")
   row_generator = generate_rows_molar(new_combination, range_map, var_ranges)
   rows = [row for row in row_generator]
-  #if debug:
-  #  sys.stdout.write("rows: " + str(rows) + "\n")
-  #  sys.stdout.write("row len in rows: " + str(len(rows[0])) + "\n")
 
   # Shuffle the rows such that the search_space_max_size doesn't block combos.
   random.shuffle(rows)
@@ -221,16 +215,7 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   cleaned = []
   for i, row in enumerate(rows[:search_space_max_size]):
     expanded = parse_rxn.parse_rxn(row, cg_props, ml_convert)
-    #if debug:
-    #  sys.stdout.write("expanded row len: " + str(len(expanded)) + "\n")
     cleaned.append( mm.removeUnused(expanded, unused_indexes) )
-    #if debug:
-    #  sys.stdout.write("cleaned row len: " + str(len(cleaned[-1])) + "\n")
-
-  #if debug:
-  #  rect = all(len(cleaned[i]) == len(cleaned[0]) for i in range(len(cleaned)))
-  #  sys.stdout.write("data for arff rectangular? " + str(rect) + "\n")
-  #  sys.stdout.flush()
 
   if debug:
     print "Search-space size: {} of {}".format(len(cleaned), len(rows))
@@ -241,16 +226,9 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   # Write all the reactions to an ARFF so that WEKA can read them.
   suffix = "_recommend"
   name = str(int(time.time()))+suffix
-  if debug:
-    sys.stdout.write("name of generated arff: " + repr(name) + "\n")
-    #sys.stdout.write("row length of cleaned: " + str(len(cleaned[0])) + "\n")
-    sys.stdout.flush()
   mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
 
   # Run the reactions through the current WEKA model.
-  if debug:
-    import os
-    os.system('echo "' + "about to try the path" + '"|espeak')
   current_model = ModelStats.objects.last() # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE MAKING THIS LIVE #daniel
   model_path = current_model.get_path() # used to be mm.get_current_model()
 
@@ -315,10 +293,6 @@ def generate_rows_molar(reactants, mass_map, var_ranges):
 
   var_steps = 3
   amt_steps = 4
-
-  # For debugging:
-  import sys
-  sys.stdout.write("in generate_rows_molar: reactants: " + str(reactants) + "\n")
 
   for pH in lookupRange("pH", var_ranges, var_steps, int_return=True):
     for time in lookupRange("time", var_ranges, var_steps, int_return=True):
@@ -518,13 +492,6 @@ def build_baseline(lab_group=None, debug=False):
 
         debug_counter = 0
 
-        if debug:
-            import sys
-            #sys.stdout.write("blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n")
-            #sys.stdout.write("len(rxns): " + str(len(rxns)) + "\n")
-            #sys.stdout.write("type(rxns[0]: " + str(type(rxns[0])) + "\n")
-            #sys.stdout.write("rxns: " + str(rxns) + "\n")
-            sys.stdout.flush()
         for rxn in rxns:
                 r = rxn[:23]
 
@@ -540,15 +507,8 @@ def build_baseline(lab_group=None, debug=False):
 
                 if any([c not in cg_props for c in reactants]):
                   debug_counter += 1
-                  if debug: sys.stdout.write("bleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh\n")
-                  if debug: sys.stdout.write("[c for c in reactants if c not in cg_props]: " + str([c for c in reactants if c not in cg_props]) + "\n")
-                  raise(Exception("Stop! HAMMERTIME!"))
                   continue
 
-                #if debug: sys.stdout.write("reactants: " + str(reactants) + "\n")
-                #if debug: sys.stdout.write("asdf len(reactants): " + str(len(reactants)) + "\n")
-                #if debug: sys.stdout.write("reactants[0]: " + str(reactants[0]) + "\n")
-                #if debug: sys.stdout.flush()
                 q_key = tuple(sorted(reactants))
                 combinations.add(q_key)
                 add_to_map(range_map, r)
@@ -766,8 +726,6 @@ def build_diverse_org(max_results=250, debug=True):
 
 
 def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False):
-  import sys
-  sys.stdout.write("here1\n")
   def remove_empty(rxn):
     return [field if field!="-1" else "" for field in rxn]
 
@@ -778,8 +736,6 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Building baseline..."
   range_map, quality_map, combinations, var_ranges = build_baseline(debug=debug)
-  #if debug: sys.stdout.write("type(combinations): " + str(type(combinations)) + "\n")
-  #if debug: sys.stdout.write("combinations: " + str(combinations) + "\n")
 
   """
   range_map = {'': (0, 0),
@@ -793,9 +749,6 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Finding distinct recommendations..."
   seed = ( class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug) )
-  #if debug: sys.stdout.write("type(seed): " + str(type(seed)) + "\n")
-  #if debug: sys.stdout.write("seed: " + str(seed) + "\n")
-  if debug: sys.stdout.flush()
 
   if debug: print "Making abbrev_map..."
   abbrev_map, cs = get_abbrev_map()
@@ -806,26 +759,16 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
   if debug: print "Ranking possibilities..."
   #Scores: a list of (score, triple) tuples. (A score is an integer, a triple is a tuple of 3 rxn strings)
-  #if debug: sys.stdout.write("seed: " + str(seed) + "\n")
-  #if debug: sys.stdout.write("type(seed): " + str(type(seed)) + "\n")
-  #if debug: sys.stdout.write("combinations: " + str(combinations) + "\n")
-  #if debug: sys.stdout.flush()
   scores = rank_possibilities(seed, combinations)
-  #if debug: sys.stdout.write("scores total: " + str(scores) + "\n")
-
-  if debug:
-    import os, sys
-    sys.stdout.write("here2\n")
-    sys.stdout.flush()
 
   # A filter for redudant simplifications, using mutual information. Commenting out until fixed.
   ## if debug: print "Filtering scores (via mutual info)..."
+  if debug: "Mutual info filter skipped while in need of attention"
   ## import DRP.recommendation.mutual_info as mutual_info
   ## scores = mutual_info.do_filter(scores, range_map)
 
   if debug: print "Scores ({} Total):".format(len(scores))
   scores = scores[:total_to_score]
-  #if debug: sys.stdout.write("scores total: " + str(scores) + "\n")
 
   if debug: print "Rescoring..."
 
@@ -834,26 +777,17 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
       reaction_tuples = evaluate_fitness(s[1], range_map, var_ranges, debug=debug)
       if not reaction_tuples:
-        if debug:
-          sys.stdout.write("branch 1 of recommendation generator\n")
-          sys.stdout.flush()
         yield (0, None)
       else:
         for score, rxn in reaction_tuples:
           if use_lab_abbrevs:
             rxn = translate_reactants(use_lab_abbrevs, rxn, single=True)
           rxn = remove_empty(rxn)
-          if debug: sys.stdout.write("branch 2 of recommendation generator\n")
-          if debug: sys.stdout.write("score, s[0], score*s[0]: " + str(score) + ", " + str(s[0]) + ", " + str(score*s[0]) + "\n")
-          if debug: sys.stdout.flush()
 
           yield (score*s[0], rxn)
 
     except Exception as e:
-      if debug: sys.stdout.write("exception branch of recommendation generator\n")
-      if debug: sys.stdout.flush()
       print "{} failed with {}: {}".format(s, e, type(e))
-      if debug: print "yaaaaaargh"
       if debug: import traceback
       if debug: traceback.print_exc()
       yield (0, None)
@@ -874,16 +808,15 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
   if debug: print "-- Storing recommmendations..."
   for (conf, rec) in scored_reactions:
     if conf>0:
-      if debug: sys.stdout.write("in create_new_recommendations: conf>0\n")
-      if debug: sys.stdout.flush()
+      #if debug: sys.stdout.write("in create_new_recommendations: conf>0\n")
+      #if debug: sys.stdout.flush()
       rec = map(str, rec)
       store_new_Recommendation_list(lab_group, [[conf]+rec], debug=debug)
       total += 1
       if debug: print " ... Finished #{}!".format(total)
     else:
-      if debug:
-        sys.stdout.write("in create_new_recommendations: conf not >0\n")
-        sys.stdout.flush()
+      if debug: sys.stdout.write("in create_new_recommendations: conf not >0\n")
+      if debug: sys.stdout.flush()
 
     if total>max_recs_per_call:
       break

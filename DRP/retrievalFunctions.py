@@ -361,6 +361,8 @@ def get_compound_by_name(compound_str):
     by_string = list(CompoundEntry.objects.filter(abbrev=compound_str))
     by_abbrev = list(CompoundEntry.objects.filter(compound=compound_str))
     by_both = by_string + by_abbrev
+    # This bit with the by_both_filtered is a bit of a hack, intended to avoid errors
+    #   from missing SMILES which should really be fixed in the database.
     by_both_filtered = [x for x in by_both if x.smiles]
     return (by_both_filtered+by_both)[0]
 

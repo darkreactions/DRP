@@ -63,11 +63,10 @@ def get_vars_from_list(lst):
 
 #Creates the Recommendation entry, but does not store it in database.
 def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
-    from DRP.models import Recommendation, get_model_field_names
-    import datetime
+  from DRP.models import Recommendation, get_model_field_names
+  import datetime
 
-  # Try catch commented for debugging purposes
-  #try:
+  try:
     debug=True
     new_rec = Recommendation()
     #Set the self-assigning fields:
@@ -76,9 +75,6 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
 
     #Set the non-user field values.
     fields = get_model_field_names(model="Recommendation")
-    if debug: sys.stdout.write("fields: " + str(fields) + "\n:")
-    if debug: sys.stdout.write("len(fields): " + str(len(fields)) + "\n:")
-    if debug: sys.stdout.flush()
 
     for (field, value) in zip(fields[1:], lst[2:]): #Ignore the reference field (and conf)
 
@@ -91,32 +87,18 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
       if field.startswith("reactant_fk"):
         value = get_compound_by_name(value)
 
-      if debug: sys.stdout.write("jkl; graaaaaaaaaaaaaaaa \n:")
-      if debug: sys.stdout.flush()
-
       if debug:
         print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
 
-      if debug: sys.stdout.write("jkl; gruuuuuuuuuuuuuuuu \n:")
-      if debug: sys.stdout.flush()
-
-      if debug: sys.stdout.write("new_rec, field, value: " + str(new_rec) + ", " + str(field) + ", " + str(value) + "\n")
-      if debug: sys.stdout.flush()
       setattr(new_rec, field, value)
 
-    if debug: sys.stdout.write("asdf new_rec.atoms: " + str("".join(new_rec.get_atoms())) + "\n:")
-    if debug: sys.stdout.write("asdf type(new_rec.atoms): " + str(type("".join(new_rec.get_atoms()))) + "\n:")
-    if debug: sys.stdout.flush()
     new_rec.atoms = "".join(new_rec.get_atoms())
 
     if not in_bulk:
       new_rec.date_dt = datetime.datetime.now()
 
     return new_rec
-  #except Exception as e:
-    import os
-    os.system('echo "' + "debug point" + '"|espeak')
-
+  except Exception as e:
     raise Exception("Recommendation construction failed: {}".format(e))
 
 def store_new_RankedReaction(json_input):
@@ -172,11 +154,9 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
   num_success = 0
   count = 0
   for rec in recommendations:
-      count += 1
-    # Try-catch commented for debugging purposes
-    #try:
+    count += 1
+    try:
       print "1: {}".format(rec)
-      if debug: print "length: ", len(rec)
       new_rec = field_list_to_Recommendation(lab_group, rec, in_bulk=True)
       new_rec.date_dt = call_time
       new_rec.model_version = model
@@ -186,7 +166,7 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
 
       new_rec.save() #Store this recommendation in the database
       num_success += 1
-    #except Exception as e:
+    except Exception as e:
       print_error("Recommendation {} could not be constructed: {}".format(count, e))
 
   if debug: print_log("Finished creating and storing {} of {} items!.".format(num_success, count))
