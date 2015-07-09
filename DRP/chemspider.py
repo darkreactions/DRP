@@ -1,5 +1,7 @@
+from models.CompoundEntry import CompoundEntry
+import chemspipy
+
 def chemspider_find(search_fields):
-  import chemspipy
 
   for i in search_fields:
     try:
