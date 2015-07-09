@@ -1,6 +1,7 @@
 from retrievalFunctions import *
 from DRP.validation import bool_fields
 from logPrinting import print_error, print_log
+from DRP.retrievalFunctions import get_compound_by_name
 import sys
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -62,13 +63,12 @@ def get_vars_from_list(lst):
 
 #Creates the Recommendation entry, but does not store it in database.
 def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
-  from DRP.models import Recommendation, get_model_field_names
-  import datetime
+    from DRP.models import Recommendation, get_model_field_names
+    import datetime
 
-  try:
+  # Try catch commented for debugging purposes
+  #try:
     debug=True
-    if debug: sys.stdout.write("asdf bluuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuurrrrrrrrrrrrrrrrrrrggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-    if debug: sys.stdout.flush()
     new_rec = Recommendation()
     #Set the self-assigning fields:
     setattr(new_rec, "lab_group", lab_group)
@@ -76,33 +76,47 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
 
     #Set the non-user field values.
     fields = get_model_field_names(model="Recommendation")
+    if debug: sys.stdout.write("fields: " + str(fields) + "\n:")
+    if debug: sys.stdout.write("len(fields): " + str(len(fields)) + "\n:")
+    if debug: sys.stdout.flush()
 
-    for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
+    for (field, value) in zip(fields[1:], lst[2:]): #Ignore the reference field (and conf)
 
       #Translate Booleans into Boolean values.
-      if field in bool_fields: # Assuming this was supposed to be the bool_fields in DRP.validation and adding import to top of file
+      # Assuming this was supposed to be the bool_fields in DRP.validation and adding import to top of file (there was no value assigned to the name bool_fields)
+      if field in bool_fields:
         value = True if value[0].lower() in "1tyc" else False
+
+      # Use the CompoundEntry object to build the rec instead of the compound string
+      if field.startswith("reactant_fk"):
+        value = get_compound_by_name(value)
+
+      if debug: sys.stdout.write("jkl; graaaaaaaaaaaaaaaa \n:")
+      if debug: sys.stdout.flush()
 
       if debug:
         print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
 
-      if debug: sys.stdout.write("asdf blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrrrrrrrrggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+      if debug: sys.stdout.write("jkl; gruuuuuuuuuuuuuuuu \n:")
       if debug: sys.stdout.flush()
-      import os
-      os.system('echo "' + "debug point" + '"|espeak')
 
+      if debug: sys.stdout.write("new_rec, field, value: " + str(new_rec) + ", " + str(field) + ", " + str(value) + "\n")
+      if debug: sys.stdout.flush()
       setattr(new_rec, field, value)
 
-      if debug: sys.stdout.write("asdf bleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeearrrrrrrrrrrrrrrrrrrggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-      if debug: sys.stdout.flush()
-
+    if debug: sys.stdout.write("asdf new_rec.atoms: " + str("".join(new_rec.get_atoms())) + "\n:")
+    if debug: sys.stdout.write("asdf type(new_rec.atoms): " + str(type("".join(new_rec.get_atoms()))) + "\n:")
+    if debug: sys.stdout.flush()
     new_rec.atoms = "".join(new_rec.get_atoms())
 
     if not in_bulk:
       new_rec.date_dt = datetime.datetime.now()
 
     return new_rec
-  except Exception as e:
+  #except Exception as e:
+    import os
+    os.system('echo "' + "debug point" + '"|espeak')
+
     raise Exception("Recommendation construction failed: {}".format(e))
 
 def store_new_RankedReaction(json_input):
@@ -158,19 +172,21 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
   num_success = 0
   count = 0
   for rec in recommendations:
-    count += 1
-    try:
-     print "1: {}".format(rec)
-     new_rec = field_list_to_Recommendation(lab_group, rec, in_bulk=True)
-     new_rec.date_dt = call_time
-     new_rec.model_version = model
-     if seed_source:
-       new_rec.seeded = True
-       new_rec.seed = seed_source #Record if this recommendation is seeded.
+      count += 1
+    # Try-catch commented for debugging purposes
+    #try:
+      print "1: {}".format(rec)
+      if debug: print "length: ", len(rec)
+      new_rec = field_list_to_Recommendation(lab_group, rec, in_bulk=True)
+      new_rec.date_dt = call_time
+      new_rec.model_version = model
+      if seed_source:
+        new_rec.seeded = True
+        new_rec.seed = seed_source #Record if this recommendation is seeded.
 
-     new_rec.save() #Store this recommendation in the database
-     num_success += 1
-    except Exception as e:
+      new_rec.save() #Store this recommendation in the database
+      num_success += 1
+    #except Exception as e:
       print_error("Recommendation {} could not be constructed: {}".format(count, e))
 
   if debug: print_log("Finished creating and storing {} of {} items!.".format(num_success, count))

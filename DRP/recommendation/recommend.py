@@ -254,7 +254,6 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
   current_model = ModelStats.objects.last() # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE MAKING THIS LIVE #daniel
   model_path = current_model.get_path() # used to be mm.get_current_model()
 
-  #name = "_changed" # temporary, to see if things run with properly configured arff
   results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
 
   # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
@@ -854,6 +853,9 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
       if debug: sys.stdout.write("exception branch of recommendation generator\n")
       if debug: sys.stdout.flush()
       print "{} failed with {}: {}".format(s, e, type(e))
+      if debug: print "yaaaaaargh"
+      if debug: import traceback
+      if debug: traceback.print_exc()
       yield (0, None)
 
 
