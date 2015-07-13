@@ -1,18 +1,22 @@
 from django.db.models import Q
-
-  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+from DRP.models import Data, get_lab_Data, get_model_field_names
+from DRP.cacheFunctions import get_cache, set_cache
+from DRP.models import get_lab_Data
+import datetime, dateutil.relativedelta
+import operator
+from DRP.data_config import CONFIG
+from DRP.validation import bool_fields
+  
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # DATA  # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-#Returns a specific datum if it is public or if it belongs to a lab_group.
 def get_public_data():
-  from DRP.models import Data
+  '''Returns a data that is both valid and public'''
   return Data.objects.filter(public=True, is_valid=True).order_by("creation_time_dt")
 
 
 def get_lab_Data_size(lab_group):
-  from DRP.cacheFunctions import get_cache, set_cache
-  from DRP.models import get_lab_Data
   size = get_cache(lab_group, "TOTALSIZE")
   if not size:
     size = get_lab_Data(lab_group).count()
@@ -30,8 +34,6 @@ def atom_filter(atoms, data=None, op="and", negative=False):
   negative = Enable to *remove* anything from `data` that matches the query.
   """
 
-  import operator
-  from django.db.models import Q
 
   op_map = {
     "and":operator.and_,
@@ -55,12 +57,7 @@ def atom_filter(atoms, data=None, op="and", negative=False):
 
   return data
 
-
-
-
-#Get data before/after a specific date (ignoring time).
 def filter_by_date(lab_data, raw_date, direction="after"):
-  import datetime, dateutil.relativedelta
 
   # Convert the date input into a usable string. (Date must be given as MM-DD-YY.)
   date = datetime.datetime.strptime(raw_date, "%m-%d-%Y")
@@ -80,8 +77,6 @@ def filter_existing_calcs(data):
   """
   Returns only the data which have calculations.
   """
-  from django.db.models import Q
-
   data = data.filter(~Q(calculations=None))
   data = data.filter(~Q(calculations__contents=""))
   data = data.filter(~Q(calculations__contents="[]"))
@@ -89,9 +84,6 @@ def filter_existing_calcs(data):
   return data
 
 def filter_data(data, queries):
-  from django.db.models import Q
-  from DRP.data_config import CONFIG
-  import operator
 
   multifields = {"reactant", "quantity", "unit"}
   mapper = {
@@ -161,10 +153,6 @@ def filter_data(data, queries):
 
 
 def form_filter_data(lab_group, query_list):
- from DRP.models import get_lab_Data, get_model_field_names
- from DRP.data_config import CONFIG
- from DRP.validation import bool_fields
- import operator
 
  #Variable Setup
  data = get_lab_Data(lab_group)
