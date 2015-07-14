@@ -1,69 +1,61 @@
-<div class='bannerText'>
+{% extends "base.html" %}
+{% block content %}
+<h1 class='bannerText'>
   Contributors
-</div>
+</h1>
 
-<div class='contributor'>
-  <div class='groupName'>
-    <a href='http://www.haverford.edu/computerscience/faculty/sorelle/index.html'>
-      Sorelle Friedler
-    </a>
-  </div>
+<figure class='contributor'>
   <img class='soloPicture' src="{{STATIC_URL}}images/Sorelle.jpg" />
-  <div class='soloInfo'>
+  <figcaption class='soloInfo'>
+    <a href='http://www.haverford.edu/computerscience/faculty/sorelle/index.html'>Sorelle Friedler</a>:
     Assistant Professor of Computer Science,
     Haverford College.
-  </div>
-</div>
+  </figcaption>
+</figure>
 
-<div class='contributor'>
-  <div class='groupName'>
-    <a href='http://www.haverford.edu/chem/Norquist/'>
-      Alex Norquist
-    </a>
-  </div>
+<figure class='contributor'>
   <img class='soloPicture' src="{{STATIC_URL}}images/Alex.jpg" />
-  <div class='soloInfo'>
+  <figcaption class='soloInfo'>
+    <a href='http://www.haverford.edu/chem/Norquist/'>Alex Norquist</a>:
     Associate Professor of Chemistry,
     Haverford College.
-  </div>
-</div>
+  </figcaption>
+</figure>
 
-<div class='contributor'>
-  <div class='groupName'>
-    <a href='http://www.haverford.edu/chem/schrier/'>
-      Joshua Schrier
-    </a>
-  </div>
+<figure class='contributor'>
   <img class='soloPicture' src="{{STATIC_URL}}images/Joshua.jpg" />
-  <div class='soloInfo'>
+  <figcaption class='soloInfo'>
+    <a href='http://www.haverford.edu/chem/schrier/'>Joshua Schrier</a>:
     Assistant Professor of Chemistry,
     Haverford College.
-  </div>
-</div>
+  </figcaption>
+</figure>
 
-<div class='contributor'>
-  <div class='groupName'>Friedler Lab</div>
+<figure class='contributorGroup'>
   <img src='{{STATIC_URL}}images/FriedlerLab.jpg' class='groupPicture' />
-  <div class='groupInfo info'>
+  <figcaption class='groupInfo info'>
+    <h1 class='groupName'>Friedler Lab</h1>
+    <p>
+    (Left to Right)
     Paul Raccuglia,
     Nora Tien,
     <a href='http://caseyfalk.com'>Casey Falk</a>,
     Daniel Washburn
-    <br/>
-    (Left to Right)
-  </div>
-</div>
+    </p>
+  </figcaption>
+</figure>
 
-<div id='contributorContainer'>
+<section id='contributorContainer'>
 
   <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1307801"
     title="See the full NSF award.">
     <img class='contributorLogo' src="{{STATIC_URL}}images/NSF.gif"/>
   </a>
 
-  <a href="http://www.haverford.edu/"/>
+  <a href="http://www.haverford.edu/">
     <img class='contributorLogo'
         id="haverfordLogo" src="{{STATIC_URL}}images/haverford_logo.png"/>
   </a>
 
-</div>
+</section>
+{% endblock %}
