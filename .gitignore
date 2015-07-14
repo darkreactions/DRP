@@ -1,6 +1,5 @@
 DRP/settings.py
 DRP/data_config.py
-DRP/migrations/*
 DRP/tmp/
 DRP/research/casey/results/CSVs/*
 
