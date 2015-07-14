@@ -1,4 +1,5 @@
 #Django settings for DRP project.
+#TODO: Set / to being os.sep
 import os
 SITE_ID = 1
 
@@ -173,8 +174,6 @@ LOGGING = {
     }
 }
 
-#Apply a user-profile to users:
-AUTH_PROFILE_MODULE = 'DRP.lab_member'
 ACCESS_CODE_LENGTH = 20 #Designates the max_length of user access_codes
 
 #Set up Memcached caching:
