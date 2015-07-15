@@ -1,14 +1,16 @@
+'''A module containing only the Descriptor class'''
 from django.db import models
 
 class Descriptor(models.Model):
+  '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
   
   class Meta:
     app_label='DRP'
 
   heading=models.CharField(max_length=200)
+  '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
+  enforce MS-excel style CSV compatibility
+  '''
   name=models.CharField('Full name', max_length=300)
   kind=models.Charfield('Kind', max_length=20, choices=(('Cat', 'Categorical'), ('Ord', 'Ordinal'), ('Num', 'Numerical'), ('Bool', 'Boolean'))
-  NaNCat = models.CharField('Not-a-value placeholder for the case of a categorical descriptor', max_length=200, null=True, default=None)
-  NaNOrd = models.CharField('Not-a-value placeholder for the case of an ordinal descriptor', max_length=100, null=True, default=None)
-  NaNNum = models.CharField('Not-a-value placeholder for the case of a numerical descriptor', max_length=100, null=True, default=None)
-  NaNBool = models.CharField('Not-a-value placeholder for the case of a boolean descriptor', max_length=100, null=True, default=None)
+  '''The kind of descriptor changes the type of data which is applicable for a descriptor value (these are stores in the DescriptorValue relationship class'''
