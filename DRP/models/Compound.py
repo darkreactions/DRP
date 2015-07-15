@@ -1,24 +1,46 @@
+'''Module containing only the Compound Class'''
 from django.db import models
 from Compound import Compound
+from Descriptor import Descriptor
 from ChemicalClass import ChemicalClass
 
 from LabGroup import LabGroup, get_Lab_Group
 from CG_calculations import CG_calculations
 
 class Compound(models.Model):
+  '''A class for containing data about Compounds used in chemical reactions.
+  The assumption is made that all chemicals used are single-species.
+  '''
   
   class Meta:
     app_label = "DRP"
 
   abbrev = models.CharField("Abbreviation", max_length=100)
-  name = models.CharField('IUPAC Name:', max_length=300)
+  '''A local, often nonstandard abbreviation for a compound'''
+  name = models.CharField('Name:', max_length=300)
+  '''Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)'''
   CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, default="")
   CHEBI_ID = models.PositiveIntegerField('CHEBI ID')
+  '''The CHEBI_ID for the compound. This has been added as a zero-cost attribute which may be used for automating chemical semantics later'''
   ChemicalClass = models.ManyToManyField(ChemicalClass)
+  '''The class of the compound- examples include Inorganic Salt'''
   CSID = models.PositiveIntegerField('Chemspider ID')
+  '''The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions'''
   custom = models.BooleanField("Custom", default=False)
+  '''This flag denotes whether a compound has been added irrespective of other validation.
+  This should be restricted to superusers'''
+  INCHI = models.TextField('InCHI key', blank=True, default='')
+  '''The Inchi key for a compound- a canonical representation of a molecule which is also unique.'''
 
-  descriptors = models.ManyToManyField(Descriptors, through='DescriptorValue')
+  smiles= models.TextField('Smiles', blank=True, default='')
+  '''A non-canonical string representation of a molecule which cannot be directly used to test for identity
+  but is nevertheless useful for calculating descriptors
+  '''
+
+  descriptors = models.ManyToManyField(Descriptor, through='DescriptorValue')
+  '''A link to descriptors which have been calculated for this compound. Values for the descriptors are found
+  on the DescriptorValue model.
+  '''
 
   def __unicode__(self):
     if self.compound == self.abbrev:
