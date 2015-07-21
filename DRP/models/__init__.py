@@ -1,16 +1,20 @@
-
-# Anything imported here gets imported on `from DRP.models import *`
+'''Models for the DRP app'''
+#Anything imported here gets imported on `from DRP.models import *`
+#Not that such behaviour is encouraged!
 
 # Classes that should get included.
-from Lab_Member import *
-from Lab_Group import *
-from Recommendation import *
-from RankedReactionList import *
-from CompoundEntry import *
-from Data import *
-
-# Any additional methods...
-from methods import *
-from DEPRECATED import *
-
-
+from Compound import Compound
+from CompoundQuantity import CompoundQuantity
+from DataSet import DataSet
+from Descriptor import Descriptor
+from DescriptorValue import DescriptorValue
+from LabGroup import LabGroup
+from LegacyStatsModel import LegacyStatsModel
+from LicenseAgreement import LicenseAgreement
+from License import License
+from PerformedReaction import PerformedReaction
+import PeriodicTable
+from Reaction import Reaction
+from Recommendation import Recommendation
+from StatsModel import StatsModel
+from StatsModelTag import StatsModelTag
