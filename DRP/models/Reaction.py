@@ -7,7 +7,7 @@ class Reaction(models.Model):
   class Meta:
     app_label="DRP"
 
-  compounds=models.ManyToManyField(Compound, through="CompoundQuantities")
+  compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
   temp=models.IntegerField()
   slowCool=models.BooleanField()
   time=models.IntegerField()
