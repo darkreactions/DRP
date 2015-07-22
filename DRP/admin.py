@@ -1,8 +1,6 @@
-from models import Lab_Member, Lab_Group, Data, CompoundEntry
 from django.contrib import admin
+from django.db import User
+from models import LabGroup
 
-admin.site.register(Lab_Member)
-admin.site.register(Lab_Group)
-admin.site.register(Data)
+admin.site.register(LabGroup)
 
-admin.site.register(CompoundEntry)
