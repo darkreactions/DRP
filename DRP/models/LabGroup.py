@@ -1,3 +1,4 @@
+'''A module containing only the LabGroup class'''
 from django.db import models
 from django.contrib import auth
 import random, string
@@ -10,6 +11,7 @@ def get_random_code():
   return "".join(chars)
 
 class LabGroup(models.Model):
+  '''A class for describing a collection of scientists belonging to the same group.'''
   class Meta:
     app_label = "DRP"
 
@@ -18,7 +20,9 @@ class LabGroup(models.Model):
   email = models.CharField(max_length=254) #Maximum length of email address
                                  default='')
   access_code = models.CharField(max_length=128)
+  '''An access code to allow members to \'prove\' that they are permitted to join the lab. Normally held by a laboratory administrator.'''
   legacy_access_code = models.CharField(max_length=20)
+  '''An older version of the access code. Made a part of this model for legacy support'''
   users = models.ManyToManyField(user)
 
   def __unicode__(self):

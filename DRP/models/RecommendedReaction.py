@@ -1,3 +1,4 @@
+'''A module containing only the RecommendedReaction class'''
 from django.db import models
 from Reaction import Reaction
 

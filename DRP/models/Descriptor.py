@@ -7,7 +7,7 @@ class Descriptor(models.Model):
   class Meta:
     app_label='DRP'
 
-  heading=models.CharField(max_length=200)
+  heading=models.CharField(max_length=200, unique=True, error={'unique':'This descriptor is already registered, or another descriptor already has this title.'})
   '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
   enforce MS-excel style CSV compatibility
   '''

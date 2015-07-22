@@ -1,17 +1,25 @@
+'''A module containing the old version of the StatsModel class. This was previously called the ModelStats class.'''
 from django.db import models
 from DRP.settings import MODEL_DIR
 
 class LegacyStatsModel(models.Model):
+  '''The legacy version of the StatsModel class. Formerly called ModelStats'''
+
   class Meta:
     app_label = "DRP"
 
   # Model Statistics
   confusion_table = models.TextField(default="{}")
+  '''The confusion table as calculated from the test data'''
   train_confusion_table = models.TextField(default="{}")
+  '''The confusion table as calculated from the training only data'''
   tmp_confusion_table = models.TextField(default="{}")
+  '''A confusion table for testing models with novel sets of data which were neither the training nor the test data'''
   headers = models.TextField(default="[]")
+  '''The headers of the descriptors used in this model'''
   correct_vals = models.CharField("Correct Values", max_length=100,
                                   default="[\"3\",\"4\"]")
+  '''Defines the values for a positive response on the outcome descriptor. Hitherto, this has been 3 or 4, hence the default.'''
 
   # Model Descriptors
   title = models.CharField("Title", max_length=100, default="untitled")
@@ -23,6 +31,7 @@ class LegacyStatsModel(models.Model):
   filename = models.CharField("Filename", max_length=128,
                                           default=MODEL_DIR+"untitled.model")
   active = models.BooleanField("Active", default=True)
+  '''Is this the model currently being used to aid in recommendations?'''
   start_time = models.DateTimeField(blank=True, null=True)
   end_time = models.DateTimeField(blank=True, null=True)
   usable = models.BooleanField("Usable", default=True)
@@ -30,7 +39,8 @@ class LegacyStatsModel(models.Model):
   # Available model types.
   library = models.CharField("Library", max_length=128, default="weka")
   tool = models.CharField("Tool", max_length=128, default="svc")
-  response = models.CharField("Response", max_length=128, default="outcome")
+  response = models.CharField("Response", max_length=128, default="outcomoe")
+  '''The name of the response descriptor being calculated'''
 
 
 
