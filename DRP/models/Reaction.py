@@ -1,7 +1,8 @@
 '''A module containing only the Reaction class'''
 from django.db import models
-from LabGroup import Labgroup
+from LabGroup import LabGroup
 from Descriptor import Descriptor
+from Compound import Compound
 
 class Reaction(models.Model):
   '''A base class on which PerformedReactions and RecommendedReactions are built,

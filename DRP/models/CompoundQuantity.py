@@ -3,7 +3,7 @@ from django.db import models
 from Compound import Compound
 from Reaction import Reaction
 
-class CompoundQuantity(models.model):
+class CompoundQuantity(models.Model):
   '''A class to contain the relationship between a reaction and a compound,
   and thus to contain the amount of a given compound used in a reaction
   with the applicable units. At present, no unit convention is enforced.

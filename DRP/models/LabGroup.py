@@ -1,6 +1,7 @@
 '''A module containing only the LabGroup class'''
 from django.db import models
 from django.contrib import auth
+from django.contrib.auth.models import User
 import random, string
 
 # Helper function for creating random access codes for Lab Groups.
@@ -17,13 +18,13 @@ class LabGroup(models.Model):
 
   title = models.CharField(max_length=200, unique=True, error_messages={'unique':"This name is already taken."})
   address = models.CharField(max_length=200)
-  email = models.CharField(max_length=254) #Maximum length of email address
+  email = models.CharField(max_length=254, #Maximum length of email address
                                  default='')
   access_code = models.CharField(max_length=128)
   '''An access code to allow members to \'prove\' that they are permitted to join the lab. Normally held by a laboratory administrator.'''
   legacy_access_code = models.CharField(max_length=20)
   '''An older version of the access code. Made a part of this model for legacy support'''
-  users = models.ManyToManyField(user)
+  users = models.ManyToManyField(User)
 
   def __unicode__(self):
     return self.lab_title

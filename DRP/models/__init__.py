@@ -12,10 +12,9 @@ from LabGroup import LabGroup
 from LegacyStatsModel import LegacyStatsModel
 from LicenseAgreement import LicenseAgreement
 from License import License
-from PerformedReaction import PerformedReaction
-import PeriodicTable
 from Reaction import Reaction
-from Recommendation import Recommendation
+from PerformedReaction import PerformedReaction
+from RecommendedReaction import RecommendedReaction
 from StatsModel import StatsModel
 from StatsModelTag import StatsModelTag
 from ChemicalClass import ChemicalClass
