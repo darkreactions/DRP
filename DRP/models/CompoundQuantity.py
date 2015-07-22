@@ -15,4 +15,4 @@ class CompoundQuantity(models.Model):
   compound=models.ForeignKey(Compound)
   reaction=models.ForeignKey(Reaction)
   amount=models.FloatField() 
-  amountUnit=models.CharField()
+  amountUnit=models.CharField(max_length=10)

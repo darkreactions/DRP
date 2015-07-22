@@ -14,7 +14,7 @@ class DescriptorValue(models.Model):
   descriptor = models.ForeignKey(Descriptor)
   Reaction = models.ForeignKey(Reaction, null=True, unique=False, default=None)
   Compound = models.ForeignKey(Compound, null=True, unique=False, default=None)
-  booleanValue= models.BooleanField('Value if descriptor is a boolean', null=True)
+  booleanValue= models.NullBooleanField('Value if descriptor is a boolean', null=True)
   ordValue = models.PositiveIntegerField('Value if descriptor is an ordinal', null=True)
   catValue = models.CharField('Value if descriptor is a category', max_length=200, null=True)
   numValue = models.FloatField('Value if descritpor is continuous', null=True)

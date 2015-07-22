@@ -11,7 +11,7 @@ class DataSet(models.Model):
   class Meta:
     app_label='DRP'
 
-  reaction=models.ForeignKey(Reaction)
+  reaction=models.ForeignKey(PerformedReaction)
   model=models.ForeignKey(StatsModel)
   isTestSet=models.BooleanField()
   isTrainingSet=models.BooleanField()

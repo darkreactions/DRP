@@ -10,7 +10,7 @@ class RecommendedReaction(Reaction):
 
   score=models.FloatField()
   model=models.ForeignKey(StatsModel.StatsModel, null=True)
-  seed=models.ForeignKey(Reaction, null=True)
+  seed=models.ForeignKey(Reaction, null=True, related_name='seeded')
   nonsense=models.BooleanField()
   hidden=models.BooleanField()
   saved=models.BooleanField()
