@@ -18,3 +18,4 @@ from Reaction import Reaction
 from Recommendation import Recommendation
 from StatsModel import StatsModel
 from StatsModelTag import StatsModelTag
+from ChemicalClass import ChemicalClass

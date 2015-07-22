@@ -186,3 +186,6 @@ CACHES = {
 
 #Force users to log out when the browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+CHEMICAL_CLASS_CHOICES=()
+LIBRARY_CHOICES=()
+TOOL_CHOICES=()

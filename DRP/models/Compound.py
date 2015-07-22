@@ -1,6 +1,5 @@
 '''Module containing only the Compound Class'''
 from django.db import models
-from Compound import Compound
 from Descriptor import Descriptor
 from ChemicalClass import ChemicalClass
 
