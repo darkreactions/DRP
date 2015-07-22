@@ -1,6 +1,7 @@
 '''Module containing only the DataSet class'''
 from django.db import models
 from StatsModel import StatsModel
+from PerformedReaction import PerformedReaction
 from Reaction import Reaction
 
 class DataSet(models.Model):
