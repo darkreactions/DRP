@@ -22,16 +22,16 @@ class Email(object):
     self.sender = sender
 
   def send(self):
-    return send_mail(subject, message, self.sender, self.recipients, fail_silently=FALSE)
+    return send_mail(self.subject, self.message, self.sender, self.recipients, fail_silently=False)
   
 class EmailToAdmins(Email):
   """Sends email specifically to administrators, with a specific flag for managers"""
 
   def __init__(self, subject, messageFrame, messageVars={}, includeManagers=False, sender=settings.DEFAULT_FROM_EMAIL):
     if includeManagers:
-      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, sender, settings.ADMIN_EMAILS)
+      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, settings.ADMIN_EMAILS, sender)
     else:
-      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, sender, settings.ADMIN_EMAILS + settings.MANAGER_EMAILS)
+      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, settings.ADMIN_EMAILS + settings.MANAGER_EMAILS, sender)
 
 #class EmailToLab(Email):
 #
