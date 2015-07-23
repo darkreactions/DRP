@@ -1,36 +1,37 @@
 """
-The Emai classes below are designed to make emailing the admins (us),
+These Email below are designed to make emailing the admins (us),
 the lab heads, and the lab members easier. Each takes a subject and a 
 message (and a lab/user if applicable), and sends them an email. If a
 critical error occurs (which probably means the darkreactions email/pass
-is incorrect), an error is printed. Each automatic "worker" process that
+is incorrect), an uncaptured exception occurs. Each automatic "worker" process that
 is added should include emails to admins to indicate failures.
-
-Note that in DEBUG-mode (indicated in settings.py) email errors will not
-be logged -- since emailing should never work if you have the password
-correctly set to "SecurePassword" as you should while developing.
 """
 
 import sys
 from django.core.mail import send_mail
+from DRP import settings
+
 
 class Email(object):
+  """The base email class, sends email to a specified recipient from a specified sender""" 
 
-  def __init__(self, subject, messageFrame, messageVars={}, to=[]):
+  def __init__(self, subject, messageFrame, messageVars={}, to=[], sender=settings.EMAIL_HOST_USER):
     self.subject = subject
     self.message = messageFrame.format(messageVars)
     self.recipients = to
+    self.sender = sender
 
   def send(self):
-    return send_mail(subject, message, settings.EMAIL_HOST_USER, self.recipients, fail_silently=FALSE)
+    return send_mail(subject, message, self.sender, self.recipients, fail_silently=FALSE)
   
 class EmailToAdmins(Email):
+  """Sends email specifically to administrators, with a specific flag for managers"""
 
-  def __init__(self, subject, messageFrame, messageVars={}, includeManagers=False):
+  def __init__(self, subject, messageFrame, messageVars={}, includeManagers=False, sender=settings.EMAIL_HOST_USER):
     if includeManagers:
-      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, settings.ADMIN_EMAILS)
+      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, sender, settings.ADMIN_EMAILS)
     else:
-      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, settings.ADMIN_EMAILS + settings.MANAGER_EMAILS)
+      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, sender, settings.ADMIN_EMAILS + settings.MANAGER_EMAILS)
 
 #class EmailToLab(Email):
 #
