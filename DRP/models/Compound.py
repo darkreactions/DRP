@@ -4,7 +4,6 @@ from Descriptor import Descriptor
 from ChemicalClass import ChemicalClass
 
 from LabGroup import LabGroup, get_Lab_Group
-from CG_calculations import CG_calculations
 
 class Compound(models.Model):
   '''A class for containing data about Compounds used in chemical reactions.

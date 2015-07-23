@@ -1,6 +1,8 @@
 from django.contrib import admin
-from django.db import User
-from models import LabGroup
+from models.LabGroup import LabGroup
+from forms import LabGroupForm
 
-admin.site.register(LabGroup)
+class LabGroupAdmin(admin.ModelAdmin):
+  form = LabGroupForm
 
+admin.site.register(LabGroup, LabGroupAdmin)

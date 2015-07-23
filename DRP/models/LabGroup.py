@@ -27,7 +27,7 @@ class LabGroup(models.Model):
   users = models.ManyToManyField(User)
 
   def __unicode__(self):
-    return self.lab_title
+    return self.title
 
 def get_Lab_Group(query):
   try:
