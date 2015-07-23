@@ -15,7 +15,7 @@ from DRP import settings
 class Email(object):
   """The base email class, sends email to a specified recipient from a specified sender""" 
 
-  def __init__(self, subject, messageFrame, messageVars={}, to=[], sender=settings.EMAIL_HOST_USER):
+  def __init__(self, subject, messageFrame, messageVars={}, to=[], sender=settings.DEFAULT_FROM_EMAIL):
     self.subject = subject
     self.message = messageFrame.format(messageVars)
     self.recipients = to
@@ -27,7 +27,7 @@ class Email(object):
 class EmailToAdmins(Email):
   """Sends email specifically to administrators, with a specific flag for managers"""
 
-  def __init__(self, subject, messageFrame, messageVars={}, includeManagers=False, sender=settings.EMAIL_HOST_USER):
+  def __init__(self, subject, messageFrame, messageVars={}, includeManagers=False, sender=settings.DEFAULT_FROM_EMAIL):
     if includeManagers:
       super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, sender, settings.ADMIN_EMAILS)
     else:
