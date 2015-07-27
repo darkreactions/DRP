@@ -68,6 +68,7 @@ class LegacyPassword2(unittest.TestCase):
     self.labGroup.delete()
 
 class CreateNew(unittest.TestCase):
+  '''Performs rudimentary tests on form validation for missing data and complete data'''
 
   def setUp(self):
     self.user1 = User(first_name='Aslan', password=make_password('old_magic'), username="Aslan", email="aslan@example.com")
@@ -116,6 +117,7 @@ class CreateNew(unittest.TestCase):
     self.user2.delete()
 
 class DuplicateUniqueValues(unittest.TestCase): 
+  '''Verifies that values which should be unique validate as false'''
 
   def setUp(self):
     self.labGroup = LabGroup(title="DuplicateValues", address='2, war drobe, Narnia', email='whitewitch@example.com', legacy_access_code='old_magic')
