@@ -1,28 +1,16 @@
-<div class='bannerText'>
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class='bannerText'>
 Contact Us
-</div>
-
-<div class='infoFormContainer'>
-  <form action="/contact_form/" class="inlineForm infoForm">
-
-  <label for="subject">Subject:
-    <select id="subject" name="subject">
-      <option  value="Comment">Comment</option>
-      <option  value="Concern">Concern</option>
-      <option  value="Bug/Error">Bug / Error</option>
-      <option  value="Feature Request">Feature  Request</option>
-    </select>
-  </label>
-
-  <label for="email">Email:
-    <input id="email" name="email" type="email" placeholder="johnsmith@gmail.com" value="{{user.email}}" />
-  </label>
-
-  <label for="content">Content:
-    <textarea id="content" name="content" placeholder="Please insert text here..."></textarea>
-  </label>
-
-  <input name="submit" id="submit" type="submit" value="Send" class="button"/>
-
+</h1>
+  {% if success %}
+  <p>Thankyou for contributing to the dark reactions project. We'll get back to you soon.</p>
+  {% else %}
+  <form method="post" action="/contact.html" class="inlineForm infoForm">
+    {% csrf_token %}
+    {{ form.as_ul }} 
+    <input type="submit" value="Send" />
   </form>
-</div>
+  {% endif %}
+{% endblock %}
