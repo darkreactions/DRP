@@ -1,3 +1,9 @@
+'''The django forms and model forms used in the DRP
+Classes:
+
+LabGroupForm: for creating Lab Groups in the django admin.
+ContactForm: A very simple form for the contact page.
+'''
 #from django.contrib.auth.models import User
 import django.forms as forms
 from django.contrib.auth.hashers import make_password
@@ -12,15 +18,25 @@ from django.core.exceptions import ValidationError
 
 
 class LabGroupForm(forms.ModelForm):
+'''This class is for use in the Django admin for creating lab groups.
+Has a Meta class setting the relevant model to LabGroup (defined in the Models subpackage of DRP)
+
+The class implements one new method, clean_accessCode, and overrides the save method.
+'''
 
   accessCode=forms.CharField(label='Access Code', widget=forms.PasswordInput, required=False, help_text='''The access code cannot be displayed due to security reasons.
   Entering a new access code here will change the access code. If nothing is entered, it will remain the same.''')
+  '''This field is included manually in the form rather than using a ModelForm simple conversion because the accessCode is stored
+  as a hash'''
 
   class Meta:
     model = LabGroup
     fields = ("title", "address", "email", 'accessCode', 'users')
 
   def clean_accessCode(self):
+    '''This method permits the use of old-style LabGroups by either saving a new access code or
+    converting the legacy access code (previously stored as a plaintext string) before erasing it.
+    '''
     if self.instance.legacy_access_code == '' and self.instance.access_code == '' and self.cleaned_data['accessCode'] == '':
       raise ValidationError('Access Code required')
     elif self.instance.access_code == '' and self.cleaned_data['accessCode'] == '':
@@ -30,6 +46,7 @@ class LabGroupForm(forms.ModelForm):
     
 
   def save(self, commit=True):
+    '''Saves an instance of the LabGroup, hashing the access code for storage.'''
     labGroup = super(LabGroupForm, self).save(commit=False)
     labGroup.access_code = make_password(self.cleaned_data['accessCode'], LAB_GROUP_HASH_SALT)
     labGroup.legacy_access_code = ''
@@ -38,6 +55,11 @@ class LabGroupForm(forms.ModelForm):
     return labGroup
 
   
+class ContactForm(forms.Form):
+  '''A very simple form for the contacting of site Admins by all people viewing the DRP site'''
+
+  email=forms.EmailField(label="Your Email Address", initial="youremail@example.com")
+  content=forms.CharField(label="Your Message", widget=forms.Textarea)
 
 #class UserForm(forms.ModelForm):
 #  username = forms.CharField(label="Username", required=True,
