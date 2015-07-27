@@ -35,6 +35,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = "" #TODO: Change me in production!
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_IMAP_HOST = '' #leave blank in production. Necessary for unit tests.
+EMAIL_IMAP_INBOX= 'Inbox' #The inbox to use for email tests. Inbox for gmail
+SKIP_EMAIL_TESTS=False #These tests are slow, so if you haven't tweaked this then skip the tests, but don't abuse this.
 
 #Emails of the Site Admins and Project Managers for the DRP.
 ADMIN_EMAILS = [""]
@@ -172,8 +175,6 @@ LOGGING = {
         },
     }
 }
-
-ACCESS_CODE_LENGTH = 20 #Designates the max_length of user access_codes
 
 #Set up Memcached caching:
 CACHES = {

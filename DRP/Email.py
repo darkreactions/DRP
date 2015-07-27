@@ -15,9 +15,9 @@ from DRP import settings
 class Email(object):
   """The base email class, sends email to a specified recipient from a specified sender""" 
 
-  def __init__(self, subject, messageFrame, messageVars={}, to=[], sender=settings.DEFAULT_FROM_EMAIL):
+  def __init__(self, subject, message, to=[], sender=settings.DEFAULT_FROM_EMAIL):
     self.subject = subject
-    self.message = messageFrame.format(messageVars)
+    self.message = message
     self.recipients = to
     self.sender = sender
 
@@ -25,13 +25,14 @@ class Email(object):
     return send_mail(self.subject, self.message, self.sender, self.recipients, fail_silently=False)
   
 class EmailToAdmins(Email):
-  """Sends email specifically to administrators, with a specific flag for managers"""
+  """Sends email specifically to administrators, with a specific flag for managers
+  This class is a very thin wrapper for the class Email, so presently no individual tests have been written."""
 
-  def __init__(self, subject, messageFrame, messageVars={}, includeManagers=False, sender=settings.DEFAULT_FROM_EMAIL):
+  def __init__(self, subject, message, includeManagers=False, sender=settings.DEFAULT_FROM_EMAIL):
     if includeManagers:
-      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, settings.ADMIN_EMAILS, sender)
+      super(EmailToAdmins, self).__init__(subject, message, settings.ADMIN_EMAILS, sender)
     else:
-      super(EmailToAdmins, self).__init__(subject, messageFrame, messageVars, settings.ADMIN_EMAILS + settings.MANAGER_EMAILS, sender)
+      super(EmailToAdmins, self).__init__(subject, message, settings.ADMIN_EMAILS + settings.MANAGER_EMAILS, sender)
 
 #class EmailToLab(Email):
 #
