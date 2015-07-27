@@ -1,5 +1,6 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, include
 from django.contrib import admin
+from django.views.generic.base import TemplateView
 
 #TODO: Abstract these out/remove these.
 #from core_views import upload_prompt, upload_CSV, data_form, check_compound, compound_guide_form, compound_guide_entry, edit_CG_entry, change_Recommendation, assign_user_to_rec, edit_recommendation
@@ -11,44 +12,31 @@ handler404 = 'DRP.views.errors.display_404_error'
 page = "(?P<page_request>\d+)"
 urlpatterns = patterns('',
  #Individual Pages.
-  (r'^$', "DRP.views.general.page", {"template":"home"}),
- #   (r'^home/?$', "DRP.views.general.page", {"template":"home"}),
- #   (r'^papers/?$', "DRP.views.general.page", {"template":"papers"}),
- #   (r'^about/?$', "DRP.views.general.page", {"template": "about"}),
- #   (r'^contact/?$', "DRP.views.general.page", {"template":"contact"}),
- #   (r'^login/?$', "DRP.views.general.page", {"template":"login_form"}),
- #   (r'^explore/?$', "DRP.views.general.page", {"template":"explore"}),
+    (r'^$', TemplateView.as_view(template_name="home.html")),
+    (r'^about.html$', TemplateView.as_view(template_name="about.html")),
+    (r'^contact.html$', "DRP.views.contact"),
+#    (r'^login.html$', "DRP.views.general.page", {"template":"login_form"}),
+#    (r'^explore.html$', "DRP.views.general.page", {"template":"explore"}),
 #
- #   (r'^contact_form/?$', "DRP.views.contact.contact_form"),
-  #Dashboard
- #   url(r'^dash(?:board)?/?$', "DRP.views.dashboard.get_dashboard"),
- #   url(r'^get_class_stats/(?P<category>[24]-(?:test|train))/?$', "DRP.views.dashboard.get_class_stats_json"),
-
- #   url(r'^graphs?/?$', "DRP.views.graph.graph"),
- #   url(r'^graphs?/test[s_]?(?:sizes?)?/?$',"DRP.views.graph.graph",{"base":"test"}),
- #   url(r'^graphs?/train[s_]?(?:sizes?)?/?$',"DRP.views.graph.graph",{"base":"train"}),
- #   url(r'^graphs?/(?:dates?|times?)/?$', "DRP.views.graph.graph", {"base":"time"}),
-
- #   url(r'^models?/(?P<model_id>\d+)/?$', "DRP.views.stats.model_stats"),
-
-  #Database
- #   (r'^data(?:base)?/?$', "DRP.views.database.database"), #Encompassing data view.
- #   (r'^data(?:base)?/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.
-
-  # Searching
- #   (r'^search/$', "DRP.views.search.search", {"model":"Data"}),
- #   (r'^search/Data/?$', "DRP.views.search.search", {"model":"Data"}),
- #   (r'^search/Explore/?$', "DRP.views.explore_search.search", {"model":"Data"}),
- #   (r'^search/Recommendation/?$', "DRP.views.search.search", {"model":"Recommendation"}),
- #   (r'^search/SeedRecommendation/?$', "DRP.views.search.search", {
- #     "model":"Recommendation",
- #     "params":{"seeded":True}
- #   }),
-
-
-   #Upload/Download database.
-   # (r'^upload_prompt/$', upload_prompt),
-  #  (r'^upload_data/$', upload_CSV),
+#  #Dashboard
+#    (r'^dashboard.html$', "DRP.views.dashboard.get_dashboard"),
+#  #Database
+#    (r'^database/$', "DRP.views.database.database"), #Encompassing data view.
+#    (r'^database/'+page+'/?$', "DRP.views.database.database"), #Encompassing data view.
+#
+#  # Searching
+#    (r'^search/$', "DRP.views.search.search", {"model":"Data"}),
+#    (r'^search/data/?$', "DRP.views.search.search", {"model":"Data"}),
+#    (r'^search/explore/?$', "DRP.views.explore_search.search", {"model":"Data"}),
+#    (r'^search/recommendation/?$', "DRP.views.search.search", {"model":"Recommendation"}),
+#    (r'^search/seed_recommendation/?$', "DRP.views.search.search", {
+#      "model":"Recommendation",
+#      "params":{"seeded":True}
+#    }),
+#
+#
+#   #Upload/Download database.
+#    (r'^upload_data/$', upload_CSV),
 #    (r'^download_prompt/$', "DRP.views.download.download_prompt"),
 #    (r'^download_data/$', "DRP.views.download.download_CSV"),
    #Modify Data
