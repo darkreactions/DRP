@@ -18,11 +18,11 @@ from django.core.exceptions import ValidationError
 
 
 class LabGroupForm(forms.ModelForm):
-'''This class is for use in the Django admin for creating lab groups.
-Has a Meta class setting the relevant model to LabGroup (defined in the Models subpackage of DRP)
+  '''This class is for use in the Django admin for creating lab groups.
+  Has a Meta class setting the relevant model to LabGroup (defined in the Models subpackage of DRP)
 
-The class implements one new method, clean_accessCode, and overrides the save method.
-'''
+  The class implements one new method, clean_accessCode, and overrides the save method.
+  '''
 
   accessCode=forms.CharField(label='Access Code', widget=forms.PasswordInput, required=False, help_text='''The access code cannot be displayed due to security reasons.
   Entering a new access code here will change the access code. If nothing is entered, it will remain the same.''')
