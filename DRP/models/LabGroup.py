@@ -2,14 +2,6 @@
 from django.db import models
 from django.contrib import auth
 from django.contrib.auth.models import User
-import random, string
-
-# Helper function for creating random access codes for Lab Groups.
-def get_random_code():
-  #Create a random alphanumeric code of specified length.
-  options = string.letters + string.digits
-  chars = [random.choice(options) for i in xrange(ACCESS_CODE_LENGTH)]
-  return "".join(chars)
 
 class LabGroup(models.Model):
   '''A class for describing a collection of scientists belonging to the same group.'''
@@ -24,7 +16,7 @@ class LabGroup(models.Model):
   '''An access code to allow members to \'prove\' that they are permitted to join the lab. Normally held by a laboratory administrator.'''
   legacy_access_code = models.CharField(max_length=20)
   '''An older version of the access code. Made a part of this model for legacy support'''
-  users = models.ManyToManyField(User)
+  users = models.ManyToManyField(User, blank=True)
 
   def __unicode__(self):
     return self.title
