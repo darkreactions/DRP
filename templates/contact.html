@@ -9,7 +9,9 @@ Contact Us
   {% else %}
   <form method="post" action="/contact.html" class="inlineForm infoForm">
     {% csrf_token %}
-    {{ form.as_ul }} 
+      <ol>
+      {{ form.as_ul }} 
+      </ol>
     <input type="submit" value="Send" />
   </form>
   {% endif %}
