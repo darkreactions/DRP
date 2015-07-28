@@ -6,6 +6,8 @@ SITE_ID = 1
 TESTING_SERVER_NAME = '' #required for html validation tests. Ignore otherwise, remove in production.
 EXTERNAL_HTML_VALIDATOR = 'http://validator.w3.org/nu/' #The external html validator. You shouldn't need to change this.
 
+LOGIN_REDIRECT_URL = '/'
+
 APP_DIR = (os.path.join(os.path.dirname(__file__)))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 

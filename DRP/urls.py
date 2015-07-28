@@ -1,6 +1,8 @@
-from django.conf.urls import patterns, include
+from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic.base import TemplateView
+from django.contrib.auth.views import login
+import DRP.views
 
 #TODO: Abstract these out/remove these.
 #from core_views import upload_prompt, upload_CSV, data_form, check_compound, compound_guide_form, compound_guide_entry, edit_CG_entry, change_Recommendation, assign_user_to_rec, edit_recommendation
@@ -14,8 +16,8 @@ urlpatterns = patterns('',
  #Individual Pages.
     (r'^$', TemplateView.as_view(template_name="home.html")),
     (r'^about.html$', TemplateView.as_view(template_name="about.html")),
-    (r'^contact.html$', "DRP.views.contact"),
-#    (r'^login.html$', "DRP.views.general.page", {"template":"login_form"}),
+    (r'^contact.html$', DRP.views.contact),
+    url(r'^login.html$', login, {'template_name':'login.html'}, name='login'),
 #    (r'^explore.html$', "DRP.views.general.page", {"template":"explore"}),
 #
 #  #Dashboard

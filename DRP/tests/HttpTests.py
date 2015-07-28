@@ -13,6 +13,7 @@ import requests
 import json
 import html5lib
 from DRP.settings import TESTING_SERVER_NAME, EXTERNAL_HTML_VALIDATOR, EMAIL_HOST_USER
+from django.contrib.auth.models import User
 loadTests = unittest.TestLoader.loadTestsFromTestCase
 
 class HomePage(unittest.TestCase):
@@ -113,17 +114,48 @@ class ContactPage_POST_bad3(ContactPage):
   def test_Status(self):
     self.assertEqual(403, self.response.status_code)
 
-def suite():
-  #This function should be adjusted to contain the loadTests() function enacted on each test case.
+
+#NOTE the correct behaviour of the default login view by django to provide a 403 response is taken for granted.
+
+class LoginPage(AboutPage):
+  '''Confirms that GETing the login page results in valid html'''
+
+  url = AboutPage.baseUrl + '/login.html'
+
+  def setUp(self):
+    self.response = requests.get(self.url)
+
+class LoginPage_POST(ContactPage_POST):
+  '''confirms that posting valid data to the login page results in a redirect''' 
+
+  url = ContactPage_POST.baseUrl + '/login.html'
+
+  def setUp(self):
+    self.tmpUser = User.objects.create_user(username="testUser", email=EMAIL_HOST_USER, password="testpass")
+    self.tmpUser.save()
+    self.setUpCsrf()
+    self.response = self.s.post(self.url, data={'username':"testUser", 'password':"testpass", 'csrfmiddlewaretoken':self.csrf}, params={'next':'/contact.html'})
+
+  def test_Status(self):
+    self.assertEqual(200, self.response.status_code)
+    self.assertEqual(302, self.response.history[0].status_code)
+
+  def tearDown(self):
+    self.tmpUser.delete()
+
+def Suite():
   return unittest.TestSuite([
-          loadTests(HomePage),
-          loadTests(AboutPage),
-          loadTests(ContactPage),
-          loadTests(ContactPage_POST),
-          loadTests(ContactPage_POST_bad),
-          loadTests(ContactPage_POST_bad2),
-          loadTests(ContactPage_POST_bad3)
-          ])
+   loadtests(HomePage),
+   loadtests(AboutPage),
+   loadtests(ContactPage),
+   loadtests(ContactPage_POST),
+   loadtests(ContactPage_POST_bad),
+   loadtests(ContactPage_POST_bad2),
+   loadtests(ContactPage_POST_bad3),
+   loadtests(LoginPage_POST),
+   loadtests(LoginPage)
+  ])
+
 
 if __name__ == '__main__':
   #Runs the test- a good way to check that this particular test set works without having to run all the tests.
