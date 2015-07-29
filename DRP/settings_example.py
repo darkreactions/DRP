@@ -32,7 +32,7 @@ WEKA_PATH = ""
 STATICFILES_DIRS = (STATIC_DIR,)
 
 #Changes to Default Django Behavior
-LOGIN_URL = "/login/"
+LOGIN_URL = "/login.html"
 
 #Email Settings
 EMAIL_USE_TLS = True
