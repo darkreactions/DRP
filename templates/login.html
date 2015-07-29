@@ -3,6 +3,7 @@
 {% block content %}
 
 <form method="post" action="{% url 'login' %}?next={{ next|urlencode:"" }}">
+  <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
   {% csrf_token %}
   <ol>
     {{ form.as_ul }}

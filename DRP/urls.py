@@ -13,12 +13,17 @@ handler500 = 'DRP.views.errors.display_500_error'
 handler404 = 'DRP.views.errors.display_404_error'
 page = "(?P<page_request>\d+)"
 urlpatterns = patterns('',
- #Individual Pages.
+ #Public Pages.
     url(r'^$', TemplateView.as_view(template_name="home.html"), name='home'),
     (r'^about.html$', TemplateView.as_view(template_name="about.html")),
     (r'^contact.html$', DRP.views.contact),
+ #Authentication pages
     url(r'^login.html$', login, {'template_name':'login.html'}, name='login'),
     (r'^logout.html$', logout, {'next_page':'home'}),
+    url(r'^register.html$', DRP.views.register, name='register'),
+#    (r'^license.html$', DRP.views.license)
+#    (r'^join_lab.html$', DRP.views.joinLab)
+
 #    (r'^explore.html$', "DRP.views.general.page", {"template":"explore"}),
 #
 #  #Dashboard

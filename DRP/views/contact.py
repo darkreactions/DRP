@@ -1,11 +1,8 @@
 """A module containing only the default contact view"""
 from DRP.forms import ContactForm 
 from django.template import RequestContext
-import datetime
 from DRP.Email import EmailToAdmins
-from smtplib import SMTPException
 from django.shortcuts import render
-from django.core.context_processors import csrf
 
 def contact(request):
   """The contact view. Validates a ContactForm against postdata, including CSRF (as part of the template).
@@ -15,7 +12,6 @@ def contact(request):
   if request.method=="POST":
     form = ContactForm(request.POST)
     if form.is_valid():
-      time = datetime.datetime.now()
       mail = EmailToAdmins('Contact from DRP Contact Us Page', form.cleaned_data['content'], includeManagers=True, sender=form.cleaned_data['email']) 
       if mail.send() == 1:
         success=True
