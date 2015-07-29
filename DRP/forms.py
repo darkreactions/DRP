@@ -9,7 +9,7 @@ import django.forms as forms
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from DRP.settings import LAB_GROUP_HASH_SALT
-from DRP.models import LabGroup
+from DRP.models import LabGroup, License
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 #from DRP.models import Data, Lab_Group, Lab_Member, CompoundEntry
@@ -68,7 +68,7 @@ class UserCreationForm(DjangoUserCreationForm):
   class Meta:
     model = User
     fields = ('first_name', 'last_name', 'email')
-  
+
 #class UserForm(forms.ModelForm):
 #  username = forms.CharField(label="Username", required=True,
 #             widget= forms.TextInput(attrs={'class':'form_text'}))
