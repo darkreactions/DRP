@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 '''This file contains tests which validate the html output and will eventually
-also contain unit tests for javascript components.
+also contain unit tests for javascript components, and tests for correct (rather than
+simply valid) markup.
 
 These tests should NOT be utilised for testing django functionality of webpages, which
 should be managed by other unit tests on views (worst case) or their components
 (preferred).
+
 '''
 
 import unittest
@@ -12,7 +14,6 @@ from DRPTestCase import DRPTestCase
 import TestConfig
 import requests
 import json
-import html5lib
 from django.conf import settings
 from django.contrib.auth.models import User
 loadTests = unittest.TestLoader.loadTestsFromTestCase
@@ -140,6 +141,7 @@ class LoginPage_POST(ContactPage_POST):
   def test_Status(self):
     self.assertEqual(200, self.response.status_code)
     self.assertEqual(302, self.response.history[0].status_code)
+    self.assertTrue(u'3a9f74ee-5c78-4ec0-8893-ce0476808131' in self.response.content, 'The wrong template seems to have been rendered...')
 
   def tearDown(self):
     self.tmpUser.delete()
