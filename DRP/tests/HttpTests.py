@@ -8,18 +8,19 @@ should be managed by other unit tests on views (worst case) or their components
 '''
 
 import unittest
+from DRPTestCase import DRPTestCase
 import TestConfig
 import requests
 import json
 import html5lib
-from DRP.settings import TESTING_SERVER_NAME, EXTERNAL_HTML_VALIDATOR, EMAIL_HOST_USER
+from django.conf import settings
 from django.contrib.auth.models import User
 loadTests = unittest.TestLoader.loadTestsFromTestCase
 
-class HomePage(unittest.TestCase):
+class HomePage(DRPTestCase):
   '''Tests the home page for HTML validity'''
 
-  baseUrl = 'http://' + TESTING_SERVER_NAME
+  baseUrl = 'http://' + settings.TESTING_SERVER_NAME
   url = baseUrl
 
   def setUp(self):
@@ -28,7 +29,7 @@ class HomePage(unittest.TestCase):
 
   def validate(self):
     '''Sends the output of the requested page to the w3c html validator to validate'''
-    self.validationResponse = requests.post(EXTERNAL_HTML_VALIDATOR, params={'out':'json'}, data=self.response.content, headers={'content-type':self.response.headers.get('content-type')})
+    self.validationResponse = requests.post(settings.EXTERNAL_HTML_VALIDATOR, params={'out':'json'}, data=self.response.content, headers={'content-type':self.response.headers.get('content-type')})
 
   @staticmethod
   def constructFailureMessage(message):
@@ -89,14 +90,14 @@ class ContactPage_POST(ContactPage):
 
   def setUp(self):
     self.setUpCsrf()
-    self.response = self.s.post(self.url, data={'email':EMAIL_HOST_USER, 'content':'This is a test message.', 'csrfmiddlewaretoken':self.csrf})
+    self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'This is a test message.', 'csrfmiddlewaretoken':self.csrf})
 
 class ContactPage_POST_bad(ContactPage_POST):
   '''Perfoems a badly formed POST request to the contact page to test html validity'''
 
   def setUp(self):
     self.setUpCsrf()
-    self.response = self.s.post(self.url, data={'email':EMAIL_HOST_USER, 'content':'', 'csrfmiddlewaretoken':self.csrf})
+    self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'', 'csrfmiddlewaretoken':self.csrf})
   
 class ContactPage_POST_bad2(ContactPage_POST):
   '''Performs a badly formed POST request missing a field entirely to test html validity'''
@@ -131,7 +132,7 @@ class LoginPage_POST(ContactPage_POST):
   url = ContactPage_POST.baseUrl + '/login.html'
 
   def setUp(self):
-    self.tmpUser = User.objects.create_user(username="testUser", email=EMAIL_HOST_USER, password="testpass")
+    self.tmpUser = User.objects.create_user(username="testUser", email=settings.EMAIL_HOST_USER, password="testpass")
     self.tmpUser.save()
     self.setUpCsrf()
     self.response = self.s.post(self.url, data={'username':"testUser", 'password':"testpass", 'csrfmiddlewaretoken':self.csrf}, params={'next':'/contact.html'})

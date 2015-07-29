@@ -9,10 +9,11 @@
 #to have that suite method called in AllTests.py
 
 import unittest
+from DRPTestCase import DRPTestCase
 import TestConfig
 loadTests = unittest.TestLoader.loadTestsFromTestCase
 
-class RidiculousTestCaseOne(unittest.TestCase):
+class RidiculousTestCaseOne(DRPTestCase):
   #This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
 
   def setUp(self):
@@ -24,7 +25,7 @@ class RidiculousTestCaseOne(unittest.TestCase):
   def tearDown(self):
       pass
 
-class RidiculousTestCaseTwo(unittest.TestCase):
+class RidiculousTestCaseTwo(DRPTestCase):
 
   def setUp(self):
       pass

@@ -9,17 +9,18 @@
 '''
 
 import unittest 
+from DRPTestCase import DRPTestCase
 import TestConfig
 from DRP.forms import LabGroupForm
 from DRP.models import LabGroup
-from DRP.settings import LAB_GROUP_HASH_SALT 
+from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import User
 from copy import copy
 
 loadTests = unittest.TestLoader.loadTestsFromTestCase
 
-class LegacyPassword(unittest.TestCase):
+class LegacyPassword(DRPTestCase):
   '''Tests for a case where a legacy password is set but no new password has been entered'''
 
   def setUp(self):
@@ -45,7 +46,7 @@ class LegacyPassword(unittest.TestCase):
   def tearDown(self):
     self.labGroup.delete()
 
-class LegacyPassword2(unittest.TestCase):
+class LegacyPassword2(DRPTestCase):
   '''Tests for a case where a legacy password is set and a new password has been entered'''
 
   def setUp(self):
@@ -67,7 +68,7 @@ class LegacyPassword2(unittest.TestCase):
   def tearDown(self):
     self.labGroup.delete()
 
-class CreateNew(unittest.TestCase):
+class CreateNew(DRPTestCase):
   '''Performs rudimentary tests on form validation for missing data and complete data'''
 
   def setUp(self):
@@ -116,7 +117,7 @@ class CreateNew(unittest.TestCase):
     self.user1.delete()
     self.user2.delete()
 
-class DuplicateUniqueValues(unittest.TestCase): 
+class DuplicateUniqueValues(DRPTestCase): 
   '''Verifies that values which should be unique validate as false'''
 
   def setUp(self):

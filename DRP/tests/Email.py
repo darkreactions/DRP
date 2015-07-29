@@ -4,7 +4,8 @@
 import TestConfig
 import unittest
 from DRP.Email import Email
-from DRP.settings import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_IMAP_HOST, DEFAULT_FROM_EMAIL, SKIP_EMAIL_TESTS, EMAIL_IMAP_INBOX 
+from django.conf import settings
+from DRPTestCase import DRPTestCase
 from uuid import uuid4
 import imaplib
 import time
@@ -12,13 +13,13 @@ import email
 
 loadTests = unittest.TestLoader.loadTestsFromTestCase
 
-class EmailSendsAndRecieves(unittest.TestCase):
+class EmailSendsAndRecieves(DRPTestCase):
   '''Sends and recieves a test email, and checks that the contents are correct'''
 
   def setUp(self):
       '''Create an email with a unique header'''
       self.headerId = uuid4()
-      self.email = Email('Test Subject Header: {0}'.format(self.headerId), 'This message is a test. Please disregard but do not delete this email.', [EMAIL_HOST_USER])
+      self.email = Email('Test Subject Header: {0}'.format(self.headerId), 'This message is a test. Please disregard but do not delete this email.', [settings.EMAIL_HOST_USER])
 
   def runTest(self):
       '''Sends an email using SMTP and fetches it via IMAP'''
@@ -27,12 +28,12 @@ class EmailSendsAndRecieves(unittest.TestCase):
       testPass = False
       self.email.send()
       time.sleep(10)
-      m = imaplib.IMAP4_SSL(EMAIL_IMAP_HOST)
-      m.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-      sel_rv, data = m.select(EMAIL_IMAP_INBOX)
+      m = imaplib.IMAP4_SSL(settings.EMAIL_IMAP_HOST)
+      m.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+      sel_rv, data = m.select(settings.EMAIL_IMAP_INBOX)
       try:
         if sel_rv=='OK':
-          search_rv, data = m.search(None, 'FROM', DEFAULT_FROM_EMAIL, 'SUBJECT', 'Test Subject Header: {0}'.format(self.headerId))
+          search_rv, data = m.search(None, 'FROM', settings.DEFAULT_FROM_EMAIL, 'SUBJECT', 'Test Subject Header: {0}'.format(self.headerId))
           if search_rv=='OK':
             if len(data[0].split()) > 1:
               raise RuntimeError('More than one message with unique ID. Test aborted.')
@@ -50,7 +51,7 @@ class EmailSendsAndRecieves(unittest.TestCase):
           else:
             raise RuntimeError('Message Searching failed')
         else:
-          raise RuntimeError('Inbox selection failed. Perhaps a different inbox is needed for EMAIL_IMAP_INBOX in settings.py.')
+          raise RuntimeError('Inbox selection failed. Perhaps a different inbox is needed for settings.EMAIL_IMAP_INBOX in settings.py.')
       except RuntimeError as e:
         errMessage = repr(e)
       finally:
@@ -60,7 +61,7 @@ class EmailSendsAndRecieves(unittest.TestCase):
 
 
 def suite():
-  if not SKIP_EMAIL_TESTS:
+  if not settings.SKIP_EMAIL_TESTS:
     return unittest.TestSuite([
           loadTests(EmailSendsAndRecieves)
           ])
