@@ -7,7 +7,7 @@ from django.contrib.auth import login
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
 from django.template.loader import render_to_string
-from drp.forms import ConfirmationForm
+from DRP.forms import ConfirmationForm
 from DRP.models import ConfirmationCode
 from uuid import uuid4
 from django.core.exceptions import PermissionDenied
@@ -24,8 +24,9 @@ def register(request):
       code = uuid4()
       confCode = ConfirmationCode(user=user, code=code)
       confCode.save()
-      emailText = render_to_string('confirmation_email.html', {'name':user.first_name + ' ' + user.second_name, 'code':code})
-      Email('Dark Reactions Project Registration', emailText, [user.email])
+      emailText = render_to_string('confirmation_email.html', {'name':user.first_name + ' ' + user.last_name, 'code':code})
+      m=Email('Dark Reactions Project Registration', emailText, [user.email])
+      m.send()
       return render(request, 'register.html', {'form':form, 'submitted':True})
     else:
       return render(request, 'register.html', {'form':form, 'submitted':False})
@@ -37,20 +38,20 @@ def confirm(request):
   '''A view to confirm sign-up, and to render the license agreement binding'''
 
   if 'code' in request.GET.keys():
-    if request.method = 'POST':
+    if request.method == 'POST':
       form = ConfirmationForm(request, request.POST) 
       if form.is_valid():
         user = form.get_user()
-        if user.confirmationcode = request.GET['code']:
+        if user.confirmationcode == request.GET['code']:
           user.active = True
           user.save()
-          return render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':True, 'code':urlencode(request.GET['code']})))
+          return render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':True, 'code':urlencode(request.GET['code'])}))
         else:
           raise PermissionDenied()
       else:
-        return render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':False, 'code':urlencode(request.GET['code']}))
+        return render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':False, 'code':urlencode(request.GET['code'])}))
     else:
       form = ConfirmationForm(request)
-      render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':False, 'code':urlencode(request.GET['code']}))
+      render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':False, 'code':urlencode(request.GET['code'])}))
   else:
     raise PermissionDenied()
