@@ -8,10 +8,12 @@ ContactForm: A very simple form for the contact page.
 import django.forms as forms
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate
 from DRP.settings import LAB_GROUP_HASH_SALT
 from DRP.models import LabGroup, License
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
+from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm
 #from DRP.models import Data, Lab_Group, Lab_Member, CompoundEntry
 #from DRP.settings import ACCESS_CODE_LENGTH
 #from DRP.validation import validate_CG, full_validation
@@ -68,6 +70,29 @@ class UserCreationForm(DjangoUserCreationForm):
   class Meta:
     model = User
     fields = ('first_name', 'last_name', 'email')
+
+class ConfirmationForm(DjangoAuthenticationForm):
+  '''A form for confirming a user's credentials, without checking if they are 'active'.'''
+
+  def clean(self):
+    '''A very close rewrite of the DjangoAuthenticationForm method, but raising an error
+    if the user is already active rather than if it is inactive'''
+
+    username = self.cleaned_data.get('username')
+    password = self.cleaned_data.get('password')
+
+    if username and password:
+      self.user_cache = authenticate(username=username, password=password)
+      if self.user_cache is None:
+        raise forms.ValidationError(self.error_messages['invalid_login'],
+              code='invalid_login',
+              params={'username':self.username_field.verbose_name})
+      elif self.user_cache.is_active:
+        raise forms.ValidationError('Your account has already been activated',
+              code='active_user')
+    return self.cleaned_data
+        
+      
 
 #class UserForm(forms.ModelForm):
 #  username = forms.CharField(label="Username", required=True,
