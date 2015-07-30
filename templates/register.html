@@ -4,6 +4,9 @@
   <h1 class="bannerText">
     Register
   </h1>
+  {% if submitted %}
+    <p>Thankyou for registering, a confirmation email should be with you shortly.</p>
+  {% else %}
   <form action="{% url 'register' %}" method="post">
   {% csrf_token %}
     <ol>
@@ -11,4 +14,5 @@
     </ol> 
     <input type="submit" value="Register" />
   </form>  
+  {% endif %}
 {% endblock %}
