@@ -15,15 +15,14 @@ from DRP import settings
 class Email(object):
   """The base email class, sends email to a specified recipient from a specified sender""" 
 
-  def __init__(self, subject, message, to=[], sender=settings.DEFAULT_FROM_EMAIL, htmlMessage=None):
+  def __init__(self, subject, message, to=[], sender=settings.DEFAULT_FROM_EMAIL):
     self.subject = subject
     self.message = message
     self.recipients = to
     self.sender = sender
-    self.htmlMessage = htmlMessage
-
+  
   def send(self):
-    return send_mail(self.subject, self.message, self.sender, self.recipients, fail_silently=False, html_message=self.htmlMessage)
+    return send_mail(self.subject, self.message, self.sender, self.recipients, fail_silently=False)
   
 class EmailToAdmins(Email):
   """Sends email specifically to administrators, with a specific flag for managers

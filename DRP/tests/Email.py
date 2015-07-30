@@ -58,7 +58,6 @@ class EmailSendsAndRecieves(DRPTestCase):
         m.logout()
       self.assertTrue(testPass, errMessage + messages)
 
-
 def suite():
   if not settings.SKIP_EMAIL_TESTS:
     return unittest.TestSuite([
