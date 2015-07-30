@@ -20,7 +20,7 @@ loadTests = unittest.TestLoader.loadTestsFromTestCase
 class HomePage(DRPTestCase):
   '''Tests the home page for HTML validity'''
 
-  baseUrl = 'http://' + settings.TESTING_SERVER_NAME
+  baseUrl = 'http://' + settings.SERVER_NAME
   url = baseUrl
 
   def setUp(self):
