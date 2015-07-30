@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import unittest, TestConfig
+import unittest
 #As you create test files, add the import statements here
 #import TemplateTest
 

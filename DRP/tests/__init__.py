@@ -1,1 +1,1 @@
-import TestConfig
+from DRPTestCase import DRPTestCase

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 '''Tests for the Email classes contained in DRP.Email'''
 
-import TestConfig
 import unittest
 from DRP.Email import Email
 from django.conf import settings

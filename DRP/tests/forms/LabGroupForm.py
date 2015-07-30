@@ -9,7 +9,7 @@
 '''
 
 import unittest 
-from DRPTestCase import DRPTestCase
+from DRP.tests import DRPTestCase
 from DRP.forms import LabGroupForm
 from DRP.models import LabGroup
 from django.conf import settings
@@ -17,7 +17,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import User
 from copy import copy
 
-loadTests = unittest.TestLoader.loadTestsFromTestCase
+loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class LegacyPassword(DRPTestCase):
   '''Tests for a case where a legacy password is set but no new password has been entered'''
@@ -130,9 +130,7 @@ class DuplicateUniqueValues(DRPTestCase):
   def tearDown(self):
     self.labGroup.delete()
 
-def suite():
-  #This function should be adjusted to contain the loadTests() function enacted on each test case.
-  return unittest.TestSuite([
+suite = unittest.TestSuite([
           loadTests(LegacyPassword),
           loadTests(LegacyPassword2),
           loadTests(CreateNew),

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import sys
-import TestConfig
 import DRP.chemspider as chemspider
 import DRP.models.CompoundEntry as CompoundEntry
 import unittest

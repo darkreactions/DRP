@@ -10,8 +10,7 @@
 
 import unittest
 from DRPTestCase import DRPTestCase
-import TestConfig
-loadTests = unittest.TestLoader.loadTestsFromTestCase
+loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class RidiculousTestCaseOne(DRPTestCase):
   #This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
@@ -36,9 +35,7 @@ class RidiculousTestCaseTwo(DRPTestCase):
   def tearDown(self):
       pass
 
-def suite():
-  #This function should be adjusted to contain the loadTests() function enacted on each test case.
-  return unittest.TestSuite([
+suite = unittest.TestSuite([
           loadTests(RidiculousTestCaseOne),
           loadTests(RidiculousTestCaseTwo)
           ])
