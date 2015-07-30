@@ -9,8 +9,8 @@ import DRP.views
 
 # Uncomment the next two lines to enable the admin: ###C
 admin.autodiscover()
-handler500 = 'DRP.views.errors.display_500_error'
-handler404 = 'DRP.views.errors.display_404_error'
+handler500 = 'DRP.views.errors.display_500_error' #TODO: check what these views do
+handler404 = 'DRP.views.errors.display_404_error' #TODO: is this the right place for this (should be set in settings.py)?
 page = "(?P<page_request>\d+)"
 urlpatterns = patterns('',
  #Public Pages.
