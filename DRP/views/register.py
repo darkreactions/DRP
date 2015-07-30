@@ -11,6 +11,7 @@ from DRP.forms import ConfirmationForm
 from DRP.models import ConfirmationCode
 from uuid import uuid4
 from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 def register(request):
   '''A view to permit new users to sign up.'''
@@ -24,7 +25,7 @@ def register(request):
       code = uuid4()
       confCode = ConfirmationCode(user=user, code=code)
       confCode.save()
-      emailText = render_to_string('confirmation_email.html', {'name':user.first_name + ' ' + user.last_name, 'code':code})
+      emailText = render_to_string('confirmation_email.txt', {'name':user.first_name + ' ' + user.last_name, 'code':code})
       m=Email('Dark Reactions Project Registration', emailText, [user.email])
       m.send()
       return render(request, 'register.html', {'form':form, 'submitted':True})
