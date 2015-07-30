@@ -69,7 +69,7 @@ class UserCreationForm(DjangoUserCreationForm):
 
   class Meta:
     model = User
-    fields = ('first_name', 'last_name', 'email')
+    fields = ('username', 'first_name', 'last_name', 'email')
 
 class ConfirmationForm(DjangoAuthenticationForm):
   '''A form for confirming a user's credentials, without checking if they are 'active'.'''
