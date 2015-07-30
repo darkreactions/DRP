@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if success %}
+  <p>Thankyou for confirming your email address. You may now proceed. </p>
+{% else %}
+  <form action="{% url 'confirm' %}?code={{ code }}" method="post">
+    {% csrf_token %}
+    <ol>
+    {{ form.as_ul }}
+    </ol>
+    <input type="submit" value="Confirm" />
+  </form>
+  <!--340545b4-9577-489c-b7ec-e664d8bbbe4c -->
+{% endif %}
+
+{% endblock %}
