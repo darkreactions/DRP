@@ -18,6 +18,7 @@ class ContactPage(AboutPage):
   '''Performs a simple get request on the contact page to test html validity'''
 
   url = AboutPage.baseUrl + '/contact.html'
+  testCodes = ['3a9f74ee-5c78-4ec0-8893-ce0476808131']
 
 
 class ContactPage_POST(ContactPage):

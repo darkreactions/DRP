@@ -35,7 +35,9 @@
       <div id="userInfo">
 
         {% if user.is_authenticated %}
-
+          {% if testing %}
+            <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
+          {% endif %}
         <div>
           <span>Hello, {{ user.first_name }}</span>
           <a href="/account.html" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
@@ -44,7 +46,9 @@
         <a href="/logout.html" id="userLogOut">Log Out</a>
 
         {% else %}
-
+          {% if testing %}
+            <!-- d68a82db-bd18-4a9f-a1a2-03b3bb259595 --> 
+          {% endif %}
         <a id="userLogin" href="/login.html">Log In</a>
         |
         <a id="registrationPrompt" href="/register.html">Register</a>

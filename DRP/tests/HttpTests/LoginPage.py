@@ -21,7 +21,7 @@ class LoginPage_POST(ContactPage_POST):
   '''confirms that posting valid data to the login page results in a redirect''' 
 
   url = ContactPage_POST.baseUrl + '/login.html'
-  templateId = u'3a9f74ee-5c78-4ec0-8893-ce0476808131'
+  testCodes = [u'3a9f74ee-5c78-4ec0-8893-ce0476808131', '1f47e7ab-1900-4683-ba1c-63330ec2f71a']
 
   @usesCsrf
   def setUp(self):
@@ -32,9 +32,6 @@ class LoginPage_POST(ContactPage_POST):
   def test_Status(self):
     self.assertEqual(200, self.response.status_code)
     self.assertEqual(302, self.response.history[0].status_code)
-
-  def test_Template(self):
-    self.assertTrue(self.templateId in self.response.content, 'The wrong template seems to have been rendered...')
 
   def tearDown(self):
     self.tmpUser.delete()
