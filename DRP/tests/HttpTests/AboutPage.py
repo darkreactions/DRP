@@ -2,6 +2,7 @@
 '''This module contains tests for the about page'''
 
 import unittest
+import requests
 from HomePage import HomePage
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 

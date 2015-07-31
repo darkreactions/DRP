@@ -2,7 +2,7 @@
 '''Provides HTML tests for the login'''
 import unittest
 import requests
-from ContactPage import ContactPage_POST
+from ContactPage import ContactPage_POST, usesCsrf
 from AboutPage import AboutPage
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
@@ -23,10 +23,10 @@ class LoginPage_POST(ContactPage_POST):
   url = ContactPage_POST.baseUrl + '/login.html'
   templateId = u'3a9f74ee-5c78-4ec0-8893-ce0476808131'
 
+  @usesCsrf
   def setUp(self):
     self.tmpUser = User.objects.create_user(username="testUser", email=settings.EMAIL_HOST_USER, password="testpass")
     self.tmpUser.save()
-    self.setUpCsrf()
     self.response = self.s.post(self.url, data={'username':"testUser", 'password':"testpass", 'csrfmiddlewaretoken':self.csrf}, params={'next':'/contact.html'})
 
   def test_Status(self):

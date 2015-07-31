@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''This package provides tests for the home page'''
-from DRPTestCase import DRPTestCase
+from DRP.tests import DRPTestCase
 from django.conf import settings
 import unittest
 import requests

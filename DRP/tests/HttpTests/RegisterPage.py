@@ -4,6 +4,8 @@
 import unittest
 import requests
 from django.contrib.auth.models import User
+from LoginPage import LoginPage
+from ContactPage import usesCsrf
 
 #The registration page tests assume that the django provided form will behave correctly.
 
@@ -18,8 +20,8 @@ class RegisterPage_POST(LoginPage_POST):
   url = LoginPage_POST.baseUrl + '/register.html'
   templateId = 'd776703c-bf1c-4a0a-89d1-1fcd83093967'
 
+  @usesCsrf
   def setUp(self):
-    self.setUpCsrf()
     self.email = 'aslan@example.com'
     self.response = self.s.post(self.url, data={'username':"testUser", 'password1':'testpass', 'password2':'testpass', 'email':self.email, 'csrfmiddlewaretoken':self.csrf})
 

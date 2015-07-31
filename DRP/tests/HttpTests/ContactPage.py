@@ -6,6 +6,13 @@ from AboutPage import AboutPage
 import requests
 import unittest
 loadTests = unittest.TestLoader().loadTestsFromTestCase
+  
+def usesCsrf(method):
+  '''A decorator for setUp functions which utilise CSRF protection'''
+  def CsrfWrapper(obj):
+    obj.setUpCsrf()
+    method(obj)
+  return CsrfWrapper
 
 class ContactPage(AboutPage):
   '''Performs a simple get request on the contact page to test html validity'''
@@ -22,22 +29,22 @@ class ContactPage_POST(ContactPage):
     getResponse = self.s.get(self.url)
     self.csrf = self.s.cookies.get_dict()['csrftoken']
 
+  @usesCsrf
   def setUp(self):
-    self.setUpCsrf()
     self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'This is a test message.', 'csrfmiddlewaretoken':self.csrf})
 
 class ContactPage_POST_bad(ContactPage_POST):
   '''Perfoems a badly formed POST request to the contact page to test html validity'''
 
+  @usesCsrf
   def setUp(self):
-    self.setUpCsrf()
     self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'', 'csrfmiddlewaretoken':self.csrf})
   
 class ContactPage_POST_bad2(ContactPage_POST):
   '''Performs a badly formed POST request missing a field entirely to test html validity'''
 
+  @usesCsrf
   def setUp(self):
-    self.setUpCsrf()
     self.response = self.s.post(self.url, data={'content':'This is a test.', 'csrfmiddlewaretoken':self.csrf})
 
 class ContactPage_POST_bad3(ContactPage):
