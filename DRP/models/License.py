@@ -8,3 +8,4 @@ class License(models.Model):
     app_label = "DRP"
 
   text=models.TextField()
+  effectiveDate=models.DateField()
