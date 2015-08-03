@@ -9,6 +9,6 @@ class LicenseAgreement(models.Model):
   class Meta:
     app_label = "DRP"
 
-  users=models.ManyToManyField(auth.models.User)
+  user=models.ForeignKey(auth.models.User)
   text=models.ForeignKey(License)
   signedDateTime = models.DateTimeField(auto_now=True)

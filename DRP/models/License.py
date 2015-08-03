@@ -6,6 +6,7 @@ class License(models.Model):
 
   class Meta:
     app_label = "DRP"
+    get_latest_by = 'effectiveDate'
 
   text=models.TextField()
   effectiveDate=models.DateField()
