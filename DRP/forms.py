@@ -10,10 +10,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
 from DRP.settings import LAB_GROUP_HASH_SALT
-from DRP.models import LabGroup, License
+from DRP.models import LabGroup, License, LicenseAgreement
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm
+from DRP.models import License
+
 #from DRP.models import Data, Lab_Group, Lab_Member, CompoundEntry
 #from DRP.settings import ACCESS_CODE_LENGTH
 #from DRP.validation import validate_CG, full_validation
@@ -92,50 +94,33 @@ class ConfirmationForm(DjangoAuthenticationForm):
               code='active_user')
     return self.cleaned_data
         
-      
+class LicenseAgreementForm(DjangoAuthenticationForm):
+  '''A re-authentication form for the signing of site license agreements for DRP deployments'''
 
-#class UserForm(forms.ModelForm):
-#  username = forms.CharField(label="Username", required=True,
-#             widget= forms.TextInput(attrs={'class':'form_text'}))
-#  password = forms.CharField(label="Password", required=True,
-#             widget=forms.PasswordInput(attrs={'class':'form_text'}))
-#  first_name = forms.CharField(label="First Name", required=True,
-#               widget= forms.TextInput(attrs={'class':'form_text'}))
-#  last_name = forms.CharField(label="Last Name", required=True,
-#              widget= forms.TextInput(attrs={'class':'form_text'}))
-#  email = forms.EmailField(label="Email", required=True,
-#          widget = forms.TextInput(attrs={'class':'form_text email_text'}))
-#
-#  class Meta:
-#    model = User
-#    fields = ("username", "email",
-#      "first_name", "last_name",
-#      "password")
-#
-#  #Hash the user's password upon save.
-#  def save(self, commit=True):
-#    user = super(UserForm, self).save(commit=False)
-#    user.set_password(self.cleaned_data["password"])
-#    if commit:
-#      user.save()
-#    return user
-#
-#class UserProfileForm(forms.ModelForm):
-# #Enumerate all of the lab titles.
-#  lab_group = forms.ModelChoiceField(queryset=Lab_Group.objects.all(),
-#              label="Lab Group", required=True,
-#              widget=forms.Select(attrs={'class':'form_text', 'title':'Choose which lab you would like to join.'}))
-#  access_code = forms.CharField(label="Access Code", required=True,
-#                max_length = ACCESS_CODE_LENGTH,
-#                widget=forms.TextInput(attrs={'class':'form_text', 'title':'The unique code given to you by a lab administrator.'}))
-#
-#  class Meta:
-#    model = Lab_Member
-#    app_label = "formsite"
-#    fields = ["lab_group"]
-#
-#
-#
+  license_id = forms.PositiveIntegerField(widget=forms.widgets.HiddenInput)
+  
+  def __init__(user, license, *args, kwargs**):
+    self.user = user
+    self.license = license
+    self.license_id.initial = license.id
+    super(LicenseAgreementForm, self).__init__(*args, **kwargs)
+
+  def clean(self):
+    '''A slightly adjusted clean method which checks that the correct license is being signed and checks that the right user is signing'''
+    super(LicenseAgreementForm, self).clean()
+    if self.user != self.user_cache:
+      raise forms.ValidationError('Incorrect user details entered. Please enter your own user credentials')
+    if self.license.id = self.cleaned_data.get('license_id'):
+      raise forms.ValidationError('Whilst you were signing the agreement, a more up-to-date agreement has been created. Please read the new agreement and sign again.')
+
+  def as_ol(self):
+    text = '<pre>{0}</pre>'.format(self.license.text)
+    text .= '<ol>{0}</ol>'.format(super(LicenseAgreementForm, self).as_ul())
+    return text
+    
+  def save(self):
+    LicenseAgreement(user=self.user, text=self.license).save()
+
 #class CompoundGuideForm(forms.ModelForm):
 #  compound = forms.CharField(widget=forms.TextInput(
 #              attrs={'class':'form_text',

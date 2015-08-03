@@ -9,7 +9,8 @@ import DRP.views
 
 # Uncomment the next two lines to enable the admin: ###C
 admin.autodiscover()
-page = "(?P<page_request>\d+)"
+#page = "(?P<page_request>\d+)"
+
 urlpatterns = patterns('',
  #Public Pages.
     url(r'^$', TemplateView.as_view(template_name="home.html"), name='home'),
@@ -20,7 +21,7 @@ urlpatterns = patterns('',
     (r'^logout.html$', logout, {'next_page':'home'}),
     url(r'^register.html$', DRP.views.register, name='register'),
     url(r'^confirm.html$', DRP.views.confirm, name='confirm'),
-#    (r'^license.html$', DRP.views.license)
+    url(r'^license.html$', DRP.views.license, name='license')
 #    (r'^join_lab.html$', DRP.views.joinLab)
 
 #    (r'^explore.html$', "DRP.views.general.page", {"template":"explore"}),
@@ -88,11 +89,7 @@ urlpatterns = patterns('',
 
   #Users and Labs
    #Authentication
-#    (r'^user_logout/$', "DRP.views.user.user_logout"), #Log Out
-#    (r'^user_login/$', "DRP.views.user.user_login"), #Log In
    #Registration
-#    (r'^user_license_agreement/$', "DRP.views.license_agreement.get_user_license_agreement"),
-#    (r'^update_user_license_agreement/$', "DRP.views.license_agreement.update_user_license_agreement"),
 #    (r'^registration_prompt/$', "DRP.views.registration.registration_prompt"), #Redirects to correct registration choice.
 #    (r'^lab_registration/$', "DRP.views.registration.lab_registration"), #Create Lab ###INACTIVE
 #    (r'^user_registration/$', "DRP.views.registration.user_registration"), #Create User

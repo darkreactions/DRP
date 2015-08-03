@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="bannerText">Your License Agreement is up to Date</h1>
+<p>Our records show that you have already signed the latest license agreement. You may review it below.</p>
+<pre>
+  {{ license.text }}
+</pre>
+
+{% if testing %}
+<!-- c87f2095-c8b2-4798-89bd-2b93ee33d338 -->
+{% endif %}
+{% endblock %}
