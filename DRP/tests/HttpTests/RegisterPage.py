@@ -97,12 +97,12 @@ class RegisterPage_POST(ContactPage_POST):
         m.close()
         m.logout()
 
-    
-def Suite():
-  return unittest.TestSuite([
-   loadtests(RegisterPage),
-   loadtests(RegisterPage_POST),
-  ])
+tests = [loadtests(RegisterPage])
+
+if settings.TESTING:
+  suite.append(loadtests(RegisterPage_POST))
+
+suite = unittest.TestSuite(tests)
 
 if __name__ == '__main__':
   #Runs the test- a good way to check that this particular test set works without having to run all the tests.
