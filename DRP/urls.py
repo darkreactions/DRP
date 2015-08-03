@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     (r'^logout.html$', logout, {'next_page':'home'}),
     url(r'^register.html$', DRP.views.register, name='register'),
     url(r'^confirm.html$', DRP.views.confirm, name='confirm'),
-    url(r'^license.html$', DRP.views.license, name='license')
+    url(r'^license.html$', DRP.views.license, name='license'),
 #    (r'^join_lab.html$', DRP.views.joinLab)
 
 #    (r'^explore.html$', "DRP.views.general.page", {"template":"explore"}),

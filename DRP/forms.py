@@ -97,29 +97,32 @@ class ConfirmationForm(DjangoAuthenticationForm):
 class LicenseAgreementForm(DjangoAuthenticationForm):
   '''A re-authentication form for the signing of site license agreements for DRP deployments'''
 
-  license_id = forms.PositiveIntegerField(widget=forms.widgets.HiddenInput)
+  licenseId = forms.IntegerField(widget=forms.widgets.HiddenInput)
   
-  def __init__(user, license, *args, kwargs**):
+  def __init__(self, user, license, *args, **kwargs):
+    super(LicenseAgreementForm, self).__init__(*args, **kwargs)
     self.user = user
     self.license = license
-    self.license_id.initial = license.id
-    super(LicenseAgreementForm, self).__init__(*args, **kwargs)
+    self.fields['licenseId'].initial = license.id
 
   def clean(self):
     '''A slightly adjusted clean method which checks that the correct license is being signed and checks that the right user is signing'''
     super(LicenseAgreementForm, self).clean()
     if self.user != self.user_cache:
       raise forms.ValidationError('Incorrect user details entered. Please enter your own user credentials')
-    if self.license.id = self.cleaned_data.get('license_id'):
+    if self.license.id != self.cleaned_data.get('licenseId'):
       raise forms.ValidationError('Whilst you were signing the agreement, a more up-to-date agreement has been created. Please read the new agreement and sign again.')
 
   def as_ol(self):
     text = '<pre>{0}</pre>'.format(self.license.text)
-    text .= '<ol>{0}</ol>'.format(super(LicenseAgreementForm, self).as_ul())
+    text += '<ol>{0}</ol>'.format(super(LicenseAgreementForm, self).as_ul())
     return text
     
-  def save(self):
-    LicenseAgreement(user=self.user, text=self.license).save()
+  def save(self, commit=False):
+    agreement = LicenseAgreement(user=self.user, text=self.license)
+    if commit:
+      agreement.save()
+    return agreement
 
 #class CompoundGuideForm(forms.ModelForm):
 #  compound = forms.CharField(widget=forms.TextInput(
