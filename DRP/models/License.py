@@ -9,4 +9,4 @@ class License(models.Model):
     get_latest_by = 'effectiveDate'
 
   text=models.TextField()
-  effectiveDate=models.DateField()
+  effectiveDate=models.DateField(verbose_name='Effective Date', help_text='The license will become effective on midnight of the provided date.')
