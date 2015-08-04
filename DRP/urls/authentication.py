@@ -1,5 +1,7 @@
 '''Urls for pages related to authentication and user management'''
 from django.conf.urls import patterns, include, url
+import DRP.views
+from django.contrib.auth.views import login, logout
     
 urls = patterns('',
     url(r'^login.html$', login, {'template_name':'login.html'}, name='login'),
