@@ -3,7 +3,6 @@
 from HttpTest import GetHttpTest
 import unittest
 import requests
-import json
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 

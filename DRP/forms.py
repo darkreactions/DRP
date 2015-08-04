@@ -14,6 +14,8 @@ from DRP.models import LabGroup, License, LicenseAgreement
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm
+from django.utils.safestring import mark_safe
+from django.utils.html import conditional_escape
 from DRP.models import License
 
 #from DRP.models import Data, Lab_Group, Lab_Member, CompoundEntry
@@ -107,18 +109,19 @@ class LicenseAgreementForm(DjangoAuthenticationForm):
 
   def clean(self):
     '''A slightly adjusted clean method which checks that the correct license is being signed and checks that the right user is signing'''
-    super(LicenseAgreementForm, self).clean()
+    supercleaned = super(LicenseAgreementForm, self).clean()
     if self.user != self.user_cache:
       raise forms.ValidationError('Incorrect user details entered. Please enter your own user credentials')
     if self.license.id != self.cleaned_data.get('licenseId'):
       raise forms.ValidationError('Whilst you were signing the agreement, a more up-to-date agreement has been created. Please read the new agreement and sign again.')
+    return supercleaned.update(self.cleaned_data)
 
   def as_ol(self):
-    text = '<pre>{0}</pre>'.format(self.license.text)
-    text += '<ol>{0}</ol>'.format(super(LicenseAgreementForm, self).as_ul())
+    text = mark_safe('<pre>{0}</pre>'.format(conditional_escape(self.license.text)))
+    text += mark_safe('<ol>{0}</ol>'.format(super(LicenseAgreementForm, self).as_ul()))
     return text
     
-  def save(self, commit=False):
+  def save(self, commit=True):
     agreement = LicenseAgreement(user=self.user, text=self.license)
     if commit:
       agreement.save()
