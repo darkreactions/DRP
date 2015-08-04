@@ -1,12 +1,13 @@
 '''This package provides tests for the responses from pages and views in the DRP project'''
-import HomePage.suite
-import ContactPage.suite
-import AboutPage.suite
-import LoginPage.suite
-import RegisterPage.suite
+import HomePage
+import ContactPage
+import AboutPage
+import LoginPage
+import RegisterPage
+import LicensePage
 import unittest
 
-suite = unittest.TestSuite({
+suite = unittest.TestSuite([
   HomePage.suite,
   ContactPage.suite,
   AboutPage.suite,

@@ -15,6 +15,7 @@ import re
 import string
 import random
 
+loadTests = unittest.TestLoader().loadTestsFromTestCase
 #The registration page tests assume that the django provided form will behave correctly.
 
 class RegisterPage(ContactPage):
@@ -97,10 +98,10 @@ class RegisterPage_POST(ContactPage_POST):
         m.close()
         m.logout()
 
-tests = [loadtests(RegisterPage])
+tests = [loadTests(RegisterPage)]
 
 if settings.TESTING:
-  suite.append(loadtests(RegisterPage_POST))
+  tests.append(loadTests(RegisterPage_POST))
 
 suite = unittest.TestSuite(tests)
 

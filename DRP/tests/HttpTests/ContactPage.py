@@ -2,53 +2,41 @@
 '''This package provides tests for the Contact page'''
 #TODO: test for email sending
 
-from AboutPage import AboutPage
+from HttpTest import GetHttpTest, PostHttpTest, usesCsrf
 import requests
 import unittest
 loadTests = unittest.TestLoader().loadTestsFromTestCase
   
-def usesCsrf(method):
-  '''A decorator for setUp functions which utilise CSRF protection'''
-  def CsrfWrapper(obj):
-    obj.setUpCsrf()
-    method(obj)
-  return CsrfWrapper
-
-class ContactPage(AboutPage):
+class ContactPage(GetHttpTest):
   '''Performs a simple get request on the contact page to test html validity'''
 
-  url = AboutPage.baseUrl + '/contact.html'
+  url = GetHttpTest.baseUrl + '/contact.html'
   testCodes = ['3a9f74ee-5c78-4ec0-8893-ce0476808131']
 
-
-class ContactPage_POST(ContactPage):
+@usesCsrf
+class PostContactPage(PostHttpTest):
   '''Performs a correctly formed POST request to the contact page to test html validity'''
   
-  def setUpCsrf(self):
-    '''Obtains the relevant CSRF token from the page'''
-    self.s = requests.Session()
-    getResponse = self.s.get(self.url)
-    self.csrf = self.s.cookies.get_dict()['csrftoken']
+  url = GetHttpTest.baseUrl + '/contact.html'
 
-  @usesCsrf
   def setUp(self):
     self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'This is a test message.', 'csrfmiddlewaretoken':self.csrf})
 
-class ContactPage_POST_bad(ContactPage_POST):
+@usesCsrf
+class PostContactPageBad(PostContactPage):
   '''Perfoems a badly formed POST request to the contact page to test html validity'''
 
-  @usesCsrf
   def setUp(self):
     self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'', 'csrfmiddlewaretoken':self.csrf})
   
-class ContactPage_POST_bad2(ContactPage_POST):
+@usesCsrf
+class PostContactPageBad2(PostContactPage):
   '''Performs a badly formed POST request missing a field entirely to test html validity'''
 
-  @usesCsrf
   def setUp(self):
     self.response = self.s.post(self.url, data={'content':'This is a test.', 'csrfmiddlewaretoken':self.csrf})
 
-class ContactPage_POST_bad3(ContactPage):
+class PostContactPageBad3(PostContactPage):
   '''Confirms that CSRF has been correctly implemented by forgetting the csrf token.'''
 
   def setUp(self):
@@ -59,9 +47,9 @@ class ContactPage_POST_bad3(ContactPage):
 
 suite = unittest.TestSuite([
   loadTests(ContactPage),
-  loadTests(ContactPage_POST_bad),
-  loadTests(ContactPage_POST_bad2),
-  loadTests(ContactPage_POST_bad3)
+  loadTests(PostContactPage),
+  loadTests(PostContactPageBad2),
+  loadTests(PostContactPageBad3)
 ])
 
 if __name__ == '__main__':

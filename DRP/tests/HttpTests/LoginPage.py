@@ -2,8 +2,7 @@
 '''Provides HTML tests for the login'''
 import unittest
 import requests
-from ContactPage import ContactPage_POST, usesCsrf
-from AboutPage import AboutPage
+from HttpTest import GetHttpTest, PostHttpTest, usesCsrf
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
@@ -14,16 +13,13 @@ class LoginPage(AboutPage):
 
   url = AboutPage.baseUrl + '/login.html'
 
-  def setUp(self):
-    self.response = requests.get(self.url)
-
-class LoginPage_POST(ContactPage_POST):
+@usesCsrf
+class PostLoginPage(PostHttpTest):
   '''confirms that posting valid data to the login page results in a redirect''' 
 
-  url = ContactPage_POST.baseUrl + '/login.html'
+  url = PostHttpTest.baseUrl + '/login.html'
   testCodes = [u'3a9f74ee-5c78-4ec0-8893-ce0476808131', '1f47e7ab-1900-4683-ba1c-63330ec2f71a']
 
-  @usesCsrf
   def setUp(self):
     self.tmpUser = User.objects.create_user(username="testUser", email=settings.EMAIL_HOST_USER, password="testpass")
     self.tmpUser.save()
@@ -37,8 +33,8 @@ class LoginPage_POST(ContactPage_POST):
     self.tmpUser.delete()
 
 suite = unittest.TestSuite([
-  loadtests(LoginPage_POST),
-  loadtests(LoginPage),
+  loadTests(LoginPage_POST),
+  loadTests(PostLoginPage),
 ])
 
 if __name__ == '__main__':

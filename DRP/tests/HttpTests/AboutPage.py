@@ -3,16 +3,11 @@
 
 import unittest
 import requests
-from HomePage import HomePage
+from Httptest import GetHttpTest
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-class AboutPage(HomePage):
+class AboutPage(GetHttpTest):
   '''Performs a get request on the AboutPage to check for Html Validity'''
-
-  url = HomePage.baseUrl + '/about.html'
-
-  def setUp(self):
-    self.response = requests.get(self.url)
 
 suite = unittest.TestSuite([
   loadTests(AboutPage)
