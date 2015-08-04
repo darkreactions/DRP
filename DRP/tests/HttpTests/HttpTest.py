@@ -100,5 +100,6 @@ def logsInAs(c, username, password, csrf=True):
 
     def tearDown(self):
       Users.objects.filter(username=username).delete()
+      super(LogsInWrapped, self).tearDown()
 
   return LogsInWrapped
