@@ -1,6 +1,6 @@
 '''Forms pertinent to user creation and authentication'''
 from django.core.exceptions import ValidationError
-from django.contrib.auth import User
+from django.contrib.auth.models import User
 import django.forms as forms
 from DRP.models import LicenseAgreement
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
