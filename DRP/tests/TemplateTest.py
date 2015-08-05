@@ -40,6 +40,6 @@ suite = unittest.TestSuite([
           loadTests(RidiculousTestCaseTwo)
           ])
 
-if __name__ == '__main__':
+if __name__=='__main__':
+  unittest.TextTestRunner(verbosity=2).run(suite)
   #Runs the test- a good way to check that this particular test set works without having to run all the tests.
-  unittest.main()
