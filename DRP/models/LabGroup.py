@@ -2,6 +2,16 @@
 from django.db import models
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.conf import settings
+
+class LabGroupManager(models.Manager)
+  '''A custom manager with a convenience function so that we can create new lab groups'''
+
+  def makeLabGroup(title, address, email, access_code):
+    '''A function to create new lab groups easily'''
+    l = LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
+    return l
 
 class LabGroup(models.Model):
   '''A class for describing a collection of scientists belonging to the same group.'''
@@ -17,6 +27,7 @@ class LabGroup(models.Model):
   legacy_access_code = models.CharField(max_length=20)
   '''An older version of the access code. Made a part of this model for legacy support'''
   users = models.ManyToManyField(User, blank=True)
+  objects = LabGroupManager()
 
   def __unicode__(self):
     return self.title
