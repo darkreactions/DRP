@@ -1,8 +1,7 @@
 '''Module containing only the Compound Class'''
 from django.db import models
-from Descriptor import Descriptor
+from MolDescriptor import MolDescriptor
 from ChemicalClass import ChemicalClass
-
 from LabGroup import LabGroup, get_Lab_Group
 
 class Compound(models.Model):
@@ -35,9 +34,9 @@ class Compound(models.Model):
   but is nevertheless useful for calculating descriptors
   '''
 
-  descriptors = models.ManyToManyField(Descriptor, through='DescriptorValue')
+  descriptors = models.ManyToManyField(MolDescriptor, through='MolDescriptorValue')
   '''A link to descriptors which have been calculated for this compound. Values for the descriptors are found
-  on the DescriptorValue model.
+  on the MolDescriptorValue model.
   '''
 
   def __unicode__(self):
