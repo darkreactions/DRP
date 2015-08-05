@@ -20,12 +20,12 @@
   <h2>Lab Groups</h2>
   {% if user.labgroups.count < 1 %}
     {% if testing %}
-      <!--308fd1a4-d2da-4d4a-9a2b-58577e348050-->
+      <!-- 308fd1a4-d2da-4d4a-9a2b-58577e348050 -->
     {% endif %}
   <p>You don't appear to have joined any lab groups yet. <a href='/account/join_group.html'>Please do so here</a></p>
   {% else %}
     {% if testing %}
-      <!--48295bf1-5be1-4f94-aab6-1e5b7e97681b-->
+      <!-- 48295bf1-5be1-4f94-aab6-1e5b7e97681b -->
     {% endif %}
   <ul>
     {% for labgroup in user.labgroups %}
