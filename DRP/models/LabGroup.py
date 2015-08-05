@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.conf import settings
 
-class LabGroupManager(models.Manager)
+class LabGroupManager(models.Manager):
   '''A custom manager with a convenience function so that we can create new lab groups'''
 
   def makeLabGroup(title, address, email, access_code):
