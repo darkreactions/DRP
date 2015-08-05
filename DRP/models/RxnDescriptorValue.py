@@ -13,7 +13,7 @@ class RxnDescriptorValue(models.Model):
     verbose_name='Reaction Descriptor Value'
     unique_together=('reaction', 'descriptor')
 
-  descriptor = models.ForeignKey(MolDescriptor)
+  descriptor = models.ForeignKey(RxnDescriptor)
   reaction = models.ForeignKey(Reaction, null=True, unique=False, default=None)
   booleanValue= models.NullBooleanField('Value if descriptor is a boolean', null=True)
   ordValue = models.PositiveIntegerField('Value if descriptor is an ordinal', null=True)

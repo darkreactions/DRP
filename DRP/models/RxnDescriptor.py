@@ -16,5 +16,5 @@ class RxnDescriptor(models.Model):
   name=models.CharField('Full name', max_length=300)
   kind=models.CharField('Kind', max_length=20, choices=(('Cat', 'Categorical'), ('Ord', 'Ordinal'), ('Num', 'Numerical'), ('Bool', 'Boolean')))
   '''The kind of descriptor changes the type of data which is applicable for a descriptor value (these are stores in the DescriptorValue relationship class'''
-  calculatorSoftware=models.CharField(max_length=300)
-  calculatorSoftwareVersion=models.CharField(max_length=100)
+  calculatorSoftware=models.CharField(max_length=100)
+  calculatorSoftwareVersion=models.CharField(max_length=20)
