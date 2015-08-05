@@ -12,5 +12,5 @@ urls = patterns('',
     url(r'^confirm.html$', DRP.views.confirm, name='confirm'),
     url(r'^license.html$', DRP.views.license, name='license'),
     url(r'^account/$', login_required(TemplateView.as_view(template_name='account.html')), name='account'),
-    #url(r'^account/join_group.html', DRP.views.joinGroup, name='joinGroup')
+    url(r'^account/join_group.html', DRP.views.joinGroup, name='joinGroup')
 )

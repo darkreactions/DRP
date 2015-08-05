@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="bannerText">Join Lab Groups</h1>
+  {% if user.labgroup_set.count < 1 %}
+  <p>You have not yet joined any lab groups</p>
+  {% else %}
+  <ul>
+  {% for labgroup in user.labgroup_set.all %}
+    <li>{{ labgroup }}</li>
+  {% endfor %}
+  </ul>
+  {% endif %}  
+  <form action="{% url 'joinGroup' %}" method="post" />
+    <ol>
+      {{ form.as_ul }}
+    </ol>
+    <input type="submit" value="Join" />
+  </form> 
+
+{% endblock %}

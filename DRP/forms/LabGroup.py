@@ -1,6 +1,6 @@
 '''A module containing form classes pertaining to the management of the LabGroup class'''
 import django.forms as forms
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.conf import settings
 from DRP.models import LabGroup
 from django.core.exceptions import ValidationError
@@ -26,7 +26,7 @@ class LabGroupForm(forms.ModelForm):
     converting the legacy access code (previously stored as a plaintext string) before erasing it.
     '''
     if self.instance.legacy_access_code == '' and self.instance.access_code == '' and self.cleaned_data['accessCode'] == '':
-      raise ValidationError('Access Code required')
+      raise ValidationError('Access Code required', code='no_code')
     elif self.instance.access_code == '' and self.cleaned_data['accessCode'] == '':
       return self.instance.legacy_access_code
     else:
@@ -42,3 +42,16 @@ class LabGroupForm(forms.ModelForm):
       labGroup.save()
     return labGroup
 
+class LabGroupJoiningForm(forms.Form):
+  '''This class is to validate a user to join a lab group using their supplied access code'''
+
+  labGroup = forms.ModelChoiceField(label='Lab Group', queryset=LabGroup.objects.all())
+  accessCode = forms.CharField(label='Access Code', widget=forms.PasswordInput)
+
+  def clean_(self):
+    if check_password(self.cleaned_data['accessCode'], self.cleaned_data['labGroup'].access_code):
+      return self.cleaned_data
+    elif self.cleaned_data['accessCode'] == self.cleaned_data['labGroup'].legacy_access_code:
+      return self.cleaned_data
+    else:
+      raise ValidationError('Invalid Access Code', code='invalid_access')

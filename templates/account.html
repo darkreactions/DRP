@@ -28,11 +28,11 @@
       <!-- 48295bf1-5be1-4f94-aab6-1e5b7e97681b -->
     {% endif %}
   <ul>
-    {% for labgroup in user.labgroups %}
-      {{ labgroup }}
+    {% for labgroup in user.labgroup_set.all %}
+      <li>{{ labgroup }}</li>
     {% endfor %}
   </ul>
-  <p><a href='/account/join_group.html'>Join additional lab groups</a>
+  <p><a href={% url 'joinGroup' %}>Join additional lab groups</a>
   {% endif %}  
 
 {% endblock %}
