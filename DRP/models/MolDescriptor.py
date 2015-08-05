@@ -7,7 +7,7 @@ class MolDescriptor(models.Model):
   class Meta:
     app_label='DRP'
     verbose_name = 'Molecular Descriptor'
-    unique_together('heading','calculatorSoftware','calculatorSoftwareVersion')
+    unique_together = ('heading','calculatorSoftware','calculatorSoftwareVersion')
 
   heading=models.CharField(max_length=200, unique=True, error_messages={'unique':'This descriptor is already registered, or another descriptor already has this title.'})
   '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
