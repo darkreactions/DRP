@@ -40,7 +40,7 @@
           {% endif %}
         <div>
           <span>Hello, {{ user.first_name }}</span>
-          <a href="/account.html" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+          <a href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
         </div>
 
         <a href="/logout.html" id="userLogOut">Log Out</a>
