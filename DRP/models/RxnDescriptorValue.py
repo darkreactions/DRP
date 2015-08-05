@@ -1,19 +1,20 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
-from Descriptor import Descriptor
+from RxnDescriptor import RxnDescriptor
 from Reaction import Reaction
 from Compound import Compound
 from StatsModel import StatsModel
 
-class DescriptorValue(models.Model):
-  '''Contains Relationships between both Reactions and Compounds and their descriptors'''
+class RxnDescriptorValue(models.Model):
+  '''Contains Relationships between Reactions and their descriptors'''
 
   class Meta:
     app_label="DRP"
+    verbose_name='Reaction Descriptor Value'
+    unique_together=('reaction', 'descriptor')
 
-  descriptor = models.ForeignKey(Descriptor)
-  Reaction = models.ForeignKey(Reaction, null=True, unique=False, default=None)
-  Compound = models.ForeignKey(Compound, null=True, unique=False, default=None)
+  descriptor = models.ForeignKey(MolDescriptor)
+  reaction = models.ForeignKey(Reaction, null=True, unique=False, default=None)
   booleanValue= models.NullBooleanField('Value if descriptor is a boolean', null=True)
   ordValue = models.PositiveIntegerField('Value if descriptor is an ordinal', null=True)
   catValue = models.CharField('Value if descriptor is a category', max_length=200, null=True)
