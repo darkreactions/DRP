@@ -51,6 +51,7 @@ MANAGER_EMAILS = [""]
 
 #Change to "False" to see standard errors:
 DEBUG = True #TODO: Change me in production to "False"!
+#DEBUG = False if TESTING else True #useful in dev environments
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
@@ -71,6 +72,33 @@ DATABASES = { #Production database.
         'PORT': '3306',                      # Set to empty string for default.
     }
 }
+
+# ==== Another Useful Hack for Testing Environments - use this INSTEAD of the above block ===
+#if TESTING:  
+#  DATABASES = { #Production database.
+#      'default': {
+#          'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#          'NAME': 'Test_DRP_db_2',                      # Or path to database file if using sqlite3.
+#          # Test_DRP_db should be used next time!
+#  	'USER': 'root',
+#          'PASSWORD': '', ###Delete me in your commits!!!###################################
+#          'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+#          'PORT': '3306',                      # Set to empty string for default.
+#      }
+#  }
+#else:
+#  DATABASES = { #Production database.
+#      'default': {
+#          'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#          'NAME': 'Test_DRP_db_3',                      # Or path to database file if using sqlite3.
+#          # Test_DRP_db should be used next time!
+#  	'USER': 'root',
+#  	#TODO: Change me in production!
+#          'PASSWORD': '', ###Delete me in your commits!!!###################################
+#          'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+#          'PORT': '3306',                      # Set to empty string for default.
+#      }
+#  }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
