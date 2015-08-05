@@ -26,8 +26,13 @@ RESEARCH_DIR = BASE_DIR + "/research/"
 LOG_DIR = BASE_DIR + "/logs/"
 MODEL_DIR = BASE_DIR + "/models/"
 LICENSE_DIR = STATIC_DIR + "/licenses/"
+
 CHEMAXON_DIR = ""
 WEKA_PATH = ""
+#TODO: allow these to accept dictionaries with version numbers
+
+MOL_DESCRIPTOR_PLUGINS=[]
+RXN_DESCRIPTOR_PLUGINS=[]
 
 STATICFILES_DIRS = (STATIC_DIR,)
 
