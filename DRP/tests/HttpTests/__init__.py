@@ -5,6 +5,7 @@ import AboutPage
 import LoginPage
 import RegisterPage
 import LicensePage
+import AccountPage
 import unittest
 
 suite = unittest.TestSuite([
@@ -12,5 +13,6 @@ suite = unittest.TestSuite([
   ContactPage.suite,
   AboutPage.suite,
   LoginPage.suite,
+  AccountPage.suite,
   RegisterPage.suite
 ])

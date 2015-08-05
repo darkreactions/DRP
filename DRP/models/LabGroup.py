@@ -8,7 +8,7 @@ from django.conf import settings
 class LabGroupManager(models.Manager):
   '''A custom manager with a convenience function so that we can create new lab groups'''
 
-  def makeLabGroup(title, address, email, access_code):
+  def makeLabGroup(self, title, address, email, access_code):
     '''A function to create new lab groups easily'''
     l = LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
     return l

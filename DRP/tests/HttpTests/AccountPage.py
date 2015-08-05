@@ -15,6 +15,9 @@ class AccountPageNoGroups(GetHttpTest):
 
   url = GetHttpTest.baseUrl + reverse('account')
   testCodes = ['308fd1a4-d2da-4d4a-9a2b-58577e348050']
+  
+  def setUp(self): 
+    self.response = self.s.get(self.url, params=self.params)
 
 @logsInAs('Aslan', 'banana')
 class AccountPageGroups(AccountPageNoGroups):
@@ -25,8 +28,9 @@ class AccountPageGroups(AccountPageNoGroups):
   def setUp(self):
     self.labGroup = LabGroup.objects.makeLabGroup('test', 'War Drobe', 'aslan@example.com', 'ancient_magic')
     self.labGroup.save()
-    self.labGroup.users.add(Users.objects.get(username='Aslan'))
-    super(AccountPageGroups, self).setUp()
+    self.labGroup.users.add(User.objects.get(username='Aslan'))
+    self.labGroup.save()
+    self.response = self.s.get(self.url, params=self.params)
 
   def tearDown(self):
     self.labGroup.delete()
