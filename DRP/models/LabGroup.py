@@ -10,8 +10,7 @@ class LabGroupManager(models.Manager):
 
   def makeLabGroup(self, title, address, email, access_code):
     '''A function to create new lab groups easily'''
-    l = LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
-    return l
+    return LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
 
 class LabGroup(models.Model):
   '''A class for describing a collection of scientists belonging to the same group.'''
