@@ -12,7 +12,7 @@ class CompoundQuantity(models.Model):
   class Meta:
     app_label='DRP'
 
-  compound=models.ForeignKey(Compound)
+  compound=models.ForeignKey(Compound, on_delete=models.PROTECT)
   reaction=models.ForeignKey(Reaction)
   amount=models.FloatField() 
   amountUnit=models.CharField(max_length=10)
