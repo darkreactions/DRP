@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 
 class CompoundAdminForm(forms.ModelForm):
+  '''Form for the django admin; permits the overriding of CSID absence but forces the existence of the custom flag'''
 
   class Meta:
     model=Compound
@@ -21,6 +22,9 @@ class CompoundAdminForm(forms.ModelForm):
 
 
 class CompoundForm(forms.ModelForm):
+  '''A form for users to add compounds to the compound guide. Forces a check against the chemspider database
+  to ensure no spurious compounds make their way into the compound guide.
+  '''
 
   CAS_ID = forms.CharField(label='CAS ID', required=False)
   CSID = forms.IntegerField(min_value=1, error_messages={'required':'This value must be set or selected'})
@@ -29,7 +33,7 @@ class CompoundForm(forms.ModelForm):
   compound = None
 
   class Meta:
-    fields=('abbrev', 'name', 'CSID', 'CAS_ID', 'chemicalClass')
+    fields=('labGroup', 'abbrev', 'name', 'CSID', 'CAS_ID', 'chemicalClass')
     model=Compound
     help_texts = {
       'abbrev':'A local abbreviation by which the compound is known.',
@@ -37,6 +41,10 @@ class CompoundForm(forms.ModelForm):
       'CAS_ID':'The CAS number for the compound. Optional.',
       'CSID':'The Chemspider ID for the compound. If this is not included, a list will be provided for you to choose from.' 
     }
+
+  def __init__(self, user, *args, **kwargs):
+    super(CompoundForm, self).__init__(*args, **kwargs)
+    self.fields['labGroup'].queryset = user.labgroup_set.all()
 
   def clean_CSID(self):
     searchResults = self.chemSpider.simple_search(self.cleaned_data['CSID'])
