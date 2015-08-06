@@ -18,7 +18,7 @@ class Compound(models.Model):
   '''Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)'''
   chemicalClass = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
   '''The class of the compound- examples include Inorganic Salt'''
-  CSID = models.PositiveIntegerField('Chemspider ID')
+  CSID = models.PositiveIntegerField('Chemspider ID', null=True)
   '''The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions'''
   custom = models.BooleanField("Custom", default=False)
   '''This flag denotes whether a compound has been added irrespective of other validation.
