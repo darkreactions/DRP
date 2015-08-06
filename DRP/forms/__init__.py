@@ -6,5 +6,5 @@ ContactForm: A very simple form for the contact page.
 '''
 from LabGroup import LabGroupForm, LabGroupJoiningForm
 from Contact import ContactForm
-from Compound import CompoundForm
+from Compound import CompoundForm, CompoundAdminForm
 from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationForm

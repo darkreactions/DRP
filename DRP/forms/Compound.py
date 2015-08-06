@@ -6,6 +6,20 @@ from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
+class CompoundAdminForm(forms.ModelForm):
+
+  class Meta:
+    model=Compound
+    exclude=('descriptors','custom')
+
+  def save(self, commit=True):
+    compound = super(CompoundAdminForm, self).save(commit=False)
+    compound.custom=True
+    if commit:
+      compound.save()
+    return compound
+
+
 class CompoundForm(forms.ModelForm):
 
   CAS_ID = forms.CharField(label='CAS ID', required=False)

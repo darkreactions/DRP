@@ -1,6 +1,6 @@
 from django.contrib import admin
-from models import LabGroup, License
-from forms import LabGroupForm
+from models import LabGroup, License, Compound, ChemicalClass 
+from forms import LabGroupForm, CompoundAdminForm
 
 class LabGroupAdmin(admin.ModelAdmin):
   form = LabGroupForm
@@ -14,5 +14,10 @@ class LicenseAdmin(admin.ModelAdmin):
 
   list_display = (licenseSnippet, 'effectiveDate')
 
+class CompoundAdmin(admin.ModelAdmin):
+  form = CompoundAdminForm
+
 admin.site.register(LabGroup, LabGroupAdmin)
 admin.site.register(License, LicenseAdmin)
+admin.site.register(Compound, CompoundAdmin)
+admin.site.register(ChemicalClass)
