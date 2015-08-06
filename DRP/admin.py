@@ -17,7 +17,7 @@ class LicenseAdmin(admin.ModelAdmin):
 class CompoundAdmin(admin.ModelAdmin):
   form = CompoundAdminForm
 
-  list_display = ('abbrev', 'name', 'csid', 'custom', 'labGroup')
+  list_display = ('abbrev', 'name', 'CSID', 'custom', 'labGroup')
 
 class ChemicalClassAdmin(admin.ModelAdmin):
   
