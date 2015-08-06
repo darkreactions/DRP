@@ -16,10 +16,7 @@ class Compound(models.Model):
   '''A local, often nonstandard abbreviation for a compound'''
   name = models.CharField('Name:', max_length=300)
   '''Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)'''
-  CAS_ID = models.CharField("CAS ID", max_length=13, blank=True, default="")
-  CHEBI_ID = models.PositiveIntegerField('CHEBI ID')
-  '''The CHEBI_ID for the compound. This has been added as a zero-cost attribute which may be used for automating chemical semantics later'''
-  ChemicalClass = models.ManyToManyField(ChemicalClass)
+  ChemicalClass = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
   '''The class of the compound- examples include Inorganic Salt'''
   CSID = models.PositiveIntegerField('Chemspider ID')
   '''The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions'''
