@@ -7,6 +7,8 @@ SERVER_NAME = '' #TODO: replace this using sites application.
 TESTING = False #tells the system that you are happy for tests, some of which run on the live database to be run. DO NOT SET TO TRUE IN PRODUCTION.
 EXTERNAL_HTML_VALIDATOR = 'http://validator.w3.org/nu/' #The external html validator. You shouldn't need to change this.
 
+CHEMSPIDER_TOKEN = '39a17d3f-0353-4b04-be4e-eb6cd73e0722'
+
 LOGIN_REDIRECT_URL = '/'
 
 APP_DIR = (os.path.join(os.path.dirname(__file__)))
