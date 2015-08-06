@@ -13,9 +13,28 @@
 {% block content %}
 
 <form action="{% url 'newCompound' %}" method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
   <ol>
-    {{ form.as_ul }}
+    <li>{{ form.abbrev.errors }}{{ form.abbrev.label_tag }}{{ form.abbrev }}{{ form.abbrev.help_text }}</li>
+    <li>{{ form.name.errors}}{{ form.name.label_tag }}{{ form.name }}{{ form.name.help_text }}</li>
+    <li>{{ form.CAS_ID.errors }}{{ form.CAS_ID.label_tag }}{{ form.CAS_ID }}{{ form.CAS_ID.help_text }}</li>
+    <li>
+        {{ form.CSID.errors }}
+        {% if form.CSID.field.choices %}
+          banana
+          <ul>
+          {% for radio in form.CSID %}
+            <li><img src="http://www.chemspider.com/ImagesHandler.ashx?id={{ radio.value }}" alt="A CSID retrieved image for this radio option button." /><label> {{ radio.tag }}</label></li>
+          </ul>
+          {% endfor %}
+        {% else %}
+          {{ form.CSID.label_tag }}{{ form.CSID }}{{ form.CSID.help_text }}
+        {% endif %}
+    </li>
+    <li>{{ form.chemicalClass.errors }}{{ form.chemicalClass.label_tag }}{{ form.chemicalClass }}{{ form.chemicalClass.help_text}}</li>
   </ol>
+  <input type="submit" value="Add Compound" />
 </form>
 
 {% endblock %}
