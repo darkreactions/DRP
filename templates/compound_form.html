@@ -1,0 +1,21 @@
+{% extends 'dbase_base.html' %}
+
+{% block submenu %}
+
+<nav>
+  <ol>
+    <li><a href="{% url 'newCompound' %}">Add a compound</a></li>
+  </ol>
+</nav>
+
+{% endblock %}
+
+{% block content %}
+
+<form action="{% url 'newCompound' %}" method="post">
+  <ol>
+    {{ form.as_ul }}
+  </ol>
+</form>
+
+{% endblock %}

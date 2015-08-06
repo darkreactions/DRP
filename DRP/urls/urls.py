@@ -12,7 +12,6 @@ admin.autodiscover()
 #page = "(?P<page_request>\d+)"
 
 urlpatterns = patterns('',
-#    (r'^join_lab.html$', DRP.views.joinLab)
 
 #    (r'^explore.html$', "DRP.views.general.page", {"template":"explore"}),
 #
