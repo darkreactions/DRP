@@ -22,10 +22,9 @@
     <li>
         {{ form.CSID.errors }}
         {% if form.CSID.field.choices %}
-          banana
           <ul>
           {% for radio in form.CSID %}
-            <li><img src="http://www.chemspider.com/ImagesHandler.ashx?id={{ radio.value }}" alt="A CSID retrieved image for this radio option button." /><label> {{ radio.tag }}</label></li>
+            <li><label><img src="http://www.chemspider.com/ImagesHandler.ashx?id={{ radio.choice_value }}" alt="A CSID retrieved image for this radio option button." /> {{ radio.tag }}</label></li>
           </ul>
           {% endfor %}
         {% else %}
