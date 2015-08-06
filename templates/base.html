@@ -56,52 +56,52 @@
         {% endif %}
 
         </div>
-    </header>
       
-    <nav>
-      <ol id="navigationMenu">
-
-        <li>
-          <a href="/" class="navLink{% if template == "home"%} currentTitle{%endif%}" title="The basics of the Project.">
-            Home
-          </a>
-        </li>
-
-        <li>
-          <a href="/database/"
-             class="navLink{% if template == "database"%} currentTitle{%endif%}"
-             title="Enter the Dark Reaction Project.">
-             Project
-          </a>
-        </li>
-
-        <li>
-          <a href="/about.html"
-             class="navLink{% if template == "about"%} currentTitle{%endif%}"
-             title="More info about the Project.">
-             About
-          </a>
-        </li>
-
+      <nav>
+        <ol id="navigationMenu">
+  
           <li>
-            <a href="/contact.html"
-               class="navLink{% if template == "contact"%} currentTitle{%endif%}"
-               title="Send a bug report, comment, or complaint.">
-               Contact
+            <a href="/" class="navLink{% if template == "home"%} currentTitle{%endif%}" title="The basics of the Project.">
+              Home
             </a>
-        </li>
- <!--TODO: ADAPT and Enable these pages when we feel ready...
-
-<a href="/explore/" class="navLink{% if template == "explore"%} currentTitle{%endif%}" title="Visualize your data.">Explore</a>
-
-<a href="/papers/" class="navLink{% if template == "papers"%} currentTitle{%endif%}" title="Info on publications.".>Papers</a>
-<a href="/help/" class= "navLink{% if template == "help"%} currentTitle{%endif%}" title="How to navigate this site.">Help</a>
-
-  -->
-
-      </ol>
-  </nav>
-
+          </li>
+  
+          <li>
+            <a href="/database/"
+               class="navLink{% if template == "database"%} currentTitle{%endif%}"
+               title="Enter the Dark Reaction Project.">
+               Project
+            </a>
+          </li>
+  
+          <li>
+            <a href="/about.html"
+               class="navLink{% if template == "about"%} currentTitle{%endif%}"
+               title="More info about the Project.">
+               About
+            </a>
+          </li>
+  
+            <li>
+              <a href="/contact.html"
+                 class="navLink{% if template == "contact"%} currentTitle{%endif%}"
+                 title="Send a bug report, comment, or complaint.">
+                 Contact
+              </a>
+          </li>
+   <!--TODO: ADAPT and Enable these pages when we feel ready...
+  
+  <a href="/explore/" class="navLink{% if template == "explore"%} currentTitle{%endif%}" title="Visualize your data.">Explore</a>
+  
+  <a href="/papers/" class="navLink{% if template == "papers"%} currentTitle{%endif%}" title="Info on publications.".>Papers</a>
+  <a href="/help/" class= "navLink{% if template == "help"%} currentTitle{%endif%}" title="How to navigate this site.">Help</a>
+  
+    -->
+  
+        </ol>
+    </nav>
+    {% block additional_header %}{% endblock %}
+  </header>
   <main>
     {% block content %}{% endblock %}
   </main>
