@@ -28,7 +28,7 @@ class CompoundForm(forms.ModelForm):
 
   CAS_ID = forms.CharField(label='CAS ID', required=False)
   '''Adding this field, not in the database, allows users to match compounds to a CAS_ID without us incuring issues for storing them'''
-  CSID = forms.IntegerField(min_value=1, error_messages={'required':'This value must be set or selected'})
+  CSID = forms.IntegerField(label='Chemspider ID', min_value=1, error_messages={'required':'This value must be set or selected'})
   '''If the user already knows the right value for this it allows them to skip a step'''
 
   chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
