@@ -10,3 +10,6 @@ class ChemicalClass(models.Model):
 
   label=models.CharField(max_length=30, unique=True, error_messages={'unique':'A chemical class with this label already exists'}, choices=settings.CHEMICAL_CLASS_CHOICES)
   description=models.CharField(max_length=20)
+
+  def __unicode__(self):
+    return self.label
