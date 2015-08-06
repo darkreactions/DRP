@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 class CreateCompound(CreateView):
+  '''A view managing the creation of compound objects'''
 
   model=Compound
   form_class = CompoundForm

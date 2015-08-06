@@ -27,10 +27,13 @@ class CompoundForm(forms.ModelForm):
   '''
 
   CAS_ID = forms.CharField(label='CAS ID', required=False)
+  '''Adding this field, not in the database, allows users to match compounds to a CAS_ID without us incuring issues for storing them'''
   CSID = forms.IntegerField(min_value=1, error_messages={'required':'This value must be set or selected'})
+  '''If the user already knows the right value for this it allows them to skip a step'''
 
   chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
   compound = None
+  '''Used for caching search results from chemspider'''
 
   class Meta:
     fields=('labGroup', 'abbrev', 'name', 'CSID', 'CAS_ID', 'chemicalClass')
@@ -43,10 +46,12 @@ class CompoundForm(forms.ModelForm):
     }
 
   def __init__(self, user, *args, **kwargs):
+    '''Overridden version of the init method allows us to place the user's lab groups as a restricted set'''
     super(CompoundForm, self).__init__(*args, **kwargs)
     self.fields['labGroup'].queryset = user.labgroup_set.all()
 
   def clean_CSID(self):
+    '''Checks that the CSID is actually a valid id from chemspider'''
     searchResults = self.chemSpider.simple_search(self.cleaned_data['CSID'])
     if(len(searchResults) == 0):
       raise ValidationError('The CSID you have provided is invalid', code='invalid_csid')
@@ -55,17 +60,20 @@ class CompoundForm(forms.ModelForm):
     return self.cleaned_data['CSID']
 
   def clean(self):
+    '''This method verifies that the CSID, CAS_ID (where supplied) and name are consistent'''
     if 'name' in self.cleaned_data.keys():
       nameResults = self.chemSpider.simple_search(self.cleaned_data['name'])
       if self.cleaned_data['CAS_ID']:
         CAS_IDResults = self.chemSpider.simple_search(self.cleaned_data['CAS_ID'])
         compoundChoices = [compound for compound in nameResults if compound in CAS_IDResults][1:10]
+        #the CAS_ID always generates a more restrictive set
       else:
         compoundChoices = nameResults[1:10]
-        CAS_IDResults = []
+        #if the CAS_ID is not supplied, then we just create a subset based on the name search alone
   
       if self.compound is None and len(compoundChoices) > 0:
         self.fields['CSID'] = forms.ChoiceField(choices=((choice.csid, choice.common_name) for choice in compoundChoices), widget=forms.widgets.RadioSelect)
+        #in essence, if a CSID was not supplied, but the chemspider search returned chemspider results, then we offer those results to the user to make a selection.
         return self.cleaned_data
       elif self.compound is None:
         raise ValidationError('Your search terms failed to validate against the Chemspider database. Please contact a local administrator.', code='no_compounds')
@@ -80,6 +88,7 @@ class CompoundForm(forms.ModelForm):
       return self.cleaned_data        
 
   def save(self, commit=True):
+    '''Creates (and if appropriate, saves) the compound instance, and adds Inchi and smiles from chemspider'''
     compound = super(CompoundForm, self).save(commit=False)
     csCompound = self.chemSpider.get_compound(compound.CSID)
     compound.INCHI = csCompound.inchi
