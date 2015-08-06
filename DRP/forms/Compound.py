@@ -70,3 +70,13 @@ class CompoundForm(forms.ModelForm):
           return self.cleaned_data
     else:
       return self.cleaned_data        
+
+  def save(self, commit=True):
+    compound = super(CompoundForm, self).save(commit=False)
+    csCompound = self.chemSpider.get_compound(compound.CSID)
+    compound.INCHI = csCompound.inchi
+    compound.smiles = csCompound.smiles
+    if commit:
+      compound.save()
+    return compound
+    
