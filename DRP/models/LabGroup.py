@@ -16,6 +16,7 @@ class LabGroup(models.Model):
   '''A class for describing a collection of scientists belonging to the same group.'''
   class Meta:
     app_label = "DRP"
+    verbose_name = 'Lab Group'
 
   title = models.CharField(max_length=200, unique=True, error_messages={'unique':"This name is already taken."})
   address = models.CharField(max_length=200)
@@ -30,14 +31,4 @@ class LabGroup(models.Model):
 
   def __unicode__(self):
     return self.title
-
-def get_Lab_Group(query):
-  try:
-    if type(query)==Lab_Group:
-      return query
-    else:
-      return Lab_Group.objects.filter(lab_title=query).get()
-  except:
-    message = "Could not find Lab_Group with lab_title: {}".format(query)
-    raise Exception(message)
 
