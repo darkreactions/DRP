@@ -61,8 +61,8 @@ class CompoundForm(forms.ModelForm):
 
   def clean(self):
     '''This method verifies that the CSID, CAS_ID (where supplied) and name are consistent'''
-    super(CompoundForm, self).clean()
-    if self.cleaned_data.get('name') and False:
+    self.cleaned_data = super(CompoundForm, self).clean()
+    if self.cleaned_data.get('name'):
       nameResults = self.chemSpider.simple_search(self.cleaned_data['name'])
       if self.cleaned_data['CAS_ID']:
         CAS_IDResults = self.chemSpider.simple_search(self.cleaned_data['CAS_ID'])
@@ -81,17 +81,17 @@ class CompoundForm(forms.ModelForm):
       else:
         if self.compound not in nameResults:
           raise ValidationError('The name provided was not valid for the CSID provided. Please change the entry, or contact your local administrator.', code='name_csid_conflict')
-        elif self.cleaned_data['CAS_ID'] and self.compound not in CAS_IDResults:
+        elif self.cleaned_data.get('CAS_ID') and self.compound not in CAS_IDResults:
           raise ValidationError('The CAS ID provided is not valid for the CSID provided. Remove, replace, or contact your local administrator.', 'name_cas_id_conflict')
         else:
           return self.cleaned_data
     else:
       if self.compound is not None:
-        #this is probably some of the most horrible code I have written, but it is the only way to get this to work.
-        data = self.data.copy()
-        data['name'] = self.compound.common_name
-        self._errors['name'] = self.error_class(['Please review this suggestion'])
-        self.data = data
+        #this is probably some of the most horrible code I have written, but it is the only way to get this to work - Phil.
+        data = self.data.copy() #because otherwise the query dict is immutable
+        data['name'] = self.compound.common_name #replace the data directly, as bad as that is...
+        self._errors['name'] = self.error_class(['Please review this suggestion']) #manually input an error message which is less demanding (this is actually canonical method)
+        self.data = data #override the old data
       return self.cleaned_data
 
   def save(self, commit=True):
