@@ -4,7 +4,7 @@
 
 <h1 class="bannerText">Compound Guide</h1>
 <!-- user form to go here -->
-{% if compounds|length >  1 %}
+{% if compounds|length >  0 %}
   <table>
     <thead>
       <tr>
@@ -28,7 +28,7 @@
       </td>
     </tr>
   {% endfor %}
-  <table>
+  </table>
 {% else %}
   <p> There are no compounds in this compound guide yet. </p>
 {% endif %}
