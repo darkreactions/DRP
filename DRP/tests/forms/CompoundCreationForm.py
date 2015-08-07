@@ -1,23 +1,18 @@
 #!/usr/bin/env python
-'''The unit test for the LabGroupForm class.
+'''The unit test for the compound Creation form.
   These tests assume that presence tests for teh form fields work as expected
-  This test suite assumes that Django's check_password functions as
-  expected.
-  This test suite assumes that Django's save methods on forms work for
-  trivial cases.
 '''
 
 import unittest 
-from DRP.tests import DRPTestCase
+from BaseFormTest import BaseFormTest
 from DRP.forms import CompoundForm
 from DRP.models import LabGroup, ChemicalClass
 from django.conf import settings
 from django.contrib.auth.models import User
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-class NoLabExists(DRPTestCase):
+class NoLabExists(BaseFormTest):
   '''Tests that the form doesn't validate when there are no lab groups'''
-  
 
   def setUpFormData(self):
     self.formData = {'labGroup':'5', 'abbrev':'etoh', 'name':'ethanol', 'CAS_ID':'64-17-5', 'CSID':'682'}
@@ -31,22 +26,6 @@ class NoLabExists(DRPTestCase):
     self.chemicalClass.save()    
     self.setUpFormData()
     self.form = CompoundForm(self.user, self.formData)
-
-  def test_validation(self):
-    self.validationFails()
-
-  def validationFails(self):
-    '''a test for cases where the form should not validate'''
-    self.assertFalse(self.form.is_valid(), 'Form should have failed... submitted data: {0}'.format(self.formData))
-
-  def validationSucceeds(self):
-    '''Test that the form does validates'''
-    valid = self.form.is_valid()
-    errString = ''
-    for e, m in self.form.errors.items():
-      errString += '{0}: {1}\n'.format(e, m)
-    errString += ' Submitted data = {0}'.format(self.formData)
-    self.assertTrue(valid, errString)
 
   def tearDown(self):
     self.chemicalClass.delete()
