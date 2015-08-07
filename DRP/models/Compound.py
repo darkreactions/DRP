@@ -26,7 +26,7 @@ class Compound(models.Model):
   INCHI = models.TextField('InCHI key', blank=True, default='')
   '''The Inchi key for a compound- a canonical representation of a molecule which is also unique.'''
 
-  smiles= models.TextField('Smiles', blank=True, default='')
+  smiles = models.TextField('Smiles', blank=True, default='')
   '''A non-canonical string representation of a molecule which cannot be directly used to test for identity
   but is nevertheless useful for calculating descriptors
   '''
