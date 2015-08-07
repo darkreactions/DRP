@@ -16,8 +16,8 @@
           <ul>
           {% for radio in form.CSID %}
             <li><label><img src="http://www.chemspider.com/ImagesHandler.ashx?id={{ radio.choice_value }}" alt="The image for the compound with ChemSpider ID {{ radio.choice_value }}" /> {{ radio.tag }}</label></li>
-          </ul>
           {% endfor %}
+          </ul>
         {% else %}
           {{ form.CSID.label_tag }}{{ form.CSID }}{{ form.CSID.help_text }}
         {% endif %}
