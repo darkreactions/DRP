@@ -35,6 +35,7 @@ class CreateTest(BaseFormTest):
     if self.form.is_valid():
       compound = self.form.save()
       self.assertIsNotNone(compound.id)
+      self.assertEqual(compound.custom, True)
       compound.delete()
 
   def tearDown(self):
