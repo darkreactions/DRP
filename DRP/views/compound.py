@@ -6,6 +6,7 @@ from DRP.models import Compound
 from DRP.forms import CompoundForm
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup
+from django.core.urlresolvers import reverse_lazy as reverse
 
 
 class CreateCompound(CreateView):
@@ -14,6 +15,7 @@ class CreateCompound(CreateView):
   model=Compound
   form_class = CompoundForm
   template_name='compound_form.html'
+  success_url=reverse('compoundguide')
  
   def get_form_kwargs(self):
     '''Overridden to add the request.user value into the kwargs'''
