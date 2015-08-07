@@ -37,5 +37,5 @@ class Compound(models.Model):
   on the MolDescriptorValue model.
   '''
 
-  labGroup = models.ForeignKey(LabGroup)
+  labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
   '''Tells us whose compound guide this appears in'''
