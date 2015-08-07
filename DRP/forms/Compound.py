@@ -31,9 +31,6 @@ class CompoundForm(forms.ModelForm):
   CSID = forms.IntegerField(label='Chemspider ID', min_value=1, error_messages={'required':'This value must be set or selected'})
   '''If the user already knows the right value for this it allows them to skip a step'''
 
-  chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
-  compound = None
-  '''Used for caching search results from chemspider'''
 
   class Meta:
     fields=('labGroup', 'abbrev', 'CSID', 'name', 'CAS_ID', 'chemicalClass')
@@ -48,6 +45,8 @@ class CompoundForm(forms.ModelForm):
   def __init__(self, user, *args, **kwargs):
     '''Overridden version of the init method allows us to place the user's lab groups as a restricted set'''
     super(CompoundForm, self).__init__(*args, **kwargs)
+    self.compound = None
+    self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
     self.fields['labGroup'].queryset = user.labgroup_set.all()
 
   def clean_CSID(self):
