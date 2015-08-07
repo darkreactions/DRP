@@ -1,10 +1,16 @@
 import unittest
-import ConfirmationForm.suite
-import LabGroupForm.suite
-import LicenseAgreementForm.suite
+import CompoundAdminForm
+import CompoundCreationForm
+import ConfirmationForm
+import LabGroupForm
+import LabGroupJoiningForm
+import LicenseAgreementForm
 
 suite = unittest.TestSuite([
-      LabGroupForm.suite,
+      CompoundAdminForm.suite,
+      CompoundCreationForm.suite,
       ConfirmationForm.suite,
+      LabGroupForm.suite,
+      LabGroupJoiningForm.suite,
       LicenseAgreementForm.suite
       ])
