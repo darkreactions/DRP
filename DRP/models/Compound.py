@@ -14,7 +14,7 @@ class Compound(models.Model):
 
   abbrev = models.CharField("Abbreviation", max_length=100)
   '''A local, often nonstandard abbreviation for a compound'''
-  name = models.CharField('Name:', max_length=300)
+  name = models.CharField('Name', max_length=300)
   '''Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)'''
   chemicalClass = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
   '''The class of the compound- examples include Inorganic Salt'''
