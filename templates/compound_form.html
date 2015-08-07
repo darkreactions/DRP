@@ -1,17 +1,7 @@
-{% extends 'dbase_base.html' %}
-
-{% block submenu %}
-
-<nav>
-  <ol>
-    <li><a href="{% url 'newCompound' %}">Add a compound</a></li>
-  </ol>
-</nav>
-
-{% endblock %}
+{% extends 'compound_base.html' %}
 
 {% block content %}
-
+<h1 class="bannerText">{{ page_heading }}</h1>
 <form action="{% url 'newCompound' %}" method="post">
   {% csrf_token %}
   {{ form.non_field_errors }}
@@ -25,7 +15,7 @@
         {% if form.CSID.field.choices %}
           <ul>
           {% for radio in form.CSID %}
-            <li><label><img src="http://www.chemspider.com/ImagesHandler.ashx?id={{ radio.choice_value }}" alt="A CSID retrieved image for this radio option button." /> {{ radio.tag }}</label></li>
+            <li><label><img src="http://www.chemspider.com/ImagesHandler.ashx?id={{ radio.choice_value }}" alt="The image for the compound with ChemSpider ID {{ radio.choice_value }}" /> {{ radio.tag }}</label></li>
           </ul>
           {% endfor %}
         {% else %}
@@ -34,7 +24,7 @@
     </li>
     <li>{{ form.chemicalClass.errors }}{{ form.chemicalClass.label_tag }}{{ form.chemicalClass }}{{ form.chemicalClass.help_text}}</li>
   </ol>
-  <input type="submit" value="Add Compound" />
+  <input type="submit" value="Save" />
 </form>
 
 {% endblock %}
