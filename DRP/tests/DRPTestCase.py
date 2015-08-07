@@ -13,13 +13,13 @@ class DRPTestCase(TestCase):
     if not settings.TESTING:
       raise RuntimeError('Testing environment not enabled')
     else:
+      super(DRPTestCase, self).__init__(*args, **kwargs)
       models.Compound.objects.all().delete()
       models.ChemicalClass.objects.all().delete()
-      models.LabGroup.objects.objects.all().delete()
+      models.LabGroup.objects.all().delete()
       models.ConfirmationCode.objects.all().delete()
       models.LicenseAgreement.objects.all()
       models.License.objects.all().delete()
-      Users.objects.all().exclude(username='root').delete()
+      User.objects.all().exclude(username='root').delete()
       
       
-      super(DRPTestCase, self).__init__(*args, **kwargs)
