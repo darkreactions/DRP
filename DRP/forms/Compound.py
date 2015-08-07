@@ -36,7 +36,7 @@ class CompoundForm(forms.ModelForm):
   '''Used for caching search results from chemspider'''
 
   class Meta:
-    fields=('labGroup', 'abbrev', 'name', 'CSID', 'CAS_ID', 'chemicalClass')
+    fields=('labGroup', 'abbrev', 'CSID', 'name', 'CAS_ID', 'chemicalClass')
     model=Compound
     help_texts = {
       'abbrev':'A local abbreviation by which the compound is known.',
@@ -53,7 +53,7 @@ class CompoundForm(forms.ModelForm):
   def clean_CSID(self):
     '''Checks that the CSID is actually a valid id from chemspider'''
     searchResults = self.chemSpider.simple_search(self.cleaned_data['CSID'])
-    if(len(searchResults) == 0):
+    if(len(searchResults) < 1):
       raise ValidationError('The CSID you have provided is invalid', code='invalid_csid')
     else: 
       self.compound=searchResults[0]
@@ -61,7 +61,8 @@ class CompoundForm(forms.ModelForm):
 
   def clean(self):
     '''This method verifies that the CSID, CAS_ID (where supplied) and name are consistent'''
-    if 'name' in self.cleaned_data.keys():
+    super(CompoundForm, self).clean()
+    if self.cleaned_data.get('name') and False:
       nameResults = self.chemSpider.simple_search(self.cleaned_data['name'])
       if self.cleaned_data['CAS_ID']:
         CAS_IDResults = self.chemSpider.simple_search(self.cleaned_data['CAS_ID'])
@@ -85,7 +86,13 @@ class CompoundForm(forms.ModelForm):
         else:
           return self.cleaned_data
     else:
-      return self.cleaned_data        
+      if self.compound is not None:
+        #this is probably some of the most horrible code I have written, but it is the only way to get this to work.
+        data = self.data.copy()
+        data['name'] = self.compound.common_name
+        self._errors['name'] = self.error_class(['Please review this suggestion'])
+        self.data = data
+      return self.cleaned_data
 
   def save(self, commit=True):
     '''Creates (and if appropriate, saves) the compound instance, and adds Inchi and smiles from chemspider'''
