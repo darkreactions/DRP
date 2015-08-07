@@ -1,0 +1,35 @@
+{% extends 'compound_base.html' %}
+
+{% block content %}
+
+<h1 class="bannerText">Compound Guide</h1>
+<!-- user form to go here -->
+{% if compounds|length >  1 %}
+  <table>
+    <thead>
+      <tr>
+        <th>Abbreviation</th>
+        <th>Name</th>
+        <th>ChemSpider ID</th>
+        <th>Compound Classes</th>
+      </tr>
+    </thead>
+  {% for compound in compounds %}
+    <tr>
+      <td>{{ compound.abbrev }}</td>
+      <td>{{ compound.name }}</td>
+      <td>{{ compound.CSID }}</td>
+      <td>
+        <ul>
+          {% for class in compound.chemicalClass.all %}
+            {{ class }}
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+  {% endfor %}
+  <table>
+{% else %}
+  <p> There are no compounds in this compound guide yet. </p>
+{% endif %}
+{% endblock %}
