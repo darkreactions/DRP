@@ -5,7 +5,8 @@ from django.views.generic import CreateView, ListView
 from DRP.models import Compound
 from DRP.forms import CompoundForm
 from django.utils.decorators import method_decorator
-from decorators import userHasLabGroup
+from decorators import userHasLabGroup, hasSignedLicense
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy as reverse
 
 
@@ -23,6 +24,8 @@ class CreateCompound(CreateView):
     kwargs['user']=self.request.user
     return kwargs
 
+  @method_decorator(login_required)
+  @method_decorator(hasSignedLicense)
   @method_decorator(userHasLabGroup)
   def dispatch(self, request, *args, **kwargs):
     '''Overridden with a decorator to ensure that a user is at least logged in'''
@@ -39,6 +42,8 @@ class ListCompound(ListView):
   template_name='compound_list.html'
   context_object_name='compounds'
 
+  @method_decorator(login_required)
+  @method_decorator(hasSignedLicense)
   @method_decorator(userHasLabGroup)
   def dispatch(self, request, *args, **kwargs):
     '''Overriden with a decorator to ensure that user is logged in and has at least one labGroup

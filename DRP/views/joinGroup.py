@@ -7,8 +7,10 @@ from django.template import RequestContext
 from DRP.models import LabGroup
 from django.shortcuts import render
 from django.http import HttpResponseNotFound
+from decorators import hasSignedLicense 
 
 @login_required
+@hasSignedLicense
 def joinGroup(request):
   '''The view which governs the form for joining lab groups'''
   if LabGroup.objects.all().count() < 1:
