@@ -48,6 +48,8 @@ class CompoundForm(forms.ModelForm):
     self.compound = None
     self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
     self.fields['labGroup'].queryset = user.labgroup_set.all()
+    if user.labgroup_set.all().count() == 1:
+      self.fields['labGroup'].empty_label = None
 
   def clean_CSID(self):
     '''Checks that the CSID is actually a valid id from chemspider'''
