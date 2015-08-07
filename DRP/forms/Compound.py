@@ -18,6 +18,7 @@ class CompoundAdminForm(forms.ModelForm):
     compound.custom=True
     if commit:
       compound.save()
+      self.save_m2m()
     return compound
 
 
@@ -65,12 +66,12 @@ class CompoundForm(forms.ModelForm):
     self.cleaned_data = super(CompoundForm, self).clean()
     if self.cleaned_data.get('name'):
       nameResults = self.chemSpider.simple_search(self.cleaned_data['name'])
-      if self.cleaned_data['CAS_ID']:
+      if self.cleaned_data.get('CAS_ID') != '':
         CAS_IDResults = self.chemSpider.simple_search(self.cleaned_data['CAS_ID'])
-        compoundChoices = [compound for compound in nameResults if compound in CAS_IDResults][1:10]
+        compoundChoices = [compound for compound in nameResults if compound in CAS_IDResults][0:10]
         #the CAS_ID always generates a more restrictive set
       else:
-        compoundChoices = nameResults[1:10]
+        compoundChoices = nameResults[0:10]
         #if the CAS_ID is not supplied, then we just create a subset based on the name search alone
   
       if self.compound is None and len(compoundChoices) > 0:
@@ -103,5 +104,6 @@ class CompoundForm(forms.ModelForm):
     compound.smiles = csCompound.smiles
     if commit:
       compound.save()
+      self.save_m2m()
     return compound
     
