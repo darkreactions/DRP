@@ -6,7 +6,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from abc import ABCMeta
 from DRP.tests import DRPTestCase
+from DRP.models import License, LicenseAgreement
 import json
+from datetime import date, timedelta
 
 class GetHttpTest(DRPTestCase):
 
@@ -15,6 +17,8 @@ class GetHttpTest(DRPTestCase):
   testCodes = []
   params = {}
   '''any GET params to be added to the reuqest.'''
+  status = 200
+  '''The expected status code for this test case'''
 
   def setUp(self):
     '''Sets up the test by requesting the home page uri'''
@@ -39,7 +43,7 @@ class GetHttpTest(DRPTestCase):
 
   def test_Status(self):
     '''Checks that the http response code is the expected value'''
-    self.assertEqual(self.response.status_code, 200, 'Url {0} returns code {1}. Page content follows:\n\n{2}'.format(self.url, self.response.status_code, self.response.text))
+    self.assertEqual(self.response.status_code, self.status, 'Url {0} returns code {1}. Page content follows:\n\n{2}'.format(self.url, self.response.status_code, self.response.text))
 
   def test_CorrectTemplate(self):
     '''Checks that the expected template is loaded'''
@@ -71,42 +75,79 @@ class PostHttpTest(GetHttpTest):
   def setUp(self):
     self.response = requests.post(self.url, data=self.payload, params=self.params)
 
+class OneRedirectionMixin:
+  '''A mixin for testing redirection pages.'''
+
+  def test_redirect(self):
+    '''Checks the response history for 302 redirects'''
+    self.assertEqual(302, self.response.history[0].status_code)
+
 def usesCsrf(c):
   '''A class decorator to indicate the test utilises csrf'''
-  class CsrfWrapped(c):
+  
+  c.s=None
+  _oldSetup = c.setUp
 
-    s=None
+  def setUp(self):
+    if not self.s:
+      self.s = requests.Session()
+    getResponse = self.s.get(self.url)
+    self.csrf = self.s.cookies.get_dict()['csrftoken']
+    _oldSetup(self)
 
-    def setUp(self):
-      if not self.s:
-        self.s = requests.Session()
-      getResponse = self.s.get(self.url)
-      self.csrf = self.s.cookies.get_dict()['csrftoken']
-      super(CsrfWrapped, self).setUp()
+  c.setUp = setUp
 
-  return CsrfWrapped
+  return c
 
 def logsInAs(username, password, csrf=True):
   '''A class decorator that creates and logs in a user on setup, and deletes it on teardown. Should be applied BEFORE usesCsrf decorator'''
 
   def _logsInAs(c):
-    class LogsInWrapped(c):
   
-      loginUrl = c.baseUrl + reverse('login')
-      s = None 
+    c.loginUrl = c.baseUrl + reverse('login')
+    c.s = None 
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
   
-      def setUp(self):
-        User.objects.create_user(username=username, password=password)
-        if not self.s:
-          self.s = requests.Session()
-        getResponse = self.s.get(self.loginUrl)
-        loginCsrf = self.s.cookies.get_dict()['csrftoken']
-        loginResponse = self.s.post(self.loginUrl, data={'username':username, 'password':password, 'csrfmiddlewaretoken':loginCsrf})
-        super(LogsInWrapped, self).setUp()
+    def setUp(self):
+      User.objects.create_user(username=username, password=password)
+      if not self.s:
+        self.s = requests.Session()
+      getResponse = self.s.get(self.loginUrl)
+      loginCsrf = self.s.cookies.get_dict()['csrftoken']
+      loginResponse = self.s.post(self.loginUrl, data={'username':username, 'password':password, 'csrfmiddlewaretoken':loginCsrf})
+      _oldSetUp(self)
   
-      def tearDown(self):
-        super(LogsInWrapped, self).tearDown()
-        User.objects.filter(username=username).delete()
+    def tearDown(self):
+      _oldTearDown(self)
+      User.objects.filter(username=username).delete()
+
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
     
-    return LogsInWrapped
   return _logsInAs
+
+def signsExampleLicense(username):
+  def _signsExampleLicense(c):
+
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
+     
+    def setUp(self)
+      user = User.objects.get(username=username)
+      self.license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
+      self.license.save()
+      self.agreement = LicenseAgreement(user=User, text=self.license)
+
+    def tearDown(self):
+      self.agreement.delete()
+      self.license.delete()
+      _oldTearDown(self)
+
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
+
+
+
