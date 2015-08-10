@@ -3,7 +3,10 @@
 {% block content %}
 
 <h1 class="bannerText">Compound Guide</h1>
-<!-- user form to go here -->
+<form action="{% url 'selectGroup' %}?next={% url 'compoundGuide' as compound_guide_url %}{{ compound_guide_url|urlencode:"" }}" method="post">
+  {% csrf_token %}
+  {{ lab_form }}
+</form>
 {% if compounds|length >  0 %}
   <table>
     <thead>

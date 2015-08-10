@@ -1,0 +1,11 @@
+{% extends 'dbase_base' %}
+
+{% block content %}
+  <h1 class="bannerText">Please select a group to view the database as.</h1>
+  <form action="{% url 'selectGroup' %}?next={{ next }}" method="post">
+    {% csrf_token %}
+    <ol>
+    {{ form.as_ul }}
+    </ol>
+  </form>
+{% end block %}

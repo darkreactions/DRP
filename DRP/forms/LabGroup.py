@@ -48,10 +48,17 @@ class LabGroupJoiningForm(forms.Form):
   labGroup = forms.ModelChoiceField(label='Lab Group', queryset=LabGroup.objects.all())
   accessCode = forms.CharField(label='Access Code', widget=forms.PasswordInput)
 
-  def clean_(self):
+  def clean(self):
     if check_password(self.cleaned_data['accessCode'], self.cleaned_data['labGroup'].access_code):
       return self.cleaned_data
     elif self.cleaned_data['accessCode'] == self.cleaned_data['labGroup'].legacy_access_code:
       return self.cleaned_data
     else:
       raise ValidationError('Invalid Access Code', code='invalid_access')
+
+class LabGroupSelectionForm(forms.Form):
+  '''This class is to validate a user to select a group in order to view the compound lists and reaction lists'''
+    
+  def __init__(self, user, *args, **kwargs):
+    super(LabGroupSelectionForm, self).__init__(*args, **kwargs)
+    self.fields['labGroup'] = forms.ModelChoiceField(label='Viewing as Lab Group', queryset=user.labgroup_set.all())

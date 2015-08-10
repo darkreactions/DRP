@@ -1,10 +1,8 @@
 '''The django forms and model forms used in the DRP
-Classes:
+Classes.
 
-LabGroupForm: for creating Lab Groups in the django admin.
-ContactForm: A very simple form for the contact page.
 '''
-from LabGroup import LabGroupForm, LabGroupJoiningForm
+from LabGroup import LabGroupForm, LabGroupJoiningForm, LabGroupSelectionForm
 from Contact import ContactForm
 from Compound import CompoundForm, CompoundAdminForm
 from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationForm
