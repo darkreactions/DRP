@@ -3,9 +3,12 @@
 {% block content %}
 
 <h1 class="bannerText">Compound Guide</h1>
-<form action="{% url 'selectGroup' %}?next={% url 'compoundGuide' as compound_guide_url %}{{ compound_guide_url|urlencode:"" }}" method="post">
+<form action="{% url 'selectGroup' %}?next={% url 'compoundguide' as compound_guide_url %}{{ compound_guide_url|urlencode:"" }}" method="post">
   {% csrf_token %}
-  {{ lab_form }}
+  <ol>
+  {{ lab_form.as_ul }}
+  </ol>
+  <input type="submit" value="select" />
 </form>
 {% if compounds|length >  0 %}
   <table>

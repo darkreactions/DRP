@@ -9,8 +9,8 @@ from decorators import userHasLabGroup, hasSignedLicense
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
+from django.http import HttpResponse
 
 
 class CreateCompound(CreateView):
@@ -44,6 +44,7 @@ class ListCompound(ListView):
 
   template_name='compound_list.html'
   context_object_name='compounds'
+  model=Compound
 
   @method_decorator(login_required)
   @method_decorator(hasSignedLicense)
@@ -55,15 +56,18 @@ class ListCompound(ListView):
     
     self.lab_form = LabGroupSelectionForm(request.user)
     if request.user.labgroup_set.all().count() > 1:
-      if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).count() > 1:
-        self.queryset = request.user.labgroup_set.get(pk=request_session['labgroup_id']).compound_set.all()
+      if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).count() > 0:
+        self.queryset = request.user.labgroup_set.get(pk=request.session['labgroup_id']).compound_set.all()
         self.lab_form.fields['labGroup'].initial = request.session['labgroup_id']
-      else:
+        return super(ListCompound, self).dispatch(request, *args, **kwargs)
+      elif 'labgroup_id' not in request.session:
         return redirect(reverse('selectGroup') + '?{0}'.format(urlencode({'next':request.path_info})))
+      else:
+        raise RuntimeError("This shouldn't happen")
     else:
       #user only has one labgroup, so don't bother asking which group's compoundlist they want to look at.
       self.queryset = request.user.labgroup_set.all()[0].compound_set.all()
-    return super(ListCompound, self).dispatch(request, *args, **kwargs)
+      return super(ListCompound, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(ListCompound, self).get_context_data(**kwargs)

@@ -1,4 +1,4 @@
-{% extends 'dbase_base' %}
+{% extends 'dbase_base.html' %}
 
 {% block content %}
   <h1 class="bannerText">Please select a group to view the database as.</h1>
@@ -7,5 +7,6 @@
     <ol>
     {{ form.as_ul }}
     </ol>
+  <input type="submit" value="Select" />
   </form>
-{% end block %}
+{% endblock %}
