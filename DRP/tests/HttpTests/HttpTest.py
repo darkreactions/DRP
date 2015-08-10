@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from abc import ABCMeta
 from DRP.tests import DRPTestCase
-from DRP.models import License, LicenseAgreement
+from DRP.models import License, LicenseAgreement, LabGroup, ChemicalClass
 import json
 from datetime import date, timedelta
 
@@ -15,10 +15,14 @@ class GetHttpTest(DRPTestCase):
   baseUrl = 'http://' + settings.SERVER_NAME
   url = baseUrl
   testCodes = []
-  params = {}
+  _params = {}
   '''any GET params to be added to the reuqest.'''
   status = 200
   '''The expected status code for this test case'''
+
+  def __init__(self, *args, **kwargs):
+    super(GetHttpTest, self).__init__(*args, **kwargs)
+    self.params = self._params.copy()
 
   def setUp(self):
     '''Sets up the test by requesting the home page uri'''
@@ -68,12 +72,36 @@ class GetHttpTest(DRPTestCase):
     self.assertTrue(testPassed, failureMessages)
 
 class PostHttpTest(GetHttpTest):
+  '''A test for post requests that do not use sessions'''
 
-  payload = {}
+  _payload = {}
   '''The data to be POSTed to the sever'''
+
+  def __init__(self, *args, **kwargs):
+    super(PostHttptest, self).__init__(*args, **kwargs)
+    self.payload = self._payload.copy()
 
   def setUp(self):
     self.response = requests.post(self.url, data=self.payload, params=self.params)
+
+class GetHttpSessionTest(GetHttpTest):
+
+  def __init__(self, *args, **kwargs):
+    super(GetHttpSessionTest, self).__init__(*args, **kwargs)
+    self.s = requests.Session()
+
+  def setUp(self):
+    self.response = self.s.get(self.url, params=self.params)
+
+class PostHttpSessionTest(PostHttpTest):
+  '''A test for post requests that use sessions (e.g. get decorated with logsInAs)'''
+
+  def __init__(self, *args, **kwargs):
+    super(PostHttpSessionTest, self).__init__(*args, **kwargs)
+    self.s = requests.Session()
+
+  def setUp(self):
+    self.response = self.s.post(self.url, data=self._payload, params=self.params) 
 
 class OneRedirectionMixin:
   '''A mixin for testing redirection pages.'''
@@ -85,14 +113,13 @@ class OneRedirectionMixin:
 def usesCsrf(c):
   '''A class decorator to indicate the test utilises csrf'''
   
-  c.s=None
   _oldSetup = c.setUp
 
   def setUp(self):
-    if not self.s:
-      self.s = requests.Session()
     getResponse = self.s.get(self.url)
     self.csrf = self.s.cookies.get_dict()['csrftoken']
+    if hasattr(self, 'payload'):
+      self.payload['csrfmiddlewaretoken'] = self.csrf #special case for post classes
     _oldSetup(self)
 
   c.setUp = setUp
@@ -105,13 +132,12 @@ def logsInAs(username, password, csrf=True):
   def _logsInAs(c):
   
     c.loginUrl = c.baseUrl + reverse('login')
-    c.s = None 
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
   
     def setUp(self):
       User.objects.create_user(username=username, password=password)
-      if not self.s:
+      if self.s is not None:
         self.s = requests.Session()
       getResponse = self.s.get(self.loginUrl)
       loginCsrf = self.s.cookies.get_dict()['csrftoken']
@@ -129,25 +155,97 @@ def logsInAs(username, password, csrf=True):
   return _logsInAs
 
 def signsExampleLicense(username):
+  '''A class decorator that creates a test license and makes the user specified by username sign it on setUp'''
   def _signsExampleLicense(c):
 
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
      
+    license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
+
     def setUp(self)
       user = User.objects.get(username=username)
-      self.license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
-      self.license.save()
-      self.agreement = LicenseAgreement(user=User, text=self.license)
+      license.save()
+      self.agreement = LicenseAgreement(user=User, text=license)
+      _oldSetup(self)
 
     def tearDown(self):
       self.agreement.delete()
-      self.license.delete()
+      license.delete()
       _oldTearDown(self)
 
     c.setUp = setUp
     c.tearDown = tearDown
     return c
+  return _signsExampleLicense
 
 
+def joinsLabGroup(username, labGroupTitle):
+  '''A class decorator that creates a test lab group with labGroupTitle as it's title and assigns user identified by
+  username to that lab group'''
+  def _joinsLabGroup(c):
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
 
+    labGroup = LabGroup(labGroupTitle, 'War drobe', 'Aslan@example.com', 'new_magic')
+
+    def setUp(self):
+      user = User.objects.get(username=username)
+      user.labgroup_set.add(labGroup)
+      labGroup.save()
+      _oldSetup(self)
+
+    def tearDown(self):
+      _oldTearDown(self)
+      labGroup.delete()
+
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
+  return _joinsLabGroup
+
+def createsChemicalClass(label, description):
+  '''A class decorator that creates a test chemical class for the addition of compounds into the database'''
+
+  def _createsChemicalClass(c):
+
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
+
+    chemicalClass = ChemicalClass(label, description)
+
+    def setUp(self):
+      chemicalClass.save()
+      _oldSetup(self)
+
+    def tearDown(self):
+      chemicalClass.delete()
+      _oldTearDown(self)
+
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
+  return _createsChemicalClass
+
+def choosesLabGroup(username, labGroupTitle):
+  '''A class decorator that sets up a user to be using a given labgroup for a session to view e.g. compound lists
+  Necessarily assumes that the user has been logged in and adjoined to the lab group
+  '''
+
+  def _choosesLabGroup(username, labGroupTitle):
+
+    _oldSetUp = c.setUp
+    _oldTearDown = c.tearDown
+    c.groupSelectUrl = c.baseUrl + reverse('selectGroup')
+
+    def setUp(self):
+      labGroup = LabGroup.objects.get(title=labGroupTitle)
+      user = User.objects.get(username)
+      getResponse = self.s.get(self.groupSelectUrl)
+      selectCsrf = self.s.gookies.get_dict()['csrftoken']
+      self.s.post(self.groupSelectUrl, data={'labGroup':labGroup.id, 'csrfmiddlewaretoken':selectCsrf})
+      _oldSetUp(self)
+
+    c.setUp = setUp
+    return c
+  return _choosesLabGroup
