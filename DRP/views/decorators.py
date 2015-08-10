@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.http import HttpResponseForbidden
 from django.template.loader import get_template
-from DRP.models import LicenseAgreement
+from DRP.models import LicenseAgreement, License
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
@@ -25,8 +25,8 @@ def hasSignedLicense(view):
   Assumes login_required is an external decorator
   '''
   def _hasSignedLicense(request, *args, **kwargs):
-    if LicenseAgreement.objects.filter(user=request.user, text=License.objects.latest()) < 1:
-      redirect(reverse('license') + '?next={0}'.format(urlencode(request.path_info)))
+    if LicenseAgreement.objects.filter(user=request.user, text=License.objects.latest()).count() < 1:
+      return redirect(reverse('license') + '?{0}'.format(urlencode({'next':request.path_info})))
     else:
       return view(request, *args, **kwargs)
   
