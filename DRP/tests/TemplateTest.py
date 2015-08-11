@@ -8,8 +8,7 @@
 #REMEMBER when you create a new test case to add it to the suite() method, and then
 #to have that suite method called in AllTests.py
 
-import unittest
-from DRPTestCase import DRPTestCase
+from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class RidiculousTestCaseOne(DRPTestCase):
@@ -41,5 +40,5 @@ suite = unittest.TestSuite([
           ])
 
 if __name__=='__main__':
-  unittest.TextTestRunner(verbosity=2).run(suite)
+  runTests(suite)
   #Runs the test- a good way to check that this particular test set works without having to run all the tests.

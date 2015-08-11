@@ -6,7 +6,7 @@ import unittest
 import requests
 from django.contrib.auth.models import User
 from DRP.models import ConfirmationCode
-from ContactPage import ContactPage, ContactPage_POST, usesCsrf
+from HttpTest import GetHttpTest, PostHttpSessionTest, usesCsrf
 from django.conf import settings
 from django.core.urlresolvers import reverse
 import imaplib
@@ -18,22 +18,24 @@ import random
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 #The registration page tests assume that the django provided form will behave correctly.
 
-class RegisterPage(ContactPage):
+registrationUrl = GetHttpTest.baseUrl + '/register.html'
+
+class RegisterPage(GetHttpTest):
   '''Checks the register page html validity'''
 
-  url=ContactPage.baseUrl + '/register.html'
+  url=registrationUrl
   testCodes = ['4cf1abe0-9118-471c-ac4e-34e863e87402','be088572-3adc-4757-8059-d16db2ea77a6'] 
 
-class RegisterPage_POST(ContactPage_POST):
+@usesCsrf
+class PostRegisterPage(PostHttpSessionTest):
   '''Checks the register page email response'''
     
-  url = ContactPage_POST.baseUrl + '/register.html'
+  url = registrationUrl
   templateId = 'd776703c-bf1c-4a0a-89d1-1fcd83093967'
   emailCode = 'ff5327c2-9e62-4f4b-b64c-67bd9e9935c2'
   emailHeader = 'Dark Reactions Project Registration'
   testCodes = ['8f7aa6e8-2be5-4630-a205-5fceeea81fe4']
 
-  @usesCsrf
   def setUp(self):
     self.username = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase) for i in range(6))
     self.response = self.s.post(self.url, data={'username':'testing', 'first_name':self.username, 'last_name':'user', 'password1':'testpass', 'password2':'testpass', 'email':settings.EMAIL_HOST_USER, 'csrfmiddlewaretoken':self.csrf})
@@ -101,7 +103,7 @@ class RegisterPage_POST(ContactPage_POST):
 tests = [loadTests(RegisterPage)]
 
 if settings.TESTING:
-  tests.append(loadTests(RegisterPage_POST))
+  tests.append(loadTests(PostRegisterPage))
 
 suite = unittest.TestSuite(tests)
 

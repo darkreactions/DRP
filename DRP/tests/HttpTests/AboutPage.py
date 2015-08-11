@@ -3,7 +3,7 @@
 
 import unittest
 import requests
-from Httptest import GetHttpTest
+from HttpTest import GetHttpTest
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class AboutPage(GetHttpTest):

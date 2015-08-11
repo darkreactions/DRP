@@ -1,22 +1,24 @@
 #!/usr/bin/env python
 '''This module contains tests for teh confirmation page'''
 
-from HttpTests import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest
-from HttpTests import  OneRedirectionMixin, logsInAs, signsExampleLicense, usesCsrf
-from HttpTests import joinsLabGroup, createsChemicalClass, 
+from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest
+from HttpTest import  OneRedirectionMixin, logsInAs, signsExampleLicense, usesCsrf
+from HttpTest import joinsLabGroup, createsChemicalClass, choosesLabGroup 
+from DRP.tests import runTests
 from django.contrib.auth.models import User
-from DRP.models import ConfirmationCode
+from DRP.models import ConfirmationCode, LabGroup, ChemicalClass
+from django.core.urlresolvers import reverse
 from uuid import uuid4
 import requests
 import unittest
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-newCompoundUrl = GetHttpRequest.baseUrl + reverse('newCompound')
-compoundListUrl = GetHttpRequest.baseUrl + reverse('compoundguide')
+newCompoundUrl = GetHttpTest.baseUrl + reverse('newCompound')
+compoundListUrl = GetHttpTest.baseUrl + reverse('compoundguide')
 
 @logsInAs('Aslan', 'old_magic')
-class LicenseRedirect(GetHttpTest, OneRedirectionMixin):
+class LicenseRedirect(GetHttpSessionTest, OneRedirectionMixin):
   '''Tests that the request is redirected if a user tries to view the compound add page in without having
   signed an EULA.'''
 
@@ -25,7 +27,7 @@ class LicenseRedirect(GetHttpTest, OneRedirectionMixin):
 
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
-class Lab403Test(GetHttpTest):
+class Lab403Test(GetHttpSessionTest):
   '''Tests that the view returns the special 403 page when trying to look at a
   compound guide without being in a research group
   '''
@@ -37,7 +39,7 @@ class Lab403Test(GetHttpTest):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-class CreateCompoundGetTest(GetHttpTest):
+class CreateCompoundGetTest(GetHttpSessionTest):
   '''Tests that when signed in with full credentials, the
   create view displays'''
 
@@ -56,9 +58,10 @@ class CreateCompoundRedirTest(PostHttpSessionTest, OneRedirectionMixin):
   testCodes=['bf3a3711-b21d-4710-a989-6d1ebc1c9ee9', '7f25b7df-2176-455b-9a68-620af1d52e46']#the first of these tests for correct template, the second tests that the compound table gets displayed 
   _payload = {'abbrev':'etoh', 'name':'ethanol', 'CAS_ID':'64-17-5', 'CSID':'682'}
   
-  def setUp(self)
+  def setUp(self):
     self.payload['labGroup']=LabGroup.objects.get(title='Narnia').id
     self.payload['chemicalClass']=[ChemicalClass.objects.get(label='Org').id]
+    super(CreateCompoundRedirTest, self).setUp()
 
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
@@ -74,7 +77,8 @@ class CreateCompoundRadioTest(PostHttpSessionTest):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'Narnia')
-class NoCompounds(GetHttpTest):
+class NoCompounds(GetHttpSessionTest):
+  '''Tests that the empy message is displayed when a group has no compounds'''
 
   url = compoundListUrl
   testCodes = ['1bf53b3a-ddf0-407b-b565-b732e4fa5ddb']#tests for empty list message
@@ -83,7 +87,7 @@ class NoCompounds(GetHttpTest):
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'Narnia')
 @joinsLabGroup('Aslan', 'Stone Table')
-class ManyGroupsRedirect(GetHttpTest, OneRedirectionMixin):
+class ManyGroupsRedirect(GetHttpSessionTest, OneRedirectionMixin):
   '''Tests that a user with many lab groups but no session data for a lab group gets redirected. Tests the display of the lab group selection template by proxy.'''
 
   url = compoundListUrl
@@ -100,12 +104,32 @@ class ManyLabGroupsDisplays(GetHttpSessionTest):
   url=compoundListUrl
   testCodes = ['bf3a3711-b21d-4710-a989-6d1ebc1c9ee9']
 
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'Narnia')
+@joinsLabGroup('Aslan', 'Stone table')
+@usesCsrf
+class LabGroupSelectionRedirect(PostHttpSessionTest, OneRedirectionMixin):
+  '''tests for the redirection after the choice of lab group has been made'''
+
+  url = PostHttpSessionTest.baseUrl + reverse('selectGroup')
+  testCodes = ['82ab2a5b-d337-4579-89d4-621cf2ce07ea']
+
+  def setUp(self, *args, **kwargs):
+    super(LabGroupSelectionRedirect, self).setUp(*args, **kwargs)
+    self.payload['labGroup'] = LabGroup.objects.get(title='Narnia').id
+
 suite = unittest.TestSuite([
-  loadTests(ConfirmationPage),
-  loadTests(ConfirmationPage2),
-  loadTests(PostConfirmationPage),
-  loadTests(PostConfirmationPage2)
+  loadTests(LicenseRedirect),
+  loadTests(Lab403Test),
+  loadTests(CreateCompoundGetTest),
+  loadTests(CreateCompoundRedirTest),
+  loadTests(CreateCompoundRadioTest),
+  loadTests(NoCompounds),
+  loadTests(ManyGroupsRedirect),
+  loadTests(ManyLabGroupsDisplays),
+  loadTests(LabGroupSelectionRedirect)
 ])
 
 if __name__=='__main__':
-  unittest.TextTestRunner(verbosity=2).run(suite)
+  runTests(suite)

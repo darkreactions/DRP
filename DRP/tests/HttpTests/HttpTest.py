@@ -78,7 +78,7 @@ class PostHttpTest(GetHttpTest):
   '''The data to be POSTed to the sever'''
 
   def __init__(self, *args, **kwargs):
-    super(PostHttptest, self).__init__(*args, **kwargs)
+    super(PostHttpTest, self).__init__(*args, **kwargs)
     self.payload = self._payload.copy()
 
   def setUp(self):
@@ -108,6 +108,7 @@ class OneRedirectionMixin:
 
   def test_redirect(self):
     '''Checks the response history for 302 redirects'''
+    self.assertEqual(len(self.response.history), 1, 'Response history has length: {0}'.format(len(self.response.history)))
     self.assertEqual(302, self.response.history[0].status_code)
 
 def usesCsrf(c):
@@ -132,11 +133,12 @@ def logsInAs(username, password, csrf=True):
   def _logsInAs(c):
   
     c.loginUrl = c.baseUrl + reverse('login')
-    _oldSetup = c.setUp
+    _oldSetUp = c.setUp
     _oldTearDown = c.tearDown
   
     def setUp(self):
-      User.objects.create_user(username=username, password=password)
+      user = User.objects.create_user(username=username, password=password)
+      user.save()
       if self.s is not None:
         self.s = requests.Session()
       getResponse = self.s.get(self.loginUrl)
@@ -163,10 +165,11 @@ def signsExampleLicense(username):
      
     license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
 
-    def setUp(self)
+    def setUp(self):
       user = User.objects.get(username=username)
       license.save()
-      self.agreement = LicenseAgreement(user=User, text=license)
+      self.agreement = LicenseAgreement(user=user, text=license)
+      self.agreement.save()
       _oldSetup(self)
 
     def tearDown(self):
@@ -187,12 +190,12 @@ def joinsLabGroup(username, labGroupTitle):
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
 
-    labGroup = LabGroup(labGroupTitle, 'War drobe', 'Aslan@example.com', 'new_magic')
+    labGroup = LabGroup(title=labGroupTitle, address='War drobe', email='Aslan@example.com', access_code='new_magic')
 
     def setUp(self):
       user = User.objects.get(username=username)
-      user.labgroup_set.add(labGroup)
       labGroup.save()
+      user.labgroup_set.add(labGroup)
       _oldSetup(self)
 
     def tearDown(self):
@@ -212,7 +215,7 @@ def createsChemicalClass(label, description):
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
 
-    chemicalClass = ChemicalClass(label, description)
+    chemicalClass = ChemicalClass(label=label, description=description)
 
     def setUp(self):
       chemicalClass.save()
@@ -232,7 +235,7 @@ def choosesLabGroup(username, labGroupTitle):
   Necessarily assumes that the user has been logged in and adjoined to the lab group
   '''
 
-  def _choosesLabGroup(username, labGroupTitle):
+  def _choosesLabGroup(c):
 
     _oldSetUp = c.setUp
     _oldTearDown = c.tearDown
@@ -240,9 +243,9 @@ def choosesLabGroup(username, labGroupTitle):
 
     def setUp(self):
       labGroup = LabGroup.objects.get(title=labGroupTitle)
-      user = User.objects.get(username)
+      user = User.objects.get(username=username)
       getResponse = self.s.get(self.groupSelectUrl)
-      selectCsrf = self.s.gookies.get_dict()['csrftoken']
+      selectCsrf = self.s.cookies.get_dict()['csrftoken']
       self.s.post(self.groupSelectUrl, data={'labGroup':labGroup.id, 'csrfmiddlewaretoken':selectCsrf})
       _oldSetUp(self)
 

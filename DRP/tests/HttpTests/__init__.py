@@ -9,12 +9,14 @@ import LicensePage
 import LoginPage
 import RegisterPage
 import unittest
+import CompoundPages
 
 suite = unittest.TestSuite([
   AboutPage.suite,
   AccountPage.suite,
   ConfirmationPage.suite,
   ContactPage.suite,
+  CompoundPages.suite,
   HomePage.suite,
   LabGroupPage.suite,
   LicensePage.suite,

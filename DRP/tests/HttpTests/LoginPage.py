@@ -8,10 +8,10 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 #NOTE the correct behaviour of the default login view by django response is taken for granted.
 
-class LoginPage(AboutPage):
+class LoginPage(GetHttpTest):
   '''Confirms that GETing the login page results in valid html'''
 
-  url = AboutPage.baseUrl + '/login.html'
+  url = GetHttpTest.baseUrl + '/login.html'
 
 @usesCsrf
 class PostLoginPage(PostHttpTest):
@@ -33,7 +33,7 @@ class PostLoginPage(PostHttpTest):
     self.tmpUser.delete()
 
 suite = unittest.TestSuite([
-  loadTests(LoginPage_POST),
+  loadTests(LoginPage),
   loadTests(PostLoginPage),
 ])
 
