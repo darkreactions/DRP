@@ -14,7 +14,7 @@ def userHasLabGroup(view):
   def hasLabGroup(request, *args, **kwargs):
     if request.user.labgroup_set.all().count() < 1:
       template=get_template('labgroup_403.html')
-      return HttpResponseForbidden(template.render(request, RequestContext(request)))      
+      return HttpResponseForbidden(template.render(RequestContext(request)))
     else:
       return view(request, *args, **kwargs)
   return hasLabGroup

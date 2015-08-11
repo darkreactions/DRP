@@ -101,7 +101,7 @@ class PostHttpSessionTest(PostHttpTest):
     self.s = requests.Session()
 
   def setUp(self):
-    self.response = self.s.post(self.url, data=self._payload, params=self.params) 
+    self.response = self.s.post(self.url, data=self.payload, params=self.params) 
 
 class OneRedirectionMixin:
   '''A mixin for testing redirection pages.'''
@@ -118,9 +118,8 @@ def usesCsrf(c):
 
   def setUp(self):
     getResponse = self.s.get(self.url)
-    self.csrf = self.s.cookies.get_dict()['csrftoken']
-    if hasattr(self, 'payload'):
-      self.payload['csrfmiddlewaretoken'] = self.csrf #special case for post classes
+    self.csrf = self.s.cookies.get_dict()['csrftoken'] #for some old-school tests TODO:Deprecate this.
+    self.payload['csrfmiddlewaretoken'] = self.csrf #special case for post classes
     _oldSetup(self)
 
   c.setUp = setUp
@@ -181,7 +180,6 @@ def signsExampleLicense(username):
     c.tearDown = tearDown
     return c
   return _signsExampleLicense
-
 
 def joinsLabGroup(username, labGroupTitle):
   '''A class decorator that creates a test lab group with labGroupTitle as it's title and assigns user identified by

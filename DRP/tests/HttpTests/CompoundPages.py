@@ -6,11 +6,12 @@ from HttpTest import  OneRedirectionMixin, logsInAs, signsExampleLicense, usesCs
 from HttpTest import joinsLabGroup, createsChemicalClass, choosesLabGroup 
 from DRP.tests import runTests
 from django.contrib.auth.models import User
-from DRP.models import ConfirmationCode, LabGroup, ChemicalClass
+from DRP.models import ConfirmationCode, LabGroup, ChemicalClass, License
 from django.core.urlresolvers import reverse
 from uuid import uuid4
 import requests
 import unittest
+from datetime import date, timedelta
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
@@ -24,6 +25,14 @@ class LicenseRedirect(GetHttpSessionTest, OneRedirectionMixin):
 
   url=newCompoundUrl
   testCodes = ['c9e46ba1-cd2a-4080-88b5-97415fa7c484']
+
+  def setUp(self):
+    self.license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
+    self.license.save()
+    super(LicenseRedirect, self).setUp()
+
+  def tearDown(self):
+    self.license.delete()
 
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
@@ -113,11 +122,13 @@ class LabGroupSelectionRedirect(PostHttpSessionTest, OneRedirectionMixin):
   '''tests for the redirection after the choice of lab group has been made'''
 
   url = PostHttpSessionTest.baseUrl + reverse('selectGroup')
-  testCodes = ['82ab2a5b-d337-4579-89d4-621cf2ce07ea']
+  testCodes = ['bf3a3711-b21d-4710-a989-6d1ebc1c9ee9']
+  _params={'next':reverse('compoundguide')}
 
   def setUp(self, *args, **kwargs):
-    super(LabGroupSelectionRedirect, self).setUp(*args, **kwargs)
     self.payload['labGroup'] = LabGroup.objects.get(title='Narnia').id
+    super(LabGroupSelectionRedirect, self).setUp(*args, **kwargs)
+
 
 suite = unittest.TestSuite([
   loadTests(LicenseRedirect),
