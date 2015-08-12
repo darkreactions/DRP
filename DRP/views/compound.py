@@ -1,16 +1,18 @@
 '''A module containing views pertinent to compound objects'''
 
 from django.contrib.auth.models import User
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import Compound
-from DRP.forms import CompoundForm, LabGroupSelectionForm
+from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.shortcuts import redirect
 from django.utils.http import urlencode
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404, HttpResponseForbidden
+from django.template.loader import get_template
+from django.views.decorators.http import require_POST
 
 
 class CreateCompound(CreateView):
@@ -39,6 +41,40 @@ class CreateCompound(CreateView):
     context['page_heading'] = 'Add a New Compound'
     return context
     
+class EditCompound(UpdateView):
+  '''A view managing the editing of compound objects'''
+
+  form_class=CompoundEditForm
+  template_name='compound_edit.html'
+  success_url=reverse('compoundguide')
+  model = Compound
+
+  @method_decorator(login_required)
+  @method_decorator(hasSignedLicense)
+  @method_decorator(userHasLabGroup)
+  def dispatch(self, request, *args, **kwargs):
+    '''Checks user has sufficient credentials and has row-level permissions for this compound'''
+    try:
+      compound = Compound.objects.get(pk=self.get_object().pk, labGroup__in=request.user.labgroup_set.all())
+    except Compound.DoesNotExist:
+      raise Http404("A compound matching your query could not be found.")
+    if compound.custom:
+      template = get_template('compound_403.html')
+      return HttpResponseForbidden(template.render(RequestContext(request)))
+    else:
+      return super(EditCompound, self).dispatch(request, *args, **kwargs)
+
+@require_POST
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+def deleteCompound(request, *args, **kwargs):
+  '''A view managing the deletion of compound objects'''
+  form = CompoundDeleteForm(data=request.POST, user=request.user) 
+  if form.is_valid():
+    form.save()
+  return redirect('compoundguide')
+
 class ListCompound(ListView):
   '''A view managing the viewing of the compound guide'''
 
@@ -56,7 +92,7 @@ class ListCompound(ListView):
     
     self.lab_form = LabGroupSelectionForm(request.user)
     if request.user.labgroup_set.all().count() > 1:
-      if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).count() > 0:
+      if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).exists():
         self.queryset = request.user.labgroup_set.get(pk=request.session['labgroup_id']).compound_set.all()
         self.lab_form.fields['labGroup'].initial = request.session['labgroup_id']
         return super(ListCompound, self).dispatch(request, *args, **kwargs)

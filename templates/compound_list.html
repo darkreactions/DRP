@@ -1,8 +1,10 @@
 {% extends 'compound_base.html' %}
+{% load compound_delete_form %}
 
 {% block content %}
 
 <h1 class="bannerText">Compound Guide</h1>
+{% if user.labgroup_set.all.count > 1 %}
 <form action="{% url 'selectGroup' %}?next={% url 'compoundguide' as compound_guide_url %}{{ compound_guide_url|urlencode:"" }}" method="post">
   {% csrf_token %}
   <ol>
@@ -10,6 +12,7 @@
   </ol>
   <input type="submit" value="select" />
 </form>
+{% endif %}
 {% if compounds|length >  0 %}
   <table>
     <thead>
@@ -22,7 +25,11 @@
     </thead>
   {% for compound in compounds %}
     <tr>
-      <td>{{ compound.abbrev }}</td>
+      <td>
+        <a href="{% url 'editCompound' compound.pk %}">
+          {{ compound.abbrev }}
+        </a>
+      </td>
       <td>{{ compound.name }}</td>
       <td>{{ compound.CSID }}</td>
       <td>
@@ -31,6 +38,15 @@
             <li>{{ class }}</li>
           {% endfor %}
         </ul>
+      </td>
+      <td>
+        {% if not compound.reaction_set.all.exists %}
+        <form action="{% url 'deleteCompound' %}" method="post">
+          {% csrf_token %}
+          {% compound_delete_form compound %}
+          <input type="Submit" value="delete" />
+        </form>
+        {% endif %}
       </td>
     </tr>
   {% endfor %}

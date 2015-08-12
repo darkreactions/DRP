@@ -1,10 +1,11 @@
 '''A module containing form for creating compounds'''
 
 import django.forms as forms 
-from DRP.models import Compound
+from DRP.models import Compound, CompoundQuantity
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.forms.widgets import HiddenInput
 
 class CompoundAdminForm(forms.ModelForm):
   '''Form for the django admin; permits the overriding of CSID absence but forces the existence of the custom flag'''
@@ -49,7 +50,7 @@ class CompoundForm(forms.ModelForm):
     self.compound = None
     self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
     self.fields['labGroup'].queryset = user.labgroup_set.all()
-    if user.labgroup_set.all().count() == 1:
+    if user.labgroup_set.all().exists():
       self.fields['labGroup'].empty_label = None
 
   def clean_CSID(self):
@@ -106,4 +107,42 @@ class CompoundForm(forms.ModelForm):
       compound.save()
       self.save_m2m()
     return compound
-    
+   
+class CompoundEditForm(forms.ModelForm):
+
+  class Meta:
+    fields=('name', 'abbrev', 'chemicalClass')
+    model=Compound 
+    help_texts = {
+      'abbrev':'A local abbreviation by which the compound is known.',
+      'name':'A common or IUPAC name for the compound.',
+    }
+
+  def clean_name(self):
+      chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
+      nameResults = chemSpider.simple_search(self.cleaned_data['name'])
+      if self.instance.CSID not in (nameResult.csid for nameResult in nameResults):
+        raise ValidationError("That name is not a known synonym for this compound")
+      else:
+        return self.cleaned_data['name']
+
+class CompoundDeleteForm(forms.ModelForm):
+
+  class Meta:
+    fields=('id',)
+    model=Compound
+
+  def __init__(self, user=None, *args, **kwargs):
+    super(CompoundDeleteForm, self).__init__(*args, **kwargs)
+    self.fields['id'] = forms.ModelChoiceField(queryset=Compound.objects.all(), initial=self.instance.pk, widget=HiddenInput)
+    if user is not None:
+      self.fields['id'].queryset=Compound.objects.filter(labGroup__in=user.labgroup_set.all())
+
+  def clean_id(self):
+    if self.cleaned_data['id'].reaction_set.exists():
+      raise ValidationError("This reaction is protected from deletion because it is used in one or more reactions or recommendations.")
+    return self.cleaned_data['id'] 
+
+  def save(self):
+    self.cleaned_data['id'].delete()
+    return self.cleaned_data['id']

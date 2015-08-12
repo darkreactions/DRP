@@ -4,5 +4,5 @@ Classes.
 '''
 from LabGroup import LabGroupForm, LabGroupJoiningForm, LabGroupSelectionForm
 from Contact import ContactForm
-from Compound import CompoundForm, CompoundAdminForm
+from compound import CompoundForm, CompoundAdminForm, CompoundEditForm, CompoundDeleteForm
 from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationForm

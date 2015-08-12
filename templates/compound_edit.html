@@ -1,0 +1,14 @@
+{% extends 'compound_base.html' %}
+
+{% block content %}
+
+<h1 class="bannerText">Edit Compound</h1>
+<form action="{% url 'editCompound' object.pk %}" method="post">
+  {% csrf_token %}
+  <ol>
+    {{ form.as_ul }}
+  </ol>
+  <input type="submit" value="Save Changes" />
+</form>
+
+{% endblock %}
