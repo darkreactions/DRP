@@ -26,6 +26,7 @@ class RegisterPage(GetHttpTest):
   url=registrationUrl
   testCodes = ['4cf1abe0-9118-471c-ac4e-34e863e87402','be088572-3adc-4757-8059-d16db2ea77a6'] 
 
+@unittest.skipIf(settings.SKIP_EMAIL_TESTS, 'Email Tests being skipped...')
 @usesCsrf
 class PostRegisterPage(PostHttpSessionTest):
   '''Checks the register page email response'''

@@ -10,7 +10,6 @@ import LoginPage
 import RegisterPage
 import unittest
 import CompoundPages
-import decorators
 
 suite = unittest.TestSuite([
   AboutPage.suite,

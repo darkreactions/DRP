@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm as DjangoAuthenticationForm
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
+from django.contrib.auth import authenticate
 
 class UserCreationForm(DjangoUserCreationForm):
 

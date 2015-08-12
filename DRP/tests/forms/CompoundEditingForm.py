@@ -8,7 +8,8 @@ from BaseFormTest import BaseFormTest
 from DRP.forms import CompoundEditForm
 from DRP.models import LabGroup, ChemicalClass, Compound, LabGroup
 from django.conf import settings
-from decorators import createsCompound, createsUser, joinsLabGroup, createsChemicalClass 
+from DRP.tests.decorators import createsCompound, createsUser, joinsLabGroup, createsChemicalClass 
+from DRP.tests import runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @createsUser('Aslan', 'old_magic')
@@ -27,7 +28,8 @@ class CorrectSynonym(BaseFormTest):
 
   def setUp(self):
     "Instantiates the form"
-    self.form = CompoundEditForm(self.user, self.formData)
+    super(CorrectSynonym, self).setUp()
+    self.form = CompoundEditForm(data=self.formData,instance=Compound.objects.get(abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
 
 @createsUser('Aslan', 'old_magic')
 @joinsLabGroup('Aslan', 'Narnia')
@@ -42,6 +44,7 @@ class IncorrectSynonym(BaseFormTest):
 
   def setUp(self):
     "Instantiates the form"
+    super(IncorrectSynonym, self).setUp()
     self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
 
 suite = unittest.TestSuite([

@@ -117,7 +117,7 @@ def usesCsrf(c):
   _oldSetup = c.setUp
 
   def setUp(self):
-    getResponse = self.s.get(self.url)
+    getResponse = self.s.get(self.url, params=self.params)
     self.csrf = self.s.cookies.get_dict()['csrftoken'] #for some old-school tests TODO:Deprecate this.
     self.payload['csrfmiddlewaretoken'] = self.csrf #special case for post classes
     _oldSetup(self)

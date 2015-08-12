@@ -6,11 +6,11 @@ from django.contrib.auth.models import User
 from DRP.models import LabGroup
 from django.core.urlresolvers import reverse
 import requests
-from HttpTest import GetHttpTest, PostHttpTest, logsInAs
+from HttpTest import GetHttpTest, GetHttpSessionTest, PostHttpTest, logsInAs
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @logsInAs('Aslan', 'banana')
-class AccountPageNoGroups(GetHttpTest):
+class AccountPageNoGroups(GetHttpSessionTest):
   '''To test that the account page displays correctly with no group memberships'''
 
   url = GetHttpTest.baseUrl + reverse('account')

@@ -4,13 +4,13 @@
 import unittest
 from DRP.Email import Email
 from django.conf import settings
-from DRPTestCase import DRPTestCase
+from DRPTestCase import DRPTestCase, runTests
 from uuid import uuid4
 import imaplib
 import time
 import email
 
-loadTests = unittest.TestLoader.loadTestsFromTestCase
+loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class EmailSendsAndRecieves(DRPTestCase):
   '''Sends and recieves a test email, and checks that the contents are correct'''
@@ -58,14 +58,14 @@ class EmailSendsAndRecieves(DRPTestCase):
         m.logout()
       self.assertTrue(testPass, errMessage + messages)
 
-def suite():
-  if not settings.SKIP_EMAIL_TESTS:
-    return unittest.TestSuite([
-          loadTests(EmailSendsAndRecieves)
-          ])
-  else:
-    return unittest.TestSuit([])
+if not settings.SKIP_EMAIL_TESTS:
+  suite = unittest.TestSuite([
+        loadTests(EmailSendsAndRecieves)
+        ])
+else:
+  suite = unittest.TestSuite([])
+
 
 if __name__ == '__main__':
   #Runs the test- a good way to check that this particular test set works without having to run all the tests.
-  unittest.main()
+  runTests(suite) 

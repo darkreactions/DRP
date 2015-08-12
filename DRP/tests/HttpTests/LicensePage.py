@@ -6,11 +6,11 @@ from django.contrib.auth.models import User
 from DRP.models import License, LicenseAgreement
 import requests
 import datetime
-from HttpTest import GetHttpTest, PostHttpTest, usesCsrf, logsInAs
+from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest, usesCsrf, logsInAs
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @logsInAs('Aslan', 'banana')
-class LicenseAgreementPage(GetHttpTest):
+class LicenseAgreementPage(GetHttpSessionTest):
 
   url = GetHttpTest.baseUrl + '/license.html'
   testCodes = ['c9e46ba1-cd2a-4080-88b5-97415fa7c484']
@@ -26,7 +26,7 @@ class LicenseAgreementPage(GetHttpTest):
 
 @logsInAs('Aslan', 'banana')
 @usesCsrf
-class PostLicenseAgreementPage(PostHttpTest):
+class PostLicenseAgreementPage(PostHttpSessionTest):
   '''defines a test case with good credentials leading to a redirect'''
 
   url = PostHttpTest.baseUrl + '/license.html'
@@ -45,7 +45,7 @@ class PostLicenseAgreementPage(PostHttpTest):
 
 @logsInAs('Aslan', 'banana')
 @usesCsrf
-class PostLicenseAgreementPage2(PostHttpTest):
+class PostLicenseAgreementPage2(PostHttpSessionTest):
   '''Defines a test case for good credentials with no redirect'''
 
   url = PostHttpTest.baseUrl + '/license.html'

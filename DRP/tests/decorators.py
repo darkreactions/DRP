@@ -1,14 +1,15 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
 from chemspipy import ChemSpider
-from DRP.models import Compound, LabGroup, ChemicalClass
+from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement
 from django.contrib.auth.models import User
 from django.conf import settings
+from datetime import date, timedelta
 
 def createsUser(username, password):
   '''A class decorator that creates a user'''
 
-  def _createsUSer(c):
+  def _createsUser(c):
 
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
@@ -34,15 +35,16 @@ def createsCompound(abbrev, csid, classLabel, labTitle):
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
 
-    compound = Compound(abbrev=abbrev, CSID=csid, chemicalClass=ChemicalClass.objects.get(label=classLabel), labGroup=LabGroup.objects.get(title=labTitle))
-
     def setUp(self):
+      self.compound = Compound(abbrev=abbrev, CSID=csid, labGroup=LabGroup.objects.get(title=labTitle))
+      self.compound.save()
+      self.compound.chemicalClass=[c for c in ChemicalClass.objects.filter(label=classLabel)]
+      self.compound.save()
       _oldSetup(self)
-      compound.save()
 
     def tearDown(self):
       _oldTearDown(self)
-      compound.delete()
+      self.compound.delete()
 
     c.setUp = setUp
     c.tearDown = tearDown

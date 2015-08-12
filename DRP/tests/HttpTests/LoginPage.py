@@ -1,8 +1,11 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 '''Provides HTML tests for the login'''
 import unittest
 import requests
-from HttpTest import GetHttpTest, PostHttpTest, usesCsrf
+from HttpTest import GetHttpTest, PostHttpTest, usesCsrf, PostHttpSessionTest
+from django.contrib.auth.models import User
+from django.conf import settings
+from DRP.tests import runTests
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
@@ -14,7 +17,7 @@ class LoginPage(GetHttpTest):
   url = GetHttpTest.baseUrl + '/login.html'
 
 @usesCsrf
-class PostLoginPage(PostHttpTest):
+class PostLoginPage(PostHttpSessionTest):
   '''confirms that posting valid data to the login page results in a redirect''' 
 
   url = PostHttpTest.baseUrl + '/login.html'
@@ -39,4 +42,4 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
   #Runs the test- a good way to check that this particular test set works without having to run all the tests.
-  unittest.main()
+  runTests(suite)

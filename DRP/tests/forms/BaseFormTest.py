@@ -4,6 +4,9 @@ from DRP.tests import DRPTestCase
   
 class BaseFormTest(DRPTestCase):
 
+  def setUp(self):
+    self.setUpFormData()
+
   def test_validation(self):
     self.validationFails()
 

@@ -2,7 +2,7 @@
 '''This package provides tests for the Contact page'''
 #TODO: test for email sending
 
-from HttpTest import GetHttpTest, PostHttpTest, usesCsrf
+from HttpTest import GetHttpTest, PostHttpTest, usesCsrf, PostHttpSessionTest
 import requests
 import unittest
 loadTests = unittest.TestLoader().loadTestsFromTestCase
@@ -14,7 +14,7 @@ class ContactPage(GetHttpTest):
   testCodes = ['3a9f74ee-5c78-4ec0-8893-ce0476808131']
 
 @usesCsrf
-class PostContactPage(PostHttpTest):
+class PostContactPage(PostHttpSessionTest):
   '''Performs a correctly formed POST request to the contact page to test html validity'''
   
   url = GetHttpTest.baseUrl + '/contact.html'

@@ -37,7 +37,7 @@ class LegacyPassword(DRPTestCase):
 class Password(DRPTestCase):
 
   def setUp(self):
-    self.labGroup = LabGroup(title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
+    self.labGroup = LabGroup.objects.makeLabGroup(title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
     self.labGroup.save()
     formData = {'labGroup':self.labGroup.id, 'accessCode':'old_magic'}
     self.form = LabGroupJoiningForm(formData)
