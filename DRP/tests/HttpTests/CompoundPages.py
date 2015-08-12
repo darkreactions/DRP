@@ -2,8 +2,9 @@
 '''This module contains tests for teh confirmation page'''
 
 from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest
-from HttpTest import  OneRedirectionMixin, logsInAs, signsExampleLicense, usesCsrf
-from HttpTest import joinsLabGroup, createsChemicalClass, choosesLabGroup 
+from HttpTest import  OneRedirectionMixin, logsInAs, usesCsrf
+from HttpTest import  choosesLabGroup 
+from DRP.tests.decorators import joinsLabGroup, createsChemicalClass, signsExampleLicense
 from DRP.tests import runTests
 from django.contrib.auth.models import User
 from DRP.models import ConfirmationCode, LabGroup, ChemicalClass, License
