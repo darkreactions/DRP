@@ -13,14 +13,14 @@ import datetime
 @login_required
 def license(request):
   '''Controls requests pertaining to the signing of deployment license agreements'''
-  if License.objects.all().count() < 1:
+  if not License.objects.all().exists():
     template = get_template('license_404.html')
     return HttpResponseNotFound(template.render(RequestContext(request)))
   else:
     latestLicense = License.objects.latest()
     currentSignedLicenseQ = LicenseAgreement.objects.filter(user=request.user, text=latestLicense)
     nextPage = request.GET['next'] if 'next' in request.GET.keys() else None
-    if currentSignedLicenseQ.count()==0:
+    if not currentSignedLicenseQ.exists():
       if request.method == 'POST':
         form = LicenseAgreementForm(request.user, latestLicense, data=request.POST)
         if form.is_valid():

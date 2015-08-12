@@ -13,7 +13,7 @@ from decorators import hasSignedLicense
 @hasSignedLicense
 def joinGroup(request):
   '''The view which governs the form for joining lab groups'''
-  if LabGroup.objects.all().count() < 1:
+  if not LabGroup.objects.all().exists():
     template = get_template('labgroup_404.html')
     return HttpResponseNotFound(template.render(RequestContext(request)))
   elif request.method=='POST':

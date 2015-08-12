@@ -12,7 +12,7 @@ from django.utils.http import urlencode
 def userHasLabGroup(view):
   '''This decorator checks that the user is a member of at least one lab group. Assumes login_required is an external decorator'''
   def hasLabGroup(request, *args, **kwargs):
-    if request.user.labgroup_set.all().count() < 1:
+    if not request.user.labgroup_set.all().exists():
       template=get_template('labgroup_403.html')
       return HttpResponseForbidden(template.render(RequestContext(request)))
     else:
@@ -25,7 +25,7 @@ def hasSignedLicense(view):
   Assumes login_required is an external decorator
   '''
   def _hasSignedLicense(request, *args, **kwargs):
-    if LicenseAgreement.objects.filter(user=request.user, text=License.objects.latest()).count() < 1:
+    if not LicenseAgreement.objects.filter(user=request.user, text=License.objects.latest()).exists():
       return redirect(reverse('license') + '?{0}'.format(urlencode({'next':request.path_info})))
     else:
       return view(request, *args, **kwargs)
