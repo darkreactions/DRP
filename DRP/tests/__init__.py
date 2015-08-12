@@ -3,6 +3,7 @@ import unittest
 import Email
 import forms
 import HttpTests
+import decorators
 
 suite = unittest.TestSuite([
   Email.suite,
