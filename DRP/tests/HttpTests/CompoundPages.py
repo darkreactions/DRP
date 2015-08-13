@@ -5,9 +5,10 @@ from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSess
 from HttpTest import  OneRedirectionMixin, logsInAs, usesCsrf
 from HttpTest import  choosesLabGroup 
 from DRP.tests.decorators import joinsLabGroup, createsChemicalClass, signsExampleLicense
+from DRP.tests.decorators import createsUser, createsCompound
 from DRP.tests import runTests
 from django.contrib.auth.models import User
-from DRP.models import ConfirmationCode, LabGroup, ChemicalClass, License
+from DRP.models import ConfirmationCode, LabGroup, ChemicalClass, License, Compound
 from django.core.urlresolvers import reverse
 from uuid import uuid4
 import requests
@@ -130,6 +131,50 @@ class LabGroupSelectionRedirect(PostHttpSessionTest, OneRedirectionMixin):
     self.payload['labGroup'] = LabGroup.objects.get(title='Narnia').id
     super(LabGroupSelectionRedirect, self).setUp(*args, **kwargs)
 
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'Narnia')
+@createsChemicalClass('Org', 'Organic')
+@createsCompound('EtOH', 682, 'Org', 'Narnia')
+class GetCompoundForEditing(GetHttpSessionTest):
+  '''Tests that fetching a compound for editing works'''
+
+  testCodes = ['7d3763bc-c7d0-4102-a036-8c184263fe21']
+
+  def setUp(self):
+    self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='EtOH').pk])
+    super(GetCompoundForEditing, self).setUp()
+
+@logsInAs('Aslan', 'old_magic')
+@createsUser('White Witch', 'new_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'Narnia')
+@joinsLabGroup('White Witch', 'stone table')
+@createsChemicalClass('Org', 'Organic')
+@createsCompound('EtOH', 682, 'Org', 'Narnia')
+@createsCompound('Pyr', 8904, 'Org', 'stone table')
+class GetNotMyCompoundForEditing(GetHttpSessionTest):
+  '''Tests that fetching someone elses compound returns a 404''' 
+
+  status=404
+
+  def setUp(self):
+    self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='Pyr').pk])
+    super(GetNotMyCompoundForEditing, self).setUp()
+
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'Narnia')
+@createsChemicalClass('Org', 'Organic')
+@createsCompound('EtOH', 682, 'Ethanol', 'Narnia', custom=True)
+class GetCustomCompound403(GetHttpSessionTest):
+  '''Tests that fetching a compound with the custom flag for editing returns a 403'''
+
+  status=403 
+
+  def setUp(self):
+    self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='EtOH').pk])
+    super(GetCustomCompound403, self).setUp()
 
 suite = unittest.TestSuite([
   loadTests(LicenseRedirect),
@@ -140,7 +185,10 @@ suite = unittest.TestSuite([
   loadTests(NoCompounds),
   loadTests(ManyGroupsRedirect),
   loadTests(ManyLabGroupsDisplays),
-  loadTests(LabGroupSelectionRedirect)
+  loadTests(LabGroupSelectionRedirect),
+  loadTests(GetCompoundForEditing),
+  loadTests(GetNotMyCompoundForEditing),
+  loadTests(GetCustomCompound403)
 ])
 
 if __name__=='__main__':

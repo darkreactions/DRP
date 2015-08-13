@@ -28,23 +28,25 @@ def createsUser(username, password):
     return c
   return _createsUser
 
-def createsCompound(abbrev, csid, classLabel, labTitle):
+def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
 
   def _createsCompound(c):
 
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
 
+    compound = Compound(abbrev=abbrev, CSID=csid, custom=custom)
+
     def setUp(self):
-      self.compound = Compound(abbrev=abbrev, CSID=csid, labGroup=LabGroup.objects.get(title=labTitle))
-      self.compound.save()
-      self.compound.chemicalClass=[c for c in ChemicalClass.objects.filter(label=classLabel)]
-      self.compound.save()
+      compound.labGroup=LabGroup.objects.get(title=labTitle)
+      compound.save()
+      compound.chemicalClass=[c for c in ChemicalClass.objects.filter(label=classLabel)]
+      compound.save()
       _oldSetup(self)
 
     def tearDown(self):
       _oldTearDown(self)
-      self.compound.delete()
+      compound.delete()
 
     c.setUp = setUp
     c.tearDown = tearDown

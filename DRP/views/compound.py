@@ -13,7 +13,7 @@ from django.utils.http import urlencode
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.template.loader import get_template
 from django.views.decorators.http import require_POST
-
+from django.template import RequestContext
 
 class CreateCompound(CreateView):
   '''A view managing the creation of compound objects'''
