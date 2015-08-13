@@ -1,21 +1,55 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
-from MolDescriptor import MolDescriptor
+from MolDescriptor import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
 from Reaction import Reaction
 from Compound import Compound
 from StatsModel import StatsModel
 
-class MolDescriptorValue(models.Model):
-  '''Contains Relationships between Compounds and their descriptors'''
+class CatMolDescriptorValue(models.Model):
+  '''Contains the value of a categorical descriptor for a compound'''
 
   class Meta:
     app_label="DRP"
-    verbose_name='Molecular Descriptor Value'
+    verbose_name='Categorical Molecular Descriptor Value'
     unique_together=('descriptor', 'compound')
 
-  descriptor = models.ForeignKey(MolDescriptor)
-  compound = models.ForeignKey(Compound, null=True, unique=False, default=None)
-  booleanValue= models.NullBooleanField('Value if descriptor is a boolean', null=True)
-  ordValue = models.PositiveIntegerField('Value if descriptor is an ordinal', null=True)
-  catValue = models.CharField('Value if descriptor is a category', max_length=200, null=True)
-  numValue = models.FloatField('Value if descritpor is continuous', null=True)
+  descriptor = models.ForeignKey(CatMolDescriptor)
+  compound = models.ForeignKey(Compound)
+  value = models.ForeignKey(CatMolDescriptorPermitted) #NOTE that the correct permission cannot be enforced at the model or database level! make sure this is done in all forms!
+
+class BoolMolDescriptorValue(models.Model):
+  '''Contains the value of a boolean descriptor for a compound'''
+
+  class Meta:
+    app_label="DRP"
+    verbose_name='Boolean Molecular Descriptor Value'
+    unique_together=('descriptor', 'compound')
+
+  descriptor = models.ForeignKey(BoolMolDescriptor)
+  compound = models.ForeignKey(Compound)
+  value= models.NullBooleanField('Value if descriptor is a boolean', null=True)
+
+class NumericalMolDescriptorValue(models.Model):
+  '''Contains the numeric value of a descriptor for a compound'''
+
+  class Meta:
+    app_label="DRP"
+    verbose_name='Boolean Molecular Descriptor Value'
+    unique_together=('descriptor', 'compound')
+
+  descriptor = models.ForeignKey(BoolMolDescriptor)
+  compound = models.ForeignKey(Compound)
+  value=models.FloatField(null=True)
+
+class OrdMolDescriptorValue(models.Model):
+  '''Contains the ordinal value of a descriptor for a compound'''
+
+  class Meta:
+    app_label="DRP"
+    verbose_name='Ordinal Molecular Descriptor Value'
+    unique_together=('descriptor', 'compound')
+
+  descriptor = models.ForeignKey(BoolMolDescriptor)
+  compound = models.ForeignKey(Compound)
+  value=models.IntegerField(null=True)
+

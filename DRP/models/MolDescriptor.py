@@ -1,13 +1,14 @@
-'''A module containing only the Descriptor class'''
+'''A module containing Classes permitting the representation of molecular descriptors'''
 from django.db import models
 
 class MolDescriptor(models.Model):
-  '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
+  '''An abstract class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
   
   class Meta:
     app_label='DRP'
     verbose_name = 'Molecular Descriptor'
     unique_together = ('heading','calculatorSoftware','calculatorSoftwareVersion')
+    abstract=True
 
   heading=models.CharField(max_length=200, unique=True, error_messages={'unique':'This descriptor is already registered, or another descriptor already has this title.'})
   '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
@@ -18,3 +19,45 @@ class MolDescriptor(models.Model):
   '''The kind of descriptor changes the type of data which is applicable for a descriptor value (these are stores in the DescriptorValue relationship class'''
   calculatorSoftware=models.CharField(max_length=100)
   calculatorSoftwareVersion=models.CharField(max_length=20)
+
+class CatMolDescriptor(MolDescriptor):
+  '''A class which describes a categorical molecular descriptors'''
+
+  class Meta(Moldescriptor.Meta):
+    abstract = False
+    verbose_name= 'Categorical Molecular Descriptor'
+
+class OrdMolDescriptor(MolDescriptor)
+  '''A class which represents an ordinal descriptor'''
+  
+  class Meta(Moldescriptor.Meta):
+    abstract = False
+    verbose_name= 'Ordinal Molecular Descriptor'
+
+  maximum=models.IntegerField()
+  minimum=models.IntegerField()
+
+class NumMolDescriptor(MolDescriptor)
+  '''A class which represents a numerical descriptor'''
+
+  class Meta(Moldescriptor.Meta):
+    abstract = False
+    verbose_name= 'Numerical Molecular Descriptor'
+
+  maximum=models.FloatField()
+  minimum=models.FloatField()
+
+class BoolMolDescriptor(MolDescriptor)
+  '''A class which represents a boolean descriptors'''
+
+  class Meta(Moldescriptor.Meta):
+    abstract = False
+    verbose_name= 'Boolean Molecular Descriptor'
+
+class CatMolDescriptorPermitted(models.Model)
+  '''A class which represents the permitted values for a categorical descriptor'''
+
+  class Meta(Moldescriptor.Meta):
+    verbose_name= 'Permitted Categorical Descriptor Value'
+
+  descriptor=models.ForeignKey(CatMolDescriptor, related_name='permittedValues')
