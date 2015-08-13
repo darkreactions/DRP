@@ -32,10 +32,5 @@ class Compound(models.Model):
   but is nevertheless useful for calculating descriptors
   '''
 
-  descriptors = models.ManyToManyField(MolDescriptor, through='MolDescriptorValue')
-  '''A link to descriptors which have been calculated for this compound. Values for the descriptors are found
-  on the MolDescriptorValue model.
-  '''
-
   labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
   '''Tells us whose compound guide this appears in'''

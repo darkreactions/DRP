@@ -23,41 +23,42 @@ class MolDescriptor(models.Model):
 class CatMolDescriptor(MolDescriptor):
   '''A class which describes a categorical molecular descriptors'''
 
-  class Meta(Moldescriptor.Meta):
+  class Meta(MolDescriptor.Meta):
     abstract = False
     verbose_name= 'Categorical Molecular Descriptor'
 
-class OrdMolDescriptor(MolDescriptor)
+class OrdMolDescriptor(MolDescriptor):
   '''A class which represents an ordinal descriptor'''
   
-  class Meta(Moldescriptor.Meta):
+  class Meta(MolDescriptor.Meta):
     abstract = False
     verbose_name= 'Ordinal Molecular Descriptor'
 
   maximum=models.IntegerField()
   minimum=models.IntegerField()
 
-class NumMolDescriptor(MolDescriptor)
+class NumMolDescriptor(MolDescriptor):
   '''A class which represents a numerical descriptor'''
 
-  class Meta(Moldescriptor.Meta):
+  class Meta(MolDescriptor.Meta):
     abstract = False
     verbose_name= 'Numerical Molecular Descriptor'
 
   maximum=models.FloatField()
   minimum=models.FloatField()
 
-class BoolMolDescriptor(MolDescriptor)
+class BoolMolDescriptor(MolDescriptor):
   '''A class which represents a boolean descriptors'''
 
-  class Meta(Moldescriptor.Meta):
+  class Meta(MolDescriptor.Meta):
     abstract = False
     verbose_name= 'Boolean Molecular Descriptor'
 
-class CatMolDescriptorPermitted(models.Model)
+class CatMolDescriptorPermitted(models.Model):
   '''A class which represents the permitted values for a categorical descriptor'''
 
-  class Meta(Moldescriptor.Meta):
+  class Meta:
+    app_label = "DRP"
     verbose_name= 'Permitted Categorical Descriptor Value'
 
   descriptor=models.ForeignKey(CatMolDescriptor, related_name='permittedValues')

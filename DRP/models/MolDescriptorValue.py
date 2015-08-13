@@ -1,6 +1,6 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
-from MolDescriptor import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
+from MolDescriptor import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor,CatMolDescriptorPermitted
 from Reaction import Reaction
 from Compound import Compound
 from StatsModel import StatsModel
@@ -29,7 +29,7 @@ class BoolMolDescriptorValue(models.Model):
   compound = models.ForeignKey(Compound)
   value= models.NullBooleanField('Value if descriptor is a boolean', null=True)
 
-class NumericalMolDescriptorValue(models.Model):
+class NumMolDescriptorValue(models.Model):
   '''Contains the numeric value of a descriptor for a compound'''
 
   class Meta:
