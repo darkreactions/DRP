@@ -8,6 +8,7 @@
 #REMEMBER when you create a new test case to add it to the suite() method, and then
 #to have that suite method called in AllTests.py
 
+import unittest
 from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 

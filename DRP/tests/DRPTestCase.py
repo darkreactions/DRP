@@ -16,6 +16,7 @@ class DRPTestCase(unittest.TestCase):
       super(DRPTestCase, self).__init__(*args, **kwargs)
       self.addCleanup(cleanUpDatabase)
 
+
 def cleanUpDatabase():
   models.Compound.objects.all().delete()
   models.ChemicalClass.objects.all().delete()
@@ -27,15 +28,15 @@ def cleanUpDatabase():
   models.LegacyStatsModel.objects.all().delete()
   models.StatsModel.objects.all().delete()
   models.PerformedReaction.objects.all().delete()
+  models.CatMolDescriptorValue.objects.all().delete()
+  models.BoolMolDescriptorValue.objects.all().delete()
+  models.NumMolDescriptorValue.objects.all().delete()
+  models.OrdMolDescriptorValue.objects.all().delete()
   models.MolDescriptor.objects.all().delete()
   models.RxnDescriptor.objects.all().delete()
-  models.MolDescriptorValue.objects.all().delete()
-  models.RxnDescriptorValue.objects.all().delete()
   models.StatsModelTag.objects.all().delete()
   User.objects.all().exclude(username='root').delete()
 
 def runTests(suite):
   '''A function which empties out the database prior to and after running the tests contained in suite'''
-  cleanUpDatabase()
-  unittest.TextTestRunner(verbosity=2).run(suite)
-  cleanUpDatabase()
+  unittest.TextTestRunner(verbosity=4).run(suite)

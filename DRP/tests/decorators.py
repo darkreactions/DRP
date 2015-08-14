@@ -20,8 +20,8 @@ def createsUser(username, password):
       _oldSetup(self)
 
     def tearDown(self):
-      _oldTearDown(self)
       User.objects.filter(username=username).delete()
+      _oldTearDown(self)
 
     c.setUp = setUp
     c.tearDown = tearDown
