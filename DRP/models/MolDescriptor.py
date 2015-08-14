@@ -8,7 +8,6 @@ class MolDescriptor(models.Model):
     app_label='DRP'
     verbose_name = 'Molecular Descriptor'
     unique_together = ('heading','calculatorSoftware','calculatorSoftwareVersion')
-    abstract=True
 
   heading=models.CharField(max_length=200, unique=True, error_messages={'unique':'This descriptor is already registered, or another descriptor already has this title.'})
   '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
@@ -23,25 +22,25 @@ class MolDescriptor(models.Model):
 class CatMolDescriptor(MolDescriptor):
   '''A class which describes a categorical molecular descriptors'''
 
-  class Meta(MolDescriptor.Meta):
-    abstract = False
+  class Meta:
+    app_label='DRP'
     verbose_name= 'Categorical Molecular Descriptor'
 
 class OrdMolDescriptor(MolDescriptor):
   '''A class which represents an ordinal descriptor'''
   
-  class Meta(MolDescriptor.Meta):
-    abstract = False
+  class Meta:
     verbose_name= 'Ordinal Molecular Descriptor'
+    app_label='DRP'
 
   maximum=models.IntegerField()
   minimum=models.IntegerField()
 
-class NumMolDescriptor(MolDescriptor):
+class NumMolDescriptor:
   '''A class which represents a numerical descriptor'''
 
-  class Meta(MolDescriptor.Meta):
-    abstract = False
+  class Meta:
+    app_label='DRP'
     verbose_name= 'Numerical Molecular Descriptor'
 
   maximum=models.FloatField()
@@ -50,8 +49,8 @@ class NumMolDescriptor(MolDescriptor):
 class BoolMolDescriptor(MolDescriptor):
   '''A class which represents a boolean descriptors'''
 
-  class Meta(MolDescriptor.Meta):
-    abstract = False
+  class Meta:
+    app_label='DRP'
     verbose_name= 'Boolean Molecular Descriptor'
 
 class CatMolDescriptorPermitted(models.Model):
