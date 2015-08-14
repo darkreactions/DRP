@@ -1,8 +1,66 @@
 '''Module containing only the Compound Class'''
-from django.db import models
+from django.db import models, transaction
 from MolDescriptor import MolDescriptor
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
+import csv
+from chemspipy import ChemSpider
+from django.conf import settings
+from django.core.exceptions import ValidationError
+
+class CompoundManager(models.Manager):
+  '''A custom manager for the Compound Class which permits the creation of entries to and from CSVs'''
+
+  @transaction.atomic
+  def fromCsv(fileName, labGroup):
+    '''Reads a CSV into the database creating objects as a transaction, and returning the resulting queryset of compounds
+      (a queryset insures us against very big lists, and allows us to exit the transaction before moving on.
+      will get/create for compound classes. This method is all-or-nothing and will fail if one row in the file fails.
+      This assumes that the uploaded csv will have headers which map to the names of the fields and that compound classes are
+      stored as comma separated lists of the chemicalClass LABEL only.
+
+      Each compound will perform a chemspider-based consistency check on the information it has been created with to ensure
+      information is consistent- this throws an ValidationError if it is not.
+
+      Each compound will also perform it's save() action, and gain the benefit of any validation that provides, throwing any
+      relevant exceptions.
+    '''
+
+    compoundIDsList = []
+    cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
+    with open(fileName) as f:
+      reader = csv.DictReader(f)
+      rowCount = 0
+      errors = []
+      for row in reader:
+        try:
+          rowCount += 1
+          if 'chemicalClass' in row:
+            classes = (c.strip() for c in row.split(','))
+            for c in classes:
+              chemicalClass = ChemicalClass.objects.get_or_create(label=c)
+              checicalClass.save()
+            del row['chemicalClass']
+          if 'CAS' in row and row.get('CSID') in ('', None):
+            CASResults = cs.simple_search(row['CAS'])
+            if len(CASResults) < 1:
+              errors.append(ValidationError('CAS Number returned no results from ChemSpider on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
+            elif len(CASResults) == 1:
+              row['CSID'] = CASResults[0].csid #a little hacky, but it gets the job done
+            else:
+              errors.append(ValidationError('CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
+          compound = Compound(labGroup = labGroup, **row)
+          compound.full_clean()
+          compound.csConsistencyCheck()
+          compound.save()
+          compoundIDsList.append(compound.pk)
+        except ValidationError as e:
+          for message in e.messages:
+            errors.append(ValidationError(message + ' on row %(rowCount)d of uploaded csv', params={'rowCount':rowCount}))
+      if len(errors) > 0:
+        raise ValidationError(errors)
+    return Compound.objects.filter(pk__in=compoundIDsList)
+
 
 class Compound(models.Model):
   '''A class for containing data about Compounds used in chemical reactions.
@@ -34,3 +92,25 @@ class Compound(models.Model):
 
   labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
   '''Tells us whose compound guide this appears in'''
+
+  objects = CompoundManager()
+
+  def csConsistencyCheck(self):
+    '''Performs a consistency check of this record against chemspider. Raises a ValidationError on error.'''
+    if not self.custom:
+      cs = ChemSpider(settings.CHEMSPIDER_TOKEN) 
+      csCompound = cs.get_compound(self.CSID)
+      nameResults = cs.simple_search(self.name)
+      errorList = []
+      if csCompound not in nameResults:
+        errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid name', code='invalid_inchi'))
+      if self.INCHI == '':
+        self.INCHI = csCompound.stdinchi
+      elif self.INCHI != csCompound.stdINCHI:
+        errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid InChi', code='invalid_inchi'))
+      if self.smiles == '':
+        self.smiles = csCompound.smiles
+      elif self.smiles != csCompound.smiles:
+        errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid smiles string', code='invalid_smiles'))
+      if len(errorList > 0):
+        raise ValidationError(errorList)
