@@ -4,11 +4,11 @@ import Email
 import forms
 import HttpTests
 import decorators
-import CompoundFromCSV
+import CompoundFromCsv
 
 suite = unittest.TestSuite([
   Email.suite,
   forms.suite,
   HttpTests.suite,
-  CompoundFromCSV.suite
+  CompoundFromCsv.suite
 ]) 

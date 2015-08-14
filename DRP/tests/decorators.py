@@ -40,7 +40,8 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
     def setUp(self):
       compound.labGroup=LabGroup.objects.get(title=labTitle)
       compound.save()
-      compound.chemicalClass=[c for c in ChemicalClass.objects.filter(label=classLabel)]
+      for c in ChemicalClass.objects.filter(label=classLabel):
+        compound.chemicalClasses.add(c)
       compound.save()
       _oldSetup(self)
 

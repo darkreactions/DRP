@@ -34,7 +34,7 @@
       <td>{{ compound.CSID }}</td>
       <td>
         <ul>
-          {% for class in compound.chemicalClass.all %}
+          {% for class in compound.chemicalClasses.all %}
             <li>{{ class }}</li>
           {% endfor %}
         </ul>

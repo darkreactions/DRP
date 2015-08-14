@@ -71,7 +71,7 @@ class CreateCompoundRedirTest(PostHttpSessionTest, OneRedirectionMixin):
   
   def setUp(self):
     self.payload['labGroup']=LabGroup.objects.get(title='Narnia').id
-    self.payload['chemicalClass']=[ChemicalClass.objects.get(label='Org').id]
+    self.payload['chemicalClasses']=[ChemicalClass.objects.get(label='Org').id]
     super(CreateCompoundRedirTest, self).setUp()
 
 @logsInAs('Aslan', 'old_magic')

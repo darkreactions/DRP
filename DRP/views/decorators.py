@@ -8,6 +8,7 @@ from DRP.models import LicenseAgreement, License
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
+from django.http import HttpResponseNotFound
 
 def userHasLabGroup(view):
   '''This decorator checks that the user is a member of at least one lab group. Assumes login_required is an external decorator'''
@@ -25,9 +26,13 @@ def hasSignedLicense(view):
   Assumes login_required is an external decorator
   '''
   def _hasSignedLicense(request, *args, **kwargs):
-    if not LicenseAgreement.objects.filter(user=request.user, text=License.objects.latest()).exists():
+    if not License.objects.all().exists():
+      template = get_template('license_404.html')
+      return HttpResponseNotFound(template.render(RequestContext(request)))
+    elif not LicenseAgreement.objects.filter(user=request.user, text=License.objects.latest()).exists():
       return redirect(reverse('license') + '?{0}'.format(urlencode({'next':request.path_info})))
     else:
       return view(request, *args, **kwargs)
   
   return _hasSignedLicense
+

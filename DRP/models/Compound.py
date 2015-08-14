@@ -35,8 +35,8 @@ class CompoundManager(models.Manager):
       for row in reader:
         try:
           rowCount += 1
-          if 'chemicalClass' in row:
-            classes = (c.strip() for c in row['chemicalClass'].split(','))
+          if 'chemicalClasses' in row:
+            classes = (c.strip() for c in row['chemicalClasses'].split(','))
             chemicalClasses = []
             for c in classes:
               chemicalClass, created = ChemicalClass.objects.get_or_create(label=c)
@@ -50,7 +50,7 @@ class CompoundManager(models.Manager):
             else:
               errors.append(ValidationError('CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
           elif row.get('CSID') in ('', None):
-            errors.append(ValidationError('No CSID provided on row %(rowCount) of uploaded csv.'))
+            errors.append(ValidationError('No CSID provided on row %(rowCount) of uploaded csv.', params={'rowCount':rowCount}))
           kwargs = {}
           kwargs['CSID'] = row.get('CSID')
           kwargs['abbrev'] = row.get('abbrev')
@@ -62,7 +62,7 @@ class CompoundManager(models.Manager):
           compound.csConsistencyCheck()
           compound.save()
           for chemicalClass in chemicalClasses:
-            compound.chemicalClass.add(chemicalClass)
+            compound.chemicalClasses.add(chemicalClass)
           compoundIDsList.append(compound.pk)
         except ValidationError as e:
           for message in e.messages:
@@ -85,7 +85,7 @@ class Compound(models.Model):
   '''A local, often nonstandard abbreviation for a compound'''
   name = models.CharField('Name', max_length=300)
   '''Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)'''
-  chemicalClass = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
+  chemicalClasses = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
   '''The class of the compound- examples include Inorganic Salt'''
   CSID = models.PositiveIntegerField('Chemspider ID', null=True)
   '''The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions'''

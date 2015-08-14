@@ -39,4 +39,5 @@ def cleanUpDatabase():
 
 def runTests(suite):
   '''A function which empties out the database prior to and after running the tests contained in suite'''
+  cleanUpDatabase()
   unittest.TextTestRunner(verbosity=4).run(suite)

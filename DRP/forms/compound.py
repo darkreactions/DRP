@@ -35,7 +35,7 @@ class CompoundForm(forms.ModelForm):
 
 
   class Meta:
-    fields=('labGroup', 'abbrev', 'CSID', 'name', 'CAS_ID', 'chemicalClass')
+    fields=('labGroup', 'abbrev', 'CSID', 'name', 'CAS_ID', 'chemicalClasses')
     model=Compound
     help_texts = {
       'abbrev':'A local abbreviation by which the compound is known.',
@@ -111,7 +111,7 @@ class CompoundForm(forms.ModelForm):
 class CompoundEditForm(forms.ModelForm):
 
   class Meta:
-    fields=('name', 'abbrev', 'chemicalClass')
+    fields=('name', 'abbrev', 'chemicalClasses')
     model=Compound 
     help_texts = {
       'abbrev':'A local abbreviation by which the compound is known.',

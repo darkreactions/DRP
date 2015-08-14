@@ -24,7 +24,7 @@ class CorrectSynonym(BaseFormTest):
 
   def setUpFormData(self):
     self.formData = {'name':'Ethanol', 'abbrev':'ban'}
-    self.formData['chemicalClass'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
+    self.formData['chemicalClasses'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
 
   def setUp(self):
     "Instantiates the form"
@@ -40,7 +40,7 @@ class IncorrectSynonym(BaseFormTest):
   
   def setUpFormData(self):
     self.formData = {'name':'Pyrazine', 'abbrev':'ban'}
-    self.formData['chemicalClass'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
+    self.formData['chemicalClasses'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
 
   def setUp(self):
     "Instantiates the form"

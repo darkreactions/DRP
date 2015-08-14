@@ -16,7 +16,7 @@ class NoLabExists(BaseFormTest):
 
   def setUpFormData(self):
     self.formData = {'labGroup':'5', 'abbrev':'etoh', 'name':'ethanol', 'CAS_ID':'64-17-5', 'CSID':'682'}
-    self.formData['chemicalClass'] = [str(self.chemicalClass.id)]
+    self.formData['chemicalClasses'] = [str(self.chemicalClass.id)]
 
   def setUp(self):
     '''Creates a user and a chemical class, then a form'''
