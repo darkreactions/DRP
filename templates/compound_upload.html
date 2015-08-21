@@ -1,0 +1,12 @@
+{% extends 'compound_base.html' %}
+
+{% block content %}
+<h1 class="bannerText">Upload a compound list</h1>
+<form method="post" action="{% url 'uploadcompoundcsv' %}" enctype="multipart/form-data">
+  <ol>
+  {% csrf_token %}
+  {{ form.as_ul }} 
+  <input type="submit" value="Upload"/>
+  </ol>
+</form>
+{% endblock %}

@@ -3,12 +3,12 @@
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import Compound
-from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm
+from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy as reverse
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.utils.http import urlencode
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.template.loader import get_template
@@ -74,6 +74,21 @@ def deleteCompound(request, *args, **kwargs):
   if form.is_valid():
     form.save()
   return redirect('compoundguide')
+
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+def uploadCompound(request, *args, **kwargs):
+  '''A view managing the upload of compound csvs'''
+  if request.method=='POST':
+    form = CompoundUploadForm(data=request.POST, files=request.FILES, user=request.user)
+    if form.is_valid(): #this particular kind of form does the saving and validation in one step. It's a nasty hack but I couldn't find a better way to leverage transactions.
+      return redirect('compoundguide')
+    else:
+      return render(request, 'compound_upload.html', {'form':form})
+  else:
+    form = CompoundUploadForm(user=request.user)
+    return render(request, 'compound_upload.html', {'form':form})
 
 class ListCompound(ListView):
   '''A view managing the viewing of the compound guide'''

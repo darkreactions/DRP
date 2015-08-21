@@ -6,6 +6,7 @@ from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
+from django.db import transaction
 
 class CompoundAdminForm(forms.ModelForm):
   '''Form for the django admin; permits the overriding of CSID absence but forces the existence of the custom flag'''
@@ -146,3 +147,16 @@ class CompoundDeleteForm(forms.ModelForm):
   def save(self):
     self.cleaned_data['id'].delete()
     return self.cleaned_data['id']
+
+class CompoundUploadForm(forms.Form):
+  '''A form to manage the uploading of compound csv files'''
+
+  csv=forms.FileField()
+  
+  def __init__(self, user, *args, **kwargs):
+    super(CompoundUploadForm, self).__init__(*args, **kwargs)
+    self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all())
+
+  def clean(self):
+    self.compounds = Compound.objects.fromCsv(self.cleaned_data['csv'].temporary_file_path(), self.cleaned_data['labGroup']) 
+    return self.cleaned_data

@@ -242,3 +242,6 @@ LIBRARY_CHOICES=()
 TOOL_CHOICES=()
 
 LAB_GROUP_HASH_SALT = ''
+
+#force temporary file creation for uploads (required for some views to work)
+FILE_UPLOAD_HANDLERS=("django.core.files.uploadhandler.TemporaryFileUploadHandler",)

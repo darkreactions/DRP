@@ -12,7 +12,7 @@ class CompoundManager(models.Manager):
   '''A custom manager for the Compound Class which permits the creation of entries to and from CSVs'''
 
   @transaction.atomic
-  def fromCsv(self, fileName, labGroup, commit=True):
+  def fromCsv(self, fileName, labGroup):
     '''Reads a CSV into the database creating objects as a transaction, and returning the resulting queryset of compounds
       (a queryset insures us against very big lists, and allows us to exit the transaction before moving on.
       will get/create for compound classes. This method is all-or-nothing and will fail if one row in the file fails.
@@ -23,7 +23,7 @@ class CompoundManager(models.Manager):
       information is consistent- this throws an ValidationError if it is not.
     '''
 
-    compoundsList = []
+    compoundIDsList = []
     cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
     with open(fileName) as f:
       reader = csv.DictReader(f, restkey='restKey')
@@ -57,17 +57,16 @@ class CompoundManager(models.Manager):
           compound = Compound(labGroup = labGroup,  **kwargs)
           compound.full_clean()
           compound.csConsistencyCheck()
-          if commit:
-            compound.save()
+          compound.save()
           for chemicalClass in chemicalClasses:
             compound.chemicalClasses.add(chemicalClass)
-          compoundsList.append(compound)
+          compoundIDsList.append(compound.pk)
         except ValidationError as e:
           for message in e.messages:
             errors.append(ValidationError(message + ' on row %(rowCount)d of uploaded csv', params={'rowCount':rowCount}))
       if len(errors) > 0:
         raise ValidationError(errors)
-    return compoundsList
+    return compoundIDsList
 
 class Compound(models.Model):
   '''A class for containing data about Compounds used in chemical reactions.

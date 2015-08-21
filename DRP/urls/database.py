@@ -7,8 +7,8 @@ import DRP.views
 urls = patterns('',
   url('^select_viewing_group.html', DRP.views.selectGroup, name='selectGroup'),
   url('^compoundguide/$', DRP.views.compound.ListCompound.as_view(), name='compoundguide'),
-  url('^compoundguide.html$', DRP.views.compound.ListCompound.as_view(), name='compoundguide2'),
   url('^compoundguide/add.html$', DRP.views.compound.CreateCompound.as_view(), name='newCompound'),
   url('^compoundguide/delete$', DRP.views.compound.deleteCompound, name='deleteCompound'),
-  url('^compoundguide/edit_(?P<pk>\d+).html', DRP.views.compound.EditCompound.as_view(), name='editCompound')
+  url('^compoundguide/edit_(?P<pk>\d+).html', DRP.views.compound.EditCompound.as_view(), name='editCompound'),
+  url('^compoundguide/upload.html', DRP.views.compound.uploadCompound, name='uploadcompoundcsv')
 )

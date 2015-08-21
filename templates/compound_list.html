@@ -4,6 +4,11 @@
 {% block content %}
 
 <h1 class="bannerText">Compound Guide</h1>
+<nav>
+  <ol>
+    <li><a href="{% url 'uploadcompoundcsv' %}">Upload csv file</a></li>
+  </ol>
+</nav>
 {% if user.labgroup_set.all.count > 1 %}
 <form action="{% url 'selectGroup' %}?next={% url 'compoundguide' as compound_guide_url %}{{ compound_guide_url|urlencode:"" }}" method="post">
   {% csrf_token %}
