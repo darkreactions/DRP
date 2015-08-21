@@ -133,11 +133,10 @@ class CompoundDeleteForm(forms.ModelForm):
     fields=('id',)
     model=Compound
 
-  def __init__(self, user=None, *args, **kwargs):
+  def __init__(self, user, *args, **kwargs):
     super(CompoundDeleteForm, self).__init__(*args, **kwargs)
-    self.fields['id'] = forms.ModelChoiceField(queryset=Compound.objects.all(), initial=self.instance.pk, widget=HiddenInput)
-    if user is not None:
-      self.fields['id'].queryset=Compound.objects.filter(labGroup__in=user.labgroup_set.all())
+    self.fields['id'] = forms.ModelChoiceField(queryset=Compound.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
+    self.prefix=str(self.instance.pk)
 
   def clean_id(self):
     if self.cleaned_data['id'].reaction_set.exists():
@@ -158,5 +157,6 @@ class CompoundUploadForm(forms.Form):
     self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all())
 
   def clean(self):
-    self.compounds = Compound.objects.fromCsv(self.cleaned_data['csv'].temporary_file_path(), self.cleaned_data['labGroup']) 
+    if self.cleaned_data.get('csv') is not None and self.cleaned_data.get('labGroup') is not None:
+      self.compounds = Compound.objects.fromCsv(self.cleaned_data['csv'].temporary_file_path(), self.cleaned_data['labGroup']) 
     return self.cleaned_data

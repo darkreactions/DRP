@@ -19,10 +19,12 @@ class GetHttpTest(DRPTestCase):
   '''any GET params to be added to the reuqest.'''
   status = 200
   '''The expected status code for this test case'''
+  _headers = {}
 
   def __init__(self, *args, **kwargs):
     super(GetHttpTest, self).__init__(*args, **kwargs)
     self.params = self._params.copy()
+    self.headers = self._headers.copy()
 
   def setUp(self):
     '''Sets up the test by requesting the home page uri'''
@@ -69,20 +71,23 @@ class GetHttpTest(DRPTestCase):
       if message['type'] in ('error', 'non-document-error'):
         failureMessages += self.constructFailureMessage(message)
         testPassed = False
-    self.assertTrue(testPassed, failureMessages)
+    self.assertTrue(testPassed, failureMessages + '\n Response html: \n {0}'.format(self.response.text))
 
 class PostHttpTest(GetHttpTest):
   '''A test for post requests that do not use sessions'''
 
   _payload = {}
   '''The data to be POSTed to the sever'''
+  _files = {}
+  '''File data to be POSTed'''
 
   def __init__(self, *args, **kwargs):
     super(PostHttpTest, self).__init__(*args, **kwargs)
     self.payload = self._payload.copy()
+    self.files = self._files.copy()
 
   def setUp(self):
-    self.response = requests.post(self.url, data=self.payload, params=self.params)
+    self.response = requests.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
 
 class GetHttpSessionTest(GetHttpTest):
 
@@ -91,7 +96,7 @@ class GetHttpSessionTest(GetHttpTest):
     self.s = requests.Session()
 
   def setUp(self):
-    self.response = self.s.get(self.url, params=self.params)
+    self.response = self.s.get(self.url, params=self.params,headers=self.headers)
 
 class PostHttpSessionTest(PostHttpTest):
   '''A test for post requests that use sessions (e.g. get decorated with logsInAs)'''
@@ -101,14 +106,14 @@ class PostHttpSessionTest(PostHttpTest):
     self.s = requests.Session()
 
   def setUp(self):
-    self.response = self.s.post(self.url, data=self.payload, params=self.params) 
+    self.response = self.s.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers) 
 
 class OneRedirectionMixin:
   '''A mixin for testing redirection pages.'''
 
   def test_redirect(self):
     '''Checks the response history for 302 redirects'''
-    self.assertEqual(len(self.response.history), 1, 'Response history has length: {0}'.format(len(self.response.history)))
+    self.assertEqual(len(self.response.history), 1, 'Response history has length: {0}. Page Content is: \n{1}'.format(len(self.response.history), self.response.text))
     self.assertEqual(302, self.response.history[0].status_code)
 
 def usesCsrf(c):

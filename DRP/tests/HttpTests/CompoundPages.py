@@ -14,6 +14,8 @@ from uuid import uuid4
 import requests
 import unittest
 from datetime import date, timedelta
+from os import path
+from django.conf import settings
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
@@ -176,6 +178,30 @@ class GetCustomCompound403(GetHttpSessionTest):
     self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='EtOH').pk])
     super(GetCustomCompound403, self).setUp()
 
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'Narnia')
+class GetCompoundUpload(GetHttpSessionTest):
+  '''Tests that GETing the compound upload page works'''
+
+  url = GetHttpSessionTest.baseUrl + reverse('uploadcompoundcsv')
+  testCodes = ["d16ff9ed-752c-405e-bc4b-cae3a27dd7b2"] 
+
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'Narnia')
+@usesCsrf
+class PostCompoundUpload(PostHttpSessionTest, OneRedirectionMixin):
+
+  url = PostHttpSessionTest.baseUrl + reverse('uploadcompoundcsv')
+  testCodes = ["bf3a3711-b21d-4710-a989-6d1ebc1c9ee9"] 
+  
+  def setUp(self):
+    self.payload['labGroup'] = LabGroup.objects.get(title="Narnia").pk
+    with open(path.join(settings.APP_DIR, 'tests', 'resource', 'compound_spread_test1.csv'), 'rb') as f:
+      self.files['csv']=('compound_test1.csv',f.read(), 'text/csv')
+    super(PostCompoundUpload, self).setUp()
+
 suite = unittest.TestSuite([
   loadTests(LicenseRedirect),
   loadTests(Lab403Test),
@@ -188,7 +214,9 @@ suite = unittest.TestSuite([
   loadTests(LabGroupSelectionRedirect),
   loadTests(GetCompoundForEditing),
   loadTests(GetNotMyCompoundForEditing),
-  loadTests(GetCustomCompound403)
+  loadTests(GetCustomCompound403),
+  loadTests(GetCompoundUpload),
+  loadTests(PostCompoundUpload)
 ])
 
 if __name__=='__main__':
