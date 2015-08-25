@@ -1,7 +1,6 @@
 #Django settings for DRP project.
 #TODO: Set / to being os.sep
 import os
-from plugins import moldescriptors
 SITE_ID = 1
 
 SERVER_NAME = '' #TODO: replace this using sites application.
@@ -34,7 +33,7 @@ CHEMAXON_DIR = ""
 WEKA_PATH = ""
 #TODO: allow these to accept dictionaries with version numbers
 
-MOL_DESCRIPTOR_PLUGINS=[moldescriptors.example]
+MOL_DESCRIPTOR_PLUGINS=['moldescriptors.example']
 RXN_DESCRIPTOR_PLUGINS=[]
 
 STATICFILES_DIRS = (STATIC_DIR,)

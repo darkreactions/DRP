@@ -9,13 +9,11 @@ class MolDescriptor(models.Model):
     verbose_name = 'Molecular Descriptor'
     unique_together = ('heading','calculatorSoftware','calculatorSoftwareVersion')
 
-  heading=models.CharField(max_length=200, unique=True, error_messages={'unique':'This descriptor is already registered, or another descriptor already has this title.'})
+  heading=models.CharField(max_length=200)
   '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
   enforce MS-excel style CSV compatibility
   '''
   name=models.CharField('Full name', max_length=300)
-  kind=models.CharField('Kind', max_length=20, choices=(('Cat', 'Categorical'), ('Ord', 'Ordinal'), ('Num', 'Numerical'), ('Bool', 'Boolean')))
-  '''The kind of descriptor changes the type of data which is applicable for a descriptor value (these are stores in the DescriptorValue relationship class'''
   calculatorSoftware=models.CharField(max_length=100)
   calculatorSoftwareVersion=models.CharField(max_length=20)
 
@@ -33,8 +31,8 @@ class OrdMolDescriptor(MolDescriptor):
     verbose_name= 'Ordinal Molecular Descriptor'
     app_label='DRP'
 
-  maximum=models.IntegerField()
-  minimum=models.IntegerField()
+  maximum=models.IntegerField(null=True)
+  minimum=models.IntegerField(null=True)
 
 class NumMolDescriptor:
   '''A class which represents a numerical descriptor'''
@@ -43,8 +41,8 @@ class NumMolDescriptor:
     app_label='DRP'
     verbose_name= 'Numerical Molecular Descriptor'
 
-  maximum=models.FloatField()
-  minimum=models.FloatField()
+  maximum=models.FloatField(null=True)
+  minimum=models.FloatField(null=True)
 
 class BoolMolDescriptor(MolDescriptor):
   '''A class which represents a boolean descriptors'''
@@ -61,3 +59,4 @@ class CatMolDescriptorPermitted(models.Model):
     verbose_name= 'Permitted Categorical Descriptor Value'
 
   descriptor=models.ForeignKey(CatMolDescriptor, related_name='permittedValues')
+  value=models.CharField('Permitted Value', max_length=500)

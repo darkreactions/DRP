@@ -1,6 +1,5 @@
 '''An example molecular descriptor plugin to demonstrate the 'shape' that the API requires.'''
-from utils import setup
-from django.conf import settings
+#from django.conf import settings
 from chemspipy import ChemSpider
 from DRP.models import NumMolDescriptor, BoolMolDescriptor, OrdMolDescriptor, CatMolDescriptor, CatMolDescriptorPermitted  
 
@@ -35,7 +34,7 @@ def calculate(compounds):
   '''Calculates the descriptors from this plugin for each compound in the provided iterable compounds.
   This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
   database as this happens.'''
-  cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
+#  cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
   for compound in compounds:
     if compound.CSID is None:
       mwValue = NumMolDescriptorValue(compound = compound, descriptor=descriptorDict['mw'], value=None)
@@ -46,6 +45,6 @@ def calculate(compounds):
       csCompound =  cs.get_compound(compound.CSID)
       mwValue = csCompound.molecular_weight
       mwValue.save()
-      fsValue = OrdMolDescriptor(compound=compound, descriptor=descriptorDict['fs'], value=fsValueCalc(mwValue)
+      fsValue = OrdMolDescriptor(compound=compound, descriptor=descriptorDict['fs'], value=fsValueCalc(mwValue))
       fsValue.save()
         
