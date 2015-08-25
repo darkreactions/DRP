@@ -30,6 +30,13 @@ def fsValueCalc(mw):
   else:
     return 3
 
+def arbValCalc(compound):
+  if compound.pk % 2 == 0:
+    return dull
+  else:
+    return fun
+
+
 def calculate(compounds):
   '''Calculates the descriptors from this plugin for each compound in the provided iterable compounds.
   This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
@@ -47,4 +54,10 @@ def calculate(compounds):
       mwValue.save()
       fsValue = OrdMolDescriptor(compound=compound, descriptor=descriptorDict['fs'], value=fsValueCalc(mwValue))
       fsValue.save()
-        
+    if compound.smiles is None:
+      nValue = BoolMolDescriptorValue(compound=compound, descriptor=descriptorDict['N?'], value=None)
+    else:
+      nValue = BoolMolDescriptorValue(compound=compound, descriptor=descriptorDict['N?'], value=('n' in smiles or 'N' in smiles))
+    nValue.save()
+    arbValue = CatMolDescriptorValue(compound=compound, descriptor=descriptorDict['arb'], value=arbValCalc(compound))
+    arbValue.save()
