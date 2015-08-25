@@ -7,6 +7,9 @@ import csv
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
+import importlib
+
+descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 
 class CompoundManager(models.Manager):
   '''A custom manager for the Compound Class which permits the creation of entries to and from CSVs'''
@@ -122,3 +125,11 @@ class Compound(models.Model):
         errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid smiles string', code='invalid_smiles'))
       if len(errorList) > 0:
         raise ValidationError(errorList)
+
+  def save(self, commit=True):
+    if commit:
+      super(Compound, self).save(commit)
+      for descriptorPlugin in descriptorPlugins:
+        descriptorPlugin.calculate(self) 
+    return super(Compound, self).save(commit)
+      

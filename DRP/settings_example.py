@@ -33,8 +33,11 @@ CHEMAXON_DIR = ""
 WEKA_PATH = ""
 #TODO: allow these to accept dictionaries with version numbers
 
-MOL_DESCRIPTOR_PLUGINS=('moldescriptors.example',)
-RXN_DESCRIPTOR_PLUGINS=()
+if testing:
+  MOL_DESCRIPTOR_PLUGINS=('moldescriptors.example',)
+  RXN_DESCRIPTOR_PLUGINS=()
+else:
+  MOL_DESCRIPTOR_PLUGINS=('moldescriptors.example',)
 
 STATICFILES_DIRS = (STATIC_DIR,)
 
