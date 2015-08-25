@@ -1,5 +1,6 @@
 '''A module containing Classes permitting the representation of molecular descriptors'''
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class MolDescriptor(models.Model):
   '''An abstract class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
@@ -34,6 +35,14 @@ class OrdMolDescriptor(MolDescriptor):
   maximum=models.IntegerField(null=True)
   minimum=models.IntegerField(null=True)
 
+  def clean(self):
+   if self.maximum < self.minimum:
+     raise ValidationError('The maximum value cannot be lower than the minimum value', 'max_min_mix') 
+
+  def save(self, commit=False):
+    self.clean()
+    super(OrdMolDescriptor, self).save(commit)
+
 class NumMolDescriptor:
   '''A class which represents a numerical descriptor'''
 
@@ -43,6 +52,14 @@ class NumMolDescriptor:
 
   maximum=models.FloatField(null=True)
   minimum=models.FloatField(null=True)
+  
+  def clean(self):
+   if self.maximum < self.minimum:
+     raise ValidationError('The maximum value cannot be lower than the minimum value', 'max_min_mix') 
+
+  def save(self, commit=False):
+    self.clean()
+    super(OrdMolDescriptor, self).save(commit)
 
 class BoolMolDescriptor(MolDescriptor):
   '''A class which represents a boolean descriptors'''
@@ -57,6 +74,7 @@ class CatMolDescriptorPermitted(models.Model):
   class Meta:
     app_label = "DRP"
     verbose_name= 'Permitted Categorical Descriptor Value'
+    unique_together=('descriptor', 'value')
 
   descriptor=models.ForeignKey(CatMolDescriptor, related_name='permittedValues')
-  value=models.CharField('Permitted Value', max_length=500)
+  value=models.CharField('Permitted Value', max_length=255, unique=True)

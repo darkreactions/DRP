@@ -4,6 +4,7 @@ from MolDescriptor import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor,
 from Reaction import Reaction
 from Compound import Compound
 from StatsModel import StatsModel
+from django.core.exceptions import ValidationError
 
 #TODO: implement methods which permit these to be used in the same way as their actual value attributes
 #I.E. NumMolDescriptors can be multiplied and divided etc, returning the appropriate type.
@@ -20,7 +21,7 @@ class CatMolDescriptorValue(models.Model):
 
   descriptor = models.ForeignKey(CatMolDescriptor)
   compound = models.ForeignKey(Compound)
-  value = models.ForeignKey(CatMolDescriptorPermitted)
+  value = models.ForeignKey(CatMolDescriptorPermitted, null=True)
 
   def __eq__(self, other):
     if isinstance(other, CatMolDescriptorValue):
@@ -29,6 +30,15 @@ class CatMolDescriptorValue(models.Model):
       return self.value.value == other.value
     else:
       return self.value.value == other
+
+  def clean(self):
+    if self.value not in self.descriptor.permittedValues and self.value is not None:
+      raise ValidationError('Invalid Category Described for this Categorical Descriptor', 'invalid_category')
+
+  def save(self, commit=True):
+    self.clean()
+    super(CatMolDescriptorValue, self).save(commit)
+
 
 class BoolMolDescriptorValue(models.Model):
   '''Contains the value of a boolean descriptor for a compound'''
@@ -56,6 +66,17 @@ class NumMolDescriptorValue(models.Model):
   descriptor = models.ForeignKey(BoolMolDescriptor)
   compound = models.ForeignKey(Compound)
   value=models.FloatField(null=True)
+
+  def clean(self):
+    if self.value is not None:
+      if self > self.descriptor.maximum:
+        raise ValidationError('The provided value is higher than the descriptor maximum', 'value_too_high')
+      if self < self.descriptor.minimum:
+        raise ValidationError('The provided value is lower than the descriptor minimum', 'value_too_low')
+
+  def save(self, commit=True):
+    self.clean()
+    super(NumMolDescriptorValue, self).save(commit)
 
   def __nonzero__(self):
     return bool(self.value)
@@ -89,6 +110,17 @@ class OrdMolDescriptorValue(models.Model):
   descriptor = models.ForeignKey(BoolMolDescriptor)
   compound = models.ForeignKey(Compound)
   value=models.IntegerField(null=True)
+  
+  def clean(self):
+    if self.value is not None:
+      if self > self.descriptor.maximum:
+        raise ValidationError('The provided value is higher than the descriptor maximum', 'value_too_high')
+      if self < self.descriptor.minimum:
+        raise ValidationError('The provided value is lower than the descriptor minimum', 'value_too_low')
+
+  def save(self, commit=True):
+    self.clean()
+    super(NumMolDescriptorValue, self).save(commit)
 
   def __eq__(self, other):
     if isinstance(other, OrdMolDescriptorValue):
