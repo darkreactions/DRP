@@ -34,10 +34,11 @@ WEKA_PATH = ""
 #TODO: allow these to accept dictionaries with version numbers
 
 if testing:
-  MOL_DESCRIPTOR_PLUGINS=('moldescriptors.example',)
+  MOL_DESCRIPTOR_PLUGINS=('DRP.plugins.moldescriptors.example',)
   RXN_DESCRIPTOR_PLUGINS=()
 else:
-  MOL_DESCRIPTOR_PLUGINS=('moldescriptors.example',)
+  MOL_DESCRIPTOR_PLUGINS=('DRP.plugins.moldescriptors.example',)
+  RXN_DESCRIPTOR_PLUGINS=()
 
 STATICFILES_DIRS = (STATIC_DIR,)
 
