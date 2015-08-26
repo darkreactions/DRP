@@ -32,12 +32,12 @@ class CatMolDescriptorValue(models.Model):
       return self.value.value == other
 
   def clean(self):
-    if self.value not in self.descriptor.permittedValues and self.value is not None:
+    if self.value not in self.descriptor.permittedValues.all() and self.value is not None:
       raise ValidationError('Invalid Category Described for this Categorical Descriptor', 'invalid_category')
 
-  def save(self, commit=True):
+  def save(self, *args, **kwargs):
     self.clean()
-    super(CatMolDescriptorValue, self).save(commit)
+    super(CatMolDescriptorValue, self).save(*args, **kwargs)
 
 
 class BoolMolDescriptorValue(models.Model):
@@ -63,20 +63,20 @@ class NumMolDescriptorValue(models.Model):
     verbose_name='Boolean Molecular Descriptor Value'
     unique_together=('descriptor', 'compound')
 
-  descriptor = models.ForeignKey(BoolMolDescriptor)
+  descriptor = models.ForeignKey(NumMolDescriptor)
   compound = models.ForeignKey(Compound)
   value=models.FloatField(null=True)
 
   def clean(self):
     if self.value is not None:
-      if self > self.descriptor.maximum:
+      if self.descriptor.maximum is not None and self > self.descriptor.maximum:
         raise ValidationError('The provided value is higher than the descriptor maximum', 'value_too_high')
-      if self < self.descriptor.minimum:
+      if self.descriptor.minimum is not None and self < self.descriptor.minimum:
         raise ValidationError('The provided value is lower than the descriptor minimum', 'value_too_low')
 
-  def save(self, commit=True):
+  def save(self, *args, **kwargs):
     self.clean()
-    super(NumMolDescriptorValue, self).save(commit)
+    super(NumMolDescriptorValue, self).save(*args, **kwargs)
 
   def __nonzero__(self):
     return bool(self.value)
@@ -107,20 +107,20 @@ class OrdMolDescriptorValue(models.Model):
     verbose_name='Ordinal Molecular Descriptor Value'
     unique_together=('descriptor', 'compound')
 
-  descriptor = models.ForeignKey(BoolMolDescriptor)
+  descriptor = models.ForeignKey(OrdMolDescriptor)
   compound = models.ForeignKey(Compound)
   value=models.IntegerField(null=True)
   
   def clean(self):
     if self.value is not None:
-      if self > self.descriptor.maximum:
+      if self.descriptor.maximum is not None and self > self.descriptor.maximum:
         raise ValidationError('The provided value is higher than the descriptor maximum', 'value_too_high')
-      if self < self.descriptor.minimum:
+      if self.descriptor.minimum is not None and self < self.descriptor.minimum:
         raise ValidationError('The provided value is lower than the descriptor minimum', 'value_too_low')
 
-  def save(self, commit=True):
+  def save(self, *args, **kwargs):
     self.clean()
-    super(NumMolDescriptorValue, self).save(commit)
+    super(OrdMolDescriptorValue, self).save(*args, **kwargs)
 
   def __eq__(self, other):
     if isinstance(other, OrdMolDescriptorValue):

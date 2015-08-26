@@ -33,7 +33,7 @@ CHEMAXON_DIR = ""
 WEKA_PATH = ""
 #TODO: allow these to accept dictionaries with version numbers
 
-if testing:
+if TESTING:
   MOL_DESCRIPTOR_PLUGINS=('DRP.plugins.moldescriptors.example',)
   RXN_DESCRIPTOR_PLUGINS=()
 else:

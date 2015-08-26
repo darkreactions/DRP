@@ -1,8 +1,10 @@
 '''A module containing only the DRPTestCase class'''
 import unittest
 from django.conf import settings
-import DRP.models as models 
 from django.contrib.auth.models import User
+import importlib
+import DRP
+molDescriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
 class DRPTestCase(unittest.TestCase):
   '''A quick and dirty safety valve to stop people accidentally running database tests in production environments
@@ -18,23 +20,25 @@ class DRPTestCase(unittest.TestCase):
 
 
 def cleanUpDatabase():
-  models.Compound.objects.all().delete()
-  models.ChemicalClass.objects.all().delete()
-  models.ConfirmationCode.objects.all().delete()
-  models.DataSet.objects.all().delete()
-  models.LabGroup.objects.all().delete()
-  models.LicenseAgreement.objects.all()
-  models.License.objects.all().delete()
-  models.LegacyStatsModel.objects.all().delete()
-  models.StatsModel.objects.all().delete()
-  models.PerformedReaction.objects.all().delete()
-  models.CatMolDescriptorValue.objects.all().delete()
-  models.BoolMolDescriptorValue.objects.all().delete()
-  models.NumMolDescriptorValue.objects.all().delete()
-  models.OrdMolDescriptorValue.objects.all().delete()
-  models.MolDescriptor.objects.all().delete()
-  models.RxnDescriptor.objects.all().delete()
-  models.StatsModelTag.objects.all().delete()
+  DRP.models.Compound.objects.all().delete()
+  DRP.models.ChemicalClass.objects.all().delete()
+  DRP.models.ConfirmationCode.objects.all().delete()
+  DRP.models.DataSet.objects.all().delete()
+  DRP.models.LabGroup.objects.all().delete()
+  DRP.models.LicenseAgreement.objects.all()
+  DRP.models.License.objects.all().delete()
+  DRP.models.LegacyStatsModel.objects.all().delete()
+  DRP.models.StatsModel.objects.all().delete()
+  DRP.models.PerformedReaction.objects.all().delete()
+  DRP.models.CatMolDescriptorValue.objects.all().delete()
+  DRP.models.BoolMolDescriptorValue.objects.all().delete()
+  DRP.models.NumMolDescriptorValue.objects.all().delete()
+  DRP.models.OrdMolDescriptorValue.objects.all().delete()
+  DRP.models.StatsModelTag.objects.all().delete()
+  keepMolDescriptors = []
+  for plugin in molDescriptorPlugins:
+    keepMolDescriptors += [plugin.descriptorDict[key].moldescriptor_ptr.pk for key in plugin.descriptorDict]
+  DRP.models.MolDescriptor.objects.exclude(pk__in=keepMolDescriptors).delete()
   User.objects.all().exclude(username='root').delete()
 
 def runTests(suite):

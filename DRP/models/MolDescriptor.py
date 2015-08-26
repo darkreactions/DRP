@@ -36,14 +36,14 @@ class OrdMolDescriptor(MolDescriptor):
   minimum=models.IntegerField(null=True)
 
   def clean(self):
-   if self.maximum < self.minimum:
+   if self.maximum is not None and self.minimum is not None and self.maximum < self.minimum:
      raise ValidationError('The maximum value cannot be lower than the minimum value', 'max_min_mix') 
 
-  def save(self, commit=False):
+  def save(self, *args, **kwargs):
     self.clean()
-    super(OrdMolDescriptor, self).save(commit)
+    super(OrdMolDescriptor, self).save(*args, **kwargs)
 
-class NumMolDescriptor:
+class NumMolDescriptor(MolDescriptor):
   '''A class which represents a numerical descriptor'''
 
   class Meta:
@@ -54,12 +54,13 @@ class NumMolDescriptor:
   minimum=models.FloatField(null=True)
   
   def clean(self):
-   if self.maximum < self.minimum:
-     raise ValidationError('The maximum value cannot be lower than the minimum value', 'max_min_mix') 
+    if self.maximum is not None and self.minimum is not None:
+      if self.maximum < self.minimum:
+        raise ValidationError('The maximum value cannot be lower than the minimum value', 'max_min_mix') 
 
-  def save(self, commit=False):
+  def save(self, *args, **kwargs):
     self.clean()
-    super(OrdMolDescriptor, self).save(commit)
+    super(NumMolDescriptor, self).save(*args, **kwargs)
 
 class BoolMolDescriptor(MolDescriptor):
   '''A class which represents a boolean descriptors'''
@@ -77,4 +78,4 @@ class CatMolDescriptorPermitted(models.Model):
     unique_together=('descriptor', 'value')
 
   descriptor=models.ForeignKey(CatMolDescriptor, related_name='permittedValues')
-  value=models.CharField('Permitted Value', max_length=255, unique=True)
+  value=models.CharField('Permitted Value', max_length=255)

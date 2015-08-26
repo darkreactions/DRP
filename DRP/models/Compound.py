@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 import importlib
 
-descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS]
+descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
 class CompoundManager(models.Manager):
   '''A custom manager for the Compound Class which permits the creation of entries to and from CSVs'''
@@ -126,10 +126,8 @@ class Compound(models.Model):
       if len(errorList) > 0:
         raise ValidationError(errorList)
 
-  def save(self, commit=True):
-    if commit:
-      super(Compound, self).save(commit)
-      for descriptorPlugin in descriptorPlugins:
-        descriptorPlugin.calculate(self) 
-    return super(Compound, self).save(commit)
+  def save(self, *args, **kwargs):
+    super(Compound, self).save(*args, **kwargs)
+    for descriptorPlugin in descriptorPlugins:
+      descriptorPlugin.calculate(self) 
       
