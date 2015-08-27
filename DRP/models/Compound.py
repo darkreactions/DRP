@@ -1,5 +1,5 @@
 '''Module containing only the Compound Class'''
-from django.db import models, transaction
+from django.db import models
 from MolDescriptor import MolDescriptor
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
@@ -14,19 +14,21 @@ descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_
 class CompoundManager(models.Manager):
   '''A custom manager for the Compound Class which permits the creation of entries to and from CSVs'''
 
-  @transaction.atomic
-  def fromCsv(self, fileName, labGroup):
-    '''Reads a CSV into the database creating objects as a transaction, and returning the resulting queryset of compounds
-      (a queryset insures us against very big lists, and allows us to exit the transaction before moving on.
-      will get/create for compound classes. This method is all-or-nothing and will fail if one row in the file fails.
+  use_for_related_fields = True #NOTE:This doesn't actually work, but no-one's sure which way django is going to jump on this.
+
+  def fromCsv(self, fileName, labGroup=None):
+    '''Reads a CSV into the creating objects, returning a list of compounds which have not yet been saved.
       This assumes that the uploaded csv will have headers which map to the names of the fields and that compound classes are
       stored as comma separated lists of the chemicalClass LABEL only.
 
       Each compound will perform a chemspider-based consistency check on the information it has been created with to ensure
       information is consistent- this throws an ValidationError if it is not.
     '''
+    if labGroup is None and hasattr(self, 'instance'):
+      #we presume that if this is being called without a labgroup that's because this manager belongs to a lab group
+      labGroup = self.instance
 
-    compoundIDsList = []
+    compoundsList = []
     cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
     with open(fileName) as f:
       reader = csv.DictReader(f, restkey='restKey')
@@ -60,16 +62,15 @@ class CompoundManager(models.Manager):
           compound = Compound(labGroup = labGroup,  **kwargs)
           compound.full_clean()
           compound.csConsistencyCheck()
-          compound.save()
           for chemicalClass in chemicalClasses:
             compound.chemicalClasses.add(chemicalClass)
-          compoundIDsList.append(compound.pk)
+          compoundsList.append(compound)
         except ValidationError as e:
           for message in e.messages:
             errors.append(ValidationError(message + ' on row %(rowCount)d of uploaded csv', params={'rowCount':rowCount}))
       if len(errors) > 0:
         raise ValidationError(errors)
-    return compoundIDsList
+    return compoundsList
 
 class Compound(models.Model):
   '''A class for containing data about Compounds used in chemical reactions.

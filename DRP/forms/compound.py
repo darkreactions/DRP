@@ -158,5 +158,9 @@ class CompoundUploadForm(forms.Form):
 
   def clean(self):
     if self.cleaned_data.get('csv') is not None and self.cleaned_data.get('labGroup') is not None:
-      self.compounds = Compound.objects.fromCsv(self.cleaned_data['csv'].temporary_file_path(), self.cleaned_data['labGroup']) 
+      self.compounds = self.cleaned_data['labGroup'].compound_set.fromCsv(self.cleaned_data['csv'].temporary_file_path)
     return self.cleaned_data
+
+  def save(self):
+    for compound in self.compounds:
+      compound.save()
