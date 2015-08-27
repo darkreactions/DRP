@@ -5,7 +5,7 @@ from MolDescriptorValue import BoolMolDescriptorValue, NumMolDescriptorValue, Ca
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
 import csv
-from CsvQuerySet import CsvQuerySet
+from CsvQuerySet import CsvModel, CsvQuerySet
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -16,12 +16,19 @@ descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_
 
 class CompoundQuerySet(CsvQuerySet):
 
-  def __init__(self, query=None, using=None):
-    super(CompoundQuerySet, self).__init__(Compound, query=query, using=using)
+  def __init__(self, **kwargs):
+    kwargs.pop('model', None)
+    super(CompoundQuerySet, self).__init__(Compound, **kwargs)
+
+  @property
+  def headers(self):
+    headers = super(CompoundQuerySet, self).headers
+    headers += ['chemicalClass_{}'.format(x+1) for x in range(0, self.annotate(chemicalClassCount=models.Count('chemicalClasses')).aggregate(max=models.Max('chemicalClassCount')]
+    return headers
 
   @property
   def expandedHeaders(self):
-    return [d.csvHeader for d in self.descriptors]
+    return self.headers + [d.csvHeader for d in self.descriptors]
 
   @property
   def descriptors(self):
@@ -42,7 +49,7 @@ class CompoundQuerySet(CsvQuerySet):
         )|
         MolDescriptor.objects.filter(
           ordmoldescriptor__in=OrdMolDescriptor.objects.filter(
-            ordmoldescriptorvalue__in=OrdMolDescriptorvalue.objects.filter(
+            ordmoldescriptorvalue__in=OrdMolDescriptorValue.objects.filter(
               compound__in=self
             )
           )
@@ -63,7 +70,7 @@ class CompoundManager(models.Manager):
   use_for_related_fields = True #NOTE:This doesn't actually work, but no-one's sure which way django is going to jump on this.
 
   def get_queryset(self):
-    return CompoundQuerySet(self.model)
+    return CompoundQuerySet()
 
   def fromCsv(self, fileName, labGroup=None):
     '''Reads a CSV into the creating objects, returning a list of compounds which have not yet been saved.
@@ -121,7 +128,7 @@ class CompoundManager(models.Manager):
         raise ValidationError(errors)
     return compoundsList
 
-class Compound(models.Model):
+class Compound(CsvModel):
   '''A class for containing data about Compounds used in chemical reactions.
   The assumption is made that all chemicals used are single-species.
   '''
@@ -187,5 +194,16 @@ class Compound(models.Model):
     return set(chain(self.catmoldescriptorvalue_set.all(), self.nummoldescriptorvalue_set.all(), self.ordmoldescriptorvalue_set.all(), self.boolmoldescriptorvalue_set.all()))
 
   @property
+  def values(self):
+    '''outputs a dict of values suitable for use by a csv.DictWriter'''
+    d =  super(Compound, self).values 
+    i = 1
+    for c in self.chemicalClasses:
+      d['chemicalClasses_{}'.format(i)] = c
+      i+=1
+    return d
+
+  @property
   def expandedValues(self):
-    return {descriptorValue.descriptor.csvHeader:descriptorValue.value for descriptorValue in self.descriptorValues}
+    '''outputs a dict of values suitable for use by a csv.DictWriter - includes molecular descriptors'''
+    return self.values.update({descriptorValue.descriptor.csvHeader:descriptorValue.value for descriptorValue in self.descriptorValues})

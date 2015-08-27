@@ -1,8 +1,7 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
 from MolDescriptor import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor,CatMolDescriptorPermitted
-from Reaction import Reaction
-from Compound import Compound
+#from Compound import Compound - retain this line for clarity
 from StatsModel import StatsModel
 from django.core.exceptions import ValidationError
 
@@ -20,7 +19,7 @@ class CatMolDescriptorValue(models.Model):
     unique_together=('descriptor', 'compound')
 
   descriptor = models.ForeignKey(CatMolDescriptor)
-  compound = models.ForeignKey(Compound)
+  compound = models.ForeignKey('DRP.Compound')
   value = models.ForeignKey(CatMolDescriptorPermitted, null=True)
 
   def __eq__(self, other):
@@ -49,7 +48,7 @@ class BoolMolDescriptorValue(models.Model):
     unique_together=('descriptor', 'compound')
 
   descriptor = models.ForeignKey(BoolMolDescriptor)
-  compound = models.ForeignKey(Compound)
+  compound = models.ForeignKey('DRP.Compound')
   value= models.NullBooleanField('Value if descriptor is a boolean', null=True)
 
   def __nonzero__(self):
@@ -64,7 +63,7 @@ class NumMolDescriptorValue(models.Model):
     unique_together=('descriptor', 'compound')
 
   descriptor = models.ForeignKey(NumMolDescriptor)
-  compound = models.ForeignKey(Compound)
+  compound = models.ForeignKey('DRP.Compound')
   value=models.FloatField(null=True)
 
   def clean(self):
@@ -108,7 +107,7 @@ class OrdMolDescriptorValue(models.Model):
     unique_together=('descriptor', 'compound')
 
   descriptor = models.ForeignKey(OrdMolDescriptor)
-  compound = models.ForeignKey(Compound)
+  compound = models.ForeignKey('DRP.Compound')
   value=models.IntegerField(null=True)
   
   def clean(self):
