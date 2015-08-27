@@ -83,3 +83,6 @@ class CatMolDescriptorPermitted(models.Model):
 
   descriptor=models.ForeignKey(CatMolDescriptor, related_name='permittedValues')
   value=models.CharField('Permitted Value', max_length=255)
+
+  def __unicode__(self):
+    return self.value

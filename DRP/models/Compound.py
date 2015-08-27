@@ -23,14 +23,15 @@ class CompoundQuerySet(CsvQuerySet):
   @property
   def headers(self):
     headers = super(CompoundQuerySet, self).headers
-    headers += ['chemicalClass_{}'.format(x+1) for x in range(0, self.annotate(chemicalClassCount=models.Count('chemicalClasses')).aggregate(max=models.Max('chemicalClassCount')]
+    m = self.annotate(chemicalClassCount=models.Count('chemicalClasses')).aggregate(max=models.Max('chemicalClassCount'))['max']
+    m = 0 if m is None else m
+    headers += ['chemicalClass_{}'.format(x+1) for x in range(0, m)]
     return headers
 
   @property
   def expandedHeaders(self):
-    return self.headers + [d.csvHeader for d in self.descriptors]
+    return self.headers + [d.csvHeader for d in self.descriptors()]
 
-  @property
   def descriptors(self):
     return (
         MolDescriptor.objects.filter(
@@ -198,12 +199,14 @@ class Compound(CsvModel):
     '''outputs a dict of values suitable for use by a csv.DictWriter'''
     d =  super(Compound, self).values 
     i = 1
-    for c in self.chemicalClasses:
-      d['chemicalClasses_{}'.format(i)] = c
+    for c in self.chemicalClasses.all():
+      d['chemicalClass_{}'.format(i)] = c
       i+=1
     return d
 
   @property
   def expandedValues(self):
     '''outputs a dict of values suitable for use by a csv.DictWriter - includes molecular descriptors'''
-    return self.values.update({descriptorValue.descriptor.csvHeader:descriptorValue.value for descriptorValue in self.descriptorValues})
+    res = self.values.copy()
+    res.update({descriptorValue.descriptor.csvHeader:descriptorValue.value for descriptorValue in self.descriptorValues})
+    return res 

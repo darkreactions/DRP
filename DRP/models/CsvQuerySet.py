@@ -30,7 +30,7 @@ class CsvQuerySet(models.query.QuerySet):
     return self.headers
 
   @abc.abstractproperty
-  def headers(self);
+  def headers(self):
     '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
     and will fail if any field holds a relationship, and will not include automagically generated fields.'''
     return [field.name for field in self.model._meta.fields]
@@ -43,13 +43,13 @@ class CsvQuerySet(models.query.QuerySet):
     '''
 
     if expanded:
-      writer = csv.DictWriter(writeable, fieldnames=self.headers)
+      writer = csv.DictWriter(writeable, fieldnames=self.expandedHeaders, restval=missing)
     else:
-      writer = csv.DictWriter(writeable, fieldnames=self.expandedHeaders)
+      writer = csv.DictWriter(writeable, fieldnames=self.headers, restval=missing)
 
     writer.writeheader()
     for item in self:
       if expanded:
-        writer.writerow(item.values)
-      else:
         writer.writerow(item.expandedValues)
+      else:
+        writer.writerow(item.values)
