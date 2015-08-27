@@ -18,6 +18,10 @@ class MolDescriptor(models.Model):
   calculatorSoftware=models.CharField(max_length=100)
   calculatorSoftwareVersion=models.CharField(max_length=20)
 
+  @property
+  def csvHeader(self):
+    return '{}_{}_{}'.format(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
+
 class CatMolDescriptor(MolDescriptor):
   '''A class which describes a categorical molecular descriptors'''
 

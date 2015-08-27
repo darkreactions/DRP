@@ -1,20 +1,69 @@
 '''Module containing only the Compound Class'''
 from django.db import models
-from MolDescriptor import MolDescriptor
+from MolDescriptor import MolDescriptor, BoolMolDescriptor, NumMolDescriptor, CatMolDescriptor, OrdMolDescriptor
+from MolDescriptorValue import BoolMolDescriptorValue, NumMolDescriptorValue, CatMolDescriptorValue, OrdMolDescriptorValue
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
 import csv
+from CsvQuerySet import CsvQuerySet
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from itertools import chain
 import importlib
 
 descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
+
+class CompoundQuerySet(CsvQuerySet):
+
+  def __init__(self, query=None, using=None):
+    super(CompoundQuerySet, self).__init__(Compound, query=query, using=using)
+
+  @property
+  def expandedHeaders(self):
+    return [d.csvHeader for d in self.descriptors]
+
+  @property
+  def descriptors(self):
+    return (
+        MolDescriptor.objects.filter(
+          boolmoldescriptor__in=BoolMolDescriptor.objects.filter(
+            boolmoldescriptorvalue__in=BoolMolDescriptorValue.objects.filter(
+              compound__in=self
+            )
+          )
+        )| #NOTE this bar
+        MolDescriptor.objects.filter(
+          nummoldescriptor__in=NumMolDescriptor.objects.filter(
+            nummoldescriptorvalue__in=NumMolDescriptorValue.objects.filter(
+              compound__in=self
+            )
+          )
+        )|
+        MolDescriptor.objects.filter(
+          ordmoldescriptor__in=OrdMolDescriptor.objects.filter(
+            ordmoldescriptorvalue__in=OrdMolDescriptorvalue.objects.filter(
+              compound__in=self
+            )
+          )
+        )|
+        MolDescriptor.objects.filter(
+          catmoldescriptor__in=CatMolDescriptor.objects.filter(
+            catmoldescriptorvalue__in=CatMolDescriptorValue.objects.filter(
+              compound__in=self
+            )
+          )
+        )
+      )
+    
 
 class CompoundManager(models.Manager):
   '''A custom manager for the Compound Class which permits the creation of entries to and from CSVs'''
 
   use_for_related_fields = True #NOTE:This doesn't actually work, but no-one's sure which way django is going to jump on this.
+
+  def get_queryset(self):
+    return CompoundQuerySet(self.model)
 
   def fromCsv(self, fileName, labGroup=None):
     '''Reads a CSV into the creating objects, returning a list of compounds which have not yet been saved.
@@ -131,4 +180,12 @@ class Compound(models.Model):
     super(Compound, self).save(*args, **kwargs)
     for descriptorPlugin in descriptorPlugins:
       descriptorPlugin.calculate(self) 
-      
+    
+  @property  
+  def descriptorValues(self):
+    '''Returns a union of the descriptor values that apply to this object. Hijacks the method from the CompoundQuerySet class'''
+    return set(chain(self.catmoldescriptorvalue_set.all(), self.nummoldescriptorvalue_set.all(), self.ordmoldescriptorvalue_set.all(), self.boolmoldescriptorvalue_set.all()))
+
+  @property
+  def expandedValues(self):
+    return {descriptorValue.descriptor.csvHeader:descriptorValue.value for descriptorValue in self.descriptorValues}
