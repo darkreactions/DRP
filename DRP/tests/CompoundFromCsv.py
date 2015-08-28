@@ -37,8 +37,11 @@ class Good(DRPTestCase):
   def runTest(self):
     for filename in self.fileNames:
       compounds = Compound.objects.fromCsv(filename, LabGroup.objects.get(title='Narnia'))
-      self.assertEqual(compounds.count(), 8) 
-      compounds.delete()
+      for compound in compounds:
+        compound.save()
+      self.assertEqual(len(compounds), 8) 
+      for compound in compounds:
+        compound.delete()
 
 class Broken(Good):
   '''Tests the broken spreads whose names ends with the values in ssids'''
@@ -49,6 +52,8 @@ class Broken(Good):
     for fileName in self.fileNames:
       with self.assertRaises(ValidationError):
         compounds = Compound.objects.fromCsv(fileName, LabGroup.objects.get(title='Narnia'))
+        for compound in compounds:
+          compound.save()
         Compound.objects.all().delete()
 
 suite = unittest.TestSuite([

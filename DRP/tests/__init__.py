@@ -13,6 +13,6 @@ suite = unittest.TestSuite([
   forms.suite,
   HttpTests.suite,
   CompoundFromCsv.suite,
-  CompoundDescriptor.suite
+  CompoundDescriptor.suite,
   CompoundToCsv.suite
 ]) 

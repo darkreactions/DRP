@@ -73,6 +73,8 @@ def deleteCompound(request, *args, **kwargs):
   form = CompoundDeleteForm(data=request.POST, user=request.user) 
   if form.is_valid():
     form.save()
+  else:
+    raise RuntimeError(str(form.errors))
   return redirect('compoundguide')
 
 @login_required
