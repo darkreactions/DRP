@@ -124,14 +124,17 @@ class ListCompound(ListView):
       self.queryset = labGroup.compound_set.all()
 
     #one way or another, by the time we get here we have only one labgroup
-    self.filterFormset = CompoundFilterFormSet(request.GET, user=request.user, labGroup=labGroup)
-    if self.filterFormSet.is_valid():
-      self.queryset = self.filterFormSet.fetch()
+    if 'filter' in request.GET:
+      self.filterFormSet = CompoundFilterFormSet(request.user, labGroup, data=request.GET)
+      if self.filterFormSet.is_valid():
+        self.queryset = self.filterFormSet.fetch()
+    else:
+      self.filterFormSet = CompoundFilterFormSet(request.user, labGroup)
     return super(ListCompound, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(ListCompound, self).get_context_data(**kwargs)
     context['lab_form'] = self.labForm
-    context['filter_formset'] = self.filterFormset
+    context['filter_formset'] = self.filterFormSet
     return context
 

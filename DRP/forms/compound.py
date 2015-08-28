@@ -1,7 +1,7 @@
 '''A module containing form for creating compounds'''
 
 import django.forms as forms 
-from DRP.models import Compound, CompoundQuantity
+from DRP.models import Compound, CompoundQuantity, ChemicalClass
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -170,19 +170,19 @@ class CompoundUploadForm(forms.Form):
 class CompoundFilterForm(forms.Form):
   '''A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method.'''
 
-  custom = forms.ChoiceField(choices=(('True', True),('False', False)))
+  custom = forms.ChoiceField(choices=(('True', True),('False', False)), widget=forms.widgets.RadioSelect, required=False)
 
   def __init__(self, user, labGroup, *args, **kwargs):
     '''Sets up the form. Because most of the fields are based around models, they must be added dynamically.'''
-    super(CompoundUploadForm, self).__init__(*args, **kwargs)
-    self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=((c['abbrev'],c['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct()), required=False)
-    self.fields['name'] = forms.ChoiceField(choices=((c['name'],c['name']) for c in labGroup.compound_set.all().values('name').distinct()), required=False)
-    self.fields['chemicalClasses'] = forms.ModelMultipleChoiceField(label='Chemical Classes', choices=ChemicalClasses.objects.filter(compound__in=labGroup.compound_set.all()), required=False)
-    self.fields['CSID'] = forms.ChoiceField(choices=((c['CSID'], c['CSID']) for c in labGroup.compound_set.all().values('CSID').distinct()), required=False)
+    super(CompoundFilterForm, self).__init__(*args, **kwargs)
+    self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=(('',''),) + tuple(((c['abbrev'],c['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct())), required=False)
+    self.fields['name'] = forms.ChoiceField(choices=((('',''),) + tuple((c['name'],c['name']) for c in labGroup.compound_set.all().values('name').distinct())), required=False)
+    self.fields['chemicalClasses'] = forms.ModelMultipleChoiceField(label='Chemical Classes', queryset=ChemicalClass.objects.filter(compound__in=labGroup.compound_set.all()).distinct(), required=False)
+    self.fields['CSID'] = forms.ChoiceField(choices=(('',''),) + tuple(((c['CSID'], c['CSID']) for c in labGroup.compound_set.all().values('CSID').distinct())), required=False)
     self.fields['INCHI'] = forms.CharField(required=False)
     self.fields['smiles'] = forms.CharField(required=False)
-    self.fields['labGroup'] = forms.ModelChoiceField(choices=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, errors={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'})
-    self.fields['js_active'] = forms.ChoiceField(choices=(('True',True),('False',False)), widget=HiddenInput, required=False)
+    self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'})
+    self.fields['js_active'] = forms.ChoiceField(choices=(('True',True),('False',False)), widget=HiddenInput, required=False, initial=False)
 
   def fetch(self):
     '''Fetches the labs according to data supplied. Expects the form to have been validated already.'''
@@ -191,36 +191,44 @@ class CompoundFilterForm(forms.Form):
     if self.cleaned_data.get('js_active'):
       pass
     else:
-      if self.cleaned_data.get('abbrev') is not '':
+      if self.cleaned_data.get('abbrev') not in (None, ''):
         qs = qs.filter(abbrev__contains=self.cleaned_data['abbrev'])
-      if self.cleaned_data.get('name') is not '':
+      if self.cleaned_data.get('name') not in (None, ''):
         qs = qs.filter(name__contains=self.cleaned_data['name'])
     if self.cleaned_data['chemicalClasses'].count() != 0:
       for cc in self.cleaned_data['chemicalClasses']:
-        qs = qs.filter(chemicalClass=cc)
-    if self.cleaned_data.get('CSID') is not '':
-      qs = qs.filter(CSID=self.cleaned_data['csid'])
-    if self.cleaned_data.get('INCHI') is not '':
+        qs = qs.filter(chemicalClasses=cc)
+    if self.cleaned_data.get('CSID') not in (None, ''):
+      qs = qs.filter(CSID=self.cleaned_data['CSID'])
+    if self.cleaned_data.get('INCHI') not in (None, ''):
       qs = qs.filter(INCHI=self.cleaned_data['INCHI'])
-    if self.cleaned_data.get('smiles') is not '':
+    if self.cleaned_data.get('smiles') not in (None, ''):
       qs = qs.filter(smiles=self.cleaned_data['smiles'])
     return qs
 
-class CompoundFilterFormSet(forms.formsets.baseFormSet):
+class CompoundFilterFormSet(forms.formsets.BaseFormSet):
   '''A formset for managing multiple filter forms, which OR together the results of each filter form to create a bigger queryset'''
 
   def __init__(self, user, labGroup, *args, **kwargs):
-    super(CompoundFilterFormSet, self).__init__(*args, **kwargs)
+    self.form = CompoundFilterForm 
     self.user=user
     self.labGroup = labGroup
+    self.extra=1
+    self.can_order = False
+    self.can_delete=False
+    self.max_num=None
+    self.validate_max=False
+    self.absolute_max = 100
+    super(CompoundFilterFormSet, self).__init__(*args, **kwargs)
 
   def _construct_form(self, i, **kwargs):
     kwargs['user'] = self.user
     kwargs['labGroup'] = self.labGroup
-    return super(CompoundFilterFormSet)._construct_form(i, **kwargs)
+    return super(CompoundFilterFormSet, self)._construct_form(i, **kwargs)
 
   def fetch(self):
-    qs = Compound.objects.none()
+    qs = self.forms[0].fetch()
     for form in self:
+      pass
       qs |= form.fetch()
     return qs
