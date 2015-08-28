@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import Compound
 from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm, CompoundFilterForm
-from django.forms.formsets import formset_factory
+from DRP.forms import CompoundFilterFormSet
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense
 from django.contrib.auth.decorators import login_required
@@ -124,12 +124,9 @@ class ListCompound(ListView):
       self.queryset = labGroup.compound_set.all()
 
     #one way or another, by the time we get here we have only one labgroup
-    FilterFormset = formset_factory(CompoundFilterForm)
-    self.filterFormset = FilterFormset(request.GET, user=request.user, labGroup=labGroup)
-    if self.searchFormset.is_valid():
-      self.queryset = labGroup.compound_set.none()
-      for form in self.filterFormSet:
-        self.queryset |= form.fetch() 
+    self.filterFormset = CompoundFilterFormSet(request.GET, user=request.user, labGroup=labGroup)
+    if self.filterFormSet.is_valid():
+      self.queryset = self.filterFormSet.fetch()
     return super(ListCompound, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
