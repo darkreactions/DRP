@@ -3,7 +3,8 @@
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import Compound
-from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm
+from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm, CompoundFilterForm
+from django.forms.formsets import formset_factory
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense
 from django.contrib.auth.decorators import login_required
@@ -107,23 +108,33 @@ class ListCompound(ListView):
     Relates the queryset of this view to the logged in user.
     '''
     
-    self.lab_form = LabGroupSelectionForm(request.user)
+    self.labForm = LabGroupSelectionForm(request.user)
     if request.user.labgroup_set.all().count() > 1:
       if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).exists():
         self.queryset = request.user.labgroup_set.get(pk=request.session['labgroup_id']).compound_set.all()
-        self.lab_form.fields['labGroup'].initial = request.session['labgroup_id']
-        return super(ListCompound, self).dispatch(request, *args, **kwargs)
+        self.labForm.fields['labGroup'].initial = request.session['labgroup_id']
+        labGroup = request.session['labgroup_id']
       elif 'labgroup_id' not in request.session:
         return redirect(reverse('selectGroup') + '?{0}'.format(urlencode({'next':request.path_info})))
       else:
         raise RuntimeError("This shouldn't happen")
     else:
       #user only has one labgroup, so don't bother asking which group's compoundlist they want to look at.
-      self.queryset = request.user.labgroup_set.all()[0].compound_set.all()
-      return super(ListCompound, self).dispatch(request, *args, **kwargs)
+      labGroup = request.user.labgroup_set.all()[0]
+      self.queryset = labGroup.compound_set.all()
+
+    #one way or another, by the time we get here we have only one labgroup
+    SearchFormset = formset_factory(CompoundFilterForm)
+    self.searchFormset = SearchFormset(request.GET, user=request.user, labGroup=labGroup)
+    if self.searchFormset.is_valid():
+      self.queryset = labGroup.compound_set.none()
+      for form in self.searchFormSet:
+        self.queryset |= form.fetch() 
+    return super(ListCompound, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(ListCompound, self).get_context_data(**kwargs)
-    context['lab_form'] = self.lab_form
+    context['lab_form'] = self.labForm
+    context['search_formset'] = self.searchFormset
     return context
 
