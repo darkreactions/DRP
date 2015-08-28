@@ -170,7 +170,7 @@ class CompoundUploadForm(forms.Form):
 class CompoundFilterForm(forms.Form):
   '''A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method.'''
 
-  custom = forms.ChoiceField(choices=(('True', True),('False', False)), widget=forms.widgets.RadioSelect, required=False)
+  custom = forms.ChoiceField(choices=(('True', 'True'),('False', 'False')), widget=forms.widgets.RadioSelect, required=False)
 
   def __init__(self, user, labGroup, *args, **kwargs):
     '''Sets up the form. Because most of the fields are based around models, they must be added dynamically.'''
@@ -182,14 +182,14 @@ class CompoundFilterForm(forms.Form):
     self.fields['INCHI'] = forms.CharField(required=False)
     self.fields['smiles'] = forms.CharField(required=False)
     self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'})
-    self.fields['js_active'] = forms.ChoiceField(choices=(('True',True),('False',False)), widget=HiddenInput, required=False, initial=False)
+    self.fields['js_active'] = forms.ChoiceField(choices=(('False','False'),('True','True')), widget=HiddenInput, required=False, initial='False')
 
   def fetch(self):
     '''Fetches the labs according to data supplied. Expects the form to have been validated already.'''
     
     qs = self.cleaned_data['labGroup'].compound_set.all()
-    if self.cleaned_data.get('js_active'):
-      pass
+    if self.cleaned_data.get('js_active') not in ('', None, 'False'):
+      raise RuntimeError(self.cleaned_data.get('js_active'))
     else:
       if self.cleaned_data.get('abbrev') not in (None, ''):
         qs = qs.filter(abbrev__contains=self.cleaned_data['abbrev'])
@@ -204,6 +204,8 @@ class CompoundFilterForm(forms.Form):
       qs = qs.filter(INCHI=self.cleaned_data['INCHI'])
     if self.cleaned_data.get('smiles') not in (None, ''):
       qs = qs.filter(smiles=self.cleaned_data['smiles'])
+    if self.cleaned_data.get('custom') not in (None, ''):
+      qs = qs.filter(custom=True if self.cleaned_data.get('custom') is 'True' else False)
     return qs
 
 class CompoundFilterFormSet(forms.formsets.BaseFormSet):
@@ -229,6 +231,5 @@ class CompoundFilterFormSet(forms.formsets.BaseFormSet):
   def fetch(self):
     qs = self.forms[0].fetch()
     for form in self:
-      pass
       qs |= form.fetch()
     return qs
