@@ -73,7 +73,6 @@ class CompoundManager(models.Manager):
   def get_queryset(self):
     return CompoundQuerySet()
 
-  @transaction.atomic
   def fromCsv(self, fileName, labGroup=None):
     '''Reads a CSV into the creating objects, returning a list of compounds which have not yet been saved.
       This assumes that the uploaded csv will have headers which map to the names of the fields and that compound classes are
@@ -110,7 +109,7 @@ class CompoundManager(models.Manager):
             else:
               errors.append(ValidationError('CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
           elif row.get('CSID') in ('', None):
-            errors.append(ValidationError('No CSID provided on row %(rowCount) of uploaded csv.', params={'rowCount':rowCount}))
+            errors.append(ValidationError('No CSID provided on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
           kwargs = {}
           kwargs['CSID'] = row.get('CSID')
           kwargs['abbrev'] = row.get('abbrev')
@@ -118,11 +117,8 @@ class CompoundManager(models.Manager):
           kwargs['name'] = row.get('name')
           kwargs['INCHI'] = row.get('INCHI')
           compound = Compound(labGroup = labGroup,  **kwargs)
-          compound.csConsistencyCheck()
-          compound.full_clean()
-          compound.save()
           for chemicalClass in chemicalClasses:
-            compound.chemicalClasses.add(chemicalClass)
+            compound.lazyChemicalClasses.append(chemicalClass)
           compoundsList.append(compound)
         except ValidationError as e:
           for message in e.messages:
@@ -164,6 +160,10 @@ class Compound(CsvModel):
 
   objects = CompoundManager()
 
+  def __init__(self, *args, **kwargs):
+    super(Compound, self).__init__(*args, **kwargs)
+    self.lazyChemicalClasses= []
+
   def csConsistencyCheck(self):
     '''Performs a consistency check of this record against chemspider. Raises a ValidationError on error.'''
     if not self.custom:
@@ -189,6 +189,8 @@ class Compound(CsvModel):
 
   def save(self, *args, **kwargs):
     super(Compound, self).save(*args, **kwargs)
+    for lcc in self.lazyChemicalClasses:
+      self.chemicalClasses.add(lcc)
     for descriptorPlugin in descriptorPlugins:
       descriptorPlugin.calculate(self) 
     

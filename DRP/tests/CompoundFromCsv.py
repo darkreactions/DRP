@@ -38,6 +38,8 @@ class Good(DRPTestCase):
     for filename in self.fileNames:
       compounds = Compound.objects.fromCsv(filename, LabGroup.objects.get(title='Narnia'))
       for compound in compounds:
+        compound.csConsistencyCheck()
+        compound.full_clean()
         compound.save()
       self.assertEqual(len(compounds), 8) 
       for compound in compounds:
@@ -53,6 +55,8 @@ class Broken(Good):
       with self.assertRaises(ValidationError):
         compounds = Compound.objects.fromCsv(fileName, LabGroup.objects.get(title='Narnia'))
         for compound in compounds:
+          compound.csConsistencyCheck()
+          compound.full_clean()
           compound.save()
         Compound.objects.all().delete()
 
