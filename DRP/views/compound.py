@@ -124,17 +124,17 @@ class ListCompound(ListView):
       self.queryset = labGroup.compound_set.all()
 
     #one way or another, by the time we get here we have only one labgroup
-    SearchFormset = formset_factory(CompoundFilterForm)
-    self.searchFormset = SearchFormset(request.GET, user=request.user, labGroup=labGroup)
+    FilterFormset = formset_factory(CompoundFilterForm)
+    self.filterFormset = FilterFormset(request.GET, user=request.user, labGroup=labGroup)
     if self.searchFormset.is_valid():
       self.queryset = labGroup.compound_set.none()
-      for form in self.searchFormSet:
+      for form in self.filterFormSet:
         self.queryset |= form.fetch() 
     return super(ListCompound, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
     context = super(ListCompound, self).get_context_data(**kwargs)
     context['lab_form'] = self.labForm
-    context['search_formset'] = self.searchFormset
+    context['filter_formset'] = self.filterFormset
     return context
 
