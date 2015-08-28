@@ -166,3 +166,41 @@ class CompoundUploadForm(forms.Form):
   def save(self):
     for compound in self.compounds:
       compound.save()
+
+class CompoundFilterForm(forms.Form):
+  '''A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method.'''
+
+  self.fields['custom'] = forms.ChoiceField(choices=(('True', True),('False', False)))
+
+  def __init__(self, user, labGroup, *args, **kwargs):
+    '''Sets up the form. Because most of the fields are based around models, they must be added dynamically.'''
+    super(CompoundUploadForm, self).__init__(*args, **kwargs)
+    self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=((c['abbrev'],c.['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct(), required=False)
+    self.fields['name'] = forms.ChoiceField(choices=((c['name'],c['name']) for c in labGroup.compound_set.all().values('name').distinct()), required=False)
+    self.fields['chemicalClasses'] = forms.ModelMultipleChoiceField(label='Chemical Classes', choices=ChemicalClasses.objects.filter(compound__in=labGroup.compound_set.all())), required=False)
+    self.fields['CSID'] = forms.ChoiceField(choices=((c['CSID'], c['CSID']) for c in labGroup.compound_set.all().values('CSID').distinct()), required=False)
+    self.fields['INCHI'] = forms.CharField(required=False)
+    self.fields['smiles'] = forms.CharField(required=False)
+    self.fields['labGroup'] = forms.ModelChoiceField(choices=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, errors={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'})
+    self.fields['js_active'] = forms.ChoiceField(choices=(('True',True),('False',False)), widget=HiddenInput, required=False)
+
+  def fetch(self):
+    '''Fetches the labs according to data supplied. Expects the form to have been validated already.'''
+    
+    qs = self.cleaned_data['labGroup'].compound_set.all()
+    if self.cleaned_data.get('js_active'):
+      pass
+    else:
+      if self.cleaned_data.get('abbrev') is not '':
+        qs = qs.filter(abbrev__contains=self.cleaned_data['abbrev'])
+      if self.cleaned_data.get('name') is not ''
+        qs = qs.filter(name__contains=self.cleaned_data['name'])
+    if self.cleaned_data['chemicalClasses'].count() != 0:
+      for cc in self.cleaned_data['chemicalClasses']:
+        qs = qs.filter(chemicalClass=cc)
+    if self.cleaned_data.get('CSID') is not '':
+      qs = qs.filter(CSID=self.cleaned_data['csid'])
+    if self.cleaned_data.get('INCHI') is not '':
+      qs = qs.filter(INCHI=self.cleaned_data['INCHI'])
+    if self.cleaned_data.get('smiles') is not '':
+      qs = qs.filter(smiles=self.cleaned_data['smiles'])
