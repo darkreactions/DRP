@@ -18,19 +18,19 @@
   <input type="submit" value="select" />
 </form>
 {% endif %}
+{% block filter_form %}
+  <form action="{% url 'compoundSearch' %}" method="get">
+    {{ filter_formset.management_form}}
+    <ol>
+      <li><ol>{{ filter_formset.forms.0.as_ul }}</ol></li>
+      {% for form in filter_formset.forms|slice:"1:" %}
+        <li><ol>{{ form.as_ul }}</ol></li>
+      {% endfor %}
+    </ol>
+    <input type="submit" value="Filter" name="filter" />
+  </form>
+{% endblock %}
 {% if compounds|length >  0 %}
-  {% block filter_form %}
-    <form action="{% url 'compoundSearch' %}" method="get">
-      {{ filter_formset.management_form}}
-      <ol>
-        <li><ol>{{ filter_formset.forms.0.as_ul }}</ol></li>
-        {% for form in filter_formset.forms|slice:"1:" %}
-          <li><ol>{{ form.as_ul }}</ol></li>
-        {% endfor %}
-      </ol>
-      <input type="submit" value="Filter" name="filter" />
-    </form>
-  {% endblock %}
   <table>
     <thead>
       <tr>

@@ -128,6 +128,9 @@ class ListCompound(ListView):
       self.filterFormSet = CompoundFilterFormSet(request.user, labGroup, data=request.GET)
       if self.filterFormSet.is_valid():
         self.queryset = self.filterFormSet.fetch()
+      else:
+        self.queryset = Compound.objects.none()
+      self.filterFormSet = CompoundFilterFormSet(request.user, labGroup, initial=self.filterFormSet.initData)
     else:
       self.filterFormSet = CompoundFilterFormSet(request.user, labGroup)
     return super(ListCompound, self).dispatch(request, *args, **kwargs)
