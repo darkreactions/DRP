@@ -1,4 +1,4 @@
 #!/bin/sh
 #This hook runs the alltest file and captures the output. If the exit code for that script is anything other than 0, this script will pass that on, a nonzero return code will cancel the push.
-../../DRP/tests/AllTests.py
+../../manage.py run_tests
 exit $?
