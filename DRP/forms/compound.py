@@ -170,7 +170,7 @@ class CompoundUploadForm(forms.Form):
 class CompoundFilterForm(forms.Form):
   '''A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method.'''
 
-  custom = forms.ChoiceField(choices=(('True', 'True'),('False', 'False')), widget=forms.widgets.RadioSelect, required=False)
+  custom = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=((None, 'Either'),(True, 'True'),(False, 'False'))), initial=None, required=False)
 
   def __init__(self, user, labGroup, *args, **kwargs):
     '''Sets up the form. Because most of the fields are based around models, they must be added dynamically.'''
@@ -183,7 +183,7 @@ class CompoundFilterForm(forms.Form):
     self.fields['INCHI'] = forms.CharField(required=False)
     self.fields['smiles'] = forms.CharField(required=False)
     self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'})
-    self.fields['js_active'] = forms.ChoiceField(choices=(('False','False'),('True','True')), widget=HiddenInput, required=False, initial='False')
+    self.fields['js_active'] = forms.NullBooleanField(widget=HiddenInput, required=False, initial=False)
 
   def is_empty(self):
     return not any(self.cleaned_data.get(key) not in (None, '') for key in ('abbrev', 'CSID', 'INCHI', 'smiles')) or ('chemicalClasses' in self.cleaned_data and self.cleaned_data.get('chemicalClasses').count() != 0)
