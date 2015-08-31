@@ -1,6 +1,7 @@
 '''A module containing Classes permitting the representation of molecular descriptors'''
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.template.defaultfilters import slugify
 
 class MolDescriptor(models.Model):
   '''An abstract class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
@@ -20,7 +21,7 @@ class MolDescriptor(models.Model):
 
   @property
   def csvHeader(self):
-    return '{}_{}_{}'.format(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
+    return '{}_{}_{}'.format(self.heading, slugify(self.calculatorSoftware), self.calculatorSoftwareVersion)
 
 class CatMolDescriptor(MolDescriptor):
   '''A class which describes a categorical molecular descriptors'''
