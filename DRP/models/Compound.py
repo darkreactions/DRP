@@ -189,7 +189,7 @@ class Compound(CsvModel):
 
   def save(self, *args, **kwargs):
     super(Compound, self).save(*args, **kwargs)
-    for lcc in self.lazyChemicalClasses:
+    for lcc in self.lazyChemicalClasses: #coping mechanism for compounds loaded from csv files; not to be used by other means
       self.chemicalClasses.add(lcc)
     for descriptorPlugin in descriptorPlugins:
       descriptorPlugin.calculate(self) 
