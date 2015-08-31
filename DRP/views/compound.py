@@ -99,6 +99,7 @@ class ListCompound(ListView):
   template_name='compound_list.html'
   context_object_name='compounds'
   model=Compound
+  formSetClass = CompoundFilterFormSet
 
   @method_decorator(login_required)
   @method_decorator(hasSignedLicense)
@@ -125,14 +126,14 @@ class ListCompound(ListView):
 
     #one way or another, by the time we get here we have only one labgroup
     if 'filter' in request.GET:
-      self.filterFormSet = CompoundFilterFormSet(request.user, labGroup, data=request.GET)
+      self.filterFormSet = self.formSetClass(request.user, labGroup, data=request.GET)
       if self.filterFormSet.is_valid():
         self.queryset = self.filterFormSet.fetch()
       else:
         self.queryset = Compound.objects.none()
-      self.filterFormSet = CompoundFilterFormSet(request.user, labGroup, initial=self.filterFormSet.cleaned_data)
+      self.filterFormSet = self.formSetClass(request.user, labGroup, initial=self.filterFormSet.cleaned_data)
     else:
-      self.filterFormSet = CompoundFilterFormSet(request.user, labGroup)
+      self.filterFormSet = self.formSetClass(request.user, labGroup)
     return super(ListCompound, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
@@ -141,3 +142,6 @@ class ListCompound(ListView):
     context['filter_formset'] = self.filterFormSet
     return context
 
+class AdvancedCompoundSearchView(ListCompound):
+
+  formSetClass = AdvancedCompoundFilterFormSet

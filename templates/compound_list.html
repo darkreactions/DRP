@@ -22,9 +22,9 @@
   <form action="{% url 'compoundSearch' %}" method="get">
     {{ filter_formset.management_form}}
     <ol>
-      <li><ol>{{ filter_formset.forms.0.as_ul }}</ol></li>
+      <li><fieldset><ol>{{ filter_formset.forms.0.as_ul }}</ol></fieldset></li>
       {% for form in filter_formset.forms|slice:"1:" %}
-        <li><ol>{{ form.as_ul }}</ol></li>
+        <li><div>OR</div><fieldset><ol>{{ form.as_ul }}</ol></fieldset></li>
       {% endfor %}
     </ol>
     <input type="submit" value="Filter" name="filter" />
@@ -70,7 +70,7 @@
   </table>
   <!-- 7f25b7df-2176-455b-9a68-620af1d52e46 -->
 {% else %}
-  <p> There are no compounds in this compound guide yet. </p>
+  <p> There are no compounds to display.</p>
   <!-- 1bf53b3a-ddf0-407b-b565-b732e4fa5ddb -->
 {% endif %}
 <!-- bf3a3711-b21d-4710-a989-6d1ebc1c9ee9 -->
