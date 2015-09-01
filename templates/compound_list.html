@@ -7,7 +7,7 @@
 <nav>
   <ol>
     <li><a href="{% url 'uploadcompoundcsv' %}">Upload csv file</a></li>
-    <li><a href="{% url 'advCompoundSearch' %}">Advanced Search</a></li>
+    <li><a href="{% url 'advCompoundSearch' '.html' %}">Advanced Search</a></li>
   </ol>
 </nav>
 {% if user.labgroup_set.all.count > 1 %}
@@ -20,7 +20,7 @@
 </form>
 {% endif %}
 {% block filter_form %}
-  <form action="{% url 'compoundSearch' %}" method="get">
+  <form action="{% url 'compoundSearch' '.html' %}" method="get">
     {{ filter_formset.management_form}}
     <ol>
       <li><fieldset><ol>{{ filter_formset.forms.0.as_ul }}</ol></fieldset></li>
@@ -32,6 +32,13 @@
   </form>
 {% endblock %}
 {% if compounds|length >  0 %}
+  <section>
+    <h1>Downloads</h1>
+    <ul>
+      <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
+      <li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&amp;{{ request.GET.urlencode }}">Expanded csv</a></li>
+    </ul>
+  </section>
   <table>
     <thead>
       <tr>

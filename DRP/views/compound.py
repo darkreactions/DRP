@@ -134,7 +134,22 @@ class ListCompound(ListView):
         self.queryset = Compound.objects.none()
     else:
       self.filterFormSet = self.formSetClass(user=request.user, labGroup=labGroup)
-    return super(ListCompound, self).dispatch(request, *args, **kwargs)
+
+    fileType = kwargs.get('filetype')
+
+    if fileType in ('/', '.html', None):
+      return super(ListCompound, self).dispatch(request, *args, **kwargs)
+    elif fileType == '.csv':
+      response = HttpResponse(content_type='text/csv')
+      response['Content-Disposition']='attachment; filename="compounds.csv"'
+      if 'expanded' in request.GET:
+        self.queryset.toCsv(response, True) 
+      else:
+        self.queryset.toCsv(response)
+      return response
+    else:
+      raise RuntimeError('The user should not be able to provoke this code')
+      
 
   def get_context_data(self, **kwargs):
     context = super(ListCompound, self).get_context_data(**kwargs)
