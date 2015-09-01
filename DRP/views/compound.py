@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import Compound
 from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm, CompoundFilterForm
-from DRP.forms import CompoundFilterFormSet
+from DRP.forms import CompoundFilterFormSet, AdvancedCompoundFilterFormSet
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense
 from django.contrib.auth.decorators import login_required
@@ -126,14 +126,14 @@ class ListCompound(ListView):
 
     #one way or another, by the time we get here we have only one labgroup
     if 'filter' in request.GET:
-      self.filterFormSet = self.formSetClass(request.user, labGroup, data=request.GET)
+      self.filterFormSet = self.formSetClass(user=request.user, labGroup=labGroup, data=request.GET)
       if self.filterFormSet.is_valid():
         self.queryset = self.filterFormSet.fetch()
+        self.filterFormSet = self.formSetClass(user=request.user, labGroup=labGroup, initial=self.filterFormSet.cleaned_data)
       else:
         self.queryset = Compound.objects.none()
-      self.filterFormSet = self.formSetClass(request.user, labGroup, initial=self.filterFormSet.cleaned_data)
     else:
-      self.filterFormSet = self.formSetClass(request.user, labGroup)
+      self.filterFormSet = self.formSetClass(user=request.user, labGroup=labGroup)
     return super(ListCompound, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
@@ -145,3 +145,4 @@ class ListCompound(ListView):
 class AdvancedCompoundSearchView(ListCompound):
 
   formSetClass = AdvancedCompoundFilterFormSet
+  template_name='adv_compound_search.html'

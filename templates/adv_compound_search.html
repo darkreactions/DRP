@@ -27,12 +27,13 @@
           </ol>
       </fieldset>
     </li>
-    {% for filter_form in filter_formset %}
+    {% for filter_form in filter_formset|slice:"1:" %}
     <li>
+      <div>OR</div> 
       <fieldset>
         <ol>{{ filter_form.as_ul }}</ol>
           <ol>
-            {% for formSet in filter_formset.formSets %}
+            {% for formSet in filter_form.formSets %}
             <li>
               <fieldset>
                 {{ formSet.management_form }}
@@ -51,6 +52,7 @@
     </li>
     {% endfor %}
   </ol>
+  <input type="submit" name="filter" value="filter" />
 </form> 
 
 {% endblock %}

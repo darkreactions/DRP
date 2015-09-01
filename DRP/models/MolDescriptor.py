@@ -19,6 +19,9 @@ class MolDescriptor(models.Model):
   calculatorSoftware=models.CharField(max_length=100)
   calculatorSoftwareVersion=models.CharField(max_length=20)
 
+  def __unicode__(self):
+    return self.name
+
   @property
   def csvHeader(self):
     return '{}_{}_{}'.format(self.heading, slugify(self.calculatorSoftware), self.calculatorSoftwareVersion)
