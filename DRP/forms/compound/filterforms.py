@@ -1,5 +1,6 @@
 '''A module containing forms for filtering compound objects'''
 import django.forms as forms 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 from DRP.models import Compound, ChemicalClass, NumMolDescriptor, NumMolDescriptorValue, OrdMolDescriptor, OrdMolDescriptorValue
@@ -19,13 +20,13 @@ class CompoundFilterForm(FilterForm):
     '''Sets up the form. Because most of the fields are based around models, they must be added dynamically.'''
     super(CompoundFilterForm, self).__init__(*args, **kwargs)
     self.empty_permitted = False #hard override to cope with a bad piece of programming in django.
-    self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=(('',''),) + tuple(((c['abbrev'],c['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct())), required=False)
-    self.fields['name'] = forms.ChoiceField(choices=((('',''),) + tuple((c['name'],c['name']) for c in labGroup.compound_set.all().values('name').distinct())), required=False)
+    self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=(('',settings.EMPTY_LABEL),) + tuple(((c['abbrev'],c['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct())), required=False)
+    self.fields['name'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((c['name'],c['name']) for c in labGroup.compound_set.all().values('name').distinct())), required=False)
     self.fields['chemicalClasses'] = forms.ModelMultipleChoiceField(label='Chemical Classes', queryset=ChemicalClass.objects.filter(compound__in=labGroup.compound_set.all()).distinct(), required=False)
-    self.fields['CSID'] = forms.ChoiceField(choices=(('',''),) + tuple(((c['CSID'], c['CSID']) for c in labGroup.compound_set.all().values('CSID').distinct())), required=False)
+    self.fields['CSID'] = forms.ChoiceField(choices=(('',settings.EMPTY_LABEL),) + tuple(((c['CSID'], c['CSID']) for c in labGroup.compound_set.all().values('CSID').distinct())), required=False)
     self.fields['INCHI'] = forms.CharField(required=False)
     self.fields['smiles'] = forms.CharField(required=False)
-    self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'})
+    self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'}, empty_label=settings.EMPTY_LABEL)
     self.fields['js_active'] = forms.NullBooleanField(widget=HiddenInput, required=False, initial=False)
     self.checkFields = ('abbrev', 'CSID', 'INCHI', 'smiles')
 
@@ -142,7 +143,7 @@ class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
   def __init__(self, *args, **kwargs):
     '''Sets up the forms fields, almost all which require some level of dynamism'''
     super(NumericFilterForm, self).__init__(*args, **kwargs)
-    self.fields['descriptor'] = forms.ModelChoiceField(queryset=NumMolDescriptor.objects.all(), required=False)
+    self.fields['descriptor'] = forms.ModelChoiceField(queryset=NumMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
     self.fields['value'] = forms.DecimalField(required=False)
     self.fields['operator'] = self.fields.pop('operator') #because there isn't a more sensible way of doing the re-ordering for non model forms.
     self.checkFields = ('value', 'descriptor')
@@ -171,8 +172,8 @@ class OrdinalFilterForm(QuantitativeFilterMixin, FilterForm):
   def __init__(self, *args, **kwargs):
     '''Sets the fields up in the right order'''
     super(OrdinalFilterForm, self).__init__(*args, **kwargs)
-    self.fields['descriptor'] = forms.ModelChoiceField(queryset=OrdMolDescriptor.objects.all(), required=False)
-    self.fields['value'] = forms.ChoiceField(choices=((('', ''),) + tuple((md.name, tuple((value, value) for value in range(md.minimum, md.maximum+1))) for md in OrdMolDescriptor.objects.all())), required=False)
+    self.fields['descriptor'] = forms.ModelChoiceField(queryset=OrdMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
+    self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value, value) for value in range(md.minimum, md.maximum+1))) for md in OrdMolDescriptor.objects.all())), required=False)
     self.fields['operator'] = self.fields.pop('operator') #because there isn't a more sensible way of doing the re-ordering for non model forms.
     self.checkFields = ('value', 'descriptor')
 
@@ -200,8 +201,8 @@ class CategoryFilterForm(FilterForm):
   def __init__(self, *args, **kwargs):
     '''Sets teh forms up in the right order'''
     super(CategoryFilterForm, self).__init__(*args, **kwargs)
-    self.fields['descriptor'] = forms.ModelChoiceField(queryset=CatMolDescriptor.objects.all(), required=False)
-    self.fields['value'] = forms.ChoiceField(choices=((('', ''),) + tuple((md.name, tuple((value.pk, value.value) for value in CatMolDescriptorPermitted.objects.filter(descriptor=md))) for md in CatMolDescriptor.objects.all())), required=False) #wow, that's hideous... It limits the options available to the available categorical molecular descriptor values, which are categorised according to the particular descriptor.
+    self.fields['descriptor'] = forms.ModelChoiceField(queryset=CatMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
+    self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value.pk, value.value) for value in CatMolDescriptorPermitted.objects.filter(descriptor=md))) for md in CatMolDescriptor.objects.all())), required=False) #wow, that's hideous... It limits the options available to the available categorical molecular descriptor values, which are categorised according to the particular descriptor.
     self.checkFields = ('value', 'descriptor')
 
   def clean(self):
@@ -230,7 +231,7 @@ class BooleanFilterForm(FilterForm):
   def __init__(self, *args, **kwargs):
     '''Sets teh fields up for this form'''
     super(BooleanFilterForm, self).__init__(*args, **kwargs)
-    self.fields['descriptor'] = forms.ModelChoiceField(queryset=BoolMolDescriptor.objects.all(), required=False)
+    self.fields['descriptor'] = forms.ModelChoiceField(queryset=BoolMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
     self.fields['value'] = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=((None, 'Either'),(True, 'True'),(False, 'False'))), initial=None, required=False)
     self.checkFields = ('value', 'descriptor')
 

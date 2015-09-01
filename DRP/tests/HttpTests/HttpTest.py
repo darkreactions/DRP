@@ -143,7 +143,7 @@ def logsInAs(username, password, csrf=True):
     def setUp(self):
       user = User.objects.create_user(username=username, password=password)
       user.save()
-      if self.s is not None:
+      if self.s is None:
         self.s = requests.Session()
       getResponse = self.s.get(self.loginUrl)
       loginCsrf = self.s.cookies.get_dict()['csrftoken']

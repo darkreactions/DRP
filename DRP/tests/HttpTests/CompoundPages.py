@@ -20,7 +20,7 @@ from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 newCompoundUrl = GetHttpTest.baseUrl + reverse('newCompound')
-compoundListUrl = GetHttpTest.baseUrl + reverse('compoundguide')
+compoundListUrl = GetHttpTest.baseUrl + reverse('compoundguide', args=['/'])
 
 @logsInAs('Aslan', 'old_magic')
 class LicenseRedirect(GetHttpSessionTest, OneRedirectionMixin):
@@ -127,7 +127,7 @@ class LabGroupSelectionRedirect(PostHttpSessionTest, OneRedirectionMixin):
 
   url = PostHttpSessionTest.baseUrl + reverse('selectGroup')
   testCodes = ['bf3a3711-b21d-4710-a989-6d1ebc1c9ee9']
-  _params={'next':reverse('compoundguide')}
+  _params={'next':compoundListUrl}
 
   def setUp(self, *args, **kwargs):
     self.payload['labGroup'] = LabGroup.objects.get(title='Narnia').id

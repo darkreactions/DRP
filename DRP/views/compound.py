@@ -22,7 +22,7 @@ class CreateCompound(CreateView):
   model=Compound
   form_class = CompoundForm
   template_name='compound_form.html'
-  success_url=reverse('compoundguide')
+  success_url=reverse('compoundguide', args=['/'])
  
   def get_form_kwargs(self):
     '''Overridden to add the request.user value into the kwargs'''
@@ -47,7 +47,7 @@ class EditCompound(UpdateView):
 
   form_class=CompoundEditForm
   template_name='compound_edit.html'
-  success_url=reverse('compoundguide')
+  success_url=reverse('compoundguide', args=['/'])
   model = Compound
 
   @method_decorator(login_required)
@@ -76,7 +76,7 @@ def deleteCompound(request, *args, **kwargs):
     form.save()
   else:
     raise RuntimeError(str(form.errors))
-  return redirect('compoundguide')
+  return redirect('compoundguide', '/')
 
 @login_required
 @hasSignedLicense
@@ -86,7 +86,7 @@ def uploadCompound(request, *args, **kwargs):
   if request.method=='POST':
     form = CompoundUploadForm(data=request.POST, files=request.FILES, user=request.user)
     if form.is_valid(): #this particular kind of form does the saving and validation in one step. It's a nasty hack but I couldn't find a better way to leverage transactions.
-      return redirect('compoundguide')
+      return redirect('compoundguide', '/')
     else:
       return render(request, 'compound_upload.html', {'form':form})
   else:

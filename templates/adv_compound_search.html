@@ -2,7 +2,7 @@
 
 {% block filter_form %}
 
-<form action="{% url 'advCompoundSearch' %}" method="get" >
+<form action="{% url 'advCompoundSearch' '.html' %}" method="get" >
   {{ filter_formset.management_form }}
   <ol>
     <li>
