@@ -15,13 +15,16 @@ import importlib
 descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
 class CompoundQuerySet(CsvQuerySet):
+  '''A specialised queryset for outputting Compounds in specific formats'''
 
   def __init__(self, **kwargs):
+    '''Initialises teh queryset'''
     kwargs.pop('model', None)
     super(CompoundQuerySet, self).__init__(Compound, **kwargs)
 
   @property
   def headers(self):
+    '''Generates the header row information for the CSV'''
     headers = super(CompoundQuerySet, self).headers
     m = self.annotate(chemicalClassCount=models.Count('chemicalClasses')).aggregate(max=models.Max('chemicalClassCount'))['max']
     m = 0 if m is None else m
@@ -30,9 +33,11 @@ class CompoundQuerySet(CsvQuerySet):
 
   @property
   def expandedHeaders(self):
+    '''Generates the expanded header for the csv'''
     return self.headers + [d.csvHeader for d in self.descriptors()]
 
   def descriptors(self):
+    '''returns the descriptor which have relationship to the queryset'''
     return (
         MolDescriptor.objects.filter(
           boolmoldescriptor__in=BoolMolDescriptor.objects.filter(
