@@ -143,6 +143,7 @@ class ListCompound(ListView):
     return context
 
 class AdvancedCompoundSearchView(ListCompound):
+  '''View for the advanced compounds search'''
 
   formSetClass = AdvancedCompoundFilterFormSet
   template_name='adv_compound_search.html'
