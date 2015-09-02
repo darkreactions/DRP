@@ -53,7 +53,7 @@ South is our library of choice for dealing with database migrations. It is alrea
 
 To get DRP running you need to setup a database with the correct encoding, in mysql:
 
-`CREATE DATABASE db_name CHARACTER SET utf8 COLLATION utf8_bin`
+`CREATE DATABASE db_name DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;`
 
 Without this, all string comparisons done at a database level are case insensitive, which causes spurious query results.
 
