@@ -25,6 +25,9 @@ Install required pip python libraries
 
 `git clone git@github.com:cfalk/DRP`
 
+####For the time being
+Switch your branch to the `phil_refactor` branch.
+
 ####Server settings
 
 In the DRP repository there is a file DRP_uwsgi.ini and another DRP_nginx. Both should be modified to suit your local server *after* having been placed in the relevant locations:
