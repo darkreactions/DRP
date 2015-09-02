@@ -79,6 +79,7 @@ in the test suite before pushing your copy of the repository, and hence forces o
 In order to run tests you must have the following environment variables set up in your shell session:
 
 export PYTHONPATH=/path/to/DRP/
+
 export DJANGO_SETTINGS_MODULE=DRP.settings
 
 This also applies to the pre-push hook.
