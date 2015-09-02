@@ -33,7 +33,7 @@ Switch your branch to the `phil_refactor` branch.
 In the DRP repository there is a file DRP_uwsgi.ini and another DRP_nginx. Both should be modified to suit your local server *after* having been placed in the relevant locations:
 
 `/etc/uwsgi/apps-enabled/DRP_uwsgi.ini`
-`/etc/nginx/sites-enabled/DRP.nginx`
+`/etc/nginx/sites-enabled/DRP_nginx`
 
 It should be noted that the uwsgi.ini is backwards compatible with older version of this repo, but that an old DRP_uwsgi file will need replacing.
 
