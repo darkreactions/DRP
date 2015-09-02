@@ -63,6 +63,8 @@ Then, in the DRP directory, run `./manage.py syncdb`
 
 This sets up the south tables.
 
+You should create a "superuser" called "root" when prompted.
+
 Then run `./manage.py migrate DRP`
 
 This should set up the schema to the most recent version. Note that you may need to do this periodically as another person updates the model.
