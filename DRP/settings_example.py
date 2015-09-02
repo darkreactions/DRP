@@ -245,6 +245,8 @@ CHEMICAL_CLASS_CHOICES=()
 LIBRARY_CHOICES=()
 TOOL_CHOICES=()
 
+EMPTY_LABEL='----'
+
 LAB_GROUP_HASH_SALT = ''
 
 #force temporary file creation for uploads (required for some views to work)
