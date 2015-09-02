@@ -1,7 +1,12 @@
 '''A module containing Classes permitting the representation of molecular descriptors'''
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.template.defaultfilters import slugify
+from django.core.validators import RegexValidator
+from django.template.defaultfilters import slugify as _slugify
+
+def slugify(text)
+  '''returns a modified version of slug text so as to keep compatibility with some external programs'''
+  return _slugify(text).replace('-', '_')
 
 class MolDescriptor(models.Model):
   '''An abstract class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
@@ -11,7 +16,7 @@ class MolDescriptor(models.Model):
     verbose_name = 'Molecular Descriptor'
     unique_together = ('heading','calculatorSoftware','calculatorSoftwareVersion')
 
-  heading=models.CharField(max_length=200)
+  heading=models.CharField(max_length=200, validators=[RegexValidator('[A-Za-z_]+', 'Please include only values which are limited to alphanumeric characters and underscores.')])
   '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
   enforce MS-excel style CSV compatibility
   '''
