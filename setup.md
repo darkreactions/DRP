@@ -69,6 +69,15 @@ This should set up the schema to the most recent version. Note that you may need
 Inside DRP there is a folder called drp_hooks. Among these is a file called pre-push, and this should be moved in your .git/hooks directory for this project. This runs all of the tests
 in the test suite before pushing your copy of the repository, and hence forces our code into compliance.
 
+###Running tests
+
+In order to run tests you must have the following environment variables set up in your shell session:
+
+export PYTHONPATH=/path/to/DRP/
+export DJANGO_SETTINGS_MODULE=DRP.settings
+
+This also applies to the pre-push hook.
+
 ###For the time being...
 
 If you are reading this setup instruction manual, you are working on the refactoring mission of the DRP. This comes with some rules:

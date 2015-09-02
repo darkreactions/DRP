@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.template.defaultfilters import slugify as _slugify
 
-def slugify(text)
+def slugify(text):
   '''returns a modified version of slug text so as to keep compatibility with some external programs'''
   return _slugify(text).replace('-', '_')
 
