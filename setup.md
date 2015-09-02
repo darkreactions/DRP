@@ -89,7 +89,7 @@ This also applies to the pre-push hook.
 If you are reading this setup instruction manual, you are working on the refactoring mission of the DRP. This comes with some rules:
 
 1. Changes to the schema should be run past Phil, who will implement them; this makes dealing with the south migrations much easier.
-2. You should make your own branch from the phil_refactor branch, and push that to the server (`push -u origin <branchname>`)- Phil will merge periodically or on request.
+2. You should make your own branch from the phil_refactor branch, and push that to the Git repo (`push -u origin <branchname>`)- Phil will merge periodically or on request.
 3. Don't attempt to circumvent the pre-push tests.
 4. Comment all the things.
 5. If you change the pre-push hook, tell everyone.
