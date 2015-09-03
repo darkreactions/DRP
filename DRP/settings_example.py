@@ -16,8 +16,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 # URLs
 STATIC_URL = '/static/'
-LICENSE_URL = STATIC_URL + "/licenses/"
-DYNAMIC_URL = '/dynamic/'
 STATIC_ROOT = APP_DIR + "/static_served/"
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
