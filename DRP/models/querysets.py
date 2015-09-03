@@ -53,9 +53,9 @@ class CsvQuerySet(models.query.QuerySet):
     '''
 
     if expanded:
-      writer = csv.DictWriter(writeable, fieldnames=self.expandedHeaders, restval=missing)
+      writer = csv.DictWriter(writeable, fieldnames=self.expandedCsvHeaders, restval=missing)
     else:
-      writer = csv.DictWriter(writeable, fieldnames=self.headers, restval=missing)
+      writer = csv.DictWriter(writeable, fieldnames=self.csvHeaders, restval=missing)
 
     writer.writeheader()
     for item in self:
