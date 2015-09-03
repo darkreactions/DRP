@@ -3,7 +3,7 @@
 import os
 SITE_ID = 1
 
-SERVER_NAME = '' #TODO: replace this using sites application.
+SERVER_NAME = ''
 TESTING = False #tells the system that you are happy for tests, some of which run on the live database to be run. DO NOT SET TO TRUE IN PRODUCTION.
 EXTERNAL_HTML_VALIDATOR = 'http://validator.w3.org/nu/' #The external html validator. You shouldn't need to change this.
 
@@ -22,16 +22,18 @@ STATIC_ROOT = APP_DIR + "/static_served/"
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
 # Directories
-STATIC_DIR = BASE_DIR + "/static/"
-TMP_DIR = BASE_DIR + "/tmp/"
-RESEARCH_DIR = BASE_DIR + "/research/"
-LOG_DIR = BASE_DIR + "/logs/"
-MODEL_DIR = BASE_DIR + "/models/"
-LICENSE_DIR = STATIC_DIR + "/licenses/"
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TMP_DIR = os.path.join(BASE_DIR, "tmp")
+RESEARCH_DIR = os.path.join(BASE_DIR + "research")
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+MODEL_DIR = os.path.join(BASE_DIR, "models")
 
-CHEMAXON_DIR = ""
-WEKA_PATH = ""
-#TODO: allow these to accept dictionaries with version numbers
+CHEMAXON_DIR = {
+  }
+# {version:directory}
+WEKA_PATH = {
+  '3.6':'/usr/share/java/weka.jar' #default path on Ubuntu
+}
 
 if TESTING:
   MOL_DESCRIPTOR_PLUGINS=('DRP.plugins.moldescriptors.example',)
