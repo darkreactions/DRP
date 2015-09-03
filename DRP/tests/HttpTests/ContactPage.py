@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 '''This package provides tests for the Contact page'''
-#TODO: test for email sending
 
 from HttpTest import GetHttpTest, PostHttpTest, usesCsrf, PostHttpSessionTest
 import requests
 import unittest
+from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
   
 class ContactPage(GetHttpTest):
@@ -20,14 +20,14 @@ class PostContactPage(PostHttpSessionTest):
   url = GetHttpTest.baseUrl + '/contact.html'
 
   def setUp(self):
-    self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'This is a test message.', 'csrfmiddlewaretoken':self.csrf})
+    self.response = self.s.post(self.url, data={'email':settings.ADMIN_EMAILS[0], 'content':'This is a test message.', 'csrfmiddlewaretoken':self.csrf})
 
 @usesCsrf
 class PostContactPageBad(PostContactPage):
   '''Perfoems a badly formed POST request to the contact page to test html validity'''
 
   def setUp(self):
-    self.response = self.s.post(self.url, data={'email':'aslan@example.com', 'content':'', 'csrfmiddlewaretoken':self.csrf})
+    self.response = self.s.post(self.url, data={'email':settings.ADMIN_EMAILS[0], 'content':'', 'csrfmiddlewaretoken':self.csrf})
   
 @usesCsrf
 class PostContactPageBad2(PostContactPage):
