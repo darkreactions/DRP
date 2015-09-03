@@ -5,7 +5,6 @@ DRP/research/casey/results/CSVs/*
 
 tmp/*
 models/*
-dynamic/*
 
 *.pyc
 *.sql
