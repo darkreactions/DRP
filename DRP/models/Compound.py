@@ -1,3 +1,4 @@
+
 '''Module containing only the Compound Class'''
 from django.db import models, transaction
 from MolDescriptor import MolDescriptor, BoolMolDescriptor, NumMolDescriptor, CatMolDescriptor, OrdMolDescriptor
@@ -11,6 +12,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from itertools import chain
 import importlib
+from collections import OrderedDict
 
 descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
@@ -22,7 +24,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
     kwargs.pop('model', None)
     super(CompoundQuerySet, self).__init__(Compound, **kwargs)
 
-  def maxChemicalClassCount(self);
+  def maxChemicalClassCount(self):
     '''Gives a count of the maximum number of chemical classes associated with a compound in this queryset'''
     m = self.annotate(chemicalClassCount=models.Count('chemicalClasses')).aggregate(max=models.Max('chemicalClassCount'))['max']
     return 0 if m is None else m
@@ -41,13 +43,15 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
     headers = super(CompoundQuerySet, self).arffHeaders
     m = Compound.objects.all().maxChemicalClassCount()
     for x in range(0, m):
-      headers['chemicalClass_{0}'.format(x+1)] = '@attribute {{{}}}'.format(chemicalClass for chemicalClass in chemicalClass.objects.all())
+      label = 'chemicalClass_{0}'.format(x+1)
+      headers[label] = '@attribute {} {{{}}}'.format(label, ','.join(str(chemicalClass) for chemicalClass in ChemicalClass.objects.all()))
     return headers
 
   @property
   def expandedArffHeaders(self):
     headers = self.arffHeaders
-    return headers + [d.arffHeader for d in self.descriptors()]   
+    headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors())))
+    return headers
 
   @property
   def expandedCsvHeaders(self):

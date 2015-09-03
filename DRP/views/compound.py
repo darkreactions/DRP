@@ -143,12 +143,19 @@ class ListCompound(ListView):
       response = HttpResponse(content_type='text/csv')
       response['Content-Disposition']='attachment; filename="compounds.csv"'
       if 'expanded' in request.GET:
-        self.queryset.toCsv(response, True) 
+        self.queryset.toCsv(response, True)
       else:
         self.queryset.toCsv(response)
-      return response
+    elif fileType == '.arff':
+      response = HttpResponse(content_type='text/vnd.weka.arff')
+      response['Content-Disposition']='attachment; filename="compounds.arff"'
+      if 'expanded' in request.GET:
+        self.queryset.toArff(response, True)
+      else:
+        self.queryset.toArff(response)
     else:
       raise RuntimeError('The user should not be able to provoke this code')
+    return response
       
 
   def get_context_data(self, **kwargs):

@@ -36,7 +36,9 @@
     <h1>Downloads</h1>
     <ul>
       <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
-      <li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&amp;{{ request.GET.urlencode }}">Expanded csv</a></li>
+      <li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>
+      <li><a href="{% url request.resolver_match.url_name '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
+      <li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>
     </ul>
   </section>
   <table>

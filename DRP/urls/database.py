@@ -6,9 +6,9 @@ import DRP.views
 
 urls = patterns('',
   url('^select_viewing_group.html', DRP.views.selectGroup, name='selectGroup'),
-  url('^compoundguide(?P<filetype>.csv|.html|/)$', DRP.views.compound.ListCompound.as_view(), name='compoundguide'),
-  url('^compoundguide/search(?P<filetype>.html|.csv)$', DRP.views.compound.ListCompound.as_view(), name='compoundSearch'),
-  url('^compoundguide/advanced_search(?P<filetype>.html|.csv)$', DRP.views.compound.AdvancedCompoundSearchView.as_view(), name='advCompoundSearch'),
+  url('^compoundguide(?P<filetype>.csv|.html|.arff|/)$', DRP.views.compound.ListCompound.as_view(), name='compoundguide'),
+  url('^compoundguide/search(?P<filetype>.html|.csv|.arff)$', DRP.views.compound.ListCompound.as_view(), name='compoundSearch'),
+  url('^compoundguide/advanced_search(?P<filetype>.html|.csv|.arff)$', DRP.views.compound.AdvancedCompoundSearchView.as_view(), name='advCompoundSearch'),
   url('^compoundguide/add.html$', DRP.views.compound.CreateCompound.as_view(), name='newCompound'),
   url('^compoundguide/delete$', DRP.views.compound.deleteCompound, name='deleteCompound'),
   url('^compoundguide/edit_(?P<pk>\d+).html', DRP.views.compound.EditCompound.as_view(), name='editCompound'),

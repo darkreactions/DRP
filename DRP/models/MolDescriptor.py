@@ -32,7 +32,7 @@ class MolDescriptor(models.Model):
   @property
   def arffHeader(self):
     '''returns the base unit of an Arff Header, but this will not be sufficient and must be overridden by subclasses'''
-    return'@attribute {}_{}_{} ' .format(self.heading, slugify(self.calculatorSoftware), self.calculatorSoftwareVersion) 
+    return'@attribute {} ' .format(self.csvHeader) 
 
 class CatMolDescriptor(MolDescriptor):
   '''A class which describes a categorical molecular descriptors'''
@@ -43,7 +43,7 @@ class CatMolDescriptor(MolDescriptor):
 
   @property
   def arffHeader(self):
-    return super(OrdMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(v.value for v in self.permittedValues.all()))
+    return super(CatMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(v.value) for v in self.permittedValues.all()))
 
 class OrdMolDescriptor(MolDescriptor):
   '''A class which represents an ordinal descriptor'''
@@ -65,7 +65,7 @@ class OrdMolDescriptor(MolDescriptor):
 
   @property
   def arffHeader(self):
-    return super(OrdMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(i for i in range(self.minimum, self.maximum+1)))
+    return super(OrdMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(i) for i in range(self.minimum, self.maximum+1)))
 
 class NumMolDescriptor(MolDescriptor):
   '''A class which represents a numerical descriptor'''
