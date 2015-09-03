@@ -16,10 +16,8 @@ class MolDescriptor(models.Model):
     verbose_name = 'Molecular Descriptor'
     unique_together = ('heading','calculatorSoftware','calculatorSoftwareVersion')
 
-  heading=models.CharField(max_length=200, validators=[RegexValidator('[A-Za-z_]+', 'Please include only values which are limited to alphanumeric characters and underscores.')])
-  '''A short label which is given to a description. No constraints currently exist, but this may be tweaked later to
-  enforce MS-excel style CSV compatibility
-  '''
+  heading=models.CharField(max_length=200, validators=[RegexValidator('[A-Za-z][A-Za-z_]+', 'Please include only values which are limited to alphanumeric characters and underscoresi, and must start with an alphabetic character.')])
+  '''A short label which is given to a description.'''
   name=models.CharField('Full name', max_length=300)
   calculatorSoftware=models.CharField(max_length=100)
   calculatorSoftwareVersion=models.CharField(max_length=20)
@@ -31,12 +29,21 @@ class MolDescriptor(models.Model):
   def csvHeader(self):
     return '{}_{}_{}'.format(self.heading, slugify(self.calculatorSoftware), self.calculatorSoftwareVersion)
 
+  @property
+  def arffHeader(self):
+    '''returns the base unit of an Arff Header, but this will not be sufficient and must be overridden by subclasses'''
+    return'@attribute {}_{}_{} ' .format(self.heading, slugify(self.calculatorSoftware), self.calculatorSoftwareVersion) 
+
 class CatMolDescriptor(MolDescriptor):
   '''A class which describes a categorical molecular descriptors'''
 
   class Meta:
     app_label='DRP'
     verbose_name= 'Categorical Molecular Descriptor'
+
+  @property
+  def arffHeader(self):
+    return super(OrdMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(v.value for v in self.permittedValues.all()))
 
 class OrdMolDescriptor(MolDescriptor):
   '''A class which represents an ordinal descriptor'''
@@ -55,6 +62,10 @@ class OrdMolDescriptor(MolDescriptor):
   def save(self, *args, **kwargs):
     self.clean()
     super(OrdMolDescriptor, self).save(*args, **kwargs)
+
+  @property
+  def arffHeader(self):
+    return super(OrdMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(i for i in range(self.minimum, self.maximum+1)))
 
 class NumMolDescriptor(MolDescriptor):
   '''A class which represents a numerical descriptor'''
@@ -75,12 +86,20 @@ class NumMolDescriptor(MolDescriptor):
     self.clean()
     super(NumMolDescriptor, self).save(*args, **kwargs)
 
+  @property
+  def arffHeader(self):
+    return super(NumMolDescriptor, self).arffHeader + 'numeric'
+
 class BoolMolDescriptor(MolDescriptor):
   '''A class which represents a boolean descriptors'''
 
   class Meta:
     app_label='DRP'
     verbose_name= 'Boolean Molecular Descriptor'
+
+  @property
+  def arffHeader(self):
+    return super(BoolMolDescriptor, self).arffHeader + '{True, False}'
 
 class CatMolDescriptorPermitted(models.Model):
   '''A class which represents the permitted values for a categorical descriptor'''

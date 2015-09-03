@@ -5,7 +5,7 @@ from MolDescriptorValue import BoolMolDescriptorValue, NumMolDescriptorValue, Ca
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
 import csv
-from CsvQuerySet import CsvModel, CsvQuerySet
+from querysets import CsvModel, CsvQuerySet, ArffQuerySet
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -14,7 +14,7 @@ import importlib
 
 descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
-class CompoundQuerySet(CsvQuerySet):
+class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
   '''A specialised queryset for outputting Compounds in specific formats'''
 
   def __init__(self, **kwargs):
@@ -22,49 +22,59 @@ class CompoundQuerySet(CsvQuerySet):
     kwargs.pop('model', None)
     super(CompoundQuerySet, self).__init__(Compound, **kwargs)
 
-  @property
-  def headers(self):
-    '''Generates the header row information for the CSV'''
-    headers = super(CompoundQuerySet, self).headers
+  def maxChemicalClassCount(self);
+    '''Gives a count of the maximum number of chemical classes associated with a compound in this queryset'''
     m = self.annotate(chemicalClassCount=models.Count('chemicalClasses')).aggregate(max=models.Max('chemicalClassCount'))['max']
-    m = 0 if m is None else m
+    return 0 if m is None else m
+    
+  @property
+  def csvHeaders(self):
+    '''Generates the header row information for the CSV'''
+    headers = super(CompoundQuerySet, self).csvHeaders
+    m = Compound.objects.all().maxChemicalClassCount()
     headers += ['chemicalClass_{}'.format(x+1) for x in range(0, m)]
     return headers
 
   @property
-  def expandedHeaders(self):
+  def arffHeaders(self):
+    '''generates headers for the arff file'''
+    headers = super(CompoundQuerySet, self).arffHeaders
+    m = Compound.objects.all().maxChemicalClassCount()
+    for x in range(0, m):
+      headers['chemicalClass_{0}'.format(x+1)] = '@attribute {{{}}}'.format(chemicalClass for chemicalClass in chemicalClass.objects.all())
+    return headers
+
+  @property
+  def expandedArffHeaders(self):
+    headers = self.arffHeaders
+    return headers + [d.arffHeader for d in self.descriptors()]   
+
+  @property
+  def expandedCsvHeaders(self):
     '''Generates the expanded header for the csv'''
-    return self.headers + [d.csvHeader for d in self.descriptors()]
+    return self.csvHeaders + [d.csvHeader for d in self.descriptors()]
 
   def descriptors(self):
     '''returns the descriptor which have relationship to the queryset'''
-    return (
-        MolDescriptor.objects.filter(
-          boolmoldescriptor__in=BoolMolDescriptor.objects.filter(
-            boolmoldescriptorvalue__in=BoolMolDescriptorValue.objects.filter(
-              compound__in=self
-            )
+    return chain(
+        BoolMolDescriptor.objects.filter(
+          boolmoldescriptorvalue__in=BoolMolDescriptorValue.objects.filter(
+            compound__in=self
           )
-        )| #NOTE this bar
-        MolDescriptor.objects.filter(
-          nummoldescriptor__in=NumMolDescriptor.objects.filter(
-            nummoldescriptorvalue__in=NumMolDescriptorValue.objects.filter(
-              compound__in=self
-            )
+        ),
+        NumMolDescriptor.objects.filter(
+          nummoldescriptorvalue__in=NumMolDescriptorValue.objects.filter(
+            compound__in=self
           )
-        )|
-        MolDescriptor.objects.filter(
-          ordmoldescriptor__in=OrdMolDescriptor.objects.filter(
-            ordmoldescriptorvalue__in=OrdMolDescriptorValue.objects.filter(
-              compound__in=self
-            )
+        ),
+        OrdMolDescriptor.objects.filter(
+          ordmoldescriptorvalue__in=OrdMolDescriptorValue.objects.filter(
+            compound__in=self
           )
-        )|
-        MolDescriptor.objects.filter(
-          catmoldescriptor__in=CatMolDescriptor.objects.filter(
-            catmoldescriptorvalue__in=CatMolDescriptorValue.objects.filter(
-              compound__in=self
-            )
+        ),
+        CatMolDescriptor.objects.filter(
+          catmoldescriptorvalue__in=CatMolDescriptorValue.objects.filter(
+            compound__in=self
           )
         )
       )
@@ -136,6 +146,7 @@ class Compound(CsvModel):
   '''A class for containing data about Compounds used in chemical reactions.
   The assumption is made that all chemicals used are single-species.
   '''
+  
   
   class Meta:
     app_label = "DRP"
