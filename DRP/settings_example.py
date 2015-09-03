@@ -56,9 +56,6 @@ EMAIL_IMAP_HOST = '' #leave blank in production. Necessary for unit tests.
 EMAIL_IMAP_INBOX= 'Inbox' #The inbox to use for email tests. Inbox for gmail
 SKIP_EMAIL_TESTS=False #These tests are slow, so if you haven't tweaked this then skip the tests, but don't abuse this.
 
-#Emails of the Site Admins and Project Managers for the DRP.
-ADMIN_EMAILS = [""]
-MANAGER_EMAILS = [""]
 
 #Change to "False" to see standard errors:
 DEBUG = True #TODO: Change me in production to "False"!
@@ -70,6 +67,10 @@ ADMINS = (
      )
 
 MANAGERS = ADMINS
+#Emails of the Site Admins and Project Managers for the DRP.
+
+ADMIN_EMAILS = (admin[0] for admin in ADMINS)
+MANAGER_EMAILS = [manager[0] for manager in MANAGERS]
 
 DATABASES = { #Production database.
     'default': {
