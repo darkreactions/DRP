@@ -12,7 +12,16 @@ class CsvModel(models.Model):
   @abc.abstractproperty
   def values(self):
     '''Returns a dict of values suitable for use by a csv.DictWriter'''
-    return {field.name:getattr(self, field.name) for field in self._meta.fields}
+    values = {}
+    for field in self._meta.fields:
+      try:
+        if any(string in getattr(self, field.name) for string in (',', ' ')):
+          values[field.name]='"{}"'.format(getattr(self, field.name))
+        else:
+          values[field.name]=getattr(self, field.name)
+      except TypeError:
+        values[field.name] = getattr(self, field.name)
+    return values
 
   @abc.abstractproperty
   def expandedValues(self):
@@ -78,13 +87,13 @@ class ArffQuerySet(models.query.QuerySet):
       elif isinstance(field, models.CharField) or isinstance(field, models.TextField):
         headers[field.name] = '@attribute {} string'.format(field.name)
       elif isinstance(field, models.DateTimeField):
-        headers[field.name] = '@attribute {} date "yyyy-MM-dd HH:mm:ss'.format(field.name)
+        headers[field.name] = '@attribute {} date "yyyy-MM-dd HH:mm:ss"'.format(field.name)
       elif isinstance(field, models.DateField):
         headers[field.name] = '@attribute {} date "yyyy-MM-dd"'.format(field.name)
       elif isinstance(field, models.BooleanField):
         headers[field.name] = '@attribute {} {{True, False}}'.format(field.name)
       elif isinstance(field, models.ForeignKey):
-        headers[field.name] = '@attribute {} {{{}}}'.format(field.name, ', '.join(choice[1] for choice in field.get_choices()[1:]))
+        headers[field.name] = '@attribute {} {{{}}}'.format(field.name, ', '.join('"{}"'.format(choice[1]) for choice in field.get_choices()[1:]))
     return headers
 
   def toArff(self, writeable, expanded=False, relationName='relation'):

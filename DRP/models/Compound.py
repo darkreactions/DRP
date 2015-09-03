@@ -44,7 +44,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
     m = Compound.objects.all().maxChemicalClassCount()
     for x in range(0, m):
       label = 'chemicalClass_{0}'.format(x+1)
-      headers[label] = '@attribute {} {{{}}}'.format(label, ','.join(str(chemicalClass) for chemicalClass in ChemicalClass.objects.all()))
+      headers[label] = '@attribute {} {{{}}}'.format(label, ','.join('"{}"'.format(chemicalClass) for chemicalClass in ChemicalClass.objects.all()))
     return headers
 
   @property
@@ -225,7 +225,7 @@ class Compound(CsvModel):
     d =  super(Compound, self).values 
     i = 1
     for c in self.chemicalClasses.all():
-      d['chemicalClass_{}'.format(i)] = c
+      d['chemicalClass_{}'.format(i)] = '"{}"'.format(c)
       i+=1
     return d
 
@@ -233,5 +233,14 @@ class Compound(CsvModel):
   def expandedValues(self):
     '''outputs a dict of values suitable for use by a csv.DictWriter - includes molecular descriptors'''
     res = self.values.copy()
-    res.update({descriptorValue.descriptor.csvHeader:descriptorValue.value for descriptorValue in self.descriptorValues})
+    for descriptorValue in self.descriptorValues:
+      key = descriptorValue.descriptor.csvHeader
+      value = descriptorValue.value
+      try:
+        if any(string in value for string in (',',' ')):
+          res[key] = '"{}"'.format(value)
+        else:
+          res[key] = value
+      except TypeError: 
+        res[key] = value 
     return res 
