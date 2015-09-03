@@ -235,14 +235,6 @@ class BooleanFilterForm(FilterForm):
     self.fields['value'] = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=((None, 'Either'),(True, 'True'),(False, 'False'))), initial=None, required=False)
     self.checkFields = ('value', 'descriptor')
 
-  def clean(self):
-    '''checks that the descriptor choice and value have both been supplied, or neither have, Either counts as not submitted.'''
-    super(BooleanFilterForm, self).clean()
-    if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') is None):
-      raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input. {} {}'.format(self.cleaned_data.get('descriptor'), self.cleaned_data.get('value')))
-    else:
-      return self.cleaned_data
-
   def fetch(self):
     '''returns the appropriate queryset'''
     return BoolMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'), value=self.cleaned_data.get('value'))
