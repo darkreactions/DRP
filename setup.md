@@ -78,6 +78,16 @@ export DJANGO_SETTINGS_MODULE=DRP.settings
 
 This also applies to the pre-push hook.
 
+You must also have `TESTING` set to `True` in your `settings.py` file.
+
+To run specific tests, provided the test is conformant to the template test (which they should be if you are writing new tests!), one can simply execute the test:
+
+`path/to/DRP/test.py`
+
+Else, one can run the entire test suite from the management script:
+
+`./manage.py run_tests`
+
 ###For the time being...
 
 If you are reading this setup instruction manual, you are working on the refactoring mission of the DRP. This comes with some rules:
