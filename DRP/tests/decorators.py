@@ -5,6 +5,7 @@ from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreem
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
+import os
 
 def createsUser(username, password):
   '''A class decorator that creates a user'''
@@ -126,3 +127,25 @@ def signsExampleLicense(username):
     c.tearDown = tearDown
     return c
   return _signsExampleLicense
+
+def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
+  '''A class decorators that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
+  
+  def _loadsCompoundsFromCsv(c):
+
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
+    labGroup = LabGroup.objects.get(title=labGroupTitle)
+
+    def setUp(self):
+      compounds = labGroup.compounds.fromCsv(os.path.join(settings.APP_PATH, 'tests', 'resource', csvFileName)
+      for compound in compounds:
+        compound.save()
+
+    def tearDown(self):
+      Compound.objects.all().delete()
+    
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
+  return _loadsCompoundsFromCsv
