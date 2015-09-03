@@ -69,8 +69,8 @@ ADMINS = (
 MANAGERS = ADMINS
 #Emails of the Site Admins and Project Managers for the DRP.
 
-ADMIN_EMAILS = (admin[0] for admin in ADMINS)
-MANAGER_EMAILS = [manager[0] for manager in MANAGERS]
+ADMIN_EMAILS = tuple(admin[0] for admin in ADMINS)
+MANAGER_EMAILS = tuple(manager[0] for manager in MANAGERS)
 
 DATABASES = { #Production database.
     'default': {
