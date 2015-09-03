@@ -7,6 +7,7 @@ import decorators
 import CompoundFromCsv
 import CompoundDescriptor
 import CompoundToCsv
+import CompoundToArff
 
 suite = unittest.TestSuite([
   Email.suite,
@@ -15,4 +16,5 @@ suite = unittest.TestSuite([
   CompoundFromCsv.suite,
   CompoundDescriptor.suite,
   CompoundToCsv.suite
+  CompoundToArff.suite
 ]) 

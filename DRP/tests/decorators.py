@@ -135,10 +135,10 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
 
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
-    labGroup = LabGroup.objects.get(title=labGroupTitle)
 
     def setUp(self):
-      compounds = labGroup.compounds.fromCsv(os.path.join(settings.APP_PATH, 'tests', 'resource', csvFileName)
+      labGroup = LabGroup.objects.get(title=labGroupTitle)
+      compounds = labGroup.compound_set.fromCsv(os.path.join(settings.APP_DIR, 'tests', 'resource', csvFileName))
       for compound in compounds:
         compound.save()
 
