@@ -25,12 +25,15 @@ Install required pip python libraries
 
 `git clone git@github.com:cfalk/DRP`
 
+####For the time being
+Switch your branch to the `phil_refactor` branch.
+
 ####Server settings
 
 In the DRP repository there is a file DRP_uwsgi.ini and another DRP_nginx. Both should be modified to suit your local server *after* having been placed in the relevant locations:
 
 `/etc/uwsgi/apps-enabled/DRP_uwsgi.ini`
-`/etc/nginx/sites-enabled/DRP.nginx`
+`/etc/nginx/sites-enabled/DRP_nginx`
 
 It should be noted that the uwsgi.ini is backwards compatible with older version of this repo, but that an old DRP_uwsgi file will need replacing.
 
@@ -52,7 +55,7 @@ South is our library of choice for dealing with database migrations. It is alrea
 
 To get DRP running you need to setup a database with the correct encoding, in mysql:
 
-`CREATE DATABASE db_name CHARACTER SET utf8 COLLATION utf8_bin`
+`CREATE DATABASE db_name DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;`
 
 Without this, all string comparisons done at a database level are case insensitive, which causes spurious query results.
 
@@ -61,6 +64,8 @@ Ensure that `db_name` matches with the name specified in your settings.py file.
 Then, in the DRP directory, run `./manage.py syncdb`
 
 This sets up the south tables.
+
+You should create a "superuser" called "root" when prompted.
 
 Then run `./manage.py migrate DRP`
 
@@ -76,6 +81,7 @@ in the test suite before pushing your copy of the repository, and hence forces o
 In order to run tests you must have the following environment variables set up in your shell session:
 
 export PYTHONPATH=/path/to/DRP/
+
 export DJANGO_SETTINGS_MODULE=DRP.settings
 
 This also applies to the pre-push hook.
@@ -95,7 +101,7 @@ Else, one can run the entire test suite from the management script:
 If you are reading this setup instruction manual, you are working on the refactoring mission of the DRP. This comes with some rules:
 
 1. Changes to the schema should be run past Phil, who will implement them; this makes dealing with the south migrations much easier.
-2. You should make your own branch from the phil_refactor branch, and push that to the server (`push -u origin <branchname>`)- Phil will merge periodically or on request.
+2. You should make your own branch from the phil_refactor branch, and push that to the Git repo (`push -u origin <branchname>`)- Phil will merge periodically or on request.
 3. Don't attempt to circumvent the pre-push tests.
 4. Comment all the things.
 5. If you change the pre-push hook, tell everyone.
