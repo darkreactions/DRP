@@ -7,6 +7,8 @@ class Command(BaseCommand):
 
   def handle(self, *args, **kwargs):
     if settings.TESTING:
-      runTests(suite)
+      result = runTests(suite)
+      if len(result.errors) > 0 or len(result.failures)>0 or len(result.unexpectedSuccesses) > 0:
+        exit(1)
     else:
       raise RuntimeError('Testing environment is not set')
