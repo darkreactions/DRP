@@ -41,7 +41,9 @@ Both uwsgi and nginx must be restarted (in that order) for the server to work.
 In DRP/DRP, there is a file called 'settings_example.py'. This must be copied to 'settings.py', and the settings therein set to the appropriate values for your server. At present, the available fields should be fairly self explanatory, though the following should be noted:
 
 `ALLOWED_HOSTS` should be set to your local ip
+
 To pass the unit tests, at least one `ADMIN_EMAILS` should be provided
+
 To pass the unit tests, the EMAIL_HOST_USER and related settings should be set.  
 
 ### Working with south
