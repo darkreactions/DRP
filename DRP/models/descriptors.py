@@ -4,7 +4,7 @@ Reaction and Molecular Descriptors should inherit from these'''
 from django.db import models
 from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
-
+from django.core.exceptions import ValidationError
 
 def slugify(text):
   '''returns a modified version of slug text so as to keep compatibility with some external programs'''
@@ -42,7 +42,7 @@ class CategoricalDescriptor(Descriptor):
 
   @property
   def arffHeader(self):
-    return super(CatMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(v.value) for v in self.permittedValues.all()))
+    return super(CategoricalDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(v.value) for v in self.permittedValues.all()))
 
 class CategoricalDescriptorPermittedValue(models.Model):
 
@@ -70,11 +70,11 @@ class OrdinalDescriptor(Descriptor):
 
   def save(self, *args, **kwargs):
     self.clean()
-    super(OrdMolDescriptor, self).save(*args, **kwargs)
+    super(OrdinalDescriptor, self).save(*args, **kwargs)
 
   @property
   def arffHeader(self):
-    return super(OrdMolDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(i) for i in range(self.minimum, self.maximum+1)))
+    return super(OrdinalDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(i) for i in range(self.minimum, self.maximum+1)))
 
 class NumericDescriptor(Descriptor):
 
@@ -91,11 +91,11 @@ class NumericDescriptor(Descriptor):
 
   def save(self, *args, **kwargs):
     self.clean()
-    super(NumMolDescriptor, self).save(*args, **kwargs)
+    super(NumericDescriptor, self).save(*args, **kwargs)
 
   @property
   def arffHeader(self):
-    return super(NumMolDescriptor, self).arffHeader + 'numeric'
+    return super(NumericDescriptor, self).arffHeader + 'numeric'
 
 class BooleanDescriptor(Descriptor):
   
@@ -104,4 +104,4 @@ class BooleanDescriptor(Descriptor):
 
   @property
   def arffHeader(self):
-    return super(BoolMolDescriptor, self).arffHeader + '{True, False}'
+    return super(BooleanDescriptor, self).arffHeader + '{True, False}'

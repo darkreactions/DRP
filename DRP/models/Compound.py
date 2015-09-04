@@ -206,12 +206,13 @@ class Compound(CsvModel):
         if len(errorList) > 0:
           raise ValidationError(errorList)
 
-  def save(self, *args, **kwargs):
+  def save(self, calcDescriptors=True, *args, **kwargs):
     super(Compound, self).save(*args, **kwargs)
     for lcc in self.lazyChemicalClasses: #coping mechanism for compounds loaded from csv files; not to be used by other means
       self.chemicalClasses.add(lcc)
-    for descriptorPlugin in descriptorPlugins:
-      descriptorPlugin.calculate(self) 
+    if calcDescriptors:#not generally done, but useful for debugging
+      for descriptorPlugin in descriptorPlugins:
+        descriptorPlugin.calculate(self) 
     
   @property  
   def descriptorValues(self):

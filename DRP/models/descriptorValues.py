@@ -1,4 +1,5 @@
 from descriptors import CategoricalDescriptorPermittedValue, CategoricalDescriptor, NumericDescriptor, BooleanDescriptor, OrdinalDescriptor
+from django.core.exceptions import ValidationError
 from django.db import models
 
 class CategoricalDescriptorValue(models.Model):

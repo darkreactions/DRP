@@ -4,7 +4,7 @@
 import unittest
 from DRPTestCase import DRPTestCase, runTests
 from DRP.models import Compound, OrdMolDescriptorValue, NumMolDescriptorValue, BoolMolDescriptorValue, CatMolDescriptorValue
-from DRP.models import OrdMolDescriptor, NumMolDescriptor, BoolMolDescriptor, CatMolDescriptor, CatMolDescriptorPermitted
+from DRP.models import OrdMolDescriptor, NumMolDescriptor, BoolMolDescriptor, CatMolDescriptor, CategoricalDescriptorPermittedValue
 from decorators import createsCompound, joinsLabGroup, createsUser, createsChemicalClass
 from django.core.exceptions import ValidationError
 loadTests = unittest.TestLoader().loadTestsFromTestCase
@@ -248,11 +248,11 @@ class CategoricalValidation(DRPTestCase):
     self.desc.save()
     self.desc2 = CatMolDescriptor(heading='heading2', name='example2', calculatorSoftware='test suite', calculatorSoftwareVersion=0)
     self.desc2.save()
-    self.descPerm = CatMolDescriptorPermitted.objects.get_or_create(descriptor=self.desc, value='fun')[0]
+    self.descPerm = CategoricalDescriptorPermittedValue.objects.get_or_create(descriptor=self.desc, value='fun')[0]
     self.descPerm.save()
-    self.descPerm2 = CatMolDescriptorPermitted.objects.get_or_create(descriptor=self.desc, value='dull')[0]
+    self.descPerm2 = CategoricalDescriptorPermittedValue.objects.get_or_create(descriptor=self.desc, value='dull')[0]
     self.descPerm2.save()
-    self.descPerm3 = CatMolDescriptorPermitted.objects.get_or_create(descriptor=self.desc2, value='banana')[0]
+    self.descPerm3 = CategoricalDescriptorPermittedValue.objects.get_or_create(descriptor=self.desc2, value='banana')[0]
     self.descPerm3.save()
     
   def test_fine(self):

@@ -35,10 +35,10 @@ def cleanUpDatabase():
   DRP.models.NumMolDescriptorValue.objects.all().delete()
   DRP.models.OrdMolDescriptorValue.objects.all().delete()
   DRP.models.StatsModelTag.objects.all().delete()
-  keepMolDescriptors = []
+  keepDescriptors = []
   for plugin in molDescriptorPlugins:
-    keepMolDescriptors += [plugin.descriptorDict[key].moldescriptor_ptr.pk for key in plugin.descriptorDict]
-  DRP.models.MolDescriptor.objects.exclude(pk__in=keepMolDescriptors).delete()
+    keepDescriptors += [plugin.descriptorDict[key].descriptor_ptr.pk for key in plugin.descriptorDict]
+  DRP.models.Descriptor.objects.exclude(pk__in=keepDescriptors).delete()
   User.objects.all().exclude(username='root').delete()
 
 def runTests(suite):

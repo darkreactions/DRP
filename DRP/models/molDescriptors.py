@@ -35,12 +35,3 @@ class BoolMolDescriptor(BooleanDescriptor):
     app_label='DRP'
     verbose_name= 'Boolean Molecular Descriptor'
 
-
-class CatMolDescriptorPermitted(CategoricalDescriptorPermittedValue):
-  '''A class which represents the permitted values for a categorical descriptor'''
-
-  class Meta:
-    app_label = "DRP"
-    verbose_name= 'Permitted Categorical Descriptor Value'
-
-

@@ -9,6 +9,7 @@ from CompoundQuantity import CompoundQuantity
 from DataSet import DataSet
 from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
 from RxnDescriptor import RxnDescriptor
+from molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
 from molDescriptorValues import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
 from RxnDescriptorValue import RxnDescriptorValue
 from LabGroup import LabGroup

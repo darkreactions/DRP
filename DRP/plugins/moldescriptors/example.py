@@ -24,9 +24,9 @@ def fsValueCalc(mw):
 
 def arbValCalc(compound):
   if compound.pk % 2 == 0:
-    return DRP.models.CatMolDescriptorPermitted.objects.get(value='dull', descriptor=descriptorDict['arb'])
+    return DRP.models.CategoricalDescriptorPermittedValue.objects.get(value='dull', descriptor=descriptorDict['arb'])
   else:
-    return DRP.models.CatMolDescriptorPermitted.objects.get(value='fun', descriptor=descriptorDict['arb'])
+    return DRP.models.CategoricalDescriptorPermittedValue.objects.get(value='fun', descriptor=descriptorDict['arb'])
 
 def calculate(compound):
   '''Calculates the descriptors from this plugin for a compound.

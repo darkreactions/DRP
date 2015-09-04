@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 from DRP.models import Compound, ChemicalClass, NumMolDescriptor, NumMolDescriptorValue, OrdMolDescriptor, OrdMolDescriptorValue
 from DRP.models import CatMolDescriptor, CatMolDescriptorValue, BoolMolDescriptor, BoolMolDescriptorValue
-from DRP.models import CatMolDescriptorPermitted
+from DRP.models import CategoricalDescriptorPermittedValue
 from DRP.forms import FilterForm, FilterFormSet, filterFormSetFactory
 from django.utils.safestring import mark_safe
 from operator import and_
@@ -202,7 +202,7 @@ class CategoryFilterForm(FilterForm):
     '''Sets teh forms up in the right order'''
     super(CategoryFilterForm, self).__init__(*args, **kwargs)
     self.fields['descriptor'] = forms.ModelChoiceField(queryset=CatMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
-    self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value.pk, value.value) for value in CatMolDescriptorPermitted.objects.filter(descriptor=md))) for md in CatMolDescriptor.objects.all())), required=False) #wow, that's hideous... It limits the options available to the available categorical molecular descriptor values, which are categorised according to the particular descriptor.
+    self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value.pk, value.value) for value in CategoricalDescriptorPermittedValue.objects.filter(descriptor=md))) for md in CatMolDescriptor.objects.all())), required=False) #wow, that's hideous... It limits the options available to the available categorical molecular descriptor values, which are categorised according to the particular descriptor.
     self.checkFields = ('value', 'descriptor')
 
   def clean(self):

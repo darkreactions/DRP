@@ -25,7 +25,7 @@ class LazyDescDict(object):
           self.internalDict[k] = DRP.models.CatMolDescriptor.objects.get_or_create(**args)[0]
           self.internalDict[k].save()
           for permittedValue in v['permittedValues']:
-            perm = DRP.models.CatMolDescriptorPermitted.objects.get_or_create(value=permittedValue, descriptor=self.internalDict[k])[0]
+            perm = DRP.models.CategoricalDescriptorPermittedValue.objects.get_or_create(value=permittedValue, descriptor=self.internalDict[k])[0]
             perm.save()
         else:
           raise RuntimeError("Invalid descriptor type provided")
