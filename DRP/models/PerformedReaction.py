@@ -10,8 +10,10 @@ class PerformedReaction(Reaction):
   
   class Meta:
     app_label="DRP"
+    unique_together=('labGroup', 'reference')
 
   user=models.ForeignKey(User)
+  reference=models.CharField(max_length=40) 
   performedDateTime=models.DateTimeField('Date Reaction Performed')
   recommendation=models.ForeignKey(RecommendedReaction, unique=False, null=True, default=None, related_name='resultantExperiment')
   legacyRecommendedFlag=models.NullBooleanField(default=None)
