@@ -1,8 +1,7 @@
-
-'''Module containing only the Compound Class'''
+'''A module containing code pertinent to manipulating Compound objects'''
 from django.db import models, transaction
-from MolDescriptor import MolDescriptor, BoolMolDescriptor, NumMolDescriptor, CatMolDescriptor, OrdMolDescriptor
-from MolDescriptorValue import BoolMolDescriptorValue, NumMolDescriptorValue, CatMolDescriptorValue, OrdMolDescriptorValue
+from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
+from molDescriptorValues import BoolMolDescriptorValue, NumMolDescriptorValue, CatMolDescriptorValue, OrdMolDescriptorValue
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
 import csv
@@ -61,22 +60,22 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
   def descriptors(self):
     '''returns the descriptor which have relationship to the queryset'''
     return chain(
-        BoolMolDescriptor.objects.filter(
+        BooleanDescriptor.objects.filter(
           boolmoldescriptorvalue__in=BoolMolDescriptorValue.objects.filter(
             compound__in=self
           )
         ),
-        NumMolDescriptor.objects.filter(
+        NumericDescriptor.objects.filter(
           nummoldescriptorvalue__in=NumMolDescriptorValue.objects.filter(
             compound__in=self
           )
         ),
-        OrdMolDescriptor.objects.filter(
+        OrdinalDescriptor.objects.filter(
           ordmoldescriptorvalue__in=OrdMolDescriptorValue.objects.filter(
             compound__in=self
           )
         ),
-        CatMolDescriptor.objects.filter(
+        CategoricalDescriptor.objects.filter(
           catmoldescriptorvalue__in=CatMolDescriptorValue.objects.filter(
             compound__in=self
           )

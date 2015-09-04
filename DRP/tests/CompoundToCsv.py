@@ -4,7 +4,7 @@
 import unittest
 from DRPTestCase import DRPTestCase, runTests
 from decorators import createsUser, joinsLabGroup, createsChemicalClass, createsCompound
-from DRP.models import Compound, MolDescriptor
+from DRP.models import Compound 
 import csv
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 

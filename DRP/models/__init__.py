@@ -7,9 +7,9 @@
 from Compound import Compound
 from CompoundQuantity import CompoundQuantity
 from DataSet import DataSet
-from MolDescriptor import MolDescriptor, CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor,CatMolDescriptorPermitted
+from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
 from RxnDescriptor import RxnDescriptor
-from MolDescriptorValue import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
+from molDescriptorValues import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
 from RxnDescriptorValue import RxnDescriptorValue
 from LabGroup import LabGroup
 from LegacyStatsModel import LegacyStatsModel
