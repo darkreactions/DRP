@@ -1,7 +1,6 @@
 '''A module containing only the Reaction class'''
 from django.db import models
 from LabGroup import LabGroup
-from RxnDescriptor import RxnDescriptor
 from Compound import Compound
 
 class Reaction(models.Model):
@@ -14,11 +13,5 @@ class Reaction(models.Model):
     app_label="DRP"
 
   compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
-  temp=models.IntegerField()
-  slowCool=models.BooleanField()
-  time=models.IntegerField()
-  leak=models.BooleanField()
-  purity=models.IntegerField()
   notes=models.TextField() 
   labGroup=models.ForeignKey(LabGroup)
-  descriptors=models.ManyToManyField(RxnDescriptor, through='RxnDescriptorValue')

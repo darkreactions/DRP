@@ -1,6 +1,7 @@
 '''Module containing only the CompoundQuantities Class'''
 from django.db import models
 from Compound import Compound
+from CompoundRole import CompoundRole
 from Reaction import Reaction
 
 class CompoundQuantity(models.Model):
@@ -14,5 +15,5 @@ class CompoundQuantity(models.Model):
 
   compound=models.ForeignKey(Compound, on_delete=models.PROTECT)
   reaction=models.ForeignKey(Reaction)
+  role=models.ForeignKey(CompoundRole)
   amount=models.FloatField() 
-  amountUnit=models.CharField(max_length=10)

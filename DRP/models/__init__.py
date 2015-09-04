@@ -23,3 +23,4 @@ from StatsModel import StatsModel
 from StatsModelTag import StatsModelTag
 from ChemicalClass import ChemicalClass
 from ConfirmationCode import ConfirmationCode
+from CompoundRole import CompoundRole

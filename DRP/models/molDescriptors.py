@@ -1,10 +1,7 @@
 '''A module containing Classes permitting the representation of molecular descriptors'''
 from django.db import models
-from django.core.exceptions import ValidationError
 from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
 from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor
-from django.core.validators import RegexValidator
-
 
 class CatMolDescriptor(CategoricalDescriptor):
   '''A class which describes a categorical molecular descriptors'''
