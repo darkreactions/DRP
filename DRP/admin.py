@@ -1,7 +1,7 @@
 from django.contrib import admin
-from models import LabGroup, License, Compound, ChemicalClass 
-from forms import LabGroupForm, CompoundAdminForm
+from models import LabGroup, License, Compound, ChemicalClass, CompoundRole
 
+from forms import LabGroupForm, CompoundAdminForm
 class LabGroupAdmin(admin.ModelAdmin):
   form = LabGroupForm
 
@@ -23,7 +23,12 @@ class ChemicalClassAdmin(admin.ModelAdmin):
   
   list_display = ('label', 'description')
 
+class CompoundRoleAdmin(admin.ModelAdmin):
+
+  list_display = ('label', 'description')
+
 admin.site.register(LabGroup, LabGroupAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Compound, CompoundAdmin)
 admin.site.register(ChemicalClass, ChemicalClassAdmin)
+admin.site.register(CompoundRole, CompoundRoleAdmin)
