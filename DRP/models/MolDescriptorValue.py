@@ -2,7 +2,6 @@
 from django.db import models
 from MolDescriptor import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor,CatMolDescriptorPermitted
 #from Compound import Compound - retain this line for clarity
-from StatsModel import StatsModel
 from django.core.exceptions import ValidationError
 
 #TODO: implement methods which permit these to be used in the same way as their actual value attributes
