@@ -16,8 +16,8 @@
       <th>Duplicate Of</th>
       <th>Lab Group</th>
     </tr>
-    {% for reaction in reactions %}
   </thead>
+    {% for reaction in reactions %}
   <tbody>
     <tr>
       <td>{{ reaction.reference }}</td>
@@ -34,7 +34,7 @@
       <td>{{ reaction.performedDatetime }}</td>
       
       <td>{{ reaction.valid }}</td>
-      <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}</td>
+      <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}{% endif %}</td>
       <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% endif %}</td>
     </tr>
     {% endfor %}

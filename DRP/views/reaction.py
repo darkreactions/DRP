@@ -14,14 +14,14 @@ class ListPerformedReactions(ListView):
   
   @method_decorator(login_required)
   @method_decorator(hasSignedLicense)
-  @method_decorator(userHasLabgroup)
+  @method_decorator(userHasLabGroup)
   @labGroupSelected #sets self.labGroup
-  def dispatch(self, request, *args, **kwargs)
-    self.queryset = self.labGroup.performedreaction_set.all()
-    return super(ListCompound, self).dispatch(request, *args, **kwargs)
+  def dispatch(self, request, *args, **kwargs):
+    self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all())
+    return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
-    context = super(ListCompound, self).get_context_data(**kwargs)
+    context = super(ListPerformedReactions, self).get_context_data(**kwargs)
     context['lab_form'] = self.labForm
 #    context['filter_formset'] = self.filterFormSet
     return context

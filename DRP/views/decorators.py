@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
 from django.http import HttpResponseNotFound
+from DRP.forms import LabGroupSelectionForm
 
 def userHasLabGroup(view):
   '''This decorator checks that the user is a member of at least one lab group. Assumes login_required is an external decorator'''
@@ -51,5 +52,6 @@ def labGroupSelected(dispatch_method):
         raise RuntimeError("This shouldn't happen")
     else:
       self.labGroup = request.user.labgroup_set.all()[0]
+    return dispatch_method(self, request, *args, **kwargs)
 
   return _labGroupSelected
