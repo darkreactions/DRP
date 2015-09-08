@@ -22,7 +22,7 @@ class PerformedReaction(Reaction):
   if the wrong reactant was used or some bad lab record has been found'''
   public=models.BooleanField()
   '''We are storing this for legacy purposes but not using it in this version'''
-  duplicateOf=models.ForeignKey(Reaction, related_name='duplicatedBy')
+  duplicateOf=models.ForeignKey('self', related_name='duplicatedBy')
   '''Describes the many to many mapping when a StatsModel uses a Performed Reaction as part of its
   test or training sets. Must be placed on this model as a workaround to circular dependency issues'''
   inTrainingSetFor=models.ManyToManyField(StatsModel, related_name='trainingSet')
