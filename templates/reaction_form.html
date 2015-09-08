@@ -1,0 +1,27 @@
+{% extends 'reactions.html' %}
+
+{% block content %}
+  <h1>Add Reaction Data</h1>
+  <form action="{% url 'newReaction' %}" method="post">
+    <ol>
+      {{ reaction_form.as_ul }}
+    </ol>
+    {{ reactants_formset.management_form }}
+    <ol>
+      {% for reactant_form in reactants_formset %}
+      <ol>
+        {{ reactant_form.as_ul }}
+      </ol>
+      {% endfor %}
+    </ol>
+    <input type="submit" name="add_reactant" value="Add Another" />
+    <ol>
+      {% for form in reaction_descriptor_forms %}
+      <ol>
+        {{ form.as_ul }}
+      </ol>
+      {% endfor %}
+    </ol>
+    <input type="submit" name="save" value="Save" />
+  </form> 
+{% endblock %}
