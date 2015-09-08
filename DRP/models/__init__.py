@@ -6,12 +6,12 @@
 
 from Compound import Compound
 from CompoundQuantity import CompoundQuantity
-from DataSet import DataSet
+#from DataSet import DataSet
 from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
-from RxnDescriptor import RxnDescriptor
+from rxnDescriptors import CatRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor  
 from molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
 from molDescriptorValues import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
-from RxnDescriptorValue import RxnDescriptorValue
+from rxnDescriptorValues import RxnDescriptorValue, CatRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue 
 from LabGroup import LabGroup
 from LegacyStatsModel import LegacyStatsModel
 from LicenseAgreement import LicenseAgreement
