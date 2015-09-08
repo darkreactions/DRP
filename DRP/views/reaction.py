@@ -17,7 +17,7 @@ class ListPerformedReactions(ListView):
   @method_decorator(userHasLabGroup)
   @labGroupSelected #sets self.labGroup
   def dispatch(self, request, *args, **kwargs):
-    self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all())
+    self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
     return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):

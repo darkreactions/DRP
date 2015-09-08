@@ -1,7 +1,8 @@
 from django.contrib import admin
 from models import LabGroup, License, Compound, ChemicalClass, CompoundRole
+from models import PerformedReaction
+from forms import LabGroupForm, CompoundAdminForm, PerformedRxnAdminForm
 
-from forms import LabGroupForm, CompoundAdminForm
 class LabGroupAdmin(admin.ModelAdmin):
   form = LabGroupForm
 
@@ -27,8 +28,14 @@ class CompoundRoleAdmin(admin.ModelAdmin):
 
   list_display = ('label', 'description')
 
+class PerformedRxnAdmin(admin.ModelAdmin):
+
+  list_display = ('Reference', 'user', 'labGroup', 'performedDateTime')
+  form = PerformedRxnAdminform
+
 admin.site.register(LabGroup, LabGroupAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Compound, CompoundAdmin)
 admin.site.register(ChemicalClass, ChemicalClassAdmin)
 admin.site.register(CompoundRole, CompoundRoleAdmin)
+admin.site.register(Performedreaction, PerformedRxnAdmin)
