@@ -35,6 +35,9 @@ class Descriptor(models.Model):
     '''returns the base unit of an Arff Header, but this will not be sufficient and must be overridden by subclasses'''
     return'@attribute {} ' .format(self.csvHeader) 
 
+  def __unicode__(self):
+    return self.name
+
 class CategoricalDescriptor(Descriptor):
 
   class Meta:

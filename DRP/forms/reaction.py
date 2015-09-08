@@ -1,6 +1,8 @@
 '''A module containing code pertaining to forms for the reaction classes'''
 from django import forms
-from DRP.models import PerformedReaction, RecommendedReaction
+from DRP.models import PerformedReaction, RecommendedReaction, OrdRxnDescriptorValue
+from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue
+from DRP.models import OrdRxnDescriptor
 
 class PerformedRxnAdminForm(forms.ModelForm):
   '''A form for the performed reactions in the Django admin, the only things we want editing from

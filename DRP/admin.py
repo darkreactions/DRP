@@ -1,7 +1,10 @@
 from django.contrib import admin
 from models import LabGroup, License, Compound, ChemicalClass, CompoundRole
-from models import PerformedReaction
+from models import PerformedReaction, OrdRxnDescriptor, NumRxnDescriptor
+from models import BoolRxnDescriptor, CatRxnDescriptor, CategoricalDescriptorPermittedValue 
 from forms import LabGroupForm, CompoundAdminForm, PerformedRxnAdminForm
+from forms import OrdRxnDescriptorForm, NumRxnDescriptorForm, BoolRxnDescriptorForm
+from forms import CatRxnDescriptorForm, CatDescPermittedValueForm
 
 class LabGroupAdmin(admin.ModelAdmin):
   form = LabGroupForm
@@ -33,9 +36,37 @@ class PerformedRxnAdmin(admin.ModelAdmin):
   list_display = ('Reference', 'user', 'labGroup', 'performedDateTime')
   form = PerformedRxnAdminform
 
-admin.site.register(LabGroup, LabGroupAdmin)
-admin.site.register(License, LicenseAdmin)
-admin.site.register(Compound, CompoundAdmin)
-admin.site.register(ChemicalClass, ChemicalClassAdmin)
-admin.site.register(CompoundRole, CompoundRoleAdmin)
-admin.site.register(Performedreaction, PerformedRxnAdmin)
+class BoolRxnDescriptorAdmin(admin.ModelAdmin):
+
+  list_display=('header', 'name')
+  form=BoolRxnDescriptorForm
+
+class NumRxnDescriptorAdmin(admin.ModelAdmin):
+  
+  list_display('header', 'name', 'maximum', 'minimum')
+  form=NumRxnDescriptorForm
+
+class OrdRxnDescriptorAdmin(admin.ModelAdmin): 
+  list_display('header', 'name', 'maximum', 'minimum')
+  form=OrdRxnDescriptorForm
+
+class CatRxnDescriptorAdmin(admin.ModelAdmin):
+  list_display('header', 'name')
+  form = CatRxnDescriptorForm
+
+class CatDescPermValAdmin(admin.ModelAdmin):
+  list_display('value', 'descriptor')
+  form = CatDescPermittedValueForm
+
+register = admin.site.register
+register(LabGroup, LabGroupAdmin)
+register(License, LicenseAdmin)
+register(Compound, CompoundAdmin)
+register(ChemicalClass, ChemicalClassAdmin)
+register(CompoundRole, CompoundRoleAdmin)
+register(Performedreaction, PerformedRxnAdmin)
+register(BoolRxnDescriptor, BoolRxnDescriptorAdmin)
+register(NumRxnDescriptor, NumRxnDescriptorAdmin)
+register(CatRxnDescriptor, CatRxnDescriptorAdmin)
+register(OrdRxnDescriptor, OrdRxnDescriptorAdmin)
+register(CategoricalPermittedDescriptorValue, CatDescPermValAdmin)

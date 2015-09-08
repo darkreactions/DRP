@@ -11,7 +11,7 @@ class RxnDescriptorValue(models.Model):
     app_label="DRP"
     abstract=True
 
-  reaction = models.ForeignKey(Reaction, null=True, unique=False, default=None)
+  reaction = models.ForeignKey(Reaction, unique=False)
   model=models.ForeignKey(StatsModel, unique=False, null=True, default=None)
   '''If this value was predicted by a statistical model, reference that model'''
 
