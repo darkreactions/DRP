@@ -36,3 +36,20 @@ def hasSignedLicense(view):
   
   return _hasSignedLicense
 
+def labGroupSelected(dispatch_method):
+  '''Ensures a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method'''
+
+  def _labGroupSelected(self, request, *args, **kwargs): 
+    self.labForm = LabGroupSelectionForm(request.user)
+    if request.user.labgroup_set.all().count() > 1:
+      if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).exists():
+        self.labGroup = request.user.labgroup_set.get(pk=request.session['labgroup_id'])
+        self.labForm.fields['labGroup'].initial = request.session['labgroup_id']
+      elif 'labgroup_id' not in request.session:
+        return redirect(reverse('selectGroup') + '?{0}'.format(urlencode({'next':request.path_info})))
+      else:
+        raise RuntimeError("This shouldn't happen")
+    else:
+      self.labGroup = request.user.labgroup_set.all()[0]
+
+  return _labGroupSelected

@@ -1,0 +1,47 @@
+{% extends 'reactions.html' %}
+
+{% block content %}
+<h1 class="bannerText">Reactions Database</h1>  
+{% include "lab_form.html" %}
+{% if reactions|length > 0 %}
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Quantities</th>
+      <th>User</th>
+      <th>Date</th>
+      <th>Valid</th>
+      <th>Based On</th>
+      <th>Duplicate Of</th>
+      <th>Lab Group</th>
+    </tr>
+    {% for reaction in reactions %}
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ reaction.reference }}</td>
+      <td>
+        <ul>
+        {% for quantity in reaction.compoundquantity_set.all %}
+          <li>{{ quantity.compound.name }}</li>
+          <li>{{ quantity.role.label }}</li>
+          <li>{{ quantity.amount}}mmoles</li>
+        {% endfor %}
+        <ul>
+      </td>
+      <td>{{ reaction.user.name }}</td>
+      <td>{{ reaction.performedDatetime }}</td>
+      
+      <td>{{ reaction.valid }}</td>
+      <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}</td>
+      <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+<table>
+{% else %}
+<p>There are currently no reactions to display</p>
+{% endif %}
+
+{% endblock %}

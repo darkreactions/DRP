@@ -5,3 +5,4 @@ from joinGroup import joinGroup
 from selectGroup import selectGroup
 import compound
 import decorators
+import reaction
