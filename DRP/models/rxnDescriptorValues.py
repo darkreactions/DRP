@@ -1,7 +1,7 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
-from rxnDescriptors import rxnDescriptors
 from Reaction import Reaction
+from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue  
 from StatsModel import StatsModel
 
 class RxnDescriptorValue(models.Model):
