@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from DRP.models import CatRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor
 from DRP.models import CategoricalDescriptorPermittedValue, CategoricalDescriptor
 
-class DescriptorAdminMixin(forms.ModelForm):
+class DescriptorAdmin(forms.ModelForm):
   '''A mixin for behaviours common to all descriptor admin forms'''
 
   def clean(self, *args, **kwargs):
@@ -23,7 +23,7 @@ class DescriptorAdminMixin(forms.ModelForm):
       descriptor.save()
     return descriptor
 
-class CatRxnDescriptorForm(forms.ModelForm, DescriptorAdminMixin):
+class CatRxnDescriptorForm(DescriptorAdmin):
   '''An admin form for custom Categorical Reaction Descriptors'''
   
   class Meta:
@@ -47,21 +47,21 @@ class CatDescPermittedValueForm(forms.ModelForm):
     super(CatDescPermittedValueForm, self).__init__(self, *args, **kwargs)
     self.fields['descriptor'].queryset=CategoricalDescriptor.objects.filter(calculatorSoftware='manual')
 
-class OrdRxnDescriptorForm(forms.ModelForm, DescriptorAdminMixin):
+class OrdRxnDescriptorForm(DescriptorAdmin):
   '''An admin form for creating custom Ordinal reaction descriptors'''
 
   class Meta:
     fields=('heading', 'name', 'minimum', 'maximum')
     model=OrdRxnDescriptor
 
-class NumRxnDescriptorForm(forms.ModelForm, DescriptorAdminMixin):
+class NumRxnDescriptorForm(DescriptorAdmin):
   '''An admin form for creating custom numeric reaction descriptors'''
 
   class Meta:
     fields=('heading', 'name', 'minimum', 'maximum')
     model=NumRxnDescriptor
 
-class BoolRxnDescriptorForm(forms.ModelForm, DescriptorAdminMixin):
+class BoolRxnDescriptorForm(DescriptorAdmin):
   '''An admin form for creating custom boolean reaction descriptors'''
 
   class Meta:
