@@ -35,6 +35,7 @@ class CatDescPermittedValueForm(forms.ModelForm):
 
   class Meta:
     model=CategoricalDescriptorPermittedValue
+    fields=('descriptor','value')
 
   def clean(self, *args, **kwargs):
     cleaned_data=super(CatDescPermittedValueForm, self).clean(*args, **kwargs)
@@ -44,7 +45,7 @@ class CatDescPermittedValueForm(forms.ModelForm):
       return cleaned_data
 
   def __init__(self, *args, **kwargs):
-    super(CatDescPermittedValueForm, self).__init__(self, *args, **kwargs)
+    super(CatDescPermittedValueForm, self).__init__(*args, **kwargs)
     self.fields['descriptor'].queryset=CategoricalDescriptor.objects.filter(calculatorSoftware='manual')
 
 class OrdRxnDescriptorForm(DescriptorAdmin):

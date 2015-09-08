@@ -33,29 +33,29 @@ class CompoundRoleAdmin(admin.ModelAdmin):
 
 class PerformedRxnAdmin(admin.ModelAdmin):
 
-  list_display = ('Reference', 'user', 'labGroup', 'performedDateTime')
-  form = PerformedRxnAdminform
+  list_display = ('reference', 'user', 'labGroup', 'performedDateTime')
+  form = PerformedRxnAdminForm
 
 class BoolRxnDescriptorAdmin(admin.ModelAdmin):
 
-  list_display=('header', 'name')
+  list_display=('heading', 'name')
   form=BoolRxnDescriptorForm
 
 class NumRxnDescriptorAdmin(admin.ModelAdmin):
   
-  list_display('header', 'name', 'maximum', 'minimum')
+  list_display=('heading', 'name', 'maximum', 'minimum')
   form=NumRxnDescriptorForm
 
 class OrdRxnDescriptorAdmin(admin.ModelAdmin): 
-  list_display('header', 'name', 'maximum', 'minimum')
+  list_display=('heading', 'name', 'maximum', 'minimum')
   form=OrdRxnDescriptorForm
 
 class CatRxnDescriptorAdmin(admin.ModelAdmin):
-  list_display('header', 'name')
+  list_display=('heading', 'name')
   form = CatRxnDescriptorForm
 
 class CatDescPermValAdmin(admin.ModelAdmin):
-  list_display('value', 'descriptor')
+  list_display=('value', 'descriptor')
   form = CatDescPermittedValueForm
 
 register = admin.site.register
@@ -64,9 +64,9 @@ register(License, LicenseAdmin)
 register(Compound, CompoundAdmin)
 register(ChemicalClass, ChemicalClassAdmin)
 register(CompoundRole, CompoundRoleAdmin)
-register(Performedreaction, PerformedRxnAdmin)
+register(PerformedReaction, PerformedRxnAdmin)
 register(BoolRxnDescriptor, BoolRxnDescriptorAdmin)
 register(NumRxnDescriptor, NumRxnDescriptorAdmin)
 register(CatRxnDescriptor, CatRxnDescriptorAdmin)
 register(OrdRxnDescriptor, OrdRxnDescriptorAdmin)
-register(CategoricalPermittedDescriptorValue, CatDescPermValAdmin)
+register(CategoricalDescriptorPermittedValue, CatDescPermValAdmin)
