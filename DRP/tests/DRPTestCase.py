@@ -23,7 +23,6 @@ def cleanUpDatabase():
   DRP.models.Compound.objects.all().delete()
   DRP.models.ChemicalClass.objects.all().delete()
   DRP.models.ConfirmationCode.objects.all().delete()
-  DRP.models.DataSet.objects.all().delete()
   DRP.models.LabGroup.objects.all().delete()
   DRP.models.LicenseAgreement.objects.all()
   DRP.models.License.objects.all().delete()
