@@ -1,5 +1,6 @@
 '''Module containing only the CompoundQuantities Class'''
 from django.db import models
+from django.core.exceptions import ValidationError
 from Compound import Compound
 from CompoundRole import CompoundRole
 from Reaction import Reaction
@@ -17,3 +18,10 @@ class CompoundQuantity(models.Model):
   reaction=models.ForeignKey(Reaction)
   role=models.ForeignKey(CompoundRole)
   amount=models.FloatField() 
+
+class BaseReactantFormSet(mode.BaseModelFormset):
+
+  def clean(self)
+    super(BaseReactantFormSet, self).clean()
+    if len(self.forms) < 1:
+      raise ValidationError('At least one reactant must be supplied', 'no_reactant') 

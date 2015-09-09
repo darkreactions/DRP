@@ -8,6 +8,6 @@ from FilterForm import FilterForm, FilterFormSet, filterFormSetFactory
 from compound import CompoundForm, CompoundAdminForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm, CompoundFilterForm
 from compound import CompoundFilterFormSet, AdvancedCompoundFilterForm, AdvancedCompoundFilterFormSet
 from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationForm
-from reaction import PerformedRxnAdminForm
+from PerformedReaction import PerformedRxnAdminForm, PerformedRxnForm
 from descriptor import CatRxnDescriptorForm, BoolRxnDescriptorForm, NumRxnDescriptorForm, OrdRxnDescriptorForm, CatDescPermittedValueForm
-  
+from descriptorValues import NumRxnDescValFormSet, OrdRxnDescValFormSet, BoolRxnDescValFormSet, CatRxnDescValFormSet  

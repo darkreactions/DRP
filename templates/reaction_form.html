@@ -23,7 +23,7 @@
       </ol></li>
       {% endfor %}
     </ol>
-    <input type="submit" name="add_" value="Add Another" />
+    <input type="submit" name="add_{{ formset.prefix }}_descriptor" value="Add Another" />
     {% endfor %}
     <input type="submit" name="save" value="Save" />
   </form> 
