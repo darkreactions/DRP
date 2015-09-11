@@ -17,12 +17,12 @@ class PerformedRxnForm(forms.ModelForm):
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
-    super(PerformedRxnForm, self).__init(*args, **kwargs)
+    super(PerformedRxnForm, self).__init__(*args, **kwargs)
     self.user = user
     labGroups = user.labgroup_set.all()
     self.fields['labGroup'].queryset = labGroups
     self.fields['recommendation'].queryset = RecommendedReaction.objects.filter(labGroup__in=labGroups)
-    self.fields['duplicateOf'].queryset = PerformedReactions.objects.filter(labGroup__in=labGroups)|PerformedReactions.objects.filter(public=True)
+    self.fields['duplicateOf'].queryset = PerformedReaction.objects.filter(labGroup__in=labGroups)|PerformedReaction.objects.filter(public=True)
     if labGroups.exists():
       self.fields['labGroup'].empty_label = None 
 

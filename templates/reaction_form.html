@@ -3,10 +3,10 @@
 {% block content %}
   <h1>Add Reaction Data</h1>
   <form action="{% url 'newReaction' %}" method="post">
+    {% csrf_token %}
     <ol>
       {{ reaction_form.as_ul }}
     </ol>
-    {{ reactants_formset.management_form }}
     <ol>
       {% for reactant_form in reactants_formset %}
       <li><ol>
@@ -14,8 +14,11 @@
       </ol></li>
       {% endfor %}
     </ol>
-    <input type="submit" name="add_reactant" value="Add Another" />
+    <ol>
+    {{ reactants_formset.managementForm.as_ul }}
+    </ol>
     {% for formset in descriptor_formsets %}
+    {{ formset.management_form }}
     <ol>
       {% for form in formset %}
       <li><ol>

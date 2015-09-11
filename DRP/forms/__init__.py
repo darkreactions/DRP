@@ -11,3 +11,4 @@ from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationF
 from PerformedReaction import PerformedRxnAdminForm, PerformedRxnForm
 from descriptor import CatRxnDescriptorForm, BoolRxnDescriptorForm, NumRxnDescriptorForm, OrdRxnDescriptorForm, CatDescPermittedValueForm
 from descriptorValues import NumRxnDescValFormSet, OrdRxnDescValFormSet, BoolRxnDescValFormSet, CatRxnDescValFormSet  
+from FormSet import FormSet, ModelFormSet, FormSetManagerForm 

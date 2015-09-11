@@ -7,7 +7,9 @@ from DRP.forms import NumRxnDescValFormSet, OrdRxnDescValFormSet, BoolRxnDescVal
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
 from django.contrib.auth.decorators import login_required
-from django.forms import modelformset_factory
+from django.forms.models import modelformset_factory
+from DRP.forms import ModelFormSet
+from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render, redirect
 
 class ListPerformedReactions(ListView):
@@ -36,33 +38,33 @@ class ListPerformedReactions(ListView):
 def createReaction(request):
   descFields = ('descriptor', 'value')
   if request.method=='POST':
+    reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), data=request.POST, canAdd=True, canDelete=True)
     reactionForm = PerformedRxnForm(request.user, data=request.POST) 
 
-    reactantsFormSet = modelformset_factory(CompoundQuantity, fields=('compound', 'role', 'amount'))(data=request.POST)
-    if 'add_reactant' in request.POST:
-      reactantsFormSet.extra = reactantsFormSet.total_form_count()+1
-    if len(reactantsFormset.forms) > 1:
-      reactantsFormSet.can_delete=True
-
-    descriptorFormsets = (
-      NumRxndescValFormSet(data=request.POST), OrdRxndescValFormSet(data=request.POST), BoolRxnDescValFormSet(data=request.POST), CatRxnDescValFormSet(data=request.POST)
+    descriptorFormSets = (
+      NumRxnDescValFormSet(data=request.POST, prefix='num'),
+      OrdRxnDescValFormSet(data=request.POST, prefix='ord'),
+      BoolRxnDescValFormSet(data=request.POST, prefix='bool'),
+      CatRxnDescValFormSet(data=request.POST, prefix='cat')
     )
     for formSet in descriptorFormSets:
       if 'add_' + formSet.prefix + '_descriptor' in request.POST:
-        formSet.extra = reactantsFormSet.total_form_count()+1
-    if reactionForm.is_valid() and reactantsFormSet.is_valid() and all(d.is_valid() for d in descriptorFormsets):
-      rxn = reactionForm.save()
-      for reactants in reactantsFormSet.save(commit=False):
-        reactant.reaction=rxn.reaction
-        reactant.save()
-      for formSet in descriptorFormSets:
-        for descriptorValue in formset.save(commit=False):
-          descriptorValue.reaction=rxn.reaction
-      return redirect('reactionlist')
+        formSet.extra = formSet.total_form_count()+1
+
+    if 'save' in request.POST:
+      if reactionForm.is_valid() and reactantsFormSetInst.is_valid() and all(d.is_valid() for d in descriptorFormSets):
+        rxn = reactionForm.save()
+        for reactants in reactantsFormSetInst.save(commit=False):
+          reactant.reaction=rxn.reaction
+          reactant.save()
+        for formSet in descriptorFormSets:
+          for descriptorValue in formset.save(commit=False):
+            descriptorValue.reaction=rxn.reaction
+        return redirect('reactionlist')
   else:
-    reactionForm = PerformedRxnForm(user)
-    reactantsFormSet = modelformset_factory(CompoundQuantity, fields=('compound', 'role', 'amount'))
-    descriptorFormsets = (
-      NumRxndescValFormSet(), OrdRxndescValFormSet(), BoolRxnDescValFormSet(), CatRxnDescValFormSet()
+    reactionForm = PerformedRxnForm(request.user)
+    reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), canAdd=True, canDelete=True)
+    descriptorFormSets = (
+      NumRxnDescValFormSet(prefix='num'), OrdRxnDescValFormSet(prefix='ord'), BoolRxnDescValFormSet(prefix='bool'), CatRxnDescValFormSet(prefix='cat')
     )
-  return render(request, 'reaction_form.html', {'reaction_form':reactionForm, 'reactants_formset':reactantsFormSet, 'descriptor_formsets':descriptorFormSets}) 
+  return render(request, 'reaction_form.html', {'reaction_form':reactionForm, 'reactants_formset':reactantsFormSetInst, 'descriptor_formsets':descriptorFormSets}) 
