@@ -18,15 +18,18 @@
     {{ reactants_formset.managementForm.as_ul }}
     </ol>
     {% for formset in descriptor_formsets %}
-    {{ formset.management_form }}
     <ol>
       {% for form in formset %}
-      <li><ol>
-        {{ form.as_ul }}
-      </ol></li>
+      <li>
+        <ol>
+          {{ form.as_ul }}
+        </ol>
+      </li>
       {% endfor %}
     </ol>
-    <input type="submit" name="add_{{ formset.prefix }}_descriptor" value="Add Another" />
+    <ol>
+      {{ formset.managementForm.as_ul }}
+    </ol>
     {% endfor %}
     <input type="submit" name="save" value="Save" />
   </form> 

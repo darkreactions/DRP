@@ -20,7 +20,7 @@ class CategoricalDescriptorValue(models.Model):
       return self.value.value == other
 
   def clean(self):
-    if self.value not in self.descriptor.permittedValues.all() and self.value is not None:
+    if self.value is not None and self.value not in self.descriptor.permittedValues.all():
       raise ValidationError('Invalid Category Described for this Categorical Descriptor', 'invalid_category')
 
   def save(self, *args, **kwargs):

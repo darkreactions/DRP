@@ -1,6 +1,5 @@
 
 from django import forms
-from django.forms.models import modelformset_factory
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models import NumRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor, OrdRxnDescriptor
@@ -25,8 +24,3 @@ NumRxnDescValForm = factory(NumRxnDescriptorValue, NumRxnDescriptor)
 OrdRxnDescValForm = factory(OrdRxnDescriptorValue, OrdRxnDescriptor)
 BoolRxnDescValForm = factory(BoolRxnDescriptorValue, BoolRxnDescriptor)
 CatRxnDescValForm = factory(CatRxnDescriptorValue, CatRxnDescriptor) 
-
-NumRxnDescValFormSet = modelformset_factory(NumRxnDescriptorValue, form=NumRxnDescValForm, can_delete=True)
-OrdRxnDescValFormSet = modelformset_factory(OrdRxnDescriptorValue, form=OrdRxnDescValForm, can_delete=True)
-BoolRxnDescValFormSet = modelformset_factory(BoolRxnDescriptorValue, form=BoolRxnDescValForm, can_delete=True)
-CatRxnDescValFormSet = modelformset_factory(CatRxnDescriptorValue, form=CatRxnDescValForm, can_delete=True)

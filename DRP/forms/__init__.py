@@ -10,5 +10,5 @@ from compound import CompoundFilterFormSet, AdvancedCompoundFilterForm, Advanced
 from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationForm
 from PerformedReaction import PerformedRxnAdminForm, PerformedRxnForm
 from descriptor import CatRxnDescriptorForm, BoolRxnDescriptorForm, NumRxnDescriptorForm, OrdRxnDescriptorForm, CatDescPermittedValueForm
-from descriptorValues import NumRxnDescValFormSet, OrdRxnDescValFormSet, BoolRxnDescValFormSet, CatRxnDescValFormSet  
+from descriptorValues import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm  
 from FormSet import FormSet, ModelFormSet, FormSetManagerForm 
