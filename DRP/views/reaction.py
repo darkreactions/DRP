@@ -44,8 +44,8 @@ def createReaction(request):
     descriptorFormSets = (
       FormSet(NumRxnDescValForm, data=request.POST, prefix='num', canDelete=True),
       FormSet(OrdRxnDescValForm, data=request.POST, prefix='ord', canDelete=True),
-      FormSet(CatRxnDescValForm, data=request.POST, prefix='cat', canDelete=True),
-      FormSet(BoolRxnDescValForm, data=request.POST, prefix='bool', canDelete=True)
+      FormSet(BoolRxnDescValForm, data=request.POST, prefix='bool', canDelete=True),
+      FormSet(CatRxnDescValForm, data=request.POST, prefix='cat', canDelete=True)
     )
 
     if 'save' in request.POST:
