@@ -17,12 +17,16 @@ class FormSetManagerForm(forms.Form):
 
   def __init__(self, maxForms, formSetPrefix, initialCount, canAdd, canDelete, prefix='', data=None, *args, **kwargs):
     super(FormSetManagerForm, self).__init__(prefix=prefix+'-'+formSetPrefix, data=copy.copy(data), *args, **kwargs)
-    self.fields[TOTAL_FORMS] = forms.IntegerField(min_value=0, widget=forms.widgets.HiddenInput, initial=1) #useful for javascript
+    self.fields[TOTAL_FORMS] = forms.IntegerField(min_value=0, widget=forms.widgets.HiddenInput, initial=0 if canAdd else 1) #useful for javascript
     self.fields[MAX_FORMS] = forms.IntegerField(min_value=0, max_value=maxForms, initial=maxForms, widget=forms.widgets.HiddenInput) #useful for javascript
     self.fields[PREFIX] = forms.CharField(initial=formSetPrefix, widget=forms.widgets.HiddenInput, required=False) #useful for javascript
     if canAdd:
       self.canAdd = canAdd
-      self.fields[ADD_FORM] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Add another'), required=False)
+      if data is None:
+        self.fields[ADD_FORM] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Add one'), required=False)
+      else:
+        self.fields[ADD_FORM] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Add another'), required=False)
+        
     if canDelete:
       self.canDelete = canDelete
       self.fields[DELETE] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Remove one'), required=False)
@@ -38,6 +42,8 @@ class FormSetManagerForm(forms.Form):
     self.data[self.add_prefix(TOTAL_FORMS)] = str(self.cleaned_data.get(TOTAL_FORMS)) #YUK.
     if cleaned_data.get(TOTAL_FORMS) < 2 and (DELETE in self.fields):
       del self.fields[DELETE]
+    if cleaned_data.get(TOTAL_FORMS) < 1 and (ADD_FORM in self.fields):
+      self.fields[ADD_FORM].widget.value = 'Add one' 
     self.cleaned_data = cleaned_data
     return cleaned_data
 
@@ -61,9 +67,10 @@ class FormSet(object):
 
   def __init__(self, formClass, data=None, prefix='', initial=None, maxForms=HARD_MAX_FORMS, canDelete=False, canAdd=True):
     if initial is None:
-      initialCount = 1
-    elif len(initial) < 2:
-      initialCount = 1
+      if canAdd:
+        initialCount = 0
+      else:
+        initalCount = 1
     else:
       initialCount = len(initial)
     self.managementForm = FormSetManagerForm(maxForms, prefix, initialCount, canAdd, canDelete, prefix='{}-manager'.format(prefix), data=data)
