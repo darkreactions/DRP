@@ -183,6 +183,9 @@ class Compound(CsvModel):
     super(Compound, self).__init__(*args, **kwargs)
     self.lazyChemicalClasses= []
 
+  def __unicode__(self):
+    return '{} ({})'.format(self.name, self.abbrev)
+
   def csConsistencyCheck(self):
     '''Performs a consistency check of this record against chemspider. Raises a ValidationError on error.'''
     if not self.custom:

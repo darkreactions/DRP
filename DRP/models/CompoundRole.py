@@ -9,3 +9,6 @@ class CompoundRole(models.Model):
 
   label=models.CharField(max_length=255, unique=True)
   description=models.TextField()
+
+  def __unicode__(self):
+    return self.label
