@@ -11,12 +11,15 @@ class PerformedRxnAdminForm(forms.ModelForm):
     model=PerformedReaction
 
 class PerformedRxnForm(forms.ModelForm):
+  '''A form for creating performed reaction instances in teh databases'''
  
   class Meta:
-    fields=('notes', 'labGroup', 'reference', 'recommendation', 'public', 'duplicateOf') 
+    fields=('reference', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf') 
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
+    '''Overridden __init__ method; requires the user as teh first argument so that choice of lab group etc can be validated, as well as to
+    track who enters what'''
     super(PerformedRxnForm, self).__init__(*args, **kwargs)
     self.user = user
     labGroups = user.labgroup_set.all()
@@ -27,6 +30,7 @@ class PerformedRxnForm(forms.ModelForm):
       self.fields['labGroup'].empty_label = None 
 
   def save(self, commit=True, *args, **kwargs):
+    '''Overriden save method automates addition of user that created this instance'''
     rxn = super(PerformedRxnForm, self).save(commit=False)
     rxn.user = self.user
     if commit:
