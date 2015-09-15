@@ -1,7 +1,8 @@
 '''A module containing views pertinent to the manipulation of reaction objects'''
 
 from django.views.generic import CreateView, ListView, UpdateView
-from DRP.models import PerformedReaction, CompoundQuantity
+from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
+from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.forms import PerformedRxnForm
 from DRP.forms import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm  
 from django.utils.decorators import method_decorator
@@ -42,10 +43,10 @@ def createReaction(request):
     reactionForm = PerformedRxnForm(request.user, data=request.POST) 
 
     descriptorFormSets = (
-      FormSet(NumRxnDescValForm, data=request.POST, prefix='num', canDelete=True),
-      FormSet(OrdRxnDescValForm, data=request.POST, prefix='ord', canDelete=True),
-      FormSet(BoolRxnDescValForm, data=request.POST, prefix='bool', canDelete=True),
-      FormSet(CatRxnDescValForm, data=request.POST, prefix='cat', canDelete=True)
+      ModelFormSet(NumRxnDescriptorValue, form=NumRxnDescValForm, data=request.POST, prefix='num', canDelete=True),
+      ModelFormSet(OrdRxnDescriptorValue, OrdRxnDescValForm, data=request.POST, prefix='ord', canDelete=True),
+      ModelFormSet(BoolRxnDescriptorValue, BoolRxnDescValForm, data=request.POST, prefix='bool', canDelete=True),
+      ModelFormSet(CatRxnDescriptorValue, CatRxnDescValForm, data=request.POST, prefix='cat', canDelete=True)
     )
 
     if 'save' in request.POST:
@@ -62,9 +63,9 @@ def createReaction(request):
     reactionForm = PerformedRxnForm(request.user)
     reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), canAdd=True)
     descriptorFormSets = (
-      FormSet(NumRxnDescValForm, prefix='num'),
-      FormSet(OrdRxnDescValForm,prefix='ord'),
-      FormSet(BoolRxnDescValForm, prefix='bool'),
-      FormSet(CatRxnDescValForm, prefix='cat')
+      ModelFormSet(NumRxnDescriptorValue, NumRxnDescValForm, prefix='num'),
+      ModelFormSet(OrdRxnDescriptorValue, OrdRxnDescValForm,prefix='ord'),
+      ModelFormSet(BoolRxnDescriptorValue, BoolRxnDescValForm, prefix='bool'),
+      ModelFormSet(CatRxnDescriptorValue, CatRxnDescValForm, prefix='cat')
     )
   return render(request, 'reaction_form.html', {'reaction_form':reactionForm, 'reactants_formset':reactantsFormSetInst, 'descriptor_formsets':descriptorFormSets}) 
