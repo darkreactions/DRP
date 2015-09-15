@@ -14,6 +14,7 @@ from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render, redirect
 
 class ListPerformedReactions(ListView):
+  '''Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies'''
 
   template_name='reactions_list.html'
   context_object_name='reactions'
@@ -37,6 +38,7 @@ class ListPerformedReactions(ListView):
 @hasSignedLicense
 @userHasLabGroup
 def createReaction(request):
+  '''A view designed to create performed reaction instances'''
   descFields = ('descriptor', 'value')
   if request.method=='POST':
     reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), data=request.POST, canAdd=True, canDelete=True)
