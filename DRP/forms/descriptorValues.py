@@ -5,7 +5,7 @@ from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDesc
 from DRP.models import NumRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor, OrdRxnDescriptor
 
 def descriptorValueFormFactory(modelClass, descriptorClass):
-'''A factory function for producing descriptor value form classes'''
+  '''A factory function for producing descriptor value form classes'''
 
   class DescriptorValueForm(forms.ModelForm):
     '''A form for a descriptor value'''
