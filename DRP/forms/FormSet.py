@@ -122,7 +122,7 @@ class FormSet(object):
 
   def is_valid(self):
     '''Checks management form and all forms are valid and returns false otherwise'''
-    return if self.managementForm.is_valid() and all(f.is_valid() for f in self.forms)
+    return self.managementForm.is_valid() and all(f.is_valid() for f in self.forms)
 
   @property
   def cleaned_data(self):
