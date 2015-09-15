@@ -1,6 +1,7 @@
 '''A module containing only the StatsModel class'''
 from django.db import models
 from StatsModelTag import StatsModelTag
+from descriptors import Descriptor 
 from django.conf import settings
 
 class StatsModel(models.Model):
@@ -20,3 +21,4 @@ class StatsModel(models.Model):
   library=models.CharField(max_length=200, choices=settings.LIBRARY_CHOICES)
   tool=models.CharField(max_length=200, choices=settings.TOOL_CHOICES)
   tags=models.ManyToManyField(StatsModelTag)
+  descriptors=models.ManyToManyField(Descriptor) 

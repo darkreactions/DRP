@@ -11,7 +11,7 @@ def slugify(text):
   return _slugify(text).replace('-', '_')
 
 class Descriptor(models.Model):
-  '''An abstract class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
+  '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
   
   class Meta:
     app_label='DRP'

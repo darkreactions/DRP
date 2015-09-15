@@ -13,5 +13,5 @@ class Reaction(models.Model):
     app_label="DRP"
 
   compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
-  notes=models.TextField() 
+  notes=models.TextField(blank=True) 
   labGroup=models.ForeignKey(LabGroup)
