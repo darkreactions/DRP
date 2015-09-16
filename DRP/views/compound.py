@@ -86,6 +86,7 @@ def uploadCompound(request, *args, **kwargs):
   if request.method=='POST':
     form = CompoundUploadForm(data=request.POST, files=request.FILES, user=request.user)
     if form.is_valid(): #this particular kind of form does the saving and validation in one step. It's a nasty hack but I couldn't find a better way to leverage transactions.
+      form.save()
       return redirect('compoundguide', '/')
     else:
       return render(request, 'compound_upload.html', {'form':form})
