@@ -10,13 +10,13 @@ class DescriptorAdmin(forms.ModelForm):
 
   def clean(self, *args, **kwargs):
     '''This clean method is purely desingned to stop the overwriting of plugin descriptors'''
-    cleaned_data = super(DescriptorAdminMixin, self).clean(*args, **kwargs)
-    if self.instance.calculatorSoftware!='manual':
+    cleaned_data = super(DescriptorAdmin, self).clean(*args, **kwargs)
+    if self.instance.pk and self.instance.calculatorSoftware != 'manual':
       raise ValidationError('This descriptor is not a manual descriptor, and thus cannot be edited using the django admin', 'not_manual')
     return cleaned_data
 
   def save(self, commit=True, *args, **kwargs):
-    descriptor = super(DescriptorAdminMixin, self).save(commit=False,*args, **kwargs)
+    descriptor = super(DescriptorAdmin, self).save(commit=False,*args, **kwargs)
     descriptor.calculatorSoftware='manual'
     descriptor.calculatorSoftwareVersion='0'
     if commit:

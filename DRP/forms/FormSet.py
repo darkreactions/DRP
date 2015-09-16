@@ -155,6 +155,6 @@ class ModelFormSet(FormSet):
       formClass._meta.fields=outerFields
     super(ModelFormSet, self).__init__(formClass, *args, **kwargs)
 
-  def save(commit=True):
+  def save(self, commit=True):
     '''Returns the objects created by all valid forms in this formset'''
     return [form.save(commit=commit) for form in self.forms if form.is_valid()]

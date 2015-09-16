@@ -10,7 +10,8 @@
       <th>Reference</th>
       <th>Quantities</th>
       <th>User</th>
-      <th>Date</th>
+      <th>Date Performed</th>
+      <th>Date Inserted</th>
       <th>Valid</th>
       <th>Based On</th>
       <th>Duplicate Of</th>
@@ -30,12 +31,13 @@
         {% endfor %}
         <ul>
       </td>
-      <td>{{ reaction.user.name }}</td>
-      <td>{{ reaction.performedDatetime }}</td>
-      
+      <td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
+      <td>{{ reaction.performedDateTime }}</td>
+      <td>{{ reaction.insertedDateTime }}</td>
       <td>{{ reaction.valid }}</td>
-      <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}{% endif %}</td>
-      <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% endif %}</td>
+      <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}{% else %}N/A{% endif %}</td>
+      <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% else %}N/A{% endif %}</td>
+      <td>{{ reaction.labGroup.title }}</td>
     </tr>
     {% endfor %}
   </tbody>

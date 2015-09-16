@@ -54,12 +54,13 @@ def createReaction(request):
     if 'save' in request.POST:
       if reactionForm.is_valid() and reactantsFormSetInst.is_valid() and all(d.is_valid() for d in descriptorFormSets):
         rxn = reactionForm.save()
-        for reactants in reactantsFormSetInst.save(commit=False):
-          reactant.reaction=rxn.reaction
+        for reactant in reactantsFormSetInst.save(commit=False):
+          reactant.reaction=rxn.reaction_ptr
           reactant.save()
         for formSet in descriptorFormSets:
-          for descriptorValue in formset.save(commit=False):
-            descriptorValue.reaction=rxn.reaction
+          for descriptorValue in formSet.save(commit=False):
+            descriptorValue.reaction=rxn.reaction_ptr
+            descriptorValue.save()
         return redirect('reactionlist')
   else:
     reactionForm = PerformedRxnForm(request.user)
