@@ -45,10 +45,10 @@ def createReaction(request):
     reactionForm = PerformedRxnForm(request.user, data=request.POST) 
 
     descriptorFormSets = (
-      ModelFormSet(NumRxnDescriptorValue, form=NumRxnDescValForm, data=request.POST, prefix='num', canDelete=True),
-      ModelFormSet(OrdRxnDescriptorValue, OrdRxnDescValForm, data=request.POST, prefix='ord', canDelete=True),
-      ModelFormSet(BoolRxnDescriptorValue, BoolRxnDescValForm, data=request.POST, prefix='bool', canDelete=True),
-      ModelFormSet(CatRxnDescriptorValue, CatRxnDescValForm, data=request.POST, prefix='cat', canDelete=True)
+      ModelFormSet(NumRxnDescriptorValue, formClass=NumRxnDescValForm, data=request.POST, prefix='num', canDelete=True),
+      ModelFormSet(OrdRxnDescriptorValue, formClass=OrdRxnDescValForm, data=request.POST, prefix='ord', canDelete=True),
+      ModelFormSet(BoolRxnDescriptorValue, formClass=BoolRxnDescValForm, data=request.POST, prefix='bool', canDelete=True),
+      ModelFormSet(CatRxnDescriptorValue, formClass=CatRxnDescValForm, data=request.POST, prefix='cat', canDelete=True)
     )
 
     if 'save' in request.POST:
@@ -65,9 +65,9 @@ def createReaction(request):
     reactionForm = PerformedRxnForm(request.user)
     reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), canAdd=True)
     descriptorFormSets = (
-      ModelFormSet(NumRxnDescriptorValue, NumRxnDescValForm, prefix='num'),
-      ModelFormSet(OrdRxnDescriptorValue, OrdRxnDescValForm,prefix='ord'),
-      ModelFormSet(BoolRxnDescriptorValue, BoolRxnDescValForm, prefix='bool'),
-      ModelFormSet(CatRxnDescriptorValue, CatRxnDescValForm, prefix='cat')
+      ModelFormSet(NumRxnDescriptorValue, formClass=NumRxnDescValForm, prefix='num'),
+      ModelFormSet(OrdRxnDescriptorValue, formClass=OrdRxnDescValForm, prefix='ord'),
+      ModelFormSet(BoolRxnDescriptorValue, formClass=BoolRxnDescValForm, prefix='bool'),
+      ModelFormSet(CatRxnDescriptorValue, formClass=CatRxnDescValForm, prefix='cat')
     )
   return render(request, 'reaction_form.html', {'reaction_form':reactionForm, 'reactants_formset':reactantsFormSetInst, 'descriptor_formsets':descriptorFormSets}) 

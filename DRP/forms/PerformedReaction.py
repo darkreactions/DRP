@@ -14,7 +14,7 @@ class PerformedRxnForm(forms.ModelForm):
   '''A form for creating performed reaction instances in teh databases'''
  
   class Meta:
-    fields=('reference', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf') 
+    fields=('reference', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf' ) 
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):

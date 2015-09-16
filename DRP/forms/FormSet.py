@@ -56,7 +56,7 @@ class FormSetManagerForm(forms.Form):
     if cleaned_data.get(DELETE):
       cleaned_data[TOTAL_FORMS] -=1
     self.data[self.add_prefix(TOTAL_FORMS)] = str(self.cleaned_data.get(TOTAL_FORMS)) #YUK.
-    if cleaned_data.get(TOTAL_FORMS) < 2 and (DELETE in self.fields):
+    if cleaned_data.get(TOTAL_FORMS) < 1 and (DELETE in self.fields): #this minimum form value should be made a variable at some poitn
       del self.fields[DELETE]
     if cleaned_data.get(TOTAL_FORMS) < 1 and (ADD_FORM in self.fields):
       self.fields[ADD_FORM].widget.value = 'Add one' 
@@ -155,6 +155,6 @@ class ModelFormSet(FormSet):
       formClass._meta.fields=outerFields
     super(ModelFormSet, self).__init__(formClass, *args, **kwargs)
 
-  def save(commmit=True):
+  def save(commit=True):
     '''Returns the objects created by all valid forms in this formset'''
     return [form.save(commit=commit) for form in self.forms if form.is_valid()]
