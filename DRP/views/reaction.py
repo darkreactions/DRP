@@ -79,21 +79,26 @@ def reactionForm(request, pk=None):
         for reactant in reactants:
           reactant.reaction=rxn.reaction_ptr
           reactant.save()
-        rxn.compoundquantities_set.exclude(reactants).delete()
+        CompoundQuantity.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(reactant.pk for reactant in reactants)).delete()
+        cdvs = [] #collated descriptor values
         for formSet in descriptorFormSets:
           descriptorValues = formSet.save(commit=False)
+          cdvs.append(descriptorValues)
           for descriptorValue in descriptorValues:
             descriptorValue.reaction=rxn.reaction_ptr
             descriptorValue.save()
-          rxn.descriptorvalue_set.exclude(descriptorValues).delete()
+        NumRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[0]))
+        OrdRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[1]))
+        BoolRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[2]))
+        CatRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[3]))
         return redirect('reactionlist')
   else:
     reactionForm = PerformedRxnForm(request.user, instance=reaction)
-    reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), canAdd=True, instances=reactants)
+    reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), canAdd=True, instances=reactants, canDelete=True)
     descriptorFormSets = (
-      ModelFormSet(NumRxnDescriptorValue, formClass=NumRxnDescValForm, prefix='num', instances=numRxnDescriptorValues),
-      ModelFormSet(OrdRxnDescriptorValue, formClass=OrdRxnDescValForm, prefix='ord', instances=ordRxnDescriptorValues),
-      ModelFormSet(BoolRxnDescriptorValue, formClass=BoolRxnDescValForm, prefix='bool', instances=boolRxnDescriptorValues),
-      ModelFormSet(CatRxnDescriptorValue, formClass=CatRxnDescValForm, prefix='cat', instances=catRxnDescriptorValues)
+      ModelFormSet(NumRxnDescriptorValue, formClass=NumRxnDescValForm, prefix='num', instances=numRxnDescriptorValues, canDelete=True),
+      ModelFormSet(OrdRxnDescriptorValue, formClass=OrdRxnDescValForm, prefix='ord', instances=ordRxnDescriptorValues, canDelete=True),
+      ModelFormSet(BoolRxnDescriptorValue, formClass=BoolRxnDescValForm, prefix='bool', instances=boolRxnDescriptorValues, canDelete=True),
+      ModelFormSet(CatRxnDescriptorValue, formClass=CatRxnDescValForm, prefix='cat', instances=catRxnDescriptorValues, canDelete=True)
     )
   return render(request, 'reaction_form.html', {'reaction_form':reactionForm, 'reactants_formset':reactantsFormSetInst, 'descriptor_formsets':descriptorFormSets}) 
