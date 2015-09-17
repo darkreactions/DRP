@@ -1,6 +1,7 @@
 '''A module containing code pertaining to forms for the reaction classes'''
 from django import forms
 from DRP.models import PerformedReaction, RecommendedReaction
+from django.forms.widgets import HiddenInput
 
 class PerformedRxnAdminForm(forms.ModelForm):
   '''A form for the performed reactions in the Django admin, the only things we want editing from
@@ -36,3 +37,22 @@ class PerformedRxnForm(forms.ModelForm):
     if commit:
       rxn.save()
     return rxn 
+
+class PerformedRxnDeleteForm(forms.ModelForm):
+
+  class Meta:
+    fields=('id',)
+    model=PerformedReaction
+
+  def __init__(self, user, *args, **kwargs):
+    super(PerformedRxnDeleteForm, self).__init__(*args, **kwargs)
+    self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
+
+  def clean_id(self):
+    if self.cleaned_data['id'].inTestSetFor.exists() or self.cleaned_data['id'].inTrainingSetFor.exists():
+      raise ValidationError("This reaction is protected from deletion because it is used in one or more reactions or recommendations.")
+    return self.cleaned_data['id'] 
+
+  def save(self):
+    self.cleaned_data['id'].delete()
+    return self.cleaned_data['id']

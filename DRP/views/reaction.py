@@ -3,7 +3,7 @@
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
-from DRP.forms import PerformedRxnForm
+from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
 from DRP.forms import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm  
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
@@ -13,6 +13,8 @@ from DRP.forms import ModelFormSet, FormSet
 from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.views.decorators.http import require_POST
+from django.core.exceptions import PermissionDenied
 
 class ListPerformedReactions(ListView):
   '''Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies'''
@@ -54,6 +56,8 @@ def reactionForm(request, pk=None):
     ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
     boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
     catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr) 
+  elif not reaction.valid:
+    raise PermissionDenied()
   else:
     reactants=None
     numRxnDescriptorValues = None 
@@ -102,3 +106,16 @@ def reactionForm(request, pk=None):
       ModelFormSet(CatRxnDescriptorValue, formClass=CatRxnDescValForm, prefix='cat', instances=catRxnDescriptorValues, canDelete=True)
     )
   return render(request, 'reaction_form.html', {'reaction_form':reactionForm, 'reactants_formset':reactantsFormSetInst, 'descriptor_formsets':descriptorFormSets}) 
+
+@require_POST
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+def deleteReaction(request, *args, **kwargs):
+  '''A view managing the deletion of reaction objects'''
+  form =PerformedRxnDeleteForm(data=request.POST, user=request.user) 
+  if form.is_valid():
+    form.save()
+  else:
+    raise RuntimeError(str(form.errors))
+  return redirect('reactionlist', '/')

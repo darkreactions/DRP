@@ -1,4 +1,5 @@
 {% extends 'reactions.html' %}
+{% load performed_rxn_delete_form %}
 
 {% block content %}
 <h1 class="bannerText">Reactions Database</h1>  
@@ -21,13 +22,13 @@
     {% for reaction in reactions %}
   <tbody>
     <tr>
-      <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a></td>
+      <td>{% if reaction.valid %}<a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>{% else %}{{ reaction.reference }}{% endif %}</td>
       <td>
         <ul>
         {% for quantity in reaction.compoundquantity_set.all %}
           <li>{{ quantity.compound.name }}</li>
           <li>{{ quantity.role.label }}</li>
-          <li>{{ quantity.amount}}mmoles</li>
+          <li>{{ quantity.amount }}mmoles</li>
         {% endfor %}
         <ul>
       </td>
@@ -38,6 +39,15 @@
       <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}{% else %}N/A{% endif %}</td>
       <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% else %}N/A{% endif %}</td>
       <td>{{ reaction.labGroup.title }}</td>
+      <td>
+        {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
+        <form action="{% url 'deleteReaction' %}" method="post">
+          {% csrf_token %}
+          {% performed_rxn_delete_form reaction %}
+          <input type="Submit" value="delete" />
+        </form>
+        {% endif %}
+      </td>
     </tr>
     {% endfor %}
   </tbody>
