@@ -31,7 +31,7 @@ class FormSetManagerForm(forms.Form):
       *args, **kwargs; other nonpertinent arguments which are handed on to the forms.Form constructor for completeness
     '''
     super(FormSetManagerForm, self).__init__(prefix=prefix+'-'+formSetPrefix, data=copy.copy(data), *args, **kwargs)
-    self.fields[TOTAL_FORMS] = forms.IntegerField(min_value=0, widget=forms.widgets.HiddenInput, initial=0 if canAdd else 1) #useful for javascript
+    self.fields[TOTAL_FORMS] = forms.IntegerField(min_value=0, widget=forms.widgets.HiddenInput, initial=initialCount if canAdd else initialCount+1) #useful for javascript
     self.fields[MAX_FORMS] = forms.IntegerField(min_value=0, max_value=maxForms, initial=maxForms, widget=forms.widgets.HiddenInput) #useful for javascript
     self.fields[PREFIX] = forms.CharField(initial=formSetPrefix, widget=forms.widgets.HiddenInput, required=False) #useful for javascript
     if canAdd:
@@ -91,27 +91,38 @@ class FormSet(object):
 
       formClass is the class of form that is being accepted
     '''
-    if initial is None:
-      if canAdd:
-        initialCount = 0
-      else:
-        initalCount = 1
-    else:
-      initialCount = len(initial)
+    self.formClass = formClass
+    self.prefix=prefix
+    self.initial = initial
+    self.canAdd = canAdd
+    initialCount = self._initialCount()
     self.managementForm = FormSetManagerForm(maxForms, prefix, initialCount, canAdd, canDelete, prefix='{}-manager'.format(prefix), data=data)
     if self.managementForm.is_bound and self.managementForm.is_valid():
         formCount = self.managementForm.submittedForms
     else:
       formCount = initialCount
 
-    self.forms = []
-
-    for i in range(0, formCount):
-      self.forms.append(formClass(data=data, prefix='{}-{}'.format(prefix, i)))
+    self.data = data
+    self._createForms(formCount)
 
     if self.managementForm.is_valid():
       if self.managementForm.cleaned_data.get(ADD_FORM):
         self.forms.append(formClass(prefix='{}-{}'.format(prefix, formCount)))
+
+  def _createForms(self, formCount):
+    self.forms = []
+    for i in range(0, formCount):
+      self.forms.append(self.formClass(data=self.data, prefix='{}-{}'.format(self.prefix, i)))
+
+  def _initialCount(self):
+    if self.initial is None:
+      if self.canAdd:
+        initialCount = 0
+      else:
+        initalCount = 1
+    else:
+      initialCount = len(self.initial)
+    return initialCount
 
   def __iter__(self):
     for f in self.forms:
@@ -132,7 +143,7 @@ class FormSet(object):
 class ModelFormSet(FormSet):
   '''A modified formset to deal with django models'''
 
-  def __init__(self, modelClass, formClass=None, fields=None, *args, **kwargs):
+  def __init__(self, modelClass, formClass=None, fields=None, instances=None, *args, **kwargs):
     ''' Overridden initialiser accepts the following arguments: 
 
       modelClass is the django model class that this formset is for
@@ -142,6 +153,8 @@ class ModelFormSet(FormSet):
       be present. if a formClass has been supplied the fields there are
       overridden.
       *args and **kwargs are the arguments that are suppled to the FormSet class'''
+    self.formClass = formClass
+    self.instances = instances
     outerFields = fields
     if formClass is None:
       class ModelFormClass(forms.ModelForm):
@@ -154,6 +167,22 @@ class ModelFormSet(FormSet):
     elif fields is not None:
       formClass._meta.fields=outerFields
     super(ModelFormSet, self).__init__(formClass, *args, **kwargs)
+
+  def _createForms(self, formCount):
+    self.forms = []
+    for i in range(0, formCount):
+      instance = self.instances[i] if i in range(0, self.instances.count()) else None 
+      self.forms.append(self.formClass(data=self.data, instance=instance, prefix='{}-{}'.format(self.prefix, i)))
+
+  def _initialCount(self):
+    if self.instances is None:
+      if self.canAdd:
+        initialCount = 0
+      else:
+        initalCount = 1
+    else:
+      initialCount = len(self.instances)
+    return initialCount
 
   def save(self, commit=True):
     '''Returns the objects created by all valid forms in this formset'''
