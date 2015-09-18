@@ -1,5 +1,6 @@
 '''A module containing only the StatsModel class'''
 from django.db import models
+from os import path
 from StatsModelTag import StatsModelTag
 from descriptors import Descriptor 
 from django.conf import settings
@@ -11,7 +12,7 @@ class StatsModel(models.Model):
   class Meta:
     app_label='DRP'
 
-  fileName=models.CharField('File for running and retrieval of model', max_length=200)
+  fileName=models.FileField(upload_to='models', max_length=200)
   '''The filename in which this model is stored'''
   description=models.TextField()
   active=models.BooleanField('Is this the active model?')
@@ -22,3 +23,13 @@ class StatsModel(models.Model):
   tool=models.CharField(max_length=200, choices=settings.TOOL_CHOICES)
   tags=models.ManyToManyField(StatsModelTag)
   descriptors=models.ManyToManyField(Descriptor) 
+
+  #these fields are for use if a model should become invalidated
+  invalid = models.BooleanField(default=False)
+  regenerationOf = models.ForeignKey("self", blank=True, null=True, default=None)
+  snapShot = models.FileField(upload_to='model_snapshots', max_length=200, null=True, default=None)
+
+  def invalidate(self):
+    self.invalid=True
+    #TODO: populate other parts of this method
+    self.save()

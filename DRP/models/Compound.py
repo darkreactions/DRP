@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from itertools import chain
 import importlib
 from collections import OrderedDict
+import StatsModel
 
 descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
@@ -149,8 +150,6 @@ class Compound(CsvModel):
   '''A class for containing data about Compounds used in chemical reactions.
   The assumption is made that all chemicals used are single-species.
   '''
-  
-  
   class Meta:
     app_label = "DRP"
     unique_together=(('abbrev', 'labGroup'), ('CSID', 'labGroup'))
@@ -210,6 +209,10 @@ class Compound(CsvModel):
           raise ValidationError(errorList)
 
   def save(self, calcDescriptors=True, *args, **kwargs):
+    for reaction in self.reaction_set.all():
+      reaction.save() #descriptor recalculation
+    for reaction in self.performedreaction_set.all();
+      reaction.save() #model invalidation
     super(Compound, self).save(*args, **kwargs)
     for lcc in self.lazyChemicalClasses: #coping mechanism for compounds loaded from csv files; not to be used by other means
       self.chemicalClasses.add(lcc)

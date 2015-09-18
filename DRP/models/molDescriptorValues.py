@@ -3,6 +3,22 @@ from django.db import models
 from descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue, OrdinalDescriptorValue
 #from Compound import DRP.Compound - retain this line for clarity
 from django.core.exceptions import ValidationError
+import StatsModel
+import DRP.models
+
+class MolDescriptorValueQuerySet(models.query.QuerySet):
+
+  def delete(self):
+    compounds = DRP.models.Compound.objects.filter(moldescriptorvalue_set__in=self)
+    for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
+      reaction.save() #recalculate descriptors
+    for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
+      reaction.save() #invalidate models
+
+class MolDescriptorValueManager(models.Manager):
+
+  def get_queryset(self)
+    return MolDescriptorValueQuerySet(self.model, using=self._db)
 
 class MolDescriptorValue(models.Model):
 
@@ -10,7 +26,14 @@ class MolDescriptorValue(models.Model):
     app_label ='DRP'
     abstract=True
 
+  objects = MolDescriptorValueManager()
   compound = models.ForeignKey('DRP.Compound')
+
+  def delete(self):
+    for reaction in self.compound.reaction_set.all():
+      reaction.save() #recalculate descriptors
+    for reaction in self.compound.performedreaction_set.all():
+      reaction.save() #invalidate models
 
 class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
   '''Contains the value of a categorical descriptor for a compound'''

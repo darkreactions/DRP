@@ -6,7 +6,7 @@
 
 from Compound import Compound
 from CompoundQuantity import CompoundQuantity
-#from DataSet import DataSet
+from dataSets import TestSet, TrainingSet
 from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
 from rxnDescriptors import CatRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor  
 from molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
