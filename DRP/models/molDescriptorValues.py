@@ -4,12 +4,13 @@ from descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue,
 #from Compound import DRP.Compound - retain this line for clarity
 from django.core.exceptions import ValidationError
 import StatsModel
+import PerformedReaction
 import DRP.models
 
 class MolDescriptorValueQuerySet(models.query.QuerySet):
 
   def delete(self):
-    compounds = DRP.models.Compound.objects.filter(moldescriptorvalue_set__in=self)
+    compounds = set(d.compound for d in self)
     for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
       reaction.save() #recalculate descriptors
     for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
@@ -17,7 +18,7 @@ class MolDescriptorValueQuerySet(models.query.QuerySet):
 
 class MolDescriptorValueManager(models.Manager):
 
-  def get_queryset(self)
+  def get_queryset(self):
     return MolDescriptorValueQuerySet(self.model, using=self._db)
 
 class MolDescriptorValue(models.Model):
@@ -32,8 +33,10 @@ class MolDescriptorValue(models.Model):
   def delete(self):
     for reaction in self.compound.reaction_set.all():
       reaction.save() #recalculate descriptors
-    for reaction in self.compound.performedreaction_set.all():
-      reaction.save() #invalidate models
+      try:
+        reaction.performedreaction.save()
+      except PerformedReaction.PerformedReaction.DoesNotExist:
+        pass #we don't care
 
 class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
   '''Contains the value of a categorical descriptor for a compound'''

@@ -5,7 +5,7 @@ from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,
 from StatsModel import StatsModel
 from itertools import chain
 
-class RxnDescriptorValueQuerySet(models.query.QuerySet)
+class RxnDescriptorValueQuerySet(models.query.QuerySet):
 
   def delete(self):
     for model in StatsModel.objects.filter(trainingset__in=self) | StatsModel.objects.filter(testset_in=self):
@@ -30,12 +30,12 @@ class RxnDescriptorValue(models.Model):
 
   def save(self, *args, **kwargs):
     if self.pk is not None:
-      for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all())
+      for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all()):
         model.invalidate()
     super(RxnDescriptorValue, self).save(*args, **kwargs)
 
   def delete(self):
-    for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all())
+    for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all()):
       model.invalidate()
     super(RxnDescriptorValue, self).delete()
 

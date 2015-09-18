@@ -11,7 +11,7 @@ class CompoundQuantityQuerySet(models.query.QuerySet):
 
   def delete(self):
     reactions = Reaction.objects.filter(compoundquantity_set__in=self)
-    for reaction in reactions
+    for reaction in reactions:
       reaction.save() #recalculate descriptors
       try:
         reaction.performedreaction.save()

@@ -13,6 +13,7 @@ from itertools import chain
 import importlib
 from collections import OrderedDict
 import StatsModel
+import PerformedReaction
 
 descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
@@ -209,10 +210,13 @@ class Compound(CsvModel):
           raise ValidationError(errorList)
 
   def save(self, calcDescriptors=True, *args, **kwargs):
-    for reaction in self.reaction_set.all():
-      reaction.save() #descriptor recalculation
-    for reaction in self.performedreaction_set.all();
-      reaction.save() #model invalidation
+    if self.pk is not None:
+      for reaction in self.reaction_set.all():
+        reaction.save() #descriptor recalculation
+        try:
+          reaction.performedreaction.save() #invalidate models
+        except PerformedReaction.PerformedReaction.DoesNotExist:
+          pass #it doesn't matter 
     super(Compound, self).save(*args, **kwargs)
     for lcc in self.lazyChemicalClasses: #coping mechanism for compounds loaded from csv files; not to be used by other means
       self.chemicalClasses.add(lcc)
