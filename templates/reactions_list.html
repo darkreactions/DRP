@@ -46,6 +46,12 @@
           {% performed_rxn_delete_form reaction %}
           <input type="Submit" value="delete" />
         </form>
+        {% else %}
+        <form action="{% url 'invalidateReaction' %}" method="post">
+          {% csrf_token %}
+          {% performed_rxn_invalidate_form reaction %}
+          <input type="Submit" value="invalidate" />
+        </form>
         {% endif %}
       </td>
     </tr>
