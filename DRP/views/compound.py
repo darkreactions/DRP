@@ -85,7 +85,7 @@ def uploadCompound(request, *args, **kwargs):
   '''A view managing the upload of compound csvs'''
   if request.method=='POST':
     form = CompoundUploadForm(data=request.POST, files=request.FILES, user=request.user)
-    if form.is_valid(): #this particular kind of form does the saving and validation in one step. It's a nasty hack but I couldn't find a better way to leverage transactions.
+    if form.is_valid():
       form.save()
       return redirect('compoundguide', '/')
     else:
