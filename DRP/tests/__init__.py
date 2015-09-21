@@ -1,4 +1,5 @@
 from DRPTestCase import DRPTestCase, runTests
+import fileTests
 import unittest
 import Email
 import forms
@@ -17,4 +18,5 @@ suite = unittest.TestSuite([
   CompoundDescriptor.suite,
   CompoundToCsv.suite,
   CompoundToArff.suite
+  fileTests.suite
 ]) 
