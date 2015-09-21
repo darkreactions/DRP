@@ -1,4 +1,5 @@
-#Django settings for DRP project.
+'''The demonstration django settings for DRP'''
+
 import os
 SITE_ID = 1
 
