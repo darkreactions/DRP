@@ -6,3 +6,4 @@ from selectGroup import selectGroup
 import compound
 import decorators
 import reaction
+from leaveGroup import leaveGroup
