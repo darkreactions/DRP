@@ -2,7 +2,6 @@
 ######Last updated by Philip Adler 2015-09-02
 
 1. **Ubuntu**
-3. **Git Hooks**
 
 ##Ubuntu development server
 
@@ -17,7 +16,7 @@ Note which version of Django gets installed.
 `sudo pip install numpy scipy Django pygraphviz`
 
 Install required pip python libraries
-`sudo pip install chemspipy requests`
+`sudo pip install chemspipy requests pep8`
 
 `sudo easy_install South`
 
