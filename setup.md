@@ -106,6 +106,7 @@ If you are reading this setup instruction manual, you are working on the refacto
 4. Comment all the things.
 5. If you change the pre-push hook, tell everyone.
 
+There are additional developer notes in teh developer_notes.md file.
 
 ###Note that everything from here on has been retained for future use, but does not currently apply in this development version
 

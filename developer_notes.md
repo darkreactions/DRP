@@ -19,4 +19,3 @@ There are additional decorators in the `HttpTests` folder, along with many helpf
 
 Inside the file `decorators.py` there are a variety of helpful class decorators which make it
 easier to perform common operations like creating users as a part of your test.
-
