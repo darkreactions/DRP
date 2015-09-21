@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load lab_group_leaving_form %} 
 
 {% block content %}
   <h1 class="bannerText">Your Account Information</h1>
@@ -29,7 +30,7 @@
     {% endif %}
   <ul>
     {% for labgroup in user.labgroup_set.all %}
-      <li>{{ labgroup }}</li>
+      <li>{{ labgroup }}<form action="/account/leave_group" method="post">{% csrf_token %}{% lab_group_leaving_form labgroup %}<input type="submit" value="Leave Group"></form></li>
     {% endfor %}
   </ul>
   <p><a href={% url 'joinGroup' %}>Join additional lab groups</a>
