@@ -12,10 +12,13 @@ from pep257 import check
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 _pep8Files = [
-#  ('DRP', 'settings_example.py'), #directories and files seperated by commas, 
+  ('DRP', 'settings_example.py'), #directories and files seperated by commas, 
+  ('DRP', 'views', 'documentation.py'),
+  ('DRP', 'views', '__init__.py'),
+  ('DRP', 'urls', 'public.py'), 
   #you can finish on a directory test the whole thing, but this should be a python package if you do so (__init__.py must be present)
 #  ('DRP', 'admin.py'),
-#  ('DRP', 'tests', 'fileTests.py')
+  ('DRP', 'tests', 'fileTests.py')
 #These commented out files are commented out because they would serve as examples had they been converted already!
 ]
 
