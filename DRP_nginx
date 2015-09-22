@@ -17,6 +17,11 @@ server {
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/static/favicon.ico;
         }
 
+        location /documentation/ {
+                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/documentation/;
+                index index.html; 
+        }
+
         location /media/ {
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/media/;
                 if ($query_string) {

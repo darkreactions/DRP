@@ -33,3 +33,7 @@ If a large number of files in the same directory are present in this variable, d
 with a representation of the directory in question.
 
 Then, fix the files as they inevitably fail the checking sequence.
+
+###Other Documentation
+
+A more rigourous documentation effort using [sphinx](http://pythonhosted.org/an_example_pypi_project/sphinx.html#full-code-example) has begun, and can be found in the /doc-build/ directory.
