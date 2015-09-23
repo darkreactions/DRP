@@ -17,14 +17,11 @@ class Descriptor(models.Model):
     app_label='DRP'
     unique_together = ('heading','calculatorSoftware','calculatorSoftwareVersion')
 
-  heading=models.CharField(max_length=200, validators=[RegexValidator('[A-Za-z][A-Za-z_]+', 'Please include only values which are limited to alphanumeric characters and underscoresi, and must start with an alphabetic character.')])
+  heading=models.CharField(max_length=200, validators=[RegexValidator('[A-Za-z0-9][A-Za-z0-9_]+', 'Please include only values which are limited to alphanumeric characters and underscoresi, and must start with an alphabetic character.')])
   '''A short label which is given to a description.'''
   name=models.CharField('Full name', max_length=300)
   calculatorSoftware=models.CharField(max_length=100)
   calculatorSoftwareVersion=models.CharField(max_length=20)
-
-  def __unicode__(self):
-    return self.name
 
   @property
   def csvHeader(self):

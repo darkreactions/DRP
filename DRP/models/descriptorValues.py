@@ -5,7 +5,7 @@ from django.db import models
 class CategoricalDescriptorValue(models.Model):
 
   descriptor = models.ForeignKey(CategoricalDescriptor)
-  value = models.ForeignKey(CategoricalDescriptorPermittedValue, null=True)
+  value = models.ForeignKey(CategoricalDescriptorPermittedValue, null=True, on_delete=models.PROTECT)
 
   class Meta:
     app_label='DRP'
