@@ -59,7 +59,7 @@ class OrdRxnDescriptorAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         if obj is not None:
             kwargs['exclude'] = ('maximum', 'minimum')
-        return super(NumRxnDescriptorAdmin, self).get_form(request, obj, **kwargs)
+        return super(OrdRxnDescriptorAdmin, self).get_form(request, obj, **kwargs)
 
 class CatRxnDescriptorAdmin(admin.ModelAdmin):
     list_display=('heading', 'name')
