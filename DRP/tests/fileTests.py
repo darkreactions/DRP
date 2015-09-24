@@ -17,12 +17,13 @@ _pep8Files = [
     ('DRP', 'urls', 'public.py'),
     ('DRP', 'models', 'descriptors.py'),
     ('DRP', 'models', 'descriptorValues.py'),
-    ('DRP', 'admin.py')
+    ('DRP', 'admin.py'),
     # you can finish on a directory test the whole thing,
     # but this should be a python package if you do so
     # (__init__.py must be present)
     # ('DRP', 'admin.py'),
-    ('DRP', 'tests', 'fileTests.py')
+    ('DRP', 'tests', 'fileTests.py'),
+    ('DRP', 'tests', 'CompoundDescriptor.py')
     # These commented out files are commented out because
     # they would serve as examples had they been converted already!
 ]

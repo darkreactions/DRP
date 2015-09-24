@@ -46,6 +46,9 @@ class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
     verbose_name='Categorical Molecular Descriptor Value'
     unique_together=('descriptor', 'compound')
 
+  def __unicode__(self):
+    return self.value.value
+
 class BoolMolDescriptorValue(BooleanDescriptorValue, MolDescriptorValue):
   '''Contains the value of a boolean descriptor for a compound'''
 

@@ -264,8 +264,13 @@ class CategoricalValidation(DRPTestCase):
     with self.assertRaises(ValidationError):
       cmdv = CatMolDescriptorValue(descriptor=self.desc, compound=Compound.objects.get(CSID=682), value=self.descPerm3)
       cmdv.save()
+    cmdv.delete()
 
   def tearDown(self):
+    CatMolDescriptorValue.objects.all().delete()
+    self.descPerm.delete()
+    self.descPerm2.delete()
+    self.descPerm3.delete()
     self.desc.delete()
     self.desc2.delete()
 

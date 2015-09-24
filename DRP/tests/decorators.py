@@ -47,8 +47,8 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
       _oldSetup(self)
 
     def tearDown(self):
-      _oldTearDown(self)
       compound.delete()
+      _oldTearDown(self)
 
     c.setUp = setUp
     c.tearDown = tearDown
