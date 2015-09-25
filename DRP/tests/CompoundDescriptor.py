@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""A module containing tests for molecular descriptor classes"""
+"""A module containing tests for molecular descriptor classes."""
 
 import unittest
 from DRPTestCase import DRPTestCase, runTests
@@ -18,11 +18,11 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass('org', 'Organic')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class DescriptorsCalced(DRPTestCase):
-    """Checks that when a compound is created the right number of descriptors
-    are created
-    """
+
+    """Checks that when a compound is created the descriptors are created."""
 
     def runTest(self):
+        """Run the test."""
         self.assertEqual(1, OrdMolDescriptorValue.objects.count())
         self.assertEqual(1, NumMolDescriptorValue.objects.count())
         self.assertEqual(1, CatMolDescriptorValue.objects.count())
@@ -30,22 +30,21 @@ class DescriptorsCalced(DRPTestCase):
 
 
 class DoublePluginImport(DRPTestCase):
-    """makes sure that when the plugin is reloaded we don't wind up with
-    duplicate key errors
-    """
+
+    """Checks no duplicate key errors on module reload."""
 
     def runTest(self):
+        """Run the test."""
         import DRP.plugins.moldescriptors.example
         reload(DRP.plugins.moldescriptors.example)
 
 
 class MaxMinValidation(DRPTestCase):
-    """Ensures that Descriptors with minimum values higher than the maximums
-    cannot be created
-    """
+
+    """Ensures that descriptor minimums and maximums are enforced."""
 
     def test_ordinal(self):
-        """tests ordinal descriptors"""
+        """Test ordinal descriptors."""
         with self.assertRaises(ValidationError):
             desc = OrdMolDescriptor(
                     heading='heading',
@@ -58,7 +57,7 @@ class MaxMinValidation(DRPTestCase):
             desc.save()
 
     def test_ordinal_ok(self):
-        """tests a working ordinal descriptor"""
+        """Test a working ordinal descriptor."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -70,8 +69,7 @@ class MaxMinValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_max_null(self):
-        """tests that creating a ordinal descriptor with a null max value works
-        """
+        """Test creating a ordinal descriptor with a null max value works."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -83,8 +81,7 @@ class MaxMinValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_min_null(self):
-        """tests that creating a ordinal descriptor with a null min value works
-        """
+        """Test creating a ordinal descriptor with a null min value works."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -96,9 +93,7 @@ class MaxMinValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_lims_null(self):
-        """tests that creating a ordinal descriptor with a null min and max
-        value works
-        """
+        """Test creating a ordinal descriptor with a null min,max value."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -110,7 +105,7 @@ class MaxMinValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric(self):
-        """tests ordinal descriptors"""
+        """Test ordinal descriptors."""
         with self.assertRaises(ValidationError):
             desc = NumMolDescriptor(
                 heading='heading',
@@ -122,7 +117,7 @@ class MaxMinValidation(DRPTestCase):
             desc.save()
 
     def test_numeric_ok(self):
-        """tests a working numeric descriptor"""
+        """Test a working numeric descriptor."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -134,8 +129,7 @@ class MaxMinValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_max_null(self):
-        """tests that creating a numeric descriptor with a null max value works
-        """
+        """Test creating a numeric descriptor with a null max value works."""
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
@@ -147,8 +141,7 @@ class MaxMinValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_min_null(self):
-        """tests that creating a numeric descriptor with a null min value works
-        """
+        """Test creating a numeric descriptor with a null min value works."""
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
@@ -160,9 +153,7 @@ class MaxMinValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_lims_null(self):
-        """tests that creating a numeric descriptor with a null min and max
-        value works
-        """
+        """Test creating a numeric descriptor w/a null min, max value works."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -179,12 +170,13 @@ class MaxMinValidation(DRPTestCase):
 @createsChemicalClass('Org', 'Organic')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class MaxMinValueValidation(DRPTestCase):
+
     """Ensures that descriptor values cannot exceed their prescribed range, and
     that null maxs and mins don't problematicise this.
     """
 
     def test_numeric_ok(self):
-        """tests a working numeric descriptor"""
+        """Test a working numeric descriptor."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -203,7 +195,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_toohigh(self):
-        """tests a descriptor value that is above the maximum"""
+        """Test a descriptor value that is above the maximum."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -221,6 +213,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_loolow(self):
+        """Test a descriptor value that is below the minimum."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -238,8 +231,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_max_null(self):
-        """tests that creating a numeric descriptor with a null max value works
-        """
+        """Test creating a numeric descriptor with a null max value works."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -256,8 +248,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_max_null_toolow(self):
-        """tests that creating a numeric descriptor with a null max value works
-        """
+        """Test creating a numeric descriptor with a null max value works."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -275,8 +266,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_max_null_toohigh(self):
-        """tests that creating a numeric descriptor with a null max value works
-        """
+        """Tests creating a numeric descriptor with a null max value works."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -294,8 +284,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_min_null(self):
-        """tests that creating a numeric descriptor with a null min value works
-        """
+        """Test creating a numeric descriptor with a null min value works."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -312,8 +301,8 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_lims_null(self):
-        """tests that creating a numeric descriptor with a null
-        min and max value works
+        """Test that creating a numeric descriptor with a null
+        min and max value works.
         """
 
         desc = NumMolDescriptor(
@@ -333,7 +322,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_ok(self):
-        """tests a working ordinal descriptor"""
+        """Test a working ordinal descriptor."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -351,7 +340,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_toohigh(self):
-        """tests a descriptor value that is above the maximum"""
+        """Test a descriptor value that is above the maximum."""
         desc = OrdMolDescriptor(
             heading='heading',
             name='test descriptor',
@@ -369,6 +358,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_loolow(self):
+        """Test a descriptor value that is below the minimum."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -386,8 +376,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_max_null(self):
-        """tests that creating a ordinal descriptor with a null max value works
-        """
+        """Test creating a ordinal descriptor with a null max value works."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -404,8 +393,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_max_null_toolow(self):
-        """tests that creating a ordinal descriptor with a null max value works
-        """
+        """Test creating a ordinal descriptor with a null max value works."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -423,8 +411,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_max_null_toohigh(self):
-        """tests that creating a ordinal descriptor with a null max value works
-        """
+        """Test creating a ordinal descriptor with a null max value works."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -442,8 +429,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_min_null(self):
-        """tests that creating a ordinal descriptor with a null min value works
-        """
+        """Test creating a ordinal descriptor with a null min value works."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -460,9 +446,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_ordinal_lims_null(self):
-        """tests that creating a ordinal descriptor with a null min and max
-        value works
-        """
+        """Test creating a ordinal descriptor w/a null min, max value works."""
         desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -484,12 +468,15 @@ class MaxMinValueValidation(DRPTestCase):
 @createsChemicalClass('Org', 'Organic')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class CategoricalValidation(DRPTestCase):
+
     """Ensures that validation for categorical descriptors works"""
 
     def setUp(self):
+        """Set up the test."""
         self.desc = CatMolDescriptor(
                 heading='heading',
-                name='example',
+                name='example',:w
+
                 calculatorSoftware='test suite',
                 calculatorSoftwareVersion=0)
         self.desc.save()
@@ -510,6 +497,7 @@ class CategoricalValidation(DRPTestCase):
         self.descPerm3.save()
 
     def test_fine(self):
+        """Test cases that should work."""
         cmdv = CatMolDescriptorValue(
             descriptor=self.desc,
             compound=Compound.objects.get(CSID=682),
@@ -518,6 +506,7 @@ class CategoricalValidation(DRPTestCase):
         cmdv.delete()
 
     def test_broken(self):
+        """Test broken cases."""
         with self.assertRaises(ValidationError):
             cmdv = CatMolDescriptorValue(
                 descriptor=self.desc,
@@ -527,6 +516,7 @@ class CategoricalValidation(DRPTestCase):
         cmdv.delete()
 
     def tearDown(self):
+        """Clean up the test."""
         CatMolDescriptorValue.objects.all().delete()
         self.descPerm.delete()
         self.descPerm2.delete()
