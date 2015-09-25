@@ -171,9 +171,7 @@ class MaxMinValidation(DRPTestCase):
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class MaxMinValueValidation(DRPTestCase):
 
-    """Ensures that descriptor values cannot exceed their prescribed range, and
-    that null maxs and mins don't problematicise this.
-    """
+    """Ensures that descriptor values cannot exceed their prescribed range."""
 
     def test_numeric_ok(self):
         """Test a working numeric descriptor."""
@@ -266,7 +264,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_max_null_toohigh(self):
-        """Tests creating a numeric descriptor with a null max value works."""
+        """Test creating a numeric descriptor with a null max value works."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -301,10 +299,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.delete()
 
     def test_numeric_lims_null(self):
-        """Test that creating a numeric descriptor with a null
-        min and max value works.
-        """
-
+        """Test creating a numeric descriptor w/a null min, max value works."""
         desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
@@ -469,14 +464,13 @@ class MaxMinValueValidation(DRPTestCase):
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class CategoricalValidation(DRPTestCase):
 
-    """Ensures that validation for categorical descriptors works"""
+    """Ensures that validation for categorical descriptors works."""
 
     def setUp(self):
         """Set up the test."""
         self.desc = CatMolDescriptor(
                 heading='heading',
-                name='example',:w
-
+                name='example',
                 calculatorSoftware='test suite',
                 calculatorSoftwareVersion=0)
         self.desc.save()
