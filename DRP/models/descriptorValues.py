@@ -154,7 +154,7 @@ class OrdinalDescriptorValue(models.Model):
     descriptor = models.ForeignKey(OrdinalDescriptor)
 
     def clean(self):
-        """Ensures the value is within the prescribed bounds."""
+        """Ensure the value is within the prescribed bounds."""
         if self.value is not None:
             if (
                self.descriptor.maximum is not None and
