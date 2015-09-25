@@ -1,5 +1,8 @@
-"""A module containing abstract base classes for descriptors
-Reaction and Molecular Descriptors should inherit from these"""
+"""A module containing abstract base classes for descriptors.
+
+Reaction and Molecular Descriptors should inherit from these
+classes.
+"""
 
 from django.db import models
 from django.template.defaultfilters import slugify as _slugify
@@ -8,15 +11,20 @@ from django.core.exceptions import ValidationError
 
 
 def slugify(text):
-    """returns a modified version of slug text
-    so as to keep compatibility with some external programs
+    """Return a modified version of slug text.
+
+    This modified version maintains compatibility with
+    external languages such as R.
     """
     return _slugify(text).replace('-', '_')
 
 
 class Descriptor(models.Model):
-    """A class which describes a descriptor- a value which describes
-    a system such as a compound or a reaction
+
+    """A class which describes a descriptor.
+
+    A descriptor is a classification of values which describe
+    a system such as a compound or a reaction.
     """
 
     class Meta:
@@ -45,6 +53,7 @@ class Descriptor(models.Model):
 
     @property
     def csvHeader(self):
+        """Generate a csv header for placing values for a descriptor."""
         return '{}_{}_{}'.format(
             self.heading,
             slugify(self.calculatorSoftware),
@@ -53,22 +62,29 @@ class Descriptor(models.Model):
 
     @property
     def arffHeader(self):
-        """returns the base unit of an Arff Header, but this will not be
-        sufficient and must be overridden by subclasses
+        """Return the base unit of an Arff Header.
+
+        This method is in sufficient and must be overridden by subclasses.
+        Details about the Arff file format can be found at
+        http://www.cs.waikato.ac.nz/ml/weka/arff.html
         """
         return'@attribute {} ' .format(self.csvHeader)
 
     def __unicode__(self):
+        """Unicode represenation of a descriptor is it's name."""
         return self.name
 
 
 class CategoricalDescriptor(Descriptor):
+
+    """A a class of descriptors which are broken up into categories."""
 
     class Meta:
         app_label = 'DRP'
 
     @property
     def arffHeader(self):
+        """Complete the Arff header for this descriptor."""
         return (super(CategoricalDescriptor, self).arffHeader +
                 '{{{}}}'.format(
                 ','.join(str(v.value) for v in self.permittedValues.all())
@@ -76,6 +92,8 @@ class CategoricalDescriptor(Descriptor):
 
 
 class CategoricalDescriptorPermittedValue(models.Model):
+
+    """Each instance is a value that a given descriptor may take."""
 
     class Meta:
         app_label = 'DRP'
@@ -88,18 +106,31 @@ class CategoricalDescriptorPermittedValue(models.Model):
     )
 
     def __unicode__(self):
+        """Return the literal value the instance represents."""
         return self.value
 
 
 class OrdinalDescriptor(Descriptor):
 
+    """A descriptor which is ordinal in nature.
+
+    It may be valued by discrete categories, but can be
+    set in an order, such as big, medium and small.
+
+    Values in the DRP database of this kind are
+    represented by integers within a limited range.
+    """
+
     class Meta:
         app_label = 'DRP'
 
     maximum = models.IntegerField(null=True)
+    """The maximal permitted value for a given descriptor instance."""
     minimum = models.IntegerField(null=True)
+    """The minimal permitted value for a given descriptor instance."""
 
     def clean(self):
+        """Special cleaning method. Ensures max < min."""
         if (
             self.maximum is not None and
             self.minimum is not None and
@@ -111,11 +142,13 @@ class OrdinalDescriptor(Descriptor):
             )
 
     def save(self, *args, **kwargs):
+        """Force cleaning to be run on save."""
         self.clean()
         super(OrdinalDescriptor, self).save(*args, **kwargs)
 
     @property
     def arffHeader(self):
+        """Complete the Arff header for this descriptor."""
         return (super(OrdinalDescriptor, self).arffHeader +
                 '{{{}}}'.format(
                         ','.join(
@@ -127,13 +160,23 @@ class OrdinalDescriptor(Descriptor):
 
 class NumericDescriptor(Descriptor):
 
+    """A descriptor which is numeric in nature.
+
+    Numeric descriptors are stored as floating
+    point numbers, and can be either positive
+    or negative.
+    """
+
     class Meta:
         app_label = 'DRP'
 
     maximum = models.FloatField(null=True)
+    """The maximum allowed value for a given descriptor."""
     minimum = models.FloatField(null=True)
+    """The minimum allowed value for a given descriptor."""
 
     def clean(self):
+        """Special cleaning method. Ensures max < min."""
         if (
            self.maximum is not None and
            self.minimum is not None and
@@ -146,19 +189,24 @@ class NumericDescriptor(Descriptor):
             )
 
     def save(self, *args, **kwargs):
+        """Force cleaning to be run on save."""
         self.clean()
         super(NumericDescriptor, self).save(*args, **kwargs)
 
     @property
     def arffHeader(self):
+        """Complete the Arff header for this descriptor."""
         return super(NumericDescriptor, self).arffHeader + 'numeric'
 
 
 class BooleanDescriptor(Descriptor):
+
+    """A descriptor which can be represented by either True or False."""
 
     class Meta:
         app_label = 'DRP'
 
     @property
     def arffHeader(self):
+        """Complete the Arff header for this descriptor."""
         return super(BooleanDescriptor, self).arffHeader + '{True, False}'
