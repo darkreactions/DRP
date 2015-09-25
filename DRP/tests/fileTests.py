@@ -17,6 +17,7 @@ _pep8Files = [
     ('DRP', 'urls', 'public.py'),
     ('DRP', 'models', 'descriptors.py'),
     ('DRP', 'models', 'descriptorValues.py'),
+    ('DRP', 'models', 'StatsModel.py'),
     ('DRP', 'admin.py'),
     # you can finish on a directory test the whole thing,
     # but this should be a python package if you do so
