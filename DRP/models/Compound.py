@@ -57,8 +57,8 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         m = Compound.objects.all().maxChemicalClassCount()
         for x in range(0, m):
             label = 'chemicalClass_{0}'.format(x+1)
-            clsStrings =('"{}"'.format(chemicalClass) for chemicalClass in ChemicalClass.objects.all()))
-            headers[label] = '@attribute {} {{{}}}'.format(label, ','.join()
+            clsStrings =('"{}"'.format(chemicalClass) for chemicalClass in ChemicalClass.objects.all())
+            headers[label] = '@attribute {} {{{}}}'.format(label, ','.join(clsStrings))
         return headers
 
     @property
@@ -190,7 +190,12 @@ class Compound(CsvModel):
     labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
     """Tells us whose compound guide this appears in"""
 
-    formula = models.CharField(max_length=500, blank=True)
+    formula = models.CharField(
+            max_length=500,
+            blank=True,
+            help_text="A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.",
+            validators=[RegexValidator('([A-Z][a-z]*(_{\d+})?)+')]
+            )
 
     objects = CompoundManager()
 
@@ -223,7 +228,7 @@ class Compound(CsvModel):
                     errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid smiles string', code='invalid_smiles'))
                 if self.formular == '':
                     self.formula = csCompound.molecular_formula
-                elif self.formula != csCompound.molecular_formula
+                elif self.formula != csCompound.molecular_formula:
                     errorsList.append(ValidationError('A compound was consistency checked and was found to have an invalid formula', code="invalid_formula"))
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
@@ -242,6 +247,22 @@ class Compound(CsvModel):
         if calcDescriptors:#not generally done, but useful for debugging
             for descriptorPlugin in descriptorPlugins:
                 descriptorPlugin.calculate(self) 
+
+    @property
+    def elements(self):
+        """ Return a list of the elemental symbols for this molecular species.
+            
+            Note that this method does not validate the data contained in the database.
+        """
+        elements = []
+        for char in self.formula:
+            if char.isalpha():
+                if char.isupper():
+                    elements.append(char)
+                else:
+                    elements[-1] += char
+        return elements
+            
         
     @property  
     def descriptorValues(self):
