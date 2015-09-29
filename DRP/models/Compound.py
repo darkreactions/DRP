@@ -17,17 +17,19 @@ import importlib
 from collections import OrderedDict
 import StatsModel
 import PerformedReaction
+from django.core.validators import RegexValidator
 
-descriptorPlugins = [importlib.import_module(plugin) for 
+descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
- # This prevents a cyclic dependency problem
+# This prevents a cyclic dependency problem
 
 
 class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
+
     """A specialised queryset for outputting Compounds in specific formats."""
 
     def __init__(self, **kwargs):
-        """Initialise teh queryset"""
+        """Initialise teh queryset."""
         kwargs.pop('model', None)
         super(CompoundQuerySet, self).__init__(Compound, **kwargs)
 
@@ -41,13 +43,13 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         )
         m = annotated.aggregate(max=models.Max('chemicalClassCount'))['max']
         return 0 if m is None else m
-        
+
     @property
     def csvHeaders(self):
         """Generate the header row information for the CSV."""
         headers = super(CompoundQuerySet, self).csvHeaders
         m = Compound.objects.all().maxChemicalClassCount()
-        headers += ['chemicalClass_{}'.format(x+1) for x in range(0, m)]
+        headers += ['chemicalClass_{}'.format(x + 1) for x in range(0, m)]
         return headers
 
     @property
@@ -56,66 +58,70 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         headers = super(CompoundQuerySet, self).arffHeaders
         m = Compound.objects.all().maxChemicalClassCount()
         for x in range(0, m):
-            label = 'chemicalClass_{0}'.format(x+1)
-            clsStrings =('"{}"'.format(chemicalClass) for chemicalClass in ChemicalClass.objects.all())
+            label = 'chemicalClass_{0}'.format(x + 1)
+            clsStrings = ('"{}"'.format(chemicalClass) for chemicalClass in ChemicalClass.objects.all())
             headers[label] = '@attribute {} {{{}}}'.format(label, ','.join(clsStrings))
         return headers
 
     @property
     def expandedArffHeaders(self):
+        """Generate expanded headers for the arff file."""
         headers = self.arffHeaders
         headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors())))
         return headers
 
     @property
     def expandedCsvHeaders(self):
-        """Generates the expanded header for the csv"""
+        """Generate the expanded header for the csv."""
         return self.csvHeaders + [d.csvHeader for d in self.descriptors()]
 
     def descriptors(self):
-        """returns the descriptor which have relationship to the queryset"""
+        """Return the descriptor which have relationship to the queryset."""
         return chain(
-                BooleanDescriptor.objects.filter(
-                    boolmoldescriptorvalue__in=BoolMolDescriptorValue.objects.filter(
-                        compound__in=self
-                    )
-                ),
-                NumericDescriptor.objects.filter(
-                    nummoldescriptorvalue__in=NumMolDescriptorValue.objects.filter(
-                        compound__in=self
-                    )
-                ),
-                OrdinalDescriptor.objects.filter(
-                    ordmoldescriptorvalue__in=OrdMolDescriptorValue.objects.filter(
-                        compound__in=self
-                    )
-                ),
-                CategoricalDescriptor.objects.filter(
-                    catmoldescriptorvalue__in=CatMolDescriptorValue.objects.filter(
-                        compound__in=self
-                    )
+            BooleanDescriptor.objects.filter(
+                boolmoldescriptorvalue__in=BoolMolDescriptorValue.objects.filter(
+                    compound__in=self
+                )
+            ),
+            NumericDescriptor.objects.filter(
+                nummoldescriptorvalue__in=NumMolDescriptorValue.objects.filter(
+                    compound__in=self
+                )
+            ),
+            OrdinalDescriptor.objects.filter(
+                ordmoldescriptorvalue__in=OrdMolDescriptorValue.objects.filter(
+                    compound__in=self
+                )
+            ),
+            CategoricalDescriptor.objects.filter(
+                catmoldescriptorvalue__in=CatMolDescriptorValue.objects.filter(
+                    compound__in=self
                 )
             )
-        
+        )
+
 
 class CompoundManager(models.Manager):
-    """A custom manager for the Compound Class which permits the creation of entries to and from CSVs"""
 
-    use_for_related_fields = True #NOTE:This doesn't actually work, but no-one's sure which way django is going to jump on this.
+    """A custom manager for the Compound Class which permits the creation of entries to and from CSVs."""
+
+    use_for_related_fields = True  # NOTE:This doesn't actually work, but no-one's sure which way django is going to jump on this.
 
     def get_queryset(self):
+        """Return the default queryset."""
         return CompoundQuerySet()
 
     def fromCsv(self, fileName, labGroup=None):
-        """Reads a CSV into the creating objects, returning a list of compounds which have not yet been saved.
-            This assumes that the uploaded csv will have headers which map to the names of the fields and that compound classes are
-            stored as comma separated lists of the chemicalClass LABEL only.
+        """Read a CSV into the creating objects, returning a list of compounds which have not yet been saved.
 
-            Each compound will perform a chemspider-based consistency check on the information it has been created with to ensure
-            information is consistent- this throws an ValidationError if it is not.
+        This assumes that the uploaded csv will have headers which map to the names of the fields and that compound classes are
+        stored as comma separated lists of the chemicalClass LABEL only.
+
+        Each compound will perform a chemspider-based consistency check on the information it has been created with to ensure
+        information is consistent- this throws an ValidationError if it is not.
         """
         if labGroup is None and hasattr(self, 'instance'):
-            #we presume that if this is being called without a labgroup that's because this manager belongs to a lab group
+            # we presume that if this is being called without a labgroup that's because this manager belongs to a lab group
             labGroup = self.instance
 
         compoundsList = []
@@ -136,37 +142,41 @@ class CompoundManager(models.Manager):
                     if row.get('CAS') not in ('', None) and row.get('CSID') in ('', None):
                         CASResults = cs.simple_search(row['CAS'])
                         if len(CASResults) < 1:
-                            errors.append(ValidationError('CAS Number returned no results from ChemSpider on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
+                            errors.append(ValidationError('CAS Number returned no results from ChemSpider on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
                         elif len(CASResults) == 1:
-                            row['CSID'] = CASResults[0].csid #a little hacky, but it gets the job done
+                            row['CSID'] = CASResults[0].csid  # a little hacky, but it gets the job done
                         else:
-                            errors.append(ValidationError('CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
+                            errors.append(ValidationError('CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
                     elif row.get('CSID') in ('', None):
-                        errors.append(ValidationError('No CSID provided on row %(rowCount)d of uploaded csv.', params={'rowCount':rowCount}))
+                        errors.append(ValidationError('No CSID provided on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
                     kwargs = {}
                     kwargs['CSID'] = row.get('CSID')
                     kwargs['abbrev'] = row.get('abbrev')
                     kwargs['smiles'] = row.get('smiles')
                     kwargs['name'] = row.get('name')
                     kwargs['INCHI'] = row.get('INCHI')
-                    compound = Compound(labGroup = labGroup,  **kwargs)
+                    compound = Compound(labGroup=labGroup, **kwargs)
                     for chemicalClass in chemicalClasses:
                         compound.lazyChemicalClasses.append(chemicalClass)
                     compoundsList.append(compound)
                 except ValidationError as e:
                     for message in e.messages:
-                        errors.append(ValidationError(message + ' on row %(rowCount)d of uploaded csv', params={'rowCount':rowCount}))
+                        errors.append(ValidationError(message + ' on row %(rowCount)d of uploaded csv', params={'rowCount': rowCount}))
             if len(errors) > 0:
                 raise ValidationError(errors)
         return compoundsList
 
+
 class Compound(CsvModel):
+
     """A class for containing data about Compounds used in chemical reactions.
+
     The assumption is made that all chemicals used are single-species.
     """
+
     class Meta:
         app_label = "DRP"
-        unique_together=(('abbrev', 'labGroup'), ('CSID', 'labGroup'))
+        unique_together = (('abbrev', 'labGroup'), ('CSID', 'labGroup'))
 
     abbrev = models.CharField("Abbreviation", max_length=100)
     """A local, often nonstandard abbreviation for a compound"""
@@ -191,26 +201,28 @@ class Compound(CsvModel):
     """Tells us whose compound guide this appears in"""
 
     formula = models.CharField(
-            max_length=500,
-            blank=True,
-            help_text="A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.",
-            validators=[RegexValidator('([A-Z][a-z]*(_{\d+})?)+')]
-            )
+        max_length=500,
+        blank=True,
+        help_text="A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.",
+        validators=[RegexValidator('([A-Z][a-z]*(_{\d+})?)+')]
+    )
 
     objects = CompoundManager()
 
     def __init__(self, *args, **kwargs):
+        """Instantiate an object."""
         super(Compound, self).__init__(*args, **kwargs)
-        self.lazyChemicalClasses= []
+        self.lazyChemicalClasses = []
 
     def __unicode__(self):
+        """Unicode representation of a compound is it's name and abbreviation."""
         return '{} ({})'.format(self.name, self.abbrev)
 
     def csConsistencyCheck(self):
-        """Performs a consistency check of this record against chemspider. Raises a ValidationError on error."""
+        """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""
         if not self.custom:
             errorList = []
-            cs = ChemSpider(settings.CHEMSPIDER_TOKEN) 
+            cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
             if self.CSID is None or self.CSID is '':
                 raise ValidationError('No CSID set', 'no_csid')
             else:
@@ -226,7 +238,7 @@ class Compound(CsvModel):
                     self.smiles = csCompound.smiles
                 elif self.smiles != csCompound.smiles:
                     errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid smiles string', code='invalid_smiles'))
-                if self.formular == '':
+                if self.formula == '':
                     self.formula = csCompound.molecular_formula
                 elif self.formula != csCompound.molecular_formula:
                     errorsList.append(ValidationError('A compound was consistency checked and was found to have an invalid formula', code="invalid_formula"))
@@ -234,25 +246,26 @@ class Compound(CsvModel):
                     raise ValidationError(errorList)
 
     def save(self, calcDescriptors=True, *args, **kwargs):
+        """Save the compound, invalidating any consequent objects like reactiosn and models."""
         if self.pk is not None:
             for reaction in self.reaction_set.all():
-                reaction.save() #descriptor recalculation
+                reaction.save()  # descriptor recalculation
                 try:
-                    reaction.performedreaction.save() #invalidate models
+                    reaction.performedreaction.save()  # invalidate models
                 except PerformedReaction.PerformedReaction.DoesNotExist:
-                    pass #it doesn't matter 
+                    pass  # it doesn't matter
         super(Compound, self).save(*args, **kwargs)
-        for lcc in self.lazyChemicalClasses: #coping mechanism for compounds loaded from csv files; not to be used by other means
+        for lcc in self.lazyChemicalClasses:  # coping mechanism for compounds loaded from csv files; not to be used by other means
             self.chemicalClasses.add(lcc)
-        if calcDescriptors:#not generally done, but useful for debugging
+        if calcDescriptors:  # not generally done, but useful for debugging
             for descriptorPlugin in descriptorPlugins:
-                descriptorPlugin.calculate(self) 
+                descriptorPlugin.calculate(self)
 
     @property
     def elements(self):
-        """ Return a list of the elemental symbols for this molecular species.
-            
-            Note that this method does not validate the data contained in the database.
+        """Return a list of the elemental symbols for this molecular species.
+
+        Note that this method does not validate the data contained in the database.
         """
         elements = []
         for char in self.formula:
@@ -262,35 +275,34 @@ class Compound(CsvModel):
                 else:
                     elements[-1] += char
         return elements
-            
-        
-    @property  
+
+    @property
     def descriptorValues(self):
-        """Returns a union of the descriptor values that apply to this object. Hijacks the method from the CompoundQuerySet class"""
+        """Return a union of the descriptor values that apply to this object. Hijacks the method from the CompoundQuerySet class."""
         return set(chain(self.catmoldescriptorvalue_set.all(), self.nummoldescriptorvalue_set.all(), self.ordmoldescriptorvalue_set.all(), self.boolmoldescriptorvalue_set.all()))
 
     @property
     def values(self):
-        """outputs a dict of values suitable for use by a csv.DictWriter"""
-        d =  super(Compound, self).values 
+        """Output a dict of values suitable for use by a csv.DictWriter."""
+        d = super(Compound, self).values
         i = 1
         for c in self.chemicalClasses.all():
             d['chemicalClass_{}'.format(i)] = '"{}"'.format(c)
-            i+=1
+            i += 1
         return d
 
     @property
     def expandedValues(self):
-        """outputs a dict of values suitable for use by a csv.DictWriter - includes molecular descriptors"""
+        """Output a dict of values suitable for use by a csv.DictWriter - includes molecular descriptors."""
         res = self.values.copy()
         for descriptorValue in self.descriptorValues:
             key = descriptorValue.descriptor.csvHeader
             value = descriptorValue.value
             try:
-                if any(string in value for string in (',',' ')):
+                if any(string in value for string in (',', ' ')):
                     res[key] = '"{}"'.format(value)
                 else:
                     res[key] = value
-            except TypeError: 
-                res[key] = value 
-        return res 
+            except TypeError:
+                res[key] = value
+        return res

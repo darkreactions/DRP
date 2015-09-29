@@ -116,9 +116,7 @@ class TestFiles(unittest.TestCase):
         errors = [str(e) for e in check(pep257Files)]
         self.assertEqual(len(errors), 0, '\n'.join(errors))
 
-suite = unittest.TestSuite([
-        loadTests(TestFiles)
-    ])
+suite = unittest.TestSuite([loadTests(TestFiles)])
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=4).run(suite)

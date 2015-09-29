@@ -38,12 +38,12 @@ class Descriptor(models.Model):
     heading = models.CharField(
         max_length=200,
         validators=[
-                RegexValidator(
-                    '[A-Za-z0-9][A-Za-z0-9_]+',
-                    ('Please include only values which are limited to'
-                     'alphanumeric characters and underscoresi, and must start'
-                     'with an alphabetic character.')
-                )
+            RegexValidator(
+                '[A-Za-z0-9][A-Za-z0-9_]+',
+                ('Please include only values which are limited to'
+                 'alphanumeric characters and underscoresi, and must start'
+                 'with an alphabetic character.')
+            )
         ]
     )
     """A short label which is given to a description."""
@@ -85,10 +85,7 @@ class CategoricalDescriptor(Descriptor):
     @property
     def arffHeader(self):
         """Complete the Arff header for this descriptor."""
-        return (super(CategoricalDescriptor, self).arffHeader +
-                '{{{}}}'.format(
-                ','.join(str(v.value) for v in self.permittedValues.all())
-               ))
+        return super(CategoricalDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(v.value) for v in self.permittedValues.all()))
 
 
 class CategoricalDescriptorPermittedValue(models.Model):
@@ -131,14 +128,10 @@ class OrdinalDescriptor(Descriptor):
 
     def clean(self):
         """Special cleaning method. Ensures max < min."""
-        if (
-            self.maximum is not None and
-            self.minimum is not None and
-            self.maximum < self.minimum
-           ):
+        if self.maximum is not None and self.minimum is not None and self.maximum < self.minimum:
             raise ValidationError(
-             'The maximum value cannot be lower than the minimum value',
-             'max_min_mix'
+                'The maximum value cannot be lower than the minimum value',
+                'max_min_mix'
             )
 
     def save(self, *args, **kwargs):
@@ -149,13 +142,7 @@ class OrdinalDescriptor(Descriptor):
     @property
     def arffHeader(self):
         """Complete the Arff header for this descriptor."""
-        return (super(OrdinalDescriptor, self).arffHeader +
-                '{{{}}}'.format(
-                        ','.join(
-                            str(i) for i in range(self.minimum, self.maximum+1)
-                        )
-                     )
-                )
+        return super(OrdinalDescriptor, self).arffHeader + '{{{}}}'.format(','.join(str(i) for i in range(self.minimum, self.maximum + 1)))
 
 
 class NumericDescriptor(Descriptor):

@@ -47,11 +47,7 @@ class StatsModel(models.Model):
 
     # these fields are for use if a model should become invalidated
     invalid = models.BooleanField(default=False)
-    regenerationOf = models.ForeignKey(
-            "self",
-            blank=True,
-            null=True,
-            default=None)
+    regenerationOf = models.ForeignKey("self", blank=True, null=True, default=None)
     snapShot = models.FileField(
         upload_to='model_snapshots',
         max_length=200,
