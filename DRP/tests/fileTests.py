@@ -100,7 +100,7 @@ class TestFiles(unittest.TestCase):
                     settings.BASE_DIR, fileName
                 ) for fileName in pep8Files
             ]
-            pep8Style = pep8.StyleGuide()
+            pep8Style = pep8.StyleGuide(ignore=['E501'])
 
             with OutputCapture() as output:
                 result = pep8Style.check_files(fullFileNames)

@@ -190,6 +190,8 @@ class Compound(CsvModel):
     labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
     """Tells us whose compound guide this appears in"""
 
+    formula = models.CharField(max_length=500, blank=True)
+
     objects = CompoundManager()
 
     def __init__(self, *args, **kwargs):
@@ -219,6 +221,10 @@ class Compound(CsvModel):
                     self.smiles = csCompound.smiles
                 elif self.smiles != csCompound.smiles:
                     errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid smiles string', code='invalid_smiles'))
+                if self.formular == '':
+                    self.formula = csCompound.molecular_formula
+                elif self.formula != csCompound.molecular_formula
+                    errorsList.append(ValidationError('A compound was consistency checked and was found to have an invalid formula', code="invalid_formula"))
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
 
