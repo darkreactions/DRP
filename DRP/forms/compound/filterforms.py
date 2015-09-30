@@ -36,7 +36,7 @@ class CompoundFilterForm(FilterForm):
     return base_empty and (self.cleaned_data.get('chemicalClasses') not in self.fields['chemicalClasses'].empty_values or self.cleaned_data.get('chemicalClasses').count() == 0)
 
   def fetch(self):
-    '''Fetches the labs according to data supplied. Exp the form to have been validated already.'''
+    '''Fetches the compounds according to data supplied. Exp the form to have been validated already.'''
     
     qs = self.cleaned_data['labGroup'].compound_set.all()
     if self.cleaned_data.get('js_active') not in ('', None, False):
