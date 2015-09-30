@@ -142,10 +142,12 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
       for compound in compounds:
         compound.csConsistencyCheck()
         compound.save()
+      _oldSetup(self) 
 
     def tearDown(self):
       Compound.objects.all().delete()
-    
+      _oldTearDown(self) 
+   
     c.setUp = setUp
     c.tearDown = tearDown
     return c
