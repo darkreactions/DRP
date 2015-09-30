@@ -42,7 +42,7 @@ Both uwsgi and nginx must be restarted (in that order) for the server to work.
 
 In DRP/DRP, there is a file called 'settings_example.py'. This must be copied to 'settings.py', and the settings therein set to the appropriate values for your server. At present, the available fields should be fairly self explanatory, though the following should be noted:
 
-`ALLOWED_HOSTS` should be set to your local ip
+`ALLOWED_HOSTS` should be set to an iterable containing only the element '*'.
 
 To pass the unit tests, at least one `ADMIN_EMAILS` should be provided
 
@@ -106,6 +106,49 @@ If you are reading this setup instruction manual, you are working on the refacto
 5. If you change the pre-push hook, tell everyone.
 
 There are additional developer notes in teh developer_notes.md file.
+
+###On Development Servers
+
+The `ALLOWED_HOSTS` option in 'settings.py' should be set to an iterable containing only the localhost ip address as a string.
+
+In the '/etc/nginx/sites-enabled/DRP_nginx' file, the host name that is being listened to should only be localhost.
+
+##Servers with multiple web applications.
+
+If you are only developing DRP on your server, the setup you have should be sufficient, however, people running other applications on their local development server should note the following.
+
+If you are running the django testing server, this requires you to select a port which is unoccupied. By default, the nginx settings file listens for port 8000, which is also the default port of the django test server; you will need to configure one or the other so that this clash does not occur. The Django documentation addresses this for django, whilst in the DRP_nginx file, the only change that needs to be made is to delete the line:
+
+`listen		8000`
+
+ #dnsmasq
+
+For instances where you are hosting multiple development projects on your local server, it may be beneficial to install dnsmasq:
+
+`sudo apt-get install dnsmasq`
+
+dnsmasq is a powerful tool for rerouting and managing dns requests. This makes it extremely helpful in managing multiple local development projects.
+
+Having installed dnsmasq, open the file `/etc/dnsmasq.conf` in your favourite text editor, and add the following line into the file:
+
+`address=/loc/127.0.0.1`
+
+Save the change, and then on the command line:
+
+`sudo service dnsmasq restart`
+
+In the DRP_nginx file, change the `server_name` configuration to something like `darkreactions.loc`. It does not matter what this is set to, provided it:
+
+a. is unique on your development server
+b. ends in `.loc`
+
+Don't forget to set the `SERVER_NAME` setting in your settings.py file to the same value!
+
+Restart nginx:
+
+`sudo service nginx restart`
+
+When you open your browser and direct yourself to darkreactions.loc (or whatever you named the server), the dark reactions project should display.
 
 ###Note that everything from here on has been retained for future use, but does not currently apply in this development version
 
