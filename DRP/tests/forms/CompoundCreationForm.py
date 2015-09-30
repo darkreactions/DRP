@@ -20,11 +20,11 @@ class NoLabExists(BaseFormTest):
 
   def setUpFormData(self):
     self.formData = {'labGroup':'5', 'abbrev':'etoh', 'name':'ethanol', 'CAS_ID':'64-17-5', 'CSID':'682'}
-    self.formData['chemicalClasses'] = ChemicalClass.objects.get(label='Solv') 
+    self.formData['chemicalClasses'] = [ChemicalClass.objects.get(label='Solv').pk]
 
   def setUp(self):
     '''Creates a user and a chemical class, then a form'''
-    self.user = User.objects.create_user('Aslan', 'old_magic')
+    self.user = User.objects.get(username='Aslan')
     self.user.save()
     self.setUpFormData()
     self.form = CompoundForm(self.user, self.formData)
