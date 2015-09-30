@@ -56,6 +56,13 @@ class LabGroupJoiningForm(forms.Form):
     else:
       raise ValidationError('Invalid Access Code', code='invalid_access')
 
+class LabGroupLeavingForm(forms.Form):
+  '''This class is a form to allow a user to leave a research group'''
+
+  def __init__(self, user, labGroup = None, *args, **kwargs):
+    super(LabGroupLeavingForm, self).__init__(*args, **kwargs)
+    self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), widget=forms.HiddenInput, initial=labGroup)
+
 class LabGroupSelectionForm(forms.Form):
   '''This class is to validate a user to select a group in order to view the compound lists and reaction lists'''
     

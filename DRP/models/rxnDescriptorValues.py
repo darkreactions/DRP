@@ -3,6 +3,18 @@ from django.db import models
 from Reaction import Reaction
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue  
 from StatsModel import StatsModel
+from itertools import chain
+
+class RxnDescriptorValueQuerySet(models.query.QuerySet):
+
+  def delete(self):
+    for model in StatsModel.objects.filter(trainingset__in=self) | StatsModel.objects.filter(testset_in=self):
+      model.invalidate()
+
+class RxnDescriptorValueManager(models.Manager):
+
+  def get_queryset(self):
+    return RxnDescriptorValueQuerySet(self.model, using=self._db) 
 
 class RxnDescriptorValue(models.Model):
   '''Contains Relationships between Reactions and their descriptors'''
@@ -11,9 +23,21 @@ class RxnDescriptorValue(models.Model):
     app_label="DRP"
     abstract=True
 
-  reaction = models.ForeignKey(Reaction, null=True, unique=False, default=None)
+  objects = RxnDescriptorValueManager()
+  reaction = models.ForeignKey(Reaction, unique=False)
   model=models.ForeignKey(StatsModel, unique=False, null=True, default=None)
   '''If this value was predicted by a statistical model, reference that model'''
+
+  def save(self, *args, **kwargs):
+    if self.pk is not None:
+      for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all()):
+        model.invalidate()
+    super(RxnDescriptorValue, self).save(*args, **kwargs)
+
+  def delete(self):
+    for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all()):
+      model.invalidate()
+    super(RxnDescriptorValue, self).delete()
 
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
   '''Contains the value of a categorical descriptor for a reaction'''

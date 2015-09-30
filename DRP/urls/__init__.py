@@ -1,3 +1,4 @@
+'''The url configuration for the DRP project'''
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 import public
@@ -12,3 +13,4 @@ urlpatterns = patterns('',
   (r'^database/', include(database.urls)),
   (r'^admin/', include(admin.site.urls))
 )
+'''The base urlconf, which includes modularised urls in the system'''

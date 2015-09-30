@@ -1,0 +1,96 @@
+{% extends 'reactions.html' %}
+
+{% block content %}
+  <h1>Add Reaction Data</h1>
+  <form action="{{ request.path }}" method="post">
+    {% csrf_token %}
+    <fieldset>
+    <legend>Reaction Details</legend>
+    <ol>
+      {{ reaction_form.as_ul }}
+    </ol>
+    <ol>
+    </fieldset>
+    <fieldset>
+    <legend>Reactants</legend>
+      {% for reactant_form in reactants_formset %}
+      <li><ol>
+        {{ reactant_form.as_ul }}
+      </ol></li>
+      {% endfor %}
+    </ol>
+    <ol>
+    {{ reactants_formset.managementForm.as_ul }}
+    </ol>
+    </fieldset>
+    {% with descriptor_formsets.0 as formset %}
+    <fieldset>
+    <legend>Numerical Descriptors</legend>
+    <ol>
+      {% for form in formset %}
+      <li>
+        <ol>
+          {{ form.as_ul }}
+        </ol>
+      </li>
+      {% endfor %}
+    </ol>
+    <ol>
+      {{ formset.managementForm.as_ul }}
+    </ol>
+    </fieldset>
+    {% endwith %}
+    {% with descriptor_formsets.1 as formset %}
+    <fieldset>
+    <legend>Ordinal Descriptors</legend>
+    <ol>
+      {% for form in formset %}
+      <li>
+        <ol>
+          {{ form.as_ul }}
+        </ol>
+      </li>
+      {% endfor %}
+    </ol>
+    <ol>
+      {{ formset.managementForm.as_ul }}
+    </ol>
+    </fieldset>
+    {% endwith %}
+    {% with descriptor_formsets.2 as formset %}
+    <fieldset>
+    <legend>Boolean Descriptors</legend>
+    <ol>
+      {% for form in formset %}
+      <li>
+        <ol>
+          {{ form.as_ul }}
+        </ol>
+      </li>
+      {% endfor %}
+    </ol>
+    <ol>
+      {{ formset.managementForm.as_ul }}
+    </ol>
+    </fieldset>
+    {% endwith %}
+    {% with descriptor_formsets.3 as formset %}
+    <fieldset>
+    <legend>Categorical Descriptors</legend>
+    <ol>
+      {% for form in formset %}
+      <li>
+        <ol>
+          {{ form.as_ul }}
+        </ol>
+      </li>
+      {% endfor %}
+    </ol>
+    <ol>
+      {{ formset.managementForm.as_ul }}
+    </ol>
+    </fieldset>
+    {% endwith %}
+    <input type="submit" name="save" value="Save" />
+  </form> 
+{% endblock %}

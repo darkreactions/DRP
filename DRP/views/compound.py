@@ -6,7 +6,7 @@ from DRP.models import Compound
 from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm, CompoundFilterForm
 from DRP.forms import CompoundFilterFormSet, AdvancedCompoundFilterFormSet
 from django.utils.decorators import method_decorator
-from decorators import userHasLabGroup, hasSignedLicense
+from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.shortcuts import render, redirect
@@ -85,7 +85,8 @@ def uploadCompound(request, *args, **kwargs):
   '''A view managing the upload of compound csvs'''
   if request.method=='POST':
     form = CompoundUploadForm(data=request.POST, files=request.FILES, user=request.user)
-    if form.is_valid(): #this particular kind of form does the saving and validation in one step. It's a nasty hack but I couldn't find a better way to leverage transactions.
+    if form.is_valid():
+      form.save()
       return redirect('compoundguide', '/')
     else:
       return render(request, 'compound_upload.html', {'form':form})
@@ -104,36 +105,23 @@ class ListCompound(ListView):
   @method_decorator(login_required)
   @method_decorator(hasSignedLicense)
   @method_decorator(userHasLabGroup)
+  @labGroupSelected #sets self.labGroup
   def dispatch(self, request, *args, **kwargs):
     '''Overriden with a decorator to ensure that user is logged in and has at least one labGroup
     Relates the queryset of this view to the logged in user.
     '''
     
-    self.labForm = LabGroupSelectionForm(request.user)
-    if request.user.labgroup_set.all().count() > 1:
-      if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).exists():
-        self.queryset = request.user.labgroup_set.get(pk=request.session['labgroup_id']).compound_set.all()
-        self.labForm.fields['labGroup'].initial = request.session['labgroup_id']
-        labGroup = request.session['labgroup_id']
-      elif 'labgroup_id' not in request.session:
-        return redirect(reverse('selectGroup') + '?{0}'.format(urlencode({'next':request.path_info})))
-      else:
-        raise RuntimeError("This shouldn't happen")
-    else:
-      #user only has one labgroup, so don't bother asking which group's compoundlist they want to look at.
-      labGroup = request.user.labgroup_set.all()[0]
-      self.queryset = labGroup.compound_set.all()
+    self.queryset = self.labGroup.compound_set.all()
 
-    #one way or another, by the time we get here we have only one labgroup
     if 'filter' in request.GET:
-      self.filterFormSet = self.formSetClass(user=request.user, labGroup=labGroup, data=request.GET)
+      self.filterFormSet = self.formSetClass(user=request.user, labGroup=self.labGroup, data=request.GET)
       if self.filterFormSet.is_valid():
         self.queryset = self.filterFormSet.fetch()
-        self.filterFormSet = self.formSetClass(user=request.user, labGroup=labGroup, initial=self.filterFormSet.cleaned_data)
+        self.filterFormSet = self.formSetClass(user=request.user, labGroup=self.labGroup, initial=self.filterFormSet.cleaned_data)
       else:
         self.queryset = Compound.objects.none()
     else:
-      self.filterFormSet = self.formSetClass(user=request.user, labGroup=labGroup)
+      self.filterFormSet = self.formSetClass(user=request.user, labGroup=self.labGroup)
 
     fileType = kwargs.get('filetype')
 

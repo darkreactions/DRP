@@ -10,15 +10,7 @@
     <li><a href="{% url 'advCompoundSearch' '.html' %}">Advanced Search</a></li>
   </ol>
 </nav>
-{% if user.labgroup_set.all.count > 1 %}
-<form action="{% url 'selectGroup' %}?next={% url 'compoundguide' '/' as compound_guide_url %}{{ compound_guide_url|urlencode:"" }}" method="post">
-  {% csrf_token %}
-  <ol>
-  {{ lab_form.as_ul }}
-  </ol>
-  <input type="submit" value="select" />
-</form>
-{% endif %}
+{% include "lab_form.html" %}
 {% block filter_form %}
   <form action="{% url 'compoundSearch' '.html' %}" method="get">
     {{ filter_formset.management_form}}

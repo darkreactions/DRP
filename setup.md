@@ -2,7 +2,6 @@
 ######Last updated by Philip Adler 2015-09-02
 
 1. **Ubuntu**
-3. **Git Hooks**
 
 ##Ubuntu development server
 
@@ -17,7 +16,7 @@ Note which version of Django gets installed.
 `sudo pip install numpy scipy Django pygraphviz`
 
 Install required pip python libraries
-`sudo pip install chemspipy requests`
+`sudo pip install chemspipy requests pep8 pep257`
 
 `sudo easy_install South`
 
@@ -106,6 +105,7 @@ If you are reading this setup instruction manual, you are working on the refacto
 4. Comment all the things.
 5. If you change the pre-push hook, tell everyone.
 
+There are additional developer notes in teh developer_notes.md file.
 
 ###Note that everything from here on has been retained for future use, but does not currently apply in this development version
 

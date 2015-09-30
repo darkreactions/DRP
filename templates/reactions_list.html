@@ -1,0 +1,66 @@
+{% extends 'reactions.html' %}
+{% load performed_rxn_delete_form %}
+{% load performed_rxn_invalidate_form %}
+
+{% block content %}
+<h1 class="bannerText">Reactions Database</h1>  
+{% include "lab_form.html" %}
+{% if reactions|length > 0 %}
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Quantities</th>
+      <th>User</th>
+      <th>Date Performed</th>
+      <th>Date Inserted</th>
+      <th>Valid</th>
+      <th>Based On</th>
+      <th>Duplicate Of</th>
+      <th>Lab Group</th>
+    </tr>
+  </thead>
+    {% for reaction in reactions %}
+  <tbody>
+    <tr>
+      <td>{% if reaction.valid %}<a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>{% else %}{{ reaction.reference }}{% endif %}</td>
+      <td>
+        <ul>
+        {% for quantity in reaction.compoundquantity_set.all %}
+          <li>{{ quantity.compound.name }}</li>
+          <li>{{ quantity.role.label }}</li>
+          <li>{{ quantity.amount }}mmoles</li>
+        {% endfor %}
+        <ul>
+      </td>
+      <td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
+      <td>{{ reaction.performedDateTime }}</td>
+      <td>{{ reaction.insertedDateTime }}</td>
+      <td>{{ reaction.valid }}</td>
+      <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}{% else %}N/A{% endif %}</td>
+      <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% else %}N/A{% endif %}</td>
+      <td>{{ reaction.labGroup.title }}</td>
+      <td>
+        {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
+        <form action="{% url 'deleteReaction' %}" method="post">
+          {% csrf_token %}
+          {% performed_rxn_delete_form reaction %}
+          <input type="Submit" value="delete" />
+        </form>
+        {% else %}
+        <form action="{% url 'invalidateReaction' %}" method="post">
+          {% csrf_token %}
+          {% performed_rxn_invalidate_form reaction %}
+          <input type="Submit" value="invalidate" />
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+<table>
+{% else %}
+<p>There are currently no reactions to display</p>
+{% endif %}
+
+{% endblock %}

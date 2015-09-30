@@ -4,9 +4,7 @@
 
 # Classes that should get included.
 
-from Compound import Compound
-from CompoundQuantity import CompoundQuantity
-#from DataSet import DataSet
+from dataSets import TestSet, TrainingSet
 from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
 from rxnDescriptors import CatRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor  
 from molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
@@ -18,6 +16,8 @@ from LicenseAgreement import LicenseAgreement
 from License import License
 from Reaction import Reaction
 from PerformedReaction import PerformedReaction
+from Compound import Compound
+from CompoundQuantity import CompoundQuantity
 from RecommendedReaction import RecommendedReaction
 from StatsModel import StatsModel
 from StatsModelTag import StatsModelTag

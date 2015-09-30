@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
 from django.http import HttpResponseNotFound
+from DRP.forms import LabGroupSelectionForm
 
 def userHasLabGroup(view):
   '''This decorator checks that the user is a member of at least one lab group. Assumes login_required is an external decorator'''
@@ -36,3 +37,21 @@ def hasSignedLicense(view):
   
   return _hasSignedLicense
 
+def labGroupSelected(dispatch_method):
+  '''Ensures a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method'''
+
+  def _labGroupSelected(self, request, *args, **kwargs): 
+    self.labForm = LabGroupSelectionForm(request.user)
+    if request.user.labgroup_set.all().count() > 1:
+      if 'labgroup_id' in request.session and request.user.labgroup_set.filter(pk=request.session['labgroup_id']).exists():
+        self.labGroup = request.user.labgroup_set.get(pk=request.session['labgroup_id'])
+        self.labForm.fields['labGroup'].initial = request.session['labgroup_id']
+      elif 'labgroup_id' not in request.session:
+        return redirect(reverse('selectGroup') + '?{0}'.format(urlencode({'next':request.path_info})))
+      else:
+        raise RuntimeError("This shouldn't happen")
+    else:
+      self.labGroup = request.user.labgroup_set.all()[0]
+    return dispatch_method(self, request, *args, **kwargs)
+
+  return _labGroupSelected

@@ -3,7 +3,7 @@ from django.db import models
 from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
 from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor
 
-class CatRxnDescriptor(models.Model):
+class CatRxnDescriptor(CategoricalDescriptor):
   '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
   
   class Meta:

@@ -2,10 +2,10 @@
 '''A test suite for checking that queryset to csv output works'''
 
 import unittest
-from DRPTestCase import DRPTestCase, runTests
 from decorators import createsUser, joinsLabGroup, createsChemicalClass, createsCompound
 from DRP.models import Compound 
 import csv
+from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @createsUser('Aslan', 'old_magic')

@@ -47,8 +47,8 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
       _oldSetup(self)
 
     def tearDown(self):
-      _oldTearDown(self)
       compound.delete()
+      _oldTearDown(self)
 
     c.setUp = setUp
     c.tearDown = tearDown
@@ -140,6 +140,7 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
       labGroup = LabGroup.objects.get(title=labGroupTitle)
       compounds = labGroup.compound_set.fromCsv(os.path.join(settings.APP_DIR, 'tests', 'resource', csvFileName))
       for compound in compounds:
+        compound.csConsistencyCheck()
         compound.save()
 
     def tearDown(self):

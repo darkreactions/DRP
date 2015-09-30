@@ -1,8 +1,27 @@
 '''Module containing only the CompoundQuantities Class'''
 from django.db import models
+from django import forms
+from django.core.exceptions import ValidationError
 from Compound import Compound
 from CompoundRole import CompoundRole
 from Reaction import Reaction
+from PerformedReaction import PerformedReaction
+
+class CompoundQuantityQuerySet(models.query.QuerySet):
+
+  def delete(self):
+    reactions = Reaction.objects.filter(compoundquantity_set__in=self)
+    for reaction in reactions:
+      reaction.save() #recalculate descriptors
+      try:
+        reaction.performedreaction.save()
+      except PerformedReaction.DoesNotExist:
+        pass #we don't care about this outcome
+
+class CompoundQuantityManager(models.Model):
+   
+  def get_queryset(self):
+    return CompoundQuantityQueryset(self.model, using=self._db)
 
 class CompoundQuantity(models.Model):
   '''A class to contain the relationship between a reaction and a compound,
@@ -17,3 +36,19 @@ class CompoundQuantity(models.Model):
   reaction=models.ForeignKey(Reaction)
   role=models.ForeignKey(CompoundRole)
   amount=models.FloatField() 
+
+  def save(self, *args, **kwargs):
+    self.reaction.save() #descriptor recalculation
+    try:
+      self.reaction.performedreaction.save() #invalidate models
+    except PerformedReaction.DoesNotExist:
+      pass #we don't care that it doesn't exist
+    super(CompoundQuantity, self).save()
+
+  def delete(self):
+    self.reaction.save() #descriptor recalculation
+    try:
+      self.reaction.performedreaction.save() #invalidate models
+    except Performedreaction.DoesNotExist:
+      pass #we don't care
+    super(CompoundQuantity, self).save()
