@@ -129,7 +129,7 @@ def signsExampleLicense(username):
   return _signsExampleLicense
 
 def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
-  '''A class decorators that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
+  '''A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
   
   def _loadsCompoundsFromCsv(c):
 
