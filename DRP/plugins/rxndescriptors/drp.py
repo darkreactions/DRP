@@ -1,5 +1,7 @@
 """Basic reaction descriptors calculation module"""
-
+from itertools import chain
+from numpy import mean
+from scipy.stats import gmean
 from django.conf import settings
 from utils import setup
 import DRP 
@@ -34,6 +36,24 @@ _descriptorDict = {
             'maximum': None,
             'minimum': None
         }
+    'inorgAtomIonizationMean':
+        {
+            'type': 'num',
+            'name': 'Mean atomic ionization energy among inorganic species',
+            'calculatorSoftware': 'DRP',
+            'calculatorSoftwareversion':'0.02',
+            'maximum': None,
+            'minimum': None
+        }
+    'inorgAtomIonizationGeom'
+        {
+            'type': 'num',
+            'name': 'Geometric average atomic ionization energy among inorganic species',
+            'calculatorSoftware': 'DRP',
+            'calculatorSoftwareversion':'0.02',
+            'maximum': None,
+            'minimum': None
+        }
 }
 
 descriptorDict = setup(_descriptorDict)
@@ -54,3 +74,14 @@ def calculate(reaction):
                             reaction=reaction,
                             descriptor=descriptorDict['inorgAtomIonizationMin'],
                             value=min(min(atoms[element]['ionization_energy'] for element in compound.elements) for compound in reaction.compounds))
+
+    num.objects.get_or_create(
+                            reaction=reaction,
+                            descriptor=descriptorDict['inorgAtomIonizationMean'],
+                            value=mean(chain(atoms[element]['ionization_energy'] for element in compound.elements) for compound in reaction.compounds))
+
+    num.objects.get_or_create(
+                            reaction=reaction,
+                            descriptor=descriptorDict['inorgAtomIonizationGeom'],
+                            value=gmean(chain(atoms[element]['ionization_energy'] for element in compound.elements) for compound in reaction.compounds))
+    
