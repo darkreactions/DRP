@@ -1,6 +1,6 @@
 """A module containing generally useful chemical data"""
 
-atoms = {
+elements = {
     "Ru": {
         "lanthanide?":False,
         "alkali_metal?":False,
