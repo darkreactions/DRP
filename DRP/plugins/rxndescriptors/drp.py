@@ -3,6 +3,7 @@ from itertools import chain
 from numpy import mean, average as wmean
 from scipy.stats import gmean
 from django.conf import settings
+from django.models import Sum
 from utils import setup
 import DRP 
 
@@ -18,6 +19,33 @@ _descriptorDict = {
             'maximum': None,
             'minimum': 0,
         },
+    'inorgWaterMolRatio':
+        {
+            'type':'num',
+            'name':'Inorganic:Water molar ratio',
+            'calculatorSoftware':'DRP',
+            'calculatorSoftwareVersion': '0.02',
+            'maximum': None,
+            'minimum': 0
+        },
+    'inorgOrgMolRatio':
+        {
+            'type': 'num',
+            'name': 'Inorganic:Organic molar ratio',
+            'calculatorSoftware': 'DRP',
+            'calculatorSoftwareVersion': '0.02',
+            'maximum': None,
+            'minimum': 0
+        },
+    'notWaterWaterMolRatio':
+        {
+            'type': 'num',
+            'name': 'Water:Not Water molar ratio',
+            'calculatorSoftware': 'DRP',
+            'calculatorSoftwareVersion': '0.02',
+            'maximum': None,
+            'minimum': 0
+        }
 }
 
 #The following adds descriptors to the dictionary in an automated way to save on voluminous code
@@ -69,7 +97,7 @@ def calculate(reaction):
     """Calculate the descriptors for this plugin."""
     num = DRP.models.NumRxnDescriptorValue
     inorgCompoundQuantities = DRP.models.CompoundQuantity.objects.filter(reaction=reaction, role__label='Inorg')  # These two lines get the inorganic compounds for htis reaction.
-    sumInorgAmount = sum(quantity.amount for quantity in inorgCompoundQuantities)
+    sumInorgAmount = inorgCompoundQuantities.aggregate(Sum('amount'))
 
 
     MAX = 1
@@ -129,6 +157,36 @@ def calculate(reaction):
                             reaction=reaction,
                             descriptor=descriptorDict['numberInorganic'],
                             value=inorgCompounds.count())
+
+    #inorganic:water molar ratio
+
+    waterMols = DRP.models.CompoundQuantity.objects.filter(reaction=reaction, compound__CSID=937).aggregate(Sum('amount')) 
+
+    if sumInorgAmount > 0 and waterMols > 0:
+        num.objects.get_or_create(
+                                reaction = reaction,
+                                descriptor = descriptorDict['inorgWaterMolRatio'],
+                                value = sumInorgAmount/waterMols)
+
+    #inorganic:organic molar ratio
+
+    organicMols = DRP.models.CompoundQuantity.objects.filter(reaction=reaction, role__label='Org'.aggregate(Sum('amount'))
+    
+    if sumInorgAmount > 0 and organicMols > 0:
+        num.objects.get_or_create(
+                                reaction=reaction,
+                                descriptor=descriptorDict['inorgOrgMolRatio'],
+                                value = sumInorgAmount/organicMols)
+
+    #notwater:water molar ratio
+
+    notWaterMols = DRP.models.CompoundQuantity.objects.filter(reaction=reaction).exclude(compound__CSID=937).aggregate(Sum('amount'))
+    
+    if notWaterMols > 0 and waterMols > 0:
+        num.objects.get_or_create(
+                                reaction=reaction,
+                                descriptor=descriptorDict('notWaterWaterMolRatio'),
+                                value = notwaterMols/waterMols 
 
     for prop in inorgAtomicProperties:
         #  Calculate the inorganic atomic properties, weight them where needed and insert them into the database.
