@@ -11,7 +11,7 @@ class FilterForm(forms.Form):
     else:
       keys = self.fields.keys()
     
-    return not any(self.cleaned_data.get(key) not in self.fields[key].empty_values for key in keys)
+    return all(self.cleaned_data.get(key) in self.fields[key].empty_values for key in keys)
 
   def fetch(self):
     '''Should be overridden to return a queryset'''
