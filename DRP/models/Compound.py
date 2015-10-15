@@ -23,6 +23,36 @@ descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 # This prevents a cyclic dependency problem
 
+def elementsFormatValidator(molFormula):
+    for char in self.formula:
+        if inBrackets:
+            if currentElement not in elements:
+                elements[currentElement]={'stoichiometry': 0}
+            if char in (str(x) for x in range(0,10)) or char == '.':
+                strStoichiometry += char
+            elif char == '}':
+                inBrackets=False
+                elements[currentElement]['stoichiometry'] += float(strStoichiometry)
+                currentElement = ''
+                strStoichiometry = ''
+            else:
+                raise ValidationError('Invalid molecular formula format.', 'mol_malform')
+        elif char.isalpha():
+            if char.isupper():
+                if currentElement != '':
+                    if currentElement in elements:
+                        elements[currentElement]['stoichiometry'] += 1
+                    else:
+                        elements[currentElement] = {'stoichiometry': 1}
+                currentElement = char
+            else:
+                currentElement += char
+        elif char == '{':
+            inBrackets=True
+        elif char == '_':
+            pass
+        else:
+            raise ValidationError('Invalid molecular formula format.', code='mol_malform')
 
 class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
 
@@ -332,33 +362,3 @@ class Compound(CsvModel):
 class ElementsException(Exception):
     pass
 
-def elementsFormatValidator(molFormula):
-    for char in self.formula:
-        if inBrackets:
-            if currentElement not in elements:
-                elements[currentElement]={'stoichiometry': 0}
-            if char in (str(x) for x in range(0,10)) or char == '.':
-                strStoichiometry += char
-            elif char == '}':
-                inBrackets=False
-                elements[currentElement]['stoichiometry'] += float(strStoichiometry)
-                currentElement = ''
-                strStoichiometry = ''
-            else:
-                raise ValidationError('Invalid molecular formula format.', 'mol_malform')
-        elif char.isalpha():
-            if char.isupper():
-                if currentElement != '':
-                    if currentElement in elements:
-                        elements[currentElement]['stoichiometry'] += 1
-                    else:
-                        elements[currentElement] = {'stoichiometry': 1}
-                currentElement = char
-            else:
-                currentElement += char
-        elif char == '{':
-            inBrackets=True
-        elif char == '_':
-            pass
-        else:
-            raise ValidationError('Invalid molecular formula format.', code='mol_malform')
