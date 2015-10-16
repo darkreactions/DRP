@@ -1,5 +1,6 @@
 
 from django.core.management.base import BaseCommand
+from DRP.Email import EmailToAdmins
 from DRP.models import Reaction
 import xxhash
 class Command(BaseCommand):
@@ -27,4 +28,7 @@ class Command(BaseCommand):
             else:
                 hashDictionary[h] = reactantString
         if collisionCount > 0:
+            e = EmailToAdmins('Dark Reactions Project: Hash Collision Failure', 
+                    'A collision between reaction space hashes has occured. Please contact the DRP development team and file a bug report.')
+            e.send()
             exit(1)

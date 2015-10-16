@@ -154,6 +154,10 @@ When you open your browser and direct yourself to darkreactions.loc (or whatever
 
 There are a number of cron-jobs that need to be set to ensure good functioning of a production grade server.
 
+Firstly, there is the reaction hash checking cron-job. This is a database integrity check that cannot be done using django's inbuilt framework. On failure, it notifies your local administrators that there is a problem. It is advised that should this check fail, that your local administrator file a bug report with the development group.
+
+The command for the cron-job is ./manage.py check_hash_collisions
+
 ###Notes for upgrading from pre-0.02 versions of DRP
 
 ###Note that everything from here on has been retained for future use, but does not currently apply in this development version
