@@ -150,6 +150,12 @@ Restart nginx:
 
 When you open your browser and direct yourself to darkreactions.loc (or whatever you named the server), the dark reactions project should display.
 
+###Additional Notes for Production Servers
+
+There are a number of cron-jobs that need to be set to ensure good functioning of a production grade server.
+
+###Notes for upgrading from pre-0.02 versions of DRP
+
 ###Note that everything from here on has been retained for future use, but does not currently apply in this development version
 
 ###Skip if you don't need model-building.
