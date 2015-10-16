@@ -23,15 +23,20 @@ descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 # This prevents a cyclic dependency problem
 
+
 def elementsFormatValidator(molFormula):
-    for char in self.formula:
+    """A validator for molecular formulae."""
+    elements = {}
+    inBrackets = False
+    currentElement = ''
+    for char in molFormula:
         if inBrackets:
             if currentElement not in elements:
-                elements[currentElement]={'stoichiometry': 0}
-            if char in (str(x) for x in range(0,10)) or char == '.':
+                elements[currentElement] = {'stoichiometry': 0}
+            if char in (str(x) for x in range(0, 10)) or char == '.':
                 strStoichiometry += char
             elif char == '}':
-                inBrackets=False
+                inBrackets = False
                 elements[currentElement]['stoichiometry'] += float(strStoichiometry)
                 currentElement = ''
                 strStoichiometry = ''
@@ -48,11 +53,13 @@ def elementsFormatValidator(molFormula):
             else:
                 currentElement += char
         elif char == '{':
-            inBrackets=True
+            strStoichiometry = ''
+            inBrackets = True
         elif char == '_':
             pass
         else:
             raise ValidationError('Invalid molecular formula format.', code='mol_malform')
+
 
 class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
 
@@ -304,11 +311,11 @@ class Compound(CsvModel):
         for char in self.formula:
             if inBrackets:
                 if currentElement not in elements:
-                    elements[currentElement]={'stoichiometry': 0}
-                if char in (str(x) for x in range(0,10)) or char == '.':
+                    elements[currentElement] = {'stoichiometry': 0}
+                if char in (str(x) for x in range(0, 10)) or char == '.':
                     strStoichiometry += char
                 elif char == '}':
-                    inBrackets=False
+                    inBrackets = False
                     elements[currentElement]['stoichiometry'] += float(strStoichiometry)
                     currentElement = ''
                     strStoichiometry = ''
@@ -325,7 +332,7 @@ class Compound(CsvModel):
                 else:
                     currentElement += char
             elif char == '{':
-                inBrackets=True
+                inBrackets = True
         return elements
 
     @property
@@ -359,6 +366,9 @@ class Compound(CsvModel):
                 res[key] = value
         return res
 
-class ElementsException(Exception):
-    pass
 
+class ElementsException(Exception):
+
+    """An exception for element formats."""
+
+    pass
