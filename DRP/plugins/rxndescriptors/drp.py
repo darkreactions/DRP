@@ -5,6 +5,7 @@ from scipy.stats import gmean
 from django.conf import settings
 from django.models import Sum
 from utils import setup
+import xxhash
 import DRP 
 
 atoms = DRP.chemical_data.elements
@@ -45,6 +46,13 @@ _descriptorDict = {
             'calculatorSoftwareVersion': '0.02',
             'maximum': None,
             'minimum': 0
+        }
+    'rxnSpaceHash1':
+        {
+            'type': 'cat',
+            'name': 'Hash of reaction reactants to partition reaction space',
+            'calculatorSoftware': 'DRP/xxhash',
+            'calculatorSoftwareVersion': '0.02/{}'.format(xxhash.VERSION)
         }
 }
 
@@ -95,7 +103,20 @@ for element, info in elements.items():
 
 def calculate(reaction):
     """Calculate the descriptors for this plugin."""
+
+    #descriptor Value classes
     num = DRP.models.NumRxnDescriptorValue
+    cat = DRP.models.CatRxnDescriptorValue
+    perm = DRP.models.CategoricalDescriptorPermittedValue
+
+    #reaction space descriptor
+    h = xxhash.xxh64() #generates a hash
+    for reactant in reaction.compounds:
+        xxhash.update(reactant.abbrev)
+    p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h)
+    cat.objects.get_or_create(reaction=reaction,descriptor=descriptorDict['rxnSpaceHash1'], value=p) 
+
+    #inorganic descriptor calculations
     inorgCompoundQuantities = DRP.models.CompoundQuantity.objects.filter(reaction=reaction, role__label='Inorg')  # These two lines get the inorganic compounds for htis reaction.
     sumInorgAmount = inorgCompoundQuantities.aggregate(Sum('amount'))
 

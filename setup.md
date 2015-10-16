@@ -16,7 +16,7 @@ Note which version of Django gets installed.
 `sudo pip install numpy scipy Django pygraphviz`
 
 Install required pip python libraries
-`sudo pip install chemspipy requests pep8 pep257`
+`sudo pip install chemspipy requests pep8 pep257 xxhash`
 
 `sudo easy_install South`
 
