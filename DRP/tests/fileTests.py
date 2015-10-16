@@ -21,6 +21,7 @@ _pep8Files = [
     ('DRP', 'models', 'Compound.py'),
     ('DRP', 'plugins', 'moldescriptors', 'example.py'),
     ('DRP', 'admin.py'),
+    ('DRP', 'management', 'commands', 'check_hash_collisions.py'), 
     # you can finish on a directory test the whole thing,
     # but this should be a python package if you do so
     # (__init__.py must be present)
