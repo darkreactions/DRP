@@ -74,7 +74,7 @@ weightings = (
 )
 aggregations = (
     ('Max', 'Maximum'), 
-    ('Min', 'Minimum'),
+    ('Range', 'Range'),
     ('Mean', 'Mean Average'),
     ('Geom', 'Geometric Average')
 )
@@ -122,9 +122,8 @@ def calculate(reaction):
 
 
     MAX = 1
-    MIN = 2
-    MEAN = 3
-    GMEAN = 4
+    RANGE = 2
+    GMEAN = 3
     WMOL = 1
     WSTOICH = 2
 
@@ -132,40 +131,34 @@ def calculate(reaction):
         """Figure out the aggregation for inorganic atom-based properties. This is done a lot so this saves on code repetition."""
         if weighting is None:
             if function == MAX:
-                return max(max(inorgElements[element][propertyLabel] for element in quantity.compound.elements) for quantity in inorgCompoundQuantities)
-            elif function == MIN:
-                return min(min(inorgElements[element][propertyLabel] for element in quantity.compound.elements) for quantity in inorgCompoundQuantities)
-            elif function == MEAN:
-                return mean(chain(inorgElements[element][propertyLabel] for element in quantity.compound.elements) for quantity in inorgCompoundQuantities)
+                return max(max(inorgElements[element][propertyLabel] for element in quantity.compound.elements if element in inorgElements) for quantity in inorgCompoundQuantities)
+            elif function == RANGE:
+                maximum = max(max(inorgElements[element][propertyLabel] for element in quantity.compound.elements if element in inorgElements) for quantity in inorgCompoundQuantities)
+                minimum = min(min(inorgElements[element][propertyLabel] for element in quantity.compound.elements) if element in inorgElements for quantity in inorgCompoundQuantities)
+                return maximum - minimum
             elif function == GMEAN:
-                return gmean(chain(inorgElements[element][propertyLabel] for element in quantity.compound.elements) for quantity in inorgCompoundQuantities)
+                return gmean(chain(inorgElements[element][propertyLabel] for element in quantity.compound.elements if element in inorgElements) for quantity in inorgCompoundQuantities)
             else:
                 raise TypeError('Unrecognised function selection constant')
         elif weighting == WMOL:
             if function == MAX:
-                return max(max(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements)
-                                            for quantity in inorgCompoundQuantities)
-            elif function == MIN:
-                return min(min(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements)
-                                            for quantity in inorgCompoundQuantities)
-            elif function == MEAN:
-                return mean(chain(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements)
-                                            for quantity in inorgCompoundQuantities)
-            elif function == GMEAN:
-                return gmean(chain(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements)
-                                            for quantity in inorgCompoundQuantities))
+                return max(max(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements if element in inorgElements) for quantity in inorgCompoundQuantities)
+            elif function == RANGE:
+                maximum = max(max(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements if element in inorgElements) for quantity in inorgCompoundQuantities)
+                minimum = min(min(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements if element in inorgElements) for quantity in inorgCompoundQuantities)
+                return maximum-minimum
+             elif function == GMEAN:
+                return gmean(chain(inorgElements[element][propertyLabel]*(quantity.amount/sumInorgAmount)*info['stoichiometry'] for element, info in quantity.compound.elements if element in inorgElements) for quantity in inorgCompoundQuantities))
             else:
                 raise TypeError('Unrecognised function selection constant')
         elif weighting == WSTOICH: 
-            values = (wmean((inorgElements[element][propertyLabel] for element in quantity.compound.elements), 
+            values = (wmean((inorgElements[element][propertyLabel] for element in quantity.compound.elements if element in inorgElements), 
                                 weights=(info['stoichiometry'] for element, info in quantity.compound.elements.items()))
                                             for quantity in inorgCompoundQuantities)
             if function == MAX:
                 return max(values)
-            elif function == MAX:
-                return min(values)
-            elif function == MEAN:
-                return mean(values)
+            elif function == DIFF:
+                return max(values) - min(values)
             elif function == GMEAN:
                 return gmean(values)
             else:
@@ -220,13 +213,8 @@ def calculate(reaction):
     
         num.objects.get_or_create(
                                 reaction=reaction,
-                                descriptor=descriptorDict[stem + 'Min'],
-                                value=inorgAtomicAggregate(prop, MIN))
-    
-        num.objects.get_or_create(
-                                reaction=reaction,
-                                descriptor=descriptorDict[stem + 'Mean'],
-                                value=inorgAtomicAggregate(prop, MEAN))
+                                descriptor=descriptorDict[stem + 'Range'],
+                                value=inorgAtomicAggregate(prop, RANGE))
     
         num.objects.get_or_create(
                                 reaction=reaction,
@@ -240,13 +228,8 @@ def calculate(reaction):
     
         num.objects.get_or_create(
                                 reaction=reaction,
-                                descriptor=descriptorDict[stem + 'MolWeightedMax'],
-                                value=inorgAtomicAggregate(prop, MIN, WMOL))
-    
-        num.objects.get_or_create(
-                                reaction=reaction,
-                                descriptor=descriptorDict[stem + 'MolWeightedMean'],
-                                value=inorgAtomicAggregate(prop, MEAN, WMOL))
+                                descriptor=descriptorDict[stem + 'MolWeightedRange'],
+                                value=inorgAtomicAggregate(prop, RANGE, WMOL))
     
         num.objects.get_or_create(
                                 reaction=reaction,
@@ -260,13 +243,8 @@ def calculate(reaction):
     
         num.objects.get_or_create(
                                 reaction=reaction,
-                                descriptor=descriptorDict[stem + 'StoichWeightedMin'],
-                                value=inorgAtomicAggregate(prop, MIN, WMOL))
-    
-        num.objects.get_or_create(
-                                reaction=reaction,
-                                descriptor=descriptorDict[stem + 'StoichWeightedMean'],
-                                value=inorgAtomicAggregate(prop, MEAN, WSTOICH))
+                                descriptor=descriptorDict[stem + 'StoichWeightedRange'],
+                                value=inorgAtomicAggregate(prop, RANGE, WMOL))
     
         num.objects.get_or_create(
                                 reaction=reaction,
