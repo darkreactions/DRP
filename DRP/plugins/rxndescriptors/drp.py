@@ -169,7 +169,6 @@ for compoundRole in DRP.models.CompoundRole.objects.all():
                         'maximum': 1,
                         'minimum': 0
                     }
-
         for descriptor in DRP.models.BoolMolDescriptor.objects.all():
             for norm in normalisations:
                 for value in ('True', 'False'):
@@ -194,6 +193,32 @@ for compoundRole in DRP.models.CompoundRole.objects.all():
                     'calculatorSoftware': 'DRP',
                     'calculatorSoftwareVersion': '0.02'
                 }
+        for descriptor in DRP.models.BoolMolDescriptor.objects.all():
+            for norm in normalisations:
+                _descriptordDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max', norm[0]] = {
+                    'type': 'num',
+                    'name': 'Maximum value for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, norm[1],
+                    'caculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': 'DRP'
+                    'maximum': None,
+                    'minimum': None
+                    }
+                _descriptordDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range', norm[0]] = {
+                    'type': 'num',
+                    'name': 'Range for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, norm[1],
+                    'caculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': 'DRP'
+                    'maximum': None,
+                    'minimum': None
+                    }
+                _descriptordDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', norm[0]] = {
+                    'type': 'num',
+                    'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, norm[1],
+                    'caculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': 'DRP'
+                    'maximum': None,
+                    'minimum': None
+                    }
             
 
 #Set up the actual descriptor dictionary.
