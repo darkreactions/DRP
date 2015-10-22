@@ -75,7 +75,6 @@ weightings = (
 aggregations = (
     ('Max', 'Maximum'), 
     ('Range', 'Range'),
-    ('Mean', 'Mean Average'),
     ('Geom', 'Geometric Average')
 )
 
@@ -92,6 +91,16 @@ for prop in inorgAtomicProperties:
                 'maximum':None,
                 'minimum':None
             }
+
+for element in elements:
+    _descriptorDict[element + '_mols'] = {
+            'type':'num',
+            'name':'Mols of {} in a reaction.'.format(element),
+            'calculatorSoftware':'DRP',
+            'calculatorSoftwareVersion': '0.02',
+            'maximum': None,
+            'minimum': 0
+        }
 
 #Set up the actual descriptor dictionary.
 descriptorDict = setup(_descriptorDict)
@@ -250,3 +259,11 @@ def calculate(reaction):
                                 reaction=reaction,
                                 descriptor=descriptorDict[stem + 'StoichWeightedGeom'],
                                 value=inorgAtomicAggregate(prop, GMEAN, WSTOICH))
+
+        # Calculate the elemental molarities
+
+        for element in elements:
+            num.objects.get_or_create(
+                                reaction=reaction,
+                                descriptor=descriptorDict[element + '_mols'],
+                                value=sum(quantity.compound.elements[element]['stoichionmetry'] * quantity.amount for quantity in CompoundQuantity.objects.filter(reaction=reaction)))
