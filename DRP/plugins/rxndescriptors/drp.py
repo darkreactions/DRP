@@ -102,8 +102,99 @@ for element in elements:
             'minimum': 0
         }
 
-#for compoundRole in DRP.models.CompoundRole.objects.all():
-#    for descriptor in DRP.models.CatMolDescriptor.objects.all():
+#descriptors for generalised aggregation across compound roles
+
+normalisations = (('molarity', 'mol_norm'), ('count','base_norm'))
+for compoundRole in DRP.models.CompoundRole.objects.all():
+    for descriptor in DRP.models.CatMolDescriptor.objects.all():
+        for norm in normalisations:
+            _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'mode', norm[1])] = {
+                    'type': 'cat',
+                    'name': descriptor.name + ' Modal value for "{}" role for reaction normalised by {}.'.format(compoundRole.label, norm[0]),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '0.02',
+                    'permittedValues': [value.value for value in descriptor.permittedValues.all()]
+                }
+            for permValue in descriptor.permittedValues.all():
+                _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, permValue.value, norm[1])] = {
+                        'type': 'num',
+                        'name': 'Proportion of reactants in category {} for descriptor "{}" weighted by normalised reactant {} in compound role {}.'.format(
+                                permValue.value, descriptor.name, norm[0], compoundRole.label),
+                        'calculatorSoftware': 'DRP',
+                        'calculatorSoftwareVersion': '0.02',
+                        'maximum': 1,
+                        'minimum': 0
+                    }
+    for descriptor in DRP.models.OrdMolDescriptor.objects.all():
+        for norm in normalisations:
+            _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'mode', norm[1]] = {
+                    'type': 'ord',
+                    'name': descriptor.name + ' Modal value for "{}" role for reaction normalised by {}.'.format(compoundRole.label, norm[0]),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '0.02',
+                    'maximum': descriptor.maximum,
+                    'minimum': descriptor.minimum
+                }
+            _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, '75pc', norm[1]] {
+                    'type': 'ord',
+                    'name': descriptor.name + ' 75th percentile value for "{}" role for reaction normalised by {}.'.format(compoundRole.label, norm[0]),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '0.02',
+                    'maximum': descriptor.maximum,
+                    'minimum': descriptor.minimum
+                }
+            _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, '50pc', norm[1]] {
+                    'type': 'ord',
+                    'name': descriptor.name + ' 50th percentile value for "{}" role for reaction normalised by {}.'.format(compoundRole.label, norm[0]),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '0.02',
+                    'maximum': descriptor.maximum,
+                    'minimum': descriptor.minimum
+                }
+            _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, '7525_IPR', norm[1]] {
+                    'type': 'ord',
+                    'name': descriptor.name + ' interpercentile range for 25th and 75th percentile for "{}" role for reaction normalised by {}.'.format(compoundRole.label, norm[0]),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '0.02',
+                    'maximum': descriptor.maximum-descriptor.minimum,
+                    'minimum': 0
+                }
+            for i in range(descriptor.minimum, descriptor.maximum+1): #  because python...
+                _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, i, norm[1])] = {
+                        'type': 'num',
+                        'name': 'Proportion of reactants with value {} for descriptor "{}" weighted by normalised reactant {} in compound role {}.'.format(
+                                i, descriptor.name, norm[0], compoundRole.label),
+                        'calculatorSoftware': 'DRP',
+                        'calculatorSoftwareVersion': '0.02',
+                        'maximum': 1,
+                        'minimum': 0
+                    }
+
+        for descriptor in DRP.models.BoolMolDescriptor.objects.all():
+            for norm in normalisations:
+                for value in ('True', 'False'):
+                    _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, value, norm[1])] = {
+                            'type': 'num',
+                            'name': 'Proportion of reactants with value {} for descriptor "{}" weighted by normalised reactant {} in compound role {}.'.format(
+                                    value, descriptor.name, norm[0], compoundRole.label),
+                            'calculatorSoftware': 'DRP',
+                            'calculatorSoftwareVersion': '0.02',
+                            'maximum': 1,
+                            'minimum': 0
+                        }
+                _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'mode', norm[1]] = {
+                        'type': 'ord',
+                        'name': descriptor.name + ' Modal value for "{}" role for reaction normalised by {}.'.format(compoundRole.label, norm[0]),
+                        'calculatorSoftware': 'DRP',
+                        'calculatorSoftwareVersion': '0.02',
+                    }
+            _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'both_present')] = {
+                    'type': 'bool',
+                    'name': 'Both true and false presence test for "{}" role for reaction.'.format(compoundRole.label, norm[0]),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '0.02'
+                }
+            
 
 #Set up the actual descriptor dictionary.
 descriptorDict = setup(_descriptorDict)
