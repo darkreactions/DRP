@@ -8,7 +8,7 @@ from utils import setup
 import xxhash
 import DRP 
 
-atoms = DRP.chemical_data.elements
+elements = DRP.chemical_data.elements
 
 _descriptorDict = { 
     'numberInorganic':
@@ -102,6 +102,9 @@ for element in elements:
             'minimum': 0
         }
 
+#for compoundRole in DRP.models.CompoundRole.objects.all():
+#    for descriptor in DRP.models.CatMolDescriptor.objects.all():
+
 #Set up the actual descriptor dictionary.
 descriptorDict = setup(_descriptorDict)
 
@@ -166,7 +169,7 @@ def calculate(reaction):
                                             for quantity in inorgCompoundQuantities)
             if function == MAX:
                 return max(values)
-            elif function == DIFF:
+            elif function == RANGE:
                 return max(values) - min(values)
             elif function == GMEAN:
                 return gmean(values)
@@ -261,9 +264,15 @@ def calculate(reaction):
                                 value=inorgAtomicAggregate(prop, GMEAN, WSTOICH))
 
         # Calculate the elemental molarities
+        allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
+
+        elementNormalisationFactor = sum(sum(quantity.compound.elements[element]['stoichiometry'] * quantity.amount for quantity in allCompoundQuantities) for element in elements)
+        # This has been spelled with an s. Someone English has been here...
 
         for element in elements:
             num.objects.get_or_create(
                                 reaction=reaction,
                                 descriptor=descriptorDict[element + '_mols'],
-                                value=sum(quantity.compound.elements[element]['stoichionmetry'] * quantity.amount for quantity in CompoundQuantity.objects.filter(reaction=reaction)))
+                                value=sum(quantity.compound.elements[element]['stoichiometry'] * quantity.amount for quantity in allCompoundQuantities)/elementNormalisationFactor)
+
+
