@@ -1,8 +1,9 @@
 from scipy.stats import gmean
 from utils import setup
 import DRP
+from DRP import chemical_data
 
-elements = DRP.chemical_data.elements
+elements = chemical_data.elements
 
 #Inorganic descriptors
 inorgAtomicProperties = (
@@ -24,12 +25,14 @@ for element, info in elements.items():
     if (element == 'Se') or (info['group'] in range(3, 13)) or ((info['group'] > 12) and ((not info['nonmetal']) or info['metalloid'])):
         inorgElements[element] = info 
 
+_descriptorDict = {}
+
 for prop in inorgAtomicProperties:
     stem = 'drpInorgAtom' + prop.title().replace('_', '') 
     for weighting in weightings:
         _descriptorDict['{}_geom_{}'.format(stem, weighting[0])] = {
             'type':'num',
-            'name': 'Geometric mean of {} weighted by {}.'.format(agg[1], prop.replace('_', ' '), weighting[1]),
+            'name': 'Geometric mean of {} weighted by {}.'.format(prop.replace('_', ' '), weighting[1]),
             'calculatorSoftware':'DRP',
             'calculatorSoftwareVersion':'0.02',
             'maximum':None,
@@ -57,25 +60,28 @@ descriptorDict = setup(_descriptorDict)
 def calculate(compound):
 
     num = DRP.models.NumMolDescriptorValue
-    inorgElementNormalisationFactor = sum(info['stoichiometry'] for element, info in compound.elements.items() if element in inorgElements)
 
-    for prop in inorgAtomicProperties:
-        num.objects.get_or_create(        
-            compound=compound,
-            descriptor=descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))]
-            value = gmean(inorgElements[element][prop] for element in compound.elements if element in inorgElements))
-
-        num.objects.get_or_create(
-            compound=compound
-            descriptor=descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))]
-            value = gmean(inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) for element, info in compound.elements if element in inorgElements))
-           
-        num.objects.get_or_create(
-            compound=compound
-            descriptor=descriptorDict['drpInorgAtom{}_max'.format(prop.title().replace('_', ''))]
-            value = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements))
-
-        num.objects.get_or_create(
-            compound=compound
-            descriptor=descriptorDict['drpInorgAtom{}_range'.format(prop.title().replace('_', ''))]
-            value = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements) - min(inorgElements[element][prop] for element in compound.elements if element in inorgElement))
+    if any(element in inorgElements for element in compound.elements):
+        inorgElementNormalisationFactor = sum(info['stoichiometry'] for element, info in compound.elements.items() if element in inorgElements)
+        for prop in inorgAtomicProperties:
+            value, boolean= num.objects.get_or_create( 
+                compound=compound,
+                descriptor=descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))])
+    
+            value.value=gmean([inorgElements[element][prop] for element in compound.elements if element in inorgElements])
+            value.save()
+    
+            num.objects.get_or_create(
+                compound=compound,
+                descriptor=descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))],
+                value = gmean([inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements]))
+               
+            num.objects.get_or_create(
+                compound=compound,
+                descriptor=descriptorDict['drpInorgAtom{}_max'.format(prop.title().replace('_', ''))],
+                value = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements))
+    
+            num.objects.get_or_create(
+                compound=compound,
+                descriptor=descriptorDict['drpInorgAtom{}_range'.format(prop.title().replace('_', ''))],
+                value = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements) - min(inorgElements[element][prop] for element in compound.elements if element in inorgElements))

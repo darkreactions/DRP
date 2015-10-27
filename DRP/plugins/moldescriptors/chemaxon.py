@@ -7,7 +7,8 @@ import DRP
 from utils import setup
 from django.conf import settings
 from collections import OrderedDict
-from subprocess import Popen
+from subprocess import Popen, PIPE
+from itertools import chain
 
 _descriptorDict = {
     'refractivity': {
@@ -121,7 +122,7 @@ _pHDependantDescriptors = {
 }
 
 
-for descriptor, d in _phDependantDescriptors:
+for descriptor, d in _pHDependantDescriptors.items():
     for i in range(1, 15):
         d['name'] += ' at pH {}'.format(i)
         _descriptorDict[descriptor + '_pH{}'.format(i)] = d
@@ -147,30 +148,28 @@ for key, command in _cxcalcpHCommandStems.items():
     for i in range(1, 15):
         cxcalcCommands[key.format(i)] = command.format(i)
 
-for key in _descriptorDict:
-    cxcalcCommands[key] = key  # NOTE: This might be true now, but might not be always true.
 
 def calculate(compound):
     notFound = True
-    if notFound and (compound.INCHI is not None):
-        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer']) # lec = lowest energy conformer
+    if notFound and (compound.INCHI is not None and compound.INCHI is not ''):
+        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, close_fds=True) # lec = lowest energy conformer
         lecProc.wait()
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
-    if notFound and (compound.smiles is not None):
-        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer']) # lec = lowest energy conformer
+    if notFound and (compound.smiles is not None and compound.smiles is not ''):
+        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, close_fds=True) # lec = lowest energy conformer
         lecProc.wait()
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False  
         notFound = False
     if not notFound:
-        calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', lec] + [command for key, command in cxcalcCommands.items()]] 
+        calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, close_fds=True) 
         calcProc.wait()
         if calcProc.returncode == 0:
-            res, resErr = lecProc.communicate()
-            if resErr == ''
+            res, resErr = calcProc.communicate()
+            if resErr == '':
                 resLines = res.split('\n')
                 if len(resLines) == 3:
                     resList = resLines[1].split('\t')

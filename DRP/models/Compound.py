@@ -333,6 +333,8 @@ class Compound(CsvModel):
                     currentElement += char
             elif char == '{':
                 inBrackets = True
+        if currentElement != '':
+            elements[currentElement] = {'stoichiometry': 1}
         return elements
 
     @property

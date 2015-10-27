@@ -163,22 +163,22 @@ def calculate(reaction):
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     num.objects.get_or_create(
                         reaction=reaction,
-                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max']
+                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')]
                         value=max(descriptorValue.value for descriptorValue in descriptorValues)
                     )
                     num.objects.get_or_create(
                         reaction=reaction,
-                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range']
+                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')]
                         value=max(descriptorValue.value for descriptorValue in descriptorValues) - min(descriptorValue.value for descriptorValue in descriptorValues)
                     )
                     num.objects.get_or_create(
                         reaction=reaction,
-                        descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity'],
+                        descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')],
                         value=gmean(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities)
                     ) 
                     num.objects.get_or_create(
                         reaction=reaction,
-                        descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count'],
+                        descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count')],
                         value=gmean(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
                     )
             for descriptor in DRP.models.OrdMolDescriptor.objects.all():
@@ -202,12 +202,12 @@ def calculate(reaction):
                     for i in (True, False): #  because Still python...
                         num.objects.get_or_create(
                             reaction=reaction,
-                            descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i]),
+                            descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, )],
                             value=len(value for value in descriptorValues if value.value == i)
                         )
                         num.objects.get_or_create(
                             reaction=reaction,
-                            descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i]),
+                            descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)],
                             value=sum(quantity.amount for quantity in roleQuantities.filter(compound__boolmoldescriptorvalue__value=i, compound__boolmoldescriptorvalue__descriptor__pk=descriptor.pk))
                         )
             for descriptor in DRP.models.CatMolDescriptor.objects.all():
@@ -216,11 +216,11 @@ def calculate(reaction):
                     for permValue in descriptor.permittedValues.all():
                         num.objects.get_or_create(
                             reaction=reaction,
-                            descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value]),
+                            descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)],
                             value=len(value for value in descriptorValues.filter(value=permValue))
                         )
                         num.objects.get_or_create(
                             reaction=reaction,
-                            descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value]),
+                            descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)],
                             value=sum(quantity.amount for quantity in roleQuantities.filter(compound__catmoldescriptorvalue__value=permValue, compound__catmoldescriptorvalue__descriptor__pk=descriptor.pk))
                         )
