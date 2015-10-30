@@ -14,22 +14,36 @@ class LazyDescDict(object):
         args = v.copy()
         del args['type']
         args['heading']=k
+        fetchArgs = {k:v for k, v in args.items() if k in ('heading', 'calculatorSoftware', 'calculatorSoftwareVersion')}
         if v['type'] == 'num':
-          self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.get_or_create(**args)[0]
+          try:
+            self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.filter(**fetchArgs).update(**args)
+            self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.get(**fetchArgs)
+          except DRP.models.NumRxnDescriptor.DoesNotExist:
+            self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.create(**args) 
         elif v['type'] == 'bool':
-          self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.get_or_create(**args)[0]
+          try:
+            self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.filter(**fetchArgs).update(**args)
+            self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.get(**fetchArgs)
+          except DRP.models.BoolRxnDescriptor.DoesNotExist:
+            self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.create(**args)
         elif v['type'] == 'ord':
-          self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get_or_create(**args)[0]
+          try:
+            self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.filter(**fetchArgs).update(**args)
+            self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get(**fetchArgs)
+          except DRP.models.OrdRxnDescriptor.DoesNotExist: 
+            self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get_or_create(**args)
         elif v['type'] == 'cat':
           del args['permittedValues']
-          self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get_or_create(**args)[0]
-          self.internalDict[k].save()
+          try: 
+            DRP.models.CatRxnDescriptor.objects.filter(**fetchArgs).update(**args)
+            self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get(**fetchArgs)
+          except DRP.models.CatRxnDescriptor.DoesNotExist:
+            self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.create(**args)
           for permittedValue in v['permittedValues']:
             perm = DRP.models.CategoricalDescriptorPermittedValue.objects.get_or_create(value=permittedValue, descriptor=self.internalDict[k])[0]
-            perm.save()
         else:
           raise RuntimeError("Invalid descriptor type provided")
-        self.internalDict[k].save()
     self.initialised = True
 
   def __len__(self):

@@ -1,13 +1,13 @@
 """Basic reaction descriptors calculation module"""
+import DRP
 from itertools import chain
 from numpy import mean, average as wmean
 from scipy.stats import gmean
-from django.conf import settings
-from django.models import Sum
+from django.db.models import Sum
 from utils import setup
 import xxhash
-import DRP 
 
+elements = DRP.chemical_data.elements
 
 _descriptorDict = { 
     'rxnSpaceHash1':
@@ -15,7 +15,8 @@ _descriptorDict = {
             'type': 'cat',
             'name': 'Hash of reaction reactants to partition reaction space',
             'calculatorSoftware': 'DRP/xxhash',
-            'calculatorSoftwareVersion': '0.02/{}'.format(xxhash.VERSION)
+            'calculatorSoftwareVersion': '0.02/{}'.format(xxhash.VERSION),
+            'permittedValues':[]
         }
 }
 
@@ -34,88 +35,89 @@ for element in elements:
 
 #descriptors for generalised aggregation across compound roles
 
-weightings = ('molarity', 'count')
-for compoundRole in DRP.models.CompoundRole.objects.all():
-    for w in weightings:
-        _descriptorDict['{}_amount_{}'.format(compoundRole.label, w)] = {
-                'type': 'num',
-                'name': 'Amount of compounds in the reaction belonging in the role "{}" weighted by'.format(compoundRole.label, w),
-                'calculatorSoftware': 'DRP',
-                'calculatorSoftwareVersion': '0.02',
-                'maximum':None,
-                'minimum': 0
-            }
-    for descriptor in DRP.models.CatMolDescriptor.objects.all():
-        for w in weightings:
-            for permValue in descriptor.permittedValues.all():
-                _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, permValue.value, w)] = {
-                    'type': 'num',
-                    'name': 'Amount of reactants in category {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
-                            permValue.value, descriptor.name, w, compoundRole.label),
-                    'calculatorSoftware': 'DRP',
-                    'calculatorSoftwareVersion': '0.02',
-                    'maximum': None,
-                    'minimum': None
-                    }
-    for descriptor in DRP.models.OrdMolDescriptor.objects.all():
-        for w in weightings:
-            for i in range(descriptor.minimum, descriptor.maximum+1): #  because python...
-                _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, i, norm[1])] = {
-                        'type': 'num',
-                        'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
-                                i, descriptor.name, norm[0], compoundRole.label),
-                        'calculatorSoftware': 'DRP',
-                        'calculatorSoftwareVersion': '0.02',
-                        'maximum': None,
-                        'minimum': None
-                    }
-        for descriptor in DRP.models.BoolMolDescriptor.objects.all():
-            for w in weightings:
-                for value in ('True', 'False'):
-                    _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, value, w] = {
-                            'type': 'num',
-                            'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
-                                    value, descriptor.name, w, compoundRole.label),
-                            'calculatorSoftware': 'DRP',
-                            'calculatorSoftwareVersion': '0.02',
-                            'maximum': None,
-                            'minimum': None,
-                        }
-        for descriptor in DRP.models.NumMolDescriptor.objects.all():
-            _descriptordDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max'] = {
-                'type': 'num',
-                'name': 'Maximum value for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
-                'caculatorSoftware': 'DRP',
-                'calculatorSoftwareVersion': 'DRP'
-                'maximum': None,
-                'minimum': None
-                }
-            _descriptordDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range'] = {
-                'type': 'num',
-                'name': 'Range for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
-                'caculatorSoftware': 'DRP',
-                'calculatorSoftwareVersion': 'DRP'
-                'maximum': None,
-                'minimum': None
-                }
-            for w in weightings:
-                _descriptordDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', w] = {
-                    'type': 'num',
-                    'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, w),
-                    'caculatorSoftware': 'DRP',
-                    'calculatorSoftwareVersion': 'DRP'
-                    'maximum': None,
-                    'minimum': None
-                    }
-            
-
-#Set up the actual descriptor dictionary.
-descriptorDict = setup(_descriptorDict)
 
 
 
 def calculate(reaction):
     """Calculate the descriptors for this plugin."""
+
+    weightings = ('molarity', 'count')
+    for compoundRole in DRP.models.CompoundRole.objects.all():
+        for w in weightings:
+            _descriptorDict['{}_amount_{}'.format(compoundRole.label, w)] = {
+                    'type': 'num',
+                    'name': 'Amount of compounds in the reaction belonging in the role "{}" weighted by {}'.format(compoundRole.label, w),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '0.02',
+                    'maximum':None,
+                    'minimum': 0
+                }
+        for descriptor in DRP.models.CatMolDescriptor.objects.all():
+            for w in weightings:
+                for permValue in descriptor.permittedValues.all():
+                    _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, permValue.value, w)] = {
+                        'type': 'num',
+                        'name': 'Amount of reactants in category {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
+                                permValue.value, descriptor.name, w, compoundRole.label),
+                        'calculatorSoftware': 'DRP',
+                        'calculatorSoftwareVersion': '0.02',
+                        'maximum': None,
+                        'minimum': None
+                        }
+        for descriptor in DRP.models.OrdMolDescriptor.objects.all():
+            for w in weightings:
+                for i in range(descriptor.minimum, descriptor.maximum+1): #  because python...
+                    _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, i, w)] = {
+                            'type': 'num',
+                            'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
+                                    i, descriptor.name, w, compoundRole.label),
+                            'calculatorSoftware': 'DRP',
+                            'calculatorSoftwareVersion': '0.02',
+                            'maximum': None,
+                            'minimum': None
+                        }
+            for descriptor in DRP.models.BoolMolDescriptor.objects.all():
+                for w in weightings:
+                    for value in ('True', 'False'):
+                        _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, value, w)] = {
+                                'type': 'num',
+                                'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
+                                        value, descriptor.name, w, compoundRole.label),
+                                'calculatorSoftware': 'DRP',
+                                'calculatorSoftwareVersion': '0.02',
+                                'maximum': None,
+                                'minimum': None,
+                            }
+            for descriptor in DRP.models.NumMolDescriptor.objects.all():
+                _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')] = {
+                    'type': 'num',
+                    'name': 'Maximum value for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': 'DRP',
+                    'maximum': None,
+                    'minimum': None
+                    }
+                _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')] = {
+                    'type': 'num',
+                    'name': 'Range for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': 'DRP',
+                    'maximum': None,
+                    'minimum': None
+                    }
+                for w in weightings:
+                    _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', w)] = {
+                        'type': 'num',
+                        'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, w),
+                        'calculatorSoftware': 'DRP',
+                        'calculatorSoftwareVersion': 'DRP',
+                        'maximum': None,
+                        'minimum': None
+                        }
+                
+    
+    #Set up the actual descriptor dictionary.
+    descriptorDict = setup(_descriptorDict)
 
     #descriptor Value classes
     CompoundQuantity = DRP.models.CompoundQuantity
@@ -125,11 +127,12 @@ def calculate(reaction):
 
     #reaction space descriptor
     h = xxhash.xxh64() #generates a hash
-    for reactant in reaction.compounds:
+    for reactant in reaction.compounds.all():
         xxhash.update(reactant.abbrev)
-    p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h)
-    cat.objects.get_or_create(reaction=reaction,descriptor=descriptorDict['rxnSpaceHash1'], value=p) 
-
+    p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h)[0]
+    c = cat.objects.get_or_create(reaction=reaction,descriptor=descriptorDict['rxnSpaceHash1'])[0] 
+    c.value = p
+    c.save()
 
     # Calculate the elemental molarities
     allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
@@ -141,19 +144,19 @@ def calculate(reaction):
                             value=sum(quantity.compound.elements[element]['stoichiometry'] * quantity.amount for quantity in allCompoundQuantities))
 
     for compoundRole in DRP.models.CompoundRole.objects.all():
-        roleQuantities = allcompoundQuantities.filter(role=CompoundRole)
+        roleQuantities = allCompoundQuantities.filter(role=compoundRole)
 
         #  number of species in reaction with this role
         num.objects.get_or_create(
             reaction=reaction,
-            descriptor=descriptorDict['{}_count'.format(compoundRole.label)],
+            descriptor=descriptorDict['{}_amount_count'.format(compoundRole.label)],
             value=roleQuantities.count())
 
         #  moles ofsum(quantity.amount for quantity in roleQuantities) reactant filling this role in this reaction
         roleMoles = sum(quantity.amount for quantity in roleQuantities)
         num.objects.get_or_create(
             reaction=reaction,
-            descriptor=descriptorDict['{}_molarity'.format(compoundRole.label)],
+            descriptor=descriptorDict['{}_amount_molarity'.format(compoundRole.label)],
             value=roleMoles)
 
         if roleQuantities.exists():
@@ -163,12 +166,12 @@ def calculate(reaction):
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     num.objects.get_or_create(
                         reaction=reaction,
-                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')]
+                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')],
                         value=max(descriptorValue.value for descriptorValue in descriptorValues)
                     )
                     num.objects.get_or_create(
                         reaction=reaction,
-                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')]
+                        descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')],
                         value=max(descriptorValue.value for descriptorValue in descriptorValues) - min(descriptorValue.value for descriptorValue in descriptorValues)
                     )
                     num.objects.get_or_create(
@@ -188,12 +191,12 @@ def calculate(reaction):
                     for i in range(descriptor.minimum, descriptor.maximum+1): #  because Still python...
                         num.objects.get_or_create(
                             reaction=reaction,
-                            descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i]),
+                            descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)],
                             value=len(value for value in descriptorValues if value.value == i)
                         )
                         num.objects.get_or_create(
                             reaction=reaction,
-                            descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i]),
+                            descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)],
                             value=sum(quantity.amount for quantity in roleQuantities.filter(compound__ordmoldescriptorvalue__value=i, compound__ordmoldescriptorvalue__descriptor__pk=descriptor.pk))
                         )
             for descriptor in DRP.models.BoolMolDescriptor.objects.all():
