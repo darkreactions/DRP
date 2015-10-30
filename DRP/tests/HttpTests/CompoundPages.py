@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 '''This module contains tests for teh confirmation page'''
 
+from django.conf import settings
 from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest
 from HttpTest import  OneRedirectionMixin, logsInAs, usesCsrf
 from HttpTest import  choosesLabGroup 
@@ -15,7 +16,6 @@ import requests
 import unittest
 from datetime import date, timedelta
 from os import path
-from django.conf import settings
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 

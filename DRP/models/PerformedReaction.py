@@ -35,7 +35,7 @@ class PerformedReaction(Reaction):
     return self.reference
 
   def validate_unique(self, exclude=None):
-    if self is valid and PerformedReaction.objects.exclude(pk=self.pk).filter(reference=self.reference, valid=True).exists():
+    if self.valid and PerformedReaction.objects.exclude(pk=self.pk).filter(reference=self.reference, valid=True).exists():
       raise ValidationError('A valid reaction with that reference code already exists.', code='not_unique')
     super(PerformedReaction, self).validate_unique(exclude=exclude)
 

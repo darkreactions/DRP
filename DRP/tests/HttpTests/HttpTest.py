@@ -3,12 +3,12 @@
 import requests
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from abc import ABCMeta
 from DRP.tests import DRPTestCase
 from DRP.models import License, LicenseAgreement, LabGroup, ChemicalClass
 import json
 from datetime import date, timedelta
+from django.contrib.auth.models import User
 
 class GetHttpTest(DRPTestCase):
 
