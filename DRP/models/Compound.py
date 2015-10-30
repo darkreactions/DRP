@@ -292,11 +292,12 @@ class Compound(CsvModel):
                 except PerformedReaction.PerformedReaction.DoesNotExist:
                     pass  # it doesn't matter
         super(Compound, self).save(*args, **kwargs)
-        for lcc in self.lazyChemicalClasses:  # coping mechanism for compounds loaded from csv files; not to be used by other means
-            self.chemicalClasses.add(lcc)
-        if calcDescriptors:  # not generally done, but useful for debugging
-            for descriptorPlugin in descriptorPlugins:
-                descriptorPlugin.calculate(self)
+        if self.pk is not None:
+            for lcc in self.lazyChemicalClasses:  # coping mechanism for compounds loaded from csv files; not to be used by other means
+                self.chemicalClasses.add(lcc)
+            if calcDescriptors:  # not generally done, but useful for debugging
+                for descriptorPlugin in descriptorPlugins:
+                    descriptorPlugin.calculate(self)
 
     @property
     def elements(self):
