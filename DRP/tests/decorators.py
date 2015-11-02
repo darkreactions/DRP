@@ -1,6 +1,6 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
-from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, OrdRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
+from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, OrdRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, TestSet, TrainingSet
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
@@ -108,6 +108,8 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
       for descriptorVal in descriptorVals:
         descriptorVal.delete()
 
+      TrainingSet.objects.filter(reaction=reaction).delete()
+      TestSet.objects.filter(reactions__in=[reaction]).delete()
       reaction.delete()
 
 
@@ -115,8 +117,6 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
     c.tearDown = tearDown
     return c
   return _createsPerformedReaction
-
-
 
 
 def createsUser(username, password):

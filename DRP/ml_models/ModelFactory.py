@@ -1,4 +1,3 @@
-from DRP.models import Reaction
 import importlib
 
 class ModelFactory():
@@ -17,6 +16,9 @@ class ModelFactory():
 
     model = self._getModelVisitor(modelLibrary, modelType)
 
+    if debug:
+      model.enableDebug()
+
     splitter = self._getSplitter(splitterType)
     model.setSplitter(splitter)
 
@@ -24,7 +26,12 @@ class ModelFactory():
     model.setTrainingData(training)
     model.setTestingData(testing)
 
+    if debug:
+      print "Training the model on {} entries...".format(training.count())
     model._train()
+
+    if debug:
+      print "Testing the model on {} entries...".format(testing.count())
     model._test()
 
     return model

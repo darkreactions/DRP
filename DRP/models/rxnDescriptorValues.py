@@ -1,10 +1,12 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
-from Reaction import Reaction
-from PerformedReaction import PerformedReaction
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue
 from StatsModel import StatsModel
 from itertools import chain
+
+# Needed to allow for circular dependency.
+import importlib
+pr = importlib.import_module("DRP.models.PerformedReaction")
 
 class RxnDescriptorValueQuerySet(models.query.QuerySet):
 
@@ -25,7 +27,7 @@ class RxnDescriptorValue(models.Model):
     abstract=True
 
   objects = RxnDescriptorValueManager()
-  reaction = models.ForeignKey(Reaction, unique=False)
+  reaction = models.ForeignKey("DRP.Reaction", unique=False)
   model=models.ForeignKey(StatsModel, unique=False, null=True, default=None)
   '''If this value was predicted by a statistical model, reference that model'''
 
@@ -34,7 +36,7 @@ class RxnDescriptorValue(models.Model):
       try:
         for model in chain(self.reaction.performedreaction.inTrainingSetFor.all(), self.reaction.performedreaction.inTestSetFor.all()):
           model.invalidate()
-      except PerformedReaction.DoesNotExist:
+      except pr.PerformedReaction.DoesNotExist:
         pass # fine, we don't care, no need to pass this on.
     super(RxnDescriptorValue, self).save(*args, **kwargs)
 

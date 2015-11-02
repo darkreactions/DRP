@@ -14,12 +14,9 @@ class PerformedReactionQuerySet(ReactionQuerySet):
         model = Reaction if model is None else model
         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
 
-
-
 class PerformedReactionManager(ReactionManager):
-
     def get_queryset(self):
-        return PerformedReactionQuerySet()
+        return PerformedReactionQuerySet(model=PerformedReaction)
 
 
 class PerformedReaction(Reaction):
