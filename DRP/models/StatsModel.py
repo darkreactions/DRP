@@ -16,14 +16,16 @@ class StatsModel(models.Model):
     fileName = models.FileField(upload_to='models', max_length=200)
     """The filename in which this model is stored"""
     description = models.TextField()
-    active = models.BooleanField('Is this the active model?')
-    start_time = models.DateTimeField()
+    active = models.BooleanField('Is this the active model?', default=False)
+    start_time = models.DateTimeField(default=None, null=True)
     end_time = models.DateTimeField(default=None, null=True)
     iterations = models.IntegerField()
     library = models.CharField(
         max_length=200, choices=settings.LIBRARY_CHOICES)
     tool = models.CharField(
         max_length=200, choices=settings.TOOL_CHOICES)
+    splitter = models.CharField(
+        max_length=200, choices=settings.SPLITTER_CHOICES)
     tags = models.ManyToManyField(StatsModelTag)
 
     descriptors = models.ManyToManyField(Descriptor)

@@ -1,11 +1,123 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
-from chemspipy import ChemSpider
-from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement
+from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, OrdRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
 import os
+
+
+descriptorPairs = [
+                   (OrdRxnDescriptor, OrdRxnDescriptorValue),
+                   (NumRxnDescriptor, NumRxnDescriptorValue),
+                   (CatRxnDescriptor, CatRxnDescriptorValue),
+                   (BoolRxnDescriptor, BoolRxnDescriptorValue)
+                  ]
+
+def createsRxnDescriptor(name, descriptorType, descriptorPropDict):
+  '''A class decorator that creates a reaction using pre-existing compounds
+     with pre-existing compoundRoles.'''
+  def _createsRxnDescriptor(c):
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
+
+    descriptor = None
+    for constructor, descriptorVal in descriptorPairs:
+      if descriptorType == constructor.__name__:
+        descriptor = constructor()
+
+    if not descriptor:
+      error = "Descriptor type \"{}\" unknown to descriptor.".format(descriptorType)
+      raise NotImplementedError(error)
+
+    def setUp(self):
+      descriptor.name = name
+      for key, val in descriptorPropDict.items():
+        setattr(descriptor, key, val)
+      descriptor.save()
+      _oldSetup(self)
+
+    def tearDown(self):
+      descriptor.delete()
+      _oldTearDown(self)
+
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
+  return _createsRxnDescriptor
+
+
+def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict):
+  '''A class decorator that creates a reaction using pre-existing compounds
+     with pre-existing compoundRoles.'''
+  def _createsPerformedReaction(c):
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
+
+    reaction = PerformedReaction()
+    compoundQuantities = []
+    descriptorVals = []
+
+    def getDescriptorAndEmptyVal(name):
+      for descriptor, descriptorVal in descriptorPairs:
+        try:
+          return descriptor.objects.get(name=name), descriptorVal()
+        except descriptor.DoesNotExist:
+          pass
+
+      raise NotImplementedError("Unknown descriptor '{}'".format(name))
+
+    def setUp(self):
+      labGroup=LabGroup.objects.get(title=labTitle)
+      reaction.labGroup = labGroup
+
+      user=User.objects.get(username=username)
+      reaction.user = user
+
+      reaction.public = False
+
+      reaction.save()
+
+      for abbrev, role, quantity in zip(compoundAbbrevs, compoundRoles, compoundAmounts):
+        compound = Compound.objects.get(labGroup=labGroup, abbrev=abbrev)
+        compoundRole = CompoundRole.objects.get(label=role)
+        compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
+                                            role=compoundRole, amount=quantity)
+        compoundQuantity.save()
+
+        compoundQuantities.append(compoundQuantity)
+
+      for descriptorName,val in descriptorDict.items():
+        descriptor, descriptorVal = getDescriptorAndEmptyVal(descriptorName)
+
+        descriptorVal.descriptor = descriptor
+        descriptorVal.value = val
+        descriptorVal.reaction = reaction
+        descriptorVal.save()
+
+        descriptorVals.append(descriptorVal)
+
+      _oldSetup(self)
+
+    def tearDown(self):
+      _oldTearDown(self)
+
+      for cq in compoundQuantities:
+        cq.delete()
+
+      for descriptorVal in descriptorVals:
+        descriptorVal.delete()
+
+      reaction.delete()
+
+
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
+  return _createsPerformedReaction
+
+
+
 
 def createsUser(username, password):
   '''A class decorator that creates a user'''
@@ -21,13 +133,37 @@ def createsUser(username, password):
       _oldSetup(self)
 
     def tearDown(self):
-      User.objects.filter(username=username).delete()
       _oldTearDown(self)
+      User.objects.filter(username=username).delete()
 
     c.setUp = setUp
     c.tearDown = tearDown
     return c
   return _createsUser
+
+def createsCompoundRole(label, description):
+
+  def _createsCompoundRole(c):
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
+
+    role = CompoundRole()
+
+    def setUp(self):
+      role.label = label
+      role.description = description
+      role.save()
+      _oldSetup(self)
+
+    def tearDown(self):
+      _oldTearDown(self)
+      role.delete()
+
+    c.setUp = setUp
+    c.tearDown = tearDown
+    return c
+  return _createsCompoundRole
+
 
 def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
 
@@ -47,8 +183,8 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
       _oldSetup(self)
 
     def tearDown(self):
-      compound.delete()
       _oldTearDown(self)
+      compound.delete()
 
     c.setUp = setUp
     c.tearDown = tearDown
@@ -108,7 +244,7 @@ def signsExampleLicense(username):
 
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
-     
+
     license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
 
     def setUp(self):
@@ -130,7 +266,7 @@ def signsExampleLicense(username):
 
 def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
   '''A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
-  
+
   def _loadsCompoundsFromCsv(c):
 
     _oldSetup = c.setUp
@@ -142,12 +278,12 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
       for compound in compounds:
         compound.csConsistencyCheck()
         compound.save()
-      _oldSetup(self) 
+      _oldSetup(self)
 
     def tearDown(self):
       Compound.objects.all().delete()
-      _oldTearDown(self) 
-   
+      _oldTearDown(self)
+
     c.setUp = setUp
     c.tearDown = tearDown
     return c

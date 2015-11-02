@@ -2,7 +2,7 @@
 from django.db import models
 from Reaction import Reaction
 from PerformedReaction import PerformedReaction
-from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue  
+from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue
 from StatsModel import StatsModel
 from itertools import chain
 
@@ -15,7 +15,7 @@ class RxnDescriptorValueQuerySet(models.query.QuerySet):
 class RxnDescriptorValueManager(models.Manager):
 
   def get_queryset(self):
-    return RxnDescriptorValueQuerySet(self.model, using=self._db) 
+    return RxnDescriptorValueQuerySet(self.model, using=self._db)
 
 class RxnDescriptorValue(models.Model):
   '''Contains Relationships between Reactions and their descriptors'''
@@ -39,8 +39,11 @@ class RxnDescriptorValue(models.Model):
     super(RxnDescriptorValue, self).save(*args, **kwargs)
 
   def delete(self):
-    for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all()):
+    test = StatsModel.objects.filter(testset__reactions__in=[self])
+    train = StatsModel.objects.filter(trainingset__reaction=self)
+    for model in chain(test, train):
       model.invalidate()
+      model.save()
     super(RxnDescriptorValue, self).delete()
 
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
