@@ -2,7 +2,7 @@
 from django.db import models
 from LabGroup import LabGroup
 from Compound import Compound
-from querysets import CsvQuerySet, ArffQuerySet
+from querysets import CsvModel, CsvQuerySet, ArffQuerySet
 from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from itertools import chain
@@ -82,7 +82,7 @@ class ReactionManager(models.Manager):
         return ReactionQuerySet()
 
 
-class Reaction(models.Model):
+class Reaction(CsvModel):
   '''A base class on which PerformedReactions and RecommendedReactions are built,
   contains common information to each in a table with an automatically
   generated one to one relationship with the subclasses.
@@ -100,3 +100,28 @@ class Reaction(models.Model):
     super(Reaction, self).save(*args, **kwargs)
     for plugin in descriptorPlugins:
       plugin.calculate(self)
+
+
+  def descriptorValues(self):
+      return chain(
+        CatRxnDescriptorValue.objects.filter(reaction=self),
+        BoolRxnDescriptorValue.objects.filter(reaction=self),
+        OrdRxnDescriptorValue.objects.filter(reaction=self),
+        NumRxnDescriptorValue.objects.filter(reaction=self)
+      )
+
+
+  @property
+  def expandedValues(self):
+    valDict = super(Reaction, self).expandedValues
+
+    # Add any descriptors associated with this reaction.
+    for descriptorVal in self.descriptorValues():
+      heading = descriptorVal.descriptor.csvHeader
+      val = descriptorVal.value
+      valDict[heading] = val
+
+    return valDict
+
+  def __unicode__(self):
+    return "Reaction_{}".format(self.id)

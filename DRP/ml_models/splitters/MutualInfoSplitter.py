@@ -11,8 +11,8 @@ class Splitter(AbstractSplitter):
     # Partitions the reactions/keys into separate test/training reactionssets.
     #train, test = create_test_and_train_lists(reactions, reactionsKeys)
 
-    train = reactions[:2]
-    test = reactions[2:]
+    train = reactions[:10]
+    test = reactions[2:15]
 
     return train, test
 

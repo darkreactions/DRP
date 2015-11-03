@@ -36,13 +36,13 @@ class ModelVisitor(AbstractModelVisitor):
     arff_file = self._prepareArff(reactions, suffix=suffix)
     model_file = self.getModelFilename()
 
-    results_file = model_file + "_{}.out".format(suffix)
+    results_file =  "{}_{}.out".format(self.getModelTag(), suffix)
     results_path = os.path.join(settings.TMP_DIR, results_file)
 
     command = "java weka.classifiers.trees.J48 -T {} -l {} -p 0 -c last 1> {}".format(arff_file, model_file, results_path)
     self._runWekaCommand(command)
 
-    return self._readArffOutputs(results_file)
+    return self._readWekaOutputFile(results_path)
 
 
   def _prepareArff(self, reactions, suffix=""):
@@ -52,10 +52,10 @@ class ModelVisitor(AbstractModelVisitor):
     filename = "{}_{}_{}.arff".format(self.getModelTag(), suffix, time.time())
     filepath = os.path.join(settings.TMP_DIR, filename)
     with open(filepath, "w") as f:
-      reactions.toArff(f, expanded=True)
+      reactions.toArff(f, expanded=True, whitelistDescriptors=self.getHeaders())
     return filepath
 
-  def _readArffOutputs(filename):
+  def _readWekaOutputFile(self, filename):
     prediction_index = 2
     with open(filename,"r") as f:
       raw_lines = f.readlines()[5:-1] #Discard the headers and ending line.

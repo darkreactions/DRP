@@ -16,20 +16,45 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsCompound('Water', 937, 'Water', 'Watchmen')
 @createsCompoundRole('Org', 'Organic')
 @createsCompoundRole('Water', 'Water')
-@createsRxnDescriptor("outcome", "OrdRxnDescriptor", {"maximum":4, "minimum":1})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1], {"outcome":1})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.2],{"outcome":1})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.3],{"outcome":1})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH", "Water"], ["Org", "Water"],[0.3, 0.3],{"outcome":3})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH", "Water"], ["Org", "Water"],[0.4, 0.5],{"outcome":4})
-@createsPerformedReaction("Watchmen", "Rorschach",["Water", "EtOH"], ["Water", "Org"],[0.4, 0.5],{"outcome":4})
+@createsRxnDescriptor("outcome", "OrdRxnDescriptor", options={"maximum":4, "minimum":1})
+@createsRxnDescriptor("testNumber", "NumRxnDescriptor")
+
+# Create a bunch of sample reactions.
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
+                          {"outcome":1, "testNumber":5.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
+                          {"outcome":1, "testNumber":5.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
+                          {"outcome":1, "testNumber":5.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
+                          {"outcome":1, "testNumber":5.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
+                          {"outcome":1, "testNumber":5.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
+                          {"outcome":1, "testNumber":5.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
+                          {"outcome":1, "testNumber":5.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.2],
+                          {"outcome":1, "testNumber":6.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.3],
+                          {"outcome":1, "testNumber":7.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH", "Water"],
+                          ["Org", "Water"],[0.3, 0.3],
+                          {"outcome":3, "testNumber":0.1})
+@createsPerformedReaction("Watchmen", "Rorschach",["EtOH", "Water"],
+                          ["Org", "Water"],[0.4, 0.5],
+                          {"outcome":4, "testNumber":0.01})
+@createsPerformedReaction("Watchmen", "Rorschach",["Water", "EtOH"],
+                          ["Water", "Org"],[0.4, 0.5],
+                          {"outcome":4, "testNumber":0.02})
+
 class BasicWekaSVM(DRPTestCase):
 
   def runTest(self):
     reactions = PerformedReaction.objects.all()
 
     #TODO: Test Headers
-    headers = ["compound_0_amount", "compound_1_amount", "valid"]
+    headers = ["outcome", "testNumber"]
 
     factory = ModelFactory()
     factory.build(reactions, headers, modelLibrary="weka", modelType="svm",

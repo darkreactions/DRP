@@ -14,7 +14,7 @@ descriptorPairs = [
                    (BoolRxnDescriptor, BoolRxnDescriptorValue)
                   ]
 
-def createsRxnDescriptor(name, descriptorType, descriptorPropDict):
+def createsRxnDescriptor(heading, descriptorType, options={}):
   '''A class decorator that creates a reaction using pre-existing compounds
      with pre-existing compoundRoles.'''
   def _createsRxnDescriptor(c):
@@ -31,10 +31,13 @@ def createsRxnDescriptor(name, descriptorType, descriptorPropDict):
       raise NotImplementedError(error)
 
     def setUp(self):
-      descriptor.name = name
-      for key, val in descriptorPropDict.items():
+      descriptor.heading = heading
+
+      for key, val in options.items():
         setattr(descriptor, key, val)
+
       descriptor.save()
+
       _oldSetup(self)
 
     def tearDown(self):
@@ -58,14 +61,14 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
     compoundQuantities = []
     descriptorVals = []
 
-    def getDescriptorAndEmptyVal(name):
+    def getDescriptorAndEmptyVal(heading):
       for descriptor, descriptorVal in descriptorPairs:
         try:
-          return descriptor.objects.get(name=name), descriptorVal()
+          return descriptor.objects.get(heading=heading), descriptorVal()
         except descriptor.DoesNotExist:
           pass
 
-      raise NotImplementedError("Unknown descriptor '{}'".format(name))
+      raise NotImplementedError("Unknown descriptor '{}'".format(heading))
 
     def setUp(self):
       labGroup=LabGroup.objects.get(title=labTitle)
@@ -87,8 +90,8 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
 
         compoundQuantities.append(compoundQuantity)
 
-      for descriptorName,val in descriptorDict.items():
-        descriptor, descriptorVal = getDescriptorAndEmptyVal(descriptorName)
+      for descriptorHeading,val in descriptorDict.items():
+        descriptor, descriptorVal = getDescriptorAndEmptyVal(descriptorHeading)
 
         descriptorVal.descriptor = descriptor
         descriptorVal.value = val

@@ -19,19 +19,24 @@ class ModelFactory():
     if debug:
       model.enableDebug()
 
+    if debug:
+      print "\nStarting model generation in debug mode..."
+
     splitter = self._getSplitter(splitterType)
     model.setSplitter(splitter)
+
+    model.setHeaders(headers)
 
     training, testing = splitter.split(reactions)
     model.setTrainingData(training)
     model.setTestingData(testing)
 
     if debug:
-      print "Training the model on {} entries...".format(training.count())
+      print "\nTraining the model on {} entries...".format(training.count())
     model._train()
 
     if debug:
-      print "Testing the model on {} entries...".format(testing.count())
+      print "\nTesting the model on {} entries...".format(testing.count())
     model._test()
 
     return model

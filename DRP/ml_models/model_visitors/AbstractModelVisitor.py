@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import os
-from DRP.models import StatsModel, PerformedReaction, TrainingSet, TestSet, TestSetRelation
+from DRP.models import StatsModel, PerformedReaction, TrainingSet, TestSet, TestSetRelation, Descriptor
 from django.conf import settings
+from django.core.files import File
 
 
 class AbstractModelVisitor(object):
@@ -23,11 +24,10 @@ class AbstractModelVisitor(object):
     pass
 
   def _test(self):
-    reactions = self.getTestingData(self.getModelTag())
+    reactions = self.getTestingData()
     self.predict(reactions, suffix="test")
 
 
-  # TODO: Change these to use the "relations" schema...
   def setTrainingData(self, reactions):
     for reaction in reactions:
       training_set = TrainingSet(reaction=reaction, model=self.stats_model)
@@ -37,19 +37,25 @@ class AbstractModelVisitor(object):
     test_set = TestSet()
     test_set.model = self.stats_model
     test_set.name = self.getModelTag()
-
-    # TODO: Need to set in var?
-    relations = [TestSetRelation(reaction=reaction, test_set=test_set) for reaction in reactions]
-
     test_set.save()
+
+    for reaction in reactions:
+      TestSetRelation(reaction=reaction, test_set=test_set).save()
 
 
   def getTrainingData(self):
     return PerformedReaction.objects.filter(trainingset__model=self.stats_model)
 
-  def getTestingData(self, name):
-    return PerformedReaction.objects.filter(testset__name=name)
+  def getTestingData(self):
+    return PerformedReaction.objects.filter(testset__name=self.getModelTag())
 
+  def setHeaders(self, headers):
+    descriptors = [Descriptor.objects.get(heading=header) for header in headers]
+    self.stats_model.descriptors.add(*descriptors)
+    self.stats_model.save()
+
+  def getHeaders(self):
+    return Descriptor.objects.filter(statsmodel=self.stats_model)
 
   def setSplitter(self, splitter):
     self.stats_model.splitter = splitter.__class__.__name__
@@ -60,7 +66,12 @@ class AbstractModelVisitor(object):
 
   def getModelFilename(self):
     if self.stats_model.fileName:
-      return self.stats_model.fileName
+      return self.stats_model.fileName.name
     else:
-      return os.path.join(settings.MODEL_DIR, self.getModelTag())
+      filename = "{}.model".format(self.getModelTag())
+      return os.path.join(settings.MODEL_DIR, filename)
+
+  def setModelFile(self, filename):
+    f = open(filename, 'r')
+    self.stats_model.fileName.save(filename, File(f))
 
