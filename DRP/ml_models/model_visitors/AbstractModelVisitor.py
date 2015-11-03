@@ -27,6 +27,9 @@ class AbstractModelVisitor(object):
     reactions = self.getTestingData()
     self.predict(reactions, suffix="test")
 
+  # TODO: Store predictions as necessary.
+  def storePredictions(reactions, predictions, responseField):
+    pass
 
   def setTrainingData(self, reactions):
     for reaction in reactions:

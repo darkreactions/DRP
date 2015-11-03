@@ -1,6 +1,5 @@
 """A module containing only the StatsModel class."""
 from django.db import models
-from os import path
 from StatsModelTag import StatsModelTag
 from descriptors import Descriptor
 from django.conf import settings
