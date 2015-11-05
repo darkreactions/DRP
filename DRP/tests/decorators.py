@@ -1,7 +1,7 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
 from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, TestSet, TrainingSet
-from DRP.models.rxnDescriptorValues import getDescriptorAndEmptyVal, descriptorPairs
+from DRP.models.rxnDescriptorValues import getRxnDescriptorAndEmptyVal, rxnDescriptorPairs
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
@@ -16,7 +16,7 @@ def createsRxnDescriptor(heading, descriptorType, options={}):
     _oldTearDown = c.tearDown
 
     descriptor = None
-    for constructor, descriptorVal in descriptorPairs:
+    for constructor, descriptorVal in rxnDescriptorPairs:
       if descriptorType == constructor.__name__:
         descriptor = constructor()
 
@@ -77,7 +77,7 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
         compoundQuantities.append(compoundQuantity)
 
       for descriptorHeading,val in descriptorDict.items():
-        descriptor, descriptorVal = getDescriptorAndEmptyVal(descriptorHeading)
+        descriptor, descriptorVal = getRxnDescriptorAndEmptyVal(descriptorHeading)
 
         descriptorVal.descriptor = descriptor
         descriptorVal.value = val

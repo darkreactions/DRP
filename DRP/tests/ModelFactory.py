@@ -69,9 +69,10 @@ class BasicWekaSVM(DRPTestCase):
     responses = ["outcome"]
 
     factory = ModelFactory()
-    factory.build(reactions, predictors, responses,
-                  modelLibrary="weka", modelType="svm",
-                  debug=True)
+    model = factory.build(reactions, predictors, responses,
+                          modelLibrary="weka", modelType="svm",
+                          debug=True)
+    model.summarize()
 
 
 suite = unittest.TestSuite([

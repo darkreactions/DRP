@@ -82,14 +82,23 @@ class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
     unique_together=('reaction', 'descriptor')
 
 
-descriptorPairs = [
+rxnDescriptorPairs = [
                    (OrdRxnDescriptor, OrdRxnDescriptorValue),
                    (NumRxnDescriptor, NumRxnDescriptorValue),
                    (CatRxnDescriptor, CatRxnDescriptorValue),
                    (BoolRxnDescriptor, BoolRxnDescriptorValue)
                   ]
-def getDescriptorAndEmptyVal(heading):
-  for descriptor, descriptorVal in descriptorPairs:
+
+def getRxnDescriptorValueType(queryDescriptor):
+  queryDescriptor = queryDescriptor.downcast()
+  for descriptor, descriptorVal in rxnDescriptorPairs:
+    if isinstance(queryDescriptor, descriptor):
+      return descriptorVal
+  raise NotImplementedError("Unknown descriptor '{}'".format(queryDescriptor))
+
+
+def getRxnDescriptorAndEmptyVal(heading):
+  for descriptor, descriptorVal in rxnDescriptorPairs:
     try:
       return descriptor.objects.get(heading=heading), descriptorVal()
     except descriptor.DoesNotExist:

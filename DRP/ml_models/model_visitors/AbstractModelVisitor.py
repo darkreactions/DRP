@@ -1,8 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import os
 from DRP.models import StatsModel, PerformedReaction, TrainingSet, TestSet, TestSetRelation, Descriptor
+from DRP.models.rxnDescriptorValues import getRxnDescriptorValueType, getRxnDescriptorAndEmptyVal
 from django.db.models.fields import AutoField, related
-from DRP.models.rxnDescriptorValues import getDescriptorAndEmptyVal
 from django.conf import settings
 from django.core.files import File
 
@@ -30,9 +30,12 @@ class AbstractModelVisitor(object):
     predictions = self.predict(reactions, suffix="test")
     self.storePredictions(reactions, predictions)
 
+  def summarize(self):
+    print self.getPredictions()
+
   def storePredictions(self, reactions, predictions):
     for response in self.getResponses():
-      desc, val = getDescriptorAndEmptyVal(response.heading + self._getModelSuffix())
+      desc, val = getRxnDescriptorAndEmptyVal(response.heading + self._getModelSuffix())
       val.descriptor = desc
       val.model = self.stats_model
 
@@ -43,6 +46,24 @@ class AbstractModelVisitor(object):
         val.value = prediction
         val.reaction = reaction
         val.save()
+
+  def getPredictions(self):
+    predictions = {}
+
+    for pred_descriptor in self.stats_model.predictsDescriptors.all():
+      valueType = getRxnDescriptorValueType(pred_descriptor)
+      normal_heading = pred_descriptor.heading[:-len(self._getModelSuffix())]
+
+      predictions[normal_heading] = []
+
+      for prediction in valueType.objects.filter(model=self.stats_model, descriptor=pred_descriptor):
+        true = valueType.objects.get(reaction=prediction.reaction,
+                                     descriptor__heading=normal_heading).value
+        guess = prediction.value
+        predictions[normal_heading].append( (true, guess) )
+
+    return predictions
+
 
 
   def setTrainingData(self, reactions):
