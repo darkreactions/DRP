@@ -22,8 +22,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsRxnDescriptor("testNumber", "NumRxnDescriptor")
 
 # Create a bunch of simple sample reactions.
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.1],
-                          {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.13],
                           {"outcome":1, "testNumber":5.04})
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.71],
@@ -35,8 +33,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.14],
                           {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.1],
-                          {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.13],
                           {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.08})
@@ -52,8 +48,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
                           {"outcome":1, "testNumber":5.05})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.04})
-@createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.18],
-                          {"outcome":1, "testNumber":5.03})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.23],
                           {"outcome":1, "testNumber":6.02})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.14],
@@ -85,11 +79,12 @@ class BasicWekaSVM(DRPTestCase):
   def runTest(self):
     reactions = PerformedReaction.objects.all()
 
-    #TODO: Test Headers
-    headers = ["outcome", "testNumber"]
+    predictors = ["testNumber"]
+    responses = ["outcome"]
 
     factory = ModelFactory()
-    factory.build(reactions, headers, modelLibrary="weka", modelType="svm",
+    factory.build(reactions, predictors, responses,
+                  modelLibrary="weka", modelType="svm",
                   debug=True)
 
 

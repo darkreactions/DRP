@@ -11,7 +11,7 @@ class ModelFactory():
 
   """
 
-  def build(self, reactions, headers, modelLibrary="weka", modelType="svm",
+  def build(self, reactions, predictors, responses, modelLibrary="weka", modelType="svm",
                   splitterType="MutualInfoSplitter", debug=True):
 
     model = self._getModelVisitor(modelLibrary, modelType)
@@ -25,7 +25,8 @@ class ModelFactory():
     splitter = self._getSplitter(splitterType)
     model.setSplitter(splitter)
 
-    model.setHeaders(headers)
+    model.setPredictors(predictors)
+    model.setResponses(responses)
 
     training, testing = splitter.split(reactions)
     model.setTrainingData(training)

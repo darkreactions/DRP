@@ -1,5 +1,6 @@
 from AbstractSplitter import AbstractSplitter
 from DRP.models import Compound
+from django.db.models import Count
 import random
 
 class Splitter(AbstractSplitter):
@@ -7,7 +8,7 @@ class Splitter(AbstractSplitter):
     super(Splitter, self).__init__()
     self.TEST_PERCENT = 0.30
     self.MAX_PARTITION_SIZE = 35 # Magic #TODO: Please de-magic this.
-    self.MIN_TRAIN_SIZE = 10 # WEKA requires at least 10 training points for SVM.
+    self.MIN_TRAIN_SIZE = 10 # WEKA requires at least 10 training points for SVMs.
 
   def split(self, reactions):
 
@@ -25,14 +26,18 @@ class Splitter(AbstractSplitter):
       if train_size < self.MIN_TRAIN_SIZE:
         train_size += count
       elif test_size < max_test_size and count <= self.MAX_PARTITION_SIZE:
-        test_keys.append(key)
+        test_keys.append((key, count))
         test_size += count
 
     # Get the primary keys of the reactions that should be tested.
     test_reactions = set()
-    for key in test_keys:
-      for reaction in reactions.filter(compounds__in=key):
-        test_reactions.add( reaction.pk )
+    for key, count in test_keys:
+      # Get the reactions that have only the compounds in a given key.
+      partition = reactions.annotate(c=Count('compounds')).filter(c=len(key))
+      for compound in key:
+        partition = partition.filter(compounds=compound)
+
+      test_reactions.update(reaction.pk for reaction in partition)
 
     # Actually perform the query.
     train = reactions.exclude(pk__in=test_reactions)

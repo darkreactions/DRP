@@ -39,7 +39,10 @@ class ModelVisitor(AbstractModelVisitor):
     results_file =  "{}_{}.out".format(self.getModelTag(), suffix)
     results_path = os.path.join(settings.TMP_DIR, results_file)
 
-    command = "java weka.classifiers.trees.J48 -T {} -l {} -p 0 -c last 1> {}".format(arff_file, model_file, results_path)
+    # Currently, we support only one "response" variable.
+    response_index = self.getPredictors().count()+1
+
+    command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
     self._runWekaCommand(command)
 
     return self._readWekaOutputFile(results_path)
@@ -52,7 +55,8 @@ class ModelVisitor(AbstractModelVisitor):
     filename = "{}_{}_{}.arff".format(self.getModelTag(), suffix, time.time())
     filepath = os.path.join(settings.TMP_DIR, filename)
     with open(filepath, "w") as f:
-      reactions.toArff(f, expanded=True, whitelistDescriptors=self.getHeaders())
+      whitelist = list(self.getPredictors()) + list(self.getResponses())
+      reactions.toArff(f, expanded=True, whitelistDescriptors=whitelist)
     return filepath
 
   def _readWekaOutputFile(self, filename):

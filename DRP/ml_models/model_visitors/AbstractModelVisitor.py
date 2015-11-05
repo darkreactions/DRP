@@ -52,13 +52,21 @@ class AbstractModelVisitor(object):
   def getTestingData(self):
     return PerformedReaction.objects.filter(testset__name=self.getModelTag())
 
-  def setHeaders(self, headers):
+  def setPredictors(self, headers):
     descriptors = [Descriptor.objects.get(heading=header) for header in headers]
     self.stats_model.descriptors.add(*descriptors)
     self.stats_model.save()
 
-  def getHeaders(self):
-    return Descriptor.objects.filter(statsmodel=self.stats_model)
+  def setResponses(self, headers):
+    descriptors = [Descriptor.objects.get(heading=header) for header in headers]
+    self.stats_model.outcomeDescriptors.add(*descriptors)
+    self.stats_model.save()
+
+  def getPredictors(self):
+    return self.stats_model.descriptors.all()
+
+  def getResponses(self):
+    return self.stats_model.outcomeDescriptors.all()
 
   def setSplitter(self, splitter):
     self.stats_model.splitter = splitter.__class__.__name__
