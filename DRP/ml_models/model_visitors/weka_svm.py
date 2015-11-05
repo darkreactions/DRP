@@ -77,7 +77,7 @@ class ModelVisitor(AbstractModelVisitor):
     if not settings.WEKA_PATH:
       raise ImproperlyConfigured("'WEKA_PATH' is not set in settings.py!")
 
-    set_path = "export CLASSPATH=$CLASSPATH:{};".format(settings.WEKA_PATH)
+    set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH)
     command = set_path + command
 
     if self.DEBUG:

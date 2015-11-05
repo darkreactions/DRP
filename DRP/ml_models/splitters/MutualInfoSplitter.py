@@ -16,7 +16,7 @@ class Splitter(AbstractSplitter):
     key_counts = self._count_compound_sets(reactions).items()
     random.shuffle(key_counts)
 
-    max_test_size = int(self.TEST_PERCENT*len(key_counts))
+    max_test_size = self.TEST_PERCENT*sum(count for key, count in key_counts)
     test_size = 0
     train_size = 0
 

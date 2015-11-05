@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
-import os, time
+import os
 from DRP.models import StatsModel, PerformedReaction, TrainingSet, TestSet, TestSetRelation, Descriptor
+from django.db.models.fields import AutoField, related
 from DRP.models.rxnDescriptorValues import getDescriptorAndEmptyVal
 from django.conf import settings
 from django.core.files import File
@@ -73,12 +74,19 @@ class AbstractModelVisitor(object):
     for descriptor in descriptors:
       # Copy the descriptor to a pred_descriptor so we retain the descriptor type.
       pred_descriptor = descriptor.__class__()
-      # TODO: Copy all fields from descriptor into pred_descriptor
+
+      #Copy any non-Foreign Key fields from the descriptor.
+      for field in descriptor._meta.fields:
+        if not (isinstance(field, AutoField) or
+                isinstance(field, related.OneToOneField) or
+                isinstance(field, related.ManyToManyField)):
+          setattr(pred_descriptor, field.name, getattr(descriptor, field.name) )
+
+      # Add the model's suffix (ID) to the descriptor and name for uniqueness.
       pred_descriptor.heading = descriptor.heading + self._getModelSuffix()
       pred_descriptor.name = descriptor.name + self._getModelSuffix()
-      pred_descriptor.maximum = descriptor.maximum #TODO: HARD CODED
-      pred_descriptor.minimum = descriptor.minimum #TODO: HARD CODED
       pred_descriptor.model = self.stats_model
+
       pred_descriptor.save()
       pred_descriptors.append(pred_descriptor)
 
@@ -89,22 +97,17 @@ class AbstractModelVisitor(object):
     self.stats_model.splitter = splitter.__class__.__name__
 
   def setModelFile(self, filename):
-    f = open(filename, 'r')
-    self.stats_model.fileName.save(filename, File(f))
+    # If a file is already in the models directory, don't re-upload it.
+    destined_path = os.path.join(settings.MODEL_DIR, filename)
+    if os.path.isfile(destined_path):
+      self.stats_model.fileName.name = filename
+      self.stats_model.save()
 
-    # Wait for the file to upload.
-    max_wait = 10 # seconds
-    filepath = os.path.join(settings.BASE_DIR, settings.MODEL_DIR, filename)
-
-    while max_wait > 0:
-      try:
-        with open(filepath, 'rb'):
-          break
-      except IOError:
-        if self.DEBUG:
-          print "Waiting {} for file to be written: {}".format(max_wait, filename)
-        time.sleep(1)
-        max_wait -= 1
+    else:
+      if self.DEBUG:
+        print "Uploading model file to: {}".format(destined_path)
+      f = open(filename, 'r')
+      self.stats_model.fileName.save(filename, File(f))
 
 
   def getTrainingData(self):

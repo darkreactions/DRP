@@ -26,35 +26,27 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
                           {"outcome":1, "testNumber":5.04})
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.23],
-                          {"outcome":1, "testNumber":6.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.14],
-                          {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.1],
                           {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.18],
                           {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.23],
-                          {"outcome":1, "testNumber":6.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.14],
-                          {"outcome":1, "testNumber":5.07})
-@createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.1],
-                          {"outcome":1, "testNumber":5.06})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.04})
-@createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.23],
-                          {"outcome":1, "testNumber":6.02})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.14],
                           {"outcome":1, "testNumber":5.01})
-
-# And create some more complex ones...
-@createsPerformedReaction("Watchmen", "Rorschach",["Water"], ["Water"], [0.53],
-                          {"outcome":1, "testNumber":7.0})
+@createsPerformedReaction("Watchmen", "Rorschach",["Water"], ["Water"], [0.14],
+                          {"outcome":1, "testNumber":5.01})
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH", "dmed", "Water"],
                           ["Org", "Org", "Water"],[0.31, 0.3, 0.5],
                           {"outcome":4, "testNumber":0.1})
+@createsPerformedReaction("Watchmen", "Rorschach",["dmed", "EtOH", "Water"],
+                          ["Org", "Org", "Water"],[0.2, 0.34, 0.3],
+                          {"outcome":4, "testNumber":0.1})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco", "Water"],
                           ["Org", "Water"],[0.3, 0.32],
+                          {"outcome":3, "testNumber":0.1})
+@createsPerformedReaction("Watchmen", "Rorschach",["Water", "dabco"],
+                          ["Water", "Org"],[0.3, 0.34],
                           {"outcome":3, "testNumber":0.1})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed", "Water"],
                           ["Org", "Water"],[0.3, 0.34],
