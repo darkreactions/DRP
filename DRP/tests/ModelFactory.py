@@ -26,16 +26,12 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
                           {"outcome":1, "testNumber":5.04})
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.18],
-                          {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.23],
                           {"outcome":1, "testNumber":6.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.14],
                           {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.1],
                           {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.71],
-                          {"outcome":1, "testNumber":5.08})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.18],
                           {"outcome":1, "testNumber":5.0})
 @createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.23],
@@ -44,8 +40,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
                           {"outcome":1, "testNumber":5.07})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.1],
                           {"outcome":1, "testNumber":5.06})
-@createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.13],
-                          {"outcome":1, "testNumber":5.05})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.04})
 @createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.23],

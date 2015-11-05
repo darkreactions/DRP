@@ -15,18 +15,20 @@ class ModelVisitor(AbstractModelVisitor):
     self.stats_model.iterations = 1 # Generate a single SVM instead of an average.
     self.stats_model.save()
 
+    self.model_filename = "{}.model".format(self.getModelTag())
+
   def _train(self):
     reactions = self.getTrainingData()
-    model_file = self.getModelFilename()
+    model_filepath = os.path.join(settings.MODEL_DIR, self.model_filename)
     arff_file = self._prepareArff(reactions, suffix="train")
 
     self.stats_model.start_time = datetime.datetime.now()
 
     kernel = "\"weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7\""
-    command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0".format(arff_file, model_file, kernel)
+    command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0".format(arff_file, model_filepath, kernel)
     self._runWekaCommand(command)
 
-    self.setModelFile(model_file)
+    self.setModelFile(model_filepath)
 
     self.stats_model.end_time = datetime.datetime.now()
     self.stats_model.save()
@@ -57,6 +59,10 @@ class ModelVisitor(AbstractModelVisitor):
     with open(filepath, "w") as f:
       whitelist = list(self.getPredictors()) + list(self.getResponses())
       reactions.toArff(f, expanded=True, whitelistDescriptors=whitelist)
+
+    if self.DEBUG:
+      print "File written: {}".format(filepath)
+
     return filepath
 
   def _readWekaOutputFile(self, filename):
@@ -64,7 +70,8 @@ class ModelVisitor(AbstractModelVisitor):
     with open(filename,"r") as f:
       raw_lines = f.readlines()[5:-1] #Discard the headers and ending line.
       raw_predictions = [line.split()[prediction_index] for line in raw_lines]
-      return [prediction.split(":")[0] for prediction in raw_predictions]
+      predictions = [prediction.split(":")[1] for prediction in raw_predictions]
+      return map(float, predictions)
 
   def _runWekaCommand(self, command):
     if not settings.WEKA_PATH:
@@ -73,7 +80,7 @@ class ModelVisitor(AbstractModelVisitor):
     set_path = "export CLASSPATH=$CLASSPATH:{};".format(settings.WEKA_PATH)
     command = set_path + command
 
-    if self.debug:
+    if self.DEBUG:
       print command
 
     subprocess.check_output(command, shell=True)

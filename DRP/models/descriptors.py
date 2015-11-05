@@ -8,6 +8,7 @@ from django.db import models
 from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+from itertools import chain
 
 
 def slugify(text):
@@ -69,6 +70,25 @@ class Descriptor(models.Model):
         http://www.cs.waikato.ac.nz/ml/weka/arff.html
         """
         return'@attribute {} ' .format(self.csvHeader)
+
+
+    def downcast(self):
+        """Return an instance of this descriptor as its deepest subclass."""
+
+        classes = ["categoricaldescriptor", "ordinaldescriptor",
+                   "numericdescriptor", "booleandescriptor"]
+        rxn_classes = ["catrxndescriptor", "ordrxndescriptor",
+                       "numrxndescriptor", "boolrxndescriptor"]
+
+        for c in chain(classes, rxn_classes):
+          if hasattr(self, c):
+            new_self = getattr(self, c)
+            for rxn_c in rxn_classes:
+              if hasattr(new_self, rxn_c):
+                return getattr(new_self, rxn_c)
+            return new_self
+        return self
+
 
     def __unicode__(self):
         """Unicode represenation of a descriptor is it's name."""

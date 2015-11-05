@@ -1,6 +1,7 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue
+from rxnDescriptors import OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptor
 from StatsModel import StatsModel
 from itertools import chain
 
@@ -79,3 +80,19 @@ class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
     app_label="DRP"
     verbose_name='Ordinal Reaction Descriptor Value'
     unique_together=('reaction', 'descriptor')
+
+
+descriptorPairs = [
+                   (OrdRxnDescriptor, OrdRxnDescriptorValue),
+                   (NumRxnDescriptor, NumRxnDescriptorValue),
+                   (CatRxnDescriptor, CatRxnDescriptorValue),
+                   (BoolRxnDescriptor, BoolRxnDescriptorValue)
+                  ]
+def getDescriptorAndEmptyVal(heading):
+  for descriptor, descriptorVal in descriptorPairs:
+    try:
+      return descriptor.objects.get(heading=heading), descriptorVal()
+    except descriptor.DoesNotExist:
+      pass
+  raise NotImplementedError("Unknown descriptor '{}'".format(heading))
+

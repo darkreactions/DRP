@@ -1,18 +1,12 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
-from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, OrdRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, TestSet, TrainingSet
+from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, TestSet, TrainingSet
+from DRP.models.rxnDescriptorValues import getDescriptorAndEmptyVal, descriptorPairs
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
 import os
 
-
-descriptorPairs = [
-                   (OrdRxnDescriptor, OrdRxnDescriptorValue),
-                   (NumRxnDescriptor, NumRxnDescriptorValue),
-                   (CatRxnDescriptor, CatRxnDescriptorValue),
-                   (BoolRxnDescriptor, BoolRxnDescriptorValue)
-                  ]
 
 def createsRxnDescriptor(heading, descriptorType, options={}):
   '''A class decorator that creates a reaction using pre-existing compounds
@@ -32,6 +26,7 @@ def createsRxnDescriptor(heading, descriptorType, options={}):
 
     def setUp(self):
       descriptor.heading = heading
+      descriptor.name = heading
 
       for key, val in options.items():
         setattr(descriptor, key, val)
@@ -60,15 +55,6 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
     reaction = PerformedReaction()
     compoundQuantities = []
     descriptorVals = []
-
-    def getDescriptorAndEmptyVal(heading):
-      for descriptor, descriptorVal in descriptorPairs:
-        try:
-          return descriptor.objects.get(heading=heading), descriptorVal()
-        except descriptor.DoesNotExist:
-          pass
-
-      raise NotImplementedError("Unknown descriptor '{}'".format(heading))
 
     def setUp(self):
       labGroup=LabGroup.objects.get(title=labTitle)
