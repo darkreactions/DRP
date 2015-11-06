@@ -47,7 +47,8 @@ class ModelVisitor(AbstractModelVisitor):
     command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
     self._runWekaCommand(command)
 
-    return self._readWekaOutputFile(results_path)
+    response = self.getResponses().first()
+    return { response : self._readWekaOutputFile(results_path) }
 
 
   def _prepareArff(self, reactions, suffix=""):
@@ -66,6 +67,8 @@ class ModelVisitor(AbstractModelVisitor):
     return filepath
 
   def _readWekaOutputFile(self, filename):
+    """Reads a *.out file called `filename` and outputs an ordered list of the
+       predicted values in that file."""
     prediction_index = 2
     with open(filename,"r") as f:
       raw_lines = f.readlines()[5:-1] #Discard the headers and ending line.
@@ -74,6 +77,7 @@ class ModelVisitor(AbstractModelVisitor):
       return map(float, predictions)
 
   def _runWekaCommand(self, command):
+    """Sets the CLASSPATH necessary to use Weka, then runs a shell `command`."""
     if not settings.WEKA_PATH:
       raise ImproperlyConfigured("'WEKA_PATH' is not set in settings.py!")
 

@@ -43,20 +43,21 @@ class ModelFactory():
     return model
 
   def _getModelVisitor(self, library, tool):
+    """ Returns a ModelVisitor object associated with this library and tool."""
     name = "{}_{}".format(library, tool)
     try:
       mod = importlib.import_module("DRP.ml_models.model_visitors.{}".format(name))
       return mod.ModelVisitor()
-    except Exception as e:
-      print e
+    except ImportError:
       error = "Model Visitor \"{}\" is not supported by the ModelFactory.".format(name)
       raise NotImplementedError(error)
 
 
   def _getSplitter(self, name):
+    """ Returns the splitter object associated with this splitter namename."""
     try:
       mod = importlib.import_module("DRP.ml_models.splitters.{}".format(name))
       return mod.Splitter()
-    except:
+    except ImportError:
       error = "Splitter \"{}\" is not supported by the ModelFactory.".format(name)
       raise NotImplementedError(error)
