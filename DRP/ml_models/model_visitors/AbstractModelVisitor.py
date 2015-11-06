@@ -31,7 +31,7 @@ class AbstractModelVisitor(object):
     self.storePredictions(reactions, predictions)
 
   def summarize(self):
-    print self.getPredictions()
+    print self.getConfusionMatrices()
 
   def storePredictions(self, reactions, predictions):
     for response in self.getResponses():
@@ -48,22 +48,58 @@ class AbstractModelVisitor(object):
         val.save()
 
   def getPredictions(self):
+    """Returns a dictionary of lists of outcome tuples, where the keys are the
+       outcomeDescriptors and the outcomes are in the format (correct, guess).
+
+       IE: {field: [(true,guess),(true',guess'),(true'',guess'')]}
+       EG: {"outcome": [(1,2),(1,1),(2,2),(3,2),(4,3)]}"""
+
     predictions = {}
 
-    for pred_descriptor in self.stats_model.predictsDescriptors.all():
+    for pred_descriptor in self.getPredictionDescriptors():
       valueType = getRxnDescriptorValueType(pred_descriptor)
-      normal_heading = pred_descriptor.heading[:-len(self._getModelSuffix())]
+      orig_heading = pred_descriptor.heading[:-len(self._getModelSuffix())]
 
-      predictions[normal_heading] = []
+      predictions[orig_heading] = []
 
       for prediction in valueType.objects.filter(model=self.stats_model, descriptor=pred_descriptor):
         true = valueType.objects.get(reaction=prediction.reaction,
-                                     descriptor__heading=normal_heading).value
+                                     descriptor__heading=orig_heading).value
         guess = prediction.value
-        predictions[normal_heading].append( (true, guess) )
+        predictions[orig_heading].append( (true, guess) )
 
     return predictions
 
+  def getConfusionMatrices(self):
+    """Returns a dicionary of dictionaries of dictionaries, where the outer keys
+       are the outcomeDescriptors, the middle keys are the "correct" or "true"
+       values, the innermost keys are the "guessed" values that occurred, and
+       the value is the integer number of occurrences of that guess when the
+       true descriptor was the middle key.
+
+       IE: {field: {true: {guess:#, guess':#},
+                    true': {guess:#, guess':#}}
+           }
+       Eg: {"outcome":
+           {"1": {"1": 10
+                  "2": 10
+                  "3": 13
+                  "4": 0
+                 }
+           , ...
+           }
+          } """
+    matrices = {}
+    for field, outcome_tups in self.getPredictions().items():
+
+      matrix = {}
+      for true, guess in outcome_tups:
+        if true not in matrix: matrix[true] = {}
+        matrix[true][guess] = matrix[true][guess]+1 if guess in matrix[true] else 1
+
+      matrices[field] = matrix
+
+    return matrices
 
 
   def setTrainingData(self, reactions):
@@ -145,6 +181,9 @@ class AbstractModelVisitor(object):
 
   def getResponses(self):
     return self.stats_model.outcomeDescriptors.all()
+
+  def getPredictionDescriptors(self):
+    return self.stats_model.predictsDescriptors.all()
 
   def getModelTag(self):
     model = self.stats_model
