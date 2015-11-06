@@ -13,6 +13,8 @@ class ModelFactory():
 
   def build(self, reactions, predictors, responses, modelLibrary="weka", modelType="svm",
                   splitterType="MutualInfoSplitter", debug=True):
+    """Constructs, trains, and then tests a ML-model using a ModelVisitor
+       of the given modelLibrary, modelType, and splitterType."""
 
     model = self._getModelVisitor(modelLibrary, modelType)
 
@@ -43,7 +45,7 @@ class ModelFactory():
     return model
 
   def _getModelVisitor(self, library, tool):
-    """ Returns a ModelVisitor object associated with this library and tool."""
+    """Returns a ModelVisitor object associated with this library and tool."""
     name = "{}_{}".format(library, tool)
     try:
       mod = importlib.import_module("DRP.ml_models.model_visitors.{}".format(name))
@@ -54,7 +56,7 @@ class ModelFactory():
 
 
   def _getSplitter(self, name):
-    """ Returns the splitter object associated with this splitter namename."""
+    """Returns the splitter object associated with this splitter namename."""
     try:
       mod = importlib.import_module("DRP.ml_models.splitters.{}".format(name))
       return mod.Splitter()

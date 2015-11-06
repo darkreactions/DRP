@@ -52,9 +52,7 @@ class ModelVisitor(AbstractModelVisitor):
 
 
   def _prepareArff(self, reactions, suffix=""):
-    """
-    Writes an *.arff file using the reactions provided.
-    """
+    """Writes an *.arff file using the provided queryset of reactions."""
     filename = "{}_{}_{}.arff".format(self.getModelTag(), suffix, time.time())
     filepath = os.path.join(settings.TMP_DIR, filename)
     with open(filepath, "w") as f:

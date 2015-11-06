@@ -31,7 +31,6 @@ class AbstractModelVisitor(object):
        ith prediction corresponds to the ith reaction.
 
        EG: {<NumRxnDescriptor> "outcome" }:[1,2,1,1]}"""
-    pass
 
   def _test(self):
     """A convenience wrapper that gets the model's default testing data,
