@@ -8,7 +8,7 @@ from DRP.models import LabGroup, Compound, PerformedReaction
 from DRP.models import ChemicalClass, NumRxnDescriptor
 from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue
-from DRP.models import OrdRxnDescriptorValue 
+from DRP.models import OrdRxnDescriptorValue, NumMolDescriptorValue 
 from chemspipy import ChemSpider
 
 outcomeDescriptor = OrdRxnDescriptor.objects.get_or_create(
@@ -144,3 +144,21 @@ class Command(BaseCommand):
                 pHDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=pHDescriptor, reaction=p)
                 pHDescriptorValue.value = float(r['pH'])
                 pHDescriptorValue.save()
+        with open(path.join(folder, 'compoundquantities.tsv')) as cqs:
+            reader = csv.DictReader(cqs, delimiter='\t')
+            for r in reader:
+                compound = Compound.objects.get(abbrev=r['compound.abbrev'])
+                mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
+                reaction = PerformedReaction.objects.get(reference=r['reaction.reference'])
+                compoundrole = CompoundRole.objects.get_or_create(label=r['compoundrole.name'])
+                if r['unit'] == 'g':
+                    amount = float(r['amount'])/mw
+                elif r['unit'] == 'd':
+                    amount = float(r['amount'])*0.0375*float(r['density'])/mw
+                elif r['unit'] == 'mL':
+                    amount = float(r['amount'])*0.0375*float(r['density'])/mw
+                else:
+                    raise RuntimeError('invalid unit entered')
+                amount = amount * 1000
+                quantity = CompoundQuantity(amount=amount, role=compoundrole, compound=compound, reaction=reaction)
+                quantity.save()
