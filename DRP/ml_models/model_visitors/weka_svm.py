@@ -16,6 +16,7 @@ class ModelVisitor(AbstractModelVisitor):
     self.stats_model.save()
 
     self.model_filename = "{}.model".format(self.getModelTag())
+    self.WEKA_VERSION = "3.6"
 
   def _train(self):
     reactions = self.getTrainingData()
@@ -76,10 +77,10 @@ class ModelVisitor(AbstractModelVisitor):
 
   def _runWekaCommand(self, command):
     """Sets the CLASSPATH necessary to use Weka, then runs a shell `command`."""
-    if not settings.WEKA_PATH:
+    if not settings.WEKA_PATH[self.WEKA_VERSION]:
       raise ImproperlyConfigured("'WEKA_PATH' is not set in settings.py!")
 
-    set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH)
+    set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
     command = set_path + command
 
     if self.DEBUG:
