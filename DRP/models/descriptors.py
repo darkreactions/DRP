@@ -81,13 +81,50 @@ class Descriptor(models.Model):
                        "numrxndescriptor", "boolrxndescriptor"]
 
         for c in chain(classes, rxn_classes):
+
           if hasattr(self, c):
-            new_self = getattr(self, c)
+            sub_self = getattr(self, c)
             for rxn_c in rxn_classes:
-              if hasattr(new_self, rxn_c):
-                return getattr(new_self, rxn_c)
-            return new_self
+
+              if hasattr(sub_self, rxn_c):
+                return getattr(sub_self, rxn_c)
+
+            return sub_self
+
         return self
+
+        """
+        try:
+          return self.categoricaldescriptor.catrxndescriptor
+        except CatRxnDescriptor.catrxndescriptor.DoesNotExist:
+          return self.categoricaldescriptor
+        except CategoricalDescriptor.DoesNotExist:
+          pass
+
+        try:
+          return self.numericdescriptor.numrxndescriptor
+        except NumericDescriptor.DoesNotExist:
+          return self.numericdescriptor
+        except Descriptor.DoesNotExist:
+          pass
+
+        try:
+          return self.booleandescriptor.boolrxndescriptor
+        except BooleanDescriptor.DoesNotExist:
+          return self.booleandescriptor
+        except Descriptor.DoesNotExist:
+          pass
+
+        try:
+          return self.ordinaldescriptor.ordrxndescriptor
+        except OrdinalDescriptor.DoesNotExist:
+          return self.ordinaldescriptor
+        except Descriptor.DoesNotExist:
+          pass
+
+
+        return self
+        """
 
 
     def __unicode__(self):

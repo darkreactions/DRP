@@ -50,7 +50,7 @@ class AbstractModelVisitor(object):
 
     for response, predictions in predictions_dict.items():
       # Get the predictsDescriptor associated with the `response` outcomeDescriptor.
-      pred_desc, val = getRxnDescriptorAndEmptyVal(response.heading + self._getModelSuffix())
+      pred_desc, val = getRxnDescriptorAndEmptyVal(response.heading + self._getModelPredictionSuffix())
       val.descriptor = pred_desc
       val.model = self.stats_model
 
@@ -71,9 +71,9 @@ class AbstractModelVisitor(object):
 
     predictions = {}
 
-    for pred_descriptor in self.getPredictions():
+    for pred_descriptor in self.stats_model.predictsDescriptors.all():
       valueType = getRxnDescriptorValueType(pred_descriptor)
-      orig_heading = pred_descriptor.heading[:-len(self._getModelSuffix())]
+      orig_heading = pred_descriptor.heading[:-len(self._getModelPredictionSuffix())]
 
       predictions[orig_heading] = []
 
@@ -86,6 +86,9 @@ class AbstractModelVisitor(object):
 
     return predictions
 
+  # TODO: Note that this logic should be moved into a PredictedDescriptor object
+  #       in the next version. For now, it stands only as a way to verify that
+  #       a model did in fact make predictions.
   def getConfusionMatrices(self):
     """Returns a dicionary of dictionaries of dictionaries, where the outer keys
        are the outcomeDescriptors, the middle keys are the "correct" or "true"
@@ -122,6 +125,11 @@ class AbstractModelVisitor(object):
     """Creates a training-set relation between each provided reaction
        and the stats_model. Note that `reactions` is assumed to be a
        queryset of Reaction objects."""
+
+    # Don't allow more than one TrainingSet to be applied to a single StatsModel
+    if TrainingSet.objects.filter(model=self.stats_model).exists():
+      raise Exception("This model already has a TrainingSet!")
+
     for reaction in reactions:
       training_set = TrainingSet(reaction=reaction, model=self.stats_model)
       training_set.save()
@@ -164,7 +172,7 @@ class AbstractModelVisitor(object):
       # Copy the descriptor to a pred_descriptor so we retain the descriptor type.
       pred_descriptor = descriptor.__class__()
 
-      #Copy any non-Foreign Key fields from the descriptor.
+      # Copy any non-Foreign Key fields from the descriptor.
       for field in descriptor._meta.fields:
         if not (isinstance(field, AutoField) or
                 isinstance(field, related.OneToOneField) or
@@ -172,8 +180,8 @@ class AbstractModelVisitor(object):
           setattr(pred_descriptor, field.name, getattr(descriptor, field.name) )
 
       # Add the model's suffix (ID) to the descriptor and name for uniqueness.
-      pred_descriptor.heading = descriptor.heading + self._getModelSuffix()
-      pred_descriptor.name = descriptor.name + self._getModelSuffix()
+      pred_descriptor.heading = descriptor.heading + self._getModelPredictionSuffix()
+      pred_descriptor.name = descriptor.name + self._getModelPredictionSuffix()
       pred_descriptor.model = self.stats_model
 
       pred_descriptor.save()
@@ -213,9 +221,9 @@ class AbstractModelVisitor(object):
     if not testset_name: testset_name = self.getModelTag()
     return PerformedReaction.objects.filter(testset__name=testset_name)
 
-  def _getModelSuffix(self):
-    """Returns a unique "suffix" for this stats_model."""
-    return "_{}".format(self.stats_model.id)
+  def _getModelPredictionSuffix(self):
+    """Returns a unique "suffix" for the predictions of this stats_model."""
+    return "_predicted_{}".format(self.stats_model.id)
 
   def getPredictors(self):
     """Returns a queryset of descriptors used by this stats_model for
@@ -225,10 +233,6 @@ class AbstractModelVisitor(object):
   def getResponses(self):
     """Returns a queryset of outcomeDescriptors used by this stats_model."""
     return self.stats_model.outcomeDescriptors.all()
-
-  def getPredictions(self):
-    """Returns a queryset of predictsDescriptors used by this stats_model."""
-    return self.stats_model.predictsDescriptors.all()
 
   def getModelTag(self):
     """Returns a unique "name" for this stats_model."""

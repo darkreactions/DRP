@@ -69,7 +69,7 @@ class ModelVisitor(AbstractModelVisitor):
        predicted values in that file."""
     prediction_index = 2
     with open(filename,"r") as f:
-      raw_lines = f.readlines()[5:-1] #Discard the headers and ending line.
+      raw_lines = f.readlines()[5:-1] # Discard the headers and ending line.
       raw_predictions = [line.split()[prediction_index] for line in raw_lines]
       predictions = [prediction.split(":")[1] for prediction in raw_predictions]
       return map(float, predictions)

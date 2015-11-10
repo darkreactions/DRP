@@ -7,7 +7,7 @@ class Splitter(AbstractSplitter):
   def __init__(self):
     super(Splitter, self).__init__()
     self.TEST_PERCENT = 0.30
-    self.MAX_PARTITION_SIZE = 35 # Magic #TODO: Please de-magic this.
+    self.MAX_PARTITION_SIZE = 35 # Magic # TODO: Please de-magic this.
     self.MIN_TRAIN_SIZE = 10 # WEKA requires at least 10 training points for SVMs.
 
   def split(self, reactions):
