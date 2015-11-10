@@ -5,7 +5,7 @@ import unittest
 from DRPTestCase import DRPTestCase, runTests
 from DRP.models import Compound, OrdMolDescriptorValue, NumMolDescriptorValue
 from DRP.models import BoolMolDescriptorValue, CatMolDescriptorValue
-from DRP.models import OrdMolDescriptor, NumMolDescriptor, BoolMolDescriptor
+from DRP.models import OrdMolDescriptor, NumMolDescriptor
 from DRP.models import CatMolDescriptor, CategoricalDescriptorPermittedValue
 from decorators import createsCompound, joinsLabGroup, createsUser
 from decorators import createsChemicalClass
@@ -386,7 +386,7 @@ class CategoricalValidation(DRPTestCase):
                 compound=Compound.objects.get(CSID=682),
                 value=self.descPerm3)
             cmdv.save()
-        cmdv.delete()
+            cmdv.delete()
 
     def tearDown(self):
         """Clean up the test."""
