@@ -8,6 +8,7 @@ from django.db import models
 from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+from itertools import chain
 
 
 def slugify(text):
@@ -69,6 +70,62 @@ class Descriptor(models.Model):
         http://www.cs.waikato.ac.nz/ml/weka/arff.html
         """
         return'@attribute {} ' .format(self.csvHeader)
+
+
+    def downcast(self):
+        """Return an instance of this descriptor as its deepest subclass."""
+
+        classes = ["categoricaldescriptor", "ordinaldescriptor",
+                   "numericdescriptor", "booleandescriptor"]
+        rxn_classes = ["catrxndescriptor", "ordrxndescriptor",
+                       "numrxndescriptor", "boolrxndescriptor"]
+
+        for c in chain(classes, rxn_classes):
+
+          if hasattr(self, c):
+            sub_self = getattr(self, c)
+            for rxn_c in rxn_classes:
+
+              if hasattr(sub_self, rxn_c):
+                return getattr(sub_self, rxn_c)
+
+            return sub_self
+
+        return self
+
+        """
+        try:
+          return self.categoricaldescriptor.catrxndescriptor
+        except CatRxnDescriptor.catrxndescriptor.DoesNotExist:
+          return self.categoricaldescriptor
+        except CategoricalDescriptor.DoesNotExist:
+          pass
+
+        try:
+          return self.numericdescriptor.numrxndescriptor
+        except NumericDescriptor.DoesNotExist:
+          return self.numericdescriptor
+        except Descriptor.DoesNotExist:
+          pass
+
+        try:
+          return self.booleandescriptor.boolrxndescriptor
+        except BooleanDescriptor.DoesNotExist:
+          return self.booleandescriptor
+        except Descriptor.DoesNotExist:
+          pass
+
+        try:
+          return self.ordinaldescriptor.ordrxndescriptor
+        except OrdinalDescriptor.DoesNotExist:
+          return self.ordinaldescriptor
+        except Descriptor.DoesNotExist:
+          pass
+
+
+        return self
+        """
+
 
     def __unicode__(self):
         """Unicode represenation of a descriptor is it's name."""

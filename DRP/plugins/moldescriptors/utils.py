@@ -20,7 +20,7 @@ class LazyDescDict(object):
             self.internalDict[k] = DRP.models.NumMolDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.NumMolDescriptor.objects.get(**fetchArgs)
           except DRP.models.NumMolDescriptor.DoesNotExist:
-            self.internalDict[k] = DRP.models.NumMolDescriptor.objects.create(**args) 
+            self.internalDict[k] = DRP.models.NumMolDescriptor.objects.create(**args)
         elif v['type'] == 'bool':
           try:
             self.internalDict[k] = DRP.models.BoolMolDescriptor.objects.filter(**fetchArgs).update(**args)
@@ -31,11 +31,11 @@ class LazyDescDict(object):
           try:
             self.internalDict[k] = DRP.models.OrdMolDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.OrdMolDescriptor.objects.get(**fetchArgs)
-          except DRP.models.OrdMolDescriptor.DoesNotExist: 
-            self.internalDict[k] = DRP.models.OrdMolDescriptor.objects.get_or_create(**args)
+          except DRP.models.OrdMolDescriptor.DoesNotExist:
+            self.internalDict[k] = DRP.models.OrdMolDescriptor.objects.create(**args)
         elif v['type'] == 'cat':
           del args['permittedValues']
-          try: 
+          try:
             DRP.models.CatMolDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.CatMolDescriptor.objects.get(**fetchArgs)
           except DRP.models.CatMolDescriptor.DoesNotExist:
@@ -59,7 +59,7 @@ class LazyDescDict(object):
 
   def __contains__(self, item):
     return item in self.internalDict
-   
+
 
 def setup(descDict):
   return LazyDescDict(descDict)
