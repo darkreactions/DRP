@@ -22,7 +22,7 @@ class CompoundFilterFormSucceed(BaseFormTest):
     def setUpFormData(self):
         #custom, for Null, True, or False Boolean Field will be left out 
         self.formData = {}
-        self.formData["abbrevs"] = "2-amep"
+        self.formData["abbrev"] = "2-amep"
         self.formData["name"] =	"2-aminomethyl-1-ethylpyrrolidine"
         self.formData["chemicalClasses"]= [self.chemicalClass.pk]
         self.formData["CSID"] = "104820"
@@ -64,7 +64,7 @@ class CompoundFilterFormDifferentLabGroupFail(BaseFormTest):
     '''This will test the CompoundFilterForm when the labgroup searched for does not match the compound searched for (i.e. searching for another labgroup's compounds), and the form should fail'''
     def setUpFormData(self):
         self.formData={}
-        self.formData["abbrevs"]="2-amep"
+        self.formData["abbrev"]="2-amep"
         self.formData["name"]="2-aminomethyl-1-ethylpyrrolidine"
         self.formData["chemicalClasses"]= [self.chemicalClass.pk]
         self.formData["CSID"]="104820"
@@ -99,7 +99,7 @@ class CompoundFilterFormWrongLabGroupFail(BaseFormTest):
     '''This will test the CompoundFilterForm when the user tries to input a different labgroup in the form than the labgroup to which the user actually belongs'''
     def setUpFormData(self): 
         self.formData = {} 
-        self.formData["abbrevs"] = "2-amep"
+        self.formData["abbrev"] = "2-amep"
         self.formData["name"] =  "2-aminomethyl-1-ethylpyrrolidine"
         self.formData["chemicalClasses"]= [self.chemicalClass.pk]
         self.formData["CSID"] = "104820"
