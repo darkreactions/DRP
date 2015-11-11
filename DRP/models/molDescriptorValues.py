@@ -38,6 +38,9 @@ class MolDescriptorValue(models.Model):
       except PerformedReaction.PerformedReaction.DoesNotExist:
         pass #we don't care
 
+  def __str__(self):
+    return '{} for {} is {}'.format(self.descriptor.name, str(self.compound), self.value)
+
 class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
   '''Contains the value of a categorical descriptor for a compound'''
 

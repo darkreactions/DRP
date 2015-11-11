@@ -1,9 +1,9 @@
 '''A module containing only the DRPTestCase class'''
 import unittest
 from django.conf import settings
-from django.contrib.auth.models import User
 import importlib
 import DRP
+from django.contrib.auth.models import User
 molDescriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
 class DRPTestCase(unittest.TestCase):

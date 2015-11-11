@@ -14,9 +14,9 @@ import unittest
 from DRPTestCase import DRPTestCase, runTests
 from DRP.models import Compound, LabGroup
 from decorators import createsUser, joinsLabGroup, createsChemicalClass
-from django.conf import settings
 import os.path
 from django.core.exceptions import ValidationError
+from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @createsUser('Aslan', 'testingpass')

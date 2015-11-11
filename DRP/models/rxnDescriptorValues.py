@@ -1,6 +1,7 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
 from Reaction import Reaction
+from PerformedReaction import PerformedReaction
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue  
 from StatsModel import StatsModel
 from itertools import chain
@@ -30,8 +31,11 @@ class RxnDescriptorValue(models.Model):
 
   def save(self, *args, **kwargs):
     if self.pk is not None:
-      for model in chain(self.reaction.inTrainingSetFor.all(), self.reaction.inTestSetFor.all()):
-        model.invalidate()
+      try:
+        for model in chain(self.reaction.performedreaction.inTrainingSetFor.all(), self.reaction.performedreaction.inTestSetFor.all()):
+          model.invalidate()
+      except PerformedReaction.DoesNotExist:
+        pass # fine, we don't care, no need to pass this on.
     super(RxnDescriptorValue, self).save(*args, **kwargs)
 
   def delete(self):

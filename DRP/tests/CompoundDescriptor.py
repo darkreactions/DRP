@@ -68,42 +68,6 @@ class MaxMinValidation(DRPTestCase):
         desc.save()
         desc.delete()
 
-    def test_ordinal_max_null(self):
-        """Test creating a ordinal descriptor with a null max value works."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=None,
-            minimum=3)
-        desc.save()
-        desc.delete()
-
-    def test_ordinal_min_null(self):
-        """Test creating a ordinal descriptor with a null min value works."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=5,
-            minimum=None)
-        desc.save()
-        desc.delete()
-
-    def test_ordinal_lims_null(self):
-        """Test creating a ordinal descriptor with a null min,max value."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=None,
-            minimum=None)
-        desc.save()
-        desc.delete()
-
     def test_numeric(self):
         """Test ordinal descriptors."""
         with self.assertRaises(ValidationError):
@@ -368,94 +332,6 @@ class MaxMinValueValidation(DRPTestCase):
                 value=2)
             descVal.save()
         desc.delete()
-
-    def test_ordinal_max_null(self):
-        """Test creating a ordinal descriptor with a null max value works."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=None,
-            minimum=3)
-        desc.save()
-        descVal = OrdMolDescriptorValue(
-            compound=Compound.objects.get(abbrev='EtOH'),
-            descriptor=desc,
-            value=3)
-        descVal.save()
-        desc.delete()
-
-    def test_ordinal_max_null_toolow(self):
-        """Test creating a ordinal descriptor with a null max value works."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=None,
-            minimum=3)
-        desc.save()
-        with self.assertRaises(ValidationError):
-            descVal = OrdMolDescriptorValue(
-                compound=Compound.objects.get(abbrev='EtOH'),
-                descriptor=desc,
-                value=2)
-            descVal.save()
-        desc.delete()
-
-    def test_ordinal_max_null_toohigh(self):
-        """Test creating a ordinal descriptor with a null max value works."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=5,
-            minimum=None)
-        desc.save()
-        with self.assertRaises(ValidationError):
-            descVal = OrdMolDescriptorValue(
-                compound=Compound.objects.get(abbrev='EtOH'),
-                descriptor=desc,
-                value=6)
-            descVal.save()
-        desc.delete()
-
-    def test_ordinal_min_null(self):
-        """Test creating a ordinal descriptor with a null min value works."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=5,
-            minimum=None)
-        desc.save()
-        descVal = OrdMolDescriptorValue(
-            compound=Compound.objects.get(abbrev='EtOH'),
-            descriptor=desc,
-            value=3)
-        descVal.save()
-        desc.delete()
-
-    def test_ordinal_lims_null(self):
-        """Test creating a ordinal descriptor w/a null min, max value works."""
-        desc = OrdMolDescriptor(
-            heading='heading',
-            name='test descriptor',
-            calculatorSoftware='test suite',
-            calculatorSoftwareVersion=0,
-            maximum=None,
-            minimum=None)
-        desc.save()
-        descVal = OrdMolDescriptorValue(
-            compound=Compound.objects.get(abbrev='EtOH'),
-            descriptor=desc,
-            value=3)
-        descVal.save()
-        desc.delete()
-
 
 @createsUser('Aslan', 'old_magic')
 @joinsLabGroup('Aslan', 'Narnia')

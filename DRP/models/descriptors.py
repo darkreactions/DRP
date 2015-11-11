@@ -121,9 +121,9 @@ class OrdinalDescriptor(Descriptor):
     class Meta:
         app_label = 'DRP'
 
-    maximum = models.IntegerField(null=True)
+    maximum = models.IntegerField()
     """The maximal permitted value for a given descriptor instance."""
-    minimum = models.IntegerField(null=True)
+    minimum = models.IntegerField()
     """The minimal permitted value for a given descriptor instance."""
 
     def clean(self):
