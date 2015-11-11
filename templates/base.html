@@ -4,6 +4,7 @@
     <title>
       {% block title %} Dark Reaction Project {% endblock %}
     </title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
 {% comment %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
     {% block head_additional %}{% endblock %}
@@ -30,6 +31,7 @@
   <body>
 
     <header>
+      <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo">
       <h1>Dark Reaction Project</h1>
 
       <div id="userInfo">

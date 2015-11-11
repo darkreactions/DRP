@@ -1,17 +1,37 @@
+img#mainLogo {
+ width:3em;
+ float:left;
+ margin: 0 1em 0 0;
+}
+
 #navigationMenu {
  display:block;
  position:relative;
  width:100%;
  padding:10px 0px;
- text-align:center;
+ text-align:left;
 }
 
 .navLink {
  font-size:1.25em;
- color:white;
- margin:0px 10px;
+ color:blue;
+ margin:0px;
 }
 
 .navLink:hover { opacity:0.8; }
+
+ol {
+ list-style:none;
+ padding:0;
+}
+
+ol li {
+ display:inline;
+ margin:0 2em 0 0;
+}
+
+img#userUpdate {
+ width: 1em;
+}
 
 .currentTitle { font-weight:bold; }
