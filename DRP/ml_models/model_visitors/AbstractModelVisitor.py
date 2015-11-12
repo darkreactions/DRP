@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import os
-from DRP.models import StatsModel, PerformedReaction, TrainingSet, TestSet, TestSetRelation, Descriptor
+from DRP.models import StatsModel, PerformedReaction, TrainingSet, TestSet, TestSetRelation, Descriptor, OrdRxnDescriptor
 from DRP.models.rxnDescriptorValues import getRxnDescriptorValueType, getRxnDescriptorAndEmptyVal
 from django.db.models.fields import AutoField, related
 from django.conf import settings
@@ -10,8 +10,27 @@ from django.core.files import File
 class AbstractModelVisitor(object):
   __metaclass__ = ABCMeta
 
-  def __init__(self):
-    self.stats_model = StatsModel()
+  def __init__(self, library, tool, iterations, modelContainer, stats_model=None):
+
+    # Allow this ModelVisitor to "wrap" a pre-existing model instead of building.
+    if stats_model is not None:
+      if not stats_model.container == modelContainer:
+        raise Exception("ModelContainer does not own this stats_model!")
+      self.stats_model = stats_model
+
+    # Verify that the modelContainer has been saved and has a valid ID.
+    elif modelContainer.id is None:
+        raise Exception("ModelContainer object must be saved before making models!")
+
+    else:
+      self.stats_model = StatsModel()
+      self.stats_model.library = library
+      self.stats_model.tool = tool
+      self.stats_model.iterations = iterations
+
+      self.stats_model.container = modelContainer
+      self.stats_model.save()
+
     self.DEBUG = False
 
   def enableDebug(self):
@@ -41,7 +60,7 @@ class AbstractModelVisitor(object):
 
   def summarize(self):
     """Prints the performance metrics of this model using its default test-set."""
-    print "Confusion Matrix: {}".format(self.getConfusionMatrices())
+    return "Confusion Matrix: {}".format(self.getConfusionMatrices())
 
   def storePredictions(self, reactions, predictions_dict):
     """Stores the predicted responses in the database as RxnDescriptorValues.
@@ -49,6 +68,8 @@ class AbstractModelVisitor(object):
        in the format specified by the `predict` method."""
 
     for response, predictions in predictions_dict.items():
+      #TODO: Make this less ugly.
+      # TODO: Ie, just create the values and remove the confusion abstraction.
       # Get the predictsDescriptor associated with the `response` outcomeDescriptor.
       pred_desc, val = getRxnDescriptorAndEmptyVal(response.heading + self._getModelPredictionSuffix())
       val.descriptor = pred_desc
@@ -148,27 +169,33 @@ class AbstractModelVisitor(object):
     for reaction in reactions:
       TestSetRelation(reaction=reaction, test_set=test_set).save()
 
-  def setPredictors(self, headers):
+  def setPredictors(self, descriptors):
     """Sets the predictor variables (aka, descriptors) for this model.
        This method assumes all necessary Descriptor objects exist already."""
-    descriptors = [Descriptor.objects.get(heading=header) for header in headers]
+
+    if not descriptors.exists():
+      raise Exception("Predictor descriptors cannot be empty!")
+
     self.stats_model.descriptors.add(*descriptors)
     self.stats_model.save()
 
-  def setResponses(self, headings):
+  def setResponses(self, descriptors):
     """Sets the response variables (aka, outcomeDescriptors) for this model.
-       Expects `headings` to be a list of strings, where each string is the
+       Expects `headings` to be a QuerySet, where each string is the
        heading of an existing Descriptor object.
 
        Also creates a unique predictsDescriptor entry for each outcomeDescriptor."""
 
-    descriptors = [Descriptor.objects.get(heading=h).downcast() for h in headings]
+    if not descriptors.exists():
+      raise Exception("Response descriptors cannot be empty!")
+
     self.stats_model.outcomeDescriptors.add(*descriptors)
 
     self.stats_model.save()
 
     pred_descriptors = []
     for descriptor in descriptors:
+      descriptor = descriptor.downcast()
       # Copy the descriptor to a pred_descriptor so we retain the descriptor type.
       pred_descriptor = descriptor.__class__()
 
@@ -236,8 +263,8 @@ class AbstractModelVisitor(object):
 
   def getModelTag(self):
     """Returns a unique "name" for this stats_model."""
-    model = self.stats_model
-    return "{}_{}_{}".format(model.library, model.tool, model.id)
+    container = self.stats_model.container
+    return "{}_{}_{}".format(container.library, container.tool, self.stats_model.id)
 
   def getModelFilename(self):
     """Returns the filename of the ML-model file."""

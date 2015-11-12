@@ -1,8 +1,8 @@
 """A module containing only the StatsModel class."""
 from django.db import models
 from StatsModelTag import StatsModelTag
+from ModelContainer import ModelContainer
 from descriptors import Descriptor
-from django.conf import settings
 
 
 class StatsModel(models.Model):
@@ -19,13 +19,9 @@ class StatsModel(models.Model):
     start_time = models.DateTimeField(default=None, null=True)
     end_time = models.DateTimeField(default=None, null=True)
     iterations = models.IntegerField()
-    library = models.CharField(
-        max_length=200, choices=settings.LIBRARY_CHOICES)
-    tool = models.CharField(
-        max_length=200, choices=settings.TOOL_CHOICES)
-    splitter = models.CharField(
-        max_length=200, choices=settings.SPLITTER_CHOICES)
     tags = models.ManyToManyField(StatsModelTag)
+
+    container = models.ForeignKey(ModelContainer)
 
     descriptors = models.ManyToManyField(Descriptor)
     """The input descriptors for the model."""

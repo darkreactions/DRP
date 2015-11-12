@@ -2,10 +2,10 @@
 '''A module containing tests for the ModelFactory class'''
 
 import unittest
-from DRP.models import PerformedReaction
-from DRP.ml_models.ModelFactory import ModelFactory
+from DRP.models import PerformedReaction, ModelContainer, Descriptor
 from decorators import createsPerformedReaction, createsCompound, joinsLabGroup, createsChemicalClass, createsUser, createsCompoundRole, createsRxnDescriptor
 from DRPTestCase import DRPTestCase, runTests
+from DRP.ml_models.splitters.KFoldSplitter import Splitter
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @createsUser('Rorschach', 'whatareyouwaitingfor')
@@ -63,16 +63,20 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 class BasicWekaSVM(DRPTestCase):
 
   def runTest(self):
+    predictors = Descriptor.objects.filter(heading="testNumber")
+    responses = Descriptor.objects.filter(heading="outcome")
+
+    container = ModelContainer(library="weka", tool="svm",
+                               splitter="KFoldSplitter")
+    container.save()
+
     reactions = PerformedReaction.objects.all()
 
-    predictors = ["testNumber"]
-    responses = ["outcome"]
+    splitter = Splitter()
+    for training, test in splitter.split(reactions):
+      container.build(training, test, predictors, responses)
 
-    factory = ModelFactory()
-    model = factory.build(reactions, predictors, responses,
-                          modelLibrary="weka", modelType="svm",
-                          debug=True)
-    model.summarize()
+    print container.summarize()
 
 
 suite = unittest.TestSuite([

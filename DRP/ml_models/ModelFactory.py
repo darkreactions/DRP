@@ -1,5 +1,6 @@
 import importlib
 
+# TODO: Mebbe change dis to ModelContainor
 class ModelFactory():
   """
   The ModelFactory is responsible for constructing and preparing
@@ -11,35 +12,31 @@ class ModelFactory():
 
   """
 
-  def build(self, reactions, predictors, responses, modelLibrary="weka", modelType="svm",
-                  splitterType="MutualInfoSplitter", debug=True):
+  # TODO: `build` should accept training_reactions_reactions and test_reactions and *not* a splitter.
+  def build(self, training_reactions, test_reactions, predictors, responses, modelLibrary="weka", modelType="svm", debug=True):
     """Constructs, trains, and then tests a ML-model using a ModelVisitor
        of the given modelLibrary, modelType, and splitterType."""
 
     model = self._getModelVisitor(modelLibrary, modelType)
 
     if debug:
-      model.enableDebug()
+      model.enableDebug() #TODO:  Turn this into a list of strings/exceptions and attach to self.
 
     if debug:
       print "\nStarting model generation in debug mode..."
 
-    splitter = self._getSplitter(splitterType)
-    model.setSplitter(splitter)
-
-    model.setPredictors(predictors)
+    model.setPredictors(predictors) #TODO:Assume predictors/resposnes are QSs. :)
     model.setResponses(responses)
 
-    training, testing = splitter.split(reactions)
-    model.setTrainingData(training)
-    model.setTestingData(testing)
+    model.settraining_reactionsData(training_reactions)
+    model.settest_reactionsData(test_reactions)
 
     if debug:
-      print "\nTraining the model on {} entries...".format(training.count())
+      print "\ntraining_reactions the model on {} entries...".format(training_reactions.count())
     model._train()
 
     if debug:
-      print "\nTesting the model on {} entries...".format(testing.count())
+      print "\ntest_reactions the model on {} entries...".format(test_reactions.count())
     model._test()
 
     return model
@@ -52,14 +49,4 @@ class ModelFactory():
       return mod.ModelVisitor()
     except ImportError:
       error = "Model Visitor \"{}\" is not supported by the ModelFactory.".format(name)
-      raise NotImplementedError(error)
-
-
-  def _getSplitter(self, name):
-    """Returns the splitter object associated with this splitter namename."""
-    try:
-      mod = importlib.import_module("DRP.ml_models.splitters.{}".format(name))
-      return mod.Splitter()
-    except ImportError:
-      error = "Splitter \"{}\" is not supported by the ModelFactory.".format(name)
       raise NotImplementedError(error)

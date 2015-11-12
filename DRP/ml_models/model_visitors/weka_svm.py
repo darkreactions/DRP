@@ -8,15 +8,11 @@ import datetime
 
 class ModelVisitor(AbstractModelVisitor):
 
-  def __init__(self):
-    super(ModelVisitor, self).__init__()
-    self.stats_model.library = "weka"
-    self.stats_model.tool = "svm"
-    self.stats_model.iterations = 1 # Generate a single SVM instead of an average.
-    self.stats_model.save()
+  def __init__(self, modelContainer, **kwargs):
+    super(ModelVisitor, self).__init__("weka", "svm", 1, modelContainer, **kwargs)
 
     self.model_filename = "{}.model".format(self.getModelTag())
-    self.WEKA_VERSION = "3.6"
+    self.WEKA_VERSION = "3.6" # The version of WEKA to use.
 
   def _train(self):
     reactions = self.getTrainingData()
@@ -45,10 +41,11 @@ class ModelVisitor(AbstractModelVisitor):
     # Currently, we support only one "response" variable.
     response_index = self.getPredictors().count()+1
 
+    #TODO: Validate this input.
     command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
     self._runWekaCommand(command)
 
-    response = self.getResponses().first()
+    response = self.getResponses()[0]
     return { response : self._readWekaOutputFile(results_path) }
 
 
