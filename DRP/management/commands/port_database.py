@@ -51,8 +51,22 @@ timeDescriptor = NumRxnDescriptor.objects.get_or_create(
     )
 
 pHDescriptor = NumRxnDescriptor.objects.get_or_create(
-    heading = 'reaction pH',
+    heading = 'reaction_pH',
     name='Reaction pH',
+    calculatorSoftware='manual',
+    calculatorSoftwareVersion='0'
+    )
+
+preHeatStandingDescriptor = NumRxnDescriptor.object.get_or_create(
+    heading='pre_heat_standing',
+    name='Pre heat standing time',
+    calculatorSoftware='manual',
+    calculatorSoftwareVersion='0'
+    )
+
+teflonDescriptor = BoolRxnDescriptor.object.get_or_create(
+    heading='teflon_pouch',
+    name='Was this reaction performed in a teflon pouch?',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
     )
@@ -136,29 +150,41 @@ class Command(BaseCommand):
                 purityValue.value = int(r['purity']) if purity in ('1', '2') else None
                 purityValue.save()
                 temperatureDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=temperatureDescriptor, reaction=p)
-                temperatureDescriptorValue.value = float(r['temp']) + 273.15
+                temperatureDescriptorValue.value = float(r['temp']) + 273.15 if r['temp'] not in ('', '?') else None
                 temperatureDescriptorValue.save()
                 timeDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=timeDescriptor, reaction=p)
-                timeDescriptorValue.value = float(r['time'])*60
+                timeDescriptorValue.value = float(r['time'])*60 if r['time'] not in ['', '?'] else None
                 timeDescriptorValue.save()
                 pHDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=pHDescriptor, reaction=p)
-                pHDescriptorValue.value = float(r['pH'])
+                pHDescriptorValue.value = float(r['pH']) if r['pH'] not in ('', '?') else None
                 pHDescriptorValue.save()
+                preHeatStandingDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=preHeatStandingDescriptor, reaction=p)
+                preHeatStandingDescriptorValue.value = bool(r['pre_heat standing']) if r['pre_head standing'] is not '' else None
+                preHeatStandingDescriptorValue.save()
+                teflonDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=teflonDescriptor, reaction=p)
+                teflonDescriptorValue.value = float(r['teflon_pouch'])*60 if r['teflon_pouch'] is not '' else None
+                teflonDescriptorValue.save()
         with open(path.join(folder, 'compoundquantities.tsv')) as cqs:
             reader = csv.DictReader(cqs, delimiter='\t')
             for r in reader:
                 compound = Compound.objects.get(abbrev=r['compound.abbrev'])
                 mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
                 reaction = PerformedReaction.objects.get(reference=r['reaction.reference'])
-                compoundrole = CompoundRole.objects.get_or_create(label=r['compoundrole.name'])
-                if r['unit'] == 'g':
-                    amount = float(r['amount'])/mw
-                elif r['unit'] == 'd':
-                    amount = float(r['amount'])*0.0375*float(r['density'])/mw
-                elif r['unit'] == 'mL':
-                    amount = float(r['amount'])*0.0375*float(r['density'])/mw
+                if r['compoundRole.name'] != 'pH':
+                    compoundrole = CompoundRole.objects.get_or_create(label=r['compoundrole.name'])
+                    if r['amount'] in ('', '?')
+                        amount = None
+                    elif r['unit'] == 'g':
+                        amount = float(r['amount'])/mw
+                    elif r['unit'] == 'd':
+                        amount = float(r['amount'])*0.0375*float(r['density'])/mw
+                    elif r['unit'] == 'mL':
+                        amount = float(r['amount'])*0.0375*float(r['density'])/mw
+                    else:
+                        raise RuntimeError('invalid unit entered')
+                    amount = amount * 1000 if amount is not None
+                    quantity = CompoundQuantity(amount=amount, role=compoundrole, compound=compound, reaction=reaction)
                 else:
-                    raise RuntimeError('invalid unit entered')
-                amount = amount * 1000
-                quantity = CompoundQuantity(amount=amount, role=compoundrole, compound=compound, reaction=reaction)
+                    reaction.notes .= ' pH adjusting reagent used: {}, {}{}'.format(r['compound.abbrev'], r['amount'], r['unit'])
+                    reaction.save()
                 quantity.save()

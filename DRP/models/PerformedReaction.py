@@ -49,6 +49,7 @@ class PerformedReaction(Reaction):
     super(PerformedReaction, self).validate_unique(exclude=exclude)
 
   def save(self, *args, **kwargs):
+    self.reference = self.reference.lower()
     if self.pk is not None:
       test = StatsModel.objects.filter(testset__reactions__in=[self])
       train = StatsModel.objects.filter(trainingset__reaction=self)
