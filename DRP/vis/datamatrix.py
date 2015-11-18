@@ -2,10 +2,10 @@ from get_data import *
 from clustering import *
 from kdtree import *
 
-#import linreg
+import linreg
 import copy
 import numpy as np
-#import statistics as stat
+import statistics as stat
 import math
 import random
 import sys
@@ -14,54 +14,23 @@ from kdtree import *
 missing_data_token = "-1";
 
 # Linreg = linear regression(actually correlation)
-#To loop through, go CR not RC (because rows and columns are flipped)
 class dataMatrix:
-  #Initialize data-matrix from file. Properties of the datamatrix will be the header_list,
-  # dataset, num_cols, and num_rows
-  def __init__(self,data):
+  #Initialize data-matrix from dictionary of "header": [list of values corresponding to this header]
+  # Properties of the datamatrix will be the header_list, dataset, num_cols, and num_rows
+  def __init__(self,headersValuesDict):
     #calls get_data's method to find title of each column
-    self.header_list = data.pop(0)
+    self.header_list = [key for key in headersValuesDict] 
     # sets number of columns equal to length of headers (length of the first row)--
     # initializes datamatrix
-    self.dataset = data  # calls get_data method to put all rows of the file into a dictionary, with each cell in each row
-    self.num_rows = len(self.dataset)
-    self.num_cols = len(self.dataset[0])
+    self.dataset = headersValuesDict  # calls get_data method to put all rows of the file into a dictionary, with each cell in each row
+    self.num_rows = len(self.dataset[header_list[0]]) #can pick any of the items in the header list
+    self.num_cols = len(header_list)
     self.convertYesNotoOneZero()
 
-
-  #Remove non-numeric columns
-  def removeStringCols(self):
-    counter = 0		
-    for i in xrange(0,self.num_cols):
-      for j in xrange(1, self.num_rows):
-        if (self.is_number(self.dataset[i][j]) == False and not (self.dataset[i][j]) == "?"):
-          counter += 1
-          self.removeColumn(i)
-          return self.removeStringCols()
-
-  #Automatically write matrix to a csv file, Filename is prese.t
-  def writeToFile(self,filename):
-    set_to_write = np.transpose(self.dataset)
-    write_data(filename, self.header_list, set_to_write)
-
-  # write a csv file of the normalized data
-  def writeArray(self, array):
-    out_file = raw_input('Write stdev with mean array where? ...')
-    with open(out_file,'w') as f:
-      f_csv = csv.writer(f)
-      for i in range(len(array)):
-        f_csv.writerow(array[i])
-
-  # write file that, for every data point, indicates whether or not it has been modified(
-  def writeCleaningFlagFile(self):
-    out_file = raw_input('Write flag file where? ...')
-    set_to_write = np.transpose(self.cleaningflags)
-    write_data(out_file, self.header_list, set_to_write)
-
   #Find the correlation between two columns of the data matrix
-  def findLinreg(self, col_num_one, col_num_two):
-    A = np.vstack([self.dataset[col_num_one], np.ones(len(self.dataset[col_num_two]))]).T
-    m, b = np.linalg.lstsq(A, self.dataset[col_num_two])[0]
+  def findLinreg(self, key1, key2):
+    A = np.vstack([self.dataset[key1], np.ones(len(self.dataset[key2]))]).T
+    m, b = np.linalg.lstsq(A, self.dataset[key2])[0]
     return m #, b
 
   #find all of the linregs. Returns a list of all comparisons in the form {Col1, Col2, Correl}
@@ -70,7 +39,9 @@ class dataMatrix:
     for i in range(0,self.num_cols):
       for j in range(0, self.num_cols):
         if float(i) and float(j) and i != j:
-          to_add = [self.header_list[i], self.header_list[j], self.findLinreg(i, j)]
+          key1 = self.header_list[i]
+          key2 = self.header_list[j]
+          to_add = [self.header_list[i], self.header_list[j], self.findLinreg(key1, key2)]
           linreg_list.append(to_add)
     return linreg_list
 
@@ -82,6 +53,8 @@ class dataMatrix:
       just_correls.append(item[2])
     return just_correls 
 
+'''
+we don't want to do this
 #Removes any linregs that are correlated within a certain range
   def removeCorrelatedLinregs(self, x, y):		
     correl_range = [.98,1.02]	
@@ -89,34 +62,34 @@ class dataMatrix:
       for j in xrange(y, self.num_cols):
         if i != j and self.is_number(self.dataset[i]) and self.is_number(self.dataset[j]):
           if (-correl_range[0] > self.findLinreg(i,j) > -correl_range[1] or correl_range[0] < self.findLinreg(i,j) < correl_range[1]):
-            if not (self.header_list[j] == "purity" or self.header_list[j] == "outcome"):
+            if not (self.header_list[j] == "outcome"):
        	      self.removeColumn(j)
   	      return self.removeCorrelatedLinregs(i, j)
-
+'''
   #Finds the mean value of a given column (helper for filling missing rows with mean)
-  def meanCol(self,num_col):
-    if (self.is_number(self.dataset[0][num_col]) == False):
+  def meanCol(self,col_key):
+    if (self.is_number(self.dataset[col_key][0]) == False):
       return 0
     total_sum = 0
     counter = 0
-    for row in self.dataset:
-      i = row[num_col]
-      if i != missing_data_token and self.is_number(i): 
-        total_sum += float(i)
+    for i in self.dataset[col_key]:
+      num  = self.dataset[col_key][i]
+      if num != missing_data_token and self.is_number(num): 
+        total_sum += float(num)
       else:
         counter+=1
     return total_sum/(self.num_rows-counter)
 
   #Find standard deviation of a given column
-  def stdevCol(self, num_of_col):
-    if (self.is_number(self.dataset[0][num_of_col]) == False):
+  def stdevCol(self, col_key):
+    if (self.is_number(self.dataset[col_key][0]) == False):
       return 0
     #find the variance
-    mean = self.meanCol(num_of_col)
+    mean = self.meanCol(col_key)
     squared_diffs = []
     #calculated all squared diffs
-    for row in self.dataset:
-      num = row[num_of_col]
+    for i in self.dataset[col_key]:
+      num = self.dataset[col_key][i]
       try:
         squared_diffs.append((float(num)-mean)**2)
       except ValueError:
@@ -133,15 +106,12 @@ class dataMatrix:
 
   # Creates array of columns in matrix with normalized data
   def createStdevArrayAllCols(self):
-    stdev_arr = []
-    for i in xrange(0, self.num_cols):
-      stdev_arr.append(self.stdevCol(i))
+    stdev_arr = [self.stdevCol(colkey) for colkey in self.headers]
     return stdev_arr
 
   #Creates array of means of all columns in data matrix (helpful when replacing missing tokens with mean)
   def createMeanArrayAllCols(self):
-    mean_arr = [self.meanCol(i) for i in xrange(self.num_cols)]
-    #print "Printing length of mean array" + str( len(mean_arr))   
+    mean_arr = [self.meanCol(colkey) for colkey in self.header_list]
     return mean_arr
 
   #Fills any missing data fields with the mean of its column. Missing data must be marked by a '?' or '-1'
@@ -165,81 +135,17 @@ class dataMatrix:
   #Convert yes's and no's to ones and zeroes
   def convertYesNotoOneZero(self):
     counter = 0
-    for i in xrange(0,self.num_rows):
-      for j in xrange(0, self.num_cols):
-        if self.dataset[i][j] == "yes":
-          counter += 1
-          self.dataset[i][j] = 1
-        elif self.dataset[i][j] == "no":
-          counter += 1
-          self.dataset[i][j] = 0
-        elif self.dataset[i][j] == "?":
-          counter += 1
-          self.dataset[i][j] = 0
-
-  #Remove non-numeric columns
-  def removeStringCols(self):
-    counter = 0
-    for i in xrange(0,self.num_cols):
-      for j in xrange(1, self.num_rows):
-        if (self.is_number(self.dataset[i][j]) == False and not (self.dataset[i][j]) == "?"):
-          counter += 1
-          self.removeColumn(i)
-          return self.removeStringCols()
-
-  #??
-  def isMadeUp(self, row, col):
-    self.cleaningflags
-
-  #Removes columns to speed up processing
-  def removeRandomCols(self, numEndingCols):
-    while (self.num_cols > numEndingCols):
-      delCol = random.randint(10,self.num_cols-3)
-      self.removeColumn(delCol)
-
-  # Removes rows to speed up processing
-  def removeRandomRows(self, numEndingRows):
-    while (self.num_rows > numEndingRows):
-      delRow = random.randint(0,self.num_rows-1)
-      self.removeRow(delRow)
-
-  #??
-  def addIds(self):
-    id_list = []
-    for i in range(0, self.num_rows):
-      id_list.append(i)
-    col_list = [id_list]
-    for c in range(0, self.num_cols):
-      col_list.append(self.dataset[c])
-    self.dataset = col_list
-    new_headers = ["id"]
-    for item in self.header_list:
-      new_headers.append(item)
-    self.header_list = new_headers
-
-  #removes column
-  def removeColumn(self, col_num):
-    self.header_list.pop(col_num)
-    self.dataset.pop(col_num)
-    self.num_cols -= 1
-
-  # Creates array of all headers and array of all columns
-  def getOnlyCols(self, colarray):
-    newDataset = []
-    newHeaders = []
-    for col in colarray:
-      newHeaders.append(self.header_list[col])
-      newDataset.append(self.dataset[col])
-
-    #add purity and outcome
-    newHeaders.append(self.header_list[self.num_cols-2])
-    newDataset.append(self.dataset[self.num_cols-2])
-    newHeaders.append(self.header_list[self.num_cols-1])
-    newDataset.append(self.dataset[self.num_cols-1])
-    self.dataset = newDataset
-    self.header_list = newHeaders
-    self.num_cols = len(self.header_list)
-    self.num_rows = len(self.dataset[0])
+    for key in self.dataset:
+        for j in xrange(len(self.dataset[key])): 
+            if self.dataset[key][j] == "yes":
+                counter += 1
+                self.dataset[key][j] = 1
+            elif self.dataset[key][j] == "no":
+                counter += 1
+                self.dataset[key][j] = 0
+            elif self.dataset[key][j] == "?":
+                counter += 1
+                self.dataset[key][j] = 0
 
   #Creates array of mean values of each column, array of all normalized values (by column);
   #Creates matrix/array? of data points, mean of each column, and normalized data point
@@ -247,8 +153,8 @@ class dataMatrix:
     meanArr = self.createMeanArrayAllCols()
     statArr = self.createStdevArrayAllCols()
     pointList = []
-    for row in self.dataset:
-      pointList.append(Point(row, meanArr, statArr))
+    for key in self.header_list:
+            pointList.append(Point(self.dataset[key], meanArr, statArr))
     return pointList
 
   #FYI: Best not to use this function every time (slow)
@@ -256,12 +162,3 @@ class dataMatrix:
     myTree = KDTree(self.createPointList())
     return myTree.findNearestNeighbor(QP)
 
-  #Prints the data matrix... poorly
-  def __repr__(self):
-    headers = ""
-    data = ""
-    for item in self.header_list:
-      headers += item + ", "
-    for item in self.dataset:
-      data += str(item) + ", "
-    return str(headers[:-1]) + "\n" + str(data[:-2])

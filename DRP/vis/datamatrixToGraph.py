@@ -1,78 +1,65 @@
-import json
+test_import json
 from kdtree import *
-from datamatrix import *
+from datamatrix import dataMatrix
 
 # This will need to be modified to reflect current data (recommendations, etc.)
 class graphNode:
-  def __init__(self, name, friendlist, pagerank, myID, purity, outcome, inorg1, inorg2, org1):
-    self.name = name
+  def __init__(self, name, friendlist, myID, headers, values, j):
     self.friendlist = friendlist
-    self.pagerank = pagerank
-    self.id = myID 
-    self.purity = purity
-    self.outcome = outcome
-    self.inorg1 = inorg1
-    self.inorg2 = inorg2
-    self.org1 = org1
     self.inNodes = []
+    self.dict = [values[headers[i]][j] for i in headers] 
+    self.dict["name"] = name
+    self.dict["id"] = myID 
 
   def getNumOut(self):
     return len(self.friendlist)
 
   def isEqual(self,otherNode):
-    if (otherNode.name == self.name and otherNode.id == self.id):
+    if (otherNode.dict["name"] == self.dict["name"] and otherNode.dict["id"] == self.dict["id"]):
       return True
     else:
       return False
 
+import csv 
 class myGraph:
   #Creates a graph from a datamatrix object as long as csv has: First col == id, Sec col == name of experiments; 3rd == inorg1
   # 4th col == inorg2, 5th col == org1, 6th(last) == purity; in between are fully numeric, filled in columns;
-  def __init__(self, datamatrix):
-    idCol = -1  
-    namesCol = 0 
-    inorg1Col = 1  
-    inorg2Col = 4
-    org1Col = 10
-    purityCol = -2
-    outcomeCol = -2  
+  def __init__(self, allreactions, headers, dids):
+    
+    headerValues = {}
+    for i in xrange(len(headers)): 
+        headersWithLists[headers[i]] = []
 
     edgeList = []    
-
     valuesArrs = []
-    names = [] 
-    ids = []  
-    inorg1s = []
-    inorg2s = []
-    org1s = []
-    outcomes = []
-    purities = []
-    for r in range (datamatrix.num_rows):
-      names.append(datamatrix.dataset[r][namesCol]) 
-      inorg1s.append(datamatrix.dataset[r][inorg1Col])
-      inorg2s.append(datamatrix.dataset[r][inorg2Col])
-      org1s.append(datamatrix.dataset[r][org1Col])
-      outcomes.append(datamatrix.dataset[r][outcomeCol])
-      purities.append(datamatrix.dataset[r][purityCol])
-      ids.append(datamatrix.dataset[r][idCol]) 
+   
+    reader = csv.DictReader(datamatrix) 
+    for row in reader:
+        for i in xrange(len(headers)):
+          headerValues[headers[i]].append(row[headers[i]])
 
-    pointList = datamatrix.createPointList()
+    cleanedData = dataMatrix(headerValues) 
+    cleanedData.removeCorrelatedLinregs(0,0)
+          
+    pointList = cleanedData.createPointList()
     tree = KDTree(pointList)
     for point in pointList:
       nnors = tree.findkNearestNeighbors(point, 5)
       #Because of the way index method works, will find only the first match (ignoring repeated elements)--hopefully not an issue  
       myFriendList = [pointList.index(neighbor) for neighbor in nnors] 
       edgeList.append(myFriendList)
-    datamatrix.dataset = np.transpose(datamatrix.dataset)
+    
+    #datamatrix.dataset = np.transpose(datamatrix.dataset)
     #edgeList should be a list of lists (one list per point/row).
-    self.names = names
+
+    #TODO: fix hardcoded parts 
+    self.names = headervalues["names"]
     self.edgeList = edgeList
-    self.ids = ids 
+    self.ids = headerValues["reference"] 
     self.nodes = []
     self.numNodes = len(names)
     for i in range(0,self.numNodes):
-      self.nodes.append(graphNode(self.names[i], self.edgeList[i], 1.0/self.numNodes, self.ids[i], purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
-
+        self.nodes.append(graphNode(self.names[i], self.edgeList[i], 1.0/self.numNodes, self.ids[i], headers, headerValues, i))
 
   def findNode(self, name):
     for node in self.nodes:
@@ -88,27 +75,20 @@ class myGraph:
 
   # formats node correctly for d3?
   def createDictForVis(self):
-    nodes = [] #TODO: This could be just self.nodes if we want ALL the data?
+    visnodes = [] #TODO: This could be just self.nodes if we want ALL the data?
     for node in self.nodes:
-      nodes.append({
-      "ref":node.name, 
-      "id":node.id, 
-      "pagerank":node.pagerank,
-      "purity":node.purity,
-      "outcome":node.outcome,
-      "inorg1":node.inorg1,
-      "inorg2":node.inorg2,
-      "org1":node.org1
-      }
-      )
+      #all the headerValues need to be appended as a dictionary 
+      visnodes.append({
+        node.dict})
+
     dids = [] 
-    for i in xrange(len(nodes)):
-     dids.append({ "id":node.id }) 
+    for i in xrange(len(visnodes)):
+     dids.append({ visnodes[i]["id"] }) 
 
     links = []
-    for i in xrange(len(nodes)):
+    for i in xrange(len(visnodes)):
       for target in self.edgeList[i]:
-	links.append({
+	    links.append({
             "source": i,
             "target": target,
             "value":1
@@ -116,7 +96,7 @@ class myGraph:
         )
 
     return {
-        "nodes": nodes,
+        "nodes": visnodes,
         "links": links,
         "dids" : dids, 
   }

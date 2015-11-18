@@ -18,10 +18,7 @@ from DRP.settings import BASE_DIR
 
 from DRP.models import *
 from DRP.retrievalFunctions import *
-from DRP.vis.datamatrix import *
-from DRP.vis.datamatrixToGraph import *
-from DRP.vis.get_data import *
-from DRP.vis.kdtree import *
+from DRP.vis.datamatrixToGraph import myGraph, writeJson
 from django.contrib.auth.decorators import login_required
 
 from DRP.database_construction import *
@@ -31,7 +28,7 @@ from DRP.validation import *
 from DRP.data_config import CONFIG
 
 from DRP.compoundGuideFunctions import translate_reactants
-
+import StringIO
 import csv, json, string
 
 #Global Variables
@@ -66,7 +63,7 @@ SECOND_CLUSTER_ABBREVS = {
 }
 
 
-VIS_DATA_PATH = BASE_DIR + "/DRP/vis/vis_data.json"
+VIS_DATA_PATH = BASE_DIR + "/DRP/vis/test_vis_data.json"
 NODEPOSITIONS_PATH  = BASE_DIR + "/DRP/vis/nodePositions.json"
 NODENOOUTCOMES = BASE_DIR + "/DRP/vis/nodePosNoOutcome.json"
 LINKS_PATH = BASE_DIR + "/DRP/vis/new_linkIndices.json"
@@ -79,7 +76,8 @@ def get_graph_data(request):
   import os.path
 
   #If vis_data is already created and up to date, just return that file
-  if os.path.exists(NODENOOUTCOMES) and os.path.exists(LINKS_PATH):
+  if False: 
+  #if os.path.exists(NODENOOUTCOMES) and os.path.exists(LINKS_PATH):
     with open(NODENOOUTCOMES, "r") as f:
       nodes = json.load(f)
     with open(LINKS_PATH, "r") as f:
@@ -237,28 +235,29 @@ def get_graph_data(request):
   else:
     print "vis_data does not exist"
     #Only grab reactions that have DataCalc objects already generated
-    all_data = Data.objects.filter(~Q(calculations=None))
-    data = all_data[:200] 
+    #data = Data.objects.filter(~Q(calculations=None))
     #Grab all data ids
-    dids= [datum.id for datum in data]
+    #dids= [datum.id for datum in data]
     print "just  finished querying for data objects and appending dids"
     #Append the data id of each Reaction(DataCalc object) to the end of the row (will be the last field)
     #Works because data ids' and expanded_data's reactions are in the same order.
-    expanded_data = expand_data(data)
-    for i in xrange(len(expanded_data)):
-      expanded_data[i] = expanded_data[i] + [dids[i]]
-    #Send headers and expanded data in rough CSV form to datamatrix.py.dataMatrix function (cleans data) in preparation to be put into JSON object form
-    headers = get_expanded_headers() + ["id"]
-    cleaned_matrix = dataMatrix([headers] + expanded_data)
-    cleaned_matrix.removeCorrelatedLinregs(0,0)
     #Send cleaned matrix to dataMatrixToGraph.myGraph (puts into correct "object" format for  d3 graph)
-    print "Just finished creating dataMatrix to graph"
-    matrix_formatted_for_vis = myGraph(cleaned_matrix)
+    
+    matrix = StringIO.StringIO()
+    PerformedReactions.objects.all().toCsv(writeable=matrix,expanded=True)
+
+    #This is where you can specify what dimensions you wish to see in the vis!!!!!!!
+    headers = ["names", "referents", "outcome", "temperature", "time", "leak", "slow_cool"]
+    
+    matrix_formatted_for_vis = myGraph(matrix, headers, dids)
+    matrix.close() 
+
     matrix_prepped_for_json = matrix_formatted_for_vis.writeJson()
+    print "Just finished creating dataMatrix to graph"
     #this_file_path = os.path.dirname(os.path.realpath((__file__)))
     #completeName = os.path.join(this_file_path, "vis_data")
     print "Just finished creating myGraph object"
-
+    
     vis_file = create_vis_data_file(matrix_prepped_for_json)
     print "just finished creating vis_data file"
 
@@ -306,7 +305,7 @@ def create_node_clusters_for_labels(links, nodes):
   filtered_clusters = get_rid_of_single_item_clusters(clusters)
   return filtered_clusters
 
-#grab all top-priority inorganics:
+#grab all top-priority inorganics: (top priority meaning most common inorganics
 def grab_inorgs(list_of_all_inorgs):
   mylist = []
   top_inorgs = []
