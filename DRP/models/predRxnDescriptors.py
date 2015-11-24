@@ -54,6 +54,20 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
         app_label='DRP'
         verbose_name = 'Predicted Ordinal Reaction Descriptor'
 
+    def summarize(self, model):
+        return "Four-Class Accuracy: {}".format(self.fourClassAccuracy(model))
+
+    def fourClassAccuracy(self, model):
+      conf = self.getConfusionMatrix(model)
+
+      correct = 0.0
+      total = 0.0
+      for true, guesses in conf.items():
+        for guess, count in guesses.items():
+          if true == guess: correct += count
+          total += count
+
+      return correct/total
 
     def getConfusionMatrix(self, model):
         """Returns a dicionary of dictionaries of dictionaries, where the outer keys

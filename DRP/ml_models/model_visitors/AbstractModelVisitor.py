@@ -59,10 +59,6 @@ class AbstractModelVisitor(object):
     predictions = self.predict(reactions, suffix="test")
     self.storePredictions(reactions, predictions)
 
-  def summarize(self):
-    """Prints the performance metrics of this model using its default test-set."""
-    return "Confusion Matrix: {}".format(self.getConfusionMatrices())
-
   def storePredictions(self, reactions, predictions_dict):
     """Stores the predicted responses in the database as RxnDescriptorValues.
        Specifically, expects the predicted responses as a `predictions_dict`
@@ -94,30 +90,6 @@ class AbstractModelVisitor(object):
         val.value = prediction
         val.reaction = reaction
         val.save()
-
-  def getConfusionMatrices(self):
-    """Returns a dicionary of dictionaries of dictionaries, where the outer keys
-       are the outcomeDescriptors, the middle keys are the "correct" or "true"
-       values, the innermost keys are the "guessed" values that occurred, and
-       the value is the integer number of occurrences of that guess when the
-       true descriptor was the middle key.
-
-       IE: {field: {true: {guess:#, guess':#},
-                    true': {guess:#, guess':#}}
-           }
-       Eg: {"outcome":
-           {"1": {"1": 10
-                  "2": 10
-                  "3": 13
-                  "4": 0
-                 }
-           , ...
-           }
-          } """
-
-    return {desc.prediction_of: desc.getConfusionMatrix(self.stats_model)
-            for desc in self.stats_model.predictsDescriptors.all().downcast()}
-
 
   def setTrainingData(self, reactions):
     """Creates a training-set relation between each provided reaction

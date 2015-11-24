@@ -43,10 +43,9 @@ class ModelContainer(models.Model):
         """CAUTION: This is a temporary development function. Do not rely on it. """
         """Return a string containing the Confusion Matrices for all stats_models."""
         summaries = "\nK-Fold Validation:\n"
-        mod = self.getVisitorModule()
         for model in self.statsmodel_set.all():
-            preds = mod.ModelVisitor(self, stats_model=model).getConfusionMatrices()
-            summaries += "{}\n".format(preds)
+            for d in model.predictsDescriptors.all().downcast():
+                summaries += d.summarize(model) + "\n"
 
         return summaries
 
