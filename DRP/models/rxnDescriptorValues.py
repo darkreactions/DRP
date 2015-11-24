@@ -88,20 +88,3 @@ rxnDescriptorPairs = [
                    (CatRxnDescriptor, CatRxnDescriptorValue),
                    (BoolRxnDescriptor, BoolRxnDescriptorValue)
                   ]
-
-def getRxnDescriptorValueType(queryDescriptor):
-  queryDescriptor = queryDescriptor.downcast()
-  for descriptor, descriptorVal in rxnDescriptorPairs:
-    if isinstance(queryDescriptor, descriptor):
-      return descriptorVal
-  raise NotImplementedError("Unknown descriptor '{}'".format(queryDescriptor))
-
-
-def getRxnDescriptorAndEmptyVal(heading):
-  for descriptor, descriptorVal in rxnDescriptorPairs:
-    try:
-      return descriptor.objects.get(heading=heading), descriptorVal()
-    except descriptor.DoesNotExist:
-      pass
-  raise NotImplementedError("Unknown descriptor '{}'".format(heading))
-

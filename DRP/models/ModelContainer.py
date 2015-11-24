@@ -57,7 +57,7 @@ class ModelContainer(models.Model):
         try:
             module_path = "DRP.ml_models.model_visitors.{}".format(module_name)
             module = importlib.import_module(module_path)
-        except ImportError:
-            error = "Cannot import model visitor: \"{}\".".format(module_name)
+        except ImportError as e:
+            error = "Cannot import model visitor: \"{}\": {}.".format(module_name, e)
             raise NotImplementedError(error)
         return module
