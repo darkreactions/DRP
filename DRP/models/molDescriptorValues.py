@@ -11,10 +11,12 @@ class MolDescriptorValueQuerySet(models.query.QuerySet):
 
   def delete(self):
     compounds = set(d.compound for d in self)
+    super(MolDescriptorValueQuerySet, self).delete()
     for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
       reaction.save() #recalculate descriptors
     for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
       reaction.save() #invalidate models
+
 
 class MolDescriptorValueManager(models.Manager):
 
@@ -31,7 +33,9 @@ class MolDescriptorValue(models.Model):
   compound = models.ForeignKey('DRP.Compound')
 
   def delete(self):
-    for reaction in self.compound.reaction_set.all():
+    reactions = set(self.compound.reaction_set.all())
+    super(MolDescriptorValue, self).delete()
+    for reaction in reactions:
       reaction.save() #recalculate descriptors
       try:
         reaction.performedreaction.save()

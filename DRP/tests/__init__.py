@@ -19,4 +19,4 @@ suite = unittest.TestSuite([
   CompoundToCsv.suite,
   CompoundToArff.suite,
   fileTests.suite
-]) 
+])

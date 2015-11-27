@@ -217,7 +217,7 @@ class Compound(CsvModel):
 
     abbrev = models.CharField("Abbreviation", max_length=100)
     """A local, often nonstandard abbreviation for a compound"""
-    name = models.CharField('Name', max_length=300)
+    name = models.CharField('Name', max_length=400)
     """Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)"""
     chemicalClasses = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
     """The class of the compound- examples include Inorganic Salt"""
@@ -264,9 +264,12 @@ class Compound(CsvModel):
                 raise ValidationError('No CSID set', 'no_csid')
             else:
                 csCompound = cs.get_compound(self.CSID)
-                nameResults = cs.simple_search(self.name)
-                if csCompound not in nameResults:
-                    errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid name', code='invalid_inchi'))
+                if self.name not in ('', None):
+                    nameResults = cs.simple_search(self.name)
+                    if csCompound not in nameResults:
+                        errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid name', code='invalid_inchi'))
+                else:
+                    self.name = csCompound.common_name
                 if self.INCHI == '':
                     self.INCHI = csCompound.stdinchi
                 elif self.INCHI != csCompound.stdinchi:

@@ -19,9 +19,9 @@ class CompoundQuantityQuerySet(models.query.QuerySet):
         pass #we don't care about this outcome
 
 class CompoundQuantityManager(models.Model):
-   
+
   def get_queryset(self):
-    return CompoundQuantityQueryset(self.model, using=self._db)
+    return CompoundQuantityQuerySet(self.model, using=self._db)
 
 class CompoundQuantity(models.Model):
   '''A class to contain the relationship between a reaction and a compound,
@@ -36,7 +36,7 @@ class CompoundQuantity(models.Model):
   compound=models.ForeignKey(Compound, on_delete=models.PROTECT)
   reaction=models.ForeignKey(Reaction)
   role=models.ForeignKey(CompoundRole)
-  amount=models.FloatField() 
+  amount=models.FloatField(null=True, blank=True)
 
   def save(self, *args, **kwargs):
     self.reaction.save() #descriptor recalculation
@@ -50,6 +50,6 @@ class CompoundQuantity(models.Model):
     self.reaction.save() #descriptor recalculation
     try:
       self.reaction.performedreaction.save() #invalidate models
-    except Performedreaction.DoesNotExist:
+    except PerformedReaction.DoesNotExist:
       pass #we don't care
     super(CompoundQuantity, self).save()

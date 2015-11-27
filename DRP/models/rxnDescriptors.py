@@ -5,14 +5,14 @@ from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor
 
 class CatRxnDescriptor(CategoricalDescriptor):
   '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
-  
+
   class Meta:
     app_label='DRP'
     verbose_name = 'Categorical Reaction Descriptor'
 
 class OrdRxnDescriptor(OrdinalDescriptor):
   '''A class which represents an ordinal descriptor'''
-  
+
   class Meta:
     verbose_name= 'Ordinal Reaction Descriptor'
     app_label='DRP'

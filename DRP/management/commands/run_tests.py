@@ -3,7 +3,7 @@ from DRP.tests import suite, runTests
 from django.conf import settings
 
 class Command(BaseCommand):
-  help='Runs the full battery of DRP tests'''
+  help='Runs the full battery of DRP tests'
 
   def handle(self, *args, **kwargs):
     if settings.TESTING:
