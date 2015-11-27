@@ -76,11 +76,6 @@ class PerformedRxnInvalidateForm(forms.ModelForm):
     super(PerformedRxnDeleteForm, self).__init__(*args, **kwargs)
     self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
 
-  def clean_id(self):
-    if self.cleaned_data['id'].inTestSetFor.exists() or self.cleaned_data['id'].inTrainingSetFor.exists():
-      raise ValidationError("This reaction is protected from deletion because it is used in one or more reactions or recommendations.")
-    return self.cleaned_data['id'] 
-
   def save(self):
     self.cleaned_data['id'].valid = False
     self.cleaned_data['id'].save()

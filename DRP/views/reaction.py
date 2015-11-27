@@ -120,3 +120,16 @@ def deleteReaction(request, *args, **kwargs):
   else:
     raise RuntimeError(str(form.errors))
   return redirect('reactionlist')
+
+@require_POST
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+def invalidateReaction(request, *args, **kwargs):
+  '''A view managing the deletion of reaction objects'''
+  form =PerformedRxnInvalidateForm(data=request.POST, user=request.user) 
+  if form.is_valid():
+    form.save()
+  else:
+    raise RuntimeError(str(form.errors))
+  return redirect('reactionlist')
