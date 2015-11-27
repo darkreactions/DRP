@@ -8,6 +8,10 @@ from DRP.data_config import CONFIG
 from DRP.validation import bool_fields
   
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+=======
+from DRP.models import CompoundEntry
+
+  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # DATA  # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -332,4 +336,24 @@ def get_lab_users(lab_group):
   lab_members = Lab_Member.filter(lab_group=lab_group)
   users = lab_members.values_list("user", flat=True)
   return users
+
+
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # #  COMPOUNDS  # # # # # # # # # # # # # # # # # # #
+   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+def get_compound_by_string(compound_str):
+    return list(CompoundEntry.objects.filter(compound=compound_str))[0]
+
+def get_compound_by_abbrev(abbrev_str):
+    return list(CompoundEntry.objects.filter(abbrev=abbrev_str))[0]
+
+def get_compound_by_name(compound_str):
+    by_string = list(CompoundEntry.objects.filter(abbrev=compound_str))
+    by_abbrev = list(CompoundEntry.objects.filter(compound=compound_str))
+    by_both = by_string + by_abbrev
+    # This bit with the by_both_filtered is a bit of a hack, intended to avoid errors
+    #   from missing SMILES which should really be fixed in the database.
+    by_both_filtered = [x for x in by_both if x.smiles]
+    return (by_both_filtered+by_both)[0]
 

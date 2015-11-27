@@ -183,6 +183,98 @@ When you change a model changes or add a field, you must run the following two c
 ###In Production
 At this point, you should have a fully-functional production-bed or test-bed. Verify by going to wherever the webapp is hosted ([darkreactions.haverford.edu](http://darkreactions.haverford.edu)).
 
-#In Development:
+###In Development:
 Verify by running `python manage.py runserver 0.0.0.0:8000` and going to port 8000 of the server hosting your workspace (ie: if you're on drp, go to [darkreactions.haverford.edu:8000](http://darkreactions.haverford.edu:8000)). Note that you may not be able to view ports other than port 80 while outside of campus.
+
+
+=======
+##OS X
+This has been tested on OS X Mavericks, but has not been tested on any other OS X version. This may not be complete as yet.
+
+First and foremost, obtain the Django code by cloning the git repository, and placing the code in the desired location. Move the settings_example.py file to settings.py without changing it's directory.
+
+This installation process assumes that you have a working Apache install on your OS X machine, since these come pre-installed by default. It also assumes that you have sudo powers on your OS X installation. 
+
+Setting up mysql is also unchallenging, since [MySQL is made available in a .dmg format](https://dev.mysql.com/doc/refman/5.5/en/osx-installation.html).
+
+python 2.7 is the default install of python on OS X, however, a number of additional packages need to be added to ensure functionality of django.
+
+First and foremost, [install pip](https://pip.pypa.io/en/latest/installing.html#install-pip).
+
+Having installed pip, we can now install Django. The current version of the dark reactions project is designed to work with Django 1.6, so the command to invoke is:
+
+`sudo pip install Django==1.6`
+
+For Django to work properly, we need the MySQLdb package for Python. However, the package as it is stored in pip doesn't work nicely with the default OSX setup of MySQL and python, so the process for getting this to work is (unfortunately) slightly more involved (information taken from [here](http://www.mechanicalgirl.com/view/installing-django-with-mysql-on-mac-os-x/) and [here](http://stackoverflow.com/questions/6383310/python-mysqldb-library-not-loaded-libmysqlclient-18-dylib):
+
+Firstly, acquire the code for [MySQLdb](http://sourceforge.net/projects/mysql-python/)
+
+Extract the package, and then in a command prompt, open the directory into which the files were extracted.
+
+Edit the file _mysql.c (lines 37,38 and 39):
+
+Edit _mysql.c lines 37, 38 and 39 as follows:
+
+`//#ifndef uint`
+
+`//#define uint unsigned int`
+
+`//#endif`
+
+Then open setup_posix.py and edit line 27 (or wherever the variable `mysql_config.path` occurs:
+
+`mysql_config.path = "/usr/local/mysql/bin/mysql_config"`
+
+Then run:
+
+`sudo python setup.py build`
+
+`sudo python setup.py install`
+
+Having done this, add the following symlinks to your system:
+
+`sudo ln -s /usr/local/mysql/lib/libmysqlclient.18.dylib /usr/lib/libmysqlclient.18.dylib`
+`sudo ln -s /usr/local/mysql/lib/ /usr/local/mysql/lib/mysql`
+
+MySQLdb should now be working.
+
+We then install the South Module (which manages database schema migrations for us until we move Django versions):
+
+`sudo pip install south`
+
+JChem is provided as an [OS X installer](https://www.chemaxon.com/download/jchem-suite/#jchem).
+You should set the `CHEMAXON_DIR` variable in settings.py to `"/Applications/ChemAxon/JChem/bin/"`
+
+Weka is provided as a [disk image for OS X](http://www.cs.waikato.ac.nz/ml/weka/downloading.html). You will need to copy the whole unit to a known place on your system, and add the path to weka.jar to the settings.py file
+
+Copies of the MySQL database are available from the DRP server for use to setup the MySQL database tables and example content in the normal way for MySQL [see mysql documentation](http://dev.mysql.com/doc/)
+
+To get Apache and Python to play nicely together, we must install mod_wsgi. Clone the package at [github](https://github.com/GrahamDumpleton/mod_wsgi) to obtain the source code, then, at a command prompt and in the code directory:
+
+`./configure`
+
+`make`
+
+`sudo make install`
+
+Then, open /private/etc/apache2/httpd.conf, and add, beneath the other default module loading statements:
+
+`LoadModule wsgi_module libexec/apache2/mod_wsgi.so`
+
+In terms of configuring the virtualhost configuration, this depends heavily on how much customisation and development work has already been done with the Apache server, so I leave you in the capable hands of the [django documentation](https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/modwsgi/) and [apache documentation](http://httpd.apache.org/docs/2.2/), with the following advisories: 
+
+The line `WSGIPythonPath /directory/drp/DRP` Cannot occur inside the virtualhost statement, and must be placed outside of the virtualhost environment.
+You need to set up additional aliases, one each for:
+
+- The `/static/` directory
+- The `/media/` directory
+- The `/favicon.ico` file
+
+##Git Hooks
+
+Git permits the use of certain hooks to automate certain behaviours. It is now policy that the code in the repo must pass the test suite before it is allowed to be pushed to the githib. The easiest way to ensure this is to use the hooks previded in the repo in the directory entitled drp_hooks. **Copy** these files to the .git/hooks directory in your local development repo to use them. They should be compatible with any *nix system (Windows currently awaits testing). **Do not under any circumstances symlink to these files from the .git folder**.
+
+Hooks currently present include:
+- pre-push: this hook runs before pushing changes to the server. In our instance, it runs the test-suite code.
+- drp_server_hooks/post-merge: this is designed to be placed (as just post-merge) into the .git directory on the production server only- it forces the refresh of the code on the pull of a new version.
 

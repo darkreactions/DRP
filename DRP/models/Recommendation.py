@@ -10,6 +10,8 @@ from Data import Data
 from CompoundEntry import CompoundEntry
 from DataCalc import DataCalc
 
+import json
+
 class Recommendation(models.Model):
   class Meta:
     app_label = "DRP"
@@ -162,6 +164,40 @@ class Recommendation(models.Model):
                                             preloaded_abbrev_map=preloaded_abbrev_map)
       return [calcDict[field] for field in headers]
 
+  # Adding from Data until I refactor DRP.models.Data and this file, DRP.models.Recommendation, on a common abstract base class
+  ###############################################
+  ########### Temporary section #################
+  ###############################################
+  def get_compounds(self, objects=True):
+    # Returns either the `CompoundEntry` objects or the `compound` property
+    # thereof from the compounds used in this reaction.
+    comps = []
+    for i in CONFIG.reactant_range():
+      comp = getattr(self, "reactant_fk_{}".format(i))
+      if comp:
+        if objects:
+          comps.append(comp)
+        else:
+          comps.append(comp.compound)
+    return comps
+
+  def get_atoms(self, refresh=False):
+    if refresh or not self.atoms:
+      #atoms = {comp.get_atoms(fail_soft=False) for comp in self.get_compounds()}
+      #Grabs each x in the .get_atoms() of each comp in self.get_compounds(), puts em in a set
+      atoms = {x for comp in self.get_compounds() for x in comp.get_atoms(fail_soft=True)}
+
+      # Store `atoms` so that reactions can be efficiently searched by atoms.
+      self.atoms = json.dumps(list(atoms))
+      #self.save() # Temporary? Causing error in initial recommendation-building #daniel
+
+      return atoms
+
+    else:
+      return set(json.loads(self.atoms))
+  ###############################################
+  ########### Temporary section #################
+  ###############################################
 
 def get_recommendations(lab_group):
   return Recommendation.objects.filter(lab_group=lab_group)

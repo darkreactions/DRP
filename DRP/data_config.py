@@ -1,6 +1,4 @@
 import os, sys
-from DRP.fileFunctions import file_exists
-from DRP.settings import CHEMAXON_DIR, WEKA_PATH
 import datetime
 
 full_path = os.path.dirname(os.path.realpath(__file__))+os.sep
@@ -8,6 +6,9 @@ django_path = full_path[:full_path.rfind(os.sep + "DRP" + os.sep)]
 if django_path not in sys.path:
   sys.path = [django_path] + sys.path
   os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+
+from DRP.fileFunctions import file_exists
+from DRP.settings import CHEMAXON_DIR, WEKA_PATH
 
 strptime = datetime.datetime.strptime
 
