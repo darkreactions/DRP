@@ -3,8 +3,7 @@ from django.db import models
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue
 from rxnDescriptors import OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptor
 from StatsModel import StatsModel
-from itertools import chain
-
+import dataSets
 # Needed to allow for circular dependency.
 import importlib
 pr = importlib.import_module("DRP.models.PerformedReaction")
@@ -12,7 +11,9 @@ pr = importlib.import_module("DRP.models.PerformedReaction")
 class RxnDescriptorValueQuerySet(models.query.QuerySet):
 
   def delete(self):
-    for model in StatsModel.objects.filter(trainingset__in=self) | StatsModel.objects.filter(testset_in=self):
+    trainingModels = StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
+    testModels = StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
+    for model in trainingModels|testModels:
       model.invalidate()
 
 class RxnDescriptorValueManager(models.Manager):
@@ -35,16 +36,18 @@ class RxnDescriptorValue(models.Model):
   def save(self, *args, **kwargs):
     if self.pk is not None:
       try:
-        for model in chain(self.reaction.performedreaction.inTrainingSetFor.all(), self.reaction.performedreaction.inTestSetFor.all()):
+        trainingModels = StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
+        testModels = StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
+        for model in trainingModels|testModels:
           model.invalidate()
       except pr.PerformedReaction.DoesNotExist:
         pass # fine, we don't care, no need to pass this on.
     super(RxnDescriptorValue, self).save(*args, **kwargs)
 
   def delete(self):
-    test = StatsModel.objects.filter(testset__reactions__in=[self])
-    train = StatsModel.objects.filter(trainingset__reaction=self)
-    for model in chain(test, train):
+    trainingModels = StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
+    testModels = StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
+    for model in trainingModels|testModels:
       model.invalidate()
       model.save()
     super(RxnDescriptorValue, self).delete()

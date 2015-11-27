@@ -2,10 +2,11 @@
 from django.conf import settings
 from chemspipy import ChemSpider
 from utils import setup
+import rdkit.Chem
 import DRP
 
 _descriptorDict = {
-    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': 'chemspider', 'calculatorSoftwareVersion': 0, 'maximum': None, 'minimum': 0},
+    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': 'drp/rdkit', 'calculatorSoftwareVersion': 0, 'maximum': None, 'minimum': 0},
     'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0, 'maximum': 3, 'minimum': 1},
     'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0},
     'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
@@ -39,22 +40,20 @@ def calculate(compound):
     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
     database as this happens.
     """
-    cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
-    if compound.CSID is None:
-        mwValue = DRP.models.NumMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['mw'], value=None)[0]
-        mwValue.save()
-        fsValue = DRP.models.OrdMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['fs'], value=None)[0]
-        fsvalue.save()
-    else:
-        csCompound = cs.get_compound(compound.CSID)
-        mwValue = DRP.models.NumMolDescriptorValue.objects.get_or_create(value=csCompound.molecular_weight, descriptor=descriptorDict['mw'], compound=compound)[0]
-        mwValue.save()
-        fsValue = DRP.models.OrdMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['fs'], value=fsValueCalc(mwValue))[0]
-        fsValue.save()
+    pt = rdkit.Chem.GetPeriodicTable()
+    mwValue = DRP.models.NumMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict['mw'], compound=compound)[0]
+    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element)))*compound.elements[element]['stoichiometry'] for element in compound.elements)
+    mwValue.save()
+    fsValue = DRP.models.OrdMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['fs'])[0]
+    fsValue.value=fsValueCalc(mwValue)
+    fsValue.save()
     if compound.smiles is None:
-        nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'], value=None)[0]
+        nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'])[0]
+        nValue.value=None
     else:
-        nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'], value=('n' in compound.smiles or 'N' in compound.smiles))[0]
+        nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'])[0]
+        nValue.value=('n' in compound.smiles or 'N' in compound.smiles)
     nValue.save()
-    arbValue = DRP.models.CatMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['arb'], value=arbValCalc(compound))[0]
+    arbValue = DRP.models.CatMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['arb'])[0]
+    arbValue.value=arbValCalc(compound)
     arbValue.save()
