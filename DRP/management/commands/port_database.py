@@ -94,7 +94,7 @@ class Command(BaseCommand):
         with open(path.join(folder, 'labGroup.tsv')) as labGroups:
             reader = csv.DictReader(labGroups, delimiter='\t')
             for r in reader:
-                if not LabGroup.objects.filter(**r).exists():
+                if not LabGroup.objects.filter(title=r['title']).exists():
                     l = LabGroup(**r)
                     l.save()
         with open(path.join(folder, 'labgroup_users.tsv')) as labGroupUsers:
