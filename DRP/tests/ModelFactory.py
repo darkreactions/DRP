@@ -22,42 +22,42 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsRxnDescriptor("testNumber", "NumRxnDescriptor")
 
 # Create a bunch of simple sample reactions.
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.13],
+@createsPerformedReaction("r1", "Watchmen", "Rorschach",["EtOH"], ["Org"], [0.13],
                           {"outcome":1, "testNumber":5.04})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH"], ["Org"], [0.71],
+@createsPerformedReaction("r2", "Watchmen", "Rorschach",["EtOH"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.1],
+@createsPerformedReaction("r3", "Watchmen", "Rorschach",["dmed"], ["Org"], [0.1],
                           {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed"], ["Org"], [0.18],
+@createsPerformedReaction("r4", "Watchmen", "Rorschach",["dmed"], ["Org"], [0.18],
                           {"outcome":1, "testNumber":5.0})
-@createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.71],
+@createsPerformedReaction("r5", "Watchmen", "Rorschach",["dabco"], ["Org"], [0.71],
                           {"outcome":1, "testNumber":5.04})
-@createsPerformedReaction("Watchmen", "Rorschach",["dabco"], ["Org"], [0.14],
+@createsPerformedReaction("r6", "Watchmen", "Rorschach",["dabco"], ["Org"], [0.14],
                           {"outcome":1, "testNumber":5.01})
-@createsPerformedReaction("Watchmen", "Rorschach",["Water"], ["Water"], [0.14],
+@createsPerformedReaction("r7", "Watchmen", "Rorschach",["Water"], ["Water"], [0.14],
                           {"outcome":1, "testNumber":5.01})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH", "dmed", "Water"],
+@createsPerformedReaction("r8", "Watchmen", "Rorschach",["EtOH", "dmed", "Water"],
                           ["Org", "Org", "Water"],[0.31, 0.3, 0.5],
                           {"outcome":4, "testNumber":0.1})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed", "EtOH", "Water"],
+@createsPerformedReaction("r9", "Watchmen", "Rorschach",["dmed", "EtOH", "Water"],
                           ["Org", "Org", "Water"],[0.2, 0.34, 0.3],
                           {"outcome":4, "testNumber":0.1})
-@createsPerformedReaction("Watchmen", "Rorschach",["dabco", "Water"],
+@createsPerformedReaction("r10", "Watchmen", "Rorschach",["dabco", "Water"],
                           ["Org", "Water"],[0.3, 0.32],
                           {"outcome":3, "testNumber":0.1})
-@createsPerformedReaction("Watchmen", "Rorschach",["Water", "dabco"],
+@createsPerformedReaction("r11", "Watchmen", "Rorschach",["Water", "dabco"],
                           ["Water", "Org"],[0.3, 0.34],
                           {"outcome":3, "testNumber":0.1})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed", "Water"],
+@createsPerformedReaction("r12", "Watchmen", "Rorschach",["dmed", "Water"],
                           ["Org", "Water"],[0.3, 0.34],
                           {"outcome":3, "testNumber":0.1})
-@createsPerformedReaction("Watchmen", "Rorschach",["EtOH", "Water"],
+@createsPerformedReaction("r13", "Watchmen", "Rorschach",["EtOH", "Water"],
                           ["Org", "Water"],[0.3, 0.35],
                           {"outcome":3, "testNumber":0.1})
-@createsPerformedReaction("Watchmen", "Rorschach",["dmed", "Water"],
+@createsPerformedReaction("r14", "Watchmen", "Rorschach",["dmed", "Water"],
                           ["Org", "Water"],[0.4, 0.56],
                           {"outcome":4, "testNumber":0.01})
-@createsPerformedReaction("Watchmen", "Rorschach",["Water", "EtOH"],
+@createsPerformedReaction("r15", "Watchmen", "Rorschach",["Water", "EtOH"],
                           ["Water", "Org"],[0.4, 0.57],
                           {"outcome":4, "testNumber":0.02})
 class BasicWekaSVM(DRPTestCase):

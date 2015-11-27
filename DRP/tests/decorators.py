@@ -45,7 +45,7 @@ def createsRxnDescriptor(heading, descriptorType, options={}):
   return _createsRxnDescriptor
 
 
-def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict):
+def createsPerformedReaction(reference, labTitle, username, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict):
   '''A class decorator that creates a reaction using pre-existing compounds
      with pre-existing compoundRoles.'''
   def _createsPerformedReaction(c):
@@ -64,6 +64,7 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
       reaction.user = user
 
       reaction.public = False
+      reaction.reference = reference
 
       reaction.save()
 
