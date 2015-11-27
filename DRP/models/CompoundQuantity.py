@@ -31,6 +31,7 @@ class CompoundQuantity(models.Model):
 
   class Meta:
     app_label='DRP'
+    unique_together=('reaction', 'role', 'amount')
 
   compound=models.ForeignKey(Compound, on_delete=models.PROTECT)
   reaction=models.ForeignKey(Reaction)

@@ -119,4 +119,4 @@ def deleteReaction(request, *args, **kwargs):
     form.save()
   else:
     raise RuntimeError(str(form.errors))
-  return redirect('reactionlist', '/')
+  return redirect('reactionlist')

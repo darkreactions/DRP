@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 '''Tests for the Email classes contained in DRP.Email'''
 
-import unittest
-from DRP.Email import Email
 from django.conf import settings
-from DRPTestCase import DRPTestCase, runTests
+import unittest
 from uuid import uuid4
 import imaplib
 import time
 import email
+import DRP.Email
+from DRPTestCase import DRPTestCase, runTests
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
@@ -18,7 +18,7 @@ class EmailSendsAndRecieves(DRPTestCase):
   def setUp(self):
       '''Create an email with a unique header'''
       self.headerId = uuid4()
-      self.email = Email('Test Subject Header: {0}'.format(self.headerId), 'This message is a test. Please disregard but do not delete this email.', [settings.EMAIL_HOST_USER])
+      self.email = DRP.Email.Email('Test Subject Header: {0}'.format(self.headerId), 'This message is a test. Please disregard but do not delete this email.', [settings.EMAIL_HOST_USER])
 
   def runTest(self):
       '''Sends an email using SMTP and fetches it via IMAP'''
@@ -34,9 +34,6 @@ class EmailSendsAndRecieves(DRPTestCase):
         if sel_rv=='OK':
           search_rv, data = m.search(None, 'FROM', settings.DEFAULT_FROM_EMAIL, 'SUBJECT', 'Test Subject Header: {0}'.format(self.headerId))
           if search_rv=='OK':
-            if len(data[0].split()) > 1:
-              raise RuntimeError('More than one message with unique ID. Test aborted.')
-            else:
               for num in data[0].split():
                 fetch_rv, msgData = m.fetch(num, '(RFC822)')
                 if fetch_rv=='OK':
@@ -45,8 +42,6 @@ class EmailSendsAndRecieves(DRPTestCase):
                     m.expunge()
                 else:
                   messages += str(email.message_from_string(msgData[0][1]))
-              else:
-                raise RuntimeError('Message Fetching failed')
           else:
             raise RuntimeError('Message Searching failed')
         else:

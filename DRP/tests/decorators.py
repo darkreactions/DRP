@@ -129,7 +129,7 @@ def signsExampleLicense(username):
   return _signsExampleLicense
 
 def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
-  '''A class decorators that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
+  '''A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
   
   def _loadsCompoundsFromCsv(c):
 
@@ -140,11 +140,14 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
       labGroup = LabGroup.objects.get(title=labGroupTitle)
       compounds = labGroup.compound_set.fromCsv(os.path.join(settings.APP_DIR, 'tests', 'resource', csvFileName))
       for compound in compounds:
+        compound.csConsistencyCheck()
         compound.save()
+      _oldSetup(self) 
 
     def tearDown(self):
       Compound.objects.all().delete()
-    
+      _oldTearDown(self) 
+   
     c.setUp = setUp
     c.tearDown = tearDown
     return c

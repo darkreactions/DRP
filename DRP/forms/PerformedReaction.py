@@ -15,7 +15,7 @@ class PerformedRxnForm(forms.ModelForm):
   '''A form for creating performed reaction instances in teh databases'''
  
   class Meta:
-    fields=('reference', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf' ) 
+    fields=('reference', 'performedBy', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf') 
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
@@ -27,8 +27,17 @@ class PerformedRxnForm(forms.ModelForm):
     self.fields['labGroup'].queryset = labGroups
     self.fields['recommendation'].queryset = RecommendedReaction.objects.filter(labGroup__in=labGroups)
     self.fields['duplicateOf'].queryset = PerformedReaction.objects.filter(labGroup__in=labGroups)|PerformedReaction.objects.filter(public=True)
+    self.fields['performedBy'].queryset = User.objects.filter(labgroup__in=labGroups)
     if labGroups.exists():
       self.fields['labGroup'].empty_label = None 
+  
+  def clean(self):
+    self.cleaned_data = super(PerformedRxnForm, self).clean()
+    if not self.fields['labGroup'] in (self.user.labgroup_set | self.cleaned_data['performedBy'].labgroup_set):
+      raise ValidationError('The selected labGroup does not contain both the inputting and experimental user.', 'invalid_lg')
+    else:
+      return self.cleaned_data
+    
 
   def save(self, commit=True, *args, **kwargs):
     '''Overriden save method automates addition of user that created this instance'''

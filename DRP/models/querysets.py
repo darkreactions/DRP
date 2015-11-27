@@ -15,7 +15,7 @@ class CsvModel(models.Model):
     values = {}
     for field in self._meta.fields:
       try:
-        if any(string in getattr(self, field.name) for string in (',', ' ')):
+        if any(string in getattr(self, field.name) for string in (',', ' ', '{', '}')):
           values[field.name]='"{}"'.format(getattr(self, field.name))
         else:
           values[field.name]=getattr(self, field.name)

@@ -17,7 +17,11 @@ _pep8Files = [
     ('DRP', 'urls', 'public.py'),
     ('DRP', 'models', 'descriptors.py'),
     ('DRP', 'models', 'descriptorValues.py'),
+    ('DRP', 'models', 'StatsModel.py'),
+    ('DRP', 'models', 'Compound.py'),
+    ('DRP', 'plugins', 'moldescriptors', 'example.py'),
     ('DRP', 'admin.py'),
+    ('DRP', 'management', 'commands', 'check_hash_collisions.py'), 
     # you can finish on a directory test the whole thing,
     # but this should be a python package if you do so
     # (__init__.py must be present)
@@ -97,7 +101,7 @@ class TestFiles(unittest.TestCase):
                     settings.BASE_DIR, fileName
                 ) for fileName in pep8Files
             ]
-            pep8Style = pep8.StyleGuide()
+            pep8Style = pep8.StyleGuide(ignore=['E501'])
 
             with OutputCapture() as output:
                 result = pep8Style.check_files(fullFileNames)
@@ -113,9 +117,7 @@ class TestFiles(unittest.TestCase):
         errors = [str(e) for e in check(pep257Files)]
         self.assertEqual(len(errors), 0, '\n'.join(errors))
 
-suite = unittest.TestSuite([
-        loadTests(TestFiles)
-    ])
+suite = unittest.TestSuite([loadTests(TestFiles)])
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=4).run(suite)

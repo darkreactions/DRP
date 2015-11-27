@@ -33,11 +33,10 @@ LOG_DIR = os.path.join(BASE_DIR, "logs")
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 
 CHEMAXON_DIR = {
-  }
+}
 # {version: directory}
 WEKA_PATH = {
-  '3.6': '/usr/share/java/weka.jar'  # default path on Ubuntu
-}
+    '3.6': '/usr/share/java/weka.jar'}  # default path on Ubuntu
 
 if TESTING:
     MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example',)
@@ -73,8 +72,7 @@ TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = []
 
 # Emails of the Site Admins and Project Managers for the DRP.
-ADMINS = (
-     )
+ADMINS = ()
 
 MANAGERS = ADMINS
 
@@ -246,15 +244,15 @@ LOGGING = {
 }
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-                   "django.contrib.auth.context_processors.auth",
-                   "django.core.context_processors.debug",
-                   "django.core.context_processors.i18n",
-                   "django.core.context_processors.media",
-                   "django.core.context_processors.static",
-                   "django.core.context_processors.request",
-                   "django.core.context_processors.tz",
-                   "django.contrib.messages.context_processors.messages",
-                   'DRP.context_processors.testing'
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.request",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    'DRP.context_processors.testing'
 )
 
 # Set up Memcached caching:

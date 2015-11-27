@@ -104,6 +104,7 @@ class CompoundForm(forms.ModelForm):
     csCompound = self.chemSpider.get_compound(compound.CSID)
     compound.INCHI = csCompound.inchi
     compound.smiles = csCompound.smiles
+    compound.formula = csCompound.molecular_formula
     if commit:
       compound.save()
       self.save_m2m()

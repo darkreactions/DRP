@@ -9,12 +9,12 @@
 #to have that suite method called in AllTests.py
 
 import unittest
-from DRPTestCase import DRPTestCase, runTests
 from decorators import createsUser, joinsLabGroup
 from decorators import loadsCompoundsFromCsv
 from DRP.models import Compound
 from django.conf import settings
 import subprocess
+from DRPTestCase import DRPTestCase, runTests
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
@@ -27,7 +27,8 @@ class CompoundToArff(DRPTestCase):
   def checkArff(self, fn):
     process = subprocess.Popen(['java', '-cp', settings.WEKA_PATH['3.6'], 'weka.core.Instances', fn])
     process.wait()
-    self.assertEqual(0, process.returncode)
+    c = process.returncode
+    self.assertEqual(0, c)
 
   def test_regular(self):
     fn = '/tmp/test_csv.arff'

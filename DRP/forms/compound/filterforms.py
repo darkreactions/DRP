@@ -28,15 +28,22 @@ class CompoundFilterForm(FilterForm):
     self.fields['smiles'] = forms.CharField(required=False)
     self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={'invalid_choice':'You appear to have borrowed a search from a lab group to which you do not belong.'}, empty_label=settings.EMPTY_LABEL)
     self.fields['js_active'] = forms.NullBooleanField(widget=HiddenInput, required=False, initial=False)
-    self.checkFields = ('abbrev', 'CSID', 'INCHI', 'smiles')
+    self.checkFields = ('name', 'labGroup', 'abbrev', 'CSID', 'INCHI', 'smiles')
 
   def is_empty(self):
     '''Checks that the form is empty and performs specific checks for chemicalClasses'''
     base_empty = super(CompoundFilterForm, self).is_empty() #performs the normal check on the easy fields
-    return base_empty and (self.cleaned_data.get('chemicalClasses') not in self.fields['chemicalClasses'].empty_values or self.cleaned_data.get('chemicalClasses').count() == 0)
+    chemClasses = self.cleaned_data.get('chemicalClasses')
+    if chemClasses is None:
+        return base_empty and True
+    elif len(chemClasses) == 0:
+        return base_empty and True
+
+    else:
+        return False 
 
   def fetch(self):
-    '''Fetches the labs according to data supplied. Exp the form to have been validated already.'''
+    '''Fetches the compounds according to data supplied. Exp the form to have been validated already.'''
     
     qs = self.cleaned_data['labGroup'].compound_set.all()
     if self.cleaned_data.get('js_active') not in ('', None, False):
