@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
 import os
+import time
 
 
 def createsRxnDescriptor(heading, descriptorType, options={}):
@@ -63,7 +64,7 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
 
       user=User.objects.get(username=username)
       reaction.user = user
-
+      reaction.reference = str(time.time()) #Create a unique reference per reaction.
       reaction.public = False
 
       reaction.save()
