@@ -28,7 +28,7 @@ class PerformedReaction(Reaction):
   objects = PerformedReactionManager()
   user=models.ForeignKey(User)
   performedBy=models.ForeignKey(User, related_name='performedReactions', null=True, default=None)
-  reference=models.CharField(max_length=40) #uniqueness validated conditionally- see method below.
+  reference=models.CharField(max_length=40, unique=True)
   performedDateTime=models.DateTimeField('Date Reaction Performed', null=True, default=None)
   insertedDateTime=models.DateTimeField('Date Reaction Saved', auto_now_add=True)
   recommendation=models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
@@ -43,12 +43,8 @@ class PerformedReaction(Reaction):
   def __unicode__(self):
     return self.reference
 
-  def validate_unique(self, exclude=None):
-    if self.valid and PerformedReaction.objects.exclude(pk=self.pk).filter(reference=self.reference, valid=True).exists():
-      raise ValidationError('A valid reaction with that reference code already exists.', code='not_unique')
-    super(PerformedReaction, self).validate_unique(exclude=exclude)
-
   def save(self, *args, **kwargs):
+    self.reference = self.reference.lower()
     if self.pk is not None:
       test = StatsModel.objects.filter(testset__reactions__in=[self])
       train = StatsModel.objects.filter(trainingset__reaction=self)

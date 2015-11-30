@@ -158,6 +158,9 @@ class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
   def clean(self):
     '''checks that the descriptor choice and value have both been supplied, or neither have'''
     super(NumericFilterForm, self).clean()
+    # if False ^ False (meaning that both are supplied), skip to the else (no error)
+    # if True ^ True, then False (according to xor logic), skip to else (no error)
+    # Otherwise, if False ^ True | if True ^ False, then if True --> raise error 
     if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') is None):
       raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
     else:
@@ -194,7 +197,7 @@ class OrdinalFilterForm(QuantitativeFilterMixin, FilterForm):
 
   def fetch(self):
     '''fetch the NumMolDescriptor objects which match the supplied form values'''
-    qs = OrdMolDescriptorValue.objects.filter(self.cleaned_data.get('descriptor'))
+    qs = OrdMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'))
     return self.applyFilters(qs)
 
   def is_empty(self):
@@ -218,7 +221,7 @@ class CategoryFilterForm(FilterForm):
     super(CategoryFilterForm, self).clean()
     if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') is ''):
       raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
-    if self.cleaned_data.get('descriptor') is not None and CatMolDescriptorValue.objects.get(pk=self.cleaned_data.get('value')) not in self.cleaned_data.get('descriptor').permittedValues.all():
+    if self.cleaned_data.get('descriptor') is not None and self.cleaned_data.get('descriptor').permittedValues.filter(pk=self.cleaned_data.get("value")).count()<1:
       raise ValidationError('The selected value is not appropriate to the selected descriptor', 'wrong_value')
     else:
       return self.cleaned_data

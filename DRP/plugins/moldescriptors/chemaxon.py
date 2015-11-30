@@ -151,19 +151,18 @@ for key, command in _cxcalcpHCommandStems.items():
 
 def calculate(compound):
     notFound = True
-    if notFound and (compound.INCHI is not None and compound.INCHI is not ''):
-        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, close_fds=True) # lec = lowest energy conformer
-        lecProc.wait()
-        if lecProc.returncode == 0:
-            lec, lecErr = lecProc.communicate()
-            notFound = False
     if notFound and (compound.smiles is not None and compound.smiles is not ''):
         lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, close_fds=True) # lec = lowest energy conformer
         lecProc.wait()
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False  
-        notFound = False
+    if notFound and (compound.INCHI is not None and compound.INCHI is not ''):
+        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, close_fds=True) # lec = lowest energy conformer
+        lecProc.wait()
+        if lecProc.returncode == 0:
+            lec, lecErr = lecProc.communicate()
+            notFound = False
     if not notFound:
         calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, close_fds=True) 
         calcProc.wait()
