@@ -10,17 +10,14 @@ def get_random_code():
   chars = [random.choice(options) for i in xrange(ACCESS_CODE_LENGTH)]
   return "".join(chars)
 
-
-
-
 class Lab_Group(models.Model):
   class Meta:
     app_label = "DRP"
 
   lab_title = models.CharField(max_length=200, unique=True, error_messages={'unique':"This name is already taken."})
   lab_address = models.CharField(max_length=200)
-  lab_email = models.CharField(max_length=254) #Maximum length of email address
-
+  lab_email = models.CharField(max_length=254, #Maximum length of email address
+                                 default='')
   access_code = models.CharField(max_length=ACCESS_CODE_LENGTH,
                                  default=get_random_code)
 

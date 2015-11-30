@@ -1,47 +1,26 @@
-# # # # # # # # # # # # # # # # # # # 
- # # # #  Contact Views  # # # # # 
-# # # # # # # # # # # # # # # # # # # 
+"""A module containing only the default contact view"""
+from DRP.forms import ContactForm 
+from django.template import RequestContext
+from DRP.Email import EmailToAdmins
+from django.shortcuts import render
 
-#Necessary Imports:
-from django.http import HttpResponse
-from django.views.decorators.http import require_http_methods
-import datetime
-
-from DRP.retrievalFunctions import *
-from DRP.emailFunctions import *
-
-@require_http_methods(["POST"])
-def contact_form(request):
-  try:
-    #Get the contact form information.
-    email = request.POST["email"]
-    content = request.POST["content"]
-    subject = request.POST["subject"]
-
-    #Make sure every field is filled, lest a fail should occur.
-    if not email or not content or not subject:
-      return HttpResponse("<p>Please fill out the entirety of the form!</p>")
-
-    #Get the current datetime to help with comparison with log files.
-    time = datetime.datetime.now()
-
-    #Get the user's information if possible.
+def contact(request):
+  """The contact view. Validates a ContactForm against postdata, including CSRF (as part of the template).
+  If a user is authenticated, prompts but does not enforce the authenticated user's email
+  """
+  success=False
+  if request.method=="POST":
+    form = ContactForm(request.POST)
+    if form.is_valid():
+      mail = EmailToAdmins('Contact from DRP Contact Us Page', form.cleaned_data['content'], includeManagers=True, sender=form.cleaned_data['email']) 
+      if mail.send() == 1:
+        success=True
+      else:
+        success=False
+  else:
     u = request.user
     if u.is_authenticated():
-      user_info = "{} (database id: {})".format(u.username, u.id)
+      form = ContactForm(initial={'email':u.email})
     else:
-      user_info = "Anonymous User"
-
-    #Format the email.
-    frame = "SUBJECT: {}\nEMAIL: {}\nUSER: {}\n\nCONTENT: {}\n\n(SERVER TIME: {})"
-    body = frame.format(subject, email, user_info, content, time) 
-
-    email_admins("Contact Form ({})".format(subject), body, include_managers=True) 
-
-    return HttpResponse("<p>Thank you for contributing to the Dark Reaction Project. We'll get back to you soon.</p>")
-
-  except Exception as e:
-    print e
-    return HttpResponse("<p>Oops... Something went wrong. Sorry about that!</p>")
- 
-
+      form = ContactForm()
+  return render(request, 'contact.html', RequestContext(request, {'success':success, 'form':form}))

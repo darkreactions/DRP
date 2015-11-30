@@ -1,3 +1,5 @@
+
+###THIS FILE IS DEPRECATED. PLEASE USE Email.py INSTEAD.###
 import sys
 from django.core.mail import send_mail
 from retrievalFunctions import *

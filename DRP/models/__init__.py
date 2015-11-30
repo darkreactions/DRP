@@ -1,16 +1,26 @@
-
-# Anything imported here gets imported on `from DRP.models import *`
+'''Models for the DRP app'''
+#Anything imported here gets imported on `from DRP.models import *`
+#Not that such behaviour is encouraged!
 
 # Classes that should get included.
-from Lab_Member import *
-from Lab_Group import *
-from Recommendation import *
-from RankedReactionList import *
-from CompoundEntry import *
-from Data import *
 
-# Any additional methods...
-from methods import *
-from DEPRECATED import *
-
-
+from dataSets import TestSet, TrainingSet, TestSetRelation
+from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
+from rxnDescriptors import CatRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor
+from molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
+from molDescriptorValues import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
+from rxnDescriptorValues import RxnDescriptorValue, CatRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue
+from LabGroup import LabGroup
+from LegacyStatsModel import LegacyStatsModel
+from LicenseAgreement import LicenseAgreement
+from License import License
+from Reaction import Reaction
+from PerformedReaction import PerformedReaction
+from Compound import Compound
+from CompoundQuantity import CompoundQuantity
+from RecommendedReaction import RecommendedReaction
+from StatsModel import StatsModel
+from StatsModelTag import StatsModelTag
+from ChemicalClass import ChemicalClass
+from ConfirmationCode import ConfirmationCode
+from CompoundRole import CompoundRole

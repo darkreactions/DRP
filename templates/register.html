@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="bannerText">
+    Register
+  </h1>
+  {% if submitted %}
+    <p>Thankyou for registering, a confirmation email should be with you shortly.</p>
+    {% if testing %}
+      <!-- 8f7aa6e8-2be5-4630-a205-5fceeea81fe4 -->
+    {% endif %}
+  {% else %}
+    {% if testing %}
+    <!-- be088572-3adc-4757-8059-d16db2ea77a6 -->
+    {% endif %}
+  <form action="{% url 'register' %}" method="post">
+  {% csrf_token %}
+    <ol>
+      {{ form.as_ul }}
+    </ol> 
+    <input type="submit" value="Register" />
+  </form>  
+  {% endif %}
+  {% if testing %}
+  <!-- 4cf1abe0-9118-471c-ac4e-34e863e87402 -->
+  {% endif %}
+{% endblock %}

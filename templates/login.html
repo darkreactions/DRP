@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="post" action="{% url 'login' %}{% if next %}?next={{ next|urlencode:"" }}{% endif %}">
+  <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
+  {% csrf_token %}
+  <ol>
+    {{ form.as_ul }}
+  </ol>
+  <input type="submit" value="Log In" />
+</form>
+
+{% endblock %}

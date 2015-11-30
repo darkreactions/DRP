@@ -1,15 +1,13 @@
+'''A command to recalculate all descriptors for all compounds when a new plugin has been installed'''
 from django.core.management.base import BaseCommand, CommandError
-from DRP.update import update_data_calcs
+from django.conf import settings
+from DRP.models import Compound
+
+descriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 
 class Command(BaseCommand):
+  
   def handle(self, *args, **options):
-    if len(args)<=2:
-
-      debug = "debug" in args
-      clear = "clear" in args
-      update_data_calcs(debug=debug, clear=clear)
-
-      self.stdout.write("-- Calculations updated!")
-    else:
-      self.stdout.write("--Oops! Can't understand input...")
-      self.stdout.write("--Usage: python manage.py update_data_calcs [debug]")
+    for plugin in descriptorPlugins:
+      for compound in Compound.objects.all()
+        plugin.calculate(compound)

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      {% block title %} Dark Reaction Project {% endblock %}
+    </title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
+{% comment %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
+    {% block head_additional %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataManipulationMenu.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/textFormatting.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/containers.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buttons.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/infoForm.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/popups.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactions.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editable.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buttons.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/errors.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/periodicTable.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/logo.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/userInfo.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% endcomment %}
+  </head>
+
+  <body>
+
+    <header>
+      <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo">
+      <h1>Dark Reaction Project</h1>
+
+      <div id="userInfo">
+
+        {% if user.is_authenticated %}
+          {% if testing %}
+            <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
+          {% endif %}
+          <div>
+            <span>Hello, {{ user.first_name }}</span>
+            <a href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+          </div>
+          <a href="/logout.html" id="userLogOut">Log Out</a>
+
+        {% else %}
+          {% if testing %}
+            <!-- d68a82db-bd18-4a9f-a1a2-03b3bb259595 --> 
+          {% endif %}
+        <a id="userLogin" href="/login.html">Log In</a>
+        <a id="registrationPrompt" href="/register.html">Register</a>
+
+        {% endif %}
+
+        </div>
+      
+      <nav>
+        <ol id="navigationMenu">
+  
+          <li>
+            <a href="/" class="navLink{% if template == "home"%} currentTitle{%endif%}" title="The basics of the Project.">
+              Home
+            </a>
+          </li>
+  
+          <li>
+            <a href="/database/"
+               class="navLink{% if template == "database"%} currentTitle{%endif%}"
+               title="Enter the Dark Reaction Project.">
+               Project
+            </a>
+          </li>
+  
+          <li>
+            <a href="/about.html"
+               class="navLink{% if template == "about"%} currentTitle{%endif%}"
+               title="More info about the Project.">
+               About
+            </a>
+          </li>
+  
+            <li>
+              <a href="/contact.html"
+                 class="navLink{% if template == "contact"%} currentTitle{%endif%}"
+                 title="Send a bug report, comment, or complaint.">
+                 Contact
+              </a>
+          </li>
+   <!--TODO: ADAPT and Enable these pages when we feel ready...
+  
+  <a href="/explore/" class="navLink{% if template == "explore"%} currentTitle{%endif%}" title="Visualize your data.">Explore</a>
+  
+  <a href="/papers/" class="navLink{% if template == "papers"%} currentTitle{%endif%}" title="Info on publications.".>Papers</a>
+  <a href="/help/" class= "navLink{% if template == "help"%} currentTitle{%endif%}" title="How to navigate this site.">Help</a>
+  
+    -->
+  
+        </ol>
+    </nav>
+    {% block additional_header %}{% endblock %}
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+  &copy; 2015 Dark Reactions Project Group(s) at Haverford College
+  </footer>
+</body>
+{% comment %}
+ <!-- SCRIPTS -->
+<!-- For production...
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+-->
+<!-- For development without internet... -->
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-ui.js"></script>
+
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.csrf.js"></script>
+
+ <script type="text/javascript">
+  //Define the STATIC_URL if needed in the JS files.
+  var STATIC_URL = "{{ STATIC_URL }}";
+ </script>
+
+ <script type="text/javascript" src="{{ STATIC_URL }}js/clientValidate.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/showRibbon.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/universal.js" ></script>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/pages.js" ></script>
+
+ {% with template|add:".js" as js_name %}
+ <script type="text/javascript" src="{{ STATIC_URL }}js/{{ js_name }}" ></script>
+ {% endwith %}
+{% endcomment %}
+</html>

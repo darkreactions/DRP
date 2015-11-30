@@ -1,0 +1,79 @@
+{% extends 'compound_base.html' %}
+{% load compound_delete_form %}
+
+{% block content %}
+
+<h1 class="bannerText">Compound Guide</h1>
+<nav>
+  <ol>
+    <li><a href="{% url 'uploadcompoundcsv' %}">Upload csv file</a></li>
+    <li><a href="{% url 'advCompoundSearch' '.html' %}">Advanced Search</a></li>
+  </ol>
+</nav>
+{% include "lab_form.html" %}
+{% block filter_form %}
+  <form action="{% url 'compoundSearch' '.html' %}" method="get">
+    {{ filter_formset.management_form}}
+    <ol>
+      <li><fieldset><ol>{{ filter_formset.forms.0.as_ul }}</ol></fieldset></li>
+      {% for form in filter_formset.forms|slice:"1:" %}
+        <li><div>OR</div><fieldset><ol>{{ form.as_ul }}</ol></fieldset></li>
+      {% endfor %}
+    </ol>
+    <input type="submit" value="Filter" name="filter" />
+  </form>
+{% endblock %}
+{% if compounds|length >  0 %}
+  <section>
+    <h1>Downloads</h1>
+    <ul>
+      <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
+      <li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>
+      <li><a href="{% url request.resolver_match.url_name '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
+      <li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>
+    </ul>
+  </section>
+  <table>
+    <thead>
+      <tr>
+        <th>Abbreviation</th>
+        <th>Name</th>
+        <th>ChemSpider ID</th>
+        <th>Compound Classes</th>
+      </tr>
+    </thead>
+  {% for compound in compounds %}
+    <tr>
+      <td>
+        <a href="{% url 'editCompound' compound.pk %}">
+          {{ compound.abbrev }}
+        </a>
+      </td>
+      <td>{{ compound.name }}</td>
+      <td>{{ compound.CSID }}</td>
+      <td>
+        <ul>
+          {% for class in compound.chemicalClasses.all %}
+            <li>{{ class }}</li>
+          {% endfor %}
+        </ul>
+      </td>
+      <td>
+        {% if not compound.reaction_set.all.exists %}
+        <form action="{% url 'deleteCompound' %}" method="post">
+          {% csrf_token %}
+          {% compound_delete_form compound %}
+          <input type="Submit" value="delete" />
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+  <!-- 7f25b7df-2176-455b-9a68-620af1d52e46 -->
+{% else %}
+  <p> There are no compounds to display.</p>
+  <!-- 1bf53b3a-ddf0-407b-b565-b732e4fa5ddb -->
+{% endif %}
+<!-- bf3a3711-b21d-4710-a989-6d1ebc1c9ee9 -->
+{% endblock %}

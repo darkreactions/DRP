@@ -17,6 +17,11 @@ server {
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/static/favicon.ico;
         }
 
+        location /documentation/ {
+                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/documentation/;
+                index index.html; 
+        }
+
         location /media/ {
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/media/;
                 if ($query_string) {
@@ -35,12 +40,13 @@ server {
                 include uwsgi_params;
                 #include /home/drp/web/darkreactions.haverford.edu/uwsgi_params;
                 uwsgi_pass      127.0.0.1:3031;
+                uwsgi_read_timeout 600;
         }
 
-        error_page 400 /static/400.html;
-        error_page 403 /static/403.html;
-        error_page 404 /static/404.html;
-        error_page 500 502 503 504 /static/500.html;
+#        error_page 400 /static/400.html;
+#        error_page 403 /static/403.html;
+#        error_page 404 /static/404.html;
+#        error_page 500 502 503 504 /static/500.html;
 
         gzip on;
         gzip_http_version 1.0;

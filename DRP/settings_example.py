@@ -1,66 +1,137 @@
-#Django settings for DRP project.
+"""The demonstration django settings for DRP."""
+
 import os
 SITE_ID = 1
+
+SERVER_NAME = ''
+
+# Tells the system that you are happy for tests,
+# some of which run on the live database to be run.
+# DO NOT SET TO TRUE IN PRODUCTION.
+TESTING = False
+
+# The external html validator. You shouldn't need to change this.
+EXTERNAL_HTML_VALIDATOR = 'http://validator.w3.org/nu/'
+
+CHEMSPIDER_TOKEN = ''
+
+LOGIN_REDIRECT_URL = '/'
 
 APP_DIR = (os.path.join(os.path.dirname(__file__)))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 # URLs
 STATIC_URL = '/static/'
-LICENSE_URL = STATIC_URL + "/licenses/"
-DYNAMIC_URL = '/dynamic/'
 STATIC_ROOT = APP_DIR + "/static_served/"
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
 # Directories
-STATIC_DIR = BASE_DIR + "/static/"
-TMP_DIR = BASE_DIR + "/tmp/"
-RESEARCH_DIR = BASE_DIR + "/research/"
-LOG_DIR = BASE_DIR + "/logs/"
-MODEL_DIR = BASE_DIR + "/models/"
-LICENSE_DIR = STATIC_DIR + "/licenses/"
-CHEMAXON_DIR = ""
-WEKA_PATH = ""
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TMP_DIR = os.path.join(BASE_DIR, "tmp")
+RESEARCH_DIR = os.path.join(BASE_DIR + "research")
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+MODEL_DIR = os.path.join(BASE_DIR, "models")
+
+CHEMAXON_DIR = {
+}
+# {version: directory}
+WEKA_PATH = {
+    '3.6': '/usr/share/java/weka.jar'}  # default path on Ubuntu
+
+if TESTING:
+    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example',)
+    RXN_DESCRIPTOR_PLUGINS = ()
+else:
+    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example',)
+    RXN_DESCRIPTOR_PLUGINS = ()
 
 STATICFILES_DIRS = (STATIC_DIR,)
 
-#Changes to Default Django Behavior
-LOGIN_URL = "/login/"
+# Changes to Default Django Behavior
+LOGIN_URL = "/login.html"
 
-#Email Settings
+# Email Settings
 EMAIL_USE_TLS = True
 EMAIL_HOST = ""
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = "" #TODO: Change me in production!
+EMAIL_HOST_PASSWORD = ""  # TODO: Change me in production!
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_IMAP_HOST = ''  # leave blank in production. Necessary for unit tests.
+EMAIL_IMAP_INBOX = 'Inbox'  # The inbox to use for email tests. Inbox for gmail
+SKIP_EMAIL_TESTS = False
+# These tests are slow, so if you haven't tweaked this
+# then skip the tests, but don't abuse this.
 
-#Emails of the Site Admins and Project Managers for the DRP.
-ADMIN_EMAILS = [""]
-MANAGER_EMAILS = [""]
 
-#Change to "False" to see standard errors:
-DEBUG = True #TODO: Change me in production to "False"!
+# Change to "False" to see standard errors:
+DEBUG = True  # TODO: Change me in production to "False"!
+# DEBUG = False if TESTING else True  #useful in dev environments
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
-ADMINS = (
-     )
+
+# Emails of the Site Admins and Project Managers for the DRP.
+ADMINS = ()
 
 MANAGERS = ADMINS
 
-DATABASES = { #Production database.
+ADMIN_EMAILS = tuple(admin[0] for admin in ADMINS)
+MANAGER_EMAILS = tuple(manager[0] for manager in MANAGERS)
+
+DATABASES = {  # Production database.
     'default': {
-        'ENGINE': '', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'ENGINE': '',
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '',  # Or path to database file if using sqlite3.
         # Test_DRP_db should be used next time!
-	'USER': '',
-	#TODO: Change me in production!
-        'PASSWORD': 'SecurePassword', ###Delete me in your commits!!!###################################
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '3306',                      # Set to empty string for default.
+        'USER': '',
+        # TODO: Change me in production!
+        'PASSWORD': 'SecurePassword',
+        'HOST': '',
+        # Empty for localhost through domain sockets or '127.0.0.1'
+        # for localhost through TCP.
+        'PORT': '3306'  # Set to empty string for default.
     }
 }
+
+# ==== Another Useful Hack for Testing Environments -
+# use this INSTEAD of the above block ===
+# if TESTING:
+#   DATABASES = { #Production database.
+#       'default': {
+#           'ENGINE': 'django.db.backends.mysql',
+#           # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#           'NAME': 'Test_DRP_db_2',
+#           #Or path to database file if using sqlite3.
+#           # Test_DRP_db should be used next time!
+#           'USER': 'root',
+#           'PASSWORD': '',
+#           'HOST': '',
+#            # Empty for localhost through domain sockets or '127.0.0.1'
+#            # for localhost through TCP.
+#           'PORT': '3306',
+#            # Set to empty string for default.
+#       }
+#   }
+# else:
+#   DATABASES = { #Production database.
+#       'default': {
+#           'ENGINE': 'django.db.backends.mysql',
+#            # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#           'NAME': 'Test_DRP_db_3',
+#           # Or path to database file if using sqlite3.
+#           # Test_DRP_db should be used next time!
+#           'USER': 'root',
+#  	        # TODO: Change me in production!
+#          'PASSWORD': '',
+#          'HOST': '',
+#           # Empty for localhost through domain sockets or '127.0.0.1'
+#           # for localhost through TCP.
+#          'PORT': '3306',
+#            # Set to empty string for default.
+#      }
+#  }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -100,7 +171,7 @@ MEDIA_URL = '/media/'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -110,7 +181,7 @@ SECRET_KEY = ''
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -136,12 +207,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-     'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-     'django.contrib.admindocs',
-     "DRP",
-     "DRP",
-     "south",
+    'django.contrib.admindocs',
+    "DRP",
+    "south"
 )
 
 # A sample logging configuration. The only tangible logging
@@ -173,11 +243,19 @@ LOGGING = {
     }
 }
 
-#Apply a user-profile to users:
-AUTH_PROFILE_MODULE = 'DRP.lab_member'
-ACCESS_CODE_LENGTH = 20 #Designates the max_length of user access_codes
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.request",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    'DRP.context_processors.testing'
+)
 
-#Set up Memcached caching:
+# Set up Memcached caching:
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -185,5 +263,16 @@ CACHES = {
     }
 }
 
-#Force users to log out when the browser is closed.
+# Force users to log out when the browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+LIBRARY_CHOICES = ()
+TOOL_CHOICES = ()
+
+EMPTY_LABEL = '----'
+
+LAB_GROUP_HASH_SALT = ''
+
+# force temporary file creation for uploads (required for some views to work)
+FILE_UPLOAD_HANDLERS = (
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+)

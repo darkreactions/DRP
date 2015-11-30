@@ -1,0 +1,12 @@
+{% extends 'dbase_base.html' %}
+
+{% block submenu %}
+
+<nav>
+  <ol>
+    <li><a href="{% url 'compoundguide' '/' %}">List Compounds</a></li> 
+    <li><a href="{% url 'newCompound' %}">Add a compound</a></li>
+  </ol>
+</nav>
+
+{% endblock %}

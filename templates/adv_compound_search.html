@@ -1,0 +1,58 @@
+{% extends 'compound_list.html' %}
+
+{% block filter_form %}
+
+<form action="{% url 'advCompoundSearch' '.html' %}" method="get" >
+  {{ filter_formset.management_form }}
+  <ol>
+    <li>
+      <fieldset>
+        {{ filter_formset.management_form }}
+        <ol>{{ filter_formset.forms.0.as_ul }}</ol>
+          <ol>
+          {% for formSet in filter_formset.forms.0.formSets %}
+            <li>
+              <fieldset>
+                {{ formSet.management_form }}
+                <ol>
+                  {% for form in formSet %}
+                    <li>
+                      <ol>{{ form.as_ul }}</ol>
+                    </li>
+                  {% endfor %} 
+                </ol>
+              </fieldset>
+            </li>
+          {% endfor %}
+          </ol>
+      </fieldset>
+    </li>
+    {% for filter_form in filter_formset|slice:"1:" %}
+    <li>
+      <div>OR</div> 
+      <fieldset>
+        <ol>{{ filter_form.as_ul }}</ol>
+          <ol>
+            {% for formSet in filter_form.formSets %}
+            <li>
+              <fieldset>
+                {{ formSet.management_form }}
+                <ol>
+                  {% for form in formSet %}
+                  <li>
+                    <ol>{{ form.as_ul }}</ol>
+                  </li>
+                  {% endfor %}  
+                </ol>
+              </fieldset>
+            </li>
+            {% endfor %}
+          </ol>
+      </fieldset>
+    </li>
+    {% endfor %}
+  </ol>
+  <input type="submit" name="filter" value="filter" />
+</form> 
+
+{% endblock %}
