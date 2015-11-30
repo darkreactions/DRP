@@ -10,7 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
   (r'^', include(public.urls)),
   (r'^', include(authentication.urls)),
-  (r'^database/', include(database.urls)),
+  (r'^database', include(database.urls)),
   (r'^admin/', include(admin.site.urls))
 )
 '''The base urlconf, which includes modularised urls in the system'''
