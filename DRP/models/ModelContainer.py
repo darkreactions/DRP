@@ -21,27 +21,23 @@ class ModelContainer(models.Model):
 
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
-    def build(self, training_reactions, test_reactions, predictors, responses, debug=True):
+    def build(self, training_reactions, test_reactions, predictors, responses, debug=False):
         """Constructs, trains, and then tests a ML-model using a ModelVisitor
              of the type (library, tool, splitter, etc.) prescribed to this
              ModelContainer."""
 
-        if debug: print "PREPPING - 1"
         mod = self.getVisitorModule()
         model = mod.ModelVisitor(self)
 
-        if debug: print "PREPPING - 2"
+        model.debug = debug
 
         model.setPredictors(predictors)
         model.setResponses(responses)
 
-        if debug: print "PREPPING - 3"
         model.setTrainingData(training_reactions)
         model.setTestingData(test_reactions)
 
-        if debug: print "TRAINING"
         model._train()
-        if debug: print "TESTING"
         model._test()
 
         return model
@@ -52,7 +48,7 @@ class ModelContainer(models.Model):
         summaries = "\nK-Fold Validation:\n"
         for model in self.statsmodel_set.all():
             for d in model.predictsDescriptors.all().downcast():
-                summaries += d.summarize(model) + "\n"
+                summaries += "{}\n".format(d.summarize(model))
 
         return summaries
 

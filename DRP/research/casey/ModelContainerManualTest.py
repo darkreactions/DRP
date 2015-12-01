@@ -16,7 +16,7 @@ container = ModelContainer(library="weka", tool="svm", splitter="KFoldSplitter")
 container.save()
 
 #reactions = PerformedReaction.objects.all()
-reactions = PerformedReaction.objects.filter(reference__istartswith="1.1")
+reactions = PerformedReaction.objects.filter(reference__istartswith="1")
 
 print "# of Reactions: {}".format(reactions.count())
 print "# of Predictors: {}".format(predictors.count())
@@ -24,7 +24,7 @@ print "# of Responses: {}".format(responses.count())
 
 splitter = Splitter()
 for training, test in splitter.split(reactions):
-  print "Building a model!"
+  print "\nBuilding a model!"
   container.build(training, test, predictors, responses, debug=True)
 
 print container.summarize()

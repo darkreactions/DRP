@@ -108,8 +108,8 @@ class ArffQuerySet(models.query.QuerySet):
 
     if whitelistDescriptors:
       new_headers = OrderedDict()
-      for heading, arff in headers.items():
-        for descriptor in whitelistDescriptors:
+      for descriptor in whitelistDescriptors:
+        for heading, arff in headers.items():
           if descriptor.csvHeader == heading:
             new_headers[heading] = arff
       headers = new_headers
@@ -118,7 +118,6 @@ class ArffQuerySet(models.query.QuerySet):
 
     writeable.write('\n\n@data\n')
     for item in self:
-      print "WRITING"
       if expanded:
         writeable.write(','.join(str(item.expandedValues.get(key, missing)) for key in headers.keys()))
       else:

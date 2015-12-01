@@ -93,6 +93,10 @@ class Reaction(CsvModel):
   generated one to one relationship with the subclasses.
   '''
 
+  def __init__(self, *args,**kwargs):
+    super(Reaction, self).__init__(*args, **kwargs)
+    self.valDict = None
+
   class Meta:
     app_label="DRP"
 
@@ -118,18 +122,18 @@ class Reaction(CsvModel):
 
   @property
   def expandedValues(self):
-    print "expandedValues-init"
-    valDict = super(Reaction, self).expandedValues
+    if not self.valDict: #TODO: Replace this with Phil's version?
+      self.valDict = super(Reaction, self).expandedValues
 
-    print "expandedValues-add"
-    # Add any descriptors associated with this reaction.
-    for descriptorVal in self.descriptorValues():
-      heading = descriptorVal.descriptor.csvHeader
-      val = descriptorVal.value
-      if val is not None:
-        valDict[heading] = val
-    print "expandedValues-end"
-    return valDict
+      # Add any descriptors associated with this reaction.
+      for descriptorVal in self.descriptorValues():
+        heading = descriptorVal.descriptor.csvHeader
+        val = descriptorVal.value
+        if val is not None:
+          self.valDict[heading] = val
+    return self.valDict
+
+
 
   def __unicode__(self):
     return "Reaction_{}".format(self.id)

@@ -55,9 +55,9 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
         verbose_name = 'Predicted Ordinal Reaction Descriptor'
 
     def summarize(self, model):
-        return "Four-Class Accuracy: {}".format(self.fourClassAccuracy(model))
+        return "Accuracy: {}".format(self.accuracy(model))
 
-    def fourClassAccuracy(self, model):
+    def accuracy(self, model):
       conf = self.getConfusionMatrix(model)
 
       correct = 0.0
@@ -66,7 +66,6 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
         for guess, count in guesses.items():
           if true == guess: correct += count
           total += count
-
       return correct/total
 
     def getConfusionMatrix(self, model):
