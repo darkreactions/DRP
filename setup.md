@@ -236,6 +236,6 @@ When you change a model changes or add a field, you must run the following two c
 ###In Production
 At this point, you should have a fully-functional production-bed or test-bed. Verify by going to wherever the webapp is hosted ([darkreactions.haverford.edu](http://darkreactions.haverford.edu)).
 
-#In Development:
+###In Development:
 Verify by running `python manage.py runserver 0.0.0.0:8000` and going to port 8000 of the server hosting your workspace (ie: if you're on drp, go to [darkreactions.haverford.edu:8000](http://darkreactions.haverford.edu:8000)). Note that you may not be able to view ports other than port 80 while outside of campus.
 

@@ -1,5 +1,4 @@
 import subprocess
-import rxn_calculator
 
 import os, sys
 full_path = os.path.dirname(os.path.realpath(__file__))+"/"
@@ -10,6 +9,7 @@ if django_path not in sys.path:
 
 from DRP.retrievalFunctions import get_valid_data
 from DRP.settings import MODEL_DIR, TMP_DIR
+from DRP.model_building import rxn_calculator
 
 POSITIVE = "4:4"
 INCORRECT = "+"
@@ -241,7 +241,7 @@ def make_arff(name, data, clock=False, raw_list_input=False, debug=True, respons
 
   with open(fullFileName, "w") as f:
     #Write the file headers.
-    arff_fields, unused_indexes = get_used_fields()
+    arff_fields, unused_indexes = get_used_fields(by_current_model=True)
     full_headers = preface(arff_fields, True)
     f.write(full_headers + "\n")
 
@@ -299,20 +299,34 @@ def evaluate_real_results(lab_group = None):
   unrecommended_results =  {'correct': unrecommended.count('4') + unrecommended.count('3'), 'incorrect': unrecommended.count('2') + unrecommended.count('1') + unrecommended.count('0') }
   return recommended_results, unrecommended_results
 
-def get_used_fields():
+def get_used_fields(by_current_model=False):
+  # This function originally written to just ban headers that begin with "XXX", instead of banning 
+  #   fields based on the current model's headers. For now I have preserved that as the default 
+  #   behavior, but added an option to go off of the latest ModelStats' headers instead. In the future 
+  #   we probably want that to be the default.
   unused_indexes = set()
   used = []
-  for i, header in enumerate(rxn_calculator.headers):
-    if header[0:3] == "XXX": # Don't use fields marked with an "XXX"
-      unused_indexes.add(i)
-    else:
-      used.append(header)
-  return used, unused_indexes
+  if by_current_model:
+    from DRP.retrievalFunctions import get_latest_ModelStats
+    from DRP.models import ModelStats
+    model = ModelStats.objects.last() # TODO: THIS SHOULD ACTUALLY BE get_latest_ModelStats() when live CHANGE BEFORE RELEASE #daniel
+    for i, header in enumerate(rxn_calculator.headers):
+      if header not in model.headers: # Don't use fields marked with an "XXX"
+        unused_indexes.add(i)
+      else:
+        used.append(header)
+  else:
+    for i, header in enumerate(rxn_calculator.headers):
+      if header[0:3] == "XXX": # Don't use fields marked with an "XXX"
+        unused_indexes.add(i)
+      else:
+        used.append(header)
+  return used, unused_indexes # TODO: See if anything that calls this ever actually uses the `used` return value
 
 
-def removeUnused(row, unused_indexes=None):
+def removeUnused(row, unused_indexes=None, by_current_model=False): #Note: by_current_model only matters if unused_indexes=None
   if unused_indexes is None:
-    arff_fields, unused_indexes = get_used_fields()
+    arff_fields, unused_indexes = get_used_fields(by_current_model=by_current_model)
   return [row[i] for i in xrange(len(row)) if i not in unused_indexes]
 
 
@@ -353,16 +367,19 @@ def get_arff_headers(zero_one=False):
 def gen_specials():
 	import rxn_calculator
 
-	specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",
-		"leak": "{yes,no}"}
+	###specials = {"outcome": "{1,2,3,4}", "slowCool": "{yes,no}",
+	###	"leak": "{yes,no}"}
+	specials = {"outcome": "{1,2,3,4}", "slowCool": "{?,no,yes}",
+		"leak": "{?,no,yes}"}
 
 	for bool_field in rxn_calculator.atomsz + rxn_calculator.bools:
-		specials[bool_field] = "{yes,no}"
+		#specials[bool_field] = "{yes,no}"
+		specials[bool_field] = "{?,no,yes}"
 
 	return specials
 
 
-def preface(headers, data):
+def preface(headers, data): # Why does the data argument exist???
     res = "%  COMMENT \n%  NAME, DATE\n@relation rec_system"
     specials = gen_specials()
     for header in headers:

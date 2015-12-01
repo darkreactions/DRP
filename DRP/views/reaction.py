@@ -12,7 +12,7 @@ from django.forms.models import modelformset_factory
 from DRP.forms import ModelFormSet, FormSet
 from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render, redirect
-from django.http import Http404
+from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 
@@ -28,8 +28,29 @@ class ListPerformedReactions(ListView):
   @method_decorator(userHasLabGroup)
   @labGroupSelected #sets self.labGroup
   def dispatch(self, request, *args, **kwargs):
+
     self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
-    return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
+
+    fileType = kwargs.get('filetype')
+    if fileType in ('/', '.html', None):
+      return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
+    elif fileType == '.csv':
+      response = HttpResponse(content_type='text/csv')
+      response['Content-Disposition']='attachment; filename="compounds.csv"'
+      if 'expanded' in request.GET:
+        self.queryset.toCsv(response, True)
+      else:
+        self.queryset.toCsv(response)
+    elif fileType == '.arff':
+      response = HttpResponse(content_type='text/vnd.weka.arff')
+      response['Content-Disposition']='attachment; filename="compounds.arff"'
+      if 'expanded' in request.GET:
+        self.queryset.toArff(response, True)
+      else:
+        self.queryset.toArff(response)
+    else:
+      raise RuntimeError('The user should not be able to provoke this code')
+    return response
 
   def get_context_data(self, **kwargs):
     context = super(ListPerformedReactions, self).get_context_data(**kwargs)
