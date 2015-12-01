@@ -72,14 +72,11 @@ def reactionForm(request, pk=None):
     except PerformedReaction.DoesNotExist:
       raise Http404("This reaction cannot be found")
   if reaction is not None:
-    if not reaction.valid:
-        raise PermissionDenied()
-    else:
-        reactants = CompoundQuantity.objects.filter(reaction=reaction.reaction_ptr)
-        numRxnDescriptorValues = NumRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-        ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-        boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-        catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr) 
+    reactants = CompoundQuantity.objects.filter(reaction=reaction.reaction_ptr)
+    numRxnDescriptorValues = NumRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
+    ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
+    boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
+    catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr) 
   else:
     reactants=None
     numRxnDescriptorValues = None 
