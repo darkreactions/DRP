@@ -71,7 +71,12 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def descriptors(self):
         """returns the descriptor which have relationship to the queryset"""
-        return chain(BooleanDescriptor.objects.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(reaction__in=self)), NumericDescriptor.objects.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(reaction__in=self)), OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(reaction__in=self)), CategoricalDescriptor.objects.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(reaction__in=self)))
+        return chain(
+            BooleanDescriptor.objects.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            NumericDescriptor.objects.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            CategoricalDescriptor.objects.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(reaction__in=self)).distinct()
+        )
 
 
 class ReactionManager(models.Manager):
