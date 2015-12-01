@@ -6,8 +6,10 @@ from django.db import models
 
 
 class Migration(SchemaMigration):
-
     def forwards(self, orm):
+      pass
+
+    def forwards_bak(self, orm):
         # Deleting field 'PredOrdRxnDescriptor.model_container'
         db.delete_column(u'DRP_predordrxndescriptor', 'model_container_id')
 
@@ -44,8 +46,8 @@ class Migration(SchemaMigration):
     def backwards(self, orm):
 
         # User chose to not deal with backwards NULL issues for 'PredOrdRxnDescriptor.model_container'
-        raise RuntimeError("Cannot reverse this migration. 'PredOrdRxnDescriptor.model_container' and its values cannot be restored.")
-        
+        #raise RuntimeError("Cannot reverse this migration. 'PredOrdRxnDescriptor.model_container' and its values cannot be restored.")
+
         # The following code is provided here to aid in writing a correct migration        # Adding field 'PredOrdRxnDescriptor.model_container'
         db.add_column(u'DRP_predordrxndescriptor', 'model_container',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.StatsModel']),
@@ -56,8 +58,8 @@ class Migration(SchemaMigration):
 
 
         # User chose to not deal with backwards NULL issues for 'PredNumRxnDescriptor.model_container'
-        raise RuntimeError("Cannot reverse this migration. 'PredNumRxnDescriptor.model_container' and its values cannot be restored.")
-        
+        #raise RuntimeError("Cannot reverse this migration. 'PredNumRxnDescriptor.model_container' and its values cannot be restored.")
+
         # The following code is provided here to aid in writing a correct migration        # Adding field 'PredNumRxnDescriptor.model_container'
         db.add_column(u'DRP_prednumrxndescriptor', 'model_container',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.StatsModel']),
@@ -68,8 +70,8 @@ class Migration(SchemaMigration):
 
 
         # User chose to not deal with backwards NULL issues for 'PredCatRxnDescriptor.model_container'
-        raise RuntimeError("Cannot reverse this migration. 'PredCatRxnDescriptor.model_container' and its values cannot be restored.")
-        
+        #raise RuntimeError("Cannot reverse this migration. 'PredCatRxnDescriptor.model_container' and its values cannot be restored.")
+
         # The following code is provided here to aid in writing a correct migration        # Adding field 'PredCatRxnDescriptor.model_container'
         db.add_column(u'DRP_predcatrxndescriptor', 'model_container',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.StatsModel']),
@@ -80,8 +82,8 @@ class Migration(SchemaMigration):
 
 
         # User chose to not deal with backwards NULL issues for 'PredBoolRxnDescriptor.model_container'
-        raise RuntimeError("Cannot reverse this migration. 'PredBoolRxnDescriptor.model_container' and its values cannot be restored.")
-        
+        #raise RuntimeError("Cannot reverse this migration. 'PredBoolRxnDescriptor.model_container' and its values cannot be restored.")
+
         # The following code is provided here to aid in writing a correct migration        # Adding field 'PredBoolRxnDescriptor.model_container'
         db.add_column(u'DRP_predboolrxndescriptor', 'model_container',
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.StatsModel']),

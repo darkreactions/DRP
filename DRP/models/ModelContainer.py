@@ -26,15 +26,22 @@ class ModelContainer(models.Model):
              of the type (library, tool, splitter, etc.) prescribed to this
              ModelContainer."""
 
+        if debug: print "PREPPING - 1"
         mod = self.getVisitorModule()
         model = mod.ModelVisitor(self)
 
+        if debug: print "PREPPING - 2"
+
         model.setPredictors(predictors)
         model.setResponses(responses)
+
+        if debug: print "PREPPING - 3"
         model.setTrainingData(training_reactions)
         model.setTestingData(test_reactions)
 
+        if debug: print "TRAINING"
         model._train()
+        if debug: print "TESTING"
         model._test()
 
         return model

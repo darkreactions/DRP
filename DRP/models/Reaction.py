@@ -113,14 +113,17 @@ class Reaction(CsvModel):
 
   @property
   def expandedValues(self):
+    print "expandedValues-init"
     valDict = super(Reaction, self).expandedValues
 
+    print "expandedValues-add"
     # Add any descriptors associated with this reaction.
     for descriptorVal in self.descriptorValues():
       heading = descriptorVal.descriptor.csvHeader
       val = descriptorVal.value
-      valDict[heading] = val
-
+      if val is not None:
+        valDict[heading] = val
+    print "expandedValues-end"
     return valDict
 
   def __unicode__(self):

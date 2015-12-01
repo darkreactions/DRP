@@ -15,20 +15,26 @@ class ModelVisitor(AbstractModelVisitor):
     self.WEKA_VERSION = "3.6" # The version of WEKA to use.
 
   def _train(self):
+    print "train-1"
     reactions = self.getTrainingData()
+    print "train-1.1"
     model_filepath = os.path.join(settings.MODEL_DIR, self.model_filename)
     arff_file = self._prepareArff(reactions, suffix="train")
+    print "train-1.2"
 
     self.stats_model.start_time = datetime.datetime.now()
+    print "train-2"
 
     kernel = "\"weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7\""
     command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0".format(arff_file, model_filepath, kernel)
     self._runWekaCommand(command)
+    print "train-3"
 
     self.setModelFile(model_filepath)
 
     self.stats_model.end_time = datetime.datetime.now()
     self.stats_model.save()
+    print "train-4"
 
 
   def predict(self, reactions, suffix="predict"):
@@ -54,11 +60,11 @@ class ModelVisitor(AbstractModelVisitor):
     filename = "{}_{}_{}.arff".format(self.getModelTag(), suffix, time.time())
     filepath = os.path.join(settings.TMP_DIR, filename)
     with open(filepath, "w") as f:
+      print "prepareArff-1"
       whitelist = list(self.getPredictors()) + list(self.getResponses())
+      print "prepareArff-2"
       reactions.toArff(f, expanded=True, whitelistDescriptors=whitelist)
-
-    if self.DEBUG:
-      print "File written: {}".format(filepath)
+      print "prepareArff-3"
 
     return filepath
 
@@ -80,7 +86,6 @@ class ModelVisitor(AbstractModelVisitor):
     set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
     command = set_path + command
 
-    if self.DEBUG:
-      print command
+    print command
 
     subprocess.check_output(command, shell=True)
