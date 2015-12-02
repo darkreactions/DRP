@@ -1,9 +1,0 @@
-{% if user.labgroup_set.all.count > 1 %}
-<form action="{% url 'selectGroup' %}?next={% url 'compoundguide' '/' as compound_guide_url %}{{ compound_guide_url|urlencode:"" }}" method="post">
-  {% csrf_token %}
-  <ol>
-  {{ lab_form.as_ul }}
-  </ol>
-  <input type="submit" value="select" />
-</form>
-{% endif %}

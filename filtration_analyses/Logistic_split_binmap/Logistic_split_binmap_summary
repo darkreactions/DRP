@@ -1,7 +1,0 @@
-Logistic classified by:
-           NBayes .... 72.4625% accurate
-         Logistic .... 78.376%  accurate
-              SMO .... 75.4634% accurate
-            KStar .... 80.8473% accurate
-          Bagging .... 80.2295% accurate
-              J48 .... 80.759%  accurate
