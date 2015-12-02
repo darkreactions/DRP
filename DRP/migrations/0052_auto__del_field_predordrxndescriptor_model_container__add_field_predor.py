@@ -7,9 +7,6 @@ from django.db import models
 
 class Migration(SchemaMigration):
     def forwards(self, orm):
-      pass
-
-    def forwards_bak(self, orm):
         # Deleting field 'PredOrdRxnDescriptor.model_container'
         db.delete_column(u'DRP_predordrxndescriptor', 'model_container_id')
 

@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
         # Removing unique constraint on 'PerformedReaction', fields ['reference']
-        db.delete_unique(u'DRP_performedreaction', ['reference'])
+        #db.delete_unique(u'DRP_performedreaction', ['reference'])
 
 
         # Changing field 'CompoundQuantity.amount'
