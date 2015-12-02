@@ -4,6 +4,7 @@ from django.contrib import admin
 import public
 import authentication
 import database
+import dashboard
 
 admin.autodiscover()
 
@@ -11,6 +12,7 @@ urlpatterns = patterns('',
   (r'^', include(public.urls)),
   (r'^', include(authentication.urls)),
   (r'^database/', include(database.urls)),
-  (r'^admin/', include(admin.site.urls))
+  (r'^admin/', include(admin.site.urls)),
+  #(r'^dashboard/', include(dashboard.urls))
 )
 '''The base urlconf, which includes modularised urls in the system'''

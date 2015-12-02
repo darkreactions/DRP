@@ -4,6 +4,7 @@
     <title>
       {% block title %} Dark Reaction Project {% endblock %}
     </title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
 {% comment %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
@@ -26,13 +27,14 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/userInfo.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endcomment %}
+  {% block additional_head %}{% endblock %}
   </head>
 
   <body>
 
     <header>
       <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo">
-      <h1>Dark Reaction Project</h1>
+      <h1 class="mainTitle">Dark Reaction Project</h1>
 
       <div id="userInfo">
 
@@ -58,6 +60,7 @@
         </div>
       
       <nav>
+       <div class="nav-wrapper">
         <ol id="navigationMenu">
   
           <li>
@@ -99,6 +102,7 @@
     -->
   
         </ol>
+     </div>
     </nav>
     {% block additional_header %}{% endblock %}
   </header>
