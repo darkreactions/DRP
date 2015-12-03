@@ -42,7 +42,7 @@ class Descriptor(models.Model):
             RegexValidator(
                 '[A-Za-z0-9][A-Za-z0-9_]+',
                 ('Please include only values which are limited to'
-                 'alphanumeric characters and underscoresi, and must start'
+                 'alphanumeric characters and underscores, and must start'
                  'with an alphabetic character.')
             )
         ]
@@ -71,7 +71,6 @@ class Descriptor(models.Model):
         """
         return'@attribute {} ' .format(self.csvHeader)
 
-
     def downcast(self):
         """Return an instance of this descriptor as its deepest subclass."""
 
@@ -82,14 +81,14 @@ class Descriptor(models.Model):
 
         for c in chain(classes, rxn_classes):
 
-          if hasattr(self, c):
-            sub_self = getattr(self, c)
-            for rxn_c in rxn_classes:
+            if hasattr(self, c):
+                sub_self = getattr(self, c)
+                for rxn_c in rxn_classes:
 
-              if hasattr(sub_self, rxn_c):
-                return getattr(sub_self, rxn_c)
-
-            return sub_self
+                if hasattr(sub_self, rxn_c):
+                    return getattr(sub_self, rxn_c)
+                else:
+                    return sub_self
 
         return self
 
@@ -125,7 +124,6 @@ class Descriptor(models.Model):
 
         return self
         """
-
 
     def __unicode__(self):
         """Unicode represenation of a descriptor is it's name."""

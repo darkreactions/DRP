@@ -42,18 +42,18 @@ def calculate(compound):
     """
     pt = rdkit.Chem.GetPeriodicTable()
     mwValue = DRP.models.NumMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict['mw'], compound=compound)[0]
-    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element)))*compound.elements[element]['stoichiometry'] for element in compound.elements)
+    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
     mwValue.save()
     fsValue = DRP.models.OrdMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['fs'])[0]
-    fsValue.value=fsValueCalc(mwValue)
+    fsValue.value = fsValueCalc(mwValue)
     fsValue.save()
     if compound.smiles is None:
         nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'])[0]
-        nValue.value=None
+        nValue.value = None
     else:
         nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'])[0]
-        nValue.value=('n' in compound.smiles or 'N' in compound.smiles)
+        nValue.value = ('n' in compound.smiles or 'N' in compound.smiles)
     nValue.save()
     arbValue = DRP.models.CatMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['arb'])[0]
-    arbValue.value=arbValCalc(compound)
+    arbValue.value = arbValCalc(compound)
     arbValue.save()

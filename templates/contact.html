@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-
-{% block content %}
+{% block additional_head %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/contact.css" />
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/infoForm.css" />
+{% endblock %}
+
+{% block content %}
 <h1 class='bannerText'>
 Contact Us
 </h1>

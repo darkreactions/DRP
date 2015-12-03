@@ -7,7 +7,7 @@ from django.conf import settings
 import os
 import sys
 from cStringIO import StringIO
-#from pep257 import check #TODO: Fix this?
+# from pep257 import check #TODO: Fix this?
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 _pep8Files = [
@@ -114,8 +114,8 @@ class TestFiles(unittest.TestCase):
 
     def testPep257(self):
         """Test docstring conformance of all files."""
-        #errors = [str(e) for e in check(pep257Files)]
-        #self.assertEqual(len(errors), 0, '\n'.join(errors))
+        # errors = [str(e) for e in check(pep257Files)]
+        # self.assertEqual(len(errors), 0, '\n'.join(errors))
         pass
 
 suite = unittest.TestSuite([loadTests(TestFiles)])

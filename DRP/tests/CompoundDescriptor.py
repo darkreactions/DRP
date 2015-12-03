@@ -333,6 +333,7 @@ class MaxMinValueValidation(DRPTestCase):
             descVal.save()
         desc.delete()
 
+
 @createsUser('Aslan', 'old_magic')
 @joinsLabGroup('Aslan', 'Narnia')
 @createsChemicalClass('Org', 'Organic')

@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+{% block additional_head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
+{% endblock %}
 {% block content %}
 <!-- '2240b1ff-895c-458f-adf2-d04d85a164d1' --> 
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
 <aside class="bannerText">
   Our goal is to help chemists collect <em class='highlightText'>better</em> data in a <em class='highlightText'>faster</em> way.
 </aside>
