@@ -32,7 +32,7 @@
     {% for reaction in reactions %}
   <tbody>
     <tr>
-      <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>{% else %}{{ reaction.reference }}</td>
+      <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>{{ reaction.reference }}</td>
       <td>
         <ul>
         {% for quantity in reaction.compoundquantity_set.all %}
