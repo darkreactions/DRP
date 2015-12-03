@@ -24,13 +24,13 @@ class ListPerformedReactions(ListView):
   model=PerformedReaction 
   paginate_by=20
   
-  @method_decorator(login_required)
-  @method_decorator(hasSignedLicense)
-  @method_decorator(userHasLabGroup)
   @labGroupSelected #sets self.labGroup
   def dispatch(self, request, *args, **kwargs):
 
-    self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
+    if self.labGroup is not None:
+        self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
+    else:
+        self.queryset = PerformedReaction.objects.filter(public=True)
 
     fileType = kwargs.get('filetype')
     if fileType in ('/', '.html', None):
@@ -39,7 +39,7 @@ class ListPerformedReactions(ListView):
       self.paginate_by = None
       response = HttpResponse(content_type='text/csv')
       response['Content-Disposition']='attachment; filename="compounds.csv"'
-      if 'expanded' in request.GET:
+      if 'expanded' in request.GET and request.user.is_authenticated():
         self.queryset.toCsv(response, True)
       else:
         self.queryset.toCsv(response)
@@ -47,7 +47,7 @@ class ListPerformedReactions(ListView):
       self.paginate_by = None
       response = HttpResponse(content_type='text/vnd.weka.arff')
       response['Content-Disposition']='attachment; filename="compounds.arff"'
-      if 'expanded' in request.GET:
+      if 'expanded' in request.GET and request.user.is_authenticated():
         self.queryset.toArff(response, True)
       else:
         self.queryset.toArff(response)
