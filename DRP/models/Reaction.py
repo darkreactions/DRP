@@ -8,7 +8,7 @@ from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, O
 from itertools import chain
 from CompoundRole import CompoundRole
 from collections import OrderedDict
-
+import DRP
 import importlib
 from django.conf import settings
 
@@ -88,45 +88,55 @@ class ReactionManager(models.Manager):
 
 
 class Reaction(CsvModel):
-  '''A base class on which PerformedReactions and RecommendedReactions are built,
-  contains common information to each in a table with an automatically
-  generated one to one relationship with the subclasses.
-  '''
+    '''A base class on which PerformedReactions and RecommendedReactions are built,
+    contains common information to each in a table with an automatically
+    generated one to one relationship with the subclasses.
+    '''
 
-  class Meta:
-    app_label="DRP"
+    class Meta:
+        app_label="DRP"
 
-  objects = ReactionManager()
-  compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
-  notes=models.TextField(blank=True)
-  labGroup=models.ForeignKey(LabGroup)
+    objects = ReactionManager()
+    compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
+    notes=models.TextField(blank=True)
+    labGroup=models.ForeignKey(LabGroup)
 
-  def save(self, *args, **kwargs):
-    super(Reaction, self).save(*args, **kwargs)
-    for plugin in descriptorPlugins:
-      plugin.calculate(self)
-
-
-  def descriptorValues(self):
-      return chain(
-        CatRxnDescriptorValue.objects.filter(reaction=self),
-        BoolRxnDescriptorValue.objects.filter(reaction=self),
-        OrdRxnDescriptorValue.objects.filter(reaction=self),
-        NumRxnDescriptorValue.objects.filter(reaction=self)
-      )
+    def save(self, *args, **kwargs):
+        super(Reaction, self).save(*args, **kwargs)
+        for plugin in descriptorPlugins:
+            plugin.calculate(self)
 
 
-  @property
-  def expandedValues(self):
-    valDict = super(Reaction, self).expandedValues
+    def descriptorValues(self):
+        return chain(
+            CatRxnDescriptorValue.objects.filter(reaction=self),
+            BoolRxnDescriptorValue.objects.filter(reaction=self),
+            OrdRxnDescriptorValue.objects.filter(reaction=self),
+            NumRxnDescriptorValue.objects.filter(reaction=self)
+        )
 
-    # Add any descriptors associated with this reaction.
-    for descriptorVal in self.descriptorValues():
-      heading = descriptorVal.descriptor.csvHeader
-      val = descriptorVal.value
-      valDict[heading] = val
+    @property
+    def values(self):
+        valDict = super(Reaction, self).values
+        i = 0
+        for cq in DRP.models.CompoundQuantity.objects.filter(reaction=self):
+            valDict['compound_{}'.format(i)] = cq.compound.abbrev
+            valDict['compound_{}_role'.format(i)] = cq.role.label
+            valDict['compound_{}_amount'.format(i)] = cq.amount
+            i+=1
+        return valDict 
 
-    return valDict
+    @property
+    def expandedValues(self):
+        valDict = self.values
 
-  def __unicode__(self):
-    return "Reaction_{}".format(self.id)
+        # Add any descriptors associated with this reaction.
+        for descriptorVal in self.descriptorValues():
+            heading = descriptorVal.descriptor.csvHeader
+            val = descriptorVal.value
+            valDict[heading] = val
+
+        return valDict
+
+    def __unicode__(self):
+        return "Reaction_{}".format(self.id)
