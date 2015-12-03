@@ -31,8 +31,14 @@
 
 .infoForm input, .infoForm textarea, .infoForm select {
   border:none;
-  background-color:#d8e5ee;
-  padding:1em;;
+  background-color:#dfb183;
+  padding:1em;
+  outline: 2px solid rgb(205,144,113);
+}
+
+.infoForm input.submit {
+  background-color:rgb(205,144,113);
+  outline: none;
 }
 
 .infoForm input:focus, .infoForm textarea:focus, .infoForm select:focus {
