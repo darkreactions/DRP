@@ -60,9 +60,9 @@ class CsvQuerySet(models.query.QuerySet):
     writer.writeheader()
     for item in self:
       if expanded:
-        writer.writerow(item.expandedValues)
+        writer.writerow({k:(v if v is not None else missing) for k, v in item.expandedValues.items()})
       else:
-        writer.writerow(item.values)
+        writer.writerow({k:(v if v is not None else missing) for k, v in item.values.items()})
 
 class ArffQuerySet(models.query.QuerySet):
   '''This queryset class permits data from a model to be output as a .arff file'''

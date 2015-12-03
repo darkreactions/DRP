@@ -60,6 +60,9 @@ class CategoricalDescriptorValue(models.Model):
         self.clean()
         super(CategoricalDescriptorValue, self).save(*args, **kwargs)
 
+    def __unicode__(self):
+        return self.value.value
+
 
 class BooleanDescriptorValue(models.Model):
 

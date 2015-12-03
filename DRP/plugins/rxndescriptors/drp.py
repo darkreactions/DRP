@@ -129,7 +129,7 @@ def calculate(reaction):
     h = xxhash.xxh64() #generates a hash
     for reactant in reaction.compounds.all():
         h.update(reactant.abbrev)
-    p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h)[0]
+    p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h.hexdigest())[0]
     c = cat.objects.get_or_create(reaction=reaction,descriptor=descriptorDict['rxnSpaceHash1'])[0] 
     c.value = p
     c.save()
