@@ -84,11 +84,10 @@ class Descriptor(models.Model):
             if hasattr(self, c):
                 sub_self = getattr(self, c)
                 for rxn_c in rxn_classes:
-
-                if hasattr(sub_self, rxn_c):
-                    return getattr(sub_self, rxn_c)
-                else:
-                    return sub_self
+                    if hasattr(sub_self, rxn_c):
+                        return getattr(sub_self, rxn_c)
+                    else:
+                        return sub_self
 
         return self
 
