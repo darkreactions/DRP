@@ -32,7 +32,11 @@
     {% for reaction in reactions %}
   <tbody>
     <tr>
-      <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>{{ reaction.reference }}</td>
+      {% if reaction.labGroup in user.labgroup_set %}
+      <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a></td>
+      {% else %} 
+      <td>{{ reaction.reference }}</td>
+      {% endif %}
       <td>
         <ul>
         {% for quantity in reaction.compoundquantity_set.all %}
@@ -50,24 +54,32 @@
       <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% else %}N/A{% endif %}</td>
       <td>{{ reaction.labGroup.title }}</td>
       <td>
-        {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
-        <form action="{% url 'deleteReaction' %}" method="post">
-          {% csrf_token %}
-          {% performed_rxn_delete_form reaction %}
-          <input type="Submit" value="delete" />
-        </form>
-        {% else %}
-        <form action="{% url 'invalidateReaction' %}" method="post">
-          {% csrf_token %}
-          {% performed_rxn_invalidate_form reaction %}
-          <input type="Submit" value="invalidate" />
-        </form>
+        {% if reaction.labGroup in user.labgroup_set %}
+          {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
+          <form action="{% url 'deleteReaction' %}" method="post">
+            {% csrf_token %}
+            {% performed_rxn_delete_form reaction %}
+            <input type="Submit" value="delete" />
+          </form>
+          {% else %}
+          <form action="{% url 'invalidateReaction' %}" method="post">
+            {% csrf_token %}
+            {% performed_rxn_invalidate_form reaction %}
+            <input type="Submit" value="invalidate" />
+          </form>
+          {% endif %}
         {% endif %}
       </td>
     </tr>
     {% endfor %}
   </tbody>
-<table>
+</table>
+<ol class="pagination">
+    {% for x in paginator.page_range %}
+        <li><a href="?page={{ x }}">{{ x }}</a></li>
+    {% endfor %}
+</ol>
+
 {% else %}
 <p>There are currently no reactions to display</p>
 {% endif %}

@@ -22,6 +22,7 @@ class ListPerformedReactions(ListView):
   template_name='reactions_list.html'
   context_object_name='reactions'
   model=PerformedReaction 
+  paginate_by=20
   
   @method_decorator(login_required)
   @method_decorator(hasSignedLicense)
@@ -35,6 +36,7 @@ class ListPerformedReactions(ListView):
     if fileType in ('/', '.html', None):
       return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
     elif fileType == '.csv':
+      self.paginate_by = None
       response = HttpResponse(content_type='text/csv')
       response['Content-Disposition']='attachment; filename="compounds.csv"'
       if 'expanded' in request.GET:
@@ -42,6 +44,7 @@ class ListPerformedReactions(ListView):
       else:
         self.queryset.toCsv(response)
     elif fileType == '.arff':
+      self.paginate_by = None
       response = HttpResponse(content_type='text/vnd.weka.arff')
       response['Content-Disposition']='attachment; filename="compounds.arff"'
       if 'expanded' in request.GET:
