@@ -74,6 +74,11 @@ class Command(BaseCommand):
             for cr in serializers.deserialize('xml',smart_str(r.text)):
                 cr.save()
 
+            r = s.get(apiUrl + 'reactions.xml', params=data)
+            for r in serializers.deserialize('xml', smart_str(r.text)):
+                r.object.calcDescriptors = False
+                r.save()
+
             r = s.get(apiUrl + 'performed_reactions.xml', params=data)
             for pr in serializers.deserialize('xml',smart_str(r.text)):
                 pr.object.calcDescriptors = False
@@ -82,6 +87,5 @@ class Command(BaseCommand):
             r = s.get(apiUrl + 'compound_quantities.xml', params=data)
             for cq in serializers.deserialize('xml',smart_str(r.text)):
                 cq.save()
-
         else:
             r.raise_for_status()
