@@ -23,7 +23,7 @@ def api1(request, component):
             return HttpResponse(serializers.serialize('xml', performedReactions), content_type='Application/xml')
         else:
             if component == 'reactions':
-                return HttpResponse(serializers.serialize('xml', Reaction.objjects.filter(performedreaction__in=(p for p in performedReactions))), content_type='Application/xml')
+                return HttpResponse(serializers.serialize('xml', Reaction.objects.filter(performedreaction__in=(p for p in performedReactions))), content_type='Application/xml')
             else:
                 labGroups = LabGroup.objects.filter(reaction__in=[p for p in performedReactions]).distinct()
                 if component == 'lab_groups':
