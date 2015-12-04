@@ -101,10 +101,11 @@ class Reaction(CsvModel):
     notes=models.TextField(blank=True)
     labGroup=models.ForeignKey(LabGroup)
 
-    def save(self, *args, **kwargs):
+    def save(self, calcDescriptors=True, *args, **kwargs):
         super(Reaction, self).save(*args, **kwargs)
-        for plugin in descriptorPlugins:
-            plugin.calculate(self)
+        if calcDescriptors:
+            for plugin in descriptorPlugins:
+                plugin.calculate(self)
 
 
     def descriptorValues(self):
