@@ -1,4 +1,5 @@
 
+from django.utils.encoding import smart_str
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.management.base import BaseCommand
@@ -42,7 +43,7 @@ class Command(BaseCommand):
                 data = {'limit':int(reaction_limit)}
 
             r = s.get(apiUrl + 'users.xml', params=data)
-            for u in serializers.deserialize('xml', r.text):
+            for u in serializers.deserialize('xml', smart_str(r.text)):
                 u.save()
 
             user = User.objects.get(username=settings.MAIN_SERVER_USER)            
@@ -50,35 +51,36 @@ class Command(BaseCommand):
             user.save()
 
             r = s.get(apiUrl + 'licenses.xml', params=data)
-            for l in serializers.deserialize('xml',r.text):
+            for l in serializers.deserialize('xml',smart_str(r.text)):
                 l.save()
 
             r = s.get(apiUrl + 'license_agreements.xml', params=data)
-            for la in serializers.deserialize('xml',r.text):
+            for la in serializers.deserialize('xml',smart_str(r.text)):
                 la.save()
 
             r = s.get(apiUrl + 'lab_groups.xml', params=data)
-            for lg in serializers.deserialize('xml',r.text):
+            for lg in serializers.deserialize('xml',smart_str(r.text)):
                 lg.save()
 
             r = s.get(apiUrl + 'chemical_classes.xml', params=data)
-            for cc in serializers.deserialize('xml',r.text):
+            for cc in serializers.deserialize('xml',smart_str(r.text)):
                 cc.save()
 
             r = s.get(apiUrl + 'compounds.xml', params=data)
-            for c in serializers.deserialize('xml',r.text):
+            for c in serializers.deserialize('xml',smart_str(r.text)):
                 c.save()
 
             r = s.get(apiUrl + 'compound_roles.xml', params=data)
-            for cr in serializers.deserialize('xml',r.text):
+            for cr in serializers.deserialize('xml',smart_str(r.text)):
                 cr.save()
 
             r = s.get(apiUrl + 'performed_reactions.xml', params=data)
-            for pr in serializers.deserialize('xml',r.text):
-                pr.save(calcDescriptors=False)
+            for pr in serializers.deserialize('xml',smart_str(r.text)):
+                pr.object.calcDescriptors = False
+                pr.save()
 
             r = s.get(apiUrl + 'compound_quantities.xml', params=data)
-            for cq in serializers.deserialize('xml',r.text):
+            for cq in serializers.deserialize('xml',smart_str(r.text)):
                 cq.save()
 
         else:
