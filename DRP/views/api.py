@@ -39,7 +39,7 @@ def api1(request, component):
                     else:
                         licenses = License.objects.filter(licenseagreement__in=licenseAgreements)
                         if component == 'licenses':
-                            return HttpResponse(serializers.serialize('xml', licenseAgreements), content_type='Application/xml')
+                            return HttpResponse(serializers.serialize('xml', licenses), content_type='Application/xml')
                         else:
                             compoundQuantities = CompoundQuantity.objects.filter(reaction__in=[p for p in performedReactions])
                             if component == 'compound_quantities':
