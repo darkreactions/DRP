@@ -31,6 +31,6 @@ class Command(BaseCommand):
                 hashDictionary[h] = reactantString
         if collisionCount > 0:
             e = EmailToAdmins('Dark Reactions Project: Hash Collision Failure',
-                                'A collision between reaction space hashes has occured. Please contact the DRP development team and file a bug report.')
+                              'A collision between reaction space hashes has occured. Please contact the DRP development team and file a bug report.')
             e.send()
             exit(1)
