@@ -25,7 +25,7 @@ class ListPerformedReactions(ListView):
   paginate_by=20
   
   @labGroupSelected #sets self.labGroup
-  def dispatch(self, request, *args, **kwargs):
+  def dispatch(self, request, filetype='.html', *args, **kwargs):
 
     if self.labGroup is not None:
         self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
