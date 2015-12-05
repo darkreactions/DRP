@@ -68,11 +68,20 @@ class Command(BaseCommand):
 
             r = s.get(apiUrl + 'compounds.xml', params=data)
             for c in serializers.deserialize('xml',smart_str(r.text)):
+                self.stdout.write(str(c.object.labGroup.pk))
+                self.stdout.write(str(c.object.labGroup.email))
+                self.stdout.write(str(c.object.labGroup.title))
+                self.stdout.write(str(c.object.labGroup.address))
                 c.save()
 
             r = s.get(apiUrl + 'compound_roles.xml', params=data)
             for cr in serializers.deserialize('xml',smart_str(r.text)):
                 cr.save()
+
+            r = s.get(apiUrl + 'reactions.xml', params=data)
+            for rr in serializers.deserialize('xml',smart_str(r.text)):
+                rr.object.calcDescriptors = False
+                rr.save()
 
             r = s.get(apiUrl + 'performed_reactions.xml', params=data)
             for pr in serializers.deserialize('xml',smart_str(r.text)):
