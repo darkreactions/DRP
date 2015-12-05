@@ -119,46 +119,46 @@ class Command(BaseCommand):
                     self.stdout.write('Creating reaction with reference {}'.format(p.reference))
                     p.validate_unique()
                     p.save()
-#        with open(path.join(folder, 'performedReactions.tsv')) as reactions:
-#            reader = csv.DictReader(reactions, delimiter='\t')
-#            for r in reader:
-#                self.stdout.write('Reiterating for reaction with reference {}'.format(r['reference'].lower()))
-#                ps = PerformedReaction.objects.filter(reference=r['reference'].lower())
-#                if ps.count() > 1:
-#                    ps = ps.filter(valid=True)
-#                if ps.exists():
-#                    if ps.count() > 1:
-#                        raise RuntimeError('{} has more than one reaction'.format(r['reference'].lower()))
-#                    p = ps[0]
-#                    try:
-#                        p.duplicateOf = PerformedReaction.objects.get(reference=r['duplicateOf.reference'].lower())
-#                        p.save()
-#                    except PerformedReaction.DoesNotExist:
-#                        pass
-#                    outValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=outcomeDescriptor, reaction=p)[0]
-#                    outValue.value = int(r['outcome']) if r['outcome'] in (str(x) for x in range (1, 5)) else None 
-#                    outValue.save()
-#                    outBoolValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=outcomeBooleanDescriptor, reaction=p)[0]
-#                    outBoolValue.value = True if outValue.value > 2 else False
-#                    outBoolValue.save()
-#                    purityValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=purityDescriptor, reaction=p)[0]
-#                    purityValue.value = int(r['purity']) if r['purity'] in ('1', '2') else None
-#                    purityValue.save()
-#                    temperatureDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=temperatureDescriptor, reaction=p)[0]
-#                    temperatureDescriptorValue.value = float(r['temp']) + 273.15 if r['temp'] not in ('', '?') else None
-#                    temperatureDescriptorValue.save()
-#                    timeDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=timeDescriptor, reaction=p)[0]
-#                    timeDescriptorValue.value = float(r['time'])*60 if r['time'] not in ['', '?'] else None
-#                    timeDescriptorValue.save()
-#                    pHDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=pHDescriptor, reaction=p)[0]
-#                    pHDescriptorValue.value = float(r['pH']) if r['pH'] not in ('', '?') else None
-#                    pHDescriptorValue.save()
-#                    preHeatStandingDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=preHeatStandingDescriptor, reaction=p)[0]
-#                    preHeatStandingDescriptorValue.value = bool(r['pre_heat standing']) if r.get('pre_heat standing') not in ('', None) else None
-#                    preHeatStandingDescriptorValue.save()
-#                    teflonDescriptorValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=teflonDescriptor, reaction=p)[0]
-#                    teflonDescriptorValue.value = bool(int(r['teflon_pouch'])) if r.get('teflon_pouch') not in(None, '') else None
-#                    teflonDescriptorValue.save()
+        with open(path.join(folder, 'performedReactions.tsv')) as reactions:
+            reader = csv.DictReader(reactions, delimiter='\t')
+            for r in reader:
+                self.stdout.write('Reiterating for reaction with reference {}'.format(r['reference'].lower()))
+                ps = PerformedReaction.objects.filter(reference=r['reference'].lower())
+                if ps.count() > 1:
+                    ps = ps.filter(valid=True)
+                if ps.exists():
+                    if ps.count() > 1:
+                        raise RuntimeError('{} has more than one reaction'.format(r['reference'].lower()))
+                    p = ps[0]
+                    try:
+                        p.duplicateOf = PerformedReaction.objects.get(reference=r['duplicateOf.reference'].lower())
+                        p.save()
+                    except PerformedReaction.DoesNotExist:
+                        pass
+                    outValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=outcomeDescriptor, reaction=p)[0]
+                    outValue.value = int(r['outcome']) if (r['outcome'] in (str(x) for x in range (1, 5))) else None 
+                    outValue.save()
+                    outBoolValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=outcomeBooleanDescriptor, reaction=p)[0]
+                    outBoolValue.value = True if (outValue.value > 2) else False
+                    outBoolValue.save()
+                    purityValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=purityDescriptor, reaction=p)[0]
+                    purityValue.value = int(r['purity']) if (r['purity'] in ('1', '2')) else None
+                    purityValue.save()
+                    temperatureDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=temperatureDescriptor, reaction=p)[0]
+                    temperatureDescriptorValue.value = (float(r['temp']) + 273.15) if (r['temp'] not in ('', '?')) else None
+                    temperatureDescriptorValue.save()
+                    timeDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=timeDescriptor, reaction=p)[0]
+                    timeDescriptorValue.value = float(r['time'])*60 if (r['time'] not in ['', '?']) else None
+                    timeDescriptorValue.save()
+                    pHDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=pHDescriptor, reaction=p)[0]
+                    pHDescriptorValue.value = float(r['pH']) if (r['pH'] not in ('', '?')) else None
+                    pHDescriptorValue.save()
+                    preHeatStandingDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=preHeatStandingDescriptor, reaction=p)[0]
+                    preHeatStandingDescriptorValue.value = bool(r['pre_heat standing']) if (r.get('pre_heat standing') not in ('', None)) else None
+                    preHeatStandingDescriptorValue.save()
+                    teflonDescriptorValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=teflonDescriptor, reaction=p)[0]
+                    teflonDescriptorValue.value = bool(int(r['teflon_pouch'])) if (r.get('teflon_pouch') not in(None, '')) else None
+                    teflonDescriptorValue.save()
         with open(path.join(folder, 'compound_labs.tsv')) as compounds:
             reader = csv.DictReader(compounds, delimiter='\t')
             cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
@@ -215,11 +215,11 @@ class Command(BaseCommand):
             reader = csv.DictReader(cqs, delimiter='\t')
             for r in reader:
                 try:
-                    compound = Compound.objects.get(abbrev=r['compound.abbrev'])
+                    reaction = PerformedReaction.objects.get(reference=r['reaction.reference'])
+                    compound = Compound.objects.get(abbrev=r['compound.abbrev'], labGroup=reaction.labGroup)
                     if r['compound.abbrev'] in ('water', 'H2O'):
                         r['density'] = 1
                     mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
-                    reaction = PerformedReaction.objects.get(reference=r['reaction.reference'], valid=True)
                     if r['compoundrole.name'] != 'pH':
                         self.stdout.write('adding {} to {}'.format(compound.abbrev, reaction.reference))
                         compoundrole = CompoundRole.objects.get_or_create(label=r['compoundrole.name'])[0]
