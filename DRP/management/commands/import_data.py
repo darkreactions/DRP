@@ -75,9 +75,9 @@ class Command(BaseCommand):
                 cr.save()
 
             r = s.get(apiUrl + 'reactions.xml', params=data)
-            for r in serializers.deserialize('xml', smart_str(r.text)):
-                r.object.calcDescriptors = False
-                r.save()
+            for rr in serializers.deserialize('xml',smart_str(r.text)):
+                rr.object.calcDescriptors = False
+                rr.save()
 
             r = s.get(apiUrl + 'performed_reactions.xml', params=data)
             for pr in serializers.deserialize('xml',smart_str(r.text)):
