@@ -4,8 +4,9 @@ Dark Reaction Project README
 ######Last Updated by Casey Falk -- 1/13/15
 
 1. **Setup and General Information**
-  1. Setup of the Server/a Test-bed
-  2. Important Directories
+  1. Accessing the Main Server
+  2. Setup of the Server/a Test-bed
+  3. Important Directories
   3. Django Directory Architecture
   4. Creating a User
   5. Connecting a User to BitBucket with an SSH Key
@@ -38,12 +39,6 @@ The website can be accessed at [darkreactions.haverford.edu](http://darkreaction
 
 For a complete, step-by-step guide on this, please check out "setup.md". I leave the installation process for that process and will focus on the actual architecture of the system here. Also note that you can use `git clone https://github.com/cfalk/DRP.git` to clone the repo to your machine if you have been granted read-access to the the private GitHub repo.
 
-
-**Important Directories**
-
-There are a few directories that are vital to hosting the site.  Notably, these are the directories of NGINX and UWSGI -- respectively "/etc/nginx/" and "/etc/uwsgi/". NGINX is responsible for serving static files and distributing HTTP requests; UWSGI acts as the gateway from NGINX to the Django files (located in the home directory of the "drp" user: "/home/drp/web/darkreactions.haverford.edu/app/").
-
-
 **Django Directory Architecture**
 
 The DRP Django Project is set up as follows inside the DRP directory:
@@ -54,29 +49,20 @@ The DRP Django Project is set up as follows inside the DRP directory:
   - HowToCommitToTheGitRepo.txt	*-- Instructions for pairing an SSH Key with BitBucket.*
   - DRP_nginx	*-- The NGINX configuration. Move to /etc/nginx/sites-enabled/*
   - DRP_uwsgi	*-- The UWSGI configuration. Move to /etc/uwsgi/apps-enabled/*
-  - ChemAxonLicense.cxl	*-- A ChemAxon license file that should go in /<home>/.chemaxon/*
   - manage.py	*-- The Django management file -- leave it as it is.*
 
 1. **DRP/** *(The DRP App)*
-  - retrievalFunctions.py	*-- Contains functions for retrieving database entries.*
-  - database_construction.py	*-- "                    "  adding database entries.*
-  - models.py		*-- Contains all the Django models and some important accessors.*
-  - settings.py	*-- Contains settings for the database, admin emails, and more.*
-  - urls.py		*-- Responsible for mapping a URL call to a function call.*
-  - data_config.py	*-- Sets the license file, some static directories, and more.*
-  - [more files].py	*-- The logging, email, and view helper functions (etc.).*
-
-  - research/		*-- Research files incorporated into the DRP scripts.*
-  - management/	*-- Directory to add custom `python manage.py` commands.*
-  - templatetags/	*-- Directory to add custom Django template tags.*
+  - models/		*-- Contains all the Django models and some important accessors.*
+  - settings_example.py	*-- Contains example settings for the database; true settings are placed in settings.py (see setup.md).*
+  - urls/		*-- Responsible for mapping a URL call to a function call; see the django documentation for details.*
+  - research/		*-- A folder for very experimental/highly unstable code.*
+  - management/	*-- Directory to add custom `python manage.py` commands- see the django documentation.*
+  - templatetags/	*-- Directory to add custom Django template tags- see the django documentation.*
   - views/		*-- Directory of various views sorted into different files.*
-  - compound_calculations/
-  - migrations/		*-- South Migration Files -- don't modify manually.*
+  - migrations/		*-- South Migration Files; see South documentation for details.*
   - model_building/		*-- Scripts for building the model itself.*
   - recommendation/		*-- Scripts for calculating and storing recommendations.*
 2. **logs** *-- (Directory for the log files of worker processes.)*
-  - compound_calculations/ 	*-- The worker process logs for compound property calcs.*
-  - seed_recommend/		* -- logs for seed recommendations.*
 3. **templates** *(The HTML templates for Django Views.)*
 4. **research** *(Any "research" scripts that are still being explored.)*
 5. **static** *(Any static files for which Django can skip templating.)*
@@ -85,77 +71,13 @@ The DRP Django Project is set up as follows inside the DRP directory:
   1. js/	*-- Any Javascript for any view belongs in this directory.*
        universal.js *-- Contains Javascript used on nearly every page.*
   2.  css/	*-- The CSS for any view should go here.*
-       universal.css *-- Contains styling used on nearly every page.*
   3.  icons/	*-- Small "icon" images belong here -- such as the hover-button images.*
   4.  images/	*-- Any large images for the site should go here (eg: the logo).*
-  5.  licenses/	*-- The current and past licenses.*
-  6.  admin/	*-- CSS for the /admin/ page. Feel free to ignore.*
-6. **tmp**		*-- Calculation files for compounds. Don't modify manually.*
-7. **test_scripts** *-- Scripts that test site status (etc).*
+  6.  admin/	*-- CSS for the /admin/ page. Used in many django installations.*
 
 There are many files that are not listed above in order to elucidate the "framework" of the DRP Django Project succinctly. Notably, there are many python files in the views and research directories that are not listed above -- but which should contain explanatory comments in the files themselves.
 
-
-**Creating a User**
-
-After logging in, you'll want to make another user. The command for
-that is pretty simple: "sudo adduser <theNewUserName>". It should
-prompt you then to make a password and for some other details
-(which you can skip).
-
-Next, give the account sudo access; to do so, all we need to do
-is add the new user to the "sudo" group. Run the command:
-"sudo adduser <theNewUserName> sudo". This change will take effect
-the next time the new user logs in. Hurray!
-
-
-**Connecting a User to BitBucket with an SSH Key**
-
-To start, hop over to BitBucket and log in/make an account. Then, follow the instructions in ".../DRP/HowToCommitToTheGitRepo.txt" to create and pair your development user with the BitBucket Repo. Note that to push, you'll still need to be added to the BitBucket Organization.
-
-
-**Using a Test Bed ON the DRP Server**
-
-This should only be used as a last-resort when you cannot develop
-locally -- as this can endanger the integrity and processes running
-on the production server.
-
-Another disclaimer: note that any test bed should be placed in the
-home directory of your own user and should always use the test database.
-Only connect to the actual database if you need the most up-to-date
-database version -- and always make sure to back up the database before
-you perform any script that may modify the database in any way.
-
-With those warnings in place, setting up a test bed is simple. First,
-"cd" to your home directory and check BitBucket for the repository URL
-that you can use to copy the repository to your development directory with
-the command: "git clone <theOverlyLongURLForTheGitRepo>".
-
-There are a few settings you must change in ".../DRP/settings.py"
-(notably the database password and the database name "DRP_db_test" is the
-test database, whereas "DRP_db" is the actual database.). Remember, data
-is gold.
-
-Django provides a nifty test-server through the command:
-`python manage.py runserver <ip>:<port>`. This "runserver" serves static
-files and operates slowly -- but allows rapid prototyping and development.
-Definitely use this in development rather than NGINX and UWSGI, as it will
-remove many obstacles and allow you to work faster and more efficiently.
-Check more out online: https://docs.djangoproject.com/en/dev/ref/django-admin/
-
-
 **Using a Test Bed OFF of the DRP Server**
-
-This is CERTAINLY the recommended development strategy. Note that the
-same process as described above can be used to set up the Django Project.
-However, you'll want to SCP a version of the database over to your
-development box and set up MySQL appropriately (see the setup.txt file above).
-Any of the backups in the DropBox backup folder should suffice.
-
-If you do not set up ChemAxon or WEKA, the ConfigManager in `data_config.py` will
-throw errors when you try to start the project. This error-checking can be disabled
-by using `validate_config=False` instead of `True` in [data_config.py](https://github.com/cfalk/DRP/blob/master/DRP/data_config.py#L18).
-
 
 **Accessing the GitHub Repo and Notes on the Repo Structure**
 
