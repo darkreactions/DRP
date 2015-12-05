@@ -68,10 +68,6 @@ class Command(BaseCommand):
 
             r = s.get(apiUrl + 'compounds.xml', params=data)
             for c in serializers.deserialize('xml',smart_str(r.text)):
-                self.stdout.write(str(c.object.labGroup.pk))
-                self.stdout.write(str(c.object.labGroup.email))
-                self.stdout.write(str(c.object.labGroup.title))
-                self.stdout.write(str(c.object.labGroup.address))
                 c.save()
 
             r = s.get(apiUrl + 'compound_roles.xml', params=data)
