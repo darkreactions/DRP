@@ -118,7 +118,7 @@ class Command(BaseCommand):
                         )
                     self.stdout.write('Creating reaction with reference {}'.format(p.reference))
                     p.validate_unique()
-                    p.save()
+                    p.save(calcDescriptors=False)
         with open(path.join(folder, 'performedReactions.tsv')) as reactions:
             reader = csv.DictReader(reactions, delimiter='\t')
             for r in reader:
@@ -243,10 +243,10 @@ class Command(BaseCommand):
                         quantity.save()
                     else:
                         reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(r['compound.abbrev'], r['amount'], r['unit'])
-                        reaction.save()
+                        reaction.save(calcDescriptors=False)
                 except Compound.DoesNotExist as e:
                     reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
                     reaction.valid = False
-                    reaction.save()
+                    reaction.save(calcDescriptors = False)
                 except PerformedReaction.DoesNotExist as e:
                     pass
