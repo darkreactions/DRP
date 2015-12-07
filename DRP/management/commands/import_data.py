@@ -82,7 +82,16 @@ class Command(BaseCommand):
             r = s.get(apiUrl + 'performed_reactions.xml', params=data)
             for pr in serializers.deserialize('xml',smart_str(r.text)):
                 pr.object.calcDescriptors = False
+                pr.object.duplicateOf = None
                 pr.save()
+
+            for pr in serializers.deserialize('xml',smart_str(r.text)):
+                pr2 = DRP.models.PerformedReaction.objects.get(pk=pr.object.pk)
+                try:
+                    pr2.duplicateOf = pr.object.duplicateOf
+                    pr2.save(calcDescriptors = False)
+                except DRP.models.PerformedReaction.DoesNotExist as e:
+                    pass
 
             r = s.get(apiUrl + 'compound_quantities.xml', params=data)
             for cq in serializers.deserialize('xml',smart_str(r.text)):
