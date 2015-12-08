@@ -10,7 +10,6 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from itertools import chain
 
-
 def slugify(text):
     """Return a modified version of slug text.
 
@@ -19,6 +18,57 @@ def slugify(text):
     """
     return _slugify(text).replace('-', '_')
 
+
+class DescriptorQuerySet(models.query.QuerySet):
+    def __init__(self, model = None, **kwargs):
+        """Initialises the queryset"""
+        model = Descriptor if model is None else model
+        super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
+
+    def downcast(self):
+
+        classes = ["categoricaldescriptor", "ordinaldescriptor",
+                       "numericdescriptor", "booleandescriptor"]
+        rxn_classes = ["catrxndescriptor", "ordrxndescriptor",
+                           "numrxndescriptor", "boolrxndescriptor"]
+        pred_rxn_classes = ["predcatrxndescriptor", "predordrxndescriptor",
+                             "prednumrxndescriptor", "predboolrxndescriptor"]
+
+        for item in super(DescriptorQuerySet, self).iterator():
+            """Return an instance of this descriptor as its deepest subclass."""
+            found = False
+
+            for c in classes:
+
+              if hasattr(item, c):
+                sub_item = getattr(item, c)
+                for rxn_c in rxn_classes:
+
+                  if hasattr(sub_item, rxn_c):
+                    sub_sub_item = getattr(sub_item, rxn_c)
+
+                    for pred_rxn_c in pred_rxn_classes:
+                      if hasattr(sub_sub_item, pred_rxn_c):
+                        yield getattr(sub_sub_item, pred_rxn_c)
+                        found = True
+
+                    if not found:
+                      yield getattr(sub_item, rxn_c)
+                      found = True
+
+                if not found:
+                    yield sub_item
+                    found = True
+
+            if not found:
+                yield item
+
+
+class DescriptorQuerySetManager(models.Manager):
+    use_for_related_fields = True
+
+    def get_queryset(self):
+        return DescriptorQuerySet()
 
 class Descriptor(models.Model):
 
@@ -35,6 +85,8 @@ class Descriptor(models.Model):
             'calculatorSoftware',
             'calculatorSoftwareVersion'
         )
+
+    objects = DescriptorQuerySetManager()
 
     heading = models.CharField(
         max_length=200,
@@ -70,59 +122,6 @@ class Descriptor(models.Model):
         http://www.cs.waikato.ac.nz/ml/weka/arff.html
         """
         return'@attribute {} ' .format(self.csvHeader)
-
-    def downcast(self):
-        """Return an instance of this descriptor as its deepest subclass."""
-
-        classes = ["categoricaldescriptor", "ordinaldescriptor",
-                   "numericdescriptor", "booleandescriptor"]
-        rxn_classes = ["catrxndescriptor", "ordrxndescriptor",
-                       "numrxndescriptor", "boolrxndescriptor"]
-
-        for c in chain(classes, rxn_classes):
-
-            if hasattr(self, c):
-                sub_self = getattr(self, c)
-                for rxn_c in rxn_classes:
-                    if hasattr(sub_self, rxn_c):
-                        return getattr(sub_self, rxn_c)
-                    else:
-                        return sub_self
-
-        return self
-
-        """
-        try:
-          return self.categoricaldescriptor.catrxndescriptor
-        except CatRxnDescriptor.catrxndescriptor.DoesNotExist:
-          return self.categoricaldescriptor
-        except CategoricalDescriptor.DoesNotExist:
-          pass
-
-        try:
-          return self.numericdescriptor.numrxndescriptor
-        except NumericDescriptor.DoesNotExist:
-          return self.numericdescriptor
-        except Descriptor.DoesNotExist:
-          pass
-
-        try:
-          return self.booleandescriptor.boolrxndescriptor
-        except BooleanDescriptor.DoesNotExist:
-          return self.booleandescriptor
-        except Descriptor.DoesNotExist:
-          pass
-
-        try:
-          return self.ordinaldescriptor.ordrxndescriptor
-        except OrdinalDescriptor.DoesNotExist:
-          return self.ordinaldescriptor
-        except Descriptor.DoesNotExist:
-          pass
-
-
-        return self
-        """
 
     def __unicode__(self):
         """Unicode represenation of a descriptor is it's name."""

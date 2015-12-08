@@ -271,6 +271,9 @@ CACHES = {
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LIBRARY_CHOICES = ()
 TOOL_CHOICES = ()
+LIBRARY_CHOICES=(["weka"]*2,)
+TOOL_CHOICES=(["svm"]*2,)
+SPLITTER_CHOICES=(["MutualInfoSplitter"]*2,["KFoldSplitter"]*2)
 
 EMPTY_LABEL = '----'
 

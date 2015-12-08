@@ -8,15 +8,12 @@ import datetime
 
 class ModelVisitor(AbstractModelVisitor):
 
-  def __init__(self):
-    super(ModelVisitor, self).__init__()
-    self.stats_model.library = "weka"
-    self.stats_model.tool = "svm"
-    self.stats_model.iterations = 1 # Generate a single SVM instead of an average.
-    self.stats_model.save()
+  def __init__(self, modelContainer, **kwargs):
+    super(ModelVisitor, self).__init__("weka", "svm", 1, modelContainer, **kwargs)
 
     self.model_filename = "{}.model".format(self.getModelTag())
-    self.WEKA_VERSION = "3.6"
+    self.WEKA_VERSION = "3.6" # The version of WEKA to use.
+    self.debug = False # Set to "True" to enable printing of debug-messages.
 
   def _train(self):
     reactions = self.getTrainingData()
@@ -34,7 +31,6 @@ class ModelVisitor(AbstractModelVisitor):
     self.stats_model.end_time = datetime.datetime.now()
     self.stats_model.save()
 
-
   def predict(self, reactions, suffix="predict"):
     arff_file = self._prepareArff(reactions, suffix=suffix)
     model_file = self.getModelFilename()
@@ -45,23 +41,23 @@ class ModelVisitor(AbstractModelVisitor):
     # Currently, we support only one "response" variable.
     response_index = self.getPredictors().count()+1
 
+    #TODO: Validate this input.
     command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
     self._runWekaCommand(command)
 
-    response = self.getResponses().first()
+    response = self.getResponses()[0]
     return { response : self._readWekaOutputFile(results_path) }
 
 
   def _prepareArff(self, reactions, suffix=""):
     """Writes an *.arff file using the provided queryset of reactions."""
+    if self.debug: print "Preparing ARFF file..."
+
     filename = "{}_{}_{}.arff".format(self.getModelTag(), suffix, time.time())
     filepath = os.path.join(settings.TMP_DIR, filename)
     with open(filepath, "w") as f:
       whitelist = list(self.getPredictors()) + list(self.getResponses())
       reactions.toArff(f, expanded=True, whitelistDescriptors=whitelist)
-
-    if self.DEBUG:
-      print "File written: {}".format(filepath)
 
     return filepath
 
@@ -83,7 +79,6 @@ class ModelVisitor(AbstractModelVisitor):
     set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
     command = set_path + command
 
-    if self.DEBUG:
-      print command
+    if self.debug: print "Running in Shell:\n{}".format(command)
 
     subprocess.check_output(command, shell=True)

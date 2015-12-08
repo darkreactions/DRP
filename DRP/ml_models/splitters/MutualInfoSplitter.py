@@ -43,7 +43,7 @@ class Splitter(AbstractSplitter):
     train = reactions.exclude(pk__in=test_reactions)
     test = reactions.filter(pk__in=test_reactions)
 
-    return train, test
+    return [(train, test)]
 
   def _count_compound_sets(self, reactions):
     compound_sets = [frozenset(Compound.objects.filter(reaction=rxn)) for rxn in reactions]

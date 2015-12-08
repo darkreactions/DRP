@@ -1,11 +1,13 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
-from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, TestSet, TrainingSet
-from DRP.models.rxnDescriptorValues import getRxnDescriptorAndEmptyVal, rxnDescriptorPairs
+from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, TestSet, TrainingSet, Descriptor
+from DRP.models.rxnDescriptorValues import rxnDescriptorPairs, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
+from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, NumRxnDescriptor
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
 import os
+import time
 
 
 def createsRxnDescriptor(heading, descriptorType, options={}):
@@ -77,8 +79,19 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
 
                 compoundQuantities.append(compoundQuantity)
 
-            for descriptorHeading,val in descriptorDict.items():
-                descriptor, descriptorVal = getRxnDescriptorAndEmptyVal(descriptorHeading)
+            for descriptor_heading,val in descriptorDict.items():
+                descriptor = Descriptor.objects.filter(heading=descriptor_heading).downcast().next()
+                if isinstance(descriptor, BoolRxnDescriptor):
+                    descriptorVal = BoolRxnDescriptorValue()
+                elif isinstance(descriptor, OrdRxnDescriptor):
+                    descriptorVal = OrdRxnDescriptorValue()
+                elif isinstance(descriptor, CatRxnDescriptor):
+                    descriptorVal = CatRxnDescriptorValue()
+                elif isinstance(descriptor, NumRxnDescriptor):
+                    descriptorVal = NumRxnDescriptorValue()
+                else:
+                    error = "Unknown descriptorValue type for '{}'".format(descriptor)
+                    raise NotImplementedError(error)
 
                 descriptorVal.descriptor = descriptor
                 descriptorVal.value = val

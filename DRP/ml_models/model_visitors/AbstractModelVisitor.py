@@ -1,8 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import os
 from DRP.models import StatsModel, PerformedReaction, TrainingSet, TestSet, TestSetRelation, Descriptor
-from DRP.models.rxnDescriptorValues import getRxnDescriptorValueType, getRxnDescriptorAndEmptyVal
-from django.db.models.fields import AutoField, related
+from DRP.models.predRxnDescriptors import PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDescriptor, PredCatRxnDescriptor
+from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from django.conf import settings
 from django.core.files import File
 
@@ -10,8 +11,27 @@ from django.core.files import File
 class AbstractModelVisitor(object):
   __metaclass__ = ABCMeta
 
-  def __init__(self):
-    self.stats_model = StatsModel()
+  def __init__(self, library, tool, iterations, modelContainer, stats_model=None):
+
+    # Allow this ModelVisitor to "wrap" a pre-existing model instead of building.
+    if stats_model is not None:
+      if not stats_model.container == modelContainer:
+        raise Exception("ModelContainer does not own this stats_model!")
+      self.stats_model = stats_model
+
+    # Verify that the modelContainer has been saved and has a valid ID.
+    elif modelContainer.id is None:
+        raise Exception("ModelContainer object must be saved before making models!")
+
+    else:
+      self.stats_model = StatsModel()
+      self.stats_model.library = library
+      self.stats_model.tool = tool
+      self.stats_model.iterations = iterations
+
+      self.stats_model.container = modelContainer
+      self.stats_model.save()
+
     self.DEBUG = False
 
   def enableDebug(self):
@@ -39,10 +59,6 @@ class AbstractModelVisitor(object):
     predictions = self.predict(reactions, suffix="test")
     self.storePredictions(reactions, predictions)
 
-  def summarize(self):
-    """Prints the performance metrics of this model using its default test-set."""
-    print "Confusion Matrix: {}".format(self.getConfusionMatrices())
-
   def storePredictions(self, reactions, predictions_dict):
     """Stores the predicted responses in the database as RxnDescriptorValues.
        Specifically, expects the predicted responses as a `predictions_dict`
@@ -50,8 +66,21 @@ class AbstractModelVisitor(object):
 
     for response, predictions in predictions_dict.items():
       # Get the predictsDescriptor associated with the `response` outcomeDescriptor.
-      pred_desc, val = getRxnDescriptorAndEmptyVal(response.heading + self._getModelPredictionSuffix())
-      val.descriptor = pred_desc
+      descriptor = Descriptor.objects.filter(heading=response.heading + self._getModelPredictionSuffix()).downcast().next()
+
+      if isinstance(descriptor, BoolRxnDescriptor):
+        val = BoolRxnDescriptorValue()
+      elif isinstance(descriptor, OrdRxnDescriptor):
+        val = OrdRxnDescriptorValue()
+      elif isinstance(descriptor, CatRxnDescriptor):
+        val = CatRxnDescriptorValue()
+      elif isinstance(descriptor, NumRxnDescriptor):
+        val = NumRxnDescriptorValue()
+      else:
+        error = "Unknown RxnDescriptorValue for '{}'".format(descriptor)
+        raise NotImplementedError(error)
+
+      val.descriptor = descriptor
       val.model = self.stats_model
 
       for reaction, prediction in zip(reactions, predictions):
@@ -61,65 +90,6 @@ class AbstractModelVisitor(object):
         val.value = prediction
         val.reaction = reaction
         val.save()
-
-  def getPredictionDict(self):
-    """Returns a dictionary of lists of outcome tuples, where the keys are the
-       outcomeDescriptors and the outcomes are in the format (correct, guess).
-
-       IE: {field: [(true,guess),(true',guess'),(true'',guess'')]}
-       EG: {"outcome": [(1,2),(1,1),(2,2),(3,2),(4,3)]}"""
-
-    predictions = {}
-
-    for pred_descriptor in self.stats_model.predictsDescriptors.all():
-      valueType = getRxnDescriptorValueType(pred_descriptor)
-      orig_heading = pred_descriptor.heading[:-len(self._getModelPredictionSuffix())]
-
-      predictions[orig_heading] = []
-
-      for prediction in valueType.objects.filter(model=self.stats_model,
-                                                 descriptor=pred_descriptor):
-        true = valueType.objects.get(reaction=prediction.reaction,
-                                     descriptor__heading=orig_heading).value
-        guess = prediction.value
-        predictions[orig_heading].append( (true, guess) )
-
-    return predictions
-
-  # TODO: Note that this logic should be moved into a PredictedDescriptor object
-  #       in the next version. For now, it stands only as a way to verify that
-  #       a model did in fact make predictions.
-  def getConfusionMatrices(self):
-    """Returns a dicionary of dictionaries of dictionaries, where the outer keys
-       are the outcomeDescriptors, the middle keys are the "correct" or "true"
-       values, the innermost keys are the "guessed" values that occurred, and
-       the value is the integer number of occurrences of that guess when the
-       true descriptor was the middle key.
-
-       IE: {field: {true: {guess:#, guess':#},
-                    true': {guess:#, guess':#}}
-           }
-       Eg: {"outcome":
-           {"1": {"1": 10
-                  "2": 10
-                  "3": 13
-                  "4": 0
-                 }
-           , ...
-           }
-          } """
-    matrices = {}
-    for field, outcome_tups in self.getPredictionDict().items():
-
-      matrix = {}
-      for true, guess in outcome_tups:
-        if true not in matrix: matrix[true] = {}
-        matrix[true][guess] = matrix[true][guess]+1 if guess in matrix[true] else 1
-
-      matrices[field] = matrix
-
-    return matrices
-
 
   def setTrainingData(self, reactions):
     """Creates a training-set relation between each provided reaction
@@ -148,41 +118,55 @@ class AbstractModelVisitor(object):
     for reaction in reactions:
       TestSetRelation(reaction=reaction, test_set=test_set).save()
 
-  def setPredictors(self, headers):
+  def setPredictors(self, descriptors):
     """Sets the predictor variables (aka, descriptors) for this model.
        This method assumes all necessary Descriptor objects exist already."""
-    descriptors = [Descriptor.objects.get(heading=header) for header in headers]
+
+    if not descriptors.exists():
+      raise Exception("Predictor descriptors cannot be empty!")
+
     self.stats_model.descriptors.add(*descriptors)
     self.stats_model.save()
 
-  def setResponses(self, headings):
+  def setResponses(self, descriptors):
     """Sets the response variables (aka, outcomeDescriptors) for this model.
-       Expects `headings` to be a list of strings, where each string is the
+       Expects `headings` to be a QuerySet, where each string is the
        heading of an existing Descriptor object.
 
        Also creates a unique predictsDescriptor entry for each outcomeDescriptor."""
 
-    descriptors = [Descriptor.objects.get(heading=h).downcast() for h in headings]
+    if not descriptors.exists():
+      raise Exception("Response descriptors cannot be empty!")
+
     self.stats_model.outcomeDescriptors.add(*descriptors)
 
     self.stats_model.save()
 
     pred_descriptors = []
-    for descriptor in descriptors:
-      # Copy the descriptor to a pred_descriptor so we retain the descriptor type.
-      pred_descriptor = descriptor.__class__()
-
-      # Copy any non-Foreign Key fields from the descriptor.
-      for field in descriptor._meta.fields:
-        if not (isinstance(field, AutoField) or
-                isinstance(field, related.OneToOneField) or
-                isinstance(field, related.ManyToManyField)):
-          setattr(pred_descriptor, field.name, getattr(descriptor, field.name) )
+    for descriptor in descriptors.downcast():
+      if isinstance(descriptor, BoolRxnDescriptor):
+        pred_descriptor = PredBoolRxnDescriptor()
+      elif isinstance(descriptor, CatRxnDescriptor):
+        pred_descriptor = PredCatRxnDescriptor()
+      elif isinstance(descriptor, OrdRxnDescriptor):
+        pred_descriptor = PredOrdRxnDescriptor()
+        pred_descriptor.maximum = descriptor.maximum
+        pred_descriptor.minimum = descriptor.minimum
+      elif isinstance(descriptor, NumRxnDescriptor):
+        pred_descriptor = PredNumRxnDescriptor()
+        pred_descriptor.maximum = descriptor.maximum
+        pred_descriptor.minimum = descriptor.minimum
+      else:
+        error = "Predicted Descriptor for '{}'".format(descriptor)
+        raise NotImplementedError(error)
 
       # Add the model's suffix (ID) to the descriptor and name for uniqueness.
-      pred_descriptor.heading = descriptor.heading + self._getModelPredictionSuffix()
+      pred_descriptor.heading = descriptor.heading+self._getModelPredictionSuffix()
       pred_descriptor.name = descriptor.name + self._getModelPredictionSuffix()
       pred_descriptor.model = self.stats_model
+
+      pred_descriptor.prediction_of = descriptor
+      pred_descriptor.stats_model = self.stats_model
 
       pred_descriptor.save()
       pred_descriptors.append(pred_descriptor)
@@ -236,8 +220,8 @@ class AbstractModelVisitor(object):
 
   def getModelTag(self):
     """Returns a unique "name" for this stats_model."""
-    model = self.stats_model
-    return "{}_{}_{}".format(model.library, model.tool, model.id)
+    container = self.stats_model.container
+    return "{}_{}_{}".format(container.library, container.tool, self.stats_model.id)
 
   def getModelFilename(self):
     """Returns the filename of the ML-model file."""

@@ -119,7 +119,6 @@ class Reaction(CsvModel):
 
     @property
     def values(self):
-        valDict = super(Reaction, self).values
         i = 0
         for cq in DRP.models.CompoundQuantity.objects.filter(reaction=self):
             valDict['compound_{}'.format(i)] = cq.compound.abbrev
