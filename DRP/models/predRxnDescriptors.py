@@ -44,7 +44,7 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
     class Meta:
         app_label='DRP'
-        verbose_name = 'Predicted Boolean Reaction Descriptor'
+        verbose_name = 'Predicted Boolean Rxn Descriptor'
 
 
 class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
@@ -52,7 +52,7 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
     class Meta:
         app_label='DRP'
-        verbose_name = 'Predicted Ordinal Reaction Descriptor'
+        verbose_name = 'Predicted Ordinal Rxn Descriptor'
 
     def summarize(self, model):
         return "Accuracy: {}".format(self.accuracy(model))
@@ -100,7 +100,7 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
 
     class Meta:
         app_label='DRP'
-        verbose_name = 'Predicted Numeric Reaction Descriptor'
+        verbose_name = 'Predicted Numeric Rxn Descriptor'
 
 
 class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
@@ -108,5 +108,5 @@ class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
 
     class Meta:
         app_label='DRP'
-        verbose_name = 'Predicted Categorical Reaction Descriptor'
+        verbose_name = 'Predicted Categorical Rxn Descriptor'
 
