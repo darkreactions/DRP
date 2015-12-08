@@ -24,6 +24,8 @@ class StatsModel(models.Model):
     container = models.ForeignKey(ModelContainer)
 
     descriptors = models.ManyToManyField(Descriptor)
+    #TODO: set these as Attributes as per hte model visitor classes, and have 'real' relationships set
+    # up to each descriptor type
     """The input descriptors for the model."""
 
     outcomeDescriptors = models.ManyToManyField(

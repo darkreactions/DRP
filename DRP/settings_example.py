@@ -274,6 +274,7 @@ TOOL_CHOICES = ()
 LIBRARY_CHOICES=(["weka"]*2,)
 TOOL_CHOICES=(["svm"]*2,)
 SPLITTER_CHOICES=(["MutualInfoSplitter"]*2,["KFoldSplitter"]*2)
+STATS_MODEL_DEBUG=True
 
 EMPTY_LABEL = '----'
 

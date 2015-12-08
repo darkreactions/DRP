@@ -64,7 +64,7 @@ class DescriptorQuerySet(models.query.QuerySet):
                 yield item
 
 
-class DescriptorQuerySetManager(models.Manager):
+class DescriptorManager(models.Manager):
     use_for_related_fields = True
 
     def get_queryset(self):
@@ -86,7 +86,7 @@ class Descriptor(models.Model):
             'calculatorSoftwareVersion'
         )
 
-    objects = DescriptorQuerySetManager()
+    objects = DescriptorManager()
 
     heading = models.CharField(
         max_length=200,
