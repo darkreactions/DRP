@@ -6,7 +6,8 @@ from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRx
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from django.conf import settings
 from django.core.files import File
-
+#TODO: set attribute methods to be transactions
+#TODO: set descriptors to forbid the word predicted
 class PredictorsAttribute(object):
 
     def __get__(self, visitor, visitorType=None):
@@ -39,20 +40,12 @@ class ResponsesAttribute(object):
         del visitor.stats_model.descriptors
         visitor.stats_model.save()
 
-class TrainingDataAttribute(object):
+
+class TestingDataAttribute(object):
 
     def __get__(self, visitor, visitorType=None):
-        return PerformedReaction.objects.filter(trainingset__model=visitor.stats_model)
+        return PerformedReaction.objects.filter(
 
-    def __set__(self, visitor, reactions):
-        TrainingSet.objects.filter(model=visitor.stats_model).delete()
-        for reaction in reactions:
-            training_set = TrainingSet(reaction=reaction, model=visitor.stats_model)
-            training_set.save()
-
-    def __delete__(self, visitor)
-        TrainingSet.objects.filter(model=visitor.stats_model).delete()
-   
 
 class AbstractModelVisitor(object):
     __metaclass__ = ABCMeta
@@ -151,45 +144,6 @@ class AbstractModelVisitor(object):
     responses = ResponsesAttribute()
     trainingData = TrainingDataAttribute()
 
-    def setResponses(self, descriptors):
-        """Sets the response variables (aka, outcomeDescriptors) for this model.
-              Expects `headings` to be a QuerySet, where each string is the
-              heading of an existing Descriptor object.
-
-              Also creates a unique predictsDescriptor entry for each outcomeDescriptor."""
-
-        pred_descriptors = []
-        for descriptor in descriptors.downcast():
-            if isinstance(descriptor, BoolRxnDescriptor):
-                pred_descriptor = PredBoolRxnDescriptor()
-            elif isinstance(descriptor, CatRxnDescriptor):
-                pred_descriptor = PredCatRxnDescriptor()
-            elif isinstance(descriptor, OrdRxnDescriptor):
-                pred_descriptor = PredOrdRxnDescriptor()
-                pred_descriptor.maximum = descriptor.maximum
-                pred_descriptor.minimum = descriptor.minimum
-            elif isinstance(descriptor, NumRxnDescriptor):
-                pred_descriptor = PredNumRxnDescriptor()
-                pred_descriptor.maximum = descriptor.maximum
-                pred_descriptor.minimum = descriptor.minimum
-            else:
-                error = "Predicted Descriptor for '{}'".format(descriptor)
-                raise NotImplementedError(error)
-
-            # Add the model's suffix (ID) to the descriptor and name for uniqueness.
-            pred_descriptor.heading = descriptor.heading+self._getModelPredictionSuffix()
-            pred_descriptor.name = descriptor.name + self._getModelPredictionSuffix()
-            pred_descriptor.model = self.stats_model
-
-            pred_descriptor.prediction_of = descriptor
-            pred_descriptor.stats_model = self.stats_model
-
-            pred_descriptor.save()
-            pred_descriptors.append(pred_descriptor)
-
-        self.stats_model.predictsDescriptors.add(*pred_descriptors)
-        self.stats_model.save()
-
     def setSplitter(self, splitter):
         """Stores the classname of a Splitter object to the stats_model."""
         self.stats_model.splitter = splitter.__class__.__name__
@@ -216,16 +170,14 @@ class AbstractModelVisitor(object):
         if not testset_name: testset_name = self.getModelTag()
         return PerformedReaction.objects.filter(testset__name=testset_name)
 
-    def _getModelPredictionSuffix(self):
-        """Returns a unique "suffix" for the predictions of this stats_model."""
-        return "_predicted_{}".format(self.stats_model.id)
 
     def getPredictors(self):
         """Returns a queryset of descriptors used by this stats_model for
               producing predictions of the various response variables."""
         return self.stats_model.descriptors.all()
 
-    def getModelTag(self):
+    @property
+    def tag(self):
         """Returns a unique "name" for this stats_model."""
         container = self.stats_model.container
         return "{}_{}_{}".format(container.library, container.tool, self.stats_model.id)

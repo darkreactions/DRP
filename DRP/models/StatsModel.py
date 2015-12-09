@@ -4,6 +4,26 @@ from StatsModelTag import StatsModelTag
 from ModelContainer import ModelContainer
 from rxnDescriptors import NumRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor
 
+class PredictsDescriptorsAttribute(object):
+
+    def __get__(self, model, modelType=None):
+        return chain(model.predboolrxndescriptor_set.all(), model.predordrxndescriptor_set.all(), model.predcatrxndescriptor_set.all(), model.prednumrxndescriptor_set.all())
+
+    def __set__(self, model, descriptors):
+        model.predboolrxndescriptor_set.clear()
+        model.predordrxndescriptor_set.clear()
+        model.predcatrxndescriptor_set.clear()
+        model.prednumrxndescriptor_set.clear()
+        for descriptor in descriptors:
+            descriptor.stats_model = model
+            descriptors.save()
+
+    def __delete__(self, model):
+        model.predboolrxndescriptor_set.clear()
+        model.predordrxndescriptor_set.clear()
+        model.predcatrxndescriptor_set.clear()
+        model.prednumrxndescriptor_set.clear()
+
 class DescriptorAttribute(object):
 
     def __get__(self, model, modelType=None):
@@ -20,9 +40,9 @@ class DescriptorAttribute(object):
             elif isinstance(descriptor, OrdRxnDescriptor):
                 model.ordRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, CatRxnDescriptor):
-                model.catRxnDescriptors.add(CatRxnDescriptor)
+                model.catRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, NumRxnDescriptor):
-                model.numRxnDescriptors.add(NumRxnDescriptor)
+                model.numRxnDescriptors.add(descriptor)
             else:
                 raise ValueError('An invalid object was assigned as a descriptor')
 
@@ -32,7 +52,7 @@ class DescriptorAttribute(object):
         model.catRxnDescriptors.clear()
         model.ordRxnDescriptors.clear()
 
-class OutComeDescriptorAttribute(object):
+class OutcomeDescriptorAttribute(object):
 
     def __get__(self, model, modelType=None):
         return chain(model.outcomeBoolRxnDescriptors.all(), model.outcomeOrdRxnDescriptors.all(), model.outcomeCatRxnDescriptors.all(), model.outcomeNumRxnDescriptors.all())
@@ -45,14 +65,28 @@ class OutComeDescriptorAttribute(object):
         for descriptor in descriptors:
             if isinstance(descriptor, BoolRxnDescriptor):
                 model.outcomeBoolRxnDescriptors.add(descriptor):
+                pred_descriptor = PredBoolRxnDescriptor()
             elif isinstance(descriptor, OrdRxnDescriptor):
                 model.outcomeOrdRxnDescriptors.add(descriptor)
+                pred_descriptor = PredOrdRxnDescriptor()
+                pred_descriptor.maximum = descriptor.maximum
+                pred_descriptor.minimum = descriptor.minimum
             elif isinstance(descriptor, CatRxnDescriptor):
+                pred_descriptor = PredCatRxnDescriptor()
                 model.outcomeCatRxnDescriptors.add(CatRxnDescriptor)
             elif isinstance(descriptor, NumRxnDescriptor):
                 model.outcomeNumRxnDescriptors.add(NumRxnDescriptor)
+                pred_descriptor = PredNumRxnDescriptor()
+                pred_descriptor.maximum = descriptor.maximum
+                pred_descriptor.minimum = descriptor.minimum
             else:
                 raise ValueError('An invalid object was assigned as a descriptor')
+            pred_descriptor.heading = descriptor.heading + model.predictionSuffix
+            pred_descriptor.name = descriptor.name + model.predictionSuffix
+
+            pred_descriptor.prediction_of = descriptor
+            pred_descriptor.stats_model = model
+            pred_descriptor.save()
 
     def __delete__(self, model):
         model.outcomeBoolRxnDescriptors.clear()
@@ -75,6 +109,8 @@ class StatsModel(models.Model):
     end_time = models.DateTimeField(default=None, null=True)
     iterations = models.IntegerField()
     tags = models.ManyToManyField(StatsModelTag)
+    trainingSet = models.ForeignKey(DataSet)
+    testSets = models.ManyToManyField(DataSet)
 
     container = models.ForeignKey(ModelContainer)
 
@@ -85,7 +121,7 @@ class StatsModel(models.Model):
     numRxnDescriptors = models.ManyToManyField(NumRxnDescriptor)
     """The input descriptors for the model."""
 
-    outcomeDescriptors OutComeDescriptorAttribute()
+    outcomeDescriptors = OutComeDescriptorAttribute()
     outcomeBoolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor, related_name='outcomeForModels'))
     outcomeOrdRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor, related_name='outcomeForModels'))
     outcomeCatRxnDescriptors = models.ManyToManyField(CatRxnDescriptor, related_name='outcomeForModels'))
@@ -99,9 +135,12 @@ class StatsModel(models.Model):
     "outcome_predicted_by_model_id_1", where 1 is the model primary
     key.
     """
+    @property
+    def modelPredictionSuffix(self):
+        """Returns a unique "suffix" for the predictions of this stats_model."""
+        return "_predicted_{}".format(self.pk)
 
-    predictsDescriptors = models.ManyToManyField(
-        Descriptor, related_name="predictedByModels")
+    predictsDescriptors = PredictsDescriptorsAttribute()
     """The descriptors which this model predicts values for."""
 
     # these fields are for use if a model should become invalidated

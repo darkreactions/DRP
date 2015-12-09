@@ -22,7 +22,6 @@ class BasicWekaSVM(DRPTestCase):
 
     container = ModelContainer(library="weka", tool="svm",
                                splitter="KFoldSplitter")
-    container.save()
 
     reactions = PerformedReaction.objects.all()
 
@@ -30,6 +29,7 @@ class BasicWekaSVM(DRPTestCase):
     for training, test in splitter.split(reactions):
       container.build(training, test, predictors, responses)
 
+    container.save()
     print container.summarize()
 
 
