@@ -5,7 +5,7 @@ class FilterForm(forms.Form):
   '''An abstract form class (though not formally an ABC) for performing filter-like searching on data'''
 
   def is_empty(self):
-    '''This method fails for foreignkey and many to many fields, for whuich you will need to implement your own methods'''
+    '''This method fails for foreignkey and many to many fields, for which you will need to implement your own methods'''
     if hasattr(self, 'checkFields'):
       keys = self.checkFields
     else:

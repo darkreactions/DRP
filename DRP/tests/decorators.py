@@ -55,6 +55,33 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
     return c
   return _createsCompound
 
+def createsPerformedReaction(reference, performedDateTime, insertedDateTime, recommendation, legacyRecommendedFlag, valid, public, duplicateOf, inTrainingSetFor, inTestSetFor, compounds, labTitle)
+  '''A class decorater that creates a performed reaction'''
+  def _createsPerformedReaction(c):
+
+    _oldSetup = c.setUp
+    _oldTearDown = c.tearDown
+
+    performedreaction = PerformedReaction(reference=reference, performedDateTime=performedDateTime, insertedDateTime=insertedDateTime, recommendation=recommendation, legacyRecommendedFlag=legacyRecommendedFlag, valid=valid, public=public, duplicateOf=duplicateOf, inTrainingSetFor=inTrainingSetFor, inTestSetFor=inTestSetFor, labTitle=labTitle)
+
+    def setUp(self):
+      performedreaction.labGroup=LabGroup.objects.get(title=labTitle)
+      for abbrev in compounds:
+        for c in Compounds.objects.filter(abbrev=abbrev):
+          performedreaction.compounds.add(c)
+      performedreaction.save()
+      _oldSetup(self)
+
+    def tearDown(self):
+      performedreaction.delete()
+      _oldTaerDown(self)  
+
+    c.setUP = setUp
+    c.tearDown = tearDown
+    return c
+  return _createsPerformedReaction
+
+ 
 def createsChemicalClass(label, description):
   '''A class decorator that creates a test chemical class for the addition of compounds into the database'''
 
@@ -77,6 +104,8 @@ def createsChemicalClass(label, description):
     c.tearDown = tearDown
     return c
   return _createsChemicalClass
+
+ 
 
 def joinsLabGroup(username, labGroupTitle):
   '''A class decorator that creates a test lab group with labGroupTitle as it's title and assigns user identified by
