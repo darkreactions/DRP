@@ -1,0 +1,50 @@
+/* stylesheet for reactions_list.html */
+
+table.reactions-list {
+ border-collapse:collapse;
+}
+
+table.reactions-list, .reactions-list th, .reactions-list td {
+ border:1px solid black;
+}
+
+.reactions-list th, .reactions-list td {
+ padding:1em;
+ text-align:left;
+}
+
+.reactions-list td ul {
+ list-style:none;
+}
+
+.reactions-list td ul li {
+ border:.1em dashed black;
+ margin-bottom:1em;
+}
+
+.reactions-list td ul li ul {
+ list-style:none;
+ padding-left:1em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
