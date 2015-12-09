@@ -24,6 +24,43 @@ descriptorPlugins = [importlib.import_module(plugin) for
 # This prevents a cyclic dependency problem
 
 
+def elementsFormatValidator(molFormula):
+    """A validator for molecular formulae."""
+    elements = {}
+    inBrackets = False
+    currentElement = ''
+    for char in molFormula:
+        if inBrackets:
+            if currentElement not in elements:
+                elements[currentElement] = {'stoichiometry': 0}
+            if char in (str(x) for x in range(0, 10)) or char == '.':
+                strStoichiometry += char
+            elif char == '}':
+                inBrackets = False
+                elements[currentElement]['stoichiometry'] += float(strStoichiometry)
+                currentElement = ''
+                strStoichiometry = ''
+            else:
+                raise ValidationError('Invalid molecular formula format.', 'mol_malform')
+        elif char.isalpha():
+            if char.isupper():
+                if currentElement != '':
+                    if currentElement in elements:
+                        elements[currentElement]['stoichiometry'] += 1
+                    else:
+                        elements[currentElement] = {'stoichiometry': 1}
+                currentElement = char
+            else:
+                currentElement += char
+        elif char == '{':
+            strStoichiometry = ''
+            inBrackets = True
+        elif char == '_':
+            pass
+        else:
+            raise ValidationError('Invalid molecular formula format.', code='mol_malform')
+
+
 class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
 
     """A specialised queryset for outputting Compounds in specific formats."""
@@ -180,7 +217,7 @@ class Compound(CsvModel):
 
     abbrev = models.CharField("Abbreviation", max_length=100)
     """A local, often nonstandard abbreviation for a compound"""
-    name = models.CharField('Name', max_length=300)
+    name = models.CharField('Name', max_length=400)
     """Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)"""
     chemicalClasses = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
     """The class of the compound- examples include Inorganic Salt"""
@@ -204,7 +241,7 @@ class Compound(CsvModel):
         max_length=500,
         blank=True,
         help_text="A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.",
-        validators=[RegexValidator('([A-Z][a-z]*(_{\d+})?)+')]
+        validators=[elementsFormatValidator]
     )
 
     objects = CompoundManager()
@@ -227,9 +264,12 @@ class Compound(CsvModel):
                 raise ValidationError('No CSID set', 'no_csid')
             else:
                 csCompound = cs.get_compound(self.CSID)
-                nameResults = cs.simple_search(self.name)
-                if csCompound not in nameResults:
-                    errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid name', code='invalid_inchi'))
+                if self.name not in ('', None):
+                    nameResults = cs.simple_search(self.name)
+                    if csCompound not in nameResults:
+                        errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid name', code='invalid_inchi'))
+                else:
+                    self.name = csCompound.common_name
                 if self.INCHI == '':
                     self.INCHI = csCompound.stdinchi
                 elif self.INCHI != csCompound.stdinchi:
@@ -255,11 +295,12 @@ class Compound(CsvModel):
                 except PerformedReaction.PerformedReaction.DoesNotExist:
                     pass  # it doesn't matter
         super(Compound, self).save(*args, **kwargs)
-        for lcc in self.lazyChemicalClasses:  # coping mechanism for compounds loaded from csv files; not to be used by other means
-            self.chemicalClasses.add(lcc)
-        if calcDescriptors:  # not generally done, but useful for debugging
-            for descriptorPlugin in descriptorPlugins:
-                descriptorPlugin.calculate(self)
+        if self.pk is not None:
+            for lcc in self.lazyChemicalClasses:  # coping mechanism for compounds loaded from csv files; not to be used by other means
+                self.chemicalClasses.add(lcc)
+            if calcDescriptors:  # not generally done, but useful for debugging
+                for descriptorPlugin in descriptorPlugins:
+                    descriptorPlugin.calculate(self)
 
     @property
     def elements(self):
@@ -267,13 +308,37 @@ class Compound(CsvModel):
 
         Note that this method does not validate the data contained in the database.
         """
-        elements = []
+        elements = {}
+        inBrackets = False
+        currentElement = ''
+        strStoichiometry = ''
         for char in self.formula:
-            if char.isalpha():
-                if char.isupper():
-                    elements.append(char)
+            if inBrackets:
+                if currentElement not in elements:
+                    elements[currentElement] = {'stoichiometry': 0}
+                if char in (str(x) for x in range(0, 10)) or char == '.':
+                    strStoichiometry += char
+                elif char == '}':
+                    inBrackets = False
+                    elements[currentElement]['stoichiometry'] += float(strStoichiometry)
+                    currentElement = ''
+                    strStoichiometry = ''
                 else:
-                    elements[-1] += char
+                    raise ElementException('Invalid molecular formula format.')
+            elif char.isalpha():
+                if char.isupper():
+                    if currentElement != '':
+                        if currentElement in elements:
+                            elements[currentElement]['stoichiometry'] += 1
+                        else:
+                            elements[currentElement] = {'stoichiometry': 1}
+                    currentElement = char
+                else:
+                    currentElement += char
+            elif char == '{':
+                inBrackets = True
+        if currentElement != '':
+            elements[currentElement] = {'stoichiometry': 1}
         return elements
 
     @property
@@ -306,3 +371,10 @@ class Compound(CsvModel):
             except TypeError:
                 res[key] = value
         return res
+
+
+class ElementsException(Exception):
+
+    """An exception for element formats."""
+
+    pass

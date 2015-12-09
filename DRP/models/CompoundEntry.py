@@ -32,6 +32,8 @@ class CompoundEntry(models.Model):
 
     error = ""
 
+    if self.compound == '' and self.abbrev == '': # This clause added by Daniel, 08-Jul-15
+      return []
     if self.custom and not self.smiles:
       error = "Cannot get SMILES of custom compound: '{}'".format(self.abbrev)
     elif not self.smiles:

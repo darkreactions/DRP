@@ -26,6 +26,10 @@ def translate_reactants(lab_group, dataList, single=False, onlyAbbrevs=False, di
   for i, reactionTuple in enumerate(dataList):
     if onlyAbbrevs:
         abbrev = reactionTuple
+        # For debugging
+        #import sys
+        #sys.stdout.write("abbrev, translation_table: " + str(abbrev) + ", " + str(translation_table) + "\n")
+        #sys.stdout.flush()
         if abbrev in translation_table:
           dataList[i] = translation_table[abbrev]
         else:
@@ -43,24 +47,39 @@ def translate_reactants(lab_group, dataList, single=False, onlyAbbrevs=False, di
 
   return dataList
 
+def getMolarMass(compound): #compound string or abbrev string
+  from DRP.models import CompoundEntry
+  import sys
+  # For debugging
+  #sys.stdout.write("in getMoles: compound: " + str(compound) + "\n")
+  compound_lookup = list(CompoundEntry.objects.filter(compound=compound))
+  abbrev_lookup = list(CompoundEntry.objects.filter(abbrev=compound))
+  if len(compound_lookup)>0:
+      return compound_lookup[0].mw
+  else:
+      return abbrev_lookup[0].mw
 
+# Rewriting to take compound or abbrev
 def getMoles(mass, compound):
   from DRP.models import CompoundEntry
+  import sys
+  # For debugging
+  #sys.stdout.write("in getMoles: compound: " + str(compound) + "\n")
   try:
-    molar_mass = CompoundEntry.objects.filter(compound=compound)[0].mw
+    molar_mass = getMolarMass(compound)
     return mass/float(molar_mass)
   except Exception as e:
     print e
-    raise Exception("getMoles: No molar mass available for {}".format(compound))
+    raise Exception("getMoles: No molar mass available for {}: {}, {}".format(compound, e))
 
 
 def getMass(moles, compound):
   from DRP.models import CompoundEntry
   try:
-    molar_mass = CompoundEntry.objects.filter(compound=compound)[0].mw
+    molar_mass = getMolarMass(compound)
     value = moles*float(molar_mass)
     return float("{:.5f}".format(value))
   except Exception as e:
     print e
-    raise Exception("getMass: No molar mass available for {}".format(compound))
+    raise Exception("getMass: No molar mass available for {}: {}, {}".format(compound, e))
 

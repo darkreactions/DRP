@@ -4,7 +4,18 @@
 
 {% block content %}
 <h1 class="bannerText">Reactions Database</h1>  
-{% include "lab_form.html" %}
+{% if user.is_authenticated %}
+    {% include "lab_form.html" %}
+{% endif %}
+  <section>
+    <h1>Downloads</h1>
+    <ul>
+      <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
+      {% if user.is_authenticated %}<li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
+      <li><a href="{% url request.resolver_match.url_name '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
+      {% if user.is_authenticated %}<li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
+    </ul>
+  </section>
 {% if reactions|length > 0 %}
 <table>
   <thead>
@@ -23,7 +34,13 @@
     {% for reaction in reactions %}
   <tbody>
     <tr>
-      <td>{% if reaction.valid %}<a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>{% else %}{{ reaction.reference }}{% endif %}</td>
+      {% if user.is_authenticated %}
+        {% if reaction.labGroup in user.labgroup_set %}
+        <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a></td>
+        {% endif %}
+      {% else %} 
+      <td>{{ reaction.reference }}</td>
+      {% endif %}
       <td>
         <ul>
         {% for quantity in reaction.compoundquantity_set.all %}
@@ -41,24 +58,34 @@
       <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% else %}N/A{% endif %}</td>
       <td>{{ reaction.labGroup.title }}</td>
       <td>
-        {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
-        <form action="{% url 'deleteReaction' %}" method="post">
-          {% csrf_token %}
-          {% performed_rxn_delete_form reaction %}
-          <input type="Submit" value="delete" />
-        </form>
-        {% else %}
-        <form action="{% url 'invalidateReaction' %}" method="post">
-          {% csrf_token %}
-          {% performed_rxn_invalidate_form reaction %}
-          <input type="Submit" value="invalidate" />
-        </form>
+        {% if user.is_authenticated %}
+          {% if reaction.labGroup in user.labgroup_set %}
+            {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
+            <form action="{% url 'deleteReaction' %}" method="post">
+              {% csrf_token %}
+              {% performed_rxn_delete_form reaction %}
+              <input type="Submit" value="delete" />
+            </form>
+            {% else %}
+            <form action="{% url 'invalidateReaction' %}" method="post">
+              {% csrf_token %}
+              {% performed_rxn_invalidate_form reaction %}
+              <input type="Submit" value="invalidate" />
+            </form>
+            {% endif %}
+          {% endif %}
         {% endif %}
       </td>
     </tr>
     {% endfor %}
   </tbody>
-<table>
+</table>
+<ol class="pagination">
+    {% for x in paginator.page_range %}
+        <li><a href="?page={{ x }}">{{ x }}</a></li>
+    {% endfor %}
+</ol>
+
 {% else %}
 <p>There are currently no reactions to display</p>
 {% endif %}

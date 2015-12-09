@@ -1,5 +1,8 @@
 from retrievalFunctions import *
+from DRP.validation import bool_fields
 from logPrinting import print_error, print_log
+from DRP.retrievalFunctions import get_compound_by_name
+import sys
 
    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
    # # # # # # # # # # # # #  CG_calculations  # # # # # # # # # # # # # # # #
@@ -64,6 +67,7 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
   import datetime
 
   try:
+    debug=True
     new_rec = Recommendation()
     #Set the self-assigning fields:
     setattr(new_rec, "lab_group", lab_group)
@@ -72,11 +76,16 @@ def field_list_to_Recommendation(lab_group, lst, in_bulk=False, debug=False):
     #Set the non-user field values.
     fields = get_model_field_names(model="Recommendation")
 
-    for (field, value) in zip(fields, lst[2:]): #Ignore the reference field.
+    for (field, value) in zip(fields[1:], lst[2:]): #Ignore the reference field (and conf)
 
       #Translate Booleans into Boolean values.
+      # Assuming this was supposed to be the bool_fields in DRP.validation and adding import to top of file (there was no value assigned to the name bool_fields)
       if field in bool_fields:
         value = True if value[0].lower() in "1tyc" else False
+
+      # Use the CompoundEntry object to build the rec instead of the compound string
+      if field.startswith("reactant_fk"):
+        value = get_compound_by_name(value)
 
       if debug:
         print "... Setting '{}' as '{}' ({})".format(field, value, type(value))
@@ -131,9 +140,13 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
 
   call_time = datetime.datetime.now()
 
+  # I believe the following comment is no longer applicable to post-ModelStats refactoring code...
   #Either prepare a new "Model Version" or use the latest one for a lab group.
   try:
-    model = get_latest_ModelStats(lab_group)
+    # Was `model = get_latest_ModelStats(lab_group)`, but get_latest_ModelStats takes no argument.
+    # Removing argument. Should get_latest_ModelStats have an optional lab_group argument or was this a
+    # refactoring mistake?
+    model = get_latest_ModelStats()
   except Exception as e:
     print_error("Model not gathered for the Recommendation list: {}".format(e))
 
@@ -143,16 +156,16 @@ def store_new_Recommendation_list(lab_group, recommendations, version_notes = ""
   for rec in recommendations:
     count += 1
     try:
-     print "1: {}".format(rec)
-     new_rec = field_list_to_Recommendation(lab_group, rec, in_bulk=True)
-     new_rec.date_dt = call_time
-     new_rec.model_version = model
-     if seed_source:
-       new_rec.seeded = True
-       new_rec.seed = seed_source #Record if this recommendation is seeded.
+      print "1: {}".format(rec)
+      new_rec = field_list_to_Recommendation(lab_group, rec, in_bulk=True)
+      new_rec.date_dt = call_time
+      new_rec.model_version = model
+      if seed_source:
+        new_rec.seeded = True
+        new_rec.seed = seed_source #Record if this recommendation is seeded.
 
-     new_rec.save() #Store this recommendation in the database
-     num_success += 1
+      new_rec.save() #Store this recommendation in the database
+      num_success += 1
     except Exception as e:
       print_error("Recommendation {} could not be constructed: {}".format(count, e))
 

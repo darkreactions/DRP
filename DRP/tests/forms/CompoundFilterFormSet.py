@@ -36,9 +36,9 @@ class CompoundFilterSetSucceed(BaseFormTest):
         self.formData["form-1-abbrevs"] = "hmta"
         self.formData["form-1-name"] =	"1,3,5,7-tetraazaadamantane"
         self.formData["form-1-chemicalClasses"]= [self.chemicalClass.pk]
-        self.formData["form-2-CSID"] = "3959"
-        self.formData["form-2-INCHI"] = "InChI=1S/C6H12N4/c1-7-2-9-4-8(1)5-10(3-7)6-9/h1-6H2"
-        self.formData["form-2-smiles"] = "C1N2CN3CN1CN(C2)C3"
+        self.formData["form-1-CSID"] = "3959"
+        self.formData["form-1-INCHI"] = "InChI=1S/C6H12N4/c1-7-2-9-4-8(1)5-10(3-7)6-9/h1-6H2"
+        self.formData["form-1-smiles"] = "C1N2CN3CN1CN(C2)C3"
         self.formData["form-1-labGroup"] = self.labgroup.pk 
         self.formData["form-1-js_active"] = False
         #third form 	
@@ -78,10 +78,10 @@ class CompoundFilterSetSucceed(BaseFormTest):
     def test_fetch(self):
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
-        self.assertEqual(fetched[1].abbrev, "hmta", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
-        self.assertEqual(fetched[2].abbrev, "sov", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
         self.assertEqual(fetched.count(), 3, "{} results found.".format(fetched.count()))
+        self.assertEqual(fetched.get(abbrev="2-amep").abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched.get(abbrev='hmta').abbrev, "hmta", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[1].abbrev))
+        self.assertEqual(fetched.get(abbrev="sov").abbrev, "sov", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[2].abbrev))
         
 
 suite = unittest.TestSuite([

@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
 {% block additional_header %}
-
+{% if user.is_authenticated %}
 <nav>
   <ol>
     <li><a href="{% url 'reactionlist' %}">Reactions</a></li>
     <li><a href="{% url 'compoundguide' '/' %}">Compound Guide</a></li>
   </ol>
-</nav>
+</nav> 
+{% endif %}
 
 {% block submenu %}{% endblock %}
 

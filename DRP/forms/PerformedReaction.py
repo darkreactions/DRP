@@ -1,6 +1,7 @@
 '''A module containing code pertaining to forms for the reaction classes'''
 from django import forms
 from DRP.models import PerformedReaction, RecommendedReaction
+from django.contrib.auth.models import User
 from django.forms.widgets import HiddenInput
 
 class PerformedRxnAdminForm(forms.ModelForm):
@@ -15,7 +16,7 @@ class PerformedRxnForm(forms.ModelForm):
   '''A form for creating performed reaction instances in teh databases'''
  
   class Meta:
-    fields=('reference', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf' ) 
+    fields=('reference', 'performedBy', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf') 
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
@@ -27,8 +28,17 @@ class PerformedRxnForm(forms.ModelForm):
     self.fields['labGroup'].queryset = labGroups
     self.fields['recommendation'].queryset = RecommendedReaction.objects.filter(labGroup__in=labGroups)
     self.fields['duplicateOf'].queryset = PerformedReaction.objects.filter(labGroup__in=labGroups)|PerformedReaction.objects.filter(public=True)
+    self.fields['performedBy'].queryset = User.objects.filter(labgroup__in=labGroups)
     if labGroups.exists():
       self.fields['labGroup'].empty_label = None 
+  
+  def clean(self):
+    self.cleaned_data = super(PerformedRxnForm, self).clean()
+    if 'preformedBy' in self.cleaned_data:
+        if not self.fields['labGroup'] in (self.user.labgroup_set | self.cleaned_data['performedBy'].labgroup_set):
+            raise ValidationError('The selected labGroup does not contain both the inputting and experimental user.', 'invalid_lg')
+    return self.cleaned_data
+    
 
   def save(self, commit=True, *args, **kwargs):
     '''Overriden save method automates addition of user that created this instance'''
@@ -66,11 +76,6 @@ class PerformedRxnInvalidateForm(forms.ModelForm):
   def __init__(self, user, *args, **kwargs):
     super(PerformedRxnDeleteForm, self).__init__(*args, **kwargs)
     self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
-
-  def clean_id(self):
-    if self.cleaned_data['id'].inTestSetFor.exists() or self.cleaned_data['id'].inTrainingSetFor.exists():
-      raise ValidationError("This reaction is protected from deletion because it is used in one or more reactions or recommendations.")
-    return self.cleaned_data['id'] 
 
   def save(self):
     self.cleaned_data['id'].valid = False

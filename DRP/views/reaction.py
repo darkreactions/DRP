@@ -12,7 +12,7 @@ from django.forms.models import modelformset_factory
 from DRP.forms import ModelFormSet, FormSet
 from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render, redirect
-from django.http import Http404
+from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 
@@ -22,14 +22,38 @@ class ListPerformedReactions(ListView):
   template_name='reactions_list.html'
   context_object_name='reactions'
   model=PerformedReaction 
+  paginate_by=20
   
-  @method_decorator(login_required)
-  @method_decorator(hasSignedLicense)
-  @method_decorator(userHasLabGroup)
   @labGroupSelected #sets self.labGroup
-  def dispatch(self, request, *args, **kwargs):
-    self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
-    return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
+  def dispatch(self, request, filetype='.html', *args, **kwargs):
+
+    if self.labGroup is not None:
+        self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
+    else:
+        self.queryset = PerformedReaction.objects.filter(public=True)
+
+    fileType = kwargs.get('filetype')
+    if fileType in ('/', '.html', None):
+      return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
+    elif fileType == '.csv':
+      self.paginate_by = None
+      response = HttpResponse(content_type='text/csv')
+      response['Content-Disposition']='attachment; filename="compounds.csv"'
+      if 'expanded' in request.GET and request.user.is_authenticated():
+        self.queryset.toCsv(response, True)
+      else:
+        self.queryset.toCsv(response)
+    elif fileType == '.arff':
+      self.paginate_by = None
+      response = HttpResponse(content_type='text/vnd.weka.arff')
+      response['Content-Disposition']='attachment; filename="compounds.arff"'
+      if 'expanded' in request.GET and request.user.is_authenticated():
+        self.queryset.toArff(response, True)
+      else:
+        self.queryset.toArff(response)
+    else:
+      raise RuntimeError('The user should not be able to provoke this code')
+    return response
 
   def get_context_data(self, **kwargs):
     context = super(ListPerformedReactions, self).get_context_data(**kwargs)
@@ -51,14 +75,11 @@ def reactionForm(request, pk=None):
     except PerformedReaction.DoesNotExist:
       raise Http404("This reaction cannot be found")
   if reaction is not None:
-    if not reaction.valid:
-        raise PermissionDenied()
-    else:
-        reactants = CompoundQuantity.objects.filter(reaction=reaction.reaction_ptr)
-        numRxnDescriptorValues = NumRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-        ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-        boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-        catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr) 
+    reactants = CompoundQuantity.objects.filter(reaction=reaction.reaction_ptr)
+    numRxnDescriptorValues = NumRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
+    ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
+    boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
+    catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr) 
   else:
     reactants=None
     numRxnDescriptorValues = None 
@@ -119,4 +140,17 @@ def deleteReaction(request, *args, **kwargs):
     form.save()
   else:
     raise RuntimeError(str(form.errors))
-  return redirect('reactionlist', '/')
+  return redirect('reactionlist')
+
+@require_POST
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+def invalidateReaction(request, *args, **kwargs):
+  '''A view managing the deletion of reaction objects'''
+  form =PerformedRxnInvalidateForm(data=request.POST, user=request.user) 
+  if form.is_valid():
+    form.save()
+  else:
+    raise RuntimeError(str(form.errors))
+  return redirect('reactionlist')

@@ -150,11 +150,11 @@ def gen_model(title, description, data=None, test_set=None, force=False,
 
   # If `splitter` is set to `None`, the default splitter will be used.
   from DRP.preprocessors import default_preprocessor as preprocessor
-  #from DRP.model_building.splitters import default_splitter as splitter
+  from DRP.model_building.splitters import default_splitter as splitter
   from DRP.postprocessors import default_postprocessor as postprocessor
 
   #from DRP.preprocessors import category_preprocessor as preprocessor
-  from DRP.model_building.splitters import no_test_splitter as splitter
+  #from DRP.model_building.splitters import no_test_splitter as splitter
   #from DRP.model_building.splitters import strict_category_splitter as splitter
 
   construct_kwargs = {

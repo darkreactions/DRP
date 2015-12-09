@@ -177,10 +177,10 @@ def atomic_properties(atom_list, smiles_pairs, counts = None):
         props += distList(indicator, numeric_props)
         props += distList(indicator, numeric_props_weighted)
     except:
-	err = str(atom_list) + " not interesting?"
+        err = str(atom_list) + " not interesting?"
         #raise Exception()
-	print err
-	props += [0 for i in range(48)]
+        print err
+        props += [0 for i in range(48)]
     return props
 
 properties = json.load(open(BASE_DIR+"/scripts/atomic_props.json"))
