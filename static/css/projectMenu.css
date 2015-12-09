@@ -1,0 +1,32 @@
+.projectNav-wrapper {
+ background-color:#dbb16e;
+ width:100%;
+}
+
+ol.projectNav {
+ display:block;
+ position:relative;
+ width:auto;
+ padding:10px 0px;
+ text-align:center;
+ background-color:#dbb16e;
+ margin:0;
+}
+
+.projectNav li {
+ margin:2em;
+}
+
+.projectNav li a:link {
+ font-size: 1em;
+ color:black;
+ text-decoration: none;
+ margin:0;
+} .projectNav li a:visited {
+ color:black;
+} .projectNav li a:hover {
+ color:#303030;
+} .projectNav li a:active {
+ font-weight:bold;
+ text-decoration:underline;
+}

@@ -42,10 +42,10 @@
           {% if testing %}
             <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
           {% endif %}
-          <div>
-            <span>Hello, {{ user.first_name }}</span>
-            <a href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
-          </div>
+          <span class="greeting">
+            Hello, {{ user.first_name }}
+            <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+          </span>
           <a href="/logout.html" id="userLogOut">Log Out</a>
 
         {% else %}
