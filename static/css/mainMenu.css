@@ -11,12 +11,12 @@ body header {
 }
 
 span.greeting {
- padding:.5em;
+ padding:.5em 0 .5em .5em;;
  background-color:#bd0000;
 }
 
-span .greeting a.account {
- margin:0;
+#userInfo span.greeting a.account {
+ margin:1em 0 1em 1em;
 }
 
 img#mainLogo {
@@ -47,8 +47,7 @@ h1.mainTitle {
 } #userInfo a:hover {
  color:#303030;
 } #userInfo a:active {
- font-weight:bold;
- text-decoration:underline;
+ color:#303030;
 }
 
 div.nav-wrapper {
@@ -81,16 +80,15 @@ a.navLink:link {
 } a.navLink:hover {
  color:#303030;
 } a.navLink:active {
- font-weight:bold;
- text-decoration:underline;
+ color:#303030;
 }
 
-ol {
+nav ol {
  list-style:none;
  padding:0;
 }
 
-ol li {
+nav ol li {
  display:inline;
 }
 

@@ -27,6 +27,5 @@ ol.projectNav {
 } .projectNav li a:hover {
  color:#303030;
 } .projectNav li a:active {
- font-weight:bold;
- text-decoration:underline;
+ color:#303030;
 }
