@@ -20,7 +20,7 @@ class PredictorsAttribute(object):
         visitor.stats_model.save()
 
     def __delete__(self, visitor):
-        visitor.stats_model.descriptors.clear()
+        del visitor.stats_model.descriptors
         visitor.stats_model.save()
 
 class ResponsesAttribute(object):
@@ -34,6 +34,25 @@ class ResponsesAttribute(object):
             raise ValueError('Response descriptors cannot be empty!')
         visitor.stats_model.outcomeDescriptors = descriptors
         visitor.stats_model.save()
+
+    def __delete__(self, visitor):
+        del visitor.stats_model.descriptors
+        visitor.stats_model.save()
+
+class TrainingDataAttribute(object):
+
+    def __get__(self, visitor, visitorType=None):
+        return PerformedReaction.objects.filter(trainingset__model=visitor.stats_model)
+
+    def __set__(self, visitor, reactions):
+        TrainingSet.objects.filter(model=visitor.stats_model).delete()
+        for reaction in reactions:
+            training_set = TrainingSet(reaction=reaction, model=visitor.stats_model)
+            training_set.save()
+
+    def __delete__(self, visitor)
+        TrainingSet.objects.filter(model=visitor.stats_model).delete()
+   
 
 class AbstractModelVisitor(object):
     __metaclass__ = ABCMeta
@@ -114,19 +133,6 @@ class AbstractModelVisitor(object):
                 val.reaction = reaction
                 val.save()
 
-    def setTrainingData(self, reactions):
-        """Creates a training-set relation between each provided reaction
-              and the stats_model. Note that `reactions` is assumed to be a
-              queryset of Reaction objects."""
-
-        # Don't allow more than one TrainingSet to be applied to a single StatsModel
-        if TrainingSet.objects.filter(model=self.stats_model).exists():
-            raise Exception("This model already has a TrainingSet!")
-
-        for reaction in reactions:
-            training_set = TrainingSet(reaction=reaction, model=self.stats_model)
-            training_set.save()
-
     def setTestingData(self, reactions, name=""):
         """Creates a new TestSet full of the provided `reactions` and binds
               that TestSet to the stats_model.
@@ -142,6 +148,8 @@ class AbstractModelVisitor(object):
             TestSetRelation(reaction=reaction, test_set=test_set).save()
 
     predictors =  PredictorsAttribute()
+    responses = ResponsesAttribute()
+    trainingData = TrainingDataAttribute()
 
     def setResponses(self, descriptors):
         """Sets the response variables (aka, outcomeDescriptors) for this model.
@@ -149,13 +157,6 @@ class AbstractModelVisitor(object):
               heading of an existing Descriptor object.
 
               Also creates a unique predictsDescriptor entry for each outcomeDescriptor."""
-
-        if not descriptors.exists():
-            raise Exception("Response descriptors cannot be empty!")
-
-        self.stats_model.outcomeDescriptors.add(*descriptors)
-
-        self.stats_model.save()
 
         pred_descriptors = []
         for descriptor in descriptors.downcast():
@@ -208,11 +209,6 @@ class AbstractModelVisitor(object):
             f = open(filename, 'r')
             self.stats_model.fileName.save(filename, File(f))
 
-
-    def getTrainingData(self):
-        """Returns a queryset of the reactions used to train this ML-model."""
-        return PerformedReaction.objects.filter(trainingset__model=self.stats_model)
-
     def getTestingData(self, testset_name=""):
         """Returns a queryset of the reactions used to test this ML-model.
 
@@ -228,10 +224,6 @@ class AbstractModelVisitor(object):
         """Returns a queryset of descriptors used by this stats_model for
               producing predictions of the various response variables."""
         return self.stats_model.descriptors.all()
-
-    def getResponses(self):
-        """Returns a queryset of outcomeDescriptors used by this stats_model."""
-        return self.stats_model.outcomeDescriptors.all()
 
     def getModelTag(self):
         """Returns a unique "name" for this stats_model."""

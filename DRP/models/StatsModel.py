@@ -2,8 +2,63 @@
 from django.db import models
 from StatsModelTag import StatsModelTag
 from ModelContainer import ModelContainer
-from descriptors import Descriptor
+from rxnDescriptors import NumRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor
 
+class DescriptorAttribute(object):
+
+    def __get__(self, model, modelType=None):
+        return chain(model.boolRxnDescriptors.all(), model.ordRxnDescriptors.all(), model.catRxnDescriptors.all(), model.numRxnDescriptors.all())
+
+    def __set__(self, model, descriptors):
+        model.boolRxnDescriptors.clear()
+        model.ordRxnDescriptors.clear()
+        model.catRxnDescriptors.clear()
+        model.numRxnDescriptors.clear()
+        for descriptor in descriptors:
+            if isinstance(descriptor, BoolRxnDescriptor):
+                model.boolRxnDescriptors.add(descriptor):
+            elif isinstance(descriptor, OrdRxnDescriptor):
+                model.ordRxnDescriptors.add(descriptor)
+            elif isinstance(descriptor, CatRxnDescriptor):
+                model.catRxnDescriptors.add(CatRxnDescriptor)
+            elif isinstance(descriptor, NumRxnDescriptor):
+                model.numRxnDescriptors.add(NumRxnDescriptor)
+            else:
+                raise ValueError('An invalid object was assigned as a descriptor')
+
+    def __delete__(self, model):
+        model.boolRxnDescriptors.clear()
+        model.numRxnDescriptors.clear()
+        model.catRxnDescriptors.clear()
+        model.ordRxnDescriptors.clear()
+
+class OutComeDescriptorAttribute(object):
+
+    def __get__(self, model, modelType=None):
+        return chain(model.outcomeBoolRxnDescriptors.all(), model.outcomeOrdRxnDescriptors.all(), model.outcomeCatRxnDescriptors.all(), model.outcomeNumRxnDescriptors.all())
+
+    def __set__(self, model, descriptors):
+        model.outcomeBoolRxnDescriptors.clear()
+        model.outcomeOrdRxnDescriptors.clear()
+        model.outcomeCatRxnDescriptors.clear()
+        model.outcomeNumRxnDescriptors.clear()
+        for descriptor in descriptors:
+            if isinstance(descriptor, BoolRxnDescriptor):
+                model.outcomeBoolRxnDescriptors.add(descriptor):
+            elif isinstance(descriptor, OrdRxnDescriptor):
+                model.outcomeOrdRxnDescriptors.add(descriptor)
+            elif isinstance(descriptor, CatRxnDescriptor):
+                model.outcomeCatRxnDescriptors.add(CatRxnDescriptor)
+            elif isinstance(descriptor, NumRxnDescriptor):
+                model.outcomeNumRxnDescriptors.add(NumRxnDescriptor)
+            else:
+                raise ValueError('An invalid object was assigned as a descriptor')
+
+    def __delete__(self, model):
+        model.outcomeBoolRxnDescriptors.clear()
+        model.outcomeNumRxnDescriptors.clear()
+        model.outcomeCatRxnDescriptors.clear()
+        model.outcomeOrdRxnDescriptors.clear()
 
 class StatsModel(models.Model):
 
@@ -23,13 +78,18 @@ class StatsModel(models.Model):
 
     container = models.ForeignKey(ModelContainer)
 
-    descriptors = models.ManyToManyField(Descriptor)
-    #TODO: set these as Attributes as per hte model visitor classes, and have 'real' relationships set
-    # up to each descriptor type
+    descriptors = DescriptorAttribute()
+    boolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor)
+    ordRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor)
+    catRxnDescriptors = models.ManyToManyField(CatRxnDescriptor)
+    numRxnDescriptors = models.ManyToManyField(NumRxnDescriptor)
     """The input descriptors for the model."""
 
-    outcomeDescriptors = models.ManyToManyField(
-        Descriptor, related_name='outcomeForModels')
+    outcomeDescriptors OutComeDescriptorAttribute()
+    outcomeBoolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor, related_name='outcomeForModels'))
+    outcomeOrdRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor, related_name='outcomeForModels'))
+    outcomeCatRxnDescriptors = models.ManyToManyField(CatRxnDescriptor, related_name='outcomeForModels'))
+    outcomeNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='outcomeForModels'))
     """The descriptors which are being used as outcomes for this model.
 
     For models which make predictions about descriptors, it is probably

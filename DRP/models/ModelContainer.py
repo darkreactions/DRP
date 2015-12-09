@@ -43,14 +43,13 @@ class ModelContainer(models.Model):
         modelVisitor = visitorModules[self.library].ModelVisitor(self)
         for training, test in splitters[self.splitter].Splitter().split(self.reactions):#wow
             modelVisitor.predictors = predictors
-            
+            modelVisitor.responses = responses
+            modelVisitor.trainingData = training
 
     def build(self, training_reactions, test_reactions, predictors, responses, debug=False):
         """Constructs, trains, and then tests a ML-model using a ModelVisitor
              of the type (library, tool, splitter, etc.) prescribed to this
              ModelContainer."""
-
-        model.setResponses(responses)
 
         model.setTrainingData(training_reactions)
         model.setTestingData(test_reactions)
