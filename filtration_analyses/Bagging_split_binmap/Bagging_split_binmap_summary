@@ -1,7 +1,0 @@
-Bagging classified by:
-	      NBayes .... 73.5216% accurate
-	    Logistic .... 74.316%  accurate
-	         SMO .... 74.669%  accurate
-	       KStar .... 82.2595% accurate
-	     Bagging .... 83.0538% accurate
-	         J48 .... 80.8473% accurate
