@@ -73,26 +73,8 @@ class TestingDataAttribute(object):
 class AbstractModelVisitor(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, modelContainer, stats_model=None):
-
-        # Allow this ModelVisitor to "wrap" a pre-existing model instead of building.
-        if stats_model is not None:
-            if stats_model.container !== modelContainer:
-                raise ValueError("ModelContainer does not own this stats_model!")
-            self.stats_model = stats_model
-
-        # Verify that the modelContainer has been saved and has a valid ID.
-        elif modelContainer.pk is None:
-                raise ValueError("ModelContainer object must have ID before making models!")
-
-        else:
-            self.stats_model = StatsModel()
-            self.stats_model.iterations = iterations
-
-            self.stats_model.container = modelContainer
-            self.stats_model.save()
-
-            self.DEBUG = settings.STATS_MODEL_DEBUG
+    def __init__(self, statsModel):
+        self.statsModel = statsModel
 
     @abstractmethod
     def train(self):
@@ -180,9 +162,9 @@ class AbstractModelVisitor(object):
 
         else:
             if self.DEBUG:
-                print "Uploading model file to: {}".format(destined_path)
-            f = open(filename, 'r')
-            self.stats_model.fileName.save(filename, File(f))
+                logger.debug("Uploading model file to: {}".format(destined_path))
+            with open(filename, 'r') as f:
+                self.stats_model.fileName.save(filename, File(f))
 
     def getTestingData(self, testset_name=""):
         """Returns a queryset of the reactions used to test this ML-model.
@@ -196,12 +178,6 @@ class AbstractModelVisitor(object):
         """Returns a queryset of descriptors used by this stats_model for
               producing predictions of the various response variables."""
         return self.stats_model.descriptors.all()
-
-    @property
-    def tag(self):
-        """Returns a unique "name" for this stats_model."""
-        container = self.stats_model.container
-        return "{}_{}_{}".format(container.library, container.tool, self.stats_model.id)
 
     def getModelFilename(self):
         """Returns the filename of the ML-model file."""

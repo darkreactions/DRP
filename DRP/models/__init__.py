@@ -21,7 +21,6 @@ from Compound import Compound
 from CompoundQuantity import CompoundQuantity
 from RecommendedReaction import RecommendedReaction
 from StatsModel import StatsModel
-from StatsModelTag import StatsModelTag
 from ChemicalClass import ChemicalClass
 from ConfirmationCode import ConfirmationCode
 from CompoundRole import CompoundRole

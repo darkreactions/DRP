@@ -21,6 +21,6 @@ class Splitter(AbstractSplitter):
       train = reactions.filter(id__in=[item for b in buckets[:i]+buckets[i+1:]
                                             for item in b])
       test = reactions.filter(id__in=buckets[i])
-      splits.append( (train, test) )
+      splits.append( (self.package(train), tuple(self.package(test))) )
 
     return splits

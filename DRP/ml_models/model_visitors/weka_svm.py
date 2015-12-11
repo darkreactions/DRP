@@ -1,40 +1,28 @@
 from django.conf import settings
-from AbstractModelVisitor import AbstractModelVisitor
+import uuid
+from AbstractModelVisitor import AbstractModelVisitor, logger
 from django.core.exceptions import ImproperlyConfigured
 import subprocess
 import time
 import os
 import datetime
-import logging
-
-logger=loggins.getLogger('DRP.ml_models.AbstractModelVisitor')
 
 class ModelVisitor(AbstractModelVisitor):
 
-  def __init__(self, modelContainer, **kwargs):
-    super(ModelVisitor, self).__init__(1, modelContainer, **kwargs)
+  def __init__(self, *args, **kwargs):
+    super(ModelVisitor, self).__init__(*args, **kwargs)
 
-    self.model_filename = "{}.model".format(self.tag)
     self.WEKA_VERSION = "3.6" # The version of WEKA to use.
     self.debug = settings.STATS_MODEL_DEBUG # Set to "True" to enable printing of debug-messages.
 
-  def train(self):
-    reactions = self.trainingData
-    model_filepath = os.path.join(settings.MODEL_DIR, self.model_filename)
-    arff_file = self._prepareArff(reactions, suffix="train")
-
-    self.stats_model.start_time = datetime.datetime.now()
+  def train(self, reactions, descriptorHeaders, filePath):
+    arff_file = self._prepareArff(reactions, descriptorHeaders)
 
     kernel = "\"weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7\""
-    command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0".format(arff_file, model_filepath, kernel)
+    command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0".format(arff_file, filePath, kernel)
     self._runWekaCommand(command)
 
-    self.setModelFile(model_filepath)
-
-    self.stats_model.end_time = datetime.datetime.now()
-    self.stats_model.save()
-
-  def predict(self, reactions, suffix="predict"):
+  def predict(self, reactions, descriptorHeaders, suffix="predict"):
     arff_file = self._prepareArff(reactions, suffix=suffix)
     model_file = self.getModelFilename()
 
@@ -42,27 +30,27 @@ class ModelVisitor(AbstractModelVisitor):
     results_path = os.path.join(settings.TMP_DIR, results_file)
 
     # Currently, we support only one "response" variable.
-    response_index = self.getPredictors().count()+1
+    headers = [x for x in reactions.expandedCsvHeaders x in descriptorHeaders]
+    response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader)
 
     #TODO: Validate this input.
     command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
     self._runWekaCommand(command)
 
-    response = self.getResponses()[0]
+    response = list(self.statsModel.container.outcomeDescriptors)[0]
     return { response : self._readWekaOutputFile(results_path) }
 
 
-  def _prepareArff(self, reactions, suffix=""):
+  def _prepareArff(self, reactions, whiteListHeaders):
     """Writes an *.arff file using the provided queryset of reactions."""
-    if self.debug: 
-        logging.debug("Preparing ARFF file...")
-
-    filename = "{}_{}_{}.arff".format(self.tag, suffix, time.time())
+    logger.debug("Preparing ARFF file...")
+    filename = "{}_{}.arff".format(self.tag, suffix, uuid.uuid4())
     filepath = os.path.join(settings.TMP_DIR, filename)
+    while os.path.isfile(filepath): #uber paranoid making sure we don't race condition
+        filename = "{}_{}.arff".format(self.tag, uuid.uuid4())
+        filepath = os.path.join(settings.TMP_DIR, filename)
     with open(filepath, "w") as f:
-      whitelist = [d.csvHeader for d in list(self.getPredictors()) + list(self.getResponses())]
-      reactions.toArff(f, expanded=True, whitelistHeaders=whitelist)
-
+      reactions.toArff(f, expanded=True, whiteListHeaders=whiteListHeaders)
     return filepath
 
   def _readWekaOutputFile(self, filename):
@@ -82,7 +70,5 @@ class ModelVisitor(AbstractModelVisitor):
 
     set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
     command = set_path + command
-
-    if self.debug: print "Running in Shell:\n{}".format(command)
-
+    logger.debug("Running in Shell:\n{}".format(command))
     subprocess.check_output(command, shell=True)
