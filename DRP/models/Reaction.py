@@ -78,6 +78,25 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
             CategoricalDescriptor.objects.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(reaction__in=self)).distinct()
         )
 
+    def rows(self, expanded):
+        if expanded:
+            reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch('catrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch('ordrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch('numrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch('compounds')
+            for item in reactions:
+                row = {field.name:getattr(item, field) for field in self.model._meta.fields} + {dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues}
+                i=0
+                for compound in item.compounds:
+                    row['compound_{}'.format(i)] = compound.name
+                    i+=1
+                yield row
+        else:
+            for row in super(CompoundQuerySet, self).rows(expanded):
+                yield row
+
+
 
 class ReactionManager(models.Manager):
     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs"""
@@ -87,7 +106,7 @@ class ReactionManager(models.Manager):
         return ReactionQuerySet()
 
 
-class Reaction(CsvModel):
+class Reaction(models.Model):
     '''A base class on which PerformedReactions and RecommendedReactions are built,
     contains common information to each in a table with an automatically
     generated one to one relationship with the subclasses.
@@ -107,37 +126,9 @@ class Reaction(CsvModel):
         if calcDescriptors and self.calcDescriptors:
             for plugin in descriptorPlugins:
                 plugin.calculate(self)
-
-
+    @property
     def descriptorValues(self):
-        return chain(
-            CatRxnDescriptorValue.objects.filter(reaction=self),
-            BoolRxnDescriptorValue.objects.filter(reaction=self),
-            OrdRxnDescriptorValue.objects.filter(reaction=self),
-            NumRxnDescriptorValue.objects.filter(reaction=self)
-        )
-
-    @property
-    def values(self):
-        i = 0
-        for cq in DRP.models.CompoundQuantity.objects.filter(reaction=self):
-            valDict['compound_{}'.format(i)] = cq.compound.abbrev
-            valDict['compound_{}_role'.format(i)] = cq.role.label
-            valDict['compound_{}_amount'.format(i)] = cq.amount
-            i+=1
-        return valDict 
-
-    @property
-    def expandedValues(self):
-        valDict = self.values
-
-        # Add any descriptors associated with this reaction.
-        for descriptorVal in self.descriptorValues():
-            heading = descriptorVal.descriptor.csvHeader
-            val = descriptorVal.value
-            valDict[heading] = val
-
-        return valDict
+        return chain(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
     def __unicode__(self):
         return "Reaction_{}".format(self.id)

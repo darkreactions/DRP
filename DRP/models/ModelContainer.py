@@ -51,37 +51,27 @@ class ModelContainer(models.Model):
         modelVisitor.predictors = predictors
         modelVisitor.responses = responses
         if self.splitter is not None:
-            for training, test in splitters[self.splitter].Splitter().split(self.reactions):#wow
-                trainingData = DataSet(name=modelVisitor.tag)
-                trainingData.save()
-                for reaction in training:
-                    DataSetRelation.objects.create(reaction=reaction, dataSet = dataSet)
-                testingData = 
-                modelVisitor.trainingData = trainingData
-                modelVisitor.
-                testSet = TestSet(model=modelVisitor.stats_model, name= )
+            dataSets = zim(self.training, self.test)
         else:
-            modelVisitor.trainingData = self.training
-            modelVisitor.testData = self.test 
-
-    def build(self, training_reactions, test_reactions, predictors, responses, debug=False):
-        """Constructs, trains, and then tests a ML-model using a ModelVisitor
-             of the type (library, tool, splitter, etc.) prescribed to this
-             ModelContainer."""
-
-        model.setTestingData(test_reactions)
-
-        model._train()
-        model._test()
-
-        return model
+            dataSets = splitters[self.splitter].Splitter().split(self.reactions):#wow
+        for training, test in dataSets:
+            trainingData = DataSet(name=modelVisitor.tag)
+            trainingData.save()
+            for reaction in self.training:
+                DataSetRelation.objects.create(reaction=reaction, dataSet = dataSet)
+            modelVisitor.trainingData = trainingData
+            testingData = TestSet(model=modelVisitor.stats_model, name= modelVisitor.tag)
+            for reaction in self.test:
+                DataSetRelation.objects.create(reaction=reaction, dataSet = dataSet)
+            modelVisitor.testData = [testingData]
+            model.train()
 
     def summarize(self):
         """CAUTION: This is a temporary development function. Do not rely on it. """
         """Return a string containing the Confusion Matrices for all stats_models."""
         summaries = "\nK-Fold Validation:\n"
         for model in self.statsmodel_set.all():
-            for d in model.predictsDescriptors.all().downcast():
+            for d in model.predictsDescriptors:
                 summaries += "{}\n".format(d.summarize(model))
 
         return summaries

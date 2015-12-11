@@ -5,18 +5,21 @@ import subprocess
 import time
 import os
 import datetime
+import logging
+
+logger=loggins.getLogger('DRP.ml_models.AbstractModelVisitor')
 
 class ModelVisitor(AbstractModelVisitor):
 
   def __init__(self, modelContainer, **kwargs):
-    super(ModelVisitor, self).__init__("weka", "svm", 1, modelContainer, **kwargs)
+    super(ModelVisitor, self).__init__(1, modelContainer, **kwargs)
 
-    self.model_filename = "{}.model".format(self.getModelTag())
+    self.model_filename = "{}.model".format(self.tag)
     self.WEKA_VERSION = "3.6" # The version of WEKA to use.
-    self.debug = False # Set to "True" to enable printing of debug-messages.
+    self.debug = settings.STATS_MODEL_DEBUG # Set to "True" to enable printing of debug-messages.
 
-  def _train(self):
-    reactions = self.getTrainingData()
+  def train(self):
+    reactions = self.trainingData
     model_filepath = os.path.join(settings.MODEL_DIR, self.model_filename)
     arff_file = self._prepareArff(reactions, suffix="train")
 
@@ -51,13 +54,14 @@ class ModelVisitor(AbstractModelVisitor):
 
   def _prepareArff(self, reactions, suffix=""):
     """Writes an *.arff file using the provided queryset of reactions."""
-    if self.debug: print "Preparing ARFF file..."
+    if self.debug: 
+        logging.debug("Preparing ARFF file...")
 
-    filename = "{}_{}_{}.arff".format(self.getModelTag(), suffix, time.time())
+    filename = "{}_{}_{}.arff".format(self.tag, suffix, time.time())
     filepath = os.path.join(settings.TMP_DIR, filename)
     with open(filepath, "w") as f:
-      whitelist = list(self.getPredictors()) + list(self.getResponses())
-      reactions.toArff(f, expanded=True, whitelistDescriptors=whitelist)
+      whitelist = [d.csvHeader for d in list(self.getPredictors()) + list(self.getResponses())]
+      reactions.toArff(f, expanded=True, whitelistHeaders=whitelist)
 
     return filepath
 

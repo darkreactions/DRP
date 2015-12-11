@@ -6,8 +6,13 @@ from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRx
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from django.conf import settings
 from django.core.files import File
+import logging
 #TODO: set attribute methods to be transactions
 #TODO: set descriptors to forbid the word predicted
+#TODO: input logging options into the settings files
+
+logger = logging.getLogger(__name__)
+
 class PredictorsAttribute(object):
 
     def __get__(self, visitor, visitorType=None):
@@ -40,32 +45,48 @@ class ResponsesAttribute(object):
         del visitor.stats_model.descriptors
         visitor.stats_model.save()
 
+class TrainingDataAttribute(object):
+    
+    def __get__(self, visitor, visitorType=None):
+        return visitor.stats_model.trainingSet
+
+    def __set__(self, visitor, dataSet):
+        visitor.stats_model.trainingSet = dataSet
+        visitor.stats_model.save()
 
 class TestingDataAttribute(object):
 
     def __get__(self, visitor, visitorType=None):
-        return PerformedReaction.objects.filter(
+        return visitor.stats_model.testSets
+
+    def __set__(self, visitor, dataSets):
+        visitor.stats_model.testSets.clear()
+        for dataSet in dataSets:
+            visitor.stats_model.testSets.add(dataset)
+        visitor.stats_model.save()
+
+    def __delete__(self, visitor)
+        visitor.stats_model.testSets.clear()
+        visitor.stats_model.save()
 
 
 class AbstractModelVisitor(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, library, tool, iterations, modelContainer, stats_model=None):
+    def __init__(self, modelContainer, stats_model=None):
 
         # Allow this ModelVisitor to "wrap" a pre-existing model instead of building.
         if stats_model is not None:
-            if not stats_model.container == modelContainer:
-                raise Exception("ModelContainer does not own this stats_model!")
+            if stats_model.container !== modelContainer:
+                raise ValueError("ModelContainer does not own this stats_model!")
             self.stats_model = stats_model
 
         # Verify that the modelContainer has been saved and has a valid ID.
-        elif modelContainer.id is None:
-                raise Exception("ModelContainer object must be saved before making models!")
+        elif modelContainer.pk is None:
+                raise ValueError("ModelContainer object must have ID before making models!")
 
         else:
             self.stats_model = StatsModel()
-            self.stats_model.library = library
-            self.stats_model.tool = tool
             self.stats_model.iterations = iterations
 
             self.stats_model.container = modelContainer
@@ -74,7 +95,7 @@ class AbstractModelVisitor(object):
             self.DEBUG = settings.STATS_MODEL_DEBUG
 
     @abstractmethod
-    def _train(self):
+    def train(self):
         """A function meant to be overridden by actual ModelVisitor classes.
               The `_train` method should prepare the machine learning model for
               classification and save that model if necessary."""
@@ -87,7 +108,7 @@ class AbstractModelVisitor(object):
 
               EG: {<NumRxnDescriptor> "outcome" }:[1,2,1,1]}"""
 
-    def _test(self):
+    def test(self):
         """A convenience wrapper that gets the model's default testing data,
               predicts outputs from that data, then stores those predictions."""
         reactions = self.getTestingData()

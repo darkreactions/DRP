@@ -107,7 +107,6 @@ class StatsModel(models.Model):
     active = models.BooleanField('Is this the active model?', default=False)
     start_time = models.DateTimeField(default=None, null=True)
     end_time = models.DateTimeField(default=None, null=True)
-    iterations = models.IntegerField()
     tags = models.ManyToManyField(StatsModelTag)
     trainingSet = models.ForeignKey(DataSet)
     testSets = models.ManyToManyField(DataSet)
