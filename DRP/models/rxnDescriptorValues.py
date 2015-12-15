@@ -1,18 +1,17 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue
-from rxnDescriptors import OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptor
-from StatsModel import StatsModel
 import dataSets
 # Needed to allow for circular dependency.
 import importlib
+import DRP.models
 pr = importlib.import_module("DRP.models.PerformedReaction")
 
 class RxnDescriptorValueQuerySet(models.query.QuerySet):
 
   def delete(self):
-    trainingModels = StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
-    testModels = StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
+    trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
+    testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
     for model in trainingModels|testModels:
       model.invalidate()
 
@@ -30,14 +29,12 @@ class RxnDescriptorValue(models.Model):
 
   objects = RxnDescriptorValueManager()
   reaction = models.ForeignKey("DRP.Reaction", unique=False)
-  model=models.ForeignKey(StatsModel, unique=False, null=True, default=None)
-  '''If this value was predicted by a statistical model, reference that model'''
 
   def save(self, *args, **kwargs):
     if self.pk is not None:
       try:
-        trainingModels = StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
-        testModels = StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
+        trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
+        testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
         for model in trainingModels|testModels:
           model.invalidate()
       except pr.PerformedReaction.DoesNotExist:
@@ -45,8 +42,8 @@ class RxnDescriptorValue(models.Model):
     super(RxnDescriptorValue, self).save(*args, **kwargs)
 
   def delete(self):
-    trainingModels = StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
-    testModels = StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
+    trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
+    testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
     for model in trainingModels|testModels:
       model.invalidate()
       model.save()
@@ -83,11 +80,3 @@ class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
     app_label="DRP"
     verbose_name='Ordinal Reaction Descriptor Value'
     unique_together=('reaction', 'descriptor')
-
-
-rxnDescriptorPairs = [
-                   (OrdRxnDescriptor, OrdRxnDescriptorValue),
-                   (NumRxnDescriptor, NumRxnDescriptorValue),
-                   (CatRxnDescriptor, CatRxnDescriptorValue),
-                   (BoolRxnDescriptor, BoolRxnDescriptorValue)
-                  ]

@@ -269,12 +269,9 @@ CACHES = {
 
 # Force users to log out when the browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-LIBRARY_CHOICES = ()
-TOOL_CHOICES = ()
-LIBRARY_CHOICES=(["weka"]*2,)
-TOOL_CHOICES=(["svm"]*2,)
-SPLITTER_CHOICES=(["MutualInfoSplitter"]*2,["KFoldSplitter"]*2)
-STATS_MODEL_DEBUG=True
+
+STATS_MODEL_LIBS=tuple()
+REACTION_DATASET_SPLITTERS=tuple()
 
 EMPTY_LABEL = '----'
 

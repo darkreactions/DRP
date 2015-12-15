@@ -2,7 +2,7 @@
 from django.db import models
 from LabGroup import LabGroup
 from Compound import Compound
-from querysets import CsvModel, CsvQuerySet, ArffQuerySet
+from querysets import CsvQuerySet, ArffQuerySet
 from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from itertools import chain

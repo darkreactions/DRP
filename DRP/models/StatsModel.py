@@ -1,4 +1,5 @@
 """A module containing only the StatsModel class."""
+from dataSets import DataSet
 from django.db import models
 from StatsModelTag import StatsModelTag
 from ModelContainer import ModelContainer
@@ -16,8 +17,8 @@ class StatsModel(models.Model):
     """The filename in which this model is stored"""
     startTime = models.DateTimeField(default=None, null=True)
     endTime = models.DateTimeField(default=None, null=True)
-    trainingSet = models.ForeignKey(DataSet)
-    testSets = models.ManyToManyField(DataSet)
+    trainingSet = models.ForeignKey(DataSet, related_name='trainingSetFor')
+    testSets = models.ManyToManyField(DataSet, related_name='testSetsFor')
     container = models.ForeignKey(ModelContainer)
 
     # these fields are for use if a model should become invalidated

@@ -8,8 +8,9 @@ import random
 import datetime
 import importlib
 import operator
+from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 visitorModules = {library:importlib.import_module(library) for library in settings.STATS_MODEL_LIBS}
-splitters = {splitterName:importlib.import_module(splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
+splitters = {splitter:importlib.import_module(splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 #TODO: set availability of manual splitting up
 
 TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in visitorModules.items()) 
@@ -47,7 +48,7 @@ class DescriptorAttribute(object):
         modelContainer.numRxnDescriptors.clear()
         for descriptor in descriptors:
             if isinstance(descriptor, BoolRxnDescriptor):
-                modelContainer.boolRxnDescriptors.add(descriptor):
+                modelContainer.boolRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, OrdRxnDescriptor):
                 modelContainer.ordRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, CatRxnDescriptor):
@@ -75,7 +76,7 @@ class OutcomeDescriptorAttribute(object):
         modelContainer.outcomeNumRxnDescriptors.clear()
         for descriptor in descriptors:
             if isinstance(descriptor, BoolRxnDescriptor):
-                modelContainer.outcomeBoolRxnDescriptors.add(descriptor):
+                modelContainer.outcomeBoolRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, OrdRxnDescriptor):
                 modelContainer.outcomeOrdRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, CatRxnDescriptor):
@@ -111,12 +112,12 @@ class ModelContainer(models.Model):
     description = models.TextField()
     active = models.BooleanField('Is this the active model?', default=False)
     library = models.CharField(
-        max_length=200, choices=settings.STATS_MODEL_LIBS)
+        max_length=200, choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS))
     tool = models.CharField(
-        max_length=200, choices=TOOL_CHOICES)
+        max_length=200, choices=tuple((tool, tool) for tool in TOOL_CHOICES))
     splitter = models.CharField(
-        max_length=200, choices=settings.REACTION_DATASET_SPLITTERS, blank=True, null=True)
-    built = models.Booleanfield('Has the build procedure been called with this container?', editable=False, default=False)
+        max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, null=True)
+    built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
     boolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor)
@@ -125,11 +126,11 @@ class ModelContainer(models.Model):
     numRxnDescriptors = models.ManyToManyField(NumRxnDescriptor)
     """The input descriptors for the model."""
 
-    outcomeDescriptors = OutComeDescriptorAttribute()
-    outcomeBoolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor, related_name='outcomeForModels'))
-    outcomeOrdRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor, related_name='outcomeForModels'))
-    outcomeCatRxnDescriptors = models.ManyToManyField(CatRxnDescriptor, related_name='outcomeForModels'))
-    outcomeNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='outcomeForModels'))
+    outcomeDescriptors = OutcomeDescriptorAttribute()
+    outcomeBoolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor, related_name='outcomeForModels')
+    outcomeOrdRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor, related_name='outcomeForModels')
+    outcomeCatRxnDescriptors = models.ManyToManyField(CatRxnDescriptor, related_name='outcomeForModels')
+    outcomeNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='outcomeForModels')
     """The descriptors which are being used as outcomes for this model.
 
     For models which make predictions about descriptors, it is probably
@@ -146,7 +147,7 @@ class ModelContainer(models.Model):
 
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
-    def __init__(self, responses, splitter, library, tool, splitter=None, reactions=None, trainingSets=None, testSets=None):
+    def __init__(self, responses, library, tool, splitter=None, reactions=None, trainingSets=None, testSets=None):
         super(ModelContainer, self).__init__(splitter=splitter, library=library, tool=tool)
         self.reactions = reactions
         self.outcomeDescriptors = responses
@@ -159,11 +160,11 @@ class ModelContainer(models.Model):
         if self.tool not in visitorModules[self.library].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
         if getattr(visitorModules[self.library], tool).maxResponseCount is not None:
-            if getattr(visitorModules[self.library], tool).maxResponseCount < self.outcomeDescriptors.count()
+            if getattr(visitorModules[self.library], tool).maxResponseCount < self.outcomeDescriptors.count():
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.library], tool).maxResponseCount)
         if self.splitter is None ^ self.reactions is None:
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
-        elif self.training is None
+        elif self.training is None:
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch') 
 
     def build(self):
@@ -190,15 +191,15 @@ class ModelContainer(models.Model):
             self._storePredictions(resDict)
             self.built = True
 
-    def _storePredictionComponents(self, predictions, statsModel, resDict=None)
+    def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         resDict = {} if resDict is None else resDict
         for response, outcomes in predictions: 
             for reaction, outcome in outcomes:
                 if reaction not in resDict:
                     resDict[reaction] = {}
-                if response not in resDict[reaction]
+                if response not in resDict[reaction]:
                     resDict[reaction][response] = {}
-                if outcome not in resDict[reaction][response][outcome]
+                if outcome not in resDict[reaction][response]:
                     resDict[reaction][response][outcome] = 0
                 resDict[reaction][response][outcome] += 1
                 predDesc = response.createPredictionDescriptor(self, statsModel)
@@ -207,7 +208,7 @@ class ModelContainer(models.Model):
                 val.save()
         return resDict
 
-    def _storePredictions(self, resDict)
+    def _storePredictions(self, resDict):
         for reaction in resDict:
             for response in resDict[reaction]:
                 predDesc = response.createPredictionDescriptor(self)

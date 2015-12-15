@@ -4,7 +4,7 @@
 
 # Classes that should get included.
 
-from dataSets import TestSet, TrainingSet, TestSetRelation
+from dataSets import DataSet, DataSetRelation
 from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
 from rxnDescriptors import CatRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor
 from predRxnDescriptors import PredCatRxnDescriptor, PredOrdRxnDescriptor, PredBoolRxnDescriptor, PredNumRxnDescriptor

@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from DRP.models import DataSet, DataSetRelation
+import DRP
 
 class AbstractSplitter(object):
     __metaclass__ = ABCMeta
@@ -14,10 +14,10 @@ class AbstractSplitter(object):
         pass
 
     def package(self, data):
-        dataSet = DataSet(name=self.namingStub + '_{}'.format(self.namingCounter))
+        dataSet = DRP.models.DataSet(name=self.namingStub + '_{}'.format(self.namingCounter))
         dataSet.save()
         self.namingCounter+=1
         for datum in data:
-            dsr = DataSetRelation(dataSet = dataSet, reaction=datum)
+            dsr = DRP.models.DataSetRelation(dataSet = dataSet, reaction=datum)
             dsr.save()
         return dataSet

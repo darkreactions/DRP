@@ -8,14 +8,13 @@ from molDescriptorValues import CatMolDescriptorValue, OrdMolDescriptorValue
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
 import csv
-from querysets import CsvModel, CsvQuerySet, ArffQuerySet
+from querysets import CsvQuerySet, ArffQuerySet
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from itertools import chain
 import importlib
 from collections import OrderedDict
-import StatsModel
 import PerformedReaction
 from django.core.validators import RegexValidator
 
@@ -222,7 +221,7 @@ class CompoundManager(models.Manager):
         return compoundsList
 
 
-class Compound(CsvModel):
+class Compound(models.Model):
 
     """A class for containing data about Compounds used in chemical reactions.
 

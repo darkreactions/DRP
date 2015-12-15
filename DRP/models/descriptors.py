@@ -225,7 +225,7 @@ class Predictable(models.Model):
             try:
                 return self.predictedDescriptorType.objects.get(modelContainer=model, statsModel=modelComponent, predictionOf=self)
             except self.predictedDescriptorType.DoesNotExist:
-                    pred = self.predictedDescriptorType()
+                pred = self.predictedDescriptorType()
                 if modelComponent is None:
                     headingSuffix = '_prediction_{}_summative'.format(modelContainer.pk)
                     nameSuffix = ' prediction for modelContainer {}'.format(modelContainer.pk)

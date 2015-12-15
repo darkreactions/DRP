@@ -7,7 +7,9 @@ import time
 import os
 import datetime
 
-class ModelVisitor(AbstractModelVisitor):
+tools=('SVM')
+
+class SVM(AbstractModelVisitor):
 
   maxResponseCount = 1
 
@@ -40,7 +42,8 @@ class ModelVisitor(AbstractModelVisitor):
     self._runWekaCommand(command)
 
     response = list(self.statsModel.container.outcomeDescriptors)[0] 
-    return { response : tuple(reaction, result for reaction, result in zip(reactions, self._readWekaOutputFile(results_path)) }
+    results = tuple((reaction, result) for reaction, result in zip(reactions, self._readWekaOutputFile(results_path)))
+    return {response :results}
 
 
   def _prepareArff(self, reactions, whiteListHeaders):

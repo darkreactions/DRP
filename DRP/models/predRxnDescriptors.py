@@ -2,7 +2,7 @@ from django.db import models
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from ModelContainer import ModelContainer
-from Statsmodel import StatsModel
+from StatsModel import StatsModel
 
 class PredictedDescriptor(models.Model):
     modelContainer = models.ForeignKey(ModelContainer)

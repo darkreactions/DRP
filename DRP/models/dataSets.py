@@ -3,7 +3,7 @@ used in StatsModels'''
 
 from django.db import models
 from PerformedReaction import PerformedReaction
-from StatsModel import StatsModel
+
 
 class DataSet(models.Model):
 
