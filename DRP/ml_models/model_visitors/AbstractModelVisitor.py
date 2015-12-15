@@ -73,115 +73,21 @@ class TestingDataAttribute(object):
 class AbstractModelVisitor(object):
     __metaclass__ = ABCMeta
 
+    maxResponseCount = None
+
     def __init__(self, statsModel):
         self.statsModel = statsModel
 
     @abstractmethod
-    def train(self):
+    def train(self, reactions, descriptorHeaders, filePath):
         """A function meant to be overridden by actual ModelVisitor classes.
               The `_train` method should prepare the machine learning model for
               classification and save that model if necessary."""
 
     @abstractmethod
-    def predict(self, reactions, suffix="predict"):
+    def predict(self, reactions, descriptorHeaders):
         """Return a dictionary where the key is the response descriptor being predicted
               and the value is an ordered list of predictions for that response where the
               ith prediction corresponds to the ith reaction.
 
               EG: {<NumRxnDescriptor> "outcome" }:[1,2,1,1]}"""
-
-    def test(self):
-        """A convenience wrapper that gets the model's default testing data,
-              predicts outputs from that data, then stores those predictions."""
-        reactions = self.getTestingData()
-        predictions = self.predict(reactions, suffix="test")
-        self.storePredictions(reactions, predictions)
-
-    def storePredictions(self, reactions, predictions_dict):
-        """Stores the predicted responses in the database as RxnDescriptorValues.
-              Specifically, expects the predicted responses as a `predictions_dict`
-              in the format specified by the `predict` method."""
-
-        for response, predictions in predictions_dict.items():
-            # Get the predictsDescriptor associated with the `response` outcomeDescriptor.
-            descriptor = Descriptor.objects.filter(heading=response.heading + self._getModelPredictionSuffix()).downcast().next()
-
-            if isinstance(descriptor, BoolRxnDescriptor):
-                val = BoolRxnDescriptorValue()
-            elif isinstance(descriptor, OrdRxnDescriptor):
-                val = OrdRxnDescriptorValue()
-            elif isinstance(descriptor, CatRxnDescriptor):
-                val = CatRxnDescriptorValue()
-            elif isinstance(descriptor, NumRxnDescriptor):
-                val = NumRxnDescriptorValue()
-            else:
-                error = "Unknown RxnDescriptorValue for '{}'".format(descriptor)
-                raise NotImplementedError(error)
-
-            val.descriptor = descriptor
-            val.model = self.stats_model
-
-            for reaction, prediction in zip(reactions, predictions):
-                # Duplicate the base descriptorValue, but for a new reaction.
-                val.id = None
-                val.pk = None
-                val.value = prediction
-                val.reaction = reaction
-                val.save()
-
-    def setTestingData(self, reactions, name=""):
-        """Creates a new TestSet full of the provided `reactions` and binds
-              that TestSet to the stats_model.
-
-              Optionally applies a unique `name` to that TestSet (instead
-              of the default)."""
-        test_set = TestSet()
-        test_set.model = self.stats_model
-        test_set.name = name if name else self.getModelTag()
-        test_set.save()
-
-        for reaction in reactions:
-            TestSetRelation(reaction=reaction, test_set=test_set).save()
-
-    predictors =  PredictorsAttribute()
-    responses = ResponsesAttribute()
-    trainingData = TrainingDataAttribute()
-
-    def setSplitter(self, splitter):
-        """Stores the classname of a Splitter object to the stats_model."""
-        self.stats_model.splitter = splitter.__class__.__name__
-
-    def setModelFile(self, filename):
-        """Uploads a ML-model file to this stats_model."""
-
-        # If a file is already in the models directory, don't re-upload it.
-        destined_path = os.path.join(settings.MODEL_DIR, filename)
-        if os.path.isfile(destined_path):
-            self.stats_model.fileName.name = filename
-            self.stats_model.save()
-
-        else:
-            if self.DEBUG:
-                logger.debug("Uploading model file to: {}".format(destined_path))
-            with open(filename, 'r') as f:
-                self.stats_model.fileName.save(filename, File(f))
-
-    def getTestingData(self, testset_name=""):
-        """Returns a queryset of the reactions used to test this ML-model.
-
-              Optionally accepts the name of a specific testset to retrieve."""
-        if not testset_name: testset_name = self.getModelTag()
-        return PerformedReaction.objects.filter(testset__name=testset_name)
-
-
-    def getPredictors(self):
-        """Returns a queryset of descriptors used by this stats_model for
-              producing predictions of the various response variables."""
-        return self.stats_model.descriptors.all()
-
-    def getModelFilename(self):
-        """Returns the filename of the ML-model file."""
-        if self.stats_model.fileName.name:
-            return self.stats_model.fileName.name
-        else:
-            raise IOError("No file has been uploaded to this stats_model.")

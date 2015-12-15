@@ -25,45 +25,6 @@ class DescriptorQuerySet(models.query.QuerySet):
         model = Descriptor if model is None else model
         super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
 
-    def downcast(self):
-
-        classes = ["categoricaldescriptor", "ordinaldescriptor",
-                       "numericdescriptor", "booleandescriptor"]
-        rxn_classes = ["catrxndescriptor", "ordrxndescriptor",
-                           "numrxndescriptor", "boolrxndescriptor"]
-        pred_rxn_classes = ["predcatrxndescriptor", "predordrxndescriptor",
-                             "prednumrxndescriptor", "predboolrxndescriptor"]
-
-        for item in super(DescriptorQuerySet, self).iterator():
-            """Return an instance of this descriptor as its deepest subclass."""
-            found = False
-
-            for c in classes:
-
-              if hasattr(item, c):
-                sub_item = getattr(item, c)
-                for rxn_c in rxn_classes:
-
-                  if hasattr(sub_item, rxn_c):
-                    sub_sub_item = getattr(sub_item, rxn_c)
-
-                    for pred_rxn_c in pred_rxn_classes:
-                      if hasattr(sub_sub_item, pred_rxn_c):
-                        yield getattr(sub_sub_item, pred_rxn_c)
-                        found = True
-
-                    if not found:
-                      yield getattr(sub_item, rxn_c)
-                      found = True
-
-                if not found:
-                    yield sub_item
-                    found = True
-
-            if not found:
-                yield item
-
-
 class DescriptorManager(models.Manager):
     use_for_related_fields = True
 
@@ -250,3 +211,30 @@ class BooleanDescriptor(Descriptor):
     def arffHeader(self):
         """Complete the Arff header for this descriptor."""
         return super(BooleanDescriptor, self).arffHeader + '{True, False}'
+
+class Predictable(models.Model):
+
+    class Meta:
+        app_label = 'DRP'
+        abstract = True
+
+    def createPredictionDescriptor(self, modelContainer, modelComponent=None):
+        if not self.pk:
+            raise self.DoesNotExist('Cannot create a prediction descriptor of a descriptor which has not yet been saved.')
+        else:
+            try:
+                return self.predictedDescriptorType.objects.get(modelContainer=model, statsModel=modelComponent, predictionOf=self)
+            except self.predictedDescriptorType.DoesNotExist:
+                    pred = self.predictedDescriptorType()
+                if modelComponent is None:
+                    headingSuffix = '_prediction_{}_summative'.format(modelContainer.pk)
+                    nameSuffix = ' prediction for modelContainer {}'.format(modelContainer.pk)
+                    pred.statsModel = modelComponent
+                else:
+                    headingSuffix = '_prediction_{}_component_{}'.format(modelContainer.pk, modelComponent.pk)
+                    nameSuffix = ' prediction for modelcontainer {} component {}'.format(modelContainer.pk, modelComponent.pk)
+                pred.heading = self.heading + headingSuffix
+                pred.name = self.name + nameSuffix
+                pred.predictionOf = self 
+                pred.modelContainer = modelContainer
+                return pred

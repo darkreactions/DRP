@@ -1,46 +1,20 @@
 from django.db import models
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
-from StatsModel import StatsModel
+from ModelContainer import ModelContainer
+from Statsmodel import StatsModel
 
 class PredictedDescriptor(models.Model):
-    stats_model = models.ForeignKey(StatsModel)
+    modelContainer = models.ForeignKey(ModelContainer)
+    statsModel = models.ForeignKey(StatsModel, null=True)
 
     class Meta:
         app_label="DRP"
         abstract = True
 
-    def getPredictionTuples(self, model):
-        """Returns a dictionary of lists of outcome tuples, where the keys are the
-           outcomeDescriptors and the outcomes are in the format (correct, guess).
-
-           IE: [(true,guess),(true',guess'),(true'',guess'')]
-           EG: [(1,2),(1,1),(2,2),(3,2),(4,3)]"""
-
-
-        if isinstance(self, BoolRxnDescriptor):
-            valueType = BoolRxnDescriptorValue
-        elif isinstance(self, OrdRxnDescriptor):
-            valueType = OrdRxnDescriptorValue
-        elif isinstance(self, CatRxnDescriptor):
-            valueType = CatRxnDescriptorValue
-        elif isinstance(self, NumRxnDescriptor):
-            valueType = NumRxnDescriptorValue
-        else:
-            error = "Unknown descriptorValue type for '{}'".format(self)
-            raise NotImplementedError(error)
-
-        predictions = []
-        for prediction in valueType.objects.filter(model=model, descriptor=self):
-            true = valueType.objects.get(reaction=prediction.reaction,
-                                         descriptor=self.prediction_of).value
-            guess = prediction.value
-            predictions.append( (true, guess) )
-
-        return predictions
 
 class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
-    prediction_of = models.ForeignKey(BoolRxnDescriptor, related_name="prediction_of")
+    predictionOf = models.ForeignKey(BoolRxnDescriptor, related_name="prediction_of")
 
     class Meta:
         app_label='DRP'
@@ -48,7 +22,7 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
 
 class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
-    prediction_of = models.ForeignKey(OrdRxnDescriptor, related_name="predition_of")
+    predictionOf = models.ForeignKey(OrdRxnDescriptor, related_name="predition_of")
 
     class Meta:
         app_label='DRP'
@@ -96,7 +70,7 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
 
 class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
-    prediction_of = models.ForeignKey(NumRxnDescriptor, related_name="prediction_of")
+    predictionOf = models.ForeignKey(NumRxnDescriptor, related_name="prediction_of")
 
     class Meta:
         app_label='DRP'
@@ -104,7 +78,7 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
 
 
 class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
-    prediction_of = models.ForeignKey(CatRxnDescriptor, related_name="prediction_of")
+    predictionOf = models.ForeignKey(CatRxnDescriptor, related_name="prediction_of")
 
     class Meta:
         app_label='DRP'

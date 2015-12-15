@@ -1,35 +1,95 @@
 '''A module containing the reactions descriptors'''
 from django.db import models
 from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
-from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor
+from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable
+import rxnDescriptorValues
+import predRxnDescriptors
 
-class CatRxnDescriptor(CategoricalDescriptor):
-  '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
+class CatRxnDescriptor(CategoricalDescriptor, Predictable):
+    '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
 
-  class Meta:
-    app_label='DRP'
-    verbose_name = 'Categorical Reaction Descriptor'
+    class Meta:
+        app_label='DRP'
+        verbose_name = 'Categorical Reaction Descriptor'
 
-class OrdRxnDescriptor(OrdinalDescriptor):
-  '''A class which represents an ordinal descriptor'''
+    def __init__(self, *args, **kwargs):
+        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
+        self.predictedDescriptorType = predRxnDescriptors.predCatRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
-  class Meta:
-    verbose_name= 'Ordinal Reaction Descriptor'
-    app_label='DRP'
+    def createValue(self, reaction, value):
+        """Create a new reaction value object"""
+        try:
+            v = rxnDescriptorValues.CatRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+        except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
+            v = rxnDescriptorValues.CatRxnDescriptorValue(descriptor=self, reaction=reaction)
+        v.value=CategoricalDescriptorPermittedValues.get(value=value)
+        return v
+               
+class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
+    '''A class which represents an ordinal descriptor'''
 
-class NumRxnDescriptor(NumericDescriptor):
-  '''A class which represents a numerical descriptor'''
+    class Meta:
+        verbose_name= 'Ordinal Reaction Descriptor'
+        app_label='DRP'
 
-  class Meta:
-    app_label='DRP'
-    verbose_name= 'Numerical Reaction Descriptor'
+    def __init__(self, *args, **kwargs):
+        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
+        self.predictedDescriptorType = predRxnDescriptors.predOrdRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
+    def createValue(self, reaction, value):
+        try:
+            v = rxnDescriptorValues.OrdRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+        except rxnDescriptorValues.OrdRxnDescriptorValue.DoesNotExist:
+            v = rxnDescriptorValues.OrdRxnDescriptorValue(descriptor=self, reaction=reaction)
+        v.value = value
+        return v
 
-class BoolRxnDescriptor(BooleanDescriptor):
-  '''A class which represents a boolean descriptors'''
+    def createPredictionDescriptor(self, *args, **kwargs):
+        pred = super(OrdRxnDescriptor, self).createPredictionDescriptor(*args, **kwargs)
+        pred.maximum = self.maximum
+        pred.minimum = self.minimum
+        return pred
 
-  class Meta:
-    app_label='DRP'
-    verbose_name= 'Boolean Reaction Descriptor'
+class NumRxnDescriptor(NumericDescriptor, Predictable):
+    '''A class which represents a numerical descriptor'''
 
+    class Meta:
+        app_label='DRP'
+        verbose_name= 'Numerical Reaction Descriptor'
 
+    def __init__(self, *args, **kwargs):
+        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
+        self.predictedDescriptorType = predRxnDescriptors.predNumRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
+
+    def createValue(self, reaction, value)
+        try:
+            v = rxnDescriptorValues.NumRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+        except rxnDescriptorValues.NumRxnDescriptorValue.DoesNotExist:
+            v = rxnDescriptorValues.NumRxnDescriptorValue(descriptor=self, reaction=reaction)
+        v.value = value
+        return v
+
+    def createPredictionDescriptor(self, *args, **kwargs):
+        pred = super(NumRxnDescriptor, self).createPredictionDescriptor(*args, **kwargs)
+        pred.maximum = self.maximum
+        pred.minimum = self.minimum
+        return pred
+
+class BoolRxnDescriptor(BooleanDescriptor, Predictable):
+    '''A class which represents a boolean descriptors'''
+
+    class Meta:
+        app_label='DRP'
+        verbose_name= 'Boolean Reaction Descriptor'
+
+    def __init__(self, *args, **kwargs):
+        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
+        self.predictedDescriptorType = predRxnDescriptors.predBoolRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
+
+    def createValue(self, reaction, value)
+        try:
+            v = rxnDescriptorValues.BoolRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+        except rxnDescriptorValues.BoolRxnDescriptorValue.doesnotExist:
+            v = rxnDescriptorValues.BoolRxnDescriptorValue(descriptor=self, reaction=reaction)
+        v.value = value
+        return v
