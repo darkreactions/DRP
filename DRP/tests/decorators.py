@@ -1,7 +1,7 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
-from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, TestSet, TrainingSet, Descriptor
-from DRP.models.rxnDescriptorValues import rxnDescriptorPairs, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
+from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, Descriptor
+from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, NumRxnDescriptor
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -46,80 +46,80 @@ def createsRxnDescriptor(heading, descriptorType, options={}):
     return _createsRxnDescriptor
 
 
-def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict={}, duplicateRef=None):
-    '''A class decorator that creates a reaction using pre-existing compounds
-          with pre-existing compoundRoles.'''
-    def _createsPerformedReaction(c):
-        _oldSetup = c.setUp
-        _oldTearDown = c.tearDown
-
-        reaction = PerformedReaction()
-        compoundQuantities = []
-        descriptorVals = []
-
-        def setUp(self):
-            labGroup=LabGroup.objects.get(title=labTitle)
-            reaction.labGroup = labGroup
-
-            user=User.objects.get(username=username)
-            reaction.user = user
-            reaction.reference = reference
-            reaction.public = False
-            if PerformedReaction.objects.filter(labGroup=labGroup, reference=duplicateRef).exists():
-                reaction.duplicateOf = PerformedReaction.objects.get(labGroup=labGroup, reference=duplicateRef)
-
-            reaction.save()
-
-            for abbrev, role, quantity in zip(compoundAbbrevs, compoundRoles, compoundAmounts):
-                compound = Compound.objects.get(labGroup=labGroup, abbrev=abbrev)
-                compoundRole = CompoundRole.objects.get(label=role)
-                compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
-                                                                                        role=compoundRole, amount=quantity)
-                compoundQuantity.save()
-
-                compoundQuantities.append(compoundQuantity)
-
-            for descriptor_heading,val in descriptorDict.items():
-                descriptor = Descriptor.objects.filter(heading=descriptor_heading).downcast().next()
-                if isinstance(descriptor, BoolRxnDescriptor):
-                    descriptorVal = BoolRxnDescriptorValue()
-                elif isinstance(descriptor, OrdRxnDescriptor):
-                    descriptorVal = OrdRxnDescriptorValue()
-                elif isinstance(descriptor, CatRxnDescriptor):
-                    descriptorVal = CatRxnDescriptorValue()
-                elif isinstance(descriptor, NumRxnDescriptor):
-                    descriptorVal = NumRxnDescriptorValue()
-                else:
-                    error = "Unknown descriptorValue type for '{}'".format(descriptor)
-                    raise NotImplementedError(error)
-
-                descriptorVal.descriptor = descriptor
-                descriptorVal.value = val
-                descriptorVal.reaction = reaction
-                descriptorVal.save()
-
-                descriptorVals.append(descriptorVal)
-
-            _oldSetup(self)
-
-        def tearDown(self):
-            _oldTearDown(self)
-
-            for cq in compoundQuantities:
-                cq.delete()
-
-            for descriptorVal in descriptorVals:
-                descriptorVal.delete()
-
-            TrainingSet.objects.filter(reaction=reaction).delete()
-            TestSet.objects.filter(reactions__in=[reaction]).delete()
-            reaction.delete()
-
-
-        c.setUp = setUp
-        c.tearDown = tearDown
-        return c
-    return _createsPerformedReaction
+#def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict={}, duplicateRef=None):
+#    '''A class decorator that creates a reaction using pre-existing compounds
+#          with pre-existing compoundRoles.'''
+#    def _createsPerformedReaction(c):
+#        _oldSetup = c.setUp
+#        _oldTearDown = c.tearDown
+#
+#        reaction = PerformedReaction()
+#        compoundQuantities = []
+#        descriptorVals = []
+#
+#        def setUp(self):
+#            labGroup=LabGroup.objects.get(title=labTitle)
+#            reaction.labGroup = labGroup
+#
+#            user=User.objects.get(username=username)
+#            reaction.user = user
+#            reaction.reference = reference
+#            reaction.public = False
+#            if PerformedReaction.objects.filter(labGroup=labGroup, reference=duplicateRef).exists():
+#                reaction.duplicateOf = PerformedReaction.objects.get(labGroup=labGroup, reference=duplicateRef)
+#
+#            reaction.save()
+#
+#            for abbrev, role, quantity in zip(compoundAbbrevs, compoundRoles, compoundAmounts):
+#                compound = Compound.objects.get(labGroup=labGroup, abbrev=abbrev)
+#                compoundRole = CompoundRole.objects.get(label=role)
+#                compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
+#                                                                                        role=compoundRole, amount=quantity)
+#                compoundQuantity.save()
+#
+#                compoundQuantities.append(compoundQuantity)
+#
+#            for descriptor_heading,val in descriptorDict.items():
+#                descriptor = Descriptor.objects.filter(heading=descriptor_heading).downcast().next()
+#                if isinstance(descriptor, BoolRxnDescriptor):
+#                    descriptorVal = BoolRxnDescriptorValue()
+#                elif isinstance(descriptor, OrdRxnDescriptor):
+#                    descriptorVal = OrdRxnDescriptorValue()
+#                elif isinstance(descriptor, CatRxnDescriptor):
+#                    descriptorVal = CatRxnDescriptorValue()
+#                elif isinstance(descriptor, NumRxnDescriptor):
+#                    descriptorVal = NumRxnDescriptorValue()
+#                else:
+#                    error = "Unknown descriptorValue type for '{}'".format(descriptor)
+#                    raise NotImplementedError(error)
+#
+#                descriptorVal.descriptor = descriptor
+#                descriptorVal.value = val
+#                descriptorVal.reaction = reaction
+#                descriptorVal.save()
+#
+#                descriptorVals.append(descriptorVal)
+#
+#            _oldSetup(self)
+#
+#        def tearDown(self):
+#            _oldTearDown(self)
+#
+#            for cq in compoundQuantities:
+#                cq.delete()
+#
+#            for descriptorVal in descriptorVals:
+#                descriptorVal.delete()
+#
+#            TrainingSet.objects.filter(reaction=reaction).delete()
+#            TestSet.objects.filter(reactions__in=[reaction]).delete()
+#            reaction.delete()
+#
+#
+#        c.setUp = setUp
+#        c.tearDown = tearDown
+#        return c
+#    return _createsPerformedReaction
 
 
 def createsUser(username, password, is_superuser=False):

@@ -1,5 +1,5 @@
 import unittest
-import AdvancedFilterForm
+import AdvancedFilterForms
 import CompoundAdminForm
 import CompoundCreationForm
 import CompoundEditingForm
@@ -20,5 +20,5 @@ suite = unittest.TestSuite([
       LabGroupForm.suite,
       LabGroupJoiningForm.suite,
       LicenseAgreementForm.suite,
-      AdvancedFilterForm.suite
+      AdvancedFilterForms.suite
       ])

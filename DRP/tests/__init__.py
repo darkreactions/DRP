@@ -5,7 +5,7 @@ import Email
 import forms
 import HttpTests
 import decorators
-import ModelFactory
+#import ModelFactory
 import CompoundFromCsv
 import CompoundDescriptor
 import CompoundToCsv
@@ -20,5 +20,4 @@ suite = unittest.TestSuite([
   CompoundToCsv.suite,
   CompoundToArff.suite,
   fileTests.suite,
-  ModelFactory.suite
 ])
