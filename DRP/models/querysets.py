@@ -40,7 +40,7 @@ class CsvQuerySet(models.query.QuerySet):
 
     def rows(self, expanded):
         for item in self:
-            yield {field.name:getattr(item, field) for field in self.model._meta.fields}
+            yield {field.name:getattr(item, field.name) for field in self.model._meta.fields}
 
 class ArffQuerySet(models.query.QuerySet):
     '''This queryset class permits data from a model to be output as a .arff file'''
@@ -84,15 +84,16 @@ class ArffQuerySet(models.query.QuerySet):
         else:
             headers= self.arffHeaders
 
-        headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
+        if whitelistHeaders is not None:
+            headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
 
         writeable.write('\n'.join(headers.values()))
 
         writeable.write('\n\n@data\n')
         for row in self.rows(expanded):
-            writeable.write(','.join(str(row.get(key, missing)) for key in headers.keys()))
+            writeable.write(','.join(('"'+str(row.get(key))+'"' if key in row else missing) for key in headers.keys()))
             writeable.write('\n')
 
     def rows(self, expanded=False):
         for item in self:
-            yield {field.name:getattr(item, field) for field in self.model._meta.fields}
+            yield {field.name:getattr(item, field.name) for field in self.model._meta.fields}

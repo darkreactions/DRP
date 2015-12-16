@@ -140,14 +140,15 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
     def rows(self, expanded):
         if expanded:
             compounds = self.prefetch_related('boolmoldescriptorvalue_set__descriptor')
-            compounds = compounds.prefetch('catmoldescriptorvalue_set__descriptor')
-            compounds = compounds.prefetch('ordmoldescriptorvalue_set__descriptor')
-            compounds = compounds.prefetch('nummoldescriptorvalue_set__descriptor')
-            compounds = compounds.prefetch('chemicalClasses')
+            compounds = compounds.prefetch_related('catmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related('ordmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related('nummoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related('chemicalClasses')
             for item in compounds:
-                row = {field.name:getattr(item, field) for field in self.model._meta.fields} + {dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues}
-                i=0
-                for cc in chemicalClasses:
+                row = {field.name:getattr(item, field.name) for field in self.model._meta.fields}
+                row.update({dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues})
+                i=1
+                for cc in item.chemicalClasses.all():
                     row['chemicalClass_{}'.format(i)] = cc.label
                     i+=1
                 yield row

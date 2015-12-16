@@ -41,7 +41,7 @@ class CsvOutput(DRPTestCase):
     with open(fn, 'rb') as csvFile:
       reader = csv.reader(csvFile, delimiter=",")
       headerRow = reader.next()
-      expectedFields=[field.name for field in Compound._meta.fields] + ['chemicalClass_1'] + [d.csvHeader for d in Compound.objects.all().descriptors()]
+      expectedFields=[field.name for field in Compound._meta.fields] + ['chemicalClass_1'] + [d.csvHeader for d in Compound.objects.all().descriptors]
       for item in expectedFields:
         self.assertTrue(item in headerRow, 'item {} not in {}'.format(item, headerRow))
       self.assertEqual(len(headerRow), len(expectedFields), 'headerRow: {0}\ncsvFields: {1}'.format(headerRow, expectedFields))
