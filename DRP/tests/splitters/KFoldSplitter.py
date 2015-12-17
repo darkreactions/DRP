@@ -1,25 +1,31 @@
 #!/usr/bin/env python
-'''A module containing tests for the ModelFactory class'''
+'''A module containing tests for the KFoldSplitter '''
 
 import unittest
-from DRP.models import PerformedReaction, ModelContainer, Descriptor
 from decorators import createsPerformedReactionSet
 from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
+from DRP.models import Reaction
+from DRP.ml_models.splitters.KFoldSplitter import Splitter
 
 @createsPerformedReactionSet
 class BasicWekaSVM(DRPTestCase):
 
   def runTest(self):
+    splitterObj = Splitter()
 
-    reactions = PerformedReaction.objects.all()
-    container = ModelContainer("weka", "svm", splitter="KFoldSplitter", reactions=reactions)
+    reactions = Reaction.objects.all()
 
-    predictors = Descriptor.objects.filter(heading="testNumber")
-    responses = Descriptor.objects.filter(heading="outcome")
-    container.build(predictors, responses)
+    splits = splitterObj.split(reactions)
 
-    print container.summarize()
+    # Make sure we have K different cross-fold splits.
+    assert( splitterObj.k == len(splits) )
+
+    # Make sure each split is not empty.
+    for train, test in splits:
+      assert( len(train) > 0 )
+      assert( len(test) > 0 )
+
 
 suite = unittest.TestSuite([
           loadTests(BasicWekaSVM),

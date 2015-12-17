@@ -4,16 +4,21 @@ from django.conf import settings
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from numpy import average
+from itertools import chain
 import random
 import datetime
 import importlib
 import operator
+import os
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from StatsModel import StatsModel
+
 visitorModules = {library:importlib.import_module(library) for library in settings.STATS_MODEL_LIBS}
+
 splitters = {splitter:importlib.import_module(splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 #TODO: set availability of manual splitting up
 
-TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in visitorModules.items()) 
+TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in visitorModules.items())
 
 
 class PredictsDescriptorsAttribute(object):
@@ -80,14 +85,13 @@ class OutcomeDescriptorAttribute(object):
             elif isinstance(descriptor, OrdRxnDescriptor):
                 modelContainer.outcomeOrdRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, CatRxnDescriptor):
-                pred_descriptor = PredCatRxnDescriptor()
                 modelContainer.outcomeCatRxnDescriptors.add(descriptor)
             elif isinstance(descriptor, NumRxnDescriptor):
                 modelContainer.outcomeNumRxnDescriptors.add(descriptor)
             else:
                 raise ValueError('An invalid object was assigned as a descriptor')
 
-            pred = descriptor.createPredictionDescriptor()
+            pred_descriptor = descriptor.createPredictionDescriptor()
             pred_descriptor.heading = descriptor.heading + '{}_summative'.format(modelContainer.pk)
             pred_descriptor.name = descriptor.name + ' summative from model container id '.format(modelContainer.pk)
 
@@ -159,33 +163,34 @@ class ModelContainer(models.Model):
     def clean(self):
         if self.tool not in visitorModules[self.library].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
-        if getattr(visitorModules[self.library], tool).maxResponseCount is not None:
-            if getattr(visitorModules[self.library], tool).maxResponseCount < self.outcomeDescriptors.count():
-                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.library], tool).maxResponseCount)
+        if getattr(visitorModules[self.library], self.tool).maxResponseCount is not None:
+            if getattr(visitorModules[self.library], self.tool).maxResponseCount < self.outcomeDescriptors.count():
+                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.library], self.tool).maxResponseCount)
         if self.splitter is None ^ self.reactions is None:
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
         elif self.training is None:
-            raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch') 
+            raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
-    def build(self):
+    def build(self, predictors, responses):
         if not self.built:
             if self.splitter is not None:
-                data = splitters[self.splitter].Splitter("{}_{}_{}".format(self.library, self.tool, self.pk)).split(self.reactions)
+                splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.library, self.tool, self.pk))
+                data = splitterObj.split(self.reactions)
                 self.trainingSets = list(d[0] for d in data)
                 self.testSets = list(d[1] for d in data)
             resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
-            for trainingSet, testSets in zip(self.trainingSets, selt.testSets):
+            for trainingSet, testSets in zip(self.trainingSets, self.testSets):
                 statsModel = StatsModel(container=self, trainingSet=trainingSet)
                 modelVisitor = getattr(visitorModules[self.library], self.tool)(statsModel)
                 statsModel.startTime = datetime.datetime.now()
-                fileName = os.path.join(settings.MODEL_DIR, '{}_{}'.format(self.pk, stats_model.pk))
+                fileName = os.path.join(settings.MODEL_DIR, '{}_{}'.format(self.pk, statsModel.pk))
                 whitelist = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
-                modelVisitor.train(trainingSet.reactions.all(), whiteList, fileName)
+                modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
                 self.stats_model.fileName = fileName
                 statsModel.endTime = datetime.datetime.now()
                 statsModel.save()
                 for testSet in testSets:
-                    statsModel.testSets.add(testSet)  
+                    statsModel.testSets.add(testSet)
                     predictions = modelVisitor.predict(testSet.reactions.all())
                     resDict = self._storePredictionComponents(predictions, statsModel, resDict)
             self._storePredictions(resDict)
@@ -193,7 +198,7 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         resDict = {} if resDict is None else resDict
-        for response, outcomes in predictions: 
+        for response, outcomes in predictions:
             for reaction, outcome in outcomes:
                 if reaction not in resDict:
                     resDict[reaction] = {}
@@ -230,9 +235,9 @@ class ModelContainer(models.Model):
     def predict(self, reactions):
         if self.built:
             for model in self.statsmodel_set:
-                modelVisitor = getattr(visitorModules[self.library], self.tool)(statsModel)
+                modelVisitor = getattr(visitorModules[self.library], self.tool)(model)
                 predictions = modelVisitor.predict(reactions)
-                resDict = self._storePredictionComponents(predictions, model) 
+                resDict = self._storePredictionComponents(predictions, model)
                 self._storePredictions(resDict)
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')

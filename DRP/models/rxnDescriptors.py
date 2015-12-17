@@ -1,6 +1,5 @@
 '''A module containing the reactions descriptors'''
-from django.db import models
-from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+from descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
 from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable
 import rxnDescriptorValues
 import DRP.models
@@ -14,7 +13,7 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
 
     def __init__(self, *args, **kwargs):
         super(CatRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.predCatRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredCatRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
         """Create a new reaction value object"""
@@ -22,9 +21,9 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
             v = rxnDescriptorValues.CatRxnDescriptorValue.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
             v = rxnDescriptorValues.CatRxnDescriptorValue(descriptor=self, reaction=reaction)
-        v.value=CategoricalDescriptorPermittedValues.get(value=value)
+        v.value=CategoricalDescriptorPermittedValue.get(value=value)
         return v
-               
+
 class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
     '''A class which represents an ordinal descriptor'''
 
@@ -33,8 +32,8 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
         app_label='DRP'
 
     def __init__(self, *args, **kwargs):
-        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.predOrdRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
+        super(OrdRxnDescriptor, self).__init__(*args, **kwargs)
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredOrdRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
         try:
@@ -58,8 +57,8 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
         verbose_name= 'Numerical Reaction Descriptor'
 
     def __init__(self, *args, **kwargs):
-        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.predNumRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
+        super(NumRxnDescriptor, self).__init__(*args, **kwargs)
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredNumRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
         try:
@@ -83,8 +82,8 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
         verbose_name= 'Boolean Reaction Descriptor'
 
     def __init__(self, *args, **kwargs):
-        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.predBoolRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
+        super(BoolRxnDescriptor, self).__init__(*args, **kwargs)
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredBoolRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
         try:

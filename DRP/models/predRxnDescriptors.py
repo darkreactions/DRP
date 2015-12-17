@@ -1,6 +1,5 @@
 from django.db import models
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
-from rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from ModelContainer import ModelContainer
 from StatsModel import StatsModel
 

@@ -28,7 +28,6 @@ class Command(BaseCommand):
         DRP.models.BoolMolDescriptorValue.objects.all().delete()
         DRP.models.NumMolDescriptorValue.objects.all().delete()
         DRP.models.OrdMolDescriptorValue.objects.all().delete()
-        DRP.models.StatsModelTag.objects.all().delete()
         DRP.models.LabGroup.objects.all().delete()
         DRP.models.Descriptor.objects.all().delete()
         User.objects.all().delete()
@@ -46,7 +45,7 @@ class Command(BaseCommand):
             for u in serializers.deserialize('xml', smart_str(r.text)):
                 u.save()
 
-            user = User.objects.get(username=settings.MAIN_SERVER_USER)            
+            user = User.objects.get(username=settings.MAIN_SERVER_USER)
             user.set_password(settings.MAIN_SERVER_PASS)
             user.save()
 
