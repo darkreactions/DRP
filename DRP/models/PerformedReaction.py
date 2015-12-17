@@ -45,9 +45,10 @@ class PerformedReaction(Reaction):
   def save(self, *args, **kwargs):
     self.reference = self.reference.lower()
     if self.pk is not None:
-      test = DRP.models.StatsModel.objects.filter(testset__reactions__in=[self])
-      train = DRP.models.StatsModel.objects.filter(trainingset__reaction=self)
-      for model in chain(test, train):
-        model.invalidate()
-        model.save()
+        pass
+     # test = DRP.models.StatsModel.objects.filter(testset__reactions__in=[self])
+     # train = DRP.models.StatsModel.objects.filter(trainingset__reaction=self)
+      #for model in chain(test, train):
+      #  model.invalidate()
+      #  model.save()
     super(PerformedReaction, self).save(*args, **kwargs)
