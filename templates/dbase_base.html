@@ -3,11 +3,13 @@
 {% block additional_header %}
 {% if user.is_authenticated %}
 <nav>
-  <ol>
+ <div class="projectNav-wrapper">
+  <ol class="projectNav">
     <li><a href="{% url 'reactionlist' %}">Reactions</a></li>
     <li><a href="{% url 'compoundguide' '/' %}">Compound Guide</a></li>
   </ol>
 </nav> 
+ </div>
 {% endif %}
 
 {% block submenu %}{% endblock %}
