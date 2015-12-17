@@ -32,21 +32,20 @@ class ListPerformedReactions(ListView):
     else:
         self.queryset = PerformedReaction.objects.filter(public=True)
 
-    fileType = kwargs.get('filetype')
-    if fileType in ('/', '.html', None):
+    if filetype in ('/', '.html', None):
       return super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
-    elif fileType == '.csv':
+    elif filetype == '.csv':
       self.paginate_by = None
       response = HttpResponse(content_type='text/csv')
-      response['Content-Disposition']='attachment; filename="compounds.csv"'
+      response['Content-Disposition']='attachment; filename="reactions.csv"'
       if 'expanded' in request.GET and request.user.is_authenticated():
         self.queryset.toCsv(response, True)
       else:
         self.queryset.toCsv(response)
-    elif fileType == '.arff':
+    elif filetype == '.arff':
       self.paginate_by = None
       response = HttpResponse(content_type='text/vnd.weka.arff')
-      response['Content-Disposition']='attachment; filename="compounds.arff"'
+      response['Content-Disposition']='attachment; filename="reactions.arff"'
       if 'expanded' in request.GET and request.user.is_authenticated():
         self.queryset.toArff(response, True)
       else:

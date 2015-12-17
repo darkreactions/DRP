@@ -81,19 +81,20 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     def rows(self, expanded):
         if expanded:
             reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch('catrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch('ordrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch('numrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch('compounds')
+            reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch_related('compounds')
             for item in reactions:
-                row = {field.name:getattr(item, field) for field in self.model._meta.fields} + {dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues}
+                row = {field.name:getattr(item, field.name) for field in self.model._meta.fields} 
+                row.update({dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues})
                 i=0
-                for compound in item.compounds:
+                for compound in item.compounds.all():
                     row['compound_{}'.format(i)] = compound.name
                     i+=1
                 yield row
         else:
-            for row in super(CompoundQuerySet, self).rows(expanded):
+            for row in super(ReactionQuerySet, self).rows(expanded):
                 yield row
 
 
