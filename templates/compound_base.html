@@ -3,10 +3,12 @@
 {% block submenu %}
 
 <nav>
-  <ol>
+ <div class="projectNav-wrapper">
+  <ol class="projectNav">
     <li><a href="{% url 'compoundguide' '/' %}">List Compounds</a></li> 
     <li><a href="{% url 'newCompound' %}">Add a compound</a></li>
   </ol>
+ <div>
 </nav>
 
 {% endblock %}

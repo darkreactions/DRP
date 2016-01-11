@@ -3,7 +3,6 @@ from django.db import models
 from Reaction import Reaction, ReactionManager, ReactionQuerySet
 from RecommendedReaction import RecommendedReaction
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from itertools import chain
 import DRP
 

@@ -17,7 +17,7 @@
     </ul>
   </section>
 {% if reactions|length > 0 %}
-<table>
+<table class="reactions-list">
   <thead>
     <tr>
       <th>Reference</th>
@@ -37,6 +37,8 @@
       {% if user.is_authenticated %}
         {% if reaction.labGroup in user.labgroup_set %}
         <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a></td>
+        {% else %} 
+        <td>{{ reaction.reference }}</td>
         {% endif %}
       {% else %} 
       <td>{{ reaction.reference }}</td>
@@ -44,9 +46,11 @@
       <td>
         <ul>
         {% for quantity in reaction.compoundquantity_set.all %}
+          <li><ul>
           <li>{{ quantity.compound.name }}</li>
           <li>{{ quantity.role.label }}</li>
           <li>{{ quantity.amount }}mmoles</li>
+          </ul></li>
         {% endfor %}
         <ul>
       </td>
