@@ -100,14 +100,14 @@ class NumericDescriptorValue(models.Model):
         if self.value is not None:
             if (
                self.descriptor.maximum is not None and
-               self > self.descriptor.maximum
+               self.value > self.descriptor.maximum
                ):
                 raise ValidationError(
                     'The provided value is higher than the descriptor maximum',
                     'value_too_high')
             if (
                self.descriptor.minimum is not None and
-               self < self.descriptor.minimum
+               self.value < self.descriptor.minimum
                ):
                 raise ValidationError(
                     'The provided value is lower than the descriptor minimum',
@@ -161,14 +161,14 @@ class OrdinalDescriptorValue(models.Model):
         if self.value is not None:
             if (
                self.descriptor.maximum is not None and
-               self > self.descriptor.maximum
+               self.value > self.descriptor.maximum
                ):
                 raise ValidationError(
                     'The provided value is higher than the descriptor maximum',
                     'value_too_high')
             if (
                self.descriptor.minimum is not None and
-               self < self.descriptor.minimum
+               self.value < self.descriptor.minimum
                ):
                 raise ValidationError(
                     'The provided value is lower than the descriptor minimum',

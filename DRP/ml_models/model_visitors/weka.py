@@ -32,7 +32,7 @@ class SVM(AbstractModelVisitor):
 
     # Currently, we support only one "response" variable.
     headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
-    response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader)
+    response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
 
     #TODO: Validate this input.
     command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
@@ -73,6 +73,5 @@ class SVM(AbstractModelVisitor):
     set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
     command = set_path + command
     logger.debug("Running in Shell:\n{}".format(command))
-    print command
     subprocess.check_output(command, shell=True)
 

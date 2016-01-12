@@ -253,9 +253,8 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel):
         resDict = {}
-        print predictions
-        for response, outcomes in predictions:
-            for reaction, outcome in outcomes:
+        for response, outcome in predictions.items():
+            for reaction, outcome in outcome:
                 if reaction not in resDict:
                     resDict[reaction] = {}
                 if response not in resDict[reaction]:
@@ -263,10 +262,13 @@ class ModelContainer(models.Model):
                 if outcome not in resDict[reaction][response]:
                     resDict[reaction][response][outcome] = 0
                 resDict[reaction][response][outcome] += 1
+
                 predDesc = response.createPredictionDescriptor(self, statsModel)
                 predDesc.save()
+
                 val = predDesc.createValue(reaction, outcome)
                 val.save()
+
         return resDict
 
     def _storePredictions(self, resDict):

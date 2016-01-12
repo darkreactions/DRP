@@ -28,6 +28,7 @@ def cleanUpDatabase():
   DRP.models.LicenseAgreement.objects.all()
   DRP.models.License.objects.all().delete()
   DRP.models.StatsModel.objects.all().delete()
+  DRP.models.DataSetRelation.objects.all().delete()
   DRP.models.PerformedReaction.objects.all().delete()
   DRP.models.CatMolDescriptorValue.objects.all().delete()
   DRP.models.BoolMolDescriptorValue.objects.all().delete()
