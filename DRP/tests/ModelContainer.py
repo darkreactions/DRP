@@ -14,7 +14,6 @@ class BasicWekaSVM(DRPTestCase):
 
     reactions = PerformedReaction.objects.all()
 
-
     container = ModelContainer("weka", "SVM", splitter="KFoldSplitter",
                                reactions=reactions)
     container.save()

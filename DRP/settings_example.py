@@ -270,8 +270,10 @@ CACHES = {
 # Force users to log out when the browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-STATS_MODEL_LIBS=tuple()
-REACTION_DATASET_SPLITTERS=tuple()
+STATS_MODEL_LIBS_DIR = "DRP.ml_models.model_visitors"
+STATS_MODEL_LIBS=("weka",)
+REACTION_DATASET_SPLITTERS_DIR="DRP.ml_models.splitters"
+REACTION_DATASET_SPLITTERS=("KFoldSplitter",)
 
 EMPTY_LABEL = '----'
 
