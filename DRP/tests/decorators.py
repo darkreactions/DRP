@@ -1,6 +1,6 @@
 '''A module containing decorators which are useful in most test cases for the DRP'''
 
-from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole, Descriptor
+from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, NumRxnDescriptor
 from DRP.models import DataSet
@@ -82,16 +82,34 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
 
                 compoundQuantities.append(compoundQuantity)
 
-            for descriptor_heading,val in descriptorDict.items():
-                if isinstance(descriptor, BoolRxnDescriptor):
+            #TODO: This is hideous and I'm not proud of it.
+            for desc_heading,val in descriptorDict.items():
+                descriptor = None
+                try:
+                    descriptor = BoolRxnDescriptor.objects.get(heading=desc_heading)
                     descriptorVal = BoolRxnDescriptorValue()
-                elif isinstance(descriptor, OrdRxnDescriptor):
+                except BoolRxnDescriptor.DoesNotExist:
+                  pass
+
+                try:
+                    descriptor = OrdRxnDescriptor.objects.get(heading=desc_heading)
                     descriptorVal = OrdRxnDescriptorValue()
-                elif isinstance(descriptor, CatRxnDescriptor):
+                except OrdRxnDescriptor.DoesNotExist:
+                  pass
+
+                try:
+                    descriptor = CatRxnDescriptor.objects.get(heading=desc_heading)
                     descriptorVal = CatRxnDescriptorValue()
-                elif isinstance(descriptor, NumRxnDescriptor):
+                except CatRxnDescriptor.DoesNotExist:
+                  pass
+
+                try:
+                    descriptor = NumRxnDescriptor.objects.get(heading=desc_heading)
                     descriptorVal = NumRxnDescriptorValue()
-                else:
+                except NumRxnDescriptor.DoesNotExist:
+                  pass
+
+                if descriptor == None:
                     error = "Unknown descriptorValue type for '{}'".format(descriptor)
                     raise NotImplementedError(error)
 

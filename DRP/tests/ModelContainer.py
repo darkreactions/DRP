@@ -13,7 +13,11 @@ class BasicWekaSVM(DRPTestCase):
   def runTest(self):
 
     reactions = PerformedReaction.objects.all()
-    container = ModelContainer("weka", "svm", splitter="KFoldSplitter", reactions=reactions)
+
+
+    container = ModelContainer("weka", "SVM", splitter="KFoldSplitter",
+                               reactions=reactions)
+    container.save()
 
     predictors = Descriptor.objects.filter(heading="testNumber")
     responses = Descriptor.objects.filter(heading="outcome")
