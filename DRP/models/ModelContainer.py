@@ -220,6 +220,8 @@ class ModelContainer(models.Model):
         for trainingSet, testSet in zip(self.trainingSets, self.testSets):
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
             modelVisitor = getattr(visitorModules[self.library], self.tool)(statsModel)
+            statsModel.save() #Generate a PK for the StatsModel component.
+
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
             fileName = os.path.join(settings.MODEL_DIR, '{}_{}'.format(self.pk, statsModel.pk))
@@ -328,9 +330,15 @@ class ModelContainer(models.Model):
         """CAUTION: This is a temporary development function. Do not rely on it. """
         """Return a string containing the Confusion Matrices for all stats_models."""
         summaries = "\nK-Fold Validation:\n"
+
+        # Retrieve the overall summary.
+        for descriptor in self.predictsDescriptors:
+            if descriptor.statsModel is None:
+                summaries += "{} (overall) \n".format(descriptor.summarize())
+
+        # Retrieve the summaries for each component.
         for model in self.statsmodel_set.all():
-            print "MODEL: {}".format(model)
             for descriptor in self.predictsDescriptors:
-                print "DESCRIPTOR: {}".format(descriptor)
-                summaries += "{}\n".format(descriptor.summarize(model))
+                if descriptor.statsModel == model:
+                    summaries += "{} (component: {})\n".format(descriptor.summarize(), model.fileName)
         return summaries

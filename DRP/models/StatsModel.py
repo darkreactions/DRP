@@ -23,7 +23,6 @@ class StatsModel(models.Model):
     regenerationOf = models.ForeignKey("self", blank=True, null=True, default=None)
 
     def invalidate(self):
-        """Invalidate and regenerate the model instance."""
+        """Invalidate the model instance."""
         self.invalid = True
-        # TODO: populate other parts of this method
         self.save()
