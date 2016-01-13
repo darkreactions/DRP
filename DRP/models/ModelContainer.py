@@ -8,7 +8,6 @@ from itertools import chain
 import random
 import datetime
 import importlib
-import operator
 import os
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from StatsModel import StatsModel
@@ -235,18 +234,18 @@ class ModelContainer(models.Model):
             predictions = modelVisitor.predict(testSet.reactions.all(), whitelist)
             newResDict = self._storePredictionComponents(predictions, statsModel)
 
-            # Update the result-dictionary.
-            for reaction, responseDict in newResDict:
-                for response, outcome in responseDict:
-                    if reaction not in resDict:
-                        resDict[reaction] = {}
-                    if response not in resDict[reaction]:
-                        resDict[reaction][response] = {}
+            # Update the overall result-dictionary with these new counts.
+            for reaction, responseDict in newResDict.items():
+                for response, outcomeDict in responseDict.items():
+                    for outcome, count in outcomeDict.items():
+                        if reaction not in resDict:
+                            resDict[reaction] = {}
+                        if response not in resDict[reaction]:
+                            resDict[reaction][response] = {}
 
-                    if outcome not in resDict[reaction][response]:
-                        resDict[reaction][response][outcome] = 0
-                    resDict[reaction][response][outcome] += 1
-
+                        if outcome not in resDict[reaction][response]:
+                            resDict[reaction][response][outcome] = count
+                        resDict[reaction][response][outcome] += count
 
         self._storePredictions(resDict)
         self.built = True
@@ -272,8 +271,9 @@ class ModelContainer(models.Model):
         return resDict
 
     def _storePredictions(self, resDict):
-        for reaction in resDict:
-            for response in resDict[reaction]:
+        finalPredictions = {}
+        for reaction, responseDict in resDict.items():
+            for response, outcomeDict in responseDict.items():
                 predDesc = response.createPredictionDescriptor(self)
                 predDesc.save()
                 if isinstance(response, NumRxnDescriptor):
@@ -282,21 +282,41 @@ class ModelContainer(models.Model):
                     weights = tuple(weight for value, weight in resDict[reaction][response].items())
                     val = predDesc.createValue(reaction, average(values, weights=weights))
                 else:
-                    #find the 'competitors' with the number of votes equal to the maximum and pick one at random for categorical variable types
-                    votes = sorted(resDict[reaction][response].items(), key=operator.itemgetter(1), reverse=True)
-                    maxVotes = max(v for k, v in votes)
-                    winners = tuple(item for item in votes if item[1] == maxVotes)
+                    #find the 'competitors' with the highest number of votes and pick one at random (in case multiple categories have equal numbers of votes)
+                    maxVotes = max(count for response, count in outcomeDict.items())
+                    winners = [(response, count) for response, count in outcomeDict.items() if count == maxVotes]
                     winner = random.choice(winners)
-                    val = predDesc.createValue(reaction, winner)
+                    val = predDesc.createValue(reaction, winner[0])
                 val.save()
+
+                if response not in finalPredictions:
+                    finalPredictions[response] = []
+                finalPredictions[response].append( (reaction, val) )
+        return finalPredictions
 
     def predict(self, reactions):
         if self.built:
+            resDict = {}
+
             for model in self.statsmodel_set:
                 modelVisitor = getattr(visitorModules[self.library], self.tool)(model)
                 predictions = modelVisitor.predict(reactions)
-                resDict = self._storePredictionComponents(predictions, model)
-                self._storePredictions(resDict)
+                newResDict = self._storePredictionComponents(predictions, model)
+
+                # Update the overall result-dictionary with these new counts.
+                for reaction, responseDict in newResDict.items():
+                    for response, outcomeDict in responseDict.items():
+                        for outcome, count in outcomeDict.items():
+                            if reaction not in resDict:
+                                resDict[reaction] = {}
+                            if response not in resDict[reaction]:
+                                resDict[reaction][response] = {}
+
+                            if outcome not in resDict[reaction][response]:
+                                resDict[reaction][response][outcome] = count
+                            resDict[reaction][response][outcome] += count
+
+            return self._storePredictions(resDict)
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
@@ -309,6 +329,8 @@ class ModelContainer(models.Model):
         """Return a string containing the Confusion Matrices for all stats_models."""
         summaries = "\nK-Fold Validation:\n"
         for model in self.statsmodel_set.all():
-            for d in model.predictsDescriptors:
-                summaries += "{}\n".format(d.summarize(model))
+            print "MODEL: {}".format(model)
+            for descriptor in self.predictsDescriptors:
+                print "DESCRIPTOR: {}".format(descriptor)
+                summaries += "{}\n".format(descriptor.summarize(model))
         return summaries

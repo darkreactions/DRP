@@ -22,6 +22,8 @@ class BasicWekaSVM(DRPTestCase):
     responses = Descriptor.objects.filter(heading="outcome")
     container.build(predictors, responses)
 
+    #TODO: We should test the ModelContainer "predict" method here as well.
+
     print container.summarize()
 
 suite = unittest.TestSuite([

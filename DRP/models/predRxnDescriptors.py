@@ -67,6 +67,25 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
         return matrix
 
+    def getPredictionTuples(self, model):
+        """"
+        Returns a list of tuples where the first value is the actual value for
+        a descriptor of a reaction and the second value is the predicted value
+        of that descriptor in the same reaction.
+        EG: [(1,1), (2,1), (4,1), (3,1), (1,1)] for a model that always
+            predicts "1" if there are 4 different values for a descriptor.
+        """
+
+        actualDescValues = self.predictionOf.ordrxndescriptorvalue_set.all()
+        predictedDescValues = self.ordrxndescriptorvalue_set.all()
+
+        predictionTuples = []
+        for prediction in predictedDescValues:
+            actual = actualDescValues.get(reaction=prediction.reaction)
+            predictionTuples.append( (actual.value, prediction.value) )
+
+        return predictionTuples
+
 
 class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
     predictionOf = models.ForeignKey(NumRxnDescriptor, related_name="prediction_of")
