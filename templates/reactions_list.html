@@ -35,7 +35,7 @@
   <tbody>
     <tr>
       {% if user.is_authenticated %}
-        {% if reaction.labGroup in user.labgroup_set %}
+        {% if reaction.labGroup in user.labgroup_set.all %}
         <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a></td>
         {% else %} 
         <td>{{ reaction.reference }}</td>
@@ -63,7 +63,7 @@
       <td>{{ reaction.labGroup.title }}</td>
       <td>
         {% if user.is_authenticated %}
-          {% if reaction.labGroup in user.labgroup_set %}
+          {% if reaction.labGroup in user.labgroup_set.all %}
             {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
             <form action="{% url 'deleteReaction' %}" method="post">
               {% csrf_token %}

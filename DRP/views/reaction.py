@@ -75,10 +75,10 @@ def reactionForm(request, pk=None):
       raise Http404("This reaction cannot be found")
   if reaction is not None:
     reactants = CompoundQuantity.objects.filter(reaction=reaction.reaction_ptr)
-    numRxnDescriptorValues = NumRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-    ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-    boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr)
-    catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction.reaction_ptr) 
+    numRxnDescriptorValues = NumRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual')
+    ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual')
+    boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual')
+    catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual') 
   else:
     reactants=None
     numRxnDescriptorValues = None 
