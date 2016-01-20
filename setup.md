@@ -12,8 +12,11 @@ The following instructions are written to work with Ubuntu 12+ and have (mostly)
 Install the necessary programs.
 `sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache mailutils`
 
-Note which version of Django gets installed.
-`sudo pip install numpy scipy Django pygraphviz`
+`sudo pip install numpy scipy pygraphviz`
+
+We now install django, note that we specify the version:
+
+`sudo pip install Django==1.6`
 
 Install required pip python libraries
 `sudo pip install chemspipy requests pep8 pep257 xxhash`
