@@ -25,7 +25,13 @@ Install required pip python libraries
 
 ###Clone from the Git Repository into your directory of choice.
 
+If you have ssh keys set up (beyond the scope of this manual) then use:
+
 `git clone git@github.com:cfalk/DRP`
+
+elsewise, use:
+
+`git clone https://github.com/cfalk/DRP`
 
 ####For the time being
 Switch your branch to the `phil_refactor` branch.
