@@ -1,18 +1,19 @@
 from django.conf import settings
 import uuid
 from DRP.ml_models.model_visitors.AbstractModelVisitor import AbstractModelVisitor, logger
+from DRP.models.descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
 from django.core.exceptions import ImproperlyConfigured
 import subprocess
 import os
 
-tools=('SVM')
+tools=('SVM_BCR')
 
-class SVM(AbstractModelVisitor):
+class SVM_BCR(AbstractModelVisitor):
 
   maxResponseCount = 1
 
   def __init__(self, *args, **kwargs):
-    super(SVM, self).__init__(*args, **kwargs)
+    super(SVM_BCR, self).__init__(*args, **kwargs)
 
     self.WEKA_VERSION = "3.6" # The version of WEKA to use.
     self.PUK_OMEGA = 0.5
@@ -20,9 +21,30 @@ class SVM(AbstractModelVisitor):
 
   def train(self, reactions, descriptorHeaders, filePath):
     arff_file = self._prepareArff(reactions, descriptorHeaders)
+    
+    response = type(list(reactions.descriptors())[-1])
 
+    if isinstance(response, OrdinalDescriptor):
+      print response.maximum - response.minimum
+  
+    raise RuntimeError
+    response = descriptorHeaders[-1]
+    print [row.get(response) for row in reactions.rows(expanded=True)]
+
+    num_classes = len(set([row.get(response) for row in reactions.rows(expanded=True)]))
+
+    cost_matrix = [ [str(0.0) if i==j else str(1.0) for i in range(num_classes)] for j in range(num_classes) ]
+
+    cost_matrix_string = '; '.join([' '.join(row) for row in cost_matrix])
+    cost_matrix_string = "\"[" + cost_matrix_string + "]\""
+    #print cost_matrix_string
+
+
+    cost_matrix_string = "\"[0.0 1.0 1.0 1.0; 1.0 0.0 1.0 1.0; 1.0 1.0 0.0 1.0; 1.0 1.0 1.0 0.0]\""
+    #cost_matrix_string = "\"[0.0 1.0 1.0; 1.0 0.0 1.0; 1.0 1.0 0.0]\""
     kernel = "\"weka.classifiers.functions.supportVector.Puk -O {} -S {}\"".format(self.PUK_OMEGA, self.PUK_SIGMA)
-    command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0".format(arff_file, filePath, kernel)
+    command = "java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix {} -W weka.classifiers.functions.SMO -t {} -d {} -p 0 -- -K {}".format(cost_matrix_string, arff_file, filePath, kernel)
+
     self._runWekaCommand(command)
 
   def predict(self, reactions, descriptorHeaders):

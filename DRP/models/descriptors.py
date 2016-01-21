@@ -77,7 +77,7 @@ class Descriptor(models.Model):
     def arffHeader(self):
         """Return the base unit of an Arff Header.
 
-        This method is in sufficient and must be overridden by subclasses.
+        This method is insufficient and must be overridden by subclasses.
         Details about the Arff file format can be found at
         http://www.cs.waikato.ac.nz/ml/weka/arff.html
         """
