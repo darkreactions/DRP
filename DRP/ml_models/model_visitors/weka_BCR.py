@@ -22,17 +22,31 @@ class SVM_BCR(AbstractModelVisitor):
   def train(self, reactions, descriptorHeaders, filePath):
     arff_file = self._prepareArff(reactions, descriptorHeaders)
     
-    response = type(list(reactions.descriptors())[-1])
+    response = list(reactions.descriptors())[-1]
 
+    if isinstance(response, CategorialDescriptor):
+      num_classes = response.permittedValues.all().count()
+      response_values = Cate
     if isinstance(response, OrdinalDescriptor):
-      print response.maximum - response.minimum
-  
+      num_classes = response.maximum - response.minimum + 1
+      response_values = OrdinalRxnDescriptorValue.objects.filter(reaction__in=reactions, descriptor__in=response)
+      class_counts = [response_values.filter(value=v).count() for v in range(minimum, maximum+1)]
+    if isinstance(response, BooleanDescriptor):
+      num_classes = 2
+      response_values = BoolRxnDescriptorValue.objects.filter(reaction__int=reactions, descriptor__in=response)
+      class_counts = [response_values.filter(value=True).count(), response_values.filter(value=False).count()]
+    if isinstance(response, NumericDescriptor):
+      
+
+
     raise RuntimeError
     response = descriptorHeaders[-1]
     print [row.get(response) for row in reactions.rows(expanded=True)]
 
     num_classes = len(set([row.get(response) for row in reactions.rows(expanded=True)]))
-
+    
+    
+    
     cost_matrix = [ [str(0.0) if i==j else str(1.0) for i in range(num_classes)] for j in range(num_classes) ]
 
     cost_matrix_string = '; '.join([' '.join(row) for row in cost_matrix])
