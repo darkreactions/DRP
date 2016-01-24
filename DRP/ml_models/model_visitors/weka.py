@@ -19,8 +19,12 @@ class SVM(AbstractModelVisitor):
   def train(self, reactions, descriptorHeaders, filePath):
     arff_file = self._prepareArff(reactions, descriptorHeaders)
 
+    # Currently, we support only one "response" variable.
+    headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
+    response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
+
     kernel = "\"weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7\""
-    command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0".format(arff_file, filePath, kernel)
+    command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0 -c {}".format(arff_file, filePath, kernel, response_index)
     self._runWekaCommand(command)
 
   def predict(self, reactions, descriptorHeaders):
@@ -73,5 +77,6 @@ class SVM(AbstractModelVisitor):
     set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
     command = set_path + command
     logger.debug("Running in Shell:\n{}".format(command))
+    print command
     subprocess.check_output(command, shell=True)
 
