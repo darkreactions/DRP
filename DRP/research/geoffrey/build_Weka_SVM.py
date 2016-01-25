@@ -2,6 +2,8 @@
 
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
 from DRP.models.rxnDescriptorValues import OrdRxnDescriptorValue, NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
+from django.db.models import Q
+import operator
 
 def build_model():
   reactions = PerformedReaction.objects.all()
@@ -10,12 +12,18 @@ def build_model():
                              reactions=reactions)
   container.save()
 
-  predictors = Descriptor.objects.filter(heading="reaction_temperature")[:100]
-  responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")[:100]
+  headers = ["reaction_temperature"]
+
+  predictors = get_descriptors_by_header(headers)
+  responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
 
   container.build(predictors, responses)
 
   print container.summarize()
+
+def get_descriptors_by_header(headers):
+  Qs = [Q(heading=header) for header in headers]
+  return Descriptor.objects.filter(reduce(operator.or_, Qs))
 
 if __name__=='__main__':
   build_model()
