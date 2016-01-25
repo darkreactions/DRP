@@ -36,7 +36,8 @@ class SVM_BCR(AbstractModelVisitor):
       response_values = BoolRxnDescriptorValue.objects.filter(reaction__int=reactions, descriptor__in=response)
       class_counts = [response_values.filter(value=True).count(), response_values.filter(value=False).count()]
     if isinstance(response, NumericDescriptor):
-      
+      #TODO XXX: What type of error should this be?
+      raise RuntimeError
 
 
     raise RuntimeError

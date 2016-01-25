@@ -88,7 +88,7 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
     def createValue(self, reaction, value):
         try:
             v = rxnDescriptorValues.BoolRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
-        except rxnDescriptorValues.BoolRxnDescriptorValue.doesnotExist:
+        except rxnDescriptorValues.BoolRxnDescriptorValue.DoesNotExist:
             v = rxnDescriptorValues.BoolRxnDescriptorValue(descriptor=self, reaction=reaction)
         v.value = value
         return v
