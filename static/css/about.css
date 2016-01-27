@@ -8,6 +8,10 @@ h1.bannerText {
   text-align:center;
 }
 
+figcaption.soloInfo p {
+ margin: .3em 0;
+}
+
 .groupName, .groupName a {
   box-sizing:border-box;
   color:black;

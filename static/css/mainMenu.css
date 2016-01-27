@@ -101,3 +101,9 @@ main {
 }
 
 .currentTitle { font-weight:bold; }
+
+footer {
+ font-size: .7em;
+ color: gray;
+ margin: 0 0 .5em 1em;
+}
