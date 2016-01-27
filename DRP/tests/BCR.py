@@ -28,6 +28,7 @@ class BCRWekaSVM(DRPTestCase):
 
 
 BCRWekaSVMBool = createsPerformedReactionSetBool(BCRWekaSVM)
+# uncommenting this line breaks things because a user is created twice. WTF?!?!
 #BCRWekaSVMOrd = createsPerformedReactionSetOrd(BCRWekaSVM)
 
 suite = unittest.TestSuite([
