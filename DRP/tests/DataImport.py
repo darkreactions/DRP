@@ -6,7 +6,7 @@ from DRPTestCase import DRPTestCase, runTests
 from django.db import transaction
 from decorators import createsPerformedReaction, createsCompound, joinsLabGroup, createsChemicalClass
 from decorators import createsUser, createsCompoundRole, createsRxnDescriptor
-from decorators import createsPerformedReactionSet
+from decorators import createsPerformedReactionSetOrd
 from decorators import signsExampleLicense 
 from DRP.management.commands import import_data
 from DRP.models import PerformedReaction
@@ -15,7 +15,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsUser('Rorschach', 'whatareyouwaitingfor', is_superuser=True)
 @joinsLabGroup('Rorschach', 'Watchmen')
 @signsExampleLicense("Rorschach")
-@createsPerformedReactionSet
+@createsPerformedReactionSetOrd
 class ApiV1(DRPTestCase):
     """Tests the version 1 api"""
 
@@ -38,7 +38,7 @@ class ApiV1(DRPTestCase):
 @createsUser('Rorschach', 'whatareyouwaitingfor')
 @joinsLabGroup('Rorschach', 'Watchmen')
 @signsExampleLicense("Rorschach")
-@createsPerformedReactionSet
+@createsPerformedReactionSetOrd
 class ApiV1FailBadUser(ApiV1):
     pass
 

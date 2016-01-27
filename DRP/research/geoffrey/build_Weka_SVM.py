@@ -8,7 +8,7 @@ import operator
 def build_model():
   reactions = PerformedReaction.objects.all()
   
-  container = ModelContainer("weka", "SVM", splitter="KFoldSplitter",
+  container = ModelContainer("weka", "SVM_PUK_basic", splitter="KFoldSplitter",
                              reactions=reactions)
   container.save()
 

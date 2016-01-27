@@ -3,18 +3,18 @@
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSet
+from decorators import createsPerformedReactionSetOrd
 from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-@createsPerformedReactionSet
+@createsPerformedReactionSetOrd
 class BasicWekaSVM(DRPTestCase):
 
   def runTest(self):
 
     reactions = PerformedReaction.objects.all()
 
-    container = ModelContainer("weka", "SVM", splitter="KFoldSplitter",
+    container = ModelContainer("weka", "SVM_PUK_basic", splitter="KFoldSplitter",
                                reactions=reactions)
     container.save()
 
@@ -24,7 +24,7 @@ class BasicWekaSVM(DRPTestCase):
 
     #TODO: We should test the ModelContainer "predict" method here as well.
 
-    print container.summarize()
+    #print container.summarize()
 
 suite = unittest.TestSuite([
           loadTests(BasicWekaSVM),
