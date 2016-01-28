@@ -313,7 +313,6 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
     return _loadsCompoundsFromCsv
 
 def createsPerformedReactionSetOrd(c):
-
     # Create a bunch of simple sample reactions with ordinal outcomes.
     c=createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome":1, "testNumber":5.04}, duplicateRef='R15')(c)
     c=createsPerformedReaction("Watchmen", "Rorschach","R02", ["EtOH"], ["Org"], [0.71], {"outcome":1, "testNumber":5.0})(c)
@@ -349,7 +348,6 @@ def createsPerformedReactionSetOrd(c):
     return c
 
 def createsPerformedReactionSetBool(c):
-
     # Create a bunch of simple sample reactions with Boolean outcomes.
     c=createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome":False, "testNumber":5.04}, duplicateRef='R15')(c)
     c=createsPerformedReaction("Watchmen", "Rorschach","R02", ["EtOH"], ["Org"], [0.71], {"outcome":False, "testNumber":5.0})(c)
