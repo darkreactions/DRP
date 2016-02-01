@@ -1,5 +1,30 @@
 /* stylesheet for reactions_list.html */
 
+h1 {
+ text-align: center;
+}
+
+div.downloads {
+ margin-bottom: 4em;
+}
+
+h1.downloads {
+ margin-bottom: 0;
+ font-size: 1.5em;
+}
+
+ul.downloads {
+ padding: 0;
+ width: 25em;
+ margin: auto;
+}
+
+ul.downloads li {
+ list-style:none;
+ float: left;
+ margin: 0 1em;
+}
+
 table.reactions-list {
  border-collapse:collapse;
 }
