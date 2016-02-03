@@ -21,7 +21,8 @@
     </ul>
   </div>
 {% if reactions|length > 0 %}
-<table class="reactions-list">
+
+{% comment %}
   <thead>
     <tr>
       <th>Reference</th>
@@ -58,6 +59,35 @@
         {% endfor %}
         <ul>
       </td>
+{% endcomment %}
+
+<table class="reactions-list">
+  {% for reaction in reactions %}
+  <div class="reaction">
+    {% if user.is_authenticated %}
+      {% if reaction.labGroup in user.labgroup_set %}
+      <a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>
+      {% comment %} not sure what this does {% endcomment %}
+      {% else %}
+      <h2>{{ reaction.reference }}</h2>
+      {% endif %}
+    {% else %}
+    <h2>{{ reaction.reference }}</h2>
+    {% endif %}
+    <div class="quantities">
+      {% for quantity in reaction.compoundquantity_set.all %}
+	<ul>
+          <li>{{ quantity.role.label }}</li>
+          <li>{{ quantity.compound.name }}</li>
+          <li>{{ quantity.amount }}mmoles</li>
+        </ul>
+      {% endfor %}
+    </div>
+
+  </div>
+  {% endfor %}
+
+{% comment %}
       <td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
       <td>{{ reaction.performedDateTime }}</td>
       <td>{{ reaction.insertedDateTime }}</td>
@@ -87,6 +117,7 @@
     </tr>
     {% endfor %}
   </tbody>
+{% endcomment %}
 </table>
 <ol class="pagination">
     {% for x in paginator.page_range %}

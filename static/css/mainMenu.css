@@ -100,6 +100,26 @@ main {
  margin:1em;
 }
 
+main a:link {
+ text-decoration: none;
+ color: #9c0000;
+}
+
+main a:visited {
+ text-decoration: none;
+ color: #9c0000;
+}
+
+main a:hover {
+ text-decoration: none;
+ color: #9c0000;
+ opacity:.7; 
+}
+
+main a:active {
+
+}
+
 .currentTitle { font-weight:bold; }
 
 footer {
