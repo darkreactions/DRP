@@ -2,6 +2,7 @@
 
 .reaction-form fieldset {
  margin:3em 0;
+ border:1px solid black;
 }
 
 .reaction-form legend {
@@ -13,8 +14,33 @@
  vertical-align:top;
 }
 
+.reaction-form fieldset ol {
+ padding:0;
+ list-style:none;
+}
+
 .reaction-form fieldset ol li {
  padding:1em 0;
+ float:left;
+ margin-right:2em;
+}
+
+.reaction-form fieldset:nth-child(2) ol li {
+ float:none;
+}
+
+.reaction-form input[type="submit"] {
+ padding:0;
+ color:white;
+ background-color: #9c0000;
+ border:1px solid #bd0000;
+ border-radius:1em;
+ width:7em;
+ height:2em;
+}
+
+.reaction-form input[value="Save"] {
+ margin: 0 45%;
 }
 
 
