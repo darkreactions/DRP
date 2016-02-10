@@ -17,7 +17,7 @@ class AbstractSplitter(object):
         dataSet = DRP.models.DataSet(name=self.namingStub + '_{}'.format(self.namingCounter))
         dataSet.save()
         self.namingCounter+=1
-        for datum in data:
-            dsr = DRP.models.DataSetRelation(dataSet = dataSet, reaction=datum)
-            dsr.save()
+        dsrs = [DRP.models.DataSetRelation(dataSet=dataSet, reaction=datum) for datum in data]
+        DRP.models.DataSetRelation.objects.bulk_create(dsrs)
+
         return dataSet
