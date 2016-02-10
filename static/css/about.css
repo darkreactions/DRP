@@ -29,6 +29,12 @@ figcaption.soloInfo p {
  margin:0 auto 2em auto;
 }
 
+.contributorGroup:first-child {
+ margin:0 auto 2em auto;
+ width: 70%;
+ max-width: 30em;
+}
+
 .row2 {
  width:70%;
  margin: auto;
@@ -39,7 +45,8 @@ figcaption.soloInfo p {
 }
 
 figure.contributorGroup.richard {
- width: 10em;
+ width: 25%;
+ max-width: 10em;
  float: right;
  margin-top:4em;
 }
