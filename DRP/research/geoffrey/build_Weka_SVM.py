@@ -4,15 +4,21 @@ from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescrip
 from DRP.models.rxnDescriptorValues import OrdRxnDescriptorValue, NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from django.db.models import Q
 import operator
+from sys import argv
 
-def build_model():
+
+def build_model(descriptor_header_file):
   reactions = PerformedReaction.objects.all()
   
   container = ModelContainer("weka", "SVM_PUK_basic", splitter="KFoldSplitter",
                              reactions=reactions)
   container.save()
 
-  headers = ["reaction_temperature"]
+
+  #headers = ["reaction_temperature"]
+  # get the headers to use from the descriptor header file
+  with open(descriptor_header_file, 'r') as f:
+    headers = f.readlines()
 
   predictors = get_descriptors_by_header(headers)
   responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
@@ -26,4 +32,5 @@ def get_descriptors_by_header(headers):
   return Descriptor.objects.filter(reduce(operator.or_, Qs))
 
 if __name__=='__main__':
-  build_model()
+  descriptor_header_file = argv[1]
+  build_model(descriptor_header_file)
