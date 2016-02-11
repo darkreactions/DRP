@@ -187,8 +187,8 @@ class ModelContainer(models.Model):
 
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
-    def __init__(self, library, tool, splitter=None, featureLibrary=None, featureTool=None reactions=None, trainingSets=None, testSets=None):
-        super(ModelContainer, self).__init__(splitter=splitter, library=library, tool=tool, featureLibrary=featureLibrary, featureTool=featureTool)
+    def __init__(self, library, tool, splitter=None, featureLibrary=None, featureTool=None, reactions=None, trainingSets=None, testSets=None):
+        super(ModelContainer, self).__init__(splitter=splitter, library=library, tool=tool)
 
 
         self.reactions = reactions
