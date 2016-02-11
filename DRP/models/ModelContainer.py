@@ -263,7 +263,8 @@ class ModelContainer(models.Model):
                 if outcome not in resDict[reaction][response]:
                     resDict[reaction][response][outcome] = 0
                 resDict[reaction][response][outcome] += 1
-
+                
+                # TODO XXX change these saves so they only make one hit on the database
                 predDesc = response.createPredictionDescriptor(self, statsModel)
                 predDesc.save()
 
