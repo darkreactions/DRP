@@ -17,8 +17,11 @@ visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR 
 splitters = {splitter:importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 #TODO: set availability of manual splitting up
 
+featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
+
 TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in visitorModules.items())
 
+FEATURE_SELECTION_TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in featureVisitorModules.items())
 
 class PredictsDescriptorsAttribute(object):
 
@@ -149,6 +152,11 @@ class ModelContainer(models.Model):
         max_length=200, choices=tuple((tool, tool) for tool in TOOL_CHOICES))
     splitter = models.CharField(
         max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, null=True)
+    # TODO XXX modify database so this will work
+    # feature_library = models.CharField(
+    #     max_length=200, choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS))
+    # feature_tool = models.CharField(
+    #     max_length=200, choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES))
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
@@ -179,8 +187,8 @@ class ModelContainer(models.Model):
 
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
-    def __init__(self, library, tool, splitter=None, reactions=None, trainingSets=None, testSets=None):
-        super(ModelContainer, self).__init__(splitter=splitter, library=library, tool=tool)
+    def __init__(self, library, tool, splitter=None, featureLibrary=None, featureTool=None reactions=None, trainingSets=None, testSets=None):
+        super(ModelContainer, self).__init__(splitter=splitter, library=library, tool=tool, featureLibrary=featureLibrary, featureTool=featureTool)
 
 
         self.reactions = reactions
@@ -188,7 +196,7 @@ class ModelContainer(models.Model):
         self.reactions = reactions
         self.trainingSets = trainingSets
         self.testSets = testSets
-
+        
     def clean(self):
         if self.tool not in visitorModules[self.library].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
