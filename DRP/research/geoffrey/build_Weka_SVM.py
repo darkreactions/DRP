@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
-from DRP.models.rxnDescriptorValues import OrdRxnDescriptorValue, NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
+from DRP.models import PerformedReaction, ModelContainer, Descriptor
 from django.db.models import Q
 import operator
 from sys import argv
@@ -18,7 +17,7 @@ def build_model(descriptor_header_file):
   #headers = ["reaction_temperature"]
   # get the headers to use from the descriptor header file
   with open(descriptor_header_file, 'r') as f:
-    headers = [l.strip('\n\r') for l in f.readlines()]
+    headers = [l.strip() for l in f.readlines()]
   
   predictors = get_descriptors_by_header(headers)
   responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")

@@ -1,13 +1,9 @@
-#!/usr/bin/env python
 from abc import ABCMeta, abstractmethod
 import logging
-#TODO: set attribute methods to be transactions
-#TODO: set descriptors to forbid the word predicted
-#TODO: input logging options into the settings files
 
 logger = logging.getLogger(__name__)
 
-class AbstractModelVisitor(object):
+class AbstractDistanceLearner(object):
     __metaclass__ = ABCMeta
 
     maxResponseCount = None
@@ -18,7 +14,7 @@ class AbstractModelVisitor(object):
         pass
 
     @abstractmethod
-    def train(self, reactions, descriptorHeaders, filePath):
+    def train(self, reactions, predictorHeaders, responseHeaders):
         """A function meant to be overridden by actual DistanceLeaner classes.
         The `_train` method should determine the distance function
         and save that model if necessary."""
