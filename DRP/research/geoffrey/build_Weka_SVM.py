@@ -18,8 +18,8 @@ def build_model(descriptor_header_file):
   #headers = ["reaction_temperature"]
   # get the headers to use from the descriptor header file
   with open(descriptor_header_file, 'r') as f:
-    headers = f.readlines()
-
+    headers = [l.strip('\n\r') for l in f.readlines()]
+  
   predictors = get_descriptors_by_header(headers)
   responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
 

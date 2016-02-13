@@ -9,7 +9,7 @@ import random
 import datetime
 import importlib
 import os
-from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from StatsModel import StatsModel
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
@@ -80,6 +80,8 @@ class DescriptorAttribute(object):
                 pass
 
             if desc is None:
+                print descriptor.heading
+                print type(descriptor)
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, modelContainer):
@@ -153,9 +155,9 @@ class ModelContainer(models.Model):
     splitter = models.CharField(
         max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, null=True)
     # TODO XXX modify database so this will work
-    # feature_library = models.CharField(
+    # featureLibrary = models.CharField(
     #     max_length=200, choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS))
-    # feature_tool = models.CharField(
+    # featureTool = models.CharField(
     #     max_length=200, choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES))
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
@@ -262,16 +264,17 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel):
         resDict = {}
-        for response, outcome in predictions.items():
-            for reaction, outcome in outcome:
-                if reaction not in resDict:
-                    resDict[reaction] = {}
-                if response not in resDict[reaction]:
-                    resDict[reaction][response] = {}
-                if outcome not in resDict[reaction][response]:
-                    resDict[reaction][response][outcome] = 0
-                resDict[reaction][response][outcome] += 1
-                
+        with transaction.atomic():
+            for response, outcome in predictions.items():
+                for reaction, outcome in outcome:
+                    if reaction not in resDict:
+                        resDict[reaction] = {}
+                        if response not in resDict[reaction]:
+                            resDict[reaction][response] = {}
+                            if outcome not in resDict[reaction][response]:
+                                resDict[reaction][response][outcome] = 0
+                                resDict[reaction][response][outcome] += 1
+                                
                 # TODO XXX change these saves so they only make one hit on the database
                 predDesc = response.createPredictionDescriptor(self, statsModel)
                 predDesc.save()
