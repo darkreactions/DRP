@@ -95,7 +95,7 @@ class ArffQuerySet(models.query.QuerySet):
             writeable.write(','.join((str(row.get(key)) if (row.get(key) is not None) else missing) for key in headers.keys()))
             writeable.write('\n')
 
-    def toNPArray(self, expanded=False, whitelistHeaders=None, missing="?"):
+    def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
         '''returns a numpy array'''
 
         matrix = []
@@ -108,7 +108,7 @@ class ArffQuerySet(models.query.QuerySet):
             headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
 
         for row in self.rows(expanded):
-            matrix.append([(row.get(key) if (row.get(key) is not None) else missing) for key in headers.keys])
+            matrix.append(((row.get(key) if (row.get(key) is not None) else missing) for key in headers.keys()))
 
         return np.array(matrix)
 

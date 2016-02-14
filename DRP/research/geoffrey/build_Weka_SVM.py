@@ -7,24 +7,24 @@ from sys import argv
 
 
 def build_model(descriptor_header_file):
-  reactions = PerformedReaction.objects.all()
-  
-  container = ModelContainer("weka", "SVM_PUK_basic", splitter="KFoldSplitter",
+    reactions = PerformedReaction.objects.all()
+    
+    container = ModelContainer("weka", "SVM_PUK_basic", splitter="KFoldSplitter",
                              reactions=reactions)
-  container.save()
-
-
-  #headers = ["reaction_temperature"]
-  # get the headers to use from the descriptor header file
-  with open(descriptor_header_file, 'r') as f:
-    headers = [l.strip() for l in f.readlines()]
-  
-  predictors = get_descriptors_by_header(headers)
-  responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
-
-  container.build(predictors, responses)
-
-  print container.summarize()
+    container.save()
+    
+    
+    #headers = ["reaction_temperature"]
+    # get the headers to use from the descriptor header file
+    with open(descriptor_header_file, 'r') as f:
+        headers = [l.strip() for l in f.readlines()]
+    
+    predictors = get_descriptors_by_header(headers)
+    responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
+    
+    container.build(predictors, responses)
+    
+    print container.summarize()
 
 def get_descriptors_by_header(headers):
   Qs = [Q(heading=header) for header in headers]

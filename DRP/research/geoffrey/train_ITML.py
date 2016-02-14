@@ -1,21 +1,32 @@
 #!/usr/bin/env python
 
-from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
 from sys import argv
+import operator
 from DRP.research.geoffrey.distance_learning.metricLearn import ITML
+from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
+from django.db.models import Q
 
 def train(descriptor_header_file):
-    reactions = PerformedReaction.objects.all()[:100]
+    reactions = PerformedReaction.objects.all()
   
     # get the headers to use from the descriptor header file
     with open(descriptor_header_file, 'r') as f:
         descriptorHeaders = [l.strip() for l in f.readlines()]
 
-    responseHeaders = ["boolean_crystallisation_outcome"]
+    predictors = get_descriptors_by_header(descriptorHeaders)
+    responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
+
+    predictorHeaders = [d.csvHeader for d in predictors]
+    responseHeaders = [d.csvHeader for d in responses]
+
     itml = ITML()
 
-    itml.train(reactions, descriptorHeaders, responseHeaders)
+    itml.train(reactions, predictorHeaders, responseHeaders)
 
+
+def get_descriptors_by_header(headers):
+    Qs = [Q(heading=header) for header in headers]
+    return Descriptor.objects.filter(reduce(operator.or_, Qs))
 
 if __name__=='__main__':
   descriptor_header_file = argv[1]
