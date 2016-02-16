@@ -19,6 +19,10 @@ def train(descriptor_header_file):
     predictorHeaders = [d.csvHeader for d in predictors]
     responseHeaders = [d.csvHeader for d in responses]
 
+
+    print predictorHeaders
+    print responseHeaders
+    
     itml = ITML()
 
     itml.train(reactions, predictorHeaders, responseHeaders)
