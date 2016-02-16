@@ -5,10 +5,12 @@ from sklearn.preprocessing import Imputer
 from sklearn.metrics import pairwise_distances
 from DRP.models import PerformedReaction, Descriptor, rxnDescriptorValues
 from DRP.research.geoffrey.distance_learning.AbstractDistanceLearner import AbstractDistanceLearner, logger
+import cPickle as pickle
 
 class ITML(AbstractDistanceLearner):
     def __init__(self, *args, **kwargs):
         super(self.__class__, self).__init__(*args, **kwargs)
+        self.matrix = None
     
     def train(self, reactions, predictorHeaders, responseHeaders):
         data = reactions.toNPArray(expanded=True, whitelistHeaders=predictorHeaders, missing=np.nan)
@@ -36,5 +38,8 @@ class ITML(AbstractDistanceLearner):
         constraints = ml_ITML.prepare_constraints(labels, data.shape[0], num_constraints)
         itml.fit(data, constraints, bounds=bounds)
 
-        self.distance_function = self.distance_function_from_matrix(itml.metric())
+        self.matrix = itml.metric()
+        
+    def save(self, writeable):
+        pickle.dump(self, writeable)
     

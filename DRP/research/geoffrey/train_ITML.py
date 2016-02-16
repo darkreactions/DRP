@@ -6,7 +6,7 @@ from DRP.research.geoffrey.distance_learning.metricLearn import ITML
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
 from django.db.models import Q
 
-def train(descriptor_header_file):
+def train(descriptor_header_file, outfile):
     reactions = PerformedReaction.objects.all()
   
     # get the headers to use from the descriptor header file
@@ -18,15 +18,13 @@ def train(descriptor_header_file):
 
     predictorHeaders = [d.csvHeader for d in predictors]
     responseHeaders = [d.csvHeader for d in responses]
-
-
-    print predictorHeaders
-    print responseHeaders
     
     itml = ITML()
 
     itml.train(reactions, predictorHeaders, responseHeaders)
 
+    with open(outfile, 'wb') as f:
+        itml.save(f)
 
 def get_descriptors_by_header(headers):
     Qs = [Q(heading=header) for header in headers]
@@ -34,4 +32,5 @@ def get_descriptors_by_header(headers):
 
 if __name__=='__main__':
   descriptor_header_file = argv[1]
-  train(descriptor_header_file)
+  outfile = argv[2]
+  train(descriptor_header_file, outfile)
