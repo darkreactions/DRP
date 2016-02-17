@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''The unit test for the compound Creation form.
-  These tests assume that presence tests for teh form fields work as expected
+  These tests assume that presence tests for the form fields work as expected
 '''
 
 import unittest 
