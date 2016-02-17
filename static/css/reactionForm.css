@@ -29,6 +29,19 @@
  float:none;
 }
 
+.reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(1), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(2), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(5), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(6), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(8) {
+ float:left;
+}
+
+.reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(3) {
+ clear:both;
+}
+
+.reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(7) {
+ float:left;
+ clear:left;
+}
+
 .reaction-form input[type="submit"] {
  padding:0;
  color:white;
