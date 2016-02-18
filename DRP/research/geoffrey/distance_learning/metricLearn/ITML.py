@@ -1,45 +1,28 @@
 #!/usr/bin/env python
-import numpy as np
 from metric_learn import ITML as ml_ITML
-from sklearn.preprocessing import Imputer
+import numpy as np
 from sklearn.metrics import pairwise_distances
-from DRP.models import PerformedReaction, Descriptor, rxnDescriptorValues
-from DRP.research.geoffrey.distance_learning.AbstractDistanceLearner import AbstractDistanceLearner, logger
-import cPickle as pickle
+from DRP.research.geoffrey.distance_learning.metricLearn.AbstractMetricLearnDistanceLearner import AbstractMetricLearnDistanceLearner, logger
 
-class ITML(AbstractDistanceLearner):
+class ITML(AbstractMetricLearnDistanceLearner):
     def __init__(self, *args, **kwargs):
+        self.metric_object = ml_ITML()
         super(self.__class__, self).__init__(*args, **kwargs)
-        self.matrix = None
     
-    def train(self, reactions, predictorHeaders, responseHeaders):
-        data = reactions.toNPArray(expanded=True, whitelistHeaders=predictorHeaders, missing=np.nan)
-        # TODO XXX: unset missing and ensure that all labels are defined.
-        # We shouldn't be using reactions with undefined labels anyway
-        labels = reactions.toNPArray(expanded=True, whitelistHeaders=responseHeaders, missing=False).flatten()
+    def train(self, num_constraints=200):
+        self._prepareArrays()
+        self.num_constraints = num_constraints #record so we know what it was trained with
 
-        data = Imputer().fit_transform(data)
+        old_settings = np.seterr(divide='raise') # we don't want division by zero to pass
 
-        bounds = np.percentile(pairwise_distances(data),(5,95))
-        # this is how metric-learn sets bounds internally if none are given.
-        # determine them here to make sure they're not 0!
-
-        bounds[0] = max(bounds[0], 0.1)
-
-        np.seterr(all='raise') # we don't want division by zero to pass
-        try:
-            assert(data.dtype == np.float64)
-        except AssertionError:
-            raise TypeError("Data is not of the type float.")
-
-        itml = ml_ITML()
-
-        num_constraints = 200
-        constraints = ml_ITML.prepare_constraints(labels, data.shape[0], num_constraints)
-        itml.fit(data, constraints, bounds=bounds)
-
-        self.matrix = itml.metric()
-        
-    def save(self, writeable):
-        pickle.dump(self, writeable)
-    
+        # This is how metric learn determines bounds internally
+        # but the lower bound can be zero this way (especially for low-dimensional data)
+        pair_dists = pairwise_distances(self.data)
+        bounds = np.percentile(pair_dists, (5, 95))
+        # the extra check ensures against divide-by-zero errors later
+        if bounds[0] == 0:
+            bounds[0] = min(pair_dists[np.nonzero(pair_dists)])
+            
+        self.constraints = self.metric_object.prepare_constraints(self.labels, self.data.shape[0], self.num_constraints)
+        self.metric_object.fit(self.data, self.constraints, bounds=bounds)
+        np.seterr(**old_settings)

@@ -19,7 +19,7 @@ descriptorPlugins = [importlib.import_module(plugin) for
 
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
-    def __init__(self, model = None, **kwargs):
+    def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""
         model = Reaction if model is None else model
         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
