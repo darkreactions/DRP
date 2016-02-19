@@ -44,7 +44,7 @@ class Command(BaseCommand):
             for u in serializers.deserialize('xml', smart_str(r.text)):
                 u.save()
 
-            user = User.objects.get(username=settings.MAIN_SERVER_USER)            
+            user = User.objects.get(username=settings.MAIN_SERVER_USER)
             user.set_password(settings.MAIN_SERVER_PASS)
             user.save()
 

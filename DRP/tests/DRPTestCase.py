@@ -27,17 +27,13 @@ def cleanUpDatabase():
   DRP.models.ConfirmationCode.objects.all().delete()
   DRP.models.LicenseAgreement.objects.all()
   DRP.models.License.objects.all().delete()
-  DRP.models.LegacyStatsModel.objects.all().delete()
   DRP.models.StatsModel.objects.all().delete()
-#  DRP.models.TestSet.objects.all().delete()
-#  DRP.models.TestSetRelation.objects.all().delete()
-#  DRP.models.TrainingSet.objects.all().delete()
+  DRP.models.DataSetRelation.objects.all().delete()
   DRP.models.PerformedReaction.objects.all().delete()
   DRP.models.CatMolDescriptorValue.objects.all().delete()
   DRP.models.BoolMolDescriptorValue.objects.all().delete()
   DRP.models.NumMolDescriptorValue.objects.all().delete()
   DRP.models.OrdMolDescriptorValue.objects.all().delete()
-#  DRP.models.StatsModelTag.objects.all().delete()
   DRP.models.LabGroup.objects.all().delete()
   keepDescriptors = []
   for plugin in molDescriptorPlugins:

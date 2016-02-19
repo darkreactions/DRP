@@ -4,16 +4,20 @@ from django.conf import settings
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from numpy import average
+from itertools import chain
 import random
 import datetime
 import importlib
-import operator
+import os
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
-visitorModules = {library:importlib.import_module(library) for library in settings.STATS_MODEL_LIBS}
-splitters = {splitter:importlib.import_module(splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
+from StatsModel import StatsModel
+
+visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
+
+splitters = {splitter:importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 #TODO: set availability of manual splitting up
 
-TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in visitorModules.items()) 
+TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in visitorModules.items())
 
 
 class PredictsDescriptorsAttribute(object):
@@ -47,15 +51,32 @@ class DescriptorAttribute(object):
         modelContainer.catRxnDescriptors.clear()
         modelContainer.numRxnDescriptors.clear()
         for descriptor in descriptors:
-            if isinstance(descriptor, BoolRxnDescriptor):
-                modelContainer.boolRxnDescriptors.add(descriptor)
-            elif isinstance(descriptor, OrdRxnDescriptor):
-                modelContainer.ordRxnDescriptors.add(descriptor)
-            elif isinstance(descriptor, CatRxnDescriptor):
-                modelContainer.catRxnDescriptors.add(descriptor)
-            elif isinstance(descriptor, NumRxnDescriptor):
-                modelContainer.numRxnDescriptors.add(descriptor)
-            else:
+            desc = None
+            try:
+                desc = BoolRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.boolRxnDescriptors.add(desc)
+            except BoolRxnDescriptor.DoesNotExist:
+                pass
+
+            try:
+                desc = OrdRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.ordRxnDescriptors.add(desc)
+            except OrdRxnDescriptor.DoesNotExist:
+                pass
+
+            try:
+                desc = CatRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.catRxnDescriptors.add(desc)
+            except CatRxnDescriptor.DoesNotExist:
+                pass
+
+            try:
+                desc = NumRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.numRxnDescriptors.add(desc)
+            except NumRxnDescriptor.DoesNotExist:
+                pass
+
+            if desc is None:
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, modelContainer):
@@ -75,24 +96,35 @@ class OutcomeDescriptorAttribute(object):
         modelContainer.outcomeCatRxnDescriptors.clear()
         modelContainer.outcomeNumRxnDescriptors.clear()
         for descriptor in descriptors:
-            if isinstance(descriptor, BoolRxnDescriptor):
-                modelContainer.outcomeBoolRxnDescriptors.add(descriptor)
-            elif isinstance(descriptor, OrdRxnDescriptor):
-                modelContainer.outcomeOrdRxnDescriptors.add(descriptor)
-            elif isinstance(descriptor, CatRxnDescriptor):
-                pred_descriptor = PredCatRxnDescriptor()
-                modelContainer.outcomeCatRxnDescriptors.add(descriptor)
-            elif isinstance(descriptor, NumRxnDescriptor):
-                modelContainer.outcomeNumRxnDescriptors.add(descriptor)
-            else:
+            desc = None
+            try:
+                desc = BoolRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.outcomeBoolRxnDescriptors.add(desc)
+            except BoolRxnDescriptor.DoesNotExist:
+                pass
+
+            try:
+                desc = OrdRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.outcomeOrdRxnDescriptors.add(desc)
+            except OrdRxnDescriptor.DoesNotExist:
+                pass
+
+            try:
+                desc = CatRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.outcomeCatRxnDescriptors.add(desc)
+            except CatRxnDescriptor.DoesNotExist:
+                pass
+
+            try:
+                desc = NumRxnDescriptor.objects.get(id=descriptor.id)
+                modelContainer.outcomeNumRxnDescriptors.add(desc)
+            except NumRxnDescriptor.DoesNotExist:
+                pass
+
+            if desc is None:
                 raise ValueError('An invalid object was assigned as a descriptor')
 
-            pred = descriptor.createPredictionDescriptor()
-            pred_descriptor.heading = descriptor.heading + '{}_summative'.format(modelContainer.pk)
-            pred_descriptor.name = descriptor.name + ' summative from model container id '.format(modelContainer.pk)
-
-            pred_descriptor.prediction_of = descriptor
-            pred_descriptor.modelContainer = modelContainer
+            pred_descriptor = desc.createPredictionDescriptor(modelContainer)
             pred_descriptor.save()
 
     def __delete__(self, modelContainer):
@@ -151,10 +183,11 @@ class ModelContainer(models.Model):
 
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
-    def __init__(self, responses, library, tool, splitter=None, reactions=None, trainingSets=None, testSets=None):
+    def __init__(self, library, tool, splitter=None, reactions=None, trainingSets=None, testSets=None):
         super(ModelContainer, self).__init__(splitter=splitter, library=library, tool=tool)
+
+
         self.reactions = reactions
-        self.outcomeDescriptors = responses
         self.splitter = splitter
         self.reactions = reactions
         self.trainingSets = trainingSets
@@ -163,42 +196,70 @@ class ModelContainer(models.Model):
     def clean(self):
         if self.tool not in visitorModules[self.library].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
-        if getattr(visitorModules[self.library], tool).maxResponseCount is not None:
-            if getattr(visitorModules[self.library], tool).maxResponseCount < self.outcomeDescriptors.count():
-                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.library], tool).maxResponseCount)
+        if getattr(visitorModules[self.library], self.tool).maxResponseCount is not None:
+            if getattr(visitorModules[self.library], self.tool).maxResponseCount < self.outcomeDescriptors.count():
+                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.library], self.tool).maxResponseCount)
         if self.splitter is None ^ self.reactions is None:
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
         elif self.training is None:
-            raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch') 
+            raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
-    def build(self):
-        if not self.built:
-            if self.splitter is not None:
-                data = splitters[self.splitter].Splitter("{}_{}_{}".format(self.library, self.tool, self.pk)).split(self.reactions)
-                self.trainingSets = list(d[0] for d in data)
-                self.testSets = list(d[1] for d in data)
-            resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
-            for trainingSet, testSets in zip(self.trainingSets, selt.testSets):
-                statsModel = StatsModel(container=self, trainingSet=trainingSet)
-                modelVisitor = getattr(visitorModules[self.library], self.tool)(statsModel)
-                statsModel.startTime = datetime.datetime.now()
-                fileName = os.path.join(settings.MODEL_DIR, '{}_{}'.format(self.pk, stats_model.pk))
-                whitelist = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
-                modelVisitor.train(trainingSet.reactions.all(), whiteList, fileName)
-                self.stats_model.fileName = fileName
-                statsModel.endTime = datetime.datetime.now()
-                statsModel.save()
-                for testSet in testSets:
-                    statsModel.testSets.add(testSet)  
-                    predictions = modelVisitor.predict(testSet.reactions.all())
-                    resDict = self._storePredictionComponents(predictions, statsModel, resDict)
-            self._storePredictions(resDict)
-            self.built = True
+    def build(self, predictors, response):
 
-    def _storePredictionComponents(self, predictions, statsModel, resDict=None):
-        resDict = {} if resDict is None else resDict
-        for response, outcomes in predictions: 
-            for reaction, outcome in outcomes:
+        if self.built:
+            raise Exception("")
+
+        self.descriptors = predictors
+        self.outcomeDescriptors = response
+
+        if self.splitter is not None:
+            splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.library, self.tool, self.pk))
+            data_splits = splitterObj.split(self.reactions)
+
+            self.trainingSets = [dataset_tuple[0] for dataset_tuple in data_splits]
+            self.testSets = [dataset_tuple[1] for dataset_tuple in data_splits]
+
+        resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
+
+        for trainingSet, testSet in zip(self.trainingSets, self.testSets):
+            statsModel = StatsModel(container=self, trainingSet=trainingSet)
+            modelVisitor = getattr(visitorModules[self.library], self.tool)(statsModel)
+            statsModel.save() #Generate a PK for the StatsModel component.
+
+            # Train the model.
+            statsModel.startTime = datetime.datetime.now()
+            fileName = os.path.join(settings.MODEL_DIR, '{}_{}'.format(self.pk, statsModel.pk))
+            whitelist = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
+            modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
+            statsModel.fileName = fileName
+            statsModel.endTime = datetime.datetime.now()
+            statsModel.save()
+
+            # Test the model.
+            statsModel.testSets.add(testSet)
+            predictions = modelVisitor.predict(testSet.reactions.all(), whitelist)
+            newResDict = self._storePredictionComponents(predictions, statsModel)
+
+            # Update the overall result-dictionary with these new counts.
+            for reaction, responseDict in newResDict.items():
+                for response, outcomeDict in responseDict.items():
+                    for outcome, count in outcomeDict.items():
+                        if reaction not in resDict:
+                            resDict[reaction] = {}
+                        if response not in resDict[reaction]:
+                            resDict[reaction][response] = {}
+
+                        if outcome not in resDict[reaction][response]:
+                            resDict[reaction][response][outcome] = count
+                        resDict[reaction][response][outcome] += count
+
+        self._storePredictions(resDict)
+        self.built = True
+
+    def _storePredictionComponents(self, predictions, statsModel):
+        resDict = {}
+        for response, outcome in predictions.items():
+            for reaction, outcome in outcome:
                 if reaction not in resDict:
                     resDict[reaction] = {}
                 if response not in resDict[reaction]:
@@ -206,15 +267,19 @@ class ModelContainer(models.Model):
                 if outcome not in resDict[reaction][response]:
                     resDict[reaction][response][outcome] = 0
                 resDict[reaction][response][outcome] += 1
+
                 predDesc = response.createPredictionDescriptor(self, statsModel)
                 predDesc.save()
+
                 val = predDesc.createValue(reaction, outcome)
                 val.save()
+
         return resDict
 
     def _storePredictions(self, resDict):
-        for reaction in resDict:
-            for response in resDict[reaction]:
+        finalPredictions = {}
+        for reaction, responseDict in resDict.items():
+            for response, outcomeDict in responseDict.items():
                 predDesc = response.createPredictionDescriptor(self)
                 predDesc.save()
                 if isinstance(response, NumRxnDescriptor):
@@ -223,34 +288,61 @@ class ModelContainer(models.Model):
                     weights = tuple(weight for value, weight in resDict[reaction][response].items())
                     val = predDesc.createValue(reaction, average(values, weights=weights))
                 else:
-                    #find the 'competitors' with the number of votes equal to the maximum and pick one at random for categorical variable types
-                    votes = sorted(resDict[reaction][response].items(), key=operator.itemgetter(1), reverse=True)
-                    maxVotes = max(v for k, v in votes)
-                    winners = tuple(item for item in votes if item[1] == maxVotes)
+                    #find the 'competitors' with the highest number of votes and pick one at random (in case multiple categories have equal numbers of votes)
+                    maxVotes = max(count for response, count in outcomeDict.items())
+                    winners = [(response, count) for response, count in outcomeDict.items() if count == maxVotes]
                     winner = random.choice(winners)
-                    val = predDesc.createValue(reaction, winner)
+                    val = predDesc.createValue(reaction, winner[0])
                 val.save()
+
+                if response not in finalPredictions:
+                    finalPredictions[response] = []
+                finalPredictions[response].append( (reaction, val) )
+        return finalPredictions
 
     def predict(self, reactions):
         if self.built:
+            resDict = {}
+
             for model in self.statsmodel_set:
-                modelVisitor = getattr(visitorModules[self.library], self.tool)(statsModel)
+                modelVisitor = getattr(visitorModules[self.library], self.tool)(model)
                 predictions = modelVisitor.predict(reactions)
-                resDict = self._storePredictionComponents(predictions, model) 
-                self._storePredictions(resDict)
+                newResDict = self._storePredictionComponents(predictions, model)
+
+                # Update the overall result-dictionary with these new counts.
+                for reaction, responseDict in newResDict.items():
+                    for response, outcomeDict in responseDict.items():
+                        for outcome, count in outcomeDict.items():
+                            if reaction not in resDict:
+                                resDict[reaction] = {}
+                            if response not in resDict[reaction]:
+                                resDict[reaction][response] = {}
+
+                            if outcome not in resDict[reaction][response]:
+                                resDict[reaction][response][outcome] = count
+                            resDict[reaction][response][outcome] += count
+
+            return self._storePredictions(resDict)
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
     @transaction.atomic
     def save(self, *args, **kwargs):
         super(ModelContainer, self).save(*args, **kwargs)
-        self.build()
 
     def summarize(self):
         """CAUTION: This is a temporary development function. Do not rely on it. """
         """Return a string containing the Confusion Matrices for all stats_models."""
         summaries = "\nK-Fold Validation:\n"
+
+        # Retrieve the overall summary.
+        for descriptor in self.predictsDescriptors:
+            if descriptor.statsModel is None:
+                summaries += "{} (overall) \n".format(descriptor.summarize())
+
+        # Retrieve the summaries for each component.
         for model in self.statsmodel_set.all():
-            for d in model.predictsDescriptors:
-                summaries += "{}\n".format(d.summarize(model))
+            for descriptor in self.predictsDescriptors:
+                if descriptor.statsModel == model:
+                    summaries += "{} (component: {})\n".format(descriptor.summarize(), model.fileName)
         return summaries

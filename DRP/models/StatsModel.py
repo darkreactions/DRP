@@ -1,9 +1,6 @@
 """A module containing only the StatsModel class."""
 from dataSets import DataSet
 from django.db import models
-from StatsModelTag import StatsModelTag
-from ModelContainer import ModelContainer
-from rxnDescriptors import NumRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor
 
 
 class StatsModel(models.Model):
@@ -19,14 +16,13 @@ class StatsModel(models.Model):
     endTime = models.DateTimeField(default=None, null=True)
     trainingSet = models.ForeignKey(DataSet, related_name='trainingSetFor')
     testSets = models.ManyToManyField(DataSet, related_name='testSetsFor')
-    container = models.ForeignKey(ModelContainer)
+    container = models.ForeignKey("DRP.ModelContainer")
 
     # these fields are for use if a model should become invalidated
     invalid = models.BooleanField(default=False)
     regenerationOf = models.ForeignKey("self", blank=True, null=True, default=None)
 
     def invalidate(self):
-        """Invalidate and regenerate the model instance."""
+        """Invalidate the model instance."""
         self.invalid = True
-        # TODO: populate other parts of this method
         self.save()

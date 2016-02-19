@@ -1,6 +1,5 @@
 '''A module containing the reactions descriptors'''
-from django.db import models
-from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+from descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
 from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable
 import rxnDescriptorValues
 import DRP.models
@@ -19,12 +18,12 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
     def createValue(self, reaction, value):
         """Create a new reaction value object"""
         try:
-            v = rxnDescriptorValues.CatRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
             v = rxnDescriptorValues.CatRxnDescriptorValue(descriptor=self, reaction=reaction)
-        v.value=CategoricalDescriptorPermittedValues.get(value=value)
+        v.value=CategoricalDescriptorPermittedValue.objects.get(value=value)
         return v
-               
+
 class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
     '''A class which represents an ordinal descriptor'''
 
@@ -33,15 +32,15 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
         app_label='DRP'
 
     def __init__(self, *args, **kwargs):
-        super(CatRxnDescriptor, self).__init__(*args, **kwargs)
+        super(OrdRxnDescriptor, self).__init__(*args, **kwargs)
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredOrdRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
         try:
-            v = rxnDescriptorValues.OrdRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.OrdRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.OrdRxnDescriptorValue.DoesNotExist:
             v = rxnDescriptorValues.OrdRxnDescriptorValue(descriptor=self, reaction=reaction)
-        v.value = value
+        v.value = int(value)
         return v
 
     def createPredictionDescriptor(self, *args, **kwargs):
@@ -63,7 +62,7 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         try:
-            v = rxnDescriptorValues.NumRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.NumRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.NumRxnDescriptorValue.DoesNotExist:
             v = rxnDescriptorValues.NumRxnDescriptorValue(descriptor=self, reaction=reaction)
         v.value = value
@@ -88,7 +87,7 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         try:
-            v = rxnDescriptorValues.BoolRxnDescriptorValue.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.BoolRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.BoolRxnDescriptorValue.doesnotExist:
             v = rxnDescriptorValues.BoolRxnDescriptorValue(descriptor=self, reaction=reaction)
         v.value = value

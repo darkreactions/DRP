@@ -12,7 +12,6 @@ from molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor
 from molDescriptorValues import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
 from rxnDescriptorValues import RxnDescriptorValue, CatRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue
 from LabGroup import LabGroup
-from LegacyStatsModel import LegacyStatsModel
 from LicenseAgreement import LicenseAgreement
 from License import License
 from Reaction import Reaction

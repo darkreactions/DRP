@@ -91,7 +91,7 @@ class ArffQuerySet(models.query.QuerySet):
 
         writeable.write('\n\n@data\n')
         for row in self.rows(expanded):
-            writeable.write(','.join(('"'+str(row.get(key))+'"' if key in row else missing) for key in headers.keys()))
+            writeable.write(','.join((str(row.get(key)) if key in row else missing) for key in headers.keys()))
             writeable.write('\n')
 
     def rows(self, expanded=False):

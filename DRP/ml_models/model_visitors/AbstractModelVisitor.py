@@ -1,7 +1,4 @@
 from abc import ABCMeta, abstractmethod
-import os
-from django.conf import settings
-from django.core.files import File
 import logging
 #TODO: set attribute methods to be transactions
 #TODO: set descriptors to forbid the word predicted
@@ -25,8 +22,7 @@ class AbstractModelVisitor(object):
 
     @abstractmethod
     def predict(self, reactions, descriptorHeaders):
-        """Return a dictionary where the key is the response descriptor being predicted
-              and the value is an ordered list of predictions for that response where the
-              ith prediction corresponds to the ith reaction.
-
-              EG: {<NumRxnDescriptor> "outcome" }:[1,2,1,1]}"""
+        """Return a dictionary where the key is the response descriptor being
+           predicted and the value is an ordered list of predictions for that
+           response where the ith prediction corresponds to the ith reaction.
+           EG: {<NumRxnDescriptor> "outcome" }:[1,2,1,1]}"""

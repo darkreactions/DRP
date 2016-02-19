@@ -8,7 +8,6 @@ from django.db import models
 from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from itertools import chain
 
 
 def slugify(text):
@@ -229,18 +228,20 @@ class Predictable(models.Model):
             raise self.DoesNotExist('Cannot create a prediction descriptor of a descriptor which has not yet been saved.')
         else:
             try:
-                return self.predictedDescriptorType.objects.get(modelContainer=model, statsModel=modelComponent, predictionOf=self)
+                return self.predictedDescriptorType.objects.get(modelContainer=modelContainer, statsModel=modelComponent, predictionOf=self)
             except self.predictedDescriptorType.DoesNotExist:
                 pred = self.predictedDescriptorType()
+
                 if modelComponent is None:
                     headingSuffix = '_prediction_{}_summative'.format(modelContainer.pk)
                     nameSuffix = ' prediction for modelContainer {}'.format(modelContainer.pk)
-                    pred.statsModel = modelComponent
                 else:
                     headingSuffix = '_prediction_{}_component_{}'.format(modelContainer.pk, modelComponent.pk)
                     nameSuffix = ' prediction for modelcontainer {} component {}'.format(modelContainer.pk, modelComponent.pk)
+
                 pred.heading = self.heading + headingSuffix
                 pred.name = self.name + nameSuffix
                 pred.predictionOf = self
                 pred.modelContainer = modelContainer
+                pred.statsModel = modelComponent
                 return pred
