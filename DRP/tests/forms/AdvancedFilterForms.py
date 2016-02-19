@@ -23,7 +23,7 @@ class NumericFilterFormGT(BaseFormTest):
         self.formData = {}
         self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="mw").pk
         self.formData["operator"] = 'gt' 
-        self.formData["value"] = 128.2153
+        self.formData["value"] = 128.219
 
     def setUp(self): 
         '''Creates a user, then a form'''
@@ -39,7 +39,7 @@ class NumericFilterFormGT(BaseFormTest):
         cleaned = self.form.cleaned_data
         self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="mw"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
         self.assertEqual(cleaned["operator"], "gt", "Got a different result, {}, for the operator than expected".format(cleaned["descriptor"]))
-        self.assertEqual(float(cleaned["value"]), 128.2153, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(float(cleaned["value"]), 128.219, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         self.form.is_valid() 
@@ -48,7 +48,7 @@ class NumericFilterFormGT(BaseFormTest):
     def test_fetch(self): 
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Got {} objects instead of 1".format(fetched.count()))
+        self.assertEqual(fetched.count(), 1, "Got {} objects ( {} ) instead of 1".format(fetched.count(), [compound for compound in fetched]))
         self.assertEqual(fetched[0].compound.abbrev, "hmta", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].compound.abbrev))
 
 @createsUser('Gamora', 'pineapple_song')

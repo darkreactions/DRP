@@ -1,0 +1,140 @@
+/* stylesheet for reactions_list.html */
+
+h1 {
+ text-align: center;
+}
+
+div.downloads {
+ margin-bottom: 4em;
+}
+
+h1.downloads {
+ margin-bottom: 0;
+ font-size: 1.5em;
+}
+
+ul.downloads {
+ padding: 0;
+ width: 25em;
+ margin: auto;
+}
+
+ul.downloads li {
+ list-style:none;
+ float: left;
+ margin: 0 1em;
+}
+
+div.reaction {
+ color:black;
+ width: 80%;
+ height:auto;
+ padding:1em;
+ margin:1em auto;
+ border-radius:1em;
+ background-color: white;
+}
+
+div.reaction h2 {
+ float:left;
+ margin:0;
+}
+
+.first_name {
+ float:right;
+}
+
+.quantities {
+ float: left;
+ clear: left;
+ margin: .5em 2em;
+}
+
+.quantities ul {
+ padding:0;
+ float:left;
+ clear:left;
+ margin:0;
+}
+
+.quantities li {
+ list-style: none;
+ float:left;
+ margin:0 1em 0 0;
+}
+
+.inserted_date {
+ clear:both;
+ margin-top:3em;
+ font-weight: 600;
+}
+
+ol.pagination {
+ list-style:none;
+ padding: 0;
+ width:18em;
+ margin:1em auto 0 auto;
+}
+
+ol.pagination li {
+ float:left;
+ margin:0 1em;
+ color: #9c0000;
+}
+
+
+
+/* commenting out old table CSS
+
+table.reactions-list {
+ border-collapse:collapse;
+}
+
+table.reactions-list, .reactions-list th, .reactions-list td {
+ border:1px solid black;
+}
+
+.reactions-list th, .reactions-list td {
+ padding:1em;
+ text-align:left;
+}
+
+.reactions-list td ul {
+ list-style:none;
+ padding-left:0;
+}
+
+.reactions-list td ul li {
+ border:.1em dashed black;
+ margin-bottom:1em;
+}
+
+.reactions-list td ul li ul {
+ list-style:none;
+ padding: 0 1em 0 1em;
+ margin-top:1em;
+}
+
+.reactions-list td ul li li {
+ border:none;
+}
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

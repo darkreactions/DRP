@@ -1,7 +1,6 @@
 '''A module containing only the RecommendedReaction class'''
 from django.db import models
 from Reaction import Reaction
-from StatsModel import StatsModel
 
 class RecommendedReaction(Reaction):
 
@@ -9,7 +8,6 @@ class RecommendedReaction(Reaction):
     app_label='DRP'
 
   score=models.FloatField()
-  model=models.ForeignKey(StatsModel, null=True)
   seed=models.ForeignKey(Reaction, null=True, related_name='seeded')
   nonsense=models.BooleanField()
   hidden=models.BooleanField()

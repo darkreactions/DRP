@@ -7,7 +7,7 @@ tmp/*
 models/*
 
 *.pyc
-*.sql
+.sql
 *.sw*
 *.log
 *.cxl

@@ -25,6 +25,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = APP_DIR + "/static_served/"
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
+MAIN_SERVER = 'http://darkreactions.haverford.edu'
+MAIN_SERVER_USER = ''
+MAIN_SERVER_PASS = ''
+
 # Directories
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 TMP_DIR = os.path.join(BASE_DIR, "tmp")
@@ -265,8 +269,11 @@ CACHES = {
 
 # Force users to log out when the browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-LIBRARY_CHOICES = ()
-TOOL_CHOICES = ()
+
+STATS_MODEL_LIBS_DIR = "DRP.ml_models.model_visitors"
+STATS_MODEL_LIBS = ("weka",)
+REACTION_DATASET_SPLITTERS_DIR = "DRP.ml_models.splitters"
+REACTION_DATASET_SPLITTERS = ("KFoldSplitter",)
 
 EMPTY_LABEL = '----'
 

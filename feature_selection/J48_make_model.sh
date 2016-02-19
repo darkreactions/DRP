@@ -1,1 +1,0 @@
-java -cp /home/drp/weka/weka.jar weka.classifiers.trees.J48 -d $3 -c last -t $1 -T $2

@@ -3,7 +3,6 @@ from django.db import models
 from descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue, OrdinalDescriptorValue
 #from Compound import DRP.Compound - retain this line for clarity
 from django.core.exceptions import ValidationError
-import StatsModel
 import PerformedReaction
 import DRP.models
 

@@ -2,11 +2,9 @@
 from django.db import models
 from Reaction import Reaction, ReactionManager, ReactionQuerySet
 from RecommendedReaction import RecommendedReaction
-from StatsModel import StatsModel
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from itertools import chain
-
+import DRP
 
 class PerformedReactionQuerySet(ReactionQuerySet):
     def __init__(self, model = None, **kwargs):
@@ -46,8 +44,8 @@ class PerformedReaction(Reaction):
   def save(self, *args, **kwargs):
     self.reference = self.reference.lower()
     if self.pk is not None:
-      test = StatsModel.objects.filter(testset__reactions__in=[self])
-      train = StatsModel.objects.filter(trainingset__reaction=self)
+      test = DRP.models.StatsModel.objects.filter(testSets__reactions__in=[self])
+      train = DRP.models.StatsModel.objects.filter(trainingSet__reactions=self)
       for model in chain(test, train):
         model.invalidate()
         model.save()

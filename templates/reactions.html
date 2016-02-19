@@ -4,10 +4,12 @@
 
 {% if user.is_authenticated %}
 <nav>
-  <ol>
+ <div class="projectNav-wrapper">
+  <ol class="projectNav" id="projectNav2">
     <li><a href="{% url 'reactionlist' %}">List Performed Reactions</a></li>
     <li><a href="{% url 'newReaction' %}">Add a Performed Reaction</a></li> 
   </ol>
+ </div>
 </nav>
 {% endif %}
 

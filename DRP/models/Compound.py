@@ -8,14 +8,13 @@ from molDescriptorValues import CatMolDescriptorValue, OrdMolDescriptorValue
 from ChemicalClass import ChemicalClass
 from LabGroup import LabGroup
 import csv
-from querysets import CsvModel, CsvQuerySet, ArffQuerySet
+from querysets import CsvQuerySet, ArffQuerySet
 from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from itertools import chain
 import importlib
 from collections import OrderedDict
-import StatsModel
 import PerformedReaction
 from django.core.validators import RegexValidator
 
@@ -104,14 +103,15 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
     def expandedArffHeaders(self):
         """Generate expanded headers for the arff file."""
         headers = self.arffHeaders
-        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors())))
+        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors)))
         return headers
 
     @property
     def expandedCsvHeaders(self):
         """Generate the expanded header for the csv."""
-        return self.csvHeaders + [d.csvHeader for d in self.descriptors()]
+        return self.csvHeaders + [d.csvHeader for d in self.descriptors]
 
+    @property
     def descriptors(self):
         """Return the descriptor which have relationship to the queryset."""
         return chain(
@@ -119,23 +119,42 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
                 boolmoldescriptorvalue__in=BoolMolDescriptorValue.objects.filter(
                     compound__in=self
                 )
-            ),
+            ).distinct(),
             NumericDescriptor.objects.filter(
                 nummoldescriptorvalue__in=NumMolDescriptorValue.objects.filter(
                     compound__in=self
                 )
-            ),
+            ).distinct(),
             OrdinalDescriptor.objects.filter(
                 ordmoldescriptorvalue__in=OrdMolDescriptorValue.objects.filter(
                     compound__in=self
                 )
-            ),
+            ).distinct(),
             CategoricalDescriptor.objects.filter(
                 catmoldescriptorvalue__in=CatMolDescriptorValue.objects.filter(
                     compound__in=self
                 )
-            )
+            ).distinct()
         )
+
+    def rows(self, expanded):
+        if expanded:
+            compounds = self.prefetch_related('boolmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related('catmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related('ordmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related('nummoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related('chemicalClasses')
+            for item in compounds:
+                row = {field.name: getattr(item, field.name) for field in self.model._meta.fields}
+                row.update({dv.descriptor.csvHeader: dv.value for dv in item.descriptorValues})
+                i = 1
+                for cc in item.chemicalClasses.all():
+                    row['chemicalClass_{}'.format(i)] = cc.label
+                    i += 1
+                yield row
+        else:
+            for row in super(CompoundQuerySet, self).rows(expanded):
+                yield row
 
 
 class CompoundManager(models.Manager):
@@ -204,7 +223,7 @@ class CompoundManager(models.Manager):
         return compoundsList
 
 
-class Compound(CsvModel):
+class Compound(models.Model):
 
     """A class for containing data about Compounds used in chemical reactions.
 
@@ -303,6 +322,10 @@ class Compound(CsvModel):
                     descriptorPlugin.calculate(self)
 
     @property
+    def descriptorValues(self):
+        return chain(self.boolmoldescriptorvalue_set.all(), self.nummoldescriptorvalue_set.all(), self.ordmoldescriptorvalue_set.all(), self.catmoldescriptorvalue_set.all())
+
+    @property
     def elements(self):
         """Return a list of the elemental symbols for this molecular species.
 
@@ -340,37 +363,6 @@ class Compound(CsvModel):
         if currentElement != '':
             elements[currentElement] = {'stoichiometry': 1}
         return elements
-
-    @property
-    def descriptorValues(self):
-        """Return a union of the descriptor values that apply to this object. Hijacks the method from the CompoundQuerySet class."""
-        return set(chain(self.catmoldescriptorvalue_set.all(), self.nummoldescriptorvalue_set.all(), self.ordmoldescriptorvalue_set.all(), self.boolmoldescriptorvalue_set.all()))
-
-    @property
-    def values(self):
-        """Output a dict of values suitable for use by a csv.DictWriter."""
-        d = super(Compound, self).values
-        i = 1
-        for c in self.chemicalClasses.all():
-            d['chemicalClass_{}'.format(i)] = '"{}"'.format(c)
-            i += 1
-        return d
-
-    @property
-    def expandedValues(self):
-        """Output a dict of values suitable for use by a csv.DictWriter - includes molecular descriptors."""
-        res = self.values.copy()
-        for descriptorValue in self.descriptorValues:
-            key = descriptorValue.descriptor.csvHeader
-            value = descriptorValue.value
-            try:
-                if any(string in value for string in (',', ' ')):
-                    res[key] = '"{}"'.format(value)
-                else:
-                    res[key] = value
-            except TypeError:
-                res[key] = value
-        return res
 
 
 class ElementsException(Exception):

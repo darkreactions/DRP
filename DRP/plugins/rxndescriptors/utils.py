@@ -39,7 +39,7 @@ class LazyDescDict(object):
             DRP.models.CatRxnDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get(**fetchArgs)
           except DRP.models.CatRxnDescriptor.DoesNotExist:
-            self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get_or_create(**args)
+            self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get_or_create(**args)[0]
           for permittedValue in v['permittedValues']:
             perm = DRP.models.CategoricalDescriptorPermittedValue.objects.get_or_create(value=permittedValue, descriptor=self.internalDict[k])[0]
         else:
