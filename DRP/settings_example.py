@@ -270,8 +270,8 @@ CACHES = {
 # Force users to log out when the browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-STATS_MODEL_LIBS=tuple()
-REACTION_DATASET_SPLITTERS=tuple()
+STATS_MODEL_LIBS = tuple()
+REACTION_DATASET_SPLITTERS = tuple()
 
 EMPTY_LABEL = '----'
 
