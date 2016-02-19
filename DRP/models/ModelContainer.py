@@ -111,10 +111,14 @@ class ModelContainer(models.Model):
 
     description = models.TextField()
     active = models.BooleanField('Is this the active model?', default=False)
-    library = models.CharField(
+    modelVisitorLibrary = models.CharField(
         max_length=200, choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS))
-    tool = models.CharField(
+    modelVisitorTool = models.CharField(
         max_length=200, choices=tuple((tool, tool) for tool in TOOL_CHOICES))
+    featureLibrary = models.CharField(
+        max_length=200, choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS), default='')
+    featureTool = models.CharField(
+        max_length=200, choices=tuple((tool, tool) for tool in TOOL_CHOICES), default='')
     splitter = models.CharField(
         max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, null=True)
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
