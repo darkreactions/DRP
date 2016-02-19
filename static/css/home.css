@@ -6,3 +6,8 @@ aside.bannerText {
  font-weight:700;
 }
 
+p {
+ width: 70%;
+ margin: 1em auto;
+}
+

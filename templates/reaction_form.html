@@ -1,5 +1,9 @@
 {% extends 'reactions.html' %}
 
+{% block additional_head %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/reactionForm.css" />
+{% endblock %}
+
 {% block content %}
   <h1>Add Reaction Data</h1>
   <form class="reaction-form" action="{{ request.path }}" method="post">

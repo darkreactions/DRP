@@ -7,8 +7,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/projectMenu.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionsList.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
+    {% block additional_css %}{% endblock %}
 {% comment %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
     {% block head_additional %}{% endblock %}
@@ -40,7 +39,7 @@
       <h1 class="mainTitle">Dark Reaction Project</h1>
 
       <div id="userInfo">
-
+	<a href="http://github.com/cfalk/DRP" class="github">GitHub</a>
         {% if user.is_authenticated %}
           {% if testing %}
             <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
@@ -113,7 +112,7 @@
     {% block content %}{% endblock %}
   </main>
   <footer>
-  &copy; 2015 Dark Reactions Project Group(s) at Haverford College
+  &copy; {% now "Y" %} Dark Reactions Project at Haverford College
   </footer>
 </body>
 {% comment %}
