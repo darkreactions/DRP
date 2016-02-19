@@ -2,7 +2,7 @@
 
 from sys import argv
 import operator
-from DRP.research.geoffrey.distance_learning.metricLearn import ITML
+from DRP.research.geoffrey.distance_learning.metricLearn import LMNN
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
 from django.db.models import Q
 
@@ -19,12 +19,12 @@ def train(descriptor_header_file, outfile):
     predictorHeaders = [d.csvHeader for d in predictors]
     responseHeaders = [d.csvHeader for d in responses]
     
-    itml = ITML(reactions, predictorHeaders, responseHeaders)
+    lmnn = LMNN(reactions, predictorHeaders, responseHeaders)
 
-    itml.train(num_constraints=200)
+    lmnn.train()
 
     with open(outfile, 'wb') as f:
-        itml.save(f)
+        lmnn.save(f)
 
 def get_descriptors_by_header(headers):
     Qs = [Q(heading=header) for header in headers]
