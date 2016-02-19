@@ -2,22 +2,27 @@
 {% load performed_rxn_delete_form %}
 {% load performed_rxn_invalidate_form %}
 
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionsList.css" />
+{% endblock %}
+
 {% block content %}
 <h1 class="bannerText">Reactions Database</h1>  
 {% if user.is_authenticated %}
     {% include "lab_form.html" %}
 {% endif %}
-  <section>
-    <h1>Downloads</h1>
-    <ul>
+  <div class="downloads">
+    <h1 class="downloads">Downloads</h1>
+    <ul class="downloads">
       <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
       {% if user.is_authenticated %}<li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
       <li><a href="{% url request.resolver_match.url_name '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
       {% if user.is_authenticated %}<li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
     </ul>
-  </section>
+  </div>
 {% if reactions|length > 0 %}
-<table class="reactions-list">
+
+{% comment %}
   <thead>
     <tr>
       <th>Reference</th>
@@ -54,10 +59,57 @@
         {% endfor %}
         <ul>
       </td>
-      <td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
+      <td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td> 
       <td>{{ reaction.performedDateTime }}</td>
-      <td>{{ reaction.insertedDateTime }}</td>
-      <td>{{ reaction.valid }}</td>
+      <td>{{ reaction.insertedDateTime }}</td> 
+{% endcomment %}
+
+<table class="reactions-list">
+  {% for reaction in reactions %}
+  <div class="reaction" {% if reaction.valid %} style="border: 5px solid green" {% else %} style="border: 5px solid red" {% endif %}>
+    {% comment %}need to change color of main div with {{ reaction.valid }}{% endcomment %} 
+    {% if user.is_authenticated %}
+      {% if reaction.labGroup in user.labgroup_set.all %}
+      <a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a>
+      {% comment %} not sure what this does {% endcomment %}
+      {% else %}
+      <h2>{{ reaction.reference }}</h2>
+      {% endif %}
+    {% else %}
+    <h2>{{ reaction.reference }}</h2>
+    {% endif %}
+    <div class="first_name">{{ reaction.user.first_name }} {{ reaction.user.last_name }}</div> 
+    <div class="quantities">
+      {% for quantity in reaction.compoundquantity_set.all %}
+	<ul>
+          <li>{{ quantity.role.label }}</li>
+          <li>{{ quantity.compound.name }}</li>
+          <li>{{ quantity.amount }} mmoles</li>
+        </ul>
+      {% endfor %}
+    </div>
+    <div class="inserted_date">{{ reaction.insertedDateTime }}</div>
+    {% if user.is_authenticated %}
+      {% if reaction.labGroup in user.labgroup_set.all %}
+        {% if not reaction.datasetrelation_set.exists %}
+    	  <form action="{% url 'deleteReaction' %}" method="post">
+            {% csrf_token %}
+            {% performed_rxn_delete_form reaction %}
+            <input type="Submit" value="delete" />
+          </form> 
+        {% else %}
+          <form action="{% url 'invalidateReaction' %}" method="post">
+            {% csrf_token %}
+            {% performed_rxn_invalidate_form reaction %}
+            <input type="Submit" value="invalidate" />
+          </form>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  </div>
+  {% endfor %}
+
+{% comment %}
       <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}{% else %}N/A{% endif %}</td>
       <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% else %}N/A{% endif %}</td>
       <td>{{ reaction.labGroup.title }}</td>
@@ -83,8 +135,10 @@
     </tr>
     {% endfor %}
   </tbody>
+{% endcomment %}
 </table>
 <ol class="pagination">
+    <li>Page<li>
     {% for x in paginator.page_range %}
         <li><a href="?page={{ x }}">{{ x }}</a></li>
     {% endfor %}
