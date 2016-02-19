@@ -16,7 +16,7 @@ span.greeting {
 }
 
 #userInfo span.greeting a.account {
- margin:1em 0 1em 1em;
+ margin:1em 0;
 }
 
 img#mainLogo {
