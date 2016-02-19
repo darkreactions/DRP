@@ -264,7 +264,7 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel):
         resDict = {}
-        with transaction.atomic():
+        with transaction.atomic(): #wrapping this all in a transaction speeds up these saves
             for response, outcome in predictions.items():
                 for reaction, outcome in outcome:
                     if reaction not in resDict:
@@ -275,7 +275,8 @@ class ModelContainer(models.Model):
                                 resDict[reaction][response][outcome] = 0
                                 resDict[reaction][response][outcome] += 1
                                 
-                # TODO XXX change these saves so they only make one hit on the database
+                # TODO XXX change these saves so they only make one hit on the database.
+                # Difficult (impossible?) with inherited models
                 predDesc = response.createPredictionDescriptor(self, statsModel)
                 predDesc.save()
 
