@@ -12,6 +12,7 @@ class Migration(DataMigration):
         for modelContainer in orm.ModelContainer.objects.all():
             modelContainer.modelVisitorLibrary = modelContainer.library
             modelContainer.modelVisitorTool = modelContainer.tool
+            modelContainer.save()
             
 
     def backwards(self, orm):
@@ -19,6 +20,7 @@ class Migration(DataMigration):
         for modelContainer in orm.ModelContainer.objects.all():
             modelContainer.library = modelContainer.modelVisitorLibrary
             modelContainer.tool = modelContainer.modelVisitorTool
+            modelContainer.save()
 
     models = {
         'DRP.booleandescriptor': {
