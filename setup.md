@@ -48,6 +48,8 @@ To pass the unit tests, at least one `ADMIN_EMAILS` should be provided
 
 To pass the unit tests, the EMAIL_HOST_USER and related settings should be set.  
 
+The chemspider token variable in settings.py should be from your chemspider.com account; note that there is currently a bug in that website, and so you must copy the access token not from the displayed web page but from the HTML source.
+
 ### Working with south
 
 South is our library of choice for dealing with database migrations. It is already "installed" by the default settings file.
@@ -100,12 +102,10 @@ Else, one can run the entire test suite from the management script:
 If you are reading this setup instruction manual, you are working on the refactoring mission of the DRP. This comes with some rules:
 
 1. Changes to the schema should be run past Phil, who will implement them; this makes dealing with the south migrations much easier.
-2. You should make your own branch from the phil_refactor branch, and push that to the Git repo (`push -u origin <branchname>`)- Phil will merge periodically or on request.
-3. Don't attempt to circumvent the pre-push tests.
-4. Comment all the things.
-5. If you change the pre-push hook, tell everyone.
+2. You should make your own branch from the master branch, and push that to the Git repo (`push -u origin <branchname>`)- Phil will merge periodically or on request.
+3. Comment all the things.
 
-There are additional developer notes in teh developer_notes.md file.
+There are additional developer notes in the developer_notes.md file.
 
 ###On Development Servers
 
