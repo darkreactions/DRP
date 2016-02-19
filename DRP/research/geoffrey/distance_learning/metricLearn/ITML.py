@@ -34,7 +34,7 @@ class ITML(AbstractDistanceLearner):
 
         itml = ml_ITML()
 
-        num_constraints = 200
+        num_constraints = 10000
         constraints = ml_ITML.prepare_constraints(labels, data.shape[0], num_constraints)
         itml.fit(data, constraints, bounds=bounds)
 
