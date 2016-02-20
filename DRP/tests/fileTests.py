@@ -30,7 +30,6 @@ _pep8Files = [
     ('DRP', 'tests', 'CompoundDescriptor.py'),
     # These commented out files are commented out because
     # they would serve as examples had they been converted already!
-    ('DRP', 'research', 'geoffrey')
 ]
 
 pep8Files = [
@@ -91,7 +90,7 @@ class TestFiles(unittest.TestCase):
             if os.path.isdir(fileName):
                 self.assertTrue(
                     os.path.isfile(
-                        os.path.join(fullFileName, '__init__.py')
+                        os.path.join(fileName, '__init__.py')
                     )
                 )
 
