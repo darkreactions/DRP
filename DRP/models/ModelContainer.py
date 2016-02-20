@@ -230,7 +230,6 @@ class ModelContainer(models.Model):
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
         for trainingSet, testSet in zip(self.trainingSets, self.testSets):
-            print "Training on: {}, testing on: {}".format(trainingSet.reactions.count(), testSet.reactions.count())
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
             modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
             statsModel.save() #Generate a PK for the StatsModel component.
@@ -347,7 +346,7 @@ class ModelContainer(models.Model):
         """
         Returns a list of lists of tuples of confusion matrices.
         Each entry of the outer list is for a different model.
-        The first is the overall model, the rests statsModels.
+        The first is the overall model, the rests component statsModels.
         For each model there is a list of tuples.
         Each tuple is of the form (descriptor_heading, confusion matrix)
         """
@@ -355,22 +354,23 @@ class ModelContainer(models.Model):
         confusion_matrix_lol = []
 
         # Retrieve the overall confusion matrix.
+        confusion_matrix_list = []
         for descriptor in self.predictsDescriptors:
-            confusion_matrix_list = []
             if descriptor.statsModel is None:
                 confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
         confusion_matrix_lol.append(confusion_matrix_list)
-        
+
         # Retrieve the matrix for each component.
         for model in self.statsmodel_set.all():
+            confusion_matrix_list = []
             for descriptor in self.predictsDescriptors:
                 if descriptor.statsModel == model:
                     confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
             confusion_matrix_lol.append(confusion_matrix_list)
             
         return confusion_matrix_lol
-        
 
+        
               
     def summarize(self):
         """CAUTION: This is a temporary development function. Do not rely on it. """

@@ -52,14 +52,12 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
            }
           }
         """
-        matrix = {}
+        matrix = {
+                    True: {True: 0, False: 0},
+                    False: {True: 0, False: 0}
+                    }
         for true, guess in self.getPredictionTuples():
-            if true not in matrix:
-                matrix[true] = {}
-
-            matrix[true][guess] = matrix[true][guess]+1 if guess in matrix[true] else 1
-
-        print matrix
+            matrix[true][guess] += 1
 
         return matrix
 
@@ -74,9 +72,6 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
         actualDescValues = self.predictionOf.boolrxndescriptorvalue_set.all()
         predictedDescValues = self.boolrxndescriptorvalue_set.all()
-
-        print "ActualDescValues: {}".format(actualDescValues.count())
-        print "PredictedDescValues: {}".format(predictedDescValues.count())
 
         predictionTuples = []
         for prediction in predictedDescValues:
@@ -125,12 +120,19 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
                , ...
                }
               } """
-        matrix = {}
+        
+        matrix = {
+                    true: {guess: 0 for guess in xrange(self.minimum, self.maximum+1)}
+                    for true in xrange(self.minimum, self.maximum+1)
+                    }
         for true, guess in self.getPredictionTuples():
-            if true not in matrix:
-                matrix[true] = {}
-
-            matrix[true][guess] = matrix[true][guess]+1 if guess in matrix[true] else 1
+            #if true not in matrix:
+                #matrix[true] = {}
+            try:
+                matrix[true][guess] += 1 #matrix[true][guess]+1 if guess in matrix[true] else 1
+            except KeyError:
+                print true, guess, type(true), type(guess)
+                exit()
 
         return matrix
 
@@ -145,9 +147,6 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
         actualDescValues = self.predictionOf.ordrxndescriptorvalue_set.all()
         predictedDescValues = self.ordrxndescriptorvalue_set.all()
-
-        print "ActualDescValues: {}".format(actualDescValues.count())
-        print "PredictedDescValues: {}".format(predictedDescValues.count())
         
         predictionTuples = []
         for prediction in predictedDescValues:

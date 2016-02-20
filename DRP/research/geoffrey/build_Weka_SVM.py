@@ -19,22 +19,50 @@ def build_model(descriptor_header_file):
         headers = [l.strip() for l in f.readlines()]
 
     predictors = get_descriptors_by_header(headers)
-    responses = Descriptor.objects.filter(heading="crystallisation_outcome")
+    responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
 
     container.build(predictors, responses)
 
     conf_mtrcs = container.getConfusionMatrices()
-    #print len(conf_mtrcs)
+
+    for model_mtrcs in conf_mtrcs:
+        for descriptor_header, conf_mtrx in model_mtrcs:
+            print "Confusion matrix for {}:".format(descriptor_header)
+            print confusionMatrixString(conf_mtrx)
+
+
+def confusionMatrixString(confusionMatrix, headers=True):
+    """
+    Returns a string that will display a confusionMatrix
+    If headers=True, includes the headers as the first row and first column.
+    """
+
+    table = confusionMatrixTable(confusionMatrix, headers)
+    return ('\n'.join([''.join(['{:^6}'.format(item) for item in row]) for row in table]))
     
-    #for model_mtrcs in conf_mtrcs:
-        #for descriptor_header, conf_mtrx in model_mtrcs:
-            #print "Confusion matrix for {}:".format(descriptor_header)
-            #print conf_mtrx
 
+def confusionMatrixTable(confusionMatrix, headers=True):
+    """
+    Converts a confusion matrix dictionary to a list of lists.
+    Primarily for display purposes.
+    Each list corresponds to a single true value and contains the
+    counts for each predicted value.
+    If headers=True, includes the headers as the first row and first column.
+    """
 
-def display_confusion_matrix(confusion_matrix):
-    """Display a confusion matrix dictionary as a table"""
-    pass
+    values = confusionMatrix.keys()
+    table = [ [0 for predicted in values] for true in values] 
+
+    for i, true in enumerate(values):
+        for j, predicted in enumerate(values):
+            table[j][i] = confusionMatrix[true][predicted]
+
+    if headers:
+        for j, predicted in enumerate(values):
+            table[j].insert(0, str(predicted))
+        table.insert(0, [""] + map(str, values))
+
+    return table
 
 
 def get_descriptors_by_header(headers):

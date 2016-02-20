@@ -143,6 +143,7 @@ class OrdinalDescriptor(Descriptor):
     minimum = models.IntegerField()
     """The minimal permitted value for a given descriptor instance."""
 
+
     def clean(self):
         """Special cleaning method. Ensures max < min."""
         if self.maximum is not None and self.minimum is not None and self.maximum < self.minimum:
