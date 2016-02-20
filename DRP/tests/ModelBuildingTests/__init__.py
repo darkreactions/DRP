@@ -5,6 +5,7 @@ import KNN
 import NaiveBayes
 import SVM_basic
 import SVM_BCR
+from DRP.tests.DRPTestCase import runTests
 
 suite = unittest.TestSuite([
     J48.suite,
@@ -13,3 +14,6 @@ suite = unittest.TestSuite([
     SVM_basic.suite,
     SVM_BCR.suite,
 ])
+
+if __name__ == '__main__':
+    runTests(suite)

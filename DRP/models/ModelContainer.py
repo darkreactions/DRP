@@ -193,10 +193,8 @@ class ModelContainer(models.Model):
 
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
-    def __init__(self, library, tool, splitter=None, featureLibrary=None, featureTool=None, reactions=None, trainingSets=None, testSets=None):
-        super(ModelContainer, self).__init__(splitter=splitter, library=library, tool=tool)
-
-
+    def __init__(self, modelVisitorLibrary, modelVisitorTool, splitter=None, featureLibrary=None, featureTool=None, reactions=None, trainingSets=None, testSets=None):
+        super(ModelContainer, self).__init__(splitter=splitter, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool)
         self.reactions = reactions
         self.splitter = splitter
         self.reactions = reactions
@@ -204,11 +202,11 @@ class ModelContainer(models.Model):
         self.testSets = testSets
         
     def clean(self):
-        if self.tool not in visitorModules[self.library].tools:
+        if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
-        if getattr(visitorModules[self.library], self.tool).maxResponseCount is not None:
-            if getattr(visitorModules[self.library], self.tool).maxResponseCount < self.outcomeDescriptors.count():
-                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.library], self.tool).maxResponseCount)
+        if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
+            if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < self.outcomeDescriptors.count():
+                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
         if self.splitter is None ^ self.reactions is None:
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
         elif self.training is None:
@@ -223,7 +221,7 @@ class ModelContainer(models.Model):
         self.outcomeDescriptors = response
 
         if self.splitter is not None:
-            splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.library, self.tool, self.pk))
+            splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))
             data_splits = splitterObj.split(self.reactions)
 
             self.trainingSets = [dataset_tuple[0] for dataset_tuple in data_splits]
@@ -233,7 +231,7 @@ class ModelContainer(models.Model):
 
         for trainingSet, testSet in zip(self.trainingSets, self.testSets):
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
-            modelVisitor = getattr(visitorModules[self.library], self.tool)(statsModel)
+            modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
             statsModel.save() #Generate a PK for the StatsModel component.
 
             # Train the model.
@@ -318,7 +316,7 @@ class ModelContainer(models.Model):
             resDict = {}
 
             for model in self.statsmodel_set:
-                modelVisitor = getattr(visitorModules[self.library], self.tool)(model)
+                modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(model)
                 predictions = modelVisitor.predict(reactions)
                 newResDict = self._storePredictionComponents(predictions, model)
 
