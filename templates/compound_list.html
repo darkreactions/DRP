@@ -1,11 +1,15 @@
 {% extends 'compound_base.html' %}
 {% load compound_delete_form %}
 
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/compoundList.css" />
+{% endblock %}
+
 {% block content %}
 
 <h1 class="bannerText">Compound Guide</h1>
 <nav>
-  <ol>
+  <ol class="downloads">
     <li><a href="{% url 'uploadcompoundcsv' %}">Upload csv file</a></li>
     <li><a href="{% url 'advCompoundSearch' '.html' %}">Advanced Search</a></li>
   </ol>
@@ -14,8 +18,8 @@
 {% block filter_form %}
   <form action="{% url 'compoundSearch' '.html' %}" method="get">
     {{ filter_formset.management_form}}
-    <ol>
-      <li><fieldset><ol>{{ filter_formset.forms.0.as_ul }}</ol></fieldset></li>
+    <ol class="list-style-none">
+      <li><fieldset class="compound-form list-style-none"><ol class="list-style-none">{{ filter_formset.forms.0.as_ul }}</ol></fieldset></li>
       {% for form in filter_formset.forms|slice:"1:" %}
         <li><div>OR</div><fieldset><ol>{{ form.as_ul }}</ol></fieldset></li>
       {% endfor %}
@@ -24,7 +28,7 @@
   </form>
 {% endblock %}
 {% if compounds|length >  0 %}
-  <section>
+  <section class="downloads">
     <h1>Downloads</h1>
     <ul>
       <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>

@@ -11,6 +11,7 @@ models/*
 *.sw*
 *.log
 *.cxl
+*~
 
 #For OS X users
 .DS_Store
