@@ -1,5 +1,5 @@
 from AbstractSplitter import AbstractSplitter
-from DRP.models import Compound
+from DRP.models.Compound import Compound
 from django.db.models import Count
 import random
 
@@ -43,7 +43,7 @@ class Splitter(AbstractSplitter):
     train = reactions.exclude(pk__in=test_reactions)
     test = reactions.filter(pk__in=test_reactions)
 
-    return [(train, test)]
+    return [(self.package(train), self.package(test))]
 
   def _count_compound_sets(self, reactions):
     compound_sets = [frozenset(Compound.objects.filter(reaction=rxn)) for rxn in reactions]
