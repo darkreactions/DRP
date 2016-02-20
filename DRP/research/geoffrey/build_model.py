@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
-from django.db.models import Q
 import operator
 import argparse
 
@@ -92,4 +91,4 @@ if __name__ == '__main__':
                         help='Splitter to use. (default: %(default)s)')
     args = parser.parse_args()
 
-    prepare_and_build_model(args.predictor_headers, args.response_headers, args.model_library, args.model_tool, args.splitter)
+    prepare_build_display_model(args.predictor_headers, args.response_headers, args.model_library, args.model_tool, args.splitter)

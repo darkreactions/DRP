@@ -224,8 +224,8 @@ class CompoundManager(models.Manager):
 
 
 class Compound(models.Model):
-
-    """A class for containing data about Compounds used in chemical reactions.
+    """
+    A class for containing data about Compounds used in chemical reactions.
 
     The assumption is made that all chemicals used are single-species.
     """
