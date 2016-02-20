@@ -23,7 +23,15 @@ def build_model(descriptor_header_file):
 
     container.build(predictors, responses)
 
-    print container.summarize()
+    for conf_mtrx_dict in container.getConfusionMatrices():
+        for descriptor_heading, conf_mtrx in conf_mtrx_dict.items():
+            print "Confusion matrix for: {}".format(descriptor_heading)
+            print conf_mtrx
+
+
+def display_confusion_matrix(confusion_matrix):
+    """Display a confusion matrix dictionary as a table"""
+    pass
 
 
 def get_descriptors_by_header(headers):

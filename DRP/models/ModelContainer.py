@@ -339,6 +339,30 @@ class ModelContainer(models.Model):
     def save(self, *args, **kwargs):
         super(ModelContainer, self).save(*args, **kwargs)
 
+
+    def getConfusionMatrices(self):
+        """
+        Returns a list of the confusion matrix dictionaries for each model.
+        The first dictionary is for the model as a whole.
+        The rest are for each of the stats models
+        """
+
+        confusion_matrix_dicts = []
+
+        # Retrieve the overall confusion matrix.
+        for descriptor in self.predictsDescriptors:
+            if descriptor.statsModel is None:
+                confusion_matrix_dicts.append(descriptor.getConfusionMatrix())
+        
+        # Retrieve the matrix for each component.
+        for model in self.statsmodel_set.all():
+            for descriptor in self.predictsDescriptors:
+                if descriptor.statsModel == model:
+                    confusion_matrix_dicts.append(descriptor.getConfusionMatrix())
+        return confusion_matrix_dicts
+        
+
+              
     def summarize(self):
         """CAUTION: This is a temporary development function. Do not rely on it. """
         """Return a string containing the Confusion Matrices for all stats_models."""

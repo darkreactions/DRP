@@ -35,7 +35,8 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
       return correct/total
 
     def getConfusionMatrix(self):
-        """Returns a dicionary of dictionaries of dictionaries, where the outer keys
+        """
+        Returns a dicionary of dictionaries of dictionaries, where the outer keys
            are the outcomeDescriptors, the middle keys are the "correct" or "true"
            values, the innermost keys are the "guessed" values that occurred, and
            the value is the integer number of occurrences of that guess when the
@@ -50,7 +51,8 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
                      }
                , ...
                }
-              } """
+              }
+        """
         matrix = {}
         for true, guess in self.getPredictionTuples():
             if true not in matrix:
@@ -59,8 +61,6 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
             matrix[true][guess] = matrix[true][guess]+1 if guess in matrix[true] else 1
 
         return matrix
-
-
 
     def getPredictionTuples(self):
         """"
