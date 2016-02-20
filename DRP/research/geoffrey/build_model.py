@@ -5,6 +5,7 @@ from django.db.models import Q
 import operator
 import argparse
 
+
 def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter):
     container = ModelContainer(modelVisitorLibrary, modelVisitorTool, splitter=splitter, reactions=reactions)
     container.save()
@@ -23,7 +24,10 @@ def display_model_results(container):
 
 
 def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter):
-    #Grab all reactions with defined outcome descriptors
+    """
+    Build and display a model with the specified tools
+    """
+    # Grab all reactions with defined outcome descriptors
     reactions = PerformedReaction.objects.all()
     reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
     reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
@@ -45,7 +49,7 @@ def confusionMatrixString(confusionMatrix, headers=True):
 
     table = confusionMatrixTable(confusionMatrix, headers)
     return ('\n'.join([''.join(['{:^6}'.format(item) for item in row]) for row in table]))
-    
+
 
 def confusionMatrixTable(confusionMatrix, headers=True):
     """
@@ -57,7 +61,7 @@ def confusionMatrixTable(confusionMatrix, headers=True):
     """
 
     values = confusionMatrix.keys()
-    table = [ [0 for predicted in values] for true in values] 
+    table = [[0 for predicted in values] for true in values]
 
     for i, true in enumerate(values):
         for j, predicted in enumerate(values):
@@ -72,9 +76,9 @@ def confusionMatrixTable(confusionMatrix, headers=True):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Builds a model', fromfile_prefix_chars='@',
-                                        epilog="Prefix arguments with '@' to specify a file containing newline"
-                                        "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
-                                        " to pass multiple descriptors from a file as predictors")
+                                     epilog="Prefix arguments with '@' to specify a file containing newline"
+                                     "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
+                                     " to pass multiple descriptors from a file as predictors")
     parser.add_argument('-p', '--predictor-headers', nargs='+',
                         help='One or more descriptors to use as predictors.'
                         'Note that most models can only handle one response variable')
