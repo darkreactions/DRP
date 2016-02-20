@@ -1,20 +1,20 @@
 #!/usr/bin/env python
-'''A module containing tests for the J48 implementation of the C4.5 classifier'''
+'''A module containing tests for the ModelFactory class'''
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
-from DRPTestCase import DRPTestCase, runTests
+from DRP.tests.decorators import createsPerformedReactionSetOrd
+from DRP.tests.DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-
-class J48(DRPTestCase):
+@createsPerformedReactionSetOrd
+class BasicWekaSVM(DRPTestCase):
 
   def runTest(self):
 
     reactions = PerformedReaction.objects.all()
 
-    container = ModelContainer("weka", "J48", splitter="KFoldSplitter",
+    container = ModelContainer("weka", "SVM_PUK_basic", splitter="KFoldSplitter",
                                reactions=reactions)
     container.save()
 
@@ -26,14 +26,9 @@ class J48(DRPTestCase):
 
     #print container.summarize()
 
-
-J48Bool = createsPerformedReactionSetBool(J48)
-
-
 suite = unittest.TestSuite([
-          loadTests(J48Bool)
+          loadTests(BasicWekaSVM),
           ])
-
 
 if __name__=='__main__':
   runTests(suite)

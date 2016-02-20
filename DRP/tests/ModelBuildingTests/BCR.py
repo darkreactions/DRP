@@ -1,20 +1,20 @@
 #!/usr/bin/env python
-'''A module containing tests for the ModelFactory class'''
+'''A module containing tests for the Balanced Classification Rate SVM'''
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSetOrd
-from DRPTestCase import DRPTestCase, runTests
+from DRP.tests.decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
+from DRP.tests.DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-@createsPerformedReactionSetOrd
-class BasicWekaSVM(DRPTestCase):
+
+class BCRWekaSVM(DRPTestCase):
 
   def runTest(self):
 
     reactions = PerformedReaction.objects.all()
 
-    container = ModelContainer("weka", "SVM_PUK_basic", splitter="KFoldSplitter",
+    container = ModelContainer("weka", "SVM_PUK_BCR", splitter="KFoldSplitter",
                                reactions=reactions)
     container.save()
 
@@ -26,9 +26,15 @@ class BasicWekaSVM(DRPTestCase):
 
     #print container.summarize()
 
+
+BCRWekaSVMBool = createsPerformedReactionSetBool(BCRWekaSVM)
+# uncommenting this line breaks things because a user is created twice. WTF?!?!
+#BCRWekaSVMOrd = createsPerformedReactionSetOrd(BCRWekaSVM)
+
 suite = unittest.TestSuite([
-          loadTests(BasicWekaSVM),
+          loadTests(BCRWekaSVMBool)
           ])
+
 
 if __name__=='__main__':
   runTests(suite)

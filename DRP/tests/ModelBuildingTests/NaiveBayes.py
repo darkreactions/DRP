@@ -3,8 +3,8 @@
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
-from DRPTestCase import DRPTestCase, runTests
+from DRP.tests.decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
+from DRP.tests.DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 

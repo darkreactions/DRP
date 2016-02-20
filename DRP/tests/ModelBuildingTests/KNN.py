@@ -1,20 +1,20 @@
 #!/usr/bin/env python
-'''A module containing tests for the Balanced Classification Rate SVM'''
+'''A module containing tests for the K nearest neighbors classifier'''
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
-from DRPTestCase import DRPTestCase, runTests
+from DRP.tests.decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
+from DRP.tests.DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
-class BCRWekaSVM(DRPTestCase):
+class KNN(DRPTestCase):
 
   def runTest(self):
 
     reactions = PerformedReaction.objects.all()
 
-    container = ModelContainer("weka", "SVM_PUK_BCR", splitter="KFoldSplitter",
+    container = ModelContainer("weka", "KNN", splitter="KFoldSplitter",
                                reactions=reactions)
     container.save()
 
@@ -27,12 +27,11 @@ class BCRWekaSVM(DRPTestCase):
     #print container.summarize()
 
 
-BCRWekaSVMBool = createsPerformedReactionSetBool(BCRWekaSVM)
-# uncommenting this line breaks things because a user is created twice. WTF?!?!
-#BCRWekaSVMOrd = createsPerformedReactionSetOrd(BCRWekaSVM)
+KNNBool = createsPerformedReactionSetBool(KNN)
+
 
 suite = unittest.TestSuite([
-          loadTests(BCRWekaSVMBool)
+          loadTests(KNNBool)
           ])
 
 

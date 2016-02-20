@@ -1,20 +1,20 @@
 #!/usr/bin/env python
-'''A module containing tests for the K nearest neighbors classifier'''
+'''A module containing tests for the J48 implementation of the C4.5 classifier'''
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
-from DRPTestCase import DRPTestCase, runTests
+from DRP.tests.decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
+from DRP.tests.DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
-class KNN(DRPTestCase):
+class J48(DRPTestCase):
 
   def runTest(self):
 
     reactions = PerformedReaction.objects.all()
 
-    container = ModelContainer("weka", "KNN", splitter="KFoldSplitter",
+    container = ModelContainer("weka", "J48", splitter="KFoldSplitter",
                                reactions=reactions)
     container.save()
 
@@ -27,11 +27,11 @@ class KNN(DRPTestCase):
     #print container.summarize()
 
 
-KNNBool = createsPerformedReactionSetBool(KNN)
+J48Bool = createsPerformedReactionSetBool(J48)
 
 
 suite = unittest.TestSuite([
-          loadTests(KNNBool)
+          loadTests(J48Bool)
           ])
 
 
