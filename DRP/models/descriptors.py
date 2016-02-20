@@ -9,6 +9,7 @@ from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
+
 def slugify(text):
     """Return a modified version of slug text.
 
@@ -19,16 +20,18 @@ def slugify(text):
 
 
 class DescriptorQuerySet(models.query.QuerySet):
-    def __init__(self, model = None, **kwargs):
+    def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""
         model = Descriptor if model is None else model
         super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
+
 
 class DescriptorManager(models.Manager):
     use_for_related_fields = True
 
     def get_queryset(self):
         return DescriptorQuerySet()
+
 
 class Descriptor(models.Model):
 
@@ -210,6 +213,7 @@ class BooleanDescriptor(Descriptor):
     def arffHeader(self):
         """Complete the Arff header for this descriptor."""
         return super(BooleanDescriptor, self).arffHeader + '{True, False}'
+
 
 class Predictable(models.Model):
 

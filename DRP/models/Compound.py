@@ -145,16 +145,17 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             compounds = compounds.prefetch_related('nummoldescriptorvalue_set__descriptor')
             compounds = compounds.prefetch_related('chemicalClasses')
             for item in compounds:
-                row = {field.name:getattr(item, field.name) for field in self.model._meta.fields}
-                row.update({dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues})
-                i=1
+                row = {field.name: getattr(item, field.name) for field in self.model._meta.fields}
+                row.update({dv.descriptor.csvHeader: dv.value for dv in item.descriptorValues})
+                i = 1
                 for cc in item.chemicalClasses.all():
                     row['chemicalClass_{}'.format(i)] = cc.label
-                    i+=1
+                    i += 1
                 yield row
         else:
             for row in super(CompoundQuerySet, self).rows(expanded):
                 yield row
+
 
 class CompoundManager(models.Manager):
 
@@ -362,6 +363,7 @@ class Compound(models.Model):
         if currentElement != '':
             elements[currentElement] = {'stoichiometry': 1}
         return elements
+
 
 class ElementsException(Exception):
 

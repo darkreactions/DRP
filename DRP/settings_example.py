@@ -271,9 +271,9 @@ CACHES = {
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 STATS_MODEL_LIBS_DIR = "DRP.ml_models.model_visitors"
-STATS_MODEL_LIBS=("weka",)
-REACTION_DATASET_SPLITTERS_DIR="DRP.ml_models.splitters"
-REACTION_DATASET_SPLITTERS=("KFoldSplitter","NoSplitter","SingleSplitter")
+STATS_MODEL_LIBS = ("weka",)
+REACTION_DATASET_SPLITTERS_DIR = "DRP.ml_models.splitters"
+REACTION_DATASET_SPLITTERS = ("KFoldSplitter", "NoSplitter", "SingleSplitter")
 FEATURE_SELECTION_LIBS_DIR = "DRP.ml_models.feature_visitors"
 FEATURE_SELECTION_LIBS = ("weka",)
 

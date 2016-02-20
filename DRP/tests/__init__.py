@@ -5,11 +5,11 @@ import Email
 import forms
 import HttpTests
 import decorators
-import ModelBuildingTests
 import CompoundFromCsv
 import CompoundDescriptor
 import CompoundToCsv
 import CompoundToArff
+import ModelBuildingTests
 
 suite = unittest.TestSuite([
     Email.suite,

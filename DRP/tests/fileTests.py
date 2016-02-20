@@ -27,9 +27,10 @@ _pep8Files = [
     # (__init__.py must be present)
     # ('DRP', 'admin.py'),
     ('DRP', 'tests', 'fileTests.py'),
-    ('DRP', 'tests', 'CompoundDescriptor.py')
+    ('DRP', 'tests', 'CompoundDescriptor.py'),
     # These commented out files are commented out because
     # they would serve as examples had they been converted already!
+    ('DRP', 'research', 'geoffrey')
 ]
 
 pep8Files = [
@@ -42,9 +43,10 @@ pep257Files = []
 
 for f in pep8Files:
     if os.path.isdir(f):
-        for root, dirnames, fileName in os.walk(f):
-            if fileName.endswith('.py'):
-                pep257Files.append(os.path.join(root, fileName))
+        for root, dirnames, fileNames in os.walk(f):
+            for fileName in fileNames:
+                if fileName.endswith('.py'):
+                    pep257Files.append(os.path.join(root, fileName))
     else:
         pep257Files.append(f)
 
