@@ -215,7 +215,7 @@ class ModelContainer(models.Model):
     def build(self, predictors, response):
 
         if self.built:
-            raise Exception("")
+            raise RuntimeError("Cannot build a model that has already been built.")
 
         self.descriptors = predictors
         self.outcomeDescriptors = response
@@ -344,24 +344,30 @@ class ModelContainer(models.Model):
 
     def getConfusionMatrices(self):
         """
-        Returns a list of the confusion matrix dictionaries for each model.
-        The first dictionary is for the model as a whole.
-        The rest are for each of the stats models
+        Returns a list of lists of tuples of confusion matrices.
+        Each entry of the outer list is for a different model.
+        The first is the overall model, the rests statsModels.
+        For each model there is a list of tuples.
+        Each tuple is of the form (descriptor_heading, confusion matrix)
         """
 
-        confusion_matrix_dicts = []
+        confusion_matrix_lol = []
 
         # Retrieve the overall confusion matrix.
         for descriptor in self.predictsDescriptors:
+            confusion_matrix_list = []
             if descriptor.statsModel is None:
-                confusion_matrix_dicts.append(descriptor.getConfusionMatrix())
+                confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
+        confusion_matrix_lol.append(confusion_matrix_list)
         
         # Retrieve the matrix for each component.
         for model in self.statsmodel_set.all():
             for descriptor in self.predictsDescriptors:
                 if descriptor.statsModel == model:
-                    confusion_matrix_dicts.append(descriptor.getConfusionMatrix())
-        return confusion_matrix_dicts
+                    confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
+            confusion_matrix_lol.append(confusion_matrix_list)
+            
+        return confusion_matrix_lol
         
 
               

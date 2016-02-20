@@ -36,22 +36,21 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
     def getConfusionMatrix(self):
         """
-        Returns a dicionary of dictionaries of dictionaries, where the outer keys
-           are the outcomeDescriptors, the middle keys are the "correct" or "true"
-           values, the innermost keys are the "guessed" values that occurred, and
-           the value is the integer number of occurrences of that guess when the
-           true descriptor was the middle key.
+        Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+       values, the inner keys are the "guessed" values that occurred, and
+       the value is the integer number of occurrences of that guess when the
+       true descriptor was the second key.
 
-           IE: {true: {guess:#, guess':#},
-                true': {guess:#, guess':#}}
-           Eg: {"1": {"1": 10
-                      "2": 10
-                      "3": 13
-                      "4": 0
-                     }
-               , ...
-               }
-              }
+       Eg: {true: {guess:#, guess':#},
+            true': {guess:#, guess':#}}
+       Eg: {"1": {"1": 10
+                  "2": 10
+                  "3": 13
+                  "4": 0
+                 }
+           , ...
+           }
+          }
         """
         matrix = {}
         for true, guess in self.getPredictionTuples():
@@ -59,6 +58,8 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
                 matrix[true] = {}
 
             matrix[true][guess] = matrix[true][guess]+1 if guess in matrix[true] else 1
+
+        print matrix
 
         return matrix
 
@@ -73,6 +74,9 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
         actualDescValues = self.predictionOf.boolrxndescriptorvalue_set.all()
         predictedDescValues = self.boolrxndescriptorvalue_set.all()
+
+        print "ActualDescValues: {}".format(actualDescValues.count())
+        print "PredictedDescValues: {}".format(predictedDescValues.count())
 
         predictionTuples = []
         for prediction in predictedDescValues:
@@ -142,6 +146,9 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
         actualDescValues = self.predictionOf.ordrxndescriptorvalue_set.all()
         predictedDescValues = self.ordrxndescriptorvalue_set.all()
 
+        print "ActualDescValues: {}".format(actualDescValues.count())
+        print "PredictedDescValues: {}".format(predictedDescValues.count())
+        
         predictionTuples = []
         for prediction in predictedDescValues:
             actual = actualDescValues.get(reaction=prediction.reaction)

@@ -19,14 +19,17 @@ def build_model(descriptor_header_file):
         headers = [l.strip() for l in f.readlines()]
 
     predictors = get_descriptors_by_header(headers)
-    responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
+    responses = Descriptor.objects.filter(heading="crystallisation_outcome")
 
     container.build(predictors, responses)
 
-    for conf_mtrx_dict in container.getConfusionMatrices():
-        for descriptor_heading, conf_mtrx in conf_mtrx_dict.items():
-            print "Confusion matrix for: {}".format(descriptor_heading)
-            print conf_mtrx
+    conf_mtrcs = container.getConfusionMatrices()
+    #print len(conf_mtrcs)
+    
+    #for model_mtrcs in conf_mtrcs:
+        #for descriptor_header, conf_mtrx in model_mtrcs:
+            #print "Confusion matrix for {}:".format(descriptor_header)
+            #print conf_mtrx
 
 
 def display_confusion_matrix(confusion_matrix):
