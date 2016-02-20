@@ -8,7 +8,6 @@ from django.db import models
 from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from itertools import chain
 
 
 def slugify(text):
@@ -18,6 +17,20 @@ def slugify(text):
     external languages such as R.
     """
     return _slugify(text).replace('-', '_')
+
+
+class DescriptorQuerySet(models.query.QuerySet):
+    def __init__(self, model=None, **kwargs):
+        """Initialises the queryset"""
+        model = Descriptor if model is None else model
+        super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
+
+
+class DescriptorManager(models.Manager):
+    use_for_related_fields = True
+
+    def get_queryset(self):
+        return DescriptorQuerySet()
 
 
 class Descriptor(models.Model):
@@ -36,13 +49,15 @@ class Descriptor(models.Model):
             'calculatorSoftwareVersion'
         )
 
+    objects = DescriptorManager()
+
     heading = models.CharField(
         max_length=200,
         validators=[
             RegexValidator(
                 '[A-Za-z0-9][A-Za-z0-9_]+',
                 ('Please include only values which are limited to'
-                 'alphanumeric characters and underscoresi, and must start'
+                 'alphanumeric characters and underscores, and must start'
                  'with an alphabetic character.')
             )
         ]
@@ -65,67 +80,11 @@ class Descriptor(models.Model):
     def arffHeader(self):
         """Return the base unit of an Arff Header.
 
-        This method is in sufficient and must be overridden by subclasses.
+        This method is insufficient and must be overridden by subclasses.
         Details about the Arff file format can be found at
         http://www.cs.waikato.ac.nz/ml/weka/arff.html
         """
         return'@attribute {} ' .format(self.csvHeader)
-
-
-    def downcast(self):
-        """Return an instance of this descriptor as its deepest subclass."""
-
-        classes = ["categoricaldescriptor", "ordinaldescriptor",
-                   "numericdescriptor", "booleandescriptor"]
-        rxn_classes = ["catrxndescriptor", "ordrxndescriptor",
-                       "numrxndescriptor", "boolrxndescriptor"]
-
-        for c in chain(classes, rxn_classes):
-
-          if hasattr(self, c):
-            sub_self = getattr(self, c)
-            for rxn_c in rxn_classes:
-
-              if hasattr(sub_self, rxn_c):
-                return getattr(sub_self, rxn_c)
-
-            return sub_self
-
-        return self
-
-        """
-        try:
-          return self.categoricaldescriptor.catrxndescriptor
-        except CatRxnDescriptor.catrxndescriptor.DoesNotExist:
-          return self.categoricaldescriptor
-        except CategoricalDescriptor.DoesNotExist:
-          pass
-
-        try:
-          return self.numericdescriptor.numrxndescriptor
-        except NumericDescriptor.DoesNotExist:
-          return self.numericdescriptor
-        except Descriptor.DoesNotExist:
-          pass
-
-        try:
-          return self.booleandescriptor.boolrxndescriptor
-        except BooleanDescriptor.DoesNotExist:
-          return self.booleandescriptor
-        except Descriptor.DoesNotExist:
-          pass
-
-        try:
-          return self.ordinaldescriptor.ordrxndescriptor
-        except OrdinalDescriptor.DoesNotExist:
-          return self.ordinaldescriptor
-        except Descriptor.DoesNotExist:
-          pass
-
-
-        return self
-        """
-
 
     def __unicode__(self):
         """Unicode represenation of a descriptor is it's name."""
@@ -254,3 +213,33 @@ class BooleanDescriptor(Descriptor):
     def arffHeader(self):
         """Complete the Arff header for this descriptor."""
         return super(BooleanDescriptor, self).arffHeader + '{True, False}'
+
+
+class Predictable(models.Model):
+
+    class Meta:
+        app_label = 'DRP'
+        abstract = True
+
+    def createPredictionDescriptor(self, modelContainer, modelComponent=None):
+        if not self.pk:
+            raise self.DoesNotExist('Cannot create a prediction descriptor of a descriptor which has not yet been saved.')
+        else:
+            try:
+                return self.predictedDescriptorType.objects.get(modelContainer=modelContainer, statsModel=modelComponent, predictionOf=self)
+            except self.predictedDescriptorType.DoesNotExist:
+                pred = self.predictedDescriptorType()
+
+                if modelComponent is None:
+                    headingSuffix = '_prediction_{}_summative'.format(modelContainer.pk)
+                    nameSuffix = ' prediction for modelContainer {}'.format(modelContainer.pk)
+                else:
+                    headingSuffix = '_prediction_{}_component_{}'.format(modelContainer.pk, modelComponent.pk)
+                    nameSuffix = ' prediction for modelcontainer {} component {}'.format(modelContainer.pk, modelComponent.pk)
+
+                pred.heading = self.heading + headingSuffix
+                pred.name = self.name + nameSuffix
+                pred.predictionOf = self
+                pred.modelContainer = modelContainer
+                pred.statsModel = modelComponent
+                return pred

@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>Add Reaction Data</h1>
-  <form action="{{ request.path }}" method="post">
+  <form class="reaction-form" action="{{ request.path }}" method="post">
     {% csrf_token %}
     <fieldset>
     <legend>Reaction Details</legend>

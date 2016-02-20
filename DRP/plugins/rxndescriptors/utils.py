@@ -20,26 +20,26 @@ class LazyDescDict(object):
             self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.get(**fetchArgs)
           except DRP.models.NumRxnDescriptor.DoesNotExist:
-            self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.create(**args) 
+            self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.get_or_create(**args)[0]
         elif v['type'] == 'bool':
           try:
             self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.get(**fetchArgs)
           except DRP.models.BoolRxnDescriptor.DoesNotExist:
-            self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.create(**args)
+            self.internalDict[k] = DRP.models.BoolRxnDescriptor.objects.get_or_create(**args)[0]
         elif v['type'] == 'ord':
           try:
             self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get(**fetchArgs)
           except DRP.models.OrdRxnDescriptor.DoesNotExist: 
-            self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get_or_create(**args)
+            self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get_or_create(**args)[0]
         elif v['type'] == 'cat':
           del args['permittedValues']
           try: 
             DRP.models.CatRxnDescriptor.objects.filter(**fetchArgs).update(**args)
             self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get(**fetchArgs)
           except DRP.models.CatRxnDescriptor.DoesNotExist:
-            self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.create(**args)
+            self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get_or_create(**args)[0]
           for permittedValue in v['permittedValues']:
             perm = DRP.models.CategoricalDescriptorPermittedValue.objects.get_or_create(value=permittedValue, descriptor=self.internalDict[k])[0]
         else:

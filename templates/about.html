@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block additional_head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/about.css" />
+{% endblock %}
+
 {% block content %}
 <h1 class='bannerText'>
   Contributors
@@ -31,10 +35,10 @@
   </figcaption>
 </figure>
 
+<h1 class='groupName'>Friedler Lab</h1>
 <figure class='contributorGroup'>
   <img src='{{STATIC_URL}}images/FriedlerLab.jpg' class='groupPicture' alt="Left to Right: Paul Raccuglia, Nora Tien, Casey Falk, Daniel Washburn" />
   <figcaption class='groupInfo info'>
-    <h1 class='groupName'>Friedler Lab</h1>
     <p>
     (Left to Right)
     Paul Raccuglia,

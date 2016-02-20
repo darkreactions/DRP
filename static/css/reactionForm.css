@@ -1,3 +1,25 @@
+/* stylesheet for reaction_form.html */
+
+.reaction-form fieldset {
+ margin:3em 0;
+}
+
+.reaction-form legend {
+ font-weight:700;
+}
+
+.reaction-form label {
+ margin-right:1em;
+ vertical-align:top;
+}
+
+.reaction-form fieldset ol li {
+ padding:1em 0;
+}
+
+
+/*******************   OLD CODE    **********************/
+
 .fieldWrapper {
  display: inline-block;
 

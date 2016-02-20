@@ -1,6 +1,7 @@
 '''A module containing code pertaining to forms for the reaction classes'''
 from django import forms
 from DRP.models import PerformedReaction, RecommendedReaction
+from django.contrib.auth.models import User
 from django.forms.widgets import HiddenInput
 
 class PerformedRxnAdminForm(forms.ModelForm):
@@ -33,10 +34,10 @@ class PerformedRxnForm(forms.ModelForm):
   
   def clean(self):
     self.cleaned_data = super(PerformedRxnForm, self).clean()
-    if not self.fields['labGroup'] in (self.user.labgroup_set | self.cleaned_data['performedBy'].labgroup_set):
-      raise ValidationError('The selected labGroup does not contain both the inputting and experimental user.', 'invalid_lg')
-    else:
-      return self.cleaned_data
+    if 'preformedBy' in self.cleaned_data:
+        if not self.fields['labGroup'] in (self.user.labgroup_set | self.cleaned_data['performedBy'].labgroup_set):
+            raise ValidationError('The selected labGroup does not contain both the inputting and experimental user.', 'invalid_lg')
+    return self.cleaned_data
     
 
   def save(self, commit=True, *args, **kwargs):

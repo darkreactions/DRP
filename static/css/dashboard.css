@@ -1,3 +1,103 @@
+.infoContainer {
+ 
+}
+
+.infoContainer h2 {
+ text-align:center;
+}
+
+.infoContainer .live {
+ height:25em;
+ margin-top:7em;
+}
+
+.infoContainer #liveGraph {
+ height:25em;
+ width:38em;
+ margin:auto;
+ background-color:rgb(207,223,191);
+}
+
+.infoContainer .stats {
+ height:25em;
+ 
+}
+
+.infoContainer .stats .statsWrapper {
+ height:20em;
+ width:30em;
+ margin:auto;
+ background-color:rgb(207,223,231);
+}
+
+.infoContainer #liveStats {
+ height:16em;
+ width:14em;
+ background-color:rgb(255,255,255);
+ float:left;
+ margin:3em 0 2em 1em;
+}
+
+.infoContainer .experimentsWrapper {
+ height:18em;
+ width:14em;
+ float:left;
+ margin: 1em 0 0 0;
+}
+
+.infoContainer #experimentsStats {
+ height:16em;
+ background-color:rgb(235,235,235);
+ margin:2em 0 0 0;
+}
+
+
+/******************** SVG - GRAPH 1 **********************/
+
+svg .graph {
+
+}
+
+svg .plot {
+
+}
+
+svg .plot rect.background {
+ fill:white;
+}
+
+svg .plot .line {
+ stroke:rgb(0,0,0);
+}
+
+svg .plot .guide.line {
+ opacity:0;
+}
+
+svg .legends {
+
+}
+
+
+/****************** END OF SVG - GRAPH 1 *****************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************  OLD CODE BELOW  ***************/
+
 .modelStatsName{
  font-style:oblique;
 }
@@ -8,11 +108,6 @@
 
 .modelStatsEntry > span {
  display:block;
-}
-
-#chart2Class svg, #chart4Class svg {
-    height: 30%;
-    width: 100%;
 }
 
 .nvtooltip.xy-tooltip { /* NVD3's Tooltips */
@@ -52,5 +147,5 @@
  font-size:0.8em;
 }
 
-
+/***************  END OLD CODE  ******************/
 

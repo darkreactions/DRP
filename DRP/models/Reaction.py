@@ -2,15 +2,16 @@
 from django.db import models
 from LabGroup import LabGroup
 from Compound import Compound
-from querysets import CsvModel, CsvQuerySet, ArffQuerySet
+from querysets import CsvQuerySet, ArffQuerySet
 from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from itertools import chain
 from CompoundRole import CompoundRole
 from collections import OrderedDict
-
+import DRP
 import importlib
 from django.conf import settings
+import gc
 
 descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.RXN_DESCRIPTOR_PLUGINS]
@@ -18,7 +19,7 @@ descriptorPlugins = [importlib.import_module(plugin) for
 
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
-    def __init__(self, model = None, **kwargs):
+    def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""
         model = Reaction if model is None else model
         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
@@ -71,7 +72,55 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def descriptors(self):
         """returns the descriptor which have relationship to the queryset"""
-        return chain(BooleanDescriptor.objects.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(reaction__in=self)), NumericDescriptor.objects.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(reaction__in=self)), OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(reaction__in=self)), CategoricalDescriptor.objects.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(reaction__in=self)))
+        return chain(
+            BooleanDescriptor.objects.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            NumericDescriptor.objects.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            CategoricalDescriptor.objects.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(reaction__in=self)).distinct()
+        )
+
+    def rows(self, expanded):
+        if expanded:
+            reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
+            reactions = reactions.prefetch_related('compounds')
+            
+            for item in reactions.batch_iterator():
+                row = {field.name:getattr(item, field.name) for field in self.model._meta.fields} 
+                row.update({dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues})
+                i=0
+                for compound in item.compounds.all():
+                    row['compound_{}'.format(i)] = compound.name
+                    i+=1
+                yield row
+        else:
+            for row in super(ReactionQuerySet, self).rows(expanded):
+                yield row
+
+
+
+    # From https://djangosnippets.org/snippets/1949/
+    def batch_iterator(self, chunksize=5000):
+        '''
+        Iterate over a Django Queryset ordered by the primary key
+    
+        This method loads a maximum of chunksize (default: 5000) rows in it's
+        memory at the same time while django normally would load all rows in it's
+        memory. Using the iterator() method only causes it to not preload all the
+        classes.
+    
+        Note that the implementation of the iterator does not support ordered query sets.
+        '''
+        pk = 0
+        last_pk = self.order_by('-pk')[0].pk
+        queryset = self.order_by('pk')
+        while pk < last_pk:
+            for row in queryset.filter(pk__gt=pk)[:chunksize]:
+                pk = row.pk
+                yield row
+            gc.collect()
 
 
 class ReactionManager(models.Manager):
@@ -82,46 +131,29 @@ class ReactionManager(models.Manager):
         return ReactionQuerySet()
 
 
-class Reaction(CsvModel):
-  '''A base class on which PerformedReactions and RecommendedReactions are built,
-  contains common information to each in a table with an automatically
-  generated one to one relationship with the subclasses.
-  '''
+class Reaction(models.Model):
+    '''A base class on which PerformedReactions and RecommendedReactions are built,
+    contains common information to each in a table with an automatically
+    generated one to one relationship with the subclasses.
+    '''
 
-  class Meta:
-    app_label="DRP"
+    class Meta:
+        app_label="DRP"
 
-  objects = ReactionManager()
-  compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
-  notes=models.TextField(blank=True)
-  labGroup=models.ForeignKey(LabGroup)
+    objects = ReactionManager()
+    compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
+    notes=models.TextField(blank=True)
+    labGroup=models.ForeignKey(LabGroup)
+    calcDescriptors = True #this is to cope with a hideous problem in xml serialization in the management commands
 
-  def save(self, *args, **kwargs):
-    super(Reaction, self).save(*args, **kwargs)
-    for plugin in descriptorPlugins:
-      plugin.calculate(self)
+    def save(self, calcDescriptors=True, *args, **kwargs):
+        super(Reaction, self).save(*args, **kwargs)
+        if calcDescriptors and self.calcDescriptors:
+            for plugin in descriptorPlugins:
+                plugin.calculate(self)
+    @property
+    def descriptorValues(self):
+        return chain(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
-
-  def descriptorValues(self):
-      return chain(
-        CatRxnDescriptorValue.objects.filter(reaction=self),
-        BoolRxnDescriptorValue.objects.filter(reaction=self),
-        OrdRxnDescriptorValue.objects.filter(reaction=self),
-        NumRxnDescriptorValue.objects.filter(reaction=self)
-      )
-
-
-  @property
-  def expandedValues(self):
-    valDict = super(Reaction, self).expandedValues
-
-    # Add any descriptors associated with this reaction.
-    for descriptorVal in self.descriptorValues():
-      heading = descriptorVal.descriptor.csvHeader
-      val = descriptorVal.value
-      valDict[heading] = val
-
-    return valDict
-
-  def __unicode__(self):
-    return "Reaction_{}".format(self.id)
+    def __unicode__(self):
+        return "Reaction_{}".format(self.id)

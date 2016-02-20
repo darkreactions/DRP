@@ -2,14 +2,12 @@
 from django.db import models
 from Reaction import Reaction, ReactionManager, ReactionQuerySet
 from RecommendedReaction import RecommendedReaction
-from StatsModel import StatsModel
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from itertools import chain
-
+import DRP
 
 class PerformedReactionQuerySet(ReactionQuerySet):
-    def __init__(self, model = None, **kwargs):
+    def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""
         model = Reaction if model is None else model
         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
@@ -29,7 +27,7 @@ class PerformedReaction(Reaction):
   user=models.ForeignKey(User)
   performedBy=models.ForeignKey(User, related_name='performedReactions', null=True, default=None)
   reference=models.CharField(max_length=40, unique=True)
-  performedDateTime=models.DateTimeField('Date Reaction Performed', null=True, default=None)
+  performedDateTime=models.DateTimeField('Date Reaction Performed', null=True, default=None, help_text='Date in format YYYY-MM-DD')
   insertedDateTime=models.DateTimeField('Date Reaction Saved', auto_now_add=True)
   recommendation=models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
   legacyRecommendedFlag=models.NullBooleanField(default=None)
@@ -46,8 +44,8 @@ class PerformedReaction(Reaction):
   def save(self, *args, **kwargs):
     self.reference = self.reference.lower()
     if self.pk is not None:
-      test = StatsModel.objects.filter(testset__reactions__in=[self])
-      train = StatsModel.objects.filter(trainingset__reaction=self)
+      test = DRP.models.StatsModel.objects.filter(testSets__reactions__in=[self])
+      train = DRP.models.StatsModel.objects.filter(trainingSet__reactions=self)
       for model in chain(test, train):
         model.invalidate()
         model.save()

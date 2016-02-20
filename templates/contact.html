@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block additional_head %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/contact.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/infoForm.css" />
+{% endblock %}
 
 {% block content %}
 <h1 class='bannerText'>
@@ -12,7 +16,7 @@ Contact Us
       <ol>
       {{ form.as_ul }} 
       </ol>
-    <input type="submit" value="Send" />
+    <input class="submit" type="submit" value="Send" />
   </form>
   {% endif %}
   {% if testing %}

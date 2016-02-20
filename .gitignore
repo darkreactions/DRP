@@ -7,7 +7,7 @@ tmp/*
 models/*
 
 *.pyc
-*.sql
+.sql
 *.sw*
 *.log
 *.cxl
@@ -15,3 +15,8 @@ models/*
 
 #For OS X users
 .DS_Store
+
+#For Emacs
+*~
+\#*\#
+.\#*

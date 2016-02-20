@@ -4,8 +4,8 @@ from django.db.models import Count
 import random
 
 class Splitter(AbstractSplitter):
-  def __init__(self):
-    super(Splitter, self).__init__()
+  def __init__(self, namingStub):
+    super(Splitter, self).__init__(namingStub)
     self.TEST_PERCENT = 0.30
     self.MAX_PARTITION_SIZE = 35 # Magic # TODO: Please de-magic this.
     self.MIN_TRAIN_SIZE = 10 # WEKA requires at least 10 training points for SVMs.
@@ -43,7 +43,7 @@ class Splitter(AbstractSplitter):
     train = reactions.exclude(pk__in=test_reactions)
     test = reactions.filter(pk__in=test_reactions)
 
-    return train, test
+    return [(train, test)]
 
   def _count_compound_sets(self, reactions):
     compound_sets = [frozenset(Compound.objects.filter(reaction=rxn)) for rxn in reactions]

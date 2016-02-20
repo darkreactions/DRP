@@ -4,6 +4,11 @@
     <title>
       {% block title %} Dark Reaction Project {% endblock %}
     </title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/projectMenu.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionsList.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
 {% comment %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
     {% block head_additional %}{% endblock %}
@@ -25,12 +30,14 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/userInfo.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endcomment %}
+  {% block additional_head %}{% endblock %}
   </head>
 
   <body>
 
     <header>
-      <h1>Dark Reaction Project</h1>
+      <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo">
+      <h1 class="mainTitle">Dark Reaction Project</h1>
 
       <div id="userInfo">
 
@@ -38,17 +45,17 @@
           {% if testing %}
             <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
           {% endif %}
-          <div>
-            <span>Hello, {{ user.first_name }}</span>
-            <a href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
-          </div>
+          <span class="greeting">
+            Hello, {{ user.first_name }}
+            <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+          </span>
           <a href="/logout.html" id="userLogOut">Log Out</a>
 
         {% else %}
           {% if testing %}
             <!-- d68a82db-bd18-4a9f-a1a2-03b3bb259595 --> 
           {% endif %}
-        <a id="userLogin" href="/login.html">Log In</a>
+        <a id="userLogin" href="/login.html?next={{ request.path_info|urlencode }}">Log In</a>
         <a id="registrationPrompt" href="/register.html">Register</a>
 
         {% endif %}
@@ -56,6 +63,7 @@
         </div>
       
       <nav>
+       <div class="nav-wrapper">
         <ol id="navigationMenu">
   
           <li>
@@ -97,6 +105,7 @@
     -->
   
         </ol>
+     </div>
     </nav>
     {% block additional_header %}{% endblock %}
   </header>
