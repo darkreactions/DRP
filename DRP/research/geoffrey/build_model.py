@@ -22,7 +22,7 @@ def display_model_results(container):
             print confusionMatrixString(conf_mtrx)
 
 
-def prepare_and_build_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter):
+def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter):
     #Grab all reactions with defined outcome descriptors
     reactions = PerformedReaction.objects.all()
     reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
@@ -70,23 +70,22 @@ def confusionMatrixTable(confusionMatrix, headers=True):
 
     return table
 
-
-#def get_descriptors_by_header(headers):
-    #Qs = [Q(heading=header) for header in headers]
-    #return Descriptor.objects.filter(reduce(operator.or_, Qs))
-
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Builds a model', fromfile_prefix_chars='@')
-    parser.add_argument('-p', '--predictor-headers', nargs='+')
-    parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"])
-    parser.add_argument('-ml', '--model-library', default="weka")
-    parser.add_argument('-mt', '--model-tool', default="SVM_PUK_basic")
-    parser.add_argument('-s', '--splitter', default="KFoldSplitter")
+    parser = argparse.ArgumentParser(description='Builds a model', fromfile_prefix_chars='@',
+                                        epilog="Prefix arguments with '@' to specify a file containing newline"
+                                        "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
+                                        " to pass multiple descriptors from a file as predictors")
+    parser.add_argument('-p', '--predictor-headers', nargs='+',
+                        help='One or more descriptors to use as predictors.'
+                        'Note that most models can only handle one response variable')
+    parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
+                        help='One or more descriptors to predict. (default: %(default)s)')
+    parser.add_argument('-ml', '--model-library', default="weka",
+                        help='Model visitor library to use. (default: %(default)s)')
+    parser.add_argument('-mt', '--model-tool', default="SVM_PUK_basic",
+                        help='Model visitor tool from library to use. (default: %(default)s)')
+    parser.add_argument('-s', '--splitter', default="KFoldSplitter",
+                        help='Splitter to use. (default: %(default)s)')
     args = parser.parse_args()
-    
-    ## get the headers to use from the descriptor header file
-    #with open(args.descriptor_header_file, 'r') as f:
-        #descriptor_headers = [l.strip() for l in f.readlines()]
 
     prepare_and_build_model(args.predictor_headers, args.response_headers, args.model_library, args.model_tool, args.splitter)
