@@ -16,7 +16,7 @@ span.greeting {
 }
 
 #userInfo span.greeting a.account {
- margin:1em 0 1em 1em;
+ margin:1em 0;
 }
 
 img#mainLogo {
@@ -28,6 +28,7 @@ img#mainLogo {
 h1.mainTitle {
  margin:.1em 0 0 0;
  float:left;
+ color:#F0D09E;
 }
 
 #userInfo {
@@ -100,4 +101,32 @@ main {
  margin:1em;
 }
 
+main a:link {
+ text-decoration: none;
+ color: #9c0000;
+}
+
+main a:visited {
+ text-decoration: none;
+ color: #9c0000;
+}
+
+main a:hover {
+ text-decoration: none;
+ color: #9c0000;
+ opacity:.7; 
+}
+
+main a:active {
+
+}
+
 .currentTitle { font-weight:bold; }
+
+footer {
+ font-size: .7em;
+ color: #ac7e35; /* the tan from top menu but slightly darker */
+ margin: 0 0 .5em 1em;
+ clear:both;
+ text-align:center;
+}

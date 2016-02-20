@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block additional_head %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/login_form.css" /> 
+{% endblock %}
+
 {% block content %}
 
 <form method="post" action="{% url 'login' %}{% if next %}?next={{ next|urlencode:"" }}{% endif %}">

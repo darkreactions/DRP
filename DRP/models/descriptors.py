@@ -27,6 +27,7 @@ class DescriptorQuerySet(models.query.QuerySet):
 
 
 class DescriptorManager(models.Manager):
+
     use_for_related_fields = True
 
     def get_queryset(self):

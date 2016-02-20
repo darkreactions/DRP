@@ -1,11 +1,11 @@
 #Setup Page for the Dark Reaction Project
-######Last updated by Philip Adler 2015-06-19
+######Last updated by Philip Adler 2015-09-02
 
 1. **Ubuntu**
-2. **OS X** 
-3. **Git Hooks**
 
-##Ubuntu
+##Ubuntu development server
+
+###Set up environment
 
 The following instructions are written to work with Ubuntu 12+ and have (mostly) been tested on Ubuntu 13.
 
@@ -15,175 +15,147 @@ Install the necessary programs.
 Note which version of Django gets installed.
 `sudo pip install numpy scipy Django pygraphviz`
 
+Install required pip python libraries
+`sudo pip install chemspipy requests pep8 pep257 xxhash`
+
 `sudo easy_install South`
 
-###Skip if you don't need model-building.
-Install [ChemAxon](http://www.chemaxon.com/)'s JChem and Marvin. These do intense, high-level chem-calcs for us. Note that these DON'T need to be installed on a test-bed if you don't need to test the compound property calculators. Also note that ChemAxon requires an install key in order to run.
+###Clone from the Git Repository into your directory of choice.
 
-###Skip if you don't want backups.
-On a production server, use a "cron" job to back up the database (the command "sudo scrontab -e" initiates crontab editor). Note that the password needs to change from what it is below. Ideally the password will be stored more discretely in one place on the server. Add the following line to dump the database to a unique file every day in a DropBox backup folder:
-`30 3 * * * mysqldump -uroot -p SecurePassword DRP_db > /home/drp/database_backups/Dropbox/DRP_db__$(date +\%m_\%d_\%y).sql`
+`git clone git@github.com:cfalk/DRP`
 
-Likewise, set up nginx to start every hour in case it goes happens to go down:
-`0 * * * * service nginx start`
+####For the time being
+Switch your branch to the `phil_refactor` branch.
 
-And back up the models directory each day:
-`0 3 * * * cp -rn /home/drp/web/darkreactions.haverford.edu/app/DRP/models/* /home/drp/model_backups/`
+####Server settings
 
+In the DRP repository there is a file DRP_uwsgi.ini and another DRP_nginx. Both should be modified to suit your local server *after* having been placed in the relevant locations:
 
-###Set up a virtual environment.
-Install a virtualenv if you are on the production server. This helps prevent hackers from accessing file and system information outside of the directory of the projects. There are also other perks (which can be researched online).
+`/etc/uwsgi/apps-enabled/DRP_uwsgi.ini`
+`/etc/nginx/sites-enabled/DRP_nginx`
 
-The URL below might change depending on your username.
-`git clone git@bitbucket.org:darkreactionproject/dark-reaction-site.git`
+It should be noted that the uwsgi.ini is backwards compatible with older version of this repo, but that an old DRP_uwsgi file will need replacing.
+
+Both uwsgi and nginx must be restarted (in that order) for the server to work.
 
 ###Set up the settings.py file
 
-In DRP/DRP, there is a file called 'settings_example.py'. This must be moved/copied to 'settings.py', and the settings therein set to the appropriate values for your server. At present, the available fields should be fairly self explanatory and are well commented. 
+In DRP/DRP, there is a file called 'settings_example.py'. This must be copied to 'settings.py', and the settings therein set to the appropriate values for your server. At present, the available fields should be fairly self explanatory, though the following should be noted:
 
-###Set up Nginx and uWSGI (Not necessary if you develop with Django's runserver).
-Move the Nginx and uWSGI files to their appropriate directories. Note that in development, you can just the the Django runserver (command: "python manage.py runserver") and thus can skip anything related to nginx/uwsgi.
+`ALLOWED_HOSTS` should be set to an iterable containing only the element '*'.
 
-`sudo mv DRP_nginx aetc/nginx/sites-available/DRP_nginx`
+To pass the unit tests, at least one `ADMIN_EMAILS` should be provided
 
-`sudo mv DRP_uwsgi /etc/uwsgi/apps-available/DRP_uwsgi`
+To pass the unit tests, the EMAIL_HOST_USER and related settings should be set.  
 
-Set up "sym links" so that the files are "activated." This is good practice so that the actual configuration file itself is never discarded when a site is de-activated. Make sure to use absolute file locations.
-`sudo ln -s /etc/nginx/sites-available/DRP_nginx /etc/nginx/sites-enabled/DRP_nginx`
+### Working with south
 
-`sudo ln -s /etc/uwsgi/apps-available/DRP_uwsgi /etc/uwsgi/apps-enabled/DRP_uwsgi`
+South is our library of choice for dealing with database migrations. It is already "installed" by the default settings file.
 
-Restart nginx and uwsgi so that they know that we changed files. If we don't, they will continue to distribute the obsolete "cached" versions. This should be done every time a change is made.
-`sudo services nginx restart`
+To get DRP running you need to setup a database with the correct encoding, in mysql:
 
-`sudo services uwsgi restart`
+`CREATE DATABASE db_name DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;`
 
-###Set up the MySQL database.
-Copy over a version of the database from the production server or a backup. Choose the most recent mysqldump file to avoid data-loss.
-` scp drp@darkreactions.haverford.edu:/home/drp/database_backups/Dropbox/DRP_db__03_30_14.sql ./database.sql`
+Without this, all string comparisons done at a database level are case insensitive, which causes spurious query results.
 
-Make sure the MySQL user accessing the database has a secure password.
+Ensure that `db_name` matches with the name specified in your settings.py file.
 
-Create an empty database for DRP using the MySQL client:
-`mysql -uroot -p`
+Then, in the DRP directory, run `./manage.py syncdb`
 
-`mysql> CREATE DATABASE DRP_db;`
+This sets up the south tables.
 
-`exit`
+You should create a "superuser" called "root" when prompted.
 
-Load the mysqldump into this empty DRP database. Note that "SecurePassword" should be more secure in production.
-`mysql -u root --password=SecurePassword DRP_db < database.sql`
+Then run `./manage.py migrate DRP`
 
-Remove any migration history that might exist. ALWAYS BE CAREFUL WHAT YOU DELETE.
-`rm -r DRP/migrations/`
+This should set up the schema to the most recent version. Note that you may need to do this periodically as another person updates the model.
 
-###Set up South for Database Migrations (see README.md for more).
-Convert the database to be managed by South. The last "--fake" and "--delete-ghost-migrations" options specify that the database version that South has stored in its personal database tables should be ignored.
-`python manage.py syncdb`
+###Git hooks.
 
-`python manage.py convert_to_south DRP`
+Inside DRP there is a folder called drp_hooks. Among these is a file called pre-push, and this should be moved in your .git/hooks directory for this project. This runs all of the tests
+in the test suite before pushing your copy of the repository, and hence forces our code into compliance.
 
-`python manage.py schemamigration DRP --initial`
+###Running tests
 
-`python manage.py migrate DRP --fake --delete-ghost-migrations`
+In order to run tests you must have the following environment variables set up in your shell session:
 
-When you change a model changes or add a field, you must run the following two commands. They'll also need to be run on the production server. Be warned that if you change the Django models before South is loaded, it may blow up on you.
-`python manage.py schemamigration --auto DRP`
+export PYTHONPATH=/path/to/DRP/
 
-`python manage.py migrate DRP`
+export DJANGO_SETTINGS_MODULE=DRP.settings
 
-###In Production
-At this point, you should have a fully-functional production-bed or test-bed. Verify by going to wherever the webapp is hosted ([darkreactions.haverford.edu](http://darkreactions.haverford.edu)).
+This also applies to the pre-push hook.
 
-###In Development:
-Verify by running `python manage.py runserver 0.0.0.0:8000` and going to port 8000 of the server hosting your workspace (ie: if you're on drp, go to [darkreactions.haverford.edu:8000](http://darkreactions.haverford.edu:8000)). Note that you may not be able to view ports other than port 80 while outside of campus.
+You must also have `TESTING` set to `True` in your `settings.py` file.
 
-##OS X
-This has been tested on OS X Mavericks, but has not been tested on any other OS X version. This may not be complete as yet.
+To run specific tests, provided the test is conformant to the template test (which they should be if you are writing new tests!), one can simply execute the test:
 
-First and foremost, obtain the Django code by cloning the git repository, and placing the code in the desired location. Move the settings_example.py file to settings.py without changing it's directory.
+`path/to/DRP/test.py`
 
-This installation process assumes that you have a working Apache install on your OS X machine, since these come pre-installed by default. It also assumes that you have sudo powers on your OS X installation. 
+Else, one can run the entire test suite from the management script:
 
-Setting up mysql is also unchallenging, since [MySQL is made available in a .dmg format](https://dev.mysql.com/doc/refman/5.5/en/osx-installation.html).
+`./manage.py run_tests`
 
-python 2.7 is the default install of python on OS X, however, a number of additional packages need to be added to ensure functionality of django.
+###For the time being...
 
-First and foremost, [install pip](https://pip.pypa.io/en/latest/installing.html#install-pip).
+If you are reading this setup instruction manual, you are working on the refactoring mission of the DRP. This comes with some rules:
 
-Having installed pip, we can now install Django. The current version of the dark reactions project is designed to work with Django 1.6, so the command to invoke is:
+1. Changes to the schema should be run past Phil, who will implement them; this makes dealing with the south migrations much easier.
+2. You should make your own branch from the phil_refactor branch, and push that to the Git repo (`push -u origin <branchname>`)- Phil will merge periodically or on request.
+3. Don't attempt to circumvent the pre-push tests.
+4. Comment all the things.
+5. If you change the pre-push hook, tell everyone.
 
-`sudo pip install Django==1.6`
+There are additional developer notes in teh developer_notes.md file.
 
-For Django to work properly, we need the MySQLdb package for Python. However, the package as it is stored in pip doesn't work nicely with the default OSX setup of MySQL and python, so the process for getting this to work is (unfortunately) slightly more involved (information taken from [here](http://www.mechanicalgirl.com/view/installing-django-with-mysql-on-mac-os-x/) and [here](http://stackoverflow.com/questions/6383310/python-mysqldb-library-not-loaded-libmysqlclient-18-dylib):
+###On Development Servers
 
-Firstly, acquire the code for [MySQLdb](http://sourceforge.net/projects/mysql-python/)
+The `ALLOWED_HOSTS` option in 'settings.py' should be set to an iterable containing only the localhost ip address as a string.
 
-Extract the package, and then in a command prompt, open the directory into which the files were extracted.
+In the '/etc/nginx/sites-enabled/DRP_nginx' file, the host name that is being listened to should only be localhost.
 
-Edit the file _mysql.c (lines 37,38 and 39):
+##Servers with multiple web applications.
 
-Edit _mysql.c lines 37, 38 and 39 as follows:
+If you are only developing DRP on your server, the setup you have should be sufficient, however, people running other applications on their local development server should note the following.
 
-`//#ifndef uint`
+If you are running the django testing server, this requires you to select a port which is unoccupied. By default, the nginx settings file listens for port 8000, which is also the default port of the django test server; you will need to configure one or the other so that this clash does not occur. The Django documentation addresses this for django, whilst in the DRP_nginx file, the only change that needs to be made is to delete the line:
 
-`//#define uint unsigned int`
+`listen		8000`
 
-`//#endif`
+ #dnsmasq
 
-Then open setup_posix.py and edit line 27 (or wherever the variable `mysql_config.path` occurs:
+For instances where you are hosting multiple development projects on your local server, it may be beneficial to install dnsmasq:
 
-`mysql_config.path = "/usr/local/mysql/bin/mysql_config"`
+`sudo apt-get install dnsmasq`
 
-Then run:
+dnsmasq is a powerful tool for rerouting and managing dns requests. This makes it extremely helpful in managing multiple local development projects.
 
-`sudo python setup.py build`
+Having installed dnsmasq, open the file `/etc/dnsmasq.conf` in your favourite text editor, and add the following line into the file:
 
-`sudo python setup.py install`
+`address=/loc/127.0.0.1`
 
-Having done this, add the following symlinks to your system:
+Save the change, and then on the command line:
 
-`sudo ln -s /usr/local/mysql/lib/libmysqlclient.18.dylib /usr/lib/libmysqlclient.18.dylib`
-`sudo ln -s /usr/local/mysql/lib/ /usr/local/mysql/lib/mysql`
+`sudo service dnsmasq restart`
 
-MySQLdb should now be working.
+In the DRP_nginx file, change the `server_name` configuration to something like `darkreactions.loc`. It does not matter what this is set to, provided it:
 
-We then install the South Module (which manages database schema migrations for us until we move Django versions):
+a. is unique on your development server
+b. ends in `.loc`
 
-`sudo pip install south`
+Don't forget to set the `SERVER_NAME` setting in your settings.py file to the same value!
 
-JChem is provided as an [OS X installer](https://www.chemaxon.com/download/jchem-suite/#jchem).
-You should set the `CHEMAXON_DIR` variable in settings.py to `"/Applications/ChemAxon/JChem/bin/"`
+Restart nginx:
 
-Weka is provided as a [disk image for OS X](http://www.cs.waikato.ac.nz/ml/weka/downloading.html). You will need to copy the whole unit to a known place on your system, and add the path to weka.jar to the settings.py file
+`sudo service nginx restart`
 
-Copies of the MySQL database are available from the DRP server for use to setup the MySQL database tables and example content in the normal way for MySQL [see mysql documentation](http://dev.mysql.com/doc/)
+When you open your browser and direct yourself to darkreactions.loc (or whatever you named the server), the dark reactions project should display.
 
-To get Apache and Python to play nicely together, we must install mod_wsgi. Clone the package at [github](https://github.com/GrahamDumpleton/mod_wsgi) to obtain the source code, then, at a command prompt and in the code directory:
+###Additional Notes for Production Servers
 
-`./configure`
+There are a number of cron-jobs that need to be set to ensure good functioning of a production grade server.
 
-`make`
+Firstly, there is the reaction hash checking cron-job. This is a database integrity check that cannot be done using django's inbuilt framework. On failure, it notifies your local administrators that there is a problem. It is advised that should this check fail, that your local administrator file a bug report with the development group.
 
-`sudo make install`
+The command for the cron-job is ./manage.py check_hash_collisions
 
-Then, open /private/etc/apache2/httpd.conf, and add, beneath the other default module loading statements:
 
-`LoadModule wsgi_module libexec/apache2/mod_wsgi.so`
-
-In terms of configuring the virtualhost configuration, this depends heavily on how much customisation and development work has already been done with the Apache server, so I leave you in the capable hands of the [django documentation](https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/modwsgi/) and [apache documentation](http://httpd.apache.org/docs/2.2/), with the following advisories: 
-
-The line `WSGIPythonPath /directory/drp/DRP` Cannot occur inside the virtualhost statement, and must be placed outside of the virtualhost environment.
-You need to set up additional aliases, one each for:
-
-- The `/static/` directory
-- The `/media/` directory
-- The `/favicon.ico` file
-
-##Git Hooks
-
-Git permits the use of certain hooks to automate certain behaviours. It is now policy that the code in the repo must pass the test suite before it is allowed to be pushed to the githib. The easiest way to ensure this is to use the hooks previded in the repo in the directory entitled drp_hooks. **Copy** these files to the .git/hooks directory in your local development repo to use them. They should be compatible with any *nix system (Windows currently awaits testing). **Do not under any circumstances symlink to these files from the .git folder**.
-
-Hooks currently present include:
-- pre-push: this hook runs before pushing changes to the server. In our instance, it runs the test-suite code.
-- drp_server_hooks/post-merge: this is designed to be placed (as just post-merge) into the .git directory on the production server only- it forces the refresh of the code on the pull of a new version.

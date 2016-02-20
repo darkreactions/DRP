@@ -1,0 +1,67 @@
+h1 {
+ text-align: center;
+}
+
+ol.downloads {
+ margin: 0 auto;
+ width: 20em;
+ text-align: center;
+}
+
+ol.downloads li:first-child {
+ margin-right: 2em;
+}
+
+.list-style-none {
+ list-style:none;
+}
+
+fieldset.compound-form {
+ border: 1px solid black;
+}
+
+ol.list-style-none ul {
+ list-style:none;
+}
+
+input[type="submit"] {
+  background-color:#9c0000;
+  border:1px solid #bd0000;
+  outline: none;
+  color: white;
+  border-radius:1em;
+  width:7em;
+  height:2em;
+  padding:0;
+  display:block;
+  margin: 0 auto;
+}
+
+section.downloads {
+ margin:3em 0 5em 0;
+}
+
+.downloads h1 {
+ margin-bottom: 0;
+ font-size: 1.5em;
+}
+
+.downloads ul {
+ padding: 0;
+ width: 25em;
+ margin: auto;
+}
+
+.downloads ul li {
+ list-style:none;
+ float: left;
+ margin: 0 1em;
+}
+
+table {
+ margin: auto;
+}
+
+tbody tr td ul {
+ list-style:none;
+}

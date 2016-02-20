@@ -12,6 +12,14 @@
   max-width:50em;
 }
 
+.infoForm ol {
+ padding:0;
+}
+
+.infoForm li {
+ list-style:none;
+}
+
 .infoForm textarea {
   height:5em;
   vertical-align:middle;
@@ -21,7 +29,6 @@
 .infoForm label {
   display:block;
   vertical-align:middle;
-
   padding: 0.5em 0em;
 }
 
@@ -29,21 +36,15 @@
   margin-left:2em;
 }
 
-.infoForm input, .infoForm textarea, .infoForm select {
-  border:none;
-  background-color:#dfb183;
-  padding:1em;
-  outline: 2px solid rgb(205,144,113);
-}
-
 .infoForm input.submit {
-  background-color:rgb(205,144,113);
+  background-color:#9c0000;
+  border:1px solid #bd0000;
   outline: none;
-}
-
-.infoForm input:focus, .infoForm textarea:focus, .infoForm select:focus {
-  background-color:#fff6cf;
-  outline: 2px solid #fff1b6;
+  color: white;
+  border-radius:1em;
+  width:7em;
+  height:2em;
+  padding:0;
 }
 
 .form_text_short { width:6em; }
