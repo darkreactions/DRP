@@ -24,7 +24,7 @@ def build_model(descriptor_header_file):
     
     container.build(predictors, responses)
     
-    print container.summarize()
+    container.getConfusionMatrices()
 
 def get_descriptors_by_header(headers):
   Qs = [Q(heading=header) for header in headers]

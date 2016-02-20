@@ -230,6 +230,7 @@ class ModelContainer(models.Model):
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
         for trainingSet, testSet in zip(self.trainingSets, self.testSets):
+            print "Training on: {}, testing on: {}".format(trainingSet.reactions.count(), testSet.reactions.count())
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
             modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
             statsModel.save() #Generate a PK for the StatsModel component.
@@ -277,13 +278,13 @@ class ModelContainer(models.Model):
                                 resDict[reaction][response][outcome] = 0
                                 resDict[reaction][response][outcome] += 1
                                 
-                # TODO XXX change these saves so they only make one hit on the database.
-                # Difficult (impossible?) with inherited models
-                predDesc = response.createPredictionDescriptor(self, statsModel)
-                predDesc.save()
-
-                val = predDesc.createValue(reaction, outcome)
-                val.save()
+                    # TODO XXX change these saves so they only make one hit on the database.
+                    # Difficult (impossible?) with inherited models
+                    predDesc = response.createPredictionDescriptor(self, statsModel)
+                    predDesc.save()
+    
+                    val = predDesc.createValue(reaction, outcome)
+                    val.save()
 
         return resDict
 
