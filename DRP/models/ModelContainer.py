@@ -270,12 +270,6 @@ class ModelContainer(models.Model):
         with transaction.atomic(): #wrapping this all in a transaction may speed up these saves
             for response, outcomes in predictions.items(): 
                 for reaction, outcome in outcomes:
-                    if outcome == 'True':
-                        outcome = True
-                    elif outcome == 'False':
-                        outcome = False
-                    else:
-                        raise ValueError("Boolean outcome parsed from weka output is neither 'True' nor 'False' but {}".format(outcome))
                     if reaction not in resDict:
                         resDict[reaction] = {}
                     if response not in resDict[reaction]:
