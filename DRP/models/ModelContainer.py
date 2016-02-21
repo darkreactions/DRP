@@ -10,6 +10,7 @@ import datetime
 import importlib
 import os
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue
 from StatsModel import StatsModel
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
@@ -264,27 +265,30 @@ class ModelContainer(models.Model):
         self._storePredictions(resDict)
         self.built = True
 
-    def _storePredictionComponents(self, predictions, statsModel):
-        resDict = {}
-        with transaction.atomic(): #wrapping this all in a transaction speeds up these saves
-            for response, outcome in predictions.items():
-                for reaction, outcome in outcome:
+    def _storePredictionComponents(self, predictions, statsModel, resDict=None):
+        resDict = {} if resDict is None else resDict
+        with transaction.atomic(): #wrapping this all in a transaction may speed up these saves
+            for response, outcomes in predictions.items(): 
+                for reaction, outcome in outcomes:
+                    if outcome == 'True':
+                        outcome = True
+                    elif outcome == 'False':
+                        outcome = False
+                    else:
+                        raise ValueError("Boolean outcome parsed from weka output is neither 'True' nor 'False' but {}".format(outcome))
                     if reaction not in resDict:
                         resDict[reaction] = {}
-                        if response not in resDict[reaction]:
-                            resDict[reaction][response] = {}
-                            if outcome not in resDict[reaction][response]:
-                                resDict[reaction][response][outcome] = 0
-                                resDict[reaction][response][outcome] += 1
-                                
+                    if response not in resDict[reaction]:
+                        resDict[reaction][response] = {}
+                    if outcome not in resDict[reaction][response]:
+                        resDict[reaction][response][outcome] = 0
+                    resDict[reaction][response][outcome] += 1
                     # TODO XXX change these saves so they only make one hit on the database.
                     # Difficult (impossible?) with inherited models
                     predDesc = response.createPredictionDescriptor(self, statsModel)
                     predDesc.save()
-    
                     val = predDesc.createValue(reaction, outcome)
                     val.save()
-
         return resDict
 
     def _storePredictions(self, resDict):
