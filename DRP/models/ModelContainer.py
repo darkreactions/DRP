@@ -287,26 +287,27 @@ class ModelContainer(models.Model):
 
     def _storePredictions(self, resDict):
         finalPredictions = {}
-        for reaction, responseDict in resDict.items():
-            for response, outcomeDict in responseDict.items():
-                predDesc = response.createPredictionDescriptor(self)
-                predDesc.save()
-                if isinstance(response, NumRxnDescriptor):
-                    #estimate the weighted average of the estimates from the component models
-                    values = tuple(value for value in resDict[reaction][response].keys())
-                    weights = tuple(weight for value, weight in resDict[reaction][response].items())
-                    val = predDesc.createValue(reaction, average(values, weights=weights))
-                else:
-                    #find the 'competitors' with the highest number of votes and pick one at random (in case multiple categories have equal numbers of votes)
-                    maxVotes = max(count for response, count in outcomeDict.items())
-                    winners = [(response, count) for response, count in outcomeDict.items() if count == maxVotes]
-                    winner = random.choice(winners)
-                    val = predDesc.createValue(reaction, winner[0])
-                val.save()
-
-                if response not in finalPredictions:
-                    finalPredictions[response] = []
-                finalPredictions[response].append( (reaction, val) )
+        with transaction.atomic(): #wrapping this all in a transaction may speed up these saves
+            for reaction, responseDict in resDict.items():
+                for response, outcomeDict in responseDict.items():
+                    predDesc = response.createPredictionDescriptor(self)
+                    predDesc.save()
+                    if isinstance(response, NumRxnDescriptor):
+                        #estimate the weighted average of the estimates from the component models
+                        values = tuple(value for value in resDict[reaction][response].keys())
+                        weights = tuple(weight for value, weight in resDict[reaction][response].items())
+                        val = predDesc.createValue(reaction, average(values, weights=weights))
+                    else:
+                        #find the 'competitors' with the highest number of votes and pick one at random (in case multiple categories have equal numbers of votes)
+                        maxVotes = max(count for response, count in outcomeDict.items())
+                        winners = [(response, count) for response, count in outcomeDict.items() if count == maxVotes]
+                        winner = random.choice(winners)
+                        val = predDesc.createValue(reaction, winner[0])
+                    val.save()
+    
+                    if response not in finalPredictions:
+                        finalPredictions[response] = []
+                    finalPredictions[response].append( (reaction, val) )
         return finalPredictions
 
     def predict(self, reactions):

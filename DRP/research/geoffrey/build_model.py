@@ -20,6 +20,8 @@ def display_model_results(container):
         for descriptor_header, conf_mtrx in model_mtrcs:
             print "Confusion matrix for {}:".format(descriptor_header)
             print confusionMatrixString(conf_mtrx)
+            print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
+            print "BCR: {:.3}".format(BCR(conf_mtrx))
 
 
 def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter):
@@ -39,6 +41,31 @@ def prepare_build_display_model(descriptor_headers, response_headers, modelVisit
 
     display_model_results(container)
 
+def accuracy(conf):
+    correct = 0.0
+    total = 0.0
+    for true, guesses in conf.items():
+        for guess, count in guesses.items():
+            if true == guess:
+                correct += count
+            total += count
+    return correct/total
+
+    
+def BCR(conf):
+    class_accuracy_sum = 0.0
+    num_classes = 0.0
+    for true, guesses in conf.items():
+        num_classes += 1
+        class_correct = 0.0
+        class_total = 0.0
+        for guess, count in guesses.items():
+            if true == guess:
+                class_correct += count
+            class_total += count
+        class_accuracy_sum += class_correct/class_total
+    
+    return class_accuracy_sum/num_classes
 
 def confusionMatrixString(confusionMatrix, headers=True):
     """
