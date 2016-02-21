@@ -24,7 +24,7 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
         return self.metric_object.transformer()
 
     def transform(self, X=None):
-        return self.metric_object.tranform(X)
+        return self.metric_object.transform(X)
 
     def metric(self):
         return self.metric_object.metric()
@@ -37,4 +37,4 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
 
         return dif.T.dot(Mah).dot(dif)
         
-        
+
