@@ -81,7 +81,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         elif isinstance(response, rxnDescriptors.CatRxnDescriptor):
             typeConversionFunction = str
         else:
-            raise TypeError("Response descriptor is of invalid type {}".format(type(respons)))
+            raise TypeError("Response descriptor is of invalid type {}".format(type(response)))
         results = tuple((reaction, result) for reaction, result in zip(reactions, self._readWekaOutputFile(results_path, typeConversionFunction)))
         return {response: results}
 
