@@ -1,0 +1,8 @@
+Confusion matrix for boolean_crystallisation_outcome_prediction_83_summative__:
+      False  True 
+False  302   253  
+ True  440   1697 
+Confusion matrix for boolean_crystallisation_outcome_prediction_83_component_74__:
+      False  True 
+False  302   253  
+ True  440   1697 
