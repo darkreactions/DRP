@@ -37,5 +37,5 @@ if __name__=='__main__':
     descriptor_header_file = argv[1]
     outfile = argv[2]
     num_constraints = argv[3]
-    train(descriptor_header_file, outfile)
+    train(descriptor_header_file, outfile, num_constraints)
     
