@@ -16,6 +16,12 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
         self.PUK_OMEGA = 0.5
         self.PUK_SIGMA = 7.0
 
+
+    def wekaTrain(self, arff_file, filePath, response_index):
+        # TODO XXX parse the arff to get these instead of throwing an error.
+        raise RuntimeError("Because the SVM optimized for BCR must know the class counts, "
+                            "it implements its own train function and does not call wekaTrain.")
+
     def train(self, reactions, descriptorHeaders, filePath):
         arff_file = self._prepareArff(reactions, descriptorHeaders)
 
@@ -25,6 +31,7 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
         if isinstance(response, CategoricalDescriptor):
             num_classes = response.permittedValues.all().count()
             response_values = CatRxnDescriptorValue.objects().filter(reaction__in=reactions, descriptor=response)
+            # TODO XXX Make this happen in the right order
             class_counts = [response_values.filter(value=v).count() for v in response.permittedValues().all()]
         elif isinstance(response, OrdinalDescriptor):
             num_classes = response.maximum - response.minimum + 1
@@ -46,6 +53,8 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
         # 1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
         # total number of data points, so each class is weighted by (total_instances)/(class_count)
         # classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
+        # For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
+        # TODO XXX Actually check the order of classes from the arff file?
         
         total_instances = sum(class_counts)
         class_weights = [ (total_instances/float(class_count) if class_count!=0 else 0.0) for class_count in class_counts ]
@@ -59,7 +68,6 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
 
         kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.PUK_OMEGA, self.PUK_SIGMA)
         command = "java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix {} -W weka.classifiers.functions.SMO -t {} -d {} -p 0 -c {} -- -K {}".format(cost_matrix_string, arff_file, filePath, response_index, kernel)
-
         self._runWekaCommand(command)
 
     def wekaPredict(self, arff_file, model_file, response_index, results_path):

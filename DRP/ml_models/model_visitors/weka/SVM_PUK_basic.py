@@ -14,13 +14,7 @@ class SVM_PUK_basic(AbstractWekaModelVisitor):
         self.PUK_OMEGA = 0.5
         self.PUK_SIGMA = 7.0
 
-    def train(self, reactions, descriptorHeaders, filePath):
-        arff_file = self._prepareArff(reactions, descriptorHeaders)
-
-        # Currently, we support only one "response" variable.
-        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
-        response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
-
+    def wekaTrain(self, arff_file, filePath, response_index):
         kernel = "\"weka.classifiers.functions.supportVector.Puk -O {} -S {}\"".format(self.PUK_OMEGA, self.PUK_SIGMA)
         command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0 -c {}".format(arff_file, filePath, kernel, response_index)
         self._runWekaCommand(command)

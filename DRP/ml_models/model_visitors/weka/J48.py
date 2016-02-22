@@ -3,7 +3,7 @@ import uuid
 from DRP.ml_models.model_visitors.weka.AbstractWekaModelVisitor import AbstractWekaModelVisitor
 import os
 
-
+    
 class J48(AbstractWekaModelVisitor):
 
     maxResponseCount = 1
@@ -12,15 +12,8 @@ class J48(AbstractWekaModelVisitor):
         super(J48, self).__init__(*args, **kwargs)
 
 
-    def train(self, reactions, descriptorHeaders, filePath):
-        arff_file = self._prepareArff(reactions, descriptorHeaders)
-
-        # Currently, we support only one "response" variable.
-        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
-        response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
-
+    def wekaTrain(self, arff_file, filePath, response_index):
         command = "java weka.classifiers.trees.J48 -t {} -d {} -p 0 -c {}".format(arff_file, filePath, response_index)
-
         self._runWekaCommand(command)
         
     def wekaPredict(self, arff_file, model_file, response_index, results_path):
