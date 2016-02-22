@@ -106,10 +106,10 @@ if __name__ == '__main__':
                                      "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                      " to pass multiple descriptors from a file as predictors")
     parser.add_argument('-p', '--predictor-headers', nargs='+',
-                        help='One or more descriptors to use as predictors.'
-                        'Note that most models can only handle one response variable')
+                        help='One or more descriptors to use as predictors.')
     parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
-                        help='One or more descriptors to predict. (default: %(default)s)')
+                        help='One or more descriptors to predict. '
+                        'Note that most models can only handle one response variable (default: %(default)s)')
     parser.add_argument('-ml', '--model-library', default="weka",
                         help='Model visitor library to use. (default: %(default)s)')
     parser.add_argument('-mt', '--model-tool', default="SVM_PUK_basic",

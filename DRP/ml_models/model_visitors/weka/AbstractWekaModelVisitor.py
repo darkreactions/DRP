@@ -51,11 +51,29 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         subprocess.check_output(command, shell=True)
 
     @abstractmethod
+    def wekaTrain(self, arff_file, filePath, response_index):
+        """
+        A function meant to be overridden by actual ModelVisitor classes.
+        Run the appropriate weka train command.
+        """
+
+    @abstractmethod
     def wekaPredict(self, arff_file, model_file, response_index, results_path):
         """
         A function meant to be overridden by actual ModelVisitor classes.
         Run the appropriate weka prediction command.
         """
+        
+
+
+    def train(self, reactions, descriptorHeaders, filePath):
+        arff_file = self._prepareArff(reactions, descriptorHeaders)
+
+        # Currently, we support only one "response" variable.
+        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
+        response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
+
+        self.wekaTrain(arff_file, filePath, response_index)
 
     def predict(self, reactions, descriptorHeaders):
         arff_file = self._prepareArff(reactions, descriptorHeaders)
