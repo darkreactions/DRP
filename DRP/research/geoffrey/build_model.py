@@ -6,7 +6,7 @@ import argparse
 
 
 def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter):
-    container = ModelContainer(modelVisitorLibrary, modelVisitorTool, splitter=splitter, reactions=reactions)
+    container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, reactions=reactions)
     container.save()
     container.build(predictors, responses)
     container.save()

@@ -194,27 +194,29 @@ class ModelContainer(models.Model):
 
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
-    def __init__(self, modelVisitorLibrary, modelVisitorTool, splitter=None, featureLibrary=None, featureTool=None, reactions=None, trainingSets=None, testSets=None):
-        super(ModelContainer, self).__init__(splitter=splitter, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool)
-        self.reactions = reactions
-        self.splitter = splitter
-        self.reactions = reactions
-        self.trainingSets = trainingSets
-        self.testSets = testSets
+    @classmethod
+    def create(cls, modelVisitorLibrary, modelVisitorTool, splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
+        model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter)
         
+        model_container.reactions = reactions
+        model_container.trainingSets = trainingSets
+        model_container.testSets = testSets
+
+        return model_container
+
+
     def clean(self):
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
-            if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < self.outcomeDescriptors.count():
+            if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
-        if self.splitter is None ^ self.reactions is None:
+        if (self.splitter is None) ^ (self.reactions is None):
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
-        elif self.training is None:
+        if (self.splitter is None) and (self.trainingSets) is None:
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
     def build(self, predictors, response):
-
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
 

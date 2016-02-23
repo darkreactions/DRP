@@ -16,7 +16,7 @@ class GetHttpTest(DRPTestCase):
   url = baseUrl
   testCodes = []
   _params = {}
-  '''any GET params to be added to the reuqest.'''
+  '''any GET params to be added to the request.'''
   status = 200
   '''The expected status code for this test case'''
   _headers = {}
