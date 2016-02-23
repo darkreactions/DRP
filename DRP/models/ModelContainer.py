@@ -204,7 +204,6 @@ class ModelContainer(models.Model):
 
         return model_container
 
-
     def clean(self):
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
