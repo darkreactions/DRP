@@ -45,33 +45,43 @@ def createsRxnDescriptor(heading, descriptorType, options={}):
   return _createsRxnDescriptor
 
 
-def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict):
+
+def createsPerformedReactionVersion2(labTitle, username, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict, reference, duplicateOf=None, legacyRecommendationFlag=False, valid=True, public=False, performedDateTime=None, insertedDateTime=None): 
   '''A class decorator that creates a reaction using pre-existing compounds
-     with pre-existing compoundRoles.'''
-  def _createsPerformedReaction(c):
+     with pre-existing compoundRoles. This is difference from createsPerformedReaction (without leading underscore in that it is used for the PerformedReactionFilterForm tests'''
+  def _createsPerformedReactionVersion2(c):
     _oldSetup = c.setUp
     _oldTearDown = c.tearDown
 
     reaction = PerformedReaction()
+    dupReaction = PerformedReaction()
     compoundQuantities = []
     descriptorVals = []
 
     def setUp(self):
       labGroup=LabGroup.objects.get(title=labTitle)
       reaction.labGroup = labGroup
-
+      
       user=User.objects.get(username=username)
       reaction.user = user
-
+      reaction.reference = reference
       reaction.public = False
+      if PerformedReaction.objects.filter(labGroup=labGroup, reference=duplicateOf).exists():
+        reaction.duplicateOf = PerformedReaction.objects.get(labGroup=labGroup, reference=duplicateOf)
+      
+
+      reaction.legacyRecommendationFlag = legacyRecommendationFlag
+      reaction.valid = valid
+      reaction.public = public 
+      reaction.performedDateTime = performedDateTime
+      reaction.insertedDateTime = insertedDateTime
 
       reaction.save()
 
       for abbrev, role, quantity in zip(compoundAbbrevs, compoundRoles, compoundAmounts):
-        compound = Compound.objects.get(labGroup=labGroup, abbrev=abbrev)
+        compound = Compound.objects.get(labGroup=LabGroup.objects.get(title=labTitle), abbrev=abbrev)
         compoundRole = CompoundRole.objects.get(label=role)
-        compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
-                                            role=compoundRole, amount=quantity)
+        compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundRole, amount=quantity)
         compoundQuantity.save()
 
         compoundQuantities.append(compoundQuantity)
@@ -105,7 +115,7 @@ def createsPerformedReaction(labTitle, username, compoundAbbrevs, compoundRoles,
     c.setUp = setUp
     c.tearDown = tearDown
     return c
-  return _createsPerformedReaction
+  return _createsPerformedReactionVersion2
 
 
 def createsUser(username, password):
@@ -180,7 +190,7 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
     return c
   return _createsCompound
 
-def createsPerformedReaction(reference, performedDateTime, insertedDateTime, recommendation, legacyRecommendedFlag, valid, public, duplicateOf, inTrainingSetFor, inTestSetFor, compounds, labTitle)
+def createsPerformedReaction(reference, performedDateTime, insertedDateTime, recommendation, legacyRecommendedFlag, valid, public, duplicateOf, inTrainingSetFor, inTestSetFor, compounds, labTitle): 
   '''A class decorater that creates a performed reaction'''
   def _createsPerformedReaction(c):
 

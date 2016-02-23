@@ -2,32 +2,29 @@
 '''Test classes for the compound filter form'''
 
 import unittest 
-from DRP.forms import FilterForm, CompoundFilterForm 
+from DRP.forms import FilterForm, PerformedReactionFilterForm
 from BaseFormTest import BaseFormTest
-from DRP.models import LabGroup, ChemicalClass
+from DRP.models import LabGroup 
 from django.conf import settings
 from django.contrib.auth.models import User
-from DRP.tests.decorators import createsCompound, createsUser, joinsLabGroup, createsChemicalClass, loadsCompoundsFromCsv
+from DRP.tests.decorators import createsCompound, createsUser, joinsLabGroup, loadsCompoundsFromCsv, createsPerformedReactionVersion2
 from DRP.tests.DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
-
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass("Amine", "descr")
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False)
 class PerformedReactionFilterFormSucceed(BaseFormTest):
-    '''This will test the CompoundFilterForm class when it should succeed;
-    Specifically, this test is creating a lab group with some chemical compounds, and 
-    searching for one of those compounds (meaning it should definitely be returned)'''
+    '''This will test the PerformedReactionFilterForm class when it should succeed;
+    Specifically, this test is creating a lab group with one performed reactin'''
     def setUpFormData(self):
         #custom, for Null, True, or False Boolean Field will be left out 
         self.formData = {}
-        self.formData["abbrev"] = "2-amep"
-        self.formData["name"] =	"2-aminomethyl-1-ethylpyrrolidine"
-        self.formData["chemicalClasses"]= [self.chemicalClass.pk]
-        self.formData["CSID"] = "104820"
-        self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
-        self.formData["smiles"] = "CCN1CCCC1CN"
+        self.formData["reference"] = "abc" 
+        self.formData["duplicateOf"] = "2cd"
+        self.formData["legacyRecommendationFlag"] = False
+        self.formData["valid"] = True
+        self.formData["public"] = False 
         self.formData["labGroup"] = self.labgroup.pk 
         self.formData["js_active"] = False
 	
@@ -35,9 +32,8 @@ class PerformedReactionFilterFormSucceed(BaseFormTest):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Gamora') 
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -51,25 +47,22 @@ class PerformedReactionFilterFormSucceed(BaseFormTest):
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
         self.assertEqual(fetched.count(), 1, "Got more than one result from the filter form")
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched[0].reference, "abc", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
     
-
 @createsUser('Gamora', 'pineapple_song')
-@joinsLabGroup('Gamora', 'Alien')
-@createsChemicalClass("Amine", "descr")
-@createsCompound("2-amep", "104820", "Amine", "Alien")
-@createsUser('Starlord', 'gamora')
-@joinsLabGroup('Starlord', 'Terran')
+@joinsLabGroup('Gamora', 'GalaxyGuardians')
+@loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
 class PerformedReactionFilterFormDifferentLabGroupFail(BaseFormTest):
-    '''This will test the CompoundFilterForm when the labgroup searched for does not match the compound searched for (i.e. searching for another labgroup's compounds), and the form should fail'''
+    '''This will test the PerformedReactionFilterForm when the labgroup searched for does not match the reaction searched for (i.e. searching for another labgroup's reactions), and the form should fail'''
+
     def setUpFormData(self):
-        self.formData={}
-        self.formData["abbrev"]="2-amep"
-        self.formData["name"]="2-aminomethyl-1-ethylpyrrolidine"
-        self.formData["chemicalClasses"]= [self.chemicalClass.pk]
-        self.formData["CSID"]="104820"
-        self.formData["INCHI"]="InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
-        self.formData["smiles"]="CCN1CCCC1CN"
+        self.formData = {}
+        self.formData["reference"] = "abc" 
+        self.formData["duplicateOf"] = "2cd"
+        self.formData["legacyRecommendationFlag"] = False
+        self.formData["valid"] = True
+        self.formData["public"] = False 
         self.formData["labGroup"]= self.labgroup.pk
         self.formData["js_active"]=False
 	
@@ -77,9 +70,8 @@ class PerformedReactionFilterFormDifferentLabGroupFail(BaseFormTest):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Starlord') 
         self.labgroup = LabGroup.objects.get(title='Terran')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''create a filter request that should fail, make sure it returns correct compounds'''  
@@ -91,30 +83,29 @@ class PerformedReactionFilterFormDifferentLabGroupFail(BaseFormTest):
         
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'Alien')
-@createsChemicalClass("Amine", "descr") 
 @createsCompound("2-amep", "104820", "Amine", "Alien")
 @createsUser('Starlord', 'gamora')
 @joinsLabGroup('Starlord', 'Terran')
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
 class PerformedReactionFilterFormWrongLabGroupFail(BaseFormTest):
-    '''This will test the CompoundFilterForm when the user tries to input a different labgroup in the form than the labgroup to which the user actually belongs'''
-    def setUpFormData(self): 
-        self.formData = {} 
-        self.formData["abbrev"] = "2-amep"
-        self.formData["name"] =  "2-aminomethyl-1-ethylpyrrolidine"
-        self.formData["chemicalClasses"]= [self.chemicalClass.pk]
-        self.formData["CSID"] = "104820"
-        self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
-        self.formData["smiles"] = "CCN1CCCC1CN"
-        self.formData["labGroup"] = self.labgroup.pk
-        self.formData["js_active"] = False
+    '''This will test the PerformedReactionFilterForm when the user tries to input a different labgroup in the form than the labgroup to which the user actually belongs'''
+
+    def setUpFormData(self):
+        self.formData = {}
+        self.formData["reference"] = "abc" 
+        self.formData["duplicateOf"] = "2cd"
+        self.formData["legacyRecommendationFlag"] = False
+        self.formData["valid"] = True
+        self.formData["public"] = False 
+        self.formData["labGroup"]= self.labgroup.pk
+        self.formData["js_active"]=False
 	
     def setUp(self):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Starlord') 
         self.labgroup = LabGroup.objects.get(title='Terran')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''Create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -127,8 +118,9 @@ class PerformedReactionFilterFormWrongLabGroupFail(BaseFormTest):
 @createsUser('Starlord', 'gamora')
 @joinsLabGroup('Starlord', 'Terran')
 @loadsCompoundsFromCsv('Terran', 'compound_spread_test9.csv')
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
 class PerformedReactionFilterFormEmptyFail(BaseFormTest):
-    '''Test to make sure that CompoundFilterForm fails with an empty form that does not specify the user/labgroup'''
+    '''Test to make sure that PerformedReactionFilterForm fails with an empty form that does not specify the user/labgroup'''
     def setUpFormData(self): 
         self.formData = {} 
 	
@@ -136,9 +128,8 @@ class PerformedReactionFilterFormEmptyFail(BaseFormTest):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Starlord')
         self.labgroup = LabGroup.objects.get(title='Terran')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''Create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -152,10 +143,10 @@ class PerformedReactionFilterFormEmptyFail(BaseFormTest):
 
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass("Amine", "descr")
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
 class PerformedReactionFilterFormLabGroup(BaseFormTest):
-    '''Test to make sure that CompoundFilterForm succeeds/returns expected results with only the lab group specified'''
+    '''Test to make sure that PerformedReactionFilterForm succeeds/returns expected results with only the lab group specified'''
     def setUpFormData(self): 
         self.formData = {} 
         self.formData["labGroup"] = self.labgroup.pk
@@ -164,9 +155,8 @@ class PerformedReactionFilterFormLabGroup(BaseFormTest):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -179,26 +169,25 @@ class PerformedReactionFilterFormLabGroup(BaseFormTest):
     def test_fetch(self):
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch() 
-        self.assertEqual(fetched.count(),8, "Expected 8 objects to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched.count(),1, "Expected 1 objects to be returned by form, number of objects returned was {}".format(fetched.count()))
 
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass("Amine", "descr")
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
-class PerformedReactionFilterFormAbbrev(BaseFormTest):
-    '''Test that Compound Filter Form succeeds/returns expected results with only the abbreviation specified'''
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
+class PerformedReactionFilterFormReference(BaseFormTest):
+    '''Test that Performed Reaction Filter Form succeeds/returns expected results with only the reference name specified'''
     def setUpFormData(self): 
         self.formData = {} 
-        self.formData["abbrev"] = "2-amep"
+        self.formData["reference"] = "abc"
         self.formData["labGroup"] = self.labgroup.pk
 	
     def setUp(self):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Gamora') 
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''Create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -212,26 +201,25 @@ class PerformedReactionFilterFormAbbrev(BaseFormTest):
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch() 
         self.assertEqual(fetched.count(),1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched[0].reference, "abc", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass("Amine", "descr")
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
-class PerformedReactionFilterFormName(BaseFormTest): 
-    '''Test that the Compound Filter Form succeeds/returns expected results with only the name specified'''
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
+class PerformedReactionFilterFormValid(BaseFormTest): 
+    '''Test that the Performed Reaction Filter Form succeeds/returns expected results with only the 'valid' field specified'''
     def setUpFormData(self):
         self.formData = {}
-        self.formData["name"] =  "2-aminomethyl-1-ethylpyrrolidine"
+        self.formData["valid"] = True 
         self.formData["labGroup"] = self.labgroup.pk
 	
     def setUp(self):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Gamora') 
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''Create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -245,26 +233,26 @@ class PerformedReactionFilterFormName(BaseFormTest):
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch() 
         self.assertEqual(fetched.count(),1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched[0].reference, "abc", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass('Amine', 'descr')
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
-class PerformedReactionFilterFormChemClass(BaseFormTest):
-    '''Test that the Compound Filter Form succeeds/returns expected results with only the chemical class specified'''
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
+class PerformedReactionFilterFormDuplicateOf(BaseFormTest):
+    '''Test that the Performed Reaction Filter Form succeeds/returns expected results with only the duplicateOf field specified'''
+
     def setUpFormData(self): 
         self.formData = {}
-        self.formData["chemicalClasses"]= [self.chemicalClass.pk]
+        self.formData["duplicateOf"]= "2cd"
         self.formData["labGroup"] = self.labgroup.pk
 	
     def setUp(self):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Gamora') 
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''Create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -281,22 +269,21 @@ class PerformedReactionFilterFormChemClass(BaseFormTest):
 
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass("Amine", "descr")
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
-class PerformedReactionFilterFormCSID(BaseFormTest): 
-    '''Test that Compound Filter Form succeeds/returned expected results with only the CSID specified'''
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
+class PerformedReactionFilterFormLegacy(BaseFormTest): 
+    '''Test that PerformedReaction Filter Form succeeds/returned expected results with only the legacyRecommendationFlag specified'''
     def setUpFormData(self):
         self.formData = {}
-        self.formData["CSID"] = "104820"
+        self.formData["legacyRecommendationFlag"] = False
         self.formData["labGroup"] = self.labgroup.pk
 	
     def setUp(self):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Gamora') 
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''Create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -310,26 +297,25 @@ class PerformedReactionFilterFormCSID(BaseFormTest):
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch() 
         self.assertEqual(fetched.count(),1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched[0].reference, "abc", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 @createsUser('Gamora', 'pineapple_song')
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass("Amine", "descr")
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
-class PerformedReactionFilterFormINCHI(BaseFormTest):
-    '''Test that Compound Filter Form succeeds/returned expected results with only the INCHI specified'''
+@createsPerformedReactionVersion2('GalaxyGuardians', 'Gamora', ['2-amep'], ["Org"], ["126.6"], {"Numeric": "77", "Boolean": True, "Ordinal": "3", "Category": "fun"}, "abc", "2cd", False, True, False) 
+class PerformedReactionFilterFormPublic(BaseFormTest):
+    '''Test that Performed Reaction Filter Form succeeds/returned expected results with only the INCHI specified'''
     def setUpFormData(self):
         self.formData = {}
-        self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
+        self.formData["public"] = False
         self.formData["labGroup"] = self.labgroup.pk
 	
     def setUp(self):
         '''Creates a user, then a form'''
         self.user = User.objects.get(username='Gamora') 
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
         self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
+        self.form = PerformedReactionFilterForm(self.user, self.labgroup, self.formData) 
 
     def test_validation(self):
         '''Create a filter request that should succeed, make sure it returns correct compounds'''  
@@ -343,42 +329,8 @@ class PerformedReactionFilterFormINCHI(BaseFormTest):
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch() 
         self.assertEqual(fetched.count(),1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched[0].reference, "abc", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
-
-
-@createsUser('Gamora', 'pineapple_song')
-@joinsLabGroup('Gamora', 'GalaxyGuardians')
-@createsChemicalClass("Amine", "descr")
-@loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
-class PerformedReactionFilterFormSmiles(BaseFormTest):
-    '''Test that Compound Filter Form succeeds/returned expected results with only the smiles specified'''
-    def setUpFormData(self): 
-        self.formData = {}
-        self.formData["smiles"] = "CCN1CCCC1CN"
-        self.formData["labGroup"] = self.labgroup.pk
-	
-    def setUp(self):
-        '''Creates a user, then a form'''
-        self.user = User.objects.get(username='Gamora') 
-        self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
-        self.chemicalClass = ChemicalClass.objects.get(label='Amine')
-        self.setUpFormData()
-        self.form = CompoundFilterForm(self.user, self.labgroup, self.formData) 
-
-    def test_validation(self):
-        '''Create a filter request that should succeed, make sure it returns correct compounds'''  
-        self.validationSucceeds() 
-
-    def test_is_empty(self):
-        self.assertTrue(self.form.is_valid())
-        self.assertFalse(self.form.is_empty())
-
-    def test_fetch(self):
-        self.assertTrue(self.form.is_valid())
-        fetched = self.form.fetch() 
-        self.assertEqual(fetched.count(),1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 
 suite = unittest.TestSuite([
@@ -387,12 +339,11 @@ suite = unittest.TestSuite([
           loadTests(PerformedReactionFilterFormWrongLabGroupFail),
           loadTests(PerformedReactionFilterFormEmptyFail), 
           loadTests(PerformedReactionFilterFormLabGroup),
-          loadTests(PerformedReactionFilterFormAbbrev),
-          loadTests(PerformedReactionFilterFormName),
-          loadTests(PerformedReactionFilterFormChemClass),
-          loadTests(PerformedReactionFilterFormCSID),
-          loadTests(PerformedReactionFilterFormINCHI),
-          loadTests(PerformedReactionFilterFormSmiles)
+          loadTests(PerformedReactionFilterFormReference),
+          loadTests(PerformedReactionFilterFormValid),
+          loadTests(PerformedReactionFilterFormDuplicateOf),
+          loadTests(PerformedReactionFilterFormLegacy),
+          loadTests(PerformedReactionFilterFormPublic)
           ])
 
 if __name__=='__main__':

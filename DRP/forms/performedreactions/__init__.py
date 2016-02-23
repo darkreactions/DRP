@@ -1,12 +1,5 @@
-from PerformedReaction import PerformedRxnAdminForm
-
-from PerformedReaction import PerformedRxnForm
-
-from PerformedReaction import PerformedRxnDeleteForm
-
-from PerformedReaction import PerformedRxnInvalidateForm
-
-
+from PerformedReaction import PerformedRxnAdminForm,  PerformedRxnForm, PerformedRxnDeleteForm, PerformedRxnInvalidateForm
+from filterforms import PerformedReactionFilterForm, PerformedReactionFilterFormSet, AdvancedPerformedReactionFilterForm, AdvancedPerformedReactionFilterFormSet 
 
 
 

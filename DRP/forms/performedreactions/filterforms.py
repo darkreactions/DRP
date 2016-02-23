@@ -3,21 +3,12 @@ import django.forms as forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
-from DRP.models import Compound, ChemicalClass, NumMolDescriptor, NumMolDescriptorValue, OrdMolDescriptor, OrdMolDescriptorValue
+from DRP.models import Compound, ChemicalClass, NumMolDescriptor, NumMolDescriptorValue, OrdMolDescriptor, OrdMolDescriptorValue, PerformedReaction
 from DRP.models import CatMolDescriptor, CatMolDescriptorValue, BoolMolDescriptor, BoolMolDescriptorValue
 from DRP.models import CategoricalDescriptorPermittedValue
-from DRP.forms import FilterForm, FilterFormSet, filterFormSetFactory
+from DRP.forms import FilterForm, FilterFormSet, filterFormSetFactory, CompoundFilterForm, AdvancedCompoundFilterForm
 from django.utils.safestring import mark_safe
 from operator import and_
-
-OPERATOR_CHOICES=(
-  ('eq','='),
-  ('gt','>'),
-  ('ge', mark_safe('&ge;')),
-  ('lt', '<'),
-  ('le', mark_safe('&le;')),
-  ('ne', mark_safe('&ne;'))
-)
 
 class PerformedReactionFilterForm(FilterForm):
   '''A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method.'''
@@ -50,6 +41,7 @@ class PerformedReactionFilterForm(FilterForm):
     if self.cleaned_data.get('js_active') not in ('', None, False):
       raise RuntimeError(self.cleaned_data.get('js_active'))
     else:
+      print "here 1"
       if self.cleaned_data.get('reference') not in (None, ''):
         qs = qs.filter(reference=self.cleaned_data['reference'])
       if self.cleaned_data.get('recommendation') not in (None, ''):
@@ -82,8 +74,8 @@ class AdvancedPerformedReactionFilterForm(PerformedReactionFilterForm):
     self.categoryFormSet = filterFormSetFactory(CategoryFilterForm, CatMolDescriptorValue)(data=data, prefix = '{}_cat'.format(self.prefix), initial=init.pop('category', None), operator=and_)
     self.booleanFormSet = filterFormSetFactory(BooleanFilterForm, BoolMolDescriptorValue)(data=data, prefix = '{}_bool'.format(self.prefix), initial=init.pop('bool', None), operator=and_)
     self.compoundQuantityFormSet = filterFormSetFactory(CompoundQuantityFilterForm, CompoundQuantity)(data=data, prefix = '{}_compoundquantity'.format(self.prefix), initial=init.pop('compoundquantity', None), operator=and_)
-    self.performedDateFormSet = filterFormSetFactory(PerformedDateFilterForm, PerformedReaction)(date=date,prefix='{}_performeddate'.format(self.prefix), initial=init.pop('performeddate'), None), operator=and_)
-    self.insertedDateFormSet = filterFormSetFactory(InsertedDateFilterForm, PerformedReaction)(date=date, prefix='{}_inserteddate'.format(self.prefix), initial=init.pop('inserteddate'), None), operator=and_)
+    self.performedDateFormSet = filterFormSetFactory(PerformedDateFilterForm, PerformedReaction)(date=date,prefix='{}_performeddate'.format(self.prefix), initial=init.pop('performeddate', None), operator=and_)
+    self.insertedDateFormSet = filterFormSetFactory(InsertedDateFilterForm, PerformedReaction)(date=date, prefix='{}_inserteddate'.format(self.prefix), initial=init.pop('inserteddate', None), operator=and_)
     self.formSets = [self.numericFormSet, self.ordinalFormSet, self.categoryFormSet, self.booleanFormSet, self.compoundquantityFormSet] 
     
   def clean(self):
@@ -93,7 +85,9 @@ class AdvancedPerformedReactionFilterForm(PerformedReactionFilterForm):
     cleaned_data['ordinal'] = self.ordinalFormSet.cleaned_data
     cleaned_data['category'] = self.categoryFormSet.cleaned_data
     cleaned_data['booleanFormSet'] = self.booleanFormSet.cleaned_data
-    cleaned_data['compoundquantity'] = self.compoundquantityFormSet.cleaned_data
+    cleaned_data['compoundquantity'] = self.compoundQuantityFormSet.cleaned_data
+    cleaned_data['performeddate'] = self.performedDateFormSet.cleaned_data
+    cleaned_data['inserteddate'] = self.insertedDateFormSet.cleaned_data
     return cleaned_data
 
   def is_empty(self):
@@ -288,7 +282,7 @@ DATE_OPERATOR_CHOICES = (
   ('le', 'on or before'),
   ('ne', 'everything other than'))
 
-class PerformedDateFilterForm(QuantitativeMixin, FilterForm): 
+class PerformedDateFilterForm(QuantitativeFilterMixin, FilterForm): 
   '''A formset for filtering reactions by date performed'''
   operator = forms.ChoiceField(choices=(DATE_OPERATOR_CHOICES))
   date = forms.DateField(required=False)
@@ -303,15 +297,15 @@ class PerformedDateFilterForm(QuantitativeMixin, FilterForm):
     # if True ^ True, then False (according to xor logic), skip to else (no error)
     # Otherwise, if False ^ True | if True ^ False, then if True --> raise error 
     if (self.cleaned_data.get('date') is None) ^ (self.cleaned_data.get('operator') is not None):
-      raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
+      raise ValidationError('Both a date and a value must be provided. Empty the fields completely to ignore this input.')
     else:
       return self.cleaned_data
-   
-  def fetch()
-   qs = PerformedReaction.objects.filter(performeddate=self.cleaned_data.get('date'))
+
+  def fetch():
+    qs = PerformedReaction.objects.filter(performeddate=self.cleaned_data.get('date'))
     return self.applyFilters(qs)
 
-  def is_empty()
+  def is_empty():
     '''returns true if all form fields were empty at submission'''
     empty = super(PerformedDateFilterForm, self).is_empty()
     return empty and self.cleaned_data.get('date') is None
@@ -319,13 +313,9 @@ class PerformedDateFilterForm(QuantitativeMixin, FilterForm):
 class InsertedDateFilterForm(PerformedDateFilterForm):
   '''A formset for filtering reactions by date inserted'''
  
-  def fetch()
-   qs = PerformedReaction.objects.filter(inserteddate=self.cleaned_data.get('date'))
+  def fetch():
+    qs = PerformedReaction.objects.filter(inserteddate=self.cleaned_data.get('date'))
     return self.applyFilters(qs)
-
-
-
-
 
 class PerformedReactionFilterFormSet(FilterFormSet):
   '''A formset for managing multiple filter forms, which OR together the results of each filter form to create a bigger queryset'''
