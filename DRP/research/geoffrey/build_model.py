@@ -9,6 +9,7 @@ def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisi
     container = ModelContainer(modelVisitorLibrary, modelVisitorTool, splitter=splitter, reactions=reactions)
     container.save()
     container.build(predictors, responses)
+    container.save()
 
     return container
 
