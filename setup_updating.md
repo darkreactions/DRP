@@ -3,22 +3,34 @@
 
 1. **Ubuntu**
 
-##Ubuntu development server
-
-###Set up environment
-
 The following instructions are written to work with Ubuntu 12+ and have (mostly) been tested on Ubuntu 13.
 
-Install the necessary programs.
-`sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache mailutils`
+##Ubuntu development server
 
-Note which version of Django gets installed.
-`sudo pip install numpy scipy Django pygraphviz`
+###Set up a virtual environment
+Install a virtual environment.
+`sudo pip install virtualenv`
 
-Install required pip python libraries
-`sudo pip install chemspipy requests pep8 pep257 xxhash`
+Create a virtual environment.
+`cd <project_folder>`
+`virtualenv <venv_name>`
 
-`sudo easy_install South`
+Activate the virtual environment.
+`source <venv_name>/bin/activate`
+
+Pip install packages as usual except DON'T USE SUDO.
+
+To exit the virtual environment
+`deactivate`
+
+For more information on using virtual environments, check out the documentation (http://docs.python-guide.org/en/latest/dev/virtualenvs/)
+
+###Install scipy
+`sudo apt-get install python-dev python-scipy python-rdkit`
+
+###Install other non-python things
+`sudo apt-get install python-pip mysql-server libmysqlclient-dev nginx git weka graphviz memcached mailutils`
+
 
 ###Clone from the Git Repository into your directory of choice.
 
@@ -26,6 +38,28 @@ Install required pip python libraries
 
 ####For the time being
 Switch your branch to the `phil_refactor` branch.
+
+
+###Set up environment
+
+Activate virtual environment. Go into the git repository and (NO SUDO)
+`pip install -r requirements.txt`
+
+
+### OLD REMOVE
+                    Install the necessary programs.
+                    `sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache mailutils`
+                    
+                    Note which version of Django gets installed.
+                    `sudo pip install numpy scipy Django pygraphviz`
+                    
+                    Install required pip python libraries
+                    `sudo pip install chemspipy requests pep8 pep257 xxhash South uwsgi`
+                    
+                    pip install uwsgi
+
+### OLD REMOVE
+                
 
 ####Server settings
 
