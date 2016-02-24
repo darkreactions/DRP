@@ -543,7 +543,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Faccount%2F">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='ZKG1UcLyVyN0uZWA9i8JqBLRgxx3t0ps' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='pKZAuuqGQ4uNtzkjM4LmL9MQ21hrmMls' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -654,7 +654,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Faccount%2F">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='QFwIldgrNIPG6SHrj3OsFhhO8wVD113T' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='PsyoJwNjsRwaHE3I9kueZJH6GrO8Tgfb' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -762,8 +762,8 @@ AssertionError: There appears to be a problem with the rendering of the template
     
 
 
-  <form action="/confirm.html?code=10861776-9039-45e5-ac83-929679c63745" method="post">
-    <input type='hidden' name='csrfmiddlewaretoken' value='7CvJMe3XihNvszfSdvTjNUZLoc0ycGjj' />
+  <form action="/confirm.html?code=e5bae78b-69ca-4c35-92c3-b28ed692cc51" method="post">
+    <input type='hidden' name='csrfmiddlewaretoken' value='off1W2oD6LYotihw0n7kSguMOLz534vd' />
     <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -873,8 +873,8 @@ AssertionError: There appears to be a problem with the rendering of the template
     
 
 
-  <form action="/confirm.html?code=4696a354-7fb7-427f-9b3c-2f180762d319" method="post">
-    <input type='hidden' name='csrfmiddlewaretoken' value='Yrcv6kMdck13XPTrqn5jsYaFx4nZCQlD' />
+  <form action="/confirm.html?code=24df075e-b7c9-4081-aadf-7064adb964de" method="post">
+    <input type='hidden' name='csrfmiddlewaretoken' value='N87NtCIKqRuT5uLqWKMgfPcLbfl3HAeS' />
     <ol>
     <li><ul class="errorlist"><li>Please enter a correct username and password. Note that both fields may be case-sensitive.</li></ul></li>
 <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" value="Aslan" /></li>
@@ -985,8 +985,8 @@ AssertionError: There appears to be a problem with the rendering of the template
     
 
 
-  <form action="/confirm.html?code=8c11b866-c377-4f71-9666-4d29f60324c1" method="post">
-    <input type='hidden' name='csrfmiddlewaretoken' value='hOD1L0G12ILcf2ZYBZb2167oKTzupHW5' />
+  <form action="/confirm.html?code=3d06bad2-0b12-4095-9d8f-e1821687fe17" method="post">
+    <input type='hidden' name='csrfmiddlewaretoken' value='WqSkWYnl8pPevLq4ZWTKFKd4Ef9uF5g5' />
     <ol>
     <li><ul class="errorlist"><li>Please enter a correct username and password. Note that both fields may be case-sensitive.</li></ul></li>
 <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" value="Aslan" /></li>
@@ -1111,7 +1111,7 @@ Contact Us
 </h1>
   
   <form method="post" action="/contact.html" class="inlineForm infoForm">
-    <input type='hidden' name='csrfmiddlewaretoken' value='FIiFdlSPFIggosagz0ndBNtiqOtF9PpS' />
+    <input type='hidden' name='csrfmiddlewaretoken' value='08Sfo9iE1diC6CtV6SvqThynJAgD56AR' />
       <ol>
       <li><label for="id_email">Your Email Address:</label> <input id="id_email" name="email" type="email" value="youremail@example.com" /></li>
 <li><label for="id_content">Your Message:</label> <textarea cols="40" id="id_content" name="content" rows="10">
@@ -1224,7 +1224,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fadd.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='ClF9qclnQGYesEnGf0TN0yyCT5scP1jX' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='ITY9mRmYw3f6ESphQZa1IO7J6iDJSiuv' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -1335,7 +1335,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fadd.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='eeso44SGSebO9jBmeDPKbohA9NPIrK3O' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='YFIWEmhLTcxLeIihNaYX1P0rmicjDxGh' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -1447,7 +1447,7 @@ AssertionError: Url http://localhost/database/compoundguide/add.html returns cod
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fadd.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='jmQEKz1v9vkjtDkbHDZpEZ6EIn94f4SR' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='Hrw8mCFNKqcHHHGyV7hYE5W4jZ4PsS8r' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -1558,7 +1558,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fadd.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='czHwfNuGuaHY4nOqF0HoJU6JqltNlwzn' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='4htISlJb7dIz5POeOKU8zz9IljYoA0OF' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -1669,7 +1669,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fadd.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='ykANDc3knCr3Vgq13AcuvfnbIyTRRQEn' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='nRklI5tjvdtgAEiY1RQlRwt18OUq8e6E' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -1780,7 +1780,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fadd.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='kiXpp2dOQHgqrqVNrFNu26IQLYktF50G' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='05E8uXL95xRgvaD0RO2ekat4u26TpeVH' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -1891,7 +1891,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2F">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='bmPmlhgNbdo3obuOBInMppHLIw6VjJWY' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='Zv0hJy2Kn04qaU7df7JEbbevzPNZ7UzC' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2002,7 +2002,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2F">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='cpTMMECm6f16lJeFSpfe2GnSVeT4XK9I' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='YfzzJ91TTF29xI5j6CbowcgQjDzHJmvS' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2113,7 +2113,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2F">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='yvWtXUYpwIVjQzbyI6HrqgXLuCAi7B9k' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='vOyQ88vic9iH108XeE2Fx5x3Ch8oGfuw' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2224,7 +2224,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fselect_viewing_group.html%3Fnext%3Dhttp%253A%252F%252Flocalhost%252Fdatabase%252Fcompoundguide%252F">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='I5mdFAQxn7c9W8myYkXkMbJsO3Vu9hCZ' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='VkyzNENA8W3DZcs0nSVjLgCRzibT2rNI' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2333,9 +2333,9 @@ AssertionError: There appears to be a problem with the rendering of the template
   <main>
     
 
-<form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fedit_1331.html">
+<form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fedit_1826.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='EJWY7vHGru6Xg7RI6cfHpCqQgBdNwfZ0' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='pS603M1HyRIUzilaOw960wxfzXY2OqfO' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2360,7 +2360,7 @@ Checks that the http response code is the expected value
 Traceback (most recent call last):
   File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/tests/HttpTests/HttpTest.py", line 52, in test_Status
     self.assertEqual(self.response.status_code, self.status, 'Url {0} returns code {1}. Page content follows:\n\n{2}'.format(self.url, self.response.status_code, self.response.text))
-AssertionError: Url http://localhost/database/compoundguide/edit_1337.html returns code 200. Page content follows:
+AssertionError: Url http://localhost/database/compoundguide/edit_1832.html returns code 200. Page content follows:
 
 <!DOCTYPE html>
 <html>
@@ -2445,9 +2445,9 @@ AssertionError: Url http://localhost/database/compoundguide/edit_1337.html retur
   <main>
     
 
-<form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fedit_1337.html">
+<form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fedit_1832.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='hZmD8g3yhEX3YwECG7ScRfvAtWtJAgQz' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='n0Koz0pgXwh1q4FS91Wk7MY8CmaPHEuU' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2472,7 +2472,7 @@ Checks that the http response code is the expected value
 Traceback (most recent call last):
   File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/tests/HttpTests/HttpTest.py", line 52, in test_Status
     self.assertEqual(self.response.status_code, self.status, 'Url {0} returns code {1}. Page content follows:\n\n{2}'.format(self.url, self.response.status_code, self.response.text))
-AssertionError: Url http://localhost/database/compoundguide/edit_1341.html returns code 200. Page content follows:
+AssertionError: Url http://localhost/database/compoundguide/edit_1836.html returns code 200. Page content follows:
 
 <!DOCTYPE html>
 <html>
@@ -2557,9 +2557,9 @@ AssertionError: Url http://localhost/database/compoundguide/edit_1341.html retur
   <main>
     
 
-<form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fedit_1341.html">
+<form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fedit_1836.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='RTpbAT4ugQEjU2y3YibpvobDwOnCRkrD' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='GAnGd3RV20U8XLIqjMKz0pVUyhRj6puU' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2670,7 +2670,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fupload.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='yW5WhED1YL1TdYUzqlftwavBD9BH8Xig' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='ZdFvxdl3Nff6L6vjpQ3s0H0zF7jdjBHn' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2781,7 +2781,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fupload.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='iBp2JG8327Tmr7v8RthiSjQBA6pO9neZ' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='LhqCnrI2A3iiGxkdAxO8WQIsDyFvO4wr' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -2999,7 +2999,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Faccount%2Fjoin_group.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='gvBhv1QcizKk8JToKgpyZB3iHd6uc2TZ' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='OWw8ESj0GrKDkovlBtOE9BSCm1Fqakcd' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -3110,7 +3110,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Faccount%2Fjoin_group.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='RtgPSpVOr0eaRU7shg07lrEkyZKj6DE6' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='aLR1eHTBN0RFeOTb9Hz8qRtnwcxHvYXs' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -3221,7 +3221,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Flicense.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='OFWxdefx3g3uL2foi21M1uz8WwULoZZw' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='VjAbkVd1Zs9ada119UHMuTDYIcnWXRpG' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -3332,7 +3332,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Flicense.html%3Fnext%3D%252Fcontact.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='XQwYDTN3ICgSAWbB4boDL9hWpEBpekGm' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='DJCfoFKzSQD7RBjEmrZGu3EAGKuFOtL5' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -3443,7 +3443,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Flicense.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='FBVjJrmzT3KgCP1alslnH9nXN4aXLHSx' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='EhSyzEUf1nuaA1TklH3hi2qwu6VjX8b0' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -3554,7 +3554,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Flicense.html%3Fnext%3D%252Fcontact.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='E7ePYsotyovTUfMLVix6nb0Ja5ZlQ3af' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='c1zsHAH0pgbyIKlLxSwDQt4zgO43FAj0' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -3665,7 +3665,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Flicense.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='wGBfZRkCBC68WJ6vp4yPTHoqsX94aBti' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='4G9Ot5TYGwBZlMEwYcTn8ZgAstIdDvtY' />
   <ol>
     <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
 <li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
@@ -3776,7 +3776,7 @@ AssertionError: There appears to be a problem with the rendering of the template
 
 <form method="post" action="/login.html?next=%2Fcontact.html">
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='Qhd39Te4na2KgGRGXCeVE5Qv6Z2LOPBW' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='CggHn1IL7JtAvBmZ9ewT6ScuzqPW6Uaa' />
   <ol>
     <li><ul class="errorlist"><li>Please enter a correct username and password. Note that both fields may be case-sensitive.</li></ul></li>
 <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" value="testUser" /></li>
@@ -3889,7 +3889,7 @@ AssertionError: There appears to be a problem with the rendering of the template
   
     
   <form action="/register.html" method="post">
-  <input type='hidden' name='csrfmiddlewaretoken' value='mBYE8P8tz4tQrrK3DamZjVWsWzGeEIck' />
+  <input type='hidden' name='csrfmiddlewaretoken' value='IcuhNhzDd6JdJh7Lfz4PuTpXKHYxaEsy' />
     <ol>
       <li><label for="id_username">Username:</label> <input id="id_username" maxlength="30" name="username" type="text" /> <span class="helptext">Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.</span></li>
 <li><label for="id_first_name">First name:</label> <input id="id_first_name" maxlength="30" name="first_name" type="text" /></li>
@@ -3924,6 +3924,6 @@ AssertionError: Errors were found in pep8 Conformance:
 
 
 ----------------------------------------------------------------------
-Ran 249 tests in 610.240s
+Ran 249 tests in 622.484s
 
 FAILED (failures=33, errors=1, skipped=4)
