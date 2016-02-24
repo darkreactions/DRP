@@ -304,6 +304,7 @@ class Compound(models.Model):
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
 
+    @transaction.atomic
     def save(self, calcDescriptors=True, *args, **kwargs):
         """Save the compound, invalidating any consequent objects like reactiosn and models."""
         if self.pk is not None:
