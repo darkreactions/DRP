@@ -91,7 +91,7 @@
     <div class="inserted_date">{{ reaction.insertedDateTime }}</div>
     {% if user.is_authenticated %}
       {% if reaction.labGroup in user.labgroup_set.all %}
-        {% if not reaction.datasetrelation_set.exists %}
+	  {% if not reaction.datasetrelation_set.exists %}
     	  <form action="{% url 'deleteReaction' %}" method="post">
             {% csrf_token %}
             {% performed_rxn_delete_form reaction %}
