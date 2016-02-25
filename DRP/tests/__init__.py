@@ -12,12 +12,12 @@ import CompoundToArff
 import modelBuildingTests
 
 suite = unittest.TestSuite([
-    #Email.suite,
-    forms.suite,
+    # Email.suite,
+    # forms.suite,
     # HttpTests.suite,
     # modelBuildingTests.suite,
     # CompoundFromCsv.suite,
-    # CompoundDescriptor.suite,
+    CompoundDescriptor.suite,
     # CompoundToCsv.suite,
     # CompoundToArff.suite,
     # fileTests.suite,
