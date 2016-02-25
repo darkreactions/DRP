@@ -9,13 +9,10 @@ DRP.RecommendedReaction.nonsense: (1_6.W002) BooleanField does not have a defaul
 	HINT: Django 1.6 changed the default value of BooleanField from False to None. See https://docs.djangoproject.com/en/1.6/ref/models/fields/#booleanfield for more information.
 DRP.RecommendedReaction.saved: (1_6.W002) BooleanField does not have a default value.
 	HINT: Django 1.6 changed the default value of BooleanField from False to None. See https://docs.djangoproject.com/en/1.6/ref/models/fields/#booleanfield for more information.
-runTest (DRP.tests.modelBuildingTests.WekaSVMBasicKFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaSVMBCRKFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaJ48KFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaKNNKFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaNBKFTest) ... ok
+runTest (DRP.tests.CompoundFromCsv.Good) ... ok
+runTest (DRP.tests.CompoundFromCsv.Broken) ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 67.187s
+Ran 2 tests in 35.905s
 
 OK
