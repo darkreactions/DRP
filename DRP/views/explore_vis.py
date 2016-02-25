@@ -121,7 +121,7 @@ def get_graph_data(request):
      
     from DRP.models import collect_CG_name_pairs
     u = request.user
-    lab_group = u.get_profile().lab_group
+    lab_group = u.profile.lab_group
   
     name_pairs = collect_CG_name_pairs(lab_group)
     name_pairs = { value:key for key,value in name_pairs.items() }    

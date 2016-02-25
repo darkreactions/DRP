@@ -19,7 +19,7 @@ def make_seed_recommendations(request):
   from DRP.cacheFunctions import get_seed_rec_worker_list, cache_seed_rec_worker
 
   u = request.user
-  lab_group = u.get_profile().lab_group
+  lab_group = u.profile.lab_group
   max_seed_calcs = 5
 
   try:
@@ -73,7 +73,7 @@ def check_seed_worker_cache(request):
   from DRP.cacheFunctions import get_seed_rec_worker_list
 
   #Get any seed_workers that are in the cache.
-  lab_group = request.user.get_profile().lab_group
+  lab_group = request.user.profile.lab_group
   active_workers = get_seed_rec_worker_list(lab_group)
 
   #And send back the updated UI.
@@ -96,7 +96,7 @@ def seed_recommend(request, page_request=None):
 
   # Variable Setup
   u = request.user
-  lab_group = u.get_profile().lab_group
+  lab_group = u.profile.lab_group
   fatal_message = ""
   recs_per_page = 15
 

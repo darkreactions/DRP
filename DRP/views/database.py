@@ -23,7 +23,7 @@ def database(request, page_request=None, model="database"):
   current_query = "?"+request.GET.urlencode()
 
   # Get that data that this lab group is allowed to see.
-  lab = request.user.get_profile().lab_group
+  lab = request.user.profile.lab_group
 
   if model=="database":
     data = get_lab_Data(lab)
