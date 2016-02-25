@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import django
+django.setup()
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
 import operator
 import argparse
