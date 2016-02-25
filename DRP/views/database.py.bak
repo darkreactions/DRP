@@ -1,3 +1,5 @@
+# This file does not work. It is maintained for reference only.
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, redirect
@@ -23,7 +25,7 @@ def database(request, page_request=None, model="database"):
   current_query = "?"+request.GET.urlencode()
 
   # Get that data that this lab group is allowed to see.
-  lab = request.user.profile.lab_group
+  lab = request.user.get_profile().lab_group
 
   if model=="database":
     data = get_lab_Data(lab)

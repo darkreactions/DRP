@@ -1,3 +1,5 @@
+# This file does not work. It is maintained for reference only.
+
 '''
 This view should get the data requested by the user (either the lab group's data, public data, or both), use jsonViews to convert it to a CSV/json (in the right format for the d3 visualization), and then render the template with that    data. The template, in turn, will render the javascript (d3 vis) with the CSV/json file passed to it (the template). Currently, however, a lot of this is hardcoded.
 
@@ -121,7 +123,7 @@ def get_graph_data(request):
      
     from DRP.models import collect_CG_name_pairs
     u = request.user
-    lab_group = u.profile.lab_group
+    lab_group = u.get_profile().lab_group
   
     name_pairs = collect_CG_name_pairs(lab_group)
     name_pairs = { value:key for key,value in name_pairs.items() }    
