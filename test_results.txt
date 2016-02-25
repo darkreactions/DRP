@@ -342,11 +342,11 @@ test_ValidHtml (DRP.tests.HttpTests.RegisterPage.PostRegisterPage)
 Checks HTML validity ... skipped 'Email Tests being skipped...'
 test_email (DRP.tests.HttpTests.RegisterPage.PostRegisterPage)
 Checks that the registration email has been recieved and is in good shape. ... skipped 'Email Tests being skipped...'
-runTest (DRP.tests.modelBuildingTests.WekaSVMBasicKFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaSVMBCRKFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaJ48KFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaKNNKFTest) ... ok
-runTest (DRP.tests.modelBuildingTests.WekaNBKFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaSVMBasicKFTest) ... ERROR
+runTest (DRP.tests.modelBuildingTests.WekaSVMBCRKFTest) ... ERROR
+runTest (DRP.tests.modelBuildingTests.WekaJ48KFTest) ... ERROR
+runTest (DRP.tests.modelBuildingTests.WekaKNNKFTest) ... ERROR
+runTest (DRP.tests.modelBuildingTests.WekaNBKFTest) ... ERROR
 runTest (DRP.tests.CompoundFromCsv.Good) ... ok
 runTest (DRP.tests.CompoundFromCsv.Broken) ... ok
 runTest (DRP.tests.CompoundDescriptor.DescriptorsCalced)
@@ -442,7 +442,77 @@ Test that all listed files conform to pep8 standards. ... ok
 test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
 Test that the settings_example.py file is present. ... ok
 
+======================================================================
+ERROR: runTest (DRP.tests.modelBuildingTests.WekaSVMBasicKFTest)
 ----------------------------------------------------------------------
-Ran 249 tests in 466.752s
+Traceback (most recent call last):
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/tests/modelBuildingTests.py", line 22, in runTest
+    container.build(predictors, responses)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/models/ModelContainer.py", line 243, in build
+    modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 70, in train
+    arff_file = self._prepareArff(reactions, descriptorHeaders)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 28, in _prepareArff
+    with open(filepath, "w") as f:
+IOError: [Errno 2] No such file or directory: '/home/geoffrey/repos/DRP_venv/DRP/tmp/269_3d76124a-6e55-40c1-ab39-ba36f8d7d0c9.arff'
 
-OK (skipped=4)
+======================================================================
+ERROR: runTest (DRP.tests.modelBuildingTests.WekaSVMBCRKFTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/tests/modelBuildingTests.py", line 22, in runTest
+    container.build(predictors, responses)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/models/ModelContainer.py", line 243, in build
+    modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/SVM_PUK_BCR.py", line 26, in train
+    arff_file = self._prepareArff(reactions, descriptorHeaders)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 28, in _prepareArff
+    with open(filepath, "w") as f:
+IOError: [Errno 2] No such file or directory: '/home/geoffrey/repos/DRP_venv/DRP/tmp/270_4b1afc59-703f-4817-af44-6c29518f95fa.arff'
+
+======================================================================
+ERROR: runTest (DRP.tests.modelBuildingTests.WekaJ48KFTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/tests/modelBuildingTests.py", line 22, in runTest
+    container.build(predictors, responses)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/models/ModelContainer.py", line 243, in build
+    modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 70, in train
+    arff_file = self._prepareArff(reactions, descriptorHeaders)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 28, in _prepareArff
+    with open(filepath, "w") as f:
+IOError: [Errno 2] No such file or directory: '/home/geoffrey/repos/DRP_venv/DRP/tmp/271_78651ea8-2bc6-4f73-82c5-f45490d6d8a7.arff'
+
+======================================================================
+ERROR: runTest (DRP.tests.modelBuildingTests.WekaKNNKFTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/tests/modelBuildingTests.py", line 22, in runTest
+    container.build(predictors, responses)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/models/ModelContainer.py", line 243, in build
+    modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 70, in train
+    arff_file = self._prepareArff(reactions, descriptorHeaders)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 28, in _prepareArff
+    with open(filepath, "w") as f:
+IOError: [Errno 2] No such file or directory: '/home/geoffrey/repos/DRP_venv/DRP/tmp/272_f02a43db-6730-4a7e-9407-aceed8d4ef1f.arff'
+
+======================================================================
+ERROR: runTest (DRP.tests.modelBuildingTests.WekaNBKFTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/tests/modelBuildingTests.py", line 22, in runTest
+    container.build(predictors, responses)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/models/ModelContainer.py", line 243, in build
+    modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 70, in train
+    arff_file = self._prepareArff(reactions, descriptorHeaders)
+  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 28, in _prepareArff
+    with open(filepath, "w") as f:
+IOError: [Errno 2] No such file or directory: '/home/geoffrey/repos/DRP_venv/DRP/tmp/273_34c32f82-2ffb-46f1-a03d-f8fefd55d8dd.arff'
+
+----------------------------------------------------------------------
+Ran 249 tests in 444.241s
+
+FAILED (errors=5, skipped=4)
