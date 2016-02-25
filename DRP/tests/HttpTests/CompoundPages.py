@@ -207,7 +207,7 @@ suite = unittest.TestSuite([
   loadTests(LicenseRedirect),
   loadTests(Lab403Test),
   loadTests(CreateCompoundGetTest),
-  #loadTests(CreateCompoundRedirTest),
+  loadTests(CreateCompoundRedirTest),
   loadTests(CreateCompoundRadioTest),
   loadTests(NoCompounds),
   loadTests(ManyGroupsRedirect),
@@ -217,7 +217,7 @@ suite = unittest.TestSuite([
   loadTests(GetNotMyCompoundForEditing),
   loadTests(GetCustomCompound403),
   loadTests(GetCompoundUpload),
-  #loadTests(PostCompoundUpload)
+  loadTests(PostCompoundUpload)
 ])
 
 if __name__=='__main__':
