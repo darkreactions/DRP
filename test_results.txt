@@ -9,52 +9,10 @@ DRP.RecommendedReaction.nonsense: (1_6.W002) BooleanField does not have a defaul
 	HINT: Django 1.6 changed the default value of BooleanField from False to None. See https://docs.djangoproject.com/en/1.6/ref/models/fields/#booleanfield for more information.
 DRP.RecommendedReaction.saved: (1_6.W002) BooleanField does not have a default value.
 	HINT: Django 1.6 changed the default value of BooleanField from False to None. See https://docs.djangoproject.com/en/1.6/ref/models/fields/#booleanfield for more information.
-runTest (DRP.tests.CompoundDescriptor.DescriptorsCalced)
-Run the test. ... ok
-runTest (DRP.tests.CompoundDescriptor.DoublePluginImport)
-Run the test. ... ok
-test_numeric (DRP.tests.CompoundDescriptor.MaxMinValidation)
-Test ordinal descriptors. ... ok
-test_numeric_lims_null (DRP.tests.CompoundDescriptor.MaxMinValidation)
-Test creating a numeric descriptor w/a null min, max value works. ... ok
-test_numeric_max_null (DRP.tests.CompoundDescriptor.MaxMinValidation)
-Test creating a numeric descriptor with a null max value works. ... ok
-test_numeric_min_null (DRP.tests.CompoundDescriptor.MaxMinValidation)
-Test creating a numeric descriptor with a null min value works. ... ok
-test_numeric_ok (DRP.tests.CompoundDescriptor.MaxMinValidation)
-Test a working numeric descriptor. ... ok
-test_ordinal (DRP.tests.CompoundDescriptor.MaxMinValidation)
-Test ordinal descriptors. ... ok
-test_ordinal_ok (DRP.tests.CompoundDescriptor.MaxMinValidation)
-Test a working ordinal descriptor. ... ok
-test_numeric_lims_null (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test creating a numeric descriptor w/a null min, max value works. ... ok
-test_numeric_loolow (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test a descriptor value that is below the minimum. ... ok
-test_numeric_max_null (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test creating a numeric descriptor with a null max value works. ... ok
-test_numeric_max_null_toohigh (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test creating a numeric descriptor with a null max value works. ... ok
-test_numeric_max_null_toolow (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test creating a numeric descriptor with a null max value works. ... ok
-test_numeric_min_null (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test creating a numeric descriptor with a null min value works. ... ok
-test_numeric_ok (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test a working numeric descriptor. ... ok
-test_numeric_toohigh (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test a descriptor value that is above the maximum. ... ok
-test_ordinal_loolow (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test a descriptor value that is below the minimum. ... ok
-test_ordinal_ok (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test a working ordinal descriptor. ... ok
-test_ordinal_toohigh (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
-Test a descriptor value that is above the maximum. ... ok
-test_broken (DRP.tests.CompoundDescriptor.CategoricalValidation)
-Test broken cases. ... ok
-test_fine (DRP.tests.CompoundDescriptor.CategoricalValidation)
-Test cases that should work. ... ok
+test_expanded (DRP.tests.CompoundToCsv.CsvOutput) ... ok
+test_regular (DRP.tests.CompoundToCsv.CsvOutput) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 9.052s
+Ran 2 tests in 1.556s
 
 OK
