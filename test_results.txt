@@ -9,10 +9,46 @@ DRP.RecommendedReaction.nonsense: (1_6.W002) BooleanField does not have a defaul
 	HINT: Django 1.6 changed the default value of BooleanField from False to None. See https://docs.djangoproject.com/en/1.6/ref/models/fields/#booleanfield for more information.
 DRP.RecommendedReaction.saved: (1_6.W002) BooleanField does not have a default value.
 	HINT: Django 1.6 changed the default value of BooleanField from False to None. See https://docs.djangoproject.com/en/1.6/ref/models/fields/#booleanfield for more information.
-test_expanded (DRP.tests.CompoundToCsv.CsvOutput) ... ok
-test_regular (DRP.tests.CompoundToCsv.CsvOutput) ... ok
+test_expanded (DRP.tests.CompoundToArff.CompoundToArff) ... Relation Name:  relation
+Num Instances:  8
+Num Attributes: 14
+
+     Name                      Type  Nom  Int Real     Missing      Unique  Dist
+   1 abbrev                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   2 name                       Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   3 CSID                       Num   0% 100%   0%     0 /  0%     8 /100%     8 
+   4 custom                     Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   5 INCHI                      Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   6 smiles                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   7 labGroup                   Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   8 formula                    Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   9 chemicalClass_1            Nom 100%   0%   0%     0 /  0%     1 / 13%     2 
+  10 chemicalClass_2            Nom  63%   0%   0%     3 / 38%     1 / 13%     2 
+  11 N?_examplepy_plugin_0      Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+  12 mw_drprdkit_0              Num   0%   0% 100%     0 /  0%     8 /100%     8 
+  13 fs_examplepy_plugin_0      Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+  14 arb_examplepy_plugin_0     Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+
+ok
+test_regular (DRP.tests.CompoundToArff.CompoundToArff) ... Relation Name:  relation
+Num Instances:  8
+Num Attributes: 10
+
+     Name                      Type  Nom  Int Real     Missing      Unique  Dist
+   1 abbrev                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   2 name                       Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   3 CSID                       Num   0% 100%   0%     0 /  0%     8 /100%     8 
+   4 custom                     Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   5 INCHI                      Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   6 smiles                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   7 labGroup                   Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   8 formula                    Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   9 chemicalClass_1            Nom   0%   0%   0%     8 /100%     0 /  0%     0 
+  10 chemicalClass_2            Nom   0%   0%   0%     8 /100%     0 /  0%     0 
+
+ok
 
 ----------------------------------------------------------------------
-Ran 2 tests in 1.556s
+Ran 2 tests in 10.696s
 
 OK

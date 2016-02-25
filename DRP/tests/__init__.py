@@ -18,7 +18,7 @@ suite = unittest.TestSuite([
     # modelBuildingTests.suite,
     # CompoundFromCsv.suite,
     # CompoundDescriptor.suite,
-    CompoundToCsv.suite,
-    # CompoundToArff.suite,
+    # CompoundToCsv.suite,
+    CompoundToArff.suite,
     # fileTests.suite,
 ])
