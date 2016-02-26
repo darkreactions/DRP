@@ -1,9 +1,9 @@
 '''A module containing urls for the database (reactions, compound guide) components of DRP'''
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 import DRP.views
 
-urls = patterns('',
+urls = [
   url('^(?P<filetype>.csv|.html|.arff)?$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/add.html', DRP.views.reaction.reactionForm, name='newReaction'),
@@ -19,4 +19,4 @@ urls = patterns('',
   url('^/compoundguide/delete$', DRP.views.compound.deleteCompound, name='deleteCompound'),
   url('^/compoundguide/edit_(?P<pk>\d+).html', DRP.views.compound.EditCompound.as_view(), name='editCompound'),
   url('^/compoundguide/upload.html', DRP.views.compound.uploadCompound, name='uploadcompoundcsv')
-)
+]

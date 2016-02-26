@@ -4,12 +4,12 @@ from Reaction import Reaction
 
 class RecommendedReaction(Reaction):
 
-  class Meta:
-    app_label='DRP'
+    class Meta:
+        app_label='DRP'
 
-  score=models.FloatField()
-  seed=models.ForeignKey(Reaction, null=True, related_name='seeded')
-  nonsense=models.BooleanField()
-  hidden=models.BooleanField()
-  saved=models.BooleanField()
-  reference=models.CharField('Text Reference', max_length=200)
+    score=models.FloatField()
+    seed = models.ForeignKey(Reaction, null=True, related_name='seeded')
+    nonsense = models.BooleanField(default=None)
+    hidden = models.BooleanField(default=None)
+    saved = models.BooleanField(default=None)
+    reference = models.CharField('Text Reference', max_length=200)
