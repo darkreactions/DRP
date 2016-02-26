@@ -1,3 +1,115 @@
+test_saving (DRP.tests.forms.CompoundAdminForm.CreateTest) ... ok
+test_validation (DRP.tests.forms.CompoundAdminForm.CreateTest) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.NoLabExists) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.NoLabForUser) ... ok
+test_saving (DRP.tests.forms.CompoundCreationForm.LabForUser) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.LabForUser) ... ok
+test_saving (DRP.tests.forms.CompoundCreationForm.LabForBadUser) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.LabForBadUser) ... ok
+test_saving (DRP.tests.forms.CompoundCreationForm.NoCAS) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.NoCAS) ... ok
+test_saving (DRP.tests.forms.CompoundCreationForm.InconsistentCASName) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.InconsistentCASName) ... ok
+test_saving (DRP.tests.forms.CompoundCreationForm.InconsistentNameCSID) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.InconsistentNameCSID) ... ok
+test_saving (DRP.tests.forms.CompoundCreationForm.InconsistentCSIDCAS) ... ok
+test_validation (DRP.tests.forms.CompoundCreationForm.InconsistentCSIDCAS) ... ok
+test_validation (DRP.tests.forms.CompoundEditingForm.IncorrectSynonym) ... ok
+test_validation (DRP.tests.forms.CompoundEditingForm.CorrectSynonym) ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormSucceed) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormSucceed) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormSucceed)
+create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormDifferentLabGroupFail) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormDifferentLabGroupFail)
+create a filter request that should fail, make sure it returns correct compounds ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormWrongLabGroupFail) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormWrongLabGroupFail)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormEmptyFail) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormEmptyFail)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormLabGroup) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormLabGroup) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormLabGroup)
+create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormAbbrev) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormAbbrev) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormAbbrev)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormName) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormName) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormName)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormChemClass) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormChemClass) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormChemClass)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormCSID) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormCSID) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormCSID)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormINCHI) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormINCHI) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormINCHI)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_fetch (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormSmiles) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormSmiles) ... ok
+test_validation (DRP.tests.forms.CompoundFilterForm.CompoundFilterFormSmiles)
+Create a filter request that should succeed, make sure it returns correct compounds ... ok
+test_cleaned_data (DRP.tests.forms.CompoundFilterFormSet.CompoundFilterSetSucceed) ... ok
+test_fetch (DRP.tests.forms.CompoundFilterFormSet.CompoundFilterSetSucceed) ... ok
+test_is_empty (DRP.tests.forms.CompoundFilterFormSet.CompoundFilterSetSucceed) ... ok
+test_validation (DRP.tests.forms.CompoundFilterFormSet.CompoundFilterSetSucceed)
+test that this test returned correct compounds ... ok
+runTest (DRP.tests.forms.ConfirmationForm.InactiveUser) ... ok
+runTest (DRP.tests.forms.ConfirmationForm.ActiveUser) ... ok
+test_databaseChange (DRP.tests.forms.LabGroupForm.LegacyPassword) ... ok
+test_validation (DRP.tests.forms.LabGroupForm.LegacyPassword) ... ok
+test_databaseChange (DRP.tests.forms.LabGroupForm.LegacyPassword2) ... ok
+test_validation (DRP.tests.forms.LabGroupForm.LegacyPassword2) ... ok
+test_missingAddress (DRP.tests.forms.LabGroupForm.CreateNew) ... ok
+test_missingEmail (DRP.tests.forms.LabGroupForm.CreateNew) ... ok
+test_missingPass (DRP.tests.forms.LabGroupForm.CreateNew) ... ok
+test_missingTitle (DRP.tests.forms.LabGroupForm.CreateNew) ... ok
+test_duplicateTitle (DRP.tests.forms.LabGroupForm.DuplicateUniqueValues) ... ok
+test_validation (DRP.tests.forms.LabGroupJoiningForm.LegacyPassword) ... ok
+test_validation (DRP.tests.forms.LabGroupJoiningForm.Password) ... ok
+test_clean (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGT) ... ok
+test_fetch (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGT) ... ok
+test_is_empty (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGT) ... ok
+test_validation (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGT)
+test that this test returned correct compounds ... ok
+test_clean (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGE) ... ok
+test_fetch (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGE) ... ok
+test_is_empty (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGE) ... ok
+test_validation (DRP.tests.forms.AdvancedFilterForms.NumericFilterFormGE)
+test that this test returned correct compounds ... ok
+test_clean (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLT) ... ok
+test_fetch (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLT) ... ok
+test_is_empty (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLT) ... ok
+test_validation (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLT)
+test that this test returned correct compounds ... ok
+test_clean (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLE) ... ok
+test_fetch (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLE) ... ok
+test_is_empty (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLE) ... ok
+test_validation (DRP.tests.forms.AdvancedFilterForms.OrdinalFilterFormLE)
+test that this test returned correct compounds ... ok
+test_clean (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormFun) ... ok
+test_fetch (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormFun) ... ok
+test_is_empty (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormFun) ... ok
+test_validation (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormFun)
+test that this test returned correct compounds ... ok
+test_clean (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormDull) ... ok
+test_fetch (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormDull) ... ok
+test_is_empty (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormDull) ... ok
+test_validation (DRP.tests.forms.AdvancedFilterForms.CategoryFilterFormDull)
+test that this test returned correct compounds ... ok
+test_clean (DRP.tests.forms.AdvancedFilterForms.BooleanFilterFormTest) ... ok
+test_fetch (DRP.tests.forms.AdvancedFilterForms.BooleanFilterFormTest) ... ok
+test_is_empty (DRP.tests.forms.AdvancedFilterForms.BooleanFilterFormTest) ... ok
+test_validation (DRP.tests.forms.AdvancedFilterForms.BooleanFilterFormTest)
+test that this test returned correct compounds ... ok
 test_Status (DRP.tests.HttpTests.AboutPage.AboutPage)
 Checks that the http response code is the expected value ... ok
 test_ValidHtml (DRP.tests.HttpTests.AboutPage.AboutPage)
@@ -129,7 +241,7 @@ Checks HTML validity ... ok
 test_Status (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage2)
 Checks that the http response code is the expected value ... ok
 test_ValidHtml (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage2)
-Checks HTML validity ... ERROR
+Checks HTML validity ... ok
 test_Redirect (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage3) ... ok
 test_Status (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage3)
 Checks that the http response code is the expected value ... ok
@@ -156,23 +268,107 @@ test_ValidHtml (DRP.tests.HttpTests.RegisterPage.PostRegisterPage)
 Checks HTML validity ... skipped 'Email Tests being skipped...'
 test_email (DRP.tests.HttpTests.RegisterPage.PostRegisterPage)
 Checks that the registration email has been recieved and is in good shape. ... skipped 'Email Tests being skipped...'
+runTest (DRP.tests.modelBuildingTests.WekaSVMBasicKFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaSVMBCRKFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaJ48KFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaKNNKFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaNBKFTest) ... ok
+runTest (DRP.tests.CompoundFromCsv.Good) ... ok
+runTest (DRP.tests.CompoundFromCsv.Broken) ... ok
+runTest (DRP.tests.CompoundDescriptor.DescriptorsCalced)
+Run the test. ... ok
+runTest (DRP.tests.CompoundDescriptor.DoublePluginImport)
+Run the test. ... ok
+test_numeric (DRP.tests.CompoundDescriptor.MaxMinValidation)
+Test ordinal descriptors. ... ok
+test_numeric_lims_null (DRP.tests.CompoundDescriptor.MaxMinValidation)
+Test creating a numeric descriptor w/a null min, max value works. ... ok
+test_numeric_max_null (DRP.tests.CompoundDescriptor.MaxMinValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_min_null (DRP.tests.CompoundDescriptor.MaxMinValidation)
+Test creating a numeric descriptor with a null min value works. ... ok
+test_numeric_ok (DRP.tests.CompoundDescriptor.MaxMinValidation)
+Test a working numeric descriptor. ... ok
+test_ordinal (DRP.tests.CompoundDescriptor.MaxMinValidation)
+Test ordinal descriptors. ... ok
+test_ordinal_ok (DRP.tests.CompoundDescriptor.MaxMinValidation)
+Test a working ordinal descriptor. ... ok
+test_numeric_lims_null (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor w/a null min, max value works. ... ok
+test_numeric_loolow (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is below the minimum. ... ok
+test_numeric_max_null (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_max_null_toohigh (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_max_null_toolow (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_min_null (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null min value works. ... ok
+test_numeric_ok (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test a working numeric descriptor. ... ok
+test_numeric_toohigh (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is above the maximum. ... ok
+test_ordinal_loolow (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is below the minimum. ... ok
+test_ordinal_ok (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test a working ordinal descriptor. ... ok
+test_ordinal_toohigh (DRP.tests.CompoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is above the maximum. ... ok
+test_broken (DRP.tests.CompoundDescriptor.CategoricalValidation)
+Test broken cases. ... ok
+test_fine (DRP.tests.CompoundDescriptor.CategoricalValidation)
+Test cases that should work. ... ok
+test_expanded (DRP.tests.CompoundToCsv.CsvOutput) ... ok
+test_regular (DRP.tests.CompoundToCsv.CsvOutput) ... ok
+test_expanded (DRP.tests.CompoundToArff.CompoundToArff) ... Relation Name:  relation
+Num Instances:  8
+Num Attributes: 14
 
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage2)
-Checks HTML validity
+     Name                      Type  Nom  Int Real     Missing      Unique  Dist
+   1 abbrev                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   2 name                       Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   3 CSID                       Num   0% 100%   0%     0 /  0%     8 /100%     8 
+   4 custom                     Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   5 INCHI                      Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   6 smiles                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   7 labGroup                   Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   8 formula                    Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   9 chemicalClass_1            Nom 100%   0%   0%     0 /  0%     1 / 13%     2 
+  10 chemicalClass_2            Nom  63%   0%   0%     3 / 38%     1 / 13%     2 
+  11 N?_examplepy_plugin_0      Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+  12 mw_drprdkit_0              Num   0%   0% 100%     0 /  0%     8 /100%     8 
+  13 fs_examplepy_plugin_0      Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+  14 arb_examplepy_plugin_0     Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+
+ok
+test_regular (DRP.tests.CompoundToArff.CompoundToArff) ... Relation Name:  relation
+Num Instances:  8
+Num Attributes: 10
+
+     Name                      Type  Nom  Int Real     Missing      Unique  Dist
+   1 abbrev                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   2 name                       Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   3 CSID                       Num   0% 100%   0%     0 /  0%     8 /100%     8 
+   4 custom                     Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   5 INCHI                      Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   6 smiles                     Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   7 labGroup                   Nom 100%   0%   0%     0 /  0%     0 /  0%     1 
+   8 formula                    Str 100%   0%   0%     0 /  0%     8 /100%     8 
+   9 chemicalClass_1            Nom   0%   0%   0%     8 /100%     0 /  0%     0 
+  10 chemicalClass_2            Nom   0%   0%   0%     8 /100%     0 /  0%     0 
+
+ok
+testInitPresence (DRP.tests.fileTests.TestFiles)
+Test that any listed modules have the requisite __init__.py file. ... ok
+testPep257 (DRP.tests.fileTests.TestFiles)
+Test docstring conformance of all files. ... ok
+testPep8 (DRP.tests.fileTests.TestFiles)
+Test that all listed files conform to pep8 standards. ... ok
+test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
+Test that the settings_example.py file is present. ... ok
+
 ----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/tests/HttpTests/HttpTest.py", line 63, in test_ValidHtml
-    responseData = json.loads(self.validationResponse.content)
-  File "/usr/lib/python2.7/json/__init__.py", line 338, in loads
-    return _default_decoder.decode(s)
-  File "/usr/lib/python2.7/json/decoder.py", line 366, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "/usr/lib/python2.7/json/decoder.py", line 384, in raw_decode
-    raise ValueError("No JSON object could be decoded")
-ValueError: No JSON object could be decoded
+Ran 212 tests in 417.358s
 
-----------------------------------------------------------------------
-Ran 82 tests in 72.563s
-
-FAILED (errors=1, skipped=3)
+OK (skipped=3)
