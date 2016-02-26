@@ -1,3 +1,19 @@
+/home/geoffrey/repos/DRP_venv/DRP_venv/local/lib/python2.7/site-packages/django/conf/__init__.py:122: RemovedInDjango110Warning: Session verification will become mandatory in Django 1.10. Please add 'django.contrib.auth.middleware.SessionAuthenticationMiddleware' to your MIDDLEWARE_CLASSES setting when you are ready to opt-in after reading the upgrade considerations in the 1.8 release notes.
+  RemovedInDjango110Warning
+/home/geoffrey/repos/DRP_venv/DRP_venv/local/lib/python2.7/site-packages/django/contrib/contenttypes/models.py:159: RemovedInDjango19Warning: Model class django.contrib.contenttypes.models.ContentType doesn't declare an explicit app_label and either isn't in an application in INSTALLED_APPS or else was imported before its application was loaded. This will no longer be supported in Django 1.9.
+  class ContentType(models.Model):
+/home/geoffrey/repos/DRP_venv/DRP_venv/local/lib/python2.7/site-packages/django/contrib/auth/models.py:41: RemovedInDjango19Warning: Model class django.contrib.auth.models.Permission doesn't declare an explicit app_label and either isn't in an application in INSTALLED_APPS or else was imported before its application was loaded. This will no longer be supported in Django 1.9.
+  class Permission(models.Model):
+/home/geoffrey/repos/DRP_venv/DRP_venv/local/lib/python2.7/site-packages/django/contrib/auth/models.py:98: RemovedInDjango19Warning: Model class django.contrib.auth.models.Group doesn't declare an explicit app_label and either isn't in an application in INSTALLED_APPS or else was imported before its application was loaded. This will no longer be supported in Django 1.9.
+  class Group(models.Model):
+/home/geoffrey/repos/DRP_venv/DRP_venv/local/lib/python2.7/site-packages/django/contrib/auth/models.py:436: RemovedInDjango19Warning: Model class django.contrib.auth.models.User doesn't declare an explicit app_label and either isn't in an application in INSTALLED_APPS or else was imported before its application was loaded. This will no longer be supported in Django 1.9.
+  class User(AbstractUser):
+/home/geoffrey/repos/DRP_venv/DRP/DRP/models/CompoundQuantity.py:21: RemovedInDjango19Warning: Model class DRP.models.CompoundQuantity.CompoundQuantityManager doesn't declare an explicit app_label and either isn't in an application in INSTALLED_APPS or else was imported before its application was loaded. This will no longer be supported in Django 1.9.
+  class CompoundQuantityManager(models.Model):
+/home/geoffrey/repos/DRP_venv/DRP_venv/local/lib/python2.7/site-packages/django/conf/__init__.py:122: RemovedInDjango110Warning: Session verification will become mandatory in Django 1.10. Please add 'django.contrib.auth.middleware.SessionAuthenticationMiddleware' to your MIDDLEWARE_CLASSES setting when you are ready to opt-in after reading the upgrade considerations in the 1.8 release notes.
+  RemovedInDjango110Warning
+/home/geoffrey/repos/DRP_venv/DRP_venv/local/lib/python2.7/site-packages/django/template/utils.py:37: RemovedInDjango110Warning: You haven't defined a TEMPLATES setting. You must do so before upgrading to Django 1.10. Otherwise Django will be unable to load templates.
+  "unable to load templates.", RemovedInDjango110Warning)
 test_saving (DRP.tests.forms.CompoundAdminForm.CreateTest) ... ok
 test_validation (DRP.tests.forms.CompoundAdminForm.CreateTest) ... ok
 test_validation (DRP.tests.forms.CompoundCreationForm.NoLabExists) ... ok
@@ -113,7 +129,7 @@ test that this test returned correct compounds ... ok
 test_Status (DRP.tests.HttpTests.AboutPage.AboutPage)
 Checks that the http response code is the expected value ... ok
 test_ValidHtml (DRP.tests.HttpTests.AboutPage.AboutPage)
-Checks HTML validity ... ERROR
+Checks HTML validity ... ok
 test_Status (DRP.tests.HttpTests.AccountPage.AccountPageNoGroups)
 Checks that the http response code is the expected value ... ok
 test_ValidHtml (DRP.tests.HttpTests.AccountPage.AccountPageNoGroups)
@@ -368,22 +384,7 @@ Test that all listed files conform to pep8 standards. ... ok
 test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
 Test that the settings_example.py file is present. ... ok
 
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.HttpTests.AboutPage.AboutPage)
-Checks HTML validity
 ----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/geoffrey/repos/DRP_venv/DRP/DRP/tests/HttpTests/HttpTest.py", line 63, in test_ValidHtml
-    responseData = json.loads(self.validationResponse.content)
-  File "/usr/lib/python2.7/json/__init__.py", line 338, in loads
-    return _default_decoder.decode(s)
-  File "/usr/lib/python2.7/json/decoder.py", line 366, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "/usr/lib/python2.7/json/decoder.py", line 384, in raw_decode
-    raise ValueError("No JSON object could be decoded")
-ValueError: No JSON object could be decoded
+Ran 212 tests in 425.937s
 
-----------------------------------------------------------------------
-Ran 212 tests in 441.695s
-
-FAILED (errors=1, skipped=3)
+OK (skipped=3)
