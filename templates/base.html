@@ -46,8 +46,7 @@
           {% endif %}
           <span class="greeting">
             Hello, {{ user.first_name }}
-            <a class="account" href="{% url 'account' %}" >
-                <img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+            <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
           </span>
           <a href="/logout.html" id="userLogOut">Log Out</a>
 
