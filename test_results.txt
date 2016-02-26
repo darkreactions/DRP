@@ -370,6 +370,6 @@ test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
 Test that the settings_example.py file is present. ... ok
 
 ----------------------------------------------------------------------
-Ran 213 tests in 440.874s
+Ran 213 tests in 442.806s
 
 OK (skipped=3)
