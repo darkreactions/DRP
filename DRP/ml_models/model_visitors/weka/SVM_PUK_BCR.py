@@ -46,19 +46,20 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
         else:
             raise TypeError('Response descriptor is not a recognized descriptor type.')
             
-        # the i,j entry in cost matrix corresponds to cost of classifying an instance of class j as class i
-        # since we want misclassification of an instance to be equally costly regardless of what it is classified as
-        # all entries in a column not on the diagonal should be the same. The diagonal should always be 0 as correct
-        # classification has no cost. So that every class is weighted the same as a whole, each class's weight is 
-        # 1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
-        # total number of data points, so each class is weighted by (total_instances)/(class_count)
-        # classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
-        # For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
-        # TODO XXX Actually check the order of classes from the arff file?
+            
+        ## the i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
+        ## since we want misclassification of an instance to be equally costly regardless of what it is classified as
+        ## all entries in a row not on the diagonal should be the same. The diagonal should always be 0 as correct
+        ## classification has no cost. So that every class is weighted the same as a whole, each class's weight is 
+        ## 1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
+        ## total number of data points, so each class is weighted by (total_instances)/(class_count)
+        ## classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
+        ## For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
+        ## TODO XXX Actually check the order of classes from the arff file?
         
         total_instances = sum(class_counts)
         class_weights = [ (total_instances/float(class_count) if class_count!=0 else 0.0) for class_count in class_counts ]
-        cost_matrix = [ [str(0.0) if i==j else str(class_weights[j]) for j in range(num_classes)] for i in range(num_classes) ]
+        cost_matrix = [ [str(0.0) if i==j else str(class_weights[i]) for j in range(num_classes)] for i in range(num_classes) ]
 
         cost_matrix_string = '"[' + '; '.join([' '.join(row) for row in cost_matrix]) + ']"'
      
