@@ -12,10 +12,10 @@ class J48(AbstractWekaModelVisitor):
         super(J48, self).__init__(*args, **kwargs)
 
 
-    def wekaTrain(self, arff_file, filePath, response_index):
+    def wekaTrainCommand(self, arff_file, filePath, response_index):
         command = "java weka.classifiers.trees.J48 -t {} -d {} -p 0 -c {}".format(arff_file, filePath, response_index)
-        self._runWekaCommand(command)
+        return command
         
-    def wekaPredict(self, arff_file, model_file, response_index, results_path):
+    def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
         command = "java weka.classifiers.trees.J48 -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
-        self._runWekaCommand(command)
+        return command

@@ -215,7 +215,7 @@ class ModelContainer(models.Model):
         if (self.splitter is None) and (self.trainingSets) is None:
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
-    def build(self, predictors, response):
+    def build(self, predictors, response, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
 
@@ -224,7 +224,8 @@ class ModelContainer(models.Model):
 
         if self.splitter is not None:
             splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))
-            data_splits = splitterObj.split(self.reactions)
+            if verbose: print "Splitting using {}".format(self.splitter)
+            data_splits = splitterObj.split(self.reactions, verbose=verbose)
 
             self.trainingSets = [dataset_tuple[0] for dataset_tuple in data_splits]
             self.testSets = [dataset_tuple[1] for dataset_tuple in data_splits]
@@ -240,14 +241,25 @@ class ModelContainer(models.Model):
             statsModel.startTime = datetime.datetime.now()
             fileName = os.path.join(settings.MODEL_DIR, '{}_{}'.format(self.pk, statsModel.pk))
             whitelist = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
-            modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName)
+            if verbose:
+                print "{} statsModel {}, saving to {}, training...".format(statsModel.startTime, statsModel.pk, fileName)
+            modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName, verbose=verbose)
             statsModel.fileName = fileName
             statsModel.endTime = datetime.datetime.now()
+            if verbose:
+                print "\t...Trained. Finished at {}. Saving statsModel...".format(statsModel.endTime),
             statsModel.save()
+            if verbose:
+                print "saved"
+            
 
             # Test the model.
+            if verbose:
+                print "Predicting test set..."
             statsModel.testSets.add(testSet)
-            predictions = modelVisitor.predict(testSet.reactions.all(), whitelist)
+            predictions = modelVisitor.predict(testSet.reactions.all(), whitelist, verbose=verbose)
+            if verbose:
+                print "\t...finished predicting. Storing predictions...",
             newResDict = self._storePredictionComponents(predictions, statsModel)
 
             # Update the overall result-dictionary with these new counts.
@@ -263,7 +275,14 @@ class ModelContainer(models.Model):
                             resDict[reaction][response][outcome] = count
                         resDict[reaction][response][outcome] += count
 
+            if verbose:
+                print "predictions stored."
+
+        if verbose:
+            print "Storing overall model predictions...",
         self._storePredictions(resDict)
+        if verbose:
+            print "predictions stored."
         self.built = True
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):

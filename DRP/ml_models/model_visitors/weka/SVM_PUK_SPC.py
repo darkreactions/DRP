@@ -54,5 +54,5 @@ class SVM_PUK_SPC(AbstractWekaModelVisitor):
 
     def wekaPredict(self, arff_file, model_file, response_index, results_path):
         command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
-        self._runWekaCommand(command)
+        return command
 

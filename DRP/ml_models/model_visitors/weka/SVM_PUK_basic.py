@@ -14,11 +14,11 @@ class SVM_PUK_basic(AbstractWekaModelVisitor):
         self.PUK_OMEGA = 0.5
         self.PUK_SIGMA = 7.0
 
-    def wekaTrain(self, arff_file, filePath, response_index):
+    def wekaTrainCommand(self, arff_file, filePath, response_index):
         kernel = "\"weka.classifiers.functions.supportVector.Puk -O {} -S {}\"".format(self.PUK_OMEGA, self.PUK_SIGMA)
         command = "java weka.classifiers.functions.SMO -t {} -d {} -K {} -p 0 -c {}".format(arff_file, filePath, kernel, response_index)
-        self._runWekaCommand(command)
+        return command
 
-    def wekaPredict(self, arff_file, model_file, response_index, results_path):
+    def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
         command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
-        self._runWekaCommand(command)
+        return command

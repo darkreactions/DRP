@@ -7,10 +7,10 @@ import operator
 import argparse
 
 
-def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter):
+def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, verbose=False):
     container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, reactions=reactions)
     container.save()
-    container.build(predictors, responses)
+    container.build(predictors, responses, verbose=verbose)
     container.save()
 
     return container
@@ -27,7 +27,7 @@ def display_model_results(container):
             print "BCR: {:.3}".format(BCR(conf_mtrx))
 
 
-def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter):
+def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter, verbose=False):
     """
     Build and display a model with the specified tools
     """
@@ -40,7 +40,7 @@ def prepare_build_display_model(descriptor_headers, response_headers, modelVisit
     predictors = Descriptor.objects.filter(heading__in=descriptor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
-    container = build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter)
+    container = build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, verbose=verbose)
 
     display_model_results(container)
 
@@ -59,14 +59,15 @@ def BCR(conf):
     class_accuracy_sum = 0.0
     num_classes = 0.0
     for true, guesses in conf.items():
-        num_classes += 1
         class_correct = 0.0
         class_total = 0.0
         for guess, count in guesses.items():
             if true == guess:
                 class_correct += count
             class_total += count
-        class_accuracy_sum += class_correct/class_total
+        if class_total != 0:
+            class_accuracy_sum += class_correct/class_total
+            num_classes += 1
     
     return class_accuracy_sum/num_classes
 
@@ -109,7 +110,7 @@ if __name__ == '__main__':
                                      "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                      " to pass multiple descriptors from a file as predictors")
     parser.add_argument('-p', '--predictor-headers', nargs='+',
-                        help='One or more descriptors to use as predictors.')
+                        help='One or more descriptors to use as predictors.', required=True)
     parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
                         help='One or more descriptors to predict. '
                         'Note that most models can only handle one response variable (default: %(default)s)')
@@ -119,6 +120,8 @@ if __name__ == '__main__':
                         help='Model visitor tool from library to use. (default: %(default)s)')
     parser.add_argument('-s', '--splitter', default="KFoldSplitter",
                         help='Splitter to use. (default: %(default)s)')
+    parser.add_argument('-v', dest='verbose', action='store_true',
+                        help='Activate verbose mode.')
     args = parser.parse_args()
 
-    prepare_build_display_model(args.predictor_headers, args.response_headers, args.model_library, args.model_tool, args.splitter)
+    prepare_build_display_model(args.predictor_headers, args.response_headers, args.model_library, args.model_tool, args.splitter, verbose=args.verbose)
