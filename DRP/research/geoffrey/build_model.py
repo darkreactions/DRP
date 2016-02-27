@@ -7,8 +7,8 @@ import operator
 import argparse
 
 
-def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, verbose=False):
-    container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, reactions=reactions)
+def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=False):
+    container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, splitter=splitter, reactions=reactions)
     container.save()
     container.build(predictors, responses, verbose=verbose)
     container.save()
@@ -27,7 +27,7 @@ def display_model_results(container):
             print "BCR: {:.3}".format(BCR(conf_mtrx))
 
 
-def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter, verbose=False):
+def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=False):
     """
     Build and display a model with the specified tools
     """
@@ -40,7 +40,7 @@ def prepare_build_display_model(descriptor_headers, response_headers, modelVisit
     predictors = Descriptor.objects.filter(heading__in=descriptor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
-    container = build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, verbose=verbose)
+    container = build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=verbose)
 
     display_model_results(container)
 
@@ -122,6 +122,8 @@ if __name__ == '__main__':
                         help='Splitter to use. (default: %(default)s)')
     parser.add_argument('-v', dest='verbose', action='store_true',
                         help='Activate verbose mode.')
+    parser.add_argument('-d', '--description', default="",
+                        help='Description of model. (default: %(default)s)')
     args = parser.parse_args()
 
-    prepare_build_display_model(args.predictor_headers, args.response_headers, args.model_library, args.model_tool, args.splitter, verbose=args.verbose)
+    prepare_build_display_model(args.predictor_headers, args.response_headers, args.model_library, args.model_tool, args.splitter, args.description, verbose=args.verbose)

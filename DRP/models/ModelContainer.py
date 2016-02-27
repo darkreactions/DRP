@@ -188,8 +188,8 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
-        model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter)
+    def create(cls, modelVisitorLibrary, modelVisitorTool, description=description, splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
+        model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, description=description)
         
         model_container.reactions = reactions
         model_container.trainingSets = trainingSets
