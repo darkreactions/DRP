@@ -188,7 +188,7 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, description=description, splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
+    def create(cls, modelVisitorLibrary, modelVisitorTool, description="", splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, description=description)
         
         model_container.reactions = reactions
@@ -203,9 +203,9 @@ class ModelContainer(models.Model):
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
-        if (self.splitter is None) ^ (self.reactions is None):
+        if (self.splitter is None) ^ (self.reactions is None): # if these are not the same, there's a problem
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
-        if (self.splitter is None) and (self.trainingSets) is None:
+        if not ((self.splitter is None) ^ (self.trainingSets is None)): # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
     def build(self, predictors, response, verbose=False):
