@@ -81,8 +81,6 @@ class DescriptorAttribute(object):
                 pass
 
             if desc is None:
-                print descriptor.heading
-                print type(descriptor)
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, modelContainer):
@@ -154,16 +152,11 @@ class ModelContainer(models.Model):
     modelVisitorTool = models.CharField(
         max_length=200, choices=tuple((tool, tool) for tool in TOOL_CHOICES))
     featureLibrary = models.CharField(
-        max_length=200, choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS), default='')
+        max_length=200, choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS), default='')
     featureTool = models.CharField(
-        max_length=200, choices=tuple((tool, tool) for tool in TOOL_CHOICES), default='')
+        max_length=200, choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES), default='')
     splitter = models.CharField(
         max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, null=True)
-    # TODO XXX modify database so this will work
-    # featureLibrary = models.CharField(
-    #     max_length=200, choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS))
-    # featureTool = models.CharField(
-    #     max_length=200, choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES))
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
