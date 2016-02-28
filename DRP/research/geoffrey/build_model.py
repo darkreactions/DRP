@@ -7,7 +7,7 @@ import operator
 import argparse
 
 
-def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=False):
+def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=False): 
     container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, splitter=splitter, reactions=reactions)
     container.save()
     container.build(predictors, responses, verbose=verbose)

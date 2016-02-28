@@ -20,9 +20,9 @@ splitters = {splitter:importlib.import_module(settings.REACTION_DATASET_SPLITTER
 
 featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
 
-TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in visitorModules.items())
+MODEL_VISITOR_TOOL_CHOICES = tuple(tool for library in visitorModules.values() for tool in library.tools)
 
-FEATURE_SELECTION_TOOL_CHOICES = tuple((key, tuple(tool for tool in library.tools)) for key,library in featureVisitorModules.items())
+FEATURE_SELECTION_TOOL_CHOICES = tuple(tool for library in featureVisitorModules.values() for tool in library.tools)
 
 class PredictsDescriptorsAttribute(object):
 
@@ -150,13 +150,13 @@ class ModelContainer(models.Model):
     modelVisitorLibrary = models.CharField(
         max_length=200, choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS))
     modelVisitorTool = models.CharField(
-        max_length=200, choices=tuple((tool, tool) for tool in TOOL_CHOICES))
+        max_length=200, choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES))
     featureLibrary = models.CharField(
-        max_length=200, choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS), default='')
+        max_length=200, choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS), default='', blank=True)
     featureTool = models.CharField(
-        max_length=200, choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES), default='')
+        max_length=200, choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES), default='', blank=True)
     splitter = models.CharField(
-        max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, null=True)
+        max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, default='')
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
@@ -190,7 +190,12 @@ class ModelContainer(models.Model):
     @classmethod
     def create(cls, modelVisitorLibrary, modelVisitorTool, description="", splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, description=description)
-        
+
+        if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
+            raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
+        if not ((splitter is None) ^ (trainingSetgis is None)): # if these are not different, there's a problem
+            raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
+
         model_container.reactions = reactions
         model_container.trainingSets = trainingSets
         model_container.testSets = testSets
@@ -203,11 +208,12 @@ class ModelContainer(models.Model):
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
-        if (self.splitter is None) ^ (self.reactions is None): # if these are not the same, there's a problem
-            raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
-        if not ((self.splitter is None) ^ (self.trainingSets is None)): # if these are not different, there's a problem
-            raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        super(self.__class__, self).save(*args, **kwargs)
+        self.full_clean()
+    
     def build(self, predictors, response, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
@@ -349,9 +355,7 @@ class ModelContainer(models.Model):
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
-    @transaction.atomic
-    def save(self, *args, **kwargs):
-        super(ModelContainer, self).save(*args, **kwargs)
+
 
 
     def getConfusionMatrices(self):
