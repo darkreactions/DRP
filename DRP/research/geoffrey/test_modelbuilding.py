@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from django.conf import settings
 import importlib
 from build_model import prepare_build_display_model
@@ -11,5 +12,5 @@ for modelVisitorLibrary, module in visitorModules.items():
     for modelVisitorTool in module.tools:
         for splitter in settings.REACTION_DATASET_SPLITTERS:
             print modelVisitorLibrary, modelVisitorTool, splitter
-            prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter, verbose=True)
+            prepare_build_display_model(descriptor_headers=descriptor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, verbose=True)
     

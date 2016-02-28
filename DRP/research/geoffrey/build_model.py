@@ -7,7 +7,7 @@ import operator
 import argparse
 
 
-def build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=False): 
+def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, description="", verbose=False): 
     container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, splitter=splitter, reactions=reactions)
     container.save()
     container.build(predictors, responses, verbose=verbose)
@@ -27,12 +27,12 @@ def display_model_results(container):
             print "BCR: {:.3}".format(BCR(conf_mtrx))
 
 
-def prepare_build_display_model(descriptor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=False):
+def prepare_build_display_model(descriptor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, description="", verbose=False):
     """
     Build and display a model with the specified tools
     """
-    # Grab all reactions with defined outcome descriptors
-    reactions = PerformedReaction.objects.all()
+    # Grab all valid reactions with defined outcome descriptors
+    reactions = PerformedReaction.objects.filter(valid=True)
     reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
     reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
     reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
@@ -40,7 +40,7 @@ def prepare_build_display_model(descriptor_headers, response_headers, modelVisit
     predictors = Descriptor.objects.filter(heading__in=descriptor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
-    container = build_model(reactions, predictors, responses, modelVisitorLibrary, modelVisitorTool, splitter, description, verbose=verbose)
+    container = build_model(reactions=reactions, predictors=predictors, responses=responses, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, description=description, verbose=verbose)
 
     display_model_results(container)
 
@@ -52,7 +52,7 @@ def accuracy(conf):
             if true == guess:
                 correct += count
             total += count
-    return correct/total
+    return (correct/total if total != 0 else 0.0)
 
     
 def BCR(conf):
@@ -69,7 +69,7 @@ def BCR(conf):
             class_accuracy_sum += class_correct/class_total
             num_classes += 1
     
-    return class_accuracy_sum/num_classes
+    return (class_accuracy_sum/num_classes if num_classes else 0.0)
 
 def confusionMatrixString(confusionMatrix, headers=True):
     """
