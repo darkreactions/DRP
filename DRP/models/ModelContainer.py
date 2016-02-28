@@ -185,7 +185,7 @@ class ModelContainer(models.Model):
     """The descriptors which this model predicts values for."""
 
 
-    fully_trained = models.ForeignKey("DRP.StatsModel", null=True)
+    fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
     def create(cls, modelVisitorLibrary, modelVisitorTool, description="", splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
