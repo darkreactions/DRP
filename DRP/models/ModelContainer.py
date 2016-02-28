@@ -145,7 +145,7 @@ class ModelContainer(models.Model):
         app_label = 'DRP'
 
 
-    description = models.TextField()
+    description = models.TextField(blank=True, null=False)
     active = models.BooleanField('Is this the active model?', default=False)
     modelVisitorLibrary = models.CharField(
         max_length=200, choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS))
@@ -193,7 +193,7 @@ class ModelContainer(models.Model):
 
         if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
-        if not ((splitter is None) ^ (trainingSetgis is None)): # if these are not different, there's a problem
+        if not ((splitter is None) ^ (trainingSets is None)): # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
         model_container.reactions = reactions
@@ -253,35 +253,39 @@ class ModelContainer(models.Model):
             
 
             # Test the model.
+            if testSet.reactions.count() > 0:
+                if verbose:
+                    print "Predicting test set..."
+                statsModel.testSets.add(testSet)
+                predictions = modelVisitor.predict(testSet.reactions.all(), whitelist, verbose=verbose)
+                if verbose:
+                    print "\t...finished predicting. Storing predictions...",
+                newResDict = self._storePredictionComponents(predictions, statsModel)
+    
+                # Update the overall result-dictionary with these new counts.
+                for reaction, responseDict in newResDict.items():
+                    for response, outcomeDict in responseDict.items():
+                        for outcome, count in outcomeDict.items():
+                            if reaction not in resDict:
+                                resDict[reaction] = {}
+                            if response not in resDict[reaction]:
+                                resDict[reaction][response] = {}
+    
+                            if outcome not in resDict[reaction][response]:
+                                resDict[reaction][response][outcome] = count
+                            resDict[reaction][response][outcome] += count
+                
+                if verbose:
+                    print "predictions stored."
+            elif verbose:
+                    print "Test set is empty."
+
+        if resDict:
             if verbose:
-                print "Predicting test set..."
-            statsModel.testSets.add(testSet)
-            predictions = modelVisitor.predict(testSet.reactions.all(), whitelist, verbose=verbose)
-            if verbose:
-                print "\t...finished predicting. Storing predictions...",
-            newResDict = self._storePredictionComponents(predictions, statsModel)
-
-            # Update the overall result-dictionary with these new counts.
-            for reaction, responseDict in newResDict.items():
-                for response, outcomeDict in responseDict.items():
-                    for outcome, count in outcomeDict.items():
-                        if reaction not in resDict:
-                            resDict[reaction] = {}
-                        if response not in resDict[reaction]:
-                            resDict[reaction][response] = {}
-
-                        if outcome not in resDict[reaction][response]:
-                            resDict[reaction][response][outcome] = count
-                        resDict[reaction][response][outcome] += count
-
+                print "Storing overall model predictions...",
+            self._storePredictions(resDict)
             if verbose:
                 print "predictions stored."
-
-        if verbose:
-            print "Storing overall model predictions...",
-        self._storePredictions(resDict)
-        if verbose:
-            print "predictions stored."
         self.built = True
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
