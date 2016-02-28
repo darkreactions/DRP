@@ -65,12 +65,11 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
      
         # Currently, we support only one "response" variable.
         headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
-        response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
+        response_index = headers.index(response.csvHeader) + 1
 
         kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.PUK_OMEGA, self.PUK_SIGMA)
         command = "java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix {} -W weka.classifiers.functions.SMO -t {} -d {} -p 0 -c {} -- -K {}".format(cost_matrix_string, arff_file, filePath, response_index, kernel)
-        if verbose:
-            print "Executing: {}".format(command)
+
         self._runWekaCommand(command)
 
     def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
