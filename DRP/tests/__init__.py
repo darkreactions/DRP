@@ -9,13 +9,13 @@ import CompoundFromCsv
 import CompoundDescriptor
 import CompoundToCsv
 import CompoundToArff
-import ModelBuildingTests
+import modelBuildingTests
 
 suite = unittest.TestSuite([
     Email.suite,
     forms.suite,
     HttpTests.suite,
-    ModelBuildingTests.suite,
+    modelBuildingTests.suite,
     CompoundFromCsv.suite,
     CompoundDescriptor.suite,
     CompoundToCsv.suite,

@@ -78,6 +78,8 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
                 compoundRole = CompoundRole.objects.get(label=role)
                 compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
                                                                                         role=compoundRole, amount=quantity)
+
+                # TODO XXX bulk_create? Can't use the special save
                 compoundQuantity.save()
 
                 compoundQuantities.append(compoundQuantity)
@@ -113,6 +115,7 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
                     error = "Unknown descriptorValue type for '{}'".format(descriptor)
                     raise NotImplementedError(error)
 
+                # TODO XXX: bulk_create?
                 descriptorVal.descriptor = descriptor
                 descriptorVal.value = val
                 descriptorVal.reaction = reaction
@@ -125,6 +128,7 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
         def tearDown(self):
             _oldTearDown(self)
 
+            # TODO XXX bulk deletion?
             for cq in compoundQuantities:
                 cq.delete()
 
@@ -298,9 +302,12 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
         def setUp(self):
             labGroup = LabGroup.objects.get(title=labGroupTitle)
             compounds = labGroup.compound_set.fromCsv(os.path.join(settings.APP_DIR, 'tests', 'resource', csvFileName))
+
+            # TODO XXX bulk_create? Can't use our custom save then
             for compound in compounds:
                 compound.csConsistencyCheck()
                 compound.save()
+
             _oldSetup(self)
 
         def tearDown(self):

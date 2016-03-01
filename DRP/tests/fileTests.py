@@ -107,11 +107,11 @@ class TestFiles(unittest.TestCase):
             with OutputCapture() as output:
                 result = pep8Style.check_files(fullFileNames)
 
-            self.assertEqual(
-                result.total_errors,
-                0,
-                'Errors were found in pep8 Conformance:\n{}'.format(output)
-            )
+                self.assertEqual(
+                    result.total_errors,
+                    0,
+                    'Errors were found in pep8 Conformance:\n{}'.format(output)
+                )
 
     def testPep257(self):
         """Test docstring conformance of all files."""
