@@ -10,7 +10,7 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
         data = reactions.toNPArray(expanded=True, whitelistHeaders=predictor_headers, missing=np.nan)
         labels = reactions.toNPArray(expanded=True, whitelistHeaders=response_headers).flatten()
 
-        Imputer(copy=False).fit_transform(data)
+        data = Imputer(copy=False).fit_transform(data)
 
         try:
             assert(data.dtype == np.float64)
