@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "/usr/lib/python2.7/runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "/usr/lib/python2.7/cProfile.py", line 199, in <module>
+    main()
+  File "/usr/lib/python2.7/cProfile.py", line 192, in main
+    runctx(code, globs, None, options.outfile, options.sort)
+  File "/usr/lib/python2.7/cProfile.py", line 49, in runctx
+    prof = prof.runctx(statement, globals, locals)
+  File "/usr/lib/python2.7/cProfile.py", line 140, in runctx
+    exec cmd in globals, locals
+  File "train_ITML.py", line 40, in <module>
+    train(descriptor_header_file, outfile, num_constraints)
+  File "train_ITML.py", line 24, in train
+    itml.train(num_constraints=num_constraints)
+  File "/homes/gmartinn/DRP_main/DRP_repo/DRP/research/geoffrey/distance_learning/metricLearn/ITML.py", line 20, in train
+    pair_dists = pairwise_distances(self.data)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/sklearn/metrics/pairwise.py", line 1207, in pairwise_distances
+    return _parallel_pairwise(X, Y, func, n_jobs, **kwds)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/sklearn/metrics/pairwise.py", line 1054, in _parallel_pairwise
+    return func(X, Y, **kwds)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/sklearn/metrics/pairwise.py", line 208, in euclidean_distances
+    X, Y = check_pairwise_arrays(X, Y)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/sklearn/metrics/pairwise.py", line 94, in check_pairwise_arrays
+    X = Y = check_array(X, accept_sparse='csr', dtype=dtype)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/sklearn/utils/validation.py", line 398, in check_array
+    _assert_all_finite(array)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/sklearn/utils/validation.py", line 54, in _assert_all_finite
+    " or a value too large for %r." % X.dtype)
+ValueError: Input contains NaN, infinity or a value too large for dtype('float64').
