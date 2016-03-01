@@ -68,8 +68,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         Returns the appropriate weka prediction command.
         """
         
-
-
     def train(self, reactions, descriptorHeaders, filePath, verbose=False):
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose)
 
@@ -78,8 +76,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
 
         command = self.wekaTrainCommand(arff_file, filePath, response_index)
-        if verbose:
-            print "Executing: {}".format(command)
         self._runWekaCommand(command, verbose=verbose)
 
     def predict(self, reactions, descriptorHeaders, verbose=False):
