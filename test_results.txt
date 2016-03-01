@@ -1,0 +1,11 @@
+runTest (DRP.tests.modelBuildingTests.WekaSVMBasicKFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaSVMBasicMFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaSVMBCRKFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaJ48KFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaKNNKFTest) ... ok
+runTest (DRP.tests.modelBuildingTests.WekaNBKFTest) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 83.405s
+
+OK

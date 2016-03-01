@@ -14,7 +14,6 @@ class ModelTest(DRPTestCase):
     def runTest(self):
         reactions = PerformedReaction.objects.all()
         container = ModelContainer.create(self.modelLibrary, self.modelTool, splitter=self.splitter,
-                                          featureLibrary=self.featureLibrary, featureTool=self.featureTool,
                                           reactions=reactions)
         container.save()
         predictors = Descriptor.objects.filter(heading="testNumber")
