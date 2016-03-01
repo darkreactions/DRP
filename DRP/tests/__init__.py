@@ -14,7 +14,7 @@ import modelBuildingTests
 suite = unittest.TestSuite([
     Email.suite,
     forms.suite,
-    HttpTests.suite,
+    #HttpTests.suite,
     modelBuildingTests.suite,
     CompoundFromCsv.suite,
     CompoundDescriptor.suite,
