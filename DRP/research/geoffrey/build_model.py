@@ -6,8 +6,12 @@ import operator
 import argparse
 
 
-def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None, description="", verbose=False): 
-    container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, splitter=splitter, reactions=reactions, trainingSets=[trainingSet], testSets=[testSet])
+def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None, description="", verbose=False):
+    if splitter is None:
+        container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, reactions=reactions, trainingSets=[trainingSet], testSets=[testSet])
+    else:
+        container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, reactions=reactions, splitter=splitter)
+
     container.save()
     container.full_clean()
     container.build(predictors, responses, verbose=verbose)
