@@ -128,9 +128,6 @@ class OutcomeDescriptorAttribute(object):
             if desc is None:
                 raise ValueError('An invalid object was assigned as a descriptor')
 
-            pred_descriptor = desc.createPredictionDescriptor(modelContainer)
-            pred_descriptor.save()
-
     def __delete__(self, modelContainer):
         modelContainer.outcomeBoolRxnDescriptors.clear()
         modelContainer.outcomeNumRxnDescriptors.clear()
@@ -147,16 +144,16 @@ class ModelContainer(models.Model):
 
     description = models.TextField(blank=True, null=False)
     active = models.BooleanField('Is this the active model?', default=False)
-    modelVisitorLibrary = models.CharField(
-        max_length=200, choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS))
-    modelVisitorTool = models.CharField(
-        max_length=200, choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES))
-    featureLibrary = models.CharField(
-        max_length=200, choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS), default='', blank=True)
-    featureTool = models.CharField(
-        max_length=200, choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES), default='', blank=True)
-    splitter = models.CharField(
-        max_length=200, choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS), blank=True, default='')
+    modelVisitorLibrary = models.CharField(max_length=200)
+    # choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS)
+    modelVisitorTool = models.CharField(max_length=200)
+    # choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
+    featureLibrary = models.CharField(max_length=200, default='', blank=True)
+    # choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS), 
+    featureTool = models.CharField(max_length=200, default='', blank=True)
+    # choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES),
+    splitter = models.CharField(max_length=200, blank=True, default='')
+    #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
@@ -209,11 +206,6 @@ class ModelContainer(models.Model):
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
 
-    @transaction.atomic
-    def save(self, *args, **kwargs):
-        super(self.__class__, self).save(*args, **kwargs)
-        self.full_clean()
-    
     def build(self, predictors, response, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
@@ -360,7 +352,9 @@ class ModelContainer(models.Model):
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
 
-
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        super(self.__class__, self).save(*args, **kwargs)
 
     def getConfusionMatrices(self):
         """

@@ -17,6 +17,7 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         """Create a new reaction value object"""
+        # TODO XXX This should really be a check on the thing being in permitted values.
         if not isinstance(value, str):
             raise TypeError("You cannot create a categorical value with a non-string type")
         try:

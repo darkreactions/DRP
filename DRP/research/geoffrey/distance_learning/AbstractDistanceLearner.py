@@ -9,20 +9,13 @@ class AbstractDistanceLearner(object):
 
     maxResponseCount = None
 
-    def __init__(self, reactions, predictorHeaders, responseHeaders):
-        self.reactions = reactions
-        self.predictorHeaders = predictorHeaders
-        self.responseHeaders = responseHeaders
-
     @abstractmethod
     def train(self):
         """A function meant to be overridden by actual DistanceLeaner classes.
-        The `_train` method should determine the distance function
+        The `train` method should determine the distance function
         and save that model if necessary."""
 
     @abstractmethod
     def dist(self, x, y):
         """Returns the distance between x and y under the metric"""
             
-    def save(self, writeable):
-        dump(self, writeable)
