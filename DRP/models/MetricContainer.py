@@ -192,8 +192,10 @@ class MetricContainer(models.Model):
         if verbose:
             print "\t...Trained. Finished at {}.".format(self.endTime)
 
-        self.transform(self.trainingSet.reactions.order_by('pk'), transformed=transformed, verbose=verbose)
         self.built = True
+
+        self.transform(self.trainingSet.reactions.order_by('pk'), transformed=transformed, verbose=verbose)
+        
 
 
     def transform(self, reactions, transformed=None, verbose=False):
