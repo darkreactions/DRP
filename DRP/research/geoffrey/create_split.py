@@ -2,6 +2,7 @@
 import django
 from DRP.models import PerformedReaction, MetricContainer, Descriptor, rxnDescriptorValues, DataSet
 from DRP.ml_models.splitters.SingleSplitter import Splitter as SingleSplitter
+from sys import argv
 
 def build_training_test_set(name, response_headers=["boolean_crystallisation_outcome"]):
     reactions = PerformedReaction.objects.filter(valid=True)
@@ -17,4 +18,5 @@ def build_training_test_set(name, response_headers=["boolean_crystallisation_out
 
 if __name__ == '__main__':
     django.setup()
-    build_training_test_set("hello_testing_datasets_again")
+    name = argv[1]
+    build_training_test_set(name)
