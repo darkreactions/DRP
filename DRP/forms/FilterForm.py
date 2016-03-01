@@ -31,11 +31,13 @@ class FilterFormSet(forms.formsets.BaseFormSet):
     the intersection thereof.'''
 
     self.extra = 1
-    self.can_delete=False
-    self.can_order=False
-    self.max_num=10000
-    self.validate_max=False
-    self.absolute_max=10000
+    self.can_delete = False
+    self.can_order = False
+    self.validate_min = False # this is required for django 1.7
+    self.min_num = 0 # this is required for django 1.7. Unclear to me why both are required, but they are.
+    self.max_num = 10000
+    self.validate_max = False
+    self.absolute_max = 10000
     if operator in (or_, and_):
       self._operator = operator
     else:
