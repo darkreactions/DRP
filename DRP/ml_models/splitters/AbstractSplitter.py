@@ -10,7 +10,7 @@ class AbstractSplitter(object):
         self.namingCounter = 0
 
     @abstractmethod
-    def split(self, data):
+    def split(self, data, verbose=False):
         pass
 
     def package(self, data):

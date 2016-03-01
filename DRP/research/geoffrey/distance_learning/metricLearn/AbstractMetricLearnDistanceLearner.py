@@ -1,30 +1,28 @@
 from DRP.research.geoffrey.distance_learning.AbstractDistanceLearner import AbstractDistanceLearner, logger
 import numpy as np
 from sklearn.preprocessing import Imputer
-
+from cPickle import dump, load
 
 class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
     maxResponseCount = 1
-    metric_object = None
 
-    def _prepareArrays(self):
-        self.data = self.reactions.toNPArray(expanded=True, whitelistHeaders=self.predictorHeaders, missing=np.nan)
-        # TODO XXX: unset missing and ensure that all labels are defined.
-        # We shouldn't be using reactions with undefined labels anyway
-        self.labels = self.reactions.toNPArray(expanded=True, whitelistHeaders=self.responseHeaders, missing=False).flatten()
+    def _prepareArrays(self, reactions, predictor_headers, response_headers):
+        data = reactions.toNPArray(expanded=True, whitelistHeaders=predictor_headers, missing=np.nan)
+        labels = reactions.toNPArray(expanded=True, whitelistHeaders=response_headers).flatten()
 
-        Imputer(copy=False).fit_transform(self.data)
+        Imputer(copy=False).fit_transform(data)
 
         try:
-            assert(self.data.dtype == np.float64)
+            assert(data.dtype == np.float64)
         except AssertionError:
             raise TypeError("Data is not of the type float.")
 
-    def transformer(self):
-        return self.metric_object.transformer()
+        return data, labels
 
-    def transform(self, X=None):
-        return self.metric_object.transform(X)
+    def transform(self, reactions, predictor_headers):
+        data = self._prepareArrays(reactions, predictor_headers, [])[0]
+        transformed = self.metric_object.transform(data)
+        return transformed
 
     def metric(self):
         return self.metric_object.metric()
@@ -37,4 +35,10 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
 
         return dif.T.dot(Mah).dot(dif)
         
+    def save(self, fileName):
+        with open(fileName, 'wb') as f:
+            dump(self.metric_object, f)
 
+    def recover(self, fileName):
+        with open(fileName, 'rb') as f:
+            self.metric_object = load(f)

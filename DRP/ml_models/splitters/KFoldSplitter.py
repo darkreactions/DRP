@@ -6,12 +6,15 @@ class Splitter(AbstractSplitter):
         super(Splitter, self).__init__(namingStub)
         self.k = 4
 
-    def split(self, reactions):
+    def split(self, reactions, verbose=False):
         # Split the reactions' IDs into K randomly-organized buckets.
         rxn_ids = [reaction.id for reaction in reactions]
         random.shuffle(rxn_ids)
         buckets = [rxn_ids[i::self.k] for i in xrange(self.k)]
 
+        if verbose:
+            print "Split into {} buckets with sizes: {}".format(len(buckets), map(len, buckets))
+            
         splits = []
         for i in range(self.k):
             train = reactions.filter(id__in=[item for b in buckets[:i]+buckets[i+1:]

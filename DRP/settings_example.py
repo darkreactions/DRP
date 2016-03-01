@@ -215,7 +215,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     "DRP",
-    "south"
 )
 
 # A sample logging configuration. The only tangible logging
@@ -273,7 +272,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 STATS_MODEL_LIBS_DIR = "DRP.ml_models.model_visitors"
 STATS_MODEL_LIBS = ("weka",)
 REACTION_DATASET_SPLITTERS_DIR = "DRP.ml_models.splitters"
-REACTION_DATASET_SPLITTERS = ("KFoldSplitter", "NoSplitter", "SingleSplitter")
+REACTION_DATASET_SPLITTERS = ("KFoldSplitter", "MutualInfoSplitter", "NoSplitter", "SingleSplitter")
 FEATURE_SELECTION_LIBS_DIR = "DRP.ml_models.feature_visitors"
 FEATURE_SELECTION_LIBS = ("weka",)
 
