@@ -2,14 +2,20 @@
 from django.db import models
 from django.conf import settings
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
-from dataSets import DataSet
+from dataSets import DataSet, DataSetRelation
+from rxnDescriptorValues import NumRxnDescriptorValue
 import importlib
+import os
+import datetime
+from itertools import chain
 
 metricVisitors = {visitor:importlib.import_module(settings.METRIC_VISITOR_DIR + "." + visitor) for visitor in settings.METRIC_VISITORS}
+splitters = {splitter:importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
+
 
 class DescriptorAttribute(object):
 
-    def __get__(self, metricContainer):
+    def __get__(self, metricContainer, metricContainerType=None):
         return chain(metricContainer.boolRxnDescriptors.all(), metricContainer.ordRxnDescriptors.all(), metricContainer.catRxnDescriptors.all(), metricContainer.numRxnDescriptors.all())
 
     def __set__(self, metricContainer, descriptors):
@@ -128,14 +134,14 @@ class MetricContainer(models.Model):
     class Meta:
         app_label = 'DRP'
         
-    description = models.TextField()
+    description = models.TextField(default='', blank=True)
     metricVisitor = models.CharField(max_length=255)
-    startTime = models.DateTimeField(default=None, null=True)
-    endTime = models.DateTimeField(default=None, null=True)
+    startTime = models.DateTimeField(default=None, null=True, blank=True)
+    endTime = models.DateTimeField(default=None, null=True, blank=True)
     fileName = models.FileField(upload_to='metrics', max_length=200, blank=True)
     """The filename in which this model is stored"""
     invalid = models.BooleanField(default=False) 
-    trainingSet = models.ForeignKey(DataSet, related_name='trainingSetForMetric')
+    trainingSet = models.ForeignKey(DataSet, related_name='trainingSetForMetric', null=True)
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
@@ -153,6 +159,18 @@ class MetricContainer(models.Model):
     #transformedDescriptors = TransformedDescriptorAttribute()
     transformedRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='transformedByMetric')
 
+    
+    @classmethod
+    def create(cls, metricVisitor, reactions, description=''):
+        container = cls(metricVisitor=metricVisitor, description=description)
+        container.save() # need a pk
+        dataSet = DataSet(name='{}_{}'.format(container.metricVisitor, container.pk))
+        dataSet.save()
+        dsrs = [DataSetRelation(dataSet=dataSet, reaction=rxn) for rxn in reactions]
+        DataSetRelation.objects.bulk_create(dsrs)
+
+        container.trainingSet = dataSet
+        return container
 
     def build(self, predictors, responses, verbose=False):
         if self.built:
@@ -161,43 +179,55 @@ class MetricContainer(models.Model):
         self.descriptors = predictors
         self.outcomeDescriptors = responses
 
-        predictorHeaders = [d.csvHeader for d in self.descriptors]
-        responseHeaders = [d.csvHeader for d in outcomeDescriptors]
+        predictorHeaders = [d.csvHeader for d in chain(self.descriptors)]
+        responseHeaders = [d.csvHeader for d in chain(self.outcomeDescriptors)]
 
         metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor()
         self.startTime = datetime.datetime.now()
         self.fileName = os.path.join(settings.METRIC_DIR, '{}_{}'.format(self.metricVisitor, self.pk))
         if verbose:
-            print "{}, saving to {}, training...".format(self.startTime, self.fileName)
-        metricVisitor.train(traningSet.reactions.all(), predictorHeaders, responseHeaders, self.fileName)
+            print "{}, saving to {}, training on {} reactions...".format(self.startTime, self.fileName, self.trainingSet.reactions.count())
+        transformed = metricVisitor.train(self.trainingSet.reactions.order_by('pk'), predictorHeaders, responseHeaders, str(self.fileName))
         self.endTime = datetime.datetime.now()
         if verbose:
             print "\t...Trained. Finished at {}.".format(self.endTime)
+
+        self.transform(self.trainingSet.reactions.order_by('pk'), transformed=transformed, verbose=verbose)
         self.built = True
-        
 
-    def transform(self, reactions, verbose=False):
-        metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor()
-        metricVisitor.recover(self.fileName)
+
+    def transform(self, reactions, transformed=None, verbose=False):
+        if not self.built:
+            raise RuntimeError("Cannot transform using a metric that has not been built.")
+            
         if verbose:
-            print "Transforming..."
-        transformed = metricVisitor.transform(reactions)
+            print "Generating transformed descriptors for {} reactions".format(reactions.count())
+            
+        if transformed is None:
+            metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor()
+            metricVisitor.recover(str(self.fileName))
+            if verbose:
+                print "Transforming..."
+            predictorHeaders = [d.csvHeader for d in chain(self.descriptors)]
+            transformed = metricVisitor.transform(reactions, predictorHeaders)
+    
+            if verbose:
+                print "\t...transformed"
+        elif verbose:
+            print "Transformed array given. Skipping transformation"
 
-        if verbose:
-            print "\t...transformed"
-
-        if not self.transformedDescriptors.exists():
+        if not self.transformedRxnDescriptors.exists():
             if verbose:
                 print "No existing descriptors found for this metric container. Creating them..."
             for col in range(transformed.shape[1]):
                 desc = NumRxnDescriptor(heading='transform_{}_metric_{}'.format(self.pk, col),
-                                        name='{} transformed descriptor for metric container {}'.format(col, self.pk))
+                                        name='transformed descriptor {} for metric container {}'.format(col, self.pk))
                 desc.save()
                 self.transformedRxnDescriptors.add(desc)
             if verbose:
                 print "\t...created"
-        elif self.transformedDescriptors.count() != transformed.shape[1]:
-            raise RuntimeError("Metric container already has descriptors, but not the same number as the number of columns in data transformed by the metric visitor")
+        elif self.transformedRxnDescriptors.count() != transformed.shape[1]:
+            raise RuntimeError("Metric container already has descriptors, but not the same number as the number of columns in data transformed by the metric visitor.")
         elif verbose:
             print "Existing transformed descriptors found. Skipping creation."
 
@@ -206,8 +236,12 @@ class MetricContainer(models.Model):
         values = []
         for i, rxn in enumerate(reactions):
             for j, desc in enumerate(self.transformedRxnDescriptors.order_by('pk')):
-                val = desc.createValue(rxn, transformed[i,j])
-                values.append(val)
+                try:
+                    v = NumRxnDescriptorValue.objects.get(descriptor=desc, reaction=rxn)
+                except:
+                    val = desc.createValue(rxn, transformed[i,j])
+                    values.append(val)
+                    
         NumRxnDescriptorValue.objects.bulk_create(values)
         if verbose:
             print "\t...finished"

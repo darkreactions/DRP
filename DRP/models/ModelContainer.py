@@ -185,13 +185,16 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, description="", splitter=None, reactions=None, trainingSets=None, testSets=None, featureLibrary=None, featureTool=None):
-        model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, description=description)
+    def create(cls, modelVisitorLibrary, modelVisitorTool, description="", splitter=None, reactions=None, trainingSets=None, testSets=None):
+        model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
         if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
         if not ((splitter is None) ^ (trainingSets is None)): # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
+
+        if splitter is not None:
+            model_container.splitter = splitter
 
         model_container.reactions = reactions
         model_container.trainingSets = trainingSets
@@ -213,14 +216,17 @@ class ModelContainer(models.Model):
         self.descriptors = predictors
         self.outcomeDescriptors = response
 
-        if self.splitter is not None:
+        if self.splitter:
             splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))
-            if verbose: print "Splitting using {}".format(self.splitter)
+            if verbose:
+                print "Splitting using {}".format(self.splitter)
             data_splits = splitterObj.split(self.reactions, verbose=verbose)
 
             self.trainingSets = [dataset_tuple[0] for dataset_tuple in data_splits]
             self.testSets = [dataset_tuple[1] for dataset_tuple in data_splits]
-
+        elif verbose:
+            print "No splitter. Using given test and training sets."
+        
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
         for trainingSet, testSet in zip(self.trainingSets, self.testSets):

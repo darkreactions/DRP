@@ -1,7 +1,7 @@
 from DRP.research.geoffrey.distance_learning.AbstractDistanceLearner import AbstractDistanceLearner, logger
 import numpy as np
 from sklearn.preprocessing import Imputer
-
+from cPickle import dump, load
 
 class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
     maxResponseCount = 1
@@ -19,7 +19,7 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
 
         return data, labels
 
-    def transform(self, reactions, predictor_headers, metricContainer):
+    def transform(self, reactions, predictor_headers):
         data = self._prepareArrays(reactions, predictor_headers, [])[0]
         transformed = self.metric_object.transform(data)
         return transformed
