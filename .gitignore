@@ -5,7 +5,7 @@ DRP/research/casey/results/CSVs/*
 
 tmp/*
 models/*
-metric/*
+metrics/*
 
 *.pyc
 .sql
