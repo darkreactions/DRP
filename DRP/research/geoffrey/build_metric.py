@@ -5,17 +5,6 @@ from DRP.models import PerformedReaction, MetricContainer, Descriptor, rxnDescri
 import argparse
 from DRP.ml_models.splitters.SingleSplitter import Splitter as SingleSplitter
 
-def build_training_test_set(name):
-    reactions = PerformedReaction.objects.filter(valid=True)
-    reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-    reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-    reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-
-    splitter = SingleSplitter(name)
-
-    trainingSet, testSet = SingleSplitter.split(reactions, verbose=True)
-
-
 def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, testSetName=None, outfile=None, verbose=False):
     """
     Build and display a model with the specified tools
@@ -32,16 +21,20 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
     container.save()
     container.full_clean()
 
-    if outfile is not None:
-        with open(outfile, 'wb') as f:
-            for desc in container.transformedRxnDescriptors.all():
-                f.write(desc.heading)
-                f.write('\n')
 
     if verbose:
         print "Transforming training set"
     reactions = trainingSet.reactions.all()
     container.transform(reactions, transformed=transformed, verbose=verbose)
+
+    if verbose:
+        print "Writing descriptors to file"
+
+    if outfile is not None:
+        with open(outfile, 'wb') as f:
+            for desc in container.transformedRxnDescriptors.all():
+                f.write(desc.heading)
+                f.write('\n')
 
     if testSetName is not None:
         if verbose:
@@ -49,6 +42,7 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
         testSet = DataSet.objects.get(name=testSetName)
         reactions = testSet.reactions.all()
         container.transform(reactions, verbose=verbose)
+
 
 if __name__ == '__main__':
     django.setup()
