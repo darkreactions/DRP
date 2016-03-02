@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.conf import settings
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
@@ -187,17 +186,14 @@ class MetricContainer(models.Model):
         self.fileName = os.path.join(settings.METRIC_DIR, '{}_{}'.format(self.metricVisitor, self.pk))
         if verbose:
             print "{}, saving to {}, training on {} reactions...".format(self.startTime, self.fileName, self.trainingSet.reactions.count())
-        transformed = metricVisitor.train(self.trainingSet.reactions.order_by('pk'), predictorHeaders, responseHeaders, str(self.fileName))
+        transformed = metricVisitor.train(self.trainingSet.reactions.all(), predictorHeaders, responseHeaders, str(self.fileName))
         self.endTime = datetime.datetime.now()
         if verbose:
             print "\t...Trained. Finished at {}.".format(self.endTime)
 
         self.built = True
-
-        self.transform(self.trainingSet.reactions.order_by('pk'), transformed=transformed, verbose=verbose)
+        return transformed
         
-
-
     def transform(self, reactions, transformed=None, verbose=False):
         if not self.built:
             raise RuntimeError("Cannot transform using a metric that has not been built.")
@@ -235,16 +231,21 @@ class MetricContainer(models.Model):
 
         if verbose:
             print "Inputting values for given reactions..."
-        values = []
-        for i, rxn in enumerate(reactions):
-            for j, desc in enumerate(self.transformedRxnDescriptors.order_by('pk')):
+        
+        for j, desc in enumerate(self.transformedRxnDescriptors.all()):
+            values = []
+            for i, rxn in enumerate(reactions):                
                 try:
                     v = NumRxnDescriptorValue.objects.get(descriptor=desc, reaction=rxn)
                 except:
                     val = desc.createValue(rxn, transformed[i,j])
                     values.append(val)
                     
-        NumRxnDescriptorValue.objects.bulk_create(values)
+            NumRxnDescriptorValue.objects.bulk_create(values)
+
+            if verbose:
+                print "Done with descriptor {} of {}".format(j, self.transformedRxnDescriptors.count())
+
         if verbose:
             print "\t...finished"
         

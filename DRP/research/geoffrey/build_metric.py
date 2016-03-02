@@ -16,11 +16,10 @@ def build_training_test_set(name):
     trainingSet, testSet = SingleSplitter.split(reactions, verbose=True)
 
 
-def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, outfile=None, verbose=False):
+def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, testSetName=None, outfile=None, verbose=False):
     """
     Build and display a model with the specified tools
     """
-    # Grab all valid reactions with defined outcome descriptors
 
     trainingSet = DataSet.objects.get(name=trainingSetName)
     predictors = Descriptor.objects.filter(heading__in=descriptor_headers)
@@ -29,7 +28,7 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
     container = MetricContainer(metricVisitor=metricVisitorTool, trainingSet=trainingSet, description=description)
     container.save()
     container.full_clean()
-    container.build(predictors, responses, verbose=verbose)
+    transformed = container.build(predictors, responses, verbose=verbose)
     container.save()
     container.full_clean()
 
@@ -40,14 +39,16 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
                 f.write('\n')
 
     if verbose:
-        print "Tranforming all reactions to new space"
+        print "Transforming training set"
+    reactions = trainingSet.reactions.all()
+    container.transform(reactions, transformed=transformed, verbose=verbose)
 
-    reactions = PerformedReaction.objects.filter(valid=True)
-    reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-    reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-    reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-
-    container.transform(reactions, verbose=verbose)
+    if testSetName is not None:
+        if verbose:
+            print "Tranforming test set to new space" 
+        testSet = DataSet.objects.get(name=testSetName)
+        reactions = testSet.reactions.all()
+        container.transform(reactions, verbose=verbose)
 
 if __name__ == '__main__':
     django.setup()
@@ -68,8 +69,10 @@ if __name__ == '__main__':
                         help='Description of metric.')
     parser.add_argument('-o', '--descriptor-outfile', default=None,
                         help='File to write list of metric descriptors.')
-    parser.add_argument('-ts', '--training-set-name', default=None, required=True,
+    parser.add_argument('-trs', '--training-set-name', default=None, required=True,
+                        help='Name of training set to use.')
+    parser.add_argument('-tes', '--test-set-name', default=None, required=True,
                         help='Name of training set to use.')
     args = parser.parse_args()
 
-    prepare_build_metric(args.predictor_headers, args.response_headers, args.metric_tool, args.description, trainingSetName=args.training_set_name, outfile=args.descriptor_outfile, verbose=args.verbose)
+    prepare_build_metric(args.predictor_headers, args.response_headers, args.metric_tool, args.description, trainingSetName=args.training_set_name, testSetName=args.test_set_name, outfile=args.descriptor_outfile, verbose=args.verbose)
