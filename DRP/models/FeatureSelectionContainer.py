@@ -191,7 +191,7 @@ class FeatureSelectionContainer(models.Model):
         self.descriptors = predictors
         self.outcomeDescriptors = responses
 
-        descriptors = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
+        descriptor_headers = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
 
         featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(self)
 
@@ -199,13 +199,17 @@ class FeatureSelectionContainer(models.Model):
 
         if verbose:
             print "{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count())
-        descriptor_headers = featureVisitor.train(self.trainingSet.reactions.all(), descriptors, verbose=verbose) 
+        chosen_descriptor_headers = featureVisitor.train(self.trainingSet.reactions.all(), descriptor_headers, verbose=verbose) 
 
         self.endTime = datetime.datetime.now()
         if verbose:
             print "\t...Trained. Finished at {}.".format(self.endTime)
 
-        self.chosenDescriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
-        print list(self.chosenDescriptors)
+        # TODO XXX Make this not hacky af
+        chosen_descriptor_list = []
+        for desc in self.descriptors:
+            if desc.csvHeader in chosen_descriptor_headers:
+                chosen_descriptor_list.append(desc)
+            
+        self.chosenDescriptors = chosen_descriptor_list
         self.built = True
-        return descriptor_headers

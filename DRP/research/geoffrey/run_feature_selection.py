@@ -31,12 +31,14 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
 
     container.save()
     container.full_clean()
-    descriptor_headers = container.build(predictors, responses, verbose=verbose)
+    container.build(predictors, responses, verbose=verbose)
     container.save()
     container.full_clean()
-    
+
+       
     if verbose:
-        print descriptor_headers
+        for desc in container.chosenDescriptors:
+            print desc.heading
     return container
 
 
