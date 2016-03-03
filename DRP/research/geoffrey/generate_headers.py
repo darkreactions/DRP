@@ -54,13 +54,18 @@ def valid_descriptors():
         descriptor_types = [BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor]
         predicted_descriptor_types = [PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDescriptor, PredCatRxnDescriptor]
         
-        if (is_descriptor_types(descriptor_types, descriptor) and not is_descriptor_types(predicted_descriptor_types, descriptor) and
-                "outcome" not in descriptor.heading and "rxnSpaceHash" not in descriptor.heading and 
-                not descriptor.heading.startswith('_') and not descriptor.heading.startswith('transform') and 
+        if (is_descriptor_types(descriptor_types, descriptor) and
+                not is_descriptor_types(predicted_descriptor_types, descriptor) and
+                "outcome" not in descriptor.heading and 
+                "rxnSpaceHash" not in descriptor.heading and 
+                not descriptor.heading.startswith('_') and
+                not descriptor.heading.startswith('transform') and 
                 "examplepy" not in descriptor.heading):
             descriptor_list.append(descriptor)
+
     return descriptor_list
 
 if __name__=='__main__':
-    print_headers()
+    #print_headers()
+    print_headers_with_names()
     #print_descriptor_types()
