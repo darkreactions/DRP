@@ -1,8 +1,4 @@
-from django.conf import settings
-import uuid
 from AbstractWekaFeatureVisitor import AbstractWekaFeatureVisitor
-import os
-
 
 class CFS(AbstractWekaFeatureVisitor):
 
