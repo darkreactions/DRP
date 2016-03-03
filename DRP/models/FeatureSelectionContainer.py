@@ -1,6 +1,9 @@
 
 from django.db import models
-
+from django.conf import settings
+from DRP.models import DataSet
+from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+import importlib
 
 featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
 
@@ -145,7 +148,7 @@ class OutcomeDescriptorAttribute(object):
         featureSelectionContainer.outcomeCatRxnDescriptors.clear()
         featureSelectionContainer.outcomeOrdRxnDescriptors.clear()
 
-class FeatureContainer(models.Model):
+class FeatureSelectionContainer(models.Model):
     
     description = models.TextField(default='', blank=True)
     featureLibrary = models.CharField(max_length=200, default='', blank=True)
@@ -180,7 +183,7 @@ class FeatureContainer(models.Model):
         container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureLibrary, container.featureLibrary, container.pk), reactions)
         return container
 
-    def build(self, predictors, responses, verbose=False)
+    def build(self, predictors, responses, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a feature selection that has already been built.")
 

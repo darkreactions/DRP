@@ -25,3 +25,4 @@ from ConfirmationCode import ConfirmationCode
 from CompoundRole import CompoundRole
 from ModelContainer import ModelContainer
 from MetricContainer import MetricContainer
+from FeatureSelectionContainer import FeatureSelectionContainer
