@@ -6,9 +6,9 @@ from DRP.research.geoffrey.distance_learning.metricLearn.AbstractMetricLearnDist
 
 
 class MetricVisitor(AbstractMetricLearnDistanceLearner):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, num_constraints, *args, **kwargs):
         self.metric_object = ml_ITML()
-        self.num_constraints = 5000
+        self.num_constraints = num_constraints if num_constraints is not None else 200
         super(self.__class__, self).__init__(*args, **kwargs)
 
 
