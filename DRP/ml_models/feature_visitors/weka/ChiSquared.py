@@ -1,6 +1,6 @@
 from AbstractWekaFeatureVisitor import AbstractWekaFeatureVisitor
 
-class ChiSquared(AbstractWekaFeatureVisitorgot):
+class ChiSquared(AbstractWekaFeatureVisitor):
 
     maxResponseCount = 1
 
