@@ -1,22 +1,9 @@
 #!/usr/bin/env python
 
 import django
-from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues, DataSet
+from DRP.models import PerformedReaction, FeatureSelectionContainer, Descriptor, rxnDescriptorValues, DataSet
 import operator
 import argparse
-
-
-def build_model(reactions=None, predictors=None, responses=None, featureVisitorLibrary=None, featureVisitorTool=None, trainingSet=None, testSet=None, description="", verbose=False):
-    container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, description=description, reactions=reactions)
-
-    container.save()
-    container.full_clean()
-    container.build(predictors, responses, verbose=verbose)
-    container.save()
-    container.full_clean()
-
-    return container
-
 
 
 def prepare_build_model(predictor_headers=None, response_headers=None, featureVisitorLibrary=None, featureVisitorTool=None, training_set_name=None, test_set_name=None, description="", verbose=False):
@@ -27,21 +14,30 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
     
-    if training_set_name is None:
-        assert(test_set_name == None)
+    if training_set_name:
+        trainingSet =  DataSet.objects.get(name=training_set_name)
+        testSet =  DataSet.objects.get(name=test_set_name)
+        reactions=None
+    else:
+        assert(not test_set_name)
         reactions = PerformedReaction.objects.filter(valid=True)
         reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         trainingSet = None
         testSet = None
-    else:
-        trainingSet =  DataSet.objects.get(name=training_set_name)
-        testSet =  DataSet.objects.get(name=test_set_name)
-        reactions=None
     
-    container = build_model(reactions=reactions, predictors=predictors, responses=responses, featureVisitorLibrary=featureVisitorLibrary, featureVisitorTool=featureVisitorTool,
-                            trainingSet=trainingSet, testSet=testSet, description=description, verbose=verbose)
+    container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, description=description, reactions=reactions)
+
+    container.save()
+    container.full_clean()
+    descriptor_headers = container.build(predictors, responses, verbose=verbose)
+    container.save()
+    container.full_clean()
+    
+    if verbose:
+        print descriptor_headers
+    return container
 
 
 if __name__ == '__main__':
@@ -63,11 +59,11 @@ if __name__ == '__main__':
                         help='Activate verbose mode.')
     parser.add_argument('-d', '--description', default="",
                         help='Description of model. (default: %(default)s)')
-    parser.add_argument('-trs', '--training-set-name', default="",mas
+    parser.add_argument('-trs', '--training-set-name', default="",
                         help='The name of the training set to use. (default: %(default)s)')
     parser.add_argument('-tes', '--test-set-name', default="",
                         help='The name of the test set to use. (default: %(default)s)')
     args = parser.parse_args()
 
-    prepare_build_display_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, featureVisitorLibrary=args.feature_visitor_library, featureVisitorTool=args.feature_visitor_tool,
+    prepare_build_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, featureVisitorLibrary=args.feature_visitor_library, featureVisitorTool=args.feature_visitor_tool,
                                 training_set_name=args.training_set_name, test_set_name=args.test_set_name, description=args.description, verbose=args.verbose)

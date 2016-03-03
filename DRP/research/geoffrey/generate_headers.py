@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-
+import django
+django.setup()
 from DRP.models import Descriptor
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from DRP.models.predRxnDescriptors import PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDescriptor, PredCatRxnDescriptor
@@ -39,6 +40,10 @@ def print_descriptor_types():
         print "There are {} descriptors of the {} type".format(number, descType)
 
 
+def print_headers_with_names():
+    for descriptor in valid_descriptors():
+        print descriptor.heading, '\n\t', descriptor.name, '\n'
+
 def print_headers():
     for descriptor in valid_descriptors():
         print descriptor.heading
@@ -50,10 +55,12 @@ def valid_descriptors():
         predicted_descriptor_types = [PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDescriptor, PredCatRxnDescriptor]
         
         if (is_descriptor_types(descriptor_types, descriptor) and not is_descriptor_types(predicted_descriptor_types, descriptor) and
-                "outcome" not in descriptor.heading and "rxnSpaceHash" not in descriptor.heading and not descriptor.heading.startswith('_')):
+                "outcome" not in descriptor.heading and "rxnSpaceHash" not in descriptor.heading and 
+                not descriptor.heading.startswith('_') and not descriptor.heading.startswith('transform') and 
+                "examplepy" not in descriptor.heading):
             descriptor_list.append(descriptor)
     return descriptor_list
 
 if __name__=='__main__':
-    #print_headers()
-    print_descriptor_types()
+    print_headers()
+    #print_descriptor_types()
