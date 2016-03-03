@@ -166,7 +166,7 @@ class MetricContainer(models.Model):
         container.trainingSet = DataSet.create('{}_{}'.format(container.metricVisitor, container.pk), reactions)
         return container
 
-    def build(self, predictors, responses, verbose=False):
+    def build(self, predictors, responses, verbose=False, num_constraints=200):
         if self.built:
             raise RuntimeError("Cannot build a metric that has already been built.")
 
@@ -176,7 +176,7 @@ class MetricContainer(models.Model):
         predictorHeaders = [d.csvHeader for d in chain(self.descriptors)]
         responseHeaders = [d.csvHeader for d in chain(self.outcomeDescriptors)]
 
-        metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor()
+        metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor(num_constraints)
         self.startTime = datetime.datetime.now()
         self.fileName = os.path.join(settings.METRIC_DIR, '{}_{}'.format(self.metricVisitor, self.pk))
         if verbose:

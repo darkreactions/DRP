@@ -5,7 +5,7 @@ from DRP.models import PerformedReaction, MetricContainer, Descriptor, rxnDescri
 import argparse
 from DRP.ml_models.splitters.SingleSplitter import Splitter as SingleSplitter
 
-def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, testSetName=None, outfile=None, verbose=False):
+def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, testSetName=None, outfile=None, verbose=False, num_constraints=None):
     """
     Build and display a model with the specified tools
     """
@@ -17,7 +17,7 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
     container = MetricContainer(metricVisitor=metricVisitorTool, trainingSet=trainingSet, description=description)
     container.save()
     container.full_clean()
-    transformed = container.build(predictors, responses, verbose=verbose)
+    transformed = container.build(predictors, responses, verbose=verbose, num_constraints=num_constraints)
     container.save()
     container.full_clean()
 
@@ -65,8 +65,12 @@ if __name__ == '__main__':
                         help='File to write list of metric descriptors.')
     parser.add_argument('-trs', '--training-set-name', default=None, required=True,
                         help='Name of training set to use.')
-    parser.add_argument('-tes', '--test-set-name', default=None, required=True,
+    parser.add_argument('-tes', '--test-set-name', default=None, required=False,
                         help='Name of training set to use.')
+    parser.add_argument('-n', '--num-constraints', default=200, type=int,
+                        help='The number of constraints to use to build the metric (only applicable for ITML)')
     args = parser.parse_args()
 
-    prepare_build_metric(args.predictor_headers, args.response_headers, args.metric_tool, args.description, trainingSetName=args.training_set_name, testSetName=args.test_set_name, outfile=args.descriptor_outfile, verbose=args.verbose)
+    prepare_build_metric(args.predictor_headers, args.response_headers, args.metric_tool, args.description,
+                        trainingSetName=args.training_set_name, testSetName=args.test_set_name,
+                        num_constraints=args.num_constraints, outfile=args.descriptor_outfile, verbose=args.verbose)
