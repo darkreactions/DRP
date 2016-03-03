@@ -93,7 +93,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         # TODO: Validate this input.
         command = self.wekaPredictCommand(arff_file, model_file, response_index, results_path)
         if verbose:
-            print "Writing results to {}".format(command, results_path)
+            print "Writing results to {}".format(results_path)
         self._runWekaCommand(command)
 
         if isinstance(response, rxnDescriptors.BoolRxnDescriptor):

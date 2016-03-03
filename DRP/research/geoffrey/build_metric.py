@@ -43,6 +43,8 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
     container = MetricContainer(metricVisitor=metricVisitorTool, trainingSet=trainingSet, description=description)
     container.save()
     container.full_clean()
+    if verbose:
+        print "Created MetricContainer {}".format(container.pk)
     transformed = container.build(predictors, responses, verbose=verbose, num_constraints=num_constraints)
     container.save()
     container.full_clean()
