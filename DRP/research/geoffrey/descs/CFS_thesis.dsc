@@ -1,0 +1,9 @@
+reaction_temperature
+reaction_time
+Na_mols
+Cl_mols
+Cr_mols
+Se_mols
+Org_amount_molarity
+Solv_amount_molarity
+Ox_amount_molarity

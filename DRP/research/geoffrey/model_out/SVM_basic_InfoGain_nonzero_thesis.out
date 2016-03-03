@@ -1,0 +1,22 @@
+No splitter. Using given test and training sets.
+2016-03-03 03:13:35.985261 statsModel 138, saving to /home/gmartinn/DRP_main/DRP_repo/models/124_138, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/138_009172b7-0eb8-4516-81a5-b8a5af1a36fd.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/138_009172b7-0eb8-4516-81a5-b8a5af1a36fd.arff -d /home/gmartinn/DRP_main/DRP_repo/models/124_138 -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-03 03:32:27.248717. Saving statsModel... saved
+Predicting test set...
+Writing results to java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/138_44f175e4-cf73-4571-9f90-705ea97c7642.arff -l /home/gmartinn/DRP_main/DRP_repo/models/124_138 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/138_8f15b8f7-64e0-4634-90ea-6103f445e20e.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_124_summative__:
+      False  True 
+False   0     2   
+ True  634   1429 
+Accuracy: 0.692
+BCR: 0.499
+Confusion matrix for boolean_crystallisation_outcome_prediction_124_component_138__:
+      False  True 
+False   0     2   
+ True  634   1429 
+Accuracy: 0.692
+BCR: 0.499

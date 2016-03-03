@@ -1,0 +1,30 @@
+2016-03-03 02:01:04.822596, training on 4193 reactions...
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 5228
+	Merit of best subset found:    0.065
+
+Attribute Subset Evaluator (supervised, Class (nominal): 1 boolean_crystallisation_outcome_manual_0):
+	CFS Subset Evaluator
+	Including locally predictive attributes
+
+Selected attributes: 3,4,18,26,50,85,138,220,292 : 9
+                     reaction_temperature_manual_0
+                     reaction_time_manual_0
+                     Na_mols_drp_0.02
+                     Cl_mols_drp_0.02
+                     Cr_mols_drp_0.02
+                     Se_mols_drp_0.02
+                     Org_amount_molarity_drp_0.02
+                     Solv_amount_molarity_drp_0.02
+                     Ox_amount_molarity_drp_0.02
+
+
+	...Trained. Finished at 2016-03-03 02:08:46.286219.
