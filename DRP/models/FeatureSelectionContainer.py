@@ -1,9 +1,10 @@
 
 from django.db import models
 from django.conf import settings
-from DRP.models import DataSet
-from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from DRP.models import DataSet, Descriptor, BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 import importlib
+from itertools import chain
+import datetime
 
 featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
 
@@ -151,8 +152,8 @@ class OutcomeDescriptorAttribute(object):
 class FeatureSelectionContainer(models.Model):
     
     description = models.TextField(default='', blank=True)
-    featureLibrary = models.CharField(max_length=200, default='', blank=True)
-    featureTool = models.CharField(max_length=200, default='', blank=True)
+    featureVisitorLibrary = models.CharField(max_length=200, default='', blank=True)
+    featureVisitorTool = models.CharField(max_length=200, default='', blank=True)
     startTime = models.DateTimeField(default=None, null=True, blank=True)
     endTime = models.DateTimeField(default=None, null=True, blank=True)
     trainingSet = models.ForeignKey(DataSet, related_name='trainingSetForFeatureSelection', null=True)
@@ -177,10 +178,10 @@ class FeatureSelectionContainer(models.Model):
     chosenNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='chosenForFeatureSelection')
 
     @classmethod
-    def create(cls, featureLibrary, featureTool, reactions):
-        container = cls(featureLibrary=featureLibrary, featureTool=featureTool)
+    def create(cls, featureVisitorLibrary, featureVisitorTool, reactions, description=""):
+        container = cls(featureVisitorLibrary=featureVisitorLibrary, featureVisitorTool=featureVisitorTool, description=description)
         container.save() # need pk
-        container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureLibrary, container.featureLibrary, container.pk), reactions)
+        container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureVisitorLibrary, container.featureVisitorLibrary, container.pk), reactions)
         return container
 
     def build(self, predictors, responses, verbose=False):
@@ -190,20 +191,21 @@ class FeatureSelectionContainer(models.Model):
         self.descriptors = predictors
         self.outcomeDescriptors = responses
 
-        predictorHeaders = [d.csvHeader for d in chain(self.descriptors)]
-        responseHeaders = [d.csvHeader for d in chain(self.outcomeDescriptors)]
+        descriptors = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
 
-        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)()
+        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(self)
 
         self.startTime = datetime.datetime.now()
 
         if verbose:
             print "{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count())
-        featureVisitor.train(trainingSet.reactions.all(), whitelist, fileName, verbose=verbose) 
+        descriptor_headers = featureVisitor.train(self.trainingSet.reactions.all(), descriptors, verbose=verbose) 
 
         self.endTime = datetime.datetime.now()
         if verbose:
             print "\t...Trained. Finished at {}.".format(self.endTime)
 
+        self.chosenDescriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
+        print list(self.chosenDescriptors)
         self.built = True
-
+        return descriptor_headers

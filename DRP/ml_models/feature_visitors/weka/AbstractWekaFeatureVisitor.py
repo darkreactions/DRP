@@ -11,23 +11,45 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
     maxResponseCount = 1
     
-    def __init__(self, ContainerID, *args, **kwargs):
+    def __init__(self, container, *args, **kwargs):
         super(AbstractWekaFeatureVisitor, self).__init__(*args, **kwargs)
+
+        self.container = container
         
         self.WEKA_VERSION = "3.6" # The version of WEKA to use.
     
     def _prepareArff(self, reactions, whitelistHeaders):
         """Writes an *.arff file using the provided queryset of reactions."""
         logger.debug("Preparing ARFF file...")
-        filename = "{}_{}.arff".format(self.statsModel.pk, uuid.uuid4())
+        filename = "featureSelection_{}_{}.arff".format(self.container.pk, uuid.uuid4())
         filepath = os.path.join(settings.TMP_DIR, filename)
         while os.path.isfile(filepath): #uber paranoid making sure we don't race condition
-            filename = "{}_{}.arff".format(self.statsModel.pk, uuid.uuid4())
+            filename = "{}_{}.arff".format(self.container.pk, uuid.uuid4())
             filepath = os.path.join(settings.TMP_DIR, filename)
         with open(filepath, "w") as f:
           reactions.toArff(f, expanded=True, whitelistHeaders=whitelistHeaders)
         return filepath
-    
+
+    def _readWekaOutput(self, output):
+        """
+        Reads a weka feature selection output and outputs a list of descriptors
+        """
+        start_line = "Selected attributes:"
+        raw_lines = output.split('\n')
+        
+        found = False
+        descriptors = []
+        for line in raw_lines:
+            if found:
+                desc = line.strip()
+                if desc: #check if line is just whitespace
+                    descriptors.append(desc)
+            if line.startswith(start_line):
+                found = True
+
+        return descriptors
+
+
     def _runWekaCommand(self, command, verbose=False):
         """Sets the CLASSPATH necessary to use Weka, then runs a shell `command`."""
         if not settings.WEKA_PATH[self.WEKA_VERSION]:
@@ -37,21 +59,28 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         logger.debug("Running in Shell:\n{}".format(command))
         if verbose:
             print "Running in Shell:\n{}".format(command)
-        subprocess.check_output(command, shell=True)
+        output = subprocess.check_output(command, shell=True)
+        return output
     
-    def train(self, reactions, descriptorHeaders, filePath, verbose=False):
+    def train(self, reactions, descriptorHeaders, verbose=False):
         arff_file = self._prepareArff(reactions, descriptorHeaders)
 
-        #results_file = "{}_{}_features.out".format(self.statsModel.pk, uuid.uuid4())
-        #results_path = os.path.join(settings.TMP_DIR, results_file)
+        results_file = "featureSelection_{}_{}.out".format(self.container.pk, uuid.uuid4())
+        results_path = os.path.join(settings.TMP_DIR, results_file)
         
         # Currently, we support only one "response" variable.
         headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
-        response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
-        command = WekaTrainCommand(arff_file, response_index)
+        response_index = headers.index(list(self.container.outcomeDescriptors)[0].csvHeader) + 1
+        command = self.wekaTrainCommand(arff_file, response_index)
         
-        check_output = self._runWekaCommand(command)
-        print check_output
+        output = self._runWekaCommand(command)
+        if verbose:
+            print output
+
+        descriptor_headers = self._readWekaOutput(output)
+        return descriptor_headers
+        
+        
 
     @abstractmethod
     def wekaTrainCommand(self, arff_file, response_index, out_file):
