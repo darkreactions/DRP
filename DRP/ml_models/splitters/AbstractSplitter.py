@@ -13,11 +13,17 @@ class AbstractSplitter(object):
     def split(self, data, verbose=False):
         pass
 
-    def package(self, data):
-        dataSet = DRP.models.DataSet(name=self.namingStub + '_{}'.format(self.namingCounter))
-        dataSet.save()
-        self.namingCounter+=1
-        dsrs = [DRP.models.DataSetRelation(dataSet=dataSet, reaction=datum) for datum in data]
-        DRP.models.DataSetRelation.objects.bulk_create(dsrs)
+    #def package(self, data):
+        #dataSet = DRP.models.DataSet(name=self.namingStub + '_{}'.format(self.namingCounter))
+        #dataSet.save()
+        #self.namingCounter+=1
+        #dsrs = [DRP.models.DataSetRelation(dataSet=dataSet, reaction=datum) for datum in data]
+        #DRP.models.DataSetRelation.objects.bulk_create(dsrs)
 
+        #return dataSet
+        
+    def package(self, data):
+        dataSet = DRP.models.DataSet.create('{}_{}'.format(self.namingStub, self.namingCounter), data)
+        self.namingCounter += 1
+    
         return dataSet

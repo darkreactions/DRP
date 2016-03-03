@@ -2,6 +2,10 @@
 from django.db import models
 
 
+featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
+
+FEATURE_SELECTION_TOOL_CHOICES = tuple(tool for library in featureVisitorModules.values() for tool in library.tools)
+
 class DescriptorAttribute(object):
 
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
@@ -169,6 +173,12 @@ class FeatureContainer(models.Model):
     chosenCatRxnDescriptors = models.ManyToManyField(CatRxnDescriptor, related_name='chosenForFeatureSelection')
     chosenNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='chosenForFeatureSelection')
 
+    @classmethod
+    def create(cls, featureLibrary, featureTool, reactions):
+        container = cls(featureLibrary=featureLibrary, featureTool=featureTool)
+        container.save() # need pk
+        container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureLibrary, container.featureLibrary, container.pk), reactions)
+        return container
 
     def build(self, predictors, responses, verbose=False)
         if self.built:
@@ -179,3 +189,18 @@ class FeatureContainer(models.Model):
 
         predictorHeaders = [d.csvHeader for d in chain(self.descriptors)]
         responseHeaders = [d.csvHeader for d in chain(self.outcomeDescriptors)]
+
+        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)()
+
+        self.startTime = datetime.datetime.now()
+
+        if verbose:
+            print "{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count())
+        featureVisitor.train(trainingSet.reactions.all(), whitelist, fileName, verbose=verbose) 
+
+        self.endTime = datetime.datetime.now()
+        if verbose:
+            print "\t...Trained. Finished at {}.".format(self.endTime)
+
+        self.built = True
+

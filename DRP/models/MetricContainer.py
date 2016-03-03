@@ -163,12 +163,7 @@ class MetricContainer(models.Model):
     def create(cls, metricVisitor, reactions, description=''):
         container = cls(metricVisitor=metricVisitor, description=description)
         container.save() # need a pk
-        dataSet = DataSet(name='{}_{}'.format(container.metricVisitor, container.pk))
-        dataSet.save()
-        dsrs = [DataSetRelation(dataSet=dataSet, reaction=rxn) for rxn in reactions]
-        DataSetRelation.objects.bulk_create(dsrs)
-
-        container.trainingSet = dataSet
+        container.trainingSet = DataSet.create('{}_{}'.format(container.metricVisitor, container.pk), reactions)
         return container
 
     def build(self, predictors, responses, verbose=False):

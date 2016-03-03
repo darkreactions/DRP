@@ -43,7 +43,7 @@ def prepare_build_display_model(predictor_headers=None, response_headers=None, m
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
     
-    if training_set_name == None:
+    if training_set_name is None:
         assert(test_set_name == None)
         reactions = PerformedReaction.objects.filter(valid=True)
         reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
