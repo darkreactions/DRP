@@ -197,7 +197,7 @@ class MetricContainer(models.Model):
             print "{} Generating transformed descriptors for {} reactions".format(datetime.datetime.now(), reactions.count())
             
         if transformed is None:
-            metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor()
+            metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor(0) #num_constraints doesn't matter here. TODO make this not stupid
             metricVisitor.recover(str(self.fileName))
             if verbose:
                 print "Transforming..."

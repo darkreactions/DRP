@@ -5,6 +5,32 @@ from DRP.models import PerformedReaction, MetricContainer, Descriptor, rxnDescri
 import argparse
 from DRP.ml_models.splitters.SingleSplitter import Splitter as SingleSplitter
 
+
+def transform_rxns(container, testSetName=None, outfile=None, verbose=False):
+    trainingSet = container.trainingSet
+    if verbose:
+        print "Transforming training set"
+    reactions = trainingSet.reactions.all()
+    container.transform(reactions, verbose=verbose)
+
+    if verbose:
+        print "Writing descriptors to file"
+
+    if outfile is not None:
+        with open(outfile, 'wb') as f:
+            for desc in container.transformedRxnDescriptors.all():
+                f.write(desc.heading)
+                f.write('\n')
+
+    if testSetName is not None:
+        if verbose:
+            print "Tranforming test set to new space" 
+        testSet = DataSet.objects.get(name=testSetName)
+        reactions = testSet.reactions.all()
+        container.transform(reactions, verbose=verbose)
+
+
+
 def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, testSetName=None, outfile=None, verbose=False, num_constraints=None):
     """
     Build and display a model with the specified tools

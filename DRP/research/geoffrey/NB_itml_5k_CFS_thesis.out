@@ -1,0 +1,15 @@
+Starting building at 2016-03-03 12:36:32.450639
+No splitter. Using given test and training sets.
+2016-03-03 12:36:33.228116 statsModel 154, saving to /home/gmartinn/DRP_main/DRP_repo/models/143_154, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/154_64825ee4-a73e-4d80-9391-4ac05ce86483.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/154_64825ee4-a73e-4d80-9391-4ac05ce86483.arff -d /home/gmartinn/DRP_main/DRP_repo/models/143_154 -p 0 -c 1
+	...Trained. Finished at 2016-03-03 12:48:37.025567. Saving statsModel... saved
+Predicting test set...
+Writing results to java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/154_d09531d6-7986-4d76-93f9-50c062584ea7.arff -l /home/gmartinn/DRP_main/DRP_repo/models/143_154 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/154_c7bf827a-4e66-4878-ad73-4d8de2840e64.out
+java.lang.Exception: training and test set are not compatible
+	at weka.classifiers.Evaluation.evaluateModel(Evaluation.java:1035)
+	at weka.classifiers.Classifier.runClassifier(Classifier.java:312)
+	at weka.classifiers.bayes.NaiveBayes.main(NaiveBayes.java:944)
+	...finished predicting. Storing predictions... predictions stored.
+Finished at 2016-03-03 12:55:56.886589

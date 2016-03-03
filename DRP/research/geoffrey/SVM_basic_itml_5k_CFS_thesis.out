@@ -1,0 +1,15 @@
+Starting building at 2016-03-03 12:36:32.353627
+No splitter. Using given test and training sets.
+2016-03-03 12:36:33.228148 statsModel 157, saving to /home/gmartinn/DRP_main/DRP_repo/models/142_157, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/157_5a557bbf-eb9a-4161-aa32-4b6406be95d2.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/157_5a557bbf-eb9a-4161-aa32-4b6406be95d2.arff -d /home/gmartinn/DRP_main/DRP_repo/models/142_157 -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-03 12:49:24.077619. Saving statsModel... saved
+Predicting test set...
+Writing results to java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/157_ad10ee18-d8ae-4b3f-903d-a309cc47fbfc.arff -l /home/gmartinn/DRP_main/DRP_repo/models/142_157 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/157_306675cf-f60d-4462-a964-816834549db9.out
+java.lang.Exception: training and test set are not compatible
+	at weka.classifiers.Evaluation.evaluateModel(Evaluation.java:1035)
+	at weka.classifiers.Classifier.runClassifier(Classifier.java:312)
+	at weka.classifiers.functions.SMO.main(SMO.java:2138)
+	...finished predicting. Storing predictions... predictions stored.
+Finished at 2016-03-03 12:57:04.216458

@@ -1,0 +1,24 @@
+2016-03-03 04:38:40.937090, saving to /home/gmartinn/DRP_main/DRP_repo/metrics/ITML_28, training on 4193 reactions...
+Preparing arrays
+Calculating bounds
+Preparing 5000 constraints
+Fitting
+Transforming training set
+	...Trained. Finished at 2016-03-03 04:59:30.126056.
+Transforming training set
+2016-03-03 04:59:30.202226 Generating transformed descriptors for 4193 reactions
+Transformed array given. Skipping transformation
+No existing descriptors found for this metric container. Creating them...
+	...created
+Inputting values for given reactions...
+Done with descriptor 0 of 9
+Done with descriptor 1 of 9
+Done with descriptor 2 of 9
+Done with descriptor 3 of 9
+Done with descriptor 4 of 9
+Done with descriptor 5 of 9
+Done with descriptor 6 of 9
+Done with descriptor 7 of 9
+Done with descriptor 8 of 9
+	...finished at 2016-03-03 05:01:08.948277
+Writing descriptors to file
