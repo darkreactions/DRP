@@ -1,0 +1,30 @@
+Confusion matrix for boolean_crystallisation_outcome_prediction_97_summative__:
+      False  True 
+False   5     1   
+ True  2953  5993 
+Accuracy: 0.67
+BCR: 0.501
+Confusion matrix for boolean_crystallisation_outcome_prediction_97_component_102__:
+      False  True 
+False   0     0   
+ True  740   1498 
+Accuracy: 0.669
+BCR: 0.5
+Confusion matrix for boolean_crystallisation_outcome_prediction_97_component_105__:
+      False  True 
+False   0     0   
+ True  753   1485 
+Accuracy: 0.664
+BCR: 0.5
+Confusion matrix for boolean_crystallisation_outcome_prediction_97_component_108__:
+      False  True 
+False   0     0   
+ True  739   1499 
+Accuracy: 0.67
+BCR: 0.5
+Confusion matrix for boolean_crystallisation_outcome_prediction_97_component_110__:
+      False  True 
+False   5     1   
+ True  721   1511 
+Accuracy: 0.677
+BCR: 0.503

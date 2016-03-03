@@ -1,8 +1,0 @@
-Confusion matrix for boolean_crystallisation_outcome_prediction_81_summative__:
-      False  True 
-False  237   426  
- True  478   1553 
-Confusion matrix for boolean_crystallisation_outcome_prediction_81_component_73__:
-      False  True 
-False  237   426  
- True  478   1553 
