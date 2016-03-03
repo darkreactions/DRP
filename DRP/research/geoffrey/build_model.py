@@ -7,7 +7,7 @@ import argparse
 
 
 def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None, description="", verbose=False):
-    if splitter is None:
+    if trainingSet is not None:
         container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, reactions=reactions, trainingSets=[trainingSet], testSets=[testSet])
     else:
         container = ModelContainer.create(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description, reactions=reactions, splitter=splitter)
@@ -136,15 +136,15 @@ if __name__ == '__main__':
                         help='Model visitor library to use. (default: %(default)s)')
     parser.add_argument('-mt', '--model-tool', default="SVM_PUK_basic",
                         help='Model visitor tool from library to use. (default: %(default)s)')
-    parser.add_argument('-s', '--splitter', default=None,
+    parser.add_argument('-s', '--splitter', default="KFoldSplitter",
                         help='Splitter to use. (default: %(default)s)')
     parser.add_argument('-v', dest='verbose', action='store_true',
                         help='Activate verbose mode.')
     parser.add_argument('-d', '--description', default="",
                         help='Description of model. (default: %(default)s)')
-    parser.add_argument('-trs', '--training-set-name', default="",
+    parser.add_argument('-trs', '--training-set-name', default=None,
                         help='The name of the training set to use. (default: %(default)s)')
-    parser.add_argument('-tes', '--test-set-name', default="",
+    parser.add_argument('-tes', '--test-set-name', default=None,
                         help='The name of the test set to use. (default: %(default)s)')
     args = parser.parse_args()
 
