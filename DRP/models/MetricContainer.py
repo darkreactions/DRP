@@ -194,7 +194,7 @@ class MetricContainer(models.Model):
             raise RuntimeError("Cannot transform using a metric that has not been built.")
             
         if verbose:
-            print "Generating transformed descriptors for {} reactions".format(reactions.count())
+            print "{} Generating transformed descriptors for {} reactions".format(datetime.datetime.now(), reactions.count())
             
         if transformed is None:
             metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor()
@@ -242,5 +242,5 @@ class MetricContainer(models.Model):
                 print "Done with descriptor {} of {}".format(j, self.transformedRxnDescriptors.count())
 
         if verbose:
-            print "\t...finished"
+            print "\t...finished at {}".format(datetime.datetime.now())
         

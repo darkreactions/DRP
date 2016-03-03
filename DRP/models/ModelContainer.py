@@ -213,6 +213,9 @@ class ModelContainer(models.Model):
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
 
+        if verbose:
+            print "Starting building at {}".format(datetime.datetime.now())
+            
         self.descriptors = predictors
         self.outcomeDescriptors = response
 
@@ -284,7 +287,10 @@ class ModelContainer(models.Model):
             self._storePredictions(resDict)
             if verbose:
                 print "predictions stored."
+
         self.built = True
+        if verbose:
+            print "Finished at {}".format(datetime.datetime.now())
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         resDict = {} if resDict is None else resDict
