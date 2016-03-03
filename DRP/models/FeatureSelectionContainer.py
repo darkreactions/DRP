@@ -178,10 +178,14 @@ class FeatureSelectionContainer(models.Model):
     chosenNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='chosenForFeatureSelection')
 
     @classmethod
-    def create(cls, featureVisitorLibrary, featureVisitorTool, reactions, description=""):
+    def create(cls, featureVisitorLibrary, featureVisitorTool, reactions=None, trainingSet=None, description=""):
         container = cls(featureVisitorLibrary=featureVisitorLibrary, featureVisitorTool=featureVisitorTool, description=description)
         container.save() # need pk
-        container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureVisitorLibrary, container.featureVisitorLibrary, container.pk), reactions)
+        if trainingSet is None:
+            assert(reactions is not None)
+            container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureVisitorLibrary, container.featureVisitorLibrary, container.pk), reactions)
+        else:
+            container.trainingSet = trainingSet
         return container
 
     def build(self, predictors, responses, verbose=False):
