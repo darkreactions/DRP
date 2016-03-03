@@ -1,20 +1,22 @@
+Starting building at 2016-03-03 12:10:41.376451
 No splitter. Using given test and training sets.
-2016-03-03 03:13:36.029801 statsModel 140, saving to /home/gmartinn/DRP_main/DRP_repo/models/126_140, training...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/140_b55b2abe-b3ee-40a8-b4e3-f28eae0a614e.arff
+2016-03-03 12:10:50.738475 statsModel 150, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_150, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/150_60834804-7c40-4403-8596-80a63af49f71.arff
 Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/140_b55b2abe-b3ee-40a8-b4e3-f28eae0a614e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/126_140 -p 0 -c 1
-	...Trained. Finished at 2016-03-03 03:23:41.664593. Saving statsModel... saved
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/150_60834804-7c40-4403-8596-80a63af49f71.arff -d /home/gmartinn/DRP_main/DRP_repo/models/135_150 -p 0 -c 1
+	...Trained. Finished at 2016-03-03 12:22:34.132580. Saving statsModel... saved
 Predicting test set...
-Writing results to java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/140_b6d6c980-eacb-4141-af23-7043044a386a.arff -l /home/gmartinn/DRP_main/DRP_repo/models/126_140 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/140_406763fb-e20b-4b63-af30-a15dbf73c0f0.out
+Writing results to java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/150_41dc0cfc-d963-4b9e-b5f8-f55e80c39e7e.arff -l /home/gmartinn/DRP_main/DRP_repo/models/135_150 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/150_9514acb6-cf86-4f7e-a923-a8496e13ff20.out
 	...finished predicting. Storing predictions... predictions stored.
 Storing overall model predictions... predictions stored.
-Confusion matrix for boolean_crystallisation_outcome_prediction_126_summative__:
+Finished at 2016-03-03 12:31:21.827725
+Confusion matrix for boolean_crystallisation_outcome_prediction_135_summative__:
       False  True 
 False  469   912  
  True  165   519  
 Accuracy: 0.478
 BCR: 0.551
-Confusion matrix for boolean_crystallisation_outcome_prediction_126_component_140__:
+Confusion matrix for boolean_crystallisation_outcome_prediction_135_component_150__:
       False  True 
 False  469   912  
  True  165   519  

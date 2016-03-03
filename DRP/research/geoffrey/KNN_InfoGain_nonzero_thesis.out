@@ -1,8 +1,0 @@
-Starting building at 2016-03-03 15:50:52.386990
-No splitter. Using given test and training sets.
-2016-03-03 15:50:55.197711 statsModel 158, saving to /home/gmartinn/DRP_main/DRP_repo/models/144_158, training...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/158_5daf05cc-0674-42e7-9fda-1288b0b2effc.arff
-Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/158_5daf05cc-0674-42e7-9fda-1288b0b2effc.arff -d /home/gmartinn/DRP_main/DRP_repo/models/144_158 -p 0 -c 1
-	...Trained. Finished at 2016-03-03 15:58:04.007894. Saving statsModel... saved
-Predicting test set...

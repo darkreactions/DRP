@@ -1,20 +1,22 @@
+Starting building at 2016-03-03 12:10:41.376476
 No splitter. Using given test and training sets.
-2016-03-03 03:13:35.985261 statsModel 138, saving to /home/gmartinn/DRP_main/DRP_repo/models/124_138, training...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/138_009172b7-0eb8-4516-81a5-b8a5af1a36fd.arff
+2016-03-03 12:10:50.805314 statsModel 151, saving to /home/gmartinn/DRP_main/DRP_repo/models/138_151, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/151_3363f008-3eea-48b6-8e76-470ad774bda2.arff
 Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/138_009172b7-0eb8-4516-81a5-b8a5af1a36fd.arff -d /home/gmartinn/DRP_main/DRP_repo/models/124_138 -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 1
-	...Trained. Finished at 2016-03-03 03:32:27.248717. Saving statsModel... saved
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/151_3363f008-3eea-48b6-8e76-470ad774bda2.arff -d /home/gmartinn/DRP_main/DRP_repo/models/138_151 -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-03 12:29:44.524391. Saving statsModel... saved
 Predicting test set...
-Writing results to java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/138_44f175e4-cf73-4571-9f90-705ea97c7642.arff -l /home/gmartinn/DRP_main/DRP_repo/models/124_138 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/138_8f15b8f7-64e0-4634-90ea-6103f445e20e.out
+Writing results to java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/151_f6d0bd3c-3196-4a71-a889-a4dd8b970efd.arff -l /home/gmartinn/DRP_main/DRP_repo/models/138_151 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/151_4393ae4d-e0b2-4cae-8673-4b7bc7b97de4.out
 	...finished predicting. Storing predictions... predictions stored.
 Storing overall model predictions... predictions stored.
-Confusion matrix for boolean_crystallisation_outcome_prediction_124_summative__:
+Finished at 2016-03-03 12:35:31.330481
+Confusion matrix for boolean_crystallisation_outcome_prediction_138_summative__:
       False  True 
 False   0     2   
  True  634   1429 
 Accuracy: 0.692
 BCR: 0.499
-Confusion matrix for boolean_crystallisation_outcome_prediction_124_component_138__:
+Confusion matrix for boolean_crystallisation_outcome_prediction_138_component_151__:
       False  True 
 False   0     2   
  True  634   1429 
