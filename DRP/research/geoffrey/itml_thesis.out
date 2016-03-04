@@ -1,0 +1,22 @@
+2016-03-02 09:36:03.339957, saving to /home/gmartinn/DRP_main/DRP_repo/metrics/ITML_15, training on 4193 reactions...
+	...Trained. Finished at 2016-03-04 06:00:19.192798.
+Traceback (most recent call last):
+  File "build_metric.py", line 78, in <module>
+    epilog="Prefix arguments with '@' to specify a file containing newline"
+  File "build_metric.py", line 32, in prepare_build_metric
+    
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/django/db/models/base.py", line 734, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/django/db/models/base.py", line 759, in save_base
+    with transaction.atomic(using=using, savepoint=False):
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/django/db/transaction.py", line 186, in __enter__
+    connection.set_autocommit(False)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/django/db/backends/base/base.py", line 295, in set_autocommit
+    self._set_autocommit(autocommit)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 301, in _set_autocommit
+    self.connection.autocommit(autocommit)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/django/db/utils.py", line 98, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/home/gmartinn/DRP_main/DRP_venv/local/lib/python2.7/site-packages/django/db/backends/mysql/base.py", line 301, in _set_autocommit
+    self.connection.autocommit(autocommit)
+django.db.utils.OperationalError: (2006, 'MySQL server has gone away')
