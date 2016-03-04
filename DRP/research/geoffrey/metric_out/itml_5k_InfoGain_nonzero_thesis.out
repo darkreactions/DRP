@@ -85,3 +85,86 @@ Done with descriptor 70 of 72
 Done with descriptor 71 of 72
 	...finished at 2016-03-03 05:43:15.237958
 Writing descriptors to file
+
+RESTART
+
+Calling transform
+Tranforming test set to new space
+2016-03-03 21:36:51.098730 Generating transformed descriptors for 2065 reactions
+Transforming...
+	...transformed
+Existing transformed descriptors found. Skipping creation.
+Inputting values for given reactions...
+Done with descriptor 0 of 72
+Done with descriptor 1 of 72
+Done with descriptor 2 of 72
+Done with descriptor 3 of 72
+Done with descriptor 4 of 72
+Done with descriptor 5 of 72
+Done with descriptor 6 of 72
+Done with descriptor 7 of 72
+Done with descriptor 8 of 72
+Done with descriptor 9 of 72
+Done with descriptor 10 of 72
+Done with descriptor 11 of 72
+Done with descriptor 12 of 72
+Done with descriptor 13 of 72
+Done with descriptor 14 of 72
+Done with descriptor 15 of 72
+Done with descriptor 16 of 72
+Done with descriptor 17 of 72
+Done with descriptor 18 of 72
+Done with descriptor 19 of 72
+Done with descriptor 20 of 72
+Done with descriptor 21 of 72
+Done with descriptor 22 of 72
+Done with descriptor 23 of 72
+Done with descriptor 24 of 72
+Done with descriptor 25 of 72
+Done with descriptor 26 of 72
+Done with descriptor 27 of 72
+Done with descriptor 28 of 72
+Done with descriptor 29 of 72
+Done with descriptor 30 of 72
+Done with descriptor 31 of 72
+Done with descriptor 32 of 72
+Done with descriptor 33 of 72
+Done with descriptor 34 of 72
+Done with descriptor 35 of 72
+Done with descriptor 36 of 72
+Done with descriptor 37 of 72
+Done with descriptor 38 of 72
+Done with descriptor 39 of 72
+Done with descriptor 40 of 72
+Done with descriptor 41 of 72
+Done with descriptor 42 of 72
+Done with descriptor 43 of 72
+Done with descriptor 44 of 72
+Done with descriptor 45 of 72
+Done with descriptor 46 of 72
+Done with descriptor 47 of 72
+Done with descriptor 48 of 72
+Done with descriptor 49 of 72
+Done with descriptor 50 of 72
+Done with descriptor 51 of 72
+Done with descriptor 52 of 72
+Done with descriptor 53 of 72
+Done with descriptor 54 of 72
+Done with descriptor 55 of 72
+Done with descriptor 56 of 72
+Done with descriptor 57 of 72
+Done with descriptor 58 of 72
+Done with descriptor 59 of 72
+Done with descriptor 60 of 72
+Done with descriptor 61 of 72
+Done with descriptor 62 of 72
+Done with descriptor 63 of 72
+Done with descriptor 64 of 72
+Done with descriptor 65 of 72
+Done with descriptor 66 of 72
+Done with descriptor 67 of 72
+Done with descriptor 68 of 72
+Done with descriptor 69 of 72
+Done with descriptor 70 of 72
+Done with descriptor 71 of 72
+	...finished at 2016-03-03 21:48:30.138569
