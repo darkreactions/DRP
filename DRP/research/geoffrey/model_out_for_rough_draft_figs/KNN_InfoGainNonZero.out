@@ -1,0 +1,24 @@
+Starting building at 2016-03-03 15:50:52.386990
+No splitter. Using given test and training sets.
+2016-03-03 15:50:55.197711 statsModel 158, saving to /home/gmartinn/DRP_main/DRP_repo/models/144_158, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/158_5daf05cc-0674-42e7-9fda-1288b0b2effc.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/158_5daf05cc-0674-42e7-9fda-1288b0b2effc.arff -d /home/gmartinn/DRP_main/DRP_repo/models/144_158 -p 0 -c 1
+	...Trained. Finished at 2016-03-03 15:58:04.007894. Saving statsModel... saved
+Predicting test set...
+Writing results to java weka.classifiers.lazy.IBk -T /home/gmartinn/DRP_main/DRP_repo/tmp/158_479a8ead-9b29-405e-ba2b-767bda6ce2d4.arff -l /home/gmartinn/DRP_main/DRP_repo/models/144_158 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/158_272fa327-9ce8-498d-bf05-3da87822205d.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-03 16:01:35.535853
+Confusion matrix for boolean_crystallisation_outcome_prediction_144_summative__:
+      False  True 
+False  373   328  
+ True  261   1103 
+Accuracy: 0.715
+BCR: 0.68
+Confusion matrix for boolean_crystallisation_outcome_prediction_144_component_158__:
+      False  True 
+False  373   328  
+ True  261   1103 
+Accuracy: 0.715
+BCR: 0.68
