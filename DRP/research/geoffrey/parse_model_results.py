@@ -13,9 +13,9 @@ def get_val(filepath, name):
 
 if __name__ == '__main__':
     directory = 'model_out_for_rough_draft_figs'
-    name = 'Accuracy'
+    name = 'BCR'
 
-    filepaths = sorted(glob.glob('{}/*itml5k_none.out'.format(directory)))
+    filepaths = sorted(glob.glob('{}/*10.out'.format(directory)))
 
     for fp in filepaths:
         fn = fp.split('/')[-1]
