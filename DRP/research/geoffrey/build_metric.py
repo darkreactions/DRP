@@ -7,20 +7,20 @@ from DRP.ml_models.splitters.SingleSplitter import Splitter as SingleSplitter
 
 
 def transform_rxns(container, testSetName=None, outfile=None, verbose=False):
-    # trainingSet = container.trainingSet
-    # if verbose:
-    #     print "Transforming training set"
-    # reactions = trainingSet.reactions.all()
-    # container.transform(reactions, verbose=verbose)
+    trainingSet = container.trainingSet
+    if verbose:
+        print "Transforming training set"
+    reactions = trainingSet.reactions.all()
+    container.transform(reactions, verbose=verbose)
 
-    # if verbose:
-    #     print "Writing descriptors to file"
+    if verbose:
+        print "Writing descriptors to file"
 
-    # if outfile is not None:
-    #     with open(outfile, 'wb') as f:
-    #         for desc in container.transformedRxnDescriptors.all():
-    #             f.write(desc.heading)
-    #             f.write('\n')
+    if outfile is not None:
+        with open(outfile, 'wb') as f:
+            for desc in container.transformedRxnDescriptors.all():
+                f.write(desc.heading)
+                f.write('\n')
 
     if testSetName is not None:
         if verbose:
