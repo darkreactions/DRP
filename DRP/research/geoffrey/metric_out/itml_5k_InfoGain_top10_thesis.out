@@ -1,0 +1,47 @@
+Created MetricContainer 33
+2016-03-04 20:04:58.580866, saving to /home/gmartinn/DRP_main/DRP_repo/metrics/ITML_33, training on 4193 reactions...
+Preparing arrays
+Calculating bounds
+Preparing 5000 constraints with bounds of (16.8564994743, 4428.3031876)
+Fitting
+Transforming training set
+	...Trained. Finished at 2016-03-04 21:45:37.027324.
+Transforming training set
+2016-03-04 21:45:37.079519 Generating transformed descriptors for 4193 reactions
+Transformed array given. Skipping transformation
+No existing descriptors found for this metric container. Creating them...
+	...created
+Inputting values for given reactions...
+Done with descriptor 0 of 10
+Done with descriptor 1 of 10
+Done with descriptor 2 of 10
+Done with descriptor 3 of 10
+Done with descriptor 4 of 10
+Done with descriptor 5 of 10
+Done with descriptor 6 of 10
+Done with descriptor 7 of 10
+Done with descriptor 8 of 10
+Done with descriptor 9 of 10
+	...finished at 2016-03-04 21:47:11.685708
+Writing descriptors to file
+
+RESTART
+
+Calling transform
+Tranforming test set to new space
+2016-03-04 21:55:45.632719 Generating transformed descriptors for 2065 reactions
+Transforming...
+	...transformed
+Existing transformed descriptors found. Skipping creation.
+Inputting values for given reactions...
+Done with descriptor 0 of 10
+Done with descriptor 1 of 10
+Done with descriptor 2 of 10
+Done with descriptor 3 of 10
+Done with descriptor 4 of 10
+Done with descriptor 5 of 10
+Done with descriptor 6 of 10
+Done with descriptor 7 of 10
+Done with descriptor 8 of 10
+Done with descriptor 9 of 10
+	...finished at 2016-03-04 22:03:25.054510

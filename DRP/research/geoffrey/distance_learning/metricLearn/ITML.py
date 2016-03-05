@@ -29,7 +29,7 @@ class MetricVisitor(AbstractMetricLearnDistanceLearner):
             bounds[0] = min(pair_dists[np.nonzero(pair_dists)])
             print "Lowerbound was 0. Set to {}".format(bounds[0])
         
-        print "Preparing {} constraints".format(self.num_constraints)
+        print "Preparing {} constraints with bounds of ({}, {})".format(self.num_constraints, bounds[0], bounds[1])
         constraints = self.metric_object.prepare_constraints(labels, data.shape[0], self.num_constraints)
         print "Fitting"
         self.metric_object.fit(data, constraints, bounds=bounds)
