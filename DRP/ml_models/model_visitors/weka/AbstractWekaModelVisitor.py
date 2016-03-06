@@ -111,9 +111,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
 
 def stringToBool(s):
-    if s == 'True':
+    if s.lower() == 'true':
         return True
-    elif s == 'False':
+    elif s.lower() == 'false':
         return False
     else:
-        raise ValueError("Tried to convert string to boolean when string was neither 'True' nor 'False' but {}".format(outcome))
+        raise ValueError("Tried to convert string to boolean when string was neither 'True' nor 'False' but {}".format(s))
