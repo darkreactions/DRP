@@ -32,7 +32,7 @@ def display_model_results(container):
             print "BCR: {:.3}".format(BCR(conf_mtrx))
 
 
-def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, description="", verbose=False):
+def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, reaction_set_name=None, description="", verbose=False):
     """
     Build and display a model with the specified tools
     """
@@ -43,12 +43,17 @@ def prepare_build_display_model(predictor_headers=None, response_headers=None, m
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
     
-    if training_set_name is None:
+    if training_set_name is None and reaction_set_name is None:
         assert(test_set_name == None)
         reactions = PerformedReaction.objects.filter(valid=True)
         reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
+        trainingSet = None
+        testSet = None
+    elif reaction_set_name is not None:
+        reaction_set = DataSet.objects.get(name=reaction_set_name)
+        reactions = reaction_set.reactions.all()
         trainingSet = None
         testSet = None
     else:
@@ -146,7 +151,9 @@ if __name__ == '__main__':
                         help='The name of the training set to use. (default: %(default)s)')
     parser.add_argument('-tes', '--test-set-name', default=None,
                         help='The name of the test set to use. (default: %(default)s)')
+    parser.add_argument('-rxn', '--reaction-set-name', default=None,
+                        help='The name of the reactions to use as a whole dataset')
     args = parser.parse_args()
 
     prepare_build_display_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTool=args.model_tool,
-                                splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, description=args.description, verbose=args.verbose)
+                                splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name, description=args.description, verbose=args.verbose)
