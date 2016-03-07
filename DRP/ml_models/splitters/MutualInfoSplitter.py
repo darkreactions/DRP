@@ -9,9 +9,13 @@ class Splitter(AbstractSplitter):
         self.TEST_PERCENT = 0.30
         self.MAX_PARTITION_SIZE = 35 # Magic # TODO: Please de-magic this.
         self.MIN_TRAIN_SIZE = 10 # WEKA requires at least 10 training points for SVMs.
+        self.num_splits = 1
 
     def split(self, reactions, verbose=False):
+        splits = [split(reactions, verbose=verbose) for i in xrange(num_splits)]
+        return splits
 
+    def single_split(reactions, verbose=False):
         # Partition the reactions based on what compounds they contain.
         key_counts = self._count_compound_sets(reactions).items()
         random.shuffle(key_counts)
@@ -46,7 +50,7 @@ class Splitter(AbstractSplitter):
         if verbose:
             print "Split into train ({}), test ({})".format(train.count(), test.count())
 
-        return [(self.package(train), self.package(test))]
+        return (self.package(train), self.package(test))
 
     def _count_compound_sets(self, reactions):
         compound_sets = [frozenset(Compound.objects.filter(reaction=rxn)) for rxn in reactions]

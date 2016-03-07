@@ -1,6 +1,7 @@
 import django
 django.setup()
 import csv
+from sys import argv
 from DRP.models import NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, PerformedReaction, NumRxnDescriptorValue, BoolRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 
 
@@ -176,7 +177,7 @@ def startswith_lookup(start):
 
     
 if __name__ == '__main__':
-    filename = '/home/geoffrey/repos/DRP_main/pre-2015-04-02-data-cleaned.csv'
+    filename = argv[1]
 
     parse_reactions(filename, save=True, overwrite=False, val_save_cutoff=5000)
-    #startswith_lookup('an')
+
