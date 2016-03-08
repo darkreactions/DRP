@@ -294,7 +294,6 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         resDict = {} if resDict is None else resDict
-        with transaction.atomic(): #wrapping this all in a transaction may speed up these saves
             for response, outcomes in predictions.items(): 
                 for reaction, outcome in outcomes:
                     if reaction not in resDict:
