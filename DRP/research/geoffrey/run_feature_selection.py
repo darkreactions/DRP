@@ -14,6 +14,9 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
     # TODO XXX this should actually check to make sure that all the descriptor headers are for valid descriptors and at least issue a warning if not
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
+
+    if verbose:
+        print "Found {} matching predictors and {} matching responses".format(predictors.count(), responses.count())
     
     if training_set_name:
         trainingSet =  DataSet.objects.get(name=training_set_name)

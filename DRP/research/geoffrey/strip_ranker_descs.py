@@ -62,10 +62,10 @@ def get_headings(descs):
 if __name__ == '__main__':
     django.setup()
     filename = argv[1]
-    rank = int(argv[2])
-    #threshold = float(argv[2])
-    #csvHeaders = strip_desc_headings_threshold(filename, threshold)
-    csvHeaders = strip_desc_headings_rank(filename, rank)
+    #rank = int(argv[2])
+    threshold = float(argv[2])
+    csvHeaders = strip_desc_headings_threshold(filename, threshold)
+    #csvHeaders = strip_desc_headings_rank(filename, rank)
     descs = get_descs(csvHeaders)
     headings = get_headings(descs)
     for heading in headings:
