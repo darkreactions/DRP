@@ -294,21 +294,21 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         resDict = {} if resDict is None else resDict
-            for response, outcomes in predictions.items(): 
-                for reaction, outcome in outcomes:
-                    if reaction not in resDict:
-                        resDict[reaction] = {}
-                    if response not in resDict[reaction]:
-                        resDict[reaction][response] = {}
-                    if outcome not in resDict[reaction][response]:
-                        resDict[reaction][response][outcome] = 0
-                    resDict[reaction][response][outcome] += 1
-                    # TODO XXX change these saves so they only make one hit on the database.
-                    # Difficult (impossible?) with inherited models
-                    predDesc = response.createPredictionDescriptor(self, statsModel)
-                    predDesc.save()
-                    val = predDesc.createValue(reaction, outcome)
-                    val.save()
+        for response, outcomes in predictions.items(): 
+            for reaction, outcome in outcomes:
+                if reaction not in resDict:
+                    resDict[reaction] = {}
+                if response not in resDict[reaction]:
+                    resDict[reaction][response] = {}
+                if outcome not in resDict[reaction][response]:
+                    resDict[reaction][response][outcome] = 0
+                resDict[reaction][response][outcome] += 1
+                # TODO XXX change these saves so they only make one hit on the database.
+                # Difficult (impossible?) with inherited models
+                predDesc = response.createPredictionDescriptor(self, statsModel)
+                predDesc.save()
+                val = predDesc.createValue(reaction, outcome)
+                val.save()
         return resDict
 
     def _storePredictions(self, resDict):
