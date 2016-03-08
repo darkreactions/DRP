@@ -1,0 +1,38 @@
+Starting building at 2016-03-08 15:29:50.735179
+Splitting using MutualInfoSplitter
+Split into train (2724), test (1181)
+Split into train (2729), test (1176)
+Split into train (2733), test (1172)
+Split into train (2728), test (1177)
+Split into train (2733), test (1172)
+Split into train (2713), test (1192)
+Split into train (2731), test (1174)
+Split into train (2733), test (1172)
+Split into train (2728), test (1177)
+Split into train (2722), test (1183)
+Split into train (2733), test (1172)
+Split into train (2733), test (1172)
+Split into train (2722), test (1183)
+Split into train (2727), test (1178)
+Split into train (2707), test (1198)
+2016-03-08 15:32:23.519280 statsModel 341, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_341, training...
+	...Trained. Finished at 2016-03-08 15:36:24.194310. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/341_abcf220f-875f-46b1-bedb-08da70171d58.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 15:40:50.203327 statsModel 347, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_347, training...
+	...Trained. Finished at 2016-03-08 15:44:26.771388. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/347_bab5dc40-903a-40a3-b4f5-59513317fdda.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 15:48:50.643869 statsModel 352, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_352, training...
+	...Trained. Finished at 2016-03-08 15:52:38.711920. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/352_63a1ca24-f348-468b-9ff3-37a70f19d95d.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 15:57:09.639110 statsModel 357, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_357, training...
+	...Trained. Finished at 2016-03-08 16:00:51.048532. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/357_b36b31e1-9923-468a-b56e-9e8708c6afb3.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 16:05:25.257798 statsModel 363, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_363, training...

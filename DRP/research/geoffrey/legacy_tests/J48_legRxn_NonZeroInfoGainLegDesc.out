@@ -1,0 +1,59 @@
+Starting building at 2016-03-08 15:29:50.733835
+Splitting using MutualInfoSplitter
+Split into train (2719), test (1186)
+Split into train (2730), test (1175)
+Split into train (2727), test (1178)
+Split into train (2718), test (1187)
+Split into train (2733), test (1172)
+Split into train (2733), test (1172)
+Split into train (2732), test (1173)
+Split into train (2730), test (1175)
+Split into train (2704), test (1201)
+Split into train (2732), test (1173)
+Split into train (2732), test (1173)
+Split into train (2733), test (1172)
+Split into train (2728), test (1177)
+Split into train (2729), test (1176)
+Split into train (2733), test (1172)
+2016-03-08 15:32:25.342934 statsModel 342, saving to /home/gmartinn/DRP_main/DRP_repo/models/136_342, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/342_99220085-a9ff-4b93-8b93-4447d9fbcb95.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/342_99220085-a9ff-4b93-8b93-4447d9fbcb95.arff -d /home/gmartinn/DRP_main/DRP_repo/models/136_342 -p 0 -c 6
+	...Trained. Finished at 2016-03-08 15:34:55.438381. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/342_5c99cfcd-4e39-4b13-8767-f1c5b1688dff.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 15:39:22.067618 statsModel 345, saving to /home/gmartinn/DRP_main/DRP_repo/models/136_345, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/345_6a65fb73-a3a9-48cb-97ad-8833e1d079dd.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/345_6a65fb73-a3a9-48cb-97ad-8833e1d079dd.arff -d /home/gmartinn/DRP_main/DRP_repo/models/136_345 -p 0 -c 6
+	...Trained. Finished at 2016-03-08 15:41:20.896595. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/345_4e161d33-f748-45b3-bbce-8ecd64747a37.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 15:45:43.749761 statsModel 350, saving to /home/gmartinn/DRP_main/DRP_repo/models/136_350, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/350_172d9520-5de2-48dc-bb75-104dec3351f7.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/350_172d9520-5de2-48dc-bb75-104dec3351f7.arff -d /home/gmartinn/DRP_main/DRP_repo/models/136_350 -p 0 -c 6
+	...Trained. Finished at 2016-03-08 15:47:38.181581. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/350_4b462619-8a8e-4d76-a961-09dd481c4bca.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 15:51:56.245204 statsModel 355, saving to /home/gmartinn/DRP_main/DRP_repo/models/136_355, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/355_b58dbe67-2ea1-47bf-b956-b8f1bac5492e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/355_b58dbe67-2ea1-47bf-b956-b8f1bac5492e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/136_355 -p 0 -c 6
+	...Trained. Finished at 2016-03-08 15:53:54.470525. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/355_03d0834c-a59c-4fbe-b0e4-96f1f64dac79.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 15:58:54.711117 statsModel 360, saving to /home/gmartinn/DRP_main/DRP_repo/models/136_360, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/360_a6285d0e-7cdc-4fae-abc5-62d70497c098.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/360_a6285d0e-7cdc-4fae-abc5-62d70497c098.arff -d /home/gmartinn/DRP_main/DRP_repo/models/136_360 -p 0 -c 6
+	...Trained. Finished at 2016-03-08 16:00:57.575530. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/360_3a46a90c-e116-41fd-85c0-3810b4da8e82.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-08 16:05:26.281873 statsModel 364, saving to /home/gmartinn/DRP_main/DRP_repo/models/136_364, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/364_9382f6eb-a4d6-489f-a4a5-fa38c5360c75.arff
