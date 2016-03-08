@@ -141,9 +141,9 @@ class Reaction(models.Model):
         app_label="DRP"
 
     objects = ReactionManager()
-    compounds=models.ManyToManyField(Compound, through="CompoundQuantity")
-    notes=models.TextField(blank=True)
-    labGroup=models.ForeignKey(LabGroup)
+    compounds = models.ManyToManyField(Compound, through="CompoundQuantity")
+    notes = models.TextField(blank=True)
+    labGroup = models.ForeignKey(LabGroup)
     calcDescriptors = True #this is to cope with a hideous problem in xml serialization in the management commands
 
     def save(self, calcDescriptors=True, *args, **kwargs):

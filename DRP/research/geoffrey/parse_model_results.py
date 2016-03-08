@@ -1,5 +1,6 @@
 import glob
 from sys import argv
+from numpy import mean
 
 def get_val(filepath, name):
     start_line = name + ':'
@@ -10,13 +11,29 @@ def get_val(filepath, name):
             val = line.split()[1]
             return val
 
+def get_average_val(filepath, name):
+    start_line = name + ':'
+    with open(filepath, 'rb') as f:
+        raw_lines = f.readlines()
+    skipped_first = False
+    vals = []
+    for line in raw_lines:
+        if line.startswith(start_line):
+            if skipped_first:
+                val = float(line.split()[1])
+                vals.append(val)
+            else:
+                skipped_first = True
+    return mean(vals)
+
 
 if __name__ == '__main__':
-    directory = 'model_out_for_rough_draft_figs'
-    name = 'Accuracy'
+    directory = 'legacy_tests'
 
-    filepaths = sorted(glob.glob('{}/*itml5k_InfoGaintop10.out'.format(directory)))
+    filepaths = sorted(glob.glob('{}/*.out'.format(directory)))
 
+
+    print "\t\t\t{}\t{}".format('BCR', 'Accuracy')
     for fp in filepaths:
         fn = fp.split('/')[-1]
         fn_split = fn[:-4].split('_')
@@ -36,4 +53,4 @@ if __name__ == '__main__':
 
         
         
-        print "{}\t{}".format(mod_string, get_val(fp, name))
+        print "{}\t{}\t{}".format(mod_string, get_average_val(fp, 'BCR'), get_average_val(fp, 'Accuracy'))
