@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "build_models_for_many.py", line 69, in <module>
+    splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name, description=args.description, verbose=args.verbose)
+  File "build_models_for_many.py", line 29, in build_many_models
+    splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description, verbose=verbose)
+  File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/research/geoffrey/build_model.py", line 65, in prepare_build_display_model
+    splitter=splitter, trainingSet=trainingSet, testSet=testSet, description=description, verbose=verbose)
+  File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/research/geoffrey/build_model.py", line 17, in build_model
+    container.build(predictors, responses, verbose=verbose)
+  File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/models/ModelContainer.py", line 261, in build
+    predictions = modelVisitor.predict(testSet.reactions.all(), whitelist, verbose=verbose)
+  File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 109, in predict
+    results = tuple((reaction, result) for reaction, result in zip(reactions, self._readWekaOutputFile(results_path, typeConversionFunction)))
+  File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py", line 43, in _readWekaOutputFile
+    predictions = [typeConversionFunction(prediction.split(":")[1]) for prediction in raw_predictions]
+IndexError: list index out of range
