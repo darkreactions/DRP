@@ -28,7 +28,7 @@ def filter_reactions(reactions, response_header):
     reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
     
     #reactions = reactions.filter(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
-    #reactions = reactions.filter(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+    reactions = reactions.filter(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
     #reactions = reactions.filter(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
 
     print reactions.count()
