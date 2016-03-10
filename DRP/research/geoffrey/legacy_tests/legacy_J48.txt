@@ -1,0 +1,360 @@
+=== Model information ===
+
+Filename:     113_101.model
+Scheme:weka.classifiers.trees.J48 -C 0.25 -M 2
+Relation:relation
+Attributes:   274
+[list of attributes omitted]
+
+=== Classifier model ===
+
+J48 pruned tree
+------------------
+
+orgASA_PArithAvg_legacy_legacy_ <= 143.27
+|   time_legacy_legacy_ <= 21
+|   |   leak_legacy_legacy_ = True
+|   |   |   pH_legacy_legacy_ <= 3: False (16.0)
+|   |   |   pH_legacy_legacy_ > 3: True (3.0/1.0)
+|   |   leak_legacy_legacy_ = False
+|   |   |   temp_legacy_legacy_ <= 110
+|   |   |   |   orgASA_HArithAvg_legacy_legacy_ <= 323.49
+|   |   |   |   |   Te_legacy_legacy_ = True: False (11.0/1.0)
+|   |   |   |   |   Te_legacy_legacy_ = False
+|   |   |   |   |   |   orgminimalprojectionradiusArithAvg_legacy_legacy_ <= 2.74
+|   |   |   |   |   |   |   oxlikeASA+GeomAvg_legacy_legacy_ <= 41.26
+|   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ <= 0.0376
+|   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ <= 0.0689: True (5.0)
+|   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ > 0.0689: False (27.0/11.0)
+|   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ > 0.0376: True (7.0)
+|   |   |   |   |   |   |   oxlikeASA+GeomAvg_legacy_legacy_ > 41.26: True (14.0/1.0)
+|   |   |   |   |   |   orgminimalprojectionradiusArithAvg_legacy_legacy_ > 2.74
+|   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0047
+|   |   |   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ <= 39.15
+|   |   |   |   |   |   |   |   |   orgASAGeomAvg_legacy_legacy_ <= 214.1106
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ <= 0.0138: False (4.0)
+|   |   |   |   |   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ > 0.0138: True (4.0/1.0)
+|   |   |   |   |   |   |   |   |   orgASAGeomAvg_legacy_legacy_ > 214.1106: True (28.0/1.0)
+|   |   |   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ > 39.15
+|   |   |   |   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ <= 66.14
+|   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 17
+|   |   |   |   |   |   |   |   |   |   |   orghbdamsdonMin_legacy_legacy_ <= 6.97: False (10.0)
+|   |   |   |   |   |   |   |   |   |   |   orghbdamsdonMin_legacy_legacy_ > 6.97
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegGeomWeighted_legacy_legacy_ <= 0.0063: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegGeomWeighted_legacy_legacy_ > 0.0063
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.0017: True (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.0017: False (3.0/1.0)
+|   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 17
+|   |   |   |   |   |   |   |   |   |   |   oxlikeASA+GeomAvg_legacy_legacy_ <= 41.26
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaGeomAvg_legacy_legacy_ <= 42.8533: True (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgpolarsurfaceareaGeomAvg_legacy_legacy_ > 42.8533
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ <= 24.27
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 18
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgdon-wateraccratio_legacy_legacy_ <= -0.0257: True (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgdon-wateraccratio_legacy_legacy_ > -0.0257: False (10.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 18: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ <= 0.1589: False (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ > 0.1589: True (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ > 24.27
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMaxWeighted_legacy_legacy_ <= 1.0958: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMaxWeighted_legacy_legacy_ > 1.0958: True (6.0)
+|   |   |   |   |   |   |   |   |   |   |   oxlikeASA+GeomAvg_legacy_legacy_ > 41.26: True (11.0)
+|   |   |   |   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ > 66.14: False (29.0/8.0)
+|   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0047
+|   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ <= 9.73: False (28.0/1.0)
+|   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ > 9.73
+|   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0111
+|   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0072
+|   |   |   |   |   |   |   |   |   |   |   oxlikeminimalprojectionareaArithAvg_legacy_legacy_ <= -1: False (21.0/7.0)
+|   |   |   |   |   |   |   |   |   |   |   oxlikeminimalprojectionareaArithAvg_legacy_legacy_ > -1
+|   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 17: True (14.0/7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 17
+|   |   |   |   |   |   |   |   |   |   |   |   |   EAMinWeighted_legacy_legacy_ <= 0.0522: False (13.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   EAMinWeighted_legacy_legacy_ > 0.0522: True (11.0/2.0)
+|   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0072
+|   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ <= 0.2023: False (19.0)
+|   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ > 0.2023
+|   |   |   |   |   |   |   |   |   |   |   |   G5_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted_legacy_legacy_ <= 0.4508: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   AtomicRadiusMeanWeighted_legacy_legacy_ > 0.4508: False (21.0)
+|   |   |   |   |   |   |   |   |   |   |   |   G5_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ <= 1.7778
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ <= 0.0169: False (25.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ > 0.0169: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ > 1.7778: True (3.0)
+|   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0111
+|   |   |   |   |   |   |   |   |   |   IonizationMinWeighted_legacy_legacy_ <= 1.2838
+|   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ <= 64.97: False (40.0/7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ > 64.97
+|   |   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ <= 0.011: False (9.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ > 0.011: True (5.0)
+|   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = False: True (3.0)
+|   |   |   |   |   |   |   |   |   |   IonizationMinWeighted_legacy_legacy_ > 1.2838
+|   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ <= 0.0254
+|   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ <= 6
+|   |   |   |   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ <= 0.025: True (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ > 0.025: False (6.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ > 6: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ > 0.0254: True (22.0)
+|   |   |   |   orgASA_HArithAvg_legacy_legacy_ > 323.49
+|   |   |   |   |   G5_legacy_legacy_ = True: True (4.0/1.0)
+|   |   |   |   |   G5_legacy_legacy_ = False: False (29.0)
+|   |   |   temp_legacy_legacy_ > 110
+|   |   |   |   orgASA-ArithAvg_legacy_legacy_ <= 16.46
+|   |   |   |   |   PaulingElectronegGeomWeighted_legacy_legacy_ <= 0.005: False (4.0)
+|   |   |   |   |   PaulingElectronegGeomWeighted_legacy_legacy_ > 0.005
+|   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ <= 14.88: False (2.0)
+|   |   |   |   |   |   orgASA-ArithAvg_legacy_legacy_ > 14.88: True (2.0)
+|   |   |   |   orgASA-ArithAvg_legacy_legacy_ > 16.46
+|   |   |   |   |   pH_legacy_legacy_ <= 3: True (68.0/8.0)
+|   |   |   |   |   pH_legacy_legacy_ > 3
+|   |   |   |   |   |   IonizationMinWeighted_legacy_legacy_ <= 0.6788: True (7.0)
+|   |   |   |   |   |   IonizationMinWeighted_legacy_legacy_ > 0.6788: False (3.0)
+|   time_legacy_legacy_ > 21
+|   |   hardnessMinWeighted_legacy_legacy_ <= 0.1021
+|   |   |   P_legacy_legacy_ = True: True (2.0)
+|   |   |   P_legacy_legacy_ = False
+|   |   |   |   Te_legacy_legacy_ = True
+|   |   |   |   |   S_legacy_legacy_ = True
+|   |   |   |   |   |   pH_legacy_legacy_ <= 2: True (3.0)
+|   |   |   |   |   |   pH_legacy_legacy_ > 2
+|   |   |   |   |   |   |   IonizationMinWeighted_legacy_legacy_ <= 0.1607: True (2.0)
+|   |   |   |   |   |   |   IonizationMinWeighted_legacy_legacy_ > 0.1607: False (6.0)
+|   |   |   |   |   S_legacy_legacy_ = False
+|   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0025: False (38.0/1.0)
+|   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0025
+|   |   |   |   |   |   |   leak_legacy_legacy_ = True: False (2.0)
+|   |   |   |   |   |   |   leak_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   PearsonElectronegMeanWeighted_legacy_legacy_ <= 0.1583: False (7.0)
+|   |   |   |   |   |   |   |   PearsonElectronegMeanWeighted_legacy_legacy_ > 0.1583
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.0005
+|   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ <= 0.0091
+|   |   |   |   |   |   |   |   |   |   |   IonizationMaxWeighted_legacy_legacy_ <= 0.6603: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   IonizationMaxWeighted_legacy_legacy_ > 0.6603: False (2.0)
+|   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ > 0.0091: True (6.0)
+|   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.0005: False (6.0/1.0)
+|   |   |   |   Te_legacy_legacy_ = False
+|   |   |   |   |   orgmaximalprojectionradiusMax_legacy_legacy_ <= 4.9
+|   |   |   |   |   |   PaulingElectronegGeomWeighted_legacy_legacy_ <= 0.0004
+|   |   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ <= 0.0002: False (2.0)
+|   |   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ > 0.0002
+|   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ <= 0.0027: True (5.0)
+|   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ > 0.0027: False (6.0/2.0)
+|   |   |   |   |   |   PaulingElectronegGeomWeighted_legacy_legacy_ > 0.0004: False (4.0)
+|   |   |   |   |   orgmaximalprojectionradiusMax_legacy_legacy_ > 4.9: True (7.0)
+|   |   hardnessMinWeighted_legacy_legacy_ > 0.1021
+|   |   |   Cr_legacy_legacy_ = True
+|   |   |   |   Se_legacy_legacy_ = True
+|   |   |   |   |   Na_legacy_legacy_ = True: True (13.0)
+|   |   |   |   |   Na_legacy_legacy_ = False
+|   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0021: False (8.0)
+|   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0021: True (11.0/3.0)
+|   |   |   |   Se_legacy_legacy_ = False
+|   |   |   |   |   temp_legacy_legacy_ <= 150
+|   |   |   |   |   |   Na_legacy_legacy_ = True: False (22.0/1.0)
+|   |   |   |   |   |   Na_legacy_legacy_ = False
+|   |   |   |   |   |   |   temp_legacy_legacy_ <= 120: True (5.0)
+|   |   |   |   |   |   |   temp_legacy_legacy_ > 120: False (4.0)
+|   |   |   |   |   temp_legacy_legacy_ > 150
+|   |   |   |   |   |   oxlikeminimalprojectionareaArithAvg_legacy_legacy_ <= -1: False (9.0/1.0)
+|   |   |   |   |   |   oxlikeminimalprojectionareaArithAvg_legacy_legacy_ > -1: True (6.0)
+|   |   |   Cr_legacy_legacy_ = False
+|   |   |   |   orgASA_HMin_legacy_legacy_ <= 333.01
+|   |   |   |   |   leak_legacy_legacy_ = True
+|   |   |   |   |   |   pH_legacy_legacy_ <= 1: False (10.0)
+|   |   |   |   |   |   pH_legacy_legacy_ > 1
+|   |   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ <= 0.0074: False (7.13/1.02)
+|   |   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ > 0.0074
+|   |   |   |   |   |   |   |   S_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   EAGeomWeighted_legacy_legacy_ <= 0.3478: True (4.0/1.0)
+|   |   |   |   |   |   |   |   |   EAGeomWeighted_legacy_legacy_ > 0.3478: False (2.0)
+|   |   |   |   |   |   |   |   S_legacy_legacy_ = False: True (11.0)
+|   |   |   |   |   leak_legacy_legacy_ = False
+|   |   |   |   |   |   hardnessMin_legacy_legacy_ <= 306.2
+|   |   |   |   |   |   |   orgASA-Min_legacy_legacy_ <= 0: True (87.0/1.0)
+|   |   |   |   |   |   |   orgASA-Min_legacy_legacy_ > 0
+|   |   |   |   |   |   |   |   time_legacy_legacy_ <= 90
+|   |   |   |   |   |   |   |   |   P_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   orgASA+ArithAvg_legacy_legacy_ <= 165.17: True (12.0/2.0)
+|   |   |   |   |   |   |   |   |   |   orgASA+ArithAvg_legacy_legacy_ > 165.17: False (10.0)
+|   |   |   |   |   |   |   |   |   P_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   numberOrg_legacy_legacy_ <= 1
+|   |   |   |   |   |   |   |   |   |   |   K_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.035
+|   |   |   |   |   |   |   |   |   |   |   |   |   Se_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 22
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaGeomAvg_legacy_legacy_ <= 26.55
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASAGeomAvg_legacy_legacy_ <= 283.2828
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ <= -0.0001: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ > -0.0001: True (8.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASAGeomAvg_legacy_legacy_ > 283.2828: True (11.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionareaGeomAvg_legacy_legacy_ > 26.55: False (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 22: True (17.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   Se_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ <= 0.0366: False (8.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ > 0.0366
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMaxWeighted_legacy_legacy_ <= 7.6613: True (7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   IonizationMaxWeighted_legacy_legacy_ > 7.6613: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.035: False (5.0)
+|   |   |   |   |   |   |   |   |   |   |   K_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   V6_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.0043
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsdonMax_legacy_legacy_ <= 0.01
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_HArithAvg_legacy_legacy_ <= 267.23
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted_legacy_legacy_ <= 0.2432
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusArithAvg_legacy_legacy_ <= 2.835
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ <= 7.34: False (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ > 7.34: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusArithAvg_legacy_legacy_ > 2.835: True (82.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMaxWeighted_legacy_legacy_ > 0.2432
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ <= 16.12
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.004
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ <= 100
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgdon-wateraccratio_legacy_legacy_ <= -0.0316
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ <= -0.0095: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ > -0.0095: False (12.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgdon-wateraccratio_legacy_legacy_ > -0.0316
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ <= 0.1196
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaArithAvg_legacy_legacy_ <= 36.125: True (23.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionareaArithAvg_legacy_legacy_ > 36.125
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ <= 2.6501
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ <= 0.1163: False (7.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ > 0.1163: True (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ > 2.6501: True (5.98)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool_legacy_legacy_ = False: False (5.91/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ > 0.1196: True (167.98/9.98)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ > 100
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Te_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionsizeArithAvg_legacy_legacy_ <= 10.83
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ <= 0.0092: True (6.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ > 0.0092
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0026: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0026: False (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionsizeArithAvg_legacy_legacy_ > 10.83: False (7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Te_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ <= 6
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg_legacy_legacy_ <= 96.35
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 60
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 24
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ <= 3
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ <= 1
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.0017
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMinWeighted_legacy_legacy_ <= 0.049: False (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   EAMinWeighted_legacy_legacy_ > 0.049
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusArithAvg_legacy_legacy_ <= 3.44: True (45.0/8.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusArithAvg_legacy_legacy_ > 3.44: False (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.0017: False (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ > 1
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0027
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ <= 0.0018: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0018: True (9.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = False: False (4.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   org-water-moleratio_legacy_legacy_ > 0.0027: True (100.0/9.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ > 3
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMin_legacy_legacy_ <= 4.77: True (11.0/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionradiusMin_legacy_legacy_ > 4.77: False (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 24: True (44.86/2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 60
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ <= -0.004: True (2.57)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ > -0.004
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ <= 110: False (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ > 110: True (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = True: False (5.14/0.14)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ <= 0.4086: False (7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ > 0.4086
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeArithAvg_legacy_legacy_ <= 5.51: True (20.14/3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeArithAvg_legacy_legacy_ > 5.51
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ <= 0.0252: False (6.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio_legacy_legacy_ > 0.0252: True (2.29)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg_legacy_legacy_ > 96.35: True (83.0/8.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ > 6
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 50
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   G5_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orghbdamsdonMin_legacy_legacy_ <= 3.13: True (16.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orghbdamsdonMin_legacy_legacy_ > 3.13
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ <= -0.0068: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ > -0.0068: True (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ <= 13.25
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ <= 11.03: False (11.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ > 11.03: True (10.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ > 13.25: False (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   G5_legacy_legacy_ = False: True (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 50: False (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.004: True (54.0/3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmolpolMin_legacy_legacy_ > 16.12: True (34.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgASA_HArithAvg_legacy_legacy_ > 267.23
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ <= 100
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ <= 10: True (20.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH_legacy_legacy_ > 10: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ > 100
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.0029: False (30.0/4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.0029
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMinWeighted_legacy_legacy_ <= 0.6056: True (17.0/5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   hardnessMinWeighted_legacy_legacy_ > 0.6056: False (6.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   oxlikehbdamsdonMax_legacy_legacy_ > 0.01: True (189.0/12.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.0043
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeArithAvg_legacy_legacy_ <= 5.17
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.006: True (25.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.006
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ <= 0.0068
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ <= 2.3497: True (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ > 2.3497: False (5.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMinWeighted_legacy_legacy_ > 0.0068
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ <= 8.4682: True (17.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ > 8.4682: False (5.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orgmaximalprojectionsizeArithAvg_legacy_legacy_ > 5.17: True (173.0/4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   V6_legacy_legacy_ = False: True (40.0)
+|   |   |   |   |   |   |   |   |   |   numberOrg_legacy_legacy_ > 1
+|   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 60: True (15.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 60
+|   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ <= 100: True (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   temp_legacy_legacy_ > 100
+|   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ <= 72: False (16.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   time_legacy_legacy_ > 72
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool_legacy_legacy_ = True: False (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool_legacy_legacy_ = False: True (5.0)
+|   |   |   |   |   |   |   |   time_legacy_legacy_ > 90
+|   |   |   |   |   |   |   |   |   pH_legacy_legacy_ <= 4
+|   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = True: False (2.0)
+|   |   |   |   |   |   |   |   |   |   Na_legacy_legacy_ = False
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg_legacy_legacy_ <= 132.83: True (17.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   orgASA_PArithAvg_legacy_legacy_ > 132.83: False (3.0)
+|   |   |   |   |   |   |   |   |   pH_legacy_legacy_ > 4: True (180.0/4.0)
+|   |   |   |   |   |   hardnessMin_legacy_legacy_ > 306.2
+|   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ <= 0.0432: False (10.0)
+|   |   |   |   |   |   |   notwater-water-moleratio_legacy_legacy_ > 0.0432
+|   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ <= 0.3729
+|   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ <= -0.1362: False (3.0)
+|   |   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ > -0.1362: True (16.0/1.0)
+|   |   |   |   |   |   |   |   EAMaxWeighted_legacy_legacy_ > 0.3729: False (2.0)
+|   |   |   |   orgASA_HMin_legacy_legacy_ > 333.01
+|   |   |   |   |   time_legacy_legacy_ <= 50
+|   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ <= 19.2343: True (22.0)
+|   |   |   |   |   |   inorg-org-moleratio_legacy_legacy_ > 19.2343: False (5.0/1.0)
+|   |   |   |   |   time_legacy_legacy_ > 50
+|   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ <= 0.0019: True (2.0)
+|   |   |   |   |   |   PaulingElectronegMeanWeighted_legacy_legacy_ > 0.0019
+|   |   |   |   |   |   |   slowCool_legacy_legacy_ = True
+|   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ <= -0.0038: False (7.0)
+|   |   |   |   |   |   |   |   orgacc-waterdonratio_legacy_legacy_ > -0.0038: True (2.0)
+|   |   |   |   |   |   |   slowCool_legacy_legacy_ = False: False (28.0/1.0)
+orgASA_PArithAvg_legacy_legacy_ > 143.27
+|   orgminimalprojectionradiusMin_legacy_legacy_ <= 2.62
+|   |   F_legacy_legacy_ = True: False (2.0)
+|   |   F_legacy_legacy_ = False: True (3.0)
+|   orgminimalprojectionradiusMin_legacy_legacy_ > 2.62: False (26.0)
+
+Number of Leaves  : 	172
+
+Size of the tree : 	343
+

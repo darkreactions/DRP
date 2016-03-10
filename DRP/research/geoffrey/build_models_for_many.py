@@ -61,6 +61,7 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
                                                         verbose=verbose)
         except:
             print '\n'.join(output)
+            print '\n'.join(['\t'.join(res) for res in results])
             raise
         BCR = parse_model_results.get_val(output, 'BCR')
         ACC = parse_model_results.get_val(output, 'Accuracy')

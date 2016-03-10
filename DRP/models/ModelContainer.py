@@ -239,7 +239,7 @@ class ModelContainer(models.Model):
 
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
-            fileName = os.path.join(settings.MODEL_DIR, '{}_{}'.format(self.pk, statsModel.pk))
+            fileName = os.path.join(settings.MODEL_DIR, '{}_{}_{}_{}.model'.format(self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
             whitelist = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
             if verbose:
                 print "{} statsModel {}, saving to {}, training...".format(statsModel.startTime, statsModel.pk, fileName)
