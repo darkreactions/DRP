@@ -57,25 +57,15 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
             mod_test_set_name = None
 
         # redirect stdout to output. TODO XXX make this less hacky
-        for attempt in range(5):
-            try:
-                with Capturing() as output:
-                        build_model.prepare_build_display_model(predictor_headers=predictor_headers, response_headers=[response_header], modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                                                            splitter=splitter, training_set_name=mod_training_set_name, test_set_name=mod_test_set_name, reaction_set_name=reaction_set_name, description=description,
-                                                            verbose=verbose)
-                break
-            except OperationalError, e:
-                print "Caught OperationalError {}: {}".format(e.args[0], e.args[1])
-                print "\nRestarting in 3 seconds...\n"
-                sleep(3)
-            except:
-                print '\n'.join(output)
-                print '\n'.join(['\t'.join(res) for res in results])
-                raise
-        else:
+        try:
+            with Capturing() as output:
+                build_model.prepare_build_display_model(predictor_headers=predictor_headers, response_headers=[response_header], modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                                                        splitter=splitter, training_set_name=mod_training_set_name, test_set_name=mod_test_set_name, reaction_set_name=reaction_set_name, description=description,
+                                                        verbose=verbose)
+        except:
             print '\n'.join(output)
             print '\n'.join(['\t'.join(res) for res in results])
-            raise RuntimeError("Got 5 Operational Errors in a row and gave up")
+            raise
 
         BCR = parse_model_results.get_val(output, 'BCR')
         ACC = parse_model_results.get_val(output, 'Accuracy')

@@ -61,8 +61,21 @@ def prepare_build_display_model(predictor_headers=None, response_headers=None, m
         testSet =  DataSet.objects.get(name=test_set_name)
         reactions=None
     
-    container = build_model(reactions=reactions, predictors=predictors, responses=responses, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                            splitter=splitter, trainingSet=trainingSet, testSet=testSet, description=description, verbose=verbose)
+    for attempt in range(5):
+        try:
+            container = build_model(reactions=reactions, predictors=predictors, responses=responses, 
+                                    modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                                    splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
+                                    description=description, verbose=verbose)
+            break
+        except OperationalError, e:
+            print "Caught OperationalError {}: {}".format(e.args[0], e.args[1])
+            print "\nRestarting in 3 seconds...\n"
+            sleep(3)
+    else:
+        print '\n'.join(output)
+        print '\n'.join(['\t'.join(res) for res in results])
+        raise RuntimeError("Got 5 Operational Errors in a row and gave up")
 
     display_model_results(container)
 
