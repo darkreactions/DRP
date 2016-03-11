@@ -40,18 +40,20 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
 
     results = [('header', 'BCR', 'ACC')]
     for response_header in response_headers:
+        if training_set_name is not None:
+            trainingSet =  DataSet.objects.get(name=training_set_name)
+            testSet =  DataSet.objects.get(name=test_set_name)
 
-        trainingSet =  DataSet.objects.get(name=training_set_name)
-        testSet =  DataSet.objects.get(name=test_set_name)
+            mod_training_set_name = '_'.join([training_set_name, response_header, str(uuid.uuid4())])
+            trainingSetRxns = filter_reactions(trainingSet.reactions.all(), response_header)
+            DataSet.create(mod_training_set_name, trainingSetRxns)
 
-        mod_training_set_name = '_'.join([training_set_name, response_header, str(uuid.uuid4())])
-        trainingSetRxns = filter_reactions(trainingSet.reactions.all(), response_header)
-        DataSet.create(mod_training_set_name, trainingSetRxns)
-
-        mod_test_set_name = '_'.join([test_set_name, response_header, str(uuid.uuid4())])
-        testSetRxns = filter_reactions(trainingSet.reactions.all(), response_header)
-        DataSet.create(mod_test_set_name, testSetRxns)
-
+            mod_test_set_name = '_'.join([test_set_name, response_header, str(uuid.uuid4())])
+            testSetRxns = filter_reactions(testSet.reactions.all(), response_header)
+            DataSet.create(mod_test_set_name, testSetRxns)
+        else:
+            mod_training_set_name = None
+            mod_test_set_name = None
 
         # redirect stdout to output. TODO XXX make this less hacky
         try:
@@ -64,7 +66,7 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
             raise
         BCR = parse_model_results.get_val(output, 'BCR')
         ACC = parse_model_results.get_val(output, 'Accuracy')
-        print BCR, 
+        
         ## now we need to give the output back to stdout
         print '\n'.join(output)
         results.append( (response_header, BCR, ACC) )

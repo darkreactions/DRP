@@ -1597,3 +1597,169 @@ VTe?_legacy
 VTe?_legacy
 2730
 2730
+0.919 Starting building at 2016-03-10 17:50:33.216753
+No splitter. Using given test and training sets.
+2016-03-10 17:50:55.034680 statsModel 883, saving to /home/gmartinn/DRP_main/DRP_repo/models/540_883, training...
+	...Trained. Finished at 2016-03-10 17:55:42.508368. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/883_f63fb90e-f38c-4e9f-a90f-f14ec09c3277.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-10 18:11:47.233206
+Confusion matrix for VTe?_legacy_prediction_540_summative__:
+      False  True 
+False  2143   36  
+ True  175   376  
+Accuracy: 0.923
+BCR: 0.919
+Confusion matrix for VTe?_legacy_prediction_540_component_883__:
+      False  True 
+False  2143   36  
+ True  175   376  
+Accuracy: 0.923
+BCR: 0.919
+I_legacy
+2730
+2730
+I_legacy
+2730
+2730
+0.984 Starting building at 2016-03-10 18:13:35.758628
+No splitter. Using given test and training sets.
+2016-03-10 18:13:57.118946 statsModel 885, saving to /home/gmartinn/DRP_main/DRP_repo/models/542_885, training...
+	...Trained. Finished at 2016-03-10 18:18:08.388109. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/885_db891b2f-1b14-4718-80fa-89d73d151d19.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-10 18:34:42.298361
+Confusion matrix for I_legacy_prediction_542_summative__:
+      False  True 
+False  2612   0   
+ True   84    34  
+Accuracy: 0.969
+BCR: 0.984
+Confusion matrix for I_legacy_prediction_542_component_885__:
+      False  True 
+False  2612   0   
+ True   84    34  
+Accuracy: 0.969
+BCR: 0.984
+slowCool_legacy
+2730
+2702
+slowCool_legacy
+2730
+2702
+0.904 Starting building at 2016-03-10 18:36:27.494868
+No splitter. Using given test and training sets.
+2016-03-10 18:36:48.500494 statsModel 887, saving to /home/gmartinn/DRP_main/DRP_repo/models/544_887, training...
+	...Trained. Finished at 2016-03-10 18:41:48.209678. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/887_6936302d-c512-40ef-bc8f-0af0c3267313.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-10 19:01:42.387007
+Confusion matrix for slowCool_legacy_prediction_544_summative__:
+      False  True 
+False  1011  135  
+ True  119   1437 
+Accuracy: 0.906
+BCR: 0.904
+Confusion matrix for slowCool_legacy_prediction_544_component_887__:
+      False  True 
+False  1011  135  
+ True  119   1437 
+Accuracy: 0.906
+BCR: 0.904
+G16_legacy
+2730
+2730
+G16_legacy
+2730
+2730
+0.939 Starting building at 2016-03-10 19:03:46.351499
+No splitter. Using given test and training sets.
+2016-03-10 19:04:08.547077 statsModel 889, saving to /home/gmartinn/DRP_main/DRP_repo/models/546_889, training...
+	...Trained. Finished at 2016-03-10 19:08:33.297177. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/889_db5b986d-6240-47bc-b64a-a161da0889ce.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-10 19:25:54.720725
+Confusion matrix for G16_legacy_prediction_546_summative__:
+      False  True 
+False  1035   45  
+ True  106   1544 
+Accuracy: 0.945
+BCR: 0.939
+Confusion matrix for G16_legacy_prediction_546_component_889__:
+      False  True 
+False  1035   45  
+ True  106   1544 
+Accuracy: 0.945
+BCR: 0.939
+header	BCR	ACC
+G5_legacy	0.969	0.974
+G4_legacy	1.0	1.0
+G3_legacy	1.0	1.0
+G2_legacy	1.0	1.0
+G1_legacy	1.0	1.0
+V3_legacy	0.984	0.984
+Br_legacy	1.0	1.0
+Na_legacy	0.85	0.851
+Cs_legacy	1.0	1.0
+AlkaliMetal_legacy	1.0	1.0
+P_legacy	0.946	0.964
+C_legacy	1.0	1.0
+G11_legacy	1.0	1.0
+Lanthanide_legacy	1.0	1.0
+boolean_outcome_legacy	0.718	0.695
+P7_legacy	1.0	1.0
+leak_legacy	0.798	0.674
+P5_legacy	0.931	0.935
+Mo_legacy	0.982	0.985
+P2_legacy	1.0	1.0
+P1_legacy	1.0	1.0
+P6_legacy	1.0	1.0
+Ga_legacy	0.984	0.984
+P4_legacy	0.982	0.985
+G15_legacy	1.0	1.0
+K_legacy	0.888	0.795
+O_legacy	1.0	1.0
+Cr_legacy	0.938	0.88
+G7_legacy	1.0	1.0
+Zn_legacy	0.972	0.944
+G6_legacy	0.94	0.958
+Cu_legacy	1.0	1.0
+Actinide_legacy	1.0	1.0
+G9_legacy	1.0	1.0
+G8_legacy	1.0	1.0
+S_legacy	0.872	0.855
+VSe?_legacy	0.911	0.905
+F_legacy	0.884	0.774
+N_legacy	0.883	0.81
+V_legacy	0.969	0.974
+G17_legacy	1.0	1.0
+G14_legacy	1.0	1.0
+G13_legacy	0.984	0.984
+G12_legacy	0.972	0.944
+Se_legacy	0.918	0.909
+G10_legacy	1.0	1.0
+Co_legacy	1.0	1.0
+Cl_legacy	0.852	0.723
+P3_legacy	1.0	1.0
+Li_legacy	1.0	1.0
+Te_legacy	0.919	0.923
+V0_legacy	1.0	1.0
+V1_legacy	1.0	1.0
+V2_legacy	0.972	0.944
+V4_legacy	1.0	1.0
+V5_legacy	0.969	0.974
+V6_legacy	0.889	0.8
+V7_legacy	1.0	1.0
+G18_legacy	1.0	1.0
+VTe?_legacy	0.919	0.923
+I_legacy	0.984	0.969
+slowCool_legacy	0.904	0.906
+G16_legacy	0.939	0.945
