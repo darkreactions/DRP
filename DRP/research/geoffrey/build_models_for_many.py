@@ -2,6 +2,7 @@ import build_model
 import parse_model_results
 import argparse
 import django
+from django.db.utils import OperationalError
 from DRP.models import DataSet, rxnDescriptorValues
 import uuid
 
@@ -58,16 +59,17 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
         # redirect stdout to output. TODO XXX make this less hacky
         try:
             with Capturing() as output:
-                    build_model.prepare_build_display_model(predictor_headers=predictor_headers, response_headers=[response_header], modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                build_model.prepare_build_display_model(predictor_headers=predictor_headers, response_headers=[response_header], modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
                                                         splitter=splitter, training_set_name=mod_training_set_name, test_set_name=mod_test_set_name, reaction_set_name=reaction_set_name, description=description,
                                                         verbose=verbose)
         except:
             print '\n'.join(output)
             print '\n'.join(['\t'.join(res) for res in results])
             raise
+
         BCR = parse_model_results.get_val(output, 'BCR')
         ACC = parse_model_results.get_val(output, 'Accuracy')
-        
+            
         ## now we need to give the output back to stdout
         print '\n'.join(output)
         results.append( (response_header, BCR, ACC) )
