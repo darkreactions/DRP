@@ -58,3 +58,786 @@ G3_legacy
 G3_legacy
 1175
 1175
+Starting building at 2016-03-11 04:57:57.052274
+No splitter. Using given test and training sets.
+2016-03-11 04:58:43.693049 statsModel 943, saving to /home/gmartinn/DRP_main/DRP_repo/models/602_943_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 05:02:24.198829. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/943_42a08ccf-a11d-472f-ac0f-e15be3c6a53e.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 05:11:59.565782
+Confusion matrix for G3_legacy_prediction_602_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G3_legacy_prediction_602_component_943__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G2_legacy
+2730
+2730
+G2_legacy
+1175
+1175
+Starting building at 2016-03-11 05:15:30.434131
+No splitter. Using given test and training sets.
+2016-03-11 05:16:02.075909 statsModel 953, saving to /home/gmartinn/DRP_main/DRP_repo/models/612_953_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 05:21:02.608927. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/953_40890f1c-cbb0-49d7-a073-3de261f34e3a.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 05:30:52.061020
+Confusion matrix for G2_legacy_prediction_612_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G2_legacy_prediction_612_component_953__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G1_legacy
+2730
+2730
+G1_legacy
+1175
+1175
+Starting building at 2016-03-11 05:33:38.420050
+No splitter. Using given test and training sets.
+2016-03-11 05:34:30.785140 statsModel 965, saving to /home/gmartinn/DRP_main/DRP_repo/models/617_965_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 05:40:26.893987. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/965_a0deb91e-f50d-47ed-81d6-b6168699ea7b.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 05:51:13.843450
+Confusion matrix for G1_legacy_prediction_617_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G1_legacy_prediction_617_component_965__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+V3_legacy
+2730
+2730
+V3_legacy
+1175
+1175
+Starting building at 2016-03-11 05:54:58.731446
+No splitter. Using given test and training sets.
+2016-03-11 05:55:30.204261 statsModel 980, saving to /home/gmartinn/DRP_main/DRP_repo/models/622_980_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 06:00:56.928763. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/980_5287734e-8d1d-4c4a-9da8-d666a510bba5.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 06:10:51.057290
+Confusion matrix for V3_legacy_prediction_622_summative__:
+      False  True 
+False  1115   3   
+ True   49    8   
+Accuracy: 0.956
+BCR: 0.843
+Confusion matrix for V3_legacy_prediction_622_component_980__:
+      False  True 
+False  1115   3   
+ True   49    8   
+Accuracy: 0.956
+BCR: 0.843
+Br_legacy
+2730
+2730
+Br_legacy
+1175
+1175
+Starting building at 2016-03-11 06:12:44.949279
+No splitter. Using given test and training sets.
+2016-03-11 06:14:07.059750 statsModel 992, saving to /home/gmartinn/DRP_main/DRP_repo/models/626_992_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 06:19:24.416789. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/992_121c9c0d-3bed-4ab8-9fbd-962085ca2e09.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 06:29:35.643878
+Confusion matrix for Br_legacy_prediction_626_summative__:
+      False  True 
+False  1172   3   
+ True   0     0   
+Accuracy: 0.997
+BCR: 0.5
+Confusion matrix for Br_legacy_prediction_626_component_992__:
+      False  True 
+False  1172   3   
+ True   0     0   
+Accuracy: 0.997
+BCR: 0.5
+Na_legacy
+2730
+2730
+Na_legacy
+1175
+1175
+Starting building at 2016-03-11 06:31:46.379579
+No splitter. Using given test and training sets.
+2016-03-11 06:32:29.949685 statsModel 1006, saving to /home/gmartinn/DRP_main/DRP_repo/models/631_1006_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 06:38:50.153913. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1006_7ec4e99c-4a81-4621-ba14-53c5826b3bc4.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 06:48:38.260423
+Confusion matrix for Na_legacy_prediction_631_summative__:
+      False  True 
+False  247   130  
+ True  106   692  
+Accuracy: 0.799
+BCR: 0.771
+Confusion matrix for Na_legacy_prediction_631_component_1006__:
+      False  True 
+False  247   130  
+ True  106   692  
+Accuracy: 0.799
+BCR: 0.771
+Cs_legacy
+2730
+2730
+Cs_legacy
+1175
+1175
+Starting building at 2016-03-11 06:51:20.527993
+No splitter. Using given test and training sets.
+2016-03-11 06:52:08.316930 statsModel 1019, saving to /home/gmartinn/DRP_main/DRP_repo/models/636_1019_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 06:56:23.856611. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1019_eb8ec6e0-c253-4915-a17f-c0253f5ec82f.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 07:06:45.999878
+Confusion matrix for Cs_legacy_prediction_636_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Cs_legacy_prediction_636_component_1019__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+AlkaliMetal_legacy
+2730
+2730
+AlkaliMetal_legacy
+1175
+1175
+Starting building at 2016-03-11 07:10:07.386234
+No splitter. Using given test and training sets.
+2016-03-11 07:11:09.271159 statsModel 1033, saving to /home/gmartinn/DRP_main/DRP_repo/models/641_1033_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 07:15:43.963536. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1033_da6b8bd3-b167-412e-9b74-63cffa7b420a.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 07:25:12.285456
+Confusion matrix for AlkaliMetal_legacy_prediction_641_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for AlkaliMetal_legacy_prediction_641_component_1033__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+P_legacy
+2730
+2730
+P_legacy
+1175
+1175
+Starting building at 2016-03-11 07:28:06.455842
+No splitter. Using given test and training sets.
+2016-03-11 07:28:55.747764 statsModel 1046, saving to /home/gmartinn/DRP_main/DRP_repo/models/646_1046_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 07:36:17.554381. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1046_e3f05196-5de6-4d19-883b-a3e4b5ef08ad.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 07:47:31.588390
+Confusion matrix for P_legacy_prediction_646_summative__:
+      False  True 
+False  1170   3   
+ True   2     0   
+Accuracy: 0.996
+BCR: 0.499
+Confusion matrix for P_legacy_prediction_646_component_1046__:
+      False  True 
+False  1170   3   
+ True   2     0   
+Accuracy: 0.996
+BCR: 0.499
+C_legacy
+2730
+2730
+C_legacy
+1175
+1175
+Starting building at 2016-03-11 07:50:27.784681
+No splitter. Using given test and training sets.
+2016-03-11 07:51:16.311685 statsModel 1056, saving to /home/gmartinn/DRP_main/DRP_repo/models/650_1056_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 07:55:43.809350. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1056_79ea1d67-e826-4a72-a601-049fe1bd7c3a.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 08:05:44.342179
+Confusion matrix for C_legacy_prediction_650_summative__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for C_legacy_prediction_650_component_1056__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+G11_legacy
+2730
+2730
+G11_legacy
+1175
+1175
+Starting building at 2016-03-11 08:07:30.255475
+No splitter. Using given test and training sets.
+2016-03-11 08:08:43.737902 statsModel 1066, saving to /home/gmartinn/DRP_main/DRP_repo/models/655_1066_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 08:12:51.526961. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1066_572fdf8b-ffb8-46a4-b56b-3994a98d6661.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 08:22:17.135197
+Confusion matrix for G11_legacy_prediction_655_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G11_legacy_prediction_655_component_1066__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Lanthanide_legacy
+2730
+2730
+Lanthanide_legacy
+1175
+1175
+Starting building at 2016-03-11 08:24:00.550455
+No splitter. Using given test and training sets.
+2016-03-11 08:24:47.390375 statsModel 1071, saving to /home/gmartinn/DRP_main/DRP_repo/models/660_1071_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 08:28:25.429991. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1071_d6bf3f8c-6b53-4ef4-aba5-d68583d43ab0.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 08:38:00.620606
+Confusion matrix for Lanthanide_legacy_prediction_660_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Lanthanide_legacy_prediction_660_component_1071__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+boolean_outcome_legacy
+2730
+2730
+boolean_outcome_legacy
+1175
+1175
+Starting building at 2016-03-11 08:39:39.679492
+No splitter. Using given test and training sets.
+2016-03-11 08:40:26.632924 statsModel 1076, saving to /home/gmartinn/DRP_main/DRP_repo/models/665_1076_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 08:47:14.318174. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1076_bcbd2efd-4733-4079-b35c-d832d647baf3.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 08:55:39.451973
+Confusion matrix for boolean_outcome_legacy_prediction_665_summative__:
+      False  True 
+False  169   299  
+ True  137   570  
+Accuracy: 0.629
+BCR: 0.604
+Confusion matrix for boolean_outcome_legacy_prediction_665_component_1076__:
+      False  True 
+False  169   299  
+ True  137   570  
+Accuracy: 0.629
+BCR: 0.604
+P7_legacy
+2730
+2730
+P7_legacy
+1175
+1175
+Starting building at 2016-03-11 08:57:27.726291
+No splitter. Using given test and training sets.
+2016-03-11 08:58:12.289066 statsModel 1082, saving to /home/gmartinn/DRP_main/DRP_repo/models/671_1082_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 09:01:52.480027. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1082_c067a396-ae7e-4ffc-9c8b-aea165d7279f.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 09:11:59.971994
+Confusion matrix for P7_legacy_prediction_671_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P7_legacy_prediction_671_component_1082__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+leak_legacy
+2730
+2718
+leak_legacy
+1175
+1149
+Starting building at 2016-03-11 09:13:46.740793
+No splitter. Using given test and training sets.
+2016-03-11 09:14:34.893028 statsModel 1087, saving to /home/gmartinn/DRP_main/DRP_repo/models/676_1087_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 09:21:30.900035. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1087_9fa8ec13-7542-48ee-9cbc-8061317f507b.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 09:30:25.302707
+Confusion matrix for leak_legacy_prediction_676_summative__:
+      False  True 
+False  846    3   
+ True  281    19  
+Accuracy: 0.753
+BCR: 0.807
+Confusion matrix for leak_legacy_prediction_676_component_1087__:
+      False  True 
+False  846    3   
+ True  281    19  
+Accuracy: 0.753
+BCR: 0.807
+P5_legacy
+2730
+2730
+P5_legacy
+1175
+1175
+Starting building at 2016-03-11 09:31:50.540295
+No splitter. Using given test and training sets.
+2016-03-11 09:32:36.461059 statsModel 1092, saving to /home/gmartinn/DRP_main/DRP_repo/models/681_1092_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 09:37:29.731161. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1092_8badcbc3-9ef5-46fe-b336-50039b753276.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 09:47:27.348921
+Confusion matrix for P5_legacy_prediction_681_summative__:
+      False  True 
+False  610    23  
+ True   46   496  
+Accuracy: 0.941
+BCR: 0.943
+Confusion matrix for P5_legacy_prediction_681_component_1092__:
+      False  True 
+False  610    23  
+ True   46   496  
+Accuracy: 0.941
+BCR: 0.943
+Mo_legacy
+2730
+2730
+Mo_legacy
+1175
+1175
+Starting building at 2016-03-11 09:49:07.887281
+No splitter. Using given test and training sets.
+2016-03-11 09:49:54.047125 statsModel 1098, saving to /home/gmartinn/DRP_main/DRP_repo/models/687_1098_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 09:54:08.735032. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1098_5aa8b46e-ecab-4377-8fbf-cedd14cde751.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:03:13.822113
+Confusion matrix for Mo_legacy_prediction_687_summative__:
+      False  True 
+False  1045   4   
+ True   21   105  
+Accuracy: 0.979
+BCR: 0.972
+Confusion matrix for Mo_legacy_prediction_687_component_1098__:
+      False  True 
+False  1045   4   
+ True   21   105  
+Accuracy: 0.979
+BCR: 0.972
+P2_legacy
+2730
+2730
+P2_legacy
+1175
+1175
+Starting building at 2016-03-11 10:05:17.342042
+No splitter. Using given test and training sets.
+2016-03-11 10:06:03.348668 statsModel 1103, saving to /home/gmartinn/DRP_main/DRP_repo/models/692_1103_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 10:10:04.275569. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1103_e3821155-8568-4501-a94a-58b57fa7d2be.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:19:37.744614
+Confusion matrix for P2_legacy_prediction_692_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P2_legacy_prediction_692_component_1103__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+P1_legacy
+2730
+2730
+P1_legacy
+1175
+1175
+Starting building at 2016-03-11 10:21:19.312156
+No splitter. Using given test and training sets.
+2016-03-11 10:22:08.595984 statsModel 1107, saving to /home/gmartinn/DRP_main/DRP_repo/models/696_1107_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 10:25:57.477651. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1107_a6155dcd-da36-4b91-8d93-7280cddb61c9.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:34:51.441361
+Confusion matrix for P1_legacy_prediction_696_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P1_legacy_prediction_696_component_1107__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+P6_legacy
+2730
+2730
+P6_legacy
+1175
+1175
+Starting building at 2016-03-11 10:36:46.742022
+No splitter. Using given test and training sets.
+2016-03-11 10:37:33.103209 statsModel 1112, saving to /home/gmartinn/DRP_main/DRP_repo/models/701_1112_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 10:41:23.060917. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1112_6c3009ba-7d5b-4e8a-8bf1-4c2441212e51.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:50:34.995427
+Confusion matrix for P6_legacy_prediction_701_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P6_legacy_prediction_701_component_1112__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Ga_legacy
+2730
+2730
+Ga_legacy
+1175
+1175
+Starting building at 2016-03-11 10:52:48.100292
+No splitter. Using given test and training sets.
+2016-03-11 10:53:32.668933 statsModel 1117, saving to /home/gmartinn/DRP_main/DRP_repo/models/706_1117_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 10:57:50.547847. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1117_c2923de6-b504-4ae6-b8fb-b8bd2fed1455.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:07:02.232664
+Confusion matrix for Ga_legacy_prediction_706_summative__:
+      False  True 
+False  1115   3   
+ True   49    8   
+Accuracy: 0.956
+BCR: 0.843
+Confusion matrix for Ga_legacy_prediction_706_component_1117__:
+      False  True 
+False  1115   3   
+ True   49    8   
+Accuracy: 0.956
+BCR: 0.843
+P4_legacy
+2730
+2730
+P4_legacy
+1175
+1175
+Starting building at 2016-03-11 11:08:40.170669
+No splitter. Using given test and training sets.
+2016-03-11 11:09:30.657804 statsModel 1123, saving to /home/gmartinn/DRP_main/DRP_repo/models/712_1123_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 11:13:42.839590. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1123_8bbff57d-7621-481f-a263-b4e87f2785ed.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:23:01.535105
+Confusion matrix for P4_legacy_prediction_712_summative__:
+      False  True 
+False  105    20  
+ True   4    1046 
+Accuracy: 0.98
+BCR: 0.972
+Confusion matrix for P4_legacy_prediction_712_component_1123__:
+      False  True 
+False  105    20  
+ True   4    1046 
+Accuracy: 0.98
+BCR: 0.972
+G15_legacy
+2730
+2730
+G15_legacy
+1175
+1175
+Starting building at 2016-03-11 11:25:10.151351
+No splitter. Using given test and training sets.
+2016-03-11 11:25:56.733954 statsModel 1128, saving to /home/gmartinn/DRP_main/DRP_repo/models/717_1128_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 11:29:44.090144. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1128_d1271a73-0014-46c2-a317-57a402944319.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:38:45.756584
+Confusion matrix for G15_legacy_prediction_717_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G15_legacy_prediction_717_component_1128__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+K_legacy
+2730
+2730
+K_legacy
+1175
+1175
+Starting building at 2016-03-11 11:40:41.612498
+No splitter. Using given test and training sets.
+2016-03-11 11:41:50.029210 statsModel 1133, saving to /home/gmartinn/DRP_main/DRP_repo/models/722_1133_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 11:46:52.706705. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1133_156ec682-7b78-4ca3-a1e6-d298fcd58ce5.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:55:54.292364
+Confusion matrix for K_legacy_prediction_722_summative__:
+      False  True 
+False  1148   2   
+ True   12    13  
+Accuracy: 0.988
+BCR: 0.928
+Confusion matrix for K_legacy_prediction_722_component_1133__:
+      False  True 
+False  1148   2   
+ True   12    13  
+Accuracy: 0.988
+BCR: 0.928
+O_legacy
+2730
+2730
+O_legacy
+1175
+1175
+Starting building at 2016-03-11 11:57:54.857687
+No splitter. Using given test and training sets.
+2016-03-11 11:58:38.321085 statsModel 1139, saving to /home/gmartinn/DRP_main/DRP_repo/models/728_1139_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 12:03:24.295334. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1139_33bdf3a5-8b6c-4d78-95e6-ffdb92a02308.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 12:12:26.309401
+Confusion matrix for O_legacy_prediction_728_summative__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for O_legacy_prediction_728_component_1139__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Cr_legacy
+2730
+2730
+Cr_legacy
+1175
+1175
+Starting building at 2016-03-11 12:14:45.086675
+No splitter. Using given test and training sets.
+2016-03-11 12:15:10.668683 statsModel 1144, saving to /home/gmartinn/DRP_main/DRP_repo/models/733_1144_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 12:19:52.804236. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1144_672416aa-ec79-408e-b833-30ff407c2eb7.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 12:28:53.653854
+Confusion matrix for Cr_legacy_prediction_733_summative__:
+      False  True 
+False  1166   0   
+ True   9     0   
+Accuracy: 0.992
+BCR: 0.992
+Confusion matrix for Cr_legacy_prediction_733_component_1144__:
+      False  True 
+False  1166   0   
+ True   9     0   
+Accuracy: 0.992
+BCR: 0.992
+G7_legacy
+2730
+2730
+G7_legacy
+1175
+1175
+Starting building at 2016-03-11 12:31:13.448709
+No splitter. Using given test and training sets.
+2016-03-11 12:31:37.010490 statsModel 1148, saving to /home/gmartinn/DRP_main/DRP_repo/models/737_1148_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 12:35:29.168693. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1148_4460380a-f014-4816-9490-16afccd63420.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 12:44:34.706768
+Confusion matrix for G7_legacy_prediction_737_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G7_legacy_prediction_737_component_1148__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Zn_legacy
+2730
+2730
+Zn_legacy
+1175
+1175
+Starting building at 2016-03-11 12:46:40.799639
+No splitter. Using given test and training sets.
+2016-03-11 12:47:54.148503 statsModel 1153, saving to /home/gmartinn/DRP_main/DRP_repo/models/742_1153_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 12:52:35.997228. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1153_2444e078-3d2b-4235-ae94-5d6e9217c7c8.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 13:01:32.956193
+Confusion matrix for Zn_legacy_prediction_742_summative__:
+      False  True 
+False  1106   25  
+ True   36    8   
+Accuracy: 0.948
+BCR: 0.605
+Confusion matrix for Zn_legacy_prediction_742_component_1153__:
+      False  True 
+False  1106   25  
+ True   36    8   
+Accuracy: 0.948
+BCR: 0.605
+G6_legacy
+2730
+2730
+G6_legacy
+1175
+1175
+Starting building at 2016-03-11 13:03:21.258866
+No splitter. Using given test and training sets.
+2016-03-11 13:04:09.944350 statsModel 1159, saving to /home/gmartinn/DRP_main/DRP_repo/models/748_1159_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 13:08:45.690432. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1159_d2ccc9cb-be99-4c3a-9bf3-6d4492e62b7c.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 13:18:36.452523
+Confusion matrix for G6_legacy_prediction_748_summative__:
+      False  True 
+False  1053   8   
+ True   13   101  
+Accuracy: 0.982
+BCR: 0.957
+Confusion matrix for G6_legacy_prediction_748_component_1159__:
+      False  True 
+False  1053   8   
+ True   13   101  
+Accuracy: 0.982
+BCR: 0.957
+Cu_legacy
+2730
+2730
+Cu_legacy
+1175
+1175

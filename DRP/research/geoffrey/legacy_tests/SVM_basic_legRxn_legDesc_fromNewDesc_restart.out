@@ -64,3 +64,873 @@ G3_legacy
 G3_legacy
 1175
 1175
+Starting building at 2016-03-11 04:59:19.872073
+No splitter. Using given test and training sets.
+2016-03-11 05:00:05.190556 statsModel 945, saving to /home/gmartinn/DRP_main/DRP_repo/models/604_945_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/945_15b6c185-d6e4-42dc-9cab-0e06f238880e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/945_15b6c185-d6e4-42dc-9cab-0e06f238880e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/604_945_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 05:03:44.438842. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/945_254c9364-b192-4f2c-9c02-1958415eace2.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 05:13:20.632240
+Confusion matrix for G3_legacy_prediction_604_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G3_legacy_prediction_604_component_945__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G2_legacy
+2730
+2730
+G2_legacy
+1175
+1175
+Starting building at 2016-03-11 05:17:18.418586
+No splitter. Using given test and training sets.
+2016-03-11 05:18:07.183851 statsModel 955, saving to /home/gmartinn/DRP_main/DRP_repo/models/614_955_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/955_34074a59-143f-426f-bcca-e1567199eeac.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/955_34074a59-143f-426f-bcca-e1567199eeac.arff -d /home/gmartinn/DRP_main/DRP_repo/models/614_955_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 05:22:37.268460. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/955_f347d8b2-623f-4848-b674-8cf5484873c9.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 05:32:29.892239
+Confusion matrix for G2_legacy_prediction_614_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G2_legacy_prediction_614_component_955__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G1_legacy
+2730
+2730
+G1_legacy
+1175
+1175
+Starting building at 2016-03-11 05:35:36.614586
+No splitter. Using given test and training sets.
+2016-03-11 05:36:21.264183 statsModel 970, saving to /home/gmartinn/DRP_main/DRP_repo/models/619_970_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/970_968d5b70-2d7b-4a83-95cb-00570397bfa2.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/970_968d5b70-2d7b-4a83-95cb-00570397bfa2.arff -d /home/gmartinn/DRP_main/DRP_repo/models/619_970_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 05:43:05.495007. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/970_04744310-4ab8-42ef-ade8-b11231100808.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 05:53:05.554599
+Confusion matrix for G1_legacy_prediction_619_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G1_legacy_prediction_619_component_970__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+V3_legacy
+2730
+2730
+V3_legacy
+1175
+1175
+Starting building at 2016-03-11 05:57:18.608363
+No splitter. Using given test and training sets.
+2016-03-11 05:58:09.280079 statsModel 982, saving to /home/gmartinn/DRP_main/DRP_repo/models/624_982_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/982_59ca041b-7cb0-4c05-b8a3-7775b671d564.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/982_59ca041b-7cb0-4c05-b8a3-7775b671d564.arff -d /home/gmartinn/DRP_main/DRP_repo/models/624_982_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 06:03:46.601399. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/982_ff4cc324-8df2-4139-bb5c-b7707e562dbb.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 06:15:23.896238
+Confusion matrix for V3_legacy_prediction_624_summative__:
+      False  True 
+False  1164   9   
+ True   0     2   
+Accuracy: 0.992
+BCR: 0.591
+Confusion matrix for V3_legacy_prediction_624_component_982__:
+      False  True 
+False  1164   9   
+ True   0     2   
+Accuracy: 0.992
+BCR: 0.591
+Br_legacy
+2730
+2730
+Br_legacy
+1175
+1175
+Starting building at 2016-03-11 06:17:54.602521
+No splitter. Using given test and training sets.
+2016-03-11 06:18:43.517671 statsModel 997, saving to /home/gmartinn/DRP_main/DRP_repo/models/628_997_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/997_ce56ff39-c617-47aa-8cc3-2ce7828f4862.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/997_ce56ff39-c617-47aa-8cc3-2ce7828f4862.arff -d /home/gmartinn/DRP_main/DRP_repo/models/628_997_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 06:26:08.886347. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/997_e7682e4a-08dc-4518-8c19-c8a0eac12f17.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 06:35:46.808846
+Confusion matrix for Br_legacy_prediction_628_summative__:
+      False  True 
+False  1172   3   
+ True   0     0   
+Accuracy: 0.997
+BCR: 0.5
+Confusion matrix for Br_legacy_prediction_628_component_997__:
+      False  True 
+False  1172   3   
+ True   0     0   
+Accuracy: 0.997
+BCR: 0.5
+Na_legacy
+2730
+2730
+Na_legacy
+1175
+1175
+Starting building at 2016-03-11 06:37:49.496051
+No splitter. Using given test and training sets.
+2016-03-11 06:38:41.791119 statsModel 1009, saving to /home/gmartinn/DRP_main/DRP_repo/models/632_1009_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1009_742c7754-2f68-4a20-90b5-1a6e5f647300.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1009_742c7754-2f68-4a20-90b5-1a6e5f647300.arff -d /home/gmartinn/DRP_main/DRP_repo/models/632_1009_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 06:48:32.185534. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1009_b60ad5ee-f865-4ea2-982d-ddb7946e8e89.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 06:58:39.557625
+Confusion matrix for Na_legacy_prediction_632_summative__:
+      False  True 
+False  247   130  
+ True  106   692  
+Accuracy: 0.799
+BCR: 0.771
+Confusion matrix for Na_legacy_prediction_632_component_1009__:
+      False  True 
+False  247   130  
+ True  106   692  
+Accuracy: 0.799
+BCR: 0.771
+Cs_legacy
+2730
+2730
+Cs_legacy
+1175
+1175
+Starting building at 2016-03-11 07:02:12.838410
+No splitter. Using given test and training sets.
+2016-03-11 07:03:03.196097 statsModel 1027, saving to /home/gmartinn/DRP_main/DRP_repo/models/639_1027_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1027_5ff6b865-cbe1-452f-8666-6badc89857d8.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1027_5ff6b865-cbe1-452f-8666-6badc89857d8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/639_1027_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 07:09:20.100622. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1027_8f87365e-5ec2-4abd-8f7b-086e1256fd70.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 07:20:55.067661
+Confusion matrix for Cs_legacy_prediction_639_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Cs_legacy_prediction_639_component_1027__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+AlkaliMetal_legacy
+2730
+2730
+AlkaliMetal_legacy
+1175
+1175
+Starting building at 2016-03-11 07:23:28.898764
+No splitter. Using given test and training sets.
+2016-03-11 07:24:16.641991 statsModel 1040, saving to /home/gmartinn/DRP_main/DRP_repo/models/643_1040_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1040_5bb817e4-b65b-47ec-8501-c199dd2e6e38.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1040_5bb817e4-b65b-47ec-8501-c199dd2e6e38.arff -d /home/gmartinn/DRP_main/DRP_repo/models/643_1040_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 07:29:30.887184. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1040_f855ac8a-28e1-47e9-8d05-0ee7c6ae6915.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 07:41:24.337600
+Confusion matrix for AlkaliMetal_legacy_prediction_643_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for AlkaliMetal_legacy_prediction_643_component_1040__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+P_legacy
+2730
+2730
+P_legacy
+1175
+1175
+Starting building at 2016-03-11 07:44:35.827691
+No splitter. Using given test and training sets.
+2016-03-11 07:45:22.933841 statsModel 1053, saving to /home/gmartinn/DRP_main/DRP_repo/models/648_1053_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1053_1382456b-981d-4d09-ae66-4903350288a7.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1053_1382456b-981d-4d09-ae66-4903350288a7.arff -d /home/gmartinn/DRP_main/DRP_repo/models/648_1053_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 07:49:55.864768. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1053_c622efdd-9a8b-4cd2-872c-5c6ee7c1e679.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 07:59:48.889287
+Confusion matrix for P_legacy_prediction_648_summative__:
+      False  True 
+False  1172   3   
+ True   0     0   
+Accuracy: 0.997
+BCR: 0.5
+Confusion matrix for P_legacy_prediction_648_component_1053__:
+      False  True 
+False  1172   3   
+ True   0     0   
+Accuracy: 0.997
+BCR: 0.5
+C_legacy
+2730
+2730
+C_legacy
+1175
+1175
+Starting building at 2016-03-11 08:02:24.082683
+No splitter. Using given test and training sets.
+2016-03-11 08:03:21.583910 statsModel 1063, saving to /home/gmartinn/DRP_main/DRP_repo/models/653_1063_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1063_9380fae6-c682-4e4f-a256-af85d361cb38.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1063_9380fae6-c682-4e4f-a256-af85d361cb38.arff -d /home/gmartinn/DRP_main/DRP_repo/models/653_1063_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 08:07:55.053138. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1063_55a5217b-d3a0-4bc1-a40a-b16881d61ea9.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 08:17:27.021311
+Confusion matrix for C_legacy_prediction_653_summative__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for C_legacy_prediction_653_component_1063__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+G11_legacy
+2730
+2730
+G11_legacy
+1175
+1175
+Starting building at 2016-03-11 08:19:09.074948
+No splitter. Using given test and training sets.
+2016-03-11 08:19:54.886405 statsModel 1070, saving to /home/gmartinn/DRP_main/DRP_repo/models/659_1070_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1070_57ab9aa9-1693-4cf5-acb7-3663dc09fdb7.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1070_57ab9aa9-1693-4cf5-acb7-3663dc09fdb7.arff -d /home/gmartinn/DRP_main/DRP_repo/models/659_1070_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 08:23:53.081844. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1070_da18b04c-f64c-4afb-a56f-7d92c22e9fe0.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 08:33:01.467339
+Confusion matrix for G11_legacy_prediction_659_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G11_legacy_prediction_659_component_1070__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Lanthanide_legacy
+2730
+2730
+Lanthanide_legacy
+1175
+1175
+Starting building at 2016-03-11 08:34:26.178010
+No splitter. Using given test and training sets.
+2016-03-11 08:35:13.551489 statsModel 1075, saving to /home/gmartinn/DRP_main/DRP_repo/models/664_1075_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1075_98836b84-dbc4-4db5-abc6-3a2cb1f092ed.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1075_98836b84-dbc4-4db5-abc6-3a2cb1f092ed.arff -d /home/gmartinn/DRP_main/DRP_repo/models/664_1075_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 08:38:58.841045. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1075_f9cb2e5e-782b-4c45-851c-bcb4bb8bc400.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 08:48:02.684248
+Confusion matrix for Lanthanide_legacy_prediction_664_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Lanthanide_legacy_prediction_664_component_1075__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+boolean_outcome_legacy
+2730
+2730
+boolean_outcome_legacy
+1175
+1175
+Starting building at 2016-03-11 08:49:46.605824
+No splitter. Using given test and training sets.
+2016-03-11 08:50:32.668085 statsModel 1078, saving to /home/gmartinn/DRP_main/DRP_repo/models/668_1078_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1078_9f0bb315-7108-4f1a-9716-d6dc4a3a4a38.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1078_9f0bb315-7108-4f1a-9716-d6dc4a3a4a38.arff -d /home/gmartinn/DRP_main/DRP_repo/models/668_1078_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 08:58:31.842864. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1078_88014586-69ca-4e80-a9c7-36726ef7dfdd.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 09:07:34.371381
+Confusion matrix for boolean_outcome_legacy_prediction_668_summative__:
+      False  True 
+False   68    79  
+ True  238   790  
+Accuracy: 0.73
+BCR: 0.566
+Confusion matrix for boolean_outcome_legacy_prediction_668_component_1078__:
+      False  True 
+False   68    79  
+ True  238   790  
+Accuracy: 0.73
+BCR: 0.566
+P7_legacy
+2730
+2730
+P7_legacy
+1175
+1175
+Starting building at 2016-03-11 09:09:16.012093
+No splitter. Using given test and training sets.
+2016-03-11 09:10:26.886764 statsModel 1085, saving to /home/gmartinn/DRP_main/DRP_repo/models/674_1085_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1085_a2b73b0f-96f3-4707-ba0c-0536905fffe9.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1085_a2b73b0f-96f3-4707-ba0c-0536905fffe9.arff -d /home/gmartinn/DRP_main/DRP_repo/models/674_1085_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 09:14:11.783738. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1085_a87f24e2-6379-45ee-9bb5-5027200e1d89.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 09:21:30.361256
+Confusion matrix for P7_legacy_prediction_674_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P7_legacy_prediction_674_component_1085__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+leak_legacy
+2730
+2718
+leak_legacy
+1175
+1149
+Starting building at 2016-03-11 09:22:56.834809
+No splitter. Using given test and training sets.
+2016-03-11 09:23:42.400280 statsModel 1089, saving to /home/gmartinn/DRP_main/DRP_repo/models/678_1089_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1089_e1390b59-2cf0-42a5-b8a1-595768b0ca26.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1089_e1390b59-2cf0-42a5-b8a1-595768b0ca26.arff -d /home/gmartinn/DRP_main/DRP_repo/models/678_1089_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 09:27:49.864126. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1089_2b2815f8-cd67-40ef-894b-d42b2350d02f.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 09:33:58.494599
+Confusion matrix for leak_legacy_prediction_678_summative__:
+      False  True 
+False  1127   22  
+ True   0     0   
+Accuracy: 0.981
+BCR: 0.5
+Confusion matrix for leak_legacy_prediction_678_component_1089__:
+      False  True 
+False  1127   22  
+ True   0     0   
+Accuracy: 0.981
+BCR: 0.5
+P5_legacy
+2730
+2730
+P5_legacy
+1175
+1175
+Starting building at 2016-03-11 09:35:33.750459
+No splitter. Using given test and training sets.
+2016-03-11 09:36:18.147681 statsModel 1094, saving to /home/gmartinn/DRP_main/DRP_repo/models/683_1094_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1094_2823f045-b078-4cfd-81d6-7475f7709136.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1094_2823f045-b078-4cfd-81d6-7475f7709136.arff -d /home/gmartinn/DRP_main/DRP_repo/models/683_1094_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 09:41:07.296674. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1094_a56b8b1c-296f-4342-b88c-d778d495c247.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 09:49:29.736074
+Confusion matrix for P5_legacy_prediction_683_summative__:
+      False  True 
+False  615    26  
+ True   41   493  
+Accuracy: 0.943
+BCR: 0.944
+Confusion matrix for P5_legacy_prediction_683_component_1094__:
+      False  True 
+False  615    26  
+ True   41   493  
+Accuracy: 0.943
+BCR: 0.944
+Mo_legacy
+2730
+2730
+Mo_legacy
+1175
+1175
+Starting building at 2016-03-11 09:50:51.392947
+No splitter. Using given test and training sets.
+2016-03-11 09:51:36.534515 statsModel 1099, saving to /home/gmartinn/DRP_main/DRP_repo/models/688_1099_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1099_1bdcc54d-cf8e-428c-9310-62eed67c6f5a.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1099_1bdcc54d-cf8e-428c-9310-62eed67c6f5a.arff -d /home/gmartinn/DRP_main/DRP_repo/models/688_1099_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 09:55:53.082664. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1099_5c1c98e2-744d-4a54-a359-9503ad71a603.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:04:48.051569
+Confusion matrix for Mo_legacy_prediction_688_summative__:
+      False  True 
+False  1056   9   
+ True   10   100  
+Accuracy: 0.984
+BCR: 0.954
+Confusion matrix for Mo_legacy_prediction_688_component_1099__:
+      False  True 
+False  1056   9   
+ True   10   100  
+Accuracy: 0.984
+BCR: 0.954
+P2_legacy
+2730
+2730
+P2_legacy
+1175
+1175
+Starting building at 2016-03-11 10:06:20.786017
+No splitter. Using given test and training sets.
+2016-03-11 10:07:04.493251 statsModel 1104, saving to /home/gmartinn/DRP_main/DRP_repo/models/693_1104_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1104_dd774179-2d50-4d0a-9c3a-a59350e86bf1.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1104_dd774179-2d50-4d0a-9c3a-a59350e86bf1.arff -d /home/gmartinn/DRP_main/DRP_repo/models/693_1104_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 10:10:55.368362. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1104_d0c5f502-bd3b-4638-9712-617420a54e52.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:20:14.452367
+Confusion matrix for P2_legacy_prediction_693_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P2_legacy_prediction_693_component_1104__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+P1_legacy
+2730
+2730
+P1_legacy
+1175
+1175
+Starting building at 2016-03-11 10:21:59.199044
+No splitter. Using given test and training sets.
+2016-03-11 10:22:47.481516 statsModel 1108, saving to /home/gmartinn/DRP_main/DRP_repo/models/697_1108_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1108_f27e28c8-fea5-4f40-aa2e-df1204a05f00.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1108_f27e28c8-fea5-4f40-aa2e-df1204a05f00.arff -d /home/gmartinn/DRP_main/DRP_repo/models/697_1108_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 10:26:33.777552. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1108_bb33c2e6-a5aa-4b43-bf7b-8a19656527fe.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:35:33.985086
+Confusion matrix for P1_legacy_prediction_697_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P1_legacy_prediction_697_component_1108__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+P6_legacy
+2730
+2730
+P6_legacy
+1175
+1175
+Starting building at 2016-03-11 10:37:20.261264
+No splitter. Using given test and training sets.
+2016-03-11 10:38:08.313463 statsModel 1113, saving to /home/gmartinn/DRP_main/DRP_repo/models/702_1113_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1113_ef2e05c6-9ff4-4a35-8556-55056e3318d2.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1113_ef2e05c6-9ff4-4a35-8556-55056e3318d2.arff -d /home/gmartinn/DRP_main/DRP_repo/models/702_1113_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 10:41:50.773910. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1113_5fb3f991-f737-4b54-b8e1-158dfdd3970a.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 10:50:54.775584
+Confusion matrix for P6_legacy_prediction_702_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for P6_legacy_prediction_702_component_1113__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Ga_legacy
+2730
+2730
+Ga_legacy
+1175
+1175
+Starting building at 2016-03-11 10:52:54.414232
+No splitter. Using given test and training sets.
+2016-03-11 10:53:44.329807 statsModel 1118, saving to /home/gmartinn/DRP_main/DRP_repo/models/707_1118_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1118_7e2c2bec-ae89-47e8-962a-2b4f25547334.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1118_7e2c2bec-ae89-47e8-962a-2b4f25547334.arff -d /home/gmartinn/DRP_main/DRP_repo/models/707_1118_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 10:57:32.496631. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1118_8041b5c8-029c-40d8-8836-216aa861397f.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:06:27.466368
+Confusion matrix for Ga_legacy_prediction_707_summative__:
+      False  True 
+False  1164   9   
+ True   0     2   
+Accuracy: 0.992
+BCR: 0.591
+Confusion matrix for Ga_legacy_prediction_707_component_1118__:
+      False  True 
+False  1164   9   
+ True   0     2   
+Accuracy: 0.992
+BCR: 0.591
+P4_legacy
+2730
+2730
+P4_legacy
+1175
+1175
+Starting building at 2016-03-11 11:08:13.187263
+No splitter. Using given test and training sets.
+2016-03-11 11:08:58.813745 statsModel 1122, saving to /home/gmartinn/DRP_main/DRP_repo/models/711_1122_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1122_9556cc46-535d-4820-ba18-fa18603b5a93.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1122_9556cc46-535d-4820-ba18-fa18603b5a93.arff -d /home/gmartinn/DRP_main/DRP_repo/models/711_1122_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 11:13:15.228683. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1122_7ed0e342-7a0e-4cb3-a509-c6c3d4ef91ec.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:22:35.719232
+Confusion matrix for P4_legacy_prediction_711_summative__:
+      False  True 
+False  100    10  
+ True   9    1056 
+Accuracy: 0.984
+BCR: 0.954
+Confusion matrix for P4_legacy_prediction_711_component_1122__:
+      False  True 
+False  100    10  
+ True   9    1056 
+Accuracy: 0.984
+BCR: 0.954
+G15_legacy
+2730
+2730
+G15_legacy
+1175
+1175
+Starting building at 2016-03-11 11:24:32.069688
+No splitter. Using given test and training sets.
+2016-03-11 11:25:21.441528 statsModel 1127, saving to /home/gmartinn/DRP_main/DRP_repo/models/716_1127_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1127_0cd6e594-d447-4f84-b71d-2708dcc650d9.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1127_0cd6e594-d447-4f84-b71d-2708dcc650d9.arff -d /home/gmartinn/DRP_main/DRP_repo/models/716_1127_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 11:29:12.415432. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1127_7c3c47ab-34fe-4a8c-9e33-451dc671be4c.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:38:16.702253
+Confusion matrix for G15_legacy_prediction_716_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G15_legacy_prediction_716_component_1127__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+K_legacy
+2730
+2730
+K_legacy
+1175
+1175
+Starting building at 2016-03-11 11:39:58.535837
+No splitter. Using given test and training sets.
+2016-03-11 11:41:09.284988 statsModel 1132, saving to /home/gmartinn/DRP_main/DRP_repo/models/721_1132_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1132_844e195d-764f-4f6b-ba53-605114cdf29e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1132_844e195d-764f-4f6b-ba53-605114cdf29e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/721_1132_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 11:45:42.413339. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1132_6d86b055-a577-40c3-a5cb-d86dd8c43c9d.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 11:54:45.300701
+Confusion matrix for K_legacy_prediction_721_summative__:
+      False  True 
+False  1160   15  
+ True   0     0   
+Accuracy: 0.987
+BCR: 0.5
+Confusion matrix for K_legacy_prediction_721_component_1132__:
+      False  True 
+False  1160   15  
+ True   0     0   
+Accuracy: 0.987
+BCR: 0.5
+O_legacy
+2730
+2730
+O_legacy
+1175
+1175
+Starting building at 2016-03-11 11:56:51.286054
+No splitter. Using given test and training sets.
+2016-03-11 11:57:38.211978 statsModel 1137, saving to /home/gmartinn/DRP_main/DRP_repo/models/726_1137_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1137_3bd95923-c406-4d66-a2a9-5d865906bde7.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1137_3bd95923-c406-4d66-a2a9-5d865906bde7.arff -d /home/gmartinn/DRP_main/DRP_repo/models/726_1137_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 12:01:34.225735. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1137_89aa21fd-e90a-4c80-8ac2-b7ed254a452b.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 12:10:15.457280
+Confusion matrix for O_legacy_prediction_726_summative__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for O_legacy_prediction_726_component_1137__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Cr_legacy
+2730
+2730
+Cr_legacy
+1175
+1175
+Starting building at 2016-03-11 12:12:03.549635
+No splitter. Using given test and training sets.
+2016-03-11 12:12:49.973871 statsModel 1141, saving to /home/gmartinn/DRP_main/DRP_repo/models/730_1141_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1141_cc4728a7-1330-48af-9366-68d065fdac51.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1141_cc4728a7-1330-48af-9366-68d065fdac51.arff -d /home/gmartinn/DRP_main/DRP_repo/models/730_1141_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 12:17:01.388540. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1141_6a1d7983-032a-4bcc-b7c2-0415e2856510.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 12:25:05.364609
+Confusion matrix for Cr_legacy_prediction_730_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Cr_legacy_prediction_730_component_1141__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G7_legacy
+2730
+2730
+G7_legacy
+1175
+1175
+Starting building at 2016-03-11 12:26:29.899420
+No splitter. Using given test and training sets.
+2016-03-11 12:27:14.779385 statsModel 1146, saving to /home/gmartinn/DRP_main/DRP_repo/models/735_1146_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1146_7e48c27e-2c7b-4cd4-ab05-1ce8254a9dfd.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1146_7e48c27e-2c7b-4cd4-ab05-1ce8254a9dfd.arff -d /home/gmartinn/DRP_main/DRP_repo/models/735_1146_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 12:31:11.302993. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1146_d3cc3089-1ec9-4b68-812e-8836490f53bf.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 12:37:37.696909
+Confusion matrix for G7_legacy_prediction_735_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G7_legacy_prediction_735_component_1146__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Zn_legacy
+2730
+2730
+Zn_legacy
+1175
+1175
+Starting building at 2016-03-11 12:39:02.981378
+No splitter. Using given test and training sets.
+2016-03-11 12:39:51.926149 statsModel 1151, saving to /home/gmartinn/DRP_main/DRP_repo/models/740_1151_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1151_6625db1e-bb85-400d-8f48-a0c80045cf54.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1151_6625db1e-bb85-400d-8f48-a0c80045cf54.arff -d /home/gmartinn/DRP_main/DRP_repo/models/740_1151_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 12:43:36.788516. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1151_8ad8a526-18ed-4123-a0e5-20d02a5f25b3.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 12:53:19.353704
+Confusion matrix for Zn_legacy_prediction_740_summative__:
+      False  True 
+False  1142   33  
+ True   0     0   
+Accuracy: 0.972
+BCR: 0.5
+Confusion matrix for Zn_legacy_prediction_740_component_1151__:
+      False  True 
+False  1142   33  
+ True   0     0   
+Accuracy: 0.972
+BCR: 0.5
+G6_legacy
+2730
+2730
+G6_legacy
+1175
+1175
+Starting building at 2016-03-11 12:54:48.336054
+No splitter. Using given test and training sets.
+2016-03-11 12:55:33.475850 statsModel 1156, saving to /home/gmartinn/DRP_main/DRP_repo/models/745_1156_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1156_a89e81e5-1843-464f-9b19-0eed6f098c5b.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/1156_a89e81e5-1843-464f-9b19-0eed6f098c5b.arff -d /home/gmartinn/DRP_main/DRP_repo/models/745_1156_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 0.5 -S 7.0" -p 0 -c 2
+	...Trained. Finished at 2016-03-11 13:00:12.621535. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1156_8db64a77-4b18-4abb-92be-2bf14a8ad70e.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 13:09:40.530389
+Confusion matrix for G6_legacy_prediction_745_summative__:
+      False  True 
+False  1056   9   
+ True   10   100  
+Accuracy: 0.984
+BCR: 0.954
+Confusion matrix for G6_legacy_prediction_745_component_1156__:
+      False  True 
+False  1056   9   
+ True   10   100  
+Accuracy: 0.984
+BCR: 0.954
+Cu_legacy
+2730
+2730
+Cu_legacy
+1175
+1175
