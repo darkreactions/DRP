@@ -784,3 +784,660 @@ O_legacy
 O_legacy
 1175
 1175
+Starting building at 2016-03-11 13:09:36.624215
+No splitter. Using given test and training sets.
+2016-03-11 13:10:23.430680 statsModel 1160, saving to /home/gmartinn/DRP_main/DRP_repo/models/749_1160_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1160_986dfacc-ced9-46a6-bbef-fd0cb33bfea3.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1160_986dfacc-ced9-46a6-bbef-fd0cb33bfea3.arff -d /home/gmartinn/DRP_main/DRP_repo/models/749_1160_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 13:16:27.465531. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1160_452e0acf-4e1b-4e30-b5d8-3c40ea137dce.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 13:26:46.152186
+Confusion matrix for O_legacy_prediction_749_summative__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for O_legacy_prediction_749_component_1160__:
+      False  True 
+False   0     0   
+ True   0    1175 
+Accuracy: 1.0
+BCR: 1.0
+Cr_legacy
+2730
+2730
+Cr_legacy
+1175
+1175
+Starting building at 2016-03-11 13:28:29.609585
+No splitter. Using given test and training sets.
+2016-03-11 13:29:19.444838 statsModel 1166, saving to /home/gmartinn/DRP_main/DRP_repo/models/755_1166_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1166_85a3c329-8ffa-4c68-83a1-7846a939c231.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1166_85a3c329-8ffa-4c68-83a1-7846a939c231.arff -d /home/gmartinn/DRP_main/DRP_repo/models/755_1166_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 13:35:25.154823. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1166_5a3c04af-3860-449d-bf0f-dea3af9c4593.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 13:46:46.843024
+Confusion matrix for Cr_legacy_prediction_755_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Cr_legacy_prediction_755_component_1166__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G7_legacy
+2730
+2730
+G7_legacy
+1175
+1175
+Starting building at 2016-03-11 13:50:27.498374
+No splitter. Using given test and training sets.
+2016-03-11 13:51:14.905395 statsModel 1177, saving to /home/gmartinn/DRP_main/DRP_repo/models/766_1177_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1177_cf8eabcd-0d3e-4670-8590-04cb01e3ee0e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1177_cf8eabcd-0d3e-4670-8590-04cb01e3ee0e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/766_1177_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 13:59:51.765160. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1177_fafa64bf-a950-4537-8eb6-db8c39e843aa.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 14:12:59.588845
+Confusion matrix for G7_legacy_prediction_766_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G7_legacy_prediction_766_component_1177__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Zn_legacy
+2730
+2730
+Zn_legacy
+1175
+1175
+Starting building at 2016-03-11 14:16:42.410119
+No splitter. Using given test and training sets.
+2016-03-11 14:17:49.837716 statsModel 1192, saving to /home/gmartinn/DRP_main/DRP_repo/models/771_1192_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1192_fc8ff936-9b22-4a83-9354-e3bc2ba7a946.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1192_fc8ff936-9b22-4a83-9354-e3bc2ba7a946.arff -d /home/gmartinn/DRP_main/DRP_repo/models/771_1192_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 14:27:15.164510. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1192_b36bb804-d61f-4277-920d-716817b423cf.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 14:39:09.265172
+Confusion matrix for Zn_legacy_prediction_771_summative__:
+      False  True 
+False  1140   29  
+ True   2     4   
+Accuracy: 0.974
+BCR: 0.56
+Confusion matrix for Zn_legacy_prediction_771_component_1192__:
+      False  True 
+False  1140   29  
+ True   2     4   
+Accuracy: 0.974
+BCR: 0.56
+G6_legacy
+2730
+2730
+G6_legacy
+1175
+1175
+Starting building at 2016-03-11 14:41:58.612036
+No splitter. Using given test and training sets.
+2016-03-11 14:42:44.132196 statsModel 1212, saving to /home/gmartinn/DRP_main/DRP_repo/models/778_1212_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1212_a31e8e06-f0f5-4012-bf1d-2f530a224a18.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1212_a31e8e06-f0f5-4012-bf1d-2f530a224a18.arff -d /home/gmartinn/DRP_main/DRP_repo/models/778_1212_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 14:53:18.014261. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1212_48d55e63-fb5e-44a5-85e0-b02e056d8a9b.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 15:05:55.240052
+Confusion matrix for G6_legacy_prediction_778_summative__:
+      False  True 
+False  1036   3   
+ True   30   106  
+Accuracy: 0.972
+BCR: 0.972
+Confusion matrix for G6_legacy_prediction_778_component_1212__:
+      False  True 
+False  1036   3   
+ True   30   106  
+Accuracy: 0.972
+BCR: 0.972
+Cu_legacy
+2730
+2730
+Cu_legacy
+1175
+1175
+Starting building at 2016-03-11 15:10:51.288364
+No splitter. Using given test and training sets.
+2016-03-11 15:11:42.796964 statsModel 1229, saving to /home/gmartinn/DRP_main/DRP_repo/models/783_1229_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1229_08eb3e69-57f8-4f09-863d-7c076433db64.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1229_08eb3e69-57f8-4f09-863d-7c076433db64.arff -d /home/gmartinn/DRP_main/DRP_repo/models/783_1229_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 15:20:28.356520. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1229_e973474a-7843-4e31-a872-d07bf3f438bc.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 15:32:38.392731
+Confusion matrix for Cu_legacy_prediction_783_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Cu_legacy_prediction_783_component_1229__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Actinide_legacy
+2730
+2730
+Actinide_legacy
+1175
+1175
+Starting building at 2016-03-11 15:35:51.982206
+No splitter. Using given test and training sets.
+2016-03-11 15:36:40.214232 statsModel 1248, saving to /home/gmartinn/DRP_main/DRP_repo/models/790_1248_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1248_c18cc47c-62a8-4397-b74e-d7d630b70ed2.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1248_c18cc47c-62a8-4397-b74e-d7d630b70ed2.arff -d /home/gmartinn/DRP_main/DRP_repo/models/790_1248_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 15:46:27.199038. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1248_f5ecbfa1-a5eb-4a08-97f8-70a0ec858d86.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 15:58:31.539697
+Confusion matrix for Actinide_legacy_prediction_790_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Actinide_legacy_prediction_790_component_1248__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G9_legacy
+2730
+2730
+G9_legacy
+1175
+1175
+Starting building at 2016-03-11 16:02:50.569669
+No splitter. Using given test and training sets.
+2016-03-11 16:03:41.414074 statsModel 1265, saving to /home/gmartinn/DRP_main/DRP_repo/models/795_1265_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1265_206737d3-12f8-4b36-91f5-483631e9af45.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1265_206737d3-12f8-4b36-91f5-483631e9af45.arff -d /home/gmartinn/DRP_main/DRP_repo/models/795_1265_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 16:12:30.493520. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1265_ad9078ad-62f3-44de-adee-e95e95eb387d.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 16:24:16.584383
+Confusion matrix for G9_legacy_prediction_795_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G9_legacy_prediction_795_component_1265__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G8_legacy
+2730
+2730
+G8_legacy
+1175
+1175
+Starting building at 2016-03-11 16:28:16.989022
+No splitter. Using given test and training sets.
+2016-03-11 16:29:11.380563 statsModel 1281, saving to /home/gmartinn/DRP_main/DRP_repo/models/801_1281_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1281_fb2591d7-1b8a-4bfb-8147-6ea2de9ec067.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1281_fb2591d7-1b8a-4bfb-8147-6ea2de9ec067.arff -d /home/gmartinn/DRP_main/DRP_repo/models/801_1281_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 16:35:43.884710. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1281_462ff3de-62fd-4793-937b-dfcd0abe7189.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 16:46:32.888033
+Confusion matrix for G8_legacy_prediction_801_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G8_legacy_prediction_801_component_1281__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+S_legacy
+2730
+2730
+S_legacy
+1175
+1175
+Starting building at 2016-03-11 16:48:58.619270
+No splitter. Using given test and training sets.
+2016-03-11 16:49:47.359196 statsModel 1288, saving to /home/gmartinn/DRP_main/DRP_repo/models/807_1288_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1288_01458418-e952-44de-ae51-9c7de8479479.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1288_01458418-e952-44de-ae51-9c7de8479479.arff -d /home/gmartinn/DRP_main/DRP_repo/models/807_1288_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 16:55:48.937870. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1288_cace7b23-e8f8-4fba-8b47-3f80a5060a4c.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 17:07:00.443592
+Confusion matrix for S_legacy_prediction_807_summative__:
+      False  True 
+False  1000   51  
+ True   63    61  
+Accuracy: 0.903
+BCR: 0.743
+Confusion matrix for S_legacy_prediction_807_component_1288__:
+      False  True 
+False  1000   51  
+ True   63    61  
+Accuracy: 0.903
+BCR: 0.743
+VSe?_legacy
+2730
+2730
+VSe?_legacy
+1175
+1175
+Starting building at 2016-03-11 17:08:39.303483
+No splitter. Using given test and training sets.
+2016-03-11 17:09:28.401601 statsModel 1293, saving to /home/gmartinn/DRP_main/DRP_repo/models/812_1293_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1293_e8647efd-ba90-4ed6-bda4-b2a0bc86a60d.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1293_e8647efd-ba90-4ed6-bda4-b2a0bc86a60d.arff -d /home/gmartinn/DRP_main/DRP_repo/models/812_1293_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 17:15:34.169346. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1293_d53e95c6-6301-4b40-ade5-4473521f708e.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 17:25:31.655106
+Confusion matrix for VSe?_legacy_prediction_812_summative__:
+      False  True 
+False  543    44  
+ True   31   557  
+Accuracy: 0.936
+BCR: 0.936
+Confusion matrix for VSe?_legacy_prediction_812_component_1293__:
+      False  True 
+False  543    44  
+ True   31   557  
+Accuracy: 0.936
+BCR: 0.936
+F_legacy
+2730
+2730
+F_legacy
+1175
+1175
+Starting building at 2016-03-11 17:27:06.557643
+No splitter. Using given test and training sets.
+2016-03-11 17:27:56.311680 statsModel 1298, saving to /home/gmartinn/DRP_main/DRP_repo/models/817_1298_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1298_7f3324d4-b201-40e0-8a28-cab55f3e51b9.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1298_7f3324d4-b201-40e0-8a28-cab55f3e51b9.arff -d /home/gmartinn/DRP_main/DRP_repo/models/817_1298_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 17:34:12.690898. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1298_5ad5377b-7ab3-4d69-84cd-9631afa5e9e5.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 17:44:30.387792
+Confusion matrix for F_legacy_prediction_817_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for F_legacy_prediction_817_component_1298__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+N_legacy
+2730
+2730
+N_legacy
+1175
+1175
+Starting building at 2016-03-11 17:47:04.717469
+No splitter. Using given test and training sets.
+2016-03-11 17:47:51.220628 statsModel 1304, saving to /home/gmartinn/DRP_main/DRP_repo/models/823_1304_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1304_492fbd51-bca5-4e60-b154-10f03b8ff8f5.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1304_492fbd51-bca5-4e60-b154-10f03b8ff8f5.arff -d /home/gmartinn/DRP_main/DRP_repo/models/823_1304_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 17:54:09.602923. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1304_8aab6ec4-b365-4381-b11e-4df452f1539d.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 18:04:50.410385
+Confusion matrix for N_legacy_prediction_823_summative__:
+      False  True 
+False   1     21  
+ True   44   1109 
+Accuracy: 0.945
+BCR: 0.502
+Confusion matrix for N_legacy_prediction_823_component_1304__:
+      False  True 
+False   1     21  
+ True   44   1109 
+Accuracy: 0.945
+BCR: 0.502
+V_legacy
+2730
+2730
+V_legacy
+1175
+1175
+Starting building at 2016-03-11 18:06:49.445386
+No splitter. Using given test and training sets.
+2016-03-11 18:07:39.696219 statsModel 1311, saving to /home/gmartinn/DRP_main/DRP_repo/models/830_1311_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1311_f5eec1d5-29e8-4ddd-b0c0-3b48c2c12491.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1311_f5eec1d5-29e8-4ddd-b0c0-3b48c2c12491.arff -d /home/gmartinn/DRP_main/DRP_repo/models/830_1311_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 18:13:46.495452. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1311_e1cf276b-a00a-451c-acd8-979ccef229ac.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 18:24:05.293942
+Confusion matrix for V_legacy_prediction_830_summative__:
+      False  True 
+False  130    29  
+ True   21   995  
+Accuracy: 0.957
+BCR: 0.916
+Confusion matrix for V_legacy_prediction_830_component_1311__:
+      False  True 
+False  130    29  
+ True   21   995  
+Accuracy: 0.957
+BCR: 0.916
+G17_legacy
+2730
+2730
+G17_legacy
+1175
+1175
+Starting building at 2016-03-11 18:27:00.720955
+No splitter. Using given test and training sets.
+2016-03-11 18:27:47.782443 statsModel 1317, saving to /home/gmartinn/DRP_main/DRP_repo/models/836_1317_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1317_1e48bc5c-3240-4001-ad7f-04adaa78e96d.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1317_1e48bc5c-3240-4001-ad7f-04adaa78e96d.arff -d /home/gmartinn/DRP_main/DRP_repo/models/836_1317_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 18:33:51.917858. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1317_7b936659-ea3e-4659-bd75-6e0672b008a1.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 18:44:20.937799
+Confusion matrix for G17_legacy_prediction_836_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G17_legacy_prediction_836_component_1317__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G14_legacy
+2730
+2730
+G14_legacy
+1175
+1175
+Starting building at 2016-03-11 18:45:57.059389
+No splitter. Using given test and training sets.
+2016-03-11 18:46:45.913934 statsModel 1323, saving to /home/gmartinn/DRP_main/DRP_repo/models/842_1323_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1323_91de8e6f-0d58-4ed7-a294-b8e82f3a8032.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1323_91de8e6f-0d58-4ed7-a294-b8e82f3a8032.arff -d /home/gmartinn/DRP_main/DRP_repo/models/842_1323_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 18:52:50.311465. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1323_348c042a-77c0-437e-ad72-810b8b60b29a.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 19:03:04.502007
+Confusion matrix for G14_legacy_prediction_842_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G14_legacy_prediction_842_component_1323__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+G13_legacy
+2730
+2730
+G13_legacy
+1175
+1175
+Starting building at 2016-03-11 19:04:58.764793
+No splitter. Using given test and training sets.
+2016-03-11 19:06:08.725544 statsModel 1328, saving to /home/gmartinn/DRP_main/DRP_repo/models/847_1328_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1328_1da4667e-49ed-4e1b-b3cd-c07d52e2259d.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1328_1da4667e-49ed-4e1b-b3cd-c07d52e2259d.arff -d /home/gmartinn/DRP_main/DRP_repo/models/847_1328_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 19:12:14.815436. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1328_5dcaaf90-0b24-4978-9872-02eced7ea3d1.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 19:22:31.302390
+Confusion matrix for G13_legacy_prediction_847_summative__:
+      False  True 
+False  1155   3   
+ True   9     8   
+Accuracy: 0.99
+BCR: 0.86
+Confusion matrix for G13_legacy_prediction_847_component_1328__:
+      False  True 
+False  1155   3   
+ True   9     8   
+Accuracy: 0.99
+BCR: 0.86
+G12_legacy
+2730
+2730
+G12_legacy
+1175
+1175
+Starting building at 2016-03-11 19:24:55.059100
+No splitter. Using given test and training sets.
+2016-03-11 19:25:43.148722 statsModel 1334, saving to /home/gmartinn/DRP_main/DRP_repo/models/853_1334_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1334_a373d7bc-4177-4984-9641-3fbdac45e4c0.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1334_a373d7bc-4177-4984-9641-3fbdac45e4c0.arff -d /home/gmartinn/DRP_main/DRP_repo/models/853_1334_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 19:31:48.948536. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1334_6483ee32-0324-4b26-8d0b-7f33a43cc87b.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 19:43:17.846546
+Confusion matrix for G12_legacy_prediction_853_summative__:
+      False  True 
+False  1140   29  
+ True   2     4   
+Accuracy: 0.974
+BCR: 0.56
+Confusion matrix for G12_legacy_prediction_853_component_1334__:
+      False  True 
+False  1140   29  
+ True   2     4   
+Accuracy: 0.974
+BCR: 0.56
+Se_legacy
+2730
+2730
+Se_legacy
+1175
+1175
+Starting building at 2016-03-11 19:45:06.083512
+No splitter. Using given test and training sets.
+2016-03-11 19:45:51.347664 statsModel 1340, saving to /home/gmartinn/DRP_main/DRP_repo/models/859_1340_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1340_ae81424b-189f-4e1e-9ab1-768807b6b942.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1340_ae81424b-189f-4e1e-9ab1-768807b6b942.arff -d /home/gmartinn/DRP_main/DRP_repo/models/859_1340_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 19:51:56.267995. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1340_d1ffcd57-9f56-48ab-8a4f-f9220fc10a73.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 20:02:09.220995
+Confusion matrix for Se_legacy_prediction_859_summative__:
+      False  True 
+False  590    32  
+ True   18   535  
+Accuracy: 0.957
+BCR: 0.957
+Confusion matrix for Se_legacy_prediction_859_component_1340__:
+      False  True 
+False  590    32  
+ True   18   535  
+Accuracy: 0.957
+BCR: 0.957
+G10_legacy
+2730
+2730
+G10_legacy
+1175
+1175
+Starting building at 2016-03-11 20:04:29.644948
+No splitter. Using given test and training sets.
+2016-03-11 20:05:13.941743 statsModel 1345, saving to /home/gmartinn/DRP_main/DRP_repo/models/864_1345_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1345_dada9eb4-6acf-4252-925b-416f4d58a087.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1345_dada9eb4-6acf-4252-925b-416f4d58a087.arff -d /home/gmartinn/DRP_main/DRP_repo/models/864_1345_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 20:11:21.541439. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1345_87f1e331-f33b-47af-81ca-c86db50d5c6a.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 20:21:42.508872
+Confusion matrix for G10_legacy_prediction_864_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G10_legacy_prediction_864_component_1345__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Co_legacy
+2730
+2730
+Co_legacy
+1175
+1175
+Starting building at 2016-03-11 20:23:23.940948
+No splitter. Using given test and training sets.
+2016-03-11 20:24:10.703559 statsModel 1352, saving to /home/gmartinn/DRP_main/DRP_repo/models/871_1352_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1352_33789394-f5f7-427c-a6ab-5b9584cef123.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1352_33789394-f5f7-427c-a6ab-5b9584cef123.arff -d /home/gmartinn/DRP_main/DRP_repo/models/871_1352_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 20:30:21.007068. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1352_2cc79ade-66fa-4d92-b67e-9db24cc374b4.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 20:41:58.773710
+Confusion matrix for Co_legacy_prediction_871_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for Co_legacy_prediction_871_component_1352__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Cl_legacy
+2730
+2730
+Cl_legacy
+1175
+1175
+Starting building at 2016-03-11 20:44:29.404174
+No splitter. Using given test and training sets.
+2016-03-11 20:45:17.375685 statsModel 1358, saving to /home/gmartinn/DRP_main/DRP_repo/models/877_1358_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1358_7b9209df-0638-45fc-b3ea-8259ae52919f.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/1358_7b9209df-0638-45fc-b3ea-8259ae52919f.arff -d /home/gmartinn/DRP_main/DRP_repo/models/877_1358_weka_KNN.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 20:51:27.164701. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1358_a8e48c2d-42c0-4020-a4d2-75c5040de1bb.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 21:01:51.899975
+Confusion matrix for Cl_legacy_prediction_877_summative__:
+      False  True 
+False  1041   68  
+ True   40    26  
+Accuracy: 0.908
+BCR: 0.62
+Confusion matrix for Cl_legacy_prediction_877_component_1358__:
+      False  True 
+False  1041   68  
+ True   40    26  
+Accuracy: 0.908
+BCR: 0.62
+P3_legacy
+2730
+2730
