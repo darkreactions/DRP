@@ -60,4 +60,4 @@ if __name__ == '__main__':
             raise RuntimeError("Don't know how to handle this many parts in a filenmae")
         
         
-        print "{}\t{}\t{}".format(mod_string, get_val_from_file(fp, 'BCR'), get_val_from_file(fp, 'Accuracy'))
+        print "{}\t{}\t{}".format(mod_string, get_average_val_from_file(fp, 'BCR'), get_average_val_from_file(fp, 'Accuracy'))
