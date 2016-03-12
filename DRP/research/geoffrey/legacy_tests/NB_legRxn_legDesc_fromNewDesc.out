@@ -1744,3 +1744,211 @@ G18_legacy
 G18_legacy
 1175
 1175
+Starting building at 2016-03-11 20:50:06.789723
+No splitter. Using given test and training sets.
+2016-03-11 20:50:53.272086 statsModel 1360, saving to /home/gmartinn/DRP_main/DRP_repo/models/879_1360_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1360_fdfb9755-4999-4477-9b01-4879f061add6.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1360_fdfb9755-4999-4477-9b01-4879f061add6.arff -d /home/gmartinn/DRP_main/DRP_repo/models/879_1360_weka_NaiveBayes.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 20:54:49.336011. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1360_ceb0aa0c-f364-4934-87d0-cd50bacbc150.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 21:04:30.622558
+Confusion matrix for G18_legacy_prediction_879_summative__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+Confusion matrix for G18_legacy_prediction_879_component_1360__:
+      False  True 
+False  1175   0   
+ True   0     0   
+Accuracy: 1.0
+BCR: 1.0
+VTe?_legacy
+2730
+2730
+VTe?_legacy
+1175
+1175
+Starting building at 2016-03-11 21:06:17.030662
+No splitter. Using given test and training sets.
+2016-03-11 21:07:26.604340 statsModel 1365, saving to /home/gmartinn/DRP_main/DRP_repo/models/884_1365_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1365_8a910cb5-934d-4ee7-b8a0-5389f079991b.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1365_8a910cb5-934d-4ee7-b8a0-5389f079991b.arff -d /home/gmartinn/DRP_main/DRP_repo/models/884_1365_weka_NaiveBayes.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 21:11:15.084155. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1365_edcbf05b-906b-4330-8e7b-a601d78f8772.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 21:20:49.207028
+Confusion matrix for VTe?_legacy_prediction_884_summative__:
+      False  True 
+False  731    9   
+ True   34   401  
+Accuracy: 0.963
+BCR: 0.967
+Confusion matrix for VTe?_legacy_prediction_884_component_1365__:
+      False  True 
+False  731    9   
+ True   34   401  
+Accuracy: 0.963
+BCR: 0.967
+I_legacy
+2730
+2730
+I_legacy
+1175
+1175
+Starting building at 2016-03-11 21:22:40.275407
+No splitter. Using given test and training sets.
+2016-03-11 21:23:25.169624 statsModel 1369, saving to /home/gmartinn/DRP_main/DRP_repo/models/888_1369_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1369_a3930171-129f-497c-a91a-40abe2aca2b8.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1369_a3930171-129f-497c-a91a-40abe2aca2b8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/888_1369_weka_NaiveBayes.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 21:27:23.806604. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1369_32f29b0d-ee19-4d2a-b7c0-03028a51cee5.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 21:37:03.293893
+Confusion matrix for I_legacy_prediction_888_summative__:
+      False  True 
+False  1147   0   
+ True   27    1   
+Accuracy: 0.977
+BCR: 0.989
+Confusion matrix for I_legacy_prediction_888_component_1369__:
+      False  True 
+False  1147   0   
+ True   27    1   
+Accuracy: 0.977
+BCR: 0.989
+slowCool_legacy
+2730
+2702
+slowCool_legacy
+1175
+1123
+Starting building at 2016-03-11 21:38:54.252525
+No splitter. Using given test and training sets.
+2016-03-11 21:40:04.977976 statsModel 1374, saving to /home/gmartinn/DRP_main/DRP_repo/models/893_1374_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1374_a9b17ad6-4003-4166-b15b-dffa26b24253.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1374_a9b17ad6-4003-4166-b15b-dffa26b24253.arff -d /home/gmartinn/DRP_main/DRP_repo/models/893_1374_weka_NaiveBayes.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 21:43:53.198183. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1374_d69416df-6f34-4be3-b9ee-8f4d690d9a88.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 21:51:11.709373
+Confusion matrix for slowCool_legacy_prediction_893_summative__:
+      False  True 
+False  151    86  
+ True  320   566  
+Accuracy: 0.638
+BCR: 0.594
+Confusion matrix for slowCool_legacy_prediction_893_component_1374__:
+      False  True 
+False  151    86  
+ True  320   566  
+Accuracy: 0.638
+BCR: 0.594
+G16_legacy
+2730
+2730
+G16_legacy
+1175
+1175
+Starting building at 2016-03-11 21:53:01.768707
+No splitter. Using given test and training sets.
+2016-03-11 21:53:47.299502 statsModel 1379, saving to /home/gmartinn/DRP_main/DRP_repo/models/898_1379_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1379_d20f7a70-99d1-4be6-8059-9227f390c38a.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1379_d20f7a70-99d1-4be6-8059-9227f390c38a.arff -d /home/gmartinn/DRP_main/DRP_repo/models/898_1379_weka_NaiveBayes.model -p 0 -c 2
+	...Trained. Finished at 2016-03-11 21:57:43.996276. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1379_fcfee821-e9d8-4a9b-959b-6f40e0233486.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 22:06:38.934103
+Confusion matrix for G16_legacy_prediction_898_summative__:
+      False  True 
+False  167    10  
+ True   31   967  
+Accuracy: 0.965
+BCR: 0.917
+Confusion matrix for G16_legacy_prediction_898_component_1379__:
+      False  True 
+False  167    10  
+ True   31   967  
+Accuracy: 0.965
+BCR: 0.917
+header	BCR	ACC
+G5_legacy	0.928	0.969
+G4_legacy	1.0	1.0
+G3_legacy	1.0	1.0
+G2_legacy	1.0	1.0
+G1_legacy	1.0	1.0
+V3_legacy	0.715	0.971
+Br_legacy	0.5	0.997
+Na_legacy	0.942	0.96
+Cs_legacy	1.0	1.0
+AlkaliMetal_legacy	1.0	1.0
+P_legacy	0.5	0.997
+C_legacy	1.0	1.0
+G11_legacy	1.0	1.0
+Lanthanide_legacy	1.0	1.0
+boolean_outcome_legacy	0.449	0.533
+P7_legacy	1.0	1.0
+leak_legacy	0.719	0.536
+P5_legacy	0.962	0.964
+Mo_legacy	0.983	0.984
+P2_legacy	1.0	1.0
+P1_legacy	1.0	1.0
+P6_legacy	1.0	1.0
+Ga_legacy	0.715	0.971
+P4_legacy	0.983	0.984
+G15_legacy	1.0	1.0
+K_legacy	0.79	0.974
+O_legacy	1.0	1.0
+Cr_legacy	1.0	1.0
+G7_legacy	1.0	1.0
+Zn_legacy	0.652	0.98
+G6_legacy	0.977	0.973
+Cu_legacy	1.0	1.0
+Actinide_legacy	1.0	1.0
+G9_legacy	1.0	1.0
+G8_legacy	1.0	1.0
+S_legacy	0.787	0.614
+VSe?_legacy	0.931	0.933
+F_legacy	1.0	1.0
+N_legacy	0.696	0.908
+V_legacy	0.928	0.969
+G17_legacy	1.0	1.0
+G14_legacy	1.0	1.0
+G13_legacy	0.715	0.971
+G12_legacy	0.652	0.98
+Se_legacy	0.908	0.905
+G10_legacy	1.0	1.0
+Co_legacy	1.0	1.0
+Cl_legacy	0.623	0.824
+P3_legacy	1.0	1.0
+Li_legacy	1.0	1.0
+Te_legacy	0.967	0.963
+V0_legacy	1.0	1.0
+V1_legacy	1.0	1.0
+V2_legacy	0.652	0.98
+V4_legacy	1.0	1.0
+V5_legacy	0.928	0.969
+V6_legacy	0.899	0.974
+V7_legacy	1.0	1.0
+G18_legacy	1.0	1.0
+VTe?_legacy	0.967	0.963
+I_legacy	0.989	0.977
+slowCool_legacy	0.594	0.638
+G16_legacy	0.917	0.965
