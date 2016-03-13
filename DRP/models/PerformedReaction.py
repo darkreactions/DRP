@@ -7,14 +7,19 @@ from itertools import chain
 import DRP
 
 class PerformedReactionQuerySet(ReactionQuerySet):
+        # I assume this was wrong and it should be the one below
+        #def __init__(self, model=None, **kwargs):
+                #"""Initialises the queryset"""
+                #model = Reaction if model is None else model
+                #super(ReactionQuerySet, self).__init__(model=model, **kwargs)
         def __init__(self, model=None, **kwargs):
                 """Initialises the queryset"""
-                model = Reaction if model is None else model
-                super(ReactionQuerySet, self).__init__(model=model, **kwargs)
+                model = PerformedReaction if model is None else model
+                super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
 
 class PerformedReactionManager(ReactionManager):
         def get_queryset(self):
-                return PerformedReactionQuerySet(model=PerformedReaction)
+            return PerformedReactionQuerySet(model=PerformedReaction)
 
 
 class PerformedReaction(Reaction):
