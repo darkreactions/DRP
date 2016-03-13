@@ -44,7 +44,7 @@ class CompoundQuantity(models.Model):
             self.reaction.performedreaction.save() #invalidate models
         except PerformedReaction.DoesNotExist:
             pass #we don't care that it doesn't exist
-        super(CompoundQuantity, self).save()
+        super(CompoundQuantity, self).save(*args, **kwargs)
 
     def delete(self):
         self.reaction.save() #descriptor recalculation

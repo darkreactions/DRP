@@ -81,35 +81,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         folder = kwargs['directory']
-        with open(path.join(folder, 'User.tsv')) as userFile:
-            reader = csv.DictReader(userFile, delimiter='\t')
-            for r in reader:
-                if not User.objects.filter(username=r['username']).exists():
-                    u = User(
-                            username=r['username'],
-                            first_name=r['first_name'],
-                            last_name=r['last_name'],
-                            email=r['email'],
-                            is_staff=int(r['is_staff']),
-                            is_superuser=int(r['is_superuser']),
-                        )
-                    u.password=r['password']
-                    u.save()
-        with open(path.join(folder, 'labGroup.tsv')) as labGroups:
-            reader = csv.DictReader(labGroups, delimiter='\t')
-            for r in reader:
-                if not LabGroup.objects.filter(title=r['title']).exists():
-                    l = LabGroup(**r)
-                    l.save()
-        with open(path.join(folder, 'labgroup_users.tsv')) as labGroupUsers:
-            reader = csv.DictReader(labGroupUsers, delimiter='\t')
-            for r in reader:
-                l = LabGroup.objects.get(title=r['title'])
-                l.users.add(User.objects.get(username=r['username']))
-
-        if not path.isfile(path.join(folder, 'performedReactionsNoDups.tsv')):
-            self.stdout.write('Writing file with duplicate references disambiguated (arbitrarily)')
-            with open(path.join(folder, 'performedReactions.tsv')) as in_file, open(path.join(folder, 'performedReactionsNoDups.tsv'), 'w') as out_file:
+        if not path.isfile(path.join(folder, 'performedReactionsNoDupsLower.tsv')):
+            self.stdout.write('Writing file with all references that were uppercase (now lower) and duplicate references disambiguated (arbitrarily)')
+            with open(path.join(folder, 'performedReactions.tsv')) as in_file, open(path.join(folder, 'performedReactionsNoDupsLower.tsv'), 'w') as out_file:
                 references = set()
                 reader = csv.DictReader(in_file, delimiter='\t')
                 writer = csv.DictWriter(out_file, delimiter='\t', fieldnames=reader.fieldnames)
@@ -126,24 +100,23 @@ class Command(BaseCommand):
                         if r['valid'] == '1':
                             valid_case_count += 1
 
-                    if ref in references:
-                        r['notes'] += ' Duplicated reference'
-                        r['valid'] = 0
-                        dup_count += 1
-                        i = 1
-                        new_ref = ref
-                        while new_ref in references:
-                            new_ref = '{}_dup{}'.format(ref, i)
-                            i += 1
-                        self.stderr.write('Reference {} duplicated {} times. Renamed and invalidated'.format(ref, i))
-                        ref = new_ref
-                    references.add(ref)
-                    r['reference'] = ref
-                    writer.writerow(r)
+                        if ref in references:
+                            r['notes'] += ' Duplicated reference'
+                            r['valid'] = 0
+                            dup_count += 1
+                            i = 1
+                            new_ref = ref
+                            while new_ref in references:
+                                new_ref = '{}_dup{}'.format(ref, i)
+                                i += 1
+                            self.stderr.write('Reference {} duplicated {} times. Renamed and invalidated'.format(ref, i))
+                            ref = new_ref
+                        references.add(ref)
+                        r['reference'] = ref
+                        writer.writerow(r)
             self.stderr.write('{} references converted to lowercase. {} were valid'.format(case_count, valid_case_count))
             self.stderr.write('{} references with _dupX appended to remove duplicate reference'.format(dup_count))
-            
-        with open(path.join(folder, 'performedReactionsNoDups.tsv')) as reactions:
+        with open(path.join(folder, 'performedReactionsNoDupsLower.tsv')) as reactions:
             reader = csv.DictReader(reactions, delimiter='\t')
             for r in reader:
                 if not PerformedReaction.objects.filter(reference=r['reference'].lower()).exists():
@@ -160,7 +133,7 @@ class Command(BaseCommand):
                     self.stdout.write('Creating reaction with reference {}'.format(p.reference))
                     p.validate_unique()
                     p.save(calcDescriptors=False)
-        with open(path.join(folder, 'performedReactionsNoDups.tsv')) as reactions:
+        with open(path.join(folder, 'performedReactionsNoDupsLower.tsv')) as reactions:
             reader = csv.DictReader(reactions, delimiter='\t')
             outValues = []
             outBoolValues = []
@@ -324,7 +297,7 @@ class Command(BaseCommand):
                                 if len(CASResults) != 1:
                                         nameResults = cs.simple_search(r.get('name'))
                                         if len(nameResults) != 1:
-                                            raise RuntimeError('Could not get unambiguous chemspider entry for CAS ID {} with name{}'.format(r['CAS_ID'], r['name']))
+                                            raise RuntimeError('Could not get unambiguous chemspider entry for CAS ID {} with name {}. Got {} responses'.format(r['CAS_ID'], r['name'], len(CASResults)))
                                         else:
                                             c = Compound(CSID=nameResults[0].csid, labGroup=l, abbrev=r['abbrev'])
                                             c.csConsistencyCheck()
@@ -350,13 +323,14 @@ class Command(BaseCommand):
                 self.stdout.write('working with class {}'.format(r['chemicalClass.label']))
                 cs = Compound.objects.filter(abbrev=r['compound.abbrev'])
                 if cs.count() > 0:
-                    c1=ChemicalClass.objects.get_or_create(label=r['chemicalClass.label'])[0]
+                    c1 = ChemicalClass.objects.get_or_create(label=r['chemicalClass.label'])[0]
                     for c2 in cs:
                         if not c1 in c2.chemicalClasses.all():
                             c2.chemicalClasses.add(c1)
                             c2.save()
         with open(path.join(folder, 'compoundquantities.tsv')) as cqs:
             reader = csv.DictReader(cqs, delimiter='\t')
+            quantities = []
             for r in reader:
                 try:
                     reaction = PerformedReaction.objects.get(reference=r['reaction.reference'].lower())
@@ -382,17 +356,23 @@ class Command(BaseCommand):
                         cqq = CompoundQuantity.objects.filter(role=compoundrole, compound=compound, reaction=reaction)
                         if cqq.count() > 1:
                             cqq.delete()
-                        quantity = CompoundQuantity.objects.get_or_create(role=compoundrole, compound=compound, reaction=reaction)[0]
-                        quantity.amount = amount
-                        quantity.save()
+                        elif cqq.count() == 0:
+                            quantity = CompoundQuantity(role=compoundrole, compound=compound, reaction=reaction)
+                            quantity.amount = amount
+                            #quantities.append(quantity)
+                            quantity.save(recalculate=False)
                     else:
                         reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(r['compound.abbrev'], r['amount'], r['unit'])
                         reaction.save(calcDescriptors=False)
                 except Compound.DoesNotExist as e:
                     self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
-                    raw_input("Continue?")
                     reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
                     reaction.valid = False
-                    reaction.save(calcDescriptors = False)
+                    reaction.save(calcDescriptors=False)
                 except PerformedReaction.DoesNotExist as e:
                     raise e
+
+                #if len(quantities) > 10:
+                    #self.stdout.write("Saving...")
+                    #CompoundQuantity.objects.bulk_create(quantities)
+                    #self.stdout.write("saved")
