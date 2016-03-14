@@ -36,7 +36,7 @@ def get_average_val(lines, name):
 if __name__ == '__main__':  
     directory = 'legacy_tests/'
 
-    filepaths = sorted(glob.glob('{}/*legRxnNonzeroCompound_newDsc.out'.format(directory)))
+    filepaths = sorted(glob.glob('{}/*legRxnNonzeroCompound_legDscNewTimeTemppH.out'.format(directory)))
 
 
     print "\t\t\t{}\t{}".format('BCR', 'Accuracy')
