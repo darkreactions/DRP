@@ -1,0 +1,89 @@
+Starting building at 2016-03-13 20:35:14.035061
+Splitting using MutualInfoSplitter
+Split into train (2197), test (945)
+Split into train (2195), test (947)
+Split into train (2193), test (949)
+Split into train (2199), test (943)
+Split into train (2199), test (943)
+Split into train (2199), test (943)
+Split into train (2198), test (944)
+Split into train (2199), test (943)
+Split into train (2196), test (946)
+Split into train (2193), test (949)
+Split into train (2196), test (946)
+Split into train (2195), test (947)
+Split into train (2198), test (944)
+Split into train (2178), test (964)
+Split into train (2193), test (949)
+2016-03-13 20:38:04.823171 statsModel 1475, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1475_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1475_add5a9d2-1226-4a0e-88ec-cb46da134f07.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1475_add5a9d2-1226-4a0e-88ec-cb46da134f07.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1475_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 20:42:35.180544. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1475_25e8d1f2-a4ac-4c7c-adde-d4bb05ae838f.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 20:46:38.708846 statsModel 1477, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1477_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1477_9608d20f-e9f1-4c72-9263-1cff15631943.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1477_9608d20f-e9f1-4c72-9263-1cff15631943.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1477_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 20:50:12.956425. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1477_5e7a213c-6589-4276-961d-2dfa896c6a0e.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 20:54:14.401664 statsModel 1482, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1482_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1482_a4a30da5-ac59-4ffc-8650-cc200bb0142c.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1482_a4a30da5-ac59-4ffc-8650-cc200bb0142c.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1482_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 20:58:09.410295. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1482_b3f0a074-0a81-4ae6-84c8-bea842e118e4.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:01:45.374989 statsModel 1487, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1487_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1487_a8add6d4-79f4-4835-a0d5-44c7ca2ea09c.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1487_a8add6d4-79f4-4835-a0d5-44c7ca2ea09c.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1487_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:06:00.021024. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1487_4e001f8a-46d5-460e-9dab-bf4136f1d2bb.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:11:55.939230 statsModel 1491, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1491_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1491_615016aa-8331-447c-b80f-9bf5d6a946c1.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1491_615016aa-8331-447c-b80f-9bf5d6a946c1.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1491_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:15:46.995832. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1491_ef55ac70-d7e4-4dd6-aec3-26652b5644db.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:19:44.102509 statsModel 1495, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1495_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1495_1574f22d-a9bf-484e-ada1-ca1a3c936daf.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1495_1574f22d-a9bf-484e-ada1-ca1a3c936daf.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1495_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:23:06.776393. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1495_a4963798-a312-4597-ae8e-0822b9ec699f.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:26:21.230796 statsModel 1500, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1500_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1500_f9578a0e-2f58-4819-b406-06ba42b1354a.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1500_f9578a0e-2f58-4819-b406-06ba42b1354a.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1500_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:31:07.433452. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1500_31e3ee1a-d42a-474d-a528-59e1b35b2a24.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:35:01.152031 statsModel 1505, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1505_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1505_b52cd62b-53b2-4bca-a69b-522a4403cd95.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1505_b52cd62b-53b2-4bca-a69b-522a4403cd95.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1505_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:39:50.817575. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1505_df0c268a-3c18-4fc2-a3e4-5b063f4bb835.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:44:53.032081 statsModel 1510, saving to /home/gmartinn/DRP_main/DRP_repo/models/925_1510_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1510_14195b5e-d175-447b-a195-44fc6543582b.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/1510_14195b5e-d175-447b-a195-44fc6543582b.arff -d /home/gmartinn/DRP_main/DRP_repo/models/925_1510_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:49:53.040947. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1510_6370c6a0-e066-4cf3-abfb-006feeea28ce.out
+	...finished predicting. Storing predictions...

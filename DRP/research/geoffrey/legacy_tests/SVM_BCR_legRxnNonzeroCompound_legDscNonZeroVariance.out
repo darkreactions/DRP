@@ -1,0 +1,52 @@
+Starting building at 2016-03-13 20:35:14.034382
+Splitting using MutualInfoSplitter
+Split into train (2190), test (952)
+Split into train (2194), test (948)
+Split into train (2198), test (944)
+Split into train (2199), test (943)
+Split into train (2199), test (943)
+Split into train (2194), test (948)
+Split into train (2195), test (947)
+Split into train (2194), test (948)
+Split into train (2193), test (949)
+Split into train (2191), test (951)
+Split into train (2194), test (948)
+Split into train (2199), test (943)
+Split into train (2174), test (968)
+Split into train (2184), test (958)
+Split into train (2199), test (943)
+2016-03-13 20:38:01.666097 statsModel 1473, saving to /home/gmartinn/DRP_main/DRP_repo/models/924_1473_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-13 20:44:44.286598. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1473_69da2914-9f4a-440e-96bf-a9cccc9d4344.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 20:49:30.665251 statsModel 1481, saving to /home/gmartinn/DRP_main/DRP_repo/models/924_1481_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-13 20:55:59.705478. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1481_8dede1ae-2e81-40cc-983a-fd74f05f7176.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:00:43.319670 statsModel 1486, saving to /home/gmartinn/DRP_main/DRP_repo/models/924_1486_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-13 21:06:23.222941. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1486_abd79d00-1c05-4e3a-b940-89263c176796.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:12:08.940070 statsModel 1492, saving to /home/gmartinn/DRP_main/DRP_repo/models/924_1492_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-13 21:17:45.599835. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1492_bfd0a54f-d554-427d-b63e-e7762bf27c33.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:22:40.833389 statsModel 1497, saving to /home/gmartinn/DRP_main/DRP_repo/models/924_1497_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-13 21:28:18.881558. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1497_fd30fe93-cea4-4b26-b7df-b7ed81d930fd.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:33:37.685070 statsModel 1502, saving to /home/gmartinn/DRP_main/DRP_repo/models/924_1502_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-13 21:39:32.729008. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1502_758d0e18-3998-428d-bd20-d943ccacfef4.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:44:50.172292 statsModel 1509, saving to /home/gmartinn/DRP_main/DRP_repo/models/924_1509_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-13 21:51:11.018157. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1509_d95b79a5-8d2f-42a2-9544-c09c03c82712.out
+	...finished predicting. Storing predictions...

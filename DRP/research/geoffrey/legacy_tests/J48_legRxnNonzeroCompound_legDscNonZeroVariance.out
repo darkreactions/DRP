@@ -1,0 +1,81 @@
+Starting building at 2016-03-13 20:35:13.988630
+Splitting using MutualInfoSplitter
+Split into train (2189), test (953)
+Split into train (2190), test (952)
+Split into train (2197), test (945)
+Split into train (2199), test (943)
+Split into train (2193), test (949)
+Split into train (2195), test (947)
+Split into train (2199), test (943)
+Split into train (2197), test (945)
+Split into train (2188), test (954)
+Split into train (2196), test (946)
+Split into train (2195), test (947)
+Split into train (2197), test (945)
+Split into train (2195), test (947)
+Split into train (2186), test (956)
+Split into train (2199), test (943)
+2016-03-13 20:38:03.498068 statsModel 1474, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1474_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1474_a1c4a1b3-973d-4547-8baa-2b0d2765ec0b.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1474_a1c4a1b3-973d-4547-8baa-2b0d2765ec0b.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1474_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 20:43:28.001518. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1474_a223607c-7667-4a33-92c3-7132e7b0eecd.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 20:48:40.353602 statsModel 1478, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1478_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1478_89026f22-88f9-481a-8e29-8e4eefd5ccbc.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1478_89026f22-88f9-481a-8e29-8e4eefd5ccbc.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1478_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 20:53:32.095130. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1478_ea7b22be-88c9-4900-92c5-993ef9540591.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 20:58:22.576608 statsModel 1483, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1483_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1483_a1ea7cce-621f-4414-a014-7c8898259d8c.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1483_a1ea7cce-621f-4414-a014-7c8898259d8c.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1483_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:02:12.190339. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1483_4b3cd035-eee8-4e27-91f0-ad9bb7584319.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:06:57.000903 statsModel 1488, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1488_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1488_a86bb420-7cdd-41bf-9899-113be9bcfd61.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1488_a86bb420-7cdd-41bf-9899-113be9bcfd61.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1488_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:10:25.012747. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1488_e551011f-6d8a-43b5-bbd0-9528813a5d15.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:13:33.964223 statsModel 1493, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1493_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1493_7debd6ac-e774-42eb-a27a-e4414778dfd8.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1493_7debd6ac-e774-42eb-a27a-e4414778dfd8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1493_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:18:41.920840. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1493_83bc2084-8278-4eb2-b8ff-a5dd60ec584c.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:23:42.080299 statsModel 1498, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1498_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1498_d2e8545a-982d-4686-a9b9-a8cc7fe77537.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1498_d2e8545a-982d-4686-a9b9-a8cc7fe77537.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1498_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:28:44.541884. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1498_ba0657b0-0a0d-4297-95ac-53fd14e78e13.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:34:01.560497 statsModel 1503, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1503_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1503_a3e8011a-2cf5-4aa9-8af7-f1b4dcd881d6.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1503_a3e8011a-2cf5-4aa9-8af7-f1b4dcd881d6.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1503_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:39:30.067157. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1503_de6ed5d6-7f51-4ffe-adfa-6babdeaf0803.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-13 21:44:33.452336 statsModel 1508, saving to /home/gmartinn/DRP_main/DRP_repo/models/921_1508_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1508_21d30e75-ef31-49bc-a590-aedf770c8ebe.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1508_21d30e75-ef31-49bc-a590-aedf770c8ebe.arff -d /home/gmartinn/DRP_main/DRP_repo/models/921_1508_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-13 21:49:38.923052. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1508_209a5631-65db-43d9-8827-b49834382c0f.out
+	...finished predicting. Storing predictions...
