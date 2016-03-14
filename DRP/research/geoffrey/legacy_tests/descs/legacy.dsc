@@ -81,7 +81,6 @@ G11_legacy
 Lanthanide_legacy
 hardnessMax_legacy
 orgpolarsurfaceareaMax_legacy
-boolean_outcome_legacy
 oxlikemaximalprojectionradiusMin_legacy
 orghbdamsaccArithAvg_legacy
 P7_legacy
