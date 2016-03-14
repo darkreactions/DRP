@@ -2,7 +2,6 @@ import build_model
 import parse_model_results
 import argparse
 import django
-from django.db.utils import OperationalError
 from DRP.models import DataSet, rxnDescriptorValues
 import uuid
 
