@@ -234,7 +234,7 @@ class ModelContainer(models.Model):
 
 
         num_models = len(self.trainingSets)
-        num_finished = 0.0
+        num_finished = 0
         overall_start_time = datetime.datetime.now()
         for trainingSet, testSet in zip(self.trainingSets, self.testSets):
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
@@ -281,13 +281,18 @@ class ModelContainer(models.Model):
                             resDict[reaction][response][outcome] += count
                 
                 if verbose:
-                    num_finished += 1.0
-                    end_time = datetime.datetime.now()
-                    elapsed = (end_time - overall_start_time)
-                    expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds()*(num_models/num_finished))) + overall_start_time
-                    print "predictions stored. Finished at {}. Elapsed model building time: {}. Expected completion time: {}".format(end_time, elapsed, expected_finish)
+                    print "predictions stored."
+
             elif verbose:
                     print "Test set is empty."
+
+            if verbose:
+                num_finished += 1
+                end_time = datetime.datetime.now()
+                elapsed = (end_time - overall_start_time)
+                expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds()*(num_models/float(num_finished)))) + overall_start_time
+                print "{}. {} of {} models built.".format(end_time, num_finished, num_models)
+                print "Elapsed model building time: {}. Expected completion time: {}".format(elapsed, expected_finish)
 
         if resDict:
             if verbose:
