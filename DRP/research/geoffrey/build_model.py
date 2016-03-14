@@ -4,6 +4,7 @@ import django
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues, DataSet
 import operator
 import argparse
+from django.db.utils import OperationalError
 
 
 def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None, description="", verbose=False):

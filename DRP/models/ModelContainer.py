@@ -232,6 +232,10 @@ class ModelContainer(models.Model):
         
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
+
+        num_models = len(self.trainingSets)
+        num_finished = 0.0
+        overall_start_time = datetime.datetime.now()
         for trainingSet, testSet in zip(self.trainingSets, self.testSets):
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
             modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
@@ -277,7 +281,11 @@ class ModelContainer(models.Model):
                             resDict[reaction][response][outcome] += count
                 
                 if verbose:
-                    print "predictions stored."
+                    num_finished += 1.0
+                    end_time = datetime.datetime.now()
+                    elapsed = (end_time - overall_start_time)
+                    expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds()*(num_models/num_finished))) + overall_start_time
+                    print "predictions stored. Finished at {}. Elapsed model building time: {}. Expected completion time: {}".format(end_time, elapsed, expected_finish)
             elif verbose:
                     print "Test set is empty."
 
@@ -286,11 +294,12 @@ class ModelContainer(models.Model):
                 print "Storing overall model predictions...",
             self._storePredictions(resDict)
             if verbose:
-                print "predictions stored."
+                print "Predictions stored"
 
         self.built = True
         if verbose:
-            print "Finished at {}".format(datetime.datetime.now())
+            overall_end_time = datetime.datetime.now()
+            print "Finished at {}".format(overall_end_time)
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         resDict = {} if resDict is None else resDict
