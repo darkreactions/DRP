@@ -5,7 +5,7 @@ from DRP.research.geoffrey.distance_learning.metricLearn.AbstractMetricLearnDist
 class LMNN(AbstractMetricLearnDistanceLearner):
     def __init__(self, *args, **kwargs):
         self.metric_object = ml_LMNN()
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super(LMNN, self).__init__(*args, **kwargs)
     
     def train(self):
         self._prepareArrays()

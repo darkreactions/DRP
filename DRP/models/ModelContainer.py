@@ -378,7 +378,7 @@ class ModelContainer(models.Model):
 
     @transaction.atomic
     def save(self, *args, **kwargs):
-        super(self.__class__, self).save(*args, **kwargs)
+        super(ModelContainer, self).save(*args, **kwargs)
 
     def getConfusionMatrices(self):
         """
