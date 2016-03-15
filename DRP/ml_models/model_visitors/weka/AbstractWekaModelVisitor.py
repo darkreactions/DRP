@@ -79,7 +79,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         self._runWekaCommand(command, verbose=verbose)
 
     def predict(self, reactions, descriptorHeaders, verbose=False):
-        arff_file = self._prepareArff(reactions, descriptorHeaders)
+        arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
         model_file = self.statsModel.fileName.name
 
         results_file = "{}_{}.out".format(self.statsModel.pk, uuid.uuid4())
@@ -94,7 +94,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         command = self.wekaPredictCommand(arff_file, model_file, response_index, results_path)
         if verbose:
             print "Writing results to {}".format(results_path)
-        self._runWekaCommand(command)
+        self._runWekaCommand(command, verbose=verbose)
 
         if isinstance(response, rxnDescriptors.BoolRxnDescriptor):
             typeConversionFunction = stringToBool
