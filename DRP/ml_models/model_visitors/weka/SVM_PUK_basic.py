@@ -11,8 +11,8 @@ class SVM_PUK_basic(AbstractWekaModelVisitor):
     def __init__(self, *args, **kwargs):
         super(SVM_PUK_basic, self).__init__(*args, **kwargs)
 
-        self.PUK_OMEGA = 0.5
-        self.PUK_SIGMA = 7.0
+        self.PUK_OMEGA = 1.0 #0.5
+        self.PUK_SIGMA = 1.0 #7.0
 
     def wekaTrainCommand(self, arff_file, filePath, response_index):
         kernel = "\"weka.classifiers.functions.supportVector.Puk -O {} -S {}\"".format(self.PUK_OMEGA, self.PUK_SIGMA)

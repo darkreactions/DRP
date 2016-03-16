@@ -83,12 +83,12 @@ if __name__ == '__main__':
     scale60 = scale_function(60)
     shiftK = shift_function(273.15)
     tol_point_5 = shift_function(0, 0.55)
-    element = argv[1]
-    d1_heading = '{}_legacy'.format(element)
-    d2_heading = '{}_mols'.format(element)
+    #element = argv[1]
+    d1_heading = 'time_legacy'#.format(element)
+    d2_heading = 'reaction_time'#.format(element)
     desc1ValueType = getDescValueType(d1_heading)
     desc2ValueType = getDescValueType(d2_heading)
-    different = compare(d1_heading, d2_heading, desc1ValueType=desc1ValueType, desc2ValueType=desc2ValueType, comparison_function=bool_equal)
+    different = compare(d1_heading, d2_heading, desc1ValueType=desc1ValueType, desc2ValueType=desc2ValueType, comparison_function=scale60)
     references = get_references(different)
     print len(references)
     print references

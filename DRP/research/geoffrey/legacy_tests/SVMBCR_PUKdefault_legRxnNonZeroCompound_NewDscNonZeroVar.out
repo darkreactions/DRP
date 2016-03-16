@@ -132,4 +132,134 @@ Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/2081_a4ebd6e8-27bb-480d-b32
 Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/2081_3282b751-f1f1-4512-ad2b-a0f0e1f592a7.out
 Running in Shell:
 export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/2081_a4ebd6e8-27bb-480d-b321-c28caed8b60f.arff -l /home/gmartinn/DRP_main/DRP_repo/models/968_2081_weka_SVM_PUK_BCR.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/2081_3282b751-f1f1-4512-ad2b-a0f0e1f592a7.out
-	...finished predicting. Storing predictions...
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-15 17:39:52.731415. 12 of 15 models built.
+Elapsed model building time: 1:45:03.766013. Expected completion time: 2016-03-15 18:06:08.672918
+2016-03-15 17:39:52.794006 statsModel 2082, saving to /home/gmartinn/DRP_main/DRP_repo/models/968_2082_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-15 17:43:44.247230. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/2082_8e0be13e-2cc5-414f-bf9f-5b1aca4e705e.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/2082_f43788d8-4a65-48bc-9767-ae6c25da1a18.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/2082_8e0be13e-2cc5-414f-bf9f-5b1aca4e705e.arff -l /home/gmartinn/DRP_main/DRP_repo/models/968_2082_weka_SVM_PUK_BCR.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/2082_f43788d8-4a65-48bc-9767-ae6c25da1a18.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-15 17:46:54.379539. 13 of 15 models built.
+Elapsed model building time: 1:52:05.414137. Expected completion time: 2016-03-15 18:04:09.058637
+2016-03-15 17:46:54.421738 statsModel 2083, saving to /home/gmartinn/DRP_main/DRP_repo/models/968_2083_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-15 17:50:49.483134. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/2083_52aa6a04-b618-4b6d-b4c1-94b9e336a2c8.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/2083_0b8d4667-f461-47a5-8860-f4d2006aea5f.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/2083_52aa6a04-b618-4b6d-b4c1-94b9e336a2c8.arff -l /home/gmartinn/DRP_main/DRP_repo/models/968_2083_weka_SVM_PUK_BCR.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/2083_0b8d4667-f461-47a5-8860-f4d2006aea5f.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-15 17:53:56.057708. 14 of 15 models built.
+Elapsed model building time: 1:59:07.092306. Expected completion time: 2016-03-15 18:02:26.564301
+2016-03-15 17:53:56.103662 statsModel 2084, saving to /home/gmartinn/DRP_main/DRP_repo/models/968_2084_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-15 17:57:47.999657. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/2084_57144912-846f-4646-b1cf-fcbc7eb3b473.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/2084_fe883c06-58b4-4e54-9c7b-c05b7e5458a3.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/2084_57144912-846f-4646-b1cf-fcbc7eb3b473.arff -l /home/gmartinn/DRP_main/DRP_repo/models/968_2084_weka_SVM_PUK_BCR.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/2084_fe883c06-58b4-4e54-9c7b-c05b7e5458a3.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-15 18:00:56.950185. 15 of 15 models built.
+Elapsed model building time: 2:06:07.984783. Expected completion time: 2016-03-15 18:00:56.950185
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-15 18:04:03.693672
+Confusion matrix for boolean_outcome_legacy_prediction_968_summative__:
+      False  True 
+False  301   354  
+ True  239   1109 
+Accuracy: 0.704
+BCR: 0.658
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2040__:
+      False  True 
+False  128   156  
+ True   97   565  
+Accuracy: 0.733
+BCR: 0.676
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2047__:
+      False  True 
+False  180   197  
+ True  109   478  
+Accuracy: 0.683
+BCR: 0.665
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2054__:
+      False  True 
+False  115   179  
+ True   85   576  
+Accuracy: 0.724
+BCR: 0.669
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2061__:
+      False  True 
+False  164   232  
+ True  120   432  
+Accuracy: 0.629
+BCR: 0.614
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2066__:
+      False  True 
+False  170   197  
+ True  143   452  
+Accuracy: 0.647
+BCR: 0.62
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2069__:
+      False  True 
+False  177   219  
+ True  121   428  
+Accuracy: 0.64
+BCR: 0.628
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2071__:
+      False  True 
+False  148   138  
+ True  116   541  
+Accuracy: 0.731
+BCR: 0.679
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2073__:
+      False  True 
+False  178   226  
+ True   84   478  
+Accuracy: 0.679
+BCR: 0.679
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2075__:
+      False  True 
+False  125   129  
+ True  155   535  
+Accuracy: 0.699
+BCR: 0.626
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2077__:
+      False  True 
+False  118   237  
+ True   84   530  
+Accuracy: 0.669
+BCR: 0.638
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2079__:
+      False  True 
+False   70   125  
+ True  129   621  
+Accuracy: 0.731
+BCR: 0.592
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2081__:
+      False  True 
+False   86   182  
+ True  142   537  
+Accuracy: 0.658
+BCR: 0.562
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2082__:
+      False  True 
+False  170   227  
+ True  124   442  
+Accuracy: 0.636
+BCR: 0.619
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2083__:
+      False  True 
+False  104   163  
+ True  120   557  
+Accuracy: 0.7
+BCR: 0.619
+Confusion matrix for boolean_outcome_legacy_prediction_968_component_2084__:
+      False  True 
+False  117   152  
+ True  133   543  
+Accuracy: 0.698
+BCR: 0.625
