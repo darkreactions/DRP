@@ -210,4 +210,101 @@ export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.func
 	...finished predicting. Storing predictions... predictions stored.
 2016-03-15 17:34:29.188329. 15 of 15 models built.
 Elapsed model building time: 2:14:43.979733. Expected completion time: 2016-03-15 17:34:29.188329
-Storing overall model predictions...
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-15 17:40:24.170248
+Confusion matrix for boolean_outcome_legacy_prediction_967_summative__:
+      False  True 
+False  152   134  
+ True  388   1329 
+Accuracy: 0.739
+BCR: 0.595
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2016__:
+      False  True 
+False   62    69  
+ True  159   661  
+Accuracy: 0.76
+BCR: 0.593
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2024__:
+      False  True 
+False   73    51  
+ True  208   613  
+Accuracy: 0.726
+BCR: 0.591
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2031__:
+      False  True 
+False   73    38  
+ True  173   664  
+Accuracy: 0.777
+BCR: 0.621
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2038__:
+      False  True 
+False   49    24  
+ True  209   662  
+Accuracy: 0.753
+BCR: 0.577
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2045__:
+      False  True 
+False   89    59  
+ True  173   622  
+Accuracy: 0.754
+BCR: 0.627
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2052__:
+      False  True 
+False   87    85  
+ True  186   587  
+Accuracy: 0.713
+BCR: 0.596
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2058__:
+      False  True 
+False   94    83  
+ True  146   628  
+Accuracy: 0.759
+BCR: 0.637
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2064__:
+      False  True 
+False   76    68  
+ True  160   640  
+Accuracy: 0.758
+BCR: 0.613
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2068__:
+      False  True 
+False   97   128  
+ True  148   581  
+Accuracy: 0.711
+BCR: 0.608
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2070__:
+      False  True 
+False  123   113  
+ True  145   567  
+Accuracy: 0.728
+BCR: 0.646
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2072__:
+      False  True 
+False   69    52  
+ True  178   658  
+Accuracy: 0.76
+BCR: 0.603
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2074__:
+      False  True 
+False   40    21  
+ True  227   676  
+Accuracy: 0.743
+BCR: 0.56
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2076__:
+      False  True 
+False   73    60  
+ True  168   661  
+Accuracy: 0.763
+BCR: 0.61
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2078__:
+      False  True 
+False  113    79  
+ True  182   600  
+Accuracy: 0.732
+BCR: 0.633
+Confusion matrix for boolean_outcome_legacy_prediction_967_component_2080__:
+      False  True 
+False   65    56  
+ True  198   628  
+Accuracy: 0.732
+BCR: 0.583
