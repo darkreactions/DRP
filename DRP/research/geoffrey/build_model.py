@@ -33,9 +33,9 @@ def display_model_results(container):
             print "BCR: {:.3}".format(BCR(conf_mtrx))
 
 
-def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, reaction_set_name=None, description="", verbose=False):
+def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, reaction_set_name=None, description="", verbose=False):
     """
-    Build and display a model with the specified tools
+    Build a model with the specified tools
     """
     # Grab all valid reactions with defined outcome descriptors
 
@@ -74,9 +74,13 @@ def prepare_build_display_model(predictor_headers=None, response_headers=None, m
             print "\nRestarting in 3 seconds...\n"
             sleep(3)
     else:
-        print '\n'.join(output)
-        print '\n'.join(['\t'.join(res) for res in results])
         raise RuntimeError("Got 5 Operational Errors in a row and gave up")
+
+    return container
+    
+def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, reaction_set_name=None, description="", verbose=False):
+
+    container = prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description, verbose=verbose)
 
     display_model_results(container)
 

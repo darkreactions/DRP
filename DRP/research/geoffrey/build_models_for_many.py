@@ -2,7 +2,7 @@ import build_model
 import parse_model_results
 import argparse
 import django
-from DRP.models import DataSet, rxnDescriptorValues
+from DRP.models import DataSet, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
 import uuid
 
 from cStringIO import StringIO
@@ -19,19 +19,27 @@ class Capturing(list):
         self.extend(self._stringio.getvalue().splitlines())
         sys.stdout = self._stdout
 
-def filter_reactions(reactions, response_header):
+def filter_reactions(reactions, response_header, verbose=False):
     # filter out reactions with undefined values for the response_descriptor
-    print response_header
-    print reactions.count()
-    reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
-    reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
-    reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
-    
-    #reactions = reactions.filter(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
-    reactions = reactions.filter(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
-    #reactions = reactions.filter(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+    initial_num = reactions.count()
+    if BoolRxnDescriptor.objects.filter(heading=response_header).exists():
+        reactions = reactions.exclude(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+    elif NumRxnDescriptor.objects.filter(heading=response_header).exists():
+        reactions = reactions.exclude(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+    elif OrdRxnDescriptor.objects.filter(heading=response_header).exists():
+        reactions = reactions.exclude(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+    elif CatRxnDescriptor.objects.filter(heading=response_header).exists():
+        reactions = reactions.exclude(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+    else:
+        raise ValueError("Descriptor header does not match any known type")
 
-    print reactions.count()
+    if verbose:
+        print "Filtered out {}/{} reactions with no value for {}".format(initial_num-reactions.count(), initial_num, response_header)
+
     return reactions
 
 
@@ -45,7 +53,7 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
             testSet =  DataSet.objects.get(name=test_set_name)
 
             mod_training_set_name = '_'.join([training_set_name, response_header, str(uuid.uuid4())])
-            trainingSetRxns = filter_reactions(trainingSet.reactions.all(), response_header)
+            trainingSetRxns = filter_reactions(trainingSet.reactions.all(), response_header, verbose=verbose)
             DataSet.create(mod_training_set_name, trainingSetRxns)
 
             mod_test_set_name = '_'.join([test_set_name, response_header, str(uuid.uuid4())])
@@ -55,25 +63,28 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
             mod_training_set_name = None
             mod_test_set_name = None
 
-        # redirect stdout to output. TODO XXX make this less hacky
-        try:
-            with Capturing() as output:
-                build_model.prepare_build_display_model(predictor_headers=predictor_headers, response_headers=[response_header], modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+        container = build_model.prepare_build_model(predictor_headers=predictor_headers, response_headers=[response_header], modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
                                                         splitter=splitter, training_set_name=mod_training_set_name, test_set_name=mod_test_set_name, reaction_set_name=reaction_set_name, description=description,
                                                         verbose=verbose)
-        except:
-            print '\n'.join(output)
-            print '\n'.join(['\t'.join(res) for res in results])
-            raise
 
-        BCR = parse_model_results.get_val(output, 'BCR')
-        ACC = parse_model_results.get_val(output, 'Accuracy')
-            
-        ## now we need to give the output back to stdout
-        print '\n'.join(output)
+        conf_mtrcs = container.getConfusionMatrices()
+
+
+        _, overall_conf_mtrx = conf_mtrcs[0][0]
+        ACC = build_model.accuracy(overall_conf_mtrx)
+        BCR = build_model.BCR(overall_conf_mtrx)    
+        for model_mtrcs in conf_mtrcs:
+            for descriptor_header, conf_mtrx in model_mtrcs:
+                ACC = build_model.accuracy(conf_mtrx)
+                BCR = build_model.BCR(conf_mtrx)
+                print "Confusion matrix for {}:".format(descriptor_header)
+                print build_model.confusionMatrixString(conf_mtrx)
+                print "Accuracy: {:.3}".format(ACC)
+                print "BCR: {:.3}".format(BCR)
+
         results.append( (response_header, BCR, ACC) )
 
-    print '\n'.join(['\t'.join(res) for res in results])
+    print '\n'.join(['\t'.join(map(str, res)) for res in results])
 
 
 if __name__ == '__main__':

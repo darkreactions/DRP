@@ -4,7 +4,7 @@ from DRP.ml_models.model_visitors.weka.AbstractWekaModelVisitor import AbstractW
 import os
 
     
-class M5P(AbstractWekaModelVisitor):
+class J48(AbstractWekaModelVisitor):
 
     maxResponseCount = 1
 

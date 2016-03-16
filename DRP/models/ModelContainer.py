@@ -384,7 +384,7 @@ class ModelContainer(models.Model):
         """
         Returns a list of lists of tuples of confusion matrices.
         Each entry of the outer list is for a different model.
-        The first is the overall model, the rests component statsModels.
+        The first is the overall model, the rest component statsModels.
         For each model there is a list of tuples.
         Each tuple is of the form (descriptor_heading, confusion matrix)
         """

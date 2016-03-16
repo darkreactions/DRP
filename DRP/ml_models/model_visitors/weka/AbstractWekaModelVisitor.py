@@ -40,7 +40,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         with open(filename, "r") as f:
             raw_lines = f.readlines()[5:-1]  # Discard the headers and ending line.
             raw_predictions = [line.split()[prediction_index] for line in raw_lines]
-            predictions = [typeConversionFunction(prediction.split(":")[1]) for prediction in raw_predictions]
+            predictions = [typeConversionFunction(prediction) for prediction in raw_predictions]
         return predictions
 
     def _runWekaCommand(self, command, verbose=False):
@@ -97,11 +97,11 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         self._runWekaCommand(command, verbose=verbose)
 
         if isinstance(response, rxnDescriptors.BoolRxnDescriptor):
-            typeConversionFunction = stringToBool
+            typeConversionFunction = booleanConversion
         elif isinstance(response, rxnDescriptors.OrdRxnDescriptor):
             typeConversionFunction = int
         elif isinstance(response, rxnDescriptors.NumRxnDescriptor):
-            typeConversionFunction = float
+            typeConversionFunction = numConversion
         elif isinstance(response, rxnDescriptors.CatRxnDescriptor):
             typeConversionFunction = str
         else:
@@ -110,7 +110,12 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         return {response: results}
 
 
-def stringToBool(s):
+def numConversion(s):
+    return float(s)
+
+def booleanConversion(s):
+    s = s.split(':')[1]
+
     if s.lower() == 'true':
         return True
     elif s.lower() == 'false':
