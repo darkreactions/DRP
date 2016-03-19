@@ -1,5 +1,11 @@
-chemAxon calculate
-calculating things!
-id	ASA	ASA	ASA	ASA	ASA	ASA	ASA	ASA	ASA	ASA	ASA	ASA	ASA	ASA	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	acceptorcount	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA-	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	ASA_P	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	molecular	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	ASA_H	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	Van der Waals surface area (3D)	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	ASA+	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount	donorcount
-1	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	3	3	3	3	3	3	3	3	3	3	3	3	3	3	5.27	5.27	5.27	5.27	5.27	5.27	5.27	5.27	5.27	5.27	5.27	5.27	5.27	5.27	220.22	220.22	220.22	220.22	220.22	220.22	220.22	220.22	220.22	220.22	220.22	220.22	220.22	220.22	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	271.26	5.10	5.10	5.10	5.10	5.10	5.10	5.10	5.10	5.10	5.10	5.10	5.10	5.10	5.10	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	110.45	110.45	110.45	110.45	110.45	110.45	110.45	110.45	110.45	110.45	110.45	110.45	110.45	110.45	51.04	51.04	51.04	51.04	51.04	51.04	51.04	51.04	51.04	51.04	51.04	51.04	51.04	51.04	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-
+Calculating for compound 29/197: N,N′-dimethylethylenediamine (dmed)
+Calculating for compound 30/197: 1,4-Bis(3-aminopropyl)piperazine (bapp)
+Calculating for compound 31/197: Potassium nitrate (KNO3)
+Calculating for compound 32/197: dioxoniobiooxy(dioxo)niobium (Nb2O5)
+Calculating for compound 33/197: Sodium selenite (Na2SeO3)
+Calculating for compound 34/197: Ethylenediamine (en)
+Calculating for compound 35/197: DABCO (dabco)
+Calculating for compound 36/197: 1,3-Diaminopropane (1,3-dap)
+Calculating for compound 37/197: putrescine (1,4-dab)
+Calculating for compound 38/197: Cadaverine (1,5-dap)
+Calculating for compound 39/197: Piperazine (pip)
