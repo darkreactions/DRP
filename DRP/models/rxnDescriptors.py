@@ -18,7 +18,7 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
     def createValue(self, reaction, value):
         """Create a new reaction value object"""
         if not isinstance(value, str) and value is not None:
-            raise TypeError("You cannot create a categorical value with a non-string type")
+            raise TypeError("You cannot create a categorical value with non-string type {}".format(type(value)))
         try:
             v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
@@ -66,7 +66,7 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         if not isinstance(value, float) and value is not None:
-            raise TypeError("You cannot create a numerical value with a non-float type")
+            raise TypeError("You cannot create a numerical value with non-float type {}".format(type(value)))
         try:
             v = rxnDescriptorValues.NumRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.NumRxnDescriptorValue.DoesNotExist:
@@ -93,7 +93,7 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         if not isinstance(value, bool) and value is not None:
-            raise TypeError("You cannot create a boolean value with a non-boolean type")
+            raise TypeError("You cannot create a boolean value with non-boolean type {}".format(type(value)))
         try:
             v = rxnDescriptorValues.BoolRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.BoolRxnDescriptorValue.DoesNotExist:

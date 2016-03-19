@@ -115,6 +115,8 @@ def make_dict():
 
 def calculate_many(reaction_iterable, verbose=False):
     descriptorDict = make_dict()
+    if verbose:
+        print "Descriptor dictionary created"
     
     for i, reaction in enumerate(reaction_iterable):
         _calculate(reaction, descriptorDict)
@@ -151,16 +153,23 @@ def _calculate(reaction, descriptorDict):
     # Calculate the elemental molarities
     allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
 
+    num.objects.filter(reaction=reaction, descriptor__in=[descriptorDict[element + '_mols'] for element in elements]).delete()
+
+    element_descs = []
     for element in elements:
-        n = num.objects.get_or_create(
-                            reaction=reaction,
-                            descriptor=descriptorDict[element + '_mols'],
-                            )[0]
+        #n = num.objects.get_or_create(
+                            #reaction=reaction,
+                            #descriptor=descriptorDict[element + '_mols'],
+                            #)[0]
         if any(quantity.amount is None for quantity in allCompoundQuantities):
-            n.value = None
+            value = None
         else: 
-            n.value=sum((quantity.compound.elements[element]['stoichiometry'] * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities)
-        n.save()
+            value=float(sum((quantity.compound.elements[element]['stoichiometry'] * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
+
+        descriptor = descriptorDict[element + '_mols']
+        n = descriptor.createValue(reaction, value)
+        element_descs.append(n)
+    num.objects.bulk_create(element_descs)
 
     for compoundRole in DRP.models.CompoundRole.objects.all():
         roleQuantities = allCompoundQuantities.filter(role=compoundRole)

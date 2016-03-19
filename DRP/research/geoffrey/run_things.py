@@ -7,13 +7,13 @@ compounds = Compound.objects.all()
 
 restart = 0
 
-for i, c in enumerate(compounds):
-    if i >= restart:
-        print u"Calculating for compound {}/{}: {}".format(i+1, compounds.count(), c)
-        try:
-            c.save(calcDescriptors=True, invalidateReactions=False)
-        except ValueError as e:
-            print e
+#for i, c in enumerate(compounds):
+    #if i >= restart:
+        #print u"Calculating for compound {}/{}: {}".format(i+1, compounds.count(), c)
+        #try:
+            #c.save(calcDescriptors=True, invalidateReactions=False)
+        #except ValueError as e:
+            #print e
 
 #for d in Descriptor.objects.all():
     #if d.calculatorSoftware != "DRP":
@@ -21,7 +21,13 @@ for i, c in enumerate(compounds):
 
 rxns = Reaction.objects.all()
 
-rxns.calculate_descriptors(verbose=True)
+mini_rxns = rxns[:2]
+
+mini_rxns.calculate_descriptors(verbose=True)
+
+
+
+#rxns.calculate_descriptors(verbose=True)
 
 #for i, r in enumerate(rxns):
     #if i > 1:
