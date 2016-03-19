@@ -70,7 +70,7 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
         kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.PUK_OMEGA, self.PUK_SIGMA)
         command = "java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix {} -W weka.classifiers.functions.SMO -t {} -d {} -p 0 -c {} -- -K {}".format(cost_matrix_string, arff_file, filePath, response_index, kernel)
 
-        self._runWekaCommand(command)
+        self._runWekaCommand(command, verbose=verbose)
 
     def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
         command = "java weka.classifiers.functions.SMO -T {} -l {} -p 0 -c {} 1> {}".format(arff_file, model_file, response_index, results_path)
