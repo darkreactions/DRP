@@ -380,6 +380,14 @@ class ModelContainer(models.Model):
     def save(self, *args, **kwargs):
         super(ModelContainer, self).save(*args, **kwargs)
 
+    def getOverallConfusionMatrices(self):
+        confusion_matrix_list = []
+        for descriptor in self.predictsDescriptors:
+            if descriptor.statsModel is None:
+                confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
+        return confusion_matrix_list
+
+
     def getConfusionMatrices(self):
         """
         Returns a list of lists of tuples of confusion matrices.
@@ -389,14 +397,7 @@ class ModelContainer(models.Model):
         Each tuple is of the form (descriptor_heading, confusion matrix)
         """
 
-        confusion_matrix_lol = []
-
-        # Retrieve the overall confusion matrix.
-        confusion_matrix_list = []
-        for descriptor in self.predictsDescriptors:
-            if descriptor.statsModel is None:
-                confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
-        confusion_matrix_lol.append(confusion_matrix_list)
+        confusion_matrix_lol = [self.getOverallConfusionMatrices()]
 
         # Retrieve the matrix for each component.
         for model in self.statsmodel_set.all():
