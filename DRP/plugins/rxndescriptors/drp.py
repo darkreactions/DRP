@@ -115,7 +115,7 @@ def make_dict():
 
 
 def delete_descriptors_many(reaction_set, descriptorDict):
-    # This could be the same as delete descriptors if we're ok with deleting the descriptor even if
+    # This could be the same as delete descriptors if we're ok with deleting the descriptor even if not
     # descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues)
     # I think yes, but wasn't completely sure, so made the separate function
 
