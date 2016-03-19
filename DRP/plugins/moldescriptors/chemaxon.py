@@ -9,6 +9,7 @@ from django.conf import settings
 from collections import OrderedDict
 from subprocess import Popen, PIPE
 from itertools import chain
+import warnings
 
 _descriptorDict = {
     'refractivity': {
@@ -150,7 +151,103 @@ for key, command in _cxcalcpHCommandStems.items():
         cxcalcCommands[key.format(i)] = command.format(i)
 
 
+def delete_descriptors(compound_set):
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type']=='num'],
+                                                    compound__in=compound_set).delete(recalculate_reactions=False)
+    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type']=='ord'],
+                                                    compound__in=compound_set).delete(recalculate_reactions=False)
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type']=='bool'],
+                                                     compound__in=compound_set).delete(recalculate_reactions=False)
+
+def calculate_many(compound_set, verbose=False):
+    if verbose:
+        print "Deleting old descriptors"
+    delete_descriptors(compound_set)
+    # filtering first and then doing a big cxcalc command is actually slower
+    #if verbose:
+        #print "Filtering out compounds without valid SMILES or INCHI"
+    #filtered_compounds = _filter_compounds(compound_set, verbose=verbose)
+    #_calculate_with_lec(filtered_compounds, verbose=verbose)
+    for i, compound in enumerate(compound_set):
+        _calculate(compound)
+        if verbose:
+            print "Done with {} ({}/{})".format(compound, i+1, len(compound_set))
+
 def calculate(compound):
+    delete_descriptors([compound])
+    _calculate(compound)
+
+def _filter_compounds(compound_set, verbose=False):
+    filtered_compounds = OrderedDict()
+    for i, compound in enumerate(compound_set):
+        notFound = True
+        if notFound and (compound.smiles is not None and compound.smiles != ''):
+            lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
+            lecProc.wait()
+            if lecProc.returncode == 0:
+                lec, lecErr = lecProc.communicate()
+                notFound = False  
+        if notFound and (compound.INCHI is not None and compound.INCHI != ''):
+            lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
+            lecProc.wait()
+            if lecProc.returncode == 0:
+                lec, lecErr = lecProc.communicate()
+                notFound = False
+        if not notFound:
+            filtered_compounds[lec] = compound
+        else:
+            warnings.warn("Compound not found")
+        if verbose:
+            print "Done with {} ({}/{})".format(compound, i+1, len(compound_set))
+    return filtered_compounds
+
+
+def _calculate_with_lec(compound_dict, verbose=False):
+    """
+    Does cxcalc calculations given an ordered dictionary lec representation : compound
+    """
+    if verbose:
+        print "Calculating descriptors for {} compounds with valid SMILES/INCHI".format(len(compound_dict))
+    #-N ih says not to display id or header
+    calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', '-N', 'ih'] + compound_dict.keys() +
+                     [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True)
+    calcProc.wait()
+    if calcProc.returncode == 0:
+        res, resErr = calcProc.communicate()
+        if not resErr:
+            if verbose:
+                print "Putting descriptor values in database"
+            resLines = res.split('\n')[:-1] #the last line is blank
+            if len(resLines) == len(compound_dict): 
+                commandKeys = cxcalcCommands.keys()
+                for i, resLine in enumerate(resLines): 
+                    resList = resLine.split('\t')
+                    compound = compound_dict.values()[i]
+    
+                    num_to_create = []
+                    ord_to_create = []
+                    bool_to_create = []
+                    for i in range(len(resList)):
+                        if _descriptorDict[commandKeys[i]]['type'] == 'num':
+                            num_to_create.append(DRP.models.NumMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                        elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
+                            ord_to_create.append(DRP.models.OrdMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                        elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
+                            bool_to_create.append(DRP.models.BoolMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                        # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
+                        # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
+                        # for it other than for the database to push it out as a part of validation procedures.
+                    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+                    DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
+                    DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_to_create)
+                    if verbose:
+                        print "Done with {} ({}/{})".format(compound, i+1, len(compound_dict))
+        else:
+            raise RuntimeError("cxcalc returned error: {}".fomrat(resErr))
+    else:
+        raise RuntimeError("cxcalc returned nonzero return code {}".format(calcProc.returncode))
+
+def _calculate(compound):
     notFound = True
     if notFound and (compound.smiles is not None and compound.smiles != ''):
         lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
@@ -165,28 +262,39 @@ def calculate(compound):
             lec, lecErr = lecProc.communicate()
             notFound = False
     if not notFound:
-        calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True) 
+        # -N ih means leave off the header row and id column
+        calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', '-N', 'ih', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True) 
         calcProc.wait()
         if calcProc.returncode == 0:
             res, resErr = calcProc.communicate()
             if not resErr:
                 resLines = res.split('\n')
-                if len(resLines) == 3:
-                    resList = resLines[1].split('\t')[1:] # cut off the first thing. It's the id
+                if len(resLines) == 2: #last line is blank
+                    resList = resLines[0].split('\t')
                     commandKeys = cxcalcCommands.keys()
-                    for i in range(len(resList)):
-                        if _descriptorDict[commandKeys[i]]['type'] == 'num':
-                            DRP.models.NumMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
-                        elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
-                            DRP.models.OrdMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
-                        elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
-                            DRP.models.BoolMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
-                        # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
-                        # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
-                        # for it other than for the database to push it out as a part of validation procedures.
+
+                    num_to_create = []
+                    ord_to_create = []
+                    bool_to_create = []
+                    if len(resList) == len(commandKeys):
+                        for i in range(len(resList)):
+                            if _descriptorDict[commandKeys[i]]['type'] == 'num':
+                                num_to_create.append(DRP.models.NumMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                            elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
+                                ord_to_create.append(DRP.models.OrdMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                            elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
+                                bool_to_create.append(DRP.models.BoolMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                            # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
+                            # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
+                            # for it other than for the database to push it out as a part of validation procedures.
+                        DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+                        DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
+                        DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_to_create)
+                    else:
+                        raise RuntimeError("Number of cxcalc commands ({}) does not match number of results ({})".format(len(commandKeys), len(resList)))
             else:
                 raise RuntimeError("cxcalc returned error: {}".format(resErr))
         else:
-            raise RuntimeError("cxcalc exited with nonzero return code {}".format(returncode))
+            raise RuntimeError("cxcalc exited with nonzero return code {}".format(calcProc.returncode))
     else:
-        raise ValueError("Compound not found")
+        warnings.warn("Compound not found")

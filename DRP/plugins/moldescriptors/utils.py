@@ -47,7 +47,7 @@ class LazyDescDict(object):
                         perm = DRP.models.CategoricalDescriptorPermittedValue.objects.get_or_create(value=permittedValue, descriptor=self.internalDict[k])[0]
                 else:
                     raise RuntimeError("Invalid descriptor type provided")
-        self.initialised = True
+            self.initialised = True
 
     def __len__(self):
         return len(self.internalDict)
