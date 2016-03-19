@@ -113,87 +113,21 @@ def make_dict():
     descriptorDict = setup(_descriptorDict)
     return descriptorDict
 
-def calculate_many(reaction_iterable, verbose=False):
-    descriptorDict = make_dict()
-    for i, reaction in enumerate(reaction_iterable):
-        _calculate(reaction, descriptorDict)
-        if verbose:
-            print "Done with {} ({}/{})".format(reaction, i+1, len(reaction_iterable))
 
+def delete_descriptors(reaction, descriptorDict):
+    allCompoundQuantities = DRP.models.CompoundQuantity.objects.filter(reaction=reaction)
 
-def calculate(reaction):
-    """Calculate the descriptors for this plugin."""
-    #Set up the actual descriptor dictionary.
-    descriptorDict = make_dict()
-    _calculate(reaction, descriptorDict)
-
-def _calculate(reaction, descriptorDict):
-    """
-    Calculates with the descriptorDict already created
-    """
-
-    #descriptor Value classes
-    CompoundQuantity = DRP.models.CompoundQuantity
-    num = DRP.models.NumRxnDescriptorValue
-    cat = DRP.models.CatRxnDescriptorValue
-    perm = DRP.models.CategoricalDescriptorPermittedValue
-    
-    #reaction space descriptor
-    h = xxhash.xxh64() #generates a hash
-    for reactant in reaction.compounds.all():
-        h.update(reactant.abbrev)
-    p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h.hexdigest())[0]
-    c = cat.objects.get_or_create(reaction=reaction,descriptor=descriptorDict['rxnSpaceHash1'])[0] 
-    c.value = p
-    c.save()
-
-    # Calculate the elemental molarities
-    allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
-
-    num.objects.filter(reaction=reaction, descriptor__in=[descriptorDict[element + '_mols'] for element in elements]).delete()
-
-    vals_to_create = []
     descriptors_to_delete = []
     for element in elements:
-        if any(quantity.amount is None for quantity in allCompoundQuantities):
-            value = None
-        else: 
-            value=float(sum((quantity.compound.elements[element]['stoichiometry'] * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
-
-        descriptor = descriptorDict[element + '_mols']
-        descriptors_to_delete.append(descriptor)
-        n = descriptor.createValue(reaction, value)
-        vals_to_create.append(n)
+        descriptors_to_delete.append(descriptorDict[element + '_mols'])
 
     for compoundRole in DRP.models.CompoundRole.objects.all():
         roleQuantities = allCompoundQuantities.filter(role=compoundRole)
         descriptors_to_delete.append(descriptorDict['{}_amount_count'.format(compoundRole.label)])
         #  number of species in reaction with this role
-        n = num(
-            reaction=reaction,
-            descriptor=descriptorDict['{}_amount_count'.format(compoundRole.label)],
-            )
-        n.value = roleQuantities.count()
-        vals_to_create.append(n)
-
-        #  moles of sum(quantity.amount for quantity in roleQuantities) reactant filling this role in this reaction
-        if any(quantity.amount is None for quantity in roleQuantities):
-            roleMoles = None
-        else:
-            roleMoles = sum(quantity.amount for quantity in roleQuantities)
         descriptors_to_delete.append(descriptorDict['{}_amount_molarity'.format(compoundRole.label)])
-        n= num(
-            reaction=reaction,
-            descriptor=descriptorDict['{}_amount_molarity'.format(compoundRole.label)],
-            )
-        n.value=roleMoles
-        vals_to_create.append(n)
-
-
-        
         
         if roleQuantities.exists():
-            # delete all the descriptors first so we can do bulk create and things don't take forever
             descriptorValues = DRP.models.NumMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
             for descriptor in DRP.models.NumMolDescriptor.objects.all():
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
@@ -226,8 +160,87 @@ def _calculate(reaction, descriptorDict):
                         descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
 
             
+    DRP.models.NumRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=descriptors_to_delete).delete()
 
-            
+
+
+def calculate_many(reaction_iterable, verbose=False):
+    descriptorDict = make_dict()
+    for i, reaction in enumerate(reaction_iterable):
+        delete_descriptors(reaction, descriptorDict)
+        _calculate(reaction, descriptorDict)
+        if verbose:
+            print "Done with {} ({}/{})".format(reaction, i+1, len(reaction_iterable))
+
+
+def calculate(reaction):
+    """Calculate the descriptors for this plugin."""
+    #Set up the actual descriptor dictionary.
+    descriptorDict = make_dict()
+    delete_descriptors(reaction, descriptorDict)
+    _calculate(reaction, descriptorDict)
+
+def _calculate(reaction, descriptorDict):
+    """
+    Calculates with the descriptorDict already created
+    """
+
+    #descriptor Value classes
+    CompoundQuantity = DRP.models.CompoundQuantity
+    num = DRP.models.NumRxnDescriptorValue
+    cat = DRP.models.CatRxnDescriptorValue
+    perm = DRP.models.CategoricalDescriptorPermittedValue
+    
+    #reaction space descriptor
+    h = xxhash.xxh64() #generates a hash
+    for reactant in reaction.compounds.all():
+        h.update(reactant.abbrev)
+    p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h.hexdigest())[0]
+    c = cat.objects.get_or_create(reaction=reaction,descriptor=descriptorDict['rxnSpaceHash1'])[0] 
+    c.value = p
+    c.save()
+
+    # Calculate the elemental molarities
+    allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
+
+    vals_to_create = []
+    for element in elements:
+        n = num(
+            reaction=reaction,
+            descriptor=descriptorDict[element + '_mols'],
+            )
+        if any(quantity.amount is None for quantity in allCompoundQuantities):
+            n.value = None
+        else: 
+            n.value=float(sum((quantity.compound.elements[element]['stoichiometry'] * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
+
+        vals_to_create.append(n)
+
+
+    for compoundRole in DRP.models.CompoundRole.objects.all():
+        roleQuantities = allCompoundQuantities.filter(role=compoundRole)
+        #  number of species in reaction with this role
+        n = num(
+            reaction=reaction,
+            descriptor=descriptorDict['{}_amount_count'.format(compoundRole.label)],
+            )
+        n.value = roleQuantities.count()
+        vals_to_create.append(n)
+
+        #  moles of sum(quantity.amount for quantity in roleQuantities) reactant filling this role in this reaction
+        if any(quantity.amount is None for quantity in roleQuantities):
+            roleMoles = None
+        else:
+            roleMoles = sum(quantity.amount for quantity in roleQuantities)
+        n = num(
+            reaction=reaction,
+            descriptor=descriptorDict['{}_amount_molarity'.format(compoundRole.label)],
+            )
+        n.value=roleMoles
+        vals_to_create.append(n)
+        
+        
+        if roleQuantities.exists():
             descriptorValues = DRP.models.NumMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
             for descriptor in DRP.models.NumMolDescriptor.objects.all():
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
@@ -326,6 +339,5 @@ def _calculate(reaction, descriptorDict):
                         else:
                             n.value=sum(quantity.amount for quantity in quantities)
                         vals_to_create.append(n)
-                        
-            num.objects.filter(reaction=reaction, descriptor__in=descriptors_to_delete).delete()
-            num.objects.bulk_create(vals_to_create)
+
+    num.objects.bulk_create(vals_to_create)
