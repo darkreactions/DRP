@@ -99,7 +99,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         if isinstance(response, rxnDescriptors.BoolRxnDescriptor):
             typeConversionFunction = booleanConversion
         elif isinstance(response, rxnDescriptors.OrdRxnDescriptor):
-            typeConversionFunction = int
+            typeConversionFunction = ordConversion
         elif isinstance(response, rxnDescriptors.NumRxnDescriptor):
             typeConversionFunction = numConversion
         elif isinstance(response, rxnDescriptors.CatRxnDescriptor):
@@ -112,6 +112,10 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
 def numConversion(s):
     return float(s)
+
+def ordConversion(s):
+    s = s.split(':')[1]
+    return int(s)
 
 def booleanConversion(s):
     s = s.split(':')[1]

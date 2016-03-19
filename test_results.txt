@@ -207,11 +207,21 @@ Test that any listed modules have the requisite __init__.py file. ... ok
 testPep257 (DRP.tests.fileTests.TestFiles)
 Test docstring conformance of all files. ... ok
 testPep8 (DRP.tests.fileTests.TestFiles)
-Test that all listed files conform to pep8 standards. ... ok
+Test that all listed files conform to pep8 standards. ... FAIL
 test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
 Test that the settings_example.py file is present. ... ok
 
+======================================================================
+FAIL: testPep8 (DRP.tests.fileTests.TestFiles)
+Test that all listed files conform to pep8 standards.
 ----------------------------------------------------------------------
-Ran 131 tests in 423.238s
+Traceback (most recent call last):
+  File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/tests/fileTests.py", line 113, in testPep8
+    '{} errors were found in pep8 Conformance:\n{}'.format(result.total_errors, output)
+AssertionError: 1 errors were found in pep8 Conformance:
 
-OK
+
+----------------------------------------------------------------------
+Ran 131 tests in 423.231s
+
+FAILED (failures=1)
