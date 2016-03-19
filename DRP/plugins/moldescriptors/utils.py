@@ -1,5 +1,6 @@
 '''A utilities module for helping with molecular descriptor plugins'''
 import DRP
+from django.db import transaction
 
 class LazyDescDict(object):
 
@@ -8,6 +9,8 @@ class LazyDescDict(object):
         self.descDict = descDict
         self.initialised = False
 
+
+    @transaction.atomic
     def initialise(self, descDict):
         if not self.initialised:
             for k,v in descDict.items():

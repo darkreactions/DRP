@@ -36,11 +36,7 @@ for element in elements:
 #descriptors for generalised aggregation across compound roles
 
 
-
-
-def calculate(reaction):
-    """Calculate the descriptors for this plugin."""
-
+def make_dict():
     weightings = ('molarity', 'count')
     for compoundRole in DRP.models.CompoundRole.objects.all():
         for w in weightings:
@@ -114,10 +110,28 @@ def calculate(reaction):
                         'maximum': None,
                         'minimum': None
                         }
-                
-    
-    #Set up the actual descriptor dictionary.
     descriptorDict = setup(_descriptorDict)
+    return descriptorDict
+
+def calculate_many(reaction_iterable, verbose=False):
+    descriptorDict = make_dict()
+    
+    for i, reaction in enumerate(reaction_iterable):
+        _calculate(reaction, descriptorDict)
+        if verbose:
+            print "Done with {} {}/{}".format(reaction, i+1, len(reaction_iterable))
+
+
+def calculate(reaction):
+    """Calculate the descriptors for this plugin."""
+    #Set up the actual descriptor dictionary.
+    descriptorDict = make_dict()
+    _calculate(reaction, descriptorDict)
+
+def _calculate(reaction, descriptorDict):
+    """
+    Calculates with the descriptorDict already created
+    """
 
     #descriptor Value classes
     CompoundQuantity = DRP.models.CompoundQuantity

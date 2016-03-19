@@ -5,8 +5,6 @@ from django.db.models import Count
 
 compounds = Compound.objects.all()
 
-#c = compounds[62]
-
 restart = 0
 
 for i, c in enumerate(compounds):
@@ -22,6 +20,8 @@ for i, c in enumerate(compounds):
         #print d.heading, d.calculatorSoftware
 
 rxns = Reaction.objects.all()
+
+rxns.calculate_descriptors(verbose=True)
 
 #for i, r in enumerate(rxns):
     #if i > 1:

@@ -58,7 +58,7 @@ _descriptorDict = {
 #The descriptors listed below also have the option to be calculated
 #at a variety of pH values, which yields a distribution.
 #This will be done, and they will be added as different descriptors
-_pHDependantDescriptors = {
+_pHDependentDescriptors = {
     'avgpol': {
         'type': 'num',
         'name': 'Average Molecular Polarizability',
@@ -122,10 +122,11 @@ _pHDependantDescriptors = {
 }
 
 
-for descriptor, d in _pHDependantDescriptors.items():
+for descriptor, d in _pHDependentDescriptors.items():
     for i in range(1, 15):
-        d['name'] += ' at pH {}'.format(i)
-        _descriptorDict[descriptor + '_pH{}'.format(i)] = d
+        d_copy = d.copy()
+        d_copy['name'] += ' at pH {}'.format(i)
+        _descriptorDict[descriptor + '_pH{}'.format(i)] = d_copy
 
 descriptorDict = setup(_descriptorDict)
 

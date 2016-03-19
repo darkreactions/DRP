@@ -23,7 +23,7 @@ def is_descriptor_types(descriptor_type_list, descriptor):
     return False
 
 
-def valid_descriptor_types():
+def descriptor_types(descriptors):
     type_dict = {"Bool":0, "Ord":0, "Num":0, "Cat":0}
     for descriptor in valid_descriptors():
         if is_descriptor_type(BoolRxnDescriptor, descriptor):
@@ -86,16 +86,20 @@ def valid_descriptors():
     return descriptor_list
 
 if __name__=='__main__':
+    descs = valid_descriptors()
+    print len(descs)
+    print_headers_with_names(descs)
+    
     #print_headers()
     #print_headers_with_names()
     #print_descriptor_types()
-    in_file = argv[1]
-    reaction_set_name = argv[2]
+    #in_file = argv[1]
+    #reaction_set_name = argv[2]
 
-    with open(in_file) as f:
-        descriptor_headers = [l.strip() for l in f.readlines()]
+    #with open(in_file) as f:
+        #descriptor_headers = [l.strip() for l in f.readlines()]
 
-    descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
-    reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+    #descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
+    #reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
-    print_headers(filter_through_reactions(reactions, descriptors))
+    #print_headers(filter_through_reactions(reactions, descriptors))
