@@ -46,9 +46,9 @@ class PerformedReaction(Reaction):
     def __unicode__(self):
         return self.reference
 
-    def save(self, *args, **kwargs):
+    def save(self, invalidate_models=True, *args, **kwargs):
         self.reference = self.reference.lower()
-        if self.pk is not None:
+        if self.pk is not None and invalidate_models:
             test = DRP.models.StatsModel.objects.filter(testSets__reactions__in=[self])
             train = DRP.models.StatsModel.objects.filter(trainingSet__reactions=self)
             for model in chain(test, train):

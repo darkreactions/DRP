@@ -115,13 +115,10 @@ def make_dict():
 
 def calculate_many(reaction_iterable, verbose=False):
     descriptorDict = make_dict()
-    if verbose:
-        print "Descriptor dictionary created"
-    
     for i, reaction in enumerate(reaction_iterable):
         _calculate(reaction, descriptorDict)
         if verbose:
-            print "Done with {} {}/{}".format(reaction, i+1, len(reaction_iterable))
+            print "Done with {} ({}/{})".format(reaction, i+1, len(reaction_iterable))
 
 
 def calculate(reaction):
@@ -140,7 +137,7 @@ def _calculate(reaction, descriptorDict):
     num = DRP.models.NumRxnDescriptorValue
     cat = DRP.models.CatRxnDescriptorValue
     perm = DRP.models.CategoricalDescriptorPermittedValue
-
+    
     #reaction space descriptor
     h = xxhash.xxh64() #generates a hash
     for reactant in reaction.compounds.all():
@@ -155,142 +152,180 @@ def _calculate(reaction, descriptorDict):
 
     num.objects.filter(reaction=reaction, descriptor__in=[descriptorDict[element + '_mols'] for element in elements]).delete()
 
-    element_descs = []
+    vals_to_create = []
+    descriptors_to_delete = []
     for element in elements:
-        #n = num.objects.get_or_create(
-                            #reaction=reaction,
-                            #descriptor=descriptorDict[element + '_mols'],
-                            #)[0]
         if any(quantity.amount is None for quantity in allCompoundQuantities):
             value = None
         else: 
             value=float(sum((quantity.compound.elements[element]['stoichiometry'] * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
 
         descriptor = descriptorDict[element + '_mols']
+        descriptors_to_delete.append(descriptor)
         n = descriptor.createValue(reaction, value)
-        element_descs.append(n)
-    num.objects.bulk_create(element_descs)
+        vals_to_create.append(n)
 
     for compoundRole in DRP.models.CompoundRole.objects.all():
         roleQuantities = allCompoundQuantities.filter(role=compoundRole)
-
+        descriptors_to_delete.append(descriptorDict['{}_amount_count'.format(compoundRole.label)])
         #  number of species in reaction with this role
-        n = num.objects.get_or_create(
+        n = num(
             reaction=reaction,
             descriptor=descriptorDict['{}_amount_count'.format(compoundRole.label)],
-            )[0]
+            )
         n.value = roleQuantities.count()
-        n.save()
+        vals_to_create.append(n)
 
-        #  moles ofsum(quantity.amount for quantity in roleQuantities) reactant filling this role in this reaction
+        #  moles of sum(quantity.amount for quantity in roleQuantities) reactant filling this role in this reaction
         if any(quantity.amount is None for quantity in roleQuantities):
             roleMoles = None
         else:
             roleMoles = sum(quantity.amount for quantity in roleQuantities)
-        n= num.objects.get_or_create(
+        descriptors_to_delete.append(descriptorDict['{}_amount_molarity'.format(compoundRole.label)])
+        n= num(
             reaction=reaction,
             descriptor=descriptorDict['{}_amount_molarity'.format(compoundRole.label)],
-            )[0]
+            )
         n.value=roleMoles
-        n.save()
+        vals_to_create.append(n)
 
+
+        
+        
         if roleQuantities.exists():
+            # delete all the descriptors first so we can do bulk create and things don't take forever
+            descriptorValues = DRP.models.NumMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
             for descriptor in DRP.models.NumMolDescriptor.objects.all():
-                descriptorValues = DRP.models.NumMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
-                    n = num.objects.get_or_create(
+                    descriptors_to_delete.append(descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')])
+                    descriptors_to_delete.append(descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')])
+                    descriptors_to_delete.append(descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')])
+                    descriptors_to_delete.append(descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count')])
+            
+            descriptorValues = DRP.models.OrdMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
+            for descriptor in DRP.models.OrdMolDescriptor.objects.all():
+                #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
+                if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
+                    for i in range(descriptor.minimum, descriptor.maximum+1): #  because Still python...
+                        descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)])
+                        descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)])
+
+
+            descriptorValues = DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
+            for descriptor in DRP.models.BoolMolDescriptor.objects.all():
+                if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
+                    for i in (True, False): #  because Still python...
+                        descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)])
+                        descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)])
+            descriptorValues = DRP.models.CatMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
+            for descriptor in DRP.models.CatMolDescriptor.objects.all():
+                if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
+                    for permValue in descriptor.permittedValues.all():
+                        descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
+                        descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
+
+            
+
+            
+            descriptorValues = DRP.models.NumMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
+            for descriptor in DRP.models.NumMolDescriptor.objects.all():
+                #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
+                if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
+                    n = num(
                         reaction=reaction,
                         descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')],
-                        
-                    )[0]
+                    )
                     if any(descriptorValue.value is None for descriptorValue in descriptorValues):
                         n.value=None
                     else:
                         n.value=max(descriptorValue.value for descriptorValue in descriptorValues)
-                    n.save()
-                    num.objects.get_or_create(
+                    vals_to_create.append(n)
+                    num(
                         reaction=reaction,
                         descriptor=descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')],
-                    )[0]
+                    )
                     if any(descriptorValue.value is None for descriptorValue in descriptorValues):
                         n.value=None
                     else:
                         n.value=max(descriptorValue.value for descriptorValue in descriptorValues) - min(descriptorValue.value for descriptorValue in descriptorValues)
-                    n.save()
-                    n=num.objects.get_or_create(
+                    vals_to_create.append(n)
+                    n=num(
                         reaction=reaction,
                         descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')],
-                    )[0]
+                    )
                     if any(descriptorValues.get(compound=quantity.compound).value is None for quantity in roleQuantities) or roleMoles == 0 or roleMoles is None:
                         n.value=None
                     else:
                         n.value=gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
-                    n.save()
-                    n=num.objects.get_or_create(
+                    vals_to_create.append(n)
+                    n=num(
                         reaction=reaction,
                         descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count')],
-                    )[0]
+                    )
                     n.value=gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
-                    n.save()
+                    vals_to_create.append(n)
+            descriptorValues = DRP.models.OrdMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
             for descriptor in DRP.models.OrdMolDescriptor.objects.all():
-                descriptorValues = DRP.models.OrdMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     for i in range(descriptor.minimum, descriptor.maximum+1): #  because Still python...
-                        n=num.objects.get_or_create(
+                        n=num(
                             reaction=reaction,
                             descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)],
-                        )[0]
+                        )
                         n.value=sum(1 for value in descriptorValues if value.value == i)
-                        n.save()
-                        n=num.objects.get_or_create(
+                        vals_to_create.append(n)
+                        n=num(
                             reaction=reaction,
                             descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)],
-                        )[0]
+                        )
                         quantities = roleQuantities.filter(compound__ordmoldescriptorvalue__value=i, compound__ordmoldescriptorvalue__descriptor__pk=descriptor.pk)
                         if any(quantity.amount is None for quantity in quantities):
                             n.value=None
                         else:
                             n.value=sum(quantity.amount for quantity in quantities)
-                        n.save()
+                        vals_to_create.append(n)
+            descriptorValues = DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
             for descriptor in DRP.models.BoolMolDescriptor.objects.all():
-                descriptorValues = DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     for i in (True, False): #  because Still python...
-                        n=num.objects.get_or_create(
+                        n=num(
                             reaction=reaction,
                             descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)],
-                        )[0]
+                        )
                         n.value=sum(1 for value in descriptorValues if value.value == i)
-                        n.save()
-                        n=num.objects.get_or_create(
+                        vals_to_create.append(n)
+                        n=num(
                             reaction=reaction,
                             descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)],
-                        )[0]
+                        )
                         quantities = roleQuantities.filter(compound__boolmoldescriptorvalue__value=i, compound__boolmoldescriptorvalue__descriptor__pk=descriptor.pk)
                         if any(quantity.amount is None for quantity in quantities):
                             n.value = None
                         else:
                             n.value=sum(quantity.amount for quantity in quantities)
-                        n.save()
+                        vals_to_create.append(n)
+            descriptorValues = DRP.models.CatMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
             for descriptor in DRP.models.CatMolDescriptor.objects.all():
-                descriptorValues = DRP.models.CatMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities])
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     for permValue in descriptor.permittedValues.all():
-                        n=num.objects.get_or_create(
+                        n=num(
                             reaction=reaction,
                             descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)],
-                        )[0]
+                        )
                         n.value=descriptorValues.filter(value=permValue).count()
-                        n.save()
-                        n=num.objects.get_or_create(
+                        vals_to_create.append(n)
+                        n=num(
                             reaction=reaction,
                             descriptor=descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)],
-                        )[0]
+                        )
                         quantities = roleQuantities.filter(compound__catmoldescriptorvalue__value=permValue, compound__catmoldescriptorvalue__descriptor__pk=descriptor.pk)
                         if any(quantity.amount is None for quantity in quantities):
                             n.value = None
                         else:
                             n.value=sum(quantity.amount for quantity in quantities)
-                        n.save()
+                        vals_to_create.append(n)
+                        
+            num.objects.filter(reaction=reaction, descriptor__in=descriptors_to_delete).delete()
+            num.objects.bulk_create(vals_to_create)

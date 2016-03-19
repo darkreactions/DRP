@@ -1,6 +1,6 @@
 import django
 django.setup()
-from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction
+from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction, CompoundQuantity
 from django.db.models import Count
 
 compounds = Compound.objects.all()
@@ -19,13 +19,11 @@ restart = 0
     #if d.calculatorSoftware != "DRP":
         #print d.heading, d.calculatorSoftware
 
-rxns = Reaction.objects.all()
+rxns = PerformedReaction.objects.all()
 
-mini_rxns = rxns[:2]
+rxns = rxns.filter(valid=True).exclude(compounds=None)
 
-mini_rxns.calculate_descriptors(verbose=True)
-
-
+rxns.calculate_descriptors(verbose=True)
 
 #rxns.calculate_descriptors(verbose=True)
 
