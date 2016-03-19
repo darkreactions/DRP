@@ -53,5 +53,4 @@ class PerformedReaction(Reaction):
             train = DRP.models.StatsModel.objects.filter(trainingSet__reactions=self)
             for model in chain(test, train):
                 model.invalidate()
-                model.save()
         super(PerformedReaction, self).save(*args, **kwargs)

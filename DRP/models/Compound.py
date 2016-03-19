@@ -272,7 +272,7 @@ class Compound(models.Model):
 
     def __unicode__(self):
         """Unicode representation of a compound is it's name and abbreviation."""
-        return '{} ({})'.format(self.name, self.abbrev)
+        return u"{} ({})".format(unicode(self.name, 'utf-8'), unicode(self.abbrev, 'utf-8'))
 
     def csConsistencyCheck(self):
         """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""
@@ -305,9 +305,9 @@ class Compound(models.Model):
                     raise ValidationError(errorList)
 
     @transaction.atomic
-    def save(self, calcDescriptors=True, *args, **kwargs):
-        """Save the compound, invalidating any consequent objects like reactiosn and models."""
-        if self.pk is not None:
+    def save(self, calcDescriptors=True, invalidateReactions=True, *args, **kwargs):
+        """Save the compound, invalidating any consequent objects like reactions and models."""
+        if self.pk is not None and invalidateReactions:
             for reaction in self.reaction_set.all():
                 reaction.save()  # descriptor recalculation
                 try:

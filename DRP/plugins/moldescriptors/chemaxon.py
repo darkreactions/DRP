@@ -151,35 +151,41 @@ for key, command in _cxcalcpHCommandStems.items():
 
 def calculate(compound):
     notFound = True
-    if notFound and (compound.smiles is not None and compound.smiles is not ''):
-        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, close_fds=True) # lec = lowest energy conformer
+    if notFound and (compound.smiles is not None and compound.smiles != ''):
+        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
         lecProc.wait()
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False  
-    if notFound and (compound.INCHI is not None and compound.INCHI is not ''):
-        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, close_fds=True) # lec = lowest energy conformer
+    if notFound and (compound.INCHI is not None and compound.INCHI != ''):
+        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
         lecProc.wait()
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
     if not notFound:
-        calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, close_fds=True) 
+        calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True) 
         calcProc.wait()
         if calcProc.returncode == 0:
             res, resErr = calcProc.communicate()
-            if resErr == '':
+            if not resErr:
                 resLines = res.split('\n')
                 if len(resLines) == 3:
-                    resList = resLines[1].split('\t')
+                    resList = resLines[1].split('\t')[1:] # cut off the first thing. It's the id
                     commandKeys = cxcalcCommands.keys()
-                    for i in len(resList):
+                    for i in range(len(resList)):
                         if _descriptorDict[commandKeys[i]]['type'] == 'num':
-                            DRP.models.NumMolDescriptorValue.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
+                            DRP.models.NumMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
                         elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
-                            DRP.models.OrdMolDescriptorValue.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
+                            DRP.models.OrdMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
                         elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
-                            DRP.models.BoolMolDescriptorValue.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
+                            DRP.models.BoolMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i])
                         # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
                         # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
                         # for it other than for the database to push it out as a part of validation procedures.
+            else:
+                raise RuntimeError("cxcalc returned error: {}".format(resErr))
+        else:
+            raise RuntimeError("cxcalc exited with nonzero return code {}".format(returncode))
+    else:
+        raise ValueError("Compound not found")
