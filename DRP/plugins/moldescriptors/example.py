@@ -25,6 +25,9 @@ def fsValueCalc(mw):
     else:
         return 3
 
+def calculate_many(compound_set, verbose=False):
+    for compound in compound_set:
+        calculate(compound)
 
 def arbValCalc(compound):
     """Calculate a completely arbitrary value as an example of a categorical descriptor."""

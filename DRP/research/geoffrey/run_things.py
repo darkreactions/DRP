@@ -3,11 +3,11 @@ django.setup()
 from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction, CompoundQuantity, NumRxnDescriptorValue
 from django.db.models import Count
 
-compounds = Compound.objects.all()
-print compounds.count()
+#compounds = Compound.objects.all()
+#print compounds.count()
+#restart = 0
 
-restart = 0
-compounds.calculate_descriptors(verbose=True)
+#compounds.calculate_descriptors(verbose=True)
 
 #bad_compounds = []
 
@@ -28,6 +28,6 @@ compounds.calculate_descriptors(verbose=True)
         #print "Error on compound with abbreviation: ", c.abbrev
         #print e
 
-#rxns = PerformedReaction.objects.all()
-#rxns = rxns.filter(valid=True).exclude(compounds=None)
-#rxns.calculate_descriptors(verbose=True)
+rxns = PerformedReaction.objects.all()
+rxns = rxns.filter(valid=True).exclude(compounds=None)
+rxns.calculate_descriptors(verbose=True)
