@@ -3,10 +3,10 @@ django.setup()
 from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction, CompoundQuantity, NumRxnDescriptorValue, CatMolDescriptorValue, OrdMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, CatMolDescriptor, OrdMolDescriptor, BoolMolDescriptor, NumMolDescriptor
 from django.db.models import Count
 
-compounds = Compound.objects.all()
+#compounds = Compound.objects.all()
 ###restart = 0
 
-compounds.calculate_descriptors(verbose=True)
+#compounds.calculate_descriptors(verbose=True)
 
 #bad_compounds = []
 
@@ -27,9 +27,9 @@ compounds.calculate_descriptors(verbose=True)
         #print "Error on compound with abbreviation: ", c.abbrev
         #print e
 
-#rxns = PerformedReaction.objects.all()
-#rxns = rxns.filter(valid=True).exclude(compounds=None)
-#rxns.calculate_descriptors(verbose=True)
+rxns = PerformedReaction.objects.all()
+rxns = rxns.filter(valid=True).exclude(compounds=None)
+rxns.calculate_descriptors(verbose=True)
 
 
 #print NumRxnDescriptorValue.objects.exclude(value=None).count()
