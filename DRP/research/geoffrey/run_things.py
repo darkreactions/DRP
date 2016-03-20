@@ -27,8 +27,12 @@ from django.db.models import Count
         #print "Error on compound with abbreviation: ", c.abbrev
         #print e
 
+restart_reference = "2tv51.2"
+
 rxns = PerformedReaction.objects.all()
 rxns = rxns.filter(valid=True).exclude(compounds=None)
+min_pk = rxns.get(reference=restart_reference)
+rxns = rxns.filter(pk=min_pk)
 rxns.calculate_descriptors(verbose=True)
 
 

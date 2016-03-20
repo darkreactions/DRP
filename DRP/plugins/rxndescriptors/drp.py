@@ -207,9 +207,9 @@ def calculate_many(reaction_set, verbose=False):
         print "Deleting old descriptor values"
     delete_descriptors_many(reaction_set, descriptorDict)
     for i, reaction in enumerate(reaction_set):
-        _calculate(reaction, descriptorDict, verbose=verbose)
         if verbose:
-            print "Done with {} ({}/{})".format(reaction, i+1, len(reaction_set))
+            print "Calculating {} ({}/{})".format(reaction, i+1, len(reaction_set))
+        _calculate(reaction, descriptorDict, verbose=verbose)
 
 
 def calculate(reaction):
