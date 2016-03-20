@@ -255,8 +255,6 @@ def _calculate(reaction, descriptorDict, verbose=False):
 
         vals_to_create.append(n)
 
-    if verbose:
-            print "{} element descriptors".format(len(vals_to_create))
 
     for compoundRole in DRP.models.CompoundRole.objects.all():
         roleQuantities = allCompoundQuantities.filter(role=compoundRole)
@@ -280,8 +278,6 @@ def _calculate(reaction, descriptorDict, verbose=False):
         n.value=roleMoles
         vals_to_create.append(n)
 
-        if verbose:
-            print "{} with amount descriptors for role {}".format(len(vals_to_create), compoundRole)
         
         if roleQuantities.exists():
             for descriptor in DRP.models.NumMolDescriptor.objects.all():
@@ -388,9 +384,6 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         else:
                             n.value = sum(quantity.amount for quantity in quantities)
                         vals_to_create.append(n)
-
-            if verbose:
-                print "{} with other descriptors for role {}".format(len(vals_to_create), compoundRole)
     if verbose:
         print "Creating {} values".format(len(vals_to_create))
     num.objects.bulk_create(vals_to_create)

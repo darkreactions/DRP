@@ -122,6 +122,10 @@ _pHDependentDescriptors = {
     }
 }
 
+cxcalcCommands = OrderedDict()
+
+for key in _descriptorDict.keys():
+    cxcalcCommands[key] = key
 
 for descriptor, d in _pHDependentDescriptors.items():
     for i in range(1, 15):
@@ -144,7 +148,6 @@ _cxcalcpHCommandStems = {
     'hbda_don_pH{}': 'donorcount -H {}'
 }
 
-cxcalcCommands = OrderedDict()
 
 for key, command in _cxcalcpHCommandStems.items():
     for i in range(1, 15):
