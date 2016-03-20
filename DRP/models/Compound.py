@@ -158,9 +158,11 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
 
     def calculate_descriptors(self, verbose=False):
         for descriptorPlugin in descriptorPlugins:
+            if verbose:
+                print "Calculating for {}".format(descriptorPlugin)
             descriptorPlugin.calculate_many(self, verbose=verbose)
             if verbose:
-                print "Done with {}".format(descriptorPlugin)
+                print "Done with {}\n".format(descriptorPlugin)
 
 class CompoundManager(models.Manager):
 

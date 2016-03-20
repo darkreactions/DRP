@@ -9,9 +9,6 @@ class RxnDescriptorSet(models.model):
         app_label = 'DRP'
 
     description = models.TextField(blank=True, null=False)
-    featureContainer = models.ForeignKey('FeatureSelectionContainer', description='The Feature Container that created this feature set', null=True=, blank=True, default=None)
-    metricContainer = models.ForeignKey('MetricContainer',  description='The Metric Container that created this feature set', null=True=, blank=True, default=None)
-
     boolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor)
     ordRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor)
     catRxnDescriptors = models.ManyToManyField(CatRxnDescriptor)

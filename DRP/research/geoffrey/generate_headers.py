@@ -6,6 +6,7 @@ from DRP.models import PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDe
 from DRP.models import PerformedReaction, DataSet, Descriptor, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
 from django.db.models import Count
 from sys import argv
+import sys
 from itertools import chain
 
 def is_descriptor_type(descriptor_type, descriptor):
@@ -46,19 +47,48 @@ def filter_through_reactions(reactions, descriptors):
     valid_descriptors = []
     
     for descriptor in descriptors:
-        bqs = BoolRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions).exclude(value=None)
-        nqs = NumRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions).exclude(value=None)
-        oqs = OrdRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions).exclude(value=None)
-        cqs = CatRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions).exclude(value=None)
-        if bqs.exists() and len(bqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
-            valid_descriptors.append(descriptor)
-        if nqs.exists() and len(nqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
-            valid_descriptors.append(descriptor)
-        if oqs.exists() and len(oqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
-            valid_descriptors.append(descriptor)
-        if cqs.exists() and len(cqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
-            valid_descriptors.append(descriptor)
-
+        bqs = BoolRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions)
+        nqs = NumRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions)
+        oqs = OrdRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions)
+        cqs = CatRxnDescriptorValue.objects.filter(descriptor=descriptor, reaction__in=reactions)
+        if bqs.exists():
+            bqs = bqs.exclude(value=None)
+            if bqs.exists():
+                if len(bqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
+                    valid_descriptors.append(descriptor)
+                else:
+                    sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
+            else:
+                sys.stderr.write("{} excluded because all values are None\n".format(descriptor.heading))
+        elif nqs.exists():
+            nqs = nqs.exclude(value=None)
+            if nqs.exists():
+                if len(nqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
+                    valid_descriptors.append(descriptor)
+                else:
+                    sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
+            else:
+                sys.stderr.write("{} excluded because all values are None\n".format(descriptor.heading))
+        elif oqs.exists():
+            oqs = oqs.exclude(value=None)
+            if oqs.exists():
+                if len(oqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
+                    valid_descriptors.append(descriptor)
+                else:
+                    sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
+            else:
+                sys.stderr.write("{} excluded because all values are None\n".format(descriptor.heading))
+        elif cqs.exists():
+            cqs = cqs.exclude(value=None)
+            if cqs.exists():
+                if len(cqs.values('value').annotate(num=Count('value'))) != 1: # the latter clause checks whether the values are unique
+                    valid_descriptors.append(descriptor)
+                else:
+                    sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
+            else:
+                sys.stderr.write("{} excluded because all values are None\n".format(descriptor.heading))
+        else:
+            sys.stderr.write("{} excluded because there are no values\n".format(descriptor.heading))
     return valid_descriptors
 
 def print_headers_with_names(descriptors):
@@ -87,21 +117,21 @@ def valid_rxn_descriptors():
     return descriptor_list
 
 if __name__=='__main__':
-    descs = valid_rxn_descriptors()
-    #print len(descs)
-    print_headers(descs)
+    #descs = valid_rxn_descriptors()
+    ##print len(descs)
+    #print_headers(descs)
     
     #print_headers()
     #print_headers_with_names()
     #print_descriptor_types()
 
-    # in_file = argv[1]
-    # reaction_set_name = argv[2]
+     in_file = argv[1]
+     reaction_set_name = argv[2]
 
-    # with open(in_file) as f:
-    #     descriptor_headers = [l.strip() for l in f.readlines()]
+     with open(in_file) as f:
+         descriptor_headers = [l.strip() for l in f.readlines()]
 
-    # descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
-    # reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+     descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
+     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
-    # print_headers(filter_through_reactions(reactions, descriptors))
+     print_headers(filter_through_reactions(reactions, descriptors))

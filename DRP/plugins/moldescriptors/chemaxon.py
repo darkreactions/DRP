@@ -153,6 +153,8 @@ for key, command in _cxcalcpHCommandStems.items():
     for i in range(1, 15):
         cxcalcCommands[key.format(i)] = command.format(i)
 
+if len(cxcalcCommands) != len(_descriptorDict):
+    raise RuntimeError("Need the same number of cxcalc commands as descriptors being calculated")
 
 def delete_descriptors(compound_set):
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type']=='num'],

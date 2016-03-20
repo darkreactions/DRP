@@ -1,13 +1,12 @@
 import django
 django.setup()
-from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction, CompoundQuantity, NumRxnDescriptorValue
+from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction, CompoundQuantity, NumRxnDescriptorValue, CatMolDescriptorValue, OrdMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, CatMolDescriptor, OrdMolDescriptor, BoolMolDescriptor, NumMolDescriptor
 from django.db.models import Count
 
-#compounds = Compound.objects.all()
-#print compounds.count()
-#restart = 0
+compounds = Compound.objects.all()
+###restart = 0
 
-#compounds.calculate_descriptors(verbose=True)
+compounds.calculate_descriptors(verbose=True)
 
 #bad_compounds = []
 
@@ -28,6 +27,20 @@ from django.db.models import Count
         #print "Error on compound with abbreviation: ", c.abbrev
         #print e
 
-rxns = PerformedReaction.objects.all()
-rxns = rxns.filter(valid=True).exclude(compounds=None)
-rxns.calculate_descriptors(verbose=True)
+#rxns = PerformedReaction.objects.all()
+#rxns = rxns.filter(valid=True).exclude(compounds=None)
+#rxns.calculate_descriptors(verbose=True)
+
+
+#print NumRxnDescriptorValue.objects.exclude(value=None).count()
+
+#for cmd in CatMolDescriptor.objects.all().order_by('heading'):
+    #all_vals = CatMolDescriptorValue.objects.filter(descriptor=cmd)
+    #print cmd, cmd.calculatorSoftware, all_vals.count(), all_vals.exclude(value=None).count()
+#for nmd in NumMolDescriptor.objects.all().order_by('heading'):
+    #all_vals = NumMolDescriptorValue.objects.filter(descriptor=nmd)
+    #print nmd, nmd.calculatorSoftware, all_vals.count(), all_vals.exclude(value=None).count()
+#for omd in OrdMolDescriptor.objects.all().order_by('heading'):
+    #print omd, omd.calculatorSoftware, OrdMolDescriptorValue.objects.filter(descriptor=omd).exclude(value=None).count()
+#for bmd in BoolMolDescriptor.objects.all().order_by('heading'):
+    #print bmd, bmd.calculatorSoftware, BoolMolDescriptorValue.objects.filter(descriptor=bmd).exclude(value=None).count()

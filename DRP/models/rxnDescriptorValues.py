@@ -31,25 +31,25 @@ class RxnDescriptorValue(models.Model):
     objects = RxnDescriptorValueManager()
     reaction = models.ForeignKey("DRP.Reaction", unique=False)
 
-    def save(self, *args, **kwargs):
-        if self.pk is not None:
-            pass
-#      try:
-#        trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
-#        testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
-#        for model in trainingModels|testModels:
-#          model.invalidate()
-#      except pr.PerformedReaction.DoesNotExist:
-#        pass # fine, we don't care, no need to pass this on.
-        super(RxnDescriptorValue, self).save(*args, **kwargs)
+    #def save(self, *args, **kwargs):
+        #if self.pk is not None:
+            #pass
+##      try:
+##        trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
+##        testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
+##        for model in trainingModels|testModels:
+##          model.invalidate()
+##      except pr.PerformedReaction.DoesNotExist:
+##        pass # fine, we don't care, no need to pass this on.
+        #super(RxnDescriptorValue, self).save(*args, **kwargs)
 
-    def delete(self):
-#    trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
-#    testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
-#    for model in trainingModels|testModels:
-#      model.invalidate()
-#      model.save()
-        super(RxnDescriptorValue, self).delete()
+    #def delete(self):
+##    trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
+##    testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction=self.reaction.performedreaction))
+##    for model in trainingModels|testModels:
+##      model.invalidate()
+##      model.save()
+        #super(RxnDescriptorValue, self).delete()
 
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
     '''Contains the value of a categorical descriptor for a reaction'''

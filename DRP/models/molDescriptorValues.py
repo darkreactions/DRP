@@ -19,6 +19,7 @@ class MolDescriptorValueQuerySet(models.query.QuerySet):
           reaction.save() #invalidate models
 
 
+
 class MolDescriptorValueManager(models.Manager):
 
   def get_queryset(self):
