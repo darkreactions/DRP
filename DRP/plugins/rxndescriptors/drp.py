@@ -278,12 +278,14 @@ def _calculate(reaction, descriptorDict, verbose=False):
         n.value=roleMoles
         vals_to_create.append(n)
 
-        
         if roleQuantities.exists():
             for descriptor in DRP.models.NumMolDescriptor.objects.all():
                 descriptorValues = DRP.models.NumMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
                 # TODO XXX this count now takes longer than actually creating the value. Can we remove it? (Same below)
+                # Ah looks like this is silently skipping inorganic properties for organics. That seems like a bad way to do it...
+                # Means I have to silence the warnings below (which previously lead me to a whole bunch of uncalculated stuff.
+                # I really don't like failing silently and it seems to have gotten us into some trouble
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     n = num(
                         reaction=reaction,
@@ -318,10 +320,10 @@ def _calculate(reaction, descriptorDict, verbose=False):
                     )
                     n.value=gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
                     vals_to_create.append(n)
-                elif descriptorValues.count() != roleQuantities.count():
-                    warnings.warn("Skipping {} because there are {} descriptorValues and {} roleQuantities".format(descriptor, descriptorValues.count(), roleQuantities.count()))
-                else:
-                    warnings.warn("Skipping {} because some descriptorValues are None".format(descriptor))
+                #elif descriptorValues.count() != roleQuantities.count():
+                    #warnings.warn("Skipping {}  because there are {} descriptorValues and {} roleQuantities".format(descriptor.heading, descriptorValues.count(), roleQuantities.count()))
+                #else:
+                    #warnings.warn("Skipping {} because some descriptorValues are None".format(descriptor.heading))
             for descriptor in DRP.models.OrdMolDescriptor.objects.all():
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
                 # TODO XXX this count now takes longer than actually creating the value. Can we remove it? (Same below)
