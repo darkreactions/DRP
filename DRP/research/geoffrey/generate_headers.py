@@ -6,6 +6,7 @@ from DRP.models import PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDe
 from DRP.models import PerformedReaction, DataSet, Descriptor, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
 from django.db.models import Count
 from sys import argv
+from itertools import chain
 
 def is_descriptor_type(descriptor_type, descriptor):
     """Returns boolean whether descriptor is of type descriptor_type"""
@@ -68,38 +69,39 @@ def print_headers(descriptors):
     for descriptor in descriptors:
         print descriptor.heading
 
-def valid_descriptors():
+def valid_rxn_descriptors():
     descriptor_list = []
-    for descriptor in Descriptor.objects.all():
-        descriptor_types = [BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor]
+    for descriptor in chain(BoolRxnDescriptor.objects.all(), NumRxnDescriptor.objects.all(), 
+                            OrdRxnDescriptor.objects.all(), CatRxnDescriptor.objects.all()):
         predicted_descriptor_types = [PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDescriptor, PredCatRxnDescriptor]
         
-        if (is_descriptor_types(descriptor_types, descriptor) and
-                not is_descriptor_types(predicted_descriptor_types, descriptor) and
+        if (not is_descriptor_types(predicted_descriptor_types, descriptor) and
                 "outcome" not in descriptor.heading and 
                 "rxnSpaceHash" not in descriptor.heading and 
                 not descriptor.heading.startswith('_') and
                 not descriptor.heading.startswith('transform') and 
-                "examplepy" not in descriptor.heading):
+                "examplepy" not in descriptor.heading and
+                "_legacy" not in descriptor.heading):
             descriptor_list.append(descriptor)
 
     return descriptor_list
 
 if __name__=='__main__':
-    descs = valid_descriptors()
-    print len(descs)
-    print_headers_with_names(descs)
+    descs = valid_rxn_descriptors()
+    #print len(descs)
+    print_headers(descs)
     
     #print_headers()
     #print_headers_with_names()
     #print_descriptor_types()
-    #in_file = argv[1]
-    #reaction_set_name = argv[2]
 
-    #with open(in_file) as f:
-        #descriptor_headers = [l.strip() for l in f.readlines()]
+    # in_file = argv[1]
+    # reaction_set_name = argv[2]
 
-    #descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
-    #reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+    # with open(in_file) as f:
+    #     descriptor_headers = [l.strip() for l in f.readlines()]
 
-    #print_headers(filter_through_reactions(reactions, descriptors))
+    # descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
+    # reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+
+    # print_headers(filter_through_reactions(reactions, descriptors))
