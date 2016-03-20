@@ -1,0 +1,32 @@
+Starting building at 2016-03-20 19:08:44.522774
+Splitting using MutualInfoSplitter
+Split into train (2192), test (950)
+Split into train (2189), test (953)
+Split into train (2190), test (952)
+Split into train (2189), test (953)
+Split into train (2198), test (944)
+Split into train (2197), test (945)
+Split into train (2191), test (951)
+Split into train (2196), test (946)
+Split into train (2194), test (948)
+Split into train (2185), test (957)
+Split into train (2192), test (950)
+Split into train (2196), test (946)
+Split into train (2198), test (944)
+Split into train (2197), test (945)
+Split into train (2172), test (970)
+2016-03-20 19:12:33.211366 statsModel 107, saving to /home/gmartinn/DRP_main/DRP_repo/models/116_107_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/107_e80b1abc-795e-4c06-88bc-50c5d22e3c8d.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/107_e80b1abc-795e-4c06-88bc-50c5d22e3c8d.arff -d /home/gmartinn/DRP_main/DRP_repo/models/116_107_weka_NaiveBayes.model -p 0 -c 1
+	...Trained. Finished at 2016-03-20 19:25:22.555141. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/107_29425dd2-7172-41a5-a493-e3e4af117723.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/107_31919713-a8af-4a80-805f-108252a2e98d.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/107_29425dd2-7172-41a5-a493-e3e4af117723.arff -l /home/gmartinn/DRP_main/DRP_repo/models/116_107_weka_NaiveBayes.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/107_31919713-a8af-4a80-805f-108252a2e98d.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-20 19:38:00.706886. 1 of 15 models built.
+Elapsed model building time: 0:25:27.543088. Expected completion time: 2016-03-21 01:34:26.310118
+2016-03-20 19:38:00.733996 statsModel 108, saving to /home/gmartinn/DRP_main/DRP_repo/models/116_108_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/108_1bc95ec1-ff1a-4f11-85b0-ba9c33659114.arff

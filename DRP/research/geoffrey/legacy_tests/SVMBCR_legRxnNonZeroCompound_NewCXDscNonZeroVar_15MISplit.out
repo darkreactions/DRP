@@ -1,0 +1,23 @@
+Starting building at 2016-03-20 19:08:44.491818
+Splitting using MutualInfoSplitter
+Split into train (2197), test (945)
+Split into train (2197), test (945)
+Split into train (2197), test (945)
+Split into train (2194), test (948)
+Split into train (2196), test (946)
+Split into train (2193), test (949)
+Split into train (2198), test (944)
+Split into train (2193), test (949)
+Split into train (2184), test (958)
+Split into train (2195), test (947)
+Split into train (2187), test (955)
+Split into train (2195), test (947)
+Split into train (2181), test (961)
+Split into train (2199), test (943)
+Split into train (2198), test (944)
+2016-03-20 19:12:30.429435 statsModel 106, saving to /home/gmartinn/DRP_main/DRP_repo/models/113_106_weka_SVM_PUK_BCR.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.33881779403; 3.95143884892 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/106_664279b3-0e64-488e-b3ea-04c1e330e9f8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/113_106_weka_SVM_PUK_BCR.model -p 0 -c 1 -- -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0"
+	...Trained. Finished at 2016-03-20 19:36:24.976563. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/106_839013fb-0b22-4a01-a29d-f91c94624b9f.arff

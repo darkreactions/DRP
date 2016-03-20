@@ -1,6 +1,6 @@
 import django
 django.setup()
-from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction, CompoundQuantity, NumRxnDescriptorValue, CatMolDescriptorValue, OrdMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, CatMolDescriptor, OrdMolDescriptor, BoolMolDescriptor, NumMolDescriptor
+from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reaction, CompoundQuantity, NumRxnDescriptorValue, CatMolDescriptorValue, OrdMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, CatMolDescriptor, OrdMolDescriptor, BoolMolDescriptor, NumMolDescriptor, BoolRxnDescriptorValue
 from django.db.models import Count
 
 #compounds = Compound.objects.all()
@@ -27,14 +27,17 @@ from django.db.models import Count
         #print "Error on compound with abbreviation: ", c.abbrev
         #print e
 
-restart_reference = "2tv51.2"
+# restart_reference = "2tv49.3"
 
 rxns = PerformedReaction.objects.all()
 rxns = rxns.filter(valid=True).exclude(compounds=None)
-min_pk = rxns.get(reference=restart_reference)
-rxns = rxns.filter(pk=min_pk)
-rxns.calculate_descriptors(verbose=True)
+rxns = rxns.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(descriptor__heading='boolean_outcome_legacy'))
 
+# min_pk = rxns.get(reference=restart_reference)
+# rxns = rxns.filter(pk__gt=min_pk)
+# rxns.calculate_descriptors(verbose=True)
+
+DataSet.create('valid_legacy_rxns_nonzero_compound', rxns)
 
 #print NumRxnDescriptorValue.objects.exclude(value=None).count()
 

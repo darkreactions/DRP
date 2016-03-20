@@ -1,0 +1,32 @@
+Starting building at 2016-03-20 19:08:44.524063
+Splitting using MutualInfoSplitter
+Split into train (2198), test (944)
+Split into train (2179), test (963)
+Split into train (2198), test (944)
+Split into train (2174), test (968)
+Split into train (2190), test (952)
+Split into train (2194), test (948)
+Split into train (2199), test (943)
+Split into train (2184), test (958)
+Split into train (2192), test (950)
+Split into train (2195), test (947)
+Split into train (2170), test (972)
+Split into train (2186), test (956)
+Split into train (2197), test (945)
+Split into train (2186), test (956)
+Split into train (2198), test (944)
+2016-03-20 19:12:17.227087 statsModel 103, saving to /home/gmartinn/DRP_main/DRP_repo/models/115_103_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/103_6c74b3a7-63a8-4170-bf1c-b411e15772b5.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/103_6c74b3a7-63a8-4170-bf1c-b411e15772b5.arff -d /home/gmartinn/DRP_main/DRP_repo/models/115_103_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-20 19:36:50.898101. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/103_5f19731a-7b2c-42eb-b098-46bc53c1902f.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/103_bc5f8b2b-cc06-446f-9e7f-a67a35e07a82.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/103_5f19731a-7b2c-42eb-b098-46bc53c1902f.arff -l /home/gmartinn/DRP_main/DRP_repo/models/115_103_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/103_bc5f8b2b-cc06-446f-9e7f-a67a35e07a82.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-20 19:48:44.311166. 1 of 15 models built.
+Elapsed model building time: 0:36:27.131786. Expected completion time: 2016-03-21 04:19:04.156170
+2016-03-20 19:48:44.349755 statsModel 109, saving to /home/gmartinn/DRP_main/DRP_repo/models/115_109_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/109_98a6f9a6-eb8f-408c-90ca-09a7ea4144c7.arff

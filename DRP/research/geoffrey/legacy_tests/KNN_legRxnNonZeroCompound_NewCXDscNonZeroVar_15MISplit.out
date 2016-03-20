@@ -1,0 +1,24 @@
+Starting building at 2016-03-20 19:08:44.521450
+Splitting using MutualInfoSplitter
+Split into train (2196), test (946)
+Split into train (2186), test (956)
+Split into train (2187), test (955)
+Split into train (2189), test (953)
+Split into train (2194), test (948)
+Split into train (2195), test (947)
+Split into train (2189), test (953)
+Split into train (2198), test (944)
+Split into train (2182), test (960)
+Split into train (2193), test (949)
+Split into train (2193), test (949)
+Split into train (2199), test (943)
+Split into train (2198), test (944)
+Split into train (2199), test (943)
+Split into train (2197), test (945)
+2016-03-20 19:12:26.570912 statsModel 104, saving to /home/gmartinn/DRP_main/DRP_repo/models/117_104_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/104_b4fccee2-9bd9-4f14-ae90-74b24df413e7.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/104_b4fccee2-9bd9-4f14-ae90-74b24df413e7.arff -d /home/gmartinn/DRP_main/DRP_repo/models/117_104_weka_KNN.model -p 0 -c 1
+	...Trained. Finished at 2016-03-20 19:34:48.272514. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/104_7f7d1877-1a53-4c48-b96b-b1543dd9060d.arff
