@@ -7,7 +7,6 @@ compounds = Compound.objects.all()
 print compounds.count()
 
 restart = 0
-
 compounds.calculate_descriptors(verbose=True)
 
 #bad_compounds = []
@@ -32,4 +31,3 @@ compounds.calculate_descriptors(verbose=True)
 #rxns = PerformedReaction.objects.all()
 #rxns = rxns.filter(valid=True).exclude(compounds=None)
 #rxns.calculate_descriptors(verbose=True)
-
