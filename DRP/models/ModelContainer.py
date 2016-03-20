@@ -10,7 +10,6 @@ import datetime
 import importlib
 import os
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
-#from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue
 from StatsModel import StatsModel
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
