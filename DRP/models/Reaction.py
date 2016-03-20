@@ -123,6 +123,8 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
             gc.collect()
 
     def calculate_descriptors(self, verbose=False):
+        if verbose:
+            print "Calculating descriptors for {} reaction".format(self.count())
         for plugin in descriptorPlugins:
             plugin.calculate_many(self, verbose=verbose)
 
