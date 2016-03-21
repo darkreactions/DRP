@@ -36,7 +36,7 @@ class CsvQuerySet(models.query.QuerySet):
             headers = self.csvHeaders
 
         if whitelistHeaders is not None:
-            headers = [h in headers if h in whitelistHeaders]
+            headers = [h for h in headers if h in whitelistHeaders]
         
         writer = csv.DictWriter(writeable, fieldnames=headers, restval=missing)
 
