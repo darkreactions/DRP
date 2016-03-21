@@ -26,6 +26,8 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         while os.path.isfile(filepath): #uber paranoid making sure we don't race condition
             filename = "{}_{}.arff".format(self.container.pk, uuid.uuid4())
             filepath = os.path.join(settings.TMP_DIR, filename)
+        if verbose:
+            print "Writing arff to {}".format(filepath)
         with open(filepath, "w") as f:
           reactions.toArff(f, expanded=True, whitelistHeaders=whitelistHeaders)
         return filepath
@@ -73,7 +75,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         response_index = headers.index(list(self.container.outcomeDescriptors)[0].csvHeader) + 1
         command = self.wekaTrainCommand(arff_file, response_index)
         
-        output = self._runWekaCommand(command)
+        output = self._runWekaCommand(command, verbose=verbose)
         if verbose:
             print output
 
