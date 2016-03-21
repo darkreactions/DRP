@@ -18,7 +18,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         
         self.WEKA_VERSION = "3.6" # The version of WEKA to use.
     
-    def _prepareArff(self, reactions, whitelistHeaders):
+    def _prepareArff(self, reactions, whitelistHeaders, verbose=False):
         """Writes an *.arff file using the provided queryset of reactions."""
         logger.debug("Preparing ARFF file...")
         filename = "featureSelection_{}_{}.arff".format(self.container.pk, uuid.uuid4())
@@ -65,7 +65,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         return output
     
     def train(self, reactions, descriptorHeaders, verbose=False):
-        arff_file = self._prepareArff(reactions, descriptorHeaders)
+        arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
 
         results_file = "featureSelection_{}_{}.out".format(self.container.pk, uuid.uuid4())
         results_path = os.path.join(settings.TMP_DIR, results_file)
