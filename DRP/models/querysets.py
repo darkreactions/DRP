@@ -23,7 +23,7 @@ class CsvQuerySet(models.query.QuerySet):
         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
         return [field.name for field in self.model._meta.fields]
 
-    def toCsv(self, writeable, expanded=False, missing="?"):#TODO:figure out most sensible default for missing values
+    def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):#TODO:figure out most sensible default for missing values
         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
             information that the corresponding methods provide- this requires the model being called to have a property
             'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
@@ -31,9 +31,14 @@ class CsvQuerySet(models.query.QuerySet):
         '''
 
         if expanded:
-            writer = csv.DictWriter(writeable, fieldnames=self.expandedCsvHeaders, restval=missing)
+            headers = self.expandedCsvHeaders
         else:
-            writer = csv.DictWriter(writeable, fieldnames=self.csvHeaders, restval=missing)
+            headers = self.csvHeaders
+
+        if whitelistHeaders is not None:
+            headers = [h in headers if h in whitelistHeaders]
+        
+        writer = csv.DictWriter(writeable, fieldnames=headers, restval=missing)
 
         writer.writeheader()
         for row in self.rows(expanded):

@@ -321,7 +321,7 @@ def _calculate(reaction, descriptorDict, verbose=False):
                     n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
                     vals_to_create.append(n)
                 #elif descriptorValues.count() != roleQuantities.count():
-                    #warnings.warn("Skipping {}  because there are {} descriptorValues and {} roleQuantities".format(descriptor.heading, descriptorValues.count(), roleQuantities.count()))
+                    #warnings.warn("Skipping {} because there are {} descriptorValues and {} roleQuantities".format(descriptor.heading, descriptorValues.count(), roleQuantities.count()))
                 #else:
                     #warnings.warn("Skipping {} because some descriptorValues are None".format(descriptor.heading))
             for descriptor in DRP.models.OrdMolDescriptor.objects.all():
