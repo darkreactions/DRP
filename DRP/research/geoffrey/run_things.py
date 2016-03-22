@@ -10,11 +10,10 @@ parser = argparse.ArgumentParser(description='dumps to csv', fromfile_prefix_cha
                                  "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                  " to pass multiple descriptors from a file as predictors")
 
-parser.add_argument('-p', '--predictor-headers', nargs='+',
-                    help='One or more descriptors to use as predictors.', required=True)
+parser.add_argument('-o', '--headers1', nargs='+', required=True)
+parser.add_argument('-n', '--headers2', nargs='+', required=True)
 args = parser.parse_args()
 
-rxns = DataSet.objects.get(name='valid_legacy_reactions').reactions.all()
-print rxns.count()
-with open('reactions_old.csv', 'wb') as f:
-    rxns.toCsv(f, expanded=True, whitelistHeaders=args.predictor_headers)
+missing_headers = [h for h in args.headers1 if h not in args.headers2]
+for header in missing_headers:
+    print header
