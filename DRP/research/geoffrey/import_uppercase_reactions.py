@@ -81,58 +81,58 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         folder = kwargs['directory']
-        if not path.isfile(path.join(folder, 'performedReactionsNoDupsLower.tsv')):
-            self.stdout.write('Writing file with all references that were uppercase (now lower) and duplicate references disambiguated (arbitrarily)')
-            with open(path.join(folder, 'performedReactions.tsv')) as in_file, open(path.join(folder, 'performedReactionsNoDupsLower.tsv'), 'w') as out_file:
-                references = set()
-                reader = csv.DictReader(in_file, delimiter='\t')
-                writer = csv.DictWriter(out_file, delimiter='\t', fieldnames=reader.fieldnames)
-                writer.writeheader()
+        #if not path.isfile(path.join(folder, 'performedReactionsNoDupsLower.tsv')):
+            #self.stdout.write('Writing file with all references that were uppercase (now lower) and duplicate references disambiguated (arbitrarily)')
+            #with open(path.join(folder, 'performedReactions.tsv')) as in_file, open(path.join(folder, 'performedReactionsNoDupsLower.tsv'), 'w') as out_file:
+                #references = set()
+                #reader = csv.DictReader(in_file, delimiter='\t')
+                #writer = csv.DictWriter(out_file, delimiter='\t', fieldnames=reader.fieldnames)
+                #writer.writeheader()
 
-                case_count = 0
-                valid_case_count = 0
-                dup_count = 0
-                for r in reader:
-                    ref = r['reference'].lower()
-                    if ref != r['reference']:
-                        self.stderr.write('Reference {} was not in lowercase. Converted.'.format(r['reference']))
-                        case_count += 1
-                        if r['valid'] == '1':
-                            valid_case_count += 1
+                #case_count = 0
+                #valid_case_count = 0
+                #dup_count = 0
+                #for r in reader:
+                    #ref = r['reference'].lower()
+                    #if ref != r['reference']:
+                        #self.stderr.write('Reference {} was not in lowercase. Converted.'.format(r['reference']))
+                        #case_count += 1
+                        #if r['valid'] == '1':
+                            #valid_case_count += 1
 
-                        if ref in references:
-                            r['notes'] += ' Duplicated reference'
-                            r['valid'] = 0
-                            dup_count += 1
-                            i = 1
-                            new_ref = ref
-                            while new_ref in references:
-                                new_ref = '{}_dup{}'.format(ref, i)
-                                i += 1
-                            self.stderr.write('Reference {} duplicated {} times. Renamed and invalidated'.format(ref, i))
-                            ref = new_ref
-                        references.add(ref)
-                        r['reference'] = ref
-                        writer.writerow(r)
-            self.stderr.write('{} references converted to lowercase. {} were valid'.format(case_count, valid_case_count))
-            self.stderr.write('{} references with _dupX appended to remove duplicate reference'.format(dup_count))
-        with open(path.join(folder, 'performedReactionsNoDupsLower.tsv')) as reactions:
-            reader = csv.DictReader(reactions, delimiter='\t')
-            for r in reader:
-                if not PerformedReaction.objects.filter(reference=r['reference'].lower()).exists():
-                    p = PerformedReaction(
-                        reference = r['reference'],
-                        labGroup = LabGroup.objects.get(title=r['labGroup.title']),
-                        notes = r['notes'],
-                        user = User.objects.get(username=r['user.username']),
-                        valid = int(r['valid']),
-                        legacyRecommendedFlag=r['legacyRecommendedFlag']=='Yes',
-                        insertedDateTime=r['insertedDateTime'],
-                        public=int(r['public'])
-                        )
-                    self.stdout.write('Creating reaction with reference {}'.format(p.reference))
-                    p.validate_unique()
-                    p.save(calcDescriptors=False)
+                        #if ref in references:
+                            #r['notes'] += ' Duplicated reference'
+                            #r['valid'] = 0
+                            #dup_count += 1
+                            #i = 1
+                            #new_ref = ref
+                            #while new_ref in references:
+                                #new_ref = '{}_dup{}'.format(ref, i)
+                                #i += 1
+                            #self.stderr.write('Reference {} duplicated {} times. Renamed and invalidated'.format(ref, i))
+                            #ref = new_ref
+                        #references.add(ref)
+                        #r['reference'] = ref
+                        #writer.writerow(r)
+            #self.stderr.write('{} references converted to lowercase. {} were valid'.format(case_count, valid_case_count))
+            #self.stderr.write('{} references with _dupX appended to remove duplicate reference'.format(dup_count))
+        #with open(path.join(folder, 'performedReactionsNoDupsLower.tsv')) as reactions:
+            #reader = csv.DictReader(reactions, delimiter='\t')
+            #for r in reader:
+                #if not PerformedReaction.objects.filter(reference=r['reference'].lower()).exists():
+                    #p = PerformedReaction(
+                        #reference = r['reference'],
+                        #labGroup = LabGroup.objects.get(title=r['labGroup.title']),
+                        #notes = r['notes'],
+                        #user = User.objects.get(username=r['user.username']),
+                        #valid = int(r['valid']),
+                        #legacyRecommendedFlag=r['legacyRecommendedFlag']=='Yes',
+                        #insertedDateTime=r['insertedDateTime'],
+                        #public=int(r['public'])
+                        #)
+                    #self.stdout.write('Creating reaction with reference {}'.format(p.reference))
+                    #p.validate_unique()
+                    #p.save(calcDescriptors=False)
         with open(path.join(folder, 'performedReactionsNoDupsLower.tsv')) as reactions:
             reader = csv.DictReader(reactions, delimiter='\t')
             outValues = []
@@ -275,7 +275,7 @@ class Command(BaseCommand):
                         preHeatStandingValues = []
                         teflonValues = []
                         self.stdout.write("...saved")
-                    
+
         with open(path.join(folder, 'compound_labs.tsv')) as compounds:
             reader = csv.DictReader(compounds, delimiter='\t')
             cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
