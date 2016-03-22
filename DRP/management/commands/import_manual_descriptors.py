@@ -139,10 +139,10 @@ class Command(BaseCommand):
                         raise RuntimeError('{} has more than one reaction'.format(r['reference'].lower()))
                     p = ps[0]
                     try:
-                        old_dup = p.duplicateOf.reference
+                        old_dup = p.duplicateOf
                         p.duplicateOf = PerformedReaction.objects.get(reference=r['duplicateOf.reference'].lower())
                         self.stderr.write("{} is a duplicate of {}".format(ref, r['duplicateOf.reference'].lower()))
-                        if old_dup != p.duplicateOf.reference:
+                        if old_dup is None or old_dup.reference != p.duplicateOf.reference:
                             self.stdout.write("resaving...")
                             p.save(invalidate_models=False)
                     except PerformedReaction.DoesNotExist:
