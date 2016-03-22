@@ -101,20 +101,20 @@ class Command(BaseCommand):
                         if r['valid'] == '1':
                             valid_case_count += 1
 
-                        if ref in references:
-                            r['notes'] += ' Duplicated reference'
-                            r['valid'] = 0
-                            dup_count += 1
-                            i = 1
-                            new_ref = ref
-                            while new_ref in references:
-                                new_ref = '{}_dup{}'.format(ref, i)
-                                i += 1
-                            self.stderr.write('Reference {} duplicated {} times. Renamed and invalidated'.format(ref, i))
-                            ref = new_ref
-                        references.add(ref)
-                        r['reference'] = ref
-                        writer.writerow(r)
+                    if ref in references:
+                        r['notes'] += ' Duplicated reference'
+                        r['valid'] = 0
+                        dup_count += 1
+                        i = 1
+                        new_ref = ref
+                        while new_ref in references:
+                            new_ref = '{}_dup{}'.format(ref, i)
+                            i += 1
+                        self.stderr.write('Reference {} duplicated {} times. Renamed and invalidated'.format(ref, i))
+                        ref = new_ref
+                    references.add(ref)
+                    r['reference'] = ref
+                    writer.writerow(r)
             self.stderr.write('{} references converted to lowercase. {} were valid'.format(case_count, valid_case_count))
             self.stderr.write('{} references with _dupX appended to remove duplicate reference'.format(dup_count))
         with open(path.join(folder, 'performedReactionsNoDupsLower.tsv')) as reactions:
@@ -148,11 +148,13 @@ class Command(BaseCommand):
                     outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range (1, 5))) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(outcomeDescriptor))
                         if v.value != outcomeValue:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, outcomeDescriptor, v.value, outcomeValue))
                             v.value = outcomeValue
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(outcomeDescriptor))
                         outValue = outcomeDescriptor.createValue(p, outcomeValue)
                         #outValue.save()
                         outValues.append(outValue)
@@ -161,11 +163,13 @@ class Command(BaseCommand):
                     value = True if (outcomeValue > 2) else False
                     try:
                         v = BoolRxnDescriptorValue.objects.get(descriptor=outcomeBooleanDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(outcomeBooleanDescriptor))
                         if v.value != value:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, outcomeBooleanDescriptor, v.value, value))
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(outcomeBooleanDescriptor))
                         #outBoolValue.save()
                         outBoolValue = outcomeBooleanDescriptor.createValue(p, value)
                         outBoolValues.append(outBoolValue)
@@ -174,11 +178,13 @@ class Command(BaseCommand):
                     value = int(r['purity']) if (r['purity'] in ('1', '2')) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=purityDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(purityDescriptor))
                         if v.value != value:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, purityDescriptor, v.value, value))
                             v.value = value
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(purityDescriptor))
                         #purityValue.save()
                         purityValue = purityDescriptor.createValue(p, value)
                         purityValues.append(purityValue)
@@ -187,11 +193,13 @@ class Command(BaseCommand):
                     value = (float(r['temp']) + 273.15) if (r['temp'] not in ('', '?')) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=temperatureDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(temperatureDescriptor))
                         if v.value != value:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, temperatureDescriptor, v.value, value))
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(temperatureDescriptor))
                         #temperatureDescriptorValue.save()
                         temperatureDescriptorValue = temperatureDescriptor.createValue(p, value)
                         temperatureValues.append(temperatureDescriptorValue)
@@ -200,11 +208,13 @@ class Command(BaseCommand):
                     value = float(r['time'])*60 if (r['time'] not in ['', '?']) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=timeDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(timeDescriptor))
                         if v.value != value:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, timeDescriptor, v.value, value))
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(timeDescriptor))
                         #timeDescriptorValue.save()
                         timeDescriptorValue = timeDescriptor.createValue(p, value)
                         timeValues.append(timeDescriptorValue)
@@ -213,11 +223,13 @@ class Command(BaseCommand):
                     value = float(r['pH']) if (r['pH'] not in ('', '?')) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=pHDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(pHDescriptor))
                         if v.value != value:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, pHDescriptor, v.value, value))
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(pHDescriptor))
                         #pHDescriptorValue.save()
                         pHDescriptorValue = pHDescriptor.createValue(p, value)
                         pHValues.append(pHDescriptorValue)
@@ -226,11 +238,13 @@ class Command(BaseCommand):
                     value = bool(r['pre_heat standing']) if (r.get('pre_heat standing') not in ('', None)) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=preHeatStandingDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(preHeatStandingDescriptor))
                         if v.value != value:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, preHeatStandingDescriptor, v.value, value))
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(preHeatStandingDescriptor))
                         #preHeatStandingDescriptorValue.save()
                         preHeatStandingDescriptorValue = preHeatStandingDescriptor.createValue(p, value)
                         preHeatStandingValues.append(preHeatStandingDescriptorValue)
@@ -239,11 +253,13 @@ class Command(BaseCommand):
                     value = bool(int(r['teflon_pouch'])) if (r.get('teflon_pouch') not in(None, '')) else None
                     try:
                         v = BoolRxnDescriptorValue.objects.get(descriptor=teflonDescriptor, reaction=p)
+                        self.stdout.write('\tValue found for descriptor {}.'.format(teflonDescriptor))
                         if v.value != value:
                             sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, teflonDescriptor, v.value, value))
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
+                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(teflonDescriptor))
                         #teflonDescriptorValue.save()
                         teflonDescriptorValue = teflonDescriptor.createValue(p, value)
                         teflonValues.append(teflonDescriptorValue)
