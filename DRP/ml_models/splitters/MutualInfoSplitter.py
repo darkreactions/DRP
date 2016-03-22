@@ -9,7 +9,7 @@ class Splitter(AbstractSplitter):
         self.TEST_PERCENT = 0.30
         self.MAX_PARTITION_SIZE = 35 # Magic # TODO: Please de-magic this.
         self.MIN_TRAIN_SIZE = 10 # WEKA requires at least 10 training points for SVMs.
-        self.num_splits = 15
+        self.num_splits = 1
 
     def split(self, reactions, verbose=False):
         splits = [self.single_split(reactions, verbose=verbose) for i in xrange(self.num_splits)]

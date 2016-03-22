@@ -1,0 +1,12 @@
+LOST FILE
+
+	...Trained. Finished at 2016-03-22 01:11:14.105782. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/260_ca8f5cd8-1e83-4f45-8fcf-2a2bb7209b40.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/260_d8523048-dfb8-4bcd-976d-e90fd3d0db35.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/260_ca8f5cd8-1e83-4f45-8fcf-2a2bb7209b40.arff -l /home/gmartinn/DRP_main/DRP_repo/models/136_260_weka_SVM_PUK_BCR.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/260_d8523048-dfb8-4bcd-976d-e90fd3d0db35.out
+       ...finished predicting. Storing predictions... predictions stored.
+2016-03-22 01:30:12.927139. 1 of 15 models built.
+Elapsed model building time: 0:36:00.336196. Expected completion time: 2016-03-22 09:54:17.633883
+2016-03-22 01:30:12.962782 statsModel 263, saving to /home/gmartinn/DRP_main/DRP_repo/models/136_263_weka_SVM_PUK_BCR.model, training...

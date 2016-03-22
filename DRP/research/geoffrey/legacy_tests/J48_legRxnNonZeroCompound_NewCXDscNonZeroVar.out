@@ -1,0 +1,50 @@
+Starting building at 2016-03-22 00:50:24.916850
+Splitting using MutualInfoSplitter
+Split into train (2194), test (948)
+Split into train (2183), test (959)
+Split into train (2199), test (943)
+Split into train (2196), test (946)
+Split into train (2197), test (945)
+Split into train (2196), test (946)
+Split into train (2193), test (949)
+Split into train (2178), test (964)
+Split into train (2190), test (952)
+Split into train (2198), test (944)
+Split into train (2196), test (946)
+Split into train (2192), test (950)
+Split into train (2198), test (944)
+Split into train (2199), test (943)
+Split into train (2195), test (947)
+2016-03-22 00:54:07.499372 statsModel 257, saving to /home/gmartinn/DRP_main/DRP_repo/models/139_257_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/257_16486ca9-61a1-427d-bd75-cf92e6b554d5.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/257_16486ca9-61a1-427d-bd75-cf92e6b554d5.arff -d /home/gmartinn/DRP_main/DRP_repo/models/139_257_weka_J48.model -p 0 -c 1
+	...Trained. Finished at 2016-03-22 01:16:50.649491. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/257_8ae50374-0204-4fb1-b62b-1507f39785f7.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/257_242288a9-ebbf-43d9-98d5-17eb40758801.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/257_8ae50374-0204-4fb1-b62b-1507f39785f7.arff -l /home/gmartinn/DRP_main/DRP_repo/models/139_257_weka_J48.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/257_242288a9-ebbf-43d9-98d5-17eb40758801.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 01:37:56.523008. 1 of 15 models built.
+Elapsed model building time: 0:43:49.060264. Expected completion time: 2016-03-22 11:51:23.366704
+2016-03-22 01:37:56.561032 statsModel 265, saving to /home/gmartinn/DRP_main/DRP_repo/models/139_265_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/265_8497550a-6814-400f-9d72-cc59b9f5a3d8.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/265_8497550a-6814-400f-9d72-cc59b9f5a3d8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/139_265_weka_J48.model -p 0 -c 1
+	...Trained. Finished at 2016-03-22 02:02:41.937450. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/265_753c33fc-fa02-48c2-83e0-616816b5768e.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/265_f8b0ea4c-bee3-4cb8-afae-9ef724c841bf.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/265_753c33fc-fa02-48c2-83e0-616816b5768e.arff -l /home/gmartinn/DRP_main/DRP_repo/models/139_265_weka_J48.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/265_f8b0ea4c-bee3-4cb8-afae-9ef724c841bf.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 02:26:20.748453. 2 of 15 models built.
+Elapsed model building time: 1:32:13.285709. Expected completion time: 2016-03-22 12:25:47.105561
+2016-03-22 02:26:20.824129 statsModel 271, saving to /home/gmartinn/DRP_main/DRP_repo/models/139_271_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/271_5abb7a3e-bb09-4236-81bf-860cabfc01b5.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/271_5abb7a3e-bb09-4236-81bf-860cabfc01b5.arff -d /home/gmartinn/DRP_main/DRP_repo/models/139_271_weka_J48.model -p 0 -c 1
+	...Trained. Finished at 2016-03-22 02:51:34.424497. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/271_9223f17d-cc96-4c13-8802-b9f9d2edec66.arff
