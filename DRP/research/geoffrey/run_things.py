@@ -12,8 +12,9 @@ parser = argparse.ArgumentParser(description='dumps to csv', fromfile_prefix_cha
 
 parser.add_argument('-p', '--predictor-headers', nargs='+',
                     help='One or more descriptors to use as predictors.', required=True)
-args = parser.parseargs()
+args = parser.parse_args()
 
-rxns = PerformedReaction.objects.all()
+rxns = DataSet.objects.get(name='valid_legacy_reactions').reactions.all()
+print rxns.count()
 with open('reactions_old.csv', 'wb') as f:
     rxns.toCsv(f, expanded=True, whitelistHeaders=args.predictor_headers)
