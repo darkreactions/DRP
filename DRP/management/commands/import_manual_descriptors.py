@@ -129,6 +129,7 @@ class Command(BaseCommand):
             teflonValues = []
             
             for r in reader:
+                ref = r['reference'].lower()
                 self.stdout.write('Reiterating for reaction with reference {}'.format(r['reference'].lower()))
                 ps = PerformedReaction.objects.filter(reference=r['reference'].lower())
                 if ps.count() > 1:
@@ -148,6 +149,7 @@ class Command(BaseCommand):
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
                         if v.value != outcomeValue:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, outcomeDescriptor, v.value, outcomeValue)
                             v.value = outcomeValue
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
@@ -160,6 +162,7 @@ class Command(BaseCommand):
                     try:
                         v = BoolRxnDescriptorValue.objects.get(descriptor=outcomeBooleanDescriptor, reaction=p)
                         if v.value != value:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, outcomeBooleanDescriptor, v.value, value)
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
@@ -172,6 +175,7 @@ class Command(BaseCommand):
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=purityDescriptor, reaction=p)
                         if v.value != value:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, purityDescriptor, v.value, value)
                             v.value = value
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
@@ -184,6 +188,7 @@ class Command(BaseCommand):
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=temperatureDescriptor, reaction=p)
                         if v.value != value:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, temperatureDescriptor, v.value, value)
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
@@ -196,6 +201,7 @@ class Command(BaseCommand):
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=timeDescriptor, reaction=p)
                         if v.value != value:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, timeDescriptor, v.value, value)
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
@@ -208,6 +214,7 @@ class Command(BaseCommand):
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=pHDescriptor, reaction=p)
                         if v.value != value:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, pHDescriptor, v.value, value)
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
@@ -220,6 +227,7 @@ class Command(BaseCommand):
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=preHeatStandingDescriptor, reaction=p)
                         if v.value != value:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, preHeatStandingDescriptor, v.value, value)
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
@@ -232,6 +240,7 @@ class Command(BaseCommand):
                     try:
                         v = BoolRxnDescriptorValue.objects.get(descriptor=teflonDescriptor, reaction=p)
                         if v.value != value:
+                            sys.stderr.write('Value for reaction {} and descriptor {} found with different value. Overwriting old value {} with new value {}'.format(ref, teflonDescriptor, v.value, value)
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
