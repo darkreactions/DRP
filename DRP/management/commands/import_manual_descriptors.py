@@ -127,6 +127,7 @@ class Command(BaseCommand):
             pHValues = []
             preHeatStandingValues = []
             teflonValues = []
+
             
             for r in reader:
                 ref = r['reference'].lower()
@@ -158,7 +159,7 @@ class Command(BaseCommand):
                             v.value = outcomeValue
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(outcomeDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(outcomeDescriptor, outcomeValue))
                         outValue = outcomeDescriptor.createValue(p, outcomeValue)
                         #outValue.save()
                         outValues.append(outValue)
@@ -173,7 +174,7 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(outcomeBooleanDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(outcomeBooleanDescriptor, value))
                         #outBoolValue.save()
                         outBoolValue = outcomeBooleanDescriptor.createValue(p, value)
                         outBoolValues.append(outBoolValue)
@@ -188,7 +189,7 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(purityDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(purityDescriptor, value))
                         #purityValue.save()
                         purityValue = purityDescriptor.createValue(p, value)
                         purityValues.append(purityValue)
@@ -203,7 +204,7 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(temperatureDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(temperatureDescriptor, value))
                         #temperatureDescriptorValue.save()
                         temperatureDescriptorValue = temperatureDescriptor.createValue(p, value)
                         temperatureValues.append(temperatureDescriptorValue)
@@ -218,7 +219,7 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(timeDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(timeDescriptor, value))
                         #timeDescriptorValue.save()
                         timeDescriptorValue = timeDescriptor.createValue(p, value)
                         timeValues.append(timeDescriptorValue)
@@ -233,7 +234,7 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(pHDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(pHDescriptor, value))
                         #pHDescriptorValue.save()
                         pHDescriptorValue = pHDescriptor.createValue(p, value)
                         pHValues.append(pHDescriptorValue)
@@ -248,7 +249,7 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(preHeatStandingDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(preHeatStandingDescriptor, value))
                         #preHeatStandingDescriptorValue.save()
                         preHeatStandingDescriptorValue = preHeatStandingDescriptor.createValue(p, value)
                         preHeatStandingValues.append(preHeatStandingDescriptorValue)
@@ -263,7 +264,7 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
-                        self.stdout.write('\tNo value found for descriptor {}. Creating.'.format(teflonDescriptor))
+                        self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(teflonDescriptor, value))
                         #teflonDescriptorValue.save()
                         teflonDescriptorValue = teflonDescriptor.createValue(p, value)
                         teflonValues.append(teflonDescriptorValue)
@@ -301,13 +302,4 @@ class Command(BaseCommand):
             NumRxnDescriptorValue.objects.bulk_create(pHValues)
             NumRxnDescriptorValue.objects.bulk_create(preHeatStandingValues)
             BoolRxnDescriptorValue.objects.bulk_create(teflonValues)
-            
-            outValues = []
-            outBoolValues = []
-            purityValues = []
-            temperatureValues = []
-            timeValues = []
-            pHValues = []
-            preHeatStandingValues = []
-            teflonValues = []
             self.stdout.write("...saved")

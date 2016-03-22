@@ -23,7 +23,7 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
                             "it implements its own train function and does not call wekaTrain.")
 
     def train(self, reactions, descriptorHeaders, filePath, verbose=False):
-        arff_file = self._prepareArff(reactions, descriptorHeaders)
+        arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
 
         # Currently, we support only one "response" variable.
         response = list(self.statsModel.container.outcomeDescriptors)[0]
