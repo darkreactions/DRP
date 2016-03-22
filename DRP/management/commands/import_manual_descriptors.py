@@ -141,7 +141,7 @@ class Command(BaseCommand):
                     try:
                         p.duplicateOf = PerformedReaction.objects.get(reference=r['duplicateOf.reference'].lower())
                         self.stderr.write("{} is a duplicate of {}".format(ref, r['duplicateOf.reference'].lower()))
-                        p.save(invalide_models=False)
+                        p.save(invalidate_models=False)
                     except PerformedReaction.DoesNotExist:
                         pass
 
