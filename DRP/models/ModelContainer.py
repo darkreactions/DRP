@@ -12,7 +12,7 @@ import os
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue
 from StatsModel import StatsModel
-from utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
+from DRP.research.geoffrey.utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
 
