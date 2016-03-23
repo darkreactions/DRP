@@ -1,9 +1,9 @@
 SCRIPT="../build_model.py"
-DESCRIPTOR_FILE="descs/new_full.dsc"
+DESCRIPTOR_FILE="descs/new_cxcalc_nonZeroVariance_plusOrgInorgProps.dsc"
 OUTCOME_DESCRIPTOR="boolean_outcome_legacy"
 RXN_SET_NAME="valid_legacy_rxns_nonzero_compound"
-COMMENT="Legacy rxns. New descriptors NOT including cxcalc. 1 mutual info split."
-FILE_SUFFIX="legRxnNonZeroCompound_NewNOCXDsc_1MISplit"
+COMMENT="Legacy rxns. New descriptors including cxcalc + Org Inorganic properties. 5 mutual info split."
+FILE_SUFFIX="legRxnNonZeroCompound_NewCXDscOrgInorg_5MISplit"
 SPLITTER="MutualInfoSplitter"
 
 python -u $SCRIPT -p @$DESCRIPTOR_FILE -rxn $RXN_SET_NAME -r $OUTCOME_DESCRIPTOR -s $SPLITTER -v -mt SVM_PUK_basic -d "SVM $COMMENT" &> "SVMbasic_$FILE_SUFFIX.out" &
