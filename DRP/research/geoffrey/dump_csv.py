@@ -4,7 +4,7 @@ from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reactio
 import argparse
 
 
-def dump_csv(descriptor_headers, reaction_set_name=None):
+def dump_csv(file_name, descriptor_headers, reaction_set_name=None):
     if reaction_set_name is None:
         rxns = PerformedReaction.objects.all()
     else:
@@ -17,7 +17,7 @@ def dump_csv(descriptor_headers, reaction_set_name=None):
 
     whitelist = [d.csvHeader for d in descriptors]
 
-    with open('test.csv', 'wb') as f:
+    with open(file_name, 'wb') as f:
         rxns.toCsv(f, whitelistHeaders=whitelist, expanded=True)
 
 if __name__ == '__main__':
@@ -26,10 +26,12 @@ if __name__ == '__main__':
                                      epilog="Prefix arguments with '@' to specify a file containing newline"
                                      "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                      " to pass multiple descriptors from a file as predictors")
+    parser.add_argument('-f', '--file-name',
+                        help='Name of file to dump to.', required=True)
     parser.add_argument('-d', '--descriptor-headers', nargs='+',
                         help='One or more descriptors to use as predictors.', required=True)
     parser.add_argument('-rxn', '--reaction-set-name', default=None,
                         help='The name of the reactions to use as a whole dataset')
     args = parser.parse_args()
 
-    dump_csv(args.descriptor_headers, args.reaction_set_name)
+    dump_csv(args.file_name, args.descriptor_headers, args.reaction_set_name)
