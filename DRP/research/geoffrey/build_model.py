@@ -6,6 +6,7 @@ import operator
 import argparse
 from django.db.utils import OperationalError
 from time import sleep
+from utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 
 def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None, description="", verbose=False):
     if trainingSet is not None:
@@ -25,13 +26,29 @@ def build_model(reactions=None, predictors=None, responses=None, modelVisitorLib
 def display_model_results(container):
     conf_mtrcs = container.getConfusionMatrices()
 
+    first = False
+    sum_acc = 0.0
+    sum_bcr = 0.0
+    count = 0
     for model_mtrcs in conf_mtrcs:
         for descriptor_header, conf_mtrx in model_mtrcs:
+            acc = accuracy(conf_mtrx)
+            bcr = BCR(conf_mtrx)
             print "Confusion matrix for {}:".format(descriptor_header)
             print confusionMatrixString(conf_mtrx)
-            print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
-            print "BCR: {:.3}".format(BCR(conf_mtrx))
+            print "Accuracy: {:.3}".format(acc)
+            print "BCR: {:.3}".format(bcr)
 
+
+        # this doesn't work for multiple responses... Sorry...
+        if not first:
+            first = True
+            sum_acc += acc
+            sum_bcr += bcr
+            count += 1
+            
+    print "Average accuracy: {:.3}".format(sum_acc/count)
+    print "Average BCR: {:.3}".format(sum_bcr/count)
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, reaction_set_name=None, description="", verbose=False):
     """
@@ -43,7 +60,12 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     # TODO XXX this should actually check to make sure that all the descriptor headers are for valid descriptors and at least issue a warning if not
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
-    
+
+    if predictors.count() != len(predictor_headers):
+        raise KeyError("Could not find all predictors")
+    if responses.count() != len(response_headers):
+        raise KeyError("Could not find all responses")
+
     if training_set_name is None and reaction_set_name is None:
         assert(test_set_name == None)
         reactions = PerformedReaction.objects.filter(valid=True)
@@ -84,65 +106,6 @@ def prepare_build_display_model(predictor_headers=None, response_headers=None, m
 
     display_model_results(container)
 
-def accuracy(conf):
-    correct = 0.0
-    total = 0.0
-    for true, guesses in conf.items():
-        for guess, count in guesses.items():
-            if true == guess:
-                correct += count
-            total += count
-    return (correct/total if total != 0 else 0.0)
-
-    
-def BCR(conf):
-    class_accuracy_sum = 0.0
-    num_classes = 0.0
-    for true, guesses in conf.items():
-        class_correct = 0.0
-        class_total = 0.0
-        for guess, count in guesses.items():
-            if true == guess:
-                class_correct += count
-            class_total += count
-        if class_total != 0:
-            class_accuracy_sum += class_correct/class_total
-            num_classes += 1
-    
-    return (class_accuracy_sum/num_classes if num_classes else 0.0)
-
-def confusionMatrixString(confusionMatrix, headers=True):
-    """
-    Returns a string that will display a confusionMatrix
-    If headers=True, includes the headers as the first row and first column.
-    """
-
-    table = confusionMatrixTable(confusionMatrix, headers)
-    return ('\n'.join([''.join(['{:^6}'.format(item) for item in row]) for row in table]))
-
-
-def confusionMatrixTable(confusionMatrix, headers=True):
-    """
-    Converts a confusion matrix dictionary to a list of lists.
-    Primarily for display purposes.
-    Each list corresponds to a single true value and contains the
-    counts for each predicted value.
-    If headers=True, includes the headers as the first row and first column.
-    """
-
-    values = confusionMatrix.keys()
-    table = [[0 for predicted in values] for true in values]
-
-    for i, true in enumerate(values):
-        for j, predicted in enumerate(values):
-            table[j][i] = confusionMatrix[true][predicted]
-
-    if headers:
-        for j, predicted in enumerate(values):
-            table[j].insert(0, str(predicted))
-        table.insert(0, [""] + map(str, values))
-
-    return table
 
 if __name__ == '__main__':
     django.setup()

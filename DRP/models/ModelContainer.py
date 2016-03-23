@@ -10,7 +10,9 @@ import datetime
 import importlib
 import os
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue
 from StatsModel import StatsModel
+from utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
 
@@ -214,7 +216,7 @@ class ModelContainer(models.Model):
 
         if verbose:
             print "Starting building at {}".format(datetime.datetime.now())
-            
+
         self.descriptors = predictors
         self.outcomeDescriptors = response
 
@@ -281,7 +283,15 @@ class ModelContainer(models.Model):
                 
                 if verbose:
                     print "predictions stored."
-
+                    for response in self.outcomeDescriptors:
+                        predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=statsModel, predictionOf=response)
+                        conf_mtrx = predDesc.getConfusionMatrix()
+                        
+                        print "Confusion matrix for {}:".format(predDesc.heading)
+                        print confusionMatrixString(conf_mtrx)
+                        print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
+                        print "BCR: {:.3}".format(BCR(conf_mtrx))
+            
             elif verbose:
                     print "Test set is empty."
 
@@ -307,7 +317,11 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         resDict = {} if resDict is None else resDict
-        for response, outcomes in predictions.items(): 
+        
+        for response, outcomes in predictions.items():
+            predDesc = response.createPredictionDescriptor(self, statsModel)
+            predDesc.save()
+            vals = []
             for reaction, outcome in outcomes:
                 if reaction not in resDict:
                     resDict[reaction] = {}
@@ -318,10 +332,10 @@ class ModelContainer(models.Model):
                 resDict[reaction][response][outcome] += 1
                 # TODO XXX change these saves so they only make one hit on the database.
                 # Difficult (impossible?) with inherited models
-                predDesc = response.createPredictionDescriptor(self, statsModel)
-                predDesc.save()
                 val = predDesc.createValue(reaction, outcome)
-                val.save()
+                #val.save()
+                vals.append(val)
+        type(vals[0]).objects.bulk_create(vals)
         return resDict
 
     def _storePredictions(self, resDict):
