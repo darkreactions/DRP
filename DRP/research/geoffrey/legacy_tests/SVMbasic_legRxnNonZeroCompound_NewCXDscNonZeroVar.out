@@ -1,0 +1,50 @@
+Starting building at 2016-03-22 00:50:24.876348
+Splitting using MutualInfoSplitter
+Split into train (2176), test (966)
+Split into train (2196), test (946)
+Split into train (2176), test (966)
+Split into train (2186), test (956)
+Split into train (2174), test (968)
+Split into train (2198), test (944)
+Split into train (2196), test (946)
+Split into train (2199), test (943)
+Split into train (2199), test (943)
+Split into train (2198), test (944)
+Split into train (2199), test (943)
+Split into train (2190), test (952)
+Split into train (2187), test (955)
+Split into train (2199), test (943)
+Split into train (2198), test (944)
+2016-03-22 00:54:08.856903 statsModel 258, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_258_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/258_06d8894d-41ae-4b27-8dc8-7018058f47ef.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/258_06d8894d-41ae-4b27-8dc8-7018058f47ef.arff -d /home/gmartinn/DRP_main/DRP_repo/models/135_258_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-22 01:19:15.271314. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/258_f2ae3d70-c519-4862-8220-9ac2491a2137.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/258_cbbc312a-b2f9-4d97-92ad-974526bd1db0.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/258_f2ae3d70-c519-4862-8220-9ac2491a2137.arff -l /home/gmartinn/DRP_main/DRP_repo/models/135_258_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/258_cbbc312a-b2f9-4d97-92ad-974526bd1db0.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 01:39:57.155832. 1 of 15 models built.
+Elapsed model building time: 0:45:48.335372. Expected completion time: 2016-03-22 12:21:13.851040
+2016-03-22 01:39:57.193600 statsModel 266, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_266_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/266_c960eb72-e5b5-4585-9f4a-83c838a0a030.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/266_c960eb72-e5b5-4585-9f4a-83c838a0a030.arff -d /home/gmartinn/DRP_main/DRP_repo/models/135_266_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-22 02:07:33.660633. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/266_a5072d16-9730-4391-8947-7509e6c2dd73.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/266_3ffd8240-1731-4cea-bf86-b0e9a09a87d4.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/266_a5072d16-9730-4391-8947-7509e6c2dd73.arff -l /home/gmartinn/DRP_main/DRP_repo/models/135_266_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/266_3ffd8240-1731-4cea-bf86-b0e9a09a87d4.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 02:30:39.015445. 2 of 15 models built.
+Elapsed model building time: 1:36:30.194985. Expected completion time: 2016-03-22 12:57:55.282848
+2016-03-22 02:30:39.058785 statsModel 272, saving to /home/gmartinn/DRP_main/DRP_repo/models/135_272_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/272_3b251c0e-a6f2-4349-bc2d-6bb9ff485af5.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/272_3b251c0e-a6f2-4349-bc2d-6bb9ff485af5.arff -d /home/gmartinn/DRP_main/DRP_repo/models/135_272_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-22 02:58:39.605697. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/272_15e92f93-7782-4dae-b9d8-f2b8d9b47603.arff

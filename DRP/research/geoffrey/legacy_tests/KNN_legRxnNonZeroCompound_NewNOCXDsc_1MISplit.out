@@ -1,0 +1,30 @@
+Starting building at 2016-03-22 03:18:23.211727
+Splitting using MutualInfoSplitter
+Split into train (2199), test (943)
+2016-03-22 03:19:16.757618 statsModel 278, saving to /home/gmartinn/DRP_main/DRP_repo/models/146_278_weka_KNN.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/278_732cca78-2f64-47cf-9c75-91ee6a7d619e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -t /home/gmartinn/DRP_main/DRP_repo/tmp/278_732cca78-2f64-47cf-9c75-91ee6a7d619e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/146_278_weka_KNN.model -p 0 -c 1
+	...Trained. Finished at 2016-03-22 03:43:16.395844. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/278_dae409a5-f52c-488f-845d-f09fd8cc647f.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/278_e4ef1dc5-637d-447b-a9ba-ad5da00b8a1c.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.lazy.IBk -T /home/gmartinn/DRP_main/DRP_repo/tmp/278_dae409a5-f52c-488f-845d-f09fd8cc647f.arff -l /home/gmartinn/DRP_main/DRP_repo/models/146_278_weka_KNN.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/278_e4ef1dc5-637d-447b-a9ba-ad5da00b8a1c.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 04:04:00.535509. 1 of 1 models built.
+Elapsed model building time: 0:44:43.815632. Expected completion time: 2016-03-22 04:04:00.535509
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-22 04:06:33.338521
+Confusion matrix for boolean_outcome_legacy_prediction_146_summative__:
+      False  True 
+False  124   145  
+ True  100   574  
+Accuracy: 0.74
+BCR: 0.676
+Confusion matrix for boolean_outcome_legacy_prediction_146_component_278__:
+      False  True 
+False  124   145  
+ True  100   574  
+Accuracy: 0.74
+BCR: 0.676
