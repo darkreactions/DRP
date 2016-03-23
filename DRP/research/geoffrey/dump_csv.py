@@ -8,7 +8,7 @@ def dump_csv(file_name, descriptor_headers, reaction_set_name=None):
     if reaction_set_name is None:
         rxns = PerformedReaction.objects.all()
     else:
-        rxns = DataSet.objects.filter(name=reaction_set_name).reactions.all()
+        rxns = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
     descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
 
