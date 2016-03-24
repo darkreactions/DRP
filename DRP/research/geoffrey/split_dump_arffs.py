@@ -31,7 +31,10 @@ def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_n
     if responses.count() != len(response_headers):
         raise KeyError("Could not find all responses")
 
-    reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+    if reaction_set_name is not None:
+        reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+    else:
+        reactions = PerformedReaction.objects.all()
 
     splitterObj = Splitter("{}_{}".format(description, uuid.uuid4()))
 
@@ -40,8 +43,8 @@ def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_n
     whitelist = [d.csvHeader for d in chain(predictors, responses)]
 
     for trainingSet, testSet in data_splits:
-        prepareArff(trainingSet.reactions.all(), whitelist, description + '_train', verbose=verbose)
-        prepareArff(testSet.reactions.all(), whitelist, description + '_test', verbose=verbose)
+        prepareArff(trainingSet.reactions.all(), whitelist, trainingSet.name + '_train', verbose=verbose)
+        prepareArff(testSet.reactions.all(), whitelist, testSet.name + '_test', verbose=verbose)
 
 if __name__ == '__main__':
     django.setup()
