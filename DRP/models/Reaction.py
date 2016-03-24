@@ -90,11 +90,12 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def rows(self, expanded):
         if expanded:
-            reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch_related('compounds')
+            #reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
+            #reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
+            #reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
+            #reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
+            #reactions = reactions.prefetch_related('compounds')
+            reactions = self
             
             for item in reactions.batch_iterator():
                 row = {field.name:getattr(item, field.name) for field in self.model._meta.fields} 

@@ -38,19 +38,27 @@ def split_and_dump(response_headers=None, reaction_set_name=None, description=""
 
     filepaths = sorted(glob.glob('../legacy_tests/descs/step*.dsc'))
 
+    with open('../legacy_tests/descs/new_full.dsc') as f:
+        old_predictor_headers = [l.strip() for l in f.readlines() if l.strip()]
+
+    old_predictors = Descriptor.objects.filter(heading__in=old_predictor_headers)
+
+    if old_predictors.count() != len(old_predictor_headers):
+        raise KeyError("Could not find all predictors")
+
     for trainingSet, testSet in data_splits:
         for desc_file in filepaths:
             with open(desc_file) as f:
                 predictor_headers = [l.strip() for l in f.readlines() if l.strip()]
             predictors = Descriptor.objects.filter(heading__in=predictor_headers)
-            whitelist = [d.csvHeader for d in chain(predictors, responses)]
 
-            desc_file_description = os.path.basename(desc_file)[:-4]
             if predictors.count() != len(predictor_headers):
                 raise KeyError("Could not find all predictors")
 
+            whitelist = [d.csvHeader for d in chain(old_predictors, predictors, responses)]
+            desc_file_description = os.path.basename(desc_file)[:-4]
             prepareArff(trainingSet.reactions.all(), whitelist, "{}_{}_train.arff".format(desc_file_description, trainingSet.name), verbose=verbose)
-            prepareArff(testSet.reactions.all(), whitelist, "{}_{}_test.arff".format(desc_file_description, trainingSet.name), verbose=verbose)
+            prepareArff(testSet.reactions.all(), whitelist, "{}_{}_test.arff".format(desc_file_description, testSet.name), verbose=verbose)
 
 if __name__ == '__main__':
     django.setup()
