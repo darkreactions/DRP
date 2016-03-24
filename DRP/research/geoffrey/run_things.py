@@ -6,7 +6,7 @@ import argparse
 
 #print PerformedReaction.objects.all().expandedArffHeaders
 
-print DataSet.object.get(name='test1001').reactions.all().expandedArffHeaders
+print DataSet.objects.get(name='test1001').reactions.all().expandedArffHeaders
 
 #if __name__ == '__main__':
     #django.setup()
