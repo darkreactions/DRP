@@ -4,7 +4,9 @@ from DRP.models import PerformedReaction, DataSet, Descriptor, Compound, Reactio
 from django.db.models import Count
 import argparse
 
-print PerformedReaction.objects.all().expandedArffHeaders
+#print PerformedReaction.objects.all().expandedArffHeaders
+
+print DataSet.object.get(name='test1001').reactions.all().expandedArffHeaders
 
 #if __name__ == '__main__':
     #django.setup()
