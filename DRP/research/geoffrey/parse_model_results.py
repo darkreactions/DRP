@@ -36,14 +36,15 @@ def get_average_val(lines, name):
 if __name__ == '__main__':  
     directory = 'legacy_tests/'
 
-    filepaths = sorted(glob.glob('{}/*.out'.format(directory)))
+    filepaths = sorted(glob.glob('{}/*15MISplit.out'.format(directory)))
 
 
     print "\t\t\t{}\t{}".format('BCR', 'Accuracy')
     for fp in filepaths:
         fn = fp.split('/')[-1]
         fn_split = fn[:-4].split('_')
-
+        fn_split = fn_split[:3]
+        
         if len(fn_split) == 1:
             model = fn_split[0]
             mod_string = 'none\tEuclidean\t{}'.format(model)
