@@ -70,13 +70,22 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         """Generates the expanded header for the csv"""
         return self.csvHeaders + [ d.csvHeader for d in self.descriptors() ]
 
+    #def descriptors(self):
+        #"""returns the descriptor which have relationship to the queryset"""
+        #return chain(
+            #BooleanDescriptor.objects.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            #NumericDescriptor.objects.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            #OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
+            #CategoricalDescriptor.objects.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(reaction__in=self)).distinct()
+        #)
+        
     def descriptors(self):
         """returns the descriptor which have relationship to the queryset"""
         return chain(
-            BooleanDescriptor.objects.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
-            NumericDescriptor.objects.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
-            OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(reaction__in=self)).distinct(),
-            CategoricalDescriptor.objects.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(reaction__in=self)).distinct()
+            BoolRxnDescriptor.objects.filter(boolrxndescriptorvalue__reaction__in=self).distinct(),
+            NumericDescriptor.objects.filter(numrxndescriptorvalue__reaction__in=self).distinct(),
+            OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__reaction__in=self).distinct(),
+            CategoricalDescriptor.objects.filter(catrxndescriptorvalue__reaction__in=self).distinct(),
         )
 
     def rows(self, expanded):
