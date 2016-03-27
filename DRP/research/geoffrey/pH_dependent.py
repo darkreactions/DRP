@@ -20,7 +20,7 @@ def create_vals(rxns):
     vals_to_create = []
     count = 1
     for rxn in rxns:
-        print "rxn.reference ({}/{})".format(count, rxns.count())
+        print "{} ({}/{})".format(rxn.reference, count, rxns.count())
         reaction_pH = NumRxnDescriptorValue.objects.get(reaction=rxn, descriptor__heading='reaction_pH').value
         if reaction_pH is not None:
             rounded_pH = int(round(reaction_pH))
