@@ -70,9 +70,11 @@ def print_headers_with_names(descriptors):
     for descriptor in descriptors:
         print descriptor.heading, '\n\t', descriptor.name, '\n'
 
-def print_headers(descriptors):
-    for descriptor in descriptors:
-        print descriptor.heading
+def print_headers(descriptors, sort=False):
+    headings = [d.heading for d in descriptors]
+    if sort:
+        headings.sort()
+    print '\n'.join(headings)
 
 def filter_queryset(dqs, include_substring=[], include_prefix=[], include_suffix=[],
                     exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
@@ -119,10 +121,9 @@ if __name__=='__main__':
     reaction_set_name = argv[1]
 
     qsets = nonlegacy_pHless_rxn_descriptors()
-    print count_qset_list(qsets)
     descriptors = chain(*qsets)
     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
     filtered_descriptors = filter_through_reactions(reactions, descriptors)
     sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), count_qset_list(qsets)))
-    print filtered_descriptors
+    print_headers(filtered_descriptors, sort=True)

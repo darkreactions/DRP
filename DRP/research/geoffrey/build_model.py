@@ -22,6 +22,12 @@ def build_model(reactions=None, predictors=None, responses=None, modelVisitorLib
 
     return container
 
+def missing_descriptors(descriptor_headings):
+    missing_descs = []
+    for heading in descriptor_headings:
+        if not Descriptor.objects.filter(heading=heading).exists():
+            missing_descs.append(heading)
+    return missing_descs
 
 def display_model_results(container):
     conf_mtrcs = container.getConfusionMatrices()
@@ -62,9 +68,9 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
     if predictors.count() != len(predictor_headers):
-        raise KeyError("Could not find all predictors")
+        raise KeyError("Could not find all predictors. Missing: {}".format(missing_descriptors(predictor_headers)))
     if responses.count() != len(response_headers):
-        raise KeyError("Could not find all responses")
+        raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
 
     if training_set_name is None and reaction_set_name is None:
         assert(test_set_name == None)
