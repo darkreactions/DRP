@@ -5,17 +5,20 @@ Miscellaneous utility functions for use in DRP
 from django.template.defaultfilters import slugify as _slugify
 from functools32 import lru_cache #backport of pythion 3.2 functools with memoization decorator
 
-def memodict(f):
-    """ Memoization decorator for a function taking a single argument """
+def memoize(f):
+    """ Memoization decorator for a function taking one or more arguments. """
     class memodict(dict):
+        def __getitem__(self, *key):
+            return dict.__getitem__(self, key)
+
         def __missing__(self, key):
-            ret = self[key] = f(key)
-            return ret 
+            ret = self[key] = f(*key)
+            return ret
+
     return memodict().__getitem__
 
-
 #@lru_cache(maxsize=64)
-@memodict
+@memoize
 def slugify(text):
     """Return a modified version of slug text.
 
@@ -26,6 +29,7 @@ def slugify(text):
 
 
 #@lru_cache(maxsize=None)
+@memoize
 def generate_csvHeader(heading, calculatorSoftware, calculatorSoftwareVersion):
     """
     Method for generating csvHeader from Descriptor properties.
