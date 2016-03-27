@@ -5,18 +5,9 @@ classes.
 """
 
 from django.db import models
-from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-
-
-def slugify(text):
-    """Return a modified version of slug text.
-
-    This modified version maintains compatibility with
-    external languages such as R.
-    """
-    return _slugify(text).replace('-', '_')
+from DRP.utils import generate_csvHeader
 
 
 class DescriptorQuerySet(models.query.QuerySet):
@@ -68,14 +59,12 @@ class Descriptor(models.Model):
     calculatorSoftware = models.CharField(max_length=100)
     calculatorSoftwareVersion = models.CharField(max_length=20)
 
+    
+
     @property
     def csvHeader(self):
         """Generate a csv header for placing values for a descriptor."""
-        return '{}_{}_{}'.format(
-            self.heading,
-            slugify(self.calculatorSoftware),
-            self.calculatorSoftwareVersion
-        )
+        return generate_csvHeader(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
 
     @property
     def arffHeader(self):
