@@ -3,21 +3,25 @@ Miscellaneous utility functions for use in DRP
 """
 
 from django.template.defaultfilters import slugify as _slugify
-from functools32 import lru_cache #backport of pythion 3.2 functools with memoization decorator
 
+# When we move to python 3 we can use the builtin lrucache in functools
+# There's a external library backport of functools from 3.2 to 2.7, but I opted to implement this function
+# rather than adding another external dependency
 def memoize(f):
-    """ Memoization decorator for a function taking one or more arguments. """
+    """
+    Memoization decorator for a function taking one or more arguments.
+    From here: http://code.activestate.com/recipes/578231-probably-the-fastest-memoization-decorator-in-the-/
+    """
     class memodict(dict):
         def __getitem__(self, *key):
             return dict.__getitem__(self, key)
 
         def __missing__(self, key):
-            ret = self[key] = f(*key)
+            self[key] = ret = f(*key)
             return ret
 
     return memodict().__getitem__
 
-#@lru_cache(maxsize=64)
 @memoize
 def slugify(text):
     """Return a modified version of slug text.
@@ -28,7 +32,6 @@ def slugify(text):
     return _slugify(text).replace('-', '_')
 
 
-#@lru_cache(maxsize=None)
 @memoize
 def generate_csvHeader(heading, calculatorSoftware, calculatorSoftwareVersion):
     """
