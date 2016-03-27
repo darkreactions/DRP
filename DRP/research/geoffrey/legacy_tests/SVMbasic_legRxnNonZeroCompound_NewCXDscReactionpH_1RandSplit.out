@@ -1,38 +1,38 @@
-Starting building at 2016-03-27 17:44:37.220236
+Starting building at 2016-03-27 17:58:51.391742
 Splitting using SingleSplitter
 Split into train (2106), test (1036)
-2016-03-27 17:44:51.713743 statsModel 405, saving to /home/gmartinn/DRP_main/DRP_repo/models/163_405_weka_SVM_PUK_basic.model, training...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/405_70d92fac-9154-45f2-8704-9f184d8a0314.arff
+2016-03-27 17:59:05.730663 statsModel 406, saving to /home/gmartinn/DRP_main/DRP_repo/models/164_406_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/406_26781e2b-82d3-45e9-b888-3205c9cc6649.arff
 Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/405_70d92fac-9154-45f2-8704-9f184d8a0314.arff -d /home/gmartinn/DRP_main/DRP_repo/models/163_405_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
-	...Trained. Finished at 2016-03-27 17:51:11.645133. Saving statsModel... saved
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/406_26781e2b-82d3-45e9-b888-3205c9cc6649.arff -d /home/gmartinn/DRP_main/DRP_repo/models/164_406_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-27 18:05:13.664246. Saving statsModel... saved
 Predicting test set...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/405_49052c08-787c-4840-8dea-b6c66c447d8d.arff
-Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/405_08adea56-0836-474b-86de-bac9ca1ce12d.out
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/406_f3241c70-09ba-4782-ae3f-ffa6835f32ea.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/406_7f36a7be-eecf-4174-977a-2143db14f15e.out
 Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/405_49052c08-787c-4840-8dea-b6c66c447d8d.arff -l /home/gmartinn/DRP_main/DRP_repo/models/163_405_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/405_08adea56-0836-474b-86de-bac9ca1ce12d.out
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/406_f3241c70-09ba-4782-ae3f-ffa6835f32ea.arff -l /home/gmartinn/DRP_main/DRP_repo/models/164_406_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/406_7f36a7be-eecf-4174-977a-2143db14f15e.out
 	...finished predicting. Storing predictions... predictions stored.
-Confusion matrix for boolean_outcome_legacy_prediction_163_component_405:
+Confusion matrix for boolean_outcome_legacy_prediction_164_component_406:
       False  True 
-False  144    58  
- True  130   704  
-Accuracy: 0.819
-BCR: 0.725
-2016-03-27 17:53:24.907940. 1 of 1 models built.
-Elapsed model building time: 0:08:33.236902. Expected completion time: 2016-03-27 17:53:24.907940
+False  155    50  
+ True  129   702  
+Accuracy: 0.827
+BCR: 0.74
+2016-03-27 18:07:20.601798. 1 of 1 models built.
+Elapsed model building time: 0:08:14.914003. Expected completion time: 2016-03-27 18:07:20.601798
 Storing overall model predictions... Predictions stored
-Finished at 2016-03-27 17:54:58.683609
-Confusion matrix for boolean_outcome_legacy_prediction_163_summative__:
+Finished at 2016-03-27 18:08:56.255075
+Confusion matrix for boolean_outcome_legacy_prediction_164_summative__:
       False  True 
-False  144    58  
- True  130   704  
-Accuracy: 0.819
-BCR: 0.725
-Confusion matrix for boolean_outcome_legacy_prediction_163_component_405__:
+False  155    50  
+ True  129   702  
+Accuracy: 0.827
+BCR: 0.74
+Confusion matrix for boolean_outcome_legacy_prediction_164_component_406__:
       False  True 
-False  144    58  
- True  130   704  
-Accuracy: 0.819
-BCR: 0.725
-Average accuracy: 0.819
-Average BCR: 0.725
+False  155    50  
+ True  129   702  
+Accuracy: 0.827
+BCR: 0.74
+Average accuracy: 0.827
+Average BCR: 0.74
