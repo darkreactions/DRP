@@ -52,8 +52,12 @@ def create_vals(rxns):
         
     print "Creating values"
     NumRxnDescriptorValue.objects.bulk_create(vals_to_create)
-    
-create_vals(PerformedReaction.objects.all())
 
-print NumRxnDescriptorValue.objects.filter(descriptor__heading__contains='_pHreaction_').count()
-#print NumRxnDescriptor.objects.filter(heading__contains='_pHreaction_').count()
+if __name__ == '__main__':
+    #create_descs()
+    rxns = PerformedReaction.objects.filter(valid=True).exclude(compounds=None)
+    
+    create_vals(rxns)
+
+    print NumRxnDescriptorValue.objects.filter(descriptor__heading__contains='_pHreaction_').count()
+    #print NumRxnDescriptor.objects.filter(heading__contains='_pHreaction_').count()
