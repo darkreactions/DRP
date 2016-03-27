@@ -1,0 +1,38 @@
+Starting building at 2016-03-27 17:27:06.604741
+Splitting using SingleSplitter
+Split into train (2106), test (1036)
+2016-03-27 17:27:20.096614 statsModel 404, saving to /home/gmartinn/DRP_main/DRP_repo/models/162_404_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/404_2ef8a3a8-6793-4b00-be3e-dc5d6b67c66b.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/404_2ef8a3a8-6793-4b00-be3e-dc5d6b67c66b.arff -d /home/gmartinn/DRP_main/DRP_repo/models/162_404_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-27 17:33:31.426692. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/404_6e001632-0d90-4f85-8643-3cb87e8cc740.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/404_1cb231e9-3b8a-4814-bdd9-c30db3134384.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/404_6e001632-0d90-4f85-8643-3cb87e8cc740.arff -l /home/gmartinn/DRP_main/DRP_repo/models/162_404_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/404_1cb231e9-3b8a-4814-bdd9-c30db3134384.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_162_component_404:
+      False  True 
+False  151    58  
+ True  129   698  
+Accuracy: 0.819
+BCR: 0.731
+2016-03-27 17:35:41.919614. 1 of 1 models built.
+Elapsed model building time: 0:08:21.852819. Expected completion time: 2016-03-27 17:35:41.919614
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-27 17:37:17.919924
+Confusion matrix for boolean_outcome_legacy_prediction_162_summative__:
+      False  True 
+False  151    58  
+ True  129   698  
+Accuracy: 0.819
+BCR: 0.731
+Confusion matrix for boolean_outcome_legacy_prediction_162_component_404__:
+      False  True 
+False  151    58  
+ True  129   698  
+Accuracy: 0.819
+BCR: 0.731
+Average accuracy: 0.819
+Average BCR: 0.731
