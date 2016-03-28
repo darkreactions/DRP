@@ -10,7 +10,7 @@ import datetime
 import importlib
 import os
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
-from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue
+from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from StatsModel import StatsModel
 from DRP.research.geoffrey.utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 

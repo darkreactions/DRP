@@ -13,7 +13,7 @@ def dump_csv(file_name, descriptor_headers, reaction_set_name=None):
     descriptors = Descriptor.objects.filter(heading__in=descriptor_headers)
 
     if descriptors.count() != len(descriptor_headers):
-        raise KeyError("Could not find all predictors")
+        raise KeyError("Could not find all descriptors")
 
     whitelist = [d.csvHeader for d in descriptors]
 
