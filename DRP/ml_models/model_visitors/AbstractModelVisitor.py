@@ -23,6 +23,6 @@ class AbstractModelVisitor(object):
     @abstractmethod
     def predict(self, reactions, descriptorHeaders, verbose=False):
         """Return a dictionary where the key is the response descriptor being
-           predicted and the value is an ordered list of predictions for that
+           predicted and the value is list of prediction tuples for that
            response where the ith prediction corresponds to the ith reaction.
-           EG: {<NumRxnDescriptor> "outcome" }:[1,2,1,1]}"""
+           EG: {<NumRxnDescriptor> "outcome" }:[(<rxn1>, 1), (<rxn2>, 2), (<rxn3>, 1), (<rxn4>, 1)]}"""

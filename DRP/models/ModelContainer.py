@@ -293,7 +293,7 @@ class ModelContainer(models.Model):
                         print "BCR: {:.3}".format(BCR(conf_mtrx))
             
             elif verbose:
-                    print "Test set is empty."
+                print "Test set is empty."
 
             if verbose:
                 num_finished += 1
@@ -316,6 +316,14 @@ class ModelContainer(models.Model):
             print "Finished at {}".format(overall_end_time)
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
+        """
+        returns resDict, a dictionary of dictionaries of dictionaries
+        The first key is the reaction, the second is the response descriptor
+        (the descriptor to be predicted), the third is the predicted outcome.
+        The value is 1 if that outcome is predicted and 0 otherwise.
+        This setup is for easier aggregating into the full model container
+        voting-based prediction.
+        """
         resDict = {} if resDict is None else resDict
         
         for response, outcomes in predictions.items():
@@ -330,36 +338,52 @@ class ModelContainer(models.Model):
                 if outcome not in resDict[reaction][response]:
                     resDict[reaction][response][outcome] = 0
                 resDict[reaction][response][outcome] += 1
-                # TODO XXX change these saves so they only make one hit on the database.
-                # Difficult (impossible?) with inherited models
                 val = predDesc.createValue(reaction, outcome)
-                #val.save()
                 vals.append(val)
-        type(vals[0]).objects.bulk_create(vals)
+            if vals:
+                type(vals[0]).objects.bulk_create(vals)
         return resDict
 
     def _storePredictions(self, resDict):
         finalPredictions = {}
+        bool_vals = []
+        num_vals = []
+        ord_vals = []
+        cat_vals = []
         for reaction, responseDict in resDict.items():
             for response, outcomeDict in responseDict.items():
                 predDesc = response.createPredictionDescriptor(self)
-                predDesc.save()
+                if predDesc.pk is None:
+                    predDesc.save()
                 if isinstance(response, NumRxnDescriptor):
                     #estimate the weighted average of the estimates from the component models
                     values = tuple(value for value in resDict[reaction][response].keys())
                     weights = tuple(weight for value, weight in resDict[reaction][response].items())
                     val = predDesc.createValue(reaction, average(values, weights=weights))
+                    num_vals.append(val)
                 else:
                     #find the 'competitors' with the highest number of votes and pick one at random (in case multiple categories have equal numbers of votes)
                     maxVotes = max(count for response, count in outcomeDict.items())
                     winners = [(response, count) for response, count in outcomeDict.items() if count == maxVotes]
                     winner = random.choice(winners)
                     val = predDesc.createValue(reaction, winner[0])
-                val.save()
+                    if isinstance(val, BoolRxnDescriptorValue):
+                        bool_vals.append(val)
+                    elif isinstance(val, OrdRxnDescriptorValue):
+                        ord_vals.append(val)
+                    elif isinstance(val, CatRxnDescriptorValue):
+                        cat_vals.append(val)
+                    else:
+                        raise ValueError("Value just created is of unexpected type {}".format(type(val)))
 
                 if response not in finalPredictions:
                     finalPredictions[response] = []
                 finalPredictions[response].append( (reaction, val) )
+                
+        BoolRxnDescriptorValue.objects.bulk_create(bool_vals)
+        NumRxnDescriptorValue.objects.bulk_create(num_vals)
+        OrdRxnDescriptorValue.objects.bulk_create(ord_vals)
+        CatRxnDescriptorValue.objects.bulk_create(cat_vals)
         return finalPredictions
 
     def predict(self, reactions):
@@ -388,7 +412,7 @@ class ModelContainer(models.Model):
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
-
+    # why did we add the transaction?
     @transaction.atomic
     def save(self, *args, **kwargs):
         super(ModelContainer, self).save(*args, **kwargs)
