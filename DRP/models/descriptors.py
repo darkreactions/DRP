@@ -47,9 +47,9 @@ class Descriptor(models.Model):
         max_length=200,
         validators=[
             RegexValidator(
-                '[A-Za-z0-9][A-Za-z0-9_]+',
-                ('Please include only values which are limited to'
-                 'alphanumeric characters and underscores, and must start'
+                '[A-Za-z0-9][A-Za-z0-9_]*',
+                ('Please include only values which are limited to '
+                 'alphanumeric characters and underscores, and must start '
                  'with an alphabetic character.')
             )
         ]
@@ -60,9 +60,9 @@ class Descriptor(models.Model):
         max_length=100,
         validators=[
             RegexValidator(
-                '[A-Za-z0-9][A-Za-z0-9_]+',
-                ('Please include only values which are limited to'
-                 'alphanumeric characters and underscores, and must start'
+                '[A-Za-z0-9][A-Za-z0-9_]*',
+                ('Please include only values which are limited to '
+                 'alphanumeric characters and underscores, and must start '
                  'with an alphabetic character.')
             )
         ]
@@ -71,9 +71,9 @@ class Descriptor(models.Model):
         max_length=20,
         validators=[
             RegexValidator(
-                '[A-Za-z0-9][A-Za-z0-9_]+',
-                ('Please include only values which are limited to'
-                 'alphanumeric characters and underscores, and must start'
+                '[A-Za-z0-9][A-Za-z0-9_.]*',
+                ('Please include only values which are limited to '
+                 'alphanumeric characters, periods and underscores, and must start '
                  'with an alphabetic character.')
             )
         ]
