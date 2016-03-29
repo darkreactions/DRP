@@ -152,7 +152,8 @@ class ModelContainer(models.Model):
     splitter = models.CharField(max_length=200, blank=True, default='')
     #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
     # TODO XXX this should be validated as json or implemented another way (key-value store in another table)
-    modelVisitorOptions = models.TextField(null=False, blank=True, default="")
+    #modelVisitorOptions = models.TextField(null=False, blank=True, default="")
+    #splitterOptions = models.TextField(null=False, blank=True, default="")
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
