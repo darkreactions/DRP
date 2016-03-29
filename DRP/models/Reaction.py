@@ -1,4 +1,4 @@
- '''A module containing only the Reaction class'''
+'''A module containing only the Reaction class'''
 from django.db import models
 from LabGroup import LabGroup
 from Compound import Compound
