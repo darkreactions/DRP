@@ -7,7 +7,7 @@ from collections import OrderedDict
 from itertools import islice, chain
 
 
-class QuerySetSet(object):
+class MultiQuerySet(object):
     """
     A set of querysets that quacks like a query set.
     For any method called on it, it calls the corresponding method on each of its querysets.
@@ -35,11 +35,11 @@ class QuerySetSet(object):
             raise AttributeError("This is not a queryset method")
 
         # This passing through only works for methods that return a queryset
-        if name not in QuerySetSet.qs_methods:
+        if name not in self.qs_methods:
             raise AttributeError("This queryset method does not return a queryset and therefore cannot be passed through to underlying querysets.")
 
         def map_attr(*args, **kwargs):
-            return QuerySetSet(*[getattr(qs, name)(*args, **kwargs) for qs in self.querysets])
+            return MultiQuerySet(*[getattr(qs, name)(*args, **kwargs) for qs in self.querysets])
 
         return map_attr
 

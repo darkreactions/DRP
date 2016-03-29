@@ -1,3 +1,8 @@
+"""
+Outdated since now models just print out their average...
+"""
+
+
 import glob
 from sys import argv
 from numpy import mean
