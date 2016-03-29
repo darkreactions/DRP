@@ -1,38 +1,5 @@
-Starting building at 2016-03-27 17:58:51.391742
+Starting building at 2016-03-28 18:56:08.095569
 Splitting using SingleSplitter
 Split into train (2106), test (1036)
-2016-03-27 17:59:05.730663 statsModel 406, saving to /home/gmartinn/DRP_main/DRP_repo/models/164_406_weka_SVM_PUK_basic.model, training...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/406_26781e2b-82d3-45e9-b888-3205c9cc6649.arff
-Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/406_26781e2b-82d3-45e9-b888-3205c9cc6649.arff -d /home/gmartinn/DRP_main/DRP_repo/models/164_406_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
-	...Trained. Finished at 2016-03-27 18:05:13.664246. Saving statsModel... saved
-Predicting test set...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/406_f3241c70-09ba-4782-ae3f-ffa6835f32ea.arff
-Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/406_7f36a7be-eecf-4174-977a-2143db14f15e.out
-Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/406_f3241c70-09ba-4782-ae3f-ffa6835f32ea.arff -l /home/gmartinn/DRP_main/DRP_repo/models/164_406_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/406_7f36a7be-eecf-4174-977a-2143db14f15e.out
-	...finished predicting. Storing predictions... predictions stored.
-Confusion matrix for boolean_outcome_legacy_prediction_164_component_406:
-      False  True 
-False  155    50  
- True  129   702  
-Accuracy: 0.827
-BCR: 0.74
-2016-03-27 18:07:20.601798. 1 of 1 models built.
-Elapsed model building time: 0:08:14.914003. Expected completion time: 2016-03-27 18:07:20.601798
-Storing overall model predictions... Predictions stored
-Finished at 2016-03-27 18:08:56.255075
-Confusion matrix for boolean_outcome_legacy_prediction_164_summative__:
-      False  True 
-False  155    50  
- True  129   702  
-Accuracy: 0.827
-BCR: 0.74
-Confusion matrix for boolean_outcome_legacy_prediction_164_component_406__:
-      False  True 
-False  155    50  
- True  129   702  
-Accuracy: 0.827
-BCR: 0.74
-Average accuracy: 0.827
-Average BCR: 0.74
+2016-03-28 18:56:20.791317 statsModel 437, saving to /home/gmartinn/DRP_main/DRP_repo/models/167_437_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/437_0e25a77f-ae72-49bd-b4ce-2927c555183c.arff
