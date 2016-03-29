@@ -2,7 +2,7 @@
 from django.db import models
 from LabGroup import LabGroup
 from Compound import Compound
-from querysets import CsvQuerySet, ArffQuerySet
+from querysets import CsvQuerySet, ArffQuerySet, MultiQuerySet
 from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from itertools import chain
@@ -72,6 +72,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def descriptors(self):
         """returns the descriptor which have relationship to the queryset"""
+        
         return chain(
             BooleanDescriptor.objects.filter(boolrxndescriptorvalue__isnull=False).distinct(),
             NumericDescriptor.objects.filter(numrxndescriptorvalue__isnull=False).distinct(),

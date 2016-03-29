@@ -58,6 +58,7 @@ class Descriptor(models.Model):
     name = models.CharField('Full name', max_length=300)
     calculatorSoftware = models.CharField(
         max_length=100,
+        blank=True,
         validators=[
             RegexValidator(
                 '[A-Za-z0-9][A-Za-z0-9_]*',
@@ -69,6 +70,7 @@ class Descriptor(models.Model):
     )
     calculatorSoftwareVersion = models.CharField(
         max_length=20,
+        blank=True,
         validators=[
             RegexValidator(
                 '[A-Za-z0-9][A-Za-z0-9_.]*',
