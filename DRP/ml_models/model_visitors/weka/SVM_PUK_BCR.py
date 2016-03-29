@@ -13,8 +13,8 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
     def __init__(self, *args, **kwargs):
         super(SVM_PUK_BCR, self).__init__(*args, **kwargs)
 
-        self.PUK_OMEGA = 1.0 #0.5
-        self.PUK_SIGMA = 1.0 #7.0
+        self.PUK_OMEGA = 1 #0.5
+        self.PUK_SIGMA = 1 #7.0
 
 
     def wekaTrainCommand(self, arff_file, filePath, response_index):
