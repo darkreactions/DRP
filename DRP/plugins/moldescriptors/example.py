@@ -6,10 +6,10 @@ import rdkit.Chem
 import DRP
 
 _descriptorDict = {
-    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': 'drp/rdkit', 'calculatorSoftwareVersion': 0, 'maximum': None, 'minimum': 0},
-    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0, 'maximum': 3, 'minimum': 1},
-    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0},
-    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
+    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': 'drp_rdkit', 'calculatorSoftwareVersion': 0, 'maximum': None, 'minimum': 0},
+    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0, 'maximum': 3, 'minimum': 1},
+    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0},
+    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
 }
 """A dictionary describing the descriptors available in this module. The key should always be the heading for the descriptor."""
 

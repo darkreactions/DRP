@@ -15,8 +15,8 @@ _descriptorDict = {
         {
             'type': 'cat',
             'name': 'Hash of reaction reactants to partition reaction space',
-            'calculatorSoftware': 'DRP/xxhash',
-            'calculatorSoftwareVersion': '0.02/{}'.format(xxhash.VERSION),
+            'calculatorSoftware': 'DRP_xxhash',
+            'calculatorSoftwareVersion': '0.02_{}'.format(xxhash.VERSION),
             'permittedValues':[]
         }
 }

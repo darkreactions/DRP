@@ -38,10 +38,10 @@ class MultiQuerySet(object):
         if name not in self.qs_methods:
             raise AttributeError("This queryset method does not return a queryset and therefore cannot be passed through to underlying querysets.")
 
-        def map_attr(*args, **kwargs):
+        def _map_attr(*args, **kwargs):
             return MultiQuerySet(*[getattr(qs, name)(*args, **kwargs) for qs in self.querysets])
 
-        return map_attr
+        return _map_attr
 
     def order_by(self, *args):
         """

@@ -149,12 +149,10 @@ class ModelContainer(models.Model):
     # choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS)
     modelVisitorTool = models.CharField(max_length=200)
     # choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
-    featureLibrary = models.CharField(max_length=200, default='', blank=True)
-    # choices=tuple((lib, lib) for lib in settings.FEATURE_SELECTION_LIBS), 
-    featureTool = models.CharField(max_length=200, default='', blank=True)
-    # choices=tuple((tool, tool) for tool in FEATURE_SELECTION_TOOL_CHOICES),
     splitter = models.CharField(max_length=200, blank=True, default='')
     #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
+    # TODO XXX this should be validated as json or implemented another way (key-value store in another table)
+    modelVisitorOptions = models.TextField(null=False, blank=True, default="")
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
