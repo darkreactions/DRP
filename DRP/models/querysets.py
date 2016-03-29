@@ -4,6 +4,79 @@ import numpy as np
 from django.db import models
 import abc
 from collections import OrderedDict
+from itertools import islice, chain
+
+
+class QuerySetSet(object):
+    """
+    A set of querysets that quacks like a query set.
+    For any method called on it, it calls the corresponding method on each of its querysets.
+    Be careful that this makes sense for the given querysets.
+    For some queryset methods, this doesn't make sense (like order_by) and more work is needed.
+    Not all of these are implemented.
+    Partially stolen from here: http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
+    and partially inspired from this: http://ramenlabs.com/2010/12/08/how-to-quack-like-a-queryset/
+    """
+    # queryset methods that return a queryset.
+    # These are passed through to the underlying querysets unless defined otherwise
+    # Does django indicate these in any way other than reading them from the docs?
+    qs_methods = ['filter', 'exclude', 'annotate', 'order_by', 'reverse', 'distinct', 'values', 'values_list', 'dates', 'datetimes',
+                  'none', 'all', 'select_related', 'prefetch_related', 'extra', 'defer', 'only', 'using', 'select_for_update', 'raw']
+
+    def __init__(self, *args):
+        self.querysets = args
+
+    def __getattr__(self, name):
+        """
+        Deals with all names that are not defined explicitly
+        """
+        # Check to make sure this is actua
+        if name not in models.query.QuerySet.__dict__:
+            raise AttributeError("This is not a queryset method")
+
+        # This passing through only works for methods that return a queryset
+        if name not in QuerySetSet.qs_methods:
+            raise AttributeError("This queryset method does not return a queryset and therefore cannot be passed through to underlying querysets.")
+
+        def map_attr(*args, **kwargs):
+            return QuerySetSet(*[getattr(qs, name)(*args, **kwargs) for qs in self.querysets])
+
+        return map_attr
+
+    def order_by(self, *args):
+        """
+        Not implemented because it's a pain and we don't (yet) need it.
+        See here for an example of how to do so: http://ramenlabs.com/2010/12/08/how-to-quack-like-a-queryset/
+        """
+        raise NotImplementedError("No order_by implemented for querysetset. File a feature request if you need this feature.")
+
+    def count(self):
+        """
+        Performs a .count() for all subquerysets and returns the number of
+        records as an integer.
+        """
+        return sum(qs.count() for qs in self.querysets)
+
+    def _clone(self):
+        "Returns a clone of this queryset chain"
+        return self.__class__(*self.querysets)
+
+    def _all(self):
+        "Iterates records in all subquerysets"
+        return chain(*self.querysets)
+
+    def __getitem__(self, ndx):
+        """
+        Retrieves an item or slice from the chained set of results from all
+        subquerysets.
+        """
+        if type(ndx) is slice:
+            return list(islice(self._all(), ndx.start, ndx.stop, ndx.step or 1))
+        else:
+            return islice(self._all(), ndx, ndx+1).next()
+
+    def exists(self):
+        return any(qs.exists() for qs in self.querysets)
 
 
 class CsvQuerySet(models.query.QuerySet):
