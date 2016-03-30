@@ -5,6 +5,7 @@ from Compound import Compound
 from querysets import CsvQuerySet, ArffQuerySet, MultiQuerySet
 from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
+from rxnDescriptors import BoolRxnDescriptor, NumRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor
 from itertools import chain
 from CompoundRole import CompoundRole
 from collections import OrderedDict
@@ -62,23 +63,33 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     @property
     def expandedArffHeaders(self):
         headers = self.arffHeaders
-        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors())))
+        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors)))
         return headers
 
     @property
     def expandedCsvHeaders(self):
         """Generates the expanded header for the csv"""
-        return self.csvHeaders + [ d.csvHeader for d in self.descriptors() ]
+        return self.csvHeaders + [ d.csvHeader for d in self.descriptors ]
 
+    #def descriptors(self):
+        #"""returns the descriptor which have relationship to the queryset"""
+        
+        #return chain(
+            #BooleanDescriptor.objects.filter(boolrxndescriptorvalue__isnull=False).distinct(),
+            #NumericDescriptor.objects.filter(numrxndescriptorvalue__isnull=False).distinct(),
+            #OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__isnull=False).distinct(),
+            #CategoricalDescriptor.objects.filter(catrxndescriptorvalue__isnull=False).distinct(),
+        #)
+
+    @property
     def descriptors(self):
         """returns the descriptor which have relationship to the queryset"""
         
-        return chain(
-            BooleanDescriptor.objects.filter(boolrxndescriptorvalue__isnull=False).distinct(),
-            NumericDescriptor.objects.filter(numrxndescriptorvalue__isnull=False).distinct(),
-            OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__isnull=False).distinct(),
-            CategoricalDescriptor.objects.filter(catrxndescriptorvalue__isnull=False).distinct(),
-        )
+        return MultiQuerySet(BoolRxnDescriptor.objects.all(),
+                                NumRxnDescriptor.objects.all(),
+                                OrdRxnDescriptor.objects.all(),
+                                CatRxnDescriptor.objects.all()
+                                )
 
     def rows(self, expanded):
         if expanded:
@@ -157,9 +168,14 @@ class Reaction(models.Model):
         if calcDescriptors and self.calcDescriptors:
             for plugin in descriptorPlugins:
                 plugin.calculate(self)
+                
+    #@property
+    #def descriptorValues(self):
+        #return chain(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
+        
     @property
     def descriptorValues(self):
-        return chain(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
+        return MultiQuerySet(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
     def __unicode__(self):
         return "Reaction_{}".format(self.id)

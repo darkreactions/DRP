@@ -88,13 +88,16 @@ class CsvQuerySet(models.query.QuerySet):
     def expandedCsvHeaders(self):
         '''For some classes, like Compounds and Reactions, there needs to be the option to send additional data (descriptors)
         as part of the csv. This method permits that expansion, and defaults to return the non-expanded headers.'''
-        return self.csvHeaders
+        return get_expandedCsvHeaders()
 
     @abc.abstractproperty
     def csvHeaders(self):
         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
         return [field.name for field in self.model._meta.fields]
+
+    def get_expandedCsvHeaders(self, whitelist=None):
+        return self.csvHeaders
 
     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):#TODO:figure out most sensible default for missing values
         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded

@@ -1,5 +1,6 @@
 from django.db import models
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from descriptors import DescriptorManager
 from ModelContainer import ModelContainer
 from StatsModel import StatsModel
 
@@ -11,6 +12,8 @@ class PredictedDescriptor(models.Model):
         app_label="DRP"
         abstract = True
 
+    objects = DescriptorManager()
+
 
 class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
     predictionOf = models.ForeignKey(BoolRxnDescriptor, related_name="prediction_of")
@@ -18,6 +21,8 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
     class Meta:
         app_label='DRP'
         verbose_name = 'Predicted Boolean Rxn Descriptor'
+
+    objects = DescriptorManager()
 
  
     def summarize(self):
@@ -88,6 +93,8 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
     class Meta:
         app_label='DRP'
         verbose_name = 'Predicted Ordinal Rxn Descriptor'
+
+    objects = DescriptorManager()
  
     def summarize(self):
         return "Accuracy: {}".format(self.accuracy())
@@ -163,7 +170,7 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
         app_label='DRP'
         verbose_name = 'Predicted Numeric Rxn Descriptor'
 
-
+    objects = DescriptorManager()
     
 
     def getPredictionTuples(self):
@@ -191,4 +198,6 @@ class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
     class Meta:
         app_label='DRP'
         verbose_name = 'Predicted Categorical Rxn Descriptor'
+
+    objects = DescriptorManager()
 

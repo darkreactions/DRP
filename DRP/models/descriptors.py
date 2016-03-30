@@ -7,7 +7,10 @@ classes.
 from django.db import models
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from DRP.utils import generate_csvHeader
+#from DRP.utils import generate_csvHeader
+from django.db.models.functions import Concat
+
+
 
 
 class DescriptorQuerySet(models.query.QuerySet):
@@ -22,7 +25,7 @@ class DescriptorManager(models.Manager):
     use_for_related_fields = True
 
     def get_queryset(self):
-        return DescriptorQuerySet()
+        return DescriptorQuerySet(model=self.model).annotate(csvHeader=Concat('heading', models.Value('_'), 'calculatorSoftware', models.Value('_'), 'calculatorSoftwareVersion'))
 
 
 class Descriptor(models.Model):
@@ -82,10 +85,10 @@ class Descriptor(models.Model):
     )
     
 
-    @property
-    def csvHeader(self):
-        """Generate a csv header for placing values for a descriptor."""
-        return generate_csvHeader(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
+    #@property
+    #def csvHeader(self):
+        #"""Generate a csv header for placing values for a descriptor."""
+        #return generate_csvHeader(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
 
     @property
     def arffHeader(self):
@@ -108,6 +111,8 @@ class CategoricalDescriptor(Descriptor):
 
     class Meta:
         app_label = 'DRP'
+
+    objects = DescriptorManager()
 
     @property
     def arffHeader(self):
@@ -148,6 +153,8 @@ class OrdinalDescriptor(Descriptor):
     class Meta:
         app_label = 'DRP'
 
+    objects = DescriptorManager()
+
     maximum = models.IntegerField()
     """The maximal permitted value for a given descriptor instance."""
     minimum = models.IntegerField()
@@ -184,6 +191,8 @@ class NumericDescriptor(Descriptor):
     class Meta:
         app_label = 'DRP'
 
+    objects = DescriptorManager()
+
     maximum = models.FloatField(null=True)
     """The maximum allowed value for a given descriptor."""
     minimum = models.FloatField(null=True)
@@ -219,6 +228,8 @@ class BooleanDescriptor(Descriptor):
 
     class Meta:
         app_label = 'DRP'
+
+    objects = DescriptorManager()
 
     @property
     def arffHeader(self):

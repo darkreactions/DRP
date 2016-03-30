@@ -2,6 +2,8 @@ from django.conf import settings
 import uuid
 from DRP.models import rxnDescriptors
 from DRP.ml_models.model_visitors.AbstractModelVisitor import AbstractModelVisitor, logger
+from DRP.models.descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
+from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, BoolRxnDescriptorValue
 from django.core.exceptions import ImproperlyConfigured
 import subprocess
 import os
@@ -13,6 +15,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
     maxResponseCount = 1
 
     def __init__(self, *args, **kwargs):
+        if 'BCR' in kwargs:
+            self.BCR = kwargs['BCR']
+        
         super(AbstractWekaModelVisitor, self).__init__(*args, **kwargs)
 
         self.WEKA_VERSION = "3.6"  # The version of WEKA to use.
@@ -53,6 +58,45 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         if verbose:
             print "Running in Shell:\n{}".format(command)
         subprocess.check_output(command, shell=True)
+
+
+    def BCR_cost_matrix(self, reactions, response):
+        if isinstance(response, CategoricalDescriptor):
+            num_classes = response.permittedValues.all().count()
+            response_values = CatRxnDescriptorValue.objects().filter(reaction__in=reactions, descriptor=response)
+            # TODO XXX Make this happen in the right order
+            class_counts = [response_values.filter(value=v).count() for v in response.permittedValues().all()]
+        elif isinstance(response, OrdinalDescriptor):
+            num_classes = response.maximum - response.minimum + 1
+            response_values = OrdRxnDescriptorValue.objects.filter(reaction__in=reactions, descriptor=response)
+            class_counts = [response_values.filter(value=v).count() for v in range(response.minimum, response.maximum+1)]
+        elif isinstance(response, BooleanDescriptor):
+            num_classes = 2
+            response_values = BoolRxnDescriptorValue.objects.filter(reaction__in=reactions, descriptor=response)
+            class_counts = [response_values.filter(value=True).count(), response_values.filter(value=False).count()]
+        elif isinstance(response, NumericDescriptor):
+            raise TypeError('Cannot train a classification algorithm to predict a numeric descriptor.')
+        else:
+            raise TypeError('Response descriptor is not a recognized descriptor type.')
+            
+            
+        ## the i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
+        ## since we want misclassification of an instance to be equally costly regardless of what it is classified as
+        ## all entries in a row not on the diagonal should be the same. The diagonal should always be 0 as correct
+        ## classification has no cost. So that every class is weighted the same as a whole, each class's weight is 
+        ## 1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
+        ## total number of data points, so each class is weighted by (total_instances)/(class_count)
+        ## classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
+        ## For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
+        ## TODO XXX Actually check the order of classes from the arff file?
+        
+        total_instances = sum(class_counts)
+        class_weights = [ (total_instances/float(class_count) if class_count!=0 else 0.0) for class_count in class_counts ]
+        cost_matrix = [ [str(0.0) if i==j else str(class_weights[i]) for j in range(num_classes)] for i in range(num_classes) ]
+
+        cost_matrix_string = '"[' + '; '.join([' '.join(row) for row in cost_matrix]) + ']"'
+
+        return cost_matrix_string
 
     @abstractmethod
     def wekaTrainCommand(self, arff_file, filePath, response_index):

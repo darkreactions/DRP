@@ -12,6 +12,8 @@ visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR 
 
 for modelVisitorLibrary, module in visitorModules.items():
     for modelVisitorTool in module.tools:
+        if modelVisitorTool != 'SVM_PUK_BCR':
+            continue
         for splitter in settings.REACTION_DATASET_SPLITTERS:
             print modelVisitorLibrary, modelVisitorTool, splitter
             prepare_build_display_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, verbose=True)

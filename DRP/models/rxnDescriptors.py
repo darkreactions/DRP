@@ -1,6 +1,6 @@
 '''A module containing the reactions descriptors'''
 from descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
-from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable
+from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable, DescriptorManager
 import rxnDescriptorValues
 import DRP.models
 
@@ -10,6 +10,8 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
     class Meta:
         app_label='DRP'
         verbose_name = 'Categorical Reaction Descriptor'
+
+    objects = DescriptorManager()
 
     def __init__(self, *args, **kwargs):
         super(CatRxnDescriptor, self).__init__(*args, **kwargs)
@@ -32,6 +34,8 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
     class Meta:
         verbose_name= 'Ordinal Reaction Descriptor'
         app_label='DRP'
+
+    objects = DescriptorManager()
 
     def __init__(self, *args, **kwargs):
         super(OrdRxnDescriptor, self).__init__(*args, **kwargs)
@@ -60,6 +64,8 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
         app_label='DRP'
         verbose_name= 'Numerical Reaction Descriptor'
 
+    objects = DescriptorManager()
+
     def __init__(self, *args, **kwargs):
         super(NumRxnDescriptor, self).__init__(*args, **kwargs)
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredNumRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
@@ -86,6 +92,8 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
     class Meta:
         app_label='DRP'
         verbose_name= 'Boolean Reaction Descriptor'
+
+    objects = DescriptorManager()
 
     def __init__(self, *args, **kwargs):
         super(BoolRxnDescriptor, self).__init__(*args, **kwargs)

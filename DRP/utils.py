@@ -40,7 +40,7 @@ def generate_csvHeader(heading, calculatorSoftware, calculatorSoftwareVersion):
     """
     return '{}_{}_{}'.format(
                              heading,
-                             slugify(calculatorSoftware),
+                             calculatorSoftware,
                              calculatorSoftwareVersion
                             )
     
