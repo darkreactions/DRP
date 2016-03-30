@@ -51,7 +51,6 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
         return descriptors
 
-
     def _runWekaCommand(self, command, verbose=False):
         """Sets the CLASSPATH necessary to use Weka, then runs a shell `command`."""
         if not settings.WEKA_PATH[self.WEKA_VERSION]:
@@ -81,8 +80,6 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
         descriptor_headers = self._readWekaOutput(output)
         return descriptor_headers
-        
-        
 
     @abstractmethod
     def wekaTrainCommand(self, arff_file, response_index, out_file):
