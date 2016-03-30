@@ -44,7 +44,7 @@ class SVM_PUK_SPC(AbstractWekaModelVisitor):
         cost_matrix_string = '"[0.0 0.0; 1.0 0.0]"'
      
         # Currently, we support only one "response" variable.
-        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
+        headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
         
         kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.PUK_OMEGA, self.PUK_SIGMA)

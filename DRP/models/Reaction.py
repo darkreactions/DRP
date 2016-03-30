@@ -13,6 +13,7 @@ import DRP
 import importlib
 from django.conf import settings
 import gc
+from django.db.models.functions import Concat
 
 descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.RXN_DESCRIPTOR_PLUGINS]
@@ -35,41 +36,45 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     def _getCompoundQuantityHeaderOrder(self, i):
         return ['compound_{}'.format(i), 'compound_{}_role'.format(i), 'compound_{}_amount'.format(i)]
 
-    @property
-    def csvHeaders(self):
+    def csvHeaders(self, whitelist=None):
         """Generates the header row information for the CSV"""
-        headers = super(ReactionQuerySet, self).csvHeaders
+        headers = super(ReactionQuerySet, self).csvHeaders(whitelist)
         m = Reaction.objects.all().maxReactantCount()
         for i in range(0, m):
-            headers.extend(self._getCompoundQuantityHeaderOrder(i))
+            h = self._getCompoundQuantityHeaderOrder(i)
+            if whitelist is None or h in whitelist:
+                headers.extend(h)
 
         return headers
 
-    @property
-    def arffHeaders(self):
+    def arffHeaders(self, whitelist=None):
         """generates headers for the arff file"""
-        headers = super(ReactionQuerySet, self).arffHeaders
+        headers = super(ReactionQuerySet, self).arffHeaders(whitelist)
         m = Reaction.objects.all().maxReactantCount()
         for i in range(0, m):
             compound_label = 'compound_{}'.format(i)
-            headers[compound_label] = '@attribute {} string'.format(compound_label)
+            if whitelist is None or compound_label in whitelist:
+                headers[compound_label] = '@attribute {} string'.format(compound_label)
             role_label = 'compound_{}_role'.format(i)
-            headers[role_label] = '@attribute {} {{{}}}'.format(role_label, ','.join(('"{}"'.format(role) for role in CompoundRole.objects.all())))
+            if whitelist is None or role_label in whitelist:
+                headers[role_label] = '@attribute {} {{{}}}'.format(role_label, ','.join(('"{}"'.format(role) for role in CompoundRole.objects.all())))
             amount_label = 'compound_{}_amount'.format(i)
-            headers[amount_label] = '@attribute {} NUMERIC'.format(amount_label)
+            if whitelist is None or amount_label in whitelist:
+                headers[amount_label] = '@attribute {} NUMERIC'.format(amount_label)
 
         return headers
 
-    @property
-    def expandedArffHeaders(self):
-        headers = self.arffHeaders
-        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors)))
+    def expandedArffHeaders(self, whitelist=None):
+        headers = self.arffHeaders(whitelist)
+        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors.filter(csvHeader__in=whitelist))))
         return headers
 
-    @property
-    def expandedCsvHeaders(self):
+    def expandedCsvHeaders(self, whitelist=None):
         """Generates the expanded header for the csv"""
-        return self.csvHeaders + [ d.csvHeader for d in self.descriptors ]
+        if whitelist is not None:
+            return self.csvHeaders(whitelist) + [ d.csvHeader for d in self.descriptors.filter(csvHeader__in=whitelist) ]
+        else:
+            return self.csvHeaders(whitelist) + [ d.csvHeader for d in self.descriptors ]
 
     #def descriptors(self):
         #"""returns the descriptor which have relationship to the queryset"""
@@ -91,22 +96,48 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                                 CatRxnDescriptor.objects.all()
                                 )
 
-    def rows(self, expanded):
+    def rows(self, expanded, whitelist=None):
         if expanded:
-            reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
-            reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
+            reactions = self
+            if whitelist is not None:
+                qs = BoolRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='filtered_boolvals'), 'filtered_boolvals__descriptor')
+                
+                qs = NumRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch('numrxndescriptorvalue_set', queryset=qs, to_attr='filtered_numvals'), 'filtered_numvals__descriptor')
+                
+                qs = OrdRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch('ordrxndescriptorvalue_set', queryset=qs, to_attr='filtered_ordvals'), 'filtered_ordvals__descriptor')
+                
+                qs = CatRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch('catrxndescriptorvalue_set', queryset=qs, to_attr='filtered_catvals'), 'filtered_catvals__descriptor')
+            #reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
+            #reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
+            #reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
+            #reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
             reactions = reactions.prefetch_related('compounds')
             
             for item in reactions.batch_iterator():
-                row = {field.name:getattr(item, field.name) for field in self.model._meta.fields} 
-                row.update({dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues})
-                i=0
-                for compound in item.compounds.all():
-                    row['compound_{}'.format(i)] = compound.name
-                    i+=1
-                yield row
+                row = {field.name:getattr(item, field.name) for field in self.model._meta.fields}
+                if whitelist is not None:
+                    row.update({dv.descCsvHeader:dv.value for dv in item.filtered_boolvals})
+                    row.update({dv.descCsvHeader:dv.value for dv in item.filtered_numvals})
+                    row.update({dv.descCsvHeader:dv.value for dv in item.filtered_ordvals})
+                    row.update({dv.descCsvHeader:dv.value for dv in item.filtered_catvals})
+                    i=0
+                    for compound in item.compounds.all():
+                        compound_num = 'compound_{}'.format(i)
+                        if compound_num in whitelist:
+                            row[compound_num] = compound.name
+                        i+=1
+                    yield row
+                else:
+                    row.update({dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues})
+                    i=0
+                    for compound in item.compounds.all():
+                        row['compound_{}'.format(i)] = compound.name
+                        i+=1
+                    yield row
         else:
             for row in super(ReactionQuerySet, self).rows(expanded):
                 yield row

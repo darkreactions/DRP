@@ -84,20 +84,22 @@ class CsvQuerySet(models.query.QuerySet):
 
     __metaclass__ = abc.ABCMeta
 
-    @abc.abstractproperty
-    def expandedCsvHeaders(self):
-        '''For some classes, like Compounds and Reactions, there needs to be the option to send additional data (descriptors)
-        as part of the csv. This method permits that expansion, and defaults to return the non-expanded headers.'''
-        return get_expandedCsvHeaders()
+    #@abc.abstractproperty
+    #def expandedCsvHeaders(self):
+        #'''For some classes, like Compounds and Reactions, there needs to be the option to send additional data (descriptors)
+        #as part of the csv. This method permits that expansion, and defaults to return the non-expanded headers.'''
+        #return getExpandedCsvHeaders()
 
-    @abc.abstractproperty
-    def csvHeaders(self):
+    def csvHeaders(self, whitelist=None):
         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
-        return [field.name for field in self.model._meta.fields]
+        if whitelist is not None:
+            return [field.name for field in self.model._meta.fields if f in whitelist]
+        else:
+            return [field.name for field in self.model._meta.fields]
 
-    def get_expandedCsvHeaders(self, whitelist=None):
-        return self.csvHeaders
+    def expandedCsvHeaders(self, whitelist=None):
+        return self.csvHeaders(whitelist)
 
     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):#TODO:figure out most sensible default for missing values
         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
@@ -107,12 +109,9 @@ class CsvQuerySet(models.query.QuerySet):
         '''
 
         if expanded:
-            headers = self.expandedCsvHeaders
+            headers = self.expandedCsvHeaders(whitelistHeaders)
         else:
-            headers = self.csvHeaders
-
-        if whitelistHeaders is not None:
-            headers = [h for h in headers if h in whitelistHeaders]
+            headers = self.csvHeaders(whitelistHeaders)
 
         writer = csv.DictWriter(writeable, fieldnames=headers, restval=missing)
 
@@ -129,50 +128,49 @@ class ArffQuerySet(models.query.QuerySet):
 
     __metaclass__ = abc.ABCMeta
 
-    @abc.abstractproperty
-    def expandedArffHeaders(self):
+    def expandedArffHeaders(self, whitelist=None):
         '''returns expanded headers, designed to be overridden by classes that need it'''
-        return self.headers
+        return self.arffHeaders
 
-    @abc.abstractproperty
-    def arffHeaders(self):
+    def arffHeaders(self, whitelist=None):
         '''the basic headers to be used for the mode. Note that this imlementation is extremely basic, though not as much so as
         the csv file query set. This will manage foreignkey relations (make sure to define __unicode__ on your models!),
         but won't handle automagic fields or fields to many objects. It will silently ignore
         fields that it does not know how to manage.'''
         headers=OrderedDict()
         for field in self.model._meta.fields:
-            if isinstance(field, models.IntegerField) or isinstance(field, models.FloatField) or isinstance(field, models.DecimalField):
-                headers[field.name] = '@attribute {} numeric'.format(field.name)
-            elif isinstance(field, models.CharField) or isinstance(field, models.TextField):
-                headers[field.name] = '@attribute {} string'.format(field.name)
-            elif isinstance(field, models.DateTimeField):
-                headers[field.name] = '@attribute {} date "yyyy-MM-dd HH:mm:ss"'.format(field.name)
-            elif isinstance(field, models.DateField):
-                headers[field.name] = '@attribute {} date "yyyy-MM-dd"'.format(field.name)
-            elif isinstance(field, models.BooleanField):
-                headers[field.name] = '@attribute {} {{True, False}}'.format(field.name)
-            elif isinstance(field, models.ForeignKey):
-                value_set = {"\"{}\"".format(choice[1]) for choice in field.get_choices()[1:]}
-                headers[field.name] = '@attribute {} {{{}}}'.format(field.name, ','.join(value_set))
+            if whitelist is None or field in whitelist:
+                if isinstance(field, models.IntegerField) or isinstance(field, models.FloatField) or isinstance(field, models.DecimalField):
+                    headers[field.name] = '@attribute {} numeric'.format(field.name)
+                elif isinstance(field, models.CharField) or isinstance(field, models.TextField):
+                    headers[field.name] = '@attribute {} string'.format(field.name)
+                elif isinstance(field, models.DateTimeField):
+                    headers[field.name] = '@attribute {} date "yyyy-MM-dd HH:mm:ss"'.format(field.name)
+                elif isinstance(field, models.DateField):
+                    headers[field.name] = '@attribute {} date "yyyy-MM-dd"'.format(field.name)
+                elif isinstance(field, models.BooleanField):
+                    headers[field.name] = '@attribute {} {{True, False}}'.format(field.name)
+                elif isinstance(field, models.ForeignKey):
+                    value_set = {"\"{}\"".format(choice[1]) for choice in field.get_choices()[1:]}
+                    headers[field.name] = '@attribute {} {{{}}}'.format(field.name, ','.join(value_set))
         return headers
-
+        
     def toArff(self, writeable, expanded=False, relationName='relation', whitelistHeaders=None, missing="?"):
         '''outputs to an arff file-like object'''
         writeable.write('%arff file generated by the Dark Reactions Project provided by Haverford College\n')
         writeable.write('\n@relation {}\n'.format(relationName))
         if expanded:
-            headers = self.expandedArffHeaders
+            headers = self.expandedArffHeaders(whitelistHeaders)
         else:
-            headers= self.arffHeaders
+            headers= self.arffHeaders(whitelistHeaders)
 
-        if whitelistHeaders is not None:
-            headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
+        #if whitelistHeaders is not None:
+            #headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
 
         writeable.write('\n'.join(headers.values()))
 
         writeable.write('\n\n@data\n')
-        for row in self.rows(expanded):
+        for row in self.rows(expanded, whitelistHeaders):
             writeable.write(','.join(('"'+str(row.get(key))+'"' if (row.get(key) is not None) else missing) for key in headers.keys()))
             writeable.write('\n')
 
@@ -181,12 +179,12 @@ class ArffQuerySet(models.query.QuerySet):
 
         matrix = []
         if expanded:
-            headers = self.expandedArffHeaders
+            headers = self.expandedArffHeaders(whitelistHeaders)
         else:
-            headers= self.arffHeaders
+            headers= self.arffHeaders(whitelistHeaders)
 
-        if whitelistHeaders is not None:
-            headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
+        #if whitelistHeaders is not None:
+            #headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
 
         for row in self.rows(expanded):
             matrix.append([(row.get(key) if (row.get(key) is not None) else missing) for key in headers.keys()])

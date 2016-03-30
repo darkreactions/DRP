@@ -11,8 +11,6 @@ from django.core.exceptions import ValidationError
 from django.db.models.functions import Concat
 
 
-
-
 class DescriptorQuerySet(models.query.QuerySet):
     def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""

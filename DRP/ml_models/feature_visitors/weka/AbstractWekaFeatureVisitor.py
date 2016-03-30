@@ -71,7 +71,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         results_path = os.path.join(settings.TMP_DIR, results_file)
         
         # Currently, we support only one "response" variable.
-        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
+        headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(list(self.container.outcomeDescriptors)[0].csvHeader) + 1
         command = self.wekaTrainCommand(arff_file, response_index)
         

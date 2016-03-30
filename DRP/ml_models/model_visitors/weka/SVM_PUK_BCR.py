@@ -66,7 +66,7 @@ class SVM_PUK_BCR(AbstractWekaModelVisitor):
         cost_matrix_string = self.BCR_cost_matrix(reactions, response)
      
         # Currently, we support only one "response" variable.
-        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
+        headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(response.csvHeader) + 1
 
         kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.PUK_OMEGA, self.PUK_SIGMA)

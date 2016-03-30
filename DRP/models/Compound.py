@@ -80,16 +80,14 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         m = annotated.aggregate(max=models.Max('chemicalClassCount'))['max']
         return 0 if m is None else m
 
-    @property
-    def csvHeaders(self):
+    def csvHeaders(self, whitelist=None):
         """Generate the header row information for the CSV."""
-        headers = super(CompoundQuerySet, self).csvHeaders
+        headers = super(CompoundQuerySet, self).csvHeaders()
         m = Compound.objects.all().maxChemicalClassCount()
         headers += ['chemicalClass_{}'.format(x + 1) for x in range(0, m)]
         return headers
 
-    @property
-    def arffHeaders(self):
+    def arffHeaders(self, whitelist=None):
         """Generate headers for the arff file."""
         headers = super(CompoundQuerySet, self).arffHeaders
         m = Compound.objects.all().maxChemicalClassCount()
@@ -99,17 +97,15 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             headers[label] = '@attribute {} {{{}}}'.format(label, ','.join(clsStrings))
         return headers
 
-    @property
-    def expandedArffHeaders(self):
+    def expandedArffHeaders(self, whitelist=None):
         """Generate expanded headers for the arff file."""
         headers = self.arffHeaders
         headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors)))
         return headers
 
-    @property
-    def expandedCsvHeaders(self):
+    def expandedCsvHeaders(self, whitelist=None):
         """Generate the expanded header for the csv."""
-        return self.csvHeaders + [d.csvHeader for d in self.descriptors]
+        return self.csvHeaders() + [d.csvHeader for d in self.descriptors]
 
     @property
     def descriptors(self):
@@ -137,7 +133,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             ).distinct()
         )
 
-    def rows(self, expanded):
+    def rows(self, expanded, whitelist=None):
         if expanded:
             compounds = self.prefetch_related('boolmoldescriptorvalue_set__descriptor')
             compounds = compounds.prefetch_related('catmoldescriptorvalue_set__descriptor')

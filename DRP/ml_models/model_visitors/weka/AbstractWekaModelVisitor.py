@@ -116,7 +116,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose)
 
         # Currently, we support only one "response" variable.
-        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
+        headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
 
         command = self.wekaTrainCommand(arff_file, filePath, response_index)
@@ -130,7 +130,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         results_path = os.path.join(settings.TMP_DIR, results_file)
 
         # Currently, we support only one "response" variable.
-        headers = [h for h in reactions.expandedCsvHeaders if h in descriptorHeaders]
+        headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response = list(self.statsModel.container.outcomeDescriptors)[0]
         response_index = headers.index(response.csvHeader) + 1
 
