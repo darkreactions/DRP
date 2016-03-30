@@ -89,7 +89,6 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     @property
     def descriptors(self):
         """returns the descriptor which have relationship to the queryset"""
-        
         return MultiQuerySet(BoolRxnDescriptor.objects.all(),
                                 NumRxnDescriptor.objects.all(),
                                 OrdRxnDescriptor.objects.all(),
@@ -111,10 +110,11 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                 
                 qs = CatRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
                 reactions = reactions.prefetch_related(models.Prefetch('catrxndescriptorvalue_set', queryset=qs, to_attr='filtered_catvals'), 'filtered_catvals__descriptor')
-            #reactions = self.prefetch_related('boolrxndescriptorvalue_set__descriptor')
-            #reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
-            #reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
-            #reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
+            else: 
+                reactions = reactions.prefetch_related('boolrxndescriptorvalue_set__descriptor')
+                reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
+                reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
+                reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
             reactions = reactions.prefetch_related('compounds')
             
             for item in reactions.batch_iterator():
