@@ -1,0 +1,402 @@
+Starting building at 2016-03-29 23:27:17.970312
+Splitting using MutualInfoSplitter
+Split into train (2194), test (948)
+Split into train (2192), test (950)
+Split into train (2180), test (962)
+Split into train (2196), test (946)
+Split into train (2195), test (947)
+Split into train (2196), test (946)
+Split into train (2189), test (953)
+Split into train (2186), test (956)
+Split into train (2195), test (947)
+Split into train (2183), test (959)
+Split into train (2192), test (950)
+Split into train (2199), test (943)
+Split into train (2198), test (944)
+Split into train (2199), test (943)
+Split into train (2179), test (963)
+2016-03-29 23:32:23.640510 statsModel 578, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_578_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/578_bd62b6ba-88d4-4119-b501-b03faf35dd22.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/578_bd62b6ba-88d4-4119-b501-b03faf35dd22.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_578_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-29 23:38:42.963860. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/578_3516ddc8-f081-42e4-9233-4bf8fdb25eaa.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/578_03d4a7a2-1c05-45df-a156-233643d6cbce.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/578_3516ddc8-f081-42e4-9233-4bf8fdb25eaa.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_578_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/578_03d4a7a2-1c05-45df-a156-233643d6cbce.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_578:
+      False  True 
+False  194   452  
+ True   81   221  
+Accuracy: 0.438
+BCR: 0.517
+2016-03-29 23:41:36.338495. 1 of 15 models built.
+Elapsed model building time: 0:09:12.744290. Expected completion time: 2016-03-30 01:50:34.758555
+2016-03-29 23:41:36.373587 statsModel 583, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_583_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/583_d299f10f-a621-4256-8921-259ca1ac29f0.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/583_d299f10f-a621-4256-8921-259ca1ac29f0.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_583_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-29 23:50:46.527874. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/583_9d7791a9-cc11-402d-8b41-53b49235209e.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/583_cce3f713-8900-4a9b-94e5-037acbcb57c5.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/583_9d7791a9-cc11-402d-8b41-53b49235209e.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_583_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/583_cce3f713-8900-4a9b-94e5-037acbcb57c5.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_583:
+      False  True 
+False  118   295  
+ True  132   405  
+Accuracy: 0.551
+BCR: 0.525
+2016-03-29 23:58:39.600634. 2 of 15 models built.
+Elapsed model building time: 0:26:16.006429. Expected completion time: 2016-03-30 02:49:23.642422
+2016-03-29 23:58:39.646957 statsModel 588, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_588_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/588_ddee1645-bdde-4412-9dd8-fa8030aa3eb4.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/588_ddee1645-bdde-4412-9dd8-fa8030aa3eb4.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_588_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 00:17:55.996752. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/588_0ac16a41-96a2-4f7c-9f05-b2471e5354c8.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/588_658e89a5-e84a-414b-b748-b948d10650e0.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/588_0ac16a41-96a2-4f7c-9f05-b2471e5354c8.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_588_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/588_658e89a5-e84a-414b-b748-b948d10650e0.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_588:
+      False  True 
+False   81   218  
+ True  168   495  
+Accuracy: 0.599
+BCR: 0.51
+2016-03-30 00:27:16.475476. 3 of 15 models built.
+Elapsed model building time: 0:54:52.881271. Expected completion time: 2016-03-30 04:06:48.000560
+2016-03-30 00:27:16.522088 statsModel 593, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_593_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/593_9f034a4b-0a66-4c7b-917d-991ca28a4b9b.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/593_9f034a4b-0a66-4c7b-917d-991ca28a4b9b.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_593_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 00:36:04.487738. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/593_5828bbde-19e8-4a67-94c9-b83b3393a9ea.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/593_5707cbea-ffc9-42df-86ff-c61bbf5e693e.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/593_5828bbde-19e8-4a67-94c9-b83b3393a9ea.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_593_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/593_5707cbea-ffc9-42df-86ff-c61bbf5e693e.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_593:
+      False  True 
+False  140   224  
+ True  120   462  
+Accuracy: 0.636
+BCR: 0.606
+2016-03-30 00:40:21.542677. 4 of 15 models built.
+Elapsed model building time: 1:07:57.948472. Expected completion time: 2016-03-30 03:47:15.900975
+2016-03-30 00:40:21.586160 statsModel 598, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_598_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/598_5ad319e6-3d7a-44b3-ab6a-507cb14f90cc.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/598_5ad319e6-3d7a-44b3-ab6a-507cb14f90cc.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_598_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 00:46:59.148037. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/598_e4e7c0d3-67d7-4621-9f0b-8da08df1c7ba.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/598_f9a62080-5c0e-48f7-bbc6-5098cdca448d.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/598_e4e7c0d3-67d7-4621-9f0b-8da08df1c7ba.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_598_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/598_f9a62080-5c0e-48f7-bbc6-5098cdca448d.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_598:
+      False  True 
+False   92   197  
+ True  177   481  
+Accuracy: 0.605
+BCR: 0.526
+2016-03-30 00:49:58.800109. 5 of 15 models built.
+Elapsed model building time: 1:17:35.205904. Expected completion time: 2016-03-30 03:25:09.211917
+2016-03-30 00:49:58.841138 statsModel 600, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_600_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/600_e6f62a08-4a63-4adb-9860-ce1721eaa461.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/600_e6f62a08-4a63-4adb-9860-ce1721eaa461.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_600_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 00:56:41.387197. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/600_0e2882c8-85ff-4046-b252-1de94391e41f.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/600_017ed55b-543c-45a6-804c-2181dafaef63.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/600_0e2882c8-85ff-4046-b252-1de94391e41f.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_600_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/600_017ed55b-543c-45a6-804c-2181dafaef63.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_600:
+      False  True 
+False  114   240  
+ True  125   467  
+Accuracy: 0.614
+BCR: 0.569
+2016-03-30 01:01:14.294130. 6 of 15 models built.
+Elapsed model building time: 1:28:50.699925. Expected completion time: 2016-03-30 03:14:30.344018
+2016-03-30 01:01:14.323895 statsModel 605, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_605_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/605_7af6f43d-8946-4a87-890b-724aac8aea0c.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/605_7af6f43d-8946-4a87-890b-724aac8aea0c.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_605_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 01:10:02.650087. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/605_84fe81dc-574f-4403-a183-b82d9537f71a.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/605_bb072fc2-597c-4492-b8a9-a71cbd4a8eb1.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/605_84fe81dc-574f-4403-a183-b82d9537f71a.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_605_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/605_bb072fc2-597c-4492-b8a9-a71cbd4a8eb1.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_605:
+      False  True 
+False   69   249  
+ True  167   468  
+Accuracy: 0.563
+BCR: 0.473
+2016-03-30 01:12:42.427006. 7 of 15 models built.
+Elapsed model building time: 1:40:18.832801. Expected completion time: 2016-03-30 03:07:21.093064
+2016-03-30 01:12:42.466342 statsModel 609, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_609_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/609_175709ec-b9df-49b6-bd48-541f0840829e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/609_175709ec-b9df-49b6-bd48-541f0840829e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_609_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 01:20:22.610844. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/609_809d8925-609b-4069-a470-42f5e49a9537.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/609_19de70e4-6746-4f34-bbdf-bbd94d710258.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/609_809d8925-609b-4069-a470-42f5e49a9537.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_609_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/609_19de70e4-6746-4f34-bbdf-bbd94d710258.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_609:
+      False  True 
+False  104   264  
+ True  164   424  
+Accuracy: 0.552
+BCR: 0.502
+2016-03-30 01:24:16.510513. 8 of 15 models built.
+Elapsed model building time: 1:51:52.916308. Expected completion time: 2016-03-30 03:02:10.312282
+2016-03-30 01:24:16.550346 statsModel 613, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_613_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/613_2f9aac79-3942-4b90-9f40-9204c3e625b2.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/613_2f9aac79-3942-4b90-9f40-9204c3e625b2.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_613_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 01:31:24.317035. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/613_2f4d3e70-6b27-4f68-b684-14158c9a3a72.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/613_2e38c8a6-1ea7-427d-8dce-ee605b5282fd.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/613_2f4d3e70-6b27-4f68-b684-14158c9a3a72.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_613_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/613_2e38c8a6-1ea7-427d-8dce-ee605b5282fd.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_613:
+      False  True 
+False   80   144  
+ True  172   551  
+Accuracy: 0.666
+BCR: 0.555
+2016-03-30 01:34:14.784820. 9 of 15 models built.
+Elapsed model building time: 2:01:51.190615. Expected completion time: 2016-03-30 02:55:28.911897
+2016-03-30 01:34:14.814683 statsModel 616, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_616_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/616_6842b466-f469-42a0-8e59-94e3c0e1ad84.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/616_6842b466-f469-42a0-8e59-94e3c0e1ad84.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_616_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 01:41:51.282744. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/616_89f6323b-c9e5-434e-b330-1e83b9b1cd9e.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/616_12ba910e-e029-416d-9236-2138636557b3.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/616_89f6323b-c9e5-434e-b330-1e83b9b1cd9e.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_616_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/616_12ba910e-e029-416d-9236-2138636557b3.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_616:
+      False  True 
+False  113   235  
+ True  139   472  
+Accuracy: 0.61
+BCR: 0.558
+2016-03-30 01:44:49.416003. 10 of 15 models built.
+Elapsed model building time: 2:12:25.821798. Expected completion time: 2016-03-30 02:51:02.326902
+2016-03-30 01:44:49.442404 statsModel 620, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_620_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/620_2afbd0b9-bb28-497f-a2c2-69f025cad9b4.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/620_2afbd0b9-bb28-497f-a2c2-69f025cad9b4.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_620_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 01:51:34.990544. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/620_545adbe8-22b1-4062-bcbd-55491e4c91da.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/620_a7bd3ac8-f598-4029-8756-469af69e8bfb.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/620_545adbe8-22b1-4062-bcbd-55491e4c91da.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_620_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/620_a7bd3ac8-f598-4029-8756-469af69e8bfb.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_620:
+      False  True 
+False   98   219  
+ True  148   485  
+Accuracy: 0.614
+BCR: 0.544
+2016-03-30 01:54:44.279444. 11 of 15 models built.
+Elapsed model building time: 2:22:20.685239. Expected completion time: 2016-03-30 02:46:29.983167
+2016-03-30 01:54:44.310802 statsModel 624, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_624_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/624_2b627861-7e95-412a-98ef-c634fc18f17c.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/624_2b627861-7e95-412a-98ef-c634fc18f17c.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_624_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 02:02:41.248157. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/624_63671263-cad9-4aa4-84d1-41946c0ecce3.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/624_dcc9e2fe-0ca3-4b27-a6f4-e8d451261e6e.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/624_63671263-cad9-4aa4-84d1-41946c0ecce3.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_624_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/624_dcc9e2fe-0ca3-4b27-a6f4-e8d451261e6e.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_624:
+      False  True 
+False  113   244  
+ True  118   468  
+Accuracy: 0.616
+BCR: 0.573
+2016-03-30 02:07:20.026793. 12 of 15 models built.
+Elapsed model building time: 2:34:56.432588. Expected completion time: 2016-03-30 02:46:04.134940
+2016-03-30 02:07:20.053060 statsModel 629, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_629_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/629_55019068-70f6-42c7-b53e-8eb241b1f264.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/629_55019068-70f6-42c7-b53e-8eb241b1f264.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_629_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 02:14:45.545066. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/629_2d99d959-5b60-46bb-b5e7-c3a4073f6e8e.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/629_38c175b9-a945-4073-9441-c723222594d1.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/629_2d99d959-5b60-46bb-b5e7-c3a4073f6e8e.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_629_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/629_38c175b9-a945-4073-9441-c723222594d1.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_629:
+      False  True 
+False  160   244  
+ True  120   420  
+Accuracy: 0.614
+BCR: 0.602
+2016-03-30 02:19:19.416647. 13 of 15 models built.
+Elapsed model building time: 2:46:55.822442. Expected completion time: 2016-03-30 02:45:00.312407
+2016-03-30 02:19:19.443642 statsModel 634, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_634_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/634_e6fe21e5-95ad-472b-a78d-e38495f43f08.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/634_e6fe21e5-95ad-472b-a78d-e38495f43f08.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_634_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 02:27:49.353173. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/634_15b15d4a-1e0b-4e25-af40-6f4ae5b4e2e7.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/634_9f3714b8-3501-4a83-b6d9-ff4848fc03f8.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/634_15b15d4a-1e0b-4e25-af40-6f4ae5b4e2e7.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_634_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/634_9f3714b8-3501-4a83-b6d9-ff4848fc03f8.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_634:
+      False  True 
+False  148   232  
+ True  116   447  
+Accuracy: 0.631
+BCR: 0.609
+2016-03-30 02:30:21.764169. 14 of 15 models built.
+Elapsed model building time: 2:57:58.169964. Expected completion time: 2016-03-30 02:43:04.490595
+2016-03-30 02:30:21.800828 statsModel 636, saving to /home/gmartinn/DRP_main/DRP_repo/models/188_636_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/636_81874cad-35e3-4e19-b6e7-5076abeddbb2.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/636_81874cad-35e3-4e19-b6e7-5076abeddbb2.arff -d /home/gmartinn/DRP_main/DRP_repo/models/188_636_weka_NaiveBayes.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 02:36:50.398572. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/636_3ff04b1f-c5a5-42d1-b40d-17125c87cb18.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/636_70ac19b0-409c-4c7c-a1a7-37defe4895db.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/636_3ff04b1f-c5a5-42d1-b40d-17125c87cb18.arff -l /home/gmartinn/DRP_main/DRP_repo/models/188_636_weka_NaiveBayes.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/636_70ac19b0-409c-4c7c-a1a7-37defe4895db.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_636:
+      False  True 
+False  141   247  
+ True  108   467  
+Accuracy: 0.631
+BCR: 0.61
+2016-03-30 02:42:29.591118. 15 of 15 models built.
+Elapsed model building time: 3:10:05.996913. Expected completion time: 2016-03-30 02:42:29.591118
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-30 02:42:37.051625
+Confusion matrix for boolean_outcome_legacy_prediction_188_summative__:
+      False  True 
+False  248   460  
+ True  291   998  
+Accuracy: 0.624
+BCR: 0.572
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_578__:
+      False  True 
+False  194   452  
+ True   81   221  
+Accuracy: 0.438
+BCR: 0.517
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_583__:
+      False  True 
+False  118   295  
+ True  132   405  
+Accuracy: 0.551
+BCR: 0.525
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_588__:
+      False  True 
+False   81   218  
+ True  168   495  
+Accuracy: 0.599
+BCR: 0.51
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_593__:
+      False  True 
+False  140   224  
+ True  120   462  
+Accuracy: 0.636
+BCR: 0.606
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_598__:
+      False  True 
+False   92   197  
+ True  177   481  
+Accuracy: 0.605
+BCR: 0.526
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_600__:
+      False  True 
+False  114   240  
+ True  125   467  
+Accuracy: 0.614
+BCR: 0.569
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_605__:
+      False  True 
+False   69   249  
+ True  167   468  
+Accuracy: 0.563
+BCR: 0.473
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_609__:
+      False  True 
+False  104   264  
+ True  164   424  
+Accuracy: 0.552
+BCR: 0.502
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_613__:
+      False  True 
+False   80   144  
+ True  172   551  
+Accuracy: 0.666
+BCR: 0.555
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_616__:
+      False  True 
+False  113   235  
+ True  139   472  
+Accuracy: 0.61
+BCR: 0.558
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_620__:
+      False  True 
+False   98   219  
+ True  148   485  
+Accuracy: 0.614
+BCR: 0.544
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_624__:
+      False  True 
+False  113   244  
+ True  118   468  
+Accuracy: 0.616
+BCR: 0.573
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_629__:
+      False  True 
+False  160   244  
+ True  120   420  
+Accuracy: 0.614
+BCR: 0.602
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_634__:
+      False  True 
+False  148   232  
+ True  116   447  
+Accuracy: 0.631
+BCR: 0.609
+Confusion matrix for boolean_outcome_legacy_prediction_188_component_636__:
+      False  True 
+False  141   247  
+ True  108   467  
+Accuracy: 0.631
+BCR: 0.61
+Average accuracy: 0.624
+Average BCR: 0.572
