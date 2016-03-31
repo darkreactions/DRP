@@ -130,7 +130,7 @@ class ArffQuerySet(models.query.QuerySet):
 
     def expandedArffHeaders(self, whitelist=None):
         '''returns expanded headers, designed to be overridden by classes that need it'''
-        return self.arffHeaders
+        return self.arffHeaders(whitelist)
 
     def arffHeaders(self, whitelist=None):
         '''the basic headers to be used for the mode. Note that this imlementation is extremely basic, though not as much so as
@@ -162,7 +162,7 @@ class ArffQuerySet(models.query.QuerySet):
         if expanded:
             headers = self.expandedArffHeaders(whitelistHeaders)
         else:
-            headers= self.arffHeaders(whitelistHeaders)
+            headers = self.arffHeaders(whitelistHeaders)
 
         #if whitelistHeaders is not None:
             #headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))

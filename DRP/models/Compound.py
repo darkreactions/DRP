@@ -89,7 +89,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
 
     def arffHeaders(self, whitelist=None):
         """Generate headers for the arff file."""
-        headers = super(CompoundQuerySet, self).arffHeaders
+        headers = super(CompoundQuerySet, self).arffHeaders(whitelist)
         m = Compound.objects.all().maxChemicalClassCount()
         for x in range(0, m):
             label = 'chemicalClass_{0}'.format(x + 1)
@@ -99,7 +99,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
 
     def expandedArffHeaders(self, whitelist=None):
         """Generate expanded headers for the arff file."""
-        headers = self.arffHeaders
+        headers = self.arffHeaders(whitelist)
         headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors)))
         return headers
 

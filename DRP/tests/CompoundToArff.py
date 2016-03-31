@@ -28,9 +28,9 @@ class CompoundToArff(DRPTestCase):
         process = subprocess.Popen(['java', '-cp', settings.WEKA_PATH['3.6'], 'weka.core.Instances', fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.wait()
         c = process.returncode
-        self.assertEqual(0, c)
+        self.assertEqual(0, c) # on the off chance weka ever returns a non-zero error code
         res, resErr = process.communicate()
-        self.assertEqual(resErr, "")
+        self.assertFalse(resErr)
 
     def test_regular(self):
         fn = '/tmp/test_csv.arff'
