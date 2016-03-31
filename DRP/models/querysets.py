@@ -94,7 +94,7 @@ class CsvQuerySet(models.query.QuerySet):
         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
         if whitelist is not None:
-            return [field.name for field in self.model._meta.fields if f in whitelist]
+            return [field.name for field in self.model._meta.fields if field in whitelist]
         else:
             return [field.name for field in self.model._meta.fields]
 

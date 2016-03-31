@@ -99,17 +99,22 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         if expanded:
             reactions = self
             if whitelist is not None:
+                # This whole nonsense just grabs the descriptor values we actually want. Let's break it down
+                # First we annotate each descriptor value with its descriptor's csvHeader using the Concat operation
+                # Then we filter on the csvHeader so it's in the whitelist
+                # Then we prefetch descriptor values matching this queryset for each reaction and assign this to filtered __vals
+                # Then we can just iterate through these values to get what we actually want!
                 qs = BoolRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='filtered_boolvals'), 'filtered_boolvals__descriptor')
+                reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='filtered_boolvals'))
                 
                 qs = NumRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('numrxndescriptorvalue_set', queryset=qs, to_attr='filtered_numvals'), 'filtered_numvals__descriptor')
+                reactions = reactions.prefetch_related(models.Prefetch('numrxndescriptorvalue_set', queryset=qs, to_attr='filtered_numvals'))
                 
                 qs = OrdRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('ordrxndescriptorvalue_set', queryset=qs, to_attr='filtered_ordvals'), 'filtered_ordvals__descriptor')
+                reactions = reactions.prefetch_related(models.Prefetch('ordrxndescriptorvalue_set', queryset=qs, to_attr='filtered_ordvals'))
                 
                 qs = CatRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('catrxndescriptorvalue_set', queryset=qs, to_attr='filtered_catvals'), 'filtered_catvals__descriptor')
+                reactions = reactions.prefetch_related(models.Prefetch('catrxndescriptorvalue_set', queryset=qs, to_attr='filtered_catvals'))
             else: 
                 reactions = reactions.prefetch_related('boolrxndescriptorvalue_set__descriptor')
                 reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
