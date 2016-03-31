@@ -1,5 +1,38 @@
-Starting building at 2016-03-28 18:56:08.095569
+Starting building at 2016-03-30 17:03:52.630126
 Splitting using SingleSplitter
 Split into train (2106), test (1036)
-2016-03-28 18:56:20.791317 statsModel 437, saving to /home/gmartinn/DRP_main/DRP_repo/models/167_437_weka_SVM_PUK_basic.model, training...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/437_0e25a77f-ae72-49bd-b4ce-2927c555183c.arff
+2016-03-30 17:04:07.651788 statsModel 704, saving to /home/gmartinn/DRP_main/DRP_repo/models/197_704_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/704_86c34e49-d918-4620-badc-14f1ec6590a0.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/704_86c34e49-d918-4620-badc-14f1ec6590a0.arff -d /home/gmartinn/DRP_main/DRP_repo/models/197_704_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1" -p 0 -c 1
+	...Trained. Finished at 2016-03-30 17:06:20.635111. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/704_118acdab-69b8-472d-a45a-5eb7cd74852c.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/704_bec6f493-df2b-4291-a13d-b111c8c71a6a.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/704_118acdab-69b8-472d-a45a-5eb7cd74852c.arff -l /home/gmartinn/DRP_main/DRP_repo/models/197_704_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/704_bec6f493-df2b-4291-a13d-b111c8c71a6a.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_197_component_704:
+      False  True 
+False  145    54  
+ True  111   726  
+Accuracy: 0.841
+BCR: 0.749
+2016-03-30 17:06:53.605671. 1 of 1 models built.
+Elapsed model building time: 0:02:45.984810. Expected completion time: 2016-03-30 17:06:53.605671
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-30 17:06:59.855703
+Confusion matrix for boolean_outcome_legacy_prediction_197_summative__:
+      False  True 
+False  145    54  
+ True  111   726  
+Accuracy: 0.841
+BCR: 0.749
+Confusion matrix for boolean_outcome_legacy_prediction_197_component_704__:
+      False  True 
+False  145    54  
+ True  111   726  
+Accuracy: 0.841
+BCR: 0.749
+Average accuracy: 0.841
+Average BCR: 0.749
