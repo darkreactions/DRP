@@ -64,6 +64,8 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
             res, resErr = wekaProc.communicate()
             if resErr:
                 raise RuntimeError("Weka returned an error: {}".format(resErr))
+        else:
+            raise RuntimeError("Weka returned nonzero exit code")
 
 
     def BCR_cost_matrix(self, reactions, response):
