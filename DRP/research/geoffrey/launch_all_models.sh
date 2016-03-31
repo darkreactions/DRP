@@ -1,10 +1,10 @@
 #!/bin/bash
 SCRIPT="../build_model.py"
-DESCRIPTOR_FILE="descs/new_cxcalc_nonZeroVariance.dsc"
+DESCRIPTOR_FILE="descs/new_legacy_noCA_nonZeroVariance.dsc"
 OUTCOME_DESCRIPTOR="boolean_outcome_legacy"
 RXN_SET_NAME="valid_legacy_rxns_nonzero_compound"
-COMMENT="Legacy rxns. New descriptors with cxcalc NonzeroVariance. 15 mutual info split."
-FILE_SUFFIX="legRxnNonZeroCompound_NewDscCANonzeroVar_15MISplit"
+COMMENT="Legacy rxns. New and legacy descriptors without cxcalc NonzeroVariance. 15 mutual info split."
+FILE_SUFFIX="legRxnNonZeroCompound_NewLegacyDscNoCANonzeroVar_15MISplit"
 SPLITTER="MutualInfoSplitter"
 
 python -u -m cProfile -o "SVMbasic_$FILE_SUFFIX.profile" $SCRIPT -p @$DESCRIPTOR_FILE -rxn $RXN_SET_NAME -r $OUTCOME_DESCRIPTOR -s $SPLITTER -v -mt SVM_PUK_basic -d "SVM Default PUK $COMMENT" &> "SVMbasic_$FILE_SUFFIX.out" &
