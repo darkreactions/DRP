@@ -32,11 +32,16 @@ def missing_descriptors(descriptor_headings):
 def display_model_results(container):
     conf_mtrcs = container.getConfusionMatrices()
 
-    first = False
     sum_acc = 0.0
     sum_bcr = 0.0
     count = 0
+
     for model_mtrcs in conf_mtrcs:
+        if not model_mtrcs:
+            print "No model results to display"
+            return 
+        elif len(model_mtrcs) != 1:
+            raise NotImplementedError('Can only handle one response')
         for descriptor_header, conf_mtrx in model_mtrcs:
             acc = accuracy(conf_mtrx)
             bcr = BCR(conf_mtrx)
@@ -45,13 +50,12 @@ def display_model_results(container):
             print "Accuracy: {:.3}".format(acc)
             print "BCR: {:.3}".format(bcr)
 
-
-        # this doesn't work for multiple responses... Sorry...
-        if not first:
-            first = True
-            sum_acc += acc
-            sum_bcr += bcr
-            count += 1
+            # This only works for one response. Sorry...
+            # TODO XXX make this work for multiple responses
+            if 'summative' not in descriptor_header:
+                sum_acc += acc
+                sum_bcr += bcr
+                count += 1
             
     print "Average accuracy: {:.3}".format(sum_acc/count)
     print "Average BCR: {:.3}".format(sum_bcr/count)

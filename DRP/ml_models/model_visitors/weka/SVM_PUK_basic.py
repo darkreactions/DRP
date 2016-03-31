@@ -5,9 +5,6 @@ import os
 
 
 class SVM_PUK_basic(AbstractWekaModelVisitor):
-
-    maxResponseCount = 1
-
     def __init__(self, *args, **kwargs):
         super(SVM_PUK_basic, self).__init__(*args, **kwargs)
 

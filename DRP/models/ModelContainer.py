@@ -151,9 +151,11 @@ class ModelContainer(models.Model):
     # choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
     splitter = models.CharField(max_length=200, blank=True, default='')
     #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
-    # TODO XXX this should be validated as json or implemented another way (key-value store in another table)
+    
+    # TODO XXX these should be validated as json or implemented another way (e.g. key-value store in another table)
     #modelVisitorOptions = models.TextField(null=False, blank=True, default="")
     #splitterOptions = models.TextField(null=False, blank=True, default="")
+    
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
@@ -411,7 +413,6 @@ class ModelContainer(models.Model):
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
-    # why did we add the transaction?
     @transaction.atomic
     def save(self, *args, **kwargs):
         super(ModelContainer, self).save(*args, **kwargs)

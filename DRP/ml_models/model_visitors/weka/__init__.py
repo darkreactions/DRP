@@ -6,5 +6,6 @@ from NaiveBayes import NaiveBayes
 from J48 import J48
 from M5P import M5P
 from LinearRegression import LinearRegression
+from bayesianLogisticRegression import BayesianLogisticRegression
 
-tools = ("SVM_PUK_basic", "SVM_PUK_BCR", "KNN", "NaiveBayes", "J48", "M5P", "LinearRegression")
+tools = ("SVM_PUK_basic", "SVM_PUK_BCR", "KNN", "NaiveBayes", "J48", "M5P", "LinearRegression", "BayesianLogisticRegression")
