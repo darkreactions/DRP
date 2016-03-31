@@ -57,7 +57,13 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         logger.debug("Running in Shell:\n{}".format(command))
         if verbose:
             print "Running in Shell:\n{}".format(command)
-        subprocess.check_output(command, shell=True)
+        #subprocess.check_output(command, shell=True)
+        wekaProc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True, shell=True) 
+        wekaProc.wait()
+        if wekaProc.returncode == 0:
+            res, resErr = wekaProc.communicate()
+            if resErr:
+                raise RuntimeError("Weka returned an error: {}".format(resErr))
 
 
     def BCR_cost_matrix(self, reactions, response):

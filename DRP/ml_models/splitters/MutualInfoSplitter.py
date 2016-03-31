@@ -12,12 +12,12 @@ class Splitter(AbstractSplitter):
         self.num_splits = 15
 
     def split(self, reactions, verbose=False):
-        splits = [self.single_split(reactions, verbose=verbose) for i in xrange(self.num_splits)]
+        key_counts = self._count_compound_sets(reactions).items()
+        splits = [self._single_split(reactions, key_counts, verbose=verbose) for i in xrange(self.num_splits)]
         return splits
 
-    def single_split(self, reactions, verbose=False):
+    def _single_split(self, reactions, key_counts, verbose=False):
         # Partition the reactions based on what compounds they contain.
-        key_counts = self._count_compound_sets(reactions).items()
         random.shuffle(key_counts)
 
         max_test_size = self.TEST_PERCENT*sum(count for key, count in key_counts)
