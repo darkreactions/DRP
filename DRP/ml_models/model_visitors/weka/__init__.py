@@ -8,5 +8,6 @@ from M5P import M5P
 from LinearRegression import LinearRegression
 from bayesianLogisticRegression import BayesianLogisticRegression
 from logisticRegression import LogisticRegression
+from randomForest import RandomForest
 
-tools = ("SVM_PUK_basic", "SVM_PUK_BCR", "KNN", "NaiveBayes", "J48", "M5P", "LinearRegression", "BayesianLogisticRegression", "LogisticRegression")
+tools = ("SVM_PUK_basic", "SVM_PUK_BCR", "KNN", "NaiveBayes", "J48", "M5P", "LinearRegression", "BayesianLogisticRegression", "LogisticRegression", "RandomForest")

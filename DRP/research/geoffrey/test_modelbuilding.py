@@ -7,7 +7,7 @@ from build_model import prepare_build_display_model
 django.setup()
 response_headers = ["boolean_crystallisation_outcome"]
 predictor_headers = ["reaction_temperature"]
-tools_to_test = ( "LogisticRegression", "SVM_PUK_basic", "SVM_PUK_BCR", "KNN", "NaiveBayes", "J48")
+tools_to_test = ("RandomForest", "LogisticRegression", "SVM_PUK_basic", "SVM_PUK_BCR", "KNN", "NaiveBayes", "J48")
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
 
