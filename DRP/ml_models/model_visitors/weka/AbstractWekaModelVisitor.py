@@ -115,6 +115,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
     def train(self, reactions, descriptorHeaders, filePath, verbose=False):
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose)
 
+        self.statsModel.inputFile = arff_file
+        self.statsModel.save(update_fields=['inputFile'])
+
         # Currently, we support only one "response" variable.
         headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
@@ -124,7 +127,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
     def predict(self, reactions, descriptorHeaders, verbose=False):
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
-        model_file = self.statsModel.fileName.name
+        model_file = self.statsModel.outputFile.name
 
         results_file = "{}_{}.out".format(self.statsModel.pk, uuid.uuid4())
         results_path = os.path.join(settings.TMP_DIR, results_file)

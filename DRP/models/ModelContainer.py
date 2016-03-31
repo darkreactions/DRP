@@ -248,7 +248,7 @@ class ModelContainer(models.Model):
             if verbose:
                 print "{} statsModel {}, saving to {}, training...".format(statsModel.startTime, statsModel.pk, fileName)
             modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName, verbose=verbose)
-            statsModel.fileName = fileName
+            statsModel.outputFile = fileName
             statsModel.endTime = datetime.datetime.now()
             if verbose:
                 print "\t...Trained. Finished at {}. Saving statsModel...".format(statsModel.endTime),
@@ -445,21 +445,3 @@ class ModelContainer(models.Model):
             
         return confusion_matrix_lol
 
-        
-              
-    def summarize(self):
-        """CAUTION: This is a temporary development function. Do not rely on it. """
-        """Return a string containing the Confusion Matrices for all stats_models."""
-        summaries = "\nK-Fold Validation:\n"
-
-        # Retrieve the overall summary.
-        for descriptor in self.predictsDescriptors:
-            if descriptor.statsModel is None:
-                summaries += "{} (overall) \n".format(descriptor.summarize())
-
-        # Retrieve the summaries for each component.
-        for model in self.statsmodel_set.all():
-            for descriptor in self.predictsDescriptors:
-                if descriptor.statsModel == model:
-                    summaries += "{} (component: {})\n".format(descriptor.summarize(), model.fileName)
-        return summaries

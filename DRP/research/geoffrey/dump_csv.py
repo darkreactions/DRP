@@ -25,7 +25,7 @@ def dump_csv(file_name, descriptor_headers, reaction_set_name=None):
 
 if __name__ == '__main__':
     django.setup()
-    parser = argparse.ArgumentParser(description='Builds a model', fromfile_prefix_chars='@',
+    parser = argparse.ArgumentParser(description='Dumps reactions to csv', fromfile_prefix_chars='@',
                                      epilog="Prefix arguments with '@' to specify a file containing newline"
                                      "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                      " to pass multiple descriptors from a file as predictors")
