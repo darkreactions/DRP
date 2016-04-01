@@ -17,6 +17,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
     def __init__(self, *args, **kwargs):
         if 'BCR' in kwargs:
             self.BCR = kwargs['BCR']
+        self.BCR = True
         
         super(AbstractWekaModelVisitor, self).__init__(*args, **kwargs)
 
@@ -106,19 +107,25 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
         return cost_matrix_string
 
-    @abstractmethod
-    def wekaTrainCommand(self, arff_file, filePath, response_index):
-        """
-        A function meant to be overridden by actual ModelVisitor classes.
-        Returns the appropriate weka train command.
-        """
+    #@abstractmethod
+    #def wekaTrainCommand(self, arff_file, filePath, response_index, weighted=False, cost_matrix=None):
+        #"""
+        #A function meant to be overridden by actual ModelVisitor classes.
+        #Returns the appropriate weka train command.
+        #"""
 
-    @abstractmethod
-    def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
+    def wekaTrainOptions(self):
         """
-        A function meant to be overridden by actual ModelVisitor classes.
-        Returns the appropriate weka prediction command.
+        Returns any additional commands specific to the classifier
         """
+        return ""
+
+    #@abstractmethod
+    #def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
+        #"""
+        #A function meant to be overridden by actual ModelVisitor classes.
+        #Returns the appropriate weka prediction command.
+        #"""
         
     def train(self, reactions, descriptorHeaders, filePath, verbose=False):
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose)
@@ -127,10 +134,15 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         self.statsModel.save(update_fields=['inputFile'])
 
         # Currently, we support only one "response" variable.
+        response = list(self.statsModel.container.outcomeDescriptors)[0]
         headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
-        response_index = headers.index(list(self.statsModel.container.outcomeDescriptors)[0].csvHeader) + 1
+        response_index = headers.index(response.csvHeader) + 1
 
-        command = self.wekaTrainCommand(arff_file, filePath, response_index)
+        if self.BCR:
+            cost_matrix_string = self.BCR_cost_matrix(reactions, response)
+            command = "java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix {} -W {} -t {} -d {} -p 0 -c {} -- {}".format(cost_matrix_string, self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions())
+        else:
+            command = "java {} -t {} -d {} -p 0 -c {} {}".format(self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions())
         self._runWekaCommand(command, verbose=verbose)
 
     def predict(self, reactions, descriptorHeaders, verbose=False):
@@ -146,7 +158,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         response_index = headers.index(response.csvHeader) + 1
 
         # TODO: Validate this input.
-        command = self.wekaPredictCommand(arff_file, model_file, response_index, results_path)
+        command = "java {} -T {} -l {} -p 0 -c {} 1> {}".format(self.wekaCommand, arff_file, model_file, response_index, results_path)
         if verbose:
             print "Writing results to {}".format(results_path)
         self._runWekaCommand(command, verbose=verbose)
