@@ -240,16 +240,14 @@ class ModelContainer(models.Model):
         m.descriptors = self.descriptors
         m.outcomeDescriptors = self.outcomeDescriptors
 
+        if self.statsmodel_set.all():
+            for sm in self.statsmodel_set.all():
+                statsModel = StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile)
+                statsModel.save()
+                statsModel.testSets = sm.testSets.all()
+        else:
+            raise RuntimeError('This model container was never properly constructed, so it cannot be duplicated. (It has no stats models)')
 
-        for trainingSet, testSet in data_splits:
-            statsModel = StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile)
-            statsModel.save()
-            statsModel.testSets.add(testSet)
-
-        print m.pk
-        for sm in statsModels:
-            print sm.container.pk
-        m.save()
         print m.statsmodel_set.all()
         exit()
 
