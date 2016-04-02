@@ -154,8 +154,8 @@ class ModelContainer(models.Model):
     #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
     
     # TODO XXX these should be validated as json or implemented another way (e.g. key-value store in another table)
-    modelVisitorOptions = models.TextField(null=False, blank=True, default="")
-    splitterOptions = models.TextField(null=False, blank=True, default="")
+    modelVisitorOptions = models.TextField(null=False, blank=True, default="{}")
+    splitterOptions = models.TextField(null=False, blank=True, default="{}")
     
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
@@ -188,7 +188,7 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, splitterOptions={}, visitorOptions={}, description="",
+    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, splitterOptions=None, visitorOptions=None, description="",
                splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
@@ -197,7 +197,7 @@ class ModelContainer(models.Model):
         if not ((splitter is None) ^ (trainingSets is None)): # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
-        if splitterOptions:
+        if splitterOptions is not None:
             if splitter is None:
                 raise ValidationError('Cannot define splitter options with no splitter')
             else:
@@ -210,7 +210,7 @@ class ModelContainer(models.Model):
         if splitter is not None:
             model_container.splitter = splitter
             splitter_name_stub = "{}_{}_{}".format(model_container.modelVisitorLibrary, model_container.modelVisitorTool, model_container.pk)
-            splitterObj = splitters[model_container.splitter].Splitter(splitter_name_stub, **splitterOptions)
+            splitterObj = splitters[model_container.splitter].Splitter(splitter_name_stub, **json.loads(model_container.splitterOptions))
             if verbose:
                 print "Splitting using {}".format(model_container.splitter)
             data_splits = splitterObj.split(reactions, verbose=verbose)
@@ -226,23 +226,26 @@ class ModelContainer(models.Model):
 
         return model_container
 
-    def create_duplicate(self, modelVisitorTool=None, description=None):
+    def create_duplicate(self, modelVisitorTool=None,  modelVisitorOptions=None, description=None):
         """
         Builds a duplicate of this model container optionally with a different model visitor tool.
         If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
         """
-        blacklist_fields = ['built', 'active', 'fully_trained']
-        fields = [field.name for field in self._meta.get_fields() if (not field.auto_created and not field.is_relation and field.name not in blacklist_fields)]
+        fields = ['description', 'splitter', 'splitterOptions', 'modelVisitorLibrary', 'modelVisitorTool', 'modelVisitorOptions']
         field_dict = ModelContainer.objects.filter(pk=self.pk).values(*fields)[0]
+
         if modelVisitorTool is not None:
-            
             field_dict['modelVisitorTool'] = modelVisitorTool
+        if modelVisitorOptions is not None:
+            field_dict['modelVisitorOptions'] = json.dumps(modelVisitorOptions)
         if description is not None:
             field_dict['description'] = description
         else:
             addendum = u' rebuilt'
             if modelVisitorTool is not None:
                 addendum += ' with tool {}'.format(modelVisitorTool)
+            if modelVisitorOptions is not None:
+                addendum += ' with options {}'.format(modelVisitorOptions)
             field_dict['description'] += addendum
 
         m = ModelContainer(**field_dict)
