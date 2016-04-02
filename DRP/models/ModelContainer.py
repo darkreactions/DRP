@@ -289,7 +289,7 @@ class ModelContainer(models.Model):
                 if verbose:
                     print "Predicting test set..."
                 statsModel.testSets.add(testSet)
-                predictions = modelVisitor.predict(testSet.reactions.all(), whitelist, verbose=verbose)
+                predictions = modelVisitor.predict(testSet.reactions.all(), verbose=verbose)
                 if verbose:
                     print "\t...finished predicting. Storing predictions...",
                 newResDict = self._storePredictionComponents(predictions, statsModel)

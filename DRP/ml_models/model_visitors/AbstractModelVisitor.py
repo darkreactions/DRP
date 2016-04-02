@@ -21,7 +21,7 @@ class AbstractModelVisitor(object):
               classification and save that model if necessary."""
 
     @abstractmethod
-    def predict(self, reactions, descriptorHeaders, verbose=False):
+    def predict(self, reactions, verbose=False):
         """Return a dictionary where the key is the response descriptor being
            predicted and the value is list of prediction tuples for that
            response where the ith prediction corresponds to the ith reaction.

@@ -146,7 +146,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
             command = "java {} -t {} -d {} -p 0 -c {} {}".format(self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions())
         self._runWekaCommand(command, verbose=verbose)
 
-    def predict(self, reactions, descriptorHeaders, verbose=False):
+    def predict(self, reactions, verbose=False):
+        descriptorHeaders = [d.csvHeader for d in chain(self.statsModel.container.descriptors, self.statsModel.container.outcomeDescriptors)]
+        
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
         model_file = self.statsModel.outputFile.name
 
