@@ -216,6 +216,7 @@ class ModelContainer(models.Model):
         blacklist_fields = ['built', 'active', 'fully_trained']
         fields = [field.name for field in self._meta.get_fields() if (not field.auto_created and not field.is_relation and field.name not in blacklist_fields)]
         field_dict = ModelContainer.objects.filter(pk=self.pk).values(*fields)[0]
+        print field_dict
 
         if modelVisitorTool is not None:
             field_dict['modelVisitorTool'] = modelVisitorTool
@@ -228,7 +229,6 @@ class ModelContainer(models.Model):
             field_dict['description'] += addendum
 
         m = ModelContainer(**field_dict)
-
         m.save()
 
         statsModels = [StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile) for sm in self.statsmodel_set.all()]
@@ -243,14 +243,7 @@ class ModelContainer(models.Model):
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
 
-    def build(self, verbose=False):
-        if self.built:
-            raise RuntimeError("Cannot build a model that has already been built.")
-
-        if verbose:
-            print "Starting building at {}".format(datetime.datetime.now())
-
-
+    def create_statsModels(self, verbose=False):
         if self.trainingSets is None:
             splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))
             if verbose:
@@ -261,17 +254,29 @@ class ModelContainer(models.Model):
             self.testSets = [dataset_tuple[1] for dataset_tuple in data_splits]
         elif verbose:
             print "Using given test and training sets."
+            
+        for trainingSet, testSet in zip(self.trainingSets, self.testSets):
+            statsModel = StatsModel(container=self, trainingSet=trainingSet)
+            statsModel.save()
+            statsModel.testSets.add(testSet)
+
+    def build(self, verbose=False):
+        if self.built:
+            raise RuntimeError("Cannot build a model that has already been built.")
+        
+        if verbose:
+            print "Starting building at {}".format(datetime.datetime.now())
+
+        self.create_statsModels(verbose=verbose)
         
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
-        num_models = len(self.trainingSets)
+        num_models = self.statsmodel_set.all().count()
         num_finished = 0
         overall_start_time = datetime.datetime.now()
-        for trainingSet, testSet in zip(self.trainingSets, self.testSets):
-            statsModel = StatsModel(container=self, trainingSet=trainingSet)
-            modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
-            statsModel.save() #Generate a PK for the StatsModel component.
 
+        for statsModel in self.statsmodel_set.all():
+            modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
             fileName = os.path.join(settings.MODEL_DIR, '{}_{}_{}_{}.model'.format(self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
@@ -288,41 +293,41 @@ class ModelContainer(models.Model):
             
 
             # Test the model.
-            if testSet.reactions.count() > 0:
-                if verbose:
-                    print "Predicting test set..."
-                statsModel.testSets.add(testSet)
-                predictions = modelVisitor.predict(testSet.reactions.all(), verbose=verbose)
-                if verbose:
-                    print "\t...finished predicting. Storing predictions...",
-                newResDict = self._storePredictionComponents(predictions, statsModel)
-    
-                # Update the overall result-dictionary with these new counts.
-                for reaction, responseDict in newResDict.items():
-                    for response, outcomeDict in responseDict.items():
-                        for outcome, count in outcomeDict.items():
-                            if reaction not in resDict:
-                                resDict[reaction] = {}
-                            if response not in resDict[reaction]:
-                                resDict[reaction][response] = {}
-    
-                            if outcome not in resDict[reaction][response]:
-                                resDict[reaction][response][outcome] = count
-                            resDict[reaction][response][outcome] += count
-                
-                if verbose:
-                    print "predictions stored."
-                    for response in self.outcomeDescriptors:
-                        predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=statsModel, predictionOf=response)
-                        conf_mtrx = predDesc.getConfusionMatrix()
-                        
-                        print "Confusion matrix for {}:".format(predDesc.heading)
-                        print confusionMatrixString(conf_mtrx)
-                        print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
-                        print "BCR: {:.3}".format(BCR(conf_mtrx))
+            for testSet in statsModel.testSets.all():
+                if testSet.reactions.all().count() != 0:
+                    if verbose:
+                        print "Predicting test set..."
+                    predictions = modelVisitor.predict(testSet.reactions.all(), verbose=verbose)
+                    if verbose:
+                        print "\t...finished predicting. Storing predictions...",
+                    newResDict = self._storePredictionComponents(predictions, statsModel)
+        
+                    # Update the overall result-dictionary with these new counts.
+                    for reaction, responseDict in newResDict.items():
+                        for response, outcomeDict in responseDict.items():
+                            for outcome, count in outcomeDict.items():
+                                if reaction not in resDict:
+                                    resDict[reaction] = {}
+                                if response not in resDict[reaction]:
+                                    resDict[reaction][response] = {}
+        
+                                if outcome not in resDict[reaction][response]:
+                                    resDict[reaction][response][outcome] = count
+                                resDict[reaction][response][outcome] += count
+                    
+                    if verbose:
+                        print "predictions stored."
+                        for response in self.outcomeDescriptors:
+                            predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=statsModel, predictionOf=response)
+                            conf_mtrx = predDesc.getConfusionMatrix()
+                            
+                            print "Confusion matrix for {}:".format(predDesc.heading)
+                            print confusionMatrixString(conf_mtrx)
+                            print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
+                            print "BCR: {:.3}".format(BCR(conf_mtrx))
             
-            elif verbose:
-                print "Test set is empty."
+                elif verbose:
+                    print "Test set is empty."
 
             if verbose:
                 num_finished += 1

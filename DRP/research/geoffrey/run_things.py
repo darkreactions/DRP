@@ -7,4 +7,6 @@ from sys import argv
 
 m = ModelContainer.objects.order_by('-pk')[0]
 
-m.create_duplicate()
+new_m = m.create_duplicate()
+
+new_m.build(verbose=True)
