@@ -204,6 +204,33 @@ class ModelContainer(models.Model):
 
         return model_container
 
+    def create_duplicate(self, modelVisitorTool=None, description=None):
+        """
+        Builds a duplicate of this model container optionally with a different model visitor tool
+        """
+        blacklist_fields = ['built', 'active', 'fully_trained']
+        fields = [field.name for field in self._meta.get_fields() if (not field.auto_created and not field.is_relation and field.name not in blacklist_fields)]
+        field_dict = ModelContainer.objects.filter(pk=self.pk).values(*fields)[0]
+
+        if modelVisitorTool is not None:
+            field_dict['modelVisitorTool'] = modelVisitorTool
+        if description is not None:
+            field_dict['description'] = description
+        else:
+            addendum = u' rebuilt'
+            if modelVisitorTool is not None:
+                addendum += ' with tool {}'.format(modelVisitorTool)
+            field_dict['description'] += addendum
+
+        m = ModelContainer(**field_dict)
+
+        m.save()
+
+        statsModels = [StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile) for sm in self.statsmodel_set.all()]
+        StatsModel.objects.bulk_create(statsModels)
+
+        return m
+        
     def clean(self):
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
@@ -221,7 +248,7 @@ class ModelContainer(models.Model):
         self.descriptors = predictors
         self.outcomeDescriptors = response
 
-        if self.splitter:
+        if self.trainingSets is None:
             splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))
             if verbose:
                 print "Splitting using {}".format(self.splitter)
@@ -230,10 +257,9 @@ class ModelContainer(models.Model):
             self.trainingSets = [dataset_tuple[0] for dataset_tuple in data_splits]
             self.testSets = [dataset_tuple[1] for dataset_tuple in data_splits]
         elif verbose:
-            print "No splitter. Using given test and training sets."
+            print "Using given test and training sets."
         
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
-
 
         num_models = len(self.trainingSets)
         num_finished = 0
@@ -246,11 +272,10 @@ class ModelContainer(models.Model):
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
             fileName = os.path.join(settings.MODEL_DIR, '{}_{}_{}_{}.model'.format(self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
-            whitelist = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
+            statsModel.outputFile = fileName
             if verbose:
                 print "{} statsModel {}, saving to {}, training...".format(statsModel.startTime, statsModel.pk, fileName)
-            modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName, verbose=verbose)
-            statsModel.outputFile = fileName
+            modelVisitor.train(verbose=verbose)
             statsModel.endTime = datetime.datetime.now()
             if verbose:
                 print "\t...Trained. Finished at {}. Saving statsModel...".format(statsModel.endTime),

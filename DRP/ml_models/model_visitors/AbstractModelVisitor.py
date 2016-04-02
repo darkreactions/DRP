@@ -15,7 +15,7 @@ class AbstractModelVisitor(object):
         self.statsModel = statsModel
 
     @abstractmethod
-    def train(self, reactions, descriptorHeaders, filePath, verbose=False):
+    def train(self, verbose=False):
         """A function meant to be overridden by actual ModelVisitor classes.
               The `_train` method should prepare the machine learning model for
               classification and save that model if necessary."""
