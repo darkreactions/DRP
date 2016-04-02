@@ -7,12 +7,21 @@ import argparse
 from django.db.utils import OperationalError
 from time import sleep
 from utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
+from django.conf import settings
+import ast
 
-def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None, description="", verbose=False):
+def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
+                description="", verbose=False, splitter_options=None):
+
+    # This way of accepting splitter options is bad and hacky.
+    # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
+    splitterOptions = ast.literal_eval(splitter_options) if splitter_options is not None else None
     if trainingSet is not None:
-        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions, trainingSets=[trainingSet], testSets=[testSet], verbose=verbose)
+        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
+                                          trainingSets=[trainingSet], testSets=[testSet], verbose=verbose, splitterOptions=splitterOptions)
     else:
-        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions, splitter=splitter, verbose=verbose)
+        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
+                                          splitter=splitter, verbose=verbose, splitterOptions=splitterOptions)
 
     container.full_clean()
     container.build(verbose=verbose)
@@ -59,7 +68,8 @@ def display_model_results(container):
     print "Average accuracy: {:.3}".format(sum_acc/count)
     print "Average BCR: {:.3}".format(sum_bcr/count)
 
-def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, reaction_set_name=None, description="", verbose=False):
+def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
+                        test_set_name=None, reaction_set_name=None, description="", verbose=False, splitter_options=None):
     """
     Build a model with the specified tools
     """
@@ -98,7 +108,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
             container = build_model(reactions=reactions, predictors=predictors, responses=responses, 
                                     modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
                                     splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
-                                    description=description, verbose=verbose)
+                                    description=description, verbose=verbose, splitter_options=splitter_options)
             break
         except OperationalError, e:
             print "Caught OperationalError {}: {}".format(e.args[0], e.args[1])
@@ -109,9 +119,10 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
 
     return container
     
-def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None, reaction_set_name=None, description="", verbose=False):
+def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
+                                reaction_set_name=None, description="", verbose=False, splitter_options=None):
 
-    container = prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description, verbose=verbose)
+    container = prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description, verbose=verbose, splitter_options=splitter_options)
 
     display_model_results(container)
 
@@ -129,11 +140,11 @@ if __name__ == '__main__':
                         'Note that most models can only handle one response variable (default: %(default)s)')
     parser.add_argument('-ml', '--model-library', default="weka",
                         help='Model visitor library to use. (default: %(default)s)')
-    parser.add_argument('-mt', '--model-tool', default="SVM_PUK_basic",
+    parser.add_argument('-mt', '--model-tool', default="SVM_PUK",
                         help='Model visitor tool from library to use. (default: %(default)s)')
-    parser.add_argument('-s', '--splitter', default="KFoldSplitter",
+    parser.add_argument('-s', '--splitter', default="KFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
                         help='Splitter to use. (default: %(default)s)')
-    parser.add_argument('-v', dest='verbose', action='store_true',
+    parser.add_argument('-v', '--verbose', action='store_true',
                         help='Activate verbose mode.')
     parser.add_argument('-d', '--description', default="",
                         help='Description of model. (default: %(default)s)')
@@ -143,7 +154,10 @@ if __name__ == '__main__':
                         help='The name of the test set to use. (default: %(default)s)')
     parser.add_argument('-rxn', '--reaction-set-name', default=None,
                         help='The name of the reactions to use as a whole dataset')
+    parser.add_argument('-so', '--splitter-options', default=None,
+                        help='A dictionary of the options to give to the splitter in JSON format')
+                        
     args = parser.parse_args()
 
     prepare_build_display_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTool=args.model_tool,
-                                splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name, description=args.description, verbose=args.verbose)
+                                splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name, description=args.description, verbose=args.verbose, splitter_options=args.splitter_options)

@@ -13,7 +13,7 @@ class Splitter(AbstractSplitter):
         self.num_splits = num_splits
 
         if min_train_size < 10:
-            warnings.warn('Min train size is only {}. Weka requires at least 10 training points for SVMs')
+            warnings.warn('Minimum train size is only {}. Weka requires at least 10 training points for SVMs')
 
     def split(self, reactions, verbose=False):
         key_counts = self._count_compound_sets(reactions).items()
