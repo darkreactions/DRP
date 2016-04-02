@@ -1,18 +1,13 @@
+#!/usr/bin/env python
 import django
 django.setup()
 from DRP.models import ModelContainer
 import build_model
 from sys import argv
 
-model_name = argv[1]
-desc_tail = ' BCR Weighted. Legacy rxns. New descriptors with CA at rxn pH NonzeroVariance. 15 mutual info split.'
-desc = model_name + desc_tail
 
-m = ModelContainer.objects.get(description=desc)
+m = ModelContainer.objects.filter(statsmodel__isnull=False).order_by('-pk')[0]
 
-print m.description
-print 'pk: {}'.format(m.pk)
-print m.splitter
-print m.modelVisitorLibrary, m.modelVisitorTool
+new_m = m.create_duplicate(modelVisitorTool='J48')
 
-build_model.display_model_results(m)
+new_m.build(verbose=True)

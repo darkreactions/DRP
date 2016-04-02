@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from numpy import average
-from itertools import chain
+from itertools import chain, izip_longest
 import random
 import datetime
 import importlib
@@ -187,7 +187,7 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, description="", splitter=None, reactions=None, trainingSets=None, testSets=None):
+    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, description="", splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
         if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
@@ -195,15 +195,61 @@ class ModelContainer(models.Model):
         if not ((splitter is None) ^ (trainingSets is None)): # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
+        model_container.save()
+
         if splitter is not None:
             model_container.splitter = splitter
+            splitterObj = splitters[model_container.splitter].Splitter("{}_{}_{}".format(model_container.modelVisitorLibrary, model_container.modelVisitorTool, model_container.pk))
+            if verbose:
+                print "Splitting using {}".format(model_container.splitter)
+            data_splits = splitterObj.split(reactions, verbose=verbose)
+        else:
+            if verbose:
+                print "Using given test and training sets."
+            data_splits = izip_longest(trainingSets, testSets) #we want the trainingset even if there's no test set
+            
+        data_splits = model_container.createStatsModels(data_splits, verbose=verbose)
 
-        model_container.reactions = reactions
-        model_container.trainingSets = trainingSets
-        model_container.testSets = testSets
+        model_container.descriptors = predictors
+        model_container.outcomeDescriptors = responses
 
         return model_container
 
+    def create_duplicate(self, modelVisitorTool=None, description=None):
+        """
+        Builds a duplicate of this model container optionally with a different model visitor tool.
+        If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
+        """
+        blacklist_fields = ['built', 'active', 'fully_trained']
+        fields = [field.name for field in self._meta.get_fields() if (not field.auto_created and not field.is_relation and field.name not in blacklist_fields)]
+        field_dict = ModelContainer.objects.filter(pk=self.pk).values(*fields)[0]
+        if modelVisitorTool is not None:
+            
+            field_dict['modelVisitorTool'] = modelVisitorTool
+        if description is not None:
+            field_dict['description'] = description
+        else:
+            addendum = u' rebuilt'
+            if modelVisitorTool is not None:
+                addendum += ' with tool {}'.format(modelVisitorTool)
+            field_dict['description'] += addendum
+
+        m = ModelContainer(**field_dict)
+        m.save()
+
+        m.descriptors = self.descriptors
+        m.outcomeDescriptors = self.outcomeDescriptors
+
+        if self.statsmodel_set.all():
+            for sm in self.statsmodel_set.all():
+                statsModel = StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile)
+                statsModel.save()
+                statsModel.testSets = sm.testSets.all()
+        else:
+            raise RuntimeError('This model container was never properly constructed, so it cannot be duplicated. (It has no stats models)')
+
+        return m
+        
     def clean(self):
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
@@ -211,46 +257,33 @@ class ModelContainer(models.Model):
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
 
-    def build(self, predictors, response, verbose=False):
+    def createStatsModels(self, data_splits, verbose=False):
+        for trainingSet, testSet in data_splits:
+            statsModel = StatsModel(container=self, trainingSet=trainingSet)
+            statsModel.save()
+            statsModel.testSets.add(testSet)
+
+    def build(self, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
-
+        
         if verbose:
             print "Starting building at {}".format(datetime.datetime.now())
 
-        self.descriptors = predictors
-        self.outcomeDescriptors = response
-
-        if self.splitter:
-            splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))
-            if verbose:
-                print "Splitting using {}".format(self.splitter)
-            data_splits = splitterObj.split(self.reactions, verbose=verbose)
-
-            self.trainingSets = [dataset_tuple[0] for dataset_tuple in data_splits]
-            self.testSets = [dataset_tuple[1] for dataset_tuple in data_splits]
-        elif verbose:
-            print "No splitter. Using given test and training sets."
-        
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
-
-        num_models = len(self.trainingSets)
+        num_models = self.statsmodel_set.all().count()
         num_finished = 0
         overall_start_time = datetime.datetime.now()
-        for trainingSet, testSet in zip(self.trainingSets, self.testSets):
-            statsModel = StatsModel(container=self, trainingSet=trainingSet)
+        for statsModel in self.statsmodel_set.all():
             modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
-            statsModel.save() #Generate a PK for the StatsModel component.
-
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
             fileName = os.path.join(settings.MODEL_DIR, '{}_{}_{}_{}.model'.format(self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
-            whitelist = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
+            statsModel.outputFile = fileName
             if verbose:
                 print "{} statsModel {}, saving to {}, training...".format(statsModel.startTime, statsModel.pk, fileName)
-            modelVisitor.train(trainingSet.reactions.all(), whitelist, fileName, verbose=verbose)
-            statsModel.outputFile = fileName
+            modelVisitor.train(verbose=verbose)
             statsModel.endTime = datetime.datetime.now()
             if verbose:
                 print "\t...Trained. Finished at {}. Saving statsModel...".format(statsModel.endTime),
@@ -260,41 +293,41 @@ class ModelContainer(models.Model):
             
 
             # Test the model.
-            if testSet.reactions.count() > 0:
-                if verbose:
-                    print "Predicting test set..."
-                statsModel.testSets.add(testSet)
-                predictions = modelVisitor.predict(testSet.reactions.all(), whitelist, verbose=verbose)
-                if verbose:
-                    print "\t...finished predicting. Storing predictions...",
-                newResDict = self._storePredictionComponents(predictions, statsModel)
-    
-                # Update the overall result-dictionary with these new counts.
-                for reaction, responseDict in newResDict.items():
-                    for response, outcomeDict in responseDict.items():
-                        for outcome, count in outcomeDict.items():
-                            if reaction not in resDict:
-                                resDict[reaction] = {}
-                            if response not in resDict[reaction]:
-                                resDict[reaction][response] = {}
-    
-                            if outcome not in resDict[reaction][response]:
-                                resDict[reaction][response][outcome] = count
-                            resDict[reaction][response][outcome] += count
-                
-                if verbose:
-                    print "predictions stored."
-                    for response in self.outcomeDescriptors:
-                        predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=statsModel, predictionOf=response)
-                        conf_mtrx = predDesc.getConfusionMatrix()
-                        
-                        print "Confusion matrix for {}:".format(predDesc.heading)
-                        print confusionMatrixString(conf_mtrx)
-                        print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
-                        print "BCR: {:.3}".format(BCR(conf_mtrx))
+            for testSet in statsModel.testSets.all():
+                if testSet.reactions.all().count() != 0:
+                    if verbose:
+                        print "Predicting test set..."
+                    predictions = modelVisitor.predict(testSet.reactions.all(), verbose=verbose)
+                    if verbose:
+                        print "\t...finished predicting. Storing predictions...",
+                    newResDict = self._storePredictionComponents(predictions, statsModel)
+        
+                    # Update the overall result-dictionary with these new counts.
+                    for reaction, responseDict in newResDict.items():
+                        for response, outcomeDict in responseDict.items():
+                            for outcome, count in outcomeDict.items():
+                                if reaction not in resDict:
+                                    resDict[reaction] = {}
+                                if response not in resDict[reaction]:
+                                    resDict[reaction][response] = {}
+        
+                                if outcome not in resDict[reaction][response]:
+                                    resDict[reaction][response][outcome] = count
+                                resDict[reaction][response][outcome] += count
+                    
+                    if verbose:
+                        print "predictions stored."
+                        for response in self.outcomeDescriptors:
+                            predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=statsModel, predictionOf=response)
+                            conf_mtrx = predDesc.getConfusionMatrix()
+                            
+                            print "Confusion matrix for {}:".format(predDesc.heading)
+                            print confusionMatrixString(conf_mtrx)
+                            print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
+                            print "BCR: {:.3}".format(BCR(conf_mtrx))
             
-            elif verbose:
-                print "Test set is empty."
+                elif verbose:
+                    print "Test set is empty."
 
             if verbose:
                 num_finished += 1

@@ -15,13 +15,13 @@ class AbstractModelVisitor(object):
         self.statsModel = statsModel
 
     @abstractmethod
-    def train(self, reactions, descriptorHeaders, filePath, verbose=False):
+    def train(self, verbose=False):
         """A function meant to be overridden by actual ModelVisitor classes.
               The `_train` method should prepare the machine learning model for
               classification and save that model if necessary."""
 
     @abstractmethod
-    def predict(self, reactions, descriptorHeaders, verbose=False):
+    def predict(self, reactions, verbose=False):
         """Return a dictionary where the key is the response descriptor being
            predicted and the value is list of prediction tuples for that
            response where the ith prediction corresponds to the ith reaction.

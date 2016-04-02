@@ -7,8 +7,9 @@ from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescrip
 from django.core.exceptions import ImproperlyConfigured
 import subprocess
 import os
-from abc import abstractmethod
-
+from abc import abstractmethod, abstractproperty
+import warnings
+from itertools import chain
 
 class AbstractWekaModelVisitor(AbstractModelVisitor):
 
@@ -22,6 +23,12 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         super(AbstractWekaModelVisitor, self).__init__(*args, **kwargs)
 
         self.WEKA_VERSION = "3.6"  # The version of WEKA to use.
+
+        # This is a bit hackier, but I don't think abstractattribute is implemented in abc
+        try:
+            self.wekaCommand
+        except AttributeError:
+            raise NotImplementedError('Subclasses of AbstractWekaModelVisitor must define wekaCommand')
 
     def _prepareArff(self, reactions, whitelistHeaders, verbose=False):
         """Writes an *.arff file using the provided queryset of reactions."""
@@ -59,6 +66,8 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         if verbose:
             print "Running in Shell:\n{}".format(command)
         subprocess.check_output(command, shell=True)
+        # TODO XXX. figure out some way to throw an error if weka errors (sends stuff to stderr. weka does not generate proper return codes)
+        # This broke things in some cases for reasons not clear to me
         # wekaProc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True, shell=True) 
         # wekaProc.wait()
         # if wekaProc.returncode == 0:
@@ -107,31 +116,29 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
         return cost_matrix_string
 
-    #@abstractmethod
-    #def wekaTrainCommand(self, arff_file, filePath, response_index, weighted=False, cost_matrix=None):
-        #"""
-        #A function meant to be overridden by actual ModelVisitor classes.
-        #Returns the appropriate weka train command.
-        #"""
-
     def wekaTrainOptions(self):
         """
         Returns any additional commands specific to the classifier
         """
         return ""
 
-    #@abstractmethod
-    #def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
-        #"""
-        #A function meant to be overridden by actual ModelVisitor classes.
-        #Returns the appropriate weka prediction command.
-        #"""
-        
-    def train(self, reactions, descriptorHeaders, filePath, verbose=False):
-        arff_file = self._prepareArff(reactions, descriptorHeaders, verbose)
+    def train(self, verbose=False):
+        reactions = self.statsModel.trainingSet.reactions.all()
+        # TODO XXX update this to make use of csvHeader as a query
+        descriptorHeaders = [d.csvHeader for d in chain(self.statsModel.container.descriptors, self.statsModel.container.outcomeDescriptors)]
+        filePath = self.statsModel.outputFile.name
+        if not self.statsModel.inputFile.name:
+            self.statsModel.inputFile = self._prepareArff(reactions, descriptorHeaders, verbose)
+            self.statsModel.save(update_fields=['inputFile'])
+        elif not os.path.isfile(self.statsModel.inputFile.name):
+            if self.invalid:
+                raise RuntimeError('Could not find statsModel arff file and model is invalid')
+            else:
+                raise warning.warn('Could not find statsModel arff file, but model is valid, so recreating')
+                self.statsModel.inputFile.name = self._prepareArff(reactions, descriptorHeaders, verbose)
+                self.statsModel.save(update_fields=['inputFile'])
 
-        self.statsModel.inputFile = arff_file
-        self.statsModel.save(update_fields=['inputFile'])
+        arff_file = self.statsModel.inputFile.name
 
         # Currently, we support only one "response" variable.
         response = list(self.statsModel.container.outcomeDescriptors)[0]
@@ -145,7 +152,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
             command = "java {} -t {} -d {} -p 0 -c {} {}".format(self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions())
         self._runWekaCommand(command, verbose=verbose)
 
-    def predict(self, reactions, descriptorHeaders, verbose=False):
+    def predict(self, reactions, verbose=False):
+        descriptorHeaders = [d.csvHeader for d in chain(self.statsModel.container.descriptors, self.statsModel.container.outcomeDescriptors)]
+        
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
         model_file = self.statsModel.outputFile.name
 
