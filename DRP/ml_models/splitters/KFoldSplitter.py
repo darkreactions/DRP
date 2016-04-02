@@ -2,9 +2,9 @@ from AbstractSplitter import AbstractSplitter
 import random
 
 class Splitter(AbstractSplitter):
-    def __init__(self, namingStub):
+    def __init__(self, namingStub, num_folds=4):
         super(Splitter, self).__init__(namingStub)
-        self.k = 4
+        self.k = num_folds
 
     def split(self, reactions, verbose=False):
         # Split the reactions' IDs into K randomly-organized buckets.

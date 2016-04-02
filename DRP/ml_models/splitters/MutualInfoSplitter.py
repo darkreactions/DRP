@@ -2,14 +2,18 @@ from AbstractSplitter import AbstractSplitter
 from DRP.models.Compound import Compound
 from django.db.models import Count
 import random
+import warnings
 
 class Splitter(AbstractSplitter):
-    def __init__(self, namingStub):
+    def __init__(self, namingStub, num_splits=1, max_partition_size=35, test_percent=0.3, min_train_size=10):
         super(Splitter, self).__init__(namingStub)
-        self.TEST_PERCENT = 0.30
-        self.MAX_PARTITION_SIZE = 35 # Magic # TODO: Please de-magic this.
-        self.MIN_TRAIN_SIZE = 10 # WEKA requires at least 10 training points for SVMs.
-        self.num_splits = 15
+        self.test_percent = test_percent
+        self.max_partition_size = max_partition_size
+        self.min_train_size = min_train_size
+        self.num_splits = num_splits
+
+        if min_train_size < 10:
+            warnings.warn('Min train size is only {}. Weka requires at least 10 training points for SVMs')
 
     def split(self, reactions, verbose=False):
         key_counts = self._count_compound_sets(reactions).items()
@@ -20,16 +24,16 @@ class Splitter(AbstractSplitter):
         # Partition the reactions based on what compounds they contain.
         random.shuffle(key_counts)
 
-        max_test_size = self.TEST_PERCENT*sum(count for key, count in key_counts)
+        max_test_size = self.test_percent*sum(count for key, count in key_counts)
         test_size = 0
         train_size = 0
 
         # Determine which partitions should be tested.
         test_keys = []
         for key, count in key_counts:
-            if train_size < self.MIN_TRAIN_SIZE:
+            if train_size < self.min_train_size:
                 train_size += count
-            elif test_size < max_test_size and count <= self.MAX_PARTITION_SIZE:
+            elif test_size < max_test_size and count <= self.max_partition_size:
                 test_keys.append((key, count))
                 test_size += count
 
