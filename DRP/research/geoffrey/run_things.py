@@ -8,6 +8,6 @@ from sys import argv
 
 m = ModelContainer.objects.filter(statsmodel__isnull=False).order_by('-pk')[0]
 
-new_m = m.create_duplicate()
+new_m = m.create_duplicate(modelVisitorTool='J48')
 
 new_m.build(verbose=True)

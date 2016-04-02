@@ -217,14 +217,14 @@ class ModelContainer(models.Model):
 
     def create_duplicate(self, modelVisitorTool=None, description=None):
         """
-        Builds a duplicate of this model container optionally with a different model visitor tool
+        Builds a duplicate of this model container optionally with a different model visitor tool.
+        If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
         """
         blacklist_fields = ['built', 'active', 'fully_trained']
         fields = [field.name for field in self._meta.get_fields() if (not field.auto_created and not field.is_relation and field.name not in blacklist_fields)]
         field_dict = ModelContainer.objects.filter(pk=self.pk).values(*fields)[0]
-        print field_dict
-
         if modelVisitorTool is not None:
+            
             field_dict['modelVisitorTool'] = modelVisitorTool
         if description is not None:
             field_dict['description'] = description
@@ -247,9 +247,6 @@ class ModelContainer(models.Model):
                 statsModel.testSets = sm.testSets.all()
         else:
             raise RuntimeError('This model container was never properly constructed, so it cannot be duplicated. (It has no stats models)')
-
-        print m.statsmodel_set.all()
-        exit()
 
         return m
         
