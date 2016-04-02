@@ -187,7 +187,7 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, description="", splitter=None, reactions=None, trainingSets=None, testSets=None):
+    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, description="", splitter=None, reactions=None, trainingSets=None, testSets=None):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
         if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
@@ -201,6 +201,11 @@ class ModelContainer(models.Model):
         model_container.reactions = reactions
         model_container.trainingSets = trainingSets
         model_container.testSets = testSets
+
+        model_container.save()
+
+        model_container.descriptors = predictors
+        model_container.outcomeDescriptors = responses
 
         return model_container
 
@@ -238,15 +243,13 @@ class ModelContainer(models.Model):
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
 
-    def build(self, predictors, response, verbose=False):
+    def build(self, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
 
         if verbose:
             print "Starting building at {}".format(datetime.datetime.now())
 
-        self.descriptors = predictors
-        self.outcomeDescriptors = response
 
         if self.trainingSets is None:
             splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))

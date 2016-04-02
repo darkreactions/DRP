@@ -24,6 +24,11 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
         self.WEKA_VERSION = "3.6"  # The version of WEKA to use.
 
+        try:
+            self.wekaCommand
+        except AttributeError:
+            raise NotImplementedError('Subclasses of AbstractWekaModelVisitor must define wekaCommand')
+
     def _prepareArff(self, reactions, whitelistHeaders, verbose=False):
         """Writes an *.arff file using the provided queryset of reactions."""
         logger.debug("Preparing ARFF file...")
