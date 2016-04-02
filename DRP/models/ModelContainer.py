@@ -267,7 +267,8 @@ class ModelContainer(models.Model):
         if verbose:
             print "Starting building at {}".format(datetime.datetime.now())
 
-        self.create_statsModels(verbose=verbose)
+        if not self.statsmodel_set.all():
+            self.create_statsModels(verbose=verbose)
         
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
