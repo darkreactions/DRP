@@ -13,6 +13,7 @@ from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRx
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from StatsModel import StatsModel
 from DRP.research.geoffrey.utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
+import json
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
 
@@ -153,8 +154,8 @@ class ModelContainer(models.Model):
     #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
     
     # TODO XXX these should be validated as json or implemented another way (e.g. key-value store in another table)
-    #modelVisitorOptions = models.TextField(null=False, blank=True, default="")
-    #splitterOptions = models.TextField(null=False, blank=True, default="")
+    modelVisitorOptions = models.TextField(null=False, blank=True, default="")
+    splitterOptions = models.TextField(null=False, blank=True, default="")
     
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
@@ -187,7 +188,8 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, description="", splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
+    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, splitterOptions={}, visitorOptions={}, description="",
+               splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
         if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
@@ -195,11 +197,20 @@ class ModelContainer(models.Model):
         if not ((splitter is None) ^ (trainingSets is None)): # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
+        if splitterOptions:
+            if splitter is None:
+                raise ValidationError('Cannot define splitter options with no splitter')
+            else:
+                model_container.splitterOptions = json.dumps(splitterOptions)
+        if visitorOptions is not None:
+            model_container.visitorOptions = json.dumps(visitorOptions)
+
         model_container.save()
 
         if splitter is not None:
             model_container.splitter = splitter
-            splitterObj = splitters[model_container.splitter].Splitter("{}_{}_{}".format(model_container.modelVisitorLibrary, model_container.modelVisitorTool, model_container.pk))
+            splitter_name_stub = "{}_{}_{}".format(model_container.modelVisitorLibrary, model_container.modelVisitorTool, model_container.pk)
+            splitterObj = splitters[model_container.splitter].Splitter(splitter_name_stub, **splitterOptions)
             if verbose:
                 print "Splitting using {}".format(model_container.splitter)
             data_splits = splitterObj.split(reactions, verbose=verbose)
