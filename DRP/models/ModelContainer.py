@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from numpy import average
-from itertools import chain
+from itertools import chain, izip_longest
 import random
 import datetime
 import importlib
@@ -187,7 +187,7 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, description="", splitter=None, reactions=None, trainingSets=None, testSets=None, verbose=False):
+    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, description="", splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
         if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
@@ -195,16 +195,20 @@ class ModelContainer(models.Model):
         if not ((splitter is None) ^ (trainingSets is None)): # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
-        if splitter is not None:
-            model_container.splitter = splitter
-
-        model_container.reactions = reactions
-        model_container.trainingSets = trainingSets
-        model_container.testSets = testSets
-
         model_container.save()
 
-        model_container.create_statsModels(verbose=verbose)
+        if splitter is not None:
+            model_container.splitter = splitter
+            splitterObj = splitters[model_container.splitter].Splitter("{}_{}_{}".format(model_container.modelVisitorLibrary, model_container.modelVisitorTool, model_container.pk))
+            if verbose:
+                print "Splitting using {}".format(model_container.splitter)
+            data_splits = splitterObj.split(reactions, verbose=verbose)
+        else:
+            if verbose:
+                print "Using given test and training sets."
+            data_splits = izip_longest(trainingSets, testSets) #we want the trainingset even if there's no test set
+            
+        data_splits = model_container.createStatsModels(data_splits, verbose=verbose)
 
         model_container.descriptors = predictors
         model_container.outcomeDescriptors = responses
@@ -236,8 +240,11 @@ class ModelContainer(models.Model):
         m.descriptors = self.descriptors
         m.outcomeDescriptors = self.outcomeDescriptors
 
-        statsModels = [StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile) for sm in self.statsmodel_set.all()]
-        StatsModel.objects.bulk_create(statsModels)
+
+        for trainingSet, testSet in data_splits:
+            statsModel = StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile)
+            statsModel.save()
+            statsModel.testSets.add(testSet)
 
         print m.pk
         for sm in statsModels:
@@ -255,19 +262,8 @@ class ModelContainer(models.Model):
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}', 'too_many_responses', tuple(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount)
 
-    def create_statsModels(self, verbose=False):
-        if self.trainingSets is None:
-            splitterObj = splitters[self.splitter].Splitter("{}_{}_{}".format(self.modelVisitorLibrary, self.modelVisitorTool, self.pk))
-            if verbose:
-                print "Splitting using {}".format(self.splitter)
-            data_splits = splitterObj.split(self.reactions, verbose=verbose)
-
-            self.trainingSets = [dataset_tuple[0] for dataset_tuple in data_splits]
-            self.testSets = [dataset_tuple[1] for dataset_tuple in data_splits]
-        elif verbose:
-            print "Using given test and training sets."
-            
-        for trainingSet, testSet in zip(self.trainingSets, self.testSets):
+    def createStatsModels(self, data_splits, verbose=False):
+        for trainingSet, testSet in data_splits:
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
             statsModel.save()
             statsModel.testSets.add(testSet)
@@ -279,14 +275,11 @@ class ModelContainer(models.Model):
         if verbose:
             print "Starting building at {}".format(datetime.datetime.now())
 
-
-        
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
         num_models = self.statsmodel_set.all().count()
         num_finished = 0
         overall_start_time = datetime.datetime.now()
-
         for statsModel in self.statsmodel_set.all():
             modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
             # Train the model.
