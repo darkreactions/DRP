@@ -5,6 +5,8 @@ import os
 
     
 class BayesianLogisticRegression(AbstractWekaModelVisitor):
+    wekaCommand = "weka.classifiers.bayes.BayesianLogisticRegression"
+    
     def wekaTrainCommand(self, arff_file, filePath, response_index):
         command = "java weka.classifiers.bayes.BayesianLogisticRegression -t {} -d {} -p 0 -c {}".format(arff_file, filePath, response_index)
         return command

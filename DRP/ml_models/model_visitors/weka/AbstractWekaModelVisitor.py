@@ -24,6 +24,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
         self.WEKA_VERSION = "3.6"  # The version of WEKA to use.
 
+        # This is a bit hackier, but I don't think abstractattribute is implemented in abc
         try:
             self.wekaCommand
         except AttributeError:

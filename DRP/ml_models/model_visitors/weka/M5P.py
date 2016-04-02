@@ -6,6 +6,7 @@ import os
     
 class M5P(AbstractWekaModelVisitor):
     """Weka M5P for predicting numeric responses"""
+    wekaCommand = "weka.classifiers.trees.M5P"
     
     maxResponseCount = 1
 

@@ -6,11 +6,10 @@ import os
     
 class LinearRegression(AbstractWekaModelVisitor):
     """Weka LinearRegression for predicting numeric responses"""
-    
-    maxResponseCount = 1
+    wekaCommand = "weka.classifiers.functions.LinearRegression"
 
     def wekaTrainCommand(self, arff_file, filePath, response_index):
-        command = "java weka.classifiers.functions.LinearRegression -t {} -d {} -p 0 -c {}".format(arff_file, filePath, response_index)
+        command = "java  -t {} -d {} -p 0 -c {}".format(arff_file, filePath, response_index)
         return command
         
     def wekaPredictCommand(self, arff_file, model_file, response_index, results_path):
