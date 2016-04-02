@@ -26,11 +26,11 @@ class NaiveBayes(AbstractWekaModelVisitor):
 class RandomForest(AbstractWekaModelVisitor):
     wekaCommand = "weka.classifiers.trees.RandomForest"
 
-class SVM_PUK_basic(AbstractWekaModelVisitor):
+class SVM_PUK(AbstractWekaModelVisitor):
     wekaCommand = "weka.classifiers.functions.SMO"
     
     def __init__(self, *args, **kwargs):
-        super(SVM_PUK_basic, self).__init__(*args, **kwargs)
+        super(SVM_PUK, self).__init__(*args, **kwargs)
 
         self.PUK_OMEGA = 1 #0.5
         self.PUK_SIGMA = 1 #7.0

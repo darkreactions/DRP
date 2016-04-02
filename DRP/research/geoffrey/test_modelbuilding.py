@@ -8,8 +8,7 @@ django.setup()
 response_headers = ["boolean_crystallisation_outcome"]
 predictor_headers = ["reaction_temperature"]
 tools_to_test = (
-                "SVM_PUK_basic",
-                #"SVM_PUK_BCR",
+                "SVM_PUK",
                 "KNN",
                 "NaiveBayes",
                 "J48",
