@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import django
 django.setup()
 from DRP.models import ModelContainer

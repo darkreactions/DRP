@@ -10,9 +10,9 @@ from utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 
 def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None, description="", verbose=False):
     if trainingSet is not None:
-        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions, trainingSets=[trainingSet], testSets=[testSet])
+        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions, trainingSets=[trainingSet], testSets=[testSet], verbose=verbose)
     else:
-        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions, splitter=splitter)
+        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions, splitter=splitter, verbose=verbose)
 
     container.full_clean()
     container.build(verbose=verbose)

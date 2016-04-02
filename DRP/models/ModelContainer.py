@@ -187,7 +187,7 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, description="", splitter=None, reactions=None, trainingSets=None, testSets=None):
+    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, description="", splitter=None, reactions=None, trainingSets=None, testSets=None, verbose=False):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
         if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
@@ -203,6 +203,8 @@ class ModelContainer(models.Model):
         model_container.testSets = testSets
 
         model_container.save()
+
+        model_container.create_statsModels(verbose=verbose)
 
         model_container.descriptors = predictors
         model_container.outcomeDescriptors = responses
@@ -231,8 +233,18 @@ class ModelContainer(models.Model):
         m = ModelContainer(**field_dict)
         m.save()
 
+        m.descriptors = self.descriptors
+        m.outcomeDescriptors = self.outcomeDescriptors
+
         statsModels = [StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile) for sm in self.statsmodel_set.all()]
         StatsModel.objects.bulk_create(statsModels)
+
+        print m.pk
+        for sm in statsModels:
+            print sm.container.pk
+        m.save()
+        print m.statsmodel_set.all()
+        exit()
 
         return m
         
@@ -267,8 +279,7 @@ class ModelContainer(models.Model):
         if verbose:
             print "Starting building at {}".format(datetime.datetime.now())
 
-        if not self.statsmodel_set.all():
-            self.create_statsModels(verbose=verbose)
+
         
         resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
