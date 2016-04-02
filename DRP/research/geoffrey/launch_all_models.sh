@@ -1,10 +1,10 @@
 #!/bin/bash
 SCRIPT="../build_model.py"
-DESCRIPTOR_FILE="descs/legacy_noCA_nonzeroVariance.dsc"
+DESCRIPTOR_FILE="descs/new_legacy_noCA_nonZeroVariance.dsc"
 OUTCOME_DESCRIPTOR="boolean_outcome_legacy"
 RXN_SET_NAME="valid_legacy_rxns_nonzero_compound"
-COMMENT="BCR Weighted. Legacy rxns. Legacy descriptors no ChemAxon NonzeroVariance. 15 mutual info split."
-FILE_SUFFIX="BCR_legRxnNonZeroCompound_NewCArxnpHDscNonzeroVar_15MISplit"
+COMMENT="BCR Weighted. Legacy rxns. Legacy and new descriptors no ChemAxon NonzeroVariance. 15 mutual info split."
+FILE_SUFFIX="BCR_legRxnNonZeroCompound_LegNewDscNoCANonzeroVar_15MISplit"
 SPLITTER="MutualInfoSplitter"
 
 #python -u -m cProfile -o "SVMbasic_$FILE_SUFFIX.profile" $SCRIPT -p @$DESCRIPTOR_FILE -rxn $RXN_SET_NAME -r $OUTCOME_DESCRIPTOR -s $SPLITTER -v -mt SVM_PUK_basic -d "SVM Default PUK $COMMENT" &> "SVMbasic_$FILE_SUFFIX.out" &
