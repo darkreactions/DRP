@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 import django
 django.setup()
-from DRP.models import ModelContainer
-import build_model
 from sys import argv
 
 
-m = ModelContainer.objects.filter(statsmodel__isnull=False).order_by('-pk')[0]
+fn1 = argv[1]
+fn2 = argv[2]
 
-options = {'BCR': False}
+with open(fn1) as f:
+    h1 = set(f.readlines())
 
-new_m = m.create_duplicate(modelVisitorTool='J48', modelVisitorOptions=options)
+with open(fn2) as f:
+    h2 = set(f.readlines())
 
-new_m.build(verbose=True)
+h_intersect = h1.intersection(h2)
+
+print ''.join(h_intersect)
