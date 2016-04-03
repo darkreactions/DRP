@@ -52,7 +52,12 @@ def missing_descriptors(descriptor_headings):
             missing_descs.append(heading)
     return missing_descs
 
-def display_model_results(container):
+def display_model_results(container, heading=""):
+    """
+    Displays confusion matrices for a model container.
+    Optional heading specifies prefix for the summary statistics
+    (useful for when multiple model containers are built by a single script)
+    """
     conf_mtrcs = container.getConfusionMatrices()
 
     sum_acc = 0.0
@@ -80,8 +85,8 @@ def display_model_results(container):
                 sum_bcr += bcr
                 count += 1
             
-    print "Average accuracy: {:.3}".format(sum_acc/count)
-    print "Average BCR: {:.3}".format(sum_bcr/count)
+    print "{} Average accuracy: {:.3}".format(heading, sum_acc/count)
+    print "{} Average BCR: {:.3}".format(heading, sum_bcr/count)
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
                         test_set_name=None, reaction_set_name=None, description="", verbose=False, splitter_options=None, visitor_options=None):

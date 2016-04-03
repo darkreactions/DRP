@@ -32,7 +32,7 @@ def prepare_build_display_many_models(predictor_headers=None, response_headers=N
         new_container.full_clean()
 
         build_model.build_model(new_container, verbose=verbose)
-        build_model.display_model_results(new_container)
+        build_model.display_model_results(new_container, heading='{} {}'.format(visitor, new_container.modelVisitorOptions))
         
     
 
@@ -66,7 +66,9 @@ if __name__ == '__main__':
     parser.add_argument('-so', '--splitter-options', default=None,
                         help='A dictionary of the options to give to the splitter in JSON format')
     parser.add_argument('-vo', '--visitor-options', default=None, nargs='+',
-                        help='A dictionary of the options to give to each visitor in JSON format')
+                        help='A dictionary of the options to give to each visitor in JSON format.'
+                        ' Options for the first visitor will be used for all visitors which specify "None"'
+                        ' Default options for visitor will be used for visitors that specify the empty dictionary {}')
                         
     args = parser.parse_args()
 
