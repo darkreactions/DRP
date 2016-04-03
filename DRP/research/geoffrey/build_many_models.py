@@ -18,11 +18,12 @@ def prepare_build_display_many_models(predictor_headers=None, response_headers=N
     visitors_with_options = izip(modelVisitorTools, visitor_options)
     
     initialVisitor, initial_visitor_options = visitors_with_options.next()
+    initialDescription = initialVisitor + initial_visitor_options + description
 
     if verbose:
         print "Building initial container with {} {}".format(initialVisitor, initial_visitor_options)
     container = build_model.prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=initialVisitor,
-                                    splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description,
+                                    splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=initialDescription,
                                     verbose=verbose, splitter_options=splitter_options, visitor_options=initial_visitor_options)
 
     build_model.display_model_results(container, heading='{} {}'.format(initialVisitor, container.modelVisitorOptions))
@@ -32,7 +33,8 @@ def prepare_build_display_many_models(predictor_headers=None, response_headers=N
             print "Building container with {} {}".format(visitor, options)
         visitorOptions = ast.literal_eval(options)
 
-        new_container = container.create_duplicate(modelVisitorTool=visitor, modelVisitorOptions=visitorOptions)
+        new_description = visitor + options + description
+        new_container = container.create_duplicate(modelVisitorTool=visitor, modelVisitorOptions=visitorOptions, description=new_description)
         new_container.full_clean()
 
         build_model.build_model(new_container, verbose=verbose)
