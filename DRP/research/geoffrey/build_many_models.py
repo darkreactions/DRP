@@ -25,7 +25,7 @@ def prepare_build_display_many_models(predictor_headers=None, response_headers=N
                                     splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description,
                                     verbose=verbose, splitter_options=splitter_options, visitor_options=initial_visitor_options)
 
-    build_model.display_model_results(container)
+    build_model.display_model_results(container, heading='{} {}'.format(initialVisitor, container.modelVisitorOptions))
 
     for visitor, options in visitors_with_options:
         if verbose:
