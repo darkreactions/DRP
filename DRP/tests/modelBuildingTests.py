@@ -5,15 +5,18 @@ import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
 from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
 from DRPTestCase import DRPTestCase, runTests
+from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class ModelTest(DRPTestCase):
+    splitterOptions = None
+    visitorOptions = None
     def runTest(self):
         reactions = PerformedReaction.objects.all()
         predictors = Descriptor.objects.filter(heading="testNumber")
         responses = Descriptor.objects.filter(heading="outcome")
         container = ModelContainer.create(self.modelLibrary, self.modelTool, predictors, responses, splitter=self.splitter,
-                                          reactions=reactions)
+                                          reactions=reactions, splitterOptions=self.splitterOptions, modelVisitorOptions=self.visitorOptions)
 
         container.build()
         container.save()
@@ -27,13 +30,13 @@ class ModelTest(DRPTestCase):
 # Should really do tests with more descriptors
 
 @createsPerformedReactionSetOrd
-class WekaSVMBasicKFTest(ModelTest):
+class WekaSVMKFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
     splitter = "KFoldSplitter"
     
 @createsPerformedReactionSetOrd
-class WekaSVMBasicMFTest(ModelTest):
+class WekaSVMMFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
     splitter = "MutualInfoSplitter"
@@ -58,8 +61,8 @@ class WekaNBKFTest(ModelTest):
 
 
 suite = unittest.TestSuite([
-                    loadTests(WekaSVMBasicKFTest),
-                    loadTests(WekaSVMBasicMFTest),
+                    loadTests(WekaSVMKFTest),
+                    loadTests(WekaSVMMFTest),
                     loadTests(WekaJ48KFTest),
                     loadTests(WekaKNNKFTest),
                     loadTests(WekaNBKFTest),

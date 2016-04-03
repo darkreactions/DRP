@@ -95,8 +95,6 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     """
     # Grab all valid reactions with defined outcome descriptors
 
-
-    # TODO XXX this should actually check to make sure that all the descriptor headers are for valid descriptors and at least issue a warning if not
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 

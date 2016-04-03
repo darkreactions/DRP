@@ -2,18 +2,23 @@
 
 import django
 from DRP.models import PerformedReaction, FeatureSelectionContainer, Descriptor, rxnDescriptorValues, DataSet
-import operator
 import argparse
+import build_model
 
 
 def prepare_build_model(predictor_headers=None, response_headers=None, featureVisitorLibrary=None, featureVisitorTool=None, training_set_name=None,
-                        test_set_name=None, output_file=None, description="", verbose=False):
+                        output_file=None, description="", verbose=False):
     """
     Do feature selection with the specified tools
     """
-    # TODO XXX this should actually check to make sure that all the descriptor headers are for valid descriptors and at least issue a warning if not
+    
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
+
+    if predictors.count() != len(predictor_headers):
+        raise KeyError("Could not find all predictors. Missing: {}".format(build_model.missing_descriptors(predictor_headers)))
+    if responses.count() != len(response_headers):
+        raise KeyError("Could not find all responses. Missing: {}".format(build_model.missing_descriptors(response_headers)))
 
     if verbose:
         print "Found {} matching predictors and {} matching responses".format(predictors.count(), responses.count())
@@ -22,7 +27,6 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
         trainingSet =  DataSet.objects.get(name=training_set_name)
         reactions=None
     else:
-        assert(not test_set_name)
         reactions = PerformedReaction.objects.filter(valid=True)
         reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
@@ -41,9 +45,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
        
     if output_file is not None:
         with open(output_file, 'wb') as f:
-            for desc in container.chosenDescriptors:
-                f.write(desc.heading)
-                f.write('\n')
+            f.write('\n'.join([d.heading for d in container.chosenDescriptors]))
             
             
     return container
@@ -72,9 +74,7 @@ if __name__ == '__main__':
                         help='Output file for descriptors.')
     parser.add_argument('-trs', '--training-set-name', default="",
                         help='The name of the training set to use. (default: %(default)s)')
-    parser.add_argument('-tes', '--test-set-name', default="",
-                        help='The name of the test set to use. (default: %(default)s)')
     args = parser.parse_args()
 
     prepare_build_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, featureVisitorLibrary=args.feature_visitor_library, featureVisitorTool=args.feature_visitor_tool,
-                        training_set_name=args.training_set_name, test_set_name=args.test_set_name, output_file=args.output_file, description=args.description, verbose=args.verbose)
+                        training_set_name=args.training_set_name, output_file=args.output_file, description=args.description, verbose=args.verbose)
