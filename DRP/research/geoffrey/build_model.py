@@ -93,8 +93,11 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     """
     Build a model with the specified tools
     """
-    # Grab all valid reactions with defined outcome descriptors
 
+    # Remove errant empty strings
+    predictor_headers = [h for h in predictor_headers if h]
+    response_headers = [h for h in response_headers if h]
+    
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
