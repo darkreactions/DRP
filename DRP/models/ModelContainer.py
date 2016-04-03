@@ -279,6 +279,14 @@ class ModelContainer(models.Model):
             getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=None, **options_dict)
         except Exception as e:
             raise ValidationError('Was unable expand modelVisitorOptions parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(e))
+        try:
+            options_dict = json.loads(self.splitterOptions)
+        except:
+            raise ValidationError('Was unable to parse splitterOptions with json. Got exception: ({})'.format(repr(sys.exc_info()[1])))
+        try:
+            splitterObj = splitters[self.splitter].Splitter('', **options_dict)
+        except Exception as e:
+            raise ValidationError('Was unable expand splitterOptions parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(e))
 
     def createStatsModels(self, data_splits, verbose=False):
         for trainingSet, testSet in data_splits:
