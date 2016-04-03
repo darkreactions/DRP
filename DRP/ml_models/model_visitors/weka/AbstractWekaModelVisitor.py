@@ -14,17 +14,14 @@ from itertools import chain
 class AbstractWekaModelVisitor(AbstractModelVisitor):
 
     maxResponseCount = 1
+    WEKA_VERSION = "3.6" # The version of WEKA to use.
 
-    def __init__(self, *args, **kwargs):
-        if 'BCR' in kwargs:
-            self.BCR = kwargs['BCR']
-        self.BCR = True
+    def __init__(self, BCR=False, *args, **kwargs):
+        self.BCR = BCR
         
         super(AbstractWekaModelVisitor, self).__init__(*args, **kwargs)
 
-        self.WEKA_VERSION = "3.6"  # The version of WEKA to use.
-
-        # This is a bit hackier, but I don't think abstractattribute is implemented in abc
+        # This is a bit hackier, but I don't think anything like abstractattribute is implemented in abc
         try:
             self.wekaCommand
         except AttributeError:

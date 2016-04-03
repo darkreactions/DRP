@@ -29,13 +29,13 @@ class RandomForest(AbstractWekaModelVisitor):
 class SVM_PUK(AbstractWekaModelVisitor):
     wekaCommand = "weka.classifiers.functions.SMO"
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, puk_omega=1, puk_sigma=1, *args, **kwargs):
         super(SVM_PUK, self).__init__(*args, **kwargs)
 
-        self.PUK_OMEGA = 1 #0.5
-        self.PUK_SIGMA = 1 #7.0
+        self.puk_omega = puk_omega
+        self.puk_sigma = puk_sigma
 
     def wekaTrainOptions(self):
-        kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.PUK_OMEGA, self.PUK_SIGMA)
+        kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.puk_omega, self.puk_sigma)
         return "-K {}".format(kernel)
 

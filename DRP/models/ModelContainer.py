@@ -290,7 +290,7 @@ class ModelContainer(models.Model):
         num_finished = 0
         overall_start_time = datetime.datetime.now()
         for statsModel in self.statsmodel_set.all():
-            modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel)
+            modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=statsModel)
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
             fileName = os.path.join(settings.MODEL_DIR, '{}_{}_{}_{}.model'.format(self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
@@ -439,7 +439,7 @@ class ModelContainer(models.Model):
             resDict = {}
 
             for model in self.statsmodel_set:
-                modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(model)
+                modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=model)
                 predictions = modelVisitor.predict(reactions)
                 newResDict = self._storePredictionComponents(predictions, model)
 
