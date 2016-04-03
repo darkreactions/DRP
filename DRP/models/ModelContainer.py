@@ -12,7 +12,7 @@ import os
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from StatsModel import StatsModel
-from DRP.research.geoffrey.utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
+from DRP.utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 import json
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
@@ -306,7 +306,6 @@ class ModelContainer(models.Model):
             if verbose:
                 print "saved"
             
-
             # Test the model.
             for testSet in statsModel.testSets.all():
                 if testSet.reactions.all().count() != 0:

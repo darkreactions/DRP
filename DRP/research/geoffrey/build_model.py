@@ -26,7 +26,17 @@ def build_model(reactions=None, predictors=None, responses=None, modelVisitorLib
                                           splitter=splitter, verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
     container.full_clean()
-    container.build(verbose=verbose)
+    for attempt in range(5):
+        try:
+            container.build(verbose=verbose)
+            break
+        except OperationalError as e:
+            print "Caught OperationalError {}".format(e)
+            print "\nRestarting in 3 seconds...\n"
+            sleep(3)
+    else:
+        raise RuntimeError("Got 5 Operational Errors in a row and gave up")
+    
     container.save()
     container.full_clean()
 
@@ -105,20 +115,11 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         testSet =  DataSet.objects.get(name=test_set_name)
         reactions=None
     
-    for attempt in range(5):
-        try:
-            container = build_model(reactions=reactions, predictors=predictors, responses=responses, 
-                                    modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                                    splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
-                                    description=description, verbose=verbose, splitter_options=splitter_options,
-                                    visitor_options=visitor_options)
-            break
-        except OperationalError, e:
-            print "Caught OperationalError {}: {}".format(e.args[0], e.args[1])
-            print "\nRestarting in 3 seconds...\n"
-            sleep(3)
-    else:
-        raise RuntimeError("Got 5 Operational Errors in a row and gave up")
+    container = build_model(reactions=reactions, predictors=predictors, responses=responses, 
+                            modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                            splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
+                            description=description, verbose=verbose, splitter_options=splitter_options,
+                            visitor_options=visitor_options)
 
     return container
     
