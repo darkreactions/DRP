@@ -188,4 +188,3 @@ orgminimalprojectionareaArithAvg_legacy
 oxlikeASAMin_legacy
 hardnessMinWeighted_legacy
 PearsonElectronegMinWeighted_legacy
-
