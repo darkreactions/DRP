@@ -15,7 +15,7 @@ with open(fn2) as f:
 
 h_intersect = h1.intersection(h2)
 try:
-    h_instersect.remove('\n')
+    h_intersect.remove('\n')
 except KeyError:
     pass
 
