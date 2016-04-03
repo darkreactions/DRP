@@ -103,4 +103,3 @@ PearsonElectronegMean_legacy
 Co_legacy
 PaulingElectronegMax_legacy
 hardnessMinWeighted_legacy
-
