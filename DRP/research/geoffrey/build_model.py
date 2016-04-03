@@ -10,7 +10,7 @@ from utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 from django.conf import settings
 import ast
 
-def build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
+def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
                 description="", verbose=False, splitter_options=None, visitor_options=None):
 
     # This way of accepting splitter options is bad and hacky.
@@ -26,6 +26,9 @@ def build_model(reactions=None, predictors=None, responses=None, modelVisitorLib
                                           splitter=splitter, verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
     container.full_clean()
+    return build_model(container, verbose=verbose)
+
+def build_model(container, verbose=False):
     for attempt in range(5):
         try:
             container.build(verbose=verbose)
@@ -115,7 +118,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         testSet =  DataSet.objects.get(name=test_set_name)
         reactions=None
     
-    container = build_model(reactions=reactions, predictors=predictors, responses=responses, 
+    container = create_build_model(reactions=reactions, predictors=predictors, responses=responses, 
                             modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
                             splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
                             description=description, verbose=verbose, splitter_options=splitter_options,

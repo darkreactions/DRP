@@ -286,7 +286,7 @@ class ModelContainer(models.Model):
         try:
             splitterObj = splitters[self.splitter].Splitter('', **options_dict)
         except:
-            raise ValidationError('Was unable expand splitterOptions parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable expand splitterOptions parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(repr(sys.exc_info()[1])))
 
     def createStatsModels(self, data_splits, verbose=False):
         for trainingSet, testSet in data_splits:
