@@ -14,6 +14,7 @@ from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescrip
 from StatsModel import StatsModel
 from DRP.utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
 import json
+import sys
 
 visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
 
@@ -270,6 +271,14 @@ class ModelContainer(models.Model):
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool cannot accept this many responses, maximum is {}'.format(getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount), 'too_many_responses')
+        try:
+            options_dict = json.loads(self.modelVisitorOptions)
+        except:
+            raise ValidationError('Was unable to parse modelVisitorOptions with json. Got exception: ({})'.format(repr(sys.exc_info()[1])))
+        try:
+            getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=None, **options_dict)
+        except Exception as e:
+            raise ValidationError('Was unable expand modelVisitorOptions parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(e))
 
     def createStatsModels(self, data_splits, verbose=False):
         for trainingSet, testSet in data_splits:
