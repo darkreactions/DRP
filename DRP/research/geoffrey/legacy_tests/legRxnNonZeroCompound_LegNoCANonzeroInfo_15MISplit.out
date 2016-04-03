@@ -1,0 +1,11 @@
+['-p', '@descs/legacy_noCA_nonZeroInfo.dsc', '-rxn', 'valid_legacy_rxns_nonzero_compound', '-r', 'boolean_outcome_legacy', '-s', 'MutualInfoSplitter', '-so', "{'num_splits': 15}", '-v', '-mt', '@mv.txt', '-vo', '@vo.txt', '-d', 'Legacy rxns. Legacy descriptors without ChemAxon nonzero InfoGain. 15 mutual info split.']
+usage: build_many_models.py [-h] -p PREDICTOR_HEADERS [PREDICTOR_HEADERS ...]
+                            [-r RESPONSE_HEADERS [RESPONSE_HEADERS ...]]
+                            [-ml MODEL_LIBRARY]
+                            [-mt MODEL_TOOLS [MODEL_TOOLS ...]]
+                            [-s {KFoldSplitter,NoSplitter,SingleSplitter,MutualInfoSplitter}]
+                            [-v] [-d DESCRIPTION] [-trs TRAINING_SET_NAME]
+                            [-tes TEST_SET_NAME] [-rxn REACTION_SET_NAME]
+                            [-so SPLITTER_OPTIONS]
+                            [-vo VISITOR_OPTIONS [VISITOR_OPTIONS ...]]
+build_many_models.py: error: [Errno 2] No such file or directory: 'descs/legacy_noCA_nonZeroInfo.dsc'

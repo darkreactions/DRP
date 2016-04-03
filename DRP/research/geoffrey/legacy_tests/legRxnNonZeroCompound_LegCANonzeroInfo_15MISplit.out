@@ -1,0 +1,40 @@
+['-p', '@descs/legacy_nonZeroInfo.dsc', '-rxn', 'valid_legacy_rxns_nonzero_compound', '-r', 'boolean_outcome_legacy', '-s', 'MutualInfoSplitter', '-so', "{'num_splits': 15}", '-v', '-mt', '@mv.txt', '-vo', '@vo.txt', '-d', 'Legacy rxns. Legacy descriptors with ChemAxon nonzero InfoGain. 15 mutual info split.']
+Building initial container with J48 {'BCR': True}
+Splitting using MutualInfoSplitter
+Split into train (2196), test (946)
+Split into train (2199), test (943)
+Split into train (2193), test (949)
+Split into train (2196), test (946)
+Split into train (2199), test (943)
+Split into train (2191), test (951)
+Split into train (2178), test (964)
+Split into train (2195), test (947)
+Split into train (2195), test (947)
+Split into train (2188), test (954)
+Split into train (2192), test (950)
+Split into train (2192), test (950)
+Split into train (2196), test (946)
+Split into train (2197), test (945)
+Split into train (2194), test (948)
+Starting building at 2016-04-03 01:56:42.458972
+2016-04-03 01:56:42.461673 statsModel 1862, saving to /home/gmartinn/DRP_main/DRP_repo/models/308_1862_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1862_38fcd6de-1056-4321-b2b9-47097307a883.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.33739342266; 3.96389891697 0.0]" -W weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/1862_38fcd6de-1056-4321-b2b9-47097307a883.arff -d /home/gmartinn/DRP_main/DRP_repo/models/308_1862_weka_J48.model -p 0 -c 6 -- 
+	...Trained. Finished at 2016-04-03 01:57:27.335783. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1862_035ffa8c-e1c2-46c8-8c61-6a46fc88e9aa.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1862_327ba422-0b8b-401f-9d0d-485679770851.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/1862_035ffa8c-e1c2-46c8-8c61-6a46fc88e9aa.arff -l /home/gmartinn/DRP_main/DRP_repo/models/308_1862_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/1862_327ba422-0b8b-401f-9d0d-485679770851.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_308_component_1862:
+      False  True 
+False  129   133  
+ True  143   541  
+Accuracy: 0.708
+BCR: 0.638
+2016-04-03 01:57:50.215176. 1 of 15 models built.
+Elapsed model building time: 0:01:07.755050. Expected completion time: 2016-04-03 02:13:38.785876
+2016-04-03 01:57:50.215343 statsModel 1863, saving to /home/gmartinn/DRP_main/DRP_repo/models/308_1863_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/1863_4c7b96ff-a295-440f-bbbc-0cc2311de0c0.arff
