@@ -2634,3 +2634,514 @@ Accuracy: 0.783
 BCR: 0.567
 SVM_PUK {"BCR": false} Average accuracy: 0.755
 SVM_PUK {"BCR": false} Average BCR: 0.562
+5
+Legacy rxns. CFS of new descriptors with ChemAxon at reaction pH. 15 mutual info split.
+pk: 359
+MutualInfoSplitter
+weka J48
+Confusion matrix for boolean_outcome_legacy_prediction_359_summative__:
+      False  True 
+False  309   324  
+ True  231   1139 
+Accuracy: 0.723
+BCR: 0.675
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2627__:
+      False  True 
+False  159   150  
+ True  118   520  
+Accuracy: 0.717
+BCR: 0.675
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2628__:
+      False  True 
+False  157   200  
+ True  125   461  
+Accuracy: 0.655
+BCR: 0.627
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2629__:
+      False  True 
+False  123   167  
+ True  127   526  
+Accuracy: 0.688
+BCR: 0.626
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2630__:
+      False  True 
+False  114   152  
+ True   99   582  
+Accuracy: 0.735
+BCR: 0.664
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2631__:
+      False  True 
+False  211   211  
+ True  106   429  
+Accuracy: 0.669
+BCR: 0.668
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2632__:
+      False  True 
+False  125   204  
+ True  126   488  
+Accuracy: 0.65
+BCR: 0.602
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2633__:
+      False  True 
+False  135   169  
+ True  124   522  
+Accuracy: 0.692
+BCR: 0.638
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2634__:
+      False  True 
+False  187   219  
+ True  105   443  
+Accuracy: 0.66
+BCR: 0.655
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2635__:
+      False  True 
+False  163   192  
+ True   98   493  
+Accuracy: 0.693
+BCR: 0.672
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2636__:
+      False  True 
+False  169   205  
+ True  134   436  
+Accuracy: 0.641
+BCR: 0.619
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2637__:
+      False  True 
+False  127   193  
+ True  126   498  
+Accuracy: 0.662
+BCR: 0.611
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2638__:
+      False  True 
+False  160   173  
+ True  107   504  
+Accuracy: 0.703
+BCR: 0.672
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2639__:
+      False  True 
+False  169   179  
+ True  109   496  
+Accuracy: 0.698
+BCR: 0.671
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2640__:
+      False  True 
+False  130   147  
+ True  122   551  
+Accuracy: 0.717
+BCR: 0.653
+Confusion matrix for boolean_outcome_legacy_prediction_359_component_2641__:
+      False  True 
+False  149   178  
+ True  104   519  
+Accuracy: 0.703
+BCR: 0.667
+J48{"BCR": true} Average accuracy: 0.686
+J48{"BCR": true} Average BCR: 0.648
+Legacy rxns. CFS of new descriptors with ChemAxon at reaction pH. 15 mutual info split. rebuilt with tool KNN with options {'BCR': True}
+pk: 364
+MutualInfoSplitter
+weka KNN
+Confusion matrix for boolean_outcome_legacy_prediction_364_summative__:
+      False  True 
+False  181   263  
+ True  359   1200 
+Accuracy: 0.689
+BCR: 0.578
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2702__:
+      False  True 
+False  116   116  
+ True  161   554  
+Accuracy: 0.707
+BCR: 0.623
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2703__:
+      False  True 
+False   81   126  
+ True  201   535  
+Accuracy: 0.653
+BCR: 0.548
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2704__:
+      False  True 
+False   81   113  
+ True  169   580  
+Accuracy: 0.701
+BCR: 0.58
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2705__:
+      False  True 
+False   65   138  
+ True  148   596  
+Accuracy: 0.698
+BCR: 0.559
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2706__:
+      False  True 
+False  104    86  
+ True  213   554  
+Accuracy: 0.688
+BCR: 0.597
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2707__:
+      False  True 
+False  109   144  
+ True  142   548  
+Accuracy: 0.697
+BCR: 0.613
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2708__:
+      False  True 
+False   85   110  
+ True  174   581  
+Accuracy: 0.701
+BCR: 0.584
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2709__:
+      False  True 
+False  126   139  
+ True  166   523  
+Accuracy: 0.68
+BCR: 0.611
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2710__:
+      False  True 
+False   91   105  
+ True  170   580  
+Accuracy: 0.709
+BCR: 0.598
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2711__:
+      False  True 
+False   91   144  
+ True  212   497  
+Accuracy: 0.623
+BCR: 0.538
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2712__:
+      False  True 
+False   80   125  
+ True  173   566  
+Accuracy: 0.684
+BCR: 0.568
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2713__:
+      False  True 
+False  105   129  
+ True  162   548  
+Accuracy: 0.692
+BCR: 0.601
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2714__:
+      False  True 
+False  100   121  
+ True  178   554  
+Accuracy: 0.686
+BCR: 0.59
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2715__:
+      False  True 
+False  118   149  
+ True  134   549  
+Accuracy: 0.702
+BCR: 0.627
+Confusion matrix for boolean_outcome_legacy_prediction_364_component_2716__:
+      False  True 
+False   69   144  
+ True  184   553  
+Accuracy: 0.655
+BCR: 0.533
+KNN{"BCR": true} Average accuracy: 0.685
+KNN{"BCR": true} Average BCR: 0.585
+Legacy rxns. CFS of new descriptors with ChemAxon at reaction pH. 15 mutual info split. rebuilt with tool LogisticRegression with options {'BCR': True}
+pk: 369
+MutualInfoSplitter
+weka LogisticRegression
+Confusion matrix for boolean_outcome_legacy_prediction_369_summative__:
+      False  True 
+False  226   541  
+ True  314   922  
+Accuracy: 0.573
+BCR: 0.524
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2777__:
+      False  True 
+False  108   283  
+ True  169   387  
+Accuracy: 0.523
+BCR: 0.484
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2778__:
+      False  True 
+False  124   222  
+ True  158   439  
+Accuracy: 0.597
+BCR: 0.552
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2779__:
+      False  True 
+False   86   247  
+ True  164   446  
+Accuracy: 0.564
+BCR: 0.494
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2780__:
+      False  True 
+False   78   278  
+ True  135   456  
+Accuracy: 0.564
+BCR: 0.494
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2781__:
+      False  True 
+False  136   237  
+ True  181   403  
+Accuracy: 0.563
+BCR: 0.529
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2782__:
+      False  True 
+False   56   165  
+ True  195   527  
+Accuracy: 0.618
+BCR: 0.492
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2783__:
+      False  True 
+False  102   274  
+ True  157   417  
+Accuracy: 0.546
+BCR: 0.499
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2784__:
+      False  True 
+False  141   277  
+ True  151   385  
+Accuracy: 0.551
+BCR: 0.532
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2785__:
+      False  True 
+False  104   258  
+ True  157   427  
+Accuracy: 0.561
+BCR: 0.511
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2786__:
+      False  True 
+False  121   266  
+ True  182   375  
+Accuracy: 0.525
+BCR: 0.492
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2787__:
+      False  True 
+False   59   175  
+ True  194   516  
+Accuracy: 0.609
+BCR: 0.49
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2788__:
+      False  True 
+False  107   252  
+ True  160   425  
+Accuracy: 0.564
+BCR: 0.514
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2789__:
+      False  True 
+False  134   324  
+ True  144   351  
+Accuracy: 0.509
+BCR: 0.501
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2790__:
+      False  True 
+False  113   267  
+ True  139   431  
+Accuracy: 0.573
+BCR: 0.533
+Confusion matrix for boolean_outcome_legacy_prediction_369_component_2791__:
+      False  True 
+False   73   205  
+ True  180   492  
+Accuracy: 0.595
+BCR: 0.497
+LogisticRegression{"BCR": true} Average accuracy: 0.564
+LogisticRegression{"BCR": true} Average BCR: 0.508
+Legacy rxns. CFS of new descriptors with ChemAxon at reaction pH. 15 mutual info split. rebuilt with tool NaiveBayes with options {'BCR': True}
+pk: 374
+MutualInfoSplitter
+weka NaiveBayes
+Confusion matrix for boolean_outcome_legacy_prediction_374_summative__:
+      False  True 
+False  157   427  
+ True  383   1036 
+Accuracy: 0.596
+BCR: 0.499
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2852__:
+      False  True 
+False   90   236  
+ True  187   434  
+Accuracy: 0.553
+BCR: 0.486
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2853__:
+      False  True 
+False   92   172  
+ True  190   489  
+Accuracy: 0.616
+BCR: 0.533
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2854__:
+      False  True 
+False   73   227  
+ True  177   466  
+Accuracy: 0.572
+BCR: 0.482
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2855__:
+      False  True 
+False   71   236  
+ True  142   498  
+Accuracy: 0.601
+BCR: 0.506
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2856__:
+      False  True 
+False   92   209  
+ True  225   431  
+Accuracy: 0.546
+BCR: 0.482
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2857__:
+      False  True 
+False   63   177  
+ True  188   515  
+Accuracy: 0.613
+BCR: 0.498
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2858__:
+      False  True 
+False   94   211  
+ True  165   480  
+Accuracy: 0.604
+BCR: 0.529
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2859__:
+      False  True 
+False   99   204  
+ True  193   458  
+Accuracy: 0.584
+BCR: 0.515
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2860__:
+      False  True 
+False   60   208  
+ True  201   477  
+Accuracy: 0.568
+BCR: 0.463
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2861__:
+      False  True 
+False   85   166  
+ True  218   475  
+Accuracy: 0.593
+BCR: 0.511
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2862__:
+      False  True 
+False   56   186  
+ True  197   505  
+Accuracy: 0.594
+BCR: 0.476
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2863__:
+      False  True 
+False   41   143  
+ True  226   534  
+Accuracy: 0.609
+BCR: 0.471
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2864__:
+      False  True 
+False   91   263  
+ True  187   412  
+Accuracy: 0.528
+BCR: 0.469
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2865__:
+      False  True 
+False   60   168  
+ True  192   530  
+Accuracy: 0.621
+BCR: 0.499
+Confusion matrix for boolean_outcome_legacy_prediction_374_component_2866__:
+      False  True 
+False   65   185  
+ True  188   512  
+Accuracy: 0.607
+BCR: 0.496
+NaiveBayes{"BCR": true} Average accuracy: 0.587
+NaiveBayes{"BCR": true} Average BCR: 0.494
+Legacy rxns. CFS of new descriptors with ChemAxon at reaction pH. 15 mutual info split. rebuilt with tool RandomForest with options {'BCR': True}
+pk: 379
+MutualInfoSplitter
+weka RandomForest
+Confusion matrix for boolean_outcome_legacy_prediction_379_summative__:
+      False  True 
+False  246   198  
+ True  294   1265 
+Accuracy: 0.754
+BCR: 0.66
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2927__:
+      False  True 
+False  126    79  
+ True  151   591  
+Accuracy: 0.757
+BCR: 0.668
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2928__:
+      False  True 
+False  147   113  
+ True  135   548  
+Accuracy: 0.737
+BCR: 0.675
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2929__:
+      False  True 
+False  104    85  
+ True  146   608  
+Accuracy: 0.755
+BCR: 0.647
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2930__:
+      False  True 
+False   99    97  
+ True  114   637  
+Accuracy: 0.777
+BCR: 0.666
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2931__:
+      False  True 
+False  139   101  
+ True  178   539  
+Accuracy: 0.708
+BCR: 0.64
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2932__:
+      False  True 
+False  133   136  
+ True  118   556  
+Accuracy: 0.731
+BCR: 0.667
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2933__:
+      False  True 
+False  107   113  
+ True  152   578  
+Accuracy: 0.721
+BCR: 0.625
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2934__:
+      False  True 
+False  182   125  
+ True  110   537  
+Accuracy: 0.754
+BCR: 0.717
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2935__:
+      False  True 
+False  122   107  
+ True  139   578  
+Accuracy: 0.74
+BCR: 0.656
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2936__:
+      False  True 
+False  117   117  
+ True  186   524  
+Accuracy: 0.679
+BCR: 0.602
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2937__:
+      False  True 
+False   88    82  
+ True  165   609  
+Accuracy: 0.738
+BCR: 0.615
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2938__:
+      False  True 
+False  143   151  
+ True  124   526  
+Accuracy: 0.709
+BCR: 0.656
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2939__:
+      False  True 
+False  137   129  
+ True  141   546  
+Accuracy: 0.717
+BCR: 0.651
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2940__:
+      False  True 
+False  126   142  
+ True  126   556  
+Accuracy: 0.718
+BCR: 0.648
+Confusion matrix for boolean_outcome_legacy_prediction_379_component_2941__:
+      False  True 
+False  114   113  
+ True  139   584  
+Accuracy: 0.735
+BCR: 0.644
+RandomForest{"BCR": true} Average accuracy: 0.732
+RandomForest{"BCR": true} Average BCR: 0.652
