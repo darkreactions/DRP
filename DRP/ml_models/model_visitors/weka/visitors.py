@@ -35,6 +35,7 @@ class SVM_PUK(AbstractWekaModelVisitor):
         self.puk_omega = puk_omega
         self.puk_sigma = puk_sigma
 
+    @property
     def wekaTrainOptions(self):
         kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.puk_omega, self.puk_sigma)
         return "-K {}".format(kernel)

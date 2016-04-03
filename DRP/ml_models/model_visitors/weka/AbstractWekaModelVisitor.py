@@ -113,6 +113,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
         return cost_matrix_string
 
+    @property
     def wekaTrainOptions(self):
         """
         Returns any additional commands specific to the classifier
@@ -144,9 +145,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
         if self.BCR:
             cost_matrix_string = self.BCR_cost_matrix(reactions, response)
-            command = "java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix {} -W {} -t {} -d {} -p 0 -c {} -- {}".format(cost_matrix_string, self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions())
+            command = "java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix {} -W {} -t {} -d {} -p 0 -c {} -- {}".format(cost_matrix_string, self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions)
         else:
-            command = "java {} -t {} -d {} -p 0 -c {} {}".format(self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions())
+            command = "java {} -t {} -d {} -p 0 -c {} {}".format(self.wekaCommand, arff_file, filePath, response_index, self.wekaTrainOptions)
         self._runWekaCommand(command, verbose=verbose)
 
     def predict(self, reactions, verbose=False):
