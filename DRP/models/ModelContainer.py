@@ -203,7 +203,7 @@ class ModelContainer(models.Model):
             else:
                 model_container.splitterOptions = json.dumps(splitterOptions)
         if visitorOptions is not None:
-            model_container.visitorOptions = json.dumps(visitorOptions)
+            model_container.modelVisitorOptions = json.dumps(visitorOptions)
 
         model_container.save()
 
@@ -290,7 +290,8 @@ class ModelContainer(models.Model):
         num_finished = 0
         overall_start_time = datetime.datetime.now()
         for statsModel in self.statsmodel_set.all():
-            modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=statsModel)
+            visitorOptions = json.loads(self.modelVisitorOptions)
+            modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=statsModel, **visitorOptions)
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
             fileName = os.path.join(settings.MODEL_DIR, '{}_{}_{}_{}.model'.format(self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
@@ -439,7 +440,8 @@ class ModelContainer(models.Model):
             resDict = {}
 
             for model in self.statsmodel_set:
-                modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=model)
+                visitorOptions = json.loads(self.modelVisitorOptions)
+                modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=model, **visitorOptions)
                 predictions = modelVisitor.predict(reactions)
                 newResDict = self._storePredictionComponents(predictions, model)
 
