@@ -14,5 +14,9 @@ with open(fn2) as f:
     h2 = set(f.readlines())
 
 h_intersect = h1.intersection(h2)
+try:
+    h_instersect.remove('\n')
+except KeyError:
+    pass
 
-print ''.join(h_intersect)
+print ''.join(h_intersect),
