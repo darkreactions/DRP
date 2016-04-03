@@ -7,7 +7,7 @@ import build_model
 from django.conf import settings
 from itertools import izip
 import ast
-
+import sys
 
 def prepare_build_display_many_models(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTools=None, splitter=None, training_set_name=None, test_set_name=None,
                                       reaction_set_name=None, description="", verbose=False, splitter_options=None, visitor_options=None):
@@ -73,7 +73,8 @@ if __name__ == '__main__':
                         help='A dictionary of the options to give to each visitor in JSON format.'
                         ' Options for the first visitor will be used for all visitors which specify "None"'
                         ' Default options for visitor will be used for visitors that specify the empty dictionary {}')
-                        
+
+    print sys.argv
     args = parser.parse_args()
 
     prepare_build_display_many_models(predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTools=args.model_tools,
