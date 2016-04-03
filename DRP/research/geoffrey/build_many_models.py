@@ -18,7 +18,9 @@ def prepare_build_display_many_models(predictor_headers=None, response_headers=N
     visitors_with_options = izip(modelVisitorTools, visitor_options)
     
     initialVisitor, initial_visitor_options = visitors_with_options.next()
-    
+
+    if verbose:
+        print "Building initial container with {} {}".format(initialVisitor, initial_visitor_options)
     container = build_model.prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=initialVisitor,
                                     splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description,
                                     verbose=verbose, splitter_options=splitter_options, visitor_options=initial_visitor_options)
@@ -26,6 +28,8 @@ def prepare_build_display_many_models(predictor_headers=None, response_headers=N
     build_model.display_model_results(container)
 
     for visitor, options in visitors_with_options:
+        if verbose:
+            print "Building container with {} {}".format(visitor, options)
         visitorOptions = ast.literal_eval(options)
 
         new_container = container.create_duplicate(modelVisitorTool=visitor, modelVisitorOptions=visitorOptions)
