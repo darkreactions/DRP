@@ -1,6 +1,11 @@
 #!/bin/bash
 SCRIPT="../run_feature_selection.py"
-DESCRIPTOR_FILE="descs/new_CA_nonzeroVariance.dsc"
+# legacy_noCA_nonZeroVariance.dsc
+# new_CA_nonZeroVariance.dsc
+# new_legacy_legCA_nonZeroVariance.dsc
+# new_legacy_noCA_nonZeroVariance.dsc
+
+DESCRIPTOR_FILE="descs/new_CA_nonZeroVariance.dsc"
 OUTCOME_DESCRIPTOR="boolean_outcome_legacy"
 RXN_SET_NAME="valid_legacy_rxns_nonzero_compound"
 COMMENT="Legacy rxns. New descriptors with ChemAxon only NonzeroVariance."
