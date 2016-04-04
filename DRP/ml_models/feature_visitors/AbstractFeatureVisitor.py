@@ -7,7 +7,7 @@ class AbstractFeatureVisitor(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def train(self, reactions, descriptorHeaders, filePath, verbose=False):
+    def train(self, verbose=False):
         """A function meant to be overridden by actual FeatureVisitor classes.
               The `train` method should prepare the feature selection model for
               attribute selection and save that model if necessary."""

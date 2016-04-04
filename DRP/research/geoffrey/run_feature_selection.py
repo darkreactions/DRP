@@ -34,11 +34,11 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
         trainingSet = None
         testSet = None
     
-    container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, description=description, reactions=reactions, trainingSet=trainingSet)
+    container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, predictors, responses, description=description, reactions=reactions, trainingSet=trainingSet)
 
     container.save()
     container.full_clean()
-    container.build(predictors, responses, verbose=verbose)
+    container.build(verbose=verbose)
     container.save()
     container.full_clean()
 

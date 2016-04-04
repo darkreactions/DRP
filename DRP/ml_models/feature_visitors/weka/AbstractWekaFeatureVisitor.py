@@ -5,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 import subprocess
 import os
 from abc import abstractmethod
+from itertools import chain
 
 
 class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
@@ -63,7 +64,10 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         output = subprocess.check_output(command, shell=True)
         return output
     
-    def train(self, reactions, descriptorHeaders, verbose=False):
+    def train(self, verbose=False):
+        descriptorHeaders = [d.csvHeader for d in chain(self.container.descriptors, self.container.outcomeDescriptors)]
+        reactions = self.container.trainingSet.reactions.all()
+        
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
 
         results_file = "featureSelection_{}_{}.out".format(self.container.pk, uuid.uuid4())

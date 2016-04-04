@@ -179,24 +179,27 @@ class FeatureSelectionContainer(models.Model):
     chosenNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='chosenForFeatureSelection')
 
     @classmethod
-    def create(cls, featureVisitorLibrary, featureVisitorTool, reactions=None, trainingSet=None, description=""):
+    def create(cls, featureVisitorLibrary, featureVisitorTool, predictors, responses, featureVisitorOptions=None, reactions=None, trainingSet=None, description=""):
         container = cls(featureVisitorLibrary=featureVisitorLibrary, featureVisitorTool=featureVisitorTool, description=description)
         container.save() # need pk
+        
+        if featureVisitorOptions is not None:
+            container.featureVisitorOptions = json.dumps(featureVisitorOptions)
+            
         if trainingSet is None:
             assert(reactions is not None)
             container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureVisitorLibrary, container.featureVisitorLibrary, container.pk), reactions)
         else:
             container.trainingSet = trainingSet
+
+        container.descriptors = predictors
+        container.outcomeDescriptors = responses
+        
         return container
 
-    def build(self, predictors, responses, verbose=False):
+    def build(self, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a feature selection that has already been built.")
-
-        self.descriptors = predictors
-        self.outcomeDescriptors = responses
-
-        descriptor_headers = [d.csvHeader for d in chain(self.descriptors, self.outcomeDescriptors)]
 
         featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(self)
 
@@ -204,7 +207,7 @@ class FeatureSelectionContainer(models.Model):
 
         if verbose:
             print "{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count())
-        chosen_descriptor_headers = featureVisitor.train(self.trainingSet.reactions.all(), descriptor_headers, verbose=verbose) 
+        chosen_descriptor_headers = featureVisitor.train(verbose=verbose) 
 
         self.endTime = datetime.datetime.now()
         if verbose:
