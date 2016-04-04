@@ -18,6 +18,12 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         self.container = container
         
         self.WEKA_VERSION = "3.6" # The version of WEKA to use.
+
+        # This is a bit hackier, but I don't think anything like abstractattribute is implemented in abc 
+        try:
+            self.wekaCommand
+        except AttributeError:
+            raise NotImplementedError('Subclasses of AbstractWekaModelVisitor must define wekaCommand')
     
     def _prepareArff(self, reactions, whitelistHeaders, verbose=False):
         """Writes an *.arff file using the provided queryset of reactions."""
@@ -76,7 +82,8 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         # Currently, we support only one "response" variable.
         headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(list(self.container.outcomeDescriptors)[0].csvHeader) + 1
-        command = self.wekaTrainCommand(arff_file, response_index)
+
+        command = "java {} -i {} -c {}".format(self.wekaCommand, arff_file, response_index)
         
         output = self._runWekaCommand(command, verbose=verbose)
         if verbose:
