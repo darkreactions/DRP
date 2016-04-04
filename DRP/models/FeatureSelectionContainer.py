@@ -154,6 +154,7 @@ class FeatureSelectionContainer(models.Model):
     description = models.TextField(default='', blank=True)
     featureVisitorLibrary = models.CharField(max_length=200, default='', blank=True)
     featureVisitorTool = models.CharField(max_length=200, default='', blank=True)
+    featureVisitorOptions = models.TextField(null=False, blank=True, default="{}")
     startTime = models.DateTimeField(default=None, null=True, blank=True)
     endTime = models.DateTimeField(default=None, null=True, blank=True)
     trainingSet = models.ForeignKey(DataSet, related_name='trainingSetForFeatureSelection', null=True)
