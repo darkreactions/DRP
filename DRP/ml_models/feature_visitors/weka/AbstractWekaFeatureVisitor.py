@@ -92,6 +92,3 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         descriptor_headers = self._readWekaOutput(output)
         return descriptor_headers
 
-    @abstractmethod
-    def wekaTrainCommand(self, arff_file, response_index, out_file):
-        """Abstract method that returns the weka train command"""
