@@ -1,3 +1,3 @@
-from visitors import InfoGain, CFS, ChiSquared
+from visitors import InfoGain, CFS, ChiSquared, Wrapper
 
-tools = ("InfoGain", "CFS", "ChiSquared")
+tools = ("InfoGain", "CFS", "ChiSquared", "wrapper")

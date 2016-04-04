@@ -201,7 +201,7 @@ class FeatureSelectionContainer(models.Model):
         if self.built:
             raise RuntimeError("Cannot build a feature selection that has already been built.")
 
-        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(self)
+        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(container=self)
 
         self.startTime = datetime.datetime.now()
 
