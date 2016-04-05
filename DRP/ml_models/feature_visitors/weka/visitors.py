@@ -18,5 +18,7 @@ class Wrapper(AbstractWekaFeatureVisitor):
         getattr(modelVisitorModules[modelVisitorLibrary], modelVisitorTool)
         modelVisitor = getattr(modelVisitorModules[modelVisitorLibrary], modelVisitorTool)(statsModel=None, **modelVisitorOptions)
         self.wekaCommand = "weka.attributeSelection.WrapperSubsetEval -s weka.attributeSelection.BestFirst -B {}".format(modelVisitor.wekaCommand)
-
+        self.wekaOptions = modelVisitor.wekaTrainOptions
+        
         super(Wrapper, self).__init__(*args, **kwargs)
+

@@ -5,6 +5,7 @@ from DRP.models import DataSet, Descriptor, BoolRxnDescriptor, OrdRxnDescriptor,
 import importlib
 from itertools import chain
 import datetime
+import json
 
 featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
 
@@ -201,7 +202,8 @@ class FeatureSelectionContainer(models.Model):
         if self.built:
             raise RuntimeError("Cannot build a feature selection that has already been built.")
 
-        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(container=self)
+        visitorOptions = json.loads(self.featureVisitorOptions)
+        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(container=self, **visitorOptions)
 
         self.startTime = datetime.datetime.now()
 

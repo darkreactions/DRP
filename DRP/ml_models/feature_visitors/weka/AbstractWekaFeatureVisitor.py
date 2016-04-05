@@ -11,6 +11,7 @@ from itertools import chain
 class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
     maxResponseCount = 1
+    wekaOptions = ""
     
     def __init__(self, container, *args, **kwargs):
         super(AbstractWekaFeatureVisitor, self).__init__(*args, **kwargs)
@@ -83,7 +84,10 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(list(self.container.outcomeDescriptors)[0].csvHeader) + 1
 
-        command = "java {} -i {} -c {}".format(self.wekaCommand, arff_file, response_index)
+        if self.wekaOptions:
+            command = "java {} -i {} -c {} -- {}".format(self.wekaCommand, arff_file, response_index, self.wekaOptions)
+        else:
+            command = "java {} -i {} -c {}".format(self.wekaCommand, arff_file, response_index)
         
         output = self._runWekaCommand(command, verbose=verbose)
         if verbose:
@@ -91,4 +95,3 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
         descriptor_headers = self._readWekaOutput(output)
         return descriptor_headers
-

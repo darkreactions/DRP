@@ -4,10 +4,10 @@ import django
 from DRP.models import PerformedReaction, FeatureSelectionContainer, Descriptor, rxnDescriptorValues, DataSet
 import argparse
 import build_model
-
+import ast
 
 def prepare_build_model(predictor_headers=None, response_headers=None, featureVisitorLibrary=None, featureVisitorTool=None, training_set_name=None,
-                        output_file=None, description="", verbose=False):
+                        output_file=None, description="", visitor_options=None, verbose=False):
     """
     Do feature selection with the specified tools
     """
@@ -33,8 +33,10 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
         reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         trainingSet = None
         testSet = None
-    
-    container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, predictors, responses, description=description, reactions=reactions, trainingSet=trainingSet)
+
+    visitorOptions = ast.literal_eval(visitor_options) if visitor_options is not None else None
+    container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, predictors, responses, description=description, reactions=reactions,
+                                                 trainingSet=trainingSet, featureVisitorOptions=visitorOptions)
 
     container.save()
     container.full_clean()
@@ -74,7 +76,9 @@ if __name__ == '__main__':
                         help='Output file for descriptors.')
     parser.add_argument('-trs', '--training-set-name', default="",
                         help='The name of the training set to use. (default: %(default)s)')
+    parser.add_argument('-vo', '--visitor-options', default="",
+                        help='Options for the feature visitor in JSON dictionary format')
     args = parser.parse_args()
 
     prepare_build_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, featureVisitorLibrary=args.feature_visitor_library, featureVisitorTool=args.feature_visitor_tool,
-                        training_set_name=args.training_set_name, output_file=args.output_file, description=args.description, verbose=args.verbose)
+                        training_set_name=args.training_set_name, output_file=args.output_file, description=args.description, verbose=args.verbose, visitor_options=args.visitor_options)
