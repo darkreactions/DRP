@@ -1,5 +1,5 @@
-Inorg_amount_count_DRP_0.02
-Na_mols_DRP_0.02
-Ox_amount_molarity_DRP_0.02
-H_mols_DRP_0.02
-reaction_time_manual_0
+Inorg_amount_count
+Na_mols
+Ox_amount_molarity
+H_mols
+reaction_time
