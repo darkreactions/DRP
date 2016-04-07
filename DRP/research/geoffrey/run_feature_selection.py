@@ -76,7 +76,7 @@ if __name__ == '__main__':
                         help='Output file for descriptors.')
     parser.add_argument('-trs', '--training-set-name', default="",
                         help='The name of the training set to use. (default: %(default)s)')
-    parser.add_argument('-vo', '--visitor-options', default="",
+    parser.add_argument('-vo', '--visitor-options', default=None,
                         help='Options for the feature visitor in JSON dictionary format')
     args = parser.parse_args()
 

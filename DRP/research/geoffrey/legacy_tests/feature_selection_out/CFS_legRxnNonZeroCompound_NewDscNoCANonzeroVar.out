@@ -1,8 +1,8 @@
-Found 1283 matching predictors and 1 matching responses
-2016-04-03 23:22:50.893414, training on 3142 reactions...
-Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_16_ff840b79-a5a2-442a-9eb7-0b97975fc84f.arff
+Found 102 matching predictors and 1 matching responses
+2016-04-03 00:34:05.253382, training on 3142 reactions...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_13_f4061323-8be5-488d-96d5-d8f0a267923f.arff
 Running in Shell:
-export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.attributeSelection.CfsSubsetEval -s weka.attributeSelection.BestFirst -i /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_16_ff840b79-a5a2-442a-9eb7-0b97975fc84f.arff -c 1
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.attributeSelection.CfsSubsetEval -s weka.attributeSelection.BestFirst -i /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_13_f4061323-8be5-488d-96d5-d8f0a267923f.arff -c 1
 
 
 === Attribute Selection on all input data ===
@@ -12,22 +12,19 @@ Search Method:
 	Start set: no attributes
 	Search direction: forward
 	Stale search after 5 node expansions
-	Total number of subsets evaluated: 17889
-	Merit of best subset found:    0.132
+	Total number of subsets evaluated: 887
+	Merit of best subset found:    0.12 
 
 Attribute Subset Evaluator (supervised, Class (nominal): 1 boolean_outcome_legacy_legacy_):
 	CFS Subset Evaluator
 	Including locally predictive attributes
 
-Selected attributes: 181,192,467,592,861,983,1250,1283 : 8
-                     Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
-                     Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
-                     Solv_amount_molarity_DRP_0.02
+Selected attributes: 41,51,66,71,102 : 5
+                     Inorg_amount_count_DRP_0.02
                      Na_mols_DRP_0.02
                      Ox_amount_molarity_DRP_0.02
-                     Org_asa-_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
-                     Inorg_refractivity_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+                     H_mols_DRP_0.02
                      reaction_time_manual_0
 
 
-	...Trained. Finished at 2016-04-03 23:27:14.694109.
+	...Trained. Finished at 2016-04-03 00:34:29.655672.
