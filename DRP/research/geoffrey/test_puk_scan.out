@@ -1,0 +1,329 @@
+['-p', '@descs/small.dsc', '-s', 'MutualInfoSplitter', '-v', '-d', 'test', '-ps', '1', '2', '0.5', '-po', '1', '2', '0.5']
+Namespace(description='test', predictor_headers=['reaction_temperature', 'reaction_time', 'reaction_pH'], puk_omega=[1.0, 2.0, 0.5], puk_sigma=[1.0, 2.0, 0.5], reaction_set_name=None, response_headers=['boolean_crystallisation_outcome'], splitter='MutualInfoSplitter', splitter_options=None, test_set_name=None, training_set_name=None, verbose=True, visitor_options=None)
+Building initial container with SVM_PUK {'puk_sigma': 1.0, 'puk_omega': 1.0}
+Splitting using MutualInfoSplitter
+Split into train (114), test (50)
+Starting building at 2016-04-07 17:22:50.644772
+2016-04-07 17:22:50.646910 statsModel 1646, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/596_1646_weka_SVM_PUK.model, training...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/596_1646_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0"
+	...Trained. Finished at 2016-04-07 17:22:51.553500. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_94a1dcb5-6058-434a-9d0c-eec27df44b83.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_46d3224e-4aa1-48f8-8b48-9b338ef58759.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_94a1dcb5-6058-434a-9d0c-eec27df44b83.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/596_1646_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_46d3224e-4aa1-48f8-8b48-9b338ef58759.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_596_component_1646:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:22:52.373282. 1 of 1 models built.
+Elapsed model building time: 0:00:01.727452. Expected completion time: 2016-04-07 17:22:52.373282
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:22:52.561178
+Confusion matrix for boolean_crystallisation_outcome_prediction_596_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_596_component_1646__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=1.0 omega=1.0 Average accuracy: 0.96
+sigma=1.0 omega=1.0 Average BCR: 0.979
+Building container with sigma=1.0 omega=1.5
+Starting building at 2016-04-07 17:22:52.955432
+2016-04-07 17:22:52.956871 statsModel 1647, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/597_1647_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/597_1647_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 1.5 -S 1.0"
+	...Trained. Finished at 2016-04-07 17:22:53.424928. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1647_fbc46e56-8dec-4ac8-9b2a-b9170053ebb0.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1647_76ba022b-5609-46be-b950-ef7996fa0811.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1647_fbc46e56-8dec-4ac8-9b2a-b9170053ebb0.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/597_1647_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1647_76ba022b-5609-46be-b950-ef7996fa0811.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_597_component_1647:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:22:54.335887. 1 of 1 models built.
+Elapsed model building time: 0:00:01.379744. Expected completion time: 2016-04-07 17:22:54.335887
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:22:54.534197
+Confusion matrix for boolean_crystallisation_outcome_prediction_597_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_597_component_1647__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=1.0 omega=1.5 Average accuracy: 0.96
+sigma=1.0 omega=1.5 Average BCR: 0.979
+Building container with sigma=1.0 omega=2.0
+Starting building at 2016-04-07 17:22:54.930497
+2016-04-07 17:22:54.932417 statsModel 1648, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/598_1648_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/598_1648_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 2.0 -S 1.0"
+	...Trained. Finished at 2016-04-07 17:22:55.395052. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1648_a3ea2b0a-d3f1-46b5-9f04-b13cea42248e.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1648_27812286-5fe4-4d5b-8a82-a5e328571add.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1648_a3ea2b0a-d3f1-46b5-9f04-b13cea42248e.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/598_1648_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1648_27812286-5fe4-4d5b-8a82-a5e328571add.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_598_component_1648:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:22:56.213356. 1 of 1 models built.
+Elapsed model building time: 0:00:01.281929. Expected completion time: 2016-04-07 17:22:56.213356
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:22:56.451921
+Confusion matrix for boolean_crystallisation_outcome_prediction_598_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_598_component_1648__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=1.0 omega=2.0 Average accuracy: 0.96
+sigma=1.0 omega=2.0 Average BCR: 0.979
+Building container with sigma=1.5 omega=1.0
+Starting building at 2016-04-07 17:22:56.927485
+2016-04-07 17:22:56.928878 statsModel 1649, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/599_1649_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/599_1649_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.5"
+	...Trained. Finished at 2016-04-07 17:22:57.388210. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1649_ba3c8032-2686-4774-99e7-9f7119b4550b.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1649_8432de59-4e03-46ed-a7fc-2027819f13cc.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1649_ba3c8032-2686-4774-99e7-9f7119b4550b.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/599_1649_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1649_8432de59-4e03-46ed-a7fc-2027819f13cc.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_599_component_1649:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:22:58.251358. 1 of 1 models built.
+Elapsed model building time: 0:00:01.323170. Expected completion time: 2016-04-07 17:22:58.251358
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:22:58.446930
+Confusion matrix for boolean_crystallisation_outcome_prediction_599_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_599_component_1649__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=1.5 omega=1.0 Average accuracy: 0.96
+sigma=1.5 omega=1.0 Average BCR: 0.979
+Building container with sigma=1.5 omega=1.5
+Starting building at 2016-04-07 17:22:58.910000
+2016-04-07 17:22:58.911715 statsModel 1650, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/600_1650_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/600_1650_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 1.5 -S 1.5"
+	...Trained. Finished at 2016-04-07 17:22:59.360799. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1650_0e1ae2f8-9f1c-4bcc-a386-03393c8aa593.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1650_6433f7b9-d1cd-469f-a62a-67f8ae977ac5.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1650_0e1ae2f8-9f1c-4bcc-a386-03393c8aa593.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/600_1650_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1650_6433f7b9-d1cd-469f-a62a-67f8ae977ac5.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_600_component_1650:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:23:00.358745. 1 of 1 models built.
+Elapsed model building time: 0:00:01.448039. Expected completion time: 2016-04-07 17:23:00.358745
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:23:00.697304
+Confusion matrix for boolean_crystallisation_outcome_prediction_600_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_600_component_1650__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=1.5 omega=1.5 Average accuracy: 0.96
+sigma=1.5 omega=1.5 Average BCR: 0.979
+Building container with sigma=1.5 omega=2.0
+Starting building at 2016-04-07 17:23:01.115942
+2016-04-07 17:23:01.117357 statsModel 1651, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/601_1651_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/601_1651_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 2.0 -S 1.5"
+	...Trained. Finished at 2016-04-07 17:23:01.555993. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1651_f346b074-5315-42f0-a7b5-a62a459e2449.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1651_12b63a46-d602-45f0-894c-dfd240a4bf18.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1651_f346b074-5315-42f0-a7b5-a62a459e2449.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/601_1651_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1651_12b63a46-d602-45f0-894c-dfd240a4bf18.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_601_component_1651:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:23:02.364698. 1 of 1 models built.
+Elapsed model building time: 0:00:01.248062. Expected completion time: 2016-04-07 17:23:02.364698
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:23:02.723528
+Confusion matrix for boolean_crystallisation_outcome_prediction_601_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_601_component_1651__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=1.5 omega=2.0 Average accuracy: 0.96
+sigma=1.5 omega=2.0 Average BCR: 0.979
+Building container with sigma=2.0 omega=1.0
+Starting building at 2016-04-07 17:23:03.226883
+2016-04-07 17:23:03.228281 statsModel 1652, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/602_1652_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/602_1652_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 2.0"
+	...Trained. Finished at 2016-04-07 17:23:03.677194. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1652_846fdac6-44fc-485f-8647-6a7ff44f6f2b.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1652_a09347cb-a879-4667-a4bc-c447d7ea4b87.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1652_846fdac6-44fc-485f-8647-6a7ff44f6f2b.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/602_1652_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1652_a09347cb-a879-4667-a4bc-c447d7ea4b87.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_602_component_1652:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:23:04.443451. 1 of 1 models built.
+Elapsed model building time: 0:00:01.215866. Expected completion time: 2016-04-07 17:23:04.443451
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:23:04.622186
+Confusion matrix for boolean_crystallisation_outcome_prediction_602_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_602_component_1652__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=2.0 omega=1.0 Average accuracy: 0.96
+sigma=2.0 omega=1.0 Average BCR: 0.979
+Building container with sigma=2.0 omega=1.5
+Starting building at 2016-04-07 17:23:05.060950
+2016-04-07 17:23:05.062378 statsModel 1653, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/603_1653_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/603_1653_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 1.5 -S 2.0"
+	...Trained. Finished at 2016-04-07 17:23:05.482695. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1653_8454f99c-fada-43a9-9204-17780acf330b.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1653_f057e6dc-bca9-474e-ad34-b06b3966d909.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1653_8454f99c-fada-43a9-9204-17780acf330b.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/603_1653_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1653_f057e6dc-bca9-474e-ad34-b06b3966d909.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_603_component_1653:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:23:06.273298. 1 of 1 models built.
+Elapsed model building time: 0:00:01.211659. Expected completion time: 2016-04-07 17:23:06.273298
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:23:06.473253
+Confusion matrix for boolean_crystallisation_outcome_prediction_603_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_603_component_1653__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=2.0 omega=1.5 Average accuracy: 0.96
+sigma=2.0 omega=1.5 Average BCR: 0.979
+Building container with sigma=2.0 omega=2.0
+Starting building at 2016-04-07 17:23:07.006630
+2016-04-07 17:23:07.008489 statsModel 1654, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/604_1654_weka_SVM_PUK.model, training...
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1646_cb8d7595-fdd6-489d-955b-b05a0ecd742d.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/604_1654_weka_SVM_PUK.model -p 0 -c 1 -K "weka.classifiers.functions.supportVector.Puk -O 2.0 -S 2.0"
+	...Trained. Finished at 2016-04-07 17:23:07.437965. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1654_a437cd96-3062-4217-bfc9-917fb2d83a2d.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1654_5d44d58a-1a4b-4f93-a9d3-3bd4b92ee8e5.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1654_a437cd96-3062-4217-bfc9-917fb2d83a2d.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/604_1654_weka_SVM_PUK.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1654_5d44d58a-1a4b-4f93-a9d3-3bd4b92ee8e5.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_604_component_1654:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+2016-04-07 17:23:08.245538. 1 of 1 models built.
+Elapsed model building time: 0:00:01.237984. Expected completion time: 2016-04-07 17:23:08.245538
+Storing overall model predictions... Predictions stored
+Finished at 2016-04-07 17:23:08.424197
+Confusion matrix for boolean_crystallisation_outcome_prediction_604_summative__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+Confusion matrix for boolean_crystallisation_outcome_prediction_604_component_1654__:
+      False  True 
+False   3     2   
+ True   0     45  
+Accuracy: 0.96
+BCR: 0.979
+sigma=2.0 omega=2.0 Average accuracy: 0.96
+sigma=2.0 omega=2.0 Average BCR: 0.979

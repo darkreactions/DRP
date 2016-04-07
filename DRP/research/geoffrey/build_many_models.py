@@ -10,31 +10,33 @@ import ast
 import sys
 
 def prepare_build_display_many_models(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTools=None, splitter=None, training_set_name=None, test_set_name=None,
-                                      reaction_set_name=None, description="", verbose=False, splitter_options=None, visitor_options=None):
+                                      reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptionsList=None):
 
-    if visitor_options is not None and len(modelVisitorTools) != len(visitor_options):
-        raise ValidationError('Need to specify options for all models or none')
+    if visitorOptionsList is None:
+        visitorOptionsList = [None for tool in args.model_tools]
 
-    visitors_with_options = izip(modelVisitorTools, visitor_options)
+    if len(modelVisitorTools) != len(visitorOptionsList):
+        raise TypeError('Need to specify options for all models or none')
+
+    visitors_with_options = izip(modelVisitorTools, visitorOptionsList)
     
-    initialVisitor, initial_visitor_options = visitors_with_options.next()
-    initialDescription = initialVisitor + initial_visitor_options + description
+    initialVisitor, initial_visitorOptions = visitors_with_options.next()
+    initialDescription = "{} {} {}".format(initialVisitor, initial_visitorOptions, description)
 
     if verbose:
-        print "Building initial container with {} {}".format(initialVisitor, initial_visitor_options)
+        print "Building initial container with {} {}".format(initialVisitor, initial_visitorOptions)
     container = build_model.prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=initialVisitor,
                                     splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=initialDescription,
-                                    verbose=verbose, splitter_options=splitter_options, visitor_options=initial_visitor_options)
+                                    verbose=verbose, splitterOptions=splitterOptions, visitorOptions=initial_visitorOptions)
 
     build_model.display_model_results(container, heading='{} {}'.format(initialVisitor, container.modelVisitorOptions))
 
     for visitor, options in visitors_with_options:
         if verbose:
             print "Building container with {} {}".format(visitor, options)
-        visitorOptions = ast.literal_eval(options)
 
-        new_description = visitor + options + description
-        new_container = container.create_duplicate(modelVisitorTool=visitor, modelVisitorOptions=visitorOptions, description=new_description)
+        new_description = "{} {} {}".format(visitor, options, description)
+        new_container = container.create_duplicate(modelVisitorTool=visitor, modelVisitorOptions=options, description=new_description)
         new_container.full_clean()
 
         build_model.build_model(new_container, verbose=verbose)
@@ -55,7 +57,7 @@ if __name__ == '__main__':
                         'Note that most models can only handle one response variable (default: %(default)s)')
     parser.add_argument('-ml', '--model-library', default="weka",
                         help='Model visitor library to use. (default: %(default)s)')
-    parser.add_argument('-mt', '--model-tools', nargs='+',
+    parser.add_argument('-mt', '--model-tools', nargs='+', required=True,
                         help='Model visitor tools from library to use.')
     parser.add_argument('-s', '--splitter', default="KFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
                         help='Splitter to use. (default: %(default)s)')
@@ -76,10 +78,18 @@ if __name__ == '__main__':
                         ' Options for the first visitor will be used for all visitors which specify "None"'
                         ' Default options for visitor will be used for visitors that specify the empty dictionary {}')
 
-    print sys.argv[1:]
-
     args = parser.parse_args()
+    if args.verbose:
+        print sys.argv[1:]
+        print args
 
+
+    # This way of accepting splitter options is bad and hacky.
+    # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
+    # TODO XXX make this not horrible
+    splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else None
+    visitorOptionsList = [ast.literal_eval(vo) for vo in args.visitor_options] if args.visitor_options is not None else None
+    
     prepare_build_display_many_models(predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTools=args.model_tools,
                                 splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name,
-                                description=args.description, verbose=args.verbose, splitter_options=args.splitter_options, visitor_options=args.visitor_options)
+                                description=args.description, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptionsList=visitorOptionsList)
