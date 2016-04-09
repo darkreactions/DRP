@@ -118,12 +118,13 @@ def nonlegacy_pHless_rxn_descriptors():
 
 
 if __name__=='__main__':
-    reaction_set_name = argv[1]
+    #reaction_set_name = argv[1]
 
-    qsets = nonlegacy_pHless_rxn_descriptors()
+    qsets = valid_nonlegacy_rxn_descriptors()
+    #qsets = nonlegacy_pHless_rxn_descriptors()
     descriptors = chain(*qsets)
-    reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+    #reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
-    filtered_descriptors = filter_through_reactions(reactions, descriptors)
-    sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), count_qset_list(qsets)))
-    print_headers(filtered_descriptors, sort=True)
+    #filtered_descriptors = filter_through_reactions(reactions, descriptors)
+    #sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), count_qset_list(qsets)))
+    print_headers(descriptors, sort=True)
