@@ -1,8 +1,9 @@
 import re
 from sys import argv
 import csv
+import glob
 
-def extract_results(fn, statistic='BCR'):
+def extract_results(fn, statistic):
     result_line = r"^sigma=([0-9.]+) omega=([0-9.]+) Average {}: ([0-9.]+)".format(statistic)
     results = []
     with open(fn) as f:
@@ -34,12 +35,17 @@ def extract_and_write(fn, csv_fn, statistic):
             writer.writerow(row)
 
 if __name__ == '__main__':
-    fn = argv[1]
-    csv_fn = argv[2]
     try:
-        statistic = argv[3]
+        statistic = argv[1]
     except IndexError:
         statistic = 'BCR'
+
+    files = glob.glob('PUK_SCAN*.out')
+
+    for fn in files:
+        csv_fn = fn.replace('.out', '.csv')
+
+        extract_and_write(fn, csv_fn, statistic)
         
 
 
