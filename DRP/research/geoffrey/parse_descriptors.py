@@ -83,6 +83,7 @@ def new_strip(header):
                          'drpInorgAtom',
                          'unw',
                          'max_',
+                         'range',
                         ]
     banned_prefixes = ['Inorg',
                        'Org',
@@ -95,7 +96,7 @@ def new_strip(header):
                        'mols',
                        ]
 
-    pH_strings = ['_pH{}_'.format(i) for i in range(1,15)]
+    pH_strings = ['_pH{}_'.format(i) for i in range(1,15)] + ['_pHreaction']
     banned_substrings += pH_strings
 
     return strip_header(header, banned_substrings, banned_prefixes, banned_suffixes)

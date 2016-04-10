@@ -6,7 +6,7 @@ import operator
 import argparse
 from django.db.utils import OperationalError
 from time import sleep
-from utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
+from DRP.utils import accuracy, BCR, Matthews, confusionMatrixString, confusionMatrixTable
 from django.conf import settings
 import ast
 from sys import argv
@@ -59,6 +59,7 @@ def display_model_results(container, heading=""):
 
     sum_acc = 0.0
     sum_bcr = 0.0
+    sum_matthews = 0.0
     count = 0
 
     for model_mtrcs in conf_mtrcs:
@@ -70,20 +71,24 @@ def display_model_results(container, heading=""):
         for descriptor_header, conf_mtrx in model_mtrcs:
             acc = accuracy(conf_mtrx)
             bcr = BCR(conf_mtrx)
+            matthews = Matthews(conf_mtrx)
             print "Confusion matrix for {}:".format(descriptor_header)
             print confusionMatrixString(conf_mtrx)
             print "Accuracy: {:.3}".format(acc)
             print "BCR: {:.3}".format(bcr)
+            print "Matthews: {:.3}".format(matthews)
 
             # This only works for one response. Sorry...
             # TODO XXX make this work for multiple responses
             if 'summative' not in descriptor_header:
                 sum_acc += acc
                 sum_bcr += bcr
+                sum_matthews += matthews
                 count += 1
             
     print "{} Average accuracy: {:.3}".format(heading, sum_acc/count)
     print "{} Average BCR: {:.3}".format(heading, sum_bcr/count)
+    print "{} Average Matthews: {:.3}".format(heading, sum_matthews/count)
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
                         test_set_name=None, reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None):
