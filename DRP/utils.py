@@ -1,6 +1,7 @@
 """
 Miscellaneous utility functions for use in DRP
 """
+from math import sqrt
 
 def accuracy(conf):
     correct = 0.0
@@ -28,6 +29,35 @@ def BCR(conf):
             num_classes += 1
     
     return (class_accuracy_sum/num_classes if num_classes else 0.0)
+
+    
+def Matthews(conf):
+    class_accuracy_sum = 0.0
+    num_classes = 0.0
+    if len(conf) != 2:
+        raise NotImplementedError("Matthews Correlation Coefficient is only defined for two-class confusion matrices. For a generalization to multi-class problems, investigate markedness and informedness.")
+    # Note it doesn't matter which of these is actually considered true and which false as Matthews Correlation Coefficient is symmetrical
+    true, true_guesses = conf.items()[0]
+    false, false_guesses = conf.items()[1]
+
+    if len(true_guesses) != 2 or len(false_guesses) != 2:
+        raise NotImplementedError("Matthews Correlation Coefficient is only defined for two-class confusion matrices. For a generalization to multi-class problems, investigate markedness and informedness.")
+
+    TP = true_guesses[true]
+    FN = true_guesses[false]
+    TN = false_guesses[false]
+    FP = false_guesses[true]
+
+    PP = TP+FP
+    AP = TP+FN
+    AN = TN+FP
+    PN = TN+FN
+
+    if 0 in [PP, AP, AN, PN]:
+        # the correct value when any part of the denominator is zero
+        return 0
+
+    return (TP*TN - FP*FN)/sqrt(PP*AP*AN*PN)
 
 def confusionMatrixString(confusionMatrix, headers=True):
     """
