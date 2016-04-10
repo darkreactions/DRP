@@ -12,6 +12,7 @@ COMMENT="Legacy rxns. New descriptors without ChemAxon only NonzeroVariance."
 FILE_SUFFIX="legRxnNonZeroCompound_NewDscNoCANonzeroVar"
 SPLITTER="MutualInfoSplitter"
 
+
 python -u $SCRIPT -p @$DESCRIPTOR_FILE -trs $RXN_SET_NAME -r $OUTCOME_DESCRIPTOR -v -vt CFS -d "CFS $COMMENT" -o "CFS_$FILE_SUFFIX.dsc" &> "CFS_$FILE_SUFFIX.out" &
 #python -u -m cProfile -o "InfoGain_$FILE_SUFFIX.profile" $SCRIPT -p @$DESCRIPTOR_FILE -trs $RXN_SET_NAME -r $OUTCOME_DESCRIPTOR -v -vt InfoGain -d "InfoGain $COMMENT" -o "InfoGain_$FILE_SUFFIX.dsc" &> "InfoGain_$FILE_SUFFIX.out" &
 #python -u -m cProfile -o "ChiSquared_$FILE_SUFFIX.profile" $SCRIPT -p @$DESCRIPTOR_FILE -trs $RXN_SET_NAME -r $OUTCOME_DESCRIPTOR -v -vt ChiSquared -d "ChiSquared $COMMENT" -o "ChiSquared_$FILE_SUFFIX.dsc" &> "ChiSquared_$FILE_SUFFIX.out" &
