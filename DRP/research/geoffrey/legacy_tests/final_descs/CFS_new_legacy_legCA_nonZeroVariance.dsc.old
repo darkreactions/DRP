@@ -5,4 +5,5 @@ Na_mols
 orgASA_HGeomAvg_legacy
 orgminimalprojectionareaGeomAvg_legacy
 Ox_amount_molarity
-reaction_timetime_legacy
+reaction_time
+time_legacy

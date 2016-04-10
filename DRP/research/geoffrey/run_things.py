@@ -11,9 +11,9 @@ except IndexError:
     fn2 = fn1
 
 with open(fn1) as f:
-    lines = f.readlines()
+    lines = [l.strip() for l in f.readlines()]
 
 lines.sort(key=lambda x: x.lower())
 
 with open(fn2, 'w') as f:
-    f.write(''.join(lines))
+    f.write('\n'.join(lines))
