@@ -17,24 +17,28 @@ DESCRIPTOR_FILES=(
     # "legacy_mw_noCA_nonZeroInfo.dsc"
     # "new_legacy_noCA_nonZeroInfo.dsc"
 
+    # "CFS_legacy_mw_noCA_nonZeroVariance.dsc"
+    # "CFS_legacy_mw_noPSA_nonZeroVariance.dsc"
+    # "CFS_new_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    # "CFS_new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
 
     # Running
-    "legacy_mw_noPSA_nonZeroVariance.dsc"
-    "new_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
-    "new_legacy_bothCA_noPSA_nonZeroVariance.dsc"
-    "new_legacy_legCA_noPSA_nonZeroVariance.dsc"
+    # "legacy_mw_noPSA_nonZeroVariance.dsc"
+    # "new_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    # "new_legacy_bothCA_noPSA_nonZeroVariance.dsc"
+    # "new_legacy_legCA_noPSA_nonZeroVariance.dsc"
 
+    # "new_legacy_legCA_noPSA_nonZeroInfo.dsc"
+    # "new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
+
+    "new_legacy_newCA_nonZeroVariance.dsc"
+    "new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    "legacy_mw_noPSA_nonZeroInfo.dsc"
+    "new_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
 
     # Not run
-    # "new_legacy_newCA_nonZeroVariance.dsc"
-    # "new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
-
-    # "legacy_mw_noPSA_nonZeroInfo.dsc"
-    # "new_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
     # "new_legacy_bothCA_noPSA_nonZeroInfo.dsc"
-    # "new_legacy_legCA_noPSA_nonZeroInfo.dsc"
     # "new_legacy_newCA_nonZeroInfo.dsc"
-    # "new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
 )
 
 for DESCRIPTOR_FN in "${DESCRIPTOR_FILES[@]}"
