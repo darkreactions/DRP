@@ -1,0 +1,13 @@
+AtomicRadiusMeanWeighted_legacy
+H_mols
+Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_molarity
+Inorg_refractivity_chemaxoncxcalc_15.6_gmean_molarity
+IonizationMinWeighted_legacy
+leak_legacy
+N_mols
+Na_mols
+Org_asa-_pH14_chemaxoncxcalc_15.6_gmean_count
+Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Max
+orgASA_HArithAvg_legacy
+Ox_amount_molarity
+reaction_timetime_legacy
