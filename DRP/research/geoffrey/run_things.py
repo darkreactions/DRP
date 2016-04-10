@@ -1,7 +1,19 @@
 #!/usr/bin/env python
-import django
-django.setup()
-from DRP.models import ModelContainer, StatsModel
+# import django
+# django.setup()
+# from DRP.models import *
+from sys import argv
 
-unbuilt_statsModel = StatsModel.objects.filter(container__built=False)
+fn1 = argv[1]
+try:
+    fn2 = argv[2]
+except IndexError:
+    fn2 = fn1
 
+with open(fn1) as f:
+    lines = f.readlines()
+
+lines.sort(key=lambda x: x.lower())
+
+with open(fn2, 'w') as f:
+    f.write(''.join(lines))

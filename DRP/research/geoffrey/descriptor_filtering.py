@@ -73,7 +73,7 @@ def print_headers_with_names(descriptors):
 def print_headers(descriptors, sort=False):
     headings = [d.heading for d in descriptors]
     if sort:
-        headings.sort()
+        headings.sort(key=lambda x: x.lower())
     print '\n'.join(headings)
 
 def filter_queryset(dqs, include_substring=[], include_prefix=[], include_suffix=[],
@@ -103,6 +103,12 @@ def filtered_rxn_descriptors(**kwargs):
     descriptor_types = [BoolRxnDescriptor, NumRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor]
     return filter_qset_list([dtype.objects.all() for dtype in descriptor_types], **kwargs)
 
+def valid_legacy_rxn_descriptors():
+    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "examplepy"]
+    exclude_prefix = ["_", "transform"]
+    require_suffix = ["_legacy",]
+    
+    return filtered_rxn_descriptors(exclude_substring=exclude_substring, exclude_prefix=exclude_prefix, include_suffix=require_suffix)
 
 def valid_nonlegacy_rxn_descriptors():
     exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "examplepy"]
@@ -117,14 +123,25 @@ def nonlegacy_pHless_rxn_descriptors():
     return filter_qset_list(valid_nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
 
-if __name__=='__main__':
-    #reaction_set_name = argv[1]
+def nonlegacy_nopHreaction_rxn_descriptors():
+    exclude_substring = ["_pHreaction_".format(n) for n in range(1,15)]
 
-    qsets = valid_nonlegacy_rxn_descriptors()
+    return filter_qset_list(valid_nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
+
+def remove_CA(qset_list):
+    exclude_substring = ["_chemaxoncxcalc_"]
+    return filter_qset_list(qset_list, exclude_substring=exclude_substring)
+
+if __name__=='__main__':
+    reaction_set_name = argv[1]
+
+    qsets = nonlegacy_nopHreaction_rxn_descriptors()
+    qsets = remove_CA(qsets)
     #qsets = nonlegacy_pHless_rxn_descriptors()
     descriptors = chain(*qsets)
-    #reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
+    
+    reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
-    #filtered_descriptors = filter_through_reactions(reactions, descriptors)
-    #sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), count_qset_list(qsets)))
-    print_headers(descriptors, sort=True)
+    filtered_descriptors = filter_through_reactions(reactions, descriptors)
+    sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), count_qset_list(qsets)))
+    print_headers(filtered_descriptors, sort=True)

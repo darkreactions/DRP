@@ -19,4 +19,4 @@ try:
 except KeyError:
     pass
 
-print ''.join(h_intersect),
+print ''.join(sorted(h_intersect, key=lambda x: x.lower())),
