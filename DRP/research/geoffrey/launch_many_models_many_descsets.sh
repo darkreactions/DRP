@@ -5,11 +5,17 @@ OUTCOME_DESCRIPTOR="boolean_outcome_legacy"
 RXN_SET_NAME="valid_legacy_rxns_nonzero_compound"
 SPLITTER="MutualInfoSplitter"
 SPLITTER_OPTIONS="{'num_splits': 15}"
-MODEL_VISITOR_FILE="mv.txt"
-MODEL_VISITOR_OPTION_FILE="vo.txt"
+# MODEL_VISITOR_FILE="mv.txt"
+# MODEL_VISITOR_OPTION_FILE="vo.txt"
+MODEL_VISITOR_FILE="mv_restart.txt"
+MODEL_VISITOR_OPTION_FILE="vo_restart.txt"
+
 
 DESCRIPTOR_DIR="final_descs/use"
 DESCRIPTOR_FILES=(
+    # "new_legacy_newCA_nonZeroInfo.dsc"
+    # "new_legacy_newCA_nonZeroVariance.dsc"
+
     # Run already
     # "legacy_mw_noCA_nonZeroVariance.dsc"
     # "new_legacy_noCA_nonZeroVariance.dsc"
@@ -30,15 +36,11 @@ DESCRIPTOR_FILES=(
 
     # "new_legacy_legCA_noPSA_nonZeroInfo.dsc"
     # "new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
+    # "new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    # "legacy_mw_noPSA_nonZeroInfo.dsc"
+    # "new_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
+    "new_legacy_bothCA_noPSA_nonZeroInfo.dsc"
 
-    "new_legacy_newCA_nonZeroVariance.dsc"
-    "new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
-    "legacy_mw_noPSA_nonZeroInfo.dsc"
-    "new_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
-
-    # Not run
-    # "new_legacy_bothCA_noPSA_nonZeroInfo.dsc"
-    # "new_legacy_newCA_nonZeroInfo.dsc"
 )
 
 for DESCRIPTOR_FN in "${DESCRIPTOR_FILES[@]}"
