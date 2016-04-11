@@ -56,7 +56,7 @@ def filter_through_reactions(reactions, descriptors):
                     qs = qs.exclude(value=None)
                     if qs.exists():
                         # the latter clause checks whether the values are unique
-                        if qs.values('value').annotate(num=Count('value')).count() != 1:                            
+                        if qs.values('value').annotate(num=Count('value')).count() != 1:
                             valid_descriptors.append(descriptor)
                         else:
                             sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
@@ -65,6 +65,23 @@ def filter_through_reactions(reactions, descriptors):
                 else:
                     sys.stderr.write("{} excluded because there are no values\n".format(descriptor.heading))
     return valid_descriptors
+
+def filter_through_reactions_nonMissing_unique(reactions, descriptors):
+    desc_triples = []
+    desc_val_types = [(BoolRxnDescriptor, BoolRxnDescriptorValue), (NumRxnDescriptor, NumRxnDescriptorValue),
+                  (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor, OrdRxnDescriptorValue)
+                 ]
+    for descriptor in descriptors:
+        for dt, vt in desc_val_types:
+            if isinstance(descriptor, dt):
+                qs = vt.objects.filter(descriptor=descriptor, reaction__in=reactions).exclude(value=None)
+
+                nonNull = qs.count()
+                distinct = qs.values('value').annotate(num=Count('value')).count()
+
+                desc_triples.append( (descriptor.heading, nonNull, distinct) )
+
+    return desc_triples
 
 def print_headers_with_names(descriptors):
     for descriptor in descriptors:

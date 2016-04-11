@@ -55,7 +55,7 @@ def Matthews(conf):
 
     if 0 in [PP, AP, AN, PN]:
         # the correct value when any part of the denominator is zero
-        return 0
+        return 0.0
 
     return (TP*TN - FP*FN)/sqrt(PP*AP*AN*PN)
 
