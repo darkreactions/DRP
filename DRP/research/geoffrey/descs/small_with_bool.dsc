@@ -1,0 +1,4 @@
+reaction_temperature
+reaction_time
+reaction_pH
+teflon_pouch
