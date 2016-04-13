@@ -19,7 +19,7 @@ modelVisitorTools = ['J48', 'KNN', 'LogisticRegression', 'NaiveBayes', 'RandomFo
 containers = ModelContainer.objects.filter(built=True).annotate(num_numDescs=Count('numRxnDescriptors', distinct=True)).annotate(num_boolDescs=Count('boolRxnDescriptors', distinct=True))
 
 print "{} built model containers".format(containers.count())
-containers = containers.filter(splitterOptions__contains=splitterOptions)
+containers = containers.filter(splitter=splitter).filter(splitterOptions__contains=splitterOptions)
 
 print "{} with correct splitter".format(containers.count())
 
