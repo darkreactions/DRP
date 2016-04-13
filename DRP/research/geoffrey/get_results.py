@@ -5,10 +5,11 @@ from DRP.models import ModelContainer, NumRxnDescriptor
 from sys import argv
 import os
 from django.db.models import Count
+import build_model
 
-descriptor_directory = 'descs'
+descriptor_directory = 'legacy_tests/final_descs/use/'
 
-desc_files = ['small.dsc']
+desc_files = ['CFS_new_legacy_noCA_nonZeroVariance.dsc']
 splitter = 'MutualInfoSplitter'
 splitterOptions = '"num_splits": 15'
 modelVisitorOptions = ['"BCR": true', '"BCR": false']
@@ -27,7 +28,8 @@ for descriptor_file in desc_files:
     num_descs = numDescs.count()
 
     if numDescs.count() != len(headers):
-        raise RuntimeError("Did not find correct number of descriptors")
+        missing_descs = build_model.missing_descriptors(headers)
+        raise RuntimeError("Did not find correct number of descriptors. Unable to find: {}".format(missing_descs))
 
     #print numDescs
     conts = containers
