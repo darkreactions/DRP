@@ -51,3 +51,5 @@ for descriptor_file in desc_files:
         for options in modelVisitorOptions:
             option_conts = model_conts.filter(modelVisitorOptions__contains=options)
             print descriptor_file, tool, options, option_conts.count()
+            for cont in option_conts:
+                print cont.id
