@@ -44,14 +44,7 @@ for descriptor_file in desc_files:
     conts = containers
     conts = conts.filter(num_numDescs=num_numDescs).filter(num_boolDescs=num_boolDescs)
     print "{} containers with appropriate number of descriptors".format(conts.count())
-    if numDescs:
-        conts = conts.filter(numRxnDescriptors__in=numDescs).distinct()
-    print "{} containers with correct numeric descriptors".format(conts.count())
-    if boolDescs:
-        conts = conts.filter(boolRxnDescriptors__in=boolDescs).distinct()
-    print "{} containers with correct boolean descriptors".format(conts.count())
-    print "Found {} containers".format(conts.count())
-
+    
     for tool in modelVisitorTools:
         model_conts = conts.filter(modelVisitorTool=tool)
         print model_conts.count()
