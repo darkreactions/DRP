@@ -52,4 +52,4 @@ for descriptor_file in desc_files:
             option_conts = model_conts.filter(modelVisitorOptions__contains=options)
             print descriptor_file, tool, options, option_conts.count()
             for cont in option_conts:
-                print cont.id
+                print cont.id, len(cont.getComponentConfusionMatrices())

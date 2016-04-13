@@ -55,7 +55,22 @@ def display_model_results(container, heading=""):
     Optional heading specifies prefix for the summary statistics
     (useful for when multiple model containers are built by a single script)
     """
-    conf_mtrcs = container.getConfusionMatrices()
+    overall_conf_mtrcs = container.getOverallConfusionMatrices()
+    if not overall_conf_mtrcs:
+        print "No model results to display"
+        return
+    if len(overall_conf_mtrcs) != 1:
+        raise NotImplementedError('Can only handle one response')
+    for descriptor_header, conf_mtrx in overall_conf_mtrcs:
+        acc = accuracy(conf_mtrx)
+        bcr = BCR(conf_mtrx)
+        matthews = Matthews(conf_mtrx)
+        print "Confusion matrix for {}:".format(descriptor_header)
+        print confusionMatrixString(conf_mtrx)
+        print "Accuracy: {:.3}".format(acc)
+        print "BCR: {:.3}".format(bcr)
+        print "Matthews: {:.3}".format(matthews)
+    conf_mtrcs = container.getComponentConfusionMatrices()
 
     sum_acc = 0.0
     sum_bcr = 0.0
@@ -63,10 +78,7 @@ def display_model_results(container, heading=""):
     count = 0
 
     for model_mtrcs in conf_mtrcs:
-        if not model_mtrcs:
-            print "No model results to display"
-            return 
-        elif len(model_mtrcs) != 1:
+        if len(model_mtrcs) != 1:
             raise NotImplementedError('Can only handle one response')
         for descriptor_header, conf_mtrx in model_mtrcs:
             acc = accuracy(conf_mtrx)
@@ -80,11 +92,10 @@ def display_model_results(container, heading=""):
 
             # This only works for one response. Sorry...
             # TODO XXX make this work for multiple responses
-            if 'summative' not in descriptor_header:
-                sum_acc += acc
-                sum_bcr += bcr
-                sum_matthews += matthews
-                count += 1
+            sum_acc += acc
+            sum_bcr += bcr
+            sum_matthews += matthews
+            count += 1
             
     print "{} Average accuracy: {:.3}".format(heading, sum_acc/count)
     print "{} Average BCR: {:.3}".format(heading, sum_bcr/count)
