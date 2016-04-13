@@ -66,7 +66,7 @@
 
 <table class="reactions-list">
   {% for reaction in reactions %}
-  <div class="reaction" {% if reaction.valid %} style="border: 5px solid green" {% else %} style="border: 5px solid red" {% endif %}>
+  <div class="reaction" {% if reaction.valid %} style="border: 5px solid #376737" {% else %} style="border: 5px solid #8b2c27" {% endif %}>
     {% comment %}need to change color of main div with {{ reaction.valid }}{% endcomment %} 
     <h2>{{reaction.reference}}</h2>
     <div class="first_name">{{ reaction.user.first_name }} {{ reaction.user.last_name }}</div> 
