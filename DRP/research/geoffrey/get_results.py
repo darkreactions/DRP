@@ -10,7 +10,7 @@ import build_model
 descriptor_directory = 'legacy_tests/final_descs/use/'
 
 
-desc_files = ['CFS_new_legacy_noCA_nonZeroVariance.dsc']
+desc_files = ['new_leak_slowcool_group_period_valence_nonZeroVariance.dsc']
 splitter = 'MutualInfoSplitter'
 splitterOptions = '"num_splits": 15'
 modelVisitorOptions = ['"BCR": true', '"BCR": false']
