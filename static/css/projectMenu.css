@@ -1,5 +1,5 @@
 .projectNav-wrapper {
- background-color:#dbb16e;
+ background-color:#8dabce;
  width:100%;
 }
 
@@ -9,12 +9,12 @@ ol.projectNav {
  width:auto;
  padding:10px 0px;
  text-align:center;
- background-color:#dbb16e;
+ background-color:#8dabce;
  margin:0;
 }
 
 ol#projectNav2 {
- background-color:#dfbb81;
+ background-color:#b7cae0;
 }
 
 .projectNav li {
@@ -29,7 +29,7 @@ ol#projectNav2 {
 } .projectNav li a:visited {
  color:black;
 } .projectNav li a:hover {
- color:#303030;
+ color:#20344b;
 } .projectNav li a:active {
- color:#303030;
+ color:#20344b;
 }

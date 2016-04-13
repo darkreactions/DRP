@@ -79,8 +79,20 @@ ol.pagination {
 ol.pagination li {
  float:left;
  margin:0 1em;
- color: #9c0000;
+ color: #20344b;
 }
+
+input[type="submit"] {
+ padding:0;
+ color:white;
+ background-color: #8dabce;
+ border:1px solid #658ebd;
+ border-radius:1em;
+ width:7em;
+ height:2em;
+ margin-bottom:.5em;
+}
+
 
 
 

@@ -65,7 +65,7 @@ figure.contributorGroup.richard {
  text-decoration:none;
  font-weight:700;
 } .contributor a:hover {
- color:#9c0000;
+ opacity:.7;
 }
 
 .groupInfo {

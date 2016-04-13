@@ -1,12 +1,17 @@
 /* stylesheet for reaction_form.html */
 
+h1 {
+ text-align:center;
+}
+
 .reaction-form fieldset {
  margin:3em 0;
- border:1px solid black;
+ border:1px solid #658ebd;
 }
 
 .reaction-form legend {
  font-weight:700;
+ color:#20344b;
 }
 
 .reaction-form label {
@@ -45,8 +50,8 @@
 .reaction-form input[type="submit"] {
  padding:0;
  color:white;
- background-color: #9c0000;
- border:1px solid #bd0000;
+ background-color: #8dabce;
+ border:1px solid #658ebd;
  border-radius:1em;
  width:7em;
  height:2em;
