@@ -477,17 +477,12 @@ class ModelContainer(models.Model):
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
-    @transaction.atomic
-    def save(self, *args, **kwargs):
-        super(ModelContainer, self).save(*args, **kwargs)
-
     def getOverallConfusionMatrices(self):
         confusion_matrix_list = []
         for descriptor in self.predictsDescriptors:
             if descriptor.statsModel is None:
                 confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
         return confusion_matrix_list
-
 
     def getConfusionMatrices(self):
         """
