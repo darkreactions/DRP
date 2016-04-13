@@ -18,9 +18,13 @@ modelVisitorTools = ['J48', 'KNN', 'LogisticRegression', 'NaiveBayes', 'RandomFo
 
 containers = ModelContainer.objects.filter(built=True).annotate(num_numDescs=Count('numRxnDescriptors', distinct=True)).annotate(num_boolDescs=Count('boolRxnDescriptors', distinct=True))
 
-#containers = containers.filter(splitterOptions__contains=splitterOptions)
+print "{} built model containers".format(containers.count())
+containers = containers.filter(splitterOptions__contains=splitterOptions)
+
+print "{} with correct splitter".format(containers.count())
 
 for descriptor_file in desc_files:
+    print "Using {}".format(descriptor_file)
     descriptor_file_path = os.path.join(descriptor_directory, descriptor_file)
     with open(descriptor_file_path) as f:
         headers = [l.strip() for l in f if l.strip()]
@@ -30,18 +34,23 @@ for descriptor_file in desc_files:
     num_numDescs = numDescs.count()
     num_boolDescs = boolDescs.count()
 
-
-    if numDescs.count() != len(headers):
-        missing_descs = build_model.missing_descriptors(headers)
-        raise RuntimeError("Did not find correct number of descriptors. Unable to find: {}".format(missing_descs))
+    if num_numDescs + num_boolDescs != len(headers):
+        missing_descs = []
+        for header in headers:
+            if not NumRxnDescriptor.objects.filter(heading=header).exists() and not BoolRxnDescriptor.objects.filter(heading=header).exists():
+                missing_descs.append(header)
+        raise RuntimeError("Did not find correct number of descriptors. Unable to find:{}".format(missing_descs))
 
     conts = containers
+    conts = conts.filter(num_numDescs=num_numDescs).filter(num_boolDescs=num_boolDescs)
+    print "{} containers with appropriate number of descriptors".format(conts.count())
     if numDescs:
         conts = conts.filter(numRxnDescriptors__in=numDescs).distinct()
+    print "{} containers with correct numeric descriptors".format(conts.count())
     if boolDescs:
         conts = conts.filter(boolRxnDescriptors__in=boolDescs).distinct()
-
-    conts = conts.filter(num_numDescs=num_numDescs).filter(num_boolDescs=num_boolDescs)
+    print "{} containers with correct boolean descriptors".format(conts.count())
+    print "Found {} containers".format(conts.count())
 
     for tool in modelVisitorTools:
         model_conts = conts.filter(modelVisitorTool=tool)
