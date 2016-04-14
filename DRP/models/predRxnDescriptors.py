@@ -92,18 +92,10 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
             
         permittedValues = [True, False]
 
-        
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self).annotate(predicted_val=F('boolrxndescriptorvalue__value'))
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self.predictionOf).annotate(actual_val=F('boolrxndescriptorvalue__value'))
 
         matrix = {true:{guess:reactions.filter(predicted_val=guess, actual_val=true).count() for guess in permittedValues} for true in permittedValues}
-        
-        
-        #for rxn in reactions:
-            #actual_val = rxn.actual_val
-            #predicted_val = rxn.predicted_val
-            #if predicted_val is not None and actual_val is not None:
-                #matrix[actual_val][predicted_val] += 1
 
         return matrix
         
