@@ -95,9 +95,12 @@ def get_rows():
                 option_conts = model_conts.filter(modelVisitorOptions=options_string)
                 option_conts = [c for c in option_conts if (set(c.numRxnDescriptors.all()) == setNumDescs and set(c.boolRxnDescriptors.all()) == setBoolDescs)]
                 
+                row = desc_set_spec.copy()
+                row['Model'] = tool
+                row['BCR Weighted'] = bcr_option
                 
                 if len(option_conts) != 1:
-                    print "\tWas unable to find a unique model container matching given specification {}. Found {}".format(row, len(option_conts))
+                    print "Was unable to find a unique model container matching given specification {}. Found {}".format(row, len(option_conts))
                 else:
                     #print "Found unique container"
                     cont = option_conts[0]
@@ -106,9 +109,7 @@ def get_rows():
                     confs = [conf_tuple_list[0][1] for conf_tuple_list in conf_tuples_lol]
                     average_conf = utils.average_normalized_conf(confs)
                     
-                    row = desc_set_spec.copy()
-                    row['Model'] = tool
-                    row['BCR Weighted'] = bcr_option
+
                     # And here we go into the part that only works for boolean descriptors
                     # That's what I need right now and we're probably going to overhaul the
                     # confusion matrix stuff soon anyway
