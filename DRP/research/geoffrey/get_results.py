@@ -10,7 +10,7 @@ import json
 import csv
 from math import sqrt
 
-descriptor_directory = 'descs' #'legacy_tests/final_descs/use/'
+descriptor_directory = 'legacy_tests/final_descs/use/'
 
 # dictionary from file name to descriptor set specification
 # 
