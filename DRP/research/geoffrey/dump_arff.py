@@ -35,7 +35,7 @@ def dump(response_headers=None, predictor_headers=None, reaction_set_name=None, 
     if reaction_set_name is None:
         reactions = PerformedReaction.objects.all()
     else:
-        reactions = DataSet.objects.filter(name=reaction_set_name).reactions.all()
+        reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
     whitelist = [d.csvHeader for d in chain(predictors, responses)]
     prepareArff(reactions, whitelist, output_file, verbose=verbose)
