@@ -14,11 +14,44 @@ descriptor_directory = 'descs' #'legacy_tests/final_descs/use/'
 
 # dictionary from file name to descriptor set specification
 # 
-desc_files = {'small_with_bool.dsc': {'Base Features':'small', 'ChemAxon':False, 'Feature Selection':'Sample'}}
+desc_files = {
+                'CFS_legacy_mw_noCA_nonZeroVariance.dsc' : {'Base Features':'legacy', 'ChemAxon':False, 'Feature Selection':'CFS'},
+                'CFS_legacy_mw_noPSA_nonZeroVariance.dsc' : {'Base Features':'legacy', 'ChemAxon':True, 'Feature Selection':'CFS'},
+                'CFS_new_leak_slowcool_group_period_valence_nonZeroVariance.dsc' : {'Base Features':'new', 'ChemAxon':True, 'Feature Selection':'CFS'},
+                'CFS_new_legacy_bothCA_noPSA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'Both', 'Feature Selection':'CFS'},
+                'CFS_new_legacy_legCA_noPSA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'Legacy', 'Feature Selection':'CFS'},
+                'CFS_new_legacy_newCA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'New', 'Feature Selection':'CFS'},
+                'CFS_new_legacy_noCA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':False, 'Feature Selection':'CFS'},
+                'CFS_new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc' : {'Base Features':'new', 'ChemAxon':False, 'Feature Selection':'CFS'},
+                'legacy_mw_noCA_nonZeroInfo.dsc' : {'Base Features':'legacy', 'ChemAxon':False, 'Feature Selection':'Postive Info'},
+                'legacy_mw_noCA_nonZeroVariance.dsc' : {'Base Features':'legacy', 'ChemAxon':False, 'Feature Selection':'Postive Variance'},
+                'legacy_mw_noPSA_nonZeroInfo.dsc' : {'Base Features':'legacy', 'ChemAxon':True, 'Feature Selection':'Postive Info'},
+                'legacy_mw_noPSA_nonZeroVariance.dsc' : {'Base Features':'legacy', 'ChemAxon':True, 'Feature Selection':'Postive Variance'},
+                'new_leak_slowcool_group_period_valence_nonZeroInfo.dsc' : {'Base Features':'new', 'ChemAxon':True, 'Feature Selection':'Postive Info'},
+                'new_leak_slowcool_group_period_valence_nonZeroVariance.dsc' : {'Base Features':'new', 'ChemAxon':True, 'Feature Selection':'Postive Variance'},
+                'new_legacy_bothCA_noPSA_nonZeroInfo.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'Both', 'Feature Selection':'Postive Info'},
+                'new_legacy_bothCA_noPSA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'Both', 'Feature Selection':'Postive Variance'},
+                'new_legacy_legCA_noPSA_nonZeroInfo.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'Legacy', 'Feature Selection':'Postive Info'},
+                'new_legacy_legCA_noPSA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'Legacy', 'Feature Selection':'Postive Variance'},
+                'new_legacy_newCA_nonZeroInfo.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'New', 'Feature Selection':'Postive Info'},
+                'new_legacy_newCA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':'New', 'Feature Selection':'Postive Variance'},
+                'new_legacy_noCA_nonZeroInfo.dsc' : {'Base Features':'new + legacy', 'ChemAxon':False, 'Feature Selection':'Postive Info'},
+                'new_legacy_noCA_nonZeroVariance.dsc' : {'Base Features':'new + legacy', 'ChemAxon':False, 'Feature Selection':'Postive Variance'},
+                'new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc' : {'Base Features':'new', 'ChemAxon':False, 'Feature Selection':'Postive Info'},
+                'new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc' : {'Base Features':'new', 'ChemAxon':False, 'Feature Selection':'Postive Variance'},
+             }
 splitter = 'MutualInfoSplitter'
-splitterOptions = json.dumps({"num_splits": 2})
+splitterOptions = json.dumps({"num_splits": 15})
 BCR_options = [True, False]
 modelVisitorTools = ['J48', 'KNN', 'LogisticRegression', 'NaiveBayes', 'RandomForest', 'SVM_PUK']
+
+#with open('test.csv', 'w') as f:
+    #headers = ['Base Features', 'ChemAxon', 'Feature Selection']
+    #writer = csv.DictWriter(f, headers)
+    #writer.writeheader()
+    #for desc_file_spec in desc_files.values():
+        #writer.writerow(desc_file_spec)
+#exit()
 
 def get_rows():
     rows = []
