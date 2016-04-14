@@ -10,6 +10,7 @@ import uuid
 from itertools import chain
 import glob
 import os
+import build_model
 
 def prepareArff(reactions, whitelistHeaders, filepath, verbose=False):
     """Writes an *.arff file using the provided queryset of reactions."""
@@ -20,36 +21,24 @@ def prepareArff(reactions, whitelistHeaders, filepath, verbose=False):
     return filepath
 
 
-def split_and_dump(response_headers=None, predictor_headers=None, reaction_set_name=None, description="", verbose=False):
+def dump(response_headers=None, predictor_headers=None, reaction_set_name=None, description="", verbose=False, output_file=None):
     responses = Descriptor.objects.filter(heading__in=response_headers)
-    predictors = Descriptor.objects.filter(heading__in=response_headers)
+    predictors = Descriptor.objects.filter(heading__in=predictor_headers)
 
     if responses.count() != len(response_headers):
-        raise KeyError("Could not find all responses")
+        missing_descriptors = build_model.missing_descriptors(response_headers)
+        raise KeyError("Could not find all responses. Missing {}".format(missing_descriptors))
+    if predictors.count() != len(predictor_headers):
+        missing_descriptors = build_model.missing_descriptors(predictor_headers)
+        raise KeyError("Could not find all predictors. Missing {}".format(missing_descriptors))
 
-    filepaths = sorted(glob.glob('legacy_tests/descs/step01.dsc'))
+    if reaction_set_name is None:
+        reactions = PerformedReaction.objects.all()
+    else:
+        reactions = DataSet.objects.filter(name=reaction_set_name).reactions.all()
 
-    with open('legacy_tests/descs/new_full.dsc') as f:
-        old_predictor_headers = [l.strip() for l in f.readlines() if l.strip()]
-
-    old_predictors = Descriptor.objects.filter(heading__in=old_predictor_headers)
-
-    if old_predictors.count() != len(old_predictor_headers):
-        raise KeyError("Could not find all predictors")
-    
-    trainingSet = DataSet.objects.get(name=reaction_set_name)
-    
-    for desc_file in filepaths:
-        with open(desc_file) as f:
-            predictor_headers = [l.strip() for l in f.readlines() if l.strip()]
-        predictors = Descriptor.objects.filter(heading__in=predictor_headers)
-
-        if predictors.count() != len(predictor_headers):
-            raise KeyError("Could not find all predictors")
-
-        whitelist = [d.csvHeader for d in chain(old_predictors, predictors, responses)]
-        desc_file_description = os.path.basename(desc_file)[:-4]
-        prepareArff(trainingSet.reactions.all(), whitelist, "{}_{}_train.arff".format(desc_file_description, trainingSet.name), verbose=verbose)
+    whitelist = [d.csvHeader for d in chain(predictors, responses)]
+    prepareArff(reactions, whitelist, output_file, verbose=verbose)
         
 
 if __name__ == '__main__':
@@ -67,7 +56,9 @@ if __name__ == '__main__':
                         help='Activate verbose mode.')
     parser.add_argument('-rxn', '--reaction-set-name', default=None,
                         help='The name of the reactions to use as a whole dataset')
+    parser.add_argument('-o', '--output-file', default=None, required=True,
+                        help='The file to dump the arff to')
 
     args = parser.parse_args()
 
-    split_and_dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers, reaction_set_name=args.reaction_set_name, verbose=args.verbose)
+    dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers, reaction_set_name=args.reaction_set_name, output_file=args.output_file, verbose=args.verbose)
