@@ -96,11 +96,6 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
                     False: {True: 0, False: 0}
                     }
 
-        #qs = BoolRxnDescriptorValue.objects.filter(descriptor=self)
-        #reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='predicted_val'))
-        #qs = BoolRxnDescriptorValue.objects.filter(descriptor=self.predictionOf)
-        #reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='actual_val'))
-    
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self).annotate(predicted_val=F('boolrxndescriptorvalue__value'))
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self.predictionOf).annotate(actual_val=F('boolrxndescriptorvalue__value'))
 
