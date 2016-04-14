@@ -20,8 +20,9 @@ def prepareArff(reactions, whitelistHeaders, filepath, verbose=False):
     return filepath
 
 
-def split_and_dump(response_headers=None, reaction_set_name=None, description="", verbose=False):
+def split_and_dump(response_headers=None, predictor_headers=None, reaction_set_name=None, description="", verbose=False):
     responses = Descriptor.objects.filter(heading__in=response_headers)
+    predictors = Descriptor.objects.filter(heading__in=response_headers)
 
     if responses.count() != len(response_headers):
         raise KeyError("Could not find all responses")
@@ -57,6 +58,8 @@ if __name__ == '__main__':
                                      epilog="Prefix arguments with '@' to specify a file containing newline"
                                      "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                      " to pass multiple descriptors from a file as predictors")
+    parser.add_argument('-p', '--predictor-headers', nargs='+',
+                        help='One or more descriptors to use as predictors.', required=True)
     parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
                         help='One or more descriptors to predict. '
                         'Note that most models can only handle one response variable (default: %(default)s)')
@@ -64,6 +67,7 @@ if __name__ == '__main__':
                         help='Activate verbose mode.')
     parser.add_argument('-rxn', '--reaction-set-name', default=None,
                         help='The name of the reactions to use as a whole dataset')
+
     args = parser.parse_args()
 
-    split_and_dump(response_headers=args.response_headers, reaction_set_name=args.reaction_set_name, verbose=args.verbose)
+    split_and_dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers, reaction_set_name=args.reaction_set_name, verbose=args.verbose)
