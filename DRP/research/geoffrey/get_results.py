@@ -118,8 +118,8 @@ def get_rows():
         
                     TP = true_guesses[True]
                     FN = true_guesses[False]
-                    TN = false_guesses[True]
-                    FP = false_guesses[False]
+                    TN = false_guesses[False]
+                    FP = false_guesses[True]
                     row['TP'] = TP
                     row['FN'] = FN
                     row['TN'] = TN

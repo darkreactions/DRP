@@ -1,6 +1,25 @@
-sigma,0.25,1.0,4.0,16.0,64.0
-0.25,0.553,0.561,0.562,0.56,0.559
-1.0,0.539,0.531,0.532,0.533,0.533
-4.0,0.534,0.534,0.534,0.534,0.534
-16.0,0.53,0.5,0.5,0.5,0.5
-64.0,0.5,0.5,0.5,0.5,0.5
+Base Features,ChemAxon,Feature Selection
+new + legacy,Legacy,Postive Info
+legacy,False,CFS
+new,True,Postive Variance
+legacy,False,Postive Variance
+new + legacy,False,CFS
+new,True,Postive Info
+new + legacy,New,CFS
+new + legacy,New,Postive Info
+new,True,CFS
+new + legacy,New,Postive Variance
+legacy,False,Postive Info
+legacy,True,Postive Info
+new,False,Postive Info
+new + legacy,Both,Postive Info
+new + legacy,False,Postive Info
+new + legacy,Legacy,CFS
+new,False,Postive Variance
+new + legacy,Legacy,Postive Variance
+new + legacy,Both,CFS
+new + legacy,Both,Postive Variance
+legacy,True,Postive Variance
+new,False,CFS
+legacy,True,CFS
+new + legacy,False,Postive Variance
