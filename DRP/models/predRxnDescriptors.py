@@ -5,6 +5,7 @@ from descriptors import DescriptorManager
 from ModelContainer import ModelContainer
 from StatsModel import StatsModel
 from PerformedReaction import PerformedReaction
+from django.db.models import F
 
 class PredictedDescriptor(models.Model):
     modelContainer = models.ForeignKey(ModelContainer)
@@ -69,6 +70,23 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
         return matrix
 
     def getConfusionMatrix(self, reactions=None):
+        """
+        Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+        values, the inner keys are the "guessed" values that occurred, and
+        the value is the integer number of occurrences of that guess when the
+        true descriptor was the second key.
+        
+        Eg: {true: {guess:#, guess':#},
+            true': {guess:#, guess':#}}
+        Eg: {"1": {"1": 10
+                  "2": 10
+                  "3": 13
+                  "4": 0
+                 }
+           , ...
+           }
+          }
+        """
         if reactions is None:
             reactions = PerformedReaction.objects.filter(boolrxndescriptorvalue__descriptor=self).distinct()
             
@@ -78,22 +96,27 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
                     False: {True: 0, False: 0}
                     }
 
-        qs = BoolRxnDescriptorValue.objects.filter(descriptor=self)
-        reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='predicted_val'))
-        qs = BoolRxnDescriptorValue.objects.filter(descriptor=self.predictionOf)
-        reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='actual_val'))
+        #qs = BoolRxnDescriptorValue.objects.filter(descriptor=self)
+        #reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='predicted_val'))
+        #qs = BoolRxnDescriptorValue.objects.filter(descriptor=self.predictionOf)
+        #reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='actual_val'))
+    
+        reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self).annotate(predicted_val=F('boolrxndescriptorvalue__value'))
+        reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self.predictionOf).annotate(actual_val=F('boolrxndescriptorvalue__value'))
 
         for rxn in reactions:
-            if not rxn.predicted_val:
-                warnings.warn('Reaction {} does not have a predicted value for this descriptor'.format(rxn))
-            if not rxn.actual_val:
-                warnings.warn('Reaction {} does not have an actual value for this descriptor'.format(rxn))
-            if len(rxn.predicted_val) != 1:
-                raise RuntimeError('More than one predicted value for this reaction. This should be impossible. Your code is wrong.')
-            if len(rxn.actual_val) != 1:
-                raise RuntimeError('More than one actual value for this reaction. This should be impossible. Your code is wrong.')
-            actual_val = rxn.actual_val[0].value
-            predicted_val = rxn.predicted_val[0].value
+            actual_val = rxn.actual_val
+            predicted_val = rxn.predicted_val
+            #if not rxn.predicted_val:
+                #warnings.warn('Reaction {} does not have a predicted value for this descriptor'.format(rxn))
+            #if not rxn.actual_val:
+                #warnings.warn('Reaction {} does not have an actual value for this descriptor'.format(rxn))
+            #if len(rxn.predicted_val) > 1:
+                #raise RuntimeError('More than one predicted value for this reaction. This should be impossible. Your code is wrong.')
+            #if len(rxn.actual_val) > 1:
+                #raise RuntimeError('More than one actual value for this reaction. This should be impossible. Your code is wrong.')
+            #actual_val = rxn.actual_val[0].value
+            #predicted_val = rxn.predicted_val[0].value
             if predicted_val is not None and actual_val is not None:
                 matrix[actual_val][predicted_val] += 1
 
