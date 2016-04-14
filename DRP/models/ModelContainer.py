@@ -477,14 +477,14 @@ class ModelContainer(models.Model):
         else:
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
-    def getOverallConfusionMatrices(self):
+    def getOverallConfusionMatrices(self, reactions=None):
         confusion_matrix_list = []
         for descriptor in self.predictsDescriptors:
             if descriptor.statsModel is None:
-                confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
+                confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)) )
         return confusion_matrix_list
 
-    def getComponentConfusionMatrices(self):
+    def getComponentConfusionMatrices(self, reactions=None):
         """
         Returns a list of lists of tuples of confusion matrices.
         Each entry of the outer list is for a different component statsModel.
@@ -497,7 +497,7 @@ class ModelContainer(models.Model):
             confusion_matrix_list = []
             for descriptor in self.predictsDescriptors:
                 if descriptor.statsModel == model:
-                    confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix()) )
+                    confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)) )
             confusion_matrix_lol.append(confusion_matrix_list)
             
         return confusion_matrix_lol
