@@ -90,30 +90,20 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
         if reactions is None:
             reactions = PerformedReaction.objects.filter(boolrxndescriptorvalue__descriptor=self).distinct()
             
-            
-        matrix = {
-                    True: {True: 0, False: 0},
-                    False: {True: 0, False: 0}
-                    }
+        permittedValues = [True, False]
 
+        
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self).annotate(predicted_val=F('boolrxndescriptorvalue__value'))
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self.predictionOf).annotate(actual_val=F('boolrxndescriptorvalue__value'))
 
-        for rxn in reactions:
-            actual_val = rxn.actual_val
-            predicted_val = rxn.predicted_val
-            #if not rxn.predicted_val:
-                #warnings.warn('Reaction {} does not have a predicted value for this descriptor'.format(rxn))
-            #if not rxn.actual_val:
-                #warnings.warn('Reaction {} does not have an actual value for this descriptor'.format(rxn))
-            #if len(rxn.predicted_val) > 1:
-                #raise RuntimeError('More than one predicted value for this reaction. This should be impossible. Your code is wrong.')
-            #if len(rxn.actual_val) > 1:
-                #raise RuntimeError('More than one actual value for this reaction. This should be impossible. Your code is wrong.')
-            #actual_val = rxn.actual_val[0].value
-            #predicted_val = rxn.predicted_val[0].value
-            if predicted_val is not None and actual_val is not None:
-                matrix[actual_val][predicted_val] += 1
+        matrix = {true:{guess:reactions.filter(predicted_val=guess, actual_val=true).count() for guess in permittedValues} for true in permittedValues}
+        
+        
+        #for rxn in reactions:
+            #actual_val = rxn.actual_val
+            #predicted_val = rxn.predicted_val
+            #if predicted_val is not None and actual_val is not None:
+                #matrix[actual_val][predicted_val] += 1
 
         return matrix
         
