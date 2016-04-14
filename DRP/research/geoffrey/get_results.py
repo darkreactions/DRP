@@ -101,39 +101,44 @@ def get_rows():
                 
                 if len(option_conts) != 1:
                     print "Was unable to find a unique model container matching given specification {}. Found {}".format(row, len(option_conts))
-                else:
-                    #print "Found unique container"
-                    cont = option_conts[0]
-                    conf_tuples_lol = cont.getComponentConfusionMatrices()
-                    # we only care about the confusion matrix of the first descriptor
-                    confs = [conf_tuple_list[0][1] for conf_tuple_list in conf_tuples_lol]
-                    average_conf = utils.average_normalized_conf(confs)
-                    
+                    if len(option_conts) > 1:
+                        print "Using container with largest pk"
+                        option_conts.sort(key=lambda x: x.pk, reverse=True)
+                    else:
+                        print "Skipping this setup"
+                        continue
+                #print "Found unique container"
+                cont = option_conts[0]
+                conf_tuples_lol = cont.getComponentConfusionMatrices()
+                # we only care about the confusion matrix of the first descriptor
+                confs = [conf_tuple_list[0][1] for conf_tuple_list in conf_tuples_lol]
+                average_conf = utils.average_normalized_conf(confs)
+                
 
-                    # And here we go into the part that only works for boolean descriptors
-                    # That's what I need right now and we're probably going to overhaul the
-                    # confusion matrix stuff soon anyway
-                    true_guesses = average_conf[True]
-                    false_guesses = average_conf[False]
-        
-                    TP = true_guesses[True]
-                    FN = true_guesses[False]
-                    TN = false_guesses[False]
-                    FP = false_guesses[True]
-                    row['TP'] = TP
-                    row['FN'] = FN
-                    row['TN'] = TN
-                    row['FP'] = FP
-                    
-                    PP = TP+FP
-                    AP = TP+FN
-                    AN = TN+FP
-                    PN = TN+FN
-                    
-                    row['Accuracy'] = TP + TN
-                    row['BCR']  = (TP/AP + TN/AN)/2
-                    row['Matthews'] = (TP*TN - FP*FN)/sqrt(PP*AP*AN*PN) if 0 not in [PP, AP, AN, PN] else 0.0
-                    rows.append(row)
+                # And here we go into the part that only works for boolean descriptors
+                # That's what I need right now and we're probably going to overhaul the
+                # confusion matrix stuff soon anyway
+                true_guesses = average_conf[True]
+                false_guesses = average_conf[False]
+    
+                TP = true_guesses[True]
+                FN = true_guesses[False]
+                TN = false_guesses[False]
+                FP = false_guesses[True]
+                row['TP'] = TP
+                row['FN'] = FN
+                row['TN'] = TN
+                row['FP'] = FP
+                
+                PP = TP+FP
+                AP = TP+FN
+                AN = TN+FP
+                PN = TN+FN
+                
+                row['Accuracy'] = TP + TN
+                row['BCR']  = (TP/AP + TN/AN)/2
+                row['Matthews'] = (TP*TN - FP*FN)/sqrt(PP*AP*AN*PN) if 0 not in [PP, AP, AN, PN] else 0.0
+                rows.append(row)
     return rows
     
 if __name__ == '__main__':
