@@ -3,6 +3,24 @@ Miscellaneous utility functions for use in DRP
 """
 from math import sqrt
 
+
+def average_normalized_conf(confs):
+    possible_vals = set(confs[0].keys())
+    sum_conf = {true: {guess:0.0 for guess in possible_vals} for true in possible_vals}
+    for conf in confs:
+        total = 0.0
+        for true, guesses in conf.items():
+            for guess, count in guesses.items():
+                total += count
+        if total == 0:
+            raise RuntimeError('Confusion matrix values sum to 0')
+        for true, guesses in conf.items():
+            for guess, count in guesses.items():
+                sum_conf[true][guess] += count/total
+
+    average_conf = {true: {guess: count/len(confs) for guess, count in guesses.items()} for true, guesses in sum_conf.items()}
+    return average_conf
+
 def accuracy(conf):
     correct = 0.0
     total = 0.0
