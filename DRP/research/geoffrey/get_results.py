@@ -40,7 +40,7 @@ desc_files = {
                 'new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc' : {'Base Features':'new', 'ChemAxon':False, 'Feature Selection':'Postive Info'},
                 'new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc' : {'Base Features':'new', 'ChemAxon':False, 'Feature Selection':'Postive Variance'},
              }
-splitter = 'MutualInfoSplitter'
+splitter = 'RandomSplitter'
 splitterOptions = json.dumps({"num_splits": 15})
 BCR_options = [True, False]
 modelVisitorTools = ['J48', 'KNN', 'LogisticRegression', 'NaiveBayes', 'RandomForest', 'SVM_PUK']
@@ -107,7 +107,7 @@ def get_rows():
                     else:
                         print "Skipping this setup"
                         continue
-                #print "Found unique container"
+                
                 cont = option_conts[0]
                 conf_tuples_lol = cont.getComponentConfusionMatrices()
                 # we only care about the confusion matrix of the first descriptor
