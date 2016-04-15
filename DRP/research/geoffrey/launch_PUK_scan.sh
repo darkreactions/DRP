@@ -9,44 +9,39 @@ TYPE=$1
 
 SIGMA_MIN=0.25
 SIGMA_MAX=64
-SIGMA_STEP=4
+SIGMA_STEP=2
 OMEGA_MIN=0.25
 OMEGA_MAX=64
-OMEGA_STEP=4
+OMEGA_STEP=2
 
 
 
-DESCRIPTOR_DIR="descs"
+DESCRIPTOR_DIR="final_descs/use"
 DESCRIPTOR_FILES=(
-    #"legacy_nonZeroVariance.dsc"
-    #"legacy_noCA_nonZeroVariance.dsc"
-    #"new_noCA_nonZeroVariance.dsc"
-    #"new_CA_nonZeroVariance.dsc"
-    #"new_legacy_CA_nonZeroVariance.dsc"
-    #"new_legacy_newCA_nonZeroVariance.dsc"
-    #"new_legacy_noCA_nonZeroVariance.dsc"
-    #"new_legacy_legCA_nonZeroVariance.dsc"
-    #"new_reactionpH_nonZeroVariance.dsc"
-
-    # "legacy_noCA_nonZeroInfo.dsc"
-    # "legacy_nonZeroInfo.dsc"
-    # "new_reactionpH_nonZeroInfo.dsc"
-    # "new_CA_nonZeroInfo.dsc"
-    # "new_legacy_noCA_nonZeroInfo.dsc"
-    # "new_legacy_CA_nonZeroInfo.dsc"
-    # "new_legacy_legCA_nonZeroInfo.dsc"
+    # "CFS_legacy_mw_noCA_nonZeroVariance.dsc"
+    # "CFS_legacy_mw_noPSA_nonZeroVariance.dsc"
+    # "CFS_new_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    # "CFS_new_legacy_bothCA_noPSA_nonZeroVariance.dsc"
+    # "CFS_new_legacy_legCA_noPSA_nonZeroVariance.dsc"
+    # "CFS_new_legacy_newCA_nonZeroVariance.dsc"
+    # "CFS_new_legacy_noCA_nonZeroVariance.dsc"
+    # "CFS_new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    # "legacy_mw_noCA_nonZeroInfo.dsc"
+    # "legacy_mw_noCA_nonZeroVariance.dsc"
+    # "legacy_mw_noPSA_nonZeroInfo.dsc"
+    # "legacy_mw_noPSA_nonZeroVariance.dsc"
+    # "new_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
+    "new_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    # "new_legacy_bothCA_noPSA_nonZeroInfo.dsc"
+    # "new_legacy_bothCA_noPSA_nonZeroVariance.dsc"
+    # "new_legacy_legCA_noPSA_nonZeroInfo.dsc"
+    # "new_legacy_legCA_noPSA_nonZeroVariance.dsc"
     # "new_legacy_newCA_nonZeroInfo.dsc"
-    # "new_noCA_nonZeroInfo.dsc"
-
-    "CFS_legRxnNonZeroCompound_LegDscCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_LegDscNoCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_NewDscCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_NewDscNoCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_NewDscRxnpHCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_NewLegDscBothCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_NewLegDscLegCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_NewLegDscNewCANonzeroVar.dsc"
-    # "CFS_legRxnNonZeroCompound_NewLegDscNoCANonzeroVar.dsc"
+    # "new_legacy_newCA_nonZeroVariance.dsc"
+    "new_legacy_noCA_nonZeroInfo.dsc"
+    # "new_legacy_noCA_nonZeroVariance.dsc"
+    # "new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
+    # "new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
 )
 
 
