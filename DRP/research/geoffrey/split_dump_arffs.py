@@ -5,9 +5,14 @@ from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescrip
 import operator
 import argparse
 from django.db.utils import OperationalError
-from DRP.ml_models.splitters.MutualInfoSplitter import Splitter
+#from DRP.ml_models.splitters.MutualInfoSplitter import Splitter
 import uuid
 from itertools import chain
+from django.conf import settings
+import importlib
+import ast
+
+splitters = {splitter:importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 
 def prepareArff(reactions, whitelistHeaders, description, verbose=False):
     """Writes an *.arff file using the provided queryset of reactions."""
@@ -18,11 +23,7 @@ def prepareArff(reactions, whitelistHeaders, description, verbose=False):
         reactions.toArff(f, expanded=True, whitelistHeaders=whitelistHeaders)
     return filepath
 
-
-def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_name=None, description="", verbose=False):
-    # Grab all valid reactions with defined outcome descriptors
-
-    # TODO XXX this should actually check to make sure that all the descriptor headers are for valid descriptors and at least issue a warning if not
+def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_name=None, description="", verbose=False, splitterOptions={}, splitter=None):
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
@@ -36,8 +37,11 @@ def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_n
     else:
         reactions = PerformedReaction.objects.all()
 
-    splitterObj = Splitter("{}_{}".format(description, uuid.uuid4()))
-
+    print splitters
+    splitter_name_stub = "{}_{}".format(description, uuid.uuid4())
+    splitterObj = splitters[splitter].Splitter(splitter_name_stub, **splitterOptions)
+    if verbose:
+        print "Splitting using {}".format(splitter)
     data_splits = splitterObj.split(reactions, verbose=verbose)
 
     whitelist = [d.csvHeader for d in chain(predictors, responses)]
@@ -57,8 +61,10 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
                         help='One or more descriptors to predict. '
                         'Note that most models can only handle one response variable (default: %(default)s)')
-    #parser.add_argument('-s', '--splitter', default="KFoldSplitter",
-                        #help='Splitter to use. (default: %(default)s)')
+    parser.add_argument('-s', '--splitter', default="KFoldSplitter",
+                        help='Splitter to use. (default: %(default)s)')
+    parser.add_argument('-so', '--splitter-options', default=None,
+                        help='A dictionary of the options to give to the splitter in JSON format')
     parser.add_argument('-v', dest='verbose', action='store_true',
                         help='Activate verbose mode.')
     parser.add_argument('-d', '--description', default="",
@@ -67,4 +73,7 @@ if __name__ == '__main__':
                         help='The name of the reactions to use as a whole dataset')
     args = parser.parse_args()
 
-    split_and_dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers, reaction_set_name=args.reaction_set_name, description=args.description, verbose=args.verbose)
+    splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else {}
+
+    split_and_dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers, reaction_set_name=args.reaction_set_name,
+                description=args.description, verbose=args.verbose, splitterOptions=splitterOptions, splitter=args.splitter)
