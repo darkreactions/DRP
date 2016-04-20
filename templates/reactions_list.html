@@ -68,9 +68,9 @@
   {% for reaction in reactions %}
   <div class="reaction" {% if reaction.valid %} style="border: 5px solid #376737" {% else %} style="border: 5px solid #8b2c27" {% endif %}>
     {% comment %}need to change color of main div with {{ reaction.valid }}{% endcomment %} 
-    <h2>{{reaction.reference}}</h2>
-    <div class="first_name">{{ reaction.user.first_name }} {{ reaction.user.last_name }}</div> 
+    <div class="first_name">Entered by: {{ reaction.user.first_name }} {{ reaction.user.last_name }}</div> 
     <div class="quantities">
+	<p>Quantities:</p>
       {% for quantity in reaction.compoundquantity_set.all %}
 	<ul>
           <li>{{ quantity.role.label }}</li>
@@ -79,7 +79,8 @@
         </ul>
       {% endfor %}
     </div>
-    <div class="inserted_date">{{ reaction.insertedDateTime }}</div>
+    <div class="inserted_date">Inserted Date: {{ reaction.insertedDateTime }}</div>
+    <div class="input_wrapper">
     {% if user.is_authenticated %}
       {% if reaction.labGroup in user.labgroup_set.all %}
     	  <form action="{% url 'editReaction' reaction.pk %}">
@@ -91,7 +92,7 @@
     	  <form action="{% url 'deleteReaction' %}" method="post">
             {% csrf_token %}
             {% performed_rxn_delete_form reaction %}
-            <input type="Submit" value="delete" />
+            <input class="delete" type="Submit" value="delete" />
           </form> 
         {% else %}
           <form action="{% url 'invalidateReaction' %}" method="post">
@@ -101,6 +102,7 @@
           </form>
         {% endif %}
       {% endif %}
+     </div>
     {% endif %}
   </div>
   {% endfor %}
