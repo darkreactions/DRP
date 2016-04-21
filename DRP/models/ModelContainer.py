@@ -403,7 +403,10 @@ class ModelContainer(models.Model):
                     resDict[reaction][response][outcome] = 0
                 resDict[reaction][response][outcome] += 1
                 val = predDesc.createValue(reaction, outcome)
-                vals.append(val)
+                if val.pk is None: #if the value already exists
+                    vals.append(val)
+                else:
+                    val.save()
             if vals:
                 type(vals[0]).objects.bulk_create(vals)
         return resDict
@@ -431,7 +434,9 @@ class ModelContainer(models.Model):
                     winners = [(response, count) for response, count in outcomeDict.items() if count == maxVotes]
                     winner = random.choice(winners)
                     val = predDesc.createValue(reaction, winner[0])
-                    if isinstance(val, BoolRxnDescriptorValue):
+                    if val.pk is not None:
+                        val.save()
+                    elif isinstance(val, BoolRxnDescriptorValue):
                         bool_vals.append(val)
                     elif isinstance(val, OrdRxnDescriptorValue):
                         ord_vals.append(val)
@@ -461,8 +466,10 @@ class ModelContainer(models.Model):
                 visitorOptions = json.loads(self.modelVisitorOptions)
                 modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=model, **visitorOptions)
                 if verbose:
-                    print "statsModel {}, saved at {}, predicting...".format(statsModel.pk, statsModel.fileName)
+                    print "statsModel {}, saved at {}, predicting...".format(model.pk, model.outputFile)
                 predictions = modelVisitor.predict(reactions, verbose=verbose)
+                if verbose:
+                    print "\t...finished predicting. Storing predictions...",
                 newResDict = self._storePredictionComponents(predictions, model)
 
                 # Update the overall result-dictionary with these new counts.
@@ -477,6 +484,17 @@ class ModelContainer(models.Model):
                             if outcome not in resDict[reaction][response]:
                                 resDict[reaction][response][outcome] = count
                             resDict[reaction][response][outcome] += count
+
+                if verbose:
+                    print "predictions stored."
+                    for response in self.outcomeDescriptors:
+                        predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=model, predictionOf=response)
+                        conf_mtrx = predDesc.getConfusionMatrix()
+                        
+                        print "Confusion matrix for {}:".format(predDesc.heading)
+                        print confusionMatrixString(conf_mtrx)
+                        print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
+                        print "BCR: {:.3}".format(BCR(conf_mtrx))
 
             return self._storePredictions(resDict)
         else:

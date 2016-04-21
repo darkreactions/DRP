@@ -126,9 +126,9 @@ def find_predict_display_model(model_id=None, predictor_headers=None, response_h
     reaction_set = DataSet.objects.get(name=reaction_set_name)
     reactions = reaction_set.reactions.all()
 
-    container.predict(reactions)
+    container.predict(reactions, verbose=verbose)
 
-    build_model.display_model_results(container,reactions)
+    build_model.display_model_results(container, reactions)
 
 
 if __name__ == '__main__':
