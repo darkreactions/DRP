@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import django
-from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues, DataSet
+from DRP.models import PerformedReaction, ModelContainer, Descriptor, DataSet, NumRxnDescriptor, BoolRxnDescriptor
 import argparse
 from django.conf import settings
 import ast
 from sys import argv
 import json
 import build_model
+from django.db.models import Count
 
 def check_container(container, predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None,
                                 verbose=False, splitterOptions=None, visitorOptions=None):
@@ -69,7 +70,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
     
             containers = containers.filter(num_outNumDescs=num_numDescs).filter(num_outBoolDescs=num_boolDescs)
             if verbose:
-                print "{} containers with appropriate number of responses".format(conts.count())
+                print "{} containers with appropriate number of responses".format(containers.count())
 
         if predictor_headers is not None:
             containers = containers.annotate(num_numDescs=Count('numRxnDescriptors', distinct=True)).annotate(num_boolDescs=Count('boolRxnDescriptors', distinct=True))
@@ -90,7 +91,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
     
             containers = containers.filter(num_numDescs=num_numDescs).filter(num_boolDescs=num_boolDescs)
             if verbose:
-                print "{} containers with appropriate number of predictors".format(conts.count())
+                print "{} containers with appropriate number of predictors".format(containers.count())
 
         if response_headers is not None:
             containers = [c for c in containers if (set(c.outcomeNumRxnDescriptors.all()) == setOutNumDescs and set(c.outcomeBoolRxnDescriptors.all()) == setOutBoolDescs)]
@@ -102,18 +103,20 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             print "Was unable to find a unique model container matching given specification. Found {}".format(len(containers))
             if len(containers) > 1 and not unique:
                 print "Using container with largest pk"
-                containers.sort(key=lambda x: x.pk, reverse=True)
-                return containers[0]
+                try:
+                    containers.sort(key=lambda x: x.pk, reverse=True)
+                except AttributeError:
+                    containers = containers.order_by('-pk')
             else:
                 raise RuntimeError("No unique container. If you want a non-unique container, remove the '-u' flag")
 
-        
+        return containers[0]
 
-def find_predict_display_model(model_id=None, predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None,
+def find_predict_display_model(model_id=None, predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, reaction_set_name=None,
                                 verbose=False, unique=False, splitterOptions=None, visitorOptions=None):
 
-    container = find_container(model_id=None, predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None,
-                                verbose=False, unique=False, splitterOptions=None, visitorOptions=None):
+    container = find_container(model_id=model_id, predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary,
+                                modelVisitorTool=modelVisitorTool, splitter=splitter, verbose=verbose, unique=unique, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
     reaction_set = DataSet.objects.get(name=reaction_set_name)
     reactions = reaction_set.reactions.all()

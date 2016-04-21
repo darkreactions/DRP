@@ -454,7 +454,7 @@ class ModelContainer(models.Model):
         if self.built:
             resDict = {}
 
-            for model in self.statsmodel_set:
+            for model in self.statsmodel_set.all():
                 visitorOptions = json.loads(self.modelVisitorOptions)
                 modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=model, **visitorOptions)
                 predictions = modelVisitor.predict(reactions)
