@@ -12,7 +12,7 @@ import os
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from StatsModel import StatsModel
-from DRP.utils import accuracy, BCR, confusionMatrixString, confusionMatrixTable
+from DRP.utils import accuracy, BCR, Matthews, confusionMatrixString, confusionMatrixTable
 import json
 import sys
 
@@ -495,6 +495,7 @@ class ModelContainer(models.Model):
                         print confusionMatrixString(conf_mtrx)
                         print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
                         print "BCR: {:.3}".format(BCR(conf_mtrx))
+                        print "Matthews: {:.3}".format(Matthews(conf_mtrx))
 
             return self._storePredictions(resDict)
         else:
