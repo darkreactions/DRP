@@ -49,13 +49,13 @@ def missing_descriptors(descriptor_headings):
             missing_descs.append(heading)
     return missing_descs
 
-def display_model_results(container, heading=""):
+def display_model_results(container, reactions=None, heading=""):
     """
     Displays confusion matrices for a model container.
     Optional heading specifies prefix for the summary statistics
     (useful for when multiple model containers are built by a single script)
     """
-    overall_conf_mtrcs = container.getOverallConfusionMatrices()
+    overall_conf_mtrcs = container.getOverallConfusionMatrices(reactions=reactions)
     if not overall_conf_mtrcs:
         print "No model results to display"
         return
@@ -70,7 +70,7 @@ def display_model_results(container, heading=""):
         print "Accuracy: {:.3}".format(acc)
         print "BCR: {:.3}".format(bcr)
         print "Matthews: {:.3}".format(matthews)
-    conf_mtrcs = container.getComponentConfusionMatrices()
+    conf_mtrcs = container.getComponentConfusionMatrices(reactions=reactions)
 
     sum_acc = 0.0
     sum_bcr = 0.0
