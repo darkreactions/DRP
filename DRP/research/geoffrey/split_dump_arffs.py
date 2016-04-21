@@ -37,7 +37,6 @@ def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_n
     else:
         reactions = PerformedReaction.objects.all()
 
-    print splitters
     splitter_name_stub = "{}_{}".format(description, uuid.uuid4())
     splitterObj = splitters[splitter].Splitter(splitter_name_stub, **splitterOptions)
     if verbose:

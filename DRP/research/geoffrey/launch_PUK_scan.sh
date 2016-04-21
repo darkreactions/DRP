@@ -26,12 +26,12 @@ DESCRIPTOR_FILES=(
     # "CFS_new_legacy_newCA_nonZeroVariance.dsc"
     # "CFS_new_legacy_noCA_nonZeroVariance.dsc"
     # "CFS_new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
-    # "legacy_mw_noCA_nonZeroInfo.dsc"
+    "legacy_mw_noCA_nonZeroInfo.dsc"
     # "legacy_mw_noCA_nonZeroVariance.dsc"
     # "legacy_mw_noPSA_nonZeroInfo.dsc"
     # "legacy_mw_noPSA_nonZeroVariance.dsc"
     # "new_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
-    "new_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
+    # "new_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
     # "new_legacy_bothCA_noPSA_nonZeroInfo.dsc"
     # "new_legacy_bothCA_noPSA_nonZeroVariance.dsc"
     # "new_legacy_legCA_noPSA_nonZeroInfo.dsc"
@@ -40,7 +40,7 @@ DESCRIPTOR_FILES=(
     # "new_legacy_newCA_nonZeroVariance.dsc"
     "new_legacy_noCA_nonZeroInfo.dsc"
     # "new_legacy_noCA_nonZeroVariance.dsc"
-    # "new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
+    "new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc"
     # "new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc"
 )
 
@@ -61,7 +61,7 @@ for DESCRIPTOR_FN in "${DESCRIPTOR_FILES[@]}"
 do
     DESCRIPTOR_FILE="$DESCRIPTOR_DIR/$DESCRIPTOR_FN"
     COMMENT="Legacy rxns. Optimizing PUK. $TYPE ${DESCRIPTOR_FN}. 15 MI split."
-    FILE_SUFFIX="PUK_SCAN_${TYPE}_${DESCRIPTOR_FN}_15MISplit"
+    FILE_SUFFIX="PUK_scan_${TYPE}_${DESCRIPTOR_FN}_15MISplit"
 
     python -u $SCRIPT -p @"$DESCRIPTOR_FILE" -rxn $RXN_SET_NAME -r $OUTCOME_DESCRIPTOR -s $SPLITTER -so "$SPLITTER_OPTIONS" -vo "$VISITOR_OPTIONS" -v -d "$COMMENT" -ps $SIGMA_MIN $SIGMA_MAX $SIGMA_STEP -po $OMEGA_MIN $OMEGA_MAX $OMEGA_STEP -g &> "$FILE_SUFFIX.out" &
 done

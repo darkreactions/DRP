@@ -2,7 +2,7 @@
 """Compare the values for two descriptors for the same reaction"""
 import django
 django.setup()
-from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, PerformedReaction
+from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, PerformedReaction, DataSet
 from sys import argv
 
 def getDescValueType(desc_heading):
@@ -29,11 +29,13 @@ def getDescValueType(desc_heading):
     raise ValueError('Invalid heading given. Does not match any descriptor')
 
 
-def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=BoolRxnDescriptorValue, desc2ValueType=BoolRxnDescriptorValue):
+def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=BoolRxnDescriptorValue, desc2ValueType=BoolRxnDescriptorValue, reactions=None):
     if comparison_function is None:
         def _equal(v1, v2):
             return v1 == v2
         comparison_function = _equal 
+    if reactions is None:
+        reactions = PerformedReaction.objects.all()
 
     d1_values = desc1ValueType.objects.filter(descriptor__heading=d1_heading)
     d2_values = desc2ValueType.objects.filter(descriptor__heading=d2_heading)
@@ -41,19 +43,18 @@ def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=Boo
 
     print d1_heading, d2_heading
     different = []
-    if d1_values.count() < d2_values.count():
-        for d1_val in d1_values:
-            d2_val = d2_values.get(reaction=d1_val.reaction)
-            if not comparison_function(d1_val.value, d2_val.value):
-                print d1_val.reaction, d1_val.value, d2_val.value
-                different.append(d1_val.reaction)
-    else:
-        for d2_val in d2_values:
-            d1_val = d1_values.get(reaction=d2_val.reaction)
-            if not comparison_function(d1_val.value, d2_val.value):
-                print d1_val.reaction, d1_val.value, d2_val.value
-                different.append(d1_val.reaction)
 
+    count = 0
+    for d1_val in d1_values:
+        rxn = d1_val.reaction
+        if reactions.filter(id=rxn.id).exists():
+            count += 1
+            d2_val = d2_values.get(reaction=rxn)
+            if not comparison_function(d1_val.value, d2_val.value):
+                print rxn, d1_val.value, d2_val.value
+                different.append(rxn)
+                print rxn.compounds.all()
+    print "compared values for {} reactions".format(count)
     return different
 
 def get_references(reactions):
@@ -84,11 +85,13 @@ if __name__ == '__main__':
     shiftK = shift_function(273.15)
     tol_point_5 = shift_function(0, 0.55)
     #element = argv[1]
-    d1_heading = 'time_legacy'#.format(element)
-    d2_heading = 'reaction_time'#.format(element)
+    d2_heading = 'Inorg_amount_count'#.format(element)
+    d1_heading = 'numberInorg_legacy'#.format(element)
+    reactions = DataSet.objects.get(name='valid_legacy_rxns_nonzero_compound').reactions.all()
+    comparison_function = None
     desc1ValueType = getDescValueType(d1_heading)
     desc2ValueType = getDescValueType(d2_heading)
-    different = compare(d1_heading, d2_heading, desc1ValueType=desc1ValueType, desc2ValueType=desc2ValueType, comparison_function=scale60)
+    different = compare(d1_heading, d2_heading, desc1ValueType=desc1ValueType, desc2ValueType=desc2ValueType, comparison_function=comparison_function, reactions=reactions)
     references = get_references(different)
     print len(references)
     print references
