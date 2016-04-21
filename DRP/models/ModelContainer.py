@@ -450,14 +450,19 @@ class ModelContainer(models.Model):
         CatRxnDescriptorValue.objects.bulk_create(cat_vals)
         return finalPredictions
 
-    def predict(self, reactions):
+    def predict(self, reactions, verbose=False):
         if self.built:
             resDict = {}
 
+            num_models = self.statsmodel_set.all().count()
+            num_finished = 0
+            overall_start_time = datetime.datetime.now()
             for model in self.statsmodel_set.all():
                 visitorOptions = json.loads(self.modelVisitorOptions)
                 modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=model, **visitorOptions)
-                predictions = modelVisitor.predict(reactions)
+                if verbose:
+                    print "statsModel {}, saved at {}, predicting...".format(statsModel.pk, statsModel.fileName)
+                predictions = modelVisitor.predict(reactions, verbose=verbose)
                 newResDict = self._storePredictionComponents(predictions, model)
 
                 # Update the overall result-dictionary with these new counts.
