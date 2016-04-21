@@ -355,6 +355,7 @@ class ModelContainer(models.Model):
                             print confusionMatrixString(conf_mtrx)
                             print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
                             print "BCR: {:.3}".format(BCR(conf_mtrx))
+                            
             
                 elif verbose:
                     print "Test set is empty."
@@ -489,13 +490,19 @@ class ModelContainer(models.Model):
                     print "predictions stored."
                     for response in self.outcomeDescriptors:
                         predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=model, predictionOf=response)
-                        conf_mtrx = predDesc.getConfusionMatrix()
+                        conf_mtrx = predDesc.getConfusionMatrix(reactions=reactions)
                         
                         print "Confusion matrix for {}:".format(predDesc.heading)
                         print confusionMatrixString(conf_mtrx)
                         print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
                         print "BCR: {:.3}".format(BCR(conf_mtrx))
                         print "Matthews: {:.3}".format(Matthews(conf_mtrx))
+                    num_finished += 1
+                    end_time = datetime.datetime.now()
+                    elapsed = (end_time - overall_start_time)
+                    expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds()*(num_models/float(num_finished)))) + overall_start_time
+                    print "{}. Predictions from {} of {} models.".format(end_time, num_finished, num_models)
+                    print "Elapsed prediction time: {}. Expected completion time: {}".format(elapsed, expected_finish)
 
             return self._storePredictions(resDict)
         else:
