@@ -80,18 +80,16 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         m = annotated.aggregate(max=models.Max('chemicalClassCount'))['max']
         return 0 if m is None else m
 
-    @property
-    def csvHeaders(self):
+    def csvHeaders(self, whitelist=None):
         """Generate the header row information for the CSV."""
-        headers = super(CompoundQuerySet, self).csvHeaders
+        headers = super(CompoundQuerySet, self).csvHeaders()
         m = Compound.objects.all().maxChemicalClassCount()
         headers += ['chemicalClass_{}'.format(x + 1) for x in range(0, m)]
         return headers
 
-    @property
-    def arffHeaders(self):
+    def arffHeaders(self, whitelist=None):
         """Generate headers for the arff file."""
-        headers = super(CompoundQuerySet, self).arffHeaders
+        headers = super(CompoundQuerySet, self).arffHeaders(whitelist)
         m = Compound.objects.all().maxChemicalClassCount()
         for x in range(0, m):
             label = 'chemicalClass_{0}'.format(x + 1)
@@ -99,17 +97,15 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             headers[label] = '@attribute {} {{{}}}'.format(label, ','.join(clsStrings))
         return headers
 
-    @property
-    def expandedArffHeaders(self):
+    def expandedArffHeaders(self, whitelist=None):
         """Generate expanded headers for the arff file."""
-        headers = self.arffHeaders
+        headers = self.arffHeaders(whitelist)
         headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors)))
         return headers
 
-    @property
-    def expandedCsvHeaders(self):
+    def expandedCsvHeaders(self, whitelist=None):
         """Generate the expanded header for the csv."""
-        return self.csvHeaders + [d.csvHeader for d in self.descriptors]
+        return self.csvHeaders() + [d.csvHeader for d in self.descriptors]
 
     @property
     def descriptors(self):
@@ -137,7 +133,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             ).distinct()
         )
 
-    def rows(self, expanded):
+    def rows(self, expanded, whitelist=None):
         if expanded:
             compounds = self.prefetch_related('boolmoldescriptorvalue_set__descriptor')
             compounds = compounds.prefetch_related('catmoldescriptorvalue_set__descriptor')
@@ -156,6 +152,13 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             for row in super(CompoundQuerySet, self).rows(expanded):
                 yield row
 
+    def calculate_descriptors(self, verbose=False):
+        for descriptorPlugin in descriptorPlugins:
+            if verbose:
+                print "Calculating for {}".format(descriptorPlugin)
+            descriptorPlugin.calculate_many(self, verbose=verbose)
+            if verbose:
+                print "Done with {}\n".format(descriptorPlugin)
 
 class CompoundManager(models.Manager):
 
@@ -272,7 +275,7 @@ class Compound(models.Model):
 
     def __unicode__(self):
         """Unicode representation of a compound is it's name and abbreviation."""
-        return '{} ({})'.format(self.name, self.abbrev)
+        return u"{} ({})".format(unicode(self.name, 'utf-8'), unicode(self.abbrev, 'utf-8'))
 
     def csConsistencyCheck(self):
         """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""
@@ -305,9 +308,9 @@ class Compound(models.Model):
                     raise ValidationError(errorList)
 
     @transaction.atomic
-    def save(self, calcDescriptors=True, *args, **kwargs):
-        """Save the compound, invalidating any consequent objects like reactiosn and models."""
-        if self.pk is not None:
+    def save(self, calcDescriptors=True, invalidateReactions=True, *args, **kwargs):
+        """Save the compound, invalidating any consequent objects like reactions and models."""
+        if self.pk is not None and invalidateReactions:
             for reaction in self.reaction_set.all():
                 reaction.save()  # descriptor recalculation
                 try:

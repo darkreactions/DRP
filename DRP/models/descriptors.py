@@ -5,18 +5,10 @@ classes.
 """
 
 from django.db import models
-from django.template.defaultfilters import slugify as _slugify
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-
-
-def slugify(text):
-    """Return a modified version of slug text.
-
-    This modified version maintains compatibility with
-    external languages such as R.
-    """
-    return _slugify(text).replace('-', '_')
+#from DRP.utils import generate_csvHeader
+from django.db.models.functions import Concat
 
 
 class DescriptorQuerySet(models.query.QuerySet):
@@ -31,7 +23,7 @@ class DescriptorManager(models.Manager):
     use_for_related_fields = True
 
     def get_queryset(self):
-        return DescriptorQuerySet()
+        return DescriptorQuerySet(model=self.model).annotate(csvHeader=Concat('heading', models.Value('_'), 'calculatorSoftware', models.Value('_'), 'calculatorSoftwareVersion'))
 
 
 class Descriptor(models.Model):
@@ -56,26 +48,45 @@ class Descriptor(models.Model):
         max_length=200,
         validators=[
             RegexValidator(
-                '[A-Za-z0-9][A-Za-z0-9_]+',
-                ('Please include only values which are limited to'
-                 'alphanumeric characters and underscores, and must start'
+                '[A-Za-z0-9][A-Za-z0-9_]*',
+                ('Please include only values which are limited to '
+                 'alphanumeric characters and underscores, and must start '
                  'with an alphabetic character.')
             )
         ]
     )
     """A short label which is given to a description."""
     name = models.CharField('Full name', max_length=300)
-    calculatorSoftware = models.CharField(max_length=100)
-    calculatorSoftwareVersion = models.CharField(max_length=20)
+    calculatorSoftware = models.CharField(
+        max_length=100,
+        blank=True,
+        validators=[
+            RegexValidator(
+                '[A-Za-z0-9][A-Za-z0-9_]*',
+                ('Please include only values which are limited to '
+                 'alphanumeric characters and underscores, and must start '
+                 'with an alphabetic character.')
+            )
+        ]
+    )
+    calculatorSoftwareVersion = models.CharField(
+        max_length=20,
+        blank=True,
+        validators=[
+            RegexValidator(
+                '[A-Za-z0-9][A-Za-z0-9_.]*',
+                ('Please include only values which are limited to '
+                 'alphanumeric characters, periods and underscores, and must start '
+                 'with an alphabetic character.')
+            )
+        ]
+    )
+    
 
-    @property
-    def csvHeader(self):
-        """Generate a csv header for placing values for a descriptor."""
-        return '{}_{}_{}'.format(
-            self.heading,
-            slugify(self.calculatorSoftware),
-            self.calculatorSoftwareVersion
-        )
+    #@property
+    #def csvHeader(self):
+        #"""Generate a csv header for placing values for a descriptor."""
+        #return generate_csvHeader(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
 
     @property
     def arffHeader(self):
@@ -98,6 +109,8 @@ class CategoricalDescriptor(Descriptor):
 
     class Meta:
         app_label = 'DRP'
+
+    objects = DescriptorManager()
 
     @property
     def arffHeader(self):
@@ -138,6 +151,8 @@ class OrdinalDescriptor(Descriptor):
     class Meta:
         app_label = 'DRP'
 
+    objects = DescriptorManager()
+
     maximum = models.IntegerField()
     """The maximal permitted value for a given descriptor instance."""
     minimum = models.IntegerField()
@@ -174,6 +189,8 @@ class NumericDescriptor(Descriptor):
     class Meta:
         app_label = 'DRP'
 
+    objects = DescriptorManager()
+
     maximum = models.FloatField(null=True)
     """The maximum allowed value for a given descriptor."""
     minimum = models.FloatField(null=True)
@@ -209,6 +226,8 @@ class BooleanDescriptor(Descriptor):
 
     class Meta:
         app_label = 'DRP'
+
+    objects = DescriptorManager()
 
     @property
     def arffHeader(self):

@@ -1,0 +1,9 @@
+leak_legacy
+AtomicRadiusMeanWeighted_legacy
+orgminimalprojectionareaGeomAvg_legacy
+orgASA_HGeomAvg_legacy
+time_legacy
+Na_mols
+Ox_amount_molarity
+H_mols
+reaction_time

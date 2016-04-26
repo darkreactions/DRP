@@ -1,0 +1,8 @@
+weka.core.NoSupportForMissingValuesException: weka.classifiers.bayes.BayesianLogisticRegression: Cannot handle missing values!
+	at weka.core.Capabilities.test(Capabilities.java:1192)
+	at weka.core.Capabilities.test(Capabilities.java:1023)
+	at weka.core.Capabilities.testWithFail(Capabilities.java:1302)
+	at weka.classifiers.bayes.BayesianLogisticRegression.buildClassifier(BayesianLogisticRegression.java:330)
+	at weka.classifiers.Evaluation.evaluateModel(Evaluation.java:1076)
+	at weka.classifiers.Classifier.runClassifier(Classifier.java:312)
+	at weka.classifiers.bayes.BayesianLogisticRegression.main(BayesianLogisticRegression.java:937)

@@ -1,5 +1,6 @@
 '''A utilities module for helping with molecular descriptor plugins'''
 import DRP
+from django.db import transaction
 
 class LazyDescDict(object):
 
@@ -8,6 +9,8 @@ class LazyDescDict(object):
         self.descDict = descDict
         self.initialised = False
 
+
+    @transaction.atomic
     def initialise(self, descDict):
         if not self.initialised:
             for k,v in descDict.items():
@@ -44,7 +47,7 @@ class LazyDescDict(object):
                         perm = DRP.models.CategoricalDescriptorPermittedValue.objects.get_or_create(value=permittedValue, descriptor=self.internalDict[k])[0]
                 else:
                     raise RuntimeError("Invalid descriptor type provided")
-        self.initialised = True
+            self.initialised = True
 
     def __len__(self):
         return len(self.internalDict)

@@ -9,18 +9,27 @@ from PerformedReaction import PerformedReaction
 
 class DataSet(models.Model):
 
-  class Meta:
-    app_label="DRP"
+    class Meta:
+        app_label="DRP"
+    
+    name = models.CharField(max_length=200, unique=True)
+    reactions = models.ManyToManyField(PerformedReaction, through="DataSetRelation")
 
-  name = models.CharField(max_length=200, unique=True)
-  reactions = models.ManyToManyField(PerformedReaction, through="DataSetRelation")
+    @classmethod
+    def create(cls, name, data):
+        dataSet = cls(name=name)
+        dataSet.save()
+        dsrs = [DataSetRelation(dataSet=dataSet, reaction=datum) for datum in data]
+        DataSetRelation.objects.bulk_create(dsrs)
 
+        return dataSet
 
 class DataSetRelation(models.Model):
 
-  class Meta:
-    app_label="DRP"
-    unique_together = ("dataSet", "reaction")
-
-  reaction = models.ForeignKey(PerformedReaction, on_delete=models.PROTECT)
-  dataSet = models.ForeignKey(DataSet)
+    class Meta:
+        app_label="DRP"
+        unique_together = ("dataSet", "reaction")
+    
+    reaction = models.ForeignKey(PerformedReaction, on_delete=models.PROTECT)
+    dataSet = models.ForeignKey(DataSet)
+    

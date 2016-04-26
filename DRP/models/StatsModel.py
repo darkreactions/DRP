@@ -10,7 +10,8 @@ class StatsModel(models.Model):
     class Meta:
         app_label = 'DRP'
 
-    fileName = models.FileField(upload_to='models', max_length=200, blank=True)
+    outputFile = models.FileField(upload_to='models', max_length=200, blank=True)
+    inputFile = models.FileField(upload_to='model_inputs', max_length=255, blank=True)
     """The filename in which this model is stored"""
     startTime = models.DateTimeField(default=None, null=True)
     endTime = models.DateTimeField(default=None, null=True)

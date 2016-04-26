@@ -1,0 +1,175 @@
+oxlikeASA_PMax                                 As
+Mo                                             Mo
+P2                                             Pb
+orgavgpolGeomAvg                               Po
+oxlikeASAArithAvg                              Ir
+P1                                             
+P6                                             
+Ga                                             Ga
+P4                                             
+orgASA+ArithAvg                                Th
+orgmolpolArithAvg                              Pt
+G15                                            
+K                                              K
+orgdon-wateraccratio                           Tc
+oxlikevanderwaalsArithAvg                      
+orgASAMax                                      Os
+orgavgpolMax                                   Al
+oxlikemolpolMin                                Xe
+oxlikerefractivityArithAvg                     
+oxlikeASA_PMin                                 Si
+AtomicRadiusMin                                Ru
+O                                              O
+Cr                                             Cr
+orgASA_PArithAvg                               _pH
+oxlikeASAGeomAvg                               Sm
+G7                                             
+EAMinWeighted                                  He
+Zn                                             Zn
+IonizationMin                                  Na
+orgavgpol_pHdependentArithAvg                  pre_heat_standing
+G6                                             
+oxlikeASA+ArithAvg                             Kr
+orgpolarsurfaceareaArithAvg                    
+oxlikemolpolMax                                Pa
+orgASA_HMax                                    Rh
+Cu                                             Cu
+PearsonElectronegGeom                          Ac
+orghbdamsdonMax                                Rb
+oxlikemaximalprojectionsizeArithAvg            Zr
+oxlikepolarsurfaceareaGeomAvg                  Eu
+AtomicRadiusMean                               
+orgASA_HMin                                    Hf
+PaulingElectronegMax                           Ca
+orgavgpol_pHdependentGeomAvg                   
+oxlikehbdamsdonGeomAvg                         Yb
+oxlikeASAMin                                   Sn
+oxlikeASAMax                                   La
+PearsonElectronegMeanWeighted                  
+numberComponents                               Np
+orgmaximalprojectionradiusGeomAvg              
+Actinide                                       Cd
+oxlikeminimalprojectionradiusGeomAvg           _temperature
+G9                                             
+orgminimalprojectionradiusArithAvg             
+orgvanderwaalsMax                              Dy
+orgvanderwaalsMin                              Nd
+pH                                             H
+G8                                             
+S                                              S
+IonizationMax                                  Ta
+PearsonElectronegMinWeighted                   
+oxlikemaximalprojectionareaGeomAvg             
+orgmaximalprojectionsizeGeomAvg                
+orghbdamsaccMin                                Bi
+PaulingElectronegMin                           U
+IonizationMean                                 _time
+numberInorg                                    Nb
+PearsonElectronegGeomWeighted                  teflon_pouch
+orgminimalprojectionradiusGeomAvg              
+oxlikemolpolGeomAvg                            
+orgminimalprojectionsizeMin                    Cs
+orgASA+Min                                     Mn
+orghbdamsaccMax                                Ba
+orgminimalprojectionsizeGeomAvg                
+F                                              F
+oxlikerefractivityGeomAvg                      Fe
+orgASA+Max                                     Sb
+orgASA_PMax                                    
+N                                              N
+orgASA_PGeomAvg                                Ra
+EAGeom                                         
+V                                              V
+G17                                            
+oxlikemaximalprojectionradiusMax               
+oxlikeavgpolMax                                Ag
+G14                                            
+G13                                            
+G12                                            
+Se                                             Se
+G10                                            
+PaulingElectronegGeom                          Au
+Co                                             Co
+temp                                           Tm
+Cl                                             Cl
+orgvanderwaalsGeomAvg                          
+PaulingElectronegMean                          Pu
+oxlikeminimalprojectionradiusArithAvg          
+oxlikemaximalprojectionareaArithAvg            
+oxlikeavgpolMin                                In
+AtomicRadiusGeomWeighted                       
+orgpolarsurfaceareaMin                         Lu
+oxlikeASA_HArithAvg                            Tb
+oxlikepolarsurfaceareaMin                      
+IonizationMeanWeighted                         W
+inorg-org-moleratio                            Er
+orgminimalprojectionareaGeomAvg                
+orghbdamsdonGeomAvg                            B
+orgASA-Min                                     Rn
+PaulingElectronegMeanWeighted                  
+PearsonElectronegMean                          Ce
+oxlikeavgpolGeomAvg                            
+oxlikerefractivityMin                          Y
+P3                                             P
+orgASA-Max                                     
+AtomicRadiusGeom                               
+Li                                             Li
+orgminimalprojectionareaArithAvg               
+orgrefractivityMin                             C
+orgASA_HGeomAvg                                Hg
+orghbdamsdonArithAvg                           
+Te                                             Te
+hardnessMeanWeighted                           At
+oxlikeavgpol_pHdependentMin                    
+orgASA_PMin                                    Pm
+inorg-water-moleratio                          Tl
+orgASA+GeomAvg                                 Re
+notwater-water-moleratio                       
+IonizationGeom                                 Ne
+EAMeanWeighted                                 Ni
+oxlikemaximalprojectionareaMax                 
+V0                                             
+V1                                             
+V2                                             
+oxlikemolpolArithAvg                           
+V4                                             
+V5                                             
+V6                                             
+V7                                             
+orgrefractivityMax                             Fr
+oxlikehbdamsdonArithAvg                        
+oxlikehbdamsdonMin                             
+G18                                            
+oxlikemaximalprojectionareaMin                 
+orgminimalprojectionradiusMin                  
+orgminimalprojectionareaMax                    
+PaulingElectronegGeomWeighted                  Pd
+time                                           Ti
+hardnessMean                                   Ar
+oxlikeASA+Min                                  
+orgavgpolArithAvg                              Pr
+oxlikehbdamsaccArithAvg                        Br
+oxlikeASA-GeomAvg                              
+oxlikemaximalprojectionsizeGeomAvg             
+orgmaximalprojectionradiusArithAvg             
+orgminimalprojectionsizeMax                    
+IonizationGeomWeighted                         
+I                                              I
+orgminimalprojectionareaMin                    
+oxlikepolarsurfaceareaMax                      
+orgmolpolGeomAvg                               Ge
+oxlikeASA-ArithAvg                             Sr
+PearsonElectronegMaxWeighted                   
+hardnessGeom                                   Ho
+org-water-moleratio                            
+orgavgpol_pHdependentMin                       
+oxlikeavgpol_pHdependentGeomAvg                
+orgASA-GeomAvg                                 Mg
+PaulingElectronegMaxWeighted                   
+hardnessMinWeighted                            Gd
+orgrefractivityArithAvg                        
+orgminimalprojectionradiusMax                  
+orghbdamsaccGeomAvg                            Be
+slowCool                                       Sc
+G16                                            
+EAMin                                          Am

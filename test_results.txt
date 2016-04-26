@@ -110,164 +110,6 @@ test_fetch (DRP.tests.forms.AdvancedFilterForms.BooleanFilterFormTest) ... ok
 test_is_empty (DRP.tests.forms.AdvancedFilterForms.BooleanFilterFormTest) ... ok
 test_validation (DRP.tests.forms.AdvancedFilterForms.BooleanFilterFormTest)
 test that this test returned correct compounds ... ok
-test_Status (DRP.tests.HttpTests.AboutPage.AboutPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.AboutPage.AboutPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.AccountPage.AccountPageNoGroups)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.AccountPage.AccountPageNoGroups)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.AccountPage.AccountPageGroups)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.AccountPage.AccountPageGroups)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ConfirmationPage.ConfirmationPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.ConfirmationPage.ConfirmationPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ConfirmationPage.ConfirmationPage2) ... ok
-test_ValidHtml (DRP.tests.HttpTests.ConfirmationPage.ConfirmationPage2)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ConfirmationPage.PostConfirmationPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.ConfirmationPage.PostConfirmationPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ConfirmationPage.PostConfirmationPage2) ... ok
-test_ValidHtml (DRP.tests.HttpTests.ConfirmationPage.PostConfirmationPage2)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ContactPage.ContactPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.ContactPage.ContactPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ContactPage.PostContactPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.ContactPage.PostContactPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ContactPage.PostContactPageBad2)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.ContactPage.PostContactPageBad2)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.ContactPage.PostContactPageBad3) ... ok
-test_ValidHtml (DRP.tests.HttpTests.ContactPage.PostContactPageBad3)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.LicenseRedirect)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.LicenseRedirect)
-Checks HTML validity ... ok
-test_redirect (DRP.tests.HttpTests.CompoundPages.LicenseRedirect)
-Checks the response history for 302 redirects ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.Lab403Test)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.Lab403Test)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.CreateCompoundGetTest)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.CreateCompoundGetTest)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.CreateCompoundRedirTest)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.CreateCompoundRedirTest)
-Checks HTML validity ... ok
-test_redirect (DRP.tests.HttpTests.CompoundPages.CreateCompoundRedirTest)
-Checks the response history for 302 redirects ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.CreateCompoundRadioTest)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.CreateCompoundRadioTest)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.NoCompounds)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.NoCompounds)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.ManyGroupsRedirect)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.ManyGroupsRedirect)
-Checks HTML validity ... ok
-test_redirect (DRP.tests.HttpTests.CompoundPages.ManyGroupsRedirect)
-Checks the response history for 302 redirects ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.ManyLabGroupsDisplays)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.ManyLabGroupsDisplays)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.LabGroupSelectionRedirect)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.LabGroupSelectionRedirect)
-Checks HTML validity ... ok
-test_redirect (DRP.tests.HttpTests.CompoundPages.LabGroupSelectionRedirect)
-Checks the response history for 302 redirects ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.GetCompoundForEditing)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.GetCompoundForEditing)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.GetNotMyCompoundForEditing)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.GetNotMyCompoundForEditing)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.GetCustomCompound403)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.GetCustomCompound403)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.GetCompoundUpload)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.GetCompoundUpload)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.CompoundPages.PostCompoundUpload)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.CompoundPages.PostCompoundUpload)
-Checks HTML validity ... ok
-test_redirect (DRP.tests.HttpTests.CompoundPages.PostCompoundUpload)
-Checks the response history for 302 redirects ... ok
-test_Status (DRP.tests.HttpTests.HomePage.HomePage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.HomePage.HomePage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.LabGroupPage.LabGroupPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LabGroupPage.LabGroupPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.LabGroupPage.PostLabGroupPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LabGroupPage.PostLabGroupPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.LicensePage.LicenseAgreementPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LicensePage.LicenseAgreementPage)
-Checks HTML validity ... ok
-test_Redirect (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage) ... ok
-test_Status (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage2)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage2)
-Checks HTML validity ... ok
-test_Redirect (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage3) ... ok
-test_Status (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage3)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage3)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage4)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LicensePage.PostLicenseAgreementPage4)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.LoginPage.LoginPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.LoginPage.LoginPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.LoginPage.PostLoginPage) ... ok
-test_ValidHtml (DRP.tests.HttpTests.LoginPage.PostLoginPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.RegisterPage.RegisterPage)
-Checks that the http response code is the expected value ... ok
-test_ValidHtml (DRP.tests.HttpTests.RegisterPage.RegisterPage)
-Checks HTML validity ... ok
-test_Status (DRP.tests.HttpTests.RegisterPage.PostRegisterPage)
-Checks that the http response code is the expected value ... skipped 'Email Tests being skipped...'
-test_ValidHtml (DRP.tests.HttpTests.RegisterPage.PostRegisterPage)
-Checks HTML validity ... skipped 'Email Tests being skipped...'
-test_email (DRP.tests.HttpTests.RegisterPage.PostRegisterPage)
-Checks that the registration email has been recieved and is in good shape. ... skipped 'Email Tests being skipped...'
 runTest (DRP.tests.modelBuildingTests.WekaSVMBasicKFTest) ... ok
 runTest (DRP.tests.modelBuildingTests.WekaSVMBasicMFTest) ... ok
 runTest (DRP.tests.modelBuildingTests.WekaSVMBCRKFTest) ... ok
@@ -365,11 +207,21 @@ Test that any listed modules have the requisite __init__.py file. ... ok
 testPep257 (DRP.tests.fileTests.TestFiles)
 Test docstring conformance of all files. ... ok
 testPep8 (DRP.tests.fileTests.TestFiles)
-Test that all listed files conform to pep8 standards. ... ok
+Test that all listed files conform to pep8 standards. ... FAIL
 test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
 Test that the settings_example.py file is present. ... ok
 
+======================================================================
+FAIL: testPep8 (DRP.tests.fileTests.TestFiles)
+Test that all listed files conform to pep8 standards.
 ----------------------------------------------------------------------
-Ran 213 tests in 442.806s
+Traceback (most recent call last):
+  File "/home/geoffrey/repos/DRP_main/DRP_repo/DRP/tests/fileTests.py", line 113, in testPep8
+    '{} errors were found in pep8 Conformance:\n{}'.format(result.total_errors, output)
+AssertionError: 1 errors were found in pep8 Conformance:
 
-OK (skipped=3)
+
+----------------------------------------------------------------------
+Ran 131 tests in 423.231s
+
+FAILED (failures=1)

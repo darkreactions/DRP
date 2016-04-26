@@ -1,0 +1,6 @@
+AtomicRadiusMaxWeighted_legacy
+Inorg_mw_drprdkit_0_gmean_molarity
+leak_legacy
+orgASA_HArithAvg_legacy
+orgminimalprojectionareaGeomAvg_legacy
+time_legacy

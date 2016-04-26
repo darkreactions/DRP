@@ -8,13 +8,16 @@ import DRP.models
 
 class MolDescriptorValueQuerySet(models.query.QuerySet):
 
-  def delete(self):
-    compounds = set(d.compound for d in self)
+  def delete(self, recalculate_reactions=True):
+    if recalculate_reactions:
+        compounds = set(d.compound for d in self)
     super(MolDescriptorValueQuerySet, self).delete()
-    for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
-      reaction.save() #recalculate descriptors
-    for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
-      reaction.save() #invalidate models
+    if recalculate_reactions:
+        for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
+          reaction.save() #recalculate descriptors
+        for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
+          reaction.save() #invalidate models
+
 
 
 class MolDescriptorValueManager(models.Manager):
@@ -31,15 +34,16 @@ class MolDescriptorValue(models.Model):
   objects = MolDescriptorValueManager()
   compound = models.ForeignKey('DRP.Compound')
 
-  def delete(self):
+  def delete(self, recalculate_reactions=True):
     reactions = set(self.compound.reaction_set.all())
     super(MolDescriptorValue, self).delete()
-    for reaction in reactions:
-      reaction.save() #recalculate descriptors
-      try:
-        reaction.performedreaction.save()
-      except PerformedReaction.PerformedReaction.DoesNotExist:
-        pass #we don't care
+    if recalculate_reactions:
+        for reaction in reactions:
+          reaction.save() #recalculate descriptors
+          try:
+            reaction.performedreaction.save()
+          except PerformedReaction.PerformedReaction.DoesNotExist:
+            pass #we don't care
 
   def __str__(self):
     return '{} for {} is {}'.format(self.descriptor.name, str(self.compound), self.value)

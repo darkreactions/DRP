@@ -1,0 +1,5 @@
+# SAME AS INFO GAIN
+#python -u build_metric.py -p @descs/ChiSquared_nonzero_thesis.dsc -m ITML -v -d "ITML ChiSquared_nonzero 10k" -o itml_10k_ChiSquared_nonzero_thesis.txt -trs geoffrey_split_for_thesis_0 -n 10000 &> itml_10k_ChiSquared_nonzero_thesis.out &
+#python -u build_metric.py -p @descs/ChiSquared_nonzero_thesis.dsc -m ITML -v -d "ITML ChiSquared_nonzero 5k" -o itml_5k_ChiSquared_nonzero_thesis.txt -trs geoffrey_split_for_thesis_0 -n 5000 &> itml_5k_ChiSquared_nonzero_thesis.out &
+#python -u build_metric.py -p @descs/ChiSquared_nonzero_thesis.dsc -m ITML -v -d "ITML ChiSquared_nonzero 1k" -o itml_1k_ChiSquared_nonzero_thesis.txt -trs geoffrey_split_for_thesis_0 -n 1000 &> itml_1k_ChiSquared_nonzero_thesis.out &
+#python -u build_metric.py -p @descs/ChiSquared_nonzero_thesis.dsc -m ITML -v -d "ITML ChiSquared_nonzero 500" -o itml_500_ChiSquared_nonzero_thesis.txt -trs geoffrey_split_for_thesis_0 -n 500 &> itml_500_ChiSquared_nonzero_thesis.out &

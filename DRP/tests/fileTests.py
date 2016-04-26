@@ -110,7 +110,7 @@ class TestFiles(unittest.TestCase):
                 self.assertEqual(
                     result.total_errors,
                     0,
-                    'Errors were found in pep8 Conformance:\n{}'.format(output)
+                    '{} errors were found in pep8 Conformance:\n{}'.format(result.total_errors, output)
                 )
 
     def testPep257(self):

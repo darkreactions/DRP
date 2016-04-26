@@ -1,0 +1,190 @@
+Starting building at 2016-03-11 13:43:25.989480
+Splitting using MutualInfoSplitter
+Split into train (2193), test (949)
+Split into train (2196), test (946)
+Split into train (2189), test (953)
+Split into train (2196), test (946)
+Split into train (2195), test (947)
+Split into train (2196), test (946)
+Split into train (2198), test (944)
+Split into train (2197), test (945)
+Split into train (2196), test (946)
+Split into train (2187), test (955)
+Split into train (2196), test (946)
+Split into train (2198), test (944)
+Split into train (2199), test (943)
+Split into train (2195), test (947)
+Split into train (2199), test (943)
+2016-03-11 13:47:22.518661 statsModel 1175, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1175_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 13:54:52.780744. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1175_28d20c32-1353-42dc-b861-484a372e7531.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 14:00:06.946249 statsModel 1185, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1185_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 14:08:06.146357. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1185_fa0ca1c6-687f-4024-99f3-ef05664a417f.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 14:12:52.250644 statsModel 1191, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1191_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 14:18:37.746426. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1191_4ab36118-c79a-415d-91b9-af44ddafa17f.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 14:23:28.197423 statsModel 1199, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1199_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 14:31:22.463113. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1199_256ef565-7c44-4a0e-ada7-8e9bde2eaff2.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 14:36:46.395452 statsModel 1206, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1206_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 14:41:28.195333. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1206_49e50d13-d59b-4317-8d91-7742dccb675f.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 14:48:30.924298 statsModel 1216, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1216_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 14:56:00.856674. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1216_18de5133-db6f-488e-8779-d475c88a53c0.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 15:01:41.386575 statsModel 1223, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1223_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 15:07:43.017499. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1223_25360247-3313-40ab-8edd-aea16dd1b693.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 15:13:32.881354 statsModel 1232, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1232_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 15:20:09.302279. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1232_ba8fbd4d-d005-41f1-8ed4-ab32dee37c2e.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 15:26:24.263163 statsModel 1241, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1241_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 15:31:49.992709. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1241_6c29e80a-fe83-4f3e-a855-dba88e35c8c8.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 15:37:28.948941 statsModel 1249, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1249_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 15:44:35.735149. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1249_85380a45-0024-4818-ac80-67728eed2c18.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 15:50:01.488596 statsModel 1256, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1256_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 15:55:34.620261. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1256_f46ca2d1-8296-48ef-b319-b33555097bd2.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 16:01:01.281814 statsModel 1264, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1264_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 16:07:22.586952. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1264_b077a237-1e89-4a24-be90-26ed270e702d.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 16:13:29.451730 statsModel 1272, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1272_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 16:18:38.867638. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1272_c213f7be-3850-4f00-a69b-c640fe02cefe.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 16:23:49.700769 statsModel 1278, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1278_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 16:28:44.537322. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1278_86d9ce74-ed9b-4155-84db-55bd4919d539.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-11 16:34:18.194432 statsModel 1283, saving to /home/gmartinn/DRP_main/DRP_repo/models/764_1283_weka_SVM_PUK_BCR.model, training...
+	...Trained. Finished at 2016-03-11 16:38:56.066546. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/1283_41aa50d6-d682-4dd7-9e80-41f0b9ed7d0f.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-11 16:50:24.577396
+Confusion matrix for boolean_outcome_legacy_prediction_764_summative__:
+      False  True 
+False  320   312  
+ True  220   1151 
+Accuracy: 0.734
+BCR: 0.69
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1175__:
+      False  True 
+False  154   185  
+ True  103   507  
+Accuracy: 0.697
+BCR: 0.666
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1185__:
+      False  True 
+False  181    95  
+ True  133   537  
+Accuracy: 0.759
+BCR: 0.713
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1191__:
+      False  True 
+False  144   166  
+ True  119   524  
+Accuracy: 0.701
+BCR: 0.653
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1199__:
+      False  True 
+False  189   151  
+ True  118   488  
+Accuracy: 0.716
+BCR: 0.69
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1206__:
+      False  True 
+False  170   199  
+ True  103   475  
+Accuracy: 0.681
+BCR: 0.664
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1216__:
+      False  True 
+False  151   144  
+ True  117   534  
+Accuracy: 0.724
+BCR: 0.676
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1223__:
+      False  True 
+False   68    85  
+ True  147   644  
+Accuracy: 0.754
+BCR: 0.6
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1232__:
+      False  True 
+False  139   107  
+ True  138   561  
+Accuracy: 0.741
+BCR: 0.671
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1241__:
+      False  True 
+False  175   192  
+ True  128   451  
+Accuracy: 0.662
+BCR: 0.639
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1249__:
+      False  True 
+False  163   114  
+ True  112   566  
+Accuracy: 0.763
+BCR: 0.713
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1256__:
+      False  True 
+False  177   167  
+ True   93   509  
+Accuracy: 0.725
+BCR: 0.704
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1264__:
+      False  True 
+False  179   262  
+ True   54   449  
+Accuracy: 0.665
+BCR: 0.7
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1272__:
+      False  True 
+False  176   166  
+ True  106   495  
+Accuracy: 0.712
+BCR: 0.686
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1278__:
+      False  True 
+False  159   142  
+ True  108   538  
+Accuracy: 0.736
+BCR: 0.693
+Confusion matrix for boolean_outcome_legacy_prediction_764_component_1283__:
+      False  True 
+False  161   216  
+ True  109   457  
+Accuracy: 0.655
+BCR: 0.638

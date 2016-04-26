@@ -1,0 +1,22 @@
+No splitter. Using given test and training sets.
+2016-03-03 00:06:09.686508 statsModel 132, saving to /home/gmartinn/DRP_main/DRP_repo/models/118_132, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/132_2bf24aff-adf9-4594-bb13-7853bd0d4ad8.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/132_2bf24aff-adf9-4594-bb13-7853bd0d4ad8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/118_132 -p 0 -c 1
+	...Trained. Finished at 2016-03-03 00:16:34.341652. Saving statsModel... saved
+Predicting test set...
+Writing results to java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/132_f3fb2811-526d-4e1b-84df-40dbd5964e3d.arff -l /home/gmartinn/DRP_main/DRP_repo/models/118_132 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/132_00775795-5a1f-4251-9d9c-2ffe0d15f1e4.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_118_summative__:
+      False  True 
+False  464   875  
+ True  170   556  
+Accuracy: 0.494
+BCR: 0.56
+Confusion matrix for boolean_crystallisation_outcome_prediction_118_component_132__:
+      False  True 
+False  464   875  
+ True  170   556  
+Accuracy: 0.494
+BCR: 0.56

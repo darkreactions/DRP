@@ -1,0 +1,1393 @@
+Found 1373 matching predictors and 1 matching responses
+2016-04-03 00:13:13.401338, training on 3142 reactions...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_7_1228a3ca-ec9a-49d3-8f3c-5cae61f88f6c.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.attributeSelection.ChiSquaredAttributeEval -s weka.attributeSelection.Ranker -i /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_7_1228a3ca-ec9a-49d3-8f3c-5cae61f88f6c.arff -c 6
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Attribute ranking.
+
+Attribute Evaluator (supervised, Class (nominal): 6 boolean_outcome_legacy_legacy_):
+	Chi-squared Ranking Filter
+
+Ranked attributes:
+533.933186169       82 time_legacy_legacy_
+533.933186169     1372 reaction_time_manual_0
+418.416465698       85 PearsonElectronegMaxWeighted_legacy_legacy_
+385.431538934      548 Inorg_asa_polar_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+385.431538934      814 Inorg_asa_polar_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+385.431538934     1043 Inorg_asa_polar_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+385.431538934     1022 Inorg_asa_polar_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+385.431538934     1031 Inorg_asa_polar_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+385.431538934     1188 Inorg_asa_polar_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+385.431538934      543 Inorg_asa_polar_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+385.431538934      433 Inorg_asa_polar_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+373.313471016      954 Inorg_maximalprojectionsize_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+369.890198691      401 Inorg_mw_drprdkit_0_gmean_count_DRP_DRP
+366.827126908      668 Inorg_asa+_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+366.827126908      608 Inorg_asa+_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+356.803590007     1304 Org_minimalprojectionarea_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+354.149950536     1135 Org_asa_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+354.149950536      804 Org_asa_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+351.007353538      938 Inorg_asa+_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+351.007353538     1112 Inorg_asa+_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+349.412543212      837 Inorg_asa_polar_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+349.412543212      953 Inorg_asa_polar_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+349.412543212      861 Inorg_asa_polar_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+348.996025377      374 Org_asa_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+348.996025377      375 Org_asa_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+347.625587016     1049 Inorg_asa-_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+347.625587016     1119 Inorg_asa-_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+347.625587016     1233 Inorg_asa-_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+347.625587016     1177 Inorg_asa-_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+347.625587016     1100 Inorg_asa-_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+347.412961571      526 Inorg_mw_drprdkit_0_gmean_molarity_DRP_DRP
+346.799657623     1115 Inorg_asa_polar_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+346.799657623     1182 Inorg_asa_polar_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+344.353721669     1077 Inorg_asa_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+344.220712599      977 Inorg_asa_polar_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+343.116949505      373 Org_asa-_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+342.423541788     1051 Org_asa_polar_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+342.423541788      866 Org_asa_polar_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+342.423541788     1310 Org_asa_polar_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+342.031631998      935 Org_avgpol_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+340.029497173      224 Org_asa_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+340.029497173      798 Org_asa_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+340.029497173     1150 Org_asa_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+338.685739292     1362 Org_asa_polar_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+338.647802181       44 AtomicRadiusMaxWeighted_legacy_legacy_
+338.594172027      720 Inorg_asa+_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.708984561      422 Inorg_avgpol_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      251 Inorg_asa-_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      544 Inorg_asa-_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      119 Inorg_asa-_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      252 Inorg_asa-_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      499 Inorg_asa-_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      378 Inorg_asa-_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      473 Inorg_asa-_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.671693239      279 Inorg_asa-_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026      342 Inorg_avgpol_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026      712 Inorg_avgpol_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026      154 Inorg_avgpol_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026     1280 Inorg_avgpol_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026      471 Inorg_avgpol_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026      555 Inorg_avgpol_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026      456 Inorg_avgpol_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.401935026      851 Inorg_avgpol_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.304530641     1264 Inorg_avgpol_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.304530641     1331 Inorg_avgpol_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.304530641      390 Inorg_avgpol_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+337.304530641     1202 Inorg_avgpol_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+336.958182663      111 Inorg_avgpol_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      381 Inorg_asa_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516     1286 Inorg_asa_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      831 Inorg_asa_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516     1179 Inorg_asa_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      246 Inorg_asa_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516     1103 Inorg_asa_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      754 Inorg_asa_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516     1255 Inorg_asa_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      876 Inorg_asa_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      818 Inorg_asa_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      685 Inorg_asa_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516      619 Inorg_asa_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.825533516     1309 Inorg_asa_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+335.249278181      492 Inorg_asa_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+334.770323123      236 Org_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+334.229366845      934 Inorg_asa+_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.229366845     1250 Inorg_asa+_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.229366845      850 Inorg_asa+_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.229366845      759 Inorg_asa+_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.229366845     1069 Inorg_asa+_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.229366845      877 Inorg_asa+_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.229366845      862 Inorg_asa+_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.229366845      184 Inorg_asa+_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+334.0316914        341 Inorg_mw_drprdkit_0_Max_DRP_DRP
+333.917391657     1290 Inorg_molpol_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       985 Inorg_hbda_acc_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       897 Inorg_hbda_acc_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       181 Inorg_hbda_acc_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793      1350 Inorg_hbda_acc_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       581 Inorg_hbda_acc_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       697 Inorg_hbda_acc_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       639 Inorg_hbda_acc_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       263 Inorg_hbda_acc_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.39407793       617 Inorg_hbda_acc_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017      258 Inorg_molpol_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017      842 Inorg_molpol_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017      442 Inorg_molpol_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017      217 Inorg_molpol_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017     1017 Inorg_molpol_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017      194 Inorg_molpol_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017      132 Inorg_molpol_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.184019017      307 Inorg_molpol_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.169613673      732 Inorg_molpol_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.169613673      343 Inorg_molpol_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.169613673      452 Inorg_molpol_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.169613673     1160 Inorg_molpol_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.074529547     1317 Inorg_hbda_acc_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.074529547      714 Inorg_hbda_acc_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.074529547      248 Inorg_hbda_acc_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.074529547      350 Inorg_hbda_acc_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+333.074529547      161 Inorg_hbda_acc_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+332.74505325       201 Inorg_molpol_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+330.666465226      556 Solv_amount_molarity_DRP_0.02
+330.503003618      964 Inorg_vanderwaals_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+330.503003618      966 Inorg_vanderwaals_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+330.503003618     1211 Inorg_vanderwaals_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+329.265571416      965 Inorg_vanderwaals_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842      546 Inorg_vanderwaals_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842     1333 Inorg_vanderwaals_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842      521 Inorg_vanderwaals_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842       95 Inorg_vanderwaals_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842      356 Inorg_vanderwaals_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842     1042 Inorg_vanderwaals_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842      973 Inorg_vanderwaals_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842     1345 Inorg_vanderwaals_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842      271 Inorg_vanderwaals_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.682666842     1040 Inorg_vanderwaals_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+328.368386793     1189 Inorg_asa+_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+328.113362709     1015 Inorg_asa+_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+328.084679738      346 Org_asa_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+328.084679738     1027 Org_asa_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+327.374410343      863 Org_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+327.374410343      209 Org_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+326.473797147      148 Org_minimalprojectionarea_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+326.216990896     1339 Inorg_refractivity_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+325.437768349     1289 Org_asa_polar_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+325.437768349      511 Org_asa_polar_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+325.437768349      682 Org_asa_polar_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+324.940366989      558 Inorg_asa-_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.849304866     1231 Inorg_vanderwaals_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.849304866     1296 Inorg_vanderwaals_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.849304866     1203 Inorg_vanderwaals_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.849304866      108 Inorg_vanderwaals_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.849304866      330 Inorg_vanderwaals_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.849304866     1305 Inorg_vanderwaals_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.849304866      518 Inorg_vanderwaals_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.849304866     1279 Inorg_vanderwaals_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.721379815      726 Inorg_asa-_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.548196015      761 Org_vanderwaals_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+324.409900655      240 Inorg_vanderwaals_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.201296514      146 Inorg_avgpol_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514      478 Inorg_avgpol_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514      434 Inorg_avgpol_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514      550 Inorg_avgpol_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514      841 Inorg_avgpol_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514     1127 Inorg_avgpol_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514      334 Inorg_avgpol_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514      149 Inorg_avgpol_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.201296514      183 Inorg_avgpol_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+324.017032059      607 Inorg_vanderwaals_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.017032059      363 Inorg_vanderwaals_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.017032059     1002 Inorg_vanderwaals_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.017032059     1122 Inorg_vanderwaals_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+324.017032059      684 Inorg_vanderwaals_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+323.975919369      296 Inorg_minimalprojectionarea_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+323.57019072       427 Inorg_minimalprojectionsize_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+321.972359036      728 Inorg_avgpol_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+321.167989519      907 Inorg_asa-_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.960892125      291 Inorg_molpol_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      152 Inorg_molpol_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      463 Inorg_molpol_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      127 Inorg_molpol_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      655 Inorg_molpol_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      871 Inorg_molpol_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      286 Inorg_molpol_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      528 Inorg_molpol_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      461 Inorg_molpol_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      162 Inorg_molpol_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125     1257 Inorg_molpol_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125     1327 Inorg_molpol_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125      151 Inorg_molpol_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.960892125     1213 Inorg_molpol_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.771076156     1226 Inorg_asa_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.733102145     1271 Inorg_asa-_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.733102145     1360 Inorg_asa-_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.573510679      751 Inorg_asa+_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.573510679      947 Inorg_asa+_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+320.356922334      777 Inorg_asa_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      185 Inorg_asa_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      579 Inorg_asa_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      305 Inorg_asa_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      386 Inorg_asa_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      669 Inorg_asa_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      672 Inorg_asa_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      657 Inorg_asa_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334     1337 Inorg_asa_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+320.356922334      678 Inorg_asa_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+319.18784186       858 Inorg_minimalprojectionradius_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+318.938179055      743 Inorg_avgpol_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+318.875186506     1044 Inorg_asa+_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+318.875186506      812 Inorg_asa+_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+318.875186506      690 Inorg_asa+_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+318.182375653      810 Inorg_asa_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+318.182375653      790 Inorg_asa_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.84306031       504 Org_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.84306031      1170 Org_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.718829169      983 Inorg_avgpol_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431      960 Inorg_asa-_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431      892 Inorg_asa-_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431      882 Inorg_asa-_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431      553 Inorg_asa-_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431     1110 Inorg_asa-_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431      309 Inorg_asa-_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431      178 Inorg_asa-_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.448550431      269 Inorg_asa-_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+317.041158587      257 Inorg_asa-_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+316.995531555      268 Inorg_avgpol_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+316.995531555      283 Inorg_avgpol_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+316.830145564      333 Inorg_minimalprojectionradius_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+316.578592274      603 Inorg_asa_polar_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+316.578592274      959 Inorg_asa_polar_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+316.072021006      801 Inorg_asa_polar_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282      173 Inorg_asa_polar_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282      399 Inorg_asa_polar_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282     1219 Inorg_asa_polar_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282     1143 Inorg_asa_polar_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282     1258 Inorg_asa_polar_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282     1287 Inorg_asa_polar_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282      849 Inorg_asa_polar_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.836407282     1169 Inorg_asa_polar_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+315.229214336     1320 Org_vanderwaals_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+315.229214336     1221 Org_vanderwaals_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+314.726337974     1261 Inorg_maximalprojectionradius_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+314.46170344       448 Org_asa_polar_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+314.46170344       311 Org_asa_polar_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+314.46170344      1260 Org_asa_polar_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+313.88251563       288 Inorg_asa+_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.88251563       468 Inorg_asa+_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.88251563      1354 Inorg_asa+_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.88251563       507 Inorg_asa+_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.88251563       587 Inorg_asa+_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.88251563      1045 Inorg_asa+_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.88251563       621 Inorg_asa+_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.88251563       247 Inorg_asa+_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+313.818374243      629 Org_asa_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+313.44045528       677 Inorg_maximalprojectionarea_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+311.60829428      1214 Org_asa_polar_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+311.322704891     1199 Org_avgpol_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+311.080551814      314 Org_asa_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+310.675572317      133 Inorg_minimalprojectionsize_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+309.618239219       99 Inorg_maximalprojectionradius_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+307.975725436     1102 Inorg_asa-_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+307.846489969      495 Inorg_minimalprojectionarea_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+307.626881646     1230 Inorg_asa_polar_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+307.626881646      204 Inorg_asa_polar_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+307.626881646      597 Inorg_asa_polar_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+306.642125609      155 Org_asa_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068      582 Inorg_asa-_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068      497 Inorg_asa-_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068     1055 Inorg_asa-_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068      624 Inorg_asa-_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068      717 Inorg_asa-_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068      709 Inorg_asa-_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068     1334 Inorg_asa-_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.715618068     1315 Inorg_asa-_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.681628966      349 Inorg_avgpol_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+305.394395868      100 Inorg_maximalprojectionsize_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+304.943409599     1183 Inorg_avgpol_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599      929 Inorg_avgpol_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599     1316 Inorg_avgpol_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599      241 Inorg_avgpol_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599     1241 Inorg_avgpol_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599     1232 Inorg_avgpol_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599      580 Inorg_avgpol_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599      169 Inorg_avgpol_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599     1314 Inorg_avgpol_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599     1176 Inorg_avgpol_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599      214 Inorg_avgpol_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599      585 Inorg_avgpol_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.943409599      535 Inorg_avgpol_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+304.887087206      651 Org_avgpol_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+303.668513439      157 Inorg_molpol_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      104 Inorg_molpol_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      957 Inorg_molpol_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439     1357 Inorg_molpol_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      599 Inorg_molpol_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439     1046 Inorg_molpol_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      134 Inorg_molpol_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439     1206 Inorg_molpol_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      405 Inorg_molpol_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      633 Inorg_molpol_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      450 Inorg_molpol_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      403 Inorg_molpol_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      828 Inorg_molpol_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.668513439      413 Inorg_molpol_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+303.465478026     1285 Inorg_asa+_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+302.925443803      632 Inorg_asa+_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+302.925443803      974 Inorg_asa+_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+302.925443803      249 Inorg_asa+_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+302.000632693     1104 Inorg_asa+_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+302.000632693     1130 Inorg_asa+_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+301.501877064     1067 Org_avgpol_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+297.697881936      114 Inorg_maximalprojectionsize_chemaxoncxcalc_15.6_Max_DRP_DRP
+297.69670844       868 Org_avgpol_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+297.605061998      765 O_mols_DRP_0.02
+297.598096912      206 Org_avgpol_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+296.744694434     1180 Org_minimalprojectionarea_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084      1116 Inorg_asa+_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084      1236 Inorg_asa+_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084       620 Inorg_asa+_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084       439 Inorg_asa+_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084       352 Inorg_asa+_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084      1367 Inorg_asa+_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084       284 Inorg_asa+_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.47730084      1096 Inorg_asa+_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+296.02169975       598 Org_avgpol_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+296.02169975       480 Org_avgpol_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+295.528422232     1099 Org_asa_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+295.308686485     1244 Org_asa-_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+295.308686485      523 Org_asa-_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+295.19743744      1210 Inorg_minimalprojectionsize_chemaxoncxcalc_15.6_Max_DRP_DRP
+289.815262838     1014 Org_asa_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+287.858263042     1284 Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+281.898451331      782 Inorg_maximalprojectionarea_chemaxoncxcalc_15.6_Max_DRP_DRP
+281.879483125     1273 Org_asa_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+281.742151886     1256 Inorg_maximalprojectionarea_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+278.703946417     1215 Org_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+278.703946417     1080 Org_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+278.698312839     1029 H_mols_DRP_0.02
+276.741079505      522 Org_asa+_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+276.741079505       93 Org_asa+_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+276.741079505     1306 Org_asa+_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+276.741079505     1246 Org_asa+_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+276.28916263       681 Na_mols_DRP_0.02
+274.669859639     1129 Inorg_asa_polar_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+274.669859639      294 Inorg_asa_polar_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+274.413096838      928 Org_maximalprojectionradius_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+273.91738285       770 Org_avgpol_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+273.47213069       540 Inorg_maximalprojectionradius_chemaxoncxcalc_15.6_Max_DRP_DRP
+273.451344992       49 AtomicRadiusMeanWeighted_legacy_legacy_
+272.604176147      870 Inorg_asa_polar_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147     1117 Inorg_asa_polar_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      946 Inorg_asa_polar_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      895 Inorg_asa_polar_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      573 Inorg_asa_polar_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      218 Inorg_asa_polar_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      760 Inorg_asa_polar_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      609 Inorg_asa_polar_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147     1024 Inorg_asa_polar_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      901 Inorg_asa_polar_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.604176147      145 Inorg_asa_polar_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+272.432128627     1365 Org_asa_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233      525 Inorg_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233      586 Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233      663 Inorg_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233      589 Inorg_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233      890 Inorg_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233     1242 Inorg_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233      486 Inorg_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.603483233      670 Inorg_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.172460963      383 Inorg_asa-_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.172460963      949 Inorg_asa-_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.172460963     1217 Inorg_asa-_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      924 Inorg_vanderwaals_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      207 Inorg_vanderwaals_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      969 Inorg_vanderwaals_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454     1065 Inorg_vanderwaals_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      698 Inorg_vanderwaals_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      421 Inorg_vanderwaals_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454     1145 Inorg_vanderwaals_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454     1089 Inorg_vanderwaals_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454     1326 Inorg_vanderwaals_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454     1319 Inorg_vanderwaals_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      429 Inorg_vanderwaals_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454     1239 Inorg_vanderwaals_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      317 Inorg_vanderwaals_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+267.050558454      476 Inorg_vanderwaals_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+266.593142606     1047 Inorg_asa-_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+266.593142606      153 Inorg_asa-_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      415 Inorg_asa_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842     1361 Inorg_asa_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      392 Inorg_asa_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      787 Inorg_asa_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842     1088 Inorg_asa_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      767 Inorg_asa_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      303 Inorg_asa-_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842     1109 Inorg_asa_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842     1172 Inorg_asa_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      208 Inorg_asa_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842     1125 Inorg_asa_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842     1052 Inorg_asa_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842     1048 Inorg_asa_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      753 Inorg_asa_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+265.883765842      891 Inorg_asa_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+264.731666959      339 Org_asa_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+264.731666959     1108 Org_asa_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+264.731666959     1307 Org_asa_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+264.42651108      1107 Inorg_asa_polar_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+264.149681982      741 Org_avgpol_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+263.738986902      267 Org_vanderwaals_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+262.759179443     1335 Org_molpol_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+262.102283065      750 Org_avgpol_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+261.159681361      980 Org_asa_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+260.609478563     1198 Inorg_refractivity_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+260.379122862      367 Org_asa-_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+260.314116196      292 Org_avgpol_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+260.242914332     1295 Org_avgpol_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+260.119804394      212 Inorg_refractivity_chemaxoncxcalc_15.6_Max_DRP_DRP
+259.791885398     1300 Org_asa_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+257.620645351     1330 Org_maximalprojectionradius_chemaxoncxcalc_15.6_Max_DRP_DRP
+257.47344271       921 Org_maximalprojectionradius_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+256.735279151      699 Org_asa-_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+256.396281414      394 Org_asa_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+253.893649085      976 Org_asa_polar_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+252.952240517      517 Org_asa_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+252.147266081      833 Org_asa_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+252.147266081      762 Org_asa_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+252.147266081      467 Org_asa_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+252.147266081      898 Org_asa_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+252.131374458      322 Org_asa-_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+252.131374458      138 Org_asa-_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+251.52918955       509 Inorg_minimalprojectionarea_chemaxoncxcalc_15.6_Max_DRP_DRP
+250.038599974      539 Org_asa-_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+248.510999651     1011 Org_asa+_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+248.034102624      729 Org_asa_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+246.690666143      641 Org_avgpol_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+246.690666143     1026 Org_avgpol_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+246.405154199     1371 reaction_temperature_manual_0
+246.405154199       68 temp_legacy_legacy_
+244.301020174      571 Org_asa_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+244.301020174      351 Org_asa_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+244.301020174      235 Org_asa_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+243.295094967      124 Org_molpol_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+241.415494179       89 hardnessMinWeighted_legacy_legacy_
+240.975347719     1072 Org_asa-_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+238.905693766      338 Org_asa_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+238.811859549      143 Org_asa_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+238.811859549      446 Org_asa_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+238.811859549      902 Org_asa_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+238.811859549      500 Org_asa_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+237.722789977     1025 Org_asa_polar_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+237.221916976      952 Org_molpol_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+236.918333986      228 Org_maximalprojectionsize_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+236.869565212      387 Org_asa_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+236.866960594      430 Org_molpol_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+236.866960594      982 Org_molpol_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+236.260348802      896 Org_asa_polar_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+234.915936423     1191 Org_refractivity_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+233.97423207       368 Org_asa-_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+233.97423207       784 Org_asa-_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+233.97423207       794 Org_asa-_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+233.218111131      722 Org_asa-_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+233.06651555       829 Org_avgpol_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+233.00280575      1247 Org_asa-_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+233.00280575      1164 Org_asa-_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+232.547491433       81 PaulingElectronegGeomWeighted_legacy_legacy_
+232.35371693       888 Org_vanderwaals_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+232.35371693       515 Org_vanderwaals_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+232.35371693       797 Org_vanderwaals_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+232.35371693       362 Org_vanderwaals_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+231.572260554      542 Org_asa_polar_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+231.572260554     1114 Org_asa_polar_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+231.491580252      466 Org_molpol_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+231.491580252      179 Org_molpol_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+231.211701645     1128 Org_asa_polar_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+230.93558954       918 Inorg_minimalprojectionradius_chemaxoncxcalc_15.6_Max_DRP_DRP
+230.91922168       262 Org_molpol_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+230.91922168       860 Org_molpol_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+230.91922168       778 Org_molpol_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+230.91922168       120 Org_molpol_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+230.585281598      962 Org_asa+_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+230.377716388      519 Org_asa_polar_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+229.340213345      304 Org_asa-_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+229.117554411      315 Org_asa-_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+228.198961257     1120 Org_refractivity_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+227.737906849       32 IonizationMaxWeighted_legacy_legacy_
+227.495862796      564 Org_asa_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+227.495862796      673 Org_asa_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+227.495862796      437 Org_asa_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+227.495862796      527 Org_asa_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+227.329963274     1168 Org_asa_polar_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+226.476701573      177 Org_asa_polar_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+226.158617181      635 Org_asa-_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+225.736956066      289 Org_avgpol_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+225.174149859      254 Org_avgpol_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+224.954580383      900 Org_molpol_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+224.954580383     1003 Org_molpol_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+224.255899696      638 Org_asa_polar_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+224.255899696      444 Org_asa_polar_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+223.651665484      130 Org_asa_polar_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+223.651665484      662 Org_asa_polar_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+222.721734444      756 Org_asa-_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+219.846527902      839 Inorg_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+219.846527902      855 Inorg_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+219.846527902      144 Inorg_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+219.145644757       77 inorg-water-moleratio_legacy_legacy_
+217.167989928      835 Org_avgpol_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+217.167989928      903 Org_avgpol_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+217.167989928      389 Org_avgpol_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+216.35825147      1137 Org_asa+_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+216.35825147       822 Org_asa+_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+216.35825147      1301 Org_asa+_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+216.35825147       106 Org_asa+_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+215.687561573      536 Org_asa_polar_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+215.687561573      514 Org_asa_polar_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+214.677646567     1147 Org_molpol_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+213.93983996      1190 Org_molpol_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+213.93983996       970 Org_molpol_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+213.519160914      746 Org_asa-_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+213.047808307       71 IonizationMeanWeighted_legacy_legacy_
+212.935783731      340 Inorg_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731     1034 Inorg_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731      958 Inorg_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731     1351 Inorg_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731      365 Inorg_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731     1124 Inorg_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731      270 Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731      909 Inorg_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731      666 Inorg_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731     1292 Inorg_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.935783731      956 Inorg_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+212.902716793      852 Inorg_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      328 Inorg_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      376 Inorg_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793     1353 Inorg_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      565 Inorg_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      625 Inorg_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      287 Inorg_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      622 Inorg_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      137 Inorg_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      744 Inorg_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+212.902716793      319 Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+211.932827221      853 Org_molpol_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+211.932827221      650 Org_molpol_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+211.413867737      109 Org_asa_polar_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+211.413867737     1200 Org_asa_polar_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+211.250329092     1133 Org_avgpol_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+211.250329092      676 Org_avgpol_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+210.563978548      229 Org_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+210.370905761     1175 Org_asa_polar_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+209.826088313      803 Org_molpol_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+209.826088313     1161 Org_molpol_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+209.826088313      118 Org_molpol_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+209.360148332      404 Org_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+209.360148332      357 Org_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+209.360148332      335 Org_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+209.360148332      791 Org_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+208.78268159       813 Org_asa-_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+207.721557655       39 EAGeomWeighted_legacy_legacy_
+207.618392336      649 Org_maximalprojectionarea_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+207.065913055      737 Org_molpol_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+206.807851302      416 Org_vanderwaals_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+205.117317375      886 Org_asa_polar_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+204.302923303      950 Ox_amount_molarity_DRP_0.02
+204.212922309     1355 Org_avgpol_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+204.212922309     1195 Org_avgpol_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+203.718939236       88 PaulingElectronegMaxWeighted_legacy_legacy_
+202.936096338      875 Org_asa+_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+202.936096338      112 Org_asa+_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+202.936096338      266 Org_asa+_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+202.936096338      380 Org_asa+_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+202.428877457      336 Org_refractivity_chemaxoncxcalc_15.6_Max_DRP_DRP
+202.371290708      163 Org_mw_drprdkit_0_gmean_count_DRP_DRP
+202.105986204      944 Org_vanderwaals_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+202.105986204      260 Org_vanderwaals_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+202.105986204      575 Org_vanderwaals_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+202.105986204      426 Org_vanderwaals_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+201.228703345      491 Org_molpol_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+200.850654922      281 Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+200.717523642     1272 Org_molpol_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+200.238250082      873 Org_molpol_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+200.238250082     1366 Org_molpol_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+198.775560756      436 Org_asa-_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+198.775560756     1194 Org_asa-_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+198.775560756      391 Org_asa-_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+198.180556607      984 Org_asa_polar_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+198.180556607      190 Org_asa_polar_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+198.180556607      503 Org_asa_polar_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+197.001666743       36 hardnessMaxWeighted_legacy_legacy_
+195.425881511      414 Org_asa-_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+195.425881511      634 Org_asa-_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+195.425881511      740 Org_asa-_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+195.336856274     1134 Org_asa_polar_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+195.051711328      227 Org_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+194.830615659     1106 Org_molpol_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+194.830615659      961 Org_molpol_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+194.830615659      191 Org_molpol_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+194.830615659      192 Org_molpol_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+194.779322106      412 Org_molpol_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+194.609318363      531 Inorg_amount_molarity_DRP_0.02
+193.773770736       65 PearsonElectronegGeomWeighted_legacy_legacy_
+193.752543863     1369 Org_asa-_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+193.748272884      534 Org_asa+_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+193.446057005       80 EAMeanWeighted_legacy_legacy_
+193.389230046      879 Org_molpol_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+193.389230046      264 Org_molpol_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+192.495397724     1254 Org_vanderwaals_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+192.495397724      998 Org_vanderwaals_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+192.351570155     1358 Org_asa+_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+192.200672581      616 Org_asa_polar_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+190.805434194     1265 Org_vanderwaals_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+189.019039041      844 Org_asa-_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+188.046956686     1111 Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+187.395268579     1368 Org_molpol_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+186.806999186      806 Org_mw_drprdkit_0_Max_DRP_DRP
+186.357101999      908 Org_minimalprojectionradius_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+185.855151253      612 Org_asa+_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+185.855151253      508 Org_asa+_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+184.14339678       664 Org_avgpol_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+184.14339678       948 Org_avgpol_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+184.14339678       941 Org_avgpol_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+184.14339678       347 Org_avgpol_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+181.034859122      845 Org_molpol_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+180.702534467     1181 Inorg_hbda_don_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+180.014486028      802 Org_asa+_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+180.014486028      799 Org_asa+_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+179.612464972      103 Org_maximalprojectionsize_chemaxoncxcalc_15.6_Max_DRP_DRP
+178.088708012       73 PaulingElectronegMeanWeighted_legacy_legacy_
+176.640769049      979 Org_molpol_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+176.640769049     1144 Org_molpol_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+176.640769049      830 Org_molpol_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+176.640769049     1081 Org_molpol_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+176.640769049      815 Org_molpol_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+176.597683113      470 Inorg_hbda_don_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964      472 Inorg_hbda_acc_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964     1338 Inorg_hbda_acc_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964      631 Inorg_hbda_acc_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964     1005 Inorg_hbda_acc_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964      715 Inorg_hbda_acc_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964      911 Inorg_hbda_acc_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964     1095 Inorg_hbda_acc_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964     1038 Inorg_hbda_acc_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964     1007 Inorg_hbda_acc_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964     1008 Inorg_hbda_acc_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964      995 Inorg_hbda_acc_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964      324 Inorg_hbda_acc_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964     1118 Inorg_hbda_acc_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.489318964      734 Inorg_hbda_acc_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+174.411034353       52 EAMinWeighted_legacy_legacy_
+173.07975204       552 Org_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+173.07975204        92 Org_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+173.07975204      1085 Org_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+173.07975204      1322 Org_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+172.44985848      1298 Org_minimalprojectionsize_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+171.222925733       70 AtomicRadiusGeomWeighted_legacy_legacy_
+170.81760184       768 Org_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+170.81760184       975 Org_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+169.74614093       409 Org_avgpol_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+169.74614093       611 Org_avgpol_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+167.679239881      559 C_mols_DRP_0.02
+167.414811437     1032 Org_avgpol_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+167.414811437      795 Org_avgpol_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+166.794918986      159 Org_minimalprojectionradius_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+166.39034231      1323 Org_vanderwaals_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+166.39034231       299 Org_vanderwaals_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+166.375639369      885 Org_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+163.583199924      131 Inorg_hbda_don_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+163.583199924      972 Inorg_hbda_don_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+163.574424952     1276 Org_minimalprojectionradius_chemaxoncxcalc_15.6_Max_DRP_DRP
+163.531266817      730 Inorg_hbda_don_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+163.531266817      182 Inorg_hbda_don_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+162.873217126     1193 Org_vanderwaals_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+162.873217126      384 Org_vanderwaals_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+162.873217126      840 Org_vanderwaals_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+162.873217126      626 Org_vanderwaals_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+162.873217126      883 Org_vanderwaals_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+162.757030768      530 Org_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+162.617202018      636 Org_vanderwaals_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+161.781500369      239 Org_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+161.334776852      881 Org_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+160.792910865      316 Org_maximalprojectionarea_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+160.621452897     1058 Org_avgpol_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+160.621452897      577 Org_avgpol_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+160.621452897      578 Org_avgpol_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+160.621452897     1270 Org_avgpol_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+160.351451491     1074 Org_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+159.72072682       231 Org_asa+_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+158.933619673     1073 Org_vanderwaals_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+158.289352792     1187 Org_asa+_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+158.289352792     1249 Org_asa+_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+158.289352792      477 Org_asa+_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+158.289352792     1325 Org_asa+_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+157.360153651     1197 Org_vanderwaals_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+157.360153651      332 Org_vanderwaals_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+157.360153651      187 Org_vanderwaals_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+157.098258944      498 Org_vanderwaals_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+156.718354121     1012 Org_asa+_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+156.259366528      920 Org_asa+_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+156.259366528      680 Org_asa+_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+156.259366528      501 Org_asa+_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+156.259366528      396 Org_asa+_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+155.318429958      683 Org_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+155.112834663     1349 Org_asa+_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+155.112834663      627 Org_asa+_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+155.112834663      445 Org_asa+_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+155.112834663      817 Org_asa+_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+154.257223174      986 Org_asa_polar_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+154.212200566      101 Org_vanderwaals_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+154.212200566      721 Org_vanderwaals_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+154.212200566      687 Org_vanderwaals_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+154.212200566     1070 Org_vanderwaals_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+154.212200566      967 Org_vanderwaals_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+154.212200566      703 Org_vanderwaals_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+153.39699602       186 Org_asa-_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+152.525486966      175 Org_vanderwaals_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+152.240377914      238 Org_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+152.08214917       457 Org_asa_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+151.467322527       45 PaulingElectronegMinWeighted_legacy_legacy_
+150.409278666      156 Org_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+149.170310134     1209 Org_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+147.394199688     1063 Org_avgpol_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+146.975750821       41 hardnessGeomWeighted_legacy_legacy_
+145.957959543      180 Inorg_hbda_don_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+141.831433265      320 Org_molpol_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+141.831433265      874 Org_molpol_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+141.690961573      725 Org_maximalprojectionarea_chemaxoncxcalc_15.6_Max_DRP_DRP
+138.334355142      993 Inorg_hbda_don_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+137.594663992      843 Org_asa-_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+137.594663992     1359 Org_asa-_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+137.594663992      922 Org_asa-_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+137.589581664      125 Org_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+137.589581664      290 Org_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+137.589581664      318 Org_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+136.379522561     1066 Org_asa+_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+136.379522561      140 Org_asa+_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+136.061087574      451 Org_amount_molarity_DRP_0.02
+135.9028589        724 Org_asa-_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+135.9028589       1207 Org_asa-_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+135.9028589        219 Org_asa-_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+134.876125458      752 Org_maximalprojectionsize_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+134.113208762      408 Org_asa+_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+134.113208762     1155 Org_asa+_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+134.113208762     1039 Org_asa+_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+134.113208762      660 Org_asa+_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+133.938794425      854 Org_asa-_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+133.938794425     1204 Org_asa-_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+133.938794425     1163 Org_asa-_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+133.921748204     1311 Org_asa-_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+132.208351212     1294 Org_asa-_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+130.950486378      282 Org_asa+_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+130.950486378     1201 Org_asa+_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+130.2583876        244 Org_asa-_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+129.467109032      610 Org_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+129.467109032      353 Org_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+129.351369181     1126 Org_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+129.351369181      925 Org_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+121.673611983       57 PearsonElectronegMeanWeighted_legacy_legacy_
+121.354108992       76 hardnessMeanWeighted_legacy_legacy_
+119.403771408     1019 Org_avgpol_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+118.33248556      1185 Org_vanderwaals_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+118.33248556       764 Org_vanderwaals_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+118.33248556       593 Org_vanderwaals_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+118.33248556      1105 Org_vanderwaals_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+118.33248556       388 Org_vanderwaals_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+118.33248556        91 Org_vanderwaals_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+117.576204611      643 Org_avgpol_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+117.576204611      295 Org_avgpol_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+117.362882623       84 IonizationGeomWeighted_legacy_legacy_
+115.611769566      147 Se_mols_DRP_0.02
+111.937499825      793 Org_avgpol_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+111.879048418      602 Org_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+111.879048418      139 Org_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+111.879048418     1062 Org_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+111.879048418     1148 Org_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+111.807771094       33 EAMaxWeighted_legacy_legacy_
+111.398666583      360 Inorg_hbda_don_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+108.97618705      1293 Te_mols_DRP_0.02
+106.291906774       87 org-water-moleratio_legacy_legacy_
+104.605529508      704 Inorg_drpInorgAtomHardness_geom_unw_drp_0.02_gmean_molarity_DRP_DRP
+104.605529508      210 Inorg_drpInorgAtomHardness_geom_stoich_drp_0.02_gmean_molarity_DRP_DRP
+104.605529508      889 Inorg_drpInorgAtomHardness_max_drp_0.02_gmean_molarity_DRP_DRP
+104.144137355      779 Org_minimalprojectionsize_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+103.152761506      916 Org_minimalprojectionsize_chemaxoncxcalc_15.6_Max_DRP_DRP
+102.961445792      225 Inorg_drpInorgAtomIonizationEnergy_geom_unw_drp_0.02_gmean_molarity_DRP_DRP
+102.961445792      431 Inorg_drpInorgAtomIonizationEnergy_max_drp_0.02_gmean_molarity_DRP_DRP
+102.961445792      261 Inorg_drpInorgAtomIonizationEnergy_geom_stoich_drp_0.02_gmean_molarity_DRP_DRP
+ 98.848194558     1302 Inorg_hbda_acc_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      821 Inorg_hbda_acc_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558     1159 Inorg_hbda_acc_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      402 Inorg_hbda_acc_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558     1121 Inorg_hbda_acc_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      988 Inorg_hbda_acc_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      836 Inorg_hbda_acc_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      917 Inorg_hbda_acc_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558     1060 Inorg_hbda_acc_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      893 Inorg_hbda_acc_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      331 Inorg_hbda_acc_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      992 Inorg_hbda_acc_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558      223 Inorg_hbda_acc_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.848194558     1068 Inorg_hbda_acc_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 98.568156461      420 N_mols_DRP_0.02
+ 98.039006867     1173 Org_mw_drprdkit_0_gmean_molarity_DRP_DRP
+ 95.439919718       61 PearsonElectronegMinWeighted_legacy_legacy_
+ 94.668446364       78 notwater-water-moleratio_legacy_legacy_
+ 93.380642585      188 Inorg_drpInorgAtomPaulingElectronegativity_geom_unw_drp_0.02_gmean_molarity_DRP_DRP
+ 93.380642585      848 Inorg_drpInorgAtomPaulingElectronegativity_geom_stoich_drp_0.02_gmean_molarity_DRP_DRP
+ 93.380642585      306 Inorg_drpInorgAtomPaulingElectronegativity_max_drp_0.02_gmean_molarity_DRP_DRP
+ 84.087566176      102 Inorg_drpInorgAtomPearsonElectronegativity_max_drp_0.02_gmean_molarity_DRP_DRP
+ 84.087566176      667 Inorg_drpInorgAtomPearsonElectronegativity_geom_stoich_drp_0.02_gmean_molarity_DRP_DRP
+ 84.087566176      126 Inorg_drpInorgAtomPearsonElectronegativity_geom_unw_drp_0.02_gmean_molarity_DRP_DRP
+ 79.773972305      913 Inorg_drpInorgAtomElectronAffinity_geom_stoich_drp_0.02_gmean_molarity_DRP_DRP
+ 79.773972305      904 Inorg_drpInorgAtomElectronAffinity_max_drp_0.02_gmean_molarity_DRP_DRP
+ 79.773972305      653 Inorg_drpInorgAtomElectronAffinity_geom_unw_drp_0.02_gmean_molarity_DRP_DRP
+ 79.563903871        4 Na_legacy_legacy_
+ 77.806480759        7 leak_legacy_legacy_
+ 74.243656852       48 hardnessMax_legacy_legacy_
+ 73.079576693      819 Org_hbda_don_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 73.079576693      864 Org_hbda_don_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 71.972707544      506 Inorg_maximalprojectionarea_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 68.037340248      150 S_mols_DRP_0.02
+ 66.618623597      366 Inorg_avgpol_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 66.304155419      905 Org_hbda_don_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 66.304155419      293 Org_hbda_don_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 66.164497692     1021 Inorg_drpInorgAtomHardness_geom_unw_drp_0.02_Max_DRP_DRP
+ 66.164497692      158 Inorg_drpInorgAtomHardness_max_drp_0.02_Max_DRP_DRP
+ 66.164497692     1149 Inorg_drpInorgAtomHardness_geom_stoich_drp_0.02_Max_DRP_DRP
+ 65.995474693     1142 Inorg_drpInorgAtomHardness_geom_stoich_drp_0.02_gmean_count_DRP_DRP
+ 65.995474693      910 Inorg_drpInorgAtomHardness_max_drp_0.02_gmean_count_DRP_DRP
+ 65.995474693      505 Inorg_drpInorgAtomHardness_geom_unw_drp_0.02_gmean_count_DRP_DRP
+ 65.910964995      532 Inorg_drpInorgAtomIonizationEnergy_geom_stoich_drp_0.02_gmean_count_DRP_DRP
+ 65.910964995      736 Inorg_drpInorgAtomIonizationEnergy_max_drp_0.02_gmean_count_DRP_DRP
+ 65.910964995     1237 Inorg_drpInorgAtomIonizationEnergy_geom_unw_drp_0.02_gmean_count_DRP_DRP
+ 65.826466359      237 Inorg_minimalprojectionarea_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.631488777       79 IonizationGeom_legacy_legacy_
+ 65.631488777       63 IonizationMean_legacy_legacy_
+ 65.631488777       86 hardnessGeom_legacy_legacy_
+ 65.631488777       83 hardnessMean_legacy_legacy_
+ 65.575155498      135 Inorg_drpInorgAtomPearsonElectronegativity_geom_unw_drp_0.02_gmean_count_DRP_DRP
+ 65.575155498      968 Inorg_drpInorgAtomPearsonElectronegativity_max_drp_0.02_gmean_count_DRP_DRP
+ 65.575155498      940 Inorg_drpInorgAtomPearsonElectronegativity_geom_stoich_drp_0.02_gmean_count_DRP_DRP
+ 65.347584598      453 Inorg_asa_polar_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.347584598     1186 Inorg_asa_polar_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.347584598      595 Inorg_asa_polar_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.347584598     1252 Inorg_asa_polar_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.347584598     1057 Inorg_asa_polar_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.347584598     1084 Inorg_asa_polar_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.347584598     1352 Inorg_asa_polar_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.347584598      706 Inorg_asa_polar_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 65.286696582       54 PearsonElectronegGeom_legacy_legacy_
+ 64.633301369       75 AtomicRadiusGeom_legacy_legacy_
+ 64.633301369       55 AtomicRadiusMean_legacy_legacy_
+ 63.719375352     1098 Inorg_asa-_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.761123973      424 Inorg_avgpol_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.761123973      825 Inorg_avgpol_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.761123973      763 Inorg_avgpol_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.761123973      438 Inorg_avgpol_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405       483 Inorg_avgpol_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405       689 Inorg_avgpol_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405       488 Inorg_avgpol_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405      1123 Inorg_avgpol_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405      1356 Inorg_avgpol_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405      1208 Inorg_avgpol_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405       256 Inorg_avgpol_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.63608405      1291 Inorg_avgpol_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 62.478570562     1205 Inorg_drpInorgAtomPearsonElectronegativity_max_drp_0.02_Max_DRP_DRP
+ 62.478570562      377 Inorg_drpInorgAtomIonizationEnergy_geom_stoich_drp_0.02_Max_DRP_DRP
+ 62.478570562      230 Inorg_drpInorgAtomPearsonElectronegativity_geom_stoich_drp_0.02_Max_DRP_DRP
+ 62.478570562      479 Inorg_drpInorgAtomIonizationEnergy_max_drp_0.02_Max_DRP_DRP
+ 62.478570562      510 Inorg_drpInorgAtomPearsonElectronegativity_geom_unw_drp_0.02_Max_DRP_DRP
+ 62.478570562      105 Inorg_drpInorgAtomIonizationEnergy_geom_unw_drp_0.02_Max_DRP_DRP
+ 61.999803041       60 IonizationMax_legacy_legacy_
+ 61.999803041       38 PearsonElectronegMax_legacy_legacy_
+ 61.82798064        74 PearsonElectronegMean_legacy_legacy_
+ 61.0898425       1373 reaction_pH_manual_0
+ 60.790543045      606 Inorg_asa-_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 60.790543045      701 Inorg_asa-_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 60.790543045      780 Inorg_asa-_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 60.790543045     1234 Inorg_asa-_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 60.790543045      630 Inorg_asa-_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 60.790543045     1101 Inorg_asa-_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 60.790543045      590 Inorg_asa-_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 60.790543045      165 Inorg_asa-_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 59.162333799      537 Inorg_asa_polar_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 59.162333799      379 Inorg_asa_polar_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 59.162333799     1229 Inorg_asa_polar_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 59.162333799     1010 Inorg_asa_polar_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 59.162333799      856 Inorg_asa_polar_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 58.816940107      512 Inorg_drpInorgAtomAtomicRadius_max_drp_0.02_gmean_count_DRP_DRP
+ 58.816940107      397 Inorg_drpInorgAtomAtomicRadius_geom_stoich_drp_0.02_gmean_count_DRP_DRP
+ 58.816940107     1018 Inorg_drpInorgAtomAtomicRadius_geom_unw_drp_0.02_gmean_count_DRP_DRP
+ 58.773401311      474 Org_hbda_don_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 57.888693507     1076 Org_hbda_don_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 57.144462847       59 pH_legacy_legacy_
+ 57.015841801      659 Org_hbda_don_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 56.964078788      576 Inorg_avgpol_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597       370 Inorg_vanderwaals_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597      1013 Inorg_vanderwaals_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597      1033 Inorg_vanderwaals_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597      1056 Inorg_vanderwaals_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597       596 Inorg_vanderwaals_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597       107 Inorg_vanderwaals_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597       987 Inorg_vanderwaals_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.46443597       702 Inorg_vanderwaals_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 55.329637896      937 Org_hbda_don_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 54.164383789      628 Org_hbda_don_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 54.164383789     1235 Org_hbda_don_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 54.164383789      796 Org_hbda_don_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 53.209770749      454 Inorg_refractivity_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 53.159696083      644 Inorg_drpInorgAtomAtomicRadius_max_drp_0.02_gmean_molarity_DRP_DRP
+ 53.159696083     1131 Inorg_drpInorgAtomAtomicRadius_geom_stoich_drp_0.02_gmean_molarity_DRP_DRP
+ 53.159696083      735 Inorg_drpInorgAtomAtomicRadius_geom_unw_drp_0.02_gmean_molarity_DRP_DRP
+ 52.923838044      600 Inorg_asa+_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.923838044      800 Inorg_asa+_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.923838044      385 Inorg_asa+_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.923838044      572 Inorg_asa+_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.923838044      570 Inorg_asa+_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.923838044      285 Inorg_asa+_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.923838044      487 Inorg_asa+_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.923838044     1248 Inorg_asa+_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.734096936     1184 Inorg_maximalprojectionsize_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 52.490838449      914 Inorg_asa+_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 51.663086809       72 inorg-org-moleratio_legacy_legacy_
+ 51.380771818      772 Inorg_asa-_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 51.380771818     1324 Inorg_asa-_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 51.380771818      202 Inorg_asa-_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 51.380771818     1238 Inorg_asa-_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 51.380771818      250 Inorg_asa-_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 51.048646446     1153 Org_hbda_don_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 50.715759265       43 IonizationMinWeighted_legacy_legacy_
+ 49.133813409      211 Inorg_asa+_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 49.133813409     1146 Inorg_asa+_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 49.133813409     1196 Inorg_asa+_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 49.133813409      364 Inorg_asa+_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 48.732742478     1138 Inorg_asa+_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 47.381281711       69 PaulingElectronegMean_legacy_legacy_
+ 47.381281711       67 PaulingElectronegGeom_legacy_legacy_
+ 47.278808737      991 Inorg_drpInorgAtomHardness_max_drp_0.02_Range_DRP_DRP
+ 47.278808737      776 Inorg_drpInorgAtomElectronAffinity_geom_unw_drp_0.02_Range_DRP_DRP
+ 47.278808737      557 Inorg_drpInorgAtomIonizationEnergy_geom_stoich_drp_0.02_Range_DRP_DRP
+ 47.278808737      710 Inorg_drpInorgAtomElectronAffinity_max_drp_0.02_Range_DRP_DRP
+ 47.278808737      771 Inorg_drpInorgAtomIonizationEnergy_max_drp_0.02_Range_DRP_DRP
+ 47.278808737     1064 Inorg_drpInorgAtomPearsonElectronegativity_geom_stoich_drp_0.02_Range_DRP_DRP
+ 47.278808737      832 Inorg_drpInorgAtomPaulingElectronegativity_geom_stoich_drp_0.02_Range_DRP_DRP
+ 47.278808737      915 Inorg_drpInorgAtomAtomicRadius_geom_stoich_drp_0.02_Range_DRP_DRP
+ 47.278808737      329 Inorg_drpInorgAtomIonizationEnergy_geom_unw_drp_0.02_Range_DRP_DRP
+ 47.278808737     1151 Inorg_drpInorgAtomHardness_geom_unw_drp_0.02_Range_DRP_DRP
+ 47.278808737      574 Inorg_drpInorgAtomPaulingElectronegativity_max_drp_0.02_Range_DRP_DRP
+ 47.278808737      894 Inorg_drpInorgAtomPearsonElectronegativity_geom_unw_drp_0.02_Range_DRP_DRP
+ 47.278808737      807 Inorg_drpInorgAtomAtomicRadius_geom_unw_drp_0.02_Range_DRP_DRP
+ 47.278808737      674 Inorg_drpInorgAtomAtomicRadius_max_drp_0.02_Range_DRP_DRP
+ 47.278808737      640 Inorg_drpInorgAtomPaulingElectronegativity_geom_unw_drp_0.02_Range_DRP_DRP
+ 47.278808737     1157 Inorg_drpInorgAtomHardness_geom_stoich_drp_0.02_Range_DRP_DRP
+ 47.278808737      220 Inorg_drpInorgAtomPearsonElectronegativity_max_drp_0.02_Range_DRP_DRP
+ 47.278808737      216 Inorg_drpInorgAtomElectronAffinity_geom_stoich_drp_0.02_Range_DRP_DRP
+ 47.093646294     1097 Inorg_drpInorgAtomElectronAffinity_geom_unw_drp_0.02_Max_DRP_DRP
+ 47.093646294      926 Inorg_drpInorgAtomElectronAffinity_max_drp_0.02_Max_DRP_DRP
+ 47.093646294      978 Inorg_drpInorgAtomElectronAffinity_geom_stoich_drp_0.02_Max_DRP_DRP
+ 47.068726041     1035 Inorg_vanderwaals_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 47.068726041     1054 Inorg_vanderwaals_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 47.068726041     1212 Inorg_vanderwaals_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 47.068726041      417 Inorg_vanderwaals_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 47.068726041      485 Inorg_vanderwaals_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 47.068726041      880 Inorg_vanderwaals_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 46.952832438     1178 Org_hbda_don_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 46.952832438      496 Org_hbda_don_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 46.952832438      513 Org_hbda_don_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 46.938003515      502 Inorg_drpInorgAtomElectronAffinity_max_drp_0.02_gmean_count_DRP_DRP
+ 46.938003515      490 Inorg_drpInorgAtomElectronAffinity_geom_unw_drp_0.02_gmean_count_DRP_DRP
+ 46.938003515      372 Inorg_drpInorgAtomElectronAffinity_geom_stoich_drp_0.02_gmean_count_DRP_DRP
+ 46.752918507      719 Org_hbda_don_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 46.752918507     1094 Org_hbda_don_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 46.640263603       56 PaulingElectronegMax_legacy_legacy_
+ 46.640263603       51 AtomicRadiusMin_legacy_legacy_
+ 46.128239637       34 EAMax_legacy_legacy_
+ 46.088651666      142 Org_hbda_don_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 46.088651666      221 Org_hbda_don_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 46.088651666     1020 Org_hbda_don_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 45.968207079       66 EAGeom_legacy_legacy_
+ 45.968207079       40 EAMean_legacy_legacy_
+ 45.775638117       47 AtomicRadiusMinWeighted_legacy_legacy_
+ 42.976228831      407 Inorg_drpInorgAtomPaulingElectronegativity_geom_unw_drp_0.02_gmean_count_DRP_DRP
+ 42.976228831      122 Inorg_drpInorgAtomPaulingElectronegativity_max_drp_0.02_gmean_count_DRP_DRP
+ 42.976228831     1329 Inorg_drpInorgAtomPaulingElectronegativity_geom_stoich_drp_0.02_gmean_count_DRP_DRP
+ 40.64615158      1087 Inorg_asa_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158       592 Inorg_asa_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158       846 Inorg_asa_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158      1174 Inorg_asa_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158       786 Inorg_asa_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158      1228 Inorg_asa_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158       458 Inorg_asa_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158       441 Inorg_asa_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158        94 Inorg_asa_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158      1363 Inorg_asa_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158       393 Inorg_asa_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158      1336 Inorg_asa_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158      1082 Inorg_asa_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 40.64615158       312 Inorg_asa_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339      1340 Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339       277 Inorg_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339      1299 Inorg_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339      1263 Inorg_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339       541 Inorg_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339      1030 Inorg_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339      1154 Inorg_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 39.87950339      1078 Inorg_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 38.71133703       884 Org_hbda_don_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 38.439411185      200 Org_hbda_don_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 38.439411185      205 Org_hbda_don_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 38.169737519      942 Org_hbda_don_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 36.916345369      584 Org_hbda_acc_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 36.568863142     1167 Org_hbda_acc_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 36.209744142     1158 Inorg_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 36.209744142      981 Inorg_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 35.885181176      128 Inorg_mw_drprdkit_0_Range_DRP_DRP
+ 35.638217229      591 Inorg_minimalprojectionradius_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 35.197125591      583 Org_hbda_acc_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 34.693352423      232 Inorg_minimalprojectionsize_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 34.646810482      300 Inorg_drpInorgAtomPaulingElectronegativity_max_drp_0.02_Max_DRP_DRP
+ 34.646810482      955 Inorg_drpInorgAtomPaulingElectronegativity_geom_stoich_drp_0.02_Max_DRP_DRP
+ 34.646810482      301 Inorg_drpInorgAtomPaulingElectronegativity_geom_unw_drp_0.02_Max_DRP_DRP
+ 34.249862923      494 Inorg_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 34.232029021       21 Se_legacy_legacy_
+ 33.89330919       939 Inorg_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 33.89330919       613 Inorg_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 33.89330919       560 Inorg_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 33.89330919      1079 Inorg_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 33.653872827      197 Inorg_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 33.415271486      601 Inorg_asa_polar_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 33.247164927       24 Te_legacy_legacy_
+ 32.589068975      569 Inorg_amount_count_DRP_0.02
+ 32.001190419      325 Inorg_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 31.754163018      195 Org_hbda_acc_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 30.908127293     1343 Org_hbda_acc_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 29.952718155     1344 Org_hbda_acc_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 29.741504667     1028 Org_hbda_acc_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 28.174896317      168 Org_hbda_acc_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 28.174896317      857 Org_hbda_acc_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 25.817529193     1023 Inorg_hbda_don_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 25.545256937      792 Org_hbda_acc_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 25.476171962        8 P5_legacy_legacy_
+ 24.929965001      781 Org_hbda_acc_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 24.677413793      141 Org_hbda_acc_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 23.261511684     1009 Org_hbda_acc_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 23.172995411      358 Org_hbda_acc_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 22.916479759      171 Inorg_hbda_don_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 21.563692986      824 Org_hbda_acc_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 21.563692986      447 Org_hbda_acc_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 21.493488416     1328 Org_hbda_acc_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 21.493488416     1282 Org_hbda_acc_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 20.776703663      274 Inorg_hbda_don_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 20.776703663      605 Inorg_hbda_don_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 20.776703663     1269 Inorg_hbda_don_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 20.745387784      245 Org_hbda_acc_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 20.745387784      554 Org_hbda_acc_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 20.507994152      686 Org_hbda_acc_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 20.507994152      176 Org_hbda_acc_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 19.532698065      990 Ga_mols_DRP_0.02
+ 18.699385928      117 Org_hbda_don_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 18.699385928      493 Org_hbda_don_pH3_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 18.699385928      963 Org_hbda_don_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 18.699385928      345 Org_hbda_don_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 18.699385928      723 Org_hbda_don_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 18.699385928      945 Org_hbda_don_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 18.691891003     1268 Org_hbda_don_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 18.691891003     1092 Org_hbda_don_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 18.691891003     1091 Org_hbda_don_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 18.691891003      739 Org_hbda_don_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 18.691891003      705 Org_hbda_don_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 18.691891003      665 Org_hbda_don_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 17.798052361      999 Org_asa_polar_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 17.798052361      129 Org_asa_polar_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 17.798052361     1004 Org_asa_polar_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 17.798052361      618 Org_asa_polar_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 17.798052361      930 Org_asa_polar_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 17.798052361      369 Org_asa_polar_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 17.798052361      566 Org_asa_polar_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 16.943746484      327 Org_hbda_acc_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+ 16.892012472      731 Org_hbda_acc_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+ 16.740126196      637 Org_asa_polar_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 16.740126196     1016 Org_asa_polar_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 15.967924902      359 Inorg_hbda_don_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 15.634962567      718 Org_hbda_acc_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 14.850404014      234 Org_hbda_acc_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 14.250876245      604 Inorg_hbda_don_pH5_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 14.250876245      567 Inorg_hbda_don_pH4_chemaxoncxcalc_15.6_Max_DRP_DRP
+ 12.895222524     1192 Inorg_hbda_don_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 12.886517116     1223 Org_hbda_acc_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+ 12.886517116      344 Org_hbda_acc_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  9.941381616     1262 Inorg_hbda_don_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.941381616      931 Inorg_hbda_don_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.941381616      313 Inorg_hbda_don_pH13_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.941381616      166 Inorg_hbda_don_pH12_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.941381616      275 Inorg_hbda_don_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.941381616      742 Inorg_hbda_don_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.941381616      936 Inorg_hbda_don_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.941381616      121 Inorg_hbda_don_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+  9.8031347         42 PearsonElectronegMin_legacy_legacy_
+  9.8031347         53 IonizationMin_legacy_legacy_
+  9.8031347         10 Ga_legacy_legacy_
+  9.8031347         37 hardnessMin_legacy_legacy_
+  9.8031347         19 G13_legacy_legacy_
+  9.8031347          2 V3_legacy_legacy_
+  9.659852142       20 G12_legacy_legacy_
+  9.659852142       13 Zn_legacy_legacy_
+  9.659852142       25 V2_legacy_legacy_
+  9.595453866      869 Inorg_hbda_don_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      411 Inorg_hbda_don_pH12_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      906 Inorg_hbda_don_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      872 Inorg_hbda_don_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      167 Inorg_hbda_don_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      707 Inorg_hbda_don_pH5_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      738 Inorg_hbda_don_pH4_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      658 Inorg_hbda_don_pH10_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866      773 Inorg_hbda_don_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866     1083 Inorg_hbda_don_pH13_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.595453866     1318 Inorg_hbda_don_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  9.577739559      242 Inorg_hbda_don_pH4_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559      203 Inorg_hbda_don_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559      321 Inorg_hbda_don_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559     1346 Inorg_hbda_don_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559     1253 Inorg_hbda_don_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559      302 Inorg_hbda_don_pH10_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559      326 Inorg_hbda_don_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559     1342 Inorg_hbda_don_pH5_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559     1050 Inorg_hbda_don_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559      932 Inorg_hbda_don_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.577739559     1141 Inorg_hbda_don_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  9.4888158         50 AtomicRadiusMax_legacy_legacy_
+  8.303989404     1313 Inorg_drpInorgAtomAtomicRadius_max_drp_0.02_Max_DRP_DRP
+  8.303989404     1061 Inorg_drpInorgAtomAtomicRadius_geom_stoich_drp_0.02_Max_DRP_DRP
+  8.303989404     1348 Inorg_drpInorgAtomAtomicRadius_geom_unw_drp_0.02_Max_DRP_DRP
+  8.268012726     1347 Org_hbda_acc_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  8.268012726      354 Org_hbda_acc_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      647 Inorg_molpol_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194     1243 Inorg_molpol_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      808 Inorg_molpol_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      713 Inorg_molpol_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194     1071 Inorg_molpol_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194     1297 Inorg_molpol_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      481 Inorg_molpol_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      215 Inorg_molpol_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      449 Inorg_molpol_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      113 Inorg_molpol_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      462 Inorg_molpol_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194     1274 Inorg_molpol_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      789 Inorg_molpol_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.948686194      994 Inorg_molpol_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  7.698399034       58 numberComponents_legacy_legacy_
+  5.68046069        29 I_legacy_legacy_
+  3.577881228       64 numberInorg_legacy_legacy_
+  2.938465756       12 K_legacy_legacy_
+  2.44399982        28 V6_legacy_legacy_
+  1.160643074       31 G16_legacy_legacy_
+  1.070970756        5 P_legacy_legacy_
+  1.070970756        3 Br_legacy_legacy_
+  0.864961447       16 S_legacy_legacy_
+  0.713753121       22 Co_legacy_legacy_
+  0.713753121       15 G9_legacy_legacy_
+  0.713753121       26 V4_legacy_legacy_
+  0.57257818        23 Cl_legacy_legacy_
+  0.400381922       30 slowCool_legacy_legacy_
+  0.092843599       14 G6_legacy_legacy_
+  0.092843599        9 Mo_legacy_legacy_
+  0.092843599       11 P4_legacy_legacy_
+  0.051314507       17 N_legacy_legacy_
+  0.00000037        18 V_legacy_legacy_
+  0.00000037         1 G5_legacy_legacy_
+  0.00000037        27 V5_legacy_legacy_
+  0                727 Org_vanderwaals_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                615 Org_hbda_acc_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                110 Org_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                410 Org_asa_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1308 Inorg_hbda_acc_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1303 Org_vanderwaals_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                614 Org_molpol_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1278 Org_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1277 Org_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                432 Org_asa-_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                671 Org_hbda_acc_pH11_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                733 Org_vanderwaals_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                136 Org_hbda_don_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1275 Org_molpol_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                923 Org_asa_polar_pH7_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                116 Org_asa-_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1288 Org_minimalprojectionsize_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                428 K_mols_DRP_0.02
+  0                115 Org_asa_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                927 Org_asa+_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1281 Org_hbda_acc_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1283 Org_hbda_don_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                123 Org_asa_polar_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                989 Inorg_hbda_don_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                951 Org_asa_hydrophobic_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                652 Inorg_hbda_don_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                400 Org_asa_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                700 Inorg_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                696 Inorg_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                 46 numberOrg_legacy_legacy_
+  0               1341 Org_asa+_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                656 Org_asa-_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                933 Org_avgpol_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                708 Org_asa-_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                654 Org_avgpol_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                 62 PaulingElectronegMin_legacy_legacy_
+  0                693 Inorg_hbda_acc_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                692 Org_avgpol_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                646 Org_hbda_acc_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                642 Org_vanderwaals_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                645 Org_hbda_acc_pH8_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                691 Org_minimalprojectionradius_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                695 Org_asa_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                688 Org_asa-_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                694 Org_vanderwaals_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                648 Org_asa_polar_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                419 Org_hbda_don_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                679 Inorg_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0               1321 Org_hbda_acc_pH11_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0                971 Org_hbda_don_pH2_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0                395 Org_maximalprojectionarea_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                943 Org_asa-_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                 35 numberOxlike_legacy_legacy_
+  0                675 Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                425 Inorg_hbda_acc_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1312 Org_molpol_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                 96 Org_hbda_don_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                 98 Org_asa_hydrophobic_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                 97 Org_avgpol_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                406 Org_asa_hydrophobic_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                716 Org_amount_count_DRP_0.02
+  0                418 Org_asa_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                398 Org_asa_hydrophobic_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                711 Inorg_hbda_don_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                623 Org_hbda_acc_pH9_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0                423 Org_asa+_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1370 Org_hbda_acc_pH7_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                 90 EAMin_legacy_legacy_
+  0               1364 Org_asa-_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1332 Br_mols_DRP_0.02
+  0                661 Org_avgpol_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1140 Inorg_hbda_acc_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                259 Org_vanderwaals_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                516 Org_asa-_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1139 Org_minimalprojectionarea_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                255 Org_avgpol_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                820 Org_asa_polar_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                823 Zn_mols_DRP_0.02
+  0                520 Inorg_hbda_acc_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                827 Org_vanderwaals_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                899 Org_asa+_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1113 Org_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                834 Org_avgpol_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                265 Mo_mols_DRP_0.02
+  0               1136 Org_vanderwaals_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                826 Org_molpol_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1132 Org_asa+_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                348 Inorg_hbda_acc_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                538 Org_maximalprojectionsize_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1156 Org_vanderwaals_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                533 Org_asa+_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                459 Org_avgpol_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1162 Org_hbda_don_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                460 Org_hbda_acc_pH12_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                233 Org_avgpol_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                524 Org_molpol_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                811 Inorg_hbda_acc_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                253 Org_molpol_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                816 Org_asa+_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                243 Org_hbda_acc_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                805 Org_asa_polar_pH6_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                809 Org_asa_hydrophobic_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                529 Inorg_hbda_acc_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1152 Org_hbda_don_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1059 Org_molpol_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                298 Org_hbda_acc_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                489 Org_asa_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                878 Inorg_hbda_acc_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                859 Org_hbda_don_pH1_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0               1086 Org_asa-_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                297 Org_asa+_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                887 Org_hbda_acc_pH9_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+  0                484 Org_asa_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                475 Org_asa+_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                867 Org_hbda_acc_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                482 I_mols_DRP_0.02
+  0                308 Org_hbda_acc_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                865 V_mols_DRP_0.02
+  0                323 Org_vanderwaals_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1075 Org_maximalprojectionradius_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                310 Org_vanderwaals_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                278 Org_asa+_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1037 Inorg_hbda_acc_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                280 Org_asa_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                838 Org_asa-_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                273 Inorg_hbda_acc_pH3_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                272 Org_asa-_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                276 Org_hbda_acc_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1036 Org_asa-_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                465 Org_asa_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1093 Inorg_hbda_don_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                469 Org_asa_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1090 Org_hbda_acc_pH8_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0               1041 Org_hbda_acc_pH13_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                464 Org_asa-_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1053 Inorg_hbda_don_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                847 Inorg_asa_hydrophobic_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                337 Org_asa_polar_pH6_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0                170 Org_molpol_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1000 Org_molpol_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                172 Org_avgpol_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1001 Org_hbda_don_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                749 Org_hbda_don_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                748 Inorg_asa_hydrophobic_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                755 Org_asa_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                164 Org_hbda_acc_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1222 Org_vanderwaals_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                758 Inorg_maximalprojectionradius_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1218 Org_asa_polar_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1220 Org_asa+_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                174 Org_asa+_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1227 Org_molpol_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1224 Org_asa_polar_pH7_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0                757 Inorg_hbda_don_pH8_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1225 Inorg_hbda_acc_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                919 Co_mols_DRP_0.02
+  0               1266 Org_asa_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                996 Org_vanderwaals_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1259 Org_vanderwaals_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                594 Org_hbda_acc_pH8_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0               1267 Org_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                435 Inorg_hbda_don_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                382 Org_mw_drprdkit_0_Range_DRP_DRP
+  0                997 Org_asa_hydrophobic_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                440 Org_hbda_don_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                747 Org_hbda_acc_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                160 Org_refractivity_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1251 Org_avgpol_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                588 Org_hbda_don_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                745 Org_hbda_don_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1245 Org_asa_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1240 Org_hbda_don_pH1_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0                547 Org_hbda_don_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                213 Ox_amount_count_DRP_0.02
+  0                545 Org_hbda_acc_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1171 Org_hbda_don_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                551 Org_hbda_acc_pH14_chemaxoncxcalc_15.6_Max_DRP_DRP
+  0                775 Org_hbda_acc_pH14_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                361 Org_molpol_pH10_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                549 Org_asa-_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1166 Cl_mols_DRP_0.02
+  0                226 Org_asa_hydrophobic_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                788 Org_hbda_don_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1165 Org_molpol_pH1_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                222 Org_molpol_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                783 Org_molpol_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                355 Org_asa+_pH9_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                785 Inorg_asa_hydrophobic_pH3_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                455 Org_asa_polar_pH13_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                769 Org_avgpol_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                766 Org_hbda_don_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                193 Org_asa+_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                563 Inorg_hbda_acc_pH6_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                371 Org_hbda_don_pH2_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0               1216 Inorg_hbda_acc_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                189 Org_asa_polar_pH6_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                568 Org_hbda_acc_pH9_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                443 Org_avgpol_pH4_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                561 Org_asa_pH5_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                774 Org_asa_polar_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                912 Inorg_hbda_don_pH7_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                196 Org_avgpol_pH12_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                562 Org_asa_hydrophobic_pH14_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0               1006 Org_hbda_acc_pH2_chemaxoncxcalc_15.6_Range_DRP_DRP
+  0                198 Org_hbda_don_pH1_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+  0                199 Org_hbda_acc_pH11_chemaxoncxcalc_15.6_Range_DRP_DRP
+
+Selected attributes: 82,1372,85,548,814,1043,1022,1031,1188,543,433,954,401,668,608,1304,1135,804,938,1112,837,953,861,374,375,1049,1119,1233,1177,1100,526,1115,1182,1077,977,373,1051,866,1310,935,224,798,1150,1362,44,720,422,251,544,119,252,499,378,473,279,342,712,154,1280,471,555,456,851,1264,1331,390,1202,111,381,1286,831,1179,246,1103,754,1255,876,818,685,619,1309,492,236,934,1250,850,759,1069,877,862,184,341,1290,985,897,181,1350,581,697,639,263,617,258,842,442,217,1017,194,132,307,732,343,452,1160,1317,714,248,350,161,201,556,964,966,1211,965,546,1333,521,95,356,1042,973,1345,271,1040,1189,1015,346,1027,863,209,148,1339,1289,511,682,558,1231,1296,1203,108,330,1305,518,1279,726,761,240,146,478,434,550,841,1127,334,149,183,607,363,1002,1122,684,296,427,728,907,291,152,463,127,655,871,286,528,461,162,1257,1327,151,1213,1226,1271,1360,751,947,777,185,579,305,386,669,672,657,1337,678,858,743,1044,812,690,810,790,504,1170,983,960,892,882,553,1110,309,178,269,257,268,283,333,603,959,801,173,399,1219,1143,1258,1287,849,1169,1320,1221,1261,448,311,1260,288,468,1354,507,587,1045,621,247,629,677,1214,1199,314,133,99,1102,495,1230,204,597,155,582,497,1055,624,717,709,1334,1315,349,100,1183,929,1316,241,1241,1232,580,169,1314,1176,214,585,535,651,157,104,957,1357,599,1046,134,1206,405,633,450,403,828,413,1285,632,974,249,1104,1130,1067,114,868,765,206,1180,1116,1236,620,439,352,1367,284,1096,598,480,1099,1244,523,1210,1014,1284,782,1273,1256,1215,1080,1029,522,93,1306,1246,681,1129,294,928,770,540,49,870,1117,946,895,573,218,760,609,1024,901,145,1365,525,586,663,589,890,1242,486,670,383,949,1217,924,207,969,1065,698,421,1145,1089,1326,1319,429,1239,317,476,1047,153,415,1361,392,787,1088,767,303,1109,1172,208,1125,1052,1048,753,891,339,1108,1307,1107,741,267,1335,750,980,1198,367,292,1295,212,1300,1330,921,699,394,976,517,833,762,467,898,322,138,509,539,1011,729,641,1026,1371,68,571,351,235,124,89,1072,338,143,446,902,500,1025,952,228,387,430,982,896,1191,368,784,794,722,829,1247,1164,81,888,515,797,362,542,1114,466,179,1128,918,262,860,778,120,962,519,304,315,1120,32,564,673,437,527,1168,177,635,289,254,900,1003,638,444,130,662,756,839,855,144,77,835,903,389,1137,822,1301,106,536,514,1147,1190,970,746,71,340,1034,958,1351,365,1124,270,909,666,1292,956,852,328,376,1353,565,625,287,622,137,744,319,853,650,109,1200,1133,676,229,1175,803,1161,118,404,357,335,791,813,39,649,737,416,886,950,1355,1195,88,875,112,266,380,336,163,944,260,575,426,491,281,1272,873,1366,436,1194,391,984,190,503,36,414,634,740,1134,227,1106,961,191,192,412,531,65,1369,534,80,879,264,1254,998,1358,616,1265,844,1111,1368,806,908,612,508,664,948,941,347,845,1181,802,799,103,73,979,1144,830,1081,815,470,472,1338,631,1005,715,911,1095,1038,1007,1008,995,324,1118,734,52,552,92,1085,1322,1298,70,768,975,409,611,559,1032,795,159,1323,299,885,131,972,1276,730,182,1193,384,840,626,883,530,636,239,881,316,1058,577,578,1270,1074,231,1073,1187,1249,477,1325,1197,332,187,498,1012,920,680,501,396,683,1349,627,445,817,986,101,721,687,1070,967,703,186,175,238,457,45,156,1209,1063,41,180,320,874,725,993,843,1359,922,125,290,318,1066,140,451,724,1207,219,752,408,1155,1039,660,854,1204,1163,1311,1294,282,1201,244,610,353,1126,925,57,76,1019,1185,764,593,1105,388,91,643,295,84,147,793,602,139,1062,1148,33,360,1293,87,704,210,889,779,916,225,431,261,1302,821,1159,402,1121,988,836,917,1060,893,331,992,223,1068,420,1173,61,78,188,848,306,102,667,126,913,904,653,4,7,48,819,864,506,150,366,905,293,1021,158,1149,1142,910,505,532,736,1237,237,79,63,86,83,135,968,940,453,1186,595,1252,1057,1084,1352,706,54,75,55,1098,424,825,763,438,483,689,488,1123,1356,1208,256,1291,1205,377,230,479,510,105,60,38,74,1373,606,701,780,1234,630,1101,590,165,537,379,1229,1010,856,512,397,1018,474,1076,59,659,576,370,1013,1033,1056,596,107,987,702,937,628,1235,796,454,644,1131,735,600,800,385,572,570,285,487,1248,1184,914,72,772,1324,202,1238,250,1153,43,211,1146,1196,364,1138,69,67,991,776,557,710,771,1064,832,915,329,1151,574,894,807,674,640,1157,220,216,1097,926,978,1035,1054,1212,417,485,880,1178,496,513,502,490,372,719,1094,56,51,34,142,221,1020,66,40,47,407,122,1329,1087,592,846,1174,786,1228,458,441,94,1363,393,1336,1082,312,1340,277,1299,1263,541,1030,1154,1078,884,200,205,942,584,1167,1158,981,128,591,583,232,300,955,301,494,21,939,613,560,1079,197,601,24,569,325,195,1343,1344,1028,168,857,1023,792,8,781,141,1009,358,171,824,447,1328,1282,274,605,1269,245,554,686,176,990,117,493,963,345,723,945,1268,1092,1091,739,705,665,999,129,1004,618,930,369,566,327,731,637,1016,359,718,234,604,567,1192,1223,344,1262,931,313,166,275,742,936,121,42,53,10,37,19,2,20,13,25,869,411,906,872,167,707,738,658,773,1083,1318,242,203,321,1346,1253,302,326,1342,1050,932,1141,50,1313,1061,1348,1347,354,647,1243,808,713,1071,1297,481,215,449,113,462,1274,789,994,58,29,64,12,28,31,5,3,16,22,15,26,23,30,14,9,11,17,18,1,27,727,615,110,410,1308,1303,614,1278,1277,432,671,733,136,1275,923,116,1288,428,115,927,1281,1283,123,989,951,652,400,700,696,46,1341,656,933,708,654,62,693,692,646,642,645,691,695,688,694,648,419,679,1321,971,395,943,35,675,425,1312,96,98,97,406,716,418,398,711,623,423,1370,90,1364,1332,661,1140,259,516,1139,255,820,823,520,827,899,1113,834,265,1136,826,1132,348,538,1156,533,459,1162,460,233,524,811,253,816,243,805,809,529,1152,1059,298,489,878,859,1086,297,887,484,475,867,482,308,865,323,1075,310,278,1037,280,838,273,272,276,1036,465,1093,469,1090,1041,464,1053,847,337,170,1000,172,1001,749,748,755,164,1222,758,1218,1220,174,1227,1224,757,1225,919,1266,996,1259,594,1267,435,382,997,440,747,160,1251,588,745,1245,1240,547,213,545,1171,551,775,361,549,1166,226,788,1165,222,783,355,785,455,769,766,193,563,371,1216,189,568,443,561,774,912,196,562,1006,198,199 : 1372
+
+
+	...Trained. Finished at 2016-04-03 00:16:43.854917.

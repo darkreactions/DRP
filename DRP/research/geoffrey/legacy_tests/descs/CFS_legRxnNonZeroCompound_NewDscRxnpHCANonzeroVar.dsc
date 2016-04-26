@@ -1,0 +1,6 @@
+Na_mols
+Ox_amount_molarity
+H_mols
+reaction_time
+Inorg_asa_hydrophobic_pHreaction_chemaxoncxcalc_15.6_gmean_molarity
+Org_asa_pHreaction_chemaxoncxcalc_15.6_Max

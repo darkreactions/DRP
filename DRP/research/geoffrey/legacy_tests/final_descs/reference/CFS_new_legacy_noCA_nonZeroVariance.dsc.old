@@ -1,0 +1,8 @@
+AtomicRadiusMeanWeighted_legacy
+H_mols
+Inorg_amount_count
+leak_legacy
+Na_mols
+Ox_amount_molarity
+reaction_time
+time_legacy
