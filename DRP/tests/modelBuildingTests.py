@@ -34,7 +34,12 @@ class WekaSVMBasicKFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "SVM_PUK_basic"
     splitter = "KFoldSplitter"
-
+    
+@createsPerformedReactionSetOrd
+class WekaSVMBasicMFTest(ModelTest):
+    modelLibrary = "weka"
+    modelTool = "SVM_PUK_basic"
+    splitter = "MutualInfoSplitter"
     
 @createsPerformedReactionSetBool
 class WekaSVMBCRKFTest(ModelTest):
@@ -64,6 +69,7 @@ class WekaNBKFTest(ModelTest):
 
 suite = unittest.TestSuite([
                     loadTests(WekaSVMBasicKFTest),
+                    loadTests(WekaSVMBasicMFTest),
                     loadTests(WekaSVMBCRKFTest),
                     loadTests(WekaJ48KFTest),
                     loadTests(WekaKNNKFTest),

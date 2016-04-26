@@ -1,9 +1,9 @@
 '''A module containing urls for the database (reactions, compound guide) components of DRP'''
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 import DRP.views
 
-urls = patterns('',
+urls = [
   url('^(?P<filetype>.csv|.html|.arff)?$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/add.html', DRP.views.reaction.reactionForm, name='newReaction'),
@@ -23,4 +23,4 @@ urls = patterns('',
   url('^/jsonapi/catrxndescriptor.json', DRP.views.descriptors.CatRxnDescriptor.as_view(), name='catrxndescriptor'),
   url('^/jsonapi/numrxndescriptor.json', DRP.views.descriptors.NumRxnDescriptor.as_view(), name='numrxndescriptor'),
   url('^/jsonapi/ordrxndescriptor.json', DRP.views.descriptors.OrdRxnDescriptor.as_view(), name='ordrxndescriptor') 
-)
+]
