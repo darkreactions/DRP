@@ -1,0 +1,6 @@
+{
+    {% for descriptor in descriptors %}
+	{{descriptor.id}}: [{{descriptor.name}}, {{descriptor.minimum}}, {{descriptor.maximum}}],
+    {% endfor %}
+}
+

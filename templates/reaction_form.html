@@ -9,24 +9,19 @@
   <form class="reaction-form" action="{{ request.path }}" method="post">
     {% csrf_token %}
     <fieldset>
-    <legend>Reaction Details</legend>
-    <ol>
-      {{ reaction_form.as_ul }}
-    </ol>
-    <ol>
+      <legend>Reaction Details</legend>
+      <ol>
+        {{ reaction_form.as_ul }}
+        {% comment %} reactants {% endcomment %}
+        {% for reactant_form in reactants_formset %}
+	  <li><ol> {{ reactant_form.as_ul }} </ol></li>
+        {% endfor %}
+        {% comment %} descriptors {% endcomment %}
+        {{ reactants_formset.managementForm.as_ul }}
+	<div>Add Descriptor</div>
+      </ol>
     </fieldset>
-    <fieldset>
-    <legend>Reactants</legend>
-      {% for reactant_form in reactants_formset %}
-      <li><ol>
-        {{ reactant_form.as_ul }}
-      </ol></li>
-      {% endfor %}
-    </ol>
-    <ol>
-    {{ reactants_formset.managementForm.as_ul }}
-    </ol>
-    </fieldset>
+    {% comment %} keeping this here {% endcomment %}
     {% with descriptor_formsets.0 as formset %}
     <fieldset>
     <legend>Numerical Descriptors</legend>

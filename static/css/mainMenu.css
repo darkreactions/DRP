@@ -1,18 +1,7 @@
-body {
- background-color:#f0d09e;
- margin:0;
- font-family: 'Open Sans', arial;
-}
-
-body header {
- background-color:#9c0000;
- padding:1em 0 0 0;
- margin-bottom:2em;
-}
 
 span.greeting {
  padding:.5em 0 .5em .5em;;
- background-color:#bd0000;
+ background-color:#b7cae0;
 }
 
 #userInfo span.greeting a.account {
@@ -28,7 +17,7 @@ img#mainLogo {
 h1.mainTitle {
  margin:.1em 0 0 0;
  float:left;
- color:#F0D09E;
+ color:#d1d1d1;
 }
 
 #userInfo {
@@ -38,7 +27,7 @@ h1.mainTitle {
 }
 
 #userInfo a:link {
- background-color:#bd0000;
+ background-color:#b7cae0;
  text-decoration:none;
  color:black;
  padding:.5em;
@@ -46,13 +35,12 @@ h1.mainTitle {
 } #userInfo a:visited {
  color:black;
 } #userInfo a:hover {
- color:#303030;
+ color:#20344b;
 } #userInfo a:active {
- color:#303030;
 }
 
 div.nav-wrapper {
- background-color:#cc9f58;
+ background-color:#658ebd;
  width:100%;
 }
 
@@ -63,7 +51,7 @@ div.nav-wrapper {
  width:32.5em;
  padding:10px 0px;
  text-align:left;
- background-color:#cc9f58;
+ background-color:#658ebd;
  margin:4em auto 0em auto;
 }
 
@@ -79,9 +67,8 @@ a.navLink:link {
 } a.navLink:visited {
  color:black;
 } a.navLink:hover {
- color:#303030;
+ color:#20344b;
 } a.navLink:active {
- color:#303030;
 }
 
 nav ol {
@@ -103,29 +90,25 @@ main {
 
 main a:link {
  text-decoration: none;
- color: #9c0000;
+ color: #20344b;
 }
-
 main a:visited {
  text-decoration: none;
- color: #9c0000;
+ color: #20344b;
 }
-
 main a:hover {
  text-decoration: none;
- color: #9c0000;
+ color: #20344b;
  opacity:.7; 
 }
-
 main a:active {
-
 }
 
 .currentTitle { font-weight:bold; }
 
 footer {
  font-size: .7em;
- color: #ac7e35; /* the tan from top menu but slightly darker */
+ color: #658ebd; /* the tan from top menu but slightly darker */
  margin: 0 0 .5em 1em;
  clear:both;
  text-align:center;

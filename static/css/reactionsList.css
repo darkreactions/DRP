@@ -32,7 +32,7 @@ div.reaction {
  padding:1em;
  margin:1em auto;
  border-radius:1em;
- background-color: white;
+ background-color: #ededed;
 }
 
 div.reaction h2 {
@@ -47,11 +47,15 @@ div.reaction h2 {
 .quantities {
  float: left;
  clear: left;
- margin: .5em 2em;
+ margin: .5em 0;
+}
+
+.quantities p {
+ margin: 0;
 }
 
 .quantities ul {
- padding:0;
+ padding:0 2em;
  float:left;
  clear:left;
  margin:0;
@@ -65,8 +69,7 @@ div.reaction h2 {
 
 .inserted_date {
  clear:both;
- margin-top:3em;
- font-weight: 600;
+ margin-bottom:0.5em;
 }
 
 ol.pagination {
@@ -79,8 +82,31 @@ ol.pagination {
 ol.pagination li {
  float:left;
  margin:0 1em;
- color: #9c0000;
+ color: #20344b;
 }
+
+input[type="submit"] {
+ padding:0;
+ color:white;
+ background-color: #8dabce;
+ border:1px solid #658ebd;
+ border-radius:1em;
+ width:7em;
+ height:2em;
+ margin-bottom:.5em;
+ float:left;
+}
+
+input.delete {
+ margin-left:1em;
+}
+
+.input_wrapper {
+ height:2em;
+ width:17em;
+ margin:auto;
+}
+
 
 
 
