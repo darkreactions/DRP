@@ -94,6 +94,54 @@ is reserved for releases. There are no working long-term support branches
 at present. Persons editing this code should set up their own branches,
 with one marked as stable, such that all tests pass in that branch.    
 
+Porting to Django 1.8
+=============================
+
+Pull django1.6 tag:
+git pull origin django1.6
+
+Make sure your database (both main and testing) is up to date with migrations:
+Set Testing = False in settings.py
+./manage.py migrate
+Set Testing = True in settings.py
+
+Restart nginx and uwsgi
+sudo service nginx restart && sudo service uwsgi restart
+
+Run all tests and make sure you pass them all:
+./manage.py run_tests
+
+Pull django1.8 tag:
+git pull origin django1.8
+
+Update your settings:
+Remove "south" from your installed apps
+
+Install django 1.8:
+pip install -U Django==1.8.9
+
+Do initial migrations:
+Delete all .pyc files in your migrations folder
+rm DRP/migrations/*.pyc
+./manage.py migrate --fake-initial
+
+
+Restart nginx and uwsgi
+sudo service nginx restart && sudo service uwsgi restart
+
+Run all tests and make sure you pass them all:
+./manage.py run_tests
+
+Migrate your main database:
+Set Testing to False in settings.py
+./manage.py migrate --fake-initial
+
+Uninstall south. You don't need it anymore:
+pip uninstall south
+
+Bake Geoffrey a cake because what just took you 20 minutes took him 12 hours to make sure everything worked properly
+
+
 Django Management Commands
 =========================
 
