@@ -3,7 +3,7 @@
 from django.conf.urls import url
 import DRP.views
 
-urls = [
+urls = (
   url('^(?P<filetype>.csv|.html|.arff)?$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/add.html', DRP.views.reaction.reactionForm, name='newReaction'),
