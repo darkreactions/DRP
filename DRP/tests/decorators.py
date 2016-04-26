@@ -78,6 +78,8 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
                 compoundRole = CompoundRole.objects.get(label=role)
                 compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
                                                                                         role=compoundRole, amount=quantity)
+
+                # TODO XXX bulk_create? Can't use the special save
                 compoundQuantity.save()
 
                 compoundQuantities.append(compoundQuantity)
@@ -113,6 +115,7 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
                     error = "Unknown descriptorValue type for '{}'".format(descriptor)
                     raise NotImplementedError(error)
 
+                # TODO XXX: bulk_create?
                 descriptorVal.descriptor = descriptor
                 descriptorVal.value = val
                 descriptorVal.reaction = reaction
@@ -125,6 +128,7 @@ def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, com
         def tearDown(self):
             _oldTearDown(self)
 
+            # TODO XXX bulk deletion?
             for cq in compoundQuantities:
                 cq.delete()
 
@@ -298,9 +302,12 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
         def setUp(self):
             labGroup = LabGroup.objects.get(title=labGroupTitle)
             compounds = labGroup.compound_set.fromCsv(os.path.join(settings.APP_DIR, 'tests', 'resource', csvFileName))
+
+            # TODO XXX bulk_create? Can't use our custom save then
             for compound in compounds:
                 compound.csConsistencyCheck()
                 compound.save()
+
             _oldSetup(self)
 
         def tearDown(self):
@@ -312,9 +319,8 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
         return c
     return _loadsCompoundsFromCsv
 
-def createsPerformedReactionSet(c):
-
-    # Create a bunch of simple sample reactions.
+def createsPerformedReactionSetOrd(c):
+    # Create a bunch of simple sample reactions with ordinal outcomes.
     c=createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome":1, "testNumber":5.04}, duplicateRef='R15')(c)
     c=createsPerformedReaction("Watchmen", "Rorschach","R02", ["EtOH"], ["Org"], [0.71], {"outcome":1, "testNumber":5.0})(c)
     c=createsPerformedReaction("Watchmen", "Rorschach","R03", ["dmed"], ["Org"], [0.1], {"outcome":1, "testNumber":5.0})(c)
@@ -332,6 +338,41 @@ def createsPerformedReactionSet(c):
     c=createsPerformedReaction("Watchmen", "Rorschach","R15",["Water", "EtOH"], ["Water", "Org"],[0.4, 0.57], {"outcome":4, "testNumber":0.02})(c)
 
     c = createsRxnDescriptor("outcome", "OrdRxnDescriptor", options={"maximum":4, "minimum":1})(c)
+    c = createsRxnDescriptor("testNumber", "NumRxnDescriptor")(c)
+
+    c=createsCompoundRole('Org', 'Organic')(c)
+    c=createsCompoundRole('Water', 'Water')(c)
+    c=createsCompound('EtOH', 682, 'Org', 'Watchmen')(c)
+    c=createsCompound('dmed', 67600, 'Org', 'Watchmen')(c)
+    c=createsCompound('dabco', 8882, 'Org', 'Watchmen')(c)
+    c=createsCompound('Water', 937, 'Water', 'Watchmen')(c)
+    c=createsChemicalClass('Org', 'Organic')(c)
+    c=createsChemicalClass('Water', 'Water')(c)
+
+    c = signsExampleLicense("Rorschach")(c)
+    c = joinsLabGroup('Rorschach', 'Watchmen')(c)
+    c = createsUser('Rorschach', 'whatareyouwaitingfor')(c)
+    return c
+
+def createsPerformedReactionSetBool(c):
+    # Create a bunch of simple sample reactions with Boolean outcomes.
+    c=createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome":False, "testNumber":5.04}, duplicateRef='R15')(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R02", ["EtOH"], ["Org"], [0.71], {"outcome":False, "testNumber":5.0})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R03", ["dmed"], ["Org"], [0.1], {"outcome":False, "testNumber":5.0})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R04", ["dmed"], ["Org"], [0.18], {"outcome":False, "testNumber":5.0})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R05", ["dabco"], ["Org"], [0.71], {"outcome":False, "testNumber":5.04})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R06", ["dabco"], ["Org"], [0.14], {"outcome":False, "testNumber":5.01})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R07", ["Water"], ["Water"], [0.14], {"outcome":False, "testNumber":5.01})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R08", ["EtOH", "dmed", "Water"], ["Org", "Org", "Water"],[0.31, 0.3, 0.5], {"outcome":True, "testNumber":0.1})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R09", ["dmed", "EtOH", "Water"], ["Org", "Org", "Water"],[0.2, 0.34, 0.3], {"outcome":True, "testNumber":0.1})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R10", ["dabco", "Water"], ["Org", "Water"],[0.3, 0.32], {"outcome":True, "testNumber":0.1})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R11",["Water", "dabco"], ["Water", "Org"],[0.3, 0.34], {"outcome":True, "testNumber":0.1})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R12",["dmed", "Water"], ["Org", "Water"],[0.3, 0.34], {"outcome":True, "testNumber":0.1})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R13",["EtOH", "Water"], ["Org", "Water"],[0.3, 0.35], {"outcome":True, "testNumber":0.1})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R14",["dmed", "Water"], ["Org", "Water"],[0.4, 0.56], {"outcome":True, "testNumber":0.01})(c)
+    c=createsPerformedReaction("Watchmen", "Rorschach","R15",["Water", "EtOH"], ["Water", "Org"],[0.4, 0.57], {"outcome":True, "testNumber":0.02})(c)
+
+    c = createsRxnDescriptor("outcome", "BoolRxnDescriptor", options={})(c)
     c = createsRxnDescriptor("testNumber", "NumRxnDescriptor")(c)
 
     c=createsCompoundRole('Org', 'Organic')(c)

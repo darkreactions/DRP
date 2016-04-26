@@ -27,7 +27,7 @@ _pep8Files = [
     # (__init__.py must be present)
     # ('DRP', 'admin.py'),
     ('DRP', 'tests', 'fileTests.py'),
-    ('DRP', 'tests', 'CompoundDescriptor.py')
+    ('DRP', 'tests', 'CompoundDescriptor.py'),
     # These commented out files are commented out because
     # they would serve as examples had they been converted already!
 ]
@@ -42,9 +42,10 @@ pep257Files = []
 
 for f in pep8Files:
     if os.path.isdir(f):
-        for root, dirnames, fileName in os.walk(f):
-            if fileName.endswith('.py'):
-                pep257Files.append(os.path.join(root, fileName))
+        for root, dirnames, fileNames in os.walk(f):
+            for fileName in fileNames:
+                if fileName.endswith('.py'):
+                    pep257Files.append(os.path.join(root, fileName))
     else:
         pep257Files.append(f)
 
@@ -89,7 +90,7 @@ class TestFiles(unittest.TestCase):
             if os.path.isdir(fileName):
                 self.assertTrue(
                     os.path.isfile(
-                        os.path.join(fullFileName, '__init__.py')
+                        os.path.join(fileName, '__init__.py')
                     )
                 )
 
@@ -106,11 +107,11 @@ class TestFiles(unittest.TestCase):
             with OutputCapture() as output:
                 result = pep8Style.check_files(fullFileNames)
 
-            self.assertEqual(
-                result.total_errors,
-                0,
-                'Errors were found in pep8 Conformance:\n{}'.format(output)
-            )
+                self.assertEqual(
+                    result.total_errors,
+                    0,
+                    'Errors were found in pep8 Conformance:\n{}'.format(output)
+                )
 
     def testPep257(self):
         """Test docstring conformance of all files."""

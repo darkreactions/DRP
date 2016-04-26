@@ -2,13 +2,13 @@
 '''A module containing tests for the KFoldSplitter '''
 
 import unittest
-from decorators import createsPerformedReactionSet
+from decorators import createsPerformedReactionSetOrd
 from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 from DRP.models import Reaction
 from DRP.ml_models.splitters.KFoldSplitter import Splitter
 
-@createsPerformedReactionSet
+@createsPerformedReactionSetOrd
 class BasicWekaSVM(DRPTestCase):
 
   def runTest(self):

@@ -1,5 +1,6 @@
 '''A module for turning querysets into csv files or output'''
 import csv
+import numpy as np
 from django.db import models
 import abc
 from collections import OrderedDict
@@ -91,10 +92,25 @@ class ArffQuerySet(models.query.QuerySet):
 
         writeable.write('\n\n@data\n')
         for row in self.rows(expanded):
-            rowValues = ((str(row.get(key)) if key in row else missing) for key in headers.keys())
-            rowValues = ('"' + rowValue + '"' if (',' in rowValue) else rowValue for rowValue in rowValues )
-            writeable.write(','.join(rowValues))
+            writeable.write(','.join(('"'+str(row.get(key))+'"' if (row.get(key) is not None) else missing) for key in headers.keys()))
             writeable.write('\n')
+
+    def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
+        '''returns a numpy array'''
+
+        matrix = []
+        if expanded:
+            headers = self.expandedArffHeaders
+        else:
+            headers= self.arffHeaders
+
+        if whitelistHeaders is not None:
+            headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
+
+        for row in self.rows(expanded):
+            matrix.append([(row.get(key) if (row.get(key) is not None) else missing) for key in headers.keys()])
+
+        return np.array(matrix)
 
     def rows(self, expanded=False):
         for item in self:

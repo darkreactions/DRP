@@ -17,6 +17,8 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         """Create a new reaction value object"""
+        if not isinstance(value, str):
+            raise TypeError("You cannot create a categorical value with a non-string type")
         try:
             v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
@@ -36,6 +38,8 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredOrdRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
+        if not isinstance(value, int):
+            raise TypeError("You cannot create a ordinal value with a non-integer type")
         try:
             v = rxnDescriptorValues.OrdRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.OrdRxnDescriptorValue.DoesNotExist:
@@ -61,6 +65,8 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredNumRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
+        if not isinstance(value, float):
+            raise TypeError("You cannot create a numerical value with a non-float type")
         try:
             v = rxnDescriptorValues.NumRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.NumRxnDescriptorValue.DoesNotExist:
@@ -86,9 +92,11 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredBoolRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
+        if not isinstance(value, bool):
+            raise TypeError("You cannot create a boolean value with a non-boolean type")
         try:
             v = rxnDescriptorValues.BoolRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
-        except rxnDescriptorValues.BoolRxnDescriptorValue.doesnotExist:
+        except rxnDescriptorValues.BoolRxnDescriptorValue.DoesNotExist:
             v = rxnDescriptorValues.BoolRxnDescriptorValue(descriptor=self, reaction=reaction)
         v.value = value
         return v

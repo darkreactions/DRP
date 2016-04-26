@@ -11,6 +11,7 @@ from collections import OrderedDict
 import DRP
 import importlib
 from django.conf import settings
+import gc
 
 descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.RXN_DESCRIPTOR_PLUGINS]
@@ -18,7 +19,7 @@ descriptorPlugins = [importlib.import_module(plugin) for
 
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
-    def __init__(self, model = None, **kwargs):
+    def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""
         model = Reaction if model is None else model
         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
@@ -85,7 +86,8 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
             reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
             reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
             reactions = reactions.prefetch_related('compounds')
-            for item in reactions:
+            
+            for item in reactions.batch_iterator():
                 row = {field.name:getattr(item, field.name) for field in self.model._meta.fields} 
                 row.update({dv.descriptor.csvHeader:dv.value for dv in item.descriptorValues})
                 i=0
@@ -97,6 +99,28 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
             for row in super(ReactionQuerySet, self).rows(expanded):
                 yield row
 
+
+
+    # From https://djangosnippets.org/snippets/1949/
+    def batch_iterator(self, chunksize=5000):
+        '''
+        Iterate over a Django Queryset ordered by the primary key
+    
+        This method loads a maximum of chunksize (default: 5000) rows in it's
+        memory at the same time while django normally would load all rows in it's
+        memory. Using the iterator() method only causes it to not preload all the
+        classes.
+    
+        Note that the implementation of the iterator does not support ordered query sets.
+        '''
+        pk = 0
+        last_pk = self.order_by('-pk')[0].pk
+        queryset = self.order_by('pk')
+        while pk < last_pk:
+            for row in queryset.filter(pk__gt=pk)[:chunksize]:
+                pk = row.pk
+                yield row
+            gc.collect()
 
 
 class ReactionManager(models.Manager):

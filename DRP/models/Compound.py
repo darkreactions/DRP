@@ -224,8 +224,8 @@ class CompoundManager(models.Manager):
 
 
 class Compound(models.Model):
-
-    """A class for containing data about Compounds used in chemical reactions.
+    """
+    A class for containing data about Compounds used in chemical reactions.
 
     The assumption is made that all chemicals used are single-species.
     """
@@ -304,6 +304,7 @@ class Compound(models.Model):
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
 
+    @transaction.atomic
     def save(self, calcDescriptors=True, *args, **kwargs):
         """Save the compound, invalidating any consequent objects like reactiosn and models."""
         if self.pk is not None:
