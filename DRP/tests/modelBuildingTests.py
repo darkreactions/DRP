@@ -16,7 +16,7 @@ class ModelTest(DRPTestCase):
         predictors = Descriptor.objects.filter(heading="testNumber")
         responses = Descriptor.objects.filter(heading="outcome")
         container = ModelContainer.create(self.modelLibrary, self.modelTool, predictors, responses, splitter=self.splitter,
-                                          reactions=reactions, splitterOptions=self.splitterOptions, modelVisitorOptions=self.visitorOptions)
+                                          reactions=reactions, splitterOptions=self.splitterOptions, visitorOptions=self.visitorOptions)
 
         container.build()
         container.save()
