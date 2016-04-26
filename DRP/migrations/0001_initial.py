@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import DRP.models.Compound
+from DRP.models.Compound import elementsFormatValidator
 import django.db.models.deletion
 from django.conf import settings
 import django.core.validators
@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
                 ('custom', models.BooleanField(default=False, verbose_name=b'Custom')),
                 ('INCHI', models.TextField(default=b'', verbose_name=b'InCHI key', blank=True)),
                 ('smiles', models.TextField(default=b'', verbose_name=b'Smiles', blank=True)),
-                ('formula', models.CharField(blank=True, help_text=b'A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.', max_length=500, validators=[DRP.models.Compound.elementsFormatValidator])),
+                ('formula', models.CharField(blank=True, help_text=b'A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.', max_length=500, validators=[elementsFormatValidator])),
                 ('chemicalClasses', models.ManyToManyField(to='DRP.ChemicalClass', verbose_name=b'Chemical Class')),
             ],
         ),
