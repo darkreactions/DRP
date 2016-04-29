@@ -3,28 +3,6 @@ Dark Reaction Project README
 
 ######Last Updated by Philip Adler 29 April 2016
 
-1. **General Information**
-2. **Setting up Your Own Instance of the Dark Reactions Project**
-3. **Updating Your Local instance of DRP**
-3. **Overview of the Project Structure**
-  1. Accessing the Main Server
-  2. Setup of the Server/a Test-bed
-  3. Important Directories
-  3. Django Directory Architecture
-  4. Creating a User
-  5. Connecting a User to BitBucket with an SSH Key
-  6. Using a Test Bed ON the DRP Server
-  7. Using a Test Bed OFF of the DRP Server
-  8. Accessing the GitHub Repo and notes on the Repo Structure
-3. **Django Management Commands**
-  1. check\_hash\_collisions
-  2. import\_data
-  3. port\_database
-  4. re\_save\_reactions
-  5. run\_tests
-4. **Accounts**
-5. **Machine Learning Models**
-
 General Information
 =============================
 
