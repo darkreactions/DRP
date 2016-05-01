@@ -193,7 +193,7 @@ class Command(BaseCommand):
                         public=int(r['public'])
                         )
                     self.stdout.write('{}: Creating reaction with reference {}'.format(i, ref))
-                    p.validate_unique()
+                    p.full_clean()
                     p.save(calcDescriptors=False)
         if start_at_delete or start_at_reactions or start_at_descriptors:
             with open(path.join(folder, 'performedReactions.tsv')) as reactions:

@@ -5,6 +5,8 @@ from RecommendedReaction import RecommendedReaction
 from django.contrib.auth.models import User
 from itertools import chain
 import DRP
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 
 class PerformedReactionQuerySet(ReactionQuerySet):
         # I assume this was wrong and it should be the one below
@@ -27,7 +29,6 @@ class PerformedReaction(Reaction):
 
     class Meta:
         app_label="DRP"
-        unique_together=('reference', 'labGroup')
 
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
@@ -57,6 +58,9 @@ class PerformedReaction(Reaction):
                 ]
                 )
 
+    def clean(self):
+        if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
+            raise ValidationError('Another reaction has the same reference and lab group')
 
     def __unicode__(self):
         return self.reference
