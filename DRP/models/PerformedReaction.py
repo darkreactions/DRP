@@ -44,12 +44,27 @@ class PerformedReaction(Reaction):
     public = models.BooleanField(default=False)
     duplicateOf = models.ForeignKey('self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
     legacyID = models.IntegerField(null=True, blank=True, unique=True)
+    '''ID in legacy database'''
     legacyRef = models.CharField(max_length=40, null=True, blank=True)
+    '''Reaction reference in legacy database'''
+    convertedLegacyRef = models.CharField(max_length=40, null=True, blank=True,
+                                          validators=[
+                                                        RegexValidator(
+                                                            '[a-z0-9\._]*[a-z][a-z0-9\._]*',
+                                                            ('Please include only values which are limited to '
+                                                             'alphanumeric characters, underscores, periods, '
+                                                             'and must include at least one '
+                                                             'alphabetic character.')
+                                                        )
+                                                     ]
+                                        )
+    '''Reaction reference in legacy database converted to canonical form by removing spaces and converting to lowercase.
+    This could differ from the reference because it is not disambiguated or validated as unique'''
     reference = models.CharField(
                 max_length=40,
                 validators=[
                     RegexValidator(
-                        '[A-Za-z0-9\._]*[A-Za-z][A-Za-z0-9\._]*',
+                        '[a-z0-9\._]*[a-z][a-z0-9\._]*',
                         ('Please include only values which are limited to '
                          'alphanumeric characters, underscores, periods, '
                          'and must include at least one '

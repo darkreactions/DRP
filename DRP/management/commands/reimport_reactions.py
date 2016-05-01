@@ -13,6 +13,7 @@ from DRP.models import OrdRxnDescriptorValue, NumMolDescriptorValue
 from DRP.models import CompoundRole, CompoundQuantity
 from chemspipy import ChemSpider
 import re
+import warnings
 
 outcomeDescriptor = OrdRxnDescriptor.objects.get_or_create(
     heading='crystallisation_outcome',
@@ -117,32 +118,6 @@ class Command(BaseCommand):
         start_number = kwargs['start_number']
         start_at_delete = not (start_at_reactions or start_at_descriptors or start_at_quantities)
 
-        if False and not path.isfile(path.join(folder, 'performedReactionsNoDupsLower.tsv')):
-            self.stdout.write('Writing file with all references that were uppercase (now lower) and duplicate references disambiguated (arbitrarily)')
-            with open(path.join(folder, 'performedReactions.tsv')) as in_file, open(path.join(folder, 'performedReactionsNoDupsLower.tsv'), 'w') as out_file:
-                references = set()
-                reader = csv.DictReader(in_file, delimiter='\t')
-                writer = csv.DictWriter(out_file, delimiter='\t', fieldnames=reader.fieldnames)
-                writer.writeheader()
-
-                case_count = 0
-                valid_case_count = 0
-                dup_count = 0
-                for r in reader:
-                    ref = convert_legacy_reference(r['reference'])
-                    new_ref = ref
-                    if ref in references:
-                        dup_count += 1
-                        i = 1
-                        while new_ref in references:
-                            new_ref = '{}_dup{}'.format(ref, i)
-                            i += 1
-                        self.stderr.write('Reference {} duplicated {} times. Renamed and invalidated'.format(ref, i))
-                    references.add(new_ref)
-                    r['reference'] = str(new_ref)
-                    writer.writerow(r)
-            self.stderr.write('{} references with _dupX appended to remove duplicate reference'.format(dup_count))
-
         if start_at_delete:
             with open(path.join(folder, 'performedReactions.tsv')) as reactions:
                 self.stdout.write('Deleting reactions')
@@ -152,13 +127,19 @@ class Command(BaseCommand):
                         continue
                     ref = convert_legacy_reference(r['reference'])
                     legacyRef = r['reference']
-                    self.stdout.write('Deleting reaction with reference {}'.format(ref))
-                    PerformedReaction.objects.filter(reference=ref).delete()
-                    PerformedReaction.objects.filter(legacyRef=legacyRef).delete()
+                    ps = PerformedReaction.objects.filter(reference=ref)
+                    if ps:
+                        self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
+                        ps.delete()
+                    ps = PerformedReaction.objects.filter(legacyRef=legacyRef)
+                    if ps:
+                        self.stdout.write('{}: Deleting reaction with legacy reference {}'.format(i, legacyRef))
+                        ps.delete()
 
         if start_at_reactions or start_at_delete:
+            warnings.simplefilter('error')
             with open(path.join(folder, 'performedReactions.tsv')) as reactions:
-                self.stdout.write('Adding or updating reactions')
+                self.stdout.write('Creating reactions')
                 reader = csv.DictReader(reactions, delimiter='\t')
                 for i, r in enumerate(reader):
                     if start_at_reactions and i < start_number:
@@ -169,11 +150,11 @@ class Command(BaseCommand):
                     if ps.exists():
                         ref = '{}_{}'.format(ref, r['id'])
                         valid = False
-                        notes = r['notes'] + ' Duplicate reference disambiguated with legacy id.'
+                        notes = r['notes'].decode('utf-8').encode('utf-8') + u' Duplicate reference disambiguated with legacy id.'
                         for p in ps:
                             if convert_legacy_reference(p.legacyRef) == p.reference:
                                 p.valid = False
-                                p.notes += ' Duplicate reference disambiguated with legacy id.'
+                                p.notes += u' Duplicate reference disambiguated with legacy id.'
                                 p.reference = '{}_{}'.format(p.reference, p.legacyID)
                                 p.save()
                     else:
