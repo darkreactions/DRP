@@ -198,7 +198,7 @@ class Reaction(models.Model):
     notes = models.TextField(blank=True)
     labGroup = models.ForeignKey(LabGroup)
     calcDescriptors = True #this is to cope with a hideous problem in xml serialization in the management commands
-    legacyID = models.IntegerField(null=True, blank=True, unique=True)
+
 
     def save(self, calcDescriptors=True, *args, **kwargs):
         super(Reaction, self).save(*args, **kwargs)

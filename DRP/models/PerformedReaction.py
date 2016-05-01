@@ -42,6 +42,8 @@ class PerformedReaction(Reaction):
     if the wrong reactant was used or some bad lab record has been found'''
     public = models.BooleanField(default=False)
     duplicateOf = models.ForeignKey('self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
+    legacyID = models.IntegerField(null=True, blank=True, unique=True)
+    legacyRef = models.CharField(max_length=40, null=True, blank=True)
 
     def __unicode__(self):
         return self.reference
