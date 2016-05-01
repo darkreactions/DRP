@@ -27,11 +27,11 @@ class PerformedReaction(Reaction):
 
     class Meta:
         app_label="DRP"
+        unique_together=('reference', 'labGroup')
 
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
     performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, default=None)
-    reference = models.CharField(max_length=40, unique=True)
     performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, default=None, help_text='Date in format YYYY-MM-DD')
     insertedDateTime = models.DateTimeField('Date Reaction Saved', auto_now_add=True)
     recommendation = models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
@@ -44,6 +44,19 @@ class PerformedReaction(Reaction):
     duplicateOf = models.ForeignKey('self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
     legacyID = models.IntegerField(null=True, blank=True, unique=True)
     legacyRef = models.CharField(max_length=40, null=True, blank=True)
+    reference = models.CharField(
+                max_length=40,
+                validators=[
+                    RegexValidator(
+                        '[A-Za-z0-9\._]*[A-Za-z][A-Za-z0-9\._]*',
+                        ('Please include only values which are limited to '
+                         'alphanumeric characters, underscores, periods, '
+                         'and must include at least one '
+                         'alphabetic character.')
+                    )
+                ]
+                )
+
 
     def __unicode__(self):
         return self.reference

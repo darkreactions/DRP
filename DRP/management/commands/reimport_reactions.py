@@ -140,10 +140,11 @@ class Command(BaseCommand):
                 self.stdout.write('Deleting reactions')
                 reader = csv.DictReader(reactions, delimiter='\t')
                 for i, r in enumerate(reader):
-                    if start_at_reactions and i < start_number:
+                    if start_at_delete and i < start_number:
                         continue
                     ref = r['reference'].lower()
-                PerformedReaction.objects.filter(reference=ref).delete()
+                    self.stdout.write('Deleting reaction with reference {}'.format(ref))
+                    PerformedReaction.objects.filter(reference=ref).delete()
 
         if start_at_reactions or start_at_delete:
             with open(path.join(folder, 'performedReactions.tsv')) as reactions:
@@ -221,7 +222,7 @@ class Command(BaseCommand):
                         p.valid = False
                         p.save()
 
-                    outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range (1, 5))) else None
+                    outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range(1, 5))) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
                         if v.value != outcomeValue:
@@ -400,7 +401,6 @@ class Command(BaseCommand):
                 BoolRxnDescriptorValue.objects.bulk_create(leakValues)
                 BoolRxnDescriptorValue.objects.bulk_create(slowCoolValues)
 
-
                 outValues = []
                 outBoolValues = []
                 purityValues = []
@@ -456,7 +456,7 @@ class Command(BaseCommand):
                         cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
                         if cqq.exists():
                             raise RuntimeError('Compound quantity for compound {} and reaction {} already exists'.format(compound, reaction))
-                            
+
                         quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole)
                         quantities.append(quantity)
 
