@@ -126,14 +126,13 @@ class Command(BaseCommand):
                     if start_at_delete and i < start_number:
                         continue
                     ref = convert_legacy_reference(r['reference'])
-                    legacyRef = r['reference']
                     ps = PerformedReaction.objects.filter(reference=ref)
                     if ps:
                         self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
                         ps.delete()
-                    ps = PerformedReaction.objects.filter(legacyRef=legacyRef)
+                    ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
                     if ps:
-                        self.stdout.write('{}: Deleting reaction with legacy reference {}'.format(i, legacyRef))
+                        self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
                         ps.delete()
 
         if start_at_reactions or start_at_delete:
@@ -145,17 +144,17 @@ class Command(BaseCommand):
                     if start_at_reactions and i < start_number:
                         continue
                     ref = convert_legacy_reference(r['reference'])
-                    legacyRef = r['reference']
-                    ps = PerformedReaction.objects.filter(legacyRef=legacyRef)
+                    convertedLegacyRef = ref
+                    ps = PerformedReaction.objects.filter(convertedLegacyRef=convertedLegacyRef)
                     if ps.exists():
                         ref = '{}_{}'.format(ref, r['id'])
                         valid = False
-                        notes = r['notes'].decode('utf-8').encode('utf-8') + u' Duplicate reference disambiguated with legacy id.'
+                        notes = r['notes'] + ' Duplicate reference disambiguated with legacy id.'
                         for p in ps:
-                            if convert_legacy_reference(p.legacyRef) == p.reference:
+                            if p.convertedLegacyRef == p.reference:
                                 p.valid = False
                                 p.notes += u' Duplicate reference disambiguated with legacy id.'
-                                p.reference = '{}_{}'.format(p.reference, p.legacyID)
+                                p.reference = '{}_{}'.format(p.convertedLegacyRef, p.legacyID)
                                 p.save()
                     else:
                         valid = bool(int(r['valid']))
@@ -163,9 +162,10 @@ class Command(BaseCommand):
 
                     p = PerformedReaction(
                         reference=ref,
+                        legacyRef=legacyRef,
+                        convertedLegacyRef=convertedLegacyRef,
                         labGroup=LabGroup.objects.get(title=r['labGroup.title']),
                         legacyID=r['id'],
-                        legacyRef=legacyRef,
                         notes=notes,
                         user=User.objects.get(username=r['user.username']),
                         valid=valid,
@@ -195,20 +195,19 @@ class Command(BaseCommand):
                     if start_at_descriptors and i < start_number:
                         continue
                     ref = convert_legacy_reference(r['reference'])
-                    legacyRef = r['reference']
                     id = r['id']
                     self.stdout.write('{}: Reiterating for reaction with reference {}, legacyID {}'.format(i, ref, id))
                     p = PerformedReaction.objects.get(legacyID=id)
                     try:
-                        p.duplicateOf = PerformedReaction.objects.get(legacyRef=legacyRef)
+                        p.duplicateOf = PerformedReaction.objects.get(convertedLegacyRef=ref)
                         p.save(calcDescriptors=False)
                     except PerformedReaction.DoesNotExist:
-                        self.stderr.write('Reaction {} marked as duplicate of reaction {}, but the latter does not exist'.format(legacyRef, r['duplicateOf.reference']))
+                        self.stderr.write('Reaction {} marked as duplicate of reaction {}, but the latter does not exist'.format(ref, r['duplicateOf.reference']))
                         p.notes += 'Marked as duplicate of reaction with legacy reference {}, but it does not exist'.format(r['duplicateOf.reference'])
                         p.valid = False
                         p.save()
                     except PerformedReaction.MultipleObjectsReturned:
-                        self.stderr.write('Reaction {} marked as duplicate of reaction {}, but more than one of the latter exists'.format(legacyRef, r['duplicateOf.reference']))
+                        self.stderr.write('Reaction {} marked as duplicate of reaction {}, but more than one of the latter exists'.format(ref, r['duplicateOf.reference']))
                         p.notes += 'Marked as duplicate of reaction with legacy reference {}, but more than one reaction with that reference exists'.format(r['duplicateOf.reference'])
                         p.valid = False
                         p.save()
