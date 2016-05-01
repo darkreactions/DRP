@@ -32,8 +32,8 @@ class PerformedReaction(Reaction):
 
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
-    performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, default=None)
-    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, default=None, help_text='Date in format YYYY-MM-DD')
+    performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, blank=True, default=None)
+    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None, help_text='Date in format YYYY-MM-DD')
     insertedDateTime = models.DateTimeField('Date Reaction Saved', auto_now_add=True)
     recommendation = models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
     legacyRecommendedFlag = models.NullBooleanField(default=None)
