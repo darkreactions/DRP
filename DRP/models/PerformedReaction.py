@@ -50,7 +50,7 @@ class PerformedReaction(Reaction):
     convertedLegacyRef = models.CharField(max_length=40, null=True, blank=True,
                                           validators=[
                                                         RegexValidator(
-                                                            '[a-z0-9\._]*[a-z][a-z0-9\._]*',
+                                                            '[a-z0-9._]*[a-z][a-z0-9._]*',
                                                             ('Please include only values which are limited to '
                                                              'alphanumeric characters, underscores, periods, '
                                                              'and must include at least one '
@@ -64,7 +64,7 @@ class PerformedReaction(Reaction):
                 max_length=40,
                 validators=[
                     RegexValidator(
-                        '[a-z0-9\._]*[a-z][a-z0-9\._]*',
+                        '[a-z0-9._]*[a-z][a-z0-9._]*',
                         ('Please include only values which are limited to '
                          'alphanumeric characters, underscores, periods, '
                          'and must include at least one '

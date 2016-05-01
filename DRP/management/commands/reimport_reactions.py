@@ -92,12 +92,14 @@ slowCoolDescriptor = BoolRxnDescriptor.objects.get_or_create(
 # about how many things django can bulk_create at once without getting upset
 save_at_once = 50
 
-ref_match = re.compile('[A-Za-z0-9\._]*[A-Za-z][A-Za-z0-9\._]*')
+ref_match = re.compile('[A-Za-z0-9._]*[A-Za-z][A-Za-z0-9._]*')
 
 def convert_legacy_reference(legacy_reference):
-    ref = legacy_reference.lower().replace(' ', '')
+    ref = legacy_reference.lower().replace(' ', '').replace('-','.')
     if ref_match.match(ref) is None:
         ref = 'xxx' + ref
+        if ref_match.match(ref) is None:
+            raise ValueError('Unhandled mismatch of regex')
     return ref
     
 class Command(BaseCommand):
@@ -126,6 +128,7 @@ class Command(BaseCommand):
                     if start_at_delete and i < start_number:
                         continue
                     ref = convert_legacy_reference(r['reference'])
+                    legacyID = r['id']
                     ps = PerformedReaction.objects.filter(reference=ref)
                     if ps:
                         self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
@@ -133,6 +136,10 @@ class Command(BaseCommand):
                     ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
                     if ps:
                         self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
+                        ps.delete()
+                    ps = PerformedReaction.objects.filter(legacyID=legacyID)
+                    if ps:
+                        self.stdout.write('{}: Deleting reaction with legacy id {}'.format(i, legacyID))
                         ps.delete()
 
         if start_at_reactions or start_at_delete:
@@ -162,7 +169,7 @@ class Command(BaseCommand):
 
                     p = PerformedReaction(
                         reference=ref,
-                        legacyRef=legacyRef,
+                        legacyRef=r['reference'],
                         convertedLegacyRef=convertedLegacyRef,
                         labGroup=LabGroup.objects.get(title=r['labGroup.title']),
                         legacyID=r['id'],
