@@ -12,6 +12,7 @@ from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue
 from DRP.models import OrdRxnDescriptorValue, NumMolDescriptorValue
 from DRP.models import CompoundRole, CompoundQuantity
 from chemspipy import ChemSpider
+import re
 
 outcomeDescriptor = OrdRxnDescriptor.objects.get_or_create(
     heading='crystallisation_outcome',
@@ -90,7 +91,14 @@ slowCoolDescriptor = BoolRxnDescriptor.objects.get_or_create(
 # about how many things django can bulk_create at once without getting upset
 save_at_once = 50
 
+ref_match = re.compile('[A-Za-z0-9\._]*[A-Za-z][A-Za-z0-9\._]*')
 
+def convert_legacy_reference(legacy_reference):
+    ref = legacy_reference.lower().replace(' ', '')
+    if ref_match.match(ref) is None:
+        ref = 'xxx' + ref
+    return ref
+    
 class Command(BaseCommand):
     help = 'Ports database from pre-0.02 to 0.02'
 
@@ -121,7 +129,7 @@ class Command(BaseCommand):
                 valid_case_count = 0
                 dup_count = 0
                 for r in reader:
-                    ref = r['reference'].lower()
+                    ref = convert_legacy_reference(r['reference'])
                     new_ref = ref
                     if ref in references:
                         dup_count += 1
@@ -142,9 +150,11 @@ class Command(BaseCommand):
                 for i, r in enumerate(reader):
                     if start_at_delete and i < start_number:
                         continue
-                    ref = r['reference'].lower()
+                    ref = convert_legacy_reference(r['reference'])
+                    legacyRef = r['reference']
                     self.stdout.write('Deleting reaction with reference {}'.format(ref))
                     PerformedReaction.objects.filter(reference=ref).delete()
+                    PerformedReaction.objects.filter(legacyRef=legacyRef).delete()
 
         if start_at_reactions or start_at_delete:
             with open(path.join(folder, 'performedReactions.tsv')) as reactions:
@@ -153,7 +163,7 @@ class Command(BaseCommand):
                 for i, r in enumerate(reader):
                     if start_at_reactions and i < start_number:
                         continue
-                    ref = r['reference'].lower()
+                    ref = convert_legacy_reference(r['reference'])
                     legacyRef = r['reference']
                     ps = PerformedReaction.objects.filter(legacyRef=legacyRef)
                     if ps.exists():
@@ -161,7 +171,7 @@ class Command(BaseCommand):
                         valid = False
                         notes = r['notes'] + ' Duplicate reference disambiguated with legacy id.'
                         for p in ps:
-                            if p.legacyRef.lower() == p.reference:
+                            if convert_legacy_reference(p.legacyRef) == p.reference:
                                 p.valid = False
                                 p.notes += ' Duplicate reference disambiguated with legacy id.'
                                 p.reference = '{}_{}'.format(p.reference, p.legacyID)
@@ -203,7 +213,7 @@ class Command(BaseCommand):
                 for i, r in enumerate(reader):
                     if start_at_descriptors and i < start_number:
                         continue
-                    ref = r['reference'].lower()
+                    ref = convert_legacy_reference(r['reference'])
                     legacyRef = r['reference']
                     id = r['id']
                     self.stdout.write('{}: Reiterating for reaction with reference {}, legacyID {}'.format(i, ref, id))
