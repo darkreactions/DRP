@@ -132,25 +132,26 @@ class Command(BaseCommand):
             if delete_all:
                 PerformedReaction.objects.all().delete()
             else:
-                with open(path.join(folder, 'performedReactions.tsv')) as reactions:
-                    reader = csv.DictReader(reactions, delimiter='\t')
-                    for i, r in enumerate(reader):
-                        if start_at_delete and i < start_number:
-                            continue
-                        ref = convert_legacy_reference(r['reference'])
-                        legacyID = r['id']
-                        ps = PerformedReaction.objects.filter(reference=ref)
-                        if ps:
-                            self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
-                            ps.delete()
-                        ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
-                        if ps:
-                            self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
-                            ps.delete()
-                        ps = PerformedReaction.objects.filter(legacyID=legacyID)
-                        if ps:
-                            self.stdout.write('{}: Deleting reaction with legacy id {}'.format(i, legacyID))
-                            ps.delete()
+                with transaction.atomic():
+                    with open(path.join(folder, 'performedReactions.tsv')) as reactions:
+                        reader = csv.DictReader(reactions, delimiter='\t')
+                        for i, r in enumerate(reader):
+                            if start_at_delete and i < start_number:
+                                continue
+                            ref = convert_legacy_reference(r['reference'])
+                            legacyID = r['id']
+                            ps = PerformedReaction.objects.filter(reference=ref)
+                            if ps:
+                                self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
+                                ps.delete()
+                            ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
+                            if ps:
+                                self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
+                                ps.delete()
+                            ps = PerformedReaction.objects.filter(legacyID=legacyID)
+                            if ps:
+                                self.stdout.write('{}: Deleting reaction with legacy id {}'.format(i, legacyID))
+                                ps.delete()
 
         if start_at_reactions or start_at_delete:
             warnings.simplefilter('error')
