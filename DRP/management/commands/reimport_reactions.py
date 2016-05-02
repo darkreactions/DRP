@@ -451,32 +451,33 @@ class Command(BaseCommand):
                         compound_found = True
                         r['compound.abbrev'] = correct_abbrev
                     except Compound.DoesNotExist:
-                        self.stderr.write('Could not find compound with abbreviation {}. Checking chemspider...'.format(correct_abbrev))
-                        results = cs.simple_search(correct_abbrev)
-                        if len(results) == 1:
-                            user_response = None
-                            while user_response is None:
-                                user_verification = raw_input('Found unique compound with CSID {} and name {} for abbreviation {}. Is this correct? (y/n): '.format(results[0].csid, results[0].common_name, correct_abbrev))
-                                if user_verification.lower()[0] == 'y':
-                                    user_response = True
-                                elif user_verification.lower()[0] == 'n':
-                                    user_response = False
-                            if user_response:
-                                self.stderr.write('Creating compound with CSID {}, abbrevation {}, name {}'.format(results[0].csid, correct_abbrev, results[0].common_name))
-                                c = Compound(CSID=results[0].csid, labGroup=reaction.labGroup, abbrev=correct_abbrev)
-                                try:
-                                    c.csConsistencyCheck()
-                                    c.save()
-                                except ValidationError:
-                                    c.delete()
-                                    raise
+                        if no_compound_prompts:
+                            correct_abbrev = ''
                         else:
+                            self.stderr.write('Could not find compound with abbreviation {}. Checking chemspider...'.format(correct_abbrev))
+                            results = cs.simple_search(correct_abbrev)
+                            if len(results) == 1:
+                                user_response = None
+                                while user_response is None:
+                                    user_verification = raw_input('Found unique compound with CSID {} and name {} for abbreviation {}. Is this correct? (y/n): '.format(results[0].csid, results[0].common_name, correct_abbrev))
+                                    if user_verification.lower()[0] == 'y':
+                                        user_response = True
+                                    elif user_verification.lower()[0] == 'n':
+                                        user_response = False
+                                if user_response:
+                                    self.stderr.write('Creating compound with CSID {}, abbrevation {}, name {}'.format(results[0].csid, correct_abbrev, results[0].common_name))
+                                    c = Compound(CSID=results[0].csid, labGroup=reaction.labGroup, abbrev=correct_abbrev)
+                                    try:
+                                        c.csConsistencyCheck()
+                                        c.save()
+                                        continue
+                                    except ValidationError:
+                                        c.delete()
+                                        raise
+                            
                             self.stderr.write('Could not get unambiguous chemspider entry for abbreviation {}'.format(correct_abbrev))
                             self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
-                            if no_compound_prompts:
-                                correct_abbrev = ''
-                            else:
-                                correct_abbrev = raw_input('What is the correct abbreviation for this? ')
+                            correct_abbrev = raw_input('What is the correct abbreviation for this? ')
                             reagent_dict[compound_abbrev] = correct_abbrev
 
                 if compound_found:
