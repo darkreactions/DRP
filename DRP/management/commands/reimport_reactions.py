@@ -428,7 +428,8 @@ class Command(BaseCommand):
             self.stdout.write('Creating or updating compound quantities')
             reader = csv.DictReader(cqs, delimiter='\t')
             writer = csv.DictWriter(fixed_cqs, reader.fieldnames, delimiter='\t')
-            writer.writeheader()
+            if not (start_at_quantities and start_number > 0):
+                writer.writeheader()
             quantities = []
             cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
             for i, r in enumerate(reader):
@@ -464,9 +465,9 @@ class Command(BaseCommand):
                                 user_response = None
                                 while user_response is None:
                                     user_verification = raw_input('Found unique compound with CSID {} and name {} for abbreviation {}. Is this correct? (y/n): '.format(results[0].csid, results[0].common_name, correct_abbrev))
-                                    if user_verification.lower()[0] == 'y':
+                                    if user_verification and user_verification.lower()[0] == 'y':
                                         user_response = True
-                                    elif user_verification.lower()[0] == 'n':
+                                    elif user_verification and user_verification.lower()[0] == 'n':
                                         user_response = False
                                 if user_response:
                                     try:
