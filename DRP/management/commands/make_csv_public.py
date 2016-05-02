@@ -17,8 +17,15 @@ class Command(BaseCommand):
                 ref = reimport_reactions.convert_legacy_reference(row[0])
                 self.stdout.write('{}: Making reference {} public'.format(i, ref))
                 ps = PerformedReaction.objects.filter(reference=ref)
-                if not ps.count() != 1:
-                    raise RuntimeError('Found {} reactions with reference {}'.format(ps.count(), ref))
+                if ps.count() != 1:
+                    if ref.startswith('xxx'):
+                        unmunged_ref = ref + '0'
+                        self.stdout.write('{}: Making UNMUNGED reference {} public'.format(i, unmunged_ref))
+                        ps = PerformedReaction.objects.filter(reference=unmunged_ref)
+                        if ps.count() != 1:
+                            ps.update(public=True)
+                    else:
+                        raise RuntimeError('Found {} reactions with reference {}'.format(ps.count(), ref))
                 else:
                     ps.update(public=True)
         
