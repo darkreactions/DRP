@@ -579,6 +579,7 @@ class Command(BaseCommand):
                                 self.stdout.write('Saving...')
                                 CompoundQuantity.objects.bulk_create(quantities)
                                 quantities = []
+
                 else:
                     self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
                     reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
@@ -586,3 +587,7 @@ class Command(BaseCommand):
                     reaction.save(calcDescriptors=False)
 
                 writer.writerow(r)
+                
+        self.stdout.write('Saving...')
+        CompoundQuantity.objects.bulk_create(quantities)
+        quantities = []
