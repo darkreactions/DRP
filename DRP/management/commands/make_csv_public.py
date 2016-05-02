@@ -2,7 +2,6 @@ from DRP.models import PerformedReaction
 from django.core.management.base import BaseCommand
 import csv
 import reimport_reactions
-import warning
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
