@@ -90,16 +90,16 @@ main {
 
 main a:link {
  text-decoration: none;
- color: #20344b;
+ color: #658EBD;
 }
 main a:visited {
  text-decoration: none;
- color: #20344b;
+ color: #658EBD;
 }
 main a:hover {
  text-decoration: none;
- color: #20344b;
- opacity:.7; 
+ color: #20344B; 
+ opacity: .7;
 }
 main a:active {
 }
