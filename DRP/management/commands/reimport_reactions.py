@@ -90,9 +90,11 @@ slowCoolDescriptor = BoolRxnDescriptor.objects.get_or_create(
     )[0]
 
 # about how many things django can bulk_create at once without getting upset
-save_at_once = 50
+save_at_once = 5000
 
 ref_match = re.compile('[A-Za-z0-9._]*[A-Za-z][A-Za-z0-9._]*')
+
+reagent_dict = {}
 
 def convert_legacy_reference(legacy_reference):
     ref = legacy_reference.lower().replace(' ', '').replace('-','.')
@@ -111,6 +113,7 @@ class Command(BaseCommand):
         parser.add_argument('--reactions', action='store_true', help='Start at importing the reactions')
         parser.add_argument('--descriptors', action='store_true', help='Start at importing the descriptors')
         parser.add_argument('--quantities', action='store_true', help='Start at importing the compound quantities')
+        parser.add_argument('--delete-all', action='store_true', help='Delete all performed reactions.')
 
     def handle(self, *args, **kwargs):
         folder = kwargs['directory']
@@ -118,29 +121,33 @@ class Command(BaseCommand):
         start_at_descriptors = kwargs['descriptors']
         start_at_quantities = kwargs['quantities']
         start_number = kwargs['start_number']
+        delete_all = kwargs['delete_all']
         start_at_delete = not (start_at_reactions or start_at_descriptors or start_at_quantities)
 
         if start_at_delete:
-            with open(path.join(folder, 'performedReactions.tsv')) as reactions:
-                self.stdout.write('Deleting reactions')
-                reader = csv.DictReader(reactions, delimiter='\t')
-                for i, r in enumerate(reader):
-                    if start_at_delete and i < start_number:
-                        continue
-                    ref = convert_legacy_reference(r['reference'])
-                    legacyID = r['id']
-                    ps = PerformedReaction.objects.filter(reference=ref)
-                    if ps:
-                        self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
-                        ps.delete()
-                    ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
-                    if ps:
-                        self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
-                        ps.delete()
-                    ps = PerformedReaction.objects.filter(legacyID=legacyID)
-                    if ps:
-                        self.stdout.write('{}: Deleting reaction with legacy id {}'.format(i, legacyID))
-                        ps.delete()
+            self.stdout.write('Deleting reactions')
+            if delete_all:
+                PerformedReaction.objects.all().delete()
+            else:
+                with open(path.join(folder, 'performedReactions.tsv')) as reactions:
+                    reader = csv.DictReader(reactions, delimiter='\t')
+                    for i, r in enumerate(reader):
+                        if start_at_delete and i < start_number:
+                            continue
+                        ref = convert_legacy_reference(r['reference'])
+                        legacyID = r['id']
+                        ps = PerformedReaction.objects.filter(reference=ref)
+                        if ps:
+                            self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
+                            ps.delete()
+                        ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
+                        if ps:
+                            self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
+                            ps.delete()
+                        ps = PerformedReaction.objects.filter(legacyID=legacyID)
+                        if ps:
+                            self.stdout.write('{}: Deleting reaction with legacy id {}'.format(i, legacyID))
+                            ps.delete()
 
         if start_at_reactions or start_at_delete:
             warnings.simplefilter('error')
@@ -202,23 +209,26 @@ class Command(BaseCommand):
                     if start_at_descriptors and i < start_number:
                         continue
                     ref = convert_legacy_reference(r['reference'])
+
                     id = r['id']
                     self.stdout.write('{}: Reiterating for reaction with reference {}, legacyID {}'.format(i, ref, id))
                     p = PerformedReaction.objects.get(legacyID=id)
-                    try:
-                        p.duplicateOf = PerformedReaction.objects.get(convertedLegacyRef=ref)
-                        p.save(calcDescriptors=False)
-                    except PerformedReaction.DoesNotExist:
-                        self.stderr.write('Reaction {} marked as duplicate of reaction {}, but the latter does not exist'.format(ref, r['duplicateOf.reference']))
-                        p.notes += 'Marked as duplicate of reaction with legacy reference {}, but it does not exist'.format(r['duplicateOf.reference'])
-                        p.valid = False
-                        p.save()
-                    except PerformedReaction.MultipleObjectsReturned:
-                        self.stderr.write('Reaction {} marked as duplicate of reaction {}, but more than one of the latter exists'.format(ref, r['duplicateOf.reference']))
-                        p.notes += 'Marked as duplicate of reaction with legacy reference {}, but more than one reaction with that reference exists'.format(r['duplicateOf.reference'])
-                        p.valid = False
-                        p.save()
-
+                    if r['duplicateOf.reference']:
+                        convertedDupRef = convert_legacy_reference(r['duplicateOf.reference'])
+                        try:
+                            p.duplicateOf = PerformedReaction.objects.get(convertedLegacyRef=convertedDupRef)
+                            p.save(calcDescriptors=False)
+                        except PerformedReaction.DoesNotExist:
+                            self.stderr.write('Reaction {} marked as duplicate of reaction {}, but the latter does not exist'.format(ref, r['duplicateOf.reference']))
+                            p.notes += 'Marked as duplicate of reaction with legacy reference {}, but it does not exist'.format(r['duplicateOf.reference'])
+                            p.valid = False
+                            p.save()
+                        except PerformedReaction.MultipleObjectsReturned:
+                            self.stderr.write('Reaction {} marked as duplicate of reaction {}, but more than one of the latter exists'.format(ref, r['duplicateOf.reference']))
+                            p.notes += 'Marked as duplicate of reaction with legacy reference {}, but more than one reaction with that reference exists'.format(r['duplicateOf.reference'])
+                            p.valid = False
+                            p.save()
+    
                     outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range(1, 5))) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
@@ -410,22 +420,38 @@ class Command(BaseCommand):
                 slowCoolValues = []
                 self.stdout.write("...saved")
 
-        with open(path.join(folder, 'compoundquantities.tsv')) as cqs:
+        with open(path.join(folder, 'compoundquantities.tsv')) as cqs, , open(path.join(folder, 'compoundquantities_fixed.tsv'), 'w') as fixed_cqs:
             self.stdout.write('Creating or updating compound quantities')
             reader = csv.DictReader(cqs, delimiter='\t')
+            writer = csv.DictWriter(fixed_cqs, delimiter='\t')
             quantities = []
             for i, r in enumerate(reader):
                 if start_at_quantities and (i < start_number):
                     continue
-                try:
-                    legacyID = r['reaction.id']
-                    reaction = PerformedReaction.objects.get(legacyID=legacyID)
-                    compound = Compound.objects.get(abbrev=r['compound.abbrev'], labGroup=reaction.labGroup)
+                
+                legacyID = r['reaction.id']
+                reaction = PerformedReaction.objects.get(legacyID=legacyID)
+                compound_abbrev = r['compound.abbrev']
+
+                correct_abbrev = reagent_dict[compound_abbrev] if compound_abbrev in reagent_dict else compound_abbrev
+
+                compound_found = False
+                while correct_abbrev and not compound_found:
+                    try:
+                        compound = Compound.objects.get(abbrev=correct_abbrev, labGroup=reaction.labGroup)
+                        compound_found = True
+                        r['compound.abbrev'] = correct_abbrev
+                    except Compound.DoesNotExist as e:
+                        self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
+                        correct_abbrev = raw_input('What is the correct abbreviation for this? ')
+                        reagent_dict[compound_abbrev] = correct_abbrev
+
+                if compound_found:
                     self.stdout.write('{}: Adding or updating quantity for compound {} and reaction {}'.format(i, reaction.reference, compound.abbrev))
                     if r['compound.abbrev'] in ('water', 'H2O'):
                         r['density'] = 1
                     mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
-
+    
                     if r['compoundrole.name'] == 'pH':
                         reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(r['compound.abbrev'], r['amount'], r['unit'])
                         reaction.save(calcDescriptors=False)
@@ -452,21 +478,20 @@ class Command(BaseCommand):
                             amount = (amount * 1000)
                         cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
                         if cqq.exists():
-                            raise RuntimeError('Compound quantity for compound {} and reaction {} already exists'.format(compound, reaction))
-
+                            cqq.delete()
+                            #raise RuntimeError('Compound quantity for compound {} and reaction {} already exists'.format(compound, reaction))
+    
                         quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole)
                         quantities.append(quantity)
+    
 
-                        # about how many things django can bulk_create at once without getting upset
                         if len(quantities) > save_at_once:
+                            self.stdout.write('Saving...')
                             CompoundQuantity.objects.bulk_create(quantities)
                             quantities = []
-
-                except Compound.DoesNotExist as e:
-                    self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
+                else:
                     reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
                     reaction.valid = False
                     reaction.save(calcDescriptors=False)
 
-            CompoundQuantity.objects.bulk_create(quantities)
-            quantities = []
+                writer.writerow(r)
