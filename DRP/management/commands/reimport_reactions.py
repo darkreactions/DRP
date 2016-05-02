@@ -420,10 +420,10 @@ class Command(BaseCommand):
                 slowCoolValues = []
                 self.stdout.write("...saved")
 
-        with open(path.join(folder, 'compoundquantities.tsv')) as cqs, , open(path.join(folder, 'compoundquantities_fixed.tsv'), 'w') as fixed_cqs:
+        with open(path.join(folder, 'compoundquantities.tsv')) as cqs, open(path.join(folder, 'compoundquantities_fixed.tsv'), 'w') as fixed_cqs:
             self.stdout.write('Creating or updating compound quantities')
             reader = csv.DictReader(cqs, delimiter='\t')
-            writer = csv.DictWriter(fixed_cqs, delimiter='\t')
+            writer = csv.DictWriter(fixed_cqs, reader.fieldnames, delimiter='\t')
             quantities = []
             for i, r in enumerate(reader):
                 if start_at_quantities and (i < start_number):
@@ -453,11 +453,24 @@ class Command(BaseCommand):
                     mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
     
                     if r['compoundrole.name'] == 'pH':
-                        reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(r['compound.abbrev'], r['amount'], r['unit'])
+                        reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(compound, r['amount'], r['unit'])
                         reaction.save(calcDescriptors=False)
                     else:
                         if r['compoundrole.name'] in (None, '', '?'):
-                            role_label = compound.chemicalClasses.all()[0].label
+                            classes = compound.chemicalClasses.all()
+                            if classes.count() > 1:
+                                self.stderr.write('{} has more than one chemical class: {}')
+                                role_label = raw_input('Which is the correct role for reagent {} in reaction {} with amount {} {}'.format(compound, reaction, r['amount'], r['unit']))
+                            elif classes.count() == 0:
+                                self.stderr.write('{} has no chemical classes: {}')
+                                role_label = raw_input('What chemical class does {} belong to?'.format(compound))
+                                cc = ChemicalClass.objects.get(label=role_label)
+                                compound.chemicalClasses.add(cc)
+                                assert(compound.chemicalClasses.all().count() == 1) # Sanity check
+                            else: # count == 1
+                                role_label = classes[0].label
+                            self.stderr.write('No reaction role listed for reagent {} with amount {} {} in reaction {}. Using chemical class {}'.format(compound, reaction, r['amount'], r['unit'], role_label))
+                            r['compoundrole.name'] = role_label
                         else:
                             role_label = r['compoundrole.name']
                         self.stdout.write('adding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
