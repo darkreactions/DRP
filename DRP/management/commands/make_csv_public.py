@@ -2,8 +2,6 @@ from DRP.models import PerformedReaction
 from django.core.management.base import BaseCommand
 import csv
 
-PerformedReaction.objects.filter(public=True).update(public=False)
-
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('filename', help='Path to csv file.')

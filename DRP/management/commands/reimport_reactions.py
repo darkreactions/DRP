@@ -144,6 +144,10 @@ class Command(BaseCommand):
                             if ps:
                                 self.stdout.write('{}: Deleting reaction with reference {}'.format(i, ref))
                                 ps.delete()
+                            ps = PerformedReaction.objects.filter(reference=ref.lower())
+                            if ps:
+                                self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
+                                ps.delete()
                             ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
                             if ps:
                                 self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
