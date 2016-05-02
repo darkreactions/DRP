@@ -483,7 +483,7 @@ class Command(BaseCommand):
                                         c = Compound(CSID=results[0].csid, labGroup=reaction.labGroup, abbrev=correct_abbrev)
                                         try:
                                             c.csConsistencyCheck()
-                                            c.save()
+                                            c.save(calcDescriptors=False, invalidateReactions=False)
                                             continue
                                         except ValidationError:
                                             c.delete()
