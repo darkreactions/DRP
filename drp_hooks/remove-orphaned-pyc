@@ -1,3 +1,5 @@
+cd $(git rev-parse --show-toplevel)
+
 echo "Looking for orphaned pyc files"
 find . -name '*.pyc' -exec bash -c 'test ! -e "${1%c}"' -- {} \; -print
 echo "Deleting..."
