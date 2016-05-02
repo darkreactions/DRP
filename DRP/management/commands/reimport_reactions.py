@@ -427,7 +427,7 @@ class Command(BaseCommand):
         with open(path.join(folder, 'compoundquantities.tsv')) as cqs, open(path.join(folder, 'compoundquantities_fixed.tsv'), 'a') as fixed_cqs:
             self.stdout.write('Creating or updating compound quantities')
             reader = csv.DictReader(cqs, delimiter='\t')
-            writer = csv.DictWriter(fixed_cqs, reader.fieldnames, delimiter='\t')
+            writer = csv.DictWriter(fixed_cqs, reader.fieldnames + ['compound.old_abbrev'], delimiter='\t')
             if not (start_at_quantities and start_number > 0):
                 writer.writeheader()
             quantities = []
@@ -450,6 +450,7 @@ class Command(BaseCommand):
                     try:
                         compound = Compound.objects.get(abbrev=correct_abbrev, labGroup=reaction.labGroup)
                         compound_found = True
+                        r['compound.old_abbrev'] = r['compound.abbrev']
                         r['compound.abbrev'] = correct_abbrev
                     except Compound.DoesNotExist:
                         if no_compound_prompts:
@@ -462,29 +463,32 @@ class Command(BaseCommand):
                                 if CSID.isdigit():
                                     results = cs.simple_search(CSID)
                             if len(results) == 1:
+                                compound = None
+                                try:
+                                    compound = Compound.objects.get(CSID=results[0].csid, labGroup=reaction.labGroup)
+                                except Compound.DoesNotExist:
+                                    pass
                                 user_response = None
                                 while user_response is None:
-                                    user_verification = raw_input('Found unique compound with CSID {} and name {} for abbreviation {}. Is this correct? (y/n): '.format(results[0].csid, results[0].common_name, correct_abbrev))
+                                    if compound is None:
+                                        user_verification = raw_input('Found unique compound with CSID {} and name {} for abbreviation {}. This is NOT IN THE COMPOUND GUIDE. Is this correct? (y/n): '.format(results[0].csid, results[0].common_name, correct_abbrev))
+                                    else:
+                                        user_verification = raw_input('Found unique compound with CSID {}, name {}, and abbreviation {} for abbreviation {} in the compound guide. Is this correct? (y/n): '.format(compound.CSID, compound.name, compound.abbrev, correct_abbrev))
                                     if user_verification and user_verification.lower()[0] == 'y':
                                         user_response = True
                                     elif user_verification and user_verification.lower()[0] == 'n':
                                         user_response = False
                                 if user_response:
-                                    try:
-                                        compound = Compound.objects.get(CSID=results[0].csid, labGroup=reaction.labGroup)
+                                    if compound is not None:
                                         correct_abbrev = compound.abbrev
                                         reagent_dict[compound_abbrev] = correct_abbrev
-                                        self.stderr.write('Found existing compound with matching CSID {}. Abbrevation {}, name {}'.format(compound.CSID, correct_abbrev, compound.name))
-                                        # Ok yes I realize that we actually have the compound now and are about to do an unnecessary
-                                        # extra lookup, but this means we don't duplicated the code from above and also adds in an extra
-                                        # sanity check
                                         continue
-                                    except Compound.DoesNotExist:
+                                    else:
                                         self.stderr.write('Creating compound with CSID {}, abbrevation {}, name {}'.format(results[0].csid, correct_abbrev, results[0].common_name))
                                         c = Compound(CSID=results[0].csid, labGroup=reaction.labGroup, abbrev=correct_abbrev)
                                         try:
                                             c.csConsistencyCheck()
-                                            c.save(calcDescriptors=False, invalidateReactions=False)
+                                            c.save(invalidateReactions=False)
                                             continue
                                         except ValidationError:
                                             c.delete()
@@ -499,8 +503,16 @@ class Command(BaseCommand):
                     self.stdout.write('{}: Creating quantity for compound {} and reaction {}'.format(i, compound.abbrev, reaction.reference))
                     if r['compound.abbrev'] in ('water', 'H2O'):
                         r['density'] = 1
-                    mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
-    
+                    try:
+                        mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
+                    except NumMolDescriptorValue.DoesNotExist:
+                        compound.save(invalidateReactions=False)
+                        mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
+
+                    if r['compound.old_abbrev'] is not None:
+                        reaction.notes += ' Compound abbreviation {} changed to {}'.format(r['compound.old_abbrev'], r['compound.abbrev'])
+                        reaction.save(calcDescriptors=False)
+
                     if r['compoundrole.name'] == 'pH':
                         reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(compound, r['amount'], r['unit'])
                         reaction.save(calcDescriptors=False)
@@ -522,46 +534,51 @@ class Command(BaseCommand):
                             r['compoundrole.name'] = role_label
                         else:
                             role_label = r['compoundrole.name']
-                        self.stdout.write('\tadding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
-                        compoundrole = CompoundRole.objects.get_or_create(label=role_label)[0]
-                        if r['amount'] in ('', '?'):
-                            amount = None
-                            reaction.notes += ' No amount for reactant {} with role {}'.format(r['compound.abbrev'], r['compoundrole.name'])
-                        elif r['unit'] == 'g':
-                            amount = float(r['amount'])/mw
-                        elif r['unit'] == 'd' or r['unit'] == 'mL':
-                            valid_density = False
-                            while not valid_density:
-                                if compound.abbrev in density_dict:
-                                    r['density'] = density_dict[compound.abbrev]
-                                try:
-                                    density = float(r['density'])
-                                    valid_density = True
-                                except (TypeError, ValueError):
-                                    self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'],compound, r['amount'], r['unit'], reaction))
-                                    r['density'] = raw_input('What is the density? ')
-                            density_dict[compound.abbrev] = r['density']
-                            if r['unit'] == 'd':
-                                amount = float(r['amount'])*0.0375*density/mw
-                            elif r['unit'] == 'mL':
-                                amount = float(r['amount'])*density/mw
+                        if not role_label:
+                            reaction.notes += ' No role for reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
+                            reaction.save(calcDescriptors=False)
                         else:
-                            raise RuntimeError('invalid unit entered')
-                        # convert to millimoles
-                        if amount is not None:
-                            amount = (amount * 1000)
-                        cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
-                        if cqq.exists():
-                            cqq.delete()
-    
-                        quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole)
-                        quantities.append(quantity)
+                            self.stdout.write('\tadding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
+                            compoundrole = CompoundRole.objects.get_or_create(label=role_label)[0]
+                            if r['amount'] in ('', '?'):
+                                amount = None
+                                reaction.notes += ' No amount for reactant {} with role {}'.format(r['compound.abbrev'], r['compoundrole.name'])
+                                reaction.save(calcDescriptors=False)
+                            elif r['unit'] == 'g':
+                                amount = float(r['amount'])/mw
+                            elif r['unit'] == 'd' or r['unit'] == 'mL':
+                                valid_density = False
+                                while not valid_density:
+                                    if compound.abbrev in density_dict:
+                                        r['density'] = density_dict[compound.abbrev]
+                                    try:
+                                        density = float(r['density'])
+                                        valid_density = True
+                                    except (TypeError, ValueError):
+                                        self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'],compound, r['amount'], r['unit'], reaction))
+                                        r['density'] = raw_input('What is the density? ')
+                                density_dict[compound.abbrev] = r['density']
+                                if r['unit'] == 'd':
+                                    amount = float(r['amount'])*0.0375*density/mw
+                                elif r['unit'] == 'mL':
+                                    amount = float(r['amount'])*density/mw
+                            else:
+                                raise RuntimeError('invalid unit entered')
+                            # convert to millimoles
+                            if amount is not None:
+                                amount = (amount * 1000)
+                            cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
+                            if cqq.exists():
+                                cqq.delete()
+        
+                            quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole)
+                            quantities.append(quantity)
     
 
-                        if len(quantities) > save_at_once:
-                            self.stdout.write('Saving...')
-                            CompoundQuantity.objects.bulk_create(quantities)
-                            quantities = []
+                            if len(quantities) > save_at_once:
+                                self.stdout.write('Saving...')
+                                CompoundQuantity.objects.bulk_create(quantities)
+                                quantities = []
                 else:
                     self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
                     reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
