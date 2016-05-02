@@ -513,7 +513,7 @@ class Command(BaseCommand):
                         compound.save(invalidateReactions=False)
                         mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
 
-                    if r['compound.old_abbrev'] is not None:
+                    if r['compound.old_abbrev'] is not None and r['compound.old_abbrev'] != r['compound.abbrev']:
                         reaction.notes += ' Compound abbreviation {} changed to {}'.format(r['compound.old_abbrev'], r['compound.abbrev'])
                         reaction.save(calcDescriptors=False)
 
@@ -571,7 +571,7 @@ class Command(BaseCommand):
                             # convert to millimoles
                             if amount is not None:
                                 amount = (amount * 1000)
-                            cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
+                            cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction, amount)
                             if cqq.exists():
                                 cqq.delete()
         
