@@ -1,3 +1,3 @@
 cd $(git rev-parse --show-toplevel)
 
-drp_hooks/remove_orphaned_pyc
+drp_hooks/remove-orphaned-pyc
