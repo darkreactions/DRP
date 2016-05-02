@@ -420,7 +420,7 @@ class Command(BaseCommand):
                 slowCoolValues = []
                 self.stdout.write("...saved")
 
-        with open(path.join(folder, 'compoundquantities.tsv')) as cqs, open(path.join(folder, 'compoundquantities_fixed.tsv'), 'w') as fixed_cqs:
+        with open(path.join(folder, 'compoundquantities.tsv')) as cqs, open(path.join(folder, 'compoundquantities_fixed.tsv'), 'a') as fixed_cqs:
             self.stdout.write('Creating or updating compound quantities')
             reader = csv.DictReader(cqs, delimiter='\t')
             writer = csv.DictWriter(fixed_cqs, reader.fieldnames, delimiter='\t')
@@ -447,7 +447,7 @@ class Command(BaseCommand):
                         reagent_dict[compound_abbrev] = correct_abbrev
 
                 if compound_found:
-                    self.stdout.write('{}: Adding or updating quantity for compound {} and reaction {}'.format(i, reaction.reference, compound.abbrev))
+                    self.stdout.write('{}: Creating quantity for compound {} and reaction {}'.format(i, reaction.reference, compound.abbrev))
                     if r['compound.abbrev'] in ('water', 'H2O'):
                         r['density'] = 1
                     mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
@@ -459,10 +459,10 @@ class Command(BaseCommand):
                         if r['compoundrole.name'] in (None, '', '?'):
                             classes = compound.chemicalClasses.all()
                             if classes.count() > 1:
-                                self.stderr.write('{} has more than one chemical class: {}')
+                                self.stderr.write('{} has more than one chemical class: {}'.format(compound, classes))
                                 role_label = raw_input('Which is the correct role for reagent {} in reaction {} with amount {} {}'.format(compound, reaction, r['amount'], r['unit']))
                             elif classes.count() == 0:
-                                self.stderr.write('{} has no chemical classes: {}')
+                                self.stderr.write('{} has no chemical classes'.format(compound))
                                 role_label = raw_input('What chemical class does {} belong to?'.format(compound))
                                 cc = ChemicalClass.objects.get(label=role_label)
                                 compound.chemicalClasses.add(cc)
@@ -480,10 +480,19 @@ class Command(BaseCommand):
                             reaction.notes += ' No amount for reactant {} with role {}'.format(r['compound.abbrev'], r['compoundrole.name'])
                         elif r['unit'] == 'g':
                             amount = float(r['amount'])/mw
-                        elif r['unit'] == 'd':
-                            amount = float(r['amount'])*0.0375*float(r['density'])/mw
-                        elif r['unit'] == 'mL':
-                            amount = float(r['amount'])*float(r['density'])/mw
+                        elif r['unit'] == 'd' or r['unit'] == 'mL':
+                            valid_density = False
+                            while not valid_density:
+                                try:
+                                    density = float(r['density'])
+                                    valid_density = True
+                                except (TypeError, ValueError):
+                                    self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'],compound, r['amount'], r['unit'], reaction))
+                                    r['density'] = raw_input('What is the density? ')
+                            if r['unit'] == 'd':
+                                amount = float(r['amount'])*0.0375*density/mw
+                            elif r['unit'] == 'mL':
+                                amount = float(r['amount'])*density/mw
                         else:
                             raise RuntimeError('invalid unit entered')
                         # convert to millimoles
