@@ -456,6 +456,10 @@ class Command(BaseCommand):
                         else:
                             self.stderr.write('Could not find compound with abbreviation {}. Checking chemspider...'.format(correct_abbrev))
                             results = cs.simple_search(correct_abbrev)
+                            if len(results) != 1:
+                                CSID = raw_input('Could not find unique compound with abbreviation {}. Do you know the CSID? '.format(correct_abbrev))
+                                if CSID.isdigit():
+                                    results = cs.simple_search(CSID)
                             if len(results) == 1:
                                 user_response = None
                                 while user_response is None:
@@ -465,15 +469,25 @@ class Command(BaseCommand):
                                     elif user_verification.lower()[0] == 'n':
                                         user_response = False
                                 if user_response:
-                                    self.stderr.write('Creating compound with CSID {}, abbrevation {}, name {}'.format(results[0].csid, correct_abbrev, results[0].common_name))
-                                    c = Compound(CSID=results[0].csid, labGroup=reaction.labGroup, abbrev=correct_abbrev)
                                     try:
-                                        c.csConsistencyCheck()
-                                        c.save()
+                                        compound = Compound.objects.get(CSID=results[0].csid, labGroup=reaction.labGroup)
+                                        correct_abbrev = compound.abbrev
+                                        reagent_dict[compound_abbrev] = correct_abbrev
+                                        self.stderr.write('Found existing compound with matching CSID {}. Abbrevation {}, name {}'.format(compound.CSID, correct_abbrev, compound.name))
+                                        # Ok yes I realize that we actually have the compound now and are about to do an unnecessary
+                                        # extra lookup, but this means we don't duplicated the code from above and also adds in an extra
+                                        # sanity check
                                         continue
-                                    except ValidationError:
-                                        c.delete()
-                                        raise
+                                    except Compound.DoesNotExist:
+                                        self.stderr.write('Creating compound with CSID {}, abbrevation {}, name {}'.format(results[0].csid, correct_abbrev, results[0].common_name))
+                                        c = Compound(CSID=results[0].csid, labGroup=reaction.labGroup, abbrev=correct_abbrev)
+                                        try:
+                                            c.csConsistencyCheck()
+                                            c.save()
+                                            continue
+                                        except ValidationError:
+                                            c.delete()
+                                            raise
                             
                             self.stderr.write('Could not get unambiguous chemspider entry for abbreviation {}'.format(correct_abbrev))
                             self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
