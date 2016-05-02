@@ -17,7 +17,7 @@ class Command(BaseCommand):
                 ref = reimport_reactions.convert_legacy_reference(row[0])
                 self.stdout.write('{}: Making reference {} public'.format(i, ref))
                 ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
-                if ps.count() != 1:
+                if ps.count() == 0:
                     if ref.startswith('xxx'):
                         unmunged_ref = ref + '0'
                         self.stdout.write('{}: Making UNMUNGED reference {} public'.format(i, unmunged_ref))
