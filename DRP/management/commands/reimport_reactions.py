@@ -95,6 +95,7 @@ save_at_once = 5000
 ref_match = re.compile('[A-Za-z0-9._]*[A-Za-z][A-Za-z0-9._]*')
 
 reagent_dict = {}
+density_dict = {}
 
 def convert_legacy_reference(legacy_reference):
     ref = legacy_reference.lower().replace(' ', '').replace('-','.')
@@ -114,6 +115,7 @@ class Command(BaseCommand):
         parser.add_argument('--descriptors', action='store_true', help='Start at importing the descriptors')
         parser.add_argument('--quantities', action='store_true', help='Start at importing the compound quantities')
         parser.add_argument('--delete-all', action='store_true', help='Delete all performed reactions.')
+        parser.add_argument('--no-compound-prompts', action='store_true', help="Don't prompt user to identify compounds. Mark unknown.")
 
     def handle(self, *args, **kwargs):
         folder = kwargs['directory']
@@ -122,6 +124,7 @@ class Command(BaseCommand):
         start_at_quantities = kwargs['quantities']
         start_number = kwargs['start_number']
         delete_all = kwargs['delete_all']
+        no_compound_prompts = kwargs['no_compound_prompts']
         start_at_delete = not (start_at_reactions or start_at_descriptors or start_at_quantities)
 
         if start_at_delete:
@@ -424,9 +427,13 @@ class Command(BaseCommand):
             self.stdout.write('Creating or updating compound quantities')
             reader = csv.DictReader(cqs, delimiter='\t')
             writer = csv.DictWriter(fixed_cqs, reader.fieldnames, delimiter='\t')
+            writer.writeheader()
             quantities = []
             for i, r in enumerate(reader):
                 if start_at_quantities and (i < start_number):
+                    continue
+                if not (r['compound.abbrev'] or r['compoundrole.name'] or r['amount']):
+                    # this is just a blank entry
                     continue
                 
                 legacyID = r['reaction.id']
@@ -443,11 +450,14 @@ class Command(BaseCommand):
                         r['compound.abbrev'] = correct_abbrev
                     except Compound.DoesNotExist as e:
                         self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
-                        correct_abbrev = raw_input('What is the correct abbreviation for this? ')
+                        if no_compound_prompts:
+                            correct_abbrev = ''
+                        else:
+                            correct_abbrev = raw_input('What is the correct abbreviation for this? ')
                         reagent_dict[compound_abbrev] = correct_abbrev
 
                 if compound_found:
-                    self.stdout.write('{}: Creating quantity for compound {} and reaction {}'.format(i, reaction.reference, compound.abbrev))
+                    self.stdout.write('{}: Creating quantity for compound {} and reaction {}'.format(i, compound.abbrev, reaction.reference))
                     if r['compound.abbrev'] in ('water', 'H2O'):
                         r['density'] = 1
                     mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
@@ -473,7 +483,7 @@ class Command(BaseCommand):
                             r['compoundrole.name'] = role_label
                         else:
                             role_label = r['compoundrole.name']
-                        self.stdout.write('adding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
+                        self.stdout.write('\tadding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
                         compoundrole = CompoundRole.objects.get_or_create(label=role_label)[0]
                         if r['amount'] in ('', '?'):
                             amount = None
@@ -483,12 +493,15 @@ class Command(BaseCommand):
                         elif r['unit'] == 'd' or r['unit'] == 'mL':
                             valid_density = False
                             while not valid_density:
+                                if compound.abbrev in density_dict:
+                                    r['density'] = density_dict[compound.abbrev]
                                 try:
                                     density = float(r['density'])
                                     valid_density = True
                                 except (TypeError, ValueError):
                                     self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'],compound, r['amount'], r['unit'], reaction))
                                     r['density'] = raw_input('What is the density? ')
+                            density_dict[compound.abbrev] = r['density']
                             if r['unit'] == 'd':
                                 amount = float(r['amount'])*0.0375*density/mw
                             elif r['unit'] == 'mL':
@@ -501,7 +514,6 @@ class Command(BaseCommand):
                         cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
                         if cqq.exists():
                             cqq.delete()
-                            #raise RuntimeError('Compound quantity for compound {} and reaction {} already exists'.format(compound, reaction))
     
                         quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole)
                         quantities.append(quantity)
@@ -512,6 +524,7 @@ class Command(BaseCommand):
                             CompoundQuantity.objects.bulk_create(quantities)
                             quantities = []
                 else:
+                    self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
                     reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
                     reaction.valid = False
                     reaction.save(calcDescriptors=False)
