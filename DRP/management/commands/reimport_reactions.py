@@ -521,7 +521,7 @@ class Command(BaseCommand):
                         reaction.save(calcDescriptors=False)
                     else:
                         compoundrole = None
-                        while compoundrole is None or r['compoundrole.name'] in (None, '', '?'):
+                        while compoundrole is None and r['compoundrole.name'] in (None, '', '?'):
                             if r['compoundrole.name'] in (None, '', '?'):
                                 classes = compound.chemicalClasses.all()
                                 if classes.count() > 1:
@@ -529,13 +529,14 @@ class Command(BaseCommand):
                                     role_label = raw_input('Which is the correct role for reagent {} in reaction {} with amount {} {}'.format(compound, reaction, r['amount'], r['unit']))
                                 elif classes.count() == 0:
                                     self.stderr.write('{} has no chemical classes'.format(compound))
-                                    role_label = raw_input('What chemical class does {} belong to?'.format(compound))
+                                    role_label = raw_input('What chemical class does {} belong to? '.format(compound))
                                     cc = ChemicalClass.objects.get(label=role_label)
                                     compound.chemicalClasses.add(cc)
                                     assert(compound.chemicalClasses.all().count() == 1) # Sanity check
                                 else: # count == 1
                                     role_label = classes[0].label
-                                self.stderr.write('No reaction role listed for reagent {} with amount {} {} in reaction {}. Using chemical class {}'.format(compound, reaction, r['amount'], r['unit'], role_label))
+                                self.stderr.write('No reaction role listed for reagent {} with amount {} {} in reaction {}. '
+                                                  'Using chemical class {}'.format(compound, reaction, r['amount'], r['unit'], role_label))
                                 r['compoundrole.name'] = role_label
                             else:
                                 role_label = r['compoundrole.name']
