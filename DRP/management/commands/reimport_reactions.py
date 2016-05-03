@@ -571,11 +571,11 @@ class Command(BaseCommand):
                             # convert to millimoles
                             if amount is not None:
                                 amount = (amount * 1000)
-                            cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction, amount=amount)
+                            cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
                             if cqq.exists():
                                 cqq.delete()
         
-                            quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole)
+                            quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole, amount=amount)
                             quantities.append(quantity)
     
 
