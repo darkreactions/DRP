@@ -516,67 +516,87 @@ class Command(BaseCommand):
                     if r['compound.old_abbrev'] is not None and r['compound.old_abbrev'] != r['compound.abbrev']:
                         reaction.notes += ' Compound abbreviation {} changed to {}'.format(r['compound.old_abbrev'], r['compound.abbrev'])
                         reaction.save(calcDescriptors=False)
-
                     if r['compoundrole.name'] == 'pH':
                         reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(compound, r['amount'], r['unit'])
                         reaction.save(calcDescriptors=False)
                     else:
-                        if r['compoundrole.name'] in (None, '', '?'):
-                            classes = compound.chemicalClasses.all()
-                            if classes.count() > 1:
-                                self.stderr.write('{} has more than one chemical class: {}'.format(compound, classes))
-                                role_label = raw_input('Which is the correct role for reagent {} in reaction {} with amount {} {}'.format(compound, reaction, r['amount'], r['unit']))
-                            elif classes.count() == 0:
-                                self.stderr.write('{} has no chemical classes'.format(compound))
-                                role_label = raw_input('What chemical class does {} belong to?'.format(compound))
-                                cc = ChemicalClass.objects.get(label=role_label)
-                                compound.chemicalClasses.add(cc)
-                                assert(compound.chemicalClasses.all().count() == 1) # Sanity check
-                            else: # count == 1
-                                role_label = classes[0].label
-                            self.stderr.write('No reaction role listed for reagent {} with amount {} {} in reaction {}. Using chemical class {}'.format(compound, reaction, r['amount'], r['unit'], role_label))
-                            r['compoundrole.name'] = role_label
-                        else:
-                            role_label = r['compoundrole.name']
-                        if not role_label:
-                            reaction.notes += ' No role for reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
-                            reaction.save(calcDescriptors=False)
-                        else:
-                            self.stdout.write('\tadding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
-                            compoundrole = CompoundRole.objects.get_or_create(label=role_label)[0]
-                            if r['amount'] in ('', '?'):
-                                amount = None
-                                reaction.notes += ' No amount for reactant {} with role {}'.format(r['compound.abbrev'], r['compoundrole.name'])
-                                reaction.save(calcDescriptors=False)
-                            elif r['unit'] == 'g':
-                                amount = float(r['amount'])/mw
-                            elif r['unit'] == 'd' or r['unit'] == 'mL':
-                                valid_density = False
-                                while not valid_density:
-                                    if compound.abbrev in density_dict:
-                                        r['density'] = density_dict[compound.abbrev]
-                                    try:
-                                        density = float(r['density'])
-                                        valid_density = True
-                                    except (TypeError, ValueError):
-                                        self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'],compound, r['amount'], r['unit'], reaction))
-                                        r['density'] = raw_input('What is the density? ')
-                                density_dict[compound.abbrev] = r['density']
-                                if r['unit'] == 'd':
-                                    amount = float(r['amount'])*0.0375*density/mw
-                                elif r['unit'] == 'mL':
-                                    amount = float(r['amount'])*density/mw
+                        compoundrole = None
+                        while compoundrole is None or r['compoundrole.name'] in (None, '', '?'):
+                            if r['compoundrole.name'] in (None, '', '?'):
+                                classes = compound.chemicalClasses.all()
+                                if classes.count() > 1:
+                                    self.stderr.write('{} has more than one chemical class: {}'.format(compound, classes))
+                                    role_label = raw_input('Which is the correct role for reagent {} in reaction {} with amount {} {}'.format(compound, reaction, r['amount'], r['unit']))
+                                elif classes.count() == 0:
+                                    self.stderr.write('{} has no chemical classes'.format(compound))
+                                    role_label = raw_input('What chemical class does {} belong to?'.format(compound))
+                                    cc = ChemicalClass.objects.get(label=role_label)
+                                    compound.chemicalClasses.add(cc)
+                                    assert(compound.chemicalClasses.all().count() == 1) # Sanity check
+                                else: # count == 1
+                                    role_label = classes[0].label
+                                self.stderr.write('No reaction role listed for reagent {} with amount {} {} in reaction {}. Using chemical class {}'.format(compound, reaction, r['amount'], r['unit'], role_label))
+                                r['compoundrole.name'] = role_label
                             else:
-                                raise RuntimeError('invalid unit entered')
-                            # convert to millimoles
-                            if amount is not None:
-                                amount = (amount * 1000)
-                            cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
-                            if cqq.exists():
-                                cqq.delete()
-        
-                            quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole, amount=amount)
-                            quantities.append(quantity)
+                                role_label = r['compoundrole.name']
+                            if not role_label:
+                                reaction.notes += ' No role for reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
+                                reaction.save(calcDescriptors=False)
+                            else:
+                                try:
+                                    compoundrole = CompoundRole.objects.get(label=role_label)
+                                except CompoundRole.DoesNotExist:
+                                    user_response = None
+                                    if role_label in role_dict:
+                                        new_role_label = role_dict[role_label]
+                                    else:
+                                        while user_response is None:
+                                            user_verification = raw_input('Compound role {} does not exist. Would you like to add it? ')
+                                            if user_verification and user_verification.lower()[0] == 'y':
+                                                user_response = True
+                                            elif user_verification and user_verification.lower()[0] == 'n':
+                                                user_response = False
+                                        if user_response:
+                                            compoundrole = CompoundRole.objects.create(label=role_label)
+                                        else:
+                                            new_role_label = raw_input('What should this label be? ')
+                                            role_dict[role_label] = new_role_label
+                                            r['compoundrole.name'] = new_role_label
+                                    
+                                self.stdout.write('\tadding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
+                                if r['amount'] in ('', '?'):
+                                    amount = None
+                                    reaction.notes += ' No amount for reactant {} with role {}'.format(r['compound.abbrev'], r['compoundrole.name'])
+                                    reaction.save(calcDescriptors=False)
+                                elif r['unit'] == 'g':
+                                    amount = float(r['amount'])/mw
+                                elif r['unit'] == 'd' or r['unit'] == 'mL':
+                                    valid_density = False
+                                    while not valid_density:
+                                        if compound.abbrev in density_dict:
+                                            r['density'] = density_dict[compound.abbrev]
+                                        try:
+                                            density = float(r['density'])
+                                            valid_density = True
+                                        except (TypeError, ValueError):
+                                            self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'],compound, r['amount'], r['unit'], reaction))
+                                            r['density'] = raw_input('What is the density? ')
+                                    density_dict[compound.abbrev] = r['density']
+                                    if r['unit'] == 'd':
+                                        amount = float(r['amount'])*0.0375*density/mw
+                                    elif r['unit'] == 'mL':
+                                        amount = float(r['amount'])*density/mw
+                                else:
+                                    raise RuntimeError('invalid unit entered')
+                                # convert to millimoles
+                                if amount is not None:
+                                    amount = (amount * 1000)
+                                cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
+                                if cqq.exists():
+                                    cqq.delete()
+            
+                                quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole, amount=amount)
+                                quantities.append(quantity)
     
 
                             if len(quantities) > save_at_once:
