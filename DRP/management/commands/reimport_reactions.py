@@ -177,7 +177,7 @@ class Command(BaseCommand):
                                 p.valid = False
                                 p.notes += u' Duplicate reference disambiguated with legacy id.'
                                 p.reference = '{}_{}'.format(p.convertedLegacyRef, p.legacyID)
-                                p.save()
+                                p.save(calcDescriptors=False)
                     else:
                         valid = bool(int(r['valid']))
                         notes = r['notes']
@@ -230,12 +230,12 @@ class Command(BaseCommand):
                             self.stderr.write('Reaction {} marked as duplicate of reaction {}, but the latter does not exist'.format(ref, r['duplicateOf.reference']))
                             p.notes += 'Marked as duplicate of reaction with legacy reference {}, but it does not exist'.format(r['duplicateOf.reference'])
                             p.valid = False
-                            p.save()
+                            p.save(calcDescriptors=False)
                         except PerformedReaction.MultipleObjectsReturned:
                             self.stderr.write('Reaction {} marked as duplicate of reaction {}, but more than one of the latter exists'.format(ref, r['duplicateOf.reference']))
                             p.notes += 'Marked as duplicate of reaction with legacy reference {}, but more than one reaction with that reference exists'.format(r['duplicateOf.reference'])
                             p.valid = False
-                            p.save()
+                            p.save(calcDescriptors=False)
     
                     outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range(1, 5))) else None
                     try:
