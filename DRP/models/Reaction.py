@@ -199,6 +199,7 @@ class Reaction(models.Model):
     labGroup = models.ForeignKey(LabGroup)
     calcDescriptors = True #this is to cope with a hideous problem in xml serialization in the management commands
 
+
     def save(self, calcDescriptors=True, *args, **kwargs):
         super(Reaction, self).save(*args, **kwargs)
         if calcDescriptors and self.calcDescriptors:

@@ -298,8 +298,8 @@ def _calculate(compound):
                     else:
                         raise RuntimeError("Number of cxcalc commands ({}) does not match number of results ({})".format(len(commandKeys), len(resList)))
             else:
-                raise RuntimeError("cxcalc returned error: {}".format(resErr))
+                warnings.warn("cxcalc returned error: {}".format(resErr))
         else:
-            raise RuntimeError("cxcalc exited with nonzero return code {}".format(calcProc.returncode))
+            warnings.warn("cxcalc exited with nonzero return code {}".format(calcProc.returncode))
     else:
         warnings.warn("Compound not found")
