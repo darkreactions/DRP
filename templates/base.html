@@ -55,7 +55,7 @@
           {% if testing %}
             <!-- d68a82db-bd18-4a9f-a1a2-03b3bb259595 --> 
           {% endif %}
-        <a id="userLogin" href="/login.html?next={{ request.path_info|urlencode }}">Log In</a>
+        <a id="userLogin" href="/login.html{% block login_next %}?next={{ request.path_info|urlencode }}{% endblock %}">Log In</a>
         <a id="registrationPrompt" href="/register.html">Register</a>
 
         {% endif %}
