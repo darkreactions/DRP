@@ -10,7 +10,6 @@
 <h1 class="bannerText">Reactions Database</h1>  
 {% if user.is_authenticated %}
     {% include "lab_form.html" %}
-{% endif %}
   <div class="downloads">
     <h1 class="downloads">Downloads</h1>
     <ul class="downloads">
@@ -20,6 +19,8 @@
       {% if user.is_authenticated %}<li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
     </ul>
   </div>
+
+{% endif %}
 {% if reactions|length > 0 %}
 
 {% comment %}
@@ -87,6 +88,9 @@
       <div class="performed_date">Performed Date: {{ reaction.performedDateTime }}</div>
     {% endif %}
     <div class="inserted_date">Inserted Date: {{ reaction.insertedDateTime }}</div>
+    {% if reaction.notes != "" %}
+      <div class="notes">Notes: {{ reaction.notes }}</div>
+    {% endif %}
     <div class="input_wrapper">
     {% if user.is_authenticated %}
       {% if reaction.labGroup in user.labgroup_set.all %}

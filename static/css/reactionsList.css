@@ -104,7 +104,7 @@ input.delete {
 .input_wrapper {
  height:2em;
  width:17em;
- margin:auto;
+ margin:1em auto 0 auto;
 }
 
 
