@@ -5,6 +5,8 @@ from RecommendedReaction import RecommendedReaction
 from django.contrib.auth.models import User
 from itertools import chain
 import DRP
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 
 class PerformedReactionQuerySet(ReactionQuerySet):
         # I assume this was wrong and it should be the one below
@@ -30,9 +32,8 @@ class PerformedReaction(Reaction):
 
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
-    performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, default=None)
-    reference = models.CharField(max_length=40, unique=True)
-    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, default=None, help_text='Date in format YYYY-MM-DD')
+    performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, blank=True, default=None)
+    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None, help_text='Date in format YYYY-MM-DD')
     insertedDateTime = models.DateTimeField('Date Reaction Saved', auto_now_add=True)
     recommendation = models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
     legacyRecommendedFlag = models.NullBooleanField(default=None)
@@ -42,6 +43,39 @@ class PerformedReaction(Reaction):
     if the wrong reactant was used or some bad lab record has been found'''
     public = models.BooleanField(default=False)
     duplicateOf = models.ForeignKey('self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
+    legacyID = models.IntegerField(null=True, blank=True, unique=True)
+    '''ID in legacy database'''
+    legacyRef = models.CharField(max_length=40, null=True, blank=True)
+    '''Reaction reference in legacy database'''
+    convertedLegacyRef = models.CharField(max_length=40, null=True, blank=True,
+                                          validators=[
+                                                        RegexValidator(
+                                                            '[a-z0-9._]*[a-z][a-z0-9._]*',
+                                                            ('Please include only values which are limited to '
+                                                             'alphanumeric characters, underscores, periods, '
+                                                             'and must include at least one '
+                                                             'alphabetic character.')
+                                                        )
+                                                     ]
+                                        )
+    '''Reaction reference in legacy database converted to canonical form by removing spaces and converting to lowercase.
+    This could differ from the reference because it is not disambiguated or validated as unique'''
+    reference = models.CharField(
+                max_length=40,
+                validators=[
+                    RegexValidator(
+                        '[a-z0-9._]*[a-z][a-z0-9._]*',
+                        ('Please include only values which are limited to '
+                         'alphanumeric characters, underscores, periods, '
+                         'and must include at least one '
+                         'alphabetic character.')
+                    )
+                ]
+                )
+
+    def clean(self):
+        if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
+            raise ValidationError('Another reaction has the same reference and lab group')
 
     def __unicode__(self):
         return self.reference

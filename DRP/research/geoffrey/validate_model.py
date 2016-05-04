@@ -47,7 +47,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             if verbose:
                 print "Found {} with correct visitor tool".format(containers.count())
         if visitorOptions is not None:
-            containers = containers.filter(visitorOptions=json.dumps(visitorOptions))
+            containers = containers.filter(modelVisitorOptions=json.dumps(visitorOptions))
             if verbose:
                 print "Found {} with correct visitor options".format(containers.count())
 
@@ -95,9 +95,14 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
 
         if response_headers is not None:
             containers = [c for c in containers if (set(c.outcomeNumRxnDescriptors.all()) == setOutNumDescs and set(c.outcomeBoolRxnDescriptors.all()) == setOutBoolDescs)]
+            if verbose:
+                print "{} containers with correct responses".format(len(containers))
+            
             
         if predictor_headers is not None:
             containers = [c for c in containers if (set(c.numRxnDescriptors.all()) == setNumDescs and set(c.boolRxnDescriptors.all()) == setBoolDescs)]
+            if verbose:
+                print "{} containers with correct predictors".format(len(containers))
 
         if len(containers) != 1:
             print "Was unable to find a unique model container matching given specification. Found {}".format(len(containers))

@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 
+{% block additional_head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/register.css" />
+{% endblock %}
+
+
 {% block content %}
   <h1 class="bannerText">
     Register
   </h1>
+  <p>Register below if you would like to add reactions to the database. If you are not already a part of a registered lab group, please <a href="contact.html">contact us</a> to create a lab group.</p>
   {% if submitted %}
     <p>Thank you for registering, a confirmation email should be with you shortly.</p>
     {% if testing %}
