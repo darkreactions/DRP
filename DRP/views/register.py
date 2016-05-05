@@ -48,7 +48,8 @@ def confirm(request):
                     return render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':True, 'code':request.GET['code']}))
                 else:
                     raise PermissionDenied()
-            elif form.user_cache.is_active:
+            elif form.user_cache is not None:
+                if form.user_cache.is_active:
                     return redirect(reverse('reactionlist'))
             else:
                 return render(request, 'confirm.html', RequestContext(request, {'form':form, 'success':False, 'code':request.GET['code']}))
