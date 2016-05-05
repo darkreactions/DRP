@@ -53,8 +53,11 @@ def labGroupSelected(dispatch_method):
                 else:
                     raise RuntimeError("This shouldn't happen")
                     self.labGroup = None
-            else:
+            elif request.user.labgroup_set.all().count == 1:
                 self.labGroup = request.user.labgroup_set.all()[0]
+            else:
+                self.labForm = None
+                self.labGroup = None
         else:
             self.labForm = None
             self.labGroup = None
