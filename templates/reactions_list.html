@@ -86,13 +86,9 @@ style it differently, give it an active id
 -- or hide all of them and only put the next page
 -- {{ page_obj.number }} is current page number
 {% endcomment %}
-<h3>Page</h3>
-<ol id="page_list" class="pagination">
-    {% for x in paginator.page_range %}
-        <li><a href="?page={{ x }}">{{ x }}</a></li>
-    {% endfor %}
-</ol>
-</div>
+<nav>
+    {{ page_obj.number }}
+</nav>
 {% else %}
 <p>There are currently no reactions to display</p>
 {% endif %}
