@@ -23,7 +23,6 @@
 {% endif %}
 {% if reactions|length > 0 %}
 
-<table class="reactions-list">
   {% for reaction in reactions %}
   <div class="reaction" {% if reaction.valid %} style="border: 5px solid #376737" {% else %} style="border: 5px solid #8b2c27" {% endif %}>
     {% comment %}need to change color of main div with {{ reaction.valid }}{% endcomment %} 
@@ -76,7 +75,6 @@
   </div>
   </div>
   {% endfor %}
-</table>
 <div>
 
 {% comment %}
@@ -86,22 +84,18 @@ style it differently, give it an active id
 -- or hide all of them and only put the next page
 -- {{ page_obj.number }} is current page number
 {% endcomment %}
-<nav>
-    {{ page_obj.number }}
+<nav class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{page_obj.previous_page_number}}">Previous<a>
+    {% endif %}
+    <span>Page Number:{{ page_obj.number }} of {{ paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}">Next<a>
+    {% endif %}
 </nav>
 {% else %}
 <p>There are currently no reactions to display</p>
 {% endif %}
 
 {% endblock %}
-
-
-{% block additional_js %}
-
-<script type="text/javascript">
-
-</script>
-
-{% endblock %}
-
 
