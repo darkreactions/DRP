@@ -90,7 +90,7 @@
 <script>
     pagNav = document.getElementById("pagination");
     pagNav.parentNode.removeChild(pagNav);
-    window.onscroll = function(ev) {
+    function scroll(ev) {
         if((window.innerHeight + window.scrollY) > document.body.offsetHeight) {
             var reaction = document.getElementsByClassName("reaction")[0];
             var newReaction = document.createElement('div'); 
