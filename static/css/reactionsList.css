@@ -107,3 +107,6 @@ input.delete {
  margin:1em auto 0 auto;
 }
 
+.pagination {
+    text-align:center;
+}
