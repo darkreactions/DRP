@@ -73,10 +73,11 @@
      </div>
     {% endif %}
   </div>
-  </div>
+</div>
   {% endfor %}
 
-<nav class="pagination">
+{% if paginator.num_pages > 1 %}
+<nav id="pagination">
     {% if page_obj.has_previous %}
         <a href="?page={{page_obj.previous_page_number}}">Previous</a>
     {% endif %}
@@ -85,6 +86,20 @@
         <a href="?page={{page_obj.next_page_number}}">Next</a>
     {% endif %}
 </nav>
+<script>
+    pagNav = document.getElementById("pagination");
+    pagNav.parentNode.removeChild(pagNav);
+    window.onscroll = function(ev) {
+        if((window.innerHeight + window.scrollY) > document.body.offsetHeight) {
+            var reaction = document.getElementsByClassName("reaction")[0];
+            var newReaction = document.createElement('div'); 
+            newReaction.setAttribute('class', 'reaction');
+            newReaction.innerHTML = 'This will be a new reaction';
+            reaction.parentNode.appendChild(newReaction);
+        }
+    }
+</script>
+{% endif %}
 {% else %}
 <p>There are currently no reactions to display</p>
 {% endif %}
