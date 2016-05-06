@@ -37,12 +37,9 @@ class ListPerformedReactions(ListView):
         elif filetype == '.html':
             if 'page' not in request.GET:
                 self.paginate_by = None
+            if 'reactions_only' in request.GET:
+                self.template_name='reactions_divs.html'
             response = super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
-        elif filetype == '.json':
-            if 'page' not in request.GET:
-                self.paginate_by = None
-            self.template_name='reactions_list.json'
-            response = super(ListPerformedReactions, self).dispatch(request, *args, content_type='application/json', **kwargs)
         elif filetype == '.csv':
             self.paginate_by = None
             response = HttpResponse(content_type='text/csv')
