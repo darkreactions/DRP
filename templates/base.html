@@ -53,6 +53,7 @@
   
           <li>
             <a href="{% url "reactionlist_typed" ".html" %}?page=1"
+               id="dbase"
                class="navLink{% if template == "database"%} currentTitle{%endif%}"
                title="Enter the Dark Reaction Project.">
                Project
@@ -95,6 +96,10 @@
   &copy; {% now "Y" %} Dark Reactions Project at Haverford College
   </footer>
   {% block additional_js %}{% endblock %}
+  <script>
+    dbase = document.getElementById('dbase');
+    dbase.setAttribute('href', '{% url "reactionlist" %}');
+  </script>
 </body>
 {% comment %}
  <!-- SCRIPTS -->
