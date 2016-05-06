@@ -86,6 +86,7 @@
         <a href="?page={{page_obj.next_page_number}}">Next</a>
     {% endif %}
 </nav>
+{% if not request.GET.page %}
 <script>
     pagNav = document.getElementById("pagination");
     pagNav.parentNode.removeChild(pagNav);
@@ -99,6 +100,7 @@
         }
     }
 </script>
+{% endif %}
 {% endif %}
 {% else %}
 <p>There are currently no reactions to display</p>
