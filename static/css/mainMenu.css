@@ -47,8 +47,7 @@ div.nav-wrapper {
 
 #navigationMenu {
  display:block;
- position:relative;
- width:32.5em;
+ width:30%;
  padding:10px 0px;
  text-align:left;
  background-color:#658ebd;
