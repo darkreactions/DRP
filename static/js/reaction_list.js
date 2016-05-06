@@ -2,7 +2,7 @@ function fetchRxn(ev) {
     if(!fetchRxn.currentPage) { 
         fetchRxn.currentPage = 2;
     }
-    if((window.innerHeight + window.scrollY) > document.body.offsetHeight*0.5 && !fetchRxn.waiting) {
+    if(((window.innerHeight + window.scrollY) > document.body.offsetHeight*0.5 || (window.innerHeight + window.pageYOffset) > document.body.offsetHeight*0.5) && !fetchRxn.waiting) {
         fetchRxn.waiting=true;
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
