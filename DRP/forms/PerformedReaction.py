@@ -17,11 +17,12 @@ class PerformedRxnForm(forms.ModelForm):
   '''A form for creating performed reaction instances in teh databases'''
  
   class Meta:
-    fields=('reference', 'performedBy', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf') 
+    fields=('reference', 'performedBy', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf', 'valid') 
+    #TODO: add tooltip to validity field for initial reaction creation step.
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
-    '''Overridden __init__ method; requires the user as teh first argument so that choice of lab group etc can be validated, as well as to
+    '''Overridden __init__ method; requires the user as the first argument so that choice of lab group etc can be validated, as well as to
     track who enters what'''
     super(PerformedRxnForm, self).__init__(*args, **kwargs)
     self.user = user
@@ -35,7 +36,7 @@ class PerformedRxnForm(forms.ModelForm):
   
   def clean(self):
     self.cleaned_data = super(PerformedRxnForm, self).clean()
-    if 'preformedBy' in self.cleaned_data:
+    if 'performedBy' in self.cleaned_data:
         if not self.fields['labGroup'] in (self.user.labgroup_set.all()| self.cleaned_data['performedBy'].labgroup_set.all()):
             raise ValidationError('The selected labGroup does not contain both the inputting and experimental user.', 'invalid_lg')
     return self.cleaned_data

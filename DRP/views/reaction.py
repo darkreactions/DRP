@@ -64,6 +64,22 @@ class ListPerformedReactions(ListView):
 #    context['filter_formset'] = self.filterFormSet
         return context
 
+#TODO: Create a view solely for the creation of reaction, without quantities etc.
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+def createReaction(request):
+    if request.method == "POST":
+        perfRxnForm = PerformedRxnForm(request.user, data=request.POST)
+        if perfRxnForm.is_valid():
+            rxn = perfRxnForm.save()
+            return redirect('editReaction', rxn.id)
+    else:
+        perfRxnForm = PerformedRxnForm(request.user)
+        return render(request, 'reaction_create.html', {'reaction_form':perfRxnForm}) 
+
+#TODO: Create views for each object creation separately (e.g. compound quantities) The formset objects can still be put onto the reaction edit page so long as they point to the right place.
+#TODO: Create a view for creating template reactions
 @login_required
 @hasSignedLicense
 @userHasLabGroup

@@ -6,7 +6,7 @@ import DRP.views
 urls = [
   url('^(?P<filetype>.csv|.html|.arff)?$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist_typed'),
   url('^/$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
-  url('^/add.html', DRP.views.reaction.reactionForm, name='newReaction'),
+  url('^/add.html', DRP.views.reaction.createReaction, name='newReaction'),
   url('^/edit_(?P<pk>\d+).html', DRP.views.reaction.reactionForm, name='editReaction'),
   url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
   url('^/invalidate$', DRP.views.reaction.invalidateReaction, name='invalidateReaction'),
