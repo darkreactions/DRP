@@ -38,11 +38,12 @@ def hasSignedLicense(view):
     
     return _hasSignedLicense
 
-def reactionExists(view):
+def reactionExists(view, *args, **kwargs):
     """This decorator checks that a reaction exists before continuing with the internal view"""
-    def _reactionExists(request, rxn_id):
+    def _reactionExists(request, *args, **kwargs):
+        rxn_id = kwargs['rxn_id']
         if PerformedReaction.objects.filter(id=rxn_id).exists() and PerformedReaction.objects.filter(labGroup__in=request.user.labgroup_set.all()):
-            return view(request, rxn_id)
+            return view(request, *args, **kwargs)
         else:
             raise Http404("This reaction cannot be found")
 

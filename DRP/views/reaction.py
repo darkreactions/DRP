@@ -105,46 +105,23 @@ def addCompoundDetails(request, rxn_id):
 @hasSignedLicense
 @userHasLabGroup
 @reactionExists
-def createNumDescVals(request, rxn_id):
-    '''A view for adding custom numerical descriptor values to a reaction'''
-    numDescVals = NumRxnDescriptorValue.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-    numDescValFormset = modelformset_factory(model=NumRxnDescriptorValue, form=NumRxnDescValForm, can_delete=True) 
+def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader):
+    '''A generic view function to create descriptor values for reactions'''
+    descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
+    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
     #TODO specify custom form for reaction descriptor values which specifies manual descriptors only
     if request.method=="POST":
-        formset = numDescValFormset(queryset=numDescVals, data=request.POST)
+        formset = descValFormset(queryset=descVals, data=request.POST)
         if formset.is_valid():
             descVals = formset.save(commit=False)
             for dv in descVals:
                 dv.reaction=PerformedReactions.objects.get(id=rxn_id)
                 dv.save()
             for dv in formset.delete_objects:
-                NumRxnDescriptorValue.objects.filter(id=dv.id).delete()
+                descValClass.objects.filter(id=dv.id).delete()
     else:
-        formset = numDescValFormset(queryset=numDescVals)
-    return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':"Numerical Reaction Descriptors"}) 
-        
-            
-
-@login_required
-@hasSignedLicense
-@userHasLabGroup
-@reactionExists
-def createOrdDescVals(request, rxn_id):
-    pass
-
-@login_required
-@hasSignedLicense
-@userHasLabGroup
-@reactionExists
-def createCatDescVals(request, rxn_id):
-    pass
-
-@login_required
-@hasSignedLicense
-@userHasLabGroup
-@reactionExists
-def createBoolDescvals(request, rxn_id):
-    pass
+        formset = descValFormset(queryset=descVals)
+    return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':infoHeader}) 
 
 def createTemplateRxn(request):
     pass

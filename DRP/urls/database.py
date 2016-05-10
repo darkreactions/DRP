@@ -2,13 +2,39 @@
 
 from django.conf.urls import url
 import DRP.views
+from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
+from DRP.models import OrdRxnDescriptorValue
+from DRP.forms import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm  
 
 urls = [
   url('^(?P<filetype>.csv|.html|.arff)?$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist_typed'),
   url('^/$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/add.html', DRP.views.reaction.createReaction, name='newReaction'),
   url('^/entry_(?P<rxn_id>\d+)/compoundquantities.html', DRP.views.reaction.addCompoundDetails, name="addCompoundDetails"),
-  url('^/entry_(?P<rxn_id>\d+)/num_desc_vals.html', DRP.views.reaction.createNumDescVals, name="createNumDescVals"),
+  url('^/entry_(?P<rxn_id>\d+)/num_desc_vals.html', DRP.views.reaction.createGenDescVal,
+                                                                        {'descValClass':NumRxnDescriptorValue, 
+                                                                         'descValFormClass':NumRxnDescValForm,
+                                                                         'infoHeader':'Numerical Descriptor Values'
+                                                                        },
+                                                                        name="createNumDescVals"),
+  url('^/entry_(?P<rxn_id>\d+)/ord_desc_vals.html', DRP.views.reaction.createGenDescVal,
+                                                                        {'descValClass':OrdRxnDescriptorValue, 
+                                                                         'descValFormClass':OrdRxnDescValForm,
+                                                                         'infoHeader':'Ordinal Descriptor Values'
+                                                                        },
+                                                                        name="createOrdDescVals"),
+  url('^/entry_(?P<rxn_id>\d+)/cat_desc_vals.html', DRP.views.reaction.createGenDescVal,
+                                                                        {'descValClass':CatRxnDescriptorValue, 
+                                                                         'descValFormClass':CatRxnDescValForm,
+                                                                         'infoHeader':'Categorical Descriptor Values'
+                                                                        },
+                                                                        name="createOrdDescVals"),
+  url('^/entry_(?P<rxn_id>\d+)/bool_desc_vals.html', DRP.views.reaction.createGenDescVal,
+                                                                        {'descValClass':BoolRxnDescriptorValue, 
+                                                                         'descValFormClass':BoolRxnDescValForm,
+                                                                         'infoHeader':'Boolean Descriptor Values'
+                                                                        },
+                                                                        name="createBoolDescVals"),
   url('^/entry_(?P<pk>\d+)/', DRP.views.reaction.editReaction, name='editReaction'),
   url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
   url('^/invalidate$', DRP.views.reaction.invalidateReaction, name='invalidateReaction'),
