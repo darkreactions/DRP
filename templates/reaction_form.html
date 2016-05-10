@@ -19,84 +19,36 @@
       <legend>Reaction Details</legend>
       <ol>
         {{ reaction_form.as_ul }}
-        {% comment %} reactants {% endcomment %}
+      </ol>
+    <input type="submit" value="Save" />
+    </fieldset>
+  </form>
+  <form action="{% url 'addCompoundDetails' reaction.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+    <legend>Reactant Details</legend>
+    <ol>
         {% for reactant_form in reactants_formset %}
 	  <li><ol> {{ reactant_form.as_ul }} </ol></li>
         {% endfor %}
-        {% comment %} descriptors {% endcomment %}
-        {{ reactants_formset.managementForm.as_ul }}
-	<div>Add Descriptor</div>
-      </ol>
-    </fieldset>
-    {% comment %} keeping this here {% endcomment %}
-    {% with descriptor_formsets.0 as formset %}
+    </ol>
+    {{ reactants_formset.management_form.as_ul }}
+    <input type="submit" value="Save" />
+   </fieldset>
+  </form>
+  {% for label, formset in descriptor_formsets.items %}
+    <form action="{% url formset.url reaction.id %}" method="post">
+    {% csrf_token %}
     <fieldset>
-    <legend>Numerical Descriptors</legend>
-    <ol>
-      {% for form in formset %}
-      <li>
+        <legend>{{ label }}</legend>
         <ol>
-          {{ form.as_ul }}
+            {% for form in formset.formset %}
+	        <li><ol> {{form.as_ul }} </ol></li>
+            {% endfor %}
         </ol>
-      </li>
-      {% endfor %}
-    </ol>
-    <ol>
-      {{ formset.managementForm.as_ul }}
-    </ol>
+        {{formset.formset.management_form.as_ul }}
+    <input type="submit" value="Save" />
     </fieldset>
-    {% endwith %}
-    {% with descriptor_formsets.1 as formset %}
-    <fieldset>
-    <legend>Ordinal Descriptors</legend>
-    <ol>
-      {% for form in formset %}
-      <li>
-        <ol>
-          {{ form.as_ul }}
-        </ol>
-      </li>
-      {% endfor %}
-    </ol>
-    <ol>
-      {{ formset.managementForm.as_ul }}
-    </ol>
-    </fieldset>
-    {% endwith %}
-    {% with descriptor_formsets.2 as formset %}
-    <fieldset>
-    <legend>Boolean Descriptors</legend>
-    <ol>
-      {% for form in formset %}
-      <li>
-        <ol>
-          {{ form.as_ul }}
-        </ol>
-      </li>
-      {% endfor %}
-    </ol>
-    <ol>
-      {{ formset.managementForm.as_ul }}
-    </ol>
-    </fieldset>
-    {% endwith %}
-    {% with descriptor_formsets.3 as formset %}
-    <fieldset>
-    <legend>Categorical Descriptors</legend>
-    <ol>
-      {% for form in formset %}
-      <li>
-        <ol>
-          {{ form.as_ul }}
-        </ol>
-      </li>
-      {% endfor %}
-    </ol>
-    <ol>
-      {{ formset.managementForm.as_ul }}
-    </ol>
-    </fieldset>
-    {% endwith %}
-    <input type="submit" name="save" value="Save" />
-  </form> 
+    </form>
+  {% endfor %} 
 {% endblock %}

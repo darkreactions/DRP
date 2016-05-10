@@ -112,7 +112,6 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
     '''A generic view function to create descriptor values for reactions'''
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
     descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
-    #TODO specify custom form for reaction descriptor values which specifies manual descriptors only
     if request.method=="POST":
         formset = descValFormset(queryset=descVals, data=request.POST)
         if formset.is_valid():
@@ -120,8 +119,9 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
             for dv in descVals:
                 dv.reaction=PerformedReactions.objects.get(id=rxn_id)
                 dv.save()
-            for dv in formset.delete_objects:
+            for dv in formset.deleted_objects:
                 descValClass.objects.filter(id=dv.id).delete()
+            messages.success(request, 'Reaction descriptor details successfully updated')
             return redirect('editReaction', rxn_id)
     else:
         formset = descValFormset(queryset=descVals)
@@ -130,74 +130,33 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
 def createTemplateRxn(request):
     pass
 
-#TODO: Create a view for creating template reactions
 @login_required
 @hasSignedLicense
 @userHasLabGroup
-def editReaction(request, pk):
-    '''A view designed to create performed reaction instances'''
-    descFields = ('descriptor', 'value')
-    if pk == None:
-        reaction = None
+@reactionExists
+def editReaction(request, rxn_id):
+    '''A view designed to edit performed reaction instances'''
+    reaction = PerformedReaction.objects.get(id=rxn_id)
+    if request.method=="POST":
+        perfRxnForm = PerformedRxnForm(request.user, data=request.POST, instance=reaction)
+        if perfRxnForm.is_valid():
+            perfRxnForm.save()
     else:
-        try:
-            reaction=PerformedReaction.objects.get(pk=pk)
-        except PerformedReaction.DoesNotExist:
-            raise Http404("This reaction cannot be found")
-    if reaction is not None:
-        reactants = CompoundQuantity.objects.filter(reaction=reaction.reaction_ptr)
-        numRxnDescriptorValues = NumRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual')
-        ordRxnDescriptorValues = OrdRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual')
-        boolRxnDescriptorValues = BoolRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual')
-        catRxnDescriptorValues = CatRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__calculatorSoftware='manual') 
-    else:
-        reactants=None
-        numRxnDescriptorValues = None 
-        ordRxnDescriptorValues = None
-        boolRxnDescriptorValues = None
-        catRxnDescriptorValues = None
-        
-    if request.method=='POST':
-        reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), data=request.POST, canAdd=True, canDelete=True, instances=reactants)
-        reactionForm = PerformedRxnForm(request.user, data=request.POST, instance=reaction) 
+        perfRxnForm = PerformedRxnForm(request.user, instance=reaction)
+    compoundQuantities=CompoundQuantity.objects.filter(reaction__id=rxn_id)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True, extra=6)
+    cqFormset = CompoundQuantityFormset(queryset=compoundQuantities) 
+    descriptorFormsets = {}
+    descriptorClasses=(('Numeric Descriptors', 'createNumDescVals', NumRxnDescriptorValue, NumRxnDescValForm),
+                       ('Ordinal Descriptors', 'createNumDescVals', OrdRxnDescriptorValue, OrdRxnDescValForm),
+                       ('Boolean Descriptors', 'createNumDescVals', BoolRxnDescriptorValue, BoolRxnDescValForm),
+                       ('Categorical Descriptors', 'createNumDescVals', CatRxnDescriptorValue, CatRxnDescValForm))
 
-        descriptorFormSets = (
-            ModelFormSet(NumRxnDescriptorValue, formClass=NumRxnDescValForm, data=request.POST, prefix='num', canDelete=True, instances=numRxnDescriptorValues),
-            ModelFormSet(OrdRxnDescriptorValue, formClass=OrdRxnDescValForm, data=request.POST, prefix='ord', canDelete=True, instances=ordRxnDescriptorValues),
-            ModelFormSet(BoolRxnDescriptorValue, formClass=BoolRxnDescValForm, data=request.POST, prefix='bool', canDelete=True, instances=boolRxnDescriptorValues),
-            ModelFormSet(CatRxnDescriptorValue, formClass=CatRxnDescValForm, data=request.POST, prefix='cat', canDelete=True, instances=catRxnDescriptorValues)
-        )
-
-        if 'save' in request.POST: 
-            if reactionForm.is_valid() and reactantsFormSetInst.is_valid() and all(d.is_valid() for d in descriptorFormSets):
-                rxn = reactionForm.save()
-                reactants = reactantsFormSetInst.save(commit=False)
-                for reactant in reactants:
-                    reactant.reaction=rxn.reaction_ptr
-                    reactant.save()
-                CompoundQuantity.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(reactant.pk for reactant in reactants)).delete()
-                cdvs = [] #collated descriptor values
-                for formSet in descriptorFormSets:
-                    descriptorValues = formSet.save(commit=False)
-                    cdvs.append(descriptorValues)
-                    for descriptorValue in descriptorValues:
-                        descriptorValue.reaction=rxn.reaction_ptr
-                        descriptorValue.save()
-                NumRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[0]))
-                OrdRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[1]))
-                BoolRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[2]))
-                CatRxnDescriptorValue.objects.filter(reaction=rxn.reaction_ptr).exclude(pk__in=(dv.pk for dv in cdvs[3]))
-                return redirect('reactionlist')
-    else:
-        reactionForm = PerformedRxnForm(request.user, instance=reaction)
-        reactantsFormSetInst = ModelFormSet(CompoundQuantity, fields=('compound', 'role', 'amount'), canAdd=True, instances=reactants, canDelete=True)
-        descriptorFormSets = (
-            ModelFormSet(NumRxnDescriptorValue, formClass=NumRxnDescValForm, prefix='num', instances=numRxnDescriptorValues, canDelete=True),
-            ModelFormSet(OrdRxnDescriptorValue, formClass=OrdRxnDescValForm, prefix='ord', instances=ordRxnDescriptorValues, canDelete=True),
-            ModelFormSet(BoolRxnDescriptorValue, formClass=BoolRxnDescValForm, prefix='bool', instances=boolRxnDescriptorValues, canDelete=True),
-            ModelFormSet(CatRxnDescriptorValue, formClass=CatRxnDescValForm, prefix='cat', instances=catRxnDescriptorValues, canDelete=True)
-        )
-    return render(request, 'reaction_form.html', {'reaction_form':reactionForm, 'reactants_formset':reactantsFormSetInst, 'descriptor_formsets':descriptorFormSets}) 
+    for descLabel, urlName, descValClass, descValFormClass in descriptorClasses: 
+        descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
+        descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
+        descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals)}
+    return render(request, 'reaction_form.html', {'reaction_form': perfRxnForm, 'reactants_formset':cqFormset, 'descriptor_formsets':descriptorFormsets, 'reaction':reaction})
 
 @require_POST
 @login_required

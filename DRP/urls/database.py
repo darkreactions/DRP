@@ -35,7 +35,7 @@ urls = [
                                                                          'infoHeader':'Boolean Descriptor Values'
                                                                         },
                                                                         name="createBoolDescVals"),
-  url('^/entry_(?P<pk>\d+)/', DRP.views.reaction.editReaction, name='editReaction'),
+  url('^/entry_(?P<rxn_id>\d+)/', DRP.views.reaction.editReaction, name='editReaction'),
   url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
   url('^/invalidate$', DRP.views.reaction.invalidateReaction, name='invalidateReaction'),
   url('^/import/apiv1/(?P<component>[^//]*).xml', DRP.views.api1),
