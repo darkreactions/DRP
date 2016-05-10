@@ -108,7 +108,7 @@ def addCompoundDetails(request, rxn_id):
 def createNumDescVals(request, rxn_id):
     '''A view for adding custom numerical descriptor values to a reaction'''
     numDescVals = NumRxnDescriptorValue.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-    numDescValFormset = modelformset_factory(model=NumRxnDescriptorValue, fields=("descriptor", "value"), can_delete=True) 
+    numDescValFormset = modelformset_factory(model=NumRxnDescriptorValue, form=NumRxnDescValForm, can_delete=True) 
     #TODO specify custom form for reaction descriptor values which specifies manual descriptors only
     if request.method=="POST":
         formset = numDescValFormset(queryset=numDescVals, data=request.POST)
