@@ -29,17 +29,11 @@
     <div class="input_wrapper">
     {% if user.is_authenticated %}
       {% if reaction.labGroup in user.labgroup_set.all %}
-    	  <form action="{% url 'editReaction' reaction.pk %}">
-            {% csrf_token %}
-            {% performed_rxn_delete_form reaction %}
-            <input type="Submit" value="edit" />
-          </form> 
+    	  <a class="button" href="{% url 'editReaction' reaction.pk %}">edit</a>
 	  {% if not reaction.datasetrelation_set.exists %}
-    	  <form action="{% url 'deleteReaction' %}" method="post">
             {% csrf_token %}
             {% performed_rxn_delete_form reaction %}
             <input class="delete" type="Submit" value="delete" />
-          </form> 
         {% else %}
           <form action="{% url 'invalidateReaction' %}" method="post">
             {% csrf_token %}
