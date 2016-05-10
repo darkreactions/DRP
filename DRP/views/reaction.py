@@ -15,6 +15,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 class ListPerformedReactions(ListView):
     '''Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies'''
@@ -97,6 +98,8 @@ def addCompoundDetails(request, rxn_id):
                 cq.save()
             for cq in formset.deleted_objects:
                 CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
+            messages.success(request, 'Compound details successfully updated')
+            return redirect('editReaction', rxn_id)
     else:
         formset = CompoundQuantityFormset(queryset=compoundQuantities)
     return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':'Compound Quantities'})
@@ -119,6 +122,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
                 dv.save()
             for dv in formset.delete_objects:
                 descValClass.objects.filter(id=dv.id).delete()
+            return redirect('editReaction', rxn_id)
     else:
         formset = descValFormset(queryset=descVals)
     return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':infoHeader}) 
