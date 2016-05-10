@@ -13,9 +13,9 @@
     <h1 class="downloads">Downloads</h1>
     <ul class="downloads">
       <li><a href="{% url 'reactionlist_typed' '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
-      {% if user.is_authenticated %}<li><a href="{% url 'reactionlist_typed' '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url 'reactionlist_typed' '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
       <li><a href="{% url 'reactionlist_typed' '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
-      {% if user.is_authenticated %}<li><a href="{% url 'reactionlist_typed' '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url 'reactionlist_typed' '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
     </ul>
   </div>
 
