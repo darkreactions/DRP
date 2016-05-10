@@ -15,6 +15,7 @@
         {{ formset.as_ul }}
       </ol>
     <input type="submit" name="save" value="Save" />
+    <a href="{% url 'editReaction' rxn_id %}">Return to Reaction</a>
     </fieldset>
   </form> 
 {% endblock %}

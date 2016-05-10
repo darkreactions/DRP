@@ -85,23 +85,23 @@ def createReaction(request):
 @userHasLabGroup
 def addCompoundDetails(request, rxn_id):
     '''A view for adding compound details to a reaction''' 
-    compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    #TODO: Check that this reaction belongs in soem way to this user.
-    #TODO: Check the reaction even exists!
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True)
-    if request.method=="POST":
-        formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
-        if formset.is_valid():
-            compoundQuantities = formset.save(commit=False)
-            for cq in compoundQuantities:
-                cq.reaction=PerformedReaction.objects.get(id=rxn_id)
-                cq.save()
-            for cq in formset.deleted_objects:
-                CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
-            return redirect('editReaction', rxn_id)
+    if PerformedReaction.objects.filter(id=rxn_id).exists() and PerformedReaction.objects.filter(labGroup__in=request.user.labgroup_set.all()):
+        compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
+        CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True)
+        if request.method=="POST":
+            formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
+            if formset.is_valid():
+                compoundQuantities = formset.save(commit=False)
+                for cq in compoundQuantities:
+                    cq.reaction=PerformedReaction.objects.get(id=rxn_id)
+                    cq.save()
+                for cq in formset.deleted_objects:
+                    CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
+        else:
+            formset = CompoundQuantityFormset(queryset=compoundQuantities)
+        return render(request, 'reaction_cq_add.html', {'formset':formset, 'rxn_id':rxn_id})
     else:
-        formset = CompoundQuantityFormset(queryset=compoundQuantities)
-    return render(request, 'reaction_cq_add.html', {'formset':formset})
+        raise Http404("This reaction cannot be found")
 
 #TODO: Create views for each object creation separately (e.g. compound quantities) The formset objects can still be put onto the reaction edit page so long as they point to the right place.
 #TODO: Create a view for creating template reactions
