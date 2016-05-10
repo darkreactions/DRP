@@ -64,11 +64,13 @@ class ListPerformedReactions(ListView):
 #    context['filter_formset'] = self.filterFormSet
         return context
 
-#TODO: Create a view solely for the creation of reaction, without quantities etc.
+#TODO: Remove tests for old create reaction view and 
+# add ones for createReaction, editReaction, addCompoundDetails
 @login_required
 @hasSignedLicense
 @userHasLabGroup
 def createReaction(request):
+    '''A view designed to create performed reaction instances'''
     if request.method == "POST":
         perfRxnForm = PerformedRxnForm(request.user, data=request.POST)
         if perfRxnForm.is_valid():
@@ -78,12 +80,35 @@ def createReaction(request):
         perfRxnForm = PerformedRxnForm(request.user)
         return render(request, 'reaction_create.html', {'reaction_form':perfRxnForm}) 
 
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+def addCompoundDetails(request, rxn_id):
+    '''A view for adding compound details to a reaction''' 
+    compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
+    #TODO: Check that this reaction belongs in soem way to this user.
+    #TODO: Check the reaction even exists!
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True)
+    if request.method=="POST":
+        formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
+        if formset.is_valid():
+            compoundQuantities = formset.save(commit=False)
+            for cq in compoundQuantities:
+                cq.reaction=PerformedReaction.objects.get(id=rxn_id)
+                cq.save()
+            for cq in formset.deleted_objects:
+                CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
+            return redirect('editReaction', rxn_id)
+    else:
+        formset = CompoundQuantityFormset(queryset=compoundQuantities)
+    return render(request, 'reaction_cq_add.html', {'formset':formset})
+
 #TODO: Create views for each object creation separately (e.g. compound quantities) The formset objects can still be put onto the reaction edit page so long as they point to the right place.
 #TODO: Create a view for creating template reactions
 @login_required
 @hasSignedLicense
 @userHasLabGroup
-def reactionForm(request, pk=None):
+def editReaction(request, pk):
     '''A view designed to create performed reaction instances'''
     descFields = ('descriptor', 'value')
     if pk == None:

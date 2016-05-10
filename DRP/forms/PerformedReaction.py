@@ -31,6 +31,8 @@ class PerformedRxnForm(forms.ModelForm):
     self.fields['recommendation'].queryset = RecommendedReaction.objects.filter(labGroup__in=labGroups)
     self.fields['duplicateOf'].queryset = PerformedReaction.objects.filter(labGroup__in=labGroups)|PerformedReaction.objects.filter(public=True)
     self.fields['performedBy'].queryset = User.objects.filter(labgroup__in=labGroups)
+    self.fields['valid'].initial=False;
+    self.fields['valid'].help_text = "This should be left unchecked until descriptor data has been added (after save has been pressed)"
     if labGroups.exists():
       self.fields['labGroup'].empty_label = None 
   
