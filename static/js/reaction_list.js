@@ -13,7 +13,7 @@ function fetchRxn(ev) {
                 fetchRxn.waiting = false;
             }
         }
-        request.open("GET", "http://darkreactions.lavoisier.haverford.edu/database.html?reactions_only=1&page=" + fetchRxn.currentPage.toString());
+        request.open("GET", "/database.html?reactions_only=1&page=" + fetchRxn.currentPage.toString());
         request.send();
     }
 }
