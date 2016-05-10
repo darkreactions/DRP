@@ -5,7 +5,7 @@ from django.template import RequestContext
 from django.http import HttpResponseForbidden
 from django.template.loader import get_template
 from DRP.models import LicenseAgreement, License
-from DRP.models import LabGroup
+from DRP.models import LabGroup, PerformedReaction
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
@@ -37,6 +37,16 @@ def hasSignedLicense(view):
             return view(request, *args, **kwargs)
     
     return _hasSignedLicense
+
+def reactionExists(view):
+    """This decorator checks that a reaction exists before continuing with the internal view"""
+    def _reactionExists(request, rxn_id):
+        if PerformedReaction.objects.filter(id=rxn_id).exists() and PerformedReaction.objects.filter(labGroup__in=request.user.labgroup_set.all()):
+            return view(request, rxn_id)
+        else:
+            raise Http404("This reaction cannot be found")
+
+    return _reactionExists
 
 def labGroupSelected(dispatch_method):
     '''Ensures a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method'''

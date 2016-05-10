@@ -6,7 +6,7 @@ from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDesc
 from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
 from DRP.forms import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm  
 from django.utils.decorators import method_decorator
-from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
+from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
 from django.contrib.auth.decorators import login_required
 from django.forms.models import modelformset_factory
 from DRP.forms import ModelFormSet, FormSet
@@ -83,27 +83,72 @@ def createReaction(request):
 @login_required
 @hasSignedLicense
 @userHasLabGroup
+@reactionExists
 def addCompoundDetails(request, rxn_id):
     '''A view for adding compound details to a reaction''' 
-    if PerformedReaction.objects.filter(id=rxn_id).exists() and PerformedReaction.objects.filter(labGroup__in=request.user.labgroup_set.all()):
-        compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
-        CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True)
-        if request.method=="POST":
-            formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
-            if formset.is_valid():
-                compoundQuantities = formset.save(commit=False)
-                for cq in compoundQuantities:
-                    cq.reaction=PerformedReaction.objects.get(id=rxn_id)
-                    cq.save()
-                for cq in formset.deleted_objects:
-                    CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
-        else:
-            formset = CompoundQuantityFormset(queryset=compoundQuantities)
-        return render(request, 'reaction_cq_add.html', {'formset':formset, 'rxn_id':rxn_id})
+    compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True)
+    if request.method=="POST":
+        formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
+        if formset.is_valid():
+            compoundQuantities = formset.save(commit=False)
+            for cq in compoundQuantities:
+                cq.reaction=PerformedReaction.objects.get(id=rxn_id)
+                cq.save()
+            for cq in formset.deleted_objects:
+                CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
     else:
-        raise Http404("This reaction cannot be found")
+        formset = CompoundQuantityFormset(queryset=compoundQuantities)
+    return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':'Compound Quantities'})
 
-#TODO: Create views for each object creation separately (e.g. compound quantities) The formset objects can still be put onto the reaction edit page so long as they point to the right place.
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+@reactionExists
+def createNumDescVals(request, rxn_id):
+    '''A view for adding custom numerical descriptor values to a reaction'''
+    numDescVals = NumRxnDescriptorValue.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
+    numDescValFormset = modelformset_factory(model=NumRxnDescriptorValue, fields=("descriptor", "value"), can_delete=True) 
+    #TODO specify custom form for reaction descriptor values which specifies manual descriptors only
+    if request.method=="POST":
+        formset = numDescValFormset(queryset=numDescVals, data=request.POST)
+        if formset.is_valid():
+            descVals = formset.save(commit=False)
+            for dv in descVals:
+                dv.reaction=PerformedReactions.objects.get(id=rxn_id)
+                dv.save()
+            for dv in formset.delete_objects:
+                NumRxnDescriptorValue.objects.filter(id=dv.id).delete()
+    else:
+        formset = numDescValFormset(queryset=numDescVals)
+    return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':"Numerical Reaction Descriptors"}) 
+        
+            
+
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+@reactionExists
+def createOrdDescVals(request, rxn_id):
+    pass
+
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+@reactionExists
+def createCatDescVals(request, rxn_id):
+    pass
+
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+@reactionExists
+def createBoolDescvals(request, rxn_id):
+    pass
+
+def createTemplateRxn(request):
+    pass
+
 #TODO: Create a view for creating template reactions
 @login_required
 @hasSignedLicense

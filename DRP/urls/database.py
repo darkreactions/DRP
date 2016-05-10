@@ -8,6 +8,7 @@ urls = [
   url('^/$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
   url('^/add.html', DRP.views.reaction.createReaction, name='newReaction'),
   url('^/entry_(?P<rxn_id>\d+)/compoundquantities.html', DRP.views.reaction.addCompoundDetails, name="addCompoundDetails"),
+  url('^/entry_(?P<rxn_id>\d+)/num_desc_vals.html', DRP.views.reaction.createNumDescVals, name="createNumDescVals"),
   url('^/entry_(?P<pk>\d+)/', DRP.views.reaction.editReaction, name='editReaction'),
   url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
   url('^/invalidate$', DRP.views.reaction.invalidateReaction, name='invalidateReaction'),
