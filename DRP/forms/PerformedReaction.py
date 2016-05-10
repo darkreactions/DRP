@@ -29,6 +29,7 @@ class PerformedRxnForm(forms.ModelForm):
     labGroups = user.labgroup_set.all()
     self.fields['labGroup'].queryset = labGroups
     self.fields['recommendation'].queryset = RecommendedReaction.objects.filter(labGroup__in=labGroups)
+    self.fields['recommendation'].widget = forms.HiddenInput()
     self.fields['duplicateOf'].queryset = PerformedReaction.objects.filter(labGroup__in=labGroups)|PerformedReaction.objects.filter(public=True)
     self.fields['performedBy'].queryset = User.objects.filter(labgroup__in=labGroups)
     self.fields['valid'].initial=False;
