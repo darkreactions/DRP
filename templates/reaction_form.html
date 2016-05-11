@@ -6,13 +6,6 @@
 
 {% block content %}
   <h1>Edit Reaction Data</h1>
-  {% if messages %}
-    <ol class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-    </ol>
-  {% endif %}
   <form class="reaction-form" action="{{ request.path }}" method="post">
     {% csrf_token %}
     <fieldset>

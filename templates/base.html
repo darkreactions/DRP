@@ -89,6 +89,13 @@
      </div>
     </nav>
     {% block additional_header %}{% endblock %}
+  {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="message_text">{{ message }}</span></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
   </header>
   <main>
     {% block content %}{% endblock %}
