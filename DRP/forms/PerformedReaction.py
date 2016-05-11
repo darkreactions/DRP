@@ -79,7 +79,7 @@ class PerformedRxnInvalidateForm(forms.ModelForm):
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
-    super(PerformedRxnDeleteForm, self).__init__(*args, **kwargs)
+    super(PerformedRxnInvalidateForm, self).__init__(*args, **kwargs)
     self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
 
   def save(self):

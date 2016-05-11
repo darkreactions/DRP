@@ -21,8 +21,9 @@
 
 {% endif %}
 {% if reactions|length > 0 %}
+<ul class="reactions">
   {% include "reactions_divs.html" %}
-
+</ul>
 {% if paginator.num_pages > 1 %}
 <nav id="pagination">
     {% if page_obj.has_previous %}
