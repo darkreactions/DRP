@@ -61,15 +61,28 @@ li.reaction {
 }
 
 td.delete, td.invalidate {
-    float:right;
+ float:right;
+}
+
+td.delete:hover, td.invalidate:hover, a.edit:hover{
+ opacity:0.7;
 }
 
 tr.quantities {
     float:left;
 }
 
+tr.quantities th, tr.quantities, td {
+ padding-left:0.5em;
+ padding-right:0.5em;
+}
+
 tr.notes {
     clear:both;
+}
+
+a.edit {
+ display:inline-block;
 }
 
 ol.pagination {
@@ -83,28 +96,6 @@ ol.pagination li {
  float:left;
  margin:0 1em;
  color: #20344b;
-}
-
-input[type="submit"], a.button:link, a.button:visited, a.button:hover, a.button:active {
- font-family:"Open Sans", Arial;
- text-decoration:none;
- display:inline-block;
- font-size:11pt;
- padding:0;
- text-align:center;
- color:white;
- background-color: #8dabce;
- border:1px solid #658ebd;
- border-radius:10px;
- width:7em;
- height:100%;
- cursor:default;
- box-sizing:border-box;
- line-height:1em;
- vertical-align:text-top;
- white-space:normal;
- text-rendering:auto;
- height:21px;
 }
 
 .input_wrapper form {

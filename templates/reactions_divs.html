@@ -10,23 +10,25 @@
                 <td>{{ reaction.reference }}</td>
                 {% if user.is_authenticated %}
                     {% if reaction.labGroup in user.labgroup_set.all %}
-    	                <td><a class="button" href="{% url 'editReaction' reaction.pk %}">edit</a></td>
+    	                <td><a class="edit" href="{% url 'editReaction' reaction.pk %}"><img src="/static/icons/edit.png" alt="edit this reaction" height="25" width="25" title="edit this reaction"/></a></td>
 	                    {% if not reaction.datasetrelation_set.exists %}
                             <td class="delete">
                                 <form action="{% url 'deleteReaction' %}" method="post">
                                     {% csrf_token %}
                                     {% performed_rxn_delete_form reaction %}
-                                    <input type="Submit" value="delete" />
+                                    <input type="image" src="/static/icons/delete.png" alt="delete this reaction" height="25" width="25"/>
                                 </form>
                             </td>
                         {% endif %}
+                        {% if reaction.valid %}
                         <td class="invalidate">
                             <form action="{% url 'invalidateReaction' %}" method="post">
                                 {% csrf_token %}
                                 {% performed_rxn_invalidate_form reaction %}
-                                <input type="Submit" value="invalidate" />
+                                <input type="image" src="/static/icons/invalidate.png" alt="invalidate this reaction" height="25" width="25"/>
                             </form>
                         </td>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </tr>
