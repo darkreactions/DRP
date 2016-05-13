@@ -12,7 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.forms.models import modelformset_factory
 from DRP.forms import ModelFormSet, FormSet
 from django.forms.formsets import TOTAL_FORM_COUNT
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from helpers import redirect
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
@@ -78,7 +79,7 @@ def createReaction(request):
         if perfRxnForm.is_valid():
             rxn = perfRxnForm.save()
             messages.success(request, "Reaction Created Successfully")
-            return redirect('addCompoundDetails', rxn.id);
+            return redirect('addCompoundDetails', rxn.id, params={'creating':True});
     else:
         perfRxnForm = PerformedRxnForm(request.user)
     return render(request, 'reaction_create.html', {'reaction_form':perfRxnForm}) 
@@ -101,7 +102,10 @@ def addCompoundDetails(request, rxn_id):
             for cq in formset.deleted_objects:
                 CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
             messages.success(request, 'Compound details successfully updated')
-            return redirect('editReaction', rxn_id)
+            if 'creating' in request.GET:
+                return redirect('editReaction', rxn_id)
+            else:
+                return redirect('createNumDescVals', rxn_id, params={'creating':True})
     else:
         formset = CompoundQuantityFormset(queryset=compoundQuantities)
     return render(request, 'reaction_compound_add.html', {'reactants_formset':formset, 'reaction':PerformedReaction.objects.get(id=rxn_id),})
@@ -119,7 +123,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
         if formset.is_valid():
             descVals = formset.save(commit=False)
             for dv in descVals:
-                dv.reaction=PerformedReactions.objects.get(id=rxn_id)
+                dv.reaction=PerformedReaction.objects.get(id=rxn_id)
                 dv.save()
             for dv in formset.deleted_objects:
                 descValClass.objects.filter(id=dv.id).delete()
@@ -158,8 +162,9 @@ def editReaction(request, rxn_id):
         descriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual')
         if descriptors.exists():
             descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-            descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
-            descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in descriptors])}
+            initialDescriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
+            descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count()) 
+            descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in initialDescriptors])}
     return render(request, 'reaction_edit.html', {'reaction_form': perfRxnForm, 'reactants_formset':cqFormset, 'descriptor_formsets':descriptorFormsets, 'reaction':reaction})
 
 @require_POST

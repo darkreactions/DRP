@@ -1,0 +1,14 @@
+
+  <form action="{% url 'addCompoundDetails' reaction.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+    <legend>Reactant Details</legend>
+    <ol class="reactants_list">
+        {% for reactant_form in reactants_formset %}
+	  <li><ol class="reactant_list"> {{ reactant_form.as_ul }} </ol></li>
+        {% endfor %}
+    </ol>
+    {{ reactants_formset.management_form.as_ul }}
+    <input type="submit" value="Save" />
+   </fieldset>
+  </form>

@@ -1,0 +1,10 @@
+{% extends 'reactions.html' %}
+
+{% block additional_head %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/reactionForm.css" />
+{% endblock %}
+
+{% block content %}
+  <h1>Add Reaction Compound Details</h1>
+  {% include "reactant_form.html" %}
+{% endblock %}
