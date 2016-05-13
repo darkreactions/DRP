@@ -6,7 +6,7 @@
 
 {% block content %}
   <h1>Add Reaction Details</h1>
-  <form class="reaction-form" action="{{ request.path }}" method="post">
+  <form class="reaction-form" action="{{ request.get_full_path }}" method="post">
     {% csrf_token %}
     <fieldset>
       <legend> {{ info_header }}</legend>

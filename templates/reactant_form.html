@@ -1,5 +1,5 @@
 
-  <form action="{% url 'addCompoundDetails' reaction.id %}" method="post">
+  <form action="{% url 'addCompoundDetails' reaction.id %}{% if request.GET|length > 0 %}?{{request.GET.urlencode}}{% endif %}" method="post">
     {% csrf_token %}
     <fieldset>
     <legend>Reactant Details</legend>
