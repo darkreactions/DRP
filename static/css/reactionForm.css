@@ -52,6 +52,8 @@ legend {
 }
 
 input[type="submit"] {
+ display:block;
+ clear:both;
  padding:0;
  padding-left:1em;
  padding-right:1em;
@@ -60,7 +62,8 @@ input[type="submit"] {
  border:1px solid #658ebd;
  border-radius:1em;
  height:2em;
- margin: 0 45%;
+ margin-left:auto;
+ margin-right:auto;
 }
 
 form>fieldset ol {
