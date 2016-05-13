@@ -53,15 +53,13 @@ legend {
 
 input[type="submit"] {
  padding:0;
+ padding-left:1em;
+ padding-right:1em;
  color:white;
  background-color: #8dabce;
  border:1px solid #658ebd;
  border-radius:1em;
- width:7em;
  height:2em;
-}
-
-input[value="Save"] {
  margin: 0 45%;
 }
 
