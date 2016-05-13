@@ -76,7 +76,7 @@ form>fieldset ol {
  width:30%;
 }
 
-.reactant_list li:last-of-type {
+.reactant_list li:nth-child(4) {
  width:5%;
 }
 .reactant_list input:not([type="submit"]):not([type="checkbox"]), .reactant_list select, .reactant_list textarea{

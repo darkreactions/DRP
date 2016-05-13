@@ -91,7 +91,7 @@ def createReaction(request):
 def addCompoundDetails(request, rxn_id):
     '''A view for adding compound details to a reaction''' 
     compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True, extra=6)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=('creating' not in request.GET), extra=6)
     if request.method=="POST":
         formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
         if formset.is_valid():
@@ -103,9 +103,9 @@ def addCompoundDetails(request, rxn_id):
                 CompoundQuantity.objects.filter(id=cq.id).delete() #copes with a bug in deletion from django
             messages.success(request, 'Compound details successfully updated')
             if 'creating' in request.GET:
-                return redirect('editReaction', rxn_id)
-            else:
                 return redirect('createNumDescVals', rxn_id, params={'creating':True})
+            else:
+                return redirect('editReaction', rxn_id)
     else:
         formset = CompoundQuantityFormset(queryset=compoundQuantities)
     return render(request, 'reaction_compound_add.html', {'reactants_formset':formset, 'reaction':PerformedReaction.objects.get(id=rxn_id),})
