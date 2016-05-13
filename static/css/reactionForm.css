@@ -102,6 +102,10 @@ form>fieldset ol {
  box-sizing:border-box;
 }
 
+.descvalform select {
+    width:15em;
+}
+
 ul.errorlist {
  background-color:#ededed;
  list-style:none;
@@ -109,4 +113,13 @@ ul.errorlist {
  border:5px solid rgb(139, 44, 39);
  padding-left:1em;
  padding-right:1em;
+}
+
+ul.errorlist li {
+ padding-top:0.5em;
+ padding-bottom:0.5em;
+}
+
+ul.errorlist li:not(:first-child) {
+ border-top:1px solid rgb(139, 44, 39);
 }

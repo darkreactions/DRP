@@ -2,7 +2,6 @@
 
 import urllib
 from django.views.generic import CreateView, ListView, UpdateView
-from django.core.urlresolvers import reverse
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
@@ -79,7 +78,7 @@ def createReaction(request):
         if perfRxnForm.is_valid():
             rxn = perfRxnForm.save()
             messages.success(request, "Reaction Created Successfully")
-            return redirect(reverse('addCompoundDetails', args=[rxn.id]) + '?{}'.format(urllib.urlencode({'creating':True})))
+            return redirect('editReaction', rxn.id);
     else:
         perfRxnForm = PerformedRxnForm(request.user)
     return render(request, 'reaction_create.html', {'reaction_form':perfRxnForm}) 
