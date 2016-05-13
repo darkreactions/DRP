@@ -1,6 +1,8 @@
 '''A module containing views pertinent to the manipulation of reaction objects'''
 
+import urllib
 from django.views.generic import CreateView, ListView, UpdateView
+from django.core.urlresolvers import reverse
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
@@ -76,10 +78,11 @@ def createReaction(request):
         perfRxnForm = PerformedRxnForm(request.user, data=request.POST)
         if perfRxnForm.is_valid():
             rxn = perfRxnForm.save()
-            return redirect('editReaction', rxn.id)
+            messages.success(request, "Reaction Created Successfully")
+            return redirect(reverse('addCompoundDetails', args=[rxn.id]) + '?{}'.format(urllib.urlencode({'creating':True})))
     else:
         perfRxnForm = PerformedRxnForm(request.user)
-        return render(request, 'reaction_create.html', {'reaction_form':perfRxnForm}) 
+    return render(request, 'reaction_create.html', {'reaction_form':perfRxnForm}) 
 
 @login_required
 @hasSignedLicense

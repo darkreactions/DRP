@@ -9,11 +9,12 @@
     {% csrf_token %}
     <fieldset>
       <legend>Reaction Details</legend>
+      {{ reaction_form.non_field_errors }}
       <table class="reactionformtable">
         <tbody class="flleft">
             {% for field in reaction_form.visible_fields %}
                     {% if forloop.counter == 3 %} </tbody><tbody class="flright">{% endif %}
-                <tr><th>{{ field.label_tag }}</th><td>{{ field }}</td></tr>
+                <tr><th>{{ field.label_tag }}</th><td>{{ field }}{{ field.errors }}</td></tr>
             {% endfor %}
         </tbody>
             {% for field in reaction_form.hidden_fields %}

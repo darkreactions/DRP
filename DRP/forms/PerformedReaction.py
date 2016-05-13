@@ -1,5 +1,6 @@
 '''A module containing code pertaining to forms for the reaction classes'''
 from django import forms
+from django.core.exceptions import ValidationError
 from DRP.models import PerformedReaction, RecommendedReaction
 from DRP.models import DataSetRelation
 from django.contrib.auth.models import User
@@ -39,9 +40,9 @@ class PerformedRxnForm(forms.ModelForm):
   
   def clean(self):
     self.cleaned_data = super(PerformedRxnForm, self).clean()
-    if 'performedBy' in self.cleaned_data:
-        if not self.fields['labGroup'] in (self.user.labgroup_set.all()| self.cleaned_data['performedBy'].labgroup_set.all()):
-            raise ValidationError('The selected labGroup does not contain both the inputting and experimental user.', 'invalid_lg')
+    if 'performedBy' in self.cleaned_data and (self.cleaned_data['performedBy'] is not None):
+        if not self.cleaned_data['labGroup'] in (self.user.labgroup_set.all()| self.cleaned_data['performedBy'].labgroup_set.all()):
+            raise ValidationError({'labGroup':'The selected lab group does not contain both the inputting and experimental user.'}, 'invalid_lg')
     return self.cleaned_data
     
 
