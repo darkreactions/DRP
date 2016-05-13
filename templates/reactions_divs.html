@@ -51,6 +51,11 @@
                     </table>
                 </td>
             </tr>
+            {% if reaction.notes != "" %}
+            <tr>
+                <th>Notes</th><td>{{ reaction.notes }}</td>
+            </tr>
+            {% endif %}
         </tbody>
         <tbody class="flright">
             <tr>
@@ -65,11 +70,6 @@
             {% if reaction.performedDateTime != None %}
             <tr>
                 <th>Performed Date</th><td>{{ reaction.performedDateTime }}</td>
-            </tr>
-            {% endif %}
-            {% if reaction.notes != "" %}
-            <tr>
-                <th>Notes</th><td>{{ reaction.notes }}</td>
             </tr>
             {% endif %}
         </tbody>

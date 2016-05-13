@@ -5,15 +5,22 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Add Reaction Data</h1>
-  <form class="reaction-form" action="{{ request.path }}" method="post">
+   <form class="reaction-form" action="{{ request.path }}" method="post">
     {% csrf_token %}
     <fieldset>
       <legend>Reaction Details</legend>
-      <ol>
-        {{ reaction_form.as_ul }}
-      </ol>
-    <input type="submit" name="save" value="Save" />
+      <table class="reactionformtable">
+        <tbody class="flleft">
+            {% for field in reaction_form.visible_fields %}
+                    {% if forloop.counter == 3 %} </tbody><tbody class="flright">{% endif %}
+                <tr><th>{{ field.label_tag }}</th><td>{{ field }}</td></tr>
+            {% endfor %}
+        </tbody>
+            {% for field in reaction_form.hidden_fields %}
+            {{ field }}
+            {% endfor %}
+      </table>
+    <input type="submit" value="Save" />
     </fieldset>
-  </form> 
+  </form>
 {% endblock %}
