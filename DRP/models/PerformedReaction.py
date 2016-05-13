@@ -51,7 +51,7 @@ class PerformedReaction(Reaction):
     convertedLegacyRef = models.CharField(max_length=40, null=True, blank=True,
                                           validators=[
                                                         RegexValidator(
-                                                            '[a-z0-9._]*[a-z][a-z0-9._]*',
+                                                            '^[a-z0-9._]*[a-z][a-z0-9._]*$',
                                                             ('Please include only values which are limited to '
                                                              'alphanumeric characters, underscores, periods, '
                                                              'and must include at least one '
@@ -65,7 +65,7 @@ class PerformedReaction(Reaction):
                 max_length=40,
                 validators=[
                     RegexValidator(
-                        '[a-z0-9._]*[a-z][a-z0-9._]*',
+                        '^[a-z0-9\._]*[a-z][a-z0-9\._]*$',
                         ('Please include only values which are limited to '
                          'alphanumeric characters, underscores, periods, '
                          'and must include at least one '
@@ -75,6 +75,7 @@ class PerformedReaction(Reaction):
                 )
 
     def clean(self):
+        super(PerformedReaction, self).clean()
         if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
             raise ValidationError({'reference':'This reference has already been used for this lab group.'}, code="duplicate_reference")
 

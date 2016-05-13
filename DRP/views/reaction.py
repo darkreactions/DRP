@@ -161,7 +161,7 @@ def editReaction(request, rxn_id):
             descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
             descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
             descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in descriptors])}
-    return render(request, 'reaction_form.html', {'reaction_form': perfRxnForm, 'reactants_formset':cqFormset, 'descriptor_formsets':descriptorFormsets, 'reaction':reaction})
+    return render(request, 'reaction_edit.html', {'reaction_form': perfRxnForm, 'reactants_formset':cqFormset, 'descriptor_formsets':descriptorFormsets, 'reaction':reaction})
 
 @require_POST
 @login_required

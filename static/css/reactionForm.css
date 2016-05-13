@@ -101,3 +101,12 @@ form>fieldset ol {
  width:50%;
  box-sizing:border-box;
 }
+
+ul.errorlist {
+ background-color:#ededed;
+ list-style:none;
+ border-radius:1em;
+ border:5px solid rgb(139, 44, 39);
+ padding-left:1em;
+ padding-right:1em;
+}
