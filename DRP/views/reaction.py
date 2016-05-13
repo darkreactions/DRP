@@ -78,7 +78,7 @@ def createReaction(request):
         if perfRxnForm.is_valid():
             rxn = perfRxnForm.save()
             messages.success(request, "Reaction Created Successfully")
-            return redirect('editReaction', rxn.id);
+            return redirect('addCompoundDetails', rxn.id);
     else:
         perfRxnForm = PerformedRxnForm(request.user)
     return render(request, 'reaction_create.html', {'reaction_form':perfRxnForm}) 
@@ -90,7 +90,7 @@ def createReaction(request):
 def addCompoundDetails(request, rxn_id):
     '''A view for adding compound details to a reaction''' 
     compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True, extra=6)
     if request.method=="POST":
         formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
         if formset.is_valid():
@@ -104,7 +104,7 @@ def addCompoundDetails(request, rxn_id):
             return redirect('editReaction', rxn_id)
     else:
         formset = CompoundQuantityFormset(queryset=compoundQuantities)
-    return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':'Compound Quantities'})
+    return render(request, 'reaction_compound_add.html', {'reactants_formset':formset, 'reaction':PerformedReaction.objects.get(id=rxn_id),})
 
 @login_required
 @hasSignedLicense
