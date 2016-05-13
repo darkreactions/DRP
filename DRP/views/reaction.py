@@ -144,18 +144,20 @@ def editReaction(request, rxn_id):
     else:
         perfRxnForm = PerformedRxnForm(request.user, instance=reaction)
     compoundQuantities=CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=True, extra=6)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("compound", "role", "amount"), can_delete=True, extra=1)
     cqFormset = CompoundQuantityFormset(queryset=compoundQuantities) 
     descriptorFormsets = {}
     descriptorClasses=(('Numeric Descriptors', 'createNumDescVals', NumRxnDescriptorValue, NumRxnDescValForm),
-                       ('Ordinal Descriptors', 'createNumDescVals', OrdRxnDescriptorValue, OrdRxnDescValForm),
-                       ('Boolean Descriptors', 'createNumDescVals', BoolRxnDescriptorValue, BoolRxnDescValForm),
-                       ('Categorical Descriptors', 'createNumDescVals', CatRxnDescriptorValue, CatRxnDescValForm))
+                       ('Ordinal Descriptors', 'createOrdDescVals', OrdRxnDescriptorValue, OrdRxnDescValForm),
+                       ('Boolean Descriptors', 'createBoolDescVals', BoolRxnDescriptorValue, BoolRxnDescValForm),
+                       ('Categorical Descriptors', 'createCatDescVals', CatRxnDescriptorValue, CatRxnDescValForm))
 
     for descLabel, urlName, descValClass, descValFormClass in descriptorClasses: 
-        descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-        descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
-        descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals)}
+        descriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual')
+        if descriptors.exists():
+            descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
+            descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
+            descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in descriptors])}
     return render(request, 'reaction_form.html', {'reaction_form': perfRxnForm, 'reactants_formset':cqFormset, 'descriptor_formsets':descriptorFormsets, 'reaction':reaction})
 
 @require_POST

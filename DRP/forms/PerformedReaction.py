@@ -17,8 +17,7 @@ class PerformedRxnForm(forms.ModelForm):
   '''A form for creating performed reaction instances in teh databases'''
  
   class Meta:
-    fields=('reference', 'performedBy', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf', 'valid') 
-    #TODO: add tooltip to validity field for initial reaction creation step.
+    fields=('reference','notes', 'performedBy', 'labGroup', 'duplicateOf', 'performedDateTime','public', 'valid',  'recommendation') 
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
@@ -32,8 +31,9 @@ class PerformedRxnForm(forms.ModelForm):
     self.fields['recommendation'].widget = forms.HiddenInput()
     self.fields['duplicateOf'].queryset = PerformedReaction.objects.filter(labGroup__in=labGroups)|PerformedReaction.objects.filter(public=True)
     self.fields['performedBy'].queryset = User.objects.filter(labgroup__in=labGroups)
-    self.fields['valid'].initial=False;
-    self.fields['valid'].help_text = "This should be left unchecked until descriptor data has been added (after save has been pressed)"
+    if not kwargs.get('instance', False):
+        self.fields['valid'].initial=False;
+        self.fields['valid'].widget = forms.HiddenInput() #a little hacky, but this is faster than making another form...
     if labGroups.exists():
       self.fields['labGroup'].empty_label = None 
   

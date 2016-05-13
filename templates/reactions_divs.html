@@ -32,39 +32,43 @@
                     {% endif %}
                 {% endif %}
             </tr>
+        </tbody>
+        <tbody class="fleft">
             <tr class="quantities">
                 <th>Quantities</th>
                 <td>
                     <table>
-                        <thead><th>Compound Role</th><th>Compound</th><th>Quantity</th></thead>
+                        <thead><th>Compound</th><th>Quantity</th><th>Role</th></thead>
                         <tbody>
                             {% for quantity in reaction.compoundquantity_set.all %}
                             <tr>
-                                <td>{{ quantity.role.label }}</td>
                                 <td>{{ quantity.compound.name }}</td>
                                 <td>{{ quantity.amount }} mmoles</td>
+                                <td>{{ quantity.role.label }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </td>
             </tr>
-            <tr class="flright">
+        </tbody>
+        <tbody class="flright">
+            <tr>
                 <th>Entered by</th><td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
             </tr>
-            <tr class="flright"><th>Inserted Date</th><td>{{ reaction.insertedDateTime }}</td></tr>
+            <tr><th>Inserted Date</th><td>{{ reaction.insertedDateTime }}</td></tr>
             {% if reaction.performedBy != None %}
-            <tr class="flright">
+            <tr>
                 <th>Performed by</th><td>{{ reaction.performedBy.first_name }} {{ reaction.performedBy.last_name }}</td>
             </tr>
             {% endif %}
             {% if reaction.performedDateTime != None %}
-            <tr class="flright">
+            <tr>
                 <th>Performed Date</th><td>{{ reaction.performedDateTime }}</td>
             </tr>
             {% endif %}
             {% if reaction.notes != "" %}
-            <tr class="notes">
+            <tr>
                 <th>Notes</th><td>{{ reaction.notes }}</td>
             </tr>
             {% endif %}

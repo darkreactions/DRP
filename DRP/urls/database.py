@@ -28,7 +28,7 @@ urls = [
                                                                          'descValFormClass':CatRxnDescValForm,
                                                                          'infoHeader':'Categorical Descriptor Values'
                                                                         },
-                                                                        name="createOrdDescVals"),
+                                                                        name="createCatDescVals"),
   url('^/entry_(?P<rxn_id>\d+)/bool_desc_vals.html', DRP.views.reaction.createGenDescVal,
                                                                         {'descValClass':BoolRxnDescriptorValue, 
                                                                          'descValFormClass':BoolRxnDescValForm,

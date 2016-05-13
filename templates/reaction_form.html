@@ -1,7 +1,7 @@
 {% extends 'reactions.html' %}
 
 {% block additional_head %}
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/reactionForm.css" />
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
 {% endblock %}
 
 {% block content %}
@@ -10,9 +10,17 @@
     {% csrf_token %}
     <fieldset>
       <legend>Reaction Details</legend>
-      <ol>
-        {{ reaction_form.as_ul }}
-      </ol>
+      <table class="reactionformtable">
+        <tbody class="flleft">
+            {% for field in reaction_form.visible_fields %}
+                    {% if forloop.counter == 3 %} </tbody><tbody class="flright">{% endif %}
+                <tr><th>{{ field.label_tag }}</th><td>{{ field }}</td></tr>
+            {% endfor %}
+        </tbody>
+            {% for field in reaction_form.hidden_fields %}
+            {{ field }}
+            {% endfor %}
+      </table>
     <input type="submit" value="Save" />
     </fieldset>
   </form>
@@ -20,23 +28,25 @@
     {% csrf_token %}
     <fieldset>
     <legend>Reactant Details</legend>
-    <ol>
+    <ol class="reactants_list">
         {% for reactant_form in reactants_formset %}
-	  <li><ol> {{ reactant_form.as_ul }} </ol></li>
+	  <li><ol class="reactant_list"> {{ reactant_form.as_ul }} </ol></li>
         {% endfor %}
     </ol>
     {{ reactants_formset.management_form.as_ul }}
     <input type="submit" value="Save" />
    </fieldset>
   </form>
+{% spaceless %}
   {% for label, formset in descriptor_formsets.items %}
-    <form action="{% url formset.url reaction.id %}" method="post">
+    
+    <form class="descvalform" action="{% url formset.url reaction.id %}" method="post">
     {% csrf_token %}
     <fieldset>
         <legend>{{ label }}</legend>
         <ol>
             {% for form in formset.formset %}
-	        <li><ol> {{form.as_ul }} </ol></li>
+	        <li><ol class="descvallist"> {{form.as_ul }} </ol></li>
             {% endfor %}
         </ol>
         {{formset.formset.management_form.as_ul }}
@@ -44,4 +54,5 @@
     </fieldset>
     </form>
   {% endfor %} 
+{% endspaceless %}
 {% endblock %}

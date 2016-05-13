@@ -57,7 +57,9 @@ li.reaction {
 }
 
 .flright {
+ float:right;
  text-align:right;
+ width:50%;
 }
 
 td.delete, td.invalidate {
@@ -68,8 +70,9 @@ td.delete:hover, td.invalidate:hover, a.edit:hover{
  opacity:0.7;
 }
 
-tr.quantities {
-    float:left;
+.fleft {
+ float:left;
+ width:50%;
 }
 
 tr.quantities th, tr.quantities, td {
