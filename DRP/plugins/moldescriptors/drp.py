@@ -72,9 +72,9 @@ for period_num in range(1,7):
         }
         
 for valence_num in range(1,8):
-    _descriptorDict['boolean_valence_{}'.format(period_num)] = {
+    _descriptorDict['boolean_valence_{}'.format(valence_num)] = {
         'type': 'bool',
-        'name': 'Presence of elements with valence {}'.format(period_num),
+        'name': 'Presence of elements with valence {}'.format(valence_num),
         'calculatorSoftware':'DRP',
         'calculatorSoftwareVersion':'1.0',
         }
