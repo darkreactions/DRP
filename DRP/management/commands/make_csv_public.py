@@ -4,6 +4,7 @@ import csv
 import reimport_reactions
 
 class Command(BaseCommand):
+    help='Make reactions from a csv public. References should be in the first column'
     def add_arguments(self, parser):
         parser.add_argument('filename', help='Path to csv file.')
 

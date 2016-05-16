@@ -6,7 +6,7 @@ from DRP.models import PerformedReaction
 import reimport_reactions
     
 class Command(BaseCommand):
-    help = 'Ports database from pre-0.02 to 0.02'
+    help = 'Deletes reactions from a tsv file'
 
     def add_arguments(self, parser):
         parser.add_argument('directory', help='The directory where the tsv files are')
