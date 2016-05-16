@@ -85,6 +85,15 @@ def make_dict():
                             'maximum': None,
                             'minimum': None,
                         }
+                        
+            _descriptorDict['{}_{}_{}_any'.format(compoundRole.label, descriptor.csvHeader, value)] = {
+                    'type': 'bool',
+                    'name': 'Whether any reactants have value True for descriptor "{}" in compound role {}.'.format(
+                            value, descriptor.name, compoundRole.label),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': '1.0',
+                }
+            
         for descriptor in DRP.models.NumMolDescriptor.objects.all():
             _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')] = {
                 'type': 'num',
