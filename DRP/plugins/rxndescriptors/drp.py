@@ -123,6 +123,7 @@ def make_dict():
     descriptorDict = setup(_descriptorDict)
     return descriptorDict
 
+# TODO this seems like we're repeating ourselves (below)
 
 def delete_descriptors_many(reaction_set, descriptorDict):
     # This could be the same as delete descriptors if we're ok with deleting the descriptor even if not
@@ -156,12 +157,16 @@ def delete_descriptors_many(reaction_set, descriptorDict):
                 for i in (True, False): #  because Still python...
                     descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)])
                     descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)])
+                    descriptors_to_delete.append(descriptorDict['{}_{}_{}_any'.format(compoundRole.label, descriptor.csvHeader, i)])
             for descriptor in DRP.models.CatMolDescriptor.objects.all():
                 for permValue in descriptor.permittedValues.all():
                     descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
                     descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
 
-    DRP.models.NumRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=descriptors_to_delete).delete()
+    DRP.models.NumRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, NumRxnDescriptor)]).delete()
+    DRP.models.BoolRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, BoolRxnDescriptor)]).delete()
+    DRP.models.OrdRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, OrdRxnDescriptor)]).delete()
+    DRP.models.CatRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, CatRxnDescriptor)]).delete()
 
 def delete_descriptors(reaction, descriptorDict):
     allCompoundQuantities = DRP.models.CompoundQuantity.objects.filter(reaction=reaction)
@@ -198,6 +203,7 @@ def delete_descriptors(reaction, descriptorDict):
                     for i in (True, False): #  because Still python...
                         descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)])
                         descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)])
+                    descriptors_to_delete.append(descriptorDict['{}_{}_{}_any'.format(compoundRole.label, descriptor.csvHeader, i)])
             for descriptor in DRP.models.CatMolDescriptor.objects.all():
                 descriptorValues = DRP.models.CatMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
@@ -206,8 +212,10 @@ def delete_descriptors(reaction, descriptorDict):
                         descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
 
             
-    DRP.models.NumRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=descriptors_to_delete).delete()
-
+    DRP.models.NumRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, NumRxnDescriptor)]).delete()
+    DRP.models.BoolRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, BoolRxnDescriptor)]).delete()
+    DRP.models.OrdRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, OrdRxnDescriptor)]).delete()
+    DRP.models.CatRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, CatRxnDescriptor)]).delete()
 
 
 def calculate_many(reaction_set, verbose=False):
@@ -252,6 +260,7 @@ def _calculate(reaction, descriptorDict, verbose=False):
     allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
 
     vals_to_create = []
+    bool_vals_to_create = []
     for element in elements:
         n = num(
             reaction=reaction,
@@ -363,7 +372,7 @@ def _calculate(reaction, descriptorDict, verbose=False):
                             reaction=reaction,
                             descriptor=descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)],
                         )
-                        n.value=sum(1 for value in descriptorValues if value.value == i)
+                        n.value = sum(1 for value in descriptorValues if value.value == i)
                         vals_to_create.append(n)
                         n = num(
                             reaction=reaction,
@@ -375,6 +384,13 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         else:
                             n.value=sum(quantity.amount for quantity in quantities)
                         vals_to_create.append(n)
+                    b = BoolRxnDescriptorValue(
+                            reaction=reaction,
+                            descriptor=descriptorDict['{}_{}_{}_any'.format(compoundRole.label, descriptor.csvHeader, i)],
+                            value=any(descriptorValues)
+                        )
+                    bool_vals_to_create.append(b)
+                    
             for descriptor in DRP.models.CatMolDescriptor.objects.all():
                 descriptorValues = DRP.models.CatMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
@@ -396,5 +412,8 @@ def _calculate(reaction, descriptorDict, verbose=False):
                             n.value = sum(quantity.amount for quantity in quantities)
                         vals_to_create.append(n)
     if verbose:
-        print "Creating {} values".format(len(vals_to_create))
+        print "Creating {} Numeric values".format(len(vals_to_create))
     num.objects.bulk_create(vals_to_create)
+    if verbose:
+        print "Creating {} Boolean values".format(len(bool_vals_to_create))
+    BoolRxnDescriptorValue.objects.bulk_create(bool_vals_to_create)
