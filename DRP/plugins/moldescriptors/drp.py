@@ -74,8 +74,8 @@ for period_num in range(1,7):
 descriptorDict = setup(_descriptorDict)
 
 def delete_descriptors(compound_set):
-    # TODO Any reason not to delete everything in the descriptor dict?
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__heading__in=descriptorDict.keys(), compound__in=compound_set).delete(recalculate_reactions=False)
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descriptorDict.values() if isinstance(desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descriptorDict.values() if isinstance(desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
 
 def calculate_many(compound_set, verbose=False):
     delete_descriptors(compound_set)

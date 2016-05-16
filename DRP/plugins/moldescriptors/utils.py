@@ -50,6 +50,7 @@ class LazyDescDict(object):
             self.initialised = True
 
     def __len__(self):
+        # TODO Is this really not supposed to initialise?
         return len(self.internalDict)
 
     def __iter__(self):
@@ -63,6 +64,17 @@ class LazyDescDict(object):
     def __contains__(self, item):
         return item in self.internalDict
 
+
+    def __getattr__(self, name):
+        """
+        Deals with all names that are not defined explicitly.
+        """
+        def _pass_attr(*args, **kwargs):
+            self.initialise(self.descDict)
+            return getattr(self.internalDict, name)(*args, **kwargs)
+            #return MultiQuerySet(*[getattr(qs, name)(*args, **kwargs) for qs in self.querysets])
+
+        return _pass_attr
 
 def setup(descDict):
     return LazyDescDict(descDict)
