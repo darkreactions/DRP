@@ -12,13 +12,13 @@ from sys import argv
 
 class Command(BaseCommand):
     help = 'Builds a machine learning model'
-    epilog = "Prefix arguments with '@' to specify a file containing newline"
-            "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
-            " to pass multiple descriptors from a file as predictors")
 
     def add_arguments(self, parser):
-        parser = argparse.ArgumentParser(description='Builds a model', fromfile_prefix_chars='@',
-    
+        #TODO check if this is actually the right place to add these (currently offline)
+        parser.fromfile_prefix_chars = '@'
+        parser.epilog = "Prefix arguments with '@' to specify a file containing newline-separated values for that argument. e.g.'-p @predictor_headers.txt' to pass multiple descriptors from a file as predictors"
+
+   
         parser.add_argument('-p', '--predictor-headers', nargs='+',
                             help='One or more descriptors to use as predictors.', required=True)
         parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
@@ -30,8 +30,6 @@ class Command(BaseCommand):
                             help='Model visitor tool from library to use. (default: %(default)s)')
         parser.add_argument('-s', '--splitter', default="KFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
                             help='Splitter to use. (default: %(default)s)')
-        parser.add_argument('-v', '--verbose', action='store_true',
-                            help='Activate verbose mode.')
         parser.add_argument('-d', '--description', default="",
                             help='Description of model. (default: %(default)s)')
         parser.add_argument('-trs', '--training-set-name', default=None,
@@ -50,15 +48,18 @@ class Command(BaseCommand):
         # This way of accepting splitter options is bad and hacky.
         # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
         # TODO XXX make this not horrible
-        splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else None
-        visitorOptions = ast.literal_eval(args.visitor_options) if args.visitor_options is not None else None
+        splitterOptions = ast.literal_eval(kwargs['splitter_options']) if kwargs['splitter_options'] is not None else None
+        visitorOptions = ast.literal_eval(kwargs['visitor_options']) if kwargs['visitor_options'] is not None else None
 
-
+        # TODO switch to logging and adjust for management command multi-level verbosity
+        verbose = (kwargs['verbosity'] > 0)
     
         prepare_build_display_model(predictor_headers=kwargs['predictor_headers'], response_headers=kwargs['response_headers'],
                                     modelVisitorLibrary=kwargs['model_library'], modelVisitorTool=kwargs['model_tool'],
-                                    splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=kwargs['verbose'], splitterOptions=splitterOptions, visitorOptions=visitorOptions)
-        
+                                    splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+
+# TODO refactor this so these functions can be used in other places more naturally
+
 def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
                 description="", verbose=False, splitterOptions=None, visitorOptions=None):
 
