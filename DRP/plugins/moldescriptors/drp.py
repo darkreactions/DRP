@@ -70,6 +70,14 @@ for period_num in range(1,7):
         'calculatorSoftware':'DRP',
         'calculatorSoftwareVersion':'1.0',
         }
+        
+for valence_num in range(1,8):
+    _descriptorDict['boolean_valence_{}'.format(period_num)] = {
+        'type': 'bool',
+        'name': 'Presence of elements with valence {}'.format(period_num),
+        'calculatorSoftware':'DRP',
+        'calculatorSoftwareVersion':'1.0',
+        }
 
 descriptorDict = setup(_descriptorDict)
 
@@ -133,5 +141,11 @@ def _calculate(compound):
                                         compound=compound,
                                         descriptor=descriptorDict['boolean_period_{}'.format(period_num)],
                                         value=(any(elements[element]['period']==period_num for element in compound.elements.keys()))
-                                    ))                                    
+                                    ))
+    for valence_num in range(1,8):
+        bool_vals_to_create.append(boolVal(
+                                compound=compound,
+                                descriptor=descriptorDict['boolean_valence_{}'.format(valence_num)],
+                                value=(any(elements[element]['valence']==valence_num for element in compound.elements.keys()))
+                            ))
     boolVal.objects.bulk_create(bool_vals_to_create)
