@@ -13,7 +13,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 settings_file = os.path.join(settings.APP_DIR, 'settings_example.py')
 
 
-class OutputCapture:
+class OutputCapture(object):
 
     """A class as a workaround for broken parts in a pep8 module."""
 
