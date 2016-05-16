@@ -132,13 +132,13 @@ def _calculate(compound):
         bool_vals_to_create.append(boolVal(
                                         compound=compound,
                                         descriptor=descriptorDict['boolean_group_{}'.format(group_num)],
-                                        value=(any(info['group']==group_num for element, info in compound.elements.items()))
+                                        value=(any(elements[element]['group']==group_num for element in compound.elements.keys()))
                                     ))
-    for period_num in range(1,7):
-        bool_vals_to_create.append(boolVal(
-                                        compound=compound,
-                                        descriptor=descriptorDict['boolean_period_{}'.format(period_num)],
-                                        value=(any(info['period']==period_num for element, info in compound.elements.items()))
-                                    ))
+    #for period_num in range(1,7):
+        #bool_vals_to_create.append(boolVal(
+                                        #compound=compound,
+                                        #descriptor=descriptorDict['boolean_period_{}'.format(period_num)],
+                                        #value=(any(info['period']==period_num for element, info in compound.elements.items()))
+                                    #))
                                     
-    boolVal.bulk_create(bool_vals_to_create)
+    boolVal.objects.bulk_create(bool_vals_to_create)
