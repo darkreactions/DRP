@@ -49,6 +49,8 @@ class LazyDescDict(object):
                     raise RuntimeError("Invalid descriptor type provided")
             self.initialised = True
 
+    # TODO Can these all be deleted because of the magic below?
+
     def __len__(self):
         # TODO Is this really not supposed to initialise?
         return len(self.internalDict)
@@ -62,17 +64,17 @@ class LazyDescDict(object):
         return self.internalDict[key]
 
     def __contains__(self, item):
+        # TODO Is this really not supposed to initialise?
         return item in self.internalDict
 
 
     def __getattr__(self, name):
         """
-        Deals with all names that are not defined explicitly.
+        Deals with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."
         """
         def _pass_attr(*args, **kwargs):
             self.initialise(self.descDict)
             return getattr(self.internalDict, name)(*args, **kwargs)
-            #return MultiQuerySet(*[getattr(qs, name)(*args, **kwargs) for qs in self.querysets])
 
         return _pass_attr
 
