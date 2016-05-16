@@ -73,44 +73,44 @@ def make_dict():
                             'maximum': None,
                             'minimum': None
                         }
-            for descriptor in DRP.models.BoolMolDescriptor.objects.all():
-                for w in weightings:
-                    for value in ('True', 'False'):
-                        _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, value, w)] = {
-                                'type': 'num',
-                                'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
-                                        value, descriptor.name, w, compoundRole.label),
-                                'calculatorSoftware': 'DRP',
-                                'calculatorSoftwareVersion': '0.02',
-                                'maximum': None,
-                                'minimum': None,
-                            }
-            for descriptor in DRP.models.NumMolDescriptor.objects.all():
-                _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')] = {
-                    'type': 'num',
-                    'name': 'Maximum value for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
-                    'calculatorSoftware': 'DRP',
-                    'calculatorSoftwareVersion': 'DRP',
-                    'maximum': None,
-                    'minimum': None
-                    }
-                _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')] = {
-                    'type': 'num',
-                    'name': 'Range for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
-                    'calculatorSoftware': 'DRP',
-                    'calculatorSoftwareVersion': 'DRP',
-                    'maximum': None,
-                    'minimum': None
-                    }
-                for w in weightings:
-                    _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', w)] = {
-                        'type': 'num',
-                        'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, w),
-                        'calculatorSoftware': 'DRP',
-                        'calculatorSoftwareVersion': 'DRP',
-                        'maximum': None,
-                        'minimum': None
+        for descriptor in DRP.models.BoolMolDescriptor.objects.all():
+            for w in weightings:
+                for value in ('True', 'False'):
+                    _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, value, w)] = {
+                            'type': 'num',
+                            'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
+                                    value, descriptor.name, w, compoundRole.label),
+                            'calculatorSoftware': 'DRP',
+                            'calculatorSoftwareVersion': '0.02',
+                            'maximum': None,
+                            'minimum': None,
                         }
+        for descriptor in DRP.models.NumMolDescriptor.objects.all():
+            _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')] = {
+                'type': 'num',
+                'name': 'Maximum value for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
+                'calculatorSoftware': 'DRP',
+                'calculatorSoftwareVersion': 'DRP',
+                'maximum': None,
+                'minimum': None
+                }
+            _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')] = {
+                'type': 'num',
+                'name': 'Range for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
+                'calculatorSoftware': 'DRP',
+                'calculatorSoftwareVersion': 'DRP',
+                'maximum': None,
+                'minimum': None
+                }
+            for w in weightings:
+                _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', w)] = {
+                    'type': 'num',
+                    'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, w),
+                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftwareVersion': 'DRP',
+                    'maximum': None,
+                    'minimum': None
+                    }
     descriptorDict = setup(_descriptorDict)
     return descriptorDict
 
