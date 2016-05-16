@@ -10,45 +10,6 @@ from cStringIO import StringIO
 import pep257
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-#_pep8Files = [
-    #('DRP', 'settings_example.py'),
-    ## directories and files seperated by commas,
-    #('DRP', 'views', '__init__.py'),
-    #('DRP', 'urls', 'public.py'),
-    #('DRP', 'models', 'descriptors.py'),
-    #('DRP', 'models', 'descriptorValues.py'),
-    #('DRP', 'models', 'StatsModel.py'),
-    #('DRP', 'models', 'Compound.py'),
-    #('DRP', 'plugins', 'moldescriptors', 'example.py'),
-    #('DRP', 'admin.py'),
-    #('DRP', 'management', 'commands', 'check_hash_collisions.py'),
-    ## you can finish on a directory test the whole thing,
-    ## but this should be a python package if you do so
-    ## (__init__.py must be present)
-    ## ('DRP', 'admin.py'),
-    #('DRP', 'tests', 'fileTests.py'),
-    #('DRP', 'tests', 'CompoundDescriptor.py'),
-    ## These commented out files are commented out because
-    ## they would serve as examples had they been converted already!
-#]
-
-#pep8Files = [
-    #os.path.join(
-        #settings.BASE_DIR, os.path.join(*_pep8File)
-    #) for _pep8File in _pep8Files
-#]
-
-#pep257Files = []
-
-#for f in pep8Files:
-    #if os.path.isdir(f):
-        #for root, dirnames, fileNames in os.walk(f):
-            #for fileName in fileNames:
-                #if fileName.endswith('.py'):
-                    #pep257Files.append(os.path.join(root, fileName))
-    #else:
-        #pep257Files.append(f)
-
 settings_file = os.path.join(settings.APP_DIR, 'settings_example.py')
 
 
@@ -79,6 +40,7 @@ class TestFiles(unittest.TestCase):
 
     def setUp(self):
         """Get list of all python files in project"""
+        # TODO add option to exclude files
         self.files = []
         for root, dirnames, fileNames in os.walk(settings.BASE_DIR):
             for fileName in fileNames:
@@ -118,31 +80,6 @@ class TestFiles(unittest.TestCase):
                         os.path.join(fileName, '__init__.py')
                     )
                 )
-
-    #def testPep8(self):
-        #"""Test that all listed files conform to pep8 standards."""
-        #for fileName in pep8Files:
-            #fullFileNames = [
-                #os.path.join(
-                    #settings.BASE_DIR, fileName
-                #) for fileName in pep8Files
-            #]
-            #pep8Style = pep8.StyleGuide(ignore=['E501'])
-
-            #with OutputCapture() as output:
-                #result = pep8Style.check_files(fullFileNames)
-
-                #self.assertEqual(
-                    #result.total_errors,
-                    #0,
-                    #'{} errors were found in pep8 Conformance:\n{}'.format(result.total_errors, output)
-                #)
-
-    #def testPep257(self):
-        #"""Test docstring conformance of all files."""
-        ## errors = [str(e) for e in check(pep257Files)]
-        ## self.assertEqual(len(errors), 0, '\n'.join(errors))
-        #pass
 
 suite = unittest.TestSuite([loadTests(TestFiles)])
 
