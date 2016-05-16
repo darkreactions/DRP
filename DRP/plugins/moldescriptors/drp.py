@@ -74,14 +74,8 @@ for period_num in range(1,7):
 descriptorDict = setup(_descriptorDict)
 
 def delete_descriptors(compound_set):
-    num = DRP.models.NumMolDescriptorValue
-    descriptors_to_delete = []
-    for prop in inorgAtomicProperties:
-        descriptors_to_delete.append(descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))])
-        descriptors_to_delete.append(descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))])
-        descriptors_to_delete.append(descriptorDict['drpInorgAtom{}_max'.format(prop.title().replace('_', ''))])
-        descriptors_to_delete.append(descriptorDict['drpInorgAtom{}_range'.format(prop.title().replace('_', ''))])
-    num.objects.filter(descriptor__in=descriptors_to_delete, compound__in=compound_set).delete(recalculate_reactions=False)
+    # TODO Any reason not to delete everything in the descriptor dict?
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__heading__in=descriptorDict.keys(), compound__in=compound_set).delete(recalculate_reactions=False)
 
 def calculate_many(compound_set, verbose=False):
     delete_descriptors(compound_set)
@@ -134,11 +128,10 @@ def _calculate(compound):
                                         descriptor=descriptorDict['boolean_group_{}'.format(group_num)],
                                         value=(any(elements[element]['group']==group_num for element in compound.elements.keys()))
                                     ))
-    #for period_num in range(1,7):
-        #bool_vals_to_create.append(boolVal(
-                                        #compound=compound,
-                                        #descriptor=descriptorDict['boolean_period_{}'.format(period_num)],
-                                        #value=(any(info['period']==period_num for element, info in compound.elements.items()))
-                                    #))
-                                    
+    for period_num in range(1,7):
+        bool_vals_to_create.append(boolVal(
+                                        compound=compound,
+                                        descriptor=descriptorDict['boolean_period_{}'.format(period_num)],
+                                        value=(any(elements[element]['period']==period_num for element in compound.elements.keys()))
+                                    ))                                    
     boolVal.objects.bulk_create(bool_vals_to_create)
