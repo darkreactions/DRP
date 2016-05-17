@@ -14,25 +14,29 @@ urls = [
   url('^/entry_(?P<rxn_id>\d+)/num_desc_vals.html', DRP.views.reaction.createGenDescVal,
                                                                         {'descValClass':NumRxnDescriptorValue, 
                                                                          'descValFormClass':NumRxnDescValForm,
-                                                                         'infoHeader':'Numerical Descriptor Values'
+                                                                         'infoHeader':'Numerical Descriptor Values',
+                                                                         'createNext':'createOrdDescVals'
                                                                         },
                                                                         name="createNumDescVals"),
   url('^/entry_(?P<rxn_id>\d+)/ord_desc_vals.html', DRP.views.reaction.createGenDescVal,
                                                                         {'descValClass':OrdRxnDescriptorValue, 
                                                                          'descValFormClass':OrdRxnDescValForm,
-                                                                         'infoHeader':'Ordinal Descriptor Values'
+                                                                         'infoHeader':'Ordinal Descriptor Values',
+                                                                         'createNext':'createBoolDescVals'
                                                                         },
                                                                         name="createOrdDescVals"),
   url('^/entry_(?P<rxn_id>\d+)/cat_desc_vals.html', DRP.views.reaction.createGenDescVal,
                                                                         {'descValClass':CatRxnDescriptorValue, 
                                                                          'descValFormClass':CatRxnDescValForm,
-                                                                         'infoHeader':'Categorical Descriptor Values'
+                                                                         'infoHeader':'Categorical Descriptor Values',
+                                                                         'createNext':None
                                                                         },
                                                                         name="createCatDescVals"),
   url('^/entry_(?P<rxn_id>\d+)/bool_desc_vals.html', DRP.views.reaction.createGenDescVal,
                                                                         {'descValClass':BoolRxnDescriptorValue, 
                                                                          'descValFormClass':BoolRxnDescValForm,
                                                                          'infoHeader':'Boolean Descriptor Values'
+                                                                         'createNext':'createCatDescVals'
                                                                         },
                                                                         name="createBoolDescVals"),
   url('^/entry_(?P<rxn_id>\d+)/', DRP.views.reaction.editReaction, name='editReaction'),

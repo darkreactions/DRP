@@ -4,6 +4,10 @@ h1 {
  text-align:center;
 }
 
+input[type="checkbox"] {
+ vertical-align:text-top;
+}
+
 table.reactionformtable, table.reactionformtable>tbody{
  display:block;
 }
@@ -89,8 +93,8 @@ form>fieldset ol {
  width:40%;
 }
 
-.descvallist li:last-of-type {
- width:20%;
+.descvallist li:nth-child(3) {
+ width:15%;
 }
 
 .descvalform {
@@ -103,10 +107,6 @@ form>fieldset ol {
 .descvalform input:not([type="submit"]):not([type="checkbox"]), .descvalform select, .descvalform textarea{
  width:50%;
  box-sizing:border-box;
-}
-
-.descvalform select {
-    width:15em;
 }
 
 ul.errorlist {

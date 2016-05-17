@@ -114,10 +114,10 @@ def addCompoundDetails(request, rxn_id):
 @hasSignedLicense
 @userHasLabGroup
 @reactionExists
-def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader):
+def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader, createNext):
     '''A generic view function to create descriptor values for reactions'''
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True) 
+    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=('creating' not in request.GET)) 
     if request.method=="POST":
         formset = descValFormset(queryset=descVals, data=request.POST)
         if formset.is_valid():
@@ -128,13 +128,13 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
             for dv in formset.deleted_objects:
                 descValClass.objects.filter(id=dv.id).delete()
             messages.success(request, 'Reaction descriptor details successfully updated')
-            return redirect('editReaction', rxn_id)
+            if createNext is not None:
+                return redirect('editReaction', rxn_id)
+            else:
+                return redirect(createNext, rxn_id)
     else:
         formset = descValFormset(queryset=descVals)
     return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':infoHeader}) 
-
-def createTemplateRxn(request):
-    pass
 
 @login_required
 @hasSignedLicense
@@ -157,7 +157,6 @@ def editReaction(request, rxn_id):
                        ('Ordinal Descriptors', 'createOrdDescVals', OrdRxnDescriptorValue, OrdRxnDescValForm),
                        ('Boolean Descriptors', 'createBoolDescVals', BoolRxnDescriptorValue, BoolRxnDescValForm),
                        ('Categorical Descriptors', 'createCatDescVals', CatRxnDescriptorValue, CatRxnDescValForm))
-
     for descLabel, urlName, descValClass, descValFormClass in descriptorClasses: 
         descriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual')
         if descriptors.exists():
