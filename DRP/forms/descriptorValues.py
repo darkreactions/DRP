@@ -32,7 +32,7 @@ class CatRxnDescValForm(forms.ModelForm):
 
     class Meta:
         model=CatRxnDescriptorValue
-        fields=('descriptor', 'value')
+        fields=('descriptor', 'value','reaction')
 
     def __init__(self, *args, **kwargs):
         super(CatRxnDescValForm, self).__init__(*args, **kwargs)

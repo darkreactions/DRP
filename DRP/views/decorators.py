@@ -42,7 +42,7 @@ def reactionExists(view, *args, **kwargs):
     """This decorator checks that a reaction exists before continuing with the internal view"""
     def _reactionExists(request, *args, **kwargs):
         rxn_id = kwargs['rxn_id']
-        if PerformedReaction.objects.filter(id=rxn_id).exists() and PerformedReaction.objects.filter(labGroup__in=request.user.labgroup_set.all()):
+        if PerformedReaction.objects.filter(id=rxn_id, labGroup__in=request.user.labgroup_set.all()).exists():
             return view(request, *args, **kwargs)
         else:
             raise Http404("This reaction cannot be found")

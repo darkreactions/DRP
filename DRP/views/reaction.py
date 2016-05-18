@@ -117,24 +117,30 @@ def addCompoundDetails(request, rxn_id):
 def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader, createNext):
     '''A generic view function to create descriptor values for reactions'''
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=('creating' not in request.GET)) 
-    if request.method=="POST":
-        formset = descValFormset(queryset=descVals, data=request.POST)
-        if formset.is_valid():
-            descVals = formset.save(commit=False)
-            for dv in descVals:
-                dv.reaction=PerformedReaction.objects.get(id=rxn_id)
-                dv.save()
-            for dv in formset.deleted_objects:
-                descValClass.objects.filter(id=dv.id).delete()
-            messages.success(request, 'Reaction descriptor details successfully updated')
-            if createNext is not None:
-                return redirect('editReaction', rxn_id)
-            else:
-                return redirect(createNext, rxn_id)
+    initialDescriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
+    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=('creating' not in request.GET), extra=initialDescriptors.count()) 
+    if descValClass.descriptorClass.objects.filter(calculatorSoftware="manual").exists(): 
+        if request.method=="POST":
+            formset = descValFormset(queryset=descVals, data=request.POST)
+            if formset.is_valid():
+                descVals = formset.save(commit=False)
+                for dv in descVals:
+                    dv.reaction=PerformedReaction.objects.get(id=rxn_id)
+                    dv.save()
+                for dv in formset.deleted_objects:
+                    descValClass.objects.filter(id=dv.id).delete()
+                messages.success(request, 'Reaction descriptor details successfully updated')
+                if createNext is None and 'creating' in request.GET:
+                    return redirect('editReaction', rxn_id)
+                else:
+                    return redirect(createNext, rxn_id, params={'creating':True})
+        else:
+            formset = descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in initialDescriptors])
+        return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':infoHeader}) 
+    elif createNext is None and 'creating' in request.GET:
+        return redirect('editReaction', rxn_id)
     else:
-        formset = descValFormset(queryset=descVals)
-    return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':infoHeader}) 
+        return redirect(createNext, rxn_id, params={'creating':True})
 
 @login_required
 @hasSignedLicense

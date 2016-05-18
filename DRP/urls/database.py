@@ -35,7 +35,7 @@ urls = [
   url('^/entry_(?P<rxn_id>\d+)/bool_desc_vals.html', DRP.views.reaction.createGenDescVal,
                                                                         {'descValClass':BoolRxnDescriptorValue, 
                                                                          'descValFormClass':BoolRxnDescValForm,
-                                                                         'infoHeader':'Boolean Descriptor Values'
+                                                                         'infoHeader':'Boolean Descriptor Values',
                                                                          'createNext':'createCatDescVals'
                                                                         },
                                                                         name="createBoolDescVals"),
