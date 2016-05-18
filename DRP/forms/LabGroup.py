@@ -49,6 +49,7 @@ class LabGroupJoiningForm(forms.Form):
   accessCode = forms.CharField(label='Access Code', widget=forms.PasswordInput)
 
   def clean(self):
+    super(LabGroupJoiningForm, self).clean()
     if check_password(self.cleaned_data['accessCode'], self.cleaned_data['labGroup'].access_code):
       return self.cleaned_data
     elif self.cleaned_data['accessCode'] == self.cleaned_data['labGroup'].legacy_access_code:
