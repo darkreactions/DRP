@@ -2,7 +2,7 @@
 """Compare the values for two descriptors for the same reaction"""
 import django
 django.setup()
-from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, PerformedReaction, DataSet
+from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, PerformedReaction, DataSet, Compound
 from sys import argv
 
 def getDescValueType(desc_heading):
@@ -51,9 +51,11 @@ def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=Boo
             count += 1
             d2_val = d2_values.get(reaction=rxn)
             if not comparison_function(d1_val.value, d2_val.value):
-                print rxn, d1_val.value, d2_val.value
+                if abs(d1_val.value-d2_val.value) != 1 or water not in rxn.compounds.all():
+                    print rxn, d1_val.value, d2_val.value
+                    print rxn.compounds.all()
                 different.append(rxn)
-                print rxn.compounds.all()
+
     print "compared values for {} reactions".format(count)
     return different
 
@@ -85,6 +87,8 @@ if __name__ == '__main__':
     shiftK = shift_function(273.15)
     tol_point_5 = shift_function(0, 0.55)
     #element = argv[1]
+    water = Compound.objects.get(abbrev__iexact='H2O')
+
     d2_heading = 'Inorg_amount_count'#.format(element)
     d1_heading = 'numberInorg_legacy'#.format(element)
     reactions = DataSet.objects.get(name='valid_legacy_rxns_nonzero_compound').reactions.all()

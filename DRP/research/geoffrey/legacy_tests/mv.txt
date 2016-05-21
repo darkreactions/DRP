@@ -1,12 +1,1 @@
-J48
-KNN
-LogisticRegression
-NaiveBayes
-RandomForest
-SVM_PUK
-J48
-KNN
-LogisticRegression
-NaiveBayes
-RandomForest
 SVM_PUK
