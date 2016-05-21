@@ -172,7 +172,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def calculate_descriptors(self, verbose=False):
         if verbose:
-            print "Calculating descriptors for {} reaction".format(self.count())
+            print "Calculating descriptors for {} reactions".format(self.count())
         for plugin in descriptorPlugins:
             plugin.calculate_many(self, verbose=verbose)
 
@@ -198,6 +198,7 @@ class Reaction(models.Model):
     notes = models.TextField(blank=True)
     labGroup = models.ForeignKey(LabGroup)
     calcDescriptors = True #this is to cope with a hideous problem in xml serialization in the management commands
+
 
     def save(self, calcDescriptors=True, *args, **kwargs):
         super(Reaction, self).save(*args, **kwargs)
