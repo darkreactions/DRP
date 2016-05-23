@@ -6,7 +6,6 @@
 
 {% block content %}
   <h1>Edit Reaction Data</h1>
-  {% include "reaction_form.html" %}
   {% include "reactant_form.html" %}
 {% spaceless %}
   {% for label, formset in descriptor_formsets.items %}
@@ -17,10 +16,10 @@
         <legend>{{ label }}</legend>
         <ol>
             {% for form in formset.formset %}
-	        <li><ol class="descvallist"> {{form.as_ul }} </ol></li>
+	        <li><ol class="descvallist">{% include "alt_ul_form.html" %}</ol></li>
             {% endfor %}
         </ol>
-        {{formset.formset.management_form.as_ul }}
+    {{ formset.formset.management_form }} 
     <input type="submit" value="Save" />
     </fieldset>
     </form>

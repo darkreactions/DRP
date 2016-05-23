@@ -75,8 +75,12 @@ form>fieldset ol {
  padding:0;
 }
 
-.reactant_list li {
+.descvallist li, .reactant_list li {
+ vertical-align:top;
  display:inline-block;
+}
+
+.reactant_list li {
  width:30%;
 }
 
@@ -89,7 +93,6 @@ form>fieldset ol {
 }
 
 .descvallist li {
- display:inline-block;
  width:40%;
 }
 

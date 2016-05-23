@@ -13,7 +13,7 @@
       <legend> {{ info_header }}</legend>
         {{ formset.management_form }}	
       <ol>
-        {% for form in formset %}<li><ol class="descvallist"> {{form.as_ul }} </ol></li>{% endfor %}
+        {% for form in formset %}<li><ol class="descvallist">{% include "alt_ul_form.html" %}</ol></li>{% endfor %}
       </ol>
     <input type="submit" name="save" value="Save" />
     <a href="{% url 'editReaction' rxn_id %}">Return to Reaction</a>
