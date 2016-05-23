@@ -174,7 +174,7 @@ def calculate_many(compound_set, verbose=False):
     #filtered_compounds = _filter_compounds(compound_set, verbose=verbose)
     #_calculate_with_lec(filtered_compounds, verbose=verbose)
     for i, compound in enumerate(compound_set):
-        _calculate(compound)
+        _calculate(compound, verbose=verbose)
         if verbose:
             print "Done with {} ({}/{})".format(compound, i+1, len(compound_set))
 
@@ -252,7 +252,7 @@ def _calculate_with_lec(compound_dict, verbose=False):
     else:
         raise RuntimeError("cxcalc returned nonzero return code {}".format(calcProc.returncode))
 
-def _calculate(compound):
+def _calculate(compound, verbose=False):
     notFound = True
     if notFound and (compound.smiles is not None and compound.smiles != ''):
         lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
@@ -292,6 +292,9 @@ def _calculate(compound):
                             # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
                             # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
                             # for it other than for the database to push it out as a part of validation procedures.
+                        
+                        if verbose:
+                            print "Creating {} numerical, {} ordinal, {} boolean values".format(len(num_to_create), len(ord_to_create), len(bool_to_create))
                         DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
                         DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
                         DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_to_create)
