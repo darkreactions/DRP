@@ -338,7 +338,7 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')],
                     )
                     if any(descriptorValues.get(compound = quantity.compound).value is None for quantity in roleQuantities) or roleMoles == 0 or roleMoles is None:
-                        n.value=None
+                        n.value = None
                     else:
                         n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
                     vals_to_create.append(n)

@@ -177,8 +177,6 @@ def calculate_many(compound_set, verbose=False):
         if verbose:
             print "{} ({}/{})".format(compound, i+1, len(compound_set))
         _calculate(compound, verbose=verbose)
-        if verbose:
-            print "\tDone"
 
 def calculate(compound):
     delete_descriptors([compound])
