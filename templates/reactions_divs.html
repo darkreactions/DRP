@@ -72,6 +72,11 @@
                 <th>Performed Date</th><td>{{ reaction.performedDateTime }}</td>
             </tr>
             {% endif %}
+            {% if reaction.public %}
+              <tr>
+                <td><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative Commons Attribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></td> 
+              </tr>
+            {% endif %}
         </tbody>
     </table>
   </li>
