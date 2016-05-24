@@ -9,6 +9,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('-e', '--error', action='store_true',
                             help='Make warnings errors instead')
+        parser.add_argument('start', type=int, default=0, nargs='?',
+                            help='pk of starting point. Indicates compound pk unless --reactions is specified')
         group = parser.add_mutually_exclusive_group(required=False)
         group.add_argument('-r', '--reactions', '--rxns', action='store_true',
                             help='Calculate descriptors for reactions only.')
@@ -19,9 +21,14 @@ class Command(BaseCommand):
         verbose = (kwargs['verbosity'] > 0)
         only_reactions = kwargs['reactions']
         only_compounds = kwargs['compounds']
+        start = kwargs['start']
+        
         if kwargs['error']:
             warnings.simplefilter('error')
         if not only_reactions:
-            Compound.objects.all().calculate_descriptors(verbose=verbose)
+            Compound.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(verbose=verbose)
         if not only_compounds:
-            Reaction.objects.all().calculate_descriptors(verbose=verbose)
+            if only_reactions:
+                Reaction.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(verbose=verbose)
+            else:
+                Reaction.objects.order_by('pk').calculate_descriptors(verbose=verbose)
