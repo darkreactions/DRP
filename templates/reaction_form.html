@@ -8,7 +8,7 @@
         <tbody class="flleft">
             {% for field in reaction_form.visible_fields %}
                     {% if forloop.counter == 3 %} </tbody><tbody class="flright">{% endif %}
-                <tr><th>{{ field.label_tag }}</th><td>{{ field }}{{ field.errors }}</td></tr>
+                <tr><th>{{ field.label_tag }}</th><td>{{ field }}{{ field.errors }}{{ field.help_text }}</td></tr>
             {% endfor %}
         </tbody>
             {% for field in reaction_form.hidden_fields %}
