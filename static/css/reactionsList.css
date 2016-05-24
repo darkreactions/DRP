@@ -62,7 +62,7 @@ li.reaction {
  width:50%;
 }
 
-td.delete, td.invalidate {
+td.delete, td.invalidate, td.license {
  float:right;
 }
 

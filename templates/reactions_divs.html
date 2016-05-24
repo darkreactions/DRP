@@ -8,9 +8,13 @@
             <tr>
                 <th>Reference</th>
                 <td>{{ reaction.reference }}</td>
+                {% if reaction.public %}<td><img src="/static/icons/public.png" alt="This reaction is public" title="this reaction is public" width="25" height="25"/></td>{% endif %} 
                 {% if user.is_authenticated %}
                     {% if reaction.labGroup in user.labgroup_set.all %}
     	                <td><a class="edit" href="{% url 'editReaction' reaction.pk %}"><img src="/static/icons/edit.png" alt="edit this reaction" height="25" width="25" title="edit this reaction"/></a></td>
+                      {% if reaction.public %}
+                          <td class="license"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" target="_blank"><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative Commons Attribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></a></td>
+                      {% endif %}
 	                    {% if not reaction.datasetrelation_set.exists %}
                             <td class="delete">
                                 <form action="{% url 'deleteReaction' %}" method="post">
@@ -58,11 +62,6 @@
             {% endif %}
         </tbody>
         <tbody class="flright">
-            {% if reaction.public %}
-              <tr>
-                <td><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative Commons Attribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></td> 
-              </tr>
-            {% endif %}
             {% if reaction.performedBy != None %}
             <tr>
                 <th>Performed by</th><td>{{ reaction.performedBy.first_name }} {{ reaction.performedBy.last_name }}</td>
