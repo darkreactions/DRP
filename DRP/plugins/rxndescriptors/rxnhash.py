@@ -52,6 +52,4 @@ def _calculate(reaction, descriptorDict, verbose=False):
     for reactant in reaction.compounds.all():
         h.update(reactant.abbrev)
     p = perm.objects.get_or_create(descriptor=descriptorDict['rxnSpaceHash1'], value=h.hexdigest())[0]
-    c = cat.objects.get_or_create(reaction=reaction, descriptor=descriptorDict['rxnSpaceHash1'])[0]
-    c.value = p
-    c.save()
+    cat.objects.update_or_create(defaults={value: p}, reaction=reaction, descriptor=descriptorDict['rxnSpaceHash1'])[0]
