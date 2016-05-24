@@ -126,6 +126,8 @@ def make_dict():
     return descriptorDict
 
 # TODO this seems like we're repeating ourselves (below)
+# There's a lot of DRY violation here because I was playing with a few different methods.
+# We should decide which method we want for deletion and work on variations of that.
 
 def delete_descriptors_many(reaction_set, descriptorDict):
     # This could be the same as delete descriptors if we're ok with deleting the descriptor even if not
@@ -170,10 +172,25 @@ def delete_descriptors_many(reaction_set, descriptorDict):
                     descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
                     descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
 
-    DRP.models.NumRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, NumRxnDescriptor)]).delete()
-    DRP.models.BoolRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, BoolRxnDescriptor)]).delete()
-    DRP.models.OrdRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, OrdRxnDescriptor)]).delete()
-    DRP.models.CatRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, CatRxnDescriptor)]).delete()
+    _delete_values(reaction_set, descriptors_to_delete)
+
+def _delete_values(reaction_set, descriptors_to_delete):
+    NumRxnDescriptor = DRP.models.NumRxnDescriptor
+    BoolRxnDescriptor = DRP.models.BoolRxnDescriptor
+    OrdRxnDescriptor = DRP.models.OrdRxnDescriptor
+    CatRxnDescriptor = DRP.models.CatRxnDescriptor
+    
+    if len(reaction_set) == 1:
+        rxn = reaction_set[0]
+        DRP.models.NumRxnDescriptorValue.objects.filter(reaction=rxn, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, NumRxnDescriptor)]).delete()
+        DRP.models.BoolRxnDescriptorValue.objects.filter(reaction=rxn, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, BoolRxnDescriptor)]).delete()
+        DRP.models.OrdRxnDescriptorValue.objects.filter(reaction=rxn, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, OrdRxnDescriptor)]).delete()
+        DRP.models.CatRxnDescriptorValue.objects.filter(reaction=rxn, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, CatRxnDescriptor)]).delete()
+    else:
+        DRP.models.NumRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, NumRxnDescriptor)]).delete()
+        DRP.models.BoolRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, BoolRxnDescriptor)]).delete()
+        DRP.models.OrdRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, OrdRxnDescriptor)]).delete()
+        DRP.models.CatRxnDescriptorValue.objects.filter(reaction__in=reaction_set, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, CatRxnDescriptor)]).delete()
 
 def delete_descriptors(reaction, descriptorDict):
     allCompoundQuantities = DRP.models.CompoundQuantity.objects.filter(reaction=reaction)
@@ -223,11 +240,7 @@ def delete_descriptors(reaction, descriptorDict):
                         descriptors_to_delete.append(descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
                         descriptors_to_delete.append(descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)])
 
-            
-    DRP.models.NumRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, NumRxnDescriptor)]).delete()
-    DRP.models.BoolRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, BoolRxnDescriptor)]).delete()
-    DRP.models.OrdRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, OrdRxnDescriptor)]).delete()
-    DRP.models.CatRxnDescriptorValue.objects.filter(reaction=reaction, descriptor__in=[desc for desc in descriptors_to_delete if isinstance(desc, CatRxnDescriptor)]).delete()
+    _delete_values([reaction], descriptors_to_delete)
 
 
 def calculate_many(reaction_set, verbose=False):
@@ -236,12 +249,17 @@ def calculate_many(reaction_set, verbose=False):
         print "Creating descriptor dictionary"
     descriptorDict = make_dict()
     descriptorDict.initialise(descriptorDict.descDict) # We're about to use it and leaving it lazy obscures where time is being spent
-    if verbose:
-        print "Deleting old descriptor values"
-    delete_descriptors_many(reaction_set, descriptorDict)
+
+    #delete_descriptors_many(reaction_set, descriptorDict)
     for i, reaction in enumerate(reaction_set):
         if verbose:
-            print "Calculating {} ({}/{})".format(reaction, i+1, len(reaction_set))
+            print "{} ({}/{})".format(reaction, i+1, len(reaction_set))
+        if verbose:
+            print "Deleting old descriptor values"
+        _delete_values([reaction], descriptorDict.values())
+        
+        if verbose:
+            print "Creating new values.".format(reaction, i+1, len(reaction_set))
         _calculate(reaction, descriptorDict, verbose=verbose)
 
 
@@ -254,7 +272,7 @@ def calculate(reaction):
 
 def _calculate(reaction, descriptorDict, verbose=False):
     """
-    Calculates with the descriptorDict already created
+    Calculates with the descriptorDict already created and previous descriptor values deleted.
     """
 
     #descriptor Value classes

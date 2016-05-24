@@ -40,7 +40,7 @@ def arbValCalc(compound):
         return DRP.models.CategoricalDescriptorPermittedValue.objects.get(value='fun', descriptor=descriptorDict['arb'])
 
 
-def calculate(compound):
+def calculate(compound, verbose=False):
     """Calculate the descriptors from this plugin for a compound.
 
     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
