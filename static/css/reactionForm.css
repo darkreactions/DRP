@@ -21,6 +21,10 @@ table.reactionformtable, table.reactionformtable>tbody{
  vertical-align:top;
 }
 
+div.reactionlist {
+ text-align:center;
+}
+
 .reactionformtable tr>td, .reactionformtable tr>th {
  display:inline-block;
  width:45%;
@@ -46,7 +50,7 @@ legend {
  color:#20344b;
 }
 
-.reaction-form input:not([type="submit"]):not([type="checkbox"]), .reaction-form select, .reaction-form textarea{
+.reaction-form input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .reaction-form select, .reaction-form textarea{
  width:100%;
  box-sizing:border-box;
 }
@@ -55,9 +59,13 @@ legend {
  height:100px;
 }
 
-input[type="submit"] {
+div.buttons {
  display:block;
  clear:both;
+ text-align:center;
+}
+
+input[type="submit"], input[type="reset"] {
  padding:0;
  padding-left:1em;
  padding-right:1em;
@@ -66,8 +74,6 @@ input[type="submit"] {
  border:1px solid #658ebd;
  border-radius:1em;
  height:2em;
- margin-left:auto;
- margin-right:auto;
 }
 
 form>fieldset ol {
@@ -87,7 +93,7 @@ form>fieldset ol {
 .reactant_list li:nth-child(4) {
  width:5%;
 }
-.reactant_list input:not([type="submit"]):not([type="checkbox"]), .reactant_list select, .reactant_list textarea{
+.reactant_list input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .reactant_list select, .reactant_list textarea{
  width:50%;
  box-sizing:border-box;
 }
@@ -107,7 +113,7 @@ form>fieldset ol {
  margin-right:auto;
 }
 
-.descvalform input:not([type="submit"]):not([type="checkbox"]), .descvalform select, .descvalform textarea{
+.descvalform input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .descvalform select, .descvalform textarea{
  width:50%;
  box-sizing:border-box;
 }

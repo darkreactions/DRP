@@ -16,7 +16,7 @@
                                 <form action="{% url 'deleteReaction' %}" method="post">
                                     {% csrf_token %}
                                     {% performed_rxn_delete_form reaction %}
-                                    <input type="image" src="/static/icons/delete.png" alt="delete this reaction" height="25" width="25"/>
+                                    <input type="image" src="/static/icons/delete.png" alt="delete this reaction" title="delete this reaction" height="25" width="25"/>
                                 </form>
                             </td>
                         {% endif %}
@@ -25,7 +25,7 @@
                             <form action="{% url 'invalidateReaction' %}" method="post">
                                 {% csrf_token %}
                                 {% performed_rxn_invalidate_form reaction %}
-                                <input type="image" src="/static/icons/invalidate.png" alt="invalidate this reaction" height="25" width="25"/>
+                                <input type="image" src="/static/icons/invalidate.png" alt="invalidate this reaction" title="invalidate this reaction" height="25" width="25"/>
                             </form>
                         </td>
                         {% endif %}
@@ -35,7 +35,7 @@
         </tbody>
         <tbody class="fleft">
             <tr class="quantities">
-                <th>Quantities</th>
+                <th>Reactants</th>
                 <td>
                     <table>
                         <thead><th>Compound</th><th>Quantity</th><th>Role</th></thead>
@@ -43,7 +43,7 @@
                             {% for quantity in reaction.compoundquantity_set.all %}
                             <tr>
                                 <td>{{ quantity.compound.name }}</td>
-                                <td>{{ quantity.amount }} mmoles</td>
+                                <td>{% if quantity.amount = None %}Unknown{% else %}{{ quantity.amount }} mmoles{% endif %}</td>
                                 <td>{{ quantity.role.label }}</td>
                             </tr>
                             {% endfor %}
@@ -58,10 +58,11 @@
             {% endif %}
         </tbody>
         <tbody class="flright">
-            <tr>
-                <th>Entered by</th><td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
-            </tr>
-            <tr><th>Inserted Date</th><td>{{ reaction.insertedDateTime }}</td></tr>
+            {% if reaction.public %}
+              <tr>
+                <td><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative Commons Attribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></td> 
+              </tr>
+            {% endif %}
             {% if reaction.performedBy != None %}
             <tr>
                 <th>Performed by</th><td>{{ reaction.performedBy.first_name }} {{ reaction.performedBy.last_name }}</td>
@@ -72,11 +73,10 @@
                 <th>Performed Date</th><td>{{ reaction.performedDateTime }}</td>
             </tr>
             {% endif %}
-            {% if reaction.public %}
-              <tr>
-                <td><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative Commons Attribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></td> 
-              </tr>
-            {% endif %}
+            <tr>
+                <th>Entered by</th><td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
+            </tr>
+            <tr><th>Inserted Date</th><td>{{ reaction.insertedDateTime }}</td></tr>
         </tbody>
     </table>
   </li>

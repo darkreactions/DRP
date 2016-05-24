@@ -6,10 +6,10 @@
 
 {% block content %}
   <h1>Edit Reaction Data</h1>
+  <div class="reactionlist"><a href="{% url "reactionlist" %}">Return to Reaction List</a></div>
   {% include "reactant_form.html" %}
-{% spaceless %}
   {% for label, formset in descriptor_formsets.items %}
-    
+    {% spaceless %}
     <form class="descvalform" action="{% url formset.url reaction.id %}" method="post">
     {% csrf_token %}
     <fieldset>
@@ -20,9 +20,12 @@
             {% endfor %}
         </ol>
     {{ formset.formset.management_form }} 
-    <input type="submit" value="Save" />
+    {% endspaceless %}
+    <div class="buttons">
+      <input type="submit" value="Save" />
+      <input type="reset" value="Reset" />
+    </div>
     </fieldset>
     </form>
   {% endfor %} 
-{% endspaceless %}
 {% endblock %}
