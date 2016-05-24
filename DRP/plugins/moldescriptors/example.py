@@ -27,7 +27,10 @@ def fsValueCalc(mw):
 
 def calculate_many(compound_set, verbose=False):
     for compound in compound_set:
-        calculate(compound)
+        for i, compound in enumerate(compound_set):
+            if verbose:
+                print "{}; Compound {} ({}/{})".format(compound, compound.pk, i+1, len(compound_set))
+            calculate(compound, verbose=verbose)
 
 def arbValCalc(compound):
     """Calculate a completely arbitrary value as an example of a categorical descriptor."""

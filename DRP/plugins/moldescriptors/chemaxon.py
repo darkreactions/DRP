@@ -175,7 +175,7 @@ def calculate_many(compound_set, verbose=False):
     #_calculate_with_lec(filtered_compounds, verbose=verbose)
     for i, compound in enumerate(compound_set):
         if verbose:
-            print "{} ({}/{})".format(compound, i+1, len(compound_set))
+            print "{}; Compound {} ({}/{})".format(compound, compound.pk, i+1, len(compound_set))
         _calculate(compound, verbose=verbose)
 
 def calculate(compound):

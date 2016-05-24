@@ -90,7 +90,7 @@ def calculate_many(compound_set, verbose=False):
     for i, compound in enumerate(compound_set):
         _calculate(compound)
         if verbose:
-            print "Done with {} ({}/{})".format(compound, i+1, len(compound_set))
+            print "{}; Compound {} ({}/{})".format(compound, compound.pk, i+1, len(compound_set))
 
 def calculate(compound):
     delete_descriptors([compound])
