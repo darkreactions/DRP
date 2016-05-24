@@ -10,6 +10,8 @@ import warnings
 
 elements = DRP.chemical_data.elements
 
+calculatorSoftware = 'DRP'
+
 _descriptorDict = { 
     'rxnSpaceHash1':
         {
@@ -28,7 +30,7 @@ for element in elements:
     _descriptorDict[element + '_mols'] = {
             'type':'num',
             'name':'Mols of {} in a reaction.'.format(element),
-            'calculatorSoftware':'DRP',
+            'calculatorSoftware': calculatorSoftware,
             'calculatorSoftwareVersion': '0.02',
             'maximum': None,
             'minimum': 0
@@ -44,7 +46,7 @@ def make_dict():
             _descriptorDict['{}_amount_{}'.format(compoundRole.label, w)] = {
                     'type': 'num',
                     'name': 'Amount of compounds in the reaction belonging in the role "{}" weighted by {}'.format(compoundRole.label, w),
-                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftware': calculatorSoftware,
                     'calculatorSoftwareVersion': '0.02',
                     'maximum':None,
                     'minimum': 0
@@ -56,7 +58,7 @@ def make_dict():
                         'type': 'num',
                         'name': 'Amount of reactants in category {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
                                 permValue.value, descriptor.name, w, compoundRole.label),
-                        'calculatorSoftware': 'DRP',
+                        'calculatorSoftware': calculatorSoftware,
                         'calculatorSoftwareVersion': '0.02',
                         'maximum': None,
                         'minimum': None
@@ -68,7 +70,7 @@ def make_dict():
                             'type': 'num',
                             'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
                                     i, descriptor.name, w, compoundRole.label),
-                            'calculatorSoftware': 'DRP',
+                            'calculatorSoftware': calculatorSoftware,
                             'calculatorSoftwareVersion': '0.02',
                             'maximum': None,
                             'minimum': None
@@ -80,7 +82,7 @@ def make_dict():
                             'type': 'num',
                             'name': 'Amount of reactants with value {} for descriptor "{}" weighted by reactant {} in compound role {}.'.format(
                                     value, descriptor.name, w, compoundRole.label),
-                            'calculatorSoftware': 'DRP',
+                            'calculatorSoftware': calculatorSoftware,
                             'calculatorSoftwareVersion': '0.02',
                             'maximum': None,
                             'minimum': None,
@@ -90,7 +92,7 @@ def make_dict():
                     'type': 'bool',
                     'name': 'Whether any reactants have value True for descriptor "{}" in compound role {}.'.format(
                             value, descriptor.name, compoundRole.label),
-                    'calculatorSoftware': 'DRP',
+                    'calculatorSoftware': calculatorSoftware,
                     'calculatorSoftwareVersion': '1.0',
                 }
             
@@ -98,16 +100,16 @@ def make_dict():
             _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')] = {
                 'type': 'num',
                 'name': 'Maximum value for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
-                'calculatorSoftware': 'DRP',
-                'calculatorSoftwareVersion': 'DRP',
+                'calculatorSoftware': calculatorSoftware,
+                'calculatorSoftwareVersion': '0.02',
                 'maximum': None,
                 'minimum': None
                 }
             _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')] = {
                 'type': 'num',
                 'name': 'Range for {} aggregated across compounds in role "{}"'.format(descriptor.name, compoundRole.label),
-                'calculatorSoftware': 'DRP',
-                'calculatorSoftwareVersion': 'DRP',
+                'calculatorSoftware': calculatorSoftware,
+                'calculatorSoftwareVersion': '0.02',
                 'maximum': None,
                 'minimum': None
                 }
@@ -115,8 +117,8 @@ def make_dict():
                 _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', w)] = {
                     'type': 'num',
                     'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(descriptor.name, compoundRole.label, w),
-                    'calculatorSoftware': 'DRP',
-                    'calculatorSoftwareVersion': 'DRP',
+                    'calculatorSoftware': calculatorSoftware,
+                    'calculatorSoftwareVersion': '0.02',
                     'maximum': None,
                     'minimum': None
                     }
@@ -229,6 +231,7 @@ def delete_descriptors(reaction, descriptorDict):
 
 
 def calculate_many(reaction_set, verbose=False):
+    """Calculate descriptors for this plugin for an entire set of reactions."""
     if verbose:
         print "Creating descriptor dictionary"
     descriptorDict = make_dict()

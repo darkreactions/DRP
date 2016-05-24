@@ -174,6 +174,8 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         if verbose:
             print "Calculating descriptors for {} reactions".format(self.count())
         for plugin in descriptorPlugins:
+            if verbose:
+                print plugin
             plugin.calculate_many(self, verbose=verbose)
 
 class ReactionManager(models.Manager):
