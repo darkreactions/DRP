@@ -342,7 +342,11 @@ def _calculate(reaction, descriptorDict, verbose=False):
                     elif any(descriptorValues.get(compound=quantity.compound).value == 0 for quantity in roleQuantities):
                         n.value = 0
                     else:
-                        n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
+                        try:
+                            n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
+                        except:
+                            print list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
+                            raise
                     vals_to_create.append(n)
                     
                     n = num(
@@ -354,7 +358,11 @@ def _calculate(reaction, descriptorDict, verbose=False):
                     elif any(descriptorValues.get(compound=quantity.compound).value == 0 for quantity in roleQuantities):
                         n.value = 0
                     else:
-                        n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
+                        try:
+                            n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
+                        except:
+                            print list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
+                            raise
                     
                     vals_to_create.append(n)
                 #elif descriptorValues.count() != roleQuantities.count():
