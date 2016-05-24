@@ -110,7 +110,8 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredNumRxnDescriptor #because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
-        if not isinstance(value, float) and value is not None:
+        # TODO These checks should be part of a more standard 'allowed value' type thing
+        if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
             raise TypeError("You cannot create a numerical value with non-float type {}".format(type(value)))
         try:
             v = rxnDescriptorValues.NumRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
@@ -125,7 +126,7 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
         This allows later bulk creation.
         Returns a tuple of the value object and whether it is new (needs to be saved).
         """
-        if not isinstance(value, float) and value is not None:
+        if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
             raise TypeError("You cannot create a numerical value with non-float type {}".format(type(value)))
         try:
             v = rxnDescriptorValues.NumRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
