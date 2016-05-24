@@ -263,6 +263,9 @@ def _calculate(reaction, descriptorDict, verbose=False):
     c.value = p
     c.save()
 
+    c = descriptor=descriptorDict['rxnSpaceHash1'].updateOrNewValue(reaction, p)
+
+
     # Calculate the elemental molarities
     allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
 
@@ -274,16 +277,16 @@ def _calculate(reaction, descriptorDict, verbose=False):
         else: 
             value = float(sum((quantity.compound.elements[element]['stoichiometry'] * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
 
-        n, new = descriptorDict[element + '_mols'].updateOrNewValue(reaction, value)
-        if new:
+        n = descriptorDict[element + '_mols'].updateOrNewValue(reaction, value)
+        if n is not None:
             vals_to_create.append(n)
 
     for compoundRole in DRP.models.CompoundRole.objects.all():
         roleQuantities = allCompoundQuantities.filter(role=compoundRole)
         #  number of species in reaction with this role
         value = roleQuantities.count()
-        n, new = descriptorDict['{}_amount_count'.format(compoundRole.label)].updateOrNewValue(reaction, value)
-        if new:
+        n = descriptorDict['{}_amount_count'.format(compoundRole.label)].updateOrNewValue(reaction, value)
+        if n is not None:
             vals_to_create.append(n)
 
         #  moles of sum(quantity.amount for quantity in roleQuantities) reactant filling this role in this reaction
@@ -291,8 +294,8 @@ def _calculate(reaction, descriptorDict, verbose=False):
             roleMoles = None
         else:
             roleMoles = sum(quantity.amount for quantity in roleQuantities)
-        n, new = descriptorDict['{}_amount_molarity'.format(compoundRole.label)].updateOrNewValue(reaction, roleMoles)
-        if new:
+        n = descriptorDict['{}_amount_molarity'.format(compoundRole.label)].updateOrNewValue(reaction, roleMoles)
+        if n is not None:
             vals_to_create.append(n)
 
         if roleQuantities.exists():
@@ -308,16 +311,16 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         value = None
                     else:
                         value = max(descriptorValue.value for descriptorValue in descriptorValues)
-                    n, new = descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')].updateOrNewValue(reaction, value)
-                    if new:
+                    n = descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')].updateOrNewValue(reaction, value)
+                    if n is not None:
                         vals_to_create.append(n)
 
                     if any(descriptorValue.value is None for descriptorValue in descriptorValues):
                         value=None
                     else:
                         value=max(descriptorValue.value for descriptorValue in descriptorValues) - min(descriptorValue.value for descriptorValue in descriptorValues)
-                    n, new = descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')].updateOrNewValue(reaction, value)
-                    if new:
+                    n = descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')].updateOrNewValue(reaction, value)
+                    if n is not None:
                         vals_to_create.append(n)
 
                     if any(descriptorValues.get(compound=quantity.compound).value is None for quantity in roleQuantities) or roleMoles == 0 or roleMoles is None:
@@ -330,8 +333,8 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         except:
                             print list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
                             raise
-                    n, new = descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')].updateOrNewValue(reaction, value)
-                    if new:
+                    n = descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')].updateOrNewValue(reaction, value)
+                    if n is not None:
                         vals_to_create.append(n)
 
                     if any(descriptorValues.get(compound=quantity.compound).value is None for quantity in roleQuantities) or roleMoles == 0 or roleMoles is None:
@@ -344,8 +347,8 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         except:
                             print list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
                             raise
-                    n, new = descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count')].updateOrNewValue(reaction, value)
-                    if new:
+                    n = descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count')].updateOrNewValue(reaction, value)
+                    if n is not None:
                         vals_to_create.append(n)
                     
                 #elif descriptorValues.count() != roleQuantities.count():
@@ -360,8 +363,8 @@ def _calculate(reaction, descriptorDict, verbose=False):
                     for i in range(descriptor.minimum, descriptor.maximum+1): #  because Still python...
                         value = sum(1 for value in descriptorValues if value.value == i)
 
-                        n, new = descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
-                        if new:
+                        n = descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
+                        if n is not None:
                             vals_to_create.append(n)
 
                         quantities = roleQuantities.filter(compound__ordmoldescriptorvalue__value=i, compound__ordmoldescriptorvalue__descriptor__pk=descriptor.pk)
@@ -370,17 +373,17 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         else:
                             value = sum(quantity.amount for quantity in quantities)
 
-                        n, new = descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
-                        if new:
+                        n = descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
+                        if n is not None:
                             vals_to_create.append(n)
                             
             for descriptor in DRP.models.BoolMolDescriptor.objects.all():
                 descriptorValues = DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     for i in (True, False): #  because Still python...
-                        n.value = sum(1 for value in descriptorValues if value.value == i)
-                        n, new = descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
-                        if new:
+                        value = sum(1 for value in descriptorValues if value.value == i)
+                        n = descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
+                        if n is not None:
                             vals_to_create.append(n)
 
                         quantities = roleQuantities.filter(compound__boolmoldescriptorvalue__value=i, compound__boolmoldescriptorvalue__descriptor__pk=descriptor.pk)
@@ -389,14 +392,14 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         else:
                             value = sum(quantity.amount for quantity in quantities)
 
-                        n, new = descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
-                        if new:
+                        n = descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)].updateOrNewValue(reaction, value)
+                        if n is not None:
                             vals_to_create.append(n)
 
                         
                     value = any(descriptorValues)
-                    b, new = descriptorDict['{}_{}_any'.format(compoundRole.label, descriptor.csvHeader)].updateOrNewValue(reaction, value)
-                    if new:
+                    b = descriptorDict['{}_{}_any'.format(compoundRole.label, descriptor.csvHeader)].updateOrNewValue(reaction, value)
+                    if b is not None:
                         bool_vals_to_create.append(b)
                         
             for descriptor in DRP.models.CatMolDescriptor.objects.all():
@@ -404,8 +407,8 @@ def _calculate(reaction, descriptorDict, verbose=False):
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     for permValue in descriptor.permittedValues.all():
                         value = descriptorValues.filter(value=permValue).count()
-                        n, new = descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)].updateOrNewValue(reaction, value)
-                        if new:
+                        n = descriptorDict['{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, permValue.value)].updateOrNewValue(reaction, value)
+                        if n is not None:
                             vals_to_create.append(n)
                         
                         quantities = roleQuantities.filter(compound__catmoldescriptorvalue__value=permValue, compound__catmoldescriptorvalue__descriptor__pk=descriptor.pk)
@@ -413,8 +416,8 @@ def _calculate(reaction, descriptorDict, verbose=False):
                             value = None
                         else:
                             value = sum(quantity.amount for quantity in quantities)
-                        n, new = descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)].updateOrNewValue(reaction, value)
-                        if new:
+                        n = descriptorDict['{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, permValue.value)].updateOrNewValue(reaction, value)
+                        if n is not None:
                             vals_to_create.append(n)
     if verbose:
         print "Creating {} Numeric values".format(len(vals_to_create))

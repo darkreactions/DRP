@@ -19,8 +19,6 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         """Create a new reaction value object"""
-        if not isinstance(value, str) and value is not None:
-            raise TypeError("You cannot create a categorical value with non-string type {}".format(type(value)))
         try:
             v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
@@ -34,8 +32,6 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
         This allows later bulk creation.
         Returns a tuple of the value object and whether it is new (needs to be saved).
         """
-        if not isinstance(value, str) and value is not None:
-            raise TypeError("You cannot create a categorical value with non-string type {}".format(type(value)))
         try:
             v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
             new = False
@@ -131,10 +127,8 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
         qs = rxnDescriptorValues.NumRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
 
-        if qs.count() > 1:
-            raise RuntimeError('More than one value for this reaction-descriptor pair. Should not have happened.')
-        elif qs.exists():
-            qs.update(value=value)
+        if qs.exists():
+            qs.exclude(value=value).update(value=value)
             return None
         else:
             return rxnDescriptorValues.NumRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
@@ -178,10 +172,8 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
             raise TypeError("You cannot create a boolean value with non-boolean type {}".format(type(value)))
         qs = rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
 
-        if qs.count() > 1:
-            raise RuntimeError('More than one value for this reaction-descriptor pair. Should not have happened.')
-        elif qs.exists():
-            qs.update(value=value)
+        if qs.exists():
+            qs.exclude(value=value).update(value=value)
             return None
         else:
             return rxnDescriptorValues.BoolRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
