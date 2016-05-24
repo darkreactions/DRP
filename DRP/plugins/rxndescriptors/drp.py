@@ -337,16 +337,25 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         reaction=reaction,
                         descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')],
                     )
-                    if any(descriptorValues.get(compound = quantity.compound).value is None for quantity in roleQuantities) or roleMoles == 0 or roleMoles is None:
+                    if any(descriptorValues.get(compound=quantity.compound).value is None for quantity in roleQuantities) or roleMoles == 0 or roleMoles is None:
                         n.value = None
+                    elif any(descriptorValues.get(compound=quantity.compound).value == 0 for quantity in roleQuantities):
+                        n.value = 0
                     else:
                         n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
                     vals_to_create.append(n)
+                    
                     n = num(
                         reaction=reaction,
                         descriptor=descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count')],
                     )
-                    n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
+                    if any(descriptorValues.get(compound=quantity.compound).value is None for quantity in roleQuantities) or roleMoles == 0 or roleMoles is None:
+                        n.value = None
+                    elif any(descriptorValues.get(compound=quantity.compound).value == 0 for quantity in roleQuantities):
+                        n.value = 0
+                    else:
+                        n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
+                    
                     vals_to_create.append(n)
                 #elif descriptorValues.count() != roleQuantities.count():
                     #warnings.warn("Skipping {} because there are {} descriptorValues and {} roleQuantities".format(descriptor.heading, descriptorValues.count(), roleQuantities.count()))
