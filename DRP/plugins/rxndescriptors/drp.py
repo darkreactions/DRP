@@ -369,7 +369,11 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         try:
                             n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
                         except:
+                            print descriptor
+                            print list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities)
                             print list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
+                            print list(quantity.amount for quantity in roleQuantities)
+                            print roleMoles
                             raise
                     vals_to_create.append(n)
                     
