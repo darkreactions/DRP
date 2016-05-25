@@ -21,6 +21,7 @@ _descriptorDict = {
         'name': 'Refractivity',
         'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'maximalprojectionarea': {
         'type': 'num',
@@ -86,49 +87,57 @@ _pHDependentDescriptors = {
         'type': 'num',
         'name': 'Van der Waals Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa': {
         'type': 'num',
         'name': 'Water Acessible Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa+': {
         'type': 'num',
         'name': 'Partial Positive Charged water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa-': {
         'type': 'num',
         'name': 'Partial negative Charged water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa_hydrophobic': {
         'type': 'num',
         'name': 'Hydrophobic water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa_polar': {
         'type': 'num',
         'name': 'Polar water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'hbda_acc': {
         'type': 'num',
         'name': 'Hydrogen bond acceptor count',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'hbda_don': {
         'type': 'num',
         'name': 'Hydrogen bond donor count',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     }
 }
 
