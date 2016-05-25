@@ -38,8 +38,8 @@ for prop in inorgAtomicProperties:
             'name': 'Geometric mean of {} weighted by {}.'.format(prop.replace('_', ' '), weighting[1]),
             'calculatorSoftware': calculatorSoftware,
             'calculatorSoftwareVersion':'0.02',
-            'maximum':None,
-            'minimum':None
+            'maximum': None,
+            'minimum': 0,
             }
     _descriptorDict['{}_max'.format(stem)] = {
         'type': 'num',
@@ -54,8 +54,8 @@ for prop in inorgAtomicProperties:
         'name': 'Range of {}'.format(prop.replace('_', '')),
         'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion':'0.02',
-        'maximum':None,
-        'minimum':None
+        'maximum': None,
+        'minimum': None
         }
 
 for group_num in range(1,18):

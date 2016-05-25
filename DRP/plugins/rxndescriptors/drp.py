@@ -120,7 +120,7 @@ def make_dict():
                     'calculatorSoftware': calculatorSoftware,
                     'calculatorSoftwareVersion': '0.02',
                     'maximum': None,
-                    'minimum': None
+                    'minimum': 0
                     }
     descriptorDict = setup(_descriptorDict)
     return descriptorDict
