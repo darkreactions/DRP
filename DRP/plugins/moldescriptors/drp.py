@@ -38,8 +38,8 @@ for prop in inorgAtomicProperties:
             'name': 'Geometric mean of {} weighted by {}.'.format(prop.replace('_', ' '), weighting[1]),
             'calculatorSoftware': calculatorSoftware,
             'calculatorSoftwareVersion':'0.02',
-            'maximum':None,
-            'minimum':None
+            'maximum': None,
+            'minimum': 0,
             }
     _descriptorDict['{}_max'.format(stem)] = {
         'type': 'num',
@@ -54,8 +54,8 @@ for prop in inorgAtomicProperties:
         'name': 'Range of {}'.format(prop.replace('_', '')),
         'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion':'0.02',
-        'maximum':None,
-        'minimum':None
+        'maximum': None,
+        'minimum': None
         }
 
 for group_num in range(1,18):
@@ -114,6 +114,11 @@ def _calculate(compound):
             # zero is what scipy does natively. This is just to avoid warnings that are fine so they don't drown out the real ones
             if 0 in [inorgElements[element][prop] for element in compound.elements if element in inorgElements]:
                 val = 0
+
+            if any([(inorgElements[element][prop] == 0) for element, info in compound.elements.items() if element in inorgElements]):
+                val = 0
+            elif  any([(inorgElements[element][prop] < 0) for element, info in compound.elements.items() if element in inorgElements]):
+                raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))]))
             else:
                 val = gmean([inorgElements[element][prop] for element in compound.elements if element in inorgElements])
             n = num( 
@@ -122,14 +127,16 @@ def _calculate(compound):
                     value=val
                     )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None
             num_vals_to_create.append(n)
 
-            if 0 in [inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements]:
+            if any([(inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) == 0) for element, info in compound.elements.items() if element in inorgElements]):
                 val = 0
+            elif any([(inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) < 0) for element, info in compound.elements.items() if element in inorgElements]):
+                raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))]))
             else:
                 val = gmean([inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])
             n = num( 
@@ -138,7 +145,7 @@ def _calculate(compound):
                     value=val,
                     )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None
@@ -151,7 +158,7 @@ def _calculate(compound):
                     value=val
                     )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None
@@ -164,7 +171,7 @@ def _calculate(compound):
                 value=val,
                 )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None

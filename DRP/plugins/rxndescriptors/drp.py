@@ -120,7 +120,7 @@ def make_dict():
                     'calculatorSoftware': calculatorSoftware,
                     'calculatorSoftwareVersion': '0.02',
                     'maximum': None,
-                    'minimum': None
+                    'minimum': 0
                     }
     descriptorDict = setup(_descriptorDict)
     return descriptorDict
@@ -365,16 +365,10 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         n.value = None
                     elif any(descriptorValues.get(compound=quantity.compound).value == 0 for quantity in roleQuantities):
                         n.value = 0
+                    elif any(descriptorValues.get(compound=quantity.compound).value < 0 for quantity in roleQuantities):
+                        raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptor))
                     else:
-                        try:
-                            n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
-                        except:
-                            print descriptor
-                            print list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities)
-                            print list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
-                            print list(quantity.amount for quantity in roleQuantities)
-                            print roleMoles
-                            raise
+                        n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value*(quantity.amount/roleMoles) for quantity in roleQuantities))
                     vals_to_create.append(n)
                     
                     n = num(
@@ -385,13 +379,10 @@ def _calculate(reaction, descriptorDict, verbose=False):
                         n.value = None
                     elif any(descriptorValues.get(compound=quantity.compound).value == 0 for quantity in roleQuantities):
                         n.value = 0
+                    elif any(descriptorValues.get(compound=quantity.compound).value < 0 for quantity in roleQuantities):
+                        raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptor))
                     else:
-                        try:
-                            n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
-                        except:
-                            print list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities)
-                            raise
-                    
+                        n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value for quantity in roleQuantities))
                     vals_to_create.append(n)
                 #elif descriptorValues.count() != roleQuantities.count():
                     #warnings.warn("Skipping {} because there are {} descriptorValues and {} roleQuantities".format(descriptor.heading, descriptorValues.count(), roleQuantities.count()))
