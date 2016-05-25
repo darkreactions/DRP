@@ -6,10 +6,12 @@ Requires cxcalc (part of JChem) to be installed and licensed.
 import DRP
 from utils import setup
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from collections import OrderedDict
 from subprocess import Popen, PIPE
 from itertools import chain
 import warnings
+
 
 calculatorSoftware = 'ChemAxon_cxcalc'
 
@@ -19,42 +21,49 @@ _descriptorDict = {
         'name': 'Refractivity',
         'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'maximalprojectionarea': {
         'type': 'num',
         'name': 'Maximal Projection Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'maximalprojectionradius': {
         'type': 'num',
         'name': 'Maximal Projection Radius',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'maximalprojectionsize': {
         'type': 'num',
         'name': 'Maximal Projection Size',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'minimalprojectionarea': {
         'type': 'num',
         'name': 'Minimal Projection Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'minimalprojectionradius': {
         'type': 'num',
         'name': 'Minimal Projection Radius',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'minimalprojectionsize': {
         'type': 'num',
         'name': 'Minimal Projection Size',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     }
 }
 
@@ -78,49 +87,57 @@ _pHDependentDescriptors = {
         'type': 'num',
         'name': 'Van der Waals Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa': {
         'type': 'num',
         'name': 'Water Acessible Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa+': {
         'type': 'num',
         'name': 'Partial Positive Charged water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa-': {
         'type': 'num',
         'name': 'Partial negative Charged water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa_hydrophobic': {
         'type': 'num',
         'name': 'Hydrophobic water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'asa_polar': {
         'type': 'num',
         'name': 'Polar water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'hbda_acc': {
         'type': 'num',
         'name': 'Hydrogen bond acceptor count',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     },
     'hbda_don': {
         'type': 'num',
         'name': 'Hydrogen bond donor count',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     }
 }
 
@@ -170,11 +187,6 @@ def calculate_many(compound_set, verbose=False):
     if verbose:
         print "Deleting old descriptors"
     delete_descriptors(compound_set)
-    # filtering first and then doing a big cxcalc command is actually slower
-    #if verbose:
-        #print "Filtering out compounds without valid SMILES or INCHI"
-    #filtered_compounds = _filter_compounds(compound_set, verbose=verbose)
-    #_calculate_with_lec(filtered_compounds, verbose=verbose)
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i+1, len(compound_set))
@@ -183,76 +195,6 @@ def calculate_many(compound_set, verbose=False):
 def calculate(compound):
     delete_descriptors([compound])
     _calculate(compound)
-
-def _filter_compounds(compound_set, verbose=False):
-    filtered_compounds = OrderedDict()
-    for i, compound in enumerate(compound_set):
-        notFound = True
-        if notFound and (compound.smiles is not None and compound.smiles != ''):
-            lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
-            lecProc.wait()
-            if lecProc.returncode == 0:
-                lec, lecErr = lecProc.communicate()
-                notFound = False  
-        if notFound and (compound.INCHI is not None and compound.INCHI != ''):
-            lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
-            lecProc.wait()
-            if lecProc.returncode == 0:
-                lec, lecErr = lecProc.communicate()
-                notFound = False
-        if not notFound:
-            filtered_compounds[lec] = compound
-        else:
-            warnings.warn("Compound not found")
-        if verbose:
-            print "Done with {} ({}/{})".format(compound, i+1, len(compound_set))
-    return filtered_compounds
-
-
-def _calculate_with_lec(compound_dict, verbose=False):
-    """
-    Does cxcalc calculations given an ordered dictionary lec representation : compound
-    """
-    if verbose:
-        print "Calculating descriptors for {} compounds with valid SMILES/INCHI".format(len(compound_dict))
-    #-N ih says not to display id or header
-    calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', '-N', 'ih'] + compound_dict.keys() +
-                     [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True)
-    calcProc.wait()
-    if calcProc.returncode == 0:
-        res, resErr = calcProc.communicate()
-        if not resErr:
-            if verbose:
-                print "Putting descriptor values in database"
-            resLines = res.split('\n')[:-1] #the last line is blank
-            if len(resLines) == len(compound_dict): 
-                commandKeys = cxcalcCommands.keys()
-                for i, resLine in enumerate(resLines): 
-                    resList = resLine.split('\t')
-                    compound = compound_dict.values()[i]
-    
-                    num_to_create = []
-                    ord_to_create = []
-                    bool_to_create = []
-                    for i in range(len(resList)):
-                        if _descriptorDict[commandKeys[i]]['type'] == 'num':
-                            num_to_create.append(DRP.models.NumMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
-                        elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
-                            ord_to_create.append(DRP.models.OrdMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
-                        elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
-                            bool_to_create.append(DRP.models.BoolMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
-                        # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
-                        # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
-                        # for it other than for the database to push it out as a part of validation procedures.
-                    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
-                    DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
-                    DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_to_create)
-                    if verbose:
-                        print "Done with {} ({}/{})".format(compound, i+1, len(compound_dict))
-        else:
-            raise RuntimeError("cxcalc returned error: {}".fomrat(resErr))
-    else:
-        raise RuntimeError("cxcalc returned nonzero return code {}".format(calcProc.returncode))
 
 def _calculate(compound, verbose=False):
     notFound = True
@@ -286,11 +228,27 @@ def _calculate(compound, verbose=False):
                     if len(resList) == len(commandKeys):
                         for i in range(len(resList)):
                             if _descriptorDict[commandKeys[i]]['type'] == 'num':
-                                num_to_create.append(DRP.models.NumMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                                n = DRP.models.NumMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=float(resList[i]))
+                                try:
+                                    n.clean()
+                                except ValidationError as e:
+                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                                    n.value = None
+                                num_to_create.append(n)
                             elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
-                                ord_to_create.append(DRP.models.OrdMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
-                            elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
-                                bool_to_create.append(DRP.models.BoolMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=resList[i]))
+                                o = DRP.models.OrdMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, value=int(resList[i]))
+                                try:
+                                    o.clean()
+                                except ValidationError as e:
+                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                                    o.value = None
+                                ord_to_create.append(o)
+                            else:
+                                return ValueError('Descriptor has unrecognized type {}'.format(_descriptorDict[commandKeys[i]]['type']))
+                            #elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
+                                ## TODO Not sure whether cxcalc even returns any boolean values, but if it does they should be coerced correctly
+                                ## commenting out this bit since this should be double checked before anyone uses it
+                                #bool_to_create.append(DRP.models.BoolMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, bool(int(value=resList[i])))
                             # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
                             # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
                             # for it other than for the database to push it out as a part of validation procedures.

@@ -81,6 +81,12 @@ class BooleanDescriptorValue(models.Model):
         """Correctly assess instances in a boolean context."""
         return self.value
 
+    def clean(self):
+        if not (isinstance(self.value, bool) or self.value is None):
+            raise ValidationError(
+                    'Only boolean values are allowed for numeric descriptors',
+                    'value_wrong_type')
+                    )
 
 class NumericDescriptorValue(models.Model):
 
@@ -97,18 +103,16 @@ class NumericDescriptorValue(models.Model):
 
     def clean(self):
         """Ensure that the value is within the prescribed bounds."""
+        if not (isinstance(self.value, float) or isinstance(self.value, int) or self.value is None):
+            raise ValidationError(
+                    'Only float or integer values are allowed for numeric descriptors.',
+                    'value_wrong_type')
         if self.value is not None:
-            if (
-               self.descriptor.maximum is not None and
-               self.value > self.descriptor.maximum
-               ):
+            if self.descriptor.maximum is not None and self.value > self.descriptor.maximum:
                 raise ValidationError(
                     'The provided value is higher than the descriptor maximum',
                     'value_too_high')
-            if (
-               self.descriptor.minimum is not None and
-               self.value < self.descriptor.minimum
-               ):
+            if self.descriptor.minimum is not None and self.value < self.descriptor.minimum:
                 raise ValidationError(
                     'The provided value is lower than the descriptor minimum',
                     'value_too_low')
@@ -158,6 +162,11 @@ class OrdinalDescriptorValue(models.Model):
 
     def clean(self):
         """Ensure the value is within the prescribed bounds."""
+        if not (isinstance(self.value, int) or self.value is None):
+            raise ValidationError(
+                    'Only integer values are allowed for numeric descriptors',
+                    'value_wrong_type')
+                    )
         if self.value is not None:
             if (
                self.descriptor.maximum is not None and
