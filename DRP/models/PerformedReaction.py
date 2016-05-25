@@ -8,6 +8,7 @@ import DRP
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
+from validators import notInTheFuture
 
 class PerformedReactionQuerySet(ReactionQuerySet):
         # I assume this was wrong and it should be the one below
@@ -34,7 +35,7 @@ class PerformedReaction(Reaction):
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
     performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, blank=True, default=None)
-    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None, help_text='Timezone assumed EST, Date in format YYYY-MM-DD')
+    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None, help_text='Timezone assumed EST, Date in format YYYY-MM-DD', validators=[notInTheFuture])
     insertedDateTime = models.DateTimeField('Date Reaction Saved', auto_now_add=True)
     recommendation = models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
     legacyRecommendedFlag = models.NullBooleanField(default=None)
