@@ -11,47 +11,49 @@ from subprocess import Popen, PIPE
 from itertools import chain
 import warnings
 
+calculatorSoftware = 'ChemAxon_cxcalc'
+
 _descriptorDict = {
     'refractivity': {
         'type': 'num',
         'name': 'Refractivity',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6',
     },
     'maximalprojectionarea': {
         'type': 'num',
         'name': 'Maximal Projection Area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'maximalprojectionradius': {
         'type': 'num',
         'name': 'Maximal Projection Radius',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'maximalprojectionsize': {
         'type': 'num',
         'name': 'Maximal Projection Size',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'minimalprojectionarea': {
         'type': 'num',
         'name': 'Minimal Projection Area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'minimalprojectionradius': {
         'type': 'num',
         'name': 'Minimal Projection Radius',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'minimalprojectionsize': {
         'type': 'num',
         'name': 'Minimal Projection Size',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     }
 }
@@ -63,61 +65,61 @@ _pHDependentDescriptors = {
     'avgpol': {
         'type': 'num',
         'name': 'Average Molecular Polarizability',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'molpol': {
         'type': 'num',
         'name': 'Specific Molecular Polarizability',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'vanderwaals': {
         'type': 'num',
         'name': 'Van der Waals Surface Area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'asa': {
         'type': 'num',
         'name': 'Water Acessible Surface Area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'asa+': {
         'type': 'num',
         'name': 'Partial Positive Charged water accessible surface area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'asa-': {
         'type': 'num',
         'name': 'Partial negative Charged water accessible surface area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'asa_hydrophobic': {
         'type': 'num',
         'name': 'Hydrophobic water accessible surface area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'asa_polar': {
         'type': 'num',
         'name': 'Polar water accessible surface area',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'hbda_acc': {
         'type': 'num',
         'name': 'Hydrogen bond acceptor count',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     },
     'hbda_don': {
         'type': 'num',
         'name': 'Hydrogen bond donor count',
-        'calculatorSoftware': 'ChemAxon_cxcalc',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6'
     }
 }

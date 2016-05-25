@@ -1,13 +1,9 @@
 """An example molecular descriptor plugin to demonstrate the 'shape' that the API requires."""
-from django.conf import settings
-from chemspipy import ChemSpider
 from utils import setup
-import rdkit.Chem
 import DRP
 
 _descriptorDict = {
-    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': 'drp_rdkit', 'calculatorSoftwareVersion': 0, 'maximum': None, 'minimum': 0},
-    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0, 'maximum': 3, 'minimum': 1},
+    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 1.5, 'maximum': 3, 'minimum': 1},
     'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0},
     'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
 }
@@ -16,21 +12,15 @@ _descriptorDict = {
 descriptorDict = setup(_descriptorDict)
 
 
-def fsValueCalc(mw):
+def fsValueCalc(num):
     """Calculate an ordinal fake size value."""
-    if mw < 50:
+    if num < 10:
         return 1
-    elif mw < 100:
+    elif num < 20:
         return 2
     else:
         return 3
 
-def calculate_many(compound_set, verbose=False):
-    for compound in compound_set:
-        for i, compound in enumerate(compound_set):
-            if verbose:
-                print "{}; Compound {} ({}/{})".format(compound, compound.pk, i+1, len(compound_set))
-            calculate(compound, verbose=verbose)
 
 def arbValCalc(compound):
     """Calculate a completely arbitrary value as an example of a categorical descriptor."""
@@ -40,26 +30,28 @@ def arbValCalc(compound):
         return DRP.models.CategoricalDescriptorPermittedValue.objects.get(value='fun', descriptor=descriptorDict['arb'])
 
 
+def calculate_many(compound_set, verbose=False):
+    for i, compound in enumerate(compound_set):
+        if verbose:
+            print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
+        calculate(compound, verbose=verbose)
+
+
 def calculate(compound, verbose=False):
     """Calculate the descriptors from this plugin for a compound.
 
     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
     database as this happens.
     """
-    pt = rdkit.Chem.GetPeriodicTable()
-    mwValue = DRP.models.NumMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict['mw'], compound=compound)[0]
-    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
-    mwValue.save()
-    fsValue = DRP.models.OrdMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['fs'])[0]
-    fsValue.value = fsValueCalc(mwValue)
-    fsValue.save()
     if compound.smiles is None:
-        nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'])[0]
-        nValue.value = None
+        fsValue = None
+        nValue = None
     else:
-        nValue = DRP.models.BoolMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['N?'])[0]
-        nValue.value = ('n' in compound.smiles or 'N' in compound.smiles)
-    nValue.save()
-    arbValue = DRP.models.CatMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['arb'])[0]
-    arbValue.value = arbValCalc(compound)
-    arbValue.save()
+        nValue = ('n' in compound.smiles or 'N' in compound.smiles)
+        fsValue = fsValueCalc(len(compound.smiles))
+
+    arbValue = arbValCalc(compound)
+
+    DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict['fs'])
+    DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict['N?'])
+    DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict['arb'])

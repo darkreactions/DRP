@@ -3,6 +3,8 @@ from utils import setup
 import DRP
 from DRP import chemical_data
 
+calculatorSoftware = 'DRP'
+
 elements = chemical_data.elements
 
 #Inorganic descriptors
@@ -33,7 +35,7 @@ for prop in inorgAtomicProperties:
         _descriptorDict['{}_geom_{}'.format(stem, weighting[0])] = {
             'type':'num',
             'name': 'Geometric mean of {} weighted by {}.'.format(prop.replace('_', ' '), weighting[1]),
-            'calculatorSoftware':'DRP',
+            'calculatorSoftware': calculatorSoftware,
             'calculatorSoftwareVersion':'0.02',
             'maximum':None,
             'minimum':None
@@ -41,7 +43,7 @@ for prop in inorgAtomicProperties:
     _descriptorDict['{}_max'.format(stem)] = {
         'type': 'num',
         'name': 'Maximal value of {}'.format(prop.replace('_', '')),
-        'calculatorSoftware':'DRP',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion':'0.02',
         'maximum':None,
         'minimum':None
@@ -49,7 +51,7 @@ for prop in inorgAtomicProperties:
     _descriptorDict['{}_range'.format(stem)] = {
         'type': 'num',
         'name': 'Range of {}'.format(prop.replace('_', '')),
-        'calculatorSoftware':'DRP',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion':'0.02',
         'maximum':None,
         'minimum':None
@@ -59,7 +61,7 @@ for group_num in range(1,18):
     _descriptorDict['boolean_group_{}'.format(group_num)] = {
         'type': 'bool',
         'name': 'Presence of elements in group {}'.format(group_num),
-        'calculatorSoftware':'DRP',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion':'1.0',
         }
         
@@ -67,7 +69,7 @@ for period_num in range(1,7):
     _descriptorDict['boolean_period_{}'.format(period_num)] = {
         'type': 'bool',
         'name': 'Presence of elements in period {}'.format(period_num),
-        'calculatorSoftware':'DRP',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion':'1.0',
         }
         
@@ -75,7 +77,7 @@ for valence_num in range(1,8):
     _descriptorDict['boolean_valence_{}'.format(valence_num)] = {
         'type': 'bool',
         'name': 'Presence of elements with valence {}'.format(valence_num),
-        'calculatorSoftware':'DRP',
+        'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion':'1.0',
         }
 
