@@ -122,7 +122,7 @@ def _calculate(compound):
                     value=val
                     )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None
@@ -138,7 +138,7 @@ def _calculate(compound):
                     value=val,
                     )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None
@@ -151,7 +151,7 @@ def _calculate(compound):
                     value=val
                     )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None
@@ -164,7 +164,7 @@ def _calculate(compound):
                 value=val,
                 )
             try:
-                n.clean()
+                n.full_clean()
             except ValidationError as e:
                 warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                 n.value = None

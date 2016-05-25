@@ -52,6 +52,21 @@ def calculate(compound, verbose=False):
 
     arbValue = arbValCalc(compound)
 
-    DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict['fs'])
-    DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict['N?'])
-    DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict['arb'])
+    try:
+        v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict['fs'])[0]
+    except ValidationError as e:
+        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+        v.value = None
+        v.save()
+    try:
+        v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict['N?'])[0]
+    except ValidationError as e:
+        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+        v.value = None
+        v.save()
+    try:
+        v = DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict['arb'])[0]
+    except ValidationError as e:
+        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+        v.value = None
+        v.save()
