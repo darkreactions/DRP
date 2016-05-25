@@ -2,6 +2,7 @@ from scipy.stats import gmean
 from utils import setup
 import DRP
 from DRP import chemical_data
+import warnings
 
 calculatorSoftware = 'DRP'
 
@@ -110,26 +111,64 @@ def _calculate(compound):
 
         inorgElementNormalisationFactor = sum(info['stoichiometry'] for element, info in compound.elements.items() if element in inorgElements)
         for prop in inorgAtomicProperties:
-            num_vals_to_create.append(num( 
-                                        compound=compound,
-                                        descriptor=descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))],
-                                        value=gmean([inorgElements[element][prop] for element in compound.elements if element in inorgElements])
-                                        ))
+            # zero is what scipy does natively. This is just to avoid warnings that are fine so they don't drown out the real ones
+            if 0 in [inorgElements[element][prop] for element in compound.elements if element in inorgElements]:
+                val = 0
+            else:
+                val = gmean([inorgElements[element][prop] for element in compound.elements if element in inorgElements])
+            n = num( 
+                    compound=compound,
+                    descriptor=descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))],
+                    value=val
+                    )
+            try:
+                n.clean()
+            except ValidationError as e:
+                warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                n.value = None
+            num_vals_to_create.append(n)
 
-            num_vals_to_create.append(num(
-                                        compound=compound,
-                                        descriptor=descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))],
-                                        value = gmean([inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])))
-               
-            num_vals_to_create.append(num(
-                                        compound=compound,
-                                        descriptor=descriptorDict['drpInorgAtom{}_max'.format(prop.title().replace('_', ''))],
-                                        value = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements)))
-    
-            num_vals_to_create.append(num(
-                                        compound=compound,
-                                        descriptor=descriptorDict['drpInorgAtom{}_range'.format(prop.title().replace('_', ''))],
-                                        value = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements) - min(inorgElements[element][prop] for element in compound.elements if element in inorgElements)))
+            if 0 in [inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements]:
+                val = 0
+            else:
+                val = gmean([inorgElements[element][prop]*(info['stoichiometry']/inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])
+            n = num( 
+                    compound=compound,
+                    descriptor=descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))],
+                    value=val,
+                    )
+            try:
+                n.clean()
+            except ValidationError as e:
+                warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                n.value = None
+            num_vals_to_create.append(n)
+
+            val = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements)
+            n = num(
+                    compound=compound,
+                    descriptor=descriptorDict['drpInorgAtom{}_max'.format(prop.title().replace('_', ''))],
+                    value=val
+                    )
+            try:
+                n.clean()
+            except ValidationError as e:
+                warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                n.value = None
+            num_vals_to_create.append(n)
+
+            val = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements) - min(inorgElements[element][prop] for element in compound.elements if element in inorgElements)
+            n = num(
+                compound=compound,
+                descriptor=descriptorDict['drpInorgAtom{}_range'.format(prop.title().replace('_', ''))],
+                value=val,
+                )
+            try:
+                n.clean()
+            except ValidationError as e:
+                warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                n.value = None
+            num_vals_to_create.append(n)
         num.objects.bulk_create(num_vals_to_create)
 
     for group_num in range(1,18):
