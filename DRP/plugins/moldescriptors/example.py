@@ -51,7 +51,7 @@ def calculate(compound, verbose=False):
         fsValue = fsValueCalc(len(compound.smiles))
 
     arbValue = arbValCalc(compound)
-        v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict['fs'])[0]
+    v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict['fs'])[0]
     try:
         v.full_clean()
     except ValidationError as e:
