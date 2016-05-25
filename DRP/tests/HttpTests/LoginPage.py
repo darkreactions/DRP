@@ -30,7 +30,8 @@ class PostLoginPage(PostHttpSessionTest):
 
   def test_Status(self):
     self.assertEqual(200, self.response.status_code)
-    self.assertEqual(302, self.response.history[0].status_code)
+    self.assertTrue(len(self.response.history) > 0, self.response.content)
+    self.assertEqual(302, self.response.history[0].status_code, self.response.content)
 
   def tearDown(self):
     self.tmpUser.delete()

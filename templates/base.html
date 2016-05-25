@@ -9,28 +9,8 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/projectMenu.css" />
     {% block additional_css %}{% endblock %}
-{% comment %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/universal.css" />
-    {% block head_additional %}{% endblock %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataManipulationMenu.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/textFormatting.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/containers.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buttons.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/infoForm.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/popups.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactions.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/editable.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buttons.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/errors.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/periodicTable.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/logo.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/userInfo.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-{% endcomment %}
   {% block additional_head %}{% endblock %}
+    {% block head_js %}{% endblock %}
   </head>
 
   <body>
@@ -55,7 +35,7 @@
           {% if testing %}
             <!-- d68a82db-bd18-4a9f-a1a2-03b3bb259595 --> 
           {% endif %}
-        <a id="userLogin" href="/login.html?next={{ request.path_info|urlencode }}">Log In</a>
+        <a id="userLogin" href="/login.html{% block login_next %}?next={{ request.path_info|urlencode }}{% endblock %}">Log In</a>
         <a id="registrationPrompt" href="/register.html">Register</a>
 
         {% endif %}
@@ -73,7 +53,8 @@
           </li>
   
           <li>
-            <a href="/database/"
+            <a href="{% url "reactionlist_typed" ".html" %}?page=1"
+               id="dbase"
                class="navLink{% if template == "database"%} currentTitle{%endif%}"
                title="Enter the Dark Reaction Project.">
                Project
@@ -116,6 +97,10 @@
   &copy; {% now "Y" %} Dark Reactions Project at Haverford College
   </footer>
   {% block additional_js %}{% endblock %}
+  <script>
+    dbase = document.getElementById('dbase');
+    dbase.setAttribute('href', '{% url "reactionlist" %}');
+  </script>
 </body>
 {% comment %}
  <!-- SCRIPTS -->

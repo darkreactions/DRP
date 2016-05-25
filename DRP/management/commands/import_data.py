@@ -18,7 +18,6 @@ class Command(BaseCommand):
         DRP.models.ConfirmationCode.objects.all().delete()
         DRP.models.LicenseAgreement.objects.all()
         DRP.models.License.objects.all().delete()
-        DRP.models.LegacyStatsModel.objects.all().delete()
         DRP.models.StatsModel.objects.all().delete()
         DRP.models.DataSet.objects.all().delete()
         DRP.models.DataSet.objects.all().delete()
