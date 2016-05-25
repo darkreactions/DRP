@@ -86,7 +86,6 @@ class BooleanDescriptorValue(models.Model):
             raise ValidationError(
                     'Only boolean values are allowed for numeric descriptors',
                     'value_wrong_type')
-                    )
 
 class NumericDescriptorValue(models.Model):
 
@@ -166,7 +165,7 @@ class OrdinalDescriptorValue(models.Model):
             raise ValidationError(
                     'Only integer values are allowed for numeric descriptors',
                     'value_wrong_type')
-                    )
+
         if self.value is not None:
             if (
                self.descriptor.maximum is not None and
