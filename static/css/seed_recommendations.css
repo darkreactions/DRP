@@ -1,9 +1,0 @@
-#seedRecOven{
-position:relative;
-}
-
-#seedRecOven .loadingWheel {
- position:absolute;
- bottom:0px;
- right:25px;
-}

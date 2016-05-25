@@ -1,0 +1,55 @@
+{% load performed_rxn_delete_form %}
+{% load performed_rxn_invalidate_form %}
+
+  {% for reaction in reactions %}
+  <div class="reaction" {% if reaction.valid %} style="border: 5px solid #376737" {% else %} style="border: 5px solid #8b2c27" {% endif %}>
+    {% comment %}need to change color of main div with {{ reaction.valid }}{% endcomment %} 
+    <div class="first_name">Entered by: {{ reaction.user.first_name }} {{ reaction.user.last_name }}</div>
+    {% if reaction.performedBy != None %}
+      <div class="performed_by">Performed by: {{ reaction.performedBy.first_name }} {{ reaction.performedBy.last_name }}</div>
+    {% endif %}
+    <div class="reference">Reference ID: {{ reaction.reference }}</div> 
+    <div class="quantities">
+	<p>Quantities:</p>
+      {% for quantity in reaction.compoundquantity_set.all %}
+	<ul>
+          <li>{{ quantity.role.label }}</li>
+          <li>{{ quantity.compound.name }}</li>
+          <li>{{ quantity.amount }} mmoles</li>
+        </ul>
+      {% endfor %}
+    </div>
+    {% if reaction.performedDateTime != None %}
+      <div class="performed_date">Performed Date: {{ reaction.performedDateTime }}</div>
+    {% endif %}
+    <div class="inserted_date">Inserted Date: {{ reaction.insertedDateTime }}</div>
+    {% if reaction.notes != "" %}
+      <div class="notes">Notes: {{ reaction.notes }}</div>
+    {% endif %}
+    <div class="input_wrapper">
+    {% if user.is_authenticated %}
+      {% if reaction.labGroup in user.labgroup_set.all %}
+    	  <form action="{% url 'editReaction' reaction.pk %}">
+            {% csrf_token %}
+            {% performed_rxn_delete_form reaction %}
+            <input type="Submit" value="edit" />
+          </form> 
+	  {% if not reaction.datasetrelation_set.exists %}
+    	  <form action="{% url 'deleteReaction' %}" method="post">
+            {% csrf_token %}
+            {% performed_rxn_delete_form reaction %}
+            <input class="delete" type="Submit" value="delete" />
+          </form> 
+        {% else %}
+          <form action="{% url 'invalidateReaction' %}" method="post">
+            {% csrf_token %}
+            {% performed_rxn_invalidate_form reaction %}
+            <input type="Submit" value="invalidate" />
+          </form>
+        {% endif %}
+      {% endif %}
+     </div>
+    {% endif %}
+  </div>
+</div>
+  {% endfor %}

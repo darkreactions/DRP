@@ -1,6 +1,5 @@
-p.github {
+p.citation {
  text-align:center;
- display: none;
 }
 
 h1.bannerText {
@@ -59,12 +58,15 @@ figure.contributorGroup.richard {
 .contributor a:hover {
   opacity:0.8;
 }
+
 .contributor a {
  font-size:inherit;
  color:inherit;
  text-decoration:none;
  font-weight:700;
-} .contributor a:hover {
+}
+
+.contributor a:hover {
  opacity:.7;
 }
 

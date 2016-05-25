@@ -47,10 +47,9 @@ div.nav-wrapper {
 
 #navigationMenu {
  display:block;
- position:relative;
- width:32.5em;
+ width:50%;
  padding:10px 0px;
- text-align:left;
+ text-align:center;
  background-color:#658ebd;
  margin:4em auto 0em auto;
 }

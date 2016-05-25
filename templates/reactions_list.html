@@ -1,161 +1,48 @@
 {% extends 'reactions.html' %}
-{% load performed_rxn_delete_form %}
-{% load performed_rxn_invalidate_form %}
 
 {% block additional_css %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionsList.css" />
 {% endblock %}
 
+
 {% block content %}
 <h1 class="bannerText">Reactions Database</h1>  
 {% if user.is_authenticated %}
     {% include "lab_form.html" %}
-{% endif %}
   <div class="downloads">
     <h1 class="downloads">Downloads</h1>
     <ul class="downloads">
-      <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
-      {% if user.is_authenticated %}<li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
-      <li><a href="{% url request.resolver_match.url_name '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
-      {% if user.is_authenticated %}<li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
+      <li><a href="{% url 'reactionlist_typed' '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url 'reactionlist_typed' '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
+      <li><a href="{% url 'reactionlist_typed' '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url 'reactionlist_typed' '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
     </ul>
   </div>
+
+{% endif %}
 {% if reactions|length > 0 %}
+  {% include "reactions_divs.html" %}
 
-{% comment %}
-  <thead>
-    <tr>
-      <th>Reference</th>
-      <th>Quantities</th>
-      <th>User</th>
-      <th>Date Performed</th>
-      <th>Date Inserted</th>
-      <th>Valid</th>
-      <th>Based On</th>
-      <th>Duplicate Of</th>
-      <th>Lab Group</th>
-    </tr>
-  </thead>
-    {% for reaction in reactions %}
-  <tbody>
-    <tr>
-      {% if user.is_authenticated %}
-        {% if reaction.labGroup in user.labgroup_set.all %}
-        <td><a href="{% url 'editReaction' reaction.pk %}">{{ reaction.reference }}</a></td>
-        {% else %} 
-        <td>{{ reaction.reference }}</td>
-        {% endif %}
-      {% else %} 
-      <td>{{ reaction.reference }}</td>
-      {% endif %}
-      <td>
-        <ul>
-        {% for quantity in reaction.compoundquantity_set.all %}
-          <li><ul>
-          <li>{{ quantity.compound.name }}</li>
-          <li>{{ quantity.role.label }}</li>
-          <li>{{ quantity.amount }}mmoles</li>
-          </ul></li>
-        {% endfor %}
-        <ul>
-      </td>
-      <td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td> 
-      <td>{{ reaction.performedDateTime }}</td>
-      <td>{{ reaction.insertedDateTime }}</td> 
-{% endcomment %}
-
-<table class="reactions-list">
-  {% for reaction in reactions %}
-  <div class="reaction" {% if reaction.valid %} style="border: 5px solid #376737" {% else %} style="border: 5px solid #8b2c27" {% endif %}>
-    {% comment %}need to change color of main div with {{ reaction.valid }}{% endcomment %} 
-    <div class="first_name">Entered by: {{ reaction.user.first_name }} {{ reaction.user.last_name }}</div> 
-    <div class="quantities">
-	<p>Quantities:</p>
-      {% for quantity in reaction.compoundquantity_set.all %}
-	<ul>
-          <li>{{ quantity.role.label }}</li>
-          <li>{{ quantity.compound.name }}</li>
-          <li>{{ quantity.amount }} mmoles</li>
-        </ul>
-      {% endfor %}
-    </div>
-    <div class="inserted_date">Inserted Date: {{ reaction.insertedDateTime }}</div>
-    <div class="input_wrapper">
-    {% if user.is_authenticated %}
-      {% if reaction.labGroup in user.labgroup_set.all %}
-    	  <form action="{% url 'editReaction' reaction.pk %}">
-            {% csrf_token %}
-            {% performed_rxn_delete_form reaction %}
-            <input type="Submit" value="edit" />
-          </form> 
-	  {% if not reaction.datasetrelation_set.exists %}
-    	  <form action="{% url 'deleteReaction' %}" method="post">
-            {% csrf_token %}
-            {% performed_rxn_delete_form reaction %}
-            <input class="delete" type="Submit" value="delete" />
-          </form> 
-        {% else %}
-          <form action="{% url 'invalidateReaction' %}" method="post">
-            {% csrf_token %}
-            {% performed_rxn_invalidate_form reaction %}
-            <input type="Submit" value="invalidate" />
-          </form>
-        {% endif %}
-      {% endif %}
-     </div>
+{% if paginator.num_pages > 1 %}
+<nav id="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{page_obj.previous_page_number}}">Previous</a>
     {% endif %}
-  </div>
-  </div>
-  {% endfor %}
-
-{% comment %}
-      <td>{% if reaction.recommendation %}{{ reaction.recommendation.reference}}{% else %}N/A{% endif %}</td>
-      <td>{% if reaction.duplicateOf %}{{ reaction.duplicateOf.reference }}{% else %}N/A{% endif %}</td>
-      <td>{{ reaction.labGroup.title }}</td>
-      <td>
-        {% if user.is_authenticated %}
-          {% if reaction.labGroup in user.labgroup_set.all %}
-            {% if not reaction.inTrainingSetFor.exists and not reaction.inTestSetFor.exists %}
-            <form action="{% url 'deleteReaction' %}" method="post">
-              {% csrf_token %}
-              {% performed_rxn_delete_form reaction %}
-              <input type="Submit" value="delete" />
-            </form>
-            {% else %}
-            <form action="{% url 'invalidateReaction' %}" method="post">
-              {% csrf_token %}
-              {% performed_rxn_invalidate_form reaction %}
-              <input type="Submit" value="invalidate" />
-            </form>
-            {% endif %}
-          {% endif %}
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-{% endcomment %}
-</table>
-<ol class="pagination">
-    <li>Page<li>
-    {% for x in paginator.page_range %}
-        <li><a href="?page={{ x }}">{{ x }}</a></li>
-    {% endfor %}
-</ol>
-
+    <span>Page Number: {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}">Next</a>
+    {% endif %}
+</nav>
+{% if not request.GET.page %}
+    <script>
+        pagNav = document.getElementById("pagination");
+        pagNav.parentNode.removeChild(pagNav);
+    </script>
+    <script src="/static/js/reaction_list.js" ></script>
+{% endif %}
+{% endif %}
 {% else %}
 <p>There are currently no reactions to display</p>
 {% endif %}
 
 {% endblock %}
-
-
-{% block additional_js %}
-
-<script type="text/javascript">
-
-</script>
-
-{% endblock %}
-
-

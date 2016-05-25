@@ -11,6 +11,8 @@ from django.contrib.auth import authenticate
 
 class UserCreationForm(DjangoUserCreationForm):
 
+  email = forms.EmailField(required=True)
+
   class Meta:
     model = User
     fields = ('username', 'first_name', 'last_name', 'email')

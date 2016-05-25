@@ -38,10 +38,12 @@ class CompoundQuantity(models.Model):
     role=models.ForeignKey(CompoundRole)
     amount=models.FloatField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        self.reaction.save() #descriptor recalculation
+    def save(self, calcDescriptors=True, invalidate_models=True, *args, **kwargs):
+        # TODO this saves the underlying reaction twice for some reason
+        # Can we not just try performedreaction.save, then except DoesNotExist reaction.save ??
+        self.reaction.save(calcDescriptors=calcDescriptors) #descriptor recalculation
         try:
-            self.reaction.performedreaction.save() #invalidate models
+            self.reaction.performedreaction.save(calcDescriptors=calcDescriptors, invalidate_models=invalidate_models) #invalidate models
         except PerformedReaction.DoesNotExist:
             pass #we don't care that it doesn't exist
         super(CompoundQuantity, self).save(*args, **kwargs)
@@ -53,3 +55,6 @@ class CompoundQuantity(models.Model):
         except PerformedReaction.DoesNotExist:
             pass #we don't care
         super(CompoundQuantity, self).save()
+
+    def __unicode__(self):
+        return u'{} {} with role {} in {}'.format(self.amount, self.compound, self.role, self.reaction)
