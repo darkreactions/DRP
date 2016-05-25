@@ -20,6 +20,7 @@ class LazyDescDict(object):
                 fetchArgs = {k:v for k, v in args.items() if k in ('heading', 'calculatorSoftware', 'calculatorSoftwareVersion')}
                 if v['type'] == 'num':
                     try:
+                        # why are we setting internal dict then immediately resetting it?
                         self.internalDict[k] = DRP.models.NumMolDescriptor.objects.filter(**fetchArgs).update(**args)
                         self.internalDict[k] = DRP.models.NumMolDescriptor.objects.get(**fetchArgs)
                     except DRP.models.NumMolDescriptor.DoesNotExist:
