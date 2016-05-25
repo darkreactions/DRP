@@ -232,7 +232,7 @@ def _calculate(compound, verbose=False):
                                 try:
                                     n.full_clean()
                                 except ValidationError as e:
-                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
                                     n.value = None
                                 num_to_create.append(n)
                             elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
@@ -240,7 +240,7 @@ def _calculate(compound, verbose=False):
                                 try:
                                     o.full_clean()
                                 except ValidationError as e:
-                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(o.value, o.compound, o.descriptor, e.message))
+                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(o.value, o.compound, o.descriptor, e.message))
                                     o.value = None
                                 ord_to_create.append(o)
                             else:

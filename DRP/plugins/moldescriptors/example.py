@@ -51,22 +51,26 @@ def calculate(compound, verbose=False):
         fsValue = fsValueCalc(len(compound.smiles))
 
     arbValue = arbValCalc(compound)
-
-    try:
         v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict['fs'])[0]
+    try:
+        v.full_clean()
     except ValidationError as e:
-        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
         v.value = None
         v.save()
+
+    v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict['N?'])[0]
     try:
-        v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict['N?'])[0]
+        v.full_clean()
     except ValidationError as e:
-        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
         v.value = None
         v.save()
+
+    v = DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict['arb'])[0]
     try:
-        v = DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict['arb'])[0]
+        v.full_clean()
     except ValidationError as e:
-        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
         v.value = None
         v.save()

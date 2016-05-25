@@ -26,4 +26,11 @@ def calculate(compound, verbose=False):
 
     mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
 
-    DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': mw}, descriptor=descriptorDict['mw'], compound=compound)[0]
+    v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': mw}, descriptor=descriptorDict['mw'], compound=compound)[0]
+
+    try:
+        v.full_clean()
+    except ValidationError as e:
+        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+        v.value = None
+        v.save()
