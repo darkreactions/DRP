@@ -89,8 +89,8 @@ if __name__ == '__main__':
     #element = argv[1]
     water = Compound.objects.get(abbrev__iexact='H2O')
 
-    d2_heading = 'Inorg_amount_count'#.format(element)
-    d1_heading = 'numberInorg_legacy'#.format(element)
+    d2_heading = 'boolean_valence_1'
+    d1_heading = 'V0_legacy'
     reactions = DataSet.objects.get(name='valid_legacy_rxns_nonzero_compound').reactions.all()
     comparison_function = None
     desc1ValueType = getDescValueType(d1_heading)
