@@ -91,9 +91,9 @@ def make_dict():
             _descriptorDict['{}_{}_any'.format(compoundRole.label, descriptor.csvHeader)] = {
                     'type': 'bool',
                     'name': 'Whether any reactants have value True for descriptor "{}" in compound role {}.'.format(
-                            value, descriptor.name, compoundRole.label),
+                             descriptor.name, compoundRole.label),
                     'calculatorSoftware': calculatorSoftware,
-                    'calculatorSoftwareVersion': '1.0',
+                    'calculatorSoftwareVersion': '1.5',
                 }
             
         for descriptor in DRP.models.NumMolDescriptor.objects.all():
