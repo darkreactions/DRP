@@ -63,7 +63,7 @@ for group_num in range(1,18):
         'type': 'bool',
         'name': 'Presence of elements in group {}'.format(group_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion':'1.0',
+        'calculatorSoftwareVersion':'1.5',
         }
         
 for period_num in range(1,7):
@@ -71,7 +71,7 @@ for period_num in range(1,7):
         'type': 'bool',
         'name': 'Presence of elements in period {}'.format(period_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion':'1.0',
+        'calculatorSoftwareVersion':'1.5',
         }
         
 for valence_num in range(1,8):
@@ -79,7 +79,7 @@ for valence_num in range(1,8):
         'type': 'bool',
         'name': 'Presence of elements with valence {}'.format(valence_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion':'1.0',
+        'calculatorSoftwareVersion':'1.5',
         }
 
 descriptorDict = setup(_descriptorDict)
