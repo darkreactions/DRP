@@ -81,16 +81,16 @@ form>fieldset ol {
  padding:0;
 }
 
-.descvallist li, .reactant_list li {
+.descvallist>li, .reactant_list>li {
  vertical-align:top;
  display:inline-block;
 }
 
-.reactant_list li {
+.reactant_list>li {
  width:30%;
 }
 
-.reactant_list li:nth-child(4) {
+.reactant_list>li:nth-child(4) {
  width:5%;
 }
 .reactant_list input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .reactant_list select, .reactant_list textarea{
@@ -98,11 +98,11 @@ form>fieldset ol {
  box-sizing:border-box;
 }
 
-.descvallist li {
+.descvallistr>li {
  width:40%;
 }
 
-.descvallist li:nth-child(3) {
+.descvallistr>li:nth-child(3) {
  width:15%;
 }
 
@@ -127,11 +127,11 @@ ul.errorlist {
  padding-right:1em;
 }
 
-ul.errorlist li {
+ul.errorlist>li {
  padding-top:0.5em;
  padding-bottom:0.5em;
 }
 
-ul.errorlist li:not(:first-child) {
+ul.errorlist>li:not(:first-child) {
  border-top:1px solid rgb(139, 44, 39);
 }
