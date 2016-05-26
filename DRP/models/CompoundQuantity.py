@@ -37,7 +37,7 @@ class CompoundQuantity(models.Model):
     compound=models.ForeignKey(Compound, on_delete=models.PROTECT)
     reaction=models.ForeignKey(Reaction)
     role=models.ForeignKey(CompoundRole)
-    amount=models.DecimalField(null=True, blank=True, max_digits=10, decimal_places=5, help_text="(in mmoles, 5 decimal places)", validators=[GreaterThanValidator(0)])
+    amount=models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5, help_text="(in mmoles, 5 decimal places)", validators=[GreaterThanValidator(0)])
 
     def save(self, *args, **kwargs):
         self.reaction.save() #descriptor recalculation
