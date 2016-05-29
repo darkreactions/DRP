@@ -14,6 +14,7 @@ import warnings
 
 
 calculatorSoftware = 'ChemAxon_cxcalc'
+create_threshold = 5000 # number of values to create at a time. Should probably be <= 5000
 
 _descriptorDict = {
     'refractivity': {
@@ -175,7 +176,7 @@ for key, command in _cxcalcpHCommandStems.items():
 if len(cxcalcCommands) != len(_descriptorDict):
     raise RuntimeError("Need the same number of cxcalc commands as descriptors being calculated")
 
-def delete_descriptors(compound_set):
+def delete_descriptors(compound_set, cxcalcCommands):
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type']=='num'],
                                                     compound__in=compound_set).delete(recalculate_reactions=False)
     DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type']=='ord'],
@@ -183,20 +184,62 @@ def delete_descriptors(compound_set):
     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type']=='bool'],
                                                      compound__in=compound_set).delete(recalculate_reactions=False)
 
-def calculate_many(compound_set, verbose=False):
+def calculate_many(compound_set, verbose=False, whitelist=None):
+    if whitelist is not None:
+        filtered_cxcalcCommands = {k:cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}
+    else:
+        filtered_cxcalcCommands = cxcalcCommands
     if verbose:
-        print "Deleting old descriptors"
-    delete_descriptors(compound_set)
+        print "Deleting old descriptor values."
+    delete_descriptors(compound_set, cxcalcCommands)
+    
+    num_to_create = []
+    ord_to_create = []
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i+1, len(compound_set))
-        _calculate(compound, verbose=verbose)
+        num_to_create, ord_to_create = _calculate(compound, filtered_cxcalcCommands, verbose=verbose, num_to_create=num_to_create, ord_to_create=ord_to_create)
+        if len(num_to_create) > create_threshold:
+            if verbose:
+                print 'Creating {} numeric values'.format(len(num_to_create))
+            DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+            num_to_create = []
+        if len(ord_to_create) > create_threshold:
+            if verbose:
+                print 'Creating {} ordinal values'.format(len(Ord_to_create))
+            DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
+            ord_to_create = []
 
-def calculate(compound):
-    delete_descriptors([compound])
-    _calculate(compound)
+    if verbose:
+        print 'Creating {} numeric values'.format(len(num_to_create))
+    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+    if verbose:
+        print 'Creating {} ordinal values'.format(len(ord_to_create))
+    DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
 
-def _calculate(compound, verbose=False):
+
+def calculate(compound, verbose=False, whitelist=None):
+    if whitelist is not None:
+        filtered_cxcalcCommands = {k:cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}
+    else:
+        filtered_cxcalcCommands = cxcalcCommands
+    if verbose:
+        print "Deleting old descriptor values"
+    delete_descriptors([compound], cxcalcCommands)
+    if whitelist is not None:
+        filtered_cxcalcCommands = {k:cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}
+    else:
+        filtered_cxcalcCommands = cxcalcCommands
+    if verbose:
+        print "Creating new descriptor values."
+    num_to_create, ord_to_create = _calculate(compound, filtered_cxcalcCommands, verbose=verbose)
+
+    if verbose:
+        print "Creating {} numerical and {} ordinal".format(len(num_to_create), len(ord_to_create))
+    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+    DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
+
+def _calculate(compound, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):
     notFound = True
     if notFound and (compound.smiles is not None and compound.smiles != ''):
         lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True) # lec = lowest energy conformer
@@ -222,9 +265,6 @@ def _calculate(compound, verbose=False):
                     resList = resLines[0].split('\t')
                     commandKeys = cxcalcCommands.keys()
 
-                    num_to_create = []
-                    ord_to_create = []
-                    bool_to_create = []
                     if len(resList) == len(commandKeys):
                         for i in range(len(resList)):
                             if _descriptorDict[commandKeys[i]]['type'] == 'num':
@@ -232,7 +272,7 @@ def _calculate(compound, verbose=False):
                                 try:
                                     n.full_clean()
                                 except ValidationError as e:
-                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e))
                                     n.value = None
                                 num_to_create.append(n)
                             elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
@@ -240,24 +280,21 @@ def _calculate(compound, verbose=False):
                                 try:
                                     o.full_clean()
                                 except ValidationError as e:
-                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(o.value, o.compound, o.descriptor, e.message))
+                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(o.value, o.compound, o.descriptor, e))
                                     o.value = None
                                 ord_to_create.append(o)
                             else:
                                 return ValueError('Descriptor has unrecognized type {}'.format(_descriptorDict[commandKeys[i]]['type']))
                             #elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
-                                ## TODO Not sure whether cxcalc even returns any boolean values, but if it does they should be coerced correctly
-                                ## commenting out this bit since this should be double checked before anyone uses it
+                                ## TODO Not sure whether cxcalc even returns any boolean values, but if it does I don't know how it notates them and they should be coerced correctly
+                                ## commenting out this bit since it should be double checked before anyone uses it
                                 #bool_to_create.append(DRP.models.BoolMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, bool(int(value=resList[i])))
                             # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.
                             # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
                             # for it other than for the database to push it out as a part of validation procedures.
-                        
-                        if verbose:
-                            print "Creating {} numerical, {} ordinal, {} boolean values".format(len(num_to_create), len(ord_to_create), len(bool_to_create))
-                        DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
-                        DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
-                        DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_to_create)
+
+                        return num_to_create, ord_to_create
+
                     else:
                         raise RuntimeError("Number of cxcalc commands ({}) does not match number of results ({})".format(len(commandKeys), len(resList)))
             else:

@@ -14,23 +14,26 @@ descriptorDict = setup(_descriptorDict)
 
 pt = rdkit.Chem.GetPeriodicTable()
 
-def calculate_many(compound_set, verbose=False):
+def calculate_many(compound_set, verbose=False, whitelist=None):
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
-        calculate(compound, verbose=verbose)
+        calculate(compound, verbose=verbose, whitelist=whitelist)
 
 
-def calculate(compound, verbose=False):
+def calculate(compound, verbose=False, whitelist=None):
     """Calculate the descriptors from this plugin for a compound."""
 
-    mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
-
-    v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': mw}, descriptor=descriptorDict['mw'], compound=compound)[0]
-
-    try:
-        v.full_clean()
-    except ValidationError as e:
-        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
-        v.value = None
-        v.save()
+    heading = 'mw'
+    if whitelist is None or heading in whitelist:
+        mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
+    
+        v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': mw}, descriptor=descriptorDict[heading], compound=compound)[0]
+    
+        try:
+            v.full_clean()
+        except ValidationError as e:
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            v.value = None
+            v.save()
+    
