@@ -25,7 +25,7 @@ for element in elements:
             'calculatorSoftware': calculatorSoftware,
             'calculatorSoftwareVersion': '0.02',
             'maximum': None,
-            'minimum': 0
+            'minimum': 0,
         }
 
 #descriptors for generalised aggregation across compound roles
@@ -39,7 +39,7 @@ def make_dict():
                     'calculatorSoftware': calculatorSoftware,
                     'calculatorSoftwareVersion': '0.02',
                     'maximum':None,
-                    'minimum': 0
+                    'minimum': 0,
                 }
         for descriptor in DRP.models.CatMolDescriptor.objects.all():
             for w in weightings:
@@ -51,7 +51,7 @@ def make_dict():
                         'calculatorSoftware': calculatorSoftware,
                         'calculatorSoftwareVersion': '0.02',
                         'maximum': None,
-                        'minimum': None
+                        'minimum': 0,
                         }
         for descriptor in DRP.models.OrdMolDescriptor.objects.all():
             for w in weightings:
@@ -63,7 +63,7 @@ def make_dict():
                             'calculatorSoftware': calculatorSoftware,
                             'calculatorSoftwareVersion': '0.02',
                             'maximum': None,
-                            'minimum': None
+                            'minimum': 0,
                         }
         for descriptor in DRP.models.BoolMolDescriptor.objects.all():
             for w in weightings:
@@ -75,7 +75,7 @@ def make_dict():
                             'calculatorSoftware': calculatorSoftware,
                             'calculatorSoftwareVersion': '0.02',
                             'maximum': None,
-                            'minimum': None,
+                            'minimum': 0,
                         }
                         
             _descriptorDict['{}_{}_any'.format(compoundRole.label, descriptor.csvHeader)] = {
@@ -93,7 +93,7 @@ def make_dict():
                 'calculatorSoftware': calculatorSoftware,
                 'calculatorSoftwareVersion': '0.02',
                 'maximum': None,
-                'minimum': None
+                'minimum': None,
                 }
             _descriptorDict['{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Range')] = {
                 'type': 'num',
@@ -101,7 +101,7 @@ def make_dict():
                 'calculatorSoftware': calculatorSoftware,
                 'calculatorSoftwareVersion': '0.02',
                 'maximum': None,
-                'minimum': None
+                'minimum': 0,
                 }
             for w in weightings:
                 _descriptorDict['{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', w)] = {
@@ -110,7 +110,7 @@ def make_dict():
                     'calculatorSoftware': calculatorSoftware,
                     'calculatorSoftwareVersion': '0.02',
                     'maximum': None,
-                    'minimum': 0
+                    'minimum': 0,
                     }
     descriptorDict = setup(_descriptorDict)
     return descriptorDict
