@@ -30,19 +30,20 @@ def arbValCalc(compound):
         return DRP.models.CategoricalDescriptorPermittedValue.objects.get(value='fun', descriptor=descriptorDict['arb'])
 
 
-def calculate_many(compound_set, verbose=False):
+def calculate_many(compound_set, verbose=False, whitelist=None):
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
-        calculate(compound, verbose=verbose)
+        calculate(compound, verbose=verbose, whitelist=whitelist)
 
 
-def calculate(compound, verbose=False):
+def calculate(compound, verbose=False, whitelist=None):
     """Calculate the descriptors from this plugin for a compound.
 
     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
     database as this happens.
     """
+
     if compound.smiles is None:
         fsValue = None
         nValue = None
@@ -51,26 +52,33 @@ def calculate(compound, verbose=False):
         fsValue = fsValueCalc(len(compound.smiles))
 
     arbValue = arbValCalc(compound)
-    v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict['fs'])[0]
-    try:
-        v.full_clean()
-    except ValidationError as e:
-        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
-        v.value = None
-        v.save()
+    heading = 'fs'
+    if whitelist is None or heading in whitelist:
+        v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        try:
+            v.full_clean()
+        except ValidationError as e:
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            v.value = None
+            v.save()
+            
+    heading = 'N?'
+    if whitelist is None or heading in whitelist:
+        v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        try:
+            v.full_clean()
+        except ValidationError as e:
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            v.value = None
+            v.save()
 
-    v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict['N?'])[0]
-    try:
-        v.full_clean()
-    except ValidationError as e:
-        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
-        v.value = None
-        v.save()
-
-    v = DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict['arb'])[0]
-    try:
-        v.full_clean()
-    except ValidationError as e:
-        warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
-        v.value = None
-        v.save()
+    heading = 'arb'
+    if whitelist is None or heading in whitelist:
+        v = DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        try:
+            v.full_clean()
+        except ValidationError as e:
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            v.value = None
+            v.save()
+    

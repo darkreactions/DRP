@@ -170,13 +170,13 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                 yield row
             gc.collect()
 
-    def calculate_descriptors(self, verbose=False):
+    def calculate_descriptors(self, verbose=False, **kwargs):
         if verbose:
             print "Calculating descriptors for {} reactions".format(self.count())
         for plugin in descriptorPlugins:
             if verbose:
                 print plugin
-            plugin.calculate_many(self, verbose=verbose)
+            plugin.calculate_many(self, verbose=verbose, **kwargs)
 
 class ReactionManager(models.Manager):
     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs"""
