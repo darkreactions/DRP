@@ -14,7 +14,7 @@ import warnings
 
 
 calculatorSoftware = 'ChemAxon_cxcalc'
-create_threshold = 50  # number of values to create at a time. Should probably be <= 5000
+create_threshold = 5000 # number of values to create at a time. Should probably be <= 5000
 
 _descriptorDict = {
     'refractivity': {
@@ -190,7 +190,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     else:
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
-        print "Deleting old descriptor values"
+        print "Deleting old descriptor values."
     delete_descriptors(compound_set, cxcalcCommands)
     
     num_to_create = []
