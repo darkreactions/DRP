@@ -14,7 +14,7 @@ import warnings
 
 
 calculatorSoftware = 'ChemAxon_cxcalc'
-create_threshold = 5000  # number of values to create at a time. Should probably be <= 5000
+create_threshold = 50  # number of values to create at a time. Should probably be <= 5000
 
 _descriptorDict = {
     'refractivity': {
@@ -190,17 +190,33 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     else:
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
-        print "Deleting old descriptor value"
+        print "Deleting old descriptor values"
     delete_descriptors(compound_set, cxcalcCommands)
+    
+    num_to_create = []
+    ord_to_create = []
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i+1, len(compound_set))
-    num_to_create, ord_to_create = _calculate(compound, filtered_cxcalcCommands, verbose=verbose)
+        num_to_create, ord_to_create = _calculate(compound, filtered_cxcalcCommands, verbose=verbose, num_to_create=num_to_create, ord_to_create=ord_to_create)
+        if len(num_to_create) > create_threshold:
+            if verbose:
+                print 'Creating {} numeric values'.format(len(num_to_create))
+            DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+            num_to_create = []
+        if len(ord_to_create) > create_threshold:
+            if verbose:
+                print 'Creating {} ordinal values'.format(len(Ord_to_create))
+            DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
+            ord_to_create = []
 
     if verbose:
-        print "Creating {} numerical and {} ordinal".format(len(num_to_create), len(ord_to_create))
+        print 'Creating {} numeric values'.format(len(num_to_create))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+    if verbose:
+        print 'Creating {} ordinal values'.format(len(ord_to_create))
     DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
+
 
 def calculate(compound, verbose=False, whitelist=None):
     if whitelist is not None:
@@ -208,7 +224,7 @@ def calculate(compound, verbose=False, whitelist=None):
     else:
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
-        print "Deleting old descriptor value"
+        print "Deleting old descriptor values"
     delete_descriptors([compound], cxcalcCommands)
     if whitelist is not None:
         filtered_cxcalcCommands = {k:cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}

@@ -86,12 +86,16 @@ for valence_num in range(1,8):
 
 descriptorDict = setup(_descriptorDict)
 
-def delete_descriptors(compound_set):
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descriptorDict.values() if isinstance(desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descriptorDict.values() if isinstance(desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
+def delete_descriptors(compound_set, whitelist=None):
+    if whitelist is None:
+        descs = descriptorDict.values()
+    else:
+        descs = [descriptorDict[k] for k in descriptorDict.keys() if k in whitelist]
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
-    delete_descriptors(compound_set)
+    delete_descriptors(compound_set, whitelist=whitelist)
     num_vals_to_create = []
     bool_vals_to_create = []
     for i, compound in enumerate(compound_set):
