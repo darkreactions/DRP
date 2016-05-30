@@ -11,33 +11,48 @@
 import unittest
 from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
+from DRP.models import validators
+from django.core.exceptions import ValidationError
+import datetime
 
-class RidiculousTestCaseOne(DRPTestCase):
+class NotInTheFuture(DRPTestCase):
     #This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
 
     def setUp(self):
         pass
 
-    def runTest(self):
-        pass
+    def test_future(self):
+        self.assertRaises(ValidationError, validators.notInTheFuture, datetime.datetime.now() + datetime.timedelta(1))
+
+    def test_past(self):
+        validators.notInTheFuture(datetime.datetime.now() - datetime.timedelta(1))
+
+    def text_present(self):
+        validators.notInTheFuture(datetime.datetime.now())
 
     def tearDown(self):
         pass
 
-class RidiculousTestCaseTwo(DRPTestCase):
+class GreaterThan(DRPTestCase):
 
     def setUp(self):
-        pass
+        self.validator = validators.GreaterThanValidator(0)
 
-    def test_ripeness(self):
-        pass
+    def test_less(self):
+        self.assertRaises(ValidationError, self.validator, -1)
+
+    def test_equal(self):
+        self.assertRaises(ValidationError, self.validator, 0)
+
+    def test_greater(self):
+        self.validator(2)
 
     def tearDown(self):
         pass
 
 suite = unittest.TestSuite([
-            loadTests(RidiculousTestCaseOne),
-            loadTests(RidiculousTestCaseTwo)
+            loadTests(GreaterThan),
+            loadTests(NotInTheFuture)
             ])
 
 if __name__=='__main__':

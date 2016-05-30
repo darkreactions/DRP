@@ -5,8 +5,10 @@
 {% endblock %}
 
 {% block content %}
+  {% if testing %}<!-- 7b3b6668-981a-4a11-8dc4-23107187de93 -->{% endif %}
   <h1>Edit Reaction Data</h1>
   <div class="reactionlist"><a href="{% url "reactionlist" %}">Return to Reaction List</a></div>
+  {% include "reaction_form.html" %}
   {% include "reactant_form.html" %}
   {% for label, formset in descriptor_formsets.items %}
     {% spaceless %}

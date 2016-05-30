@@ -90,6 +90,7 @@
     </nav>
     {% block additional_header %}{% endblock %}
   {% if messages %}
+    {% if testing %}<!-- d96fc7a1-69cf-44ac-975d-a67f9e2c74d0  -->{% endif %}
     <ul class="messages">
     {% for message in messages %}
         <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="message_text">{{ message }}</span></li>

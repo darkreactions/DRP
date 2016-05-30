@@ -67,8 +67,6 @@ class ListPerformedReactions(ListView):
 #    context['filter_formset'] = self.filterFormSet
         return context
 
-#TODO: Remove tests for old create reaction view and 
-# add ones for createReaction, editReaction, addCompoundDetails
 @login_required
 @hasSignedLicense
 @userHasLabGroup
@@ -130,14 +128,14 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
                 for dv in formset.deleted_objects:
                     descValClass.objects.filter(id=dv.id).delete()
                 messages.success(request, 'Reaction descriptor details successfully updated')
-                if createNext is None and 'creating' in request.GET:
+                if createNext is None or 'creating' not in request.GET:
                     return redirect('editReaction', rxn_id)
                 else:
                     return redirect(createNext, rxn_id, params={'creating':True})
         else:
             formset = descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in initialDescriptors])
         return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':infoHeader}) 
-    elif createNext is None and 'creating' in request.GET:
+    elif createNext is None or 'creating' not in request.GET:
         return redirect('editReaction', rxn_id)
     else:
         return redirect(createNext, rxn_id, params={'creating':True})
@@ -178,7 +176,7 @@ def editReaction(request, rxn_id):
 @userHasLabGroup
 def deleteReaction(request, *args, **kwargs):
     '''A view managing the deletion of reaction objects'''
-    form =PerformedRxnDeleteForm(data=request.POST, user=request.user) 
+    form=PerformedRxnDeleteForm(data=request.POST, user=request.user) 
     if form.is_valid():
         form.save()
     else:

@@ -6,6 +6,7 @@
 
 
 {% block content %}
+{% if testing %}<!-- ba960469-5fad-4142-a0a1-a10b37e9432e -->{% endif %}
 <h1 class="bannerText">Reactions Database</h1>  
 {% if user.is_authenticated %}
     {% include "lab_form.html" %}

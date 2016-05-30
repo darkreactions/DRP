@@ -36,7 +36,7 @@ class PerformedRxnForm(forms.ModelForm):
         self.fields['valid'].initial=False;
         self.fields['valid'].widget = forms.HiddenInput() #a little hacky, but this is faster than making another form...
     if labGroups.exists():
-      self.fields['labGroup'].empty_label = None 
+       self.fields['labGroup'].empty_label = None 
   
   def clean(self):
     self.cleaned_data = super(PerformedRxnForm, self).clean()

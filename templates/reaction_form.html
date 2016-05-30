@@ -1,5 +1,6 @@
 
    <form class="reaction-form" action="{{ request.path }}" method="post">
+   {% if testing %} <!-- 2758c44c-b7e2-440a-a617-36d9d730bc93 --> {% endif %}
     {% csrf_token %}
     <fieldset>
       <legend>Reaction Details</legend>
