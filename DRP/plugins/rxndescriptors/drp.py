@@ -247,7 +247,7 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
     if whitelist is None:
         descs_to_delete = descriptorDict.values()
     else:
-        descs_to_delete = [k[v] for k in descriptorDict.keys() if k in whitelist]
+        descs_to_delete = [descriptorDict[k] for k in descriptorDict.keys() if k in whitelist]
 
     if bulk_delete:
         if verbose:
