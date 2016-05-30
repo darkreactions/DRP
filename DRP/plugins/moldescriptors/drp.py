@@ -60,7 +60,7 @@ for prop in inorgAtomicProperties:
         'minimum': 0,
         }
 
-for group_num in range(1,18):
+for group_num in range(1,19):
     _descriptorDict['boolean_group_{}'.format(group_num)] = {
         'type': 'bool',
         'name': 'Presence of elements in group {}'.format(group_num),
@@ -68,7 +68,7 @@ for group_num in range(1,18):
         'calculatorSoftwareVersion':'1.5',
         }
         
-for period_num in range(1,7):
+for period_num in range(1,8):
     _descriptorDict['boolean_period_{}'.format(period_num)] = {
         'type': 'bool',
         'name': 'Presence of elements in period {}'.format(period_num),
@@ -76,7 +76,7 @@ for period_num in range(1,7):
         'calculatorSoftwareVersion':'1.5',
         }
         
-for valence_num in range(1,8):
+for valence_num in range(0,8):
     _descriptorDict['boolean_inorganic_valence_{}'.format(valence_num)] = {
         'type': 'bool',
         'name': 'Presence of inorganic elements with valence {}'.format(valence_num),
@@ -212,7 +212,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 num_vals_to_create.append(n)
         
 
-    for group_num in range(1,18):
+    for group_num in range(1,19):
         heading = 'boolean_group_{}'.format(group_num)
         if whitelist is None or heading in whitelist:
             bool_vals_to_create.append(boolVal(
@@ -220,7 +220,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                                             descriptor=descriptorDict[heading],
                                             value=(any(elements[element]['group']==group_num for element in compound.elements.keys()))
                                         ))
-    for period_num in range(1,7):
+    for period_num in range(1,8):
         heading = 'boolean_period_{}'.format(period_num)
         if whitelist is None or heading in whitelist:
             bool_vals_to_create.append(boolVal(
@@ -228,7 +228,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                                             descriptor=descriptorDict[heading],
                                             value=(any(elements[element]['period']==period_num for element in compound.elements.keys()))
                                         ))
-    for valence_num in range(1,8):
+    for valence_num in range(0,8):
         heading = 'boolean_inorganic_valence_{}'.format(valence_num)
         if whitelist is None or heading in whitelist:
             bool_vals_to_create.append(boolVal(

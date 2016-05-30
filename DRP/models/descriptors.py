@@ -7,7 +7,6 @@ classes.
 from django.db import models
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-#from DRP.utils import generate_csvHeader
 from django.db.models.functions import Concat
 
 
@@ -81,12 +80,6 @@ class Descriptor(models.Model):
             )
         ]
     )
-    
-
-    #@property
-    #def csvHeader(self):
-        #"""Generate a csv header for placing values for a descriptor."""
-        #return generate_csvHeader(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
 
     @property
     def arffHeader(self):
