@@ -7,5 +7,5 @@ from itertools import chain
 
 for d in BoolRxnDescriptor.objects.filter(heading__contains='valence'):
     print d.heading
-    new_heading = d.heading.replace('boolean_inorganic_valence', 'drpInorgAtom_boolean_valence')
+    d.heading = d.heading.replace('boolean_inorganic_valence', 'drpInorgAtom_boolean_valence')
     d.save()
