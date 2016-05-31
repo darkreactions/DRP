@@ -38,14 +38,6 @@ class PerformedRxnForm(forms.ModelForm):
     if labGroups.exists():
        self.fields['labGroup'].empty_label = None 
   
-  def clean(self):
-    self.cleaned_data = super(PerformedRxnForm, self).clean()
-    if 'performedBy' in self.cleaned_data and (self.cleaned_data['performedBy'] is not None):
-        if not self.cleaned_data['labGroup'] in (self.user.labgroup_set.all()| self.cleaned_data['performedBy'].labgroup_set.all()):
-            raise ValidationError({'labGroup':'The selected lab group does not contain both the inputting and experimental user.'}, 'invalid_lg')
-    return self.cleaned_data
-    
-
   def save(self, commit=True, *args, **kwargs):
     '''Overriden save method automates addition of user that created this instance'''
     rxn = super(PerformedRxnForm, self).save(commit=False)
