@@ -230,7 +230,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
 
     # inorganic elements only
     for group_num in range(1,19):
-        heading = 'boolean_inorganic_group_{}'.format(group_num)
+        heading = 'drpInorgAtom_boolean_group_{}'.format(group_num)
         if whitelist is None or heading in whitelist:
             bool_vals_to_create.append(boolVal(
                                             compound=compound,
@@ -238,7 +238,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                                             value=(any(elements[element]['group']==group_num for element in compound.elements.keys() if element in inorgElements))
                                         ))
     for period_num in range(1,8):
-        heading = 'boolean_inorganic_period_{}'.format(period_num)
+        heading = 'drpInorgAtom_boolean_period_{}'.format(period_num)
         if whitelist is None or heading in whitelist:
             bool_vals_to_create.append(boolVal(
                                             compound=compound,
@@ -246,7 +246,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                                             value=(any(elements[element]['period']==period_num for element in compound.elements.keys() if element in inorgElements))
                                         ))
     for valence_num in range(0,8):
-        heading = 'boolean_inorganic_valence_{}'.format(valence_num)
+        heading = 'drpInorgAtom_boolean_valence_{}'.format(valence_num)
         if whitelist is None or heading in whitelist:
             bool_vals_to_create.append(boolVal(
                                     compound=compound,
