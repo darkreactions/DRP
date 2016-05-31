@@ -332,7 +332,7 @@ class Compound(models.Model):
 
     @property
     def elements(self):
-        """Return a list of the elemental symbols for this molecular species.
+        """Return a dictionary of elemental symbols and their stoichiometry
 
         Note that this method does not validate the data contained in the database.
         """
