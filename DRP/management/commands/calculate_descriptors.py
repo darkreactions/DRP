@@ -34,7 +34,7 @@ class Command(BaseCommand):
         only_reactions = kwargs['reactions']
         only_compounds = kwargs['compounds']
         start = kwargs['start']
-        whitelist = kwargs['whitelist']
+        whitelist = set(kwargs['whitelist'])
         plugins = kwargs['plugins']
 
         if kwargs['error_level'] == 1:
