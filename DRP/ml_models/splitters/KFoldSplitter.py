@@ -7,6 +7,7 @@ class Splitter(AbstractSplitter):
         self.k = num_folds
 
     def split(self, reactions, verbose=False):
+        super(Splitter, self).split(reactions, verbose=verbose)
         # Split the reactions' IDs into K randomly-organized buckets.
         rxn_ids = [reaction.id for reaction in reactions]
         random.shuffle(rxn_ids)

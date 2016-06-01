@@ -3,22 +3,16 @@ from DRP.models.Compound import Compound
 from DRP.models import CatRxnDescriptor
 from django.db.models import Count
 import random
-import warnings
 
 class Splitter(AbstractSplitter):
-    def __init__(self, namingStub, num_splits=1, margin_percent=0.01, test_percent=0.33, min_train_size=10):
+    def __init__(self, namingStub, num_splits=1, margin_percent=0.01, test_percent=0.33):
         super(Splitter, self).__init__(namingStub)
         self.test_percent = test_percent
         self.margin_percent = margin_percent
-        self.min_train_size = min_train_size
         self.num_splits = num_splits
 
-        if min_train_size < 10:
-            warnings.warn('Minimum train size is only {}. Weka requires at least 10 training points for SVMs')
-
     def split(self, reactions, verbose=False):
-        if reactions.count() < 20:
-            warnings.warn('You are only using {} reactions. This may cause problems (e.g. Weka SVMs require at least 10 data points in the training set)'.format(reactions.count()))
+        super(Splitter, self).split(reactions, verbose=verbose)
         key_counts = self._count_compound_sets(reactions).items()
         splits = [self._single_split(reactions, key_counts, verbose=verbose) for i in xrange(self.num_splits)]
         return splits

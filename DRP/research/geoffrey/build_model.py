@@ -122,9 +122,6 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     if training_set_name is None and reaction_set_name is None:
         assert(test_set_name == None)
         reactions = PerformedReaction.objects.filter(valid=True)
-        #reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        #reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        #reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         trainingSet = None
         testSet = None
     elif reaction_set_name is not None:
