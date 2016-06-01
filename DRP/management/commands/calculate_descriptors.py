@@ -34,8 +34,12 @@ class Command(BaseCommand):
         only_reactions = kwargs['reactions']
         only_compounds = kwargs['compounds']
         start = kwargs['start']
-        whitelist = set(kwargs['whitelist'])
+        whitelist = kwargs['whitelist']
         plugins = kwargs['plugins']
+
+        if whitelist is not None:
+            # just a little optimization
+            whitelist = set(whitelist)
 
         if kwargs['error_level'] == 1:
             warnings.simplefilter('error', RuntimeWarning)
