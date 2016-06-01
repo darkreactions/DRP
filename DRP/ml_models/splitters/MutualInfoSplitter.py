@@ -5,7 +5,7 @@ import random
 import warnings
 
 class Splitter(AbstractSplitter):
-    def __init__(self, namingStub, num_splits=1, max_partition_size=35, test_percent=0.3, min_train_size=10):
+    def __init__(self, namingStub, num_splits=1, max_partition_size=35, test_percent=0.33, min_train_size=10):
         super(Splitter, self).__init__(namingStub)
         self.test_percent = test_percent
         self.max_partition_size = max_partition_size
