@@ -112,3 +112,18 @@ footer {
  clear:both;
  text-align:center;
 }
+ul.messages {
+ margin-top:0;
+ text-align:center;
+ padding-left:0;
+}
+
+li.success {
+ background-color:#689868;
+ list-style-image:url('/static/icons/tick.png');
+}
+
+span.message_text {
+ position:relative;
+ top:-4px;
+}

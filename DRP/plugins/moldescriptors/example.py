@@ -45,7 +45,7 @@ def calculate(compound):
     """
     pt = rdkit.Chem.GetPeriodicTable()
     mwValue = DRP.models.NumMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict['mw'], compound=compound)[0]
-    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
+    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * float(compound.elements[element]['stoichiometry']) for element in compound.elements)
     mwValue.save()
     fsValue = DRP.models.OrdMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['fs'])[0]
     fsValue.value = fsValueCalc(mwValue)

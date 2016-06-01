@@ -1,0 +1,33 @@
+{% extends 'reactions.html' %}
+
+{% block additional_head %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
+{% endblock %}
+
+{% block content %}
+  {% if testing %}<!-- 7b3b6668-981a-4a11-8dc4-23107187de93 -->{% endif %}
+  <h1>Edit Reaction Data</h1>
+  <div class="reactionlist"><a href="{% url "reactionlist" %}">Return to Reaction List</a></div>
+  {% include "reaction_form.html" %}
+  {% include "reactant_form.html" %}
+  {% for label, formset in descriptor_formsets.items %}
+    {% spaceless %}
+    <form class="descvalform" action="{% url formset.url reaction.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend>{{ label }}</legend>
+        <ol>
+            {% for form in formset.formset %}
+	        <li><ol class="descvallist">{% include "alt_ul_form.html" %}</ol></li>
+            {% endfor %}
+        </ol>
+    {{ formset.formset.management_form }} 
+    {% endspaceless %}
+    <div class="buttons">
+      <input type="submit" value="Save" />
+      <input type="reset" value="Reset" />
+    </div>
+    </fieldset>
+    </form>
+  {% endfor %} 
+{% endblock %}

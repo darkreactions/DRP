@@ -109,13 +109,18 @@ class PostHttpSessionTest(PostHttpTest):
   def setUp(self):
     self.response = self.s.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers) 
 
-class OneRedirectionMixin:
-  '''A mixin for testing redirection pages.'''
+def redirectionMixinFactory(redirectionCount):
+    '''A facotry for generating class mixins which test redirection'''
 
-  def test_redirect(self):
-    '''Checks the response history for 302 redirects'''
-    self.assertEqual(len(self.response.history), 1, 'Response history has length: {0}. Page Content is: \n{1}'.format(len(self.response.history), self.response.text))
-    self.assertEqual(302, self.response.history[0].status_code)
+    class RedirectionMixin:
+        '''A mixin for testing redirectionpages'''
+        
+        def test_redirect(self):
+            self.assertEqual(len(self.response.history), redirectionCount, 'Response history has length: {0}. Page Content is: \n{1}'.format(len(self.response.history), self.response.text))
+            for i in range(0, len(self.response.history)-1):
+                self.assertEqual(302, self.response.history[i].status)
+
+OneRedirectionMixin = redirectionMixinFactory(1) #for old tests. TODO: Deprecate this
 
 def usesCsrf(c):
   '''A class decorator to indicate the test utilises csrf'''

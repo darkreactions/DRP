@@ -1,6 +1,7 @@
 '''A module containign only the DescriptorValue class'''
 from django.db import models
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue,BooleanDescriptorValue, NumericDescriptorValue
+from rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
 import dataSets
 # Needed to allow for circular dependency.
 import importlib
@@ -54,6 +55,8 @@ class RxnDescriptorValue(models.Model):
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
     '''Contains the value of a categorical descriptor for a reaction'''
 
+    descriptorClass = CatRxnDescriptor
+
     class Meta:
         app_label="DRP"
         verbose_name='Categorical Reaction Descriptor Value'
@@ -62,6 +65,8 @@ class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
 class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
     '''Contains the value of a boolean descriptor for a reaction'''
 
+    descriptorClass = BoolRxnDescriptor
+
     class Meta:
         app_label="DRP"
         verbose_name='Boolean Reaction Descriptor Value'
@@ -69,6 +74,8 @@ class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
 
 class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
     '''Contains the numeric value of a descriptor for a reaction'''
+    
+    descriptorClass = NumRxnDescriptor
 
     class Meta:
         app_label="DRP"
@@ -77,6 +84,8 @@ class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
 
 class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
     '''Contains the ordinal value of a descriptor for a reaction'''
+
+    descriptorClass = OrdRxnDescriptor
 
     class Meta:
         app_label="DRP"

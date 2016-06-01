@@ -200,7 +200,7 @@ class Reaction(models.Model):
     calcDescriptors = True #this is to cope with a hideous problem in xml serialization in the management commands
 
 
-    def save(self, calcDescriptors=True, *args, **kwargs):
+    def save(self, calcDescriptors=False, *args, **kwargs):
         super(Reaction, self).save(*args, **kwargs)
         if calcDescriptors and self.calcDescriptors:
             for plugin in descriptorPlugins:

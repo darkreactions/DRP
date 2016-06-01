@@ -1,0 +1,14 @@
+{{ form.non_field_errors }}
+<!-- 634d88bb-9289-448b-a3dc-548ff4c6cda1 -->
+
+{% for field in form.visible_fields %}
+{% spaceless %}
+  <li>{{ field.label_tag }}{{ field }}
+    {% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}
+    {{ field.errors }}
+    {% if forloop.last %}
+     {% for field in form.hidden_fields %}{{ field }}{% endfor %} 
+    {% endif %} 
+  </li>
+{% endspaceless %}
+{% endfor %}

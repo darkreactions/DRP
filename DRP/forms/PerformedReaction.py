@@ -1,5 +1,6 @@
 '''A module containing code pertaining to forms for the reaction classes'''
 from django import forms
+from django.core.exceptions import ValidationError
 from DRP.models import PerformedReaction, RecommendedReaction
 from DRP.models import DataSetRelation
 from django.contrib.auth.models import User
@@ -17,30 +18,26 @@ class PerformedRxnForm(forms.ModelForm):
   '''A form for creating performed reaction instances in teh databases'''
  
   class Meta:
-    fields=('reference', 'performedBy', 'performedDateTime', 'notes', 'labGroup', 'recommendation', 'public', 'duplicateOf') 
+    fields=('reference','notes', 'performedBy', 'labGroup', 'duplicateOf', 'performedDateTime','public', 'valid',  'recommendation') 
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
-    '''Overridden __init__ method; requires the user as teh first argument so that choice of lab group etc can be validated, as well as to
+    '''Overridden __init__ method; requires the user as the first argument so that choice of lab group etc can be validated, as well as to
     track who enters what'''
     super(PerformedRxnForm, self).__init__(*args, **kwargs)
     self.user = user
     labGroups = user.labgroup_set.all()
     self.fields['labGroup'].queryset = labGroups
     self.fields['recommendation'].queryset = RecommendedReaction.objects.filter(labGroup__in=labGroups)
+    self.fields['recommendation'].widget = forms.HiddenInput()
     self.fields['duplicateOf'].queryset = PerformedReaction.objects.filter(labGroup__in=labGroups)|PerformedReaction.objects.filter(public=True)
     self.fields['performedBy'].queryset = User.objects.filter(labgroup__in=labGroups)
+    if not kwargs.get('instance', False):
+        self.fields['valid'].initial=False;
+        self.fields['valid'].widget = forms.HiddenInput() #a little hacky, but this is faster than making another form...
     if labGroups.exists():
-      self.fields['labGroup'].empty_label = None 
+       self.fields['labGroup'].empty_label = None 
   
-  def clean(self):
-    self.cleaned_data = super(PerformedRxnForm, self).clean()
-    if 'preformedBy' in self.cleaned_data:
-        if not self.fields['labGroup'] in (self.user.labgroup_set.all()| self.cleaned_data['performedBy'].labgroup_set.all()):
-            raise ValidationError('The selected labGroup does not contain both the inputting and experimental user.', 'invalid_lg')
-    return self.cleaned_data
-    
-
   def save(self, commit=True, *args, **kwargs):
     '''Overriden save method automates addition of user that created this instance'''
     rxn = super(PerformedRxnForm, self).save(commit=False)
@@ -75,7 +72,7 @@ class PerformedRxnInvalidateForm(forms.ModelForm):
     model=PerformedReaction
 
   def __init__(self, user, *args, **kwargs):
-    super(PerformedRxnDeleteForm, self).__init__(*args, **kwargs)
+    super(PerformedRxnInvalidateForm, self).__init__(*args, **kwargs)
     self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
 
   def save(self):
