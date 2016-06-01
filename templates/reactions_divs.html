@@ -71,6 +71,11 @@
                 <th>Performed by</th><td>{{ reaction.performedBy.first_name }} {{ reaction.performedBy.last_name }}</td>
             </tr>
             {% endif %}
+            {% if reaction.labGroup != None %}
+            <tr>  
+              <th>Lab group</th><td>{{reaction.labGroup}} </td>
+            </tr>
+            {% endif %}
             {% if reaction.performedDateTime != None %}
             <tr>
                 <th>Performed Date</th><td>{{ reaction.performedDateTime }}</td>
