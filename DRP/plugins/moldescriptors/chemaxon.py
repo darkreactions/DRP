@@ -303,3 +303,5 @@ def _calculate(compound, cxcalcCommands, verbose=False, num_to_create=[], ord_to
             warnings.warn("cxcalc exited with nonzero return code {}".format(calcProc.returncode))
     else:
         warnings.warn("Compound not found")
+
+    return [], []

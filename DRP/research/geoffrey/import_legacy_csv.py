@@ -108,11 +108,14 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
 
             rxn_reference = rxn_entry['XXXtitle'].lower()
             try:
-                rxn = PerformedReaction.objects.get(reference=rxn_reference)
+                rxn = PerformedReaction.objects.get(convertedLegacyRef=rxn_reference)
                 #print "Found rxn for {}".format(rxn_reference)
                 found.append(rxn_reference)
             except PerformedReaction.DoesNotExist:
                 #print "Couldn't find rxn for {}".format(rxn_reference)
+                failed.append(rxn_reference)
+                rxn = None
+            except PerformedReaction.MultipleObjectsReturned:
                 failed.append(rxn_reference)
                 rxn = None
 

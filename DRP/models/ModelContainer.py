@@ -226,7 +226,7 @@ class ModelContainer(models.Model):
 
         return model_container
 
-    def create_duplicate(self, modelVisitorTool=None,  modelVisitorOptions=None, description=None):
+    def create_duplicate(self, modelVisitorTool=None,  modelVisitorOptions=None, description=None, predictors=None, responses=None):
         """
         Builds a duplicate of this model container optionally with a different model visitor tool.
         If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
@@ -251,12 +251,20 @@ class ModelContainer(models.Model):
         m = ModelContainer(**field_dict)
         m.save()
 
-        m.descriptors = self.descriptors
-        m.outcomeDescriptors = self.outcomeDescriptors
+        if predictors is None:
+            m.descriptors = self.descriptors
+        else:
+            m.descriptors = predictors
+        if responses is None:
+            m.outcomeDescriptors = self.outcomeDescriptors
+        else:
+            m.outcomeDescriptors = responses
 
         if self.statsmodel_set.all():
             for sm in self.statsmodel_set.all():
-                statsModel = StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile)
+                statsModel = StatsModel(container=m, trainingSet=sm.trainingSet)
+                if predictors is not None or responses is not None:
+                    inputFile = sm.inputFile
                 statsModel.save()
                 statsModel.testSets = sm.testSets.all()
         else:
@@ -266,26 +274,26 @@ class ModelContainer(models.Model):
         
     def clean(self):
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
-            raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
+            raise ValidationError('Selected tool {} does not exist in selected library {}'.format(self.modelVisitorTool, self.modelVisitorLibrary), 'wrong_library')
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
-                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}'.format(getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount), 'too_many_responses')
+                raise ValidationError('Selected tool {} cannot accept this many responses, maximum is {}'.format(self.modelVisitorTool, getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount), 'too_many_responses')
         try:
             options_dict = json.loads(self.modelVisitorOptions)
         except:
-            raise ValidationError('Was unable to parse modelVisitorOptions with json. Got exception: ({})'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable to parse modelVisitorOptions {} with json. Got exception: ({})'.format(self.modelVisitorOptions, repr(sys.exc_info()[1])))
         try:
             getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=None, **options_dict)
         except:
-            raise ValidationError('Was unable expand modelVisitorOptions parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable expand modelVisitorOptions {} parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(self.modelVisitorOptions, repr(sys.exc_info()[1])))
         try:
             options_dict = json.loads(self.splitterOptions)
         except:
-            raise ValidationError('Was unable to parse splitterOptions with json. Got exception: ({})'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable to parse splitterOptions {} with json. Got exception: ({})'.format(self.splitterOptions, repr(sys.exc_info()[1])))
         try:
             splitterObj = splitters[self.splitter].Splitter('', **options_dict)
         except:
-            raise ValidationError('Was unable expand splitterOptions parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable to expand splitterOptions {} parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(self.splitterOptions, repr(sys.exc_info()[1])))
 
     def createStatsModels(self, data_splits, verbose=False):
         for trainingSet, testSet in data_splits:

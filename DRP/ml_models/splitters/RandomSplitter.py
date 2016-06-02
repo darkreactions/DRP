@@ -9,6 +9,7 @@ class Splitter(AbstractSplitter):
 
 
     def split(self, reactions, verbose=False):
+        super(Splitter, self).split(reactions, verbose=verbose)
         splits = [self._single_split(reactions, verbose) for i in xrange(self.num_splits)]
         return splits
 

@@ -26,7 +26,7 @@ STATIC_ROOT = APP_DIR + "/static_served/"
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
 MAIN_SERVER = 'http://darkreactions.haverford.edu'
-MAIN_SERVER_USER = ''
+MAIN_SERVER_USER = '' # Your login credentials to the website, not the machine
 MAIN_SERVER_PASS = ''
 
 # Directories
@@ -272,9 +272,11 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 STATS_MODEL_LIBS_DIR = "DRP.ml_models.model_visitors"
 STATS_MODEL_LIBS = ("weka",)
 REACTION_DATASET_SPLITTERS_DIR = "DRP.ml_models.splitters"
-REACTION_DATASET_SPLITTERS = ("KFoldSplitter", "MutualInfoSplitter", "NoSplitter", "SingleSplitter")
+REACTION_DATASET_SPLITTERS = ("KFoldSplitter", "ExploratorySplitter", "NoSplitter", "RandomSplitter")
 FEATURE_SELECTION_LIBS_DIR = "DRP.ml_models.feature_visitors"
 FEATURE_SELECTION_LIBS = ("weka",)
+METRIC_VISITORS = ("ITML",)
+METRIC_VISITOR_DIR = "DRP.research.geoffrey.distance_learning.metricLearn"
 
 EMPTY_LABEL = '----'
 

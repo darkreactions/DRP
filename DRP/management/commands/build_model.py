@@ -14,13 +14,11 @@ class Command(BaseCommand):
     help = 'Builds a machine learning model'
 
     def add_arguments(self, parser):
-        #TODO check if this is actually the right place to add these (currently offline)
         parser.fromfile_prefix_chars = '@'
         parser.epilog = "Prefix arguments with '@' to specify a file containing newline-separated values for that argument. e.g.'-p @predictor_headers.txt' to pass multiple descriptors from a file as predictors"
 
-   
         parser.add_argument('-p', '--predictor-headers', nargs='+',
-                            help='One or more descriptors to use as predictors.', required=True)
+                            help='One or more descriptors to use as predictors.')
         parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
                             help='One or more descriptors to predict. '
                             'Note that most models can only handle one response variable (default: %(default)s)')
@@ -28,6 +26,8 @@ class Command(BaseCommand):
                             help='Model visitor library to use. (default: %(default)s)')
         parser.add_argument('-mt', '--model-tool', default="SVM_PUK",
                             help='Model visitor tool from library to use. (default: %(default)s)')
+        parser.add_argument('-mid', '--model-container-id', default=None, type=int,
+                            help='Use the same splits as the specified model container. (default: %(default)s)')
         parser.add_argument('-s', '--splitter', default="KFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
                             help='Splitter to use. (default: %(default)s)')
         parser.add_argument('-d', '--description', default="",
@@ -37,11 +37,14 @@ class Command(BaseCommand):
         parser.add_argument('-tes', '--test-set-name', default=None,
                             help='The name of the test set to use. (default: %(default)s)')
         parser.add_argument('-rxn', '--reaction-set-name', default=None,
-                            help='The name of the reactions to use as a whole dataset')
+                            help='The name of the reactions to use as a whole dataset. (default: all valid reactions)')
         parser.add_argument('-so', '--splitter-options', default=None,
                             help='A dictionary of the options to give to the splitter in JSON format')
         parser.add_argument('-vo', '--visitor-options', default=None,
                             help='A dictionary of the options to give to the visitor in JSON format')
+
+        # TODO setup argparse to properly check combinations of these arguments as valid.
+        # it's actually pretty complicated what the valid options are...
 
 
     def handle(self, *args, **kwargs):
@@ -51,17 +54,26 @@ class Command(BaseCommand):
         splitterOptions = ast.literal_eval(kwargs['splitter_options']) if kwargs['splitter_options'] is not None else None
         visitorOptions = ast.literal_eval(kwargs['visitor_options']) if kwargs['visitor_options'] is not None else None
 
+        # Remove errant empty strings
+        predictor_headers = [h for h in kwargs['predictor_headers'] if h] if kwargs['predictor_headers'] is not None else None
+        response_headers = [h for h in kwargs['response_headers'] if h] if kwargs['response_headers'] is not None else None
+
         # TODO switch to logging and adjust for management command multi-level verbosity
         verbose = (kwargs['verbosity'] > 0)
     
-        prepare_build_display_model(predictor_headers=kwargs['predictor_headers'], response_headers=kwargs['response_headers'],
+        prepare_build_display_model(predictor_headers=predictor_headers, response_headers=response_headers,
                                     modelVisitorLibrary=kwargs['model_library'], modelVisitorTool=kwargs['model_tool'],
-                                    splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+                                    splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=verbose, container_id=kwargs['model_container_id'], splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+
 
 # TODO refactor this so these functions can be used in other places more naturally
+# Also so this workflow makes some freaking sense. What the hell was I thinking?
+# Handle should call each part in turn, not have a bunch of parameters that keep getting passed through till someone uses them
+# I think I did that so that other files could call model building at the point it was need and jump into the pipeline,
+# but wow there has to be a better way - GCMN
 
 def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
-                description="", verbose=False, splitterOptions=None, visitorOptions=None):
+                       description=None, verbose=False, splitterOptions=None, visitorOptions=None):
 
     if trainingSet is not None:
         container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
@@ -73,6 +85,7 @@ def create_build_model(reactions=None, predictors=None, responses=None, modelVis
 
     container.full_clean()
     return build_model(container, verbose=verbose)
+
 
 def build_model(container, verbose=False):
     for attempt in range(5):
@@ -91,12 +104,14 @@ def build_model(container, verbose=False):
 
     return container
 
+
 def missing_descriptors(descriptor_headings):
     missing_descs = []
     for heading in descriptor_headings:
         if not Descriptor.objects.filter(heading=heading).exists():
             missing_descs.append(heading)
     return missing_descs
+
 
 def display_model_results(container, reactions=None, heading=""):
     """
@@ -150,56 +165,67 @@ def display_model_results(container, reactions=None, heading=""):
     print "{} Average BCR: {:.3}".format(heading, sum_bcr/count)
     print "{} Average Matthews: {:.3}".format(heading, sum_matthews/count)
 
+
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
-                        test_set_name=None, reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None):
+                        test_set_name=None, reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
     """
     Build a model with the specified tools
     """
 
-    # Remove errant empty strings
-    predictor_headers = [h for h in predictor_headers if h]
-    response_headers = [h for h in response_headers if h]
-    
-    predictors = Descriptor.objects.filter(heading__in=predictor_headers)
-    responses = Descriptor.objects.filter(heading__in=response_headers)
-
-    if predictors.count() != len(predictor_headers):
-        raise KeyError("Could not find all predictors. Missing: {}".format(missing_descriptors(predictor_headers)))
-    if responses.count() != len(response_headers):
-        raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
-
-    if training_set_name is None and reaction_set_name is None:
-        assert(test_set_name == None)
-        reactions = PerformedReaction.objects.filter(valid=True)
-        #reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        #reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        #reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        trainingSet = None
-        testSet = None
-    elif reaction_set_name is not None:
-        reaction_set = DataSet.objects.get(name=reaction_set_name)
-        reactions = reaction_set.reactions.all()
-        trainingSet = None
-        testSet = None
+    if predictor_headers is not None:
+        predictors = Descriptor.objects.filter(heading__in=predictor_headers)
+        if predictors.count() != len(predictor_headers):
+            print predictor_headers
+            print predictors
+            raise KeyError("Could not find all predictors. Missing: {}".format(missing_descriptors(predictor_headers)))
     else:
-        trainingSet =  DataSet.objects.get(name=training_set_name)
-        testSet =  DataSet.objects.get(name=test_set_name)
-        reactions=None
-    
-    container = create_build_model(reactions=reactions, predictors=predictors, responses=responses, 
-                            modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                            splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
-                            description=description, verbose=verbose, splitterOptions=splitterOptions,
-                            visitorOptions=visitorOptions)
+        predictors = None
+    if response_headers is not None:
+        responses = Descriptor.objects.filter(heading__in=response_headers)
+        if responses.count() != len(response_headers):
+            raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
+    else:
+        responses = None
+        
+    if container_id is not None:
+        parent_container = ModelContainer.objects.get(id=container_id)
+        parent_container.full_clean()
+        new_container = parent_container.create_duplicate(modelVisitorTool=modelVisitorTool, modelVisitorOptions=visitorOptions, description=description, predictors=predictors, responses=responses)
+        new_container.full_clean()
+        container = build_model(new_container, verbose=verbose)
+    else:
+        if training_set_name is None and reaction_set_name is None:
+            assert(test_set_name == None)
+            reactions = PerformedReaction.objects.filter(valid=True)
+            trainingSet = None
+            testSet = None
+        elif reaction_set_name is not None:
+            reaction_set = DataSet.objects.get(name=reaction_set_name)
+            reactions = reaction_set.reactions.all()
+            trainingSet = None
+            testSet = None
+        else:
+            trainingSet =  DataSet.objects.get(name=training_set_name)
+            testSet =  DataSet.objects.get(name=test_set_name)
+            reactions=None
+        
+        container = create_build_model(reactions=reactions, predictors=predictors, responses=responses, 
+                                modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                                splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
+                                description=description, verbose=verbose, splitterOptions=splitterOptions,
+                                visitorOptions=visitorOptions)
 
     return container
-    
+
+
 def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
-                                reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None):
+                                reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
+
+
 
     container = prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
                                     splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description,
-                                    verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+                                    verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, container_id=container_id)
 
     display_model_results(container)
 

@@ -51,7 +51,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None):
     heading = 'rxnSpaceHash1'
     if whitelist is None or heading in whitelist:
         h = xxhash.xxh64()  # generates a hash
-        for reactant in reaction.compounds.all():
+        for reactant in reaction.compounds.order_by('abbrev'):
             h.update(reactant.abbrev)
         p = perm.objects.get_or_create(descriptor=descriptorDict[heading], value=h.hexdigest())[0]
         cat.objects.update_or_create(defaults={'value': p}, reaction=reaction, descriptor=descriptorDict['rxnSpaceHash1'])[0]
