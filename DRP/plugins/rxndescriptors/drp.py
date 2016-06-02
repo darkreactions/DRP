@@ -295,7 +295,7 @@ def calculate(reaction, verbose=False, whitelist=None):
         descs_to_delete = descriptorDict.values()
     else:
         descs_to_delete = [k[v] for k in descriptorDict.keys() if k in whitelist]
-    _delete_values(reaction, descs_to_delete)
+    _delete_values([reaction], descs_to_delete)
     num_vals_to_create, bool_vals_to_create = _calculate(reaction, descriptorDict, verbose=verbose, whitelist=whitelist)
 
     if verbose:
