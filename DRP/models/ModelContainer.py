@@ -266,26 +266,26 @@ class ModelContainer(models.Model):
         
     def clean(self):
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
-            raise ValidationError('Selected tool does not exist in selected library', 'wrong_library')
+            raise ValidationError('Selected tool {} does not exist in selected library {}', 'wrong_library'.format(self.modelVisitorTool, self.modelVisitorLibrary))
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
             if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
-                raise ValidationError('Selected tool cannot accept this many responses, maximum is {}'.format(getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount), 'too_many_responses')
+                raise ValidationError('Selected tool {} cannot accept this many responses, maximum is {}'.format(self.modelVisitorTool, getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount), 'too_many_responses')
         try:
             options_dict = json.loads(self.modelVisitorOptions)
         except:
-            raise ValidationError('Was unable to parse modelVisitorOptions with json. Got exception: ({})'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable to parse modelVisitorOptions {} with json. Got exception: ({})'.format(self.modelVisitorOptions, repr(sys.exc_info()[1])))
         try:
             getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(statsModel=None, **options_dict)
         except:
-            raise ValidationError('Was unable expand modelVisitorOptions parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable expand modelVisitorOptions {} parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(self.modelVisitorOptions, repr(sys.exc_info()[1])))
         try:
             options_dict = json.loads(self.splitterOptions)
         except:
-            raise ValidationError('Was unable to parse splitterOptions with json. Got exception: ({})'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable to parse splitterOptions {} with json. Got exception: ({})'.format(self.splitterOptions, repr(sys.exc_info()[1])))
         try:
             splitterObj = splitters[self.splitter].Splitter('', **options_dict)
         except:
-            raise ValidationError('Was unable expand splitterOptions parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(repr(sys.exc_info()[1])))
+            raise ValidationError('Was unable expand splitterOptions {} parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(self.splitterOptions, repr(sys.exc_info()[1])))
 
     def createStatsModels(self, data_splits, verbose=False):
         for trainingSet, testSet in data_splits:
