@@ -6,6 +6,7 @@ from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantit
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
 from DRP.forms import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm  
+from DRP.forms import PerformedRxnInvalidateForm, PerformedRxnDeleteForm
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
 from django.contrib.auth.decorators import login_required
@@ -91,7 +92,7 @@ def addCompoundDetails(request, rxn_id):
     compoundQuantities =CompoundQuantity.objects.filter(reaction__id=rxn_id)
     CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=('creating' not in request.GET), extra=6)
     if request.method=="POST":
-        formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST)
+        formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST, prefix='quantities')
         if formset.is_valid():
             compoundQuantities = formset.save(commit=False)
             for cq in compoundQuantities:
@@ -105,7 +106,7 @@ def addCompoundDetails(request, rxn_id):
             else:
                 return redirect('editReaction', rxn_id)
     else:
-        formset = CompoundQuantityFormset(queryset=compoundQuantities)
+        formset = CompoundQuantityFormset(queryset=compoundQuantities, prefix='quantities')
     return render(request, 'reaction_compound_add.html', {'reactants_formset':formset, 'reaction':PerformedReaction.objects.get(id=rxn_id),})
 
 @login_required
@@ -119,7 +120,9 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
     descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=('creating' not in request.GET), extra=initialDescriptors.count()) 
     if descValClass.descriptorClass.objects.filter(calculatorSoftware="manual").exists(): 
         if request.method=="POST":
-            formset = descValFormset(queryset=descVals, data=request.POST)
+            formset = descValFormset(queryset=descVals, data=request.POST, prefix=request.resolver_match.url_name)
+            # this weird prefix is caused by the generic nature of this function and the neccessity to namespace
+            # the different form elements in the formsets used in the edit reaction view.
             if formset.is_valid():
                 descVals = formset.save(commit=False)
                 for dv in descVals:
@@ -133,7 +136,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
                 else:
                     return redirect(createNext, rxn_id, params={'creating':True})
         else:
-            formset = descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in initialDescriptors])
+            formset = descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in initialDescriptors], prefix=request.resolver_match.url_name)
         return render(request, 'reaction_detail_add.html', {'formset':formset, 'rxn_id':rxn_id, 'info_header':infoHeader}) 
     elif createNext is None or 'creating' not in request.GET:
         return redirect('editReaction', rxn_id)
@@ -155,7 +158,7 @@ def editReaction(request, rxn_id):
         perfRxnForm = PerformedRxnForm(request.user, instance=reaction)
     compoundQuantities=CompoundQuantity.objects.filter(reaction__id=rxn_id)
     CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("compound", "role", "amount"), can_delete=True, extra=1)
-    cqFormset = CompoundQuantityFormset(queryset=compoundQuantities) 
+    cqFormset = CompoundQuantityFormset(queryset=compoundQuantities, prefix="quantities") 
     descriptorFormsets = {}
     descriptorClasses=(('Numeric Descriptors', 'createNumDescVals', NumRxnDescriptorValue, NumRxnDescValForm),
                        ('Ordinal Descriptors', 'createOrdDescVals', OrdRxnDescriptorValue, OrdRxnDescValForm),
@@ -167,7 +170,7 @@ def editReaction(request, rxn_id):
             descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
             initialDescriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
             descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count()) 
-            descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in initialDescriptors])}
+            descriptorFormsets[descLabel] = {'url':urlName, 'formset': descValFormset(queryset=descVals, initial=[{'descriptor':descriptor.id} for descriptor in initialDescriptors], prefix=urlName)}
     return render(request, 'reaction_edit.html', {'reaction_form': perfRxnForm, 'reactants_formset':cqFormset, 'descriptor_formsets':descriptorFormsets, 'reaction':reaction})
 
 @require_POST
@@ -179,8 +182,6 @@ def deleteReaction(request, *args, **kwargs):
     form=PerformedRxnDeleteForm(data=request.POST, user=request.user) 
     if form.is_valid():
         form.save()
-    else:
-        raise RuntimeError(str(form.errors))
     return redirect('reactionlist')
 
 @require_POST
@@ -189,9 +190,7 @@ def deleteReaction(request, *args, **kwargs):
 @userHasLabGroup
 def invalidateReaction(request, *args, **kwargs):
     '''A view managing the deletion of reaction objects'''
-    form =PerformedRxnInvalidateForm(data=request.POST, user=request.user) 
+    form=PerformedRxnInvalidateForm(data=request.POST, user=request.user) 
     if form.is_valid():
         form.save()
-    else:
-        raise RuntimeError(str(form.errors))
     return redirect('reactionlist')

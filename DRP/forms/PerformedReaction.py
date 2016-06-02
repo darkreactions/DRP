@@ -46,15 +46,12 @@ class PerformedRxnForm(forms.ModelForm):
       rxn.save()
     return rxn 
 
-class PerformedRxnDeleteForm(forms.ModelForm):
+class PerformedRxnDeleteForm(forms.Form):
+    
 
-  class Meta:
-    fields=('id',)
-    model=PerformedReaction
-
-  def __init__(self, user, *args, **kwargs):
+  def __init__(self, user, instance=None, *args, **kwargs):
     super(PerformedRxnDeleteForm, self).__init__(*args, **kwargs)
-    self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
+    self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=None if instance is None else instance.pk, widget=HiddenInput)
 
   def clean_id(self):
     if DataSetRelation.objects.filter(reaction__pk=self.cleaned_data['id']).exists():
@@ -65,15 +62,11 @@ class PerformedRxnDeleteForm(forms.ModelForm):
     self.cleaned_data['id'].delete()
     return self.cleaned_data['id']
 
-class PerformedRxnInvalidateForm(forms.ModelForm):
+class PerformedRxnInvalidateForm(forms.Form):
 
-  class Meta:
-    fields=('id',)
-    model=PerformedReaction
-
-  def __init__(self, user, *args, **kwargs):
+  def __init__(self, user, instance=None, *args, **kwargs):
     super(PerformedRxnInvalidateForm, self).__init__(*args, **kwargs)
-    self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
+    self.fields['id'] = forms.ModelChoiceField(queryset=PerformedReaction.objects.filter(labGroup__in=user.labgroup_set.all()), initial=None if instance is None else instance.pk, widget=HiddenInput)
 
   def save(self):
     self.cleaned_data['id'].valid = False

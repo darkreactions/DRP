@@ -12,10 +12,10 @@
                 <tr><th>{{ field.label_tag }}</th><td>{{ field }}{{ field.errors }}{{ field.help_text }}</td></tr>
             {% endfor %}
         </tbody>
+      </table>
             {% for field in reaction_form.hidden_fields %}
             {{ field }}
             {% endfor %}
-      </table>
     <div class="buttons">
       <input type="submit" value="Save" />
       <input type="reset" value="Reset" />

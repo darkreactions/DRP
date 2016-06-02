@@ -112,13 +112,15 @@ class PostHttpSessionTest(PostHttpTest):
 def redirectionMixinFactory(redirectionCount):
     '''A facotry for generating class mixins which test redirection'''
 
-    class RedirectionMixin:
+    class RedirectionMixin(object):
         '''A mixin for testing redirectionpages'''
         
         def test_redirect(self):
             self.assertEqual(len(self.response.history), redirectionCount, 'Response history has length: {0}. Page Content is: \n{1}'.format(len(self.response.history), self.response.text))
             for i in range(0, len(self.response.history)-1):
-                self.assertEqual(302, self.response.history[i].status)
+                self.assertEqual(302, self.response.history[i].status_code)
+
+    return RedirectionMixin
 
 OneRedirectionMixin = redirectionMixinFactory(1) #for old tests. TODO: Deprecate this
 

@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
 from django.http import HttpResponseNotFound
 from DRP.forms import LabGroupSelectionForm
+from django.http import Http404
 
 def userHasLabGroup(view):
     '''This decorator checks that the user is a member of at least one lab group. Assumes login_required is an external decorator'''
