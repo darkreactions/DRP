@@ -226,7 +226,7 @@ class ModelContainer(models.Model):
 
         return model_container
 
-    def create_duplicate(self, modelVisitorTool=None,  modelVisitorOptions=None, description=None):
+    def create_duplicate(self, modelVisitorTool=None,  modelVisitorOptions=None, description=None, predictors=None, responses=None):
         """
         Builds a duplicate of this model container optionally with a different model visitor tool.
         If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
@@ -251,12 +251,20 @@ class ModelContainer(models.Model):
         m = ModelContainer(**field_dict)
         m.save()
 
-        m.descriptors = self.descriptors
-        m.outcomeDescriptors = self.outcomeDescriptors
+        if predictors is None:
+            m.descriptors = self.descriptors
+        else:
+            m.descriptors = predictors
+        if responses is None:
+            m.outcomeDescriptors = self.outcomeDescriptors
+        else:
+            m.outcomeDescriptors = responses
 
         if self.statsmodel_set.all():
             for sm in self.statsmodel_set.all():
-                statsModel = StatsModel(container=m, trainingSet=sm.trainingSet, inputFile=sm.inputFile)
+                statsModel = StatsModel(container=m, trainingSet=sm.trainingSet)
+                if predictors is not None or responses is not None:
+                    inputFile = sm.inputFile
                 statsModel.save()
                 statsModel.testSets = sm.testSets.all()
         else:
