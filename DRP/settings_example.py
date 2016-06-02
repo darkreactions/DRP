@@ -26,7 +26,7 @@ STATIC_ROOT = APP_DIR + "/static_served/"
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
 MAIN_SERVER = 'http://darkreactions.haverford.edu'
-MAIN_SERVER_USER = ''
+MAIN_SERVER_USER = '' # Your login credentials to the website, not the machine
 MAIN_SERVER_PASS = ''
 
 # Directories
