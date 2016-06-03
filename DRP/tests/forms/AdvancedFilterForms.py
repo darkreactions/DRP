@@ -21,9 +21,9 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 class NumericFilterFormGT(BaseFormTest):
     def setUpFormData(self):
         self.formData = {}
-        self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="mw").pk
+        self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="length").pk
         self.formData["operator"] = 'gt' 
-        self.formData["value"] = 128.219
+        self.formData["value"] = 12
 
     def setUp(self): 
         '''Creates a user, then a form'''
@@ -37,9 +37,9 @@ class NumericFilterFormGT(BaseFormTest):
     def test_clean(self):
         self.form.is_valid() 
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="mw"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
         self.assertEqual(cleaned["operator"], "gt", "Got a different result, {}, for the operator than expected".format(cleaned["descriptor"]))
-        self.assertEqual(float(cleaned["value"]), 128.219, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(float(cleaned["value"]), 12, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         self.form.is_valid() 
@@ -57,9 +57,9 @@ class NumericFilterFormGT(BaseFormTest):
 class NumericFilterFormGE(BaseFormTest):
     def setUpFormData(self):
         self.formData = {}
-        self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="mw").pk
+        self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="length").pk
         self.formData["operator"] = 'ge' 
-        self.formData["value"] = 128.2153
+        self.formData["value"] = 18
 
     def setUp(self): 
         '''Creates a user, then a form'''
@@ -73,9 +73,9 @@ class NumericFilterFormGE(BaseFormTest):
     def test_clean(self):
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="mw"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
         self.assertEqual(cleaned["operator"], "ge", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
-        self.assertEqual(float(cleaned["value"]), 128.2153, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(float(cleaned["value"]), 12, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         self.form.is_valid() 

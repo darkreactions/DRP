@@ -20,5 +20,5 @@ suite = unittest.TestSuite([
     CompoundDescriptor.suite,
     CompoundToCsv.suite,
     CompoundToArff.suite,
-    fileTests.suite,
+    #fileTests.suite,
 ])
