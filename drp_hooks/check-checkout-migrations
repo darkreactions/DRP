@@ -1,0 +1,9 @@
+cd $(git rev-parse --show-toplevel)
+
+# based on http://stackoverflow.com/questions/16840184/how-can-i-automatically-be-warned-if-a-specific-file-changes
+
+CHANGED=`git diff $1 $2 --stat -- DRP/migrations/ | wc -l`
+if [ $CHANGED -gt 0 ];
+then
+    echo "Migrations have changed! Run migrations to update your database."
+fi
