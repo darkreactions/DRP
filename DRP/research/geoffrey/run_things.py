@@ -2,19 +2,8 @@
 import django
 django.setup()
 import DRP
-from itertools import chain
+from DRP.models import Descriptor
 
-headings = []
 
-for compoundRole in DRP.models.CompoundRole.objects.all():
-    for descriptor in chain(DRP.models.BoolMolDescriptor.objects.filter(heading__contains='group'), DRP.models.BoolMolDescriptor.objects.filter(heading__contains='period')):
-        for i in (True, False):
-            heading = '{}_{}_{}_count'.format(compoundRole.label, descriptor.csvHeader, i)
-            headings.append(heading)
-            heading = '{}_{}_{}_molarity'.format(compoundRole.label, descriptor.csvHeader, i)
-            headings.append(heading)
-        heading = '{}_{}_any'.format(compoundRole.label, descriptor.csvHeader)
-        headings.append(heading)
-
-print '\n'.join(headings)
+print '\n'.join([d.heading for d in Descriptor.objects.filter(heading__contains='polar_surface_area')])
     
