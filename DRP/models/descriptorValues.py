@@ -18,7 +18,7 @@ class CategoricalDescriptorValue(models.Model):
     descriptor = models.ForeignKey(CategoricalDescriptor)
     """The categorical descriptor to which this pertains."""
     value = models.ForeignKey(CategoricalDescriptorPermittedValue,
-                              null=True,
+                              null=True, blank=True,
                               on_delete=models.PROTECT)
     """The value of the categorical descriptor value.
 
@@ -72,7 +72,7 @@ class BooleanDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
-    value = models.NullBooleanField('Value for descriptor', null=True)
+    value = models.NullBooleanField('Value for descriptor', null=True, blank=True)
     """Set to true, false or none (missing value) for instances."""
     descriptor = models.ForeignKey(BooleanDescriptor)
     """The descriptor to which this value pertains."""
@@ -95,7 +95,7 @@ class NumericDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
-    value = models.FloatField(null=True)
+    value = models.FloatField(null=True, blank=True)
     """Set to the floating point value for instances."""
     descriptor = models.ForeignKey(NumericDescriptor)
     """The descriptor to which a value pertains."""
@@ -155,7 +155,7 @@ class OrdinalDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
-    value = models.IntegerField(null=True)
+    value = models.IntegerField(null=True, blank=True)
     """The integer value for the specified descriptor."""
     descriptor = models.ForeignKey(OrdinalDescriptor)
 
