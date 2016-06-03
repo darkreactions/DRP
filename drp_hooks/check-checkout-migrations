@@ -7,5 +7,5 @@ NUM_CHANGED=`echo $CHANGED | wc`
 if [ $NUM_CHANGED -gt 0 ];
 then
     echo "Migrations have changed! Run migrations to update your database."
-    tr $CHANGED ' ' '\n'
+    echo $CHANGED | tr " " "\n"
 fi
