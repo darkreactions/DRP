@@ -56,7 +56,7 @@ class Descriptor(models.Model):
         ]
     )
     """A short label which is given to a description."""
-    name = models.CharField('Full name', max_length=255, unique=True)
+    name = models.CharField('Full name', max_length=300)
     calculatorSoftware = models.CharField(
         max_length=100,
         blank=True,
