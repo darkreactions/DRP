@@ -15,12 +15,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.fromfile_prefix_chars = '@'
-        parser.epilog = "Prefix arguments with '@' to specify a file containing newline-separated values for that argument. e.g.'-p @predictor_headers.txt' to pass multiple descriptors from a file as predictors"
+        parser.epilog = ("Prefix arguments with '@' to specify a file containing newline-separated values for that argument. "
+                        "e.g.'-p @predictor_headers.txt' to pass multiple descriptor headings from a file as predictors.")
 
         parser.add_argument('-p', '--predictor-headers', nargs='+',
-                            help='One or more descriptors to use as predictors.')
+                            help='The headings of one or more descriptors to use as predictors.')
         parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
-                            help='One or more descriptors to predict. '
+                            help='The headings of one or more descriptors to predict. '
                             'Note that most models can only handle one response variable (default: %(default)s)')
         parser.add_argument('-ml', '--model-library', default="weka",
                             help='Model visitor library to use. (default: %(default)s)')

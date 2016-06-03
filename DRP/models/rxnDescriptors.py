@@ -30,18 +30,16 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
         """
         Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
         This allows later bulk creation.
-        Returns a tuple of the value object and whether it is new (needs to be saved).
+        Returns the new value object or None if no object was created (only updated).
         """
-        try:
-            v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
-            new = False
-            if v.value != value:
-                v.value = value
-                v.save()
-        except rxnDescriptorValues.CatRxnDescriptorValue.DoesNotExist:
-            v = rxnDescriptorValues.CatRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
-            new = True
-        return v, new
+        qs = rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
+
+        if qs.exists():
+            qs.exclude(value=value).update(value=value)
+            return None
+        else:
+            return rxnDescriptorValues.CatRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
+
 
 
 class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
@@ -71,20 +69,18 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
         """
         Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
         This allows later bulk creation.
-        Returns a tuple of the value object and whether it is new (needs to be saved).
+        Returns the new value object or None if no object was created (only updated).
         """
         if not isinstance(value, int) and value is not None:
             raise TypeError("You cannot create a ordinal value with non-integer type {}".format(type(value)))
-        try:
-            v = rxnDescriptorValues.OrdRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
-            new = False
-            if v.value != value:
-                v.value = value
-                v.save()
-        except rxnDescriptorValues.OrdRxnDescriptorValue.DoesNotExist:
-            v = rxnDescriptorValues.OrdRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
-            new = True
-        return v, new
+
+        qs = rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
+
+        if qs.exists():
+            qs.exclude(value=value).update(value=value)
+            return None
+        else:
+            return rxnDescriptorValues.OrdRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
 
     def createPredictionDescriptor(self, *args, **kwargs):
         pred = super(OrdRxnDescriptor, self).createPredictionDescriptor(*args, **kwargs)
