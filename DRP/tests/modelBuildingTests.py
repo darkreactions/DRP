@@ -39,7 +39,7 @@ class WekaSVMKFTest(ModelTest):
 class WekaSVMMFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
-    splitter = "MutualInfoSplitter"
+    splitter = "ExploratorySplitter"
     
 @createsPerformedReactionSetOrd
 class WekaJ48KFTest(ModelTest):
