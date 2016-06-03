@@ -1,4 +1,7 @@
 cd $(git rev-parse --show-toplevel)
 
+echo $1
+echo $2
+
 .git/hooks/remove-orphaned-pyc
-.git/hooks/check-checkout-migrations
+.git/hooks/check-checkout-migrations $1 $2
