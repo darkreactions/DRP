@@ -238,6 +238,18 @@ This command checks the hashed values of the reactions calculated by
 the DRP descriptor plugin for clashes. If there is a clash,
 the lead developer should be notified ASAP.
 
+**build\_model**
+
+Builds a machine learning model. The most basic usage is
+`python manage.py build_model -p 'reaction_temperature'`
+this will build a model using only the reaction temperature
+as a descriptor to predict the default outcome descriptor
+(currently boolean crystallisation outcome) using the default
+model (currently a Weka SVM using the PUK kernel and cross-validated using
+a 4-fold split to analyze model performance).
+More advanced usage should be well documented in the help text
+`python manage.py build_model -h`
+
 **import_data**
 
 Imports reaction data from the main Haverford Dark Reactions server.
