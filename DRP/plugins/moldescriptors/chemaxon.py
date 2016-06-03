@@ -139,6 +139,13 @@ _pHDependentDescriptors = {
         'calculatorSoftware': calculatorSoftware,
         'calculatorSoftwareVersion': '15.6',
         'minimum': 0,
+    },
+    'polar_surface_area': {
+        'type': 'num',
+        'name': 'Polar Surface Area',
+        'calculatorSoftware': calculatorSoftware,
+        'calculatorSoftwareVersion': '15.6',
+        'minimum': 0,
     }
 }
 
@@ -165,7 +172,8 @@ _cxcalcpHCommandStems = {
     'asa_hydrophobic_pH{}': 'molecularsurfacearea -t ASA_H -H {}',
     'asa_polar_pH{}': 'molecularsurfacearea -t ASA_P -H {}',
     'hbda_acc_pH{}': 'acceptorcount -H {}',
-    'hbda_don_pH{}': 'donorcount -H {}'
+    'hbda_don_pH{}': 'donorcount -H {}',
+    'polar_surface_area_pH{}': 'polarsurfacearea -H {}',
 }
 
 
