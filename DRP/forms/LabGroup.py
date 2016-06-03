@@ -50,9 +50,9 @@ class LabGroupJoiningForm(forms.Form):
 
   def clean(self):
     super(LabGroupJoiningForm, self).clean()
-    if check_password(self.cleaned_data['accessCode'], self.cleaned_data['labGroup'].access_code):
+    if check_password(self.cleaned_data.get('accessCode'), self.cleaned_data['labGroup'].access_code):
       return self.cleaned_data
-    elif self.cleaned_data['accessCode'] == self.cleaned_data['labGroup'].legacy_access_code:
+    elif self.cleaned_data.get('accessCode') == self.cleaned_data['labGroup'].legacy_access_code:
       return self.cleaned_data
     else:
       raise ValidationError('Invalid Access Code', code='invalid_access')
