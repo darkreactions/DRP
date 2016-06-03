@@ -41,8 +41,8 @@ def cleanUpDatabase():
     DRP.models.Descriptor.objects.exclude(pk__in=keepDescriptors).delete()
     User.objects.all().exclude(username='root').delete()
 
-def runTests(suite):
+def runTests(suite, failfast=False):
     '''A function which empties out the database prior to and after running the tests contained in suite'''
     cleanUpDatabase()
-    return unittest.TextTestRunner(verbosity=4).run(suite)
+    return unittest.TextTestRunner(verbosity=4, failfast=failfast).run(suite)
     

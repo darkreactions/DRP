@@ -3,12 +3,19 @@ from DRP.tests import suite, runTests
 from django.conf import settings
 
 class Command(BaseCommand):
-  help='Runs the full battery of DRP tests'
+    help='Runs the full battery of DRP tests'
 
-  def handle(self, *args, **kwargs):
-    if settings.TESTING:
-      result = runTests(suite)
-      if len(result.errors) > 0 or len(result.failures)>0 or len(result.unexpectedSuccesses) > 0:
-        exit(1)
-    else:
-      raise RuntimeError('Testing environment is not set')
+    def add_arguments(self, parser):
+        parser.add_argument('--failfast', action='store_true',
+                            help='Turn on the unittest failfast option. Tests halt at the first failure'
+                            )
+        
+
+    def handle(self, *args, **kwargs):
+        failfast = kwargs['failfast']
+        if settings.TESTING:
+            result = runTests(suite, failfast=failfast)
+            if len(result.errors) > 0 or len(result.failures)>0 or len(result.unexpectedSuccesses) > 0:
+                exit(1)
+        else:
+            raise RuntimeError('Testing environment is not set')
