@@ -1,0 +1,10 @@
+reaction_time
+Na_mols
+O_mols
+H_mols
+V_mols
+C_mols
+N_mols
+Org_amount_molarity
+Inorg_amount_molarity
+Solv_amount_molarity

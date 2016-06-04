@@ -1,0 +1,25 @@
+To 1.7:
+
+Standalone scripts
+
+If you’re using Django in a plain Python script — rather than a management command — and you rely on the DJANGO_SETTINGS_MODULE environment variable, you must now explicitly initialize Django at the beginning of your script with:
+
+>>> import django
+>>> django.setup()
+
+Otherwise, you will hit an AppRegistryNotReady exception.
+
+The django.db.models.Model.__eq__() method is now defined in a way where instances of a proxy model and its base model are considered equal when primary keys match. Previously only instances of exact same class were considered equal on primary key match. two Model instances without primary key values won’t be considered equal (unless they are the same instance). will now raise TypeError when called on an instance without a primary key value. This is done to avoid mutable __hash__ values in containers.
+
+It looks like django has support for test databases built in now. We should investigate this.
+
+
+To 1.8:
+
+Django 1.8 deprecates dotted python paths for reversing urls. I don't think we do that anywhere, but I'm unsure about this command:
+{% url request.resolver_match.url_name '.arff' %}
+which shows up in quite a few places. This is also the one that uses a non-default context_processor, which was causing errors because I accidentally removed it.
+
+Django 1.8 defines a new way of using template settings that allows multiple backends (see here: https://docs.djangoproject.com/en/1.8/ref/templates/upgrading/ [^]). While switching to this system should be straightforward, my attempts to do so have failed spectacularly. It is just clearly not searching in TEMPLATES['DIRS'] and I'm getting a TemplateDoesNotExist error. >:-( 
+
+1.8 recommends the use of SessionAuthenticationMiddleware, but adding it in settings results in 404s.

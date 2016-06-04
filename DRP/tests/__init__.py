@@ -9,16 +9,20 @@ import CompoundFromCsv
 import CompoundDescriptor
 import CompoundToCsv
 import CompoundToArff
-import modelBuildingTests
+#import modelBuildingTests
+#import DataImport
+import modelValidators
 
 suite = unittest.TestSuite([
     Email.suite,
     forms.suite,
     HttpTests.suite,
-    modelBuildingTests.suite,
+#    modelBuildingTests.suite,
+#    DataImport.suite,
     CompoundFromCsv.suite,
     CompoundDescriptor.suite,
     CompoundToCsv.suite,
     CompoundToArff.suite,
     fileTests.suite,
+    modelValidators.suite,
 ])

@@ -1,0 +1,50 @@
+Starting building at 2016-03-22 00:50:24.917088
+Splitting using MutualInfoSplitter
+Split into train (2184), test (958)
+Split into train (2190), test (952)
+Split into train (2197), test (945)
+Split into train (2198), test (944)
+Split into train (2197), test (945)
+Split into train (2199), test (943)
+Split into train (2193), test (949)
+Split into train (2198), test (944)
+Split into train (2185), test (957)
+Split into train (2197), test (945)
+Split into train (2170), test (972)
+Split into train (2188), test (954)
+Split into train (2182), test (960)
+Split into train (2185), test (957)
+Split into train (2193), test (949)
+2016-03-22 00:54:10.769127 statsModel 259, saving to /home/gmartinn/DRP_main/DRP_repo/models/138_259_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/259_de5362e1-527f-4a0c-8d92-bf574ac1e37a.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/259_de5362e1-527f-4a0c-8d92-bf574ac1e37a.arff -d /home/gmartinn/DRP_main/DRP_repo/models/138_259_weka_NaiveBayes.model -p 0 -c 1
+	...Trained. Finished at 2016-03-22 01:16:57.308714. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/259_57056f89-7c15-41db-ac3e-1fdf42be73db.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/259_f0d2464e-75e0-4820-93fb-206024ae9671.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/259_57056f89-7c15-41db-ac3e-1fdf42be73db.arff -l /home/gmartinn/DRP_main/DRP_repo/models/138_259_weka_NaiveBayes.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/259_f0d2464e-75e0-4820-93fb-206024ae9671.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 01:37:47.327102. 1 of 15 models built.
+Elapsed model building time: 0:43:36.594834. Expected completion time: 2016-03-22 11:48:19.654778
+2016-03-22 01:37:47.378217 statsModel 264, saving to /home/gmartinn/DRP_main/DRP_repo/models/138_264_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/264_55dd56ba-633e-42b3-8c9f-cefd316272f6.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/264_55dd56ba-633e-42b3-8c9f-cefd316272f6.arff -d /home/gmartinn/DRP_main/DRP_repo/models/138_264_weka_NaiveBayes.model -p 0 -c 1
+	...Trained. Finished at 2016-03-22 02:01:26.583270. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/264_f541b8d1-e3dd-433c-92df-e26843d67a06.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/264_4c8796ab-38c9-4a81-9465-a3dd05913bda.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -T /home/gmartinn/DRP_main/DRP_repo/tmp/264_f541b8d1-e3dd-433c-92df-e26843d67a06.arff -l /home/gmartinn/DRP_main/DRP_repo/models/138_264_weka_NaiveBayes.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/264_4c8796ab-38c9-4a81-9465-a3dd05913bda.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 02:24:08.697151. 2 of 15 models built.
+Elapsed model building time: 1:29:57.964883. Expected completion time: 2016-03-22 12:08:55.468891
+2016-03-22 02:24:08.795190 statsModel 270, saving to /home/gmartinn/DRP_main/DRP_repo/models/138_270_weka_NaiveBayes.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/270_71962d09-5cca-4dc6-a90d-a095df2264e5.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/270_71962d09-5cca-4dc6-a90d-a095df2264e5.arff -d /home/gmartinn/DRP_main/DRP_repo/models/138_270_weka_NaiveBayes.model -p 0 -c 1
+	...Trained. Finished at 2016-03-22 02:48:54.715839. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/270_a9bc9b03-2f18-48a8-ae79-a3d89708a264.arff

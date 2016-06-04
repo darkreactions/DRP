@@ -6,10 +6,10 @@ import rdkit.Chem
 import DRP
 
 _descriptorDict = {
-    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': 'drp/rdkit', 'calculatorSoftwareVersion': 0, 'maximum': None, 'minimum': 0},
-    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0, 'maximum': 3, 'minimum': 1},
-    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0},
-    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': 'example.py plugin', 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
+    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': 'drp_rdkit', 'calculatorSoftwareVersion': 0, 'maximum': None, 'minimum': 0},
+    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0, 'maximum': 3, 'minimum': 1},
+    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0},
+    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
 }
 """A dictionary describing the descriptors available in this module. The key should always be the heading for the descriptor."""
 
@@ -25,6 +25,9 @@ def fsValueCalc(mw):
     else:
         return 3
 
+def calculate_many(compound_set, verbose=False):
+    for compound in compound_set:
+        calculate(compound)
 
 def arbValCalc(compound):
     """Calculate a completely arbitrary value as an example of a categorical descriptor."""
@@ -42,7 +45,7 @@ def calculate(compound):
     """
     pt = rdkit.Chem.GetPeriodicTable()
     mwValue = DRP.models.NumMolDescriptorValue.objects.get_or_create(descriptor=descriptorDict['mw'], compound=compound)[0]
-    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
+    mwValue.value = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * float(compound.elements[element]['stoichiometry']) for element in compound.elements)
     mwValue.save()
     fsValue = DRP.models.OrdMolDescriptorValue.objects.get_or_create(compound=compound, descriptor=descriptorDict['fs'])[0]
     fsValue.value = fsValueCalc(mwValue)

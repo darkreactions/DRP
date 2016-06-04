@@ -1,0 +1,24 @@
+Starting building at 2016-03-04 18:30:13.171497
+No splitter. Using given test and training sets.
+2016-03-04 18:30:14.011855 statsModel 193, saving to /home/gmartinn/DRP_main/DRP_repo/models/176_193, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/193_8bdbf188-bce1-4fce-90dc-beb94fbbdd5e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.bayes.NaiveBayes -t /home/gmartinn/DRP_main/DRP_repo/tmp/193_8bdbf188-bce1-4fce-90dc-beb94fbbdd5e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/176_193 -p 0 -c 1
+	...Trained. Finished at 2016-03-04 18:39:53.491232. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/193_38baa0bb-0593-483a-bcd4-be3bd96f17a6.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-04 18:44:58.449350
+Confusion matrix for boolean_crystallisation_outcome_prediction_176_summative__:
+      False  True 
+False  277   476  
+ True  357   955  
+Accuracy: 0.597
+BCR: 0.552
+Confusion matrix for boolean_crystallisation_outcome_prediction_176_component_193__:
+      False  True 
+False  277   476  
+ True  357   955  
+Accuracy: 0.597
+BCR: 0.552

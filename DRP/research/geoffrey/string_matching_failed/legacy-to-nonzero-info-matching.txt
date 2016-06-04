@@ -1,0 +1,274 @@
+ionization_max_weighted                          __atom_energy_gmean_inorg_ionization_max_molarity_org
+ea_max_weighted                                  
+ea_max                                           
+arith_avg_oxlikeminimalprojectionarea            __affinity_atom_count_electron_gmean_inorg_org_range
+min_orgmolpol                                    amount_inorg_molarity
+arith_avg_orgmaximalprojectionarea               __affinity_atom_electron_gmean_inorg_molarity_org_range
+arith_avg_oxlikeminimalprojectionsize            __affinity_atom_count_electron_geom_gmean_inorg_org_stoich
+arith_avg_orgmaximalprojectionsize               __atom_electronegativity_geom_gmean_inorg_molarity_org_pearson_stoich
+asa+_avg_geom_oxlike                             
+max_oxlikehbdamsdon                              
+number_oxlike                                    
+hardness_max_weighted                            __atom_gmean_hardness_inorg_max_molarity_org
+min_orghbdamsdon                                 
+arith_avg_orgminimalprojectionsize               __affinity_atom_electron_geom_gmean_inorg_molarity_org_stoich
+asa+_max_oxlike                                  
+min_oxlikeminimalprojectionradius                
+asa_avg_geom_h_oxlike                            
+avg_geom_orgpolarsurfacearea                     __atom_gmean_hardness_inorg_molarity_org_range
+asa_avg_geom_org                                 _0_count_gmean_mw_org
+min_orgmaximalprojectionradius                   __atom_count_energy_gmean_inorg_ionization_max_org
+g5                                               
+g4                                               
+g3                                               
+g2                                               
+g1                                               
+max_orgmolpol                                    
+min_oxlikevanderwaals                            
+min_oxlikeminimalprojectionarea                  
+arith_asa-_avg_org                               
+max_oxlikeminimalprojectionradius                
+v3                                               
+max_oxlikemaximalprojectionsize                  
+br                                               
+na                                               na
+min_oxlikehbdamsacc                              
+hardness_min                                     
+arith_asa_avg_h_org                              __affinity_atom_count_electron_gmean_inorg_max_org
+cs                                               
+max_orgmaximalprojectionsize                     
+electroneg_max_pearson                           __atom_count_electronegativity_gmean_inorg_max_org_pearson
+max_oxlikehbdamsacc                              
+max_oxlikeminimalprojectionsize                  
+asa_h_min_oxlike                                 
+alkali_metal                                     
+ea_geom_weighted                                 
+max_oxlikevanderwaals                            
+p                                                h
+asa-_min_oxlike                                  
+arith_avg_oxlikeavgpol                           
+min_orgmaximalprojectionarea                     __atom_count_energy_gmean_inorg_ionization_org_range
+max_orgmaximalprojectionradius                   
+avg_geom_oxlikehbdamsacc                         
+asa-_max_oxlike                                  
+arith_avg_oxlikepolarsurfacearea                 
+arith_avg_hdependent_oxlikeavgpol_p              __affinity_atom_count_electron_geom_gmean_inorg_org_unw
+ea_mean                                          
+orgacc-waterdonratio                             
+asa_h_max_oxlike                                 
+geom_hardness_weighted                           __atom_count_geom_gmean_hardness_inorg_org_stoich
+max_oxlikerefractivity                           
+electroneg_min_pearson                           __affinity_atom_electron_geom_gmean_inorg_molarity_org_unw
+avg_geom_oxlikevanderwaals                       
+arith_avg_oxlikemaximalprojectionradius          
+hdependent_max_orgavgpol_p                       
+ionization_min_weighted                          
+max_orgmaximalprojectionarea                     
+atomic_max_radius_weighted                       __atom_count_gmean_hardness_inorg_max_org
+min_oxlikeminimalprojectionsize                  
+min_orgmaximalprojectionsize                     
+electroneg_min_pauling_weighted                  __atom_electronegativity_gmean_inorg_molarity_org_pauling_range
+asa_avg_geom_oxlike_p                            
+arith_asa_avg_org                                
+number_org                                       temperature
+min_orgavgpol                                    amount_molarity_solv
+c                                                c
+avg_geom_orgrefractivity                         
+avg_geom_oxlikeminimalprojectionarea             
+hdependent_max_oxlikeavgpol_p                    
+atomic_min_radius_weighted                       __atom_atomic_gmean_inorg_molarity_org_radius_range
+g11                                              
+lanthanide                                       
+hardness_max                                     
+max_orgpolarsurfacearea                          
+boolean_outcome                                  amount_count_ox
+min_oxlikemaximalprojectionradius                
+arith_avg_orghbdamsacc                           
+p7                                               
+min_oxlikemaximalprojectionsize                  
+avg_geom_oxlikeminimalprojectionsize             
+arith_avg_orgvanderwaals                         
+leak                                             
+p5                                               
+avg_geom_orgmaximalprojectionarea                __atom_count_energy_geom_gmean_inorg_ionization_org_unw
+arith_asa_avg_oxlike_p                           
+max_oxlikeminimalprojectionarea                  
+avg_geom_oxlikemaximalprojectionradius           
+atomic_mean_radius_weighted                      __atom_count_gmean_hardness_inorg_org_range
+atomic_max_radius                                __atom_atomic_count_gmean_inorg_max_org_radius
+asa_min_org                                      amount_count_inorg
+asa_max_oxlike_p                                 
+mo                                               
+p2                                               
+avg_geom_orgavgpol                               
+arith_asa_avg_oxlike                             
+p1                                               
+p6                                               
+ga                                               ga
+p4                                               
+arith_asa+_avg_org                               
+arith_avg_orgmolpol                              
+g15                                              
+k                                                
+orgdon-wateraccratio                             
+arith_avg_oxlikevanderwaals                      
+asa_max_org                                      _0_gmean_molarity_mw_org
+max_orgavgpol                                    
+min_oxlikemolpol                                 
+arith_avg_oxlikerefractivity                     
+asa_min_oxlike_p                                 
+atomic_min_radius                                __atom_atomic_count_geom_gmean_inorg_org_radius_unw
+o                                                o
+cr                                               cr
+arith_asa_avg_org_p                              
+asa_avg_geom_oxlike                              
+g7                                               
+ea_min_weighted                                  
+zn                                               
+ionization_min                                   
+arith_avg_hdependent_orgavgpol_p                 __affinity_atom_electron_gmean_inorg_max_molarity_org
+g6                                               
+arith_asa+_avg_oxlike                            
+arith_avg_orgpolarsurfacearea                    
+max_oxlikemolpol                                 
+asa_h_max_org                                    amount_molarity_org
+cu                                               
+electroneg_geom_pearson                          __atom_count_electronegativity_geom_gmean_inorg_org_pearson_unw
+max_orghbdamsdon                                 
+arith_avg_oxlikemaximalprojectionsize            
+avg_geom_oxlikepolarsurfacearea                  
+atomic_mean_radius                               __atom_atomic_count_gmean_inorg_org_radius_range
+asa_h_min_org                                    amount_count_solv
+electroneg_max_pauling                           __atom_electronegativity_gmean_inorg_max_molarity_org_pauling
+avg_geom_hdependent_orgavgpol_p                  __atom_geom_gmean_hardness_inorg_molarity_org_unw
+avg_geom_oxlikehbdamsdon                         
+asa_min_oxlike                                   
+asa_max_oxlike                                   
+electroneg_mean_pearson_weighted                 __atom_count_electronegativity_geom_gmean_inorg_org_pearson_stoich
+components_number                                
+avg_geom_orgmaximalprojectionradius              __atom_atomic_geom_gmean_inorg_molarity_org_radius_stoich
+actinide                                         
+avg_geom_oxlikeminimalprojectionradius           
+g9                                               
+arith_avg_orgminimalprojectionradius             
+max_orgvanderwaals                               
+min_orgvanderwaals                               
+h_p                                              h_p
+g8                                               
+s                                                s
+ionization_max                                   amount_molarity_ox
+electroneg_min_pearson_weighted                  __atom_electronegativity_gmean_inorg_molarity_org_pearson_range
+avg_geom_oxlikemaximalprojectionarea             
+avg_geom_orgmaximalprojectionsize                __atom_count_energy_geom_gmean_inorg_ionization_org_stoich
+min_orghbdamsacc                                 
+electroneg_min_pauling                           __atom_electronegativity_geom_gmean_inorg_molarity_org_pauling_unw
+ionization_mean                                  
+inorg_number                                     
+electroneg_geom_pearson_weighted                 __atom_electronegativity_geom_gmean_inorg_molarity_org_pauling_stoich
+avg_geom_orgminimalprojectionradius              __atom_atomic_geom_gmean_inorg_molarity_org_radius_unw
+avg_geom_oxlikemolpol                            
+min_orgminimalprojectionsize                     
+asa+_min_org                                     amount_count_org
+max_orghbdamsacc                                 
+avg_geom_orgminimalprojectionsize                __atom_energy_geom_gmean_inorg_ionization_molarity_org_stoich
+f                                                
+avg_geom_oxlikerefractivity                      
+asa+_max_org                                     
+asa_max_org_p                                    
+n                                                n
+asa_avg_geom_org_p                               
+ea_geom                                          
+v                                                v
+g17                                              
+max_oxlikemaximalprojectionradius                
+max_oxlikeavgpol                                 
+g14                                              
+g13                                              
+g12                                              
+se                                               se
+g10                                              
+electroneg_geom_pauling                          __atom_count_electronegativity_gmean_inorg_max_org_pauling
+co                                               
+temp                                             
+cl                                               cl
+avg_geom_orgvanderwaals                          
+electroneg_mean_pauling                          __atom_count_electronegativity_geom_gmean_inorg_org_pauling_unw
+arith_avg_oxlikeminimalprojectionradius          
+arith_avg_oxlikemaximalprojectionarea            
+min_oxlikeavgpol                                 
+atomic_geom_radius_weighted                      __atom_count_geom_gmean_hardness_inorg_org_unw
+min_orgpolarsurfacearea                          
+arith_asa_avg_h_oxlike                           
+min_oxlikepolarsurfacearea                       
+ionization_mean_weighted                         
+inorg-org-moleratio                              
+avg_geom_orgminimalprojectionarea                __atom_energy_geom_gmean_inorg_ionization_molarity_org_unw
+avg_geom_orghbdamsdon                            
+asa-_min_org                                     
+electroneg_mean_pauling_weighted                 __atom_count_electronegativity_gmean_inorg_org_pauling_range
+electroneg_mean_pearson                          __atom_electronegativity_gmean_inorg_max_molarity_org_pearson
+avg_geom_oxlikeavgpol                            
+min_oxlikerefractivity                           
+p3                                               
+asa-_max_org                                     
+atomic_geom_radius                               __atom_atomic_count_geom_gmean_inorg_org_radius_stoich
+li                                               
+arith_avg_orgminimalprojectionarea               
+min_orgrefractivity                              
+asa_avg_geom_h_org                               
+arith_avg_orghbdamsdon                           
+te                                               
+hardness_mean_weighted                           
+hdependent_min_oxlikeavgpol_p                    
+asa_min_org_p                                    
+inorg-water-moleratio                            
+asa+_avg_geom_org                                
+notwater-water-moleratio                         
+geom_ionization                                  
+ea_mean_weighted                                 
+max_oxlikemaximalprojectionarea                  
+v0                                               
+v1                                               
+v2                                               
+arith_avg_oxlikemolpol                           
+v4                                               
+v5                                               
+v6                                               
+v7                                               
+max_orgrefractivity                              
+arith_avg_oxlikehbdamsdon                        
+min_oxlikehbdamsdon                              
+g18                                              
+min_oxlikemaximalprojectionarea                  
+min_orgminimalprojectionradius                   
+max_orgminimalprojectionarea                     
+electroneg_geom_pauling_weighted                 __atom_electronegativity_geom_gmean_inorg_molarity_org_pearson_unw
+time                                             time
+hardness_mean                                    
+asa+_min_oxlike                                  
+arith_avg_orgavgpol                              
+arith_avg_oxlikehbdamsacc                        
+asa-_avg_geom_oxlike                             
+avg_geom_oxlikemaximalprojectionsize             
+arith_avg_orgmaximalprojectionradius             __atom_atomic_gmean_inorg_max_molarity_org_radius
+max_orgminimalprojectionsize                     
+geom_ionization_weighted                         __atom_energy_gmean_inorg_ionization_molarity_org_range
+i                                                
+min_orgminimalprojectionarea                     
+max_oxlikepolarsurfacearea                       
+avg_geom_orgmolpol                               
+arith_asa-_avg_oxlike                            
+electroneg_max_pearson_weighted                  __atom_count_electronegativity_gmean_inorg_org_pearson_range
+geom_hardness                                    
+org-water-moleratio                              
+hdependent_min_orgavgpol_p                       
+avg_geom_hdependent_oxlikeavgpol_p               __atom_geom_gmean_hardness_inorg_molarity_org_stoich
+asa-_avg_geom_org                                
+electroneg_max_pauling_weighted                  __atom_count_electronegativity_geom_gmean_inorg_org_pauling_stoich
+hardness_min_weighted                            
+arith_avg_orgrefractivity                        
+max_orgminimalprojectionradius                   
+avg_geom_orghbdamsacc                            
+cool_slow                                        
+g16                                              
+ea_min                                           

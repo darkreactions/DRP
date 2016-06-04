@@ -25,48 +25,67 @@ ul.downloads li {
  margin: 0 1em;
 }
 
-div.reaction {
+ul.reactions {
+ list-style:none;
+}
+
+li.reaction {
  color:black;
  width: 80%;
  height:auto;
  padding:1em;
  margin:1em auto;
  border-radius:1em;
- background-color: white;
+ background-color: #ededed;
 }
 
-div.reaction h2 {
- float:left;
- margin:0;
+.reaction>table, .reaction>table>tbody {
+ display:block;
+ overflow:hidden;
 }
 
-.first_name {
+.reaction>table>tbody>tr {
+ display:block;
+}
+
+.reaction>table>tbody>tr>td,.reaction>table>tbody>tr>th {
+ display:inline-block;
+}
+
+.reaction>table>tbody>tr>th::after {
+ content:":";
+}
+
+.flright {
+ float:right;
+ text-align:right;
+ width:50%;
+}
+
+td.right {
  float:right;
 }
 
-.quantities {
- float: left;
- clear: left;
- margin: .5em 2em;
+td.delete:hover, td.invalidate:hover, a.edit:hover{
+ opacity:0.7;
 }
 
-.quantities ul {
- padding:0;
+.fleft {
  float:left;
- clear:left;
- margin:0;
+ width:50%;
 }
 
-.quantities li {
- list-style: none;
- float:left;
- margin:0 1em 0 0;
+tr.quantities th, tr.quantities, td {
+ padding-left:0.5em;
+ padding-right:0.5em;
 }
 
-.inserted_date {
- clear:both;
- margin-top:3em;
- font-weight: 600;
+tr.notes {
+    clear:both;
+}
+
+a.edit {
+ display:inline-block;
 }
 
 ol.pagination {
@@ -79,62 +98,23 @@ ol.pagination {
 ol.pagination li {
  float:left;
  margin:0 1em;
- color: #9c0000;
+ color: #20344b;
 }
 
-
-
-/* commenting out old table CSS
-
-table.reactions-list {
- border-collapse:collapse;
+.input_wrapper form {
+ display:inline-block;
+ box-sizing:content-box;
+ white-space:normal;
+ text-rendering:auto;
 }
 
-table.reactions-list, .reactions-list th, .reactions-list td {
- border:1px solid black;
+.input_wrapper {
+ text-align:center;
+ margin-left:auto;
+ margin-right:auto;
+ width:30%;
 }
 
-.reactions-list th, .reactions-list td {
- padding:1em;
- text-align:left;
+#pagination {
+    text-align:center;
 }
-
-.reactions-list td ul {
- list-style:none;
- padding-left:0;
-}
-
-.reactions-list td ul li {
- border:.1em dashed black;
- margin-bottom:1em;
-}
-
-.reactions-list td ul li ul {
- list-style:none;
- padding: 0 1em 0 1em;
- margin-top:1em;
-}
-
-.reactions-list td ul li li {
- border:none;
-}
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

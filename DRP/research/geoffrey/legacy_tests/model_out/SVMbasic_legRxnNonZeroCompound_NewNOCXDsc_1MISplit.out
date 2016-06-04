@@ -1,0 +1,30 @@
+Starting building at 2016-03-22 03:18:23.211381
+Splitting using MutualInfoSplitter
+Split into train (2199), test (943)
+2016-03-22 03:19:14.689120 statsModel 274, saving to /home/gmartinn/DRP_main/DRP_repo/models/144_274_weka_SVM_PUK_basic.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/274_8f9529f3-7b62-4094-ac1a-a43a699e570a.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/274_8f9529f3-7b62-4094-ac1a-a43a699e570a.arff -d /home/gmartinn/DRP_main/DRP_repo/models/144_274_weka_SVM_PUK_basic.model -K "weka.classifiers.functions.supportVector.Puk -O 1.0 -S 1.0" -p 0 -c 1
+	...Trained. Finished at 2016-03-22 03:41:18.089103. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/274_d5f7afcb-209c-4a3a-ba35-66f7080c7691.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/274_47619e16-5074-4f22-99c3-a973e99f191f.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/274_d5f7afcb-209c-4a3a-ba35-66f7080c7691.arff -l /home/gmartinn/DRP_main/DRP_repo/models/144_274_weka_SVM_PUK_basic.model -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/274_47619e16-5074-4f22-99c3-a973e99f191f.out
+	...finished predicting. Storing predictions... predictions stored.
+2016-03-22 04:02:09.760745. 1 of 1 models built.
+Elapsed model building time: 0:42:55.144426. Expected completion time: 2016-03-22 04:02:09.760745
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-22 04:04:56.360764
+Confusion matrix for boolean_outcome_legacy_prediction_144_summative__:
+      False  True 
+False   95    38  
+ True  150   660  
+Accuracy: 0.801
+BCR: 0.667
+Confusion matrix for boolean_outcome_legacy_prediction_144_component_274__:
+      False  True 
+False   95    38  
+ True  150   660  
+Accuracy: 0.801
+BCR: 0.667

@@ -1,0 +1,5 @@
+{
+    {% for descriptor in descriptors %}
+	{{descriptor.id}}: {{descriptor.name}},
+    {% endfor %}
+}

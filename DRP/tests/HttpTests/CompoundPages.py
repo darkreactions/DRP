@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''This module contains tests for teh confirmation page'''
+'''This module contains tests for the compound pages'''
 
 from django.conf import settings
 from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest
@@ -202,6 +202,7 @@ class PostCompoundUpload(PostHttpSessionTest, OneRedirectionMixin):
       self.files['csv']=('compound_test1.csv',f.read(), 'text/csv')
     super(PostCompoundUpload, self).setUp()
 
+# TODO XXX PHIL_FIX_AFTER_CONTEXT_PROCESSOR
 suite = unittest.TestSuite([
   loadTests(LicenseRedirect),
   loadTests(Lab403Test),

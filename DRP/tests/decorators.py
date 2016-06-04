@@ -9,140 +9,228 @@ from django.conf import settings
 from datetime import date, timedelta
 import os
 
+def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
+    '''A class decorator that creates an ordinal reaction descriptor.'''
 
-def createsRxnDescriptor(heading, descriptorType, options={}):
-    '''A class decorator that creates a reaction descriptor'''
-    def _createsRxnDescriptor(c):
+    def _createsOrdRxnDescriptor(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
-        if descriptorType == "BoolRxnDescriptor":
-          descriptor = BoolRxnDescriptor()
-        elif descriptorType == "NumRxnDescriptor":
-          descriptor = NumRxnDescriptor()
-        elif descriptorType == "OrdRxnDescriptor":
-          descriptor = OrdRxnDescriptor()
-        elif descriptorType == "CatRxnDescriptor":
-          descriptor = CatRxnDescriptor()
-        else:
-            error = "Descriptor type \"{}\" unknown to descriptor.".format(descriptorType)
-            raise NotImplementedError(error)
+        def setUp(self):
+            OrdRxnDescriptor.objects.create(name=heading, heading=heading, maximum=maximum, minimum=minimum, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
+            _oldSetup(self)
+            
+        def tearDown(self):
+            OrdRxnDescriptor.objects.filter(name=heading, heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
+            _oldTearDown(self) 
+
+        c.setUp = setUp
+        c.tearDown = tearDown
+        
+        return c
+
+    return _createsOrdRxnDescriptor
+
+def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
+
+    def _createsOrdRxnDescriptorValue(c):
+        _oldSetup = c.setUp
+        _oldTearDown = c.tearDown
 
         def setUp(self):
-            descriptor.heading = heading
-            descriptor.name = heading
+            OrdRxnDescriptorValue.objects.create(descriptor=OrdRxnDescriptor.objects.get(heading=descHeading), reaction=PerformedReaction.objects.get(reference=rxnRef, labGroup=LabGroup.objects.get(title=labGroupTitle)), value=value)
+            _oldSetup(self)
+    
 
-            for key, val in options.items():
-                setattr(descriptor, key, val)
+        c.setUp = setUp
+        
+        return c
 
-            descriptor.save()
+    return _createsOrdRxnDescriptorValue
 
+def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
+
+    def _createsCompoundQuantity(c):
+        _oldSetup = c.setUp
+        _oldTearDown = c.tearDown
+
+        def setUp(self):
+            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
             _oldSetup(self)
 
         def tearDown(self):
-            descriptor.delete()
+            if PerformedReaction.objects.filter(reference=rxnRef).exists():
+                CompoundQuantity.objects.get(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols).delete()
             _oldTearDown(self)
 
         c.setUp = setUp
         c.tearDown = tearDown
+
         return c
-    return _createsRxnDescriptor
 
+    return _createsCompoundQuantity
 
-def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs, compoundRoles, compoundAmounts, descriptorDict={}, duplicateRef=None):
-    '''A class decorator that creates a reaction using pre-existing compounds
-          with pre-existing compoundRoles.'''
+             
+#def createsRxnDescriptor(heading, descriptorClass, options={}):
+#    '''A class decorator that creates a reaction descriptor'''
+#    def _createsRxnDescriptor(c):
+#        _oldSetup = c.setUp
+#        _oldTearDown = c.tearDown
+#
+#        if descriptorType == "BoolRxnDescriptor":
+#          descriptor = BoolRxnDescriptor()
+#        elif descriptorType == "NumRxnDescriptor":
+#          descriptor = NumRxnDescriptor()
+#        elif descriptorType == "OrdRxnDescriptor":
+#          descriptor = OrdRxnDescriptor()
+#        elif descriptorType == "CatRxnDescriptor":
+#          descriptor = CatRxnDescriptor()
+#        else:
+#            error = "Descriptor type \"{}\" unknown to descriptor.".format(descriptorType)
+#            raise NotImplementedError(error)
+#
+#        def setUp(self):
+#            descriptor.heading = heading
+#            descriptor.name = heading
+#
+#            for key, val in options.items():
+#                setattr(descriptor, key, val)
+#
+#            descriptor.save()
+#
+#            _oldSetup(self)
+#
+#        def tearDown(self):
+#            descriptor.delete()
+#            _oldTearDown(self)
+#
+#        c.setUp = setUp
+#        c.tearDown = tearDown
+#        return c
+#    return _createsRxnDescriptor
+
+def createsPerformedReaction(labTitle, username, reference, valid=True):
+    '''A class decorator that creates a very minimal reaction with no compounds or reactants'''
+
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
-        reaction = PerformedReaction()
-        compoundQuantities = []
-        descriptorVals = []
-
         def setUp(self):
-            labGroup=LabGroup.objects.get(title=labTitle)
-            reaction.labGroup = labGroup
-
-            user=User.objects.get(username=username)
-            reaction.user = user
-            reaction.reference = reference
-            reaction.public = False
-            if PerformedReaction.objects.filter(labGroup=labGroup, reference=duplicateRef).exists():
-                reaction.duplicateOf = PerformedReaction.objects.get(labGroup=labGroup, reference=duplicateRef)
-
-            reaction.save()
-
-            for abbrev, role, quantity in zip(compoundAbbrevs, compoundRoles, compoundAmounts):
-                compound = Compound.objects.get(labGroup=labGroup, abbrev=abbrev)
-                compoundRole = CompoundRole.objects.get(label=role)
-                compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
-                                                                                        role=compoundRole, amount=quantity)
-
-                # TODO XXX bulk_create? Can't use the special save
-                compoundQuantity.save()
-
-                compoundQuantities.append(compoundQuantity)
-
-            #TODO: This is hideous and I'm not proud of it.
-            for desc_heading,val in descriptorDict.items():
-                descriptor = None
-                try:
-                    descriptor = BoolRxnDescriptor.objects.get(heading=desc_heading)
-                    descriptorVal = BoolRxnDescriptorValue()
-                except BoolRxnDescriptor.DoesNotExist:
-                  pass
-
-                try:
-                    descriptor = OrdRxnDescriptor.objects.get(heading=desc_heading)
-                    descriptorVal = OrdRxnDescriptorValue()
-                except OrdRxnDescriptor.DoesNotExist:
-                  pass
-
-                try:
-                    descriptor = CatRxnDescriptor.objects.get(heading=desc_heading)
-                    descriptorVal = CatRxnDescriptorValue()
-                except CatRxnDescriptor.DoesNotExist:
-                  pass
-
-                try:
-                    descriptor = NumRxnDescriptor.objects.get(heading=desc_heading)
-                    descriptorVal = NumRxnDescriptorValue()
-                except NumRxnDescriptor.DoesNotExist:
-                  pass
-
-                if descriptor == None:
-                    error = "Unknown descriptorValue type for '{}'".format(descriptor)
-                    raise NotImplementedError(error)
-
-                # TODO XXX: bulk_create?
-                descriptorVal.descriptor = descriptor
-                descriptorVal.value = val
-                descriptorVal.reaction = reaction
-                descriptorVal.save()
-
-                descriptorVals.append(descriptorVal)
-
+            labGroup = LabGroup.objects.get(title=labTitle)
+            user = User.objects.get(username=username)
+            reaction = PerformedReaction.objects.create(labGroup=labGroup, user=user, reference=reference, valid=valid)
             _oldSetup(self)
 
         def tearDown(self):
+            labGroup = LabGroup.objects.get(title=labTitle)
+            user = User.objects.get(username=username)
+            PerformedReaction.objects.filter(labGroup=labGroup, reference=reference).delete()
             _oldTearDown(self)
-
-            # TODO XXX bulk deletion?
-            for cq in compoundQuantities:
-                cq.delete()
-
-            for descriptorVal in descriptorVals:
-                descriptorVal.delete()
-
-            DataSet.objects.filter(reactions__in=[reaction]).delete()
-            reaction.delete()
-
 
         c.setUp = setUp
         c.tearDown = tearDown
+        
         return c
+
     return _createsPerformedReaction
+    
+
+#TODO: finish replacing this
+#def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs=[], compoundRoles=[], compoundAmounts=[], descriptorDict={}, duplicateRef=None):
+#    '''A class decorator that creates a reaction using pre-existing compounds
+#          with pre-existing compoundRoles.'''
+#    def _createsPerformedReaction(c):
+#        _oldSetup = c.setUp
+#        _oldTearDown = c.tearDown
+#
+#        reaction = PerformedReaction()
+#        compoundQuantities = []
+#        descriptorVals = []
+#
+#        def setUp(self):
+#            labGroup=LabGroup.objects.get(title=labTitle)
+#            reaction.labGroup = labGroup
+#
+#            user=User.objects.get(username=username)
+#            reaction.user = user
+#            reaction.reference = reference
+#            reaction.public = False
+#            if PerformedReaction.objects.filter(labGroup=labGroup, reference=duplicateRef).exists():
+#                reaction.duplicateOf = PerformedReaction.objects.get(labGroup=labGroup, reference=duplicateRef)
+#
+#            reaction.save()
+#
+#            for abbrev, role, quantity in zip(compoundAbbrevs, compoundRoles, compoundAmounts):
+#                compound = Compound.objects.get(labGroup=labGroup, abbrev=abbrev)
+#                compoundRole = CompoundRole.objects.get(label=role)
+#                compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
+#                                                                                        role=compoundRole, amount=quantity)
+#
+#                # TODO XXX bulk_create? Can't use the special save
+#                compoundQuantity.save()
+#
+#                compoundQuantities.append(compoundQuantity)
+#
+#            #TODO: This is hideous and I'm not proud of it.
+#            for desc_heading,val in descriptorDict.items():
+#                descriptor = None
+#                try:
+#                    descriptor = BoolRxnDescriptor.objects.get(heading=desc_heading)
+#                    descriptorVal = BoolRxnDescriptorValue()
+#                except BoolRxnDescriptor.DoesNotExist:
+#                  pass
+#
+#                try:
+#                    descriptor = OrdRxnDescriptor.objects.get(heading=desc_heading)
+#                    descriptorVal = OrdRxnDescriptorValue()
+#                except OrdRxnDescriptor.DoesNotExist:
+#                  pass
+#
+#                try:
+#                    descriptor = CatRxnDescriptor.objects.get(heading=desc_heading)
+#                    descriptorVal = CatRxnDescriptorValue()
+#                except CatRxnDescriptor.DoesNotExist:
+#                  pass
+#
+#                try:
+#                    descriptor = NumRxnDescriptor.objects.get(heading=desc_heading)
+#                    descriptorVal = NumRxnDescriptorValue()
+#                except NumRxnDescriptor.DoesNotExist:
+#                  pass
+#
+#                if descriptor == None:
+#                    error = "Unknown descriptorValue type for '{}'".format(descriptor)
+#                    raise NotImplementedError(error)
+#
+#                # TODO XXX: bulk_create?
+#                descriptorVal.descriptor = descriptor
+#                descriptorVal.value = val
+#                descriptorVal.reaction = reaction
+#                descriptorVal.save()
+#
+#                descriptorVals.append(descriptorVal)
+#
+#            _oldSetup(self)
+#
+#        def tearDown(self):
+#            _oldTearDown(self)
+#
+#            # TODO XXX bulk deletion?
+#            for cq in compoundQuantities:
+#                cq.delete()
+#
+#            for descriptorVal in descriptorVals:
+#                descriptorVal.delete()
+#
+#            DataSet.objects.filter(reactions__in=[reaction]).delete()
+#            reaction.delete()
+#
+#
+#        c.setUp = setUp
+#        c.tearDown = tearDown
+#        return c
+#    return _createsPerformedReaction
 
 
 def createsUser(username, password, is_superuser=False):
@@ -277,13 +365,14 @@ def signsExampleLicense(username):
         def setUp(self):
             user = User.objects.get(username=username)
             license.save()
-            self.agreement = LicenseAgreement(user=user, text=license)
-            self.agreement.save()
+            agreement = LicenseAgreement(user=user, text=license)
+            agreement.save()
             _oldSetup(self)
 
         def tearDown(self):
-            self.agreement.delete()
-            license.delete()
+            LicenseAgreement.objects.filter(user__username=username, text=license).delete()
+            if license.licenseagreement_set.count() < 1:
+                license.delete()
             _oldTearDown(self)
 
         c.setUp = setUp
@@ -311,7 +400,7 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
             _oldSetup(self)
 
         def tearDown(self):
-            Compound.objects.all().delete()
+            CompoundQuantity.objects.all().delete()
             _oldTearDown(self)
 
         c.setUp = setUp

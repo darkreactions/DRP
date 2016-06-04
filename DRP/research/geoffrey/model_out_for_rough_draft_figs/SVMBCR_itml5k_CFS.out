@@ -1,0 +1,21 @@
+Starting building at 2016-03-03 16:21:18.463321
+No splitter. Using given test and training sets.
+2016-03-03 16:21:19.326708 statsModel 159, saving to /home/gmartinn/DRP_main/DRP_repo/models/145_159, training...
+	...Trained. Finished at 2016-03-03 16:36:27.322704. Saving statsModel... saved
+Predicting test set...
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/159_d462d517-5521-4696-b300-5e0d223de47a.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Finished at 2016-03-03 16:41:17.263048
+Confusion matrix for boolean_crystallisation_outcome_prediction_145_summative__:
+      False  True 
+False  493   990  
+ True  141   441  
+Accuracy: 0.452
+BCR: 0.543
+Confusion matrix for boolean_crystallisation_outcome_prediction_145_component_159__:
+      False  True 
+False  493   990  
+ True  141   441  
+Accuracy: 0.452
+BCR: 0.543

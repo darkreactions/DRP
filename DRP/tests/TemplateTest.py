@@ -13,33 +13,33 @@ from DRPTestCase import DRPTestCase, runTests
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class RidiculousTestCaseOne(DRPTestCase):
-  #This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
+    #This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
 
-  def setUp(self):
-      pass
+    def setUp(self):
+        pass
 
-  def runTest(self):
-      pass
+    def runTest(self):
+        pass
 
-  def tearDown(self):
-      pass
+    def tearDown(self):
+        pass
 
 class RidiculousTestCaseTwo(DRPTestCase):
 
-  def setUp(self):
-      pass
+    def setUp(self):
+        pass
 
-  def test_ripeness(self):
-      pass
+    def test_ripeness(self):
+        pass
 
-  def tearDown(self):
-      pass
+    def tearDown(self):
+        pass
 
 suite = unittest.TestSuite([
-          loadTests(RidiculousTestCaseOne),
-          loadTests(RidiculousTestCaseTwo)
-          ])
+            loadTests(RidiculousTestCaseOne),
+            loadTests(RidiculousTestCaseTwo)
+            ])
 
 if __name__=='__main__':
-  runTests(suite)
-  #Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    runTests(suite)
+    #Runs the test- a good way to check that this particular test set works without having to run all the tests.

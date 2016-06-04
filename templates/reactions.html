@@ -4,6 +4,7 @@
 
 {% if user.is_authenticated %}
 <nav>
+ {% if testing %}<!-- ea5108a2-0b88-482d-90c5-ea492fd8134e --> {% endif %}
  <div class="projectNav-wrapper">
   <ol class="projectNav" id="projectNav2">
     <li><a href="{% url 'reactionlist' %}">List Performed Reactions</a></li>

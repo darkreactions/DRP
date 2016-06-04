@@ -5,22 +5,22 @@ import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
 from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
 from DRPTestCase import DRPTestCase, runTests
+from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class ModelTest(DRPTestCase):
-    featureLibrary = None
-    featureTool = None
-    
+    splitterOptions = None
+    visitorOptions = None
     def runTest(self):
         reactions = PerformedReaction.objects.all()
-        container = ModelContainer.create(self.modelLibrary, self.modelTool, splitter=self.splitter,
-                                          featureLibrary=self.featureLibrary, featureTool=self.featureTool,
-                                          reactions=reactions)
-        container.save()
         predictors = Descriptor.objects.filter(heading="testNumber")
         responses = Descriptor.objects.filter(heading="outcome")
-        container.build(predictors, responses)
+        container = ModelContainer.create(self.modelLibrary, self.modelTool, predictors, responses, splitter=self.splitter,
+                                          reactions=reactions, splitterOptions=self.splitterOptions, visitorOptions=self.visitorOptions)
+
+        container.build()
         container.save()
+        container.full_clean()
 
         #TODO: We should test the ModelContainer "predict" method here as well.
 
@@ -30,18 +30,16 @@ class ModelTest(DRPTestCase):
 # Should really do tests with more descriptors
 
 @createsPerformedReactionSetOrd
-class WekaSVMBasicKFTest(ModelTest):
+class WekaSVMKFTest(ModelTest):
     modelLibrary = "weka"
-    modelTool = "SVM_PUK_basic"
+    modelTool = "SVM_PUK"
     splitter = "KFoldSplitter"
-
     
-@createsPerformedReactionSetBool
-class WekaSVMBCRKFTest(ModelTest):
+@createsPerformedReactionSetOrd
+class WekaSVMMFTest(ModelTest):
     modelLibrary = "weka"
-    modelTool = "SVM_PUK_BCR"
-    splitter = "KFoldSplitter"
-
+    modelTool = "SVM_PUK"
+    splitter = "MutualInfoSplitter"
     
 @createsPerformedReactionSetOrd
 class WekaJ48KFTest(ModelTest):
@@ -63,8 +61,8 @@ class WekaNBKFTest(ModelTest):
 
 
 suite = unittest.TestSuite([
-                    loadTests(WekaSVMBasicKFTest),
-                    loadTests(WekaSVMBCRKFTest),
+                    loadTests(WekaSVMKFTest),
+                    loadTests(WekaSVMMFTest),
                     loadTests(WekaJ48KFTest),
                     loadTests(WekaKNNKFTest),
                     loadTests(WekaNBKFTest),

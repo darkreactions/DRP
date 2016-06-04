@@ -1,0 +1,402 @@
+Starting building at 2016-03-30 21:24:30.599245
+Splitting using MutualInfoSplitter
+Split into train (2198), test (944)
+Split into train (2187), test (955)
+Split into train (2199), test (943)
+Split into train (2194), test (948)
+Split into train (2194), test (948)
+Split into train (2199), test (943)
+Split into train (2193), test (949)
+Split into train (2199), test (943)
+Split into train (2180), test (962)
+Split into train (2199), test (943)
+Split into train (2198), test (944)
+Split into train (2184), test (958)
+Split into train (2196), test (946)
+Split into train (2199), test (943)
+Split into train (2197), test (945)
+2016-03-30 21:29:37.808651 statsModel 808, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_808_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/808_ebf176ef-77ed-48d5-b053-f83c44538903.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.37805642633; 3.64510779436 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/808_ebf176ef-77ed-48d5-b053-f83c44538903.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_808_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 21:36:31.235798. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/808_7508a1f6-bed0-4e6f-b3f5-fbe2b901c8a9.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/808_b08f1fe7-b109-4124-83b6-dd1c556ae758.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/808_7508a1f6-bed0-4e6f-b3f5-fbe2b901c8a9.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_808_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/808_b08f1fe7-b109-4124-83b6-dd1c556ae758.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_808:
+      False  True 
+False   37    14  
+ True  186   707  
+Accuracy: 0.788
+BCR: 0.573
+2016-03-30 21:37:55.527735. 1 of 15 models built.
+Elapsed model building time: 0:08:17.942226. Expected completion time: 2016-03-30 23:34:06.718899
+2016-03-30 21:37:55.575484 statsModel 813, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_813_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/813_e9910343-6117-4b53-94fa-eea62ca189df.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.32948328267; 4.03505535055 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/813_e9910343-6117-4b53-94fa-eea62ca189df.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_813_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 21:44:13.902410. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/813_d83cc31f-accf-465c-9093-545d74d3a89d.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/813_102b112f-222d-44c0-af25-23ef3b967146.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/813_d83cc31f-accf-465c-9093-545d74d3a89d.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_813_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/813_102b112f-222d-44c0-af25-23ef3b967146.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_813:
+      False  True 
+False   27    18  
+ True  257   653  
+Accuracy: 0.712
+BCR: 0.534
+2016-03-30 21:45:40.112087. 2 of 15 models built.
+Elapsed model building time: 0:16:02.526578. Expected completion time: 2016-03-30 23:29:56.534844
+2016-03-30 21:45:40.154730 statsModel 818, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_818_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/818_8a906d53-358a-4427-ad4a-d2e5a03bca28.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.34742647059; 3.87830687831 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/818_8a906d53-358a-4427-ad4a-d2e5a03bca28.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_818_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 21:52:32.958035. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/818_0ede036a-3b18-4872-8f5f-efa97ac6ab1b.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/818_6cc35584-22e6-42e0-86cd-2491c00b6f7b.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/818_0ede036a-3b18-4872-8f5f-efa97ac6ab1b.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_818_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/818_6cc35584-22e6-42e0-86cd-2491c00b6f7b.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_818:
+      False  True 
+False   7     19  
+ True  252   665  
+Accuracy: 0.713
+BCR: 0.5
+2016-03-30 21:54:03.031045. 3 of 15 models built.
+Elapsed model building time: 0:24:25.445536. Expected completion time: 2016-03-30 23:31:44.813189
+2016-03-30 21:54:03.076400 statsModel 825, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_825_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/825_a0ff035b-4aef-456e-bd7f-bb94ef26deb3.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.33131067961; 4.01831501832 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/825_a0ff035b-4aef-456e-bd7f-bb94ef26deb3.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_825_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:00:48.868403. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/825_e6d8ab37-28b0-4879-8668-77738549451d.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/825_4741b7d7-83a2-4053-80ed-15f5d903d1aa.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/825_e6d8ab37-28b0-4879-8668-77738549451d.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_825_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/825_4741b7d7-83a2-4053-80ed-15f5d903d1aa.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_825:
+      False  True 
+False   36    16  
+ True  244   652  
+Accuracy: 0.726
+BCR: 0.552
+2016-03-30 22:02:26.103193. 4 of 15 models built.
+Elapsed model building time: 0:32:48.517684. Expected completion time: 2016-03-30 23:32:39.526824
+2016-03-30 22:02:26.136954 statsModel 833, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_833_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/833_4988ac1b-a211-43ec-b9d0-65aa83c22ec8.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.31930246542; 4.131826742 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/833_4988ac1b-a211-43ec-b9d0-65aa83c22ec8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_833_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:09:21.427158. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/833_6893e3e0-b03b-4068-90e6-3947696febd7.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/833_68b60c28-4d5d-43f7-8e37-5b58661e7904.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/833_6893e3e0-b03b-4068-90e6-3947696febd7.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_833_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/833_68b60c28-4d5d-43f7-8e37-5b58661e7904.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_833:
+      False  True 
+False   36    16  
+ True  259   637  
+Accuracy: 0.71
+BCR: 0.549
+2016-03-30 22:10:52.709126. 5 of 15 models built.
+Elapsed model building time: 0:41:15.123617. Expected completion time: 2016-03-30 23:33:22.956360
+2016-03-30 22:10:52.748572 statsModel 839, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_839_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/839_3eed6912-aa01-4157-9da7-f75d921627aa.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.35239852399; 3.83769633508 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/839_3eed6912-aa01-4157-9da7-f75d921627aa.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_839_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:18:13.973324. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/839_320ec2cc-fb4f-4a73-9b49-623da851ee92.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/839_03197508-3591-491a-bf6d-1a975185e6f8.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/839_320ec2cc-fb4f-4a73-9b49-623da851ee92.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_839_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/839_03197508-3591-491a-bf6d-1a975185e6f8.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_839:
+      False  True 
+False   32    16  
+ True  221   674  
+Accuracy: 0.749
+BCR: 0.552
+2016-03-30 22:19:35.748543. 6 of 15 models built.
+Elapsed model building time: 0:49:58.163034. Expected completion time: 2016-03-30 23:34:32.993094
+2016-03-30 22:19:35.789246 statsModel 847, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_847_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/847_7f8e3cb3-802f-4b2e-9c62-583025a226bc.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.34210526316; 3.92307692308 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/847_7f8e3cb3-802f-4b2e-9c62-583025a226bc.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_847_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:26:42.036520. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/847_fce277b2-0b75-464d-af2f-33b2fea5a69f.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/847_9bdfcf92-18fc-45ba-a9e4-0467ce8072b7.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/847_fce277b2-0b75-464d-af2f-33b2fea5a69f.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_847_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/847_9bdfcf92-18fc-45ba-a9e4-0467ce8072b7.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_847:
+      False  True 
+False   35    11  
+ True  232   671  
+Accuracy: 0.744
+BCR: 0.557
+2016-03-30 22:28:23.730009. 7 of 15 models built.
+Elapsed model building time: 0:58:46.144500. Expected completion time: 2016-03-30 23:35:33.609438
+2016-03-30 22:28:23.767385 statsModel 855, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_855_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/855_2a5ac2b9-ad52-442b-a912-13a46f8d16a3.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.36668738347; 3.72711864407 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/855_2a5ac2b9-ad52-442b-a912-13a46f8d16a3.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_855_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:35:32.174555. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/855_942fef68-811c-4747-83da-5938bf9da45a.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/855_b9d8e385-6c0a-49f8-ac8f-19c0b5f2b5d2.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/855_942fef68-811c-4747-83da-5938bf9da45a.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_855_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/855_b9d8e385-6c0a-49f8-ac8f-19c0b5f2b5d2.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_855:
+      False  True 
+False   26    10  
+ True  210   697  
+Accuracy: 0.767
+BCR: 0.548
+2016-03-30 22:37:00.815146. 8 of 15 models built.
+Elapsed model building time: 1:07:23.229637. Expected completion time: 2016-03-30 23:35:58.641078
+2016-03-30 22:37:00.852852 statsModel 861, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_861_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/861_a10b0b05-55db-441f-a3f5-22fe1b0bb5cd.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.33824432167; 3.95644283122 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/861_a10b0b05-55db-441f-a3f5-22fe1b0bb5cd.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_861_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:43:26.806439. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/861_b201fd2d-a3c2-472a-851d-cdffbd418f3b.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/861_ee35bbce-32fb-436c-9bcd-8af3c5473cdf.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/861_b201fd2d-a3c2-472a-851d-cdffbd418f3b.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_861_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/861_ee35bbce-32fb-436c-9bcd-8af3c5473cdf.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_861:
+      False  True 
+False   11    8   
+ True  264   679  
+Accuracy: 0.717
+BCR: 0.514
+2016-03-30 22:44:45.360398. 9 of 15 models built.
+Elapsed model building time: 1:15:07.774889. Expected completion time: 2016-03-30 23:34:50.543657
+2016-03-30 22:44:45.405429 statsModel 866, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_866_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/866_2cf9bd61-7451-43a4-8c46-34dd9eed3902.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.35406403941; 3.82434782609 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/866_2cf9bd61-7451-43a4-8c46-34dd9eed3902.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_866_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:51:07.612729. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/866_a94ad001-0665-431b-9674-934d49c6955c.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/866_04f78113-bf6b-415a-b477-ec73fb18ffc1.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/866_a94ad001-0665-431b-9674-934d49c6955c.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_866_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/866_04f78113-bf6b-415a-b477-ec73fb18ffc1.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_866:
+      False  True 
+False   7     12  
+ True  244   680  
+Accuracy: 0.729
+BCR: 0.505
+2016-03-30 22:52:20.003716. 10 of 15 models built.
+Elapsed model building time: 1:22:42.418207. Expected completion time: 2016-03-30 23:33:41.212820
+2016-03-30 22:52:20.034289 statsModel 869, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_869_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/869_b5572467-8f37-4201-a053-55b4f7925841.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.37460913071; 3.6694490818 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/869_b5572467-8f37-4201-a053-55b4f7925841.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_869_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 22:58:28.232247. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/869_658b922e-914c-43b7-bdfa-2d306ce57260.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/869_c4b9d692-4984-48a8-a970-725f2be666b9.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/869_658b922e-914c-43b7-bdfa-2d306ce57260.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_869_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/869_c4b9d692-4984-48a8-a970-725f2be666b9.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_869:
+      False  True 
+False   32    9   
+ True  195   708  
+Accuracy: 0.784
+BCR: 0.564
+2016-03-30 22:59:44.346704. 11 of 15 models built.
+Elapsed model building time: 1:30:06.761195. Expected completion time: 2016-03-30 23:32:30.441684
+2016-03-30 22:59:44.391097 statsModel 872, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_872_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/872_87dee480-5ac3-4b8c-a0ab-c305007eba4d.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.34565619224; 3.89304812834 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/872_87dee480-5ac3-4b8c-a0ab-c305007eba4d.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_872_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 23:05:42.544428. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/872_a8f0181d-6d6f-445c-ab2b-4b9704f0691b.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/872_e06afaaa-9ada-46ad-b6d9-086cc90722b6.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/872_a8f0181d-6d6f-445c-ab2b-4b9704f0691b.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_872_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/872_e06afaaa-9ada-46ad-b6d9-086cc90722b6.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_872:
+      False  True 
+False   8     12  
+ True  257   681  
+Accuracy: 0.719
+BCR: 0.506
+2016-03-30 23:06:55.989937. 12 of 15 models built.
+Elapsed model building time: 1:37:18.404428. Expected completion time: 2016-03-30 23:31:15.591044
+2016-03-30 23:06:56.018912 statsModel 874, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_874_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/874_fb8aa24c-865a-4bf8-bc72-5dfc6ad98138.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.33984136669; 3.94254937163 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/874_fb8aa24c-865a-4bf8-bc72-5dfc6ad98138.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_874_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 23:12:59.936826. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/874_4e473847-58d6-4ec5-b783-3b6e4f39c10a.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/874_c4283bbe-abb9-4b3d-a964-2f7b4410107c.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/874_4e473847-58d6-4ec5-b783-3b6e4f39c10a.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_874_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/874_c4283bbe-abb9-4b3d-a964-2f7b4410107c.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_874:
+      False  True 
+False   9     12  
+ True  260   665  
+Accuracy: 0.712
+BCR: 0.508
+2016-03-30 23:14:11.821813. 13 of 15 models built.
+Elapsed model building time: 1:44:34.236304. Expected completion time: 2016-03-30 23:30:17.088937
+2016-03-30 23:14:11.847384 statsModel 876, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_876_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/876_11e8557f-85d7-4599-9c89-671b3b6341f8.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.38388923851; 3.60491803279 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/876_11e8557f-85d7-4599-9c89-671b3b6341f8.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_876_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 23:20:20.932476. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/876_40349f01-fef1-4a6b-8536-5247f730be23.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/876_d5f02501-8d93-473a-9623-820d5ffe89e4.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/876_40349f01-fef1-4a6b-8536-5247f730be23.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_876_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/876_d5f02501-8d93-473a-9623-820d5ffe89e4.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_876:
+      False  True 
+False   15    10  
+ True  201   717  
+Accuracy: 0.776
+BCR: 0.528
+2016-03-30 23:21:32.820506. 14 of 15 models built.
+Elapsed model building time: 1:51:55.234997. Expected completion time: 2016-03-30 23:29:32.480149
+2016-03-30 23:21:32.854119 statsModel 878, saving to /home/gmartinn/DRP_main/DRP_repo/models/211_878_weka_SVM_PUK_BCR.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/878_168fa7c8-351b-4f67-985d-394dd236645e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.38176100629; 3.6194398682 0.0]" -W weka.classifiers.functions.SMO -t /home/gmartinn/DRP_main/DRP_repo/tmp/878_168fa7c8-351b-4f67-985d-394dd236645e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/211_878_weka_SVM_PUK_BCR.model -p 0 -c 6 -- -K "weka.classifiers.functions.supportVector.Puk -O 1 -S 1"
+	...Trained. Finished at 2016-03-30 23:27:46.638044. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/878_1a461aef-aa9a-4fa3-9c64-54d4995e3d64.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/878_4d7b4e44-e553-4226-91f6-6eadaf0ddd17.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/878_1a461aef-aa9a-4fa3-9c64-54d4995e3d64.arff -l /home/gmartinn/DRP_main/DRP_repo/models/211_878_weka_SVM_PUK_BCR.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/878_4d7b4e44-e553-4226-91f6-6eadaf0ddd17.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_878:
+      False  True 
+False   9     16  
+ True  210   710  
+Accuracy: 0.761
+BCR: 0.51
+2016-03-30 23:28:57.458014. 15 of 15 models built.
+Elapsed model building time: 1:59:19.872505. Expected completion time: 2016-03-30 23:28:57.458014
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-30 23:29:04.754840
+Confusion matrix for boolean_outcome_legacy_prediction_211_summative__:
+      False  True 
+False   47    27  
+ True  493   1436 
+Accuracy: 0.74
+BCR: 0.534
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_808__:
+      False  True 
+False   37    14  
+ True  186   707  
+Accuracy: 0.788
+BCR: 0.573
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_813__:
+      False  True 
+False   27    18  
+ True  257   653  
+Accuracy: 0.712
+BCR: 0.534
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_818__:
+      False  True 
+False   7     19  
+ True  252   665  
+Accuracy: 0.713
+BCR: 0.5
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_825__:
+      False  True 
+False   36    16  
+ True  244   652  
+Accuracy: 0.726
+BCR: 0.552
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_833__:
+      False  True 
+False   36    16  
+ True  259   637  
+Accuracy: 0.71
+BCR: 0.549
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_839__:
+      False  True 
+False   32    16  
+ True  221   674  
+Accuracy: 0.749
+BCR: 0.552
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_847__:
+      False  True 
+False   35    11  
+ True  232   671  
+Accuracy: 0.744
+BCR: 0.557
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_855__:
+      False  True 
+False   26    10  
+ True  210   697  
+Accuracy: 0.767
+BCR: 0.548
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_861__:
+      False  True 
+False   11    8   
+ True  264   679  
+Accuracy: 0.717
+BCR: 0.514
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_866__:
+      False  True 
+False   7     12  
+ True  244   680  
+Accuracy: 0.729
+BCR: 0.505
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_869__:
+      False  True 
+False   32    9   
+ True  195   708  
+Accuracy: 0.784
+BCR: 0.564
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_872__:
+      False  True 
+False   8     12  
+ True  257   681  
+Accuracy: 0.719
+BCR: 0.506
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_874__:
+      False  True 
+False   9     12  
+ True  260   665  
+Accuracy: 0.712
+BCR: 0.508
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_876__:
+      False  True 
+False   15    10  
+ True  201   717  
+Accuracy: 0.776
+BCR: 0.528
+Confusion matrix for boolean_outcome_legacy_prediction_211_component_878__:
+      False  True 
+False   9     16  
+ True  210   710  
+Accuracy: 0.761
+BCR: 0.51
+Average accuracy: 0.74
+Average BCR: 0.534

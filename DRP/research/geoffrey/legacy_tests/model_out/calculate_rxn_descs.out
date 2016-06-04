@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "/usr/lib/python2.7/runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "/usr/lib/python2.7/cProfile.py", line 199, in <module>
+    main()
+  File "/usr/lib/python2.7/cProfile.py", line 185, in main
+    with open(progname, 'rb') as fp:
+IOError: [Errno 2] No such file or directory: 'run_things.py'

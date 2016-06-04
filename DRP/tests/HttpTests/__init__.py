@@ -10,6 +10,7 @@ import LoginPage
 import RegisterPage
 import unittest
 import CompoundPages
+import ReactionPages
 
 suite = unittest.TestSuite([
   AboutPage.suite,
@@ -21,5 +22,6 @@ suite = unittest.TestSuite([
   LabGroupPage.suite,
   LicensePage.suite,
   LoginPage.suite,
-  RegisterPage.suite
+  RegisterPage.suite,
+  ReactionPages.suite
 ])

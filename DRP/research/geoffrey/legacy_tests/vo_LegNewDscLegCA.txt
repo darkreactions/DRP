@@ -1,0 +1,9 @@
+{'BCR': True}
+None
+None
+None
+None
+None
+{'BCR': False}
+{'BCR': False}
+{'BCR': False}

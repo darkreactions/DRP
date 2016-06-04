@@ -1,491 +1,781 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import migrations, models
+from DRP.models.Compound import elementsFormatValidator
+import django.db.models.deletion
+from django.conf import settings
+import django.core.validators
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Descriptor'
-        db.create_table(u'DRP_descriptor', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('heading', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=300)),
-            ('kind', self.gf('django.db.models.fields.CharField')(max_length=20)),
-        ))
-        db.send_create_signal('DRP', ['Descriptor'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-        # Adding model 'ChemicalClass'
-        db.create_table(u'DRP_chemicalclass', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('label', self.gf('django.db.models.fields.CharField')(unique=True, max_length=30)),
-            ('description', self.gf('django.db.models.fields.CharField')(max_length=20)),
-        ))
-        db.send_create_signal('DRP', ['ChemicalClass'])
-
-        # Adding model 'LabGroup'
-        db.create_table(u'DRP_labgroup', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
-            ('address', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('email', self.gf('django.db.models.fields.CharField')(default='', max_length=254)),
-            ('access_code', self.gf('django.db.models.fields.CharField')(max_length=128)),
-            ('legacy_access_code', self.gf('django.db.models.fields.CharField')(max_length=20)),
-        ))
-        db.send_create_signal('DRP', ['LabGroup'])
-
-        # Adding M2M table for field users on 'LabGroup'
-        db.create_table(u'DRP_labgroup_users', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('labgroup', models.ForeignKey(orm['DRP.labgroup'], null=False)),
-            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
-        ))
-        db.create_unique(u'DRP_labgroup_users', ['labgroup_id', 'user_id'])
-
-        # Adding model 'CG_calculations'
-        db.create_table(u'DRP_cg_calculations', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('json_data', self.gf('django.db.models.fields.TextField')()),
-            ('compound', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('smiles', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
-            ('json', self.gf('django.db.models.fields.TextField')(default='{}', null=True)),
-        ))
-        db.send_create_signal('DRP', ['CG_calculations'])
-
-        # Adding model 'Compound'
-        db.create_table(u'DRP_compound', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('abbrev', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=300)),
-            ('CAS_ID', self.gf('django.db.models.fields.CharField')(default='', max_length=13, blank=True)),
-            ('CHEBI_ID', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('CSID', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('custom', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('INCHI', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
-            ('smiles', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
-        ))
-        db.send_create_signal('DRP', ['Compound'])
-
-        # Adding M2M table for field ChemicalClass on 'Compound'
-        db.create_table(u'DRP_compound_ChemicalClass', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('compound', models.ForeignKey(orm['DRP.compound'], null=False)),
-            ('chemicalclass', models.ForeignKey(orm['DRP.chemicalclass'], null=False))
-        ))
-        db.create_unique(u'DRP_compound_ChemicalClass', ['compound_id', 'chemicalclass_id'])
-
-        # Adding model 'Reaction'
-        db.create_table(u'DRP_reaction', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('temp', self.gf('django.db.models.fields.IntegerField')()),
-            ('slowCool', self.gf('django.db.models.fields.BooleanField')()),
-            ('time', self.gf('django.db.models.fields.IntegerField')()),
-            ('leak', self.gf('django.db.models.fields.BooleanField')()),
-            ('purity', self.gf('django.db.models.fields.IntegerField')()),
-            ('notes', self.gf('django.db.models.fields.TextField')()),
-            ('labGroup', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.LabGroup'])),
-        ))
-        db.send_create_signal('DRP', ['Reaction'])
-
-        # Adding model 'CompoundQuantity'
-        db.create_table(u'DRP_compoundquantity', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('compound', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.Compound'])),
-            ('reaction', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.Reaction'])),
-            ('amount', self.gf('django.db.models.fields.FloatField')()),
-            ('amountUnit', self.gf('django.db.models.fields.CharField')(max_length=10)),
-        ))
-        db.send_create_signal('DRP', ['CompoundQuantity'])
-
-        # Adding model 'StatsModelTag'
-        db.create_table(u'DRP_statsmodeltag', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('text', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
-        ))
-        db.send_create_signal('DRP', ['StatsModelTag'])
-
-        # Adding model 'StatsModel'
-        db.create_table(u'DRP_statsmodel', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('fileName', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('description', self.gf('django.db.models.fields.TextField')()),
-            ('active', self.gf('django.db.models.fields.BooleanField')()),
-            ('start_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('end_time', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True)),
-            ('iterations', self.gf('django.db.models.fields.IntegerField')()),
-            ('library', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('tool', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal('DRP', ['StatsModel'])
-
-        # Adding M2M table for field tags on 'StatsModel'
-        db.create_table(u'DRP_statsmodel_tags', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('statsmodel', models.ForeignKey(orm['DRP.statsmodel'], null=False)),
-            ('statsmodeltag', models.ForeignKey(orm['DRP.statsmodeltag'], null=False))
-        ))
-        db.create_unique(u'DRP_statsmodel_tags', ['statsmodel_id', 'statsmodeltag_id'])
-
-        # Adding model 'RecommendedReaction'
-        db.create_table(u'DRP_recommendedreaction', (
-            (u'reaction_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['DRP.Reaction'], unique=True, primary_key=True)),
-            ('score', self.gf('django.db.models.fields.FloatField')()),
-            ('model', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.StatsModel'], null=True)),
-            ('seed', self.gf('django.db.models.fields.related.ForeignKey')(related_name='seeded', null=True, to=orm['DRP.Reaction'])),
-            ('nonsense', self.gf('django.db.models.fields.BooleanField')()),
-            ('hidden', self.gf('django.db.models.fields.BooleanField')()),
-            ('saved', self.gf('django.db.models.fields.BooleanField')()),
-            ('reference', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal('DRP', ['RecommendedReaction'])
-
-        # Adding model 'PerformedReaction'
-        db.create_table(u'DRP_performedreaction', (
-            (u'reaction_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['DRP.Reaction'], unique=True, primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('performedDateTime', self.gf('django.db.models.fields.DateTimeField')()),
-            ('recommendation', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='resultantExperiment', null=True, to=orm['DRP.RecommendedReaction'])),
-            ('legacyRecommendedFlag', self.gf('django.db.models.fields.NullBooleanField')(default=None, null=True, blank=True)),
-            ('valid', self.gf('django.db.models.fields.BooleanField')()),
-            ('public', self.gf('django.db.models.fields.BooleanField')()),
-            ('duplicateOf', self.gf('django.db.models.fields.related.ForeignKey')(related_name='duplicatedBy', to=orm['DRP.Reaction'])),
-        ))
-        db.send_create_signal('DRP', ['PerformedReaction'])
-
-        # Adding model 'DataSet'
-        db.create_table(u'DRP_dataset', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('reaction', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.PerformedReaction'])),
-            ('model', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.StatsModel'])),
-            ('isTestSet', self.gf('django.db.models.fields.BooleanField')()),
-            ('isTrainingSet', self.gf('django.db.models.fields.BooleanField')()),
-        ))
-        db.send_create_signal('DRP', ['DataSet'])
-
-        # Adding model 'DescriptorValue'
-        db.create_table(u'DRP_descriptorvalue', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('descriptor', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.Descriptor'])),
-            ('Reaction', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['DRP.Reaction'], null=True)),
-            ('Compound', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['DRP.Compound'], null=True)),
-            ('booleanValue', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
-            ('ordValue', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
-            ('catValue', self.gf('django.db.models.fields.CharField')(max_length=200, null=True)),
-            ('numValue', self.gf('django.db.models.fields.FloatField')(null=True)),
-            ('isPredicted', self.gf('django.db.models.fields.BooleanField')()),
-            ('model', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['DRP.StatsModel'], null=True)),
-        ))
-        db.send_create_signal('DRP', ['DescriptorValue'])
-
-        # Adding model 'LegacyStatsModel'
-        db.create_table(u'DRP_legacystatsmodel', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('confusion_table', self.gf('django.db.models.fields.TextField')(default='{}')),
-            ('train_confusion_table', self.gf('django.db.models.fields.TextField')(default='{}')),
-            ('tmp_confusion_table', self.gf('django.db.models.fields.TextField')(default='{}')),
-            ('headers', self.gf('django.db.models.fields.TextField')(default='[]')),
-            ('correct_vals', self.gf('django.db.models.fields.CharField')(default='["3","4"]', max_length=100)),
-            ('title', self.gf('django.db.models.fields.CharField')(default='untitled', max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(default='')),
-            ('tags', self.gf('django.db.models.fields.TextField')(default='')),
-            ('iterations', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('filename', self.gf('django.db.models.fields.CharField')(default='/home/padler1/programming/drp/DRP/models/untitled.model', max_length=128)),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('start_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('end_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('usable', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('library', self.gf('django.db.models.fields.CharField')(default='weka', max_length=128)),
-            ('tool', self.gf('django.db.models.fields.CharField')(default='svc', max_length=128)),
-            ('response', self.gf('django.db.models.fields.CharField')(default='outcomoe', max_length=128)),
-        ))
-        db.send_create_signal('DRP', ['LegacyStatsModel'])
-
-        # Adding model 'License'
-        db.create_table(u'DRP_license', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal('DRP', ['License'])
-
-        # Adding model 'LicenseAgreement'
-        db.create_table(u'DRP_licenseagreement', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('text', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['DRP.License'])),
-            ('signedDateTime', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-        ))
-        db.send_create_signal('DRP', ['LicenseAgreement'])
-
-        # Adding M2M table for field users on 'LicenseAgreement'
-        db.create_table(u'DRP_licenseagreement_users', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('licenseagreement', models.ForeignKey(orm['DRP.licenseagreement'], null=False)),
-            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
-        ))
-        db.create_unique(u'DRP_licenseagreement_users', ['licenseagreement_id', 'user_id'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Descriptor'
-        db.delete_table(u'DRP_descriptor')
-
-        # Deleting model 'ChemicalClass'
-        db.delete_table(u'DRP_chemicalclass')
-
-        # Deleting model 'LabGroup'
-        db.delete_table(u'DRP_labgroup')
-
-        # Removing M2M table for field users on 'LabGroup'
-        db.delete_table('DRP_labgroup_users')
-
-        # Deleting model 'CG_calculations'
-        db.delete_table(u'DRP_cg_calculations')
-
-        # Deleting model 'Compound'
-        db.delete_table(u'DRP_compound')
-
-        # Removing M2M table for field ChemicalClass on 'Compound'
-        db.delete_table('DRP_compound_ChemicalClass')
-
-        # Deleting model 'Reaction'
-        db.delete_table(u'DRP_reaction')
-
-        # Deleting model 'CompoundQuantity'
-        db.delete_table(u'DRP_compoundquantity')
-
-        # Deleting model 'StatsModelTag'
-        db.delete_table(u'DRP_statsmodeltag')
-
-        # Deleting model 'StatsModel'
-        db.delete_table(u'DRP_statsmodel')
-
-        # Removing M2M table for field tags on 'StatsModel'
-        db.delete_table('DRP_statsmodel_tags')
-
-        # Deleting model 'RecommendedReaction'
-        db.delete_table(u'DRP_recommendedreaction')
-
-        # Deleting model 'PerformedReaction'
-        db.delete_table(u'DRP_performedreaction')
-
-        # Deleting model 'DataSet'
-        db.delete_table(u'DRP_dataset')
-
-        # Deleting model 'DescriptorValue'
-        db.delete_table(u'DRP_descriptorvalue')
-
-        # Deleting model 'LegacyStatsModel'
-        db.delete_table(u'DRP_legacystatsmodel')
-
-        # Deleting model 'License'
-        db.delete_table(u'DRP_license')
-
-        # Deleting model 'LicenseAgreement'
-        db.delete_table(u'DRP_licenseagreement')
-
-        # Removing M2M table for field users on 'LicenseAgreement'
-        db.delete_table('DRP_licenseagreement_users')
-
-
-    models = {
-        'DRP.cg_calculations': {
-            'Meta': {'object_name': 'CG_calculations'},
-            'compound': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'json': ('django.db.models.fields.TextField', [], {'default': "'{}'", 'null': 'True'}),
-            'json_data': ('django.db.models.fields.TextField', [], {}),
-            'smiles': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'})
-        },
-        'DRP.chemicalclass': {
-            'Meta': {'object_name': 'ChemicalClass'},
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'label': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'DRP.compound': {
-            'CAS_ID': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '13', 'blank': 'True'}),
-            'CHEBI_ID': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'CSID': ('django.db.models.fields.PositiveIntegerField', [], {}),
-            'ChemicalClass': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['DRP.ChemicalClass']", 'symmetrical': 'False'}),
-            'INCHI': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'Meta': {'object_name': 'Compound'},
-            'abbrev': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'custom': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'descriptors': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['DRP.Descriptor']", 'through': "orm['DRP.DescriptorValue']", 'symmetrical': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '300'}),
-            'smiles': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'})
-        },
-        'DRP.compoundquantity': {
-            'Meta': {'object_name': 'CompoundQuantity'},
-            'amount': ('django.db.models.fields.FloatField', [], {}),
-            'amountUnit': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
-            'compound': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.Compound']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'reaction': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.Reaction']"})
-        },
-        'DRP.dataset': {
-            'Meta': {'object_name': 'DataSet'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'isTestSet': ('django.db.models.fields.BooleanField', [], {}),
-            'isTrainingSet': ('django.db.models.fields.BooleanField', [], {}),
-            'model': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.StatsModel']"}),
-            'reaction': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.PerformedReaction']"})
-        },
-        'DRP.descriptor': {
-            'Meta': {'object_name': 'Descriptor'},
-            'heading': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'kind': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '300'})
-        },
-        'DRP.descriptorvalue': {
-            'Compound': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['DRP.Compound']", 'null': 'True'}),
-            'Meta': {'object_name': 'DescriptorValue'},
-            'Reaction': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['DRP.Reaction']", 'null': 'True'}),
-            'booleanValue': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
-            'catValue': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
-            'descriptor': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.Descriptor']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'isPredicted': ('django.db.models.fields.BooleanField', [], {}),
-            'model': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'to': "orm['DRP.StatsModel']", 'null': 'True'}),
-            'numValue': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
-            'ordValue': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'})
-        },
-        'DRP.labgroup': {
-            'Meta': {'object_name': 'LabGroup'},
-            'access_code': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'address': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'email': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '254'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'legacy_access_code': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
-            'users': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'})
-        },
-        'DRP.legacystatsmodel': {
-            'Meta': {'object_name': 'LegacyStatsModel'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'confusion_table': ('django.db.models.fields.TextField', [], {'default': "'{}'"}),
-            'correct_vals': ('django.db.models.fields.CharField', [], {'default': '\'["3","4"]\'', 'max_length': '100'}),
-            'description': ('django.db.models.fields.TextField', [], {'default': "''"}),
-            'end_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'filename': ('django.db.models.fields.CharField', [], {'default': "'/home/padler1/programming/drp/DRP/models/untitled.model'", 'max_length': '128'}),
-            'headers': ('django.db.models.fields.TextField', [], {'default': "'[]'"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'iterations': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'library': ('django.db.models.fields.CharField', [], {'default': "'weka'", 'max_length': '128'}),
-            'response': ('django.db.models.fields.CharField', [], {'default': "'outcomoe'", 'max_length': '128'}),
-            'start_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'tags': ('django.db.models.fields.TextField', [], {'default': "''"}),
-            'title': ('django.db.models.fields.CharField', [], {'default': "'untitled'", 'max_length': '100'}),
-            'tmp_confusion_table': ('django.db.models.fields.TextField', [], {'default': "'{}'"}),
-            'tool': ('django.db.models.fields.CharField', [], {'default': "'svc'", 'max_length': '128'}),
-            'train_confusion_table': ('django.db.models.fields.TextField', [], {'default': "'{}'"}),
-            'usable': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
-        },
-        'DRP.license': {
-            'Meta': {'object_name': 'License'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'text': ('django.db.models.fields.TextField', [], {})
-        },
-        'DRP.licenseagreement': {
-            'Meta': {'object_name': 'LicenseAgreement'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'signedDateTime': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'text': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.License']"}),
-            'users': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'})
-        },
-        'DRP.performedreaction': {
-            'Meta': {'object_name': 'PerformedReaction', '_ormbases': ['DRP.Reaction']},
-            'duplicateOf': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'duplicatedBy'", 'to': "orm['DRP.Reaction']"}),
-            'legacyRecommendedFlag': ('django.db.models.fields.NullBooleanField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
-            'performedDateTime': ('django.db.models.fields.DateTimeField', [], {}),
-            'public': ('django.db.models.fields.BooleanField', [], {}),
-            u'reaction_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['DRP.Reaction']", 'unique': 'True', 'primary_key': 'True'}),
-            'recommendation': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'resultantExperiment'", 'null': 'True', 'to': "orm['DRP.RecommendedReaction']"}),
-            'usedForModel': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['DRP.StatsModel']", 'through': "orm['DRP.DataSet']", 'symmetrical': 'False'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'valid': ('django.db.models.fields.BooleanField', [], {})
-        },
-        'DRP.reaction': {
-            'Meta': {'object_name': 'Reaction'},
-            'compounds': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['DRP.Compound']", 'through': "orm['DRP.CompoundQuantity']", 'symmetrical': 'False'}),
-            'descriptors': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['DRP.Descriptor']", 'through': "orm['DRP.DescriptorValue']", 'symmetrical': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'labGroup': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.LabGroup']"}),
-            'leak': ('django.db.models.fields.BooleanField', [], {}),
-            'notes': ('django.db.models.fields.TextField', [], {}),
-            'purity': ('django.db.models.fields.IntegerField', [], {}),
-            'slowCool': ('django.db.models.fields.BooleanField', [], {}),
-            'temp': ('django.db.models.fields.IntegerField', [], {}),
-            'time': ('django.db.models.fields.IntegerField', [], {})
-        },
-        'DRP.recommendedreaction': {
-            'Meta': {'object_name': 'RecommendedReaction', '_ormbases': ['DRP.Reaction']},
-            'hidden': ('django.db.models.fields.BooleanField', [], {}),
-            'model': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['DRP.StatsModel']", 'null': 'True'}),
-            'nonsense': ('django.db.models.fields.BooleanField', [], {}),
-            u'reaction_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['DRP.Reaction']", 'unique': 'True', 'primary_key': 'True'}),
-            'reference': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'saved': ('django.db.models.fields.BooleanField', [], {}),
-            'score': ('django.db.models.fields.FloatField', [], {}),
-            'seed': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'seeded'", 'null': 'True', 'to': "orm['DRP.Reaction']"})
-        },
-        'DRP.statsmodel': {
-            'Meta': {'object_name': 'StatsModel'},
-            'active': ('django.db.models.fields.BooleanField', [], {}),
-            'description': ('django.db.models.fields.TextField', [], {}),
-            'end_time': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True'}),
-            'fileName': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'iterations': ('django.db.models.fields.IntegerField', [], {}),
-            'library': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'start_time': ('django.db.models.fields.DateTimeField', [], {}),
-            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['DRP.StatsModelTag']", 'symmetrical': 'False'}),
-            'tool': ('django.db.models.fields.CharField', [], {'max_length': '200'})
-        },
-        'DRP.statsmodeltag': {
-            'Meta': {'object_name': 'StatsModelTag'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'text': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
-        },
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        }
-    }
-
-    complete_apps = ['DRP']
+    operations = [
+        migrations.CreateModel(
+            name='BoolMolDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.NullBooleanField(verbose_name=b'Value for descriptor')),
+            ],
+            options={
+                'verbose_name': 'Boolean Molecular Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='BoolRxnDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.NullBooleanField(verbose_name=b'Value for descriptor')),
+            ],
+            options={
+                'verbose_name': 'Boolean Reaction Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='CategoricalDescriptorPermittedValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.CharField(max_length=255, verbose_name=b'Permitted Value')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CatMolDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+            ],
+            options={
+                'verbose_name': 'Categorical Molecular Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='CatRxnDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+            ],
+            options={
+                'verbose_name': 'Categorical Reaction Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='ChemicalClass',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('label', models.CharField(unique=True, max_length=30, error_messages={b'unique': b'A chemical class with this label already exists'})),
+                ('description', models.CharField(max_length=20)),
+            ],
+            options={
+                'verbose_name_plural': 'Chemical Classes',
+            },
+        ),
+        migrations.CreateModel(
+            name='Compound',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('abbrev', models.CharField(max_length=100, verbose_name=b'Abbreviation')),
+                ('name', models.CharField(max_length=400, verbose_name=b'Name')),
+                ('CSID', models.PositiveIntegerField(null=True, verbose_name=b'Chemspider ID')),
+                ('custom', models.BooleanField(default=False, verbose_name=b'Custom')),
+                ('INCHI', models.TextField(default=b'', verbose_name=b'InCHI key', blank=True)),
+                ('smiles', models.TextField(default=b'', verbose_name=b'Smiles', blank=True)),
+                ('formula', models.CharField(blank=True, help_text=b'A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.', max_length=500, validators=[elementsFormatValidator])),
+                ('chemicalClasses', models.ManyToManyField(to='DRP.ChemicalClass', verbose_name=b'Chemical Class')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CompoundQuantity',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('amount', models.FloatField(null=True, blank=True)),
+                ('compound', models.ForeignKey(to='DRP.Compound', on_delete=django.db.models.deletion.PROTECT)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CompoundQuantityManager',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='CompoundRole',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('label', models.CharField(unique=True, max_length=255)),
+                ('description', models.TextField()),
+            ],
+            options={
+                'verbose_name': 'Compound Role Category',
+                'verbose_name_plural': 'Compound Role Categories',
+            },
+        ),
+        migrations.CreateModel(
+            name='ConfirmationCode',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(unique=True, max_length=36)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='DataSet',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(unique=True, max_length=200)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='DataSetRelation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('dataSet', models.ForeignKey(to='DRP.DataSet')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Descriptor',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('heading', models.CharField(max_length=200, validators=[django.core.validators.RegexValidator(b'[A-Za-z0-9][A-Za-z0-9_]+', b'Please include only values which are limited toalphanumeric characters and underscores, and must startwith an alphabetic character.')])),
+                ('name', models.CharField(max_length=300, verbose_name=b'Full name')),
+                ('calculatorSoftware', models.CharField(max_length=100)),
+                ('calculatorSoftwareVersion', models.CharField(max_length=20)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='LabGroup',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(unique=True, max_length=200, error_messages={b'unique': b'This name is already taken.'})),
+                ('address', models.CharField(max_length=200)),
+                ('email', models.CharField(default=b'', max_length=254)),
+                ('access_code', models.CharField(max_length=128)),
+                ('legacy_access_code', models.CharField(max_length=20)),
+                ('users', models.ManyToManyField(to=settings.AUTH_USER_MODEL, blank=True)),
+            ],
+            options={
+                'verbose_name': 'Lab Group',
+            },
+        ),
+        migrations.CreateModel(
+            name='License',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('text', models.TextField()),
+                ('effectiveDate', models.DateField(help_text=b'The license will become effective on midnight of the provided date.', verbose_name=b'Effective Date')),
+            ],
+            options={
+                'get_latest_by': 'effectiveDate',
+            },
+        ),
+        migrations.CreateModel(
+            name='LicenseAgreement',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('signedDateTime', models.DateTimeField(auto_now=True)),
+                ('text', models.ForeignKey(to='DRP.License')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='MetricContainer',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('metricVisitor', models.CharField(max_length=255)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ModelContainer',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('description', models.TextField()),
+                ('active', models.BooleanField(default=False, verbose_name=b'Is this the active model?')),
+                ('modelVisitorLibrary', models.CharField(max_length=200, choices=[(b'weka', b'weka')])),
+                ('modelVisitorTool', models.CharField(max_length=200, choices=[((b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')), (b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')))])),
+                ('featureLibrary', models.CharField(default=b'', max_length=200, choices=[(b'weka', b'weka')])),
+                ('featureTool', models.CharField(default=b'', max_length=200, choices=[((b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')), (b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')))])),
+                ('splitter', models.CharField(blank=True, max_length=200, null=True, choices=[(b'KFoldSplitter', b'KFoldSplitter'), (b'MutualInfoSplitter', b'MutualInfoSplitter'), (b'NoSplitter', b'NoSplitter'), (b'RandomSplitter', b'RandomSplitter')])),
+                ('built', models.BooleanField(default=False, verbose_name=b'Has the build procedure been called with this container?', editable=False)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='NumMolDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.FloatField(null=True)),
+                ('compound', models.ForeignKey(to='DRP.Compound')),
+            ],
+            options={
+                'verbose_name': 'Numeric Molecular Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='NumRxnDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.FloatField(null=True)),
+            ],
+            options={
+                'verbose_name': 'Numeric Reaction Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='OrdMolDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.IntegerField(null=True)),
+                ('compound', models.ForeignKey(to='DRP.Compound')),
+            ],
+            options={
+                'verbose_name': 'Ordinal Molecular Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='OrdRxnDescriptorValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.IntegerField(null=True)),
+            ],
+            options={
+                'verbose_name': 'Ordinal Reaction Descriptor Value',
+            },
+        ),
+        migrations.CreateModel(
+            name='Reaction',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('notes', models.TextField(blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='StatsModel',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('fileName', models.FileField(max_length=200, upload_to=b'models', blank=True)),
+                ('startTime', models.DateTimeField(default=None, null=True)),
+                ('endTime', models.DateTimeField(default=None, null=True)),
+                ('invalid', models.BooleanField(default=False)),
+                ('container', models.ForeignKey(to='DRP.ModelContainer')),
+                ('regenerationOf', models.ForeignKey(default=None, blank=True, to='DRP.StatsModel', null=True)),
+                ('testSets', models.ManyToManyField(related_name='testSetsFor', to='DRP.DataSet')),
+                ('trainingSet', models.ForeignKey(related_name='trainingSetFor', to='DRP.DataSet')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='BooleanDescriptor',
+            fields=[
+                ('descriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.Descriptor')),
+            ],
+            bases=('DRP.descriptor',),
+        ),
+        migrations.CreateModel(
+            name='CategoricalDescriptor',
+            fields=[
+                ('descriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.Descriptor')),
+            ],
+            bases=('DRP.descriptor',),
+        ),
+        migrations.CreateModel(
+            name='NumericDescriptor',
+            fields=[
+                ('descriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.Descriptor')),
+                ('maximum', models.FloatField(null=True)),
+                ('minimum', models.FloatField(null=True)),
+            ],
+            bases=('DRP.descriptor',),
+        ),
+        migrations.CreateModel(
+            name='OrdinalDescriptor',
+            fields=[
+                ('descriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.Descriptor')),
+                ('maximum', models.IntegerField()),
+                ('minimum', models.IntegerField()),
+            ],
+            bases=('DRP.descriptor',),
+        ),
+        migrations.CreateModel(
+            name='PerformedReaction',
+            fields=[
+                ('reaction_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.Reaction')),
+                ('reference', models.CharField(unique=True, max_length=40)),
+                ('performedDateTime', models.DateTimeField(default=None, help_text=b'Date in format YYYY-MM-DD', null=True, verbose_name=b'Date Reaction Performed')),
+                ('insertedDateTime', models.DateTimeField(auto_now_add=True, verbose_name=b'Date Reaction Saved')),
+                ('legacyRecommendedFlag', models.NullBooleanField(default=None)),
+                ('valid', models.BooleanField(default=True)),
+                ('public', models.BooleanField(default=False)),
+                ('duplicateOf', models.ForeignKey(related_name='duplicatedBy', default=None, blank=True, to='DRP.PerformedReaction', null=True)),
+                ('performedBy', models.ForeignKey(related_name='performedReactions', default=None, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            bases=('DRP.reaction',),
+        ),
+        migrations.CreateModel(
+            name='RecommendedReaction',
+            fields=[
+                ('reaction_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.Reaction')),
+                ('score', models.FloatField()),
+                ('nonsense', models.BooleanField(default=None)),
+                ('hidden', models.BooleanField(default=None)),
+                ('saved', models.BooleanField(default=None)),
+                ('reference', models.CharField(max_length=200, verbose_name=b'Text Reference')),
+            ],
+            bases=('DRP.reaction',),
+        ),
+        migrations.AddField(
+            model_name='reaction',
+            name='compounds',
+            field=models.ManyToManyField(to='DRP.Compound', through='DRP.CompoundQuantity'),
+        ),
+        migrations.AddField(
+            model_name='reaction',
+            name='labGroup',
+            field=models.ForeignKey(to='DRP.LabGroup'),
+        ),
+        migrations.AddField(
+            model_name='ordrxndescriptorvalue',
+            name='reaction',
+            field=models.ForeignKey(to='DRP.Reaction'),
+        ),
+        migrations.AddField(
+            model_name='numrxndescriptorvalue',
+            name='reaction',
+            field=models.ForeignKey(to='DRP.Reaction'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='fully_trained',
+            field=models.ForeignKey(to='DRP.StatsModel', null=True),
+        ),
+        migrations.AlterUniqueTogether(
+            name='descriptor',
+            unique_together=set([('heading', 'calculatorSoftware', 'calculatorSoftwareVersion')]),
+        ),
+        migrations.AddField(
+            model_name='compoundquantity',
+            name='reaction',
+            field=models.ForeignKey(to='DRP.Reaction'),
+        ),
+        migrations.AddField(
+            model_name='compoundquantity',
+            name='role',
+            field=models.ForeignKey(to='DRP.CompoundRole'),
+        ),
+        migrations.AddField(
+            model_name='compound',
+            name='labGroup',
+            field=models.ForeignKey(verbose_name=b'Lab Group', to='DRP.LabGroup'),
+        ),
+        migrations.AddField(
+            model_name='catrxndescriptorvalue',
+            name='reaction',
+            field=models.ForeignKey(to='DRP.Reaction'),
+        ),
+        migrations.AddField(
+            model_name='catrxndescriptorvalue',
+            name='value',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='DRP.CategoricalDescriptorPermittedValue', null=True),
+        ),
+        migrations.AddField(
+            model_name='catmoldescriptorvalue',
+            name='compound',
+            field=models.ForeignKey(to='DRP.Compound'),
+        ),
+        migrations.AddField(
+            model_name='catmoldescriptorvalue',
+            name='value',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='DRP.CategoricalDescriptorPermittedValue', null=True),
+        ),
+        migrations.AddField(
+            model_name='boolrxndescriptorvalue',
+            name='reaction',
+            field=models.ForeignKey(to='DRP.Reaction'),
+        ),
+        migrations.AddField(
+            model_name='boolmoldescriptorvalue',
+            name='compound',
+            field=models.ForeignKey(to='DRP.Compound'),
+        ),
+        migrations.CreateModel(
+            name='BoolMolDescriptor',
+            fields=[
+                ('booleandescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.BooleanDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Boolean Molecular Descriptor',
+            },
+            bases=('DRP.booleandescriptor',),
+        ),
+        migrations.CreateModel(
+            name='BoolRxnDescriptor',
+            fields=[
+                ('booleandescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.BooleanDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Boolean Reaction Descriptor',
+            },
+            bases=('DRP.booleandescriptor', models.Model),
+        ),
+        migrations.CreateModel(
+            name='CatMolDescriptor',
+            fields=[
+                ('categoricaldescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.CategoricalDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Categorical Molecular Descriptor',
+            },
+            bases=('DRP.categoricaldescriptor',),
+        ),
+        migrations.CreateModel(
+            name='CatRxnDescriptor',
+            fields=[
+                ('categoricaldescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.CategoricalDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Categorical Reaction Descriptor',
+            },
+            bases=('DRP.categoricaldescriptor', models.Model),
+        ),
+        migrations.CreateModel(
+            name='NumMolDescriptor',
+            fields=[
+                ('numericdescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.NumericDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Numerical Molecular Descriptor',
+            },
+            bases=('DRP.numericdescriptor',),
+        ),
+        migrations.CreateModel(
+            name='NumRxnDescriptor',
+            fields=[
+                ('numericdescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.NumericDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Numerical Reaction Descriptor',
+            },
+            bases=('DRP.numericdescriptor', models.Model),
+        ),
+        migrations.CreateModel(
+            name='OrdMolDescriptor',
+            fields=[
+                ('ordinaldescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.OrdinalDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Ordinal Molecular Descriptor',
+            },
+            bases=('DRP.ordinaldescriptor',),
+        ),
+        migrations.CreateModel(
+            name='OrdRxnDescriptor',
+            fields=[
+                ('ordinaldescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.OrdinalDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Ordinal Reaction Descriptor',
+            },
+            bases=('DRP.ordinaldescriptor', models.Model),
+        ),
+        migrations.AddField(
+            model_name='recommendedreaction',
+            name='seed',
+            field=models.ForeignKey(related_name='seeded', to='DRP.Reaction', null=True),
+        ),
+        migrations.AddField(
+            model_name='performedreaction',
+            name='recommendation',
+            field=models.ForeignKey(related_name='resultantExperiment', default=None, blank=True, to='DRP.RecommendedReaction', null=True),
+        ),
+        migrations.AddField(
+            model_name='performedreaction',
+            name='user',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='ordrxndescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.OrdinalDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='ordmoldescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.OrdinalDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='numrxndescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.NumericDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='nummoldescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.NumericDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='datasetrelation',
+            name='reaction',
+            field=models.ForeignKey(to='DRP.PerformedReaction', on_delete=django.db.models.deletion.PROTECT),
+        ),
+        migrations.AddField(
+            model_name='dataset',
+            name='reactions',
+            field=models.ManyToManyField(to='DRP.PerformedReaction', through='DRP.DataSetRelation'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='compoundquantity',
+            unique_together=set([('reaction', 'role', 'amount')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='compound',
+            unique_together=set([('CSID', 'labGroup'), ('abbrev', 'labGroup')]),
+        ),
+        migrations.AddField(
+            model_name='catrxndescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.CategoricalDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='catmoldescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.CategoricalDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='categoricaldescriptorpermittedvalue',
+            name='descriptor',
+            field=models.ForeignKey(related_name='permittedValues', to='DRP.CategoricalDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='boolrxndescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.BooleanDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='boolmoldescriptorvalue',
+            name='descriptor',
+            field=models.ForeignKey(to='DRP.BooleanDescriptor'),
+        ),
+        migrations.CreateModel(
+            name='PredBoolRxnDescriptor',
+            fields=[
+                ('boolrxndescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.BoolRxnDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Predicted Boolean Rxn Descriptor',
+            },
+            bases=('DRP.boolrxndescriptor', models.Model),
+        ),
+        migrations.CreateModel(
+            name='PredCatRxnDescriptor',
+            fields=[
+                ('catrxndescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.CatRxnDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Predicted Categorical Rxn Descriptor',
+            },
+            bases=('DRP.catrxndescriptor', models.Model),
+        ),
+        migrations.CreateModel(
+            name='PredNumRxnDescriptor',
+            fields=[
+                ('numrxndescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.NumRxnDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Predicted Numeric Rxn Descriptor',
+            },
+            bases=('DRP.numrxndescriptor', models.Model),
+        ),
+        migrations.CreateModel(
+            name='PredOrdRxnDescriptor',
+            fields=[
+                ('ordrxndescriptor_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='DRP.OrdRxnDescriptor')),
+            ],
+            options={
+                'verbose_name': 'Predicted Ordinal Rxn Descriptor',
+            },
+            bases=('DRP.ordrxndescriptor', models.Model),
+        ),
+        migrations.AlterUniqueTogether(
+            name='ordrxndescriptorvalue',
+            unique_together=set([('reaction', 'descriptor')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='ordmoldescriptorvalue',
+            unique_together=set([('descriptor', 'compound')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='numrxndescriptorvalue',
+            unique_together=set([('reaction', 'descriptor')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='nummoldescriptorvalue',
+            unique_together=set([('descriptor', 'compound')]),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='boolRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.BoolRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='catRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.CatRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='numRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.NumRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='ordRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.OrdRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='outcomeBoolRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForModels', to='DRP.BoolRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='outcomeCatRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForModels', to='DRP.CatRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='outcomeNumRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForModels', to='DRP.NumRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='modelcontainer',
+            name='outcomeOrdRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForModels', to='DRP.OrdRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='boolRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.BoolRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='catRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.CatRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='numRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.NumRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='ordRxnDescriptors',
+            field=models.ManyToManyField(to='DRP.OrdRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='outcomeBoolRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForMetrics', to='DRP.BoolRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='outcomeCatRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForMetrics', to='DRP.CatRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='outcomeNumRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForMetrics', to='DRP.NumRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='outcomeOrdRxnDescriptors',
+            field=models.ManyToManyField(related_name='outcomeForMetrics', to='DRP.OrdRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='metriccontainer',
+            name='transformedRxnDescriptors',
+            field=models.ManyToManyField(related_name='transformedByMetric', to='DRP.NumRxnDescriptor'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='datasetrelation',
+            unique_together=set([('dataSet', 'reaction')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='catrxndescriptorvalue',
+            unique_together=set([('reaction', 'descriptor')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='catmoldescriptorvalue',
+            unique_together=set([('descriptor', 'compound')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='categoricaldescriptorpermittedvalue',
+            unique_together=set([('descriptor', 'value')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='boolrxndescriptorvalue',
+            unique_together=set([('reaction', 'descriptor')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='boolmoldescriptorvalue',
+            unique_together=set([('descriptor', 'compound')]),
+        ),
+        migrations.AddField(
+            model_name='predordrxndescriptor',
+            name='modelContainer',
+            field=models.ForeignKey(to='DRP.ModelContainer'),
+        ),
+        migrations.AddField(
+            model_name='predordrxndescriptor',
+            name='predictionOf',
+            field=models.ForeignKey(related_name='predition_of', to='DRP.OrdRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='predordrxndescriptor',
+            name='statsModel',
+            field=models.ForeignKey(to='DRP.StatsModel', null=True),
+        ),
+        migrations.AddField(
+            model_name='prednumrxndescriptor',
+            name='modelContainer',
+            field=models.ForeignKey(to='DRP.ModelContainer'),
+        ),
+        migrations.AddField(
+            model_name='prednumrxndescriptor',
+            name='predictionOf',
+            field=models.ForeignKey(related_name='prediction_of', to='DRP.NumRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='prednumrxndescriptor',
+            name='statsModel',
+            field=models.ForeignKey(to='DRP.StatsModel', null=True),
+        ),
+        migrations.AddField(
+            model_name='predcatrxndescriptor',
+            name='modelContainer',
+            field=models.ForeignKey(to='DRP.ModelContainer'),
+        ),
+        migrations.AddField(
+            model_name='predcatrxndescriptor',
+            name='predictionOf',
+            field=models.ForeignKey(related_name='prediction_of', to='DRP.CatRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='predcatrxndescriptor',
+            name='statsModel',
+            field=models.ForeignKey(to='DRP.StatsModel', null=True),
+        ),
+        migrations.AddField(
+            model_name='predboolrxndescriptor',
+            name='modelContainer',
+            field=models.ForeignKey(to='DRP.ModelContainer'),
+        ),
+        migrations.AddField(
+            model_name='predboolrxndescriptor',
+            name='predictionOf',
+            field=models.ForeignKey(related_name='prediction_of', to='DRP.BoolRxnDescriptor'),
+        ),
+        migrations.AddField(
+            model_name='predboolrxndescriptor',
+            name='statsModel',
+            field=models.ForeignKey(to='DRP.StatsModel', null=True),
+        ),
+    ]

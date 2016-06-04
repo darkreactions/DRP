@@ -1,48 +1,180 @@
 Dark Reaction Project README
 ===========================
 
-######Last Updated by Casey Falk -- 1/13/15
+######Last Updated by Philip Adler 29 April 2016
 
-1. **Setup and General Information**
-  1. Accessing the Main Server
-  2. Setup of the Server/a Test-bed
-  3. Important Directories
-  3. Django Directory Architecture
-  4. Creating a User
-  5. Connecting a User to BitBucket with an SSH Key
-  6. Using a Test Bed ON the DRP Server
-  7. Using a Test Bed OFF of the DRP Server
-  8. Accessing the GitHub Repo and notes on the Repo Structure
-2. **Django Management Commands**
-  1. check\_hash\_collisions
-  2. import\_data
-  3. port\_database
-  4. re\_save\_reactions
-  5. run\_tests
-3. **Accounts**
-4. **Machine Learning Models**
-
-Setup and General Information
+General Information
 =============================
 
-**Accessing the Server**
+Always make sure to check the latest version of the README on the master branch.
+
+This repository contains the software for the [https://www.djangoproject.com/](Django)-based source code for the Dark Reactions Project Software. If you are looking to contribute to the chemistry aspects of the project, please visit the main project site at [http://darkreactions.haverford.edu](http://darkreactions.haverford.edu). If you are looking to contribute to the source code of the project __and are not a member of haverford college__, please fork this repository and issue a pull request with any changes or fixes you may have made. A list of known bugs can be found at [http://bugs.darkreactions.haverford.edu](our instance of Mantis Bug Tracker). Please note that you will to sign up for an account, and that the authentication credentials for the bug reporting page and the main project page are separate.
+
+Setting up your own instance of the DRP
+=============================
+
+The following instructions are written to work with Ubuntu 12+ and have (mostly) been tested on Ubuntu 13. These instructions assume familiarity with Linux and a Command Line.
+
+Install the necessary programs.
+`sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache mailutils`
+
+`sudo pip install numpy scipy pygraphviz`
+
+Install Django. The current version of DRP is designed to work with Django 1.8
+
+`sudo pip install django==1.8`
+
+Install required pip python libraries
+`sudo pip install chemspipy requests pep8 pep257 xxhash`
+
+###Clone from the Git Repository into your directory of choice.
+
+`git clone git@github.com:darkreactions/DRP`
+
+###Release Versions
+
+DRP is distributed in release versions. To use a specific version of the code, use the following template command:
+
+`git checkout <version number>`
+
+####Server settings
+
+In the DRP repository there is a file DRP\_uwsgi.ini and another DRP\_nginx. Both should be modified to suit your local server *after* having been placed in the relevant locations:
+
+`/etc/uwsgi/apps-enabled/DRP_uwsgi.ini`
+`/etc/nginx/sites-enabled/DRP_nginx`
+
+It should be noted that the uwsgi.ini is backwards compatible with older version of this repo, but that an old DRP_uwsgi file will need replacing.
+
+Both uwsgi and nginx must be restarted (in that order) for the server to work.
+
+###Set up the settings.py file
+
+In DRP/DRP, there is a file called 'settings\_example.py'. This must be copied to 'settings.py', and the settings therein set to the appropriate values for your server. At present, the available fields should be fairly self explanatory, though the following should be noted:
+
+`ALLOWED_HOSTS` should be set to an iterable containing only the element '\*'.
+
+To pass the unit tests, at least one `ADMIN_EMAILS` should be provided
+
+To pass the unit tests, the EMAIL\_HOST\_USER and related settings should be set.  
+
+###Running tests
+
+In order to run tests you must have the following environment variables set up in your shell session:
+
+export PYTHONPATH=/path/to/DRP/
+
+export DJANGO_SETTINGS_MODULE=DRP.settings
+
+You must also have `TESTING` set to `True` in your `settings.py` file.
+
+To run specific tests, provided the test is conformant to the template test (which they should be if you are writing new tests!), one can simply execute the test:
+
+`path/to/DRP/test.py`
+
+Else, one can run the entire test suite from the management script:
+
+`./manage.py run_tests`
+
+###Contribution Guidlines
+
+Can be found in the "CONTRIBUTING.md" file.
+
+###On Development Servers
+
+The `ALLOWED_HOSTS` option in 'settings.py' should be set to an iterable containing only the localhost ip address as a string.
+
+In the '/etc/nginx/sites-enabled/DRP\_nginx' file, the host name that is being listened to should only be localhost.
+
+##Servers with multiple web applications.
+
+If you are only developing DRP on your server, the setup you have should be sufficient, however, people running other applications on their local development server should note the following.
+
+If you are running the django testing server, this requires you to select a port which is unoccupied. By default, the nginx settings file listens for port 8000, which is also the default port of the django test server; you will need to configure one or the other so that this clash does not occur. The Django documentation addresses this for django, whilst in the DRP\_nginx file, the only change that needs to be made is to delete the line:
+
+`listen		8000`
+
+ #dnsmasq
+
+For instances where you are hosting multiple development projects on your local server, it may be beneficial to install dnsmasq:
+
+`sudo apt-get install dnsmasq`
+
+dnsmasq is a powerful tool for rerouting and managing dns requests. This makes it extremely helpful in managing multiple local development projects.
+
+Having installed dnsmasq, open the file `/etc/dnsmasq.conf` in your favourite text editor, and add the following line into the file:
+
+`address=/loc/127.0.0.1`
+
+Save the change, and then on the command line:
+
+`sudo service dnsmasq restart`
+
+In the DRP\_nginx file, change the `server_name` configuration to something like `darkreactions.loc`. It does not matter what this is set to, provided it:
+
+a. is unique on your development server
+b. ends in `.loc`
+
+Don't forget to set the `SERVER_NAME` setting in your settings.py file to the same value!
+
+Restart nginx:
+
+`sudo service nginx restart`
+
+When you open your browser and direct yourself to darkreactions.loc (or whatever you named the server), the dark reactions project should display.
+
+###DRP Versions < 0.1
+
+Versions of code prior to 0.1 are not compatible with versions above.
+
+**Upgrading from versions prior to 0.7**
+
+Version 0.6 of DRP was the last version to use Django 1.6, subsequent versions use Django 1.8. There are, therefore, necessary transition steps to be made. 
+
+`git fetch --all`
+`git checkout 0.7`
+
+Make sure your database (both main and testing) is up to date with migrations:
+`Set Testing = False in settings.py`
+`./manage.py migrate`
+
+Set Testing = True in settings.py
+
+Restart nginx and uwsgi
+`sudo service nginx restart && sudo service uwsgi restart`
+
+Run all tests and make sure you pass them all:
+`./manage.py run_tests`
+
+git checkout 0.81
+
+Remove "south" from your installed apps
+
+Install django 1.8:
+pip install -U Django==1.8.9
+
+Delete all .pyc files in your migrations folder
+`rm DRP/migrations/*.pyc`
+`./manage.py migrate DRP --fake`
+`./manage.py migrate --fake-initial`
+`./manage.py migrate`
+
+Repeat this process for your Main database.
+
+Restart nginx and uwsgi
+sudo service nginx restart && sudo service uwsgi restart
+
+Run all tests and make sure you pass them all:
+`./manage.py run_tests`
+
+**Notes for Local (Haverford) Developers**
 
 The website can be accessed at [darkreactions.haverford.edu](http://darkreactions.haverford.edu) -- this domain is managed by Haverford. The server itself (named "drp") is in the KINSC Server Room and can be accessed by SSH while on campus.  Note that if you are off-campus and need to access drp, you will need to tunnel through another server on campus -- such as those hosted by FIG or a CS Lab Computer. That is, SSH there and THEN SSH into drp.
 
-**Setup of the Server/a Test-bed**
-
-For a complete, step-by-step guide on this, please check out "setup.md". I leave the installation process for that process and will focus on the actual architecture of the system here. Also note that you can use `git clone https://github.com/cfalk/DRP.git` to clone the repo to your machine if you have been granted read-access to the the private GitHub repo.
-
-This README assumes more than a passing familiarity with the Django framework
-
-**Django Directory Architecture**
-
-The DRP Django Project is set up as follows inside the DRP directory:
+**DRP Project Structure**
 
 1. **./** *(The DRP Project)*
   - README	*-- This file.*
-  - setup.txt	*-- Instructions for setting up the server.*
-  - HowToCommitToTheGitRepo.txt	*-- Instructions for pairing an SSH Key with BitBucket.*
   - DRP_nginx	*-- The NGINX configuration. Move to /etc/nginx/sites-enabled/*
   - DRP_uwsgi	*-- The UWSGI configuration. Move to /etc/uwsgi/apps-enabled/*
   - manage.py	*-- The Django management file -- leave it as it is.*
@@ -55,10 +187,7 @@ The DRP Django Project is set up as follows inside the DRP directory:
   - management/	*-- Directory to add custom `python manage.py` commands- see the django documentation.*
   - templatetags/	*-- Directory to add custom Django template tags- see the django documentation.*
   - views/		*-- Directory of various views sorted into different files.*
-  - migrations/		*-- South Migration Files; see South documentation for details.*
-  - model_building/		*-- Scripts for building the model itself.*
-  - recommendation/		*-- Scripts for calculating and storing recommendations.*
-2. **logs** *-- (Directory for the log files of worker processes.)*
+  - migrations/		*-- Migration Files*
 3. **templates** *(The HTML templates for Django Views.)*
 4. **research** *(Any "research" scripts that are still being explored.)*
 5. **static** *(Any static files for which Django can skip templating.)*
@@ -78,11 +207,8 @@ There are many files that are not listed above in order to elucidate the "framew
 Firstly, you'll need a GitHub account and you'll need someone with access to
 the repo to grant your account access (though if you can view this README without
 access to the GitHub repo, you should tell someone). Then, you should be able to
-use `git clone https://github.com/cfalk/DRP.git` to copy the repository to
-your workstation. Note that if you have a branch set up using the old BitBucket,
-you'll want to delete that section in your ".../.git/config" file and use
-`git remote add <branch> https://github.com/cfalk/DRP.git` to transition smoothly
-to the new repo.
+use `git clone https://github.com/darkreactions/DRP.git` to copy the repository to
+your workstation. 
 
 Django has an important file, settings.py, which is not tracked by this git
 repository for security reasons. If you add or remove items in this file
@@ -132,4 +258,9 @@ set up.
 **run_tests**
 
 Runs all of the tests correctly imported in the test suite.
+
+**import_manual_descriptors**
+
+An untested component for pulling in custom descriptor data from a live
+server for a local development server. Use with caution.
 

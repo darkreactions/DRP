@@ -1,0 +1,86 @@
+{% load performed_rxn_delete_form %}
+{% load performed_rxn_invalidate_form %}
+
+{% for reaction in reactions %}
+  <li class="reaction" {% if reaction.valid %} style="border: 5px solid #376737" {% else %} style="border: 5px solid #8b2c27" {% endif %}>
+    <table>
+        <tbody>
+            <tr>
+                <th>Reference</th>
+                <td>{{ reaction.reference }}</td>
+                {% if user.is_authenticated %}
+                    {% if reaction.labGroup in user.labgroup_set.all %}
+    	                <td><a class="edit" href="{% url 'editReaction' reaction.pk %}"><img src="/static/icons/edit.png" alt="edit this reaction" height="25" width="25" title="edit this reaction"/></a></td>
+                    {% endif %}
+                {% endif %}
+                      {% if reaction.public %}
+                          <td class="right"><img src="/static/icons/public.png" alt="This reaction is public" title="this reaction is public" width="25" height="25"/></td>
+                          <td class="right"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" target="_blank"><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative Commons Attribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></a></td>
+                      {% endif %}
+                {% if user.is_authenticated %}
+                    {% if reaction.labGroup in user.labgroup_set.all %}
+	                    {% if not reaction.datasetrelation_set.exists %}
+                            <td class="right">
+                                <form action="{% url 'deleteReaction' %}" method="post">
+                                    {% csrf_token %}
+                                    {% performed_rxn_delete_form reaction %}
+                                    <input type="image" src="/static/icons/delete.png" alt="delete this reaction" title="delete this reaction" height="25" width="25"/>
+                                </form>
+                            </td>
+                        {% endif %}
+                        {% if reaction.valid %}
+                        <td class="invalidate">
+                            <form action="{% url 'invalidateReaction' %}" method="post">
+                                {% csrf_token %}
+                                {% performed_rxn_invalidate_form reaction %}
+                                <input type="image" src="/static/icons/invalidate.png" alt="invalidate this reaction" title="invalidate this reaction" height="25" width="25"/>
+                            </form>
+                        </td>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </tr>
+        </tbody>
+        <tbody class="fleft">
+            <tr class="quantities">
+                <th>Reactants</th>
+                <td>
+                    <table>
+                        <thead><tr><th>Compound</th><th>Quantity</th><th>Role</th></tr></thead>
+                        <tbody>
+                            {% for quantity in reaction.compoundquantity_set.all %}
+                            <tr>
+                                <td>{{ quantity.compound.name }}</td>
+                                <td>{% if quantity.amount = None %}Unknown{% else %}{{ quantity.amount }} mmoles{% endif %}</td>
+                                <td>{{ quantity.role.label }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% if reaction.notes != "" %}
+            <tr>
+                <th>Notes</th><td>{{ reaction.notes }}</td>
+            </tr>
+            {% endif %}
+        </tbody>
+        <tbody class="flright">
+            {% if reaction.performedBy != None %}
+            <tr>
+                <th>Performed by</th><td>{{ reaction.performedBy.first_name }} {{ reaction.performedBy.last_name }}</td>
+            </tr>
+            {% endif %}
+            {% if reaction.performedDateTime != None %}
+            <tr>
+                <th>Performed Date</th><td>{{ reaction.performedDateTime }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Entered by</th><td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
+            </tr>
+            <tr><th>Inserted Date</th><td>{{ reaction.insertedDateTime }}</td></tr>
+        </tbody>
+    </table>
+  </li>
+{% endfor %}

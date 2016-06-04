@@ -5,7 +5,9 @@ class Splitter(AbstractSplitter):
   def __init__(self, namingStub):
     super(Splitter, self).__init__(namingStub)
 
-  def split(self, reactions):
+  def split(self, reactions, verbose=False):
+    if verbose:
+        print "Training set ({}) and no test set.".format(reactions.count())
     splits = [ (self.package(reactions), self.package([])) ]
 
     return splits

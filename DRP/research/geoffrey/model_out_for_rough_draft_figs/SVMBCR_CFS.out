@@ -1,0 +1,19 @@
+No splitter. Using given test and training sets.
+2016-03-03 02:30:34.501168 statsModel 136, saving to /home/gmartinn/DRP_main/DRP_repo/models/121_136, training...
+	...Trained. Finished at 2016-03-03 02:47:32.784616. Saving statsModel... saved
+Predicting test set...
+Writing results to java weka.classifiers.functions.SMO -T /home/gmartinn/DRP_main/DRP_repo/tmp/136_48f6db63-6e56-431b-b49f-8288d698b200.arff -l /home/gmartinn/DRP_main/DRP_repo/models/121_136 -p 0 -c 1 1> /home/gmartinn/DRP_main/DRP_repo/tmp/136_e51768cd-03de-476c-8c75-deef3a075f30.out
+	...finished predicting. Storing predictions... predictions stored.
+Storing overall model predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_121_summative__:
+      False  True 
+False  392   593  
+ True  242   838  
+Accuracy: 0.596
+BCR: 0.602
+Confusion matrix for boolean_crystallisation_outcome_prediction_121_component_136__:
+      False  True 
+False  392   593  
+ True  242   838  
+Accuracy: 0.596
+BCR: 0.602

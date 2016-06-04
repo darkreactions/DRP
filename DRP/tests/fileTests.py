@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 """A module containing tests for standards conformance of the DRP."""
 
 import unittest
@@ -7,7 +7,7 @@ from django.conf import settings
 import os
 import sys
 from cStringIO import StringIO
-# from pep257 import check #TODO: Fix this?
+# from pep257 import check # TODO: Fix this?
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 _pep8Files = [
@@ -110,7 +110,7 @@ class TestFiles(unittest.TestCase):
                 self.assertEqual(
                     result.total_errors,
                     0,
-                    'Errors were found in pep8 Conformance:\n{}'.format(output)
+                    '{} errors were found in pep8 Conformance:\n{}'.format(result.total_errors, output)
                 )
 
     def testPep257(self):

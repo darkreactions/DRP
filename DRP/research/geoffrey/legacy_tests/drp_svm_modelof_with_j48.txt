@@ -1,0 +1,164 @@
+=== Run information ===
+
+Scheme:weka.classifiers.trees.J48 -U -M 2
+Relation:     drp_svm-weka.filters.unsupervised.attribute.Remove-R274
+Instances:    3664
+Attributes:   274
+[list of attributes omitted]
+Test mode:evaluate on training data
+
+=== Classifier model (full training set) ===
+
+J48 unpruned tree
+------------------
+
+leak = no
+|   orgminimalprojectionradiusArithAvg <= 3.76
+|   |   orgASA_HMin <= 315.94
+|   |   |   orgASA_HMax <= 110.13
+|   |   |   |   numberInorg <= 2
+|   |   |   |   |   time <= 33.3: 0 (20.0)
+|   |   |   |   |   time > 33.3
+|   |   |   |   |   |   inorg-water-moleratio <= 0.0267: 0 (2.0)
+|   |   |   |   |   |   inorg-water-moleratio > 0.0267: 1 (2.0)
+|   |   |   |   numberInorg > 2: 1 (3.0)
+|   |   |   orgASA_HMax > 110.13
+|   |   |   |   Zn = no
+|   |   |   |   |   hardnessMinWeighted <= 0.0972
+|   |   |   |   |   |   Te = no: 1 (52.0)
+|   |   |   |   |   |   Te = yes
+|   |   |   |   |   |   |   orgASA_PMax <= 51.57
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaMax <= 16.56: 0 (3.0)
+|   |   |   |   |   |   |   |   orgpolarsurfaceareaMax > 16.56
+|   |   |   |   |   |   |   |   |   pH <= 4
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax <= 9.94
+|   |   |   |   |   |   |   |   |   |   |   temp <= 100: 0 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   temp > 100: 1 (3.0)
+|   |   |   |   |   |   |   |   |   |   orgavgpolMax > 9.94: 0 (4.0)
+|   |   |   |   |   |   |   |   |   pH > 4: 1 (30.0)
+|   |   |   |   |   |   |   orgASA_PMax > 51.57
+|   |   |   |   |   |   |   |   orghbdamsaccMax <= 0.06: 0 (43.0)
+|   |   |   |   |   |   |   |   orghbdamsaccMax > 0.06
+|   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax <= 2.98: 1 (2.0)
+|   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax > 2.98: 0 (8.0)
+|   |   |   |   |   hardnessMinWeighted > 0.0972
+|   |   |   |   |   |   orgASA_HMin <= 24.69
+|   |   |   |   |   |   |   time <= 96: 0 (17.0)
+|   |   |   |   |   |   |   time > 96
+|   |   |   |   |   |   |   |   PaulingElectronegMaxWeighted <= 0.0016: 0 (2.0)
+|   |   |   |   |   |   |   |   PaulingElectronegMaxWeighted > 0.0016: 1 (12.0)
+|   |   |   |   |   |   orgASA_HMin > 24.69
+|   |   |   |   |   |   |   Cr = no
+|   |   |   |   |   |   |   |   time <= 20
+|   |   |   |   |   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   |   |   |   |   K = no: 1 (366.0)
+|   |   |   |   |   |   |   |   |   |   K = yes
+|   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio <= 0.0151: 0 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio > 0.0151: 1 (4.0)
+|   |   |   |   |   |   |   |   |   slowCool = no: 0 (70.0)
+|   |   |   |   |   |   |   |   time > 20
+|   |   |   |   |   |   |   |   |   N = yes
+|   |   |   |   |   |   |   |   |   |   org-water-moleratio <= 0.0015
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax <= 2.98
+|   |   |   |   |   |   |   |   |   |   |   |   Te = no: 1 (7.0)
+|   |   |   |   |   |   |   |   |   |   |   |   Te = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax <= 12.65
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH <= 2: 0 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   pH > 2: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgavgpolMax > 12.65: 0 (14.0)
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax > 2.98: 1 (60.96)
+|   |   |   |   |   |   |   |   |   |   org-water-moleratio > 0.0015
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax <= 3.72
+|   |   |   |   |   |   |   |   |   |   |   |   P = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio <= 0.0176
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool = yes: 0 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   slowCool = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH <= 3: 0 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH > 3: 1 (22.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   inorg-org-moleratio > 0.0176
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Te = no: 1 (1915.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   Te = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = yes: 0 (4.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   S = no
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax <= 2.62
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH <= 4: 0 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   pH > 4: 1 (13.96)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax > 2.62: 1 (274.61)
+|   |   |   |   |   |   |   |   |   |   |   |   P = yes
+|   |   |   |   |   |   |   |   |   |   |   |   |   S = yes: 0 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   S = no: 1 (23.0)
+|   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusMax > 3.72
+|   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio <= 0.0044: 0 (3.0)
+|   |   |   |   |   |   |   |   |   |   |   |   inorg-water-moleratio > 0.0044
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusArithAvg <= 3.16
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orghbdamsdonMax <= 1.96: 1 (9.0/1.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   |   orghbdamsdonMax > 1.96: 0 (2.0)
+|   |   |   |   |   |   |   |   |   |   |   |   |   orgminimalprojectionradiusArithAvg > 3.16: 1 (35.0)
+|   |   |   |   |   |   |   |   |   N = no
+|   |   |   |   |   |   |   |   |   |   time <= 84
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMaxWeighted <= 0.0274: 0 (11.0)
+|   |   |   |   |   |   |   |   |   |   |   PaulingElectronegMaxWeighted > 0.0274: 1 (2.0)
+|   |   |   |   |   |   |   |   |   |   time > 84: 1 (29.0)
+|   |   |   |   |   |   |   Cr = yes
+|   |   |   |   |   |   |   |   numberInorg <= 2
+|   |   |   |   |   |   |   |   |   temp <= 150: 0 (17.0)
+|   |   |   |   |   |   |   |   |   temp > 150: 1 (9.0)
+|   |   |   |   |   |   |   |   numberInorg > 2: 1 (14.0)
+|   |   |   |   Zn = yes
+|   |   |   |   |   PaulingElectronegMaxWeighted <= 0.0173: 0 (24.0/1.0)
+|   |   |   |   |   PaulingElectronegMaxWeighted > 0.0173: 1 (11.0)
+|   |   orgASA_HMin > 315.94
+|   |   |   time <= 22: 0 (58.0)
+|   |   |   time > 22: 1 (13.0)
+|   orgminimalprojectionradiusArithAvg > 3.76
+|   |   Mo = no
+|   |   |   N = yes
+|   |   |   |   orgdon-wateraccratio <= -0.0036
+|   |   |   |   |   slowCool = yes
+|   |   |   |   |   |   orgdon-wateraccratio <= -0.0039: 1 (48.94)
+|   |   |   |   |   |   orgdon-wateraccratio > -0.0039
+|   |   |   |   |   |   |   time <= 33.3: 0 (2.0)
+|   |   |   |   |   |   |   time > 33.3: 1 (2.0)
+|   |   |   |   |   slowCool = no: 1 (60.06)
+|   |   |   |   orgdon-wateraccratio > -0.0036
+|   |   |   |   |   orgavgpolMax <= 19.35
+|   |   |   |   |   |   time <= 33.3: 0 (30.0)
+|   |   |   |   |   |   time > 33.3: 1 (8.0)
+|   |   |   |   |   orgavgpolMax > 19.35: 1 (14.0)
+|   |   |   N = no: 0 (7.0)
+|   |   Mo = yes: 0 (180.0)
+leak = yes: 0 (79.48/0.48)
+
+Number of Leaves  : 	59
+
+Size of the tree : 	117
+
+
+Time taken to build model: 1.54 seconds
+
+=== Evaluation on training set ===
+=== Summary ===
+
+Correctly Classified Instances        3662               99.9454 %
+Incorrectly Classified Instances         2                0.0546 %
+Kappa statistic                          0.998 
+Mean absolute error                      0.0013
+Root mean squared error                  0.0225
+Relative absolute error                  0.4529 %
+Root relative squared error              6.0252 %
+Total Number of Instances             3664     
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.998     0          0.998     0.998     0.998      1        0
+                 1         0.002      1         1         1          1        1
+Weighted Avg.    0.999     0.001      0.999     0.999     0.999      1    
+
+=== Confusion Matrix ===
+
+    a    b   <-- classified as
+  615    1 |    a = 0
+    1 3047 |    b = 1
+
+

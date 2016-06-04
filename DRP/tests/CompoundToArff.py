@@ -22,30 +22,32 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @joinsLabGroup('Aslan', 'Narnia')
 @loadsCompoundsFromCsv('Narnia','compound_spread_test1.csv')
 class CompoundToArff(DRPTestCase):
-  '''Validates the structure of the Arff- this could be more detailed if we find that we encounter issues later'''
+    '''Validates the structure of the Arff- this could be more detailed if we find that we encounter issues later'''
 
-  def checkArff(self, fn):
-    process = subprocess.Popen(['java', '-cp', settings.WEKA_PATH['3.6'], 'weka.core.Instances', fn])
-    process.wait()
-    c = process.returncode
-    self.assertEqual(0, c)
+    def checkArff(self, fn):
+        process = subprocess.Popen(['java', '-cp', settings.WEKA_PATH['3.6'], 'weka.core.Instances', fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.wait()
+        c = process.returncode
+        self.assertEqual(0, c) # on the off chance weka ever returns a non-zero error code
+        res, resErr = process.communicate()
+        self.assertFalse(resErr)
 
-  def test_regular(self):
-    fn = '/tmp/test_csv.arff'
-    with open(fn, 'wb') as arffFile:
-      Compound.objects.all().toArff(arffFile)
-    self.checkArff(fn)
-  
-  def test_expanded(self):
-    fn = '/tmp/test_ex_csv.arff'
-    with open(fn, 'wb') as arffFile:
-      Compound.objects.all().toArff(arffFile, expanded=True)
-    self.checkArff(fn)
-  
+    def test_regular(self):
+        fn = '/tmp/test_csv.arff'
+        with open(fn, 'wb') as arffFile:
+            Compound.objects.all().toArff(arffFile)
+        self.checkArff(fn)
+    
+    def test_expanded(self):
+        fn = '/tmp/test_ex_csv.arff'
+        with open(fn, 'wb') as arffFile:
+            Compound.objects.all().toArff(arffFile, expanded=True)
+        self.checkArff(fn)
+    
 suite = unittest.TestSuite([
-          loadTests(CompoundToArff)
-          ])
+                    loadTests(CompoundToArff)
+                    ])
 
 if __name__=='__main__':
-  runTests(suite)
-  #Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    runTests(suite)
+    #Runs the test- a good way to check that this particular test set works without having to run all the tests.
