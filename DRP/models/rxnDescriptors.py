@@ -19,7 +19,7 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredCatRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
-        """Create a new reaction value object"""
+        """Create a new reaction value object."""
         try:
             v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:

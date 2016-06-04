@@ -41,9 +41,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         return filepath
 
     def _readWekaOutput(self, output):
-        """
-        Reads a weka feature selection output and outputs a list of descriptors
-        """
+        """Reads a weka feature selection output and outputs a list of descriptors"""
         start_line = "Selected attributes:"
         raw_lines = output.split('\n')
 

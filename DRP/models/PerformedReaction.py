@@ -15,7 +15,7 @@ class PerformedReactionQuerySet(ReactionQuerySet):
     """A custom queryset for performed reactions."""
 
     def __init__(self, model=None, **kwargs):
-        """Initialises the queryset"""
+        """Initialises the queryset."""
         model = PerformedReaction if model is None else model
         super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
 

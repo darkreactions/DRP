@@ -1,0 +1,78 @@
+drp_rdkit.py:25 in public function `calculate`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+    25: def calculate(compound, verbose=False, whitelist=None):
+    26:     """Calculate the descriptors from this plugin for a compound."""
+    27: 
+    28:     heading = 'mw'
+    29:     if whitelist is None or heading in whitelist:
+    30:         mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
+    31: 
+        ...
+
+
+example.py:45 in public function `calculate`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+    45: def calculate(compound, verbose=False, whitelist=None):
+    46:     """Calculate the descriptors from this plugin for a compound.
+    47: 
+    48:     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
+    49:     database as this happens.
+    50:     """
+    51: 
+        ...
+
+
+utils.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A utilities module for helping with molecular descriptor plugins.'''
+     2: import DRP
+     3: from django.db import transaction
+     4: 
+     5: 
+     6: class LazyDescDict(object):
+     7: 
+        ...
+
+
+utils.py:71 in public method `__getattr__`:
+        D401: First line should be in imperative mood ('Deal', not 'Deals')
+
+    71:     def __getattr__(self, name):
+    72:         """
+    73:         Deals with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."
+    74:         """
+    75:         def _pass_attr(*args, **kwargs):
+    76:             self.initialise(self.descDict)
+    77:             return getattr(self.internalDict, name)(*args, **kwargs)
+        ...
+
+
+utils.py:71 in public method `__getattr__`:
+        D400: First line should end with a period (not '"')
+
+    71:     def __getattr__(self, name):
+    72:         """
+    73:         Deals with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."
+    74:         """
+    75:         def _pass_attr(*args, **kwargs):
+    76:             self.initialise(self.descDict)
+    77:             return getattr(self.internalDict, name)(*args, **kwargs)
+        ...
+
+
+utils.py:71 in public method `__getattr__`:
+        D200: One-line docstring should fit on one line with quotes (found 3)
+
+    71:     def __getattr__(self, name):
+    72:         """
+    73:         Deals with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."
+    74:         """
+    75:         def _pass_attr(*args, **kwargs):
+    76:             self.initialise(self.descDict)
+    77:             return getattr(self.internalDict, name)(*args, **kwargs)
+        ...
+
+

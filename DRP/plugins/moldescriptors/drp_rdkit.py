@@ -24,7 +24,6 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 def calculate(compound, verbose=False, whitelist=None):
     """Calculate the descriptors from this plugin for a compound."""
-
     heading = 'mw'
     if whitelist is None or heading in whitelist:
         mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)

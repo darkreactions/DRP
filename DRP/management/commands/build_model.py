@@ -168,10 +168,7 @@ def display_model_results(container, reactions=None, heading=""):
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
                         test_set_name=None, reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
-    """
-    Build a model with the specified tools
-    """
-
+    """Build a model with the specified tools"""
     if predictor_headers is not None:
         predictors = Descriptor.objects.filter(heading__in=predictor_headers)
         if predictors.count() != len(predictor_headers):

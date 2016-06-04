@@ -114,9 +114,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
     @property
     def wekaTrainOptions(self):
-        """
-        Returns any additional commands specific to the classifier
-        """
+        """Returns any additional commands specific to the classifier"""
         return ""
 
     def train(self, verbose=False):

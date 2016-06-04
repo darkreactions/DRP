@@ -48,7 +48,6 @@ def calculate(compound, verbose=False, whitelist=None):
     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
     database as this happens.
     """
-
     if compound.smiles:
         nValue = ('n' in compound.smiles or 'N' in compound.smiles)
         lengthValue = len(compound.smiles)

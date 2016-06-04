@@ -1,4 +1,4 @@
-"""Basic reaction descriptors calculation module"""
+"""Basic reaction descriptors calculation module."""
 import DRP
 from itertools import chain
 from numpy import mean, average as wmean
@@ -308,10 +308,7 @@ def calculate(reaction, verbose=False, whitelist=None):
 
 
 def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals_to_create=[], bool_vals_to_create=[]):
-    """
-    Calculates with the descriptorDict already created and previous descriptor values deleted.
-    """
-
+    """Calculates with the descriptorDict already created and previous descriptor values deleted."""
     # descriptor Value classes
     CompoundQuantity = DRP.models.CompoundQuantity
     num = DRP.models.NumRxnDescriptorValue

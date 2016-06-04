@@ -1,0 +1,2479 @@
+ChemicalClass.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing only the ChemicalClass class'''
+     2: from django.db import models
+     3: from django.conf import settings
+     4: 
+     5: 
+     6: class ChemicalClass(models.Model):
+     7: 
+        ...
+
+
+ChemicalClass.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing only the ChemicalClass class'''
+     2: from django.db import models
+     3: from django.conf import settings
+     4: 
+     5: 
+     6: class ChemicalClass(models.Model):
+     7: 
+        ...
+
+
+Compound.py:232 in public class `Compound`:
+        D203: 1 blank line required before class docstring (found 0)
+
+   232: class Compound(models.Model):
+   233:     """
+   234:     A class for containing data about Compounds used in chemical reactions.
+   235: 
+   236:     The assumption is made that all chemicals used are single-species.
+   237:     """
+   238: 
+        ...
+
+
+Compound.py:336 in public method `elements`:
+        D400: First line should end with a period (not 'y')
+
+   336:     def elements(self):
+   337:         """Return a dictionary of elemental symbols and their stoichiometry
+   338: 
+   339:         Note that this method does not validate the data contained in the database.
+   340:         """
+   341:         elements = {}
+   342:         inBrackets = False
+        ...
+
+
+CompoundQuantity.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''Module containing only the CompoundQuantities Class'''
+     2: from django.db import models
+     3: from django import forms
+     4: from django.core.exceptions import ValidationError
+     5: from Compound import Compound
+     6: from CompoundRole import CompoundRole
+     7: from Reaction import Reaction
+        ...
+
+
+CompoundQuantity.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''Module containing only the CompoundQuantities Class'''
+     2: from django.db import models
+     3: from django import forms
+     4: from django.core.exceptions import ValidationError
+     5: from Compound import Compound
+     6: from CompoundRole import CompoundRole
+     7: from Reaction import Reaction
+        ...
+
+
+CompoundQuantity.py:30 in public class `CompoundQuantity`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    30: class CompoundQuantity(models.Model):
+    31:     '''A class to contain the relationship between a reaction and a compound,
+    32:     and thus to contain the amount of a given compound used in a reaction
+    33:     with the applicable units. At present, no unit convention is enforced.
+    34:     '''
+    35: 
+    36:     class Meta:
+        ...
+
+
+CompoundQuantity.py:30 in public class `CompoundQuantity`:
+        D400: First line should end with a period (not ',')
+
+    30: class CompoundQuantity(models.Model):
+    31:     '''A class to contain the relationship between a reaction and a compound,
+    32:     and thus to contain the amount of a given compound used in a reaction
+    33:     with the applicable units. At present, no unit convention is enforced.
+    34:     '''
+    35: 
+    36:     class Meta:
+        ...
+
+
+CompoundQuantity.py:30 in public class `CompoundQuantity`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    30: class CompoundQuantity(models.Model):
+    31:     '''A class to contain the relationship between a reaction and a compound,
+    32:     and thus to contain the amount of a given compound used in a reaction
+    33:     with the applicable units. At present, no unit convention is enforced.
+    34:     '''
+    35: 
+    36:     class Meta:
+        ...
+
+
+ConfirmationCode.py:5 in public class `ConfirmationCode`:
+        D203: 1 blank line required before class docstring (found 0)
+
+     5: class ConfirmationCode(models.Model):
+     6:     '''This class stores confirmation codes for users so that we can confirm that they have control over
+     7:     Their provided email address- this ensures that the license agreement they sign is valid
+     8:     '''
+     9: 
+    10:     class Meta:
+    11:         app_label = "DRP"
+        ...
+
+
+ConfirmationCode.py:5 in public class `ConfirmationCode`:
+        D400: First line should end with a period (not 'r')
+
+     5: class ConfirmationCode(models.Model):
+     6:     '''This class stores confirmation codes for users so that we can confirm that they have control over
+     7:     Their provided email address- this ensures that the license agreement they sign is valid
+     8:     '''
+     9: 
+    10:     class Meta:
+    11:         app_label = "DRP"
+        ...
+
+
+ConfirmationCode.py:5 in public class `ConfirmationCode`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     5: class ConfirmationCode(models.Model):
+     6:     '''This class stores confirmation codes for users so that we can confirm that they have control over
+     7:     Their provided email address- this ensures that the license agreement they sign is valid
+     8:     '''
+     9: 
+    10:     class Meta:
+    11:         app_label = "DRP"
+        ...
+
+
+dataSets.py:1 at module level:
+        D209: Multi-line docstring closing quotes should be on a separate line
+
+     1: '''A module containing classes to provide deletion protection to Performed reactions
+     2: used in StatsModels. Whilst the DataSet model may, to the uninitiated, appear to be
+     3: an erroneous proxy for a many-to-many relationship between Reactions and Models,
+     4: This allows the datasets to exist independently of the models.'''
+     5: 
+     6: from django.db import models
+     7: from PerformedReaction import PerformedReaction
+        ...
+
+
+dataSets.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing classes to provide deletion protection to Performed reactions
+     2: used in StatsModels. Whilst the DataSet model may, to the uninitiated, appear to be
+     3: an erroneous proxy for a many-to-many relationship between Reactions and Models,
+     4: This allows the datasets to exist independently of the models.'''
+     5: 
+     6: from django.db import models
+     7: from PerformedReaction import PerformedReaction
+        ...
+
+
+dataSets.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing classes to provide deletion protection to Performed reactions
+     2: used in StatsModels. Whilst the DataSet model may, to the uninitiated, appear to be
+     3: an erroneous proxy for a many-to-many relationship between Reactions and Models,
+     4: This allows the datasets to exist independently of the models.'''
+     5: 
+     6: from django.db import models
+     7: from PerformedReaction import PerformedReaction
+        ...
+
+
+descriptors.py:15 in public method `__init__`:
+        D401: First line should be in imperative mood ('Initialise', not 'Initialises')
+
+    15:     def __init__(self, model=None, **kwargs):
+    16:         """Initialises the queryset"""
+    17:         model = Descriptor if model is None else model
+    18:         super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
+
+
+descriptors.py:15 in public method `__init__`:
+        D400: First line should end with a period (not 't')
+
+    15:     def __init__(self, model=None, **kwargs):
+    16:         """Initialises the queryset"""
+    17:         model = Descriptor if model is None else model
+    18:         super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
+
+
+__init__.py:1 at module level:
+        D400: First line should end with a period (not 'p')
+
+     1: '''Models for the DRP app'''
+     2: # Anything imported here gets imported on `from DRP.models import *`
+     3: # Not that such behaviour is encouraged!
+     4: 
+     5: # Classes that should get included.
+     6: 
+     7: from dataSets import DataSet, DataSetRelation
+        ...
+
+
+__init__.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''Models for the DRP app'''
+     2: # Anything imported here gets imported on `from DRP.models import *`
+     3: # Not that such behaviour is encouraged!
+     4: 
+     5: # Classes that should get included.
+     6: 
+     7: from dataSets import DataSet, DataSetRelation
+        ...
+
+
+LabGroup.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing only the LabGroup class'''
+     2: from django.db import models
+     3: from django.contrib import auth
+     4: from django.contrib.auth.models import User
+     5: from django.contrib.auth.hashers import make_password
+     6: from django.conf import settings
+     7: 
+        ...
+
+
+LabGroup.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing only the LabGroup class'''
+     2: from django.db import models
+     3: from django.contrib import auth
+     4: from django.contrib.auth.models import User
+     5: from django.contrib.auth.hashers import make_password
+     6: from django.conf import settings
+     7: 
+        ...
+
+
+LabGroup.py:9 in public class `LabGroupManager`:
+        D203: 1 blank line required before class docstring (found 0)
+
+     9: class LabGroupManager(models.Manager):
+    10:     '''A custom manager with a convenience function so that we can create new lab groups'''
+    11: 
+    12:     def makeLabGroup(self, title, address, email, access_code):
+    13:         '''A function to create new lab groups easily'''
+    14:         return LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
+
+
+LabGroup.py:9 in public class `LabGroupManager`:
+        D400: First line should end with a period (not 's')
+
+     9: class LabGroupManager(models.Manager):
+    10:     '''A custom manager with a convenience function so that we can create new lab groups'''
+    11: 
+    12:     def makeLabGroup(self, title, address, email, access_code):
+    13:         '''A function to create new lab groups easily'''
+    14:         return LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
+
+
+LabGroup.py:9 in public class `LabGroupManager`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     9: class LabGroupManager(models.Manager):
+    10:     '''A custom manager with a convenience function so that we can create new lab groups'''
+    11: 
+    12:     def makeLabGroup(self, title, address, email, access_code):
+    13:         '''A function to create new lab groups easily'''
+    14:         return LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
+
+
+LabGroup.py:12 in public method `makeLabGroup`:
+        D400: First line should end with a period (not 'y')
+
+    12:     def makeLabGroup(self, title, address, email, access_code):
+    13:         '''A function to create new lab groups easily'''
+    14:         return LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
+
+
+LabGroup.py:12 in public method `makeLabGroup`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    12:     def makeLabGroup(self, title, address, email, access_code):
+    13:         '''A function to create new lab groups easily'''
+    14:         return LabGroup(title=title, address=address, email=email, access_code=make_password(access_code, settings.LAB_GROUP_HASH_SALT))
+
+
+LabGroup.py:17 in public class `LabGroup`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    17: class LabGroup(models.Model):
+    18:     '''A class for describing a collection of scientists belonging to the same group.'''
+    19:     class Meta:
+    20:         app_label = "DRP"
+    21:         verbose_name = 'Lab Group'
+    22: 
+    23:     title = models.CharField(max_length=200, unique=True, error_messages={'unique': "This name is already taken."})
+        ...
+
+
+LabGroup.py:17 in public class `LabGroup`:
+        D204: 1 blank line required after class docstring (found 0)
+
+    17: class LabGroup(models.Model):
+    18:     '''A class for describing a collection of scientists belonging to the same group.'''
+    19:     class Meta:
+    20:         app_label = "DRP"
+    21:         verbose_name = 'Lab Group'
+    22: 
+    23:     title = models.CharField(max_length=200, unique=True, error_messages={'unique': "This name is already taken."})
+        ...
+
+
+LabGroup.py:17 in public class `LabGroup`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    17: class LabGroup(models.Model):
+    18:     '''A class for describing a collection of scientists belonging to the same group.'''
+    19:     class Meta:
+    20:         app_label = "DRP"
+    21:         verbose_name = 'Lab Group'
+    22: 
+    23:     title = models.CharField(max_length=200, unique=True, error_messages={'unique': "This name is already taken."})
+        ...
+
+
+LicenseAgreement.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing only the LicenseAgreement class'''
+     2: from django.db import models
+     3: from django.contrib import auth
+     4: from License import License
+     5: 
+     6: 
+     7: class LicenseAgreement(models.Model):
+        ...
+
+
+LicenseAgreement.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing only the LicenseAgreement class'''
+     2: from django.db import models
+     3: from django.contrib import auth
+     4: from License import License
+     5: 
+     6: 
+     7: class LicenseAgreement(models.Model):
+        ...
+
+
+LicenseAgreement.py:7 in public class `LicenseAgreement`:
+        D203: 1 blank line required before class docstring (found 0)
+
+     7: class LicenseAgreement(models.Model):
+     8:     '''The LicenseAgreement class details the date and time a license was agreed to by a user'''
+     9: 
+    10:     class Meta:
+    11:         app_label = "DRP"
+    12: 
+    13:     user = models.ForeignKey(auth.models.User)
+        ...
+
+
+LicenseAgreement.py:7 in public class `LicenseAgreement`:
+        D400: First line should end with a period (not 'r')
+
+     7: class LicenseAgreement(models.Model):
+     8:     '''The LicenseAgreement class details the date and time a license was agreed to by a user'''
+     9: 
+    10:     class Meta:
+    11:         app_label = "DRP"
+    12: 
+    13:     user = models.ForeignKey(auth.models.User)
+        ...
+
+
+LicenseAgreement.py:7 in public class `LicenseAgreement`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     7: class LicenseAgreement(models.Model):
+     8:     '''The LicenseAgreement class details the date and time a license was agreed to by a user'''
+     9: 
+    10:     class Meta:
+    11:         app_label = "DRP"
+    12: 
+    13:     user = models.ForeignKey(auth.models.User)
+        ...
+
+
+License.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing only the License class'''
+     2: from django.db import models
+     3: 
+     4: 
+     5: class License(models.Model):
+     6:     '''A class solely to store the text of a license agreement. These must be signed for someone to use the project site.'''
+     7: 
+        ...
+
+
+License.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing only the License class'''
+     2: from django.db import models
+     3: 
+     4: 
+     5: class License(models.Model):
+     6:     '''A class solely to store the text of a license agreement. These must be signed for someone to use the project site.'''
+     7: 
+        ...
+
+
+License.py:5 in public class `License`:
+        D203: 1 blank line required before class docstring (found 0)
+
+     5: class License(models.Model):
+     6:     '''A class solely to store the text of a license agreement. These must be signed for someone to use the project site.'''
+     7: 
+     8:     class Meta:
+     9:         app_label = "DRP"
+    10:         get_latest_by = 'effectiveDate'
+    11: 
+        ...
+
+
+License.py:5 in public class `License`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     5: class License(models.Model):
+     6:     '''A class solely to store the text of a license agreement. These must be signed for someone to use the project site.'''
+     7: 
+     8:     class Meta:
+     9:         app_label = "DRP"
+    10:         get_latest_by = 'effectiveDate'
+    11: 
+        ...
+
+
+ModelContainer.py:231 in public method `create_duplicate`:
+        D401: First line should be in imperative mood ('Build', not 'Builds')
+
+   231:     def create_duplicate(self, modelVisitorTool=None, modelVisitorOptions=None, description=None, predictors=None, responses=None):
+   232:         """
+   233:         Builds a duplicate of this model container optionally with a different model visitor tool.
+   234:         If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
+   235:         """
+   236:         fields = ['description', 'splitter', 'splitterOptions', 'modelVisitorLibrary', 'modelVisitorTool', 'modelVisitorOptions']
+   237:         field_dict = ModelContainer.objects.filter(pk=self.pk).values(*fields)[0]
+        ...
+
+
+ModelContainer.py:392 in private method `_storePredictionComponents`:
+        D401: First line should be in imperative mood ('return', not 'returns')
+
+   392:     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
+   393:         """
+   394:         returns resDict, a dictionary of dictionaries of dictionaries
+   395:         The first key is the reaction, the second is the response descriptor
+   396:         (the descriptor to be predicted), the third is the predicted outcome.
+   397:         The value is 1 if that outcome is predicted and 0 otherwise.
+   398:         This setup is for easier aggregating into the full model container
+        ...
+
+
+ModelContainer.py:392 in private method `_storePredictionComponents`:
+        D400: First line should end with a period (not 's')
+
+   392:     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
+   393:         """
+   394:         returns resDict, a dictionary of dictionaries of dictionaries
+   395:         The first key is the reaction, the second is the response descriptor
+   396:         (the descriptor to be predicted), the third is the predicted outcome.
+   397:         The value is 1 if that outcome is predicted and 0 otherwise.
+   398:         This setup is for easier aggregating into the full model container
+        ...
+
+
+ModelContainer.py:527 in public method `getComponentConfusionMatrices`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+
+   527:     def getComponentConfusionMatrices(self, reactions=None):
+   528:         """
+   529:         Returns a list of lists of tuples of confusion matrices.
+   530:         Each entry of the outer list is for a different component statsModel.
+   531:         For each model there is a list of tuples.
+   532:         Each tuple is of the form (descriptor_heading, confusion matrix)
+   533:         """
+        ...
+
+
+molDescriptors.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing Classes permitting the representation of molecular descriptors'''
+     2: from django.db import models
+     3: from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+     4: from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, DescriptorManager
+     5: 
+     6: 
+     7: class CatMolDescriptor(CategoricalDescriptor):
+        ...
+
+
+molDescriptors.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing Classes permitting the representation of molecular descriptors'''
+     2: from django.db import models
+     3: from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+     4: from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, DescriptorManager
+     5: 
+     6: 
+     7: class CatMolDescriptor(CategoricalDescriptor):
+        ...
+
+
+molDescriptors.py:7 in public class `CatMolDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+     7: class CatMolDescriptor(CategoricalDescriptor):
+     8:     '''A class which describes a categorical molecular descriptors'''
+     9: 
+    10:     class Meta:
+    11:         app_label = 'DRP'
+    12:         verbose_name = 'Categorical Molecular Descriptor'
+    13: 
+        ...
+
+
+molDescriptors.py:7 in public class `CatMolDescriptor`:
+        D400: First line should end with a period (not 's')
+
+     7: class CatMolDescriptor(CategoricalDescriptor):
+     8:     '''A class which describes a categorical molecular descriptors'''
+     9: 
+    10:     class Meta:
+    11:         app_label = 'DRP'
+    12:         verbose_name = 'Categorical Molecular Descriptor'
+    13: 
+        ...
+
+
+molDescriptors.py:7 in public class `CatMolDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     7: class CatMolDescriptor(CategoricalDescriptor):
+     8:     '''A class which describes a categorical molecular descriptors'''
+     9: 
+    10:     class Meta:
+    11:         app_label = 'DRP'
+    12:         verbose_name = 'Categorical Molecular Descriptor'
+    13: 
+        ...
+
+
+molDescriptors.py:17 in public class `OrdMolDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    17: class OrdMolDescriptor(OrdinalDescriptor):
+    18:     '''A class which represents an ordinal descriptor'''
+    19: 
+    20:     class Meta:
+    21:         verbose_name = 'Ordinal Molecular Descriptor'
+    22:         app_label = 'DRP'
+    23: 
+        ...
+
+
+molDescriptors.py:17 in public class `OrdMolDescriptor`:
+        D400: First line should end with a period (not 'r')
+
+    17: class OrdMolDescriptor(OrdinalDescriptor):
+    18:     '''A class which represents an ordinal descriptor'''
+    19: 
+    20:     class Meta:
+    21:         verbose_name = 'Ordinal Molecular Descriptor'
+    22:         app_label = 'DRP'
+    23: 
+        ...
+
+
+molDescriptors.py:17 in public class `OrdMolDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    17: class OrdMolDescriptor(OrdinalDescriptor):
+    18:     '''A class which represents an ordinal descriptor'''
+    19: 
+    20:     class Meta:
+    21:         verbose_name = 'Ordinal Molecular Descriptor'
+    22:         app_label = 'DRP'
+    23: 
+        ...
+
+
+molDescriptors.py:27 in public class `NumMolDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    27: class NumMolDescriptor(NumericDescriptor):
+    28:     '''A class which represents a numerical descriptor'''
+    29: 
+    30:     class Meta:
+    31:         app_label = 'DRP'
+    32:         verbose_name = 'Numerical Molecular Descriptor'
+    33: 
+        ...
+
+
+molDescriptors.py:27 in public class `NumMolDescriptor`:
+        D400: First line should end with a period (not 'r')
+
+    27: class NumMolDescriptor(NumericDescriptor):
+    28:     '''A class which represents a numerical descriptor'''
+    29: 
+    30:     class Meta:
+    31:         app_label = 'DRP'
+    32:         verbose_name = 'Numerical Molecular Descriptor'
+    33: 
+        ...
+
+
+molDescriptors.py:27 in public class `NumMolDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    27: class NumMolDescriptor(NumericDescriptor):
+    28:     '''A class which represents a numerical descriptor'''
+    29: 
+    30:     class Meta:
+    31:         app_label = 'DRP'
+    32:         verbose_name = 'Numerical Molecular Descriptor'
+    33: 
+        ...
+
+
+molDescriptors.py:37 in public class `BoolMolDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    37: class BoolMolDescriptor(BooleanDescriptor):
+    38:     '''A class which represents a boolean descriptors'''
+    39: 
+    40:     class Meta:
+    41:         app_label = 'DRP'
+    42:         verbose_name = 'Boolean Molecular Descriptor'
+    43: 
+        ...
+
+
+molDescriptors.py:37 in public class `BoolMolDescriptor`:
+        D400: First line should end with a period (not 's')
+
+    37: class BoolMolDescriptor(BooleanDescriptor):
+    38:     '''A class which represents a boolean descriptors'''
+    39: 
+    40:     class Meta:
+    41:         app_label = 'DRP'
+    42:         verbose_name = 'Boolean Molecular Descriptor'
+    43: 
+        ...
+
+
+molDescriptors.py:37 in public class `BoolMolDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    37: class BoolMolDescriptor(BooleanDescriptor):
+    38:     '''A class which represents a boolean descriptors'''
+    39: 
+    40:     class Meta:
+    41:         app_label = 'DRP'
+    42:         verbose_name = 'Boolean Molecular Descriptor'
+    43: 
+        ...
+
+
+molDescriptorValues.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containign only the DescriptorValue class'''
+     2: from django.db import models
+     3: from descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue, OrdinalDescriptorValue
+     4: # from Compound import DRP.Compound - retain this line for clarity
+     5: from django.core.exceptions import ValidationError
+     6: import PerformedReaction
+     7: import DRP.models
+        ...
+
+
+molDescriptorValues.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containign only the DescriptorValue class'''
+     2: from django.db import models
+     3: from descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue, OrdinalDescriptorValue
+     4: # from Compound import DRP.Compound - retain this line for clarity
+     5: from django.core.exceptions import ValidationError
+     6: import PerformedReaction
+     7: import DRP.models
+        ...
+
+
+molDescriptorValues.py:53 in public class `CatMolDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    53: class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
+    54:     '''Contains the value of a categorical descriptor for a compound'''
+    55: 
+    56:     class Meta:
+    57:         app_label = "DRP"
+    58:         verbose_name = 'Categorical Molecular Descriptor Value'
+    59:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:53 in public class `CatMolDescriptorValue`:
+        D400: First line should end with a period (not 'd')
+
+    53: class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
+    54:     '''Contains the value of a categorical descriptor for a compound'''
+    55: 
+    56:     class Meta:
+    57:         app_label = "DRP"
+    58:         verbose_name = 'Categorical Molecular Descriptor Value'
+    59:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:53 in public class `CatMolDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    53: class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
+    54:     '''Contains the value of a categorical descriptor for a compound'''
+    55: 
+    56:     class Meta:
+    57:         app_label = "DRP"
+    58:         verbose_name = 'Categorical Molecular Descriptor Value'
+    59:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:65 in public class `BoolMolDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    65: class BoolMolDescriptorValue(BooleanDescriptorValue, MolDescriptorValue):
+    66:     '''Contains the value of a boolean descriptor for a compound'''
+    67: 
+    68:     class Meta:
+    69:         app_label = "DRP"
+    70:         verbose_name = 'Boolean Molecular Descriptor Value'
+    71:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:65 in public class `BoolMolDescriptorValue`:
+        D400: First line should end with a period (not 'd')
+
+    65: class BoolMolDescriptorValue(BooleanDescriptorValue, MolDescriptorValue):
+    66:     '''Contains the value of a boolean descriptor for a compound'''
+    67: 
+    68:     class Meta:
+    69:         app_label = "DRP"
+    70:         verbose_name = 'Boolean Molecular Descriptor Value'
+    71:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:65 in public class `BoolMolDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    65: class BoolMolDescriptorValue(BooleanDescriptorValue, MolDescriptorValue):
+    66:     '''Contains the value of a boolean descriptor for a compound'''
+    67: 
+    68:     class Meta:
+    69:         app_label = "DRP"
+    70:         verbose_name = 'Boolean Molecular Descriptor Value'
+    71:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:74 in public class `NumMolDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    74: class NumMolDescriptorValue(NumericDescriptorValue, MolDescriptorValue):
+    75:     '''Contains the numeric value of a descriptor for a compound'''
+    76: 
+    77:     class Meta:
+    78:         app_label = "DRP"
+    79:         verbose_name = 'Numeric Molecular Descriptor Value'
+    80:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:74 in public class `NumMolDescriptorValue`:
+        D400: First line should end with a period (not 'd')
+
+    74: class NumMolDescriptorValue(NumericDescriptorValue, MolDescriptorValue):
+    75:     '''Contains the numeric value of a descriptor for a compound'''
+    76: 
+    77:     class Meta:
+    78:         app_label = "DRP"
+    79:         verbose_name = 'Numeric Molecular Descriptor Value'
+    80:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:74 in public class `NumMolDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    74: class NumMolDescriptorValue(NumericDescriptorValue, MolDescriptorValue):
+    75:     '''Contains the numeric value of a descriptor for a compound'''
+    76: 
+    77:     class Meta:
+    78:         app_label = "DRP"
+    79:         verbose_name = 'Numeric Molecular Descriptor Value'
+    80:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:83 in public class `OrdMolDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    83: class OrdMolDescriptorValue(OrdinalDescriptorValue, MolDescriptorValue):
+    84:     '''Contains the ordinal value of a descriptor for a compound'''
+    85: 
+    86:     class Meta:
+    87:         app_label = "DRP"
+    88:         verbose_name = 'Ordinal Molecular Descriptor Value'
+    89:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:83 in public class `OrdMolDescriptorValue`:
+        D400: First line should end with a period (not 'd')
+
+    83: class OrdMolDescriptorValue(OrdinalDescriptorValue, MolDescriptorValue):
+    84:     '''Contains the ordinal value of a descriptor for a compound'''
+    85: 
+    86:     class Meta:
+    87:         app_label = "DRP"
+    88:         verbose_name = 'Ordinal Molecular Descriptor Value'
+    89:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+molDescriptorValues.py:83 in public class `OrdMolDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    83: class OrdMolDescriptorValue(OrdinalDescriptorValue, MolDescriptorValue):
+    84:     '''Contains the ordinal value of a descriptor for a compound'''
+    85: 
+    86:     class Meta:
+    87:         app_label = "DRP"
+    88:         verbose_name = 'Ordinal Molecular Descriptor Value'
+    89:         unique_together = ('descriptor', 'compound')
+        ...
+
+
+PerformedReaction.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing only the PerformedReaction class'''
+     2: from django.db import models
+     3: from Reaction import Reaction, ReactionManager, ReactionQuerySet
+     4: from RecommendedReaction import RecommendedReaction
+     5: from django.contrib.auth.models import User
+     6: from itertools import chain
+     7: import DRP
+        ...
+
+
+PerformedReaction.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing only the PerformedReaction class'''
+     2: from django.db import models
+     3: from Reaction import Reaction, ReactionManager, ReactionQuerySet
+     4: from RecommendedReaction import RecommendedReaction
+     5: from django.contrib.auth.models import User
+     6: from itertools import chain
+     7: import DRP
+        ...
+
+
+PerformedReaction.py:14 in public class `PerformedReactionQuerySet`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    14: class PerformedReactionQuerySet(ReactionQuerySet):
+    15:     """A custom queryset for performed reactions."""
+    16: 
+    17:     def __init__(self, model=None, **kwargs):
+    18:         """Initialises the queryset"""
+    19:         model = PerformedReaction if model is None else model
+    20:         super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
+        ...
+
+
+PerformedReaction.py:17 in public method `__init__`:
+        D401: First line should be in imperative mood ('Initialise', not 'Initialises')
+
+    17:     def __init__(self, model=None, **kwargs):
+    18:         """Initialises the queryset"""
+    19:         model = PerformedReaction if model is None else model
+    20:         super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
+
+
+PerformedReaction.py:17 in public method `__init__`:
+        D400: First line should end with a period (not 't')
+
+    17:     def __init__(self, model=None, **kwargs):
+    18:         """Initialises the queryset"""
+    19:         model = PerformedReaction if model is None else model
+    20:         super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
+
+
+PerformedReaction.py:23 in public class `PerformedReactionManager`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    23: class PerformedReactionManager(ReactionManager):
+    24:     """A custom manager for performed reactions."""
+    25: 
+    26:     def get_queryset(self):
+    27:         return PerformedReactionQuerySet(model=PerformedReaction)
+
+
+PerformedReaction.py:30 in public class `PerformedReaction`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    30: class PerformedReaction(Reaction):
+    31:     '''A class representing concrete instances of reactions that have actually been performed'''
+    32: 
+    33:     class Meta:
+    34:         app_label = "DRP"
+    35: 
+    36:     objects = PerformedReactionManager()
+        ...
+
+
+PerformedReaction.py:30 in public class `PerformedReaction`:
+        D400: First line should end with a period (not 'd')
+
+    30: class PerformedReaction(Reaction):
+    31:     '''A class representing concrete instances of reactions that have actually been performed'''
+    32: 
+    33:     class Meta:
+    34:         app_label = "DRP"
+    35: 
+    36:     objects = PerformedReactionManager()
+        ...
+
+
+PerformedReaction.py:30 in public class `PerformedReaction`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    30: class PerformedReaction(Reaction):
+    31:     '''A class representing concrete instances of reactions that have actually been performed'''
+    32: 
+    33:     class Meta:
+    34:         app_label = "DRP"
+    35: 
+    36:     objects = PerformedReactionManager()
+        ...
+
+
+predRxnDescriptors.py:46 in public method `oldGetConfusionMatrix`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+
+    46:     def oldGetConfusionMatrix(self):
+    47:         """
+    48:         Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+    49:        values, the inner keys are the "guessed" values that occurred, and
+    50:        the value is the integer number of occurrences of that guess when the
+    51:        true descriptor was the second key.
+    52: 
+        ...
+
+
+predRxnDescriptors.py:46 in public method `oldGetConfusionMatrix`:
+        D400: First line should end with a period (not '"')
+
+    46:     def oldGetConfusionMatrix(self):
+    47:         """
+    48:         Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+    49:        values, the inner keys are the "guessed" values that occurred, and
+    50:        the value is the integer number of occurrences of that guess when the
+    51:        true descriptor was the second key.
+    52: 
+        ...
+
+
+predRxnDescriptors.py:46 in public method `oldGetConfusionMatrix`:
+        D207: Docstring is under-indented
+
+    46:     def oldGetConfusionMatrix(self):
+    47:         """
+    48:         Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+    49:        values, the inner keys are the "guessed" values that occurred, and
+    50:        the value is the integer number of occurrences of that guess when the
+    51:        true descriptor was the second key.
+    52: 
+        ...
+
+
+predRxnDescriptors.py:73 in public method `getConfusionMatrix`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+
+    73:     def getConfusionMatrix(self, reactions=None):
+    74:         """
+    75:         Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+    76:         values, the inner keys are the "guessed" values that occurred, and
+    77:         the value is the integer number of occurrences of that guess when the
+    78:         true descriptor was the second key.
+    79: 
+        ...
+
+
+predRxnDescriptors.py:73 in public method `getConfusionMatrix`:
+        D400: First line should end with a period (not '"')
+
+    73:     def getConfusionMatrix(self, reactions=None):
+    74:         """
+    75:         Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+    76:         values, the inner keys are the "guessed" values that occurred, and
+    77:         the value is the integer number of occurrences of that guess when the
+    78:         true descriptor was the second key.
+    79: 
+        ...
+
+
+predRxnDescriptors.py:103 in public method `getPredictionTuples`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+   103:     def getPredictionTuples(self):
+   104:         """"
+   105:         Returns a list of tuples where the first value is the actual value for
+   106:         a descriptor of a reaction and the second value is the predicted value
+   107:         of that descriptor in the same reaction.
+   108:         EG: [(True,True), (False,True), (False,True), (True,True), (True,True)] for a model that always
+   109:             predicts "True"
+        ...
+
+
+predRxnDescriptors.py:103 in public method `getPredictionTuples`:
+        D400: First line should end with a period (not '"')
+
+   103:     def getPredictionTuples(self):
+   104:         """"
+   105:         Returns a list of tuples where the first value is the actual value for
+   106:         a descriptor of a reaction and the second value is the predicted value
+   107:         of that descriptor in the same reaction.
+   108:         EG: [(True,True), (False,True), (False,True), (True,True), (True,True)] for a model that always
+   109:             predicts "True"
+        ...
+
+
+predRxnDescriptors.py:147 in public method `getConfusionMatrix`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+
+   147:     def getConfusionMatrix(self):
+   148:         """Returns a dicionary of dictionaries of dictionaries, where the outer keys
+   149:            are the outcomeDescriptors, the middle keys are the "correct" or "true"
+   150:            values, the innermost keys are the "guessed" values that occurred, and
+   151:            the value is the integer number of occurrences of that guess when the
+   152:            true descriptor was the middle key.
+   153: 
+        ...
+
+
+predRxnDescriptors.py:147 in public method `getConfusionMatrix`:
+        D209: Multi-line docstring closing quotes should be on a separate line
+
+   147:     def getConfusionMatrix(self):
+   148:         """Returns a dicionary of dictionaries of dictionaries, where the outer keys
+   149:            are the outcomeDescriptors, the middle keys are the "correct" or "true"
+   150:            values, the innermost keys are the "guessed" values that occurred, and
+   151:            the value is the integer number of occurrences of that guess when the
+   152:            true descriptor was the middle key.
+   153: 
+        ...
+
+
+predRxnDescriptors.py:147 in public method `getConfusionMatrix`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+   147:     def getConfusionMatrix(self):
+   148:         """Returns a dicionary of dictionaries of dictionaries, where the outer keys
+   149:            are the outcomeDescriptors, the middle keys are the "correct" or "true"
+   150:            values, the innermost keys are the "guessed" values that occurred, and
+   151:            the value is the integer number of occurrences of that guess when the
+   152:            true descriptor was the middle key.
+   153: 
+        ...
+
+
+predRxnDescriptors.py:147 in public method `getConfusionMatrix`:
+        D400: First line should end with a period (not 's')
+
+   147:     def getConfusionMatrix(self):
+   148:         """Returns a dicionary of dictionaries of dictionaries, where the outer keys
+   149:            are the outcomeDescriptors, the middle keys are the "correct" or "true"
+   150:            values, the innermost keys are the "guessed" values that occurred, and
+   151:            the value is the integer number of occurrences of that guess when the
+   152:            true descriptor was the middle key.
+   153: 
+        ...
+
+
+predRxnDescriptors.py:147 in public method `getConfusionMatrix`:
+        D208: Docstring is over-indented
+
+   147:     def getConfusionMatrix(self):
+   148:         """Returns a dicionary of dictionaries of dictionaries, where the outer keys
+   149:            are the outcomeDescriptors, the middle keys are the "correct" or "true"
+   150:            values, the innermost keys are the "guessed" values that occurred, and
+   151:            the value is the integer number of occurrences of that guess when the
+   152:            true descriptor was the middle key.
+   153: 
+        ...
+
+
+predRxnDescriptors.py:173 in public method `getPredictionTuples`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+   173:     def getPredictionTuples(self):
+   174:         """"
+   175:         Returns a list of tuples where the first value is the actual value for
+   176:         a descriptor of a reaction and the second value is the predicted value
+   177:         of that descriptor in the same reaction.
+   178:         EG: [(1,1), (2,1), (4,1), (3,1), (1,1)] for a model that always
+   179:             predicts "1" if there are 4 different values for a descriptor.
+        ...
+
+
+predRxnDescriptors.py:173 in public method `getPredictionTuples`:
+        D400: First line should end with a period (not '"')
+
+   173:     def getPredictionTuples(self):
+   174:         """"
+   175:         Returns a list of tuples where the first value is the actual value for
+   176:         a descriptor of a reaction and the second value is the predicted value
+   177:         of that descriptor in the same reaction.
+   178:         EG: [(1,1), (2,1), (4,1), (3,1), (1,1)] for a model that always
+   179:             predicts "1" if there are 4 different values for a descriptor.
+        ...
+
+
+predRxnDescriptors.py:202 in public method `getPredictionTuples`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+   202:     def getPredictionTuples(self):
+   203:         """"
+   204:         Returns a list of tuples where the first value is the actual value for
+   205:         a descriptor of a reaction and the second value is the predicted value
+   206:         of that descriptor in the same reaction.
+   207:         EG: [(1,1), (2,1), (4,1), (3,1), (1,1)] for a model that always
+   208:             predicts "1" if there are 4 different values for a descriptor.
+        ...
+
+
+predRxnDescriptors.py:202 in public method `getPredictionTuples`:
+        D400: First line should end with a period (not '"')
+
+   202:     def getPredictionTuples(self):
+   203:         """"
+   204:         Returns a list of tuples where the first value is the actual value for
+   205:         a descriptor of a reaction and the second value is the predicted value
+   206:         of that descriptor in the same reaction.
+   207:         EG: [(1,1), (2,1), (4,1), (3,1), (1,1)] for a model that always
+   208:             predicts "1" if there are 4 different values for a descriptor.
+        ...
+
+
+querysets.py:1 at module level:
+        D400: First line should end with a period (not 't')
+
+     1: '''A module for turning querysets into csv files or output'''
+     2: import csv
+     3: import numpy as np
+     4: from django.db import models
+     5: import abc
+     6: from collections import OrderedDict
+     7: from itertools import islice, chain
+        ...
+
+
+querysets.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module for turning querysets into csv files or output'''
+     2: import csv
+     3: import numpy as np
+     4: from django.db import models
+     5: import abc
+     6: from collections import OrderedDict
+     7: from itertools import islice, chain
+        ...
+
+
+querysets.py:10 in public class `MultiQuerySet`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    10: class MultiQuerySet(object):
+    11:     """
+    12:     A set of querysets that quacks like a query set.
+    13:     For any method called on it, it calls the corresponding method on each of its querysets.
+    14:     Be careful that this makes sense for the given querysets.
+    15:     For some queryset methods, this doesn't make sense (like order_by) and more work is needed.
+    16:     Not all of these are implemented.
+        ...
+
+
+querysets.py:10 in public class `MultiQuerySet`:
+        D204: 1 blank line required after class docstring (found 0)
+
+    10: class MultiQuerySet(object):
+    11:     """
+    12:     A set of querysets that quacks like a query set.
+    13:     For any method called on it, it calls the corresponding method on each of its querysets.
+    14:     Be careful that this makes sense for the given querysets.
+    15:     For some queryset methods, this doesn't make sense (like order_by) and more work is needed.
+    16:     Not all of these are implemented.
+        ...
+
+
+querysets.py:29 in public method `__getattr__`:
+        D401: First line should be in imperative mood ('Deal', not 'Deals')
+
+    29:     def __getattr__(self, name):
+    30:         """
+    31:         Deals with all names that are not defined explicitly
+    32:         """
+    33:         # Check to make sure this is actua
+    34:         if name not in models.query.QuerySet.__dict__:
+    35:             raise AttributeError("This is not a queryset method")
+        ...
+
+
+querysets.py:29 in public method `__getattr__`:
+        D400: First line should end with a period (not 'y')
+
+    29:     def __getattr__(self, name):
+    30:         """
+    31:         Deals with all names that are not defined explicitly
+    32:         """
+    33:         # Check to make sure this is actua
+    34:         if name not in models.query.QuerySet.__dict__:
+    35:             raise AttributeError("This is not a queryset method")
+        ...
+
+
+querysets.py:29 in public method `__getattr__`:
+        D200: One-line docstring should fit on one line with quotes (found 3)
+
+    29:     def __getattr__(self, name):
+    30:         """
+    31:         Deals with all names that are not defined explicitly
+    32:         """
+    33:         # Check to make sure this is actua
+    34:         if name not in models.query.QuerySet.__dict__:
+    35:             raise AttributeError("This is not a queryset method")
+        ...
+
+
+querysets.py:53 in public method `count`:
+        D401: First line should be in imperative mood ('Perform', not 'Performs')
+
+    53:     def count(self):
+    54:         """
+    55:         Performs a .count() for all subquerysets and returns the number of
+    56:         records as an integer.
+    57:         """
+    58:         return sum(qs.count() for qs in self.querysets)
+
+
+querysets.py:53 in public method `count`:
+        D402: First line should not be the function's "signature"
+
+    53:     def count(self):
+    54:         """
+    55:         Performs a .count() for all subquerysets and returns the number of
+    56:         records as an integer.
+    57:         """
+    58:         return sum(qs.count() for qs in self.querysets)
+
+
+querysets.py:53 in public method `count`:
+        D400: First line should end with a period (not 'f')
+
+    53:     def count(self):
+    54:         """
+    55:         Performs a .count() for all subquerysets and returns the number of
+    56:         records as an integer.
+    57:         """
+    58:         return sum(qs.count() for qs in self.querysets)
+
+
+querysets.py:60 in private method `_clone`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+
+    60:     def _clone(self):
+    61:         "Returns a clone of this queryset chain"
+    62:         return self.__class__(*self.querysets)
+
+
+querysets.py:60 in private method `_clone`:
+        D400: First line should end with a period (not 'n')
+
+    60:     def _clone(self):
+    61:         "Returns a clone of this queryset chain"
+    62:         return self.__class__(*self.querysets)
+
+
+querysets.py:60 in private method `_clone`:
+        D300: Use """triple double quotes""" (found '-quotes)
+
+    60:     def _clone(self):
+    61:         "Returns a clone of this queryset chain"
+    62:         return self.__class__(*self.querysets)
+
+
+querysets.py:64 in private method `_all`:
+        D401: First line should be in imperative mood ('Iterate', not 'Iterates')
+
+    64:     def _all(self):
+    65:         "Iterates records in all subquerysets"
+    66:         return chain(*self.querysets)
+
+
+querysets.py:64 in private method `_all`:
+        D400: First line should end with a period (not 's')
+
+    64:     def _all(self):
+    65:         "Iterates records in all subquerysets"
+    66:         return chain(*self.querysets)
+
+
+querysets.py:64 in private method `_all`:
+        D300: Use """triple double quotes""" (found '-quotes)
+
+    64:     def _all(self):
+    65:         "Iterates records in all subquerysets"
+    66:         return chain(*self.querysets)
+
+
+querysets.py:68 in public method `__getitem__`:
+        D401: First line should be in imperative mood ('Retrieve', not 'Retrieves')
+
+    68:     def __getitem__(self, ndx):
+    69:         """
+    70:         Retrieves an item or slice from the chained set of results from all
+    71:         subquerysets.
+    72:         """
+    73:         if isinstance(ndx, slice):
+    74:             return list(islice(self._all(), ndx.start, ndx.stop, ndx.step or 1))
+        ...
+
+
+querysets.py:68 in public method `__getitem__`:
+        D400: First line should end with a period (not 'l')
+
+    68:     def __getitem__(self, ndx):
+    69:         """
+    70:         Retrieves an item or slice from the chained set of results from all
+    71:         subquerysets.
+    72:         """
+    73:         if isinstance(ndx, slice):
+    74:             return list(islice(self._all(), ndx.start, ndx.stop, ndx.step or 1))
+        ...
+
+
+querysets.py:82 in public class `CsvQuerySet`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    82: class CsvQuerySet(models.query.QuerySet):
+    83:     '''This queryset permits the output of the data from a model as a csv'''
+    84: 
+    85:     __metaclass__ = abc.ABCMeta
+    86: 
+    87:     def csvHeaders(self, whitelist=None):
+    88:         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
+        ...
+
+
+querysets.py:82 in public class `CsvQuerySet`:
+        D400: First line should end with a period (not 'v')
+
+    82: class CsvQuerySet(models.query.QuerySet):
+    83:     '''This queryset permits the output of the data from a model as a csv'''
+    84: 
+    85:     __metaclass__ = abc.ABCMeta
+    86: 
+    87:     def csvHeaders(self, whitelist=None):
+    88:         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
+        ...
+
+
+querysets.py:82 in public class `CsvQuerySet`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    82: class CsvQuerySet(models.query.QuerySet):
+    83:     '''This queryset permits the output of the data from a model as a csv'''
+    84: 
+    85:     __metaclass__ = abc.ABCMeta
+    86: 
+    87:     def csvHeaders(self, whitelist=None):
+    88:         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
+        ...
+
+
+querysets.py:87 in public method `csvHeaders`:
+        D209: Multi-line docstring closing quotes should be on a separate line
+
+    87:     def csvHeaders(self, whitelist=None):
+    88:         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
+    89:         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
+    90:         if whitelist is not None:
+    91:             return [field.name for field in self.model._meta.fields if field in whitelist]
+    92:         else:
+    93:             return [field.name for field in self.model._meta.fields]
+        ...
+
+
+querysets.py:87 in public method `csvHeaders`:
+        D400: First line should end with a period (not ',')
+
+    87:     def csvHeaders(self, whitelist=None):
+    88:         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
+    89:         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
+    90:         if whitelist is not None:
+    91:             return [field.name for field in self.model._meta.fields if field in whitelist]
+    92:         else:
+    93:             return [field.name for field in self.model._meta.fields]
+        ...
+
+
+querysets.py:87 in public method `csvHeaders`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    87:     def csvHeaders(self, whitelist=None):
+    88:         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
+    89:         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
+    90:         if whitelist is not None:
+    91:             return [field.name for field in self.model._meta.fields if field in whitelist]
+    92:         else:
+    93:             return [field.name for field in self.model._meta.fields]
+        ...
+
+
+querysets.py:98 in public method `toCsv`:
+        D401: First line should be in imperative mood ('Write', not 'Writes')
+
+    98:     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):  # TODO:figure out most sensible default for missing values
+    99:         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
+   100:             information that the corresponding methods provide- this requires the model being called to have a property
+   101:             'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
+   102:             by fetchExpandedHeaders.
+   103:         '''
+   104: 
+        ...
+
+
+querysets.py:98 in public method `toCsv`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+    98:     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):  # TODO:figure out most sensible default for missing values
+    99:         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
+   100:             information that the corresponding methods provide- this requires the model being called to have a property
+   101:             'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
+   102:             by fetchExpandedHeaders.
+   103:         '''
+   104: 
+        ...
+
+
+querysets.py:98 in public method `toCsv`:
+        D400: First line should end with a period (not 'd')
+
+    98:     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):  # TODO:figure out most sensible default for missing values
+    99:         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
+   100:             information that the corresponding methods provide- this requires the model being called to have a property
+   101:             'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
+   102:             by fetchExpandedHeaders.
+   103:         '''
+   104: 
+        ...
+
+
+querysets.py:98 in public method `toCsv`:
+        D208: Docstring is over-indented
+
+    98:     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):  # TODO:figure out most sensible default for missing values
+    99:         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
+   100:             information that the corresponding methods provide- this requires the model being called to have a property
+   101:             'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
+   102:             by fetchExpandedHeaders.
+   103:         '''
+   104: 
+        ...
+
+
+querysets.py:98 in public method `toCsv`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    98:     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):  # TODO:figure out most sensible default for missing values
+    99:         '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
+   100:             information that the corresponding methods provide- this requires the model being called to have a property
+   101:             'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
+   102:             by fetchExpandedHeaders.
+   103:         '''
+   104: 
+        ...
+
+
+querysets.py:121 in public class `ArffQuerySet`:
+        D203: 1 blank line required before class docstring (found 0)
+
+   121: class ArffQuerySet(models.query.QuerySet):
+   122:     '''This queryset class permits data from a model to be output as a .arff file'''
+   123: 
+   124:     __metaclass__ = abc.ABCMeta
+   125: 
+   126:     def expandedArffHeaders(self, whitelist=None):
+   127:         '''returns expanded headers, designed to be overridden by classes that need it'''
+        ...
+
+
+querysets.py:121 in public class `ArffQuerySet`:
+        D400: First line should end with a period (not 'e')
+
+   121: class ArffQuerySet(models.query.QuerySet):
+   122:     '''This queryset class permits data from a model to be output as a .arff file'''
+   123: 
+   124:     __metaclass__ = abc.ABCMeta
+   125: 
+   126:     def expandedArffHeaders(self, whitelist=None):
+   127:         '''returns expanded headers, designed to be overridden by classes that need it'''
+        ...
+
+
+querysets.py:121 in public class `ArffQuerySet`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   121: class ArffQuerySet(models.query.QuerySet):
+   122:     '''This queryset class permits data from a model to be output as a .arff file'''
+   123: 
+   124:     __metaclass__ = abc.ABCMeta
+   125: 
+   126:     def expandedArffHeaders(self, whitelist=None):
+   127:         '''returns expanded headers, designed to be overridden by classes that need it'''
+        ...
+
+
+querysets.py:126 in public method `expandedArffHeaders`:
+        D401: First line should be in imperative mood ('return', not 'returns')
+
+   126:     def expandedArffHeaders(self, whitelist=None):
+   127:         '''returns expanded headers, designed to be overridden by classes that need it'''
+   128:         return self.arffHeaders(whitelist)
+
+
+querysets.py:126 in public method `expandedArffHeaders`:
+        D400: First line should end with a period (not 't')
+
+   126:     def expandedArffHeaders(self, whitelist=None):
+   127:         '''returns expanded headers, designed to be overridden by classes that need it'''
+   128:         return self.arffHeaders(whitelist)
+
+
+querysets.py:126 in public method `expandedArffHeaders`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   126:     def expandedArffHeaders(self, whitelist=None):
+   127:         '''returns expanded headers, designed to be overridden by classes that need it'''
+   128:         return self.arffHeaders(whitelist)
+
+
+querysets.py:130 in public method `arffHeaders`:
+        D209: Multi-line docstring closing quotes should be on a separate line
+
+   130:     def arffHeaders(self, whitelist=None):
+   131:         '''the basic headers to be used for the mode. Note that this imlementation is extremely basic, though not as much so as
+   132:         the csv file query set. This will manage foreignkey relations (make sure to define __unicode__ on your models!),
+   133:         but won't handle automagic fields or fields to many objects. It will silently ignore
+   134:         fields that it does not know how to manage.'''
+   135:         headers = OrderedDict()
+   136:         for field in self.model._meta.fields:
+        ...
+
+
+querysets.py:130 in public method `arffHeaders`:
+        D400: First line should end with a period (not 's')
+
+   130:     def arffHeaders(self, whitelist=None):
+   131:         '''the basic headers to be used for the mode. Note that this imlementation is extremely basic, though not as much so as
+   132:         the csv file query set. This will manage foreignkey relations (make sure to define __unicode__ on your models!),
+   133:         but won't handle automagic fields or fields to many objects. It will silently ignore
+   134:         fields that it does not know how to manage.'''
+   135:         headers = OrderedDict()
+   136:         for field in self.model._meta.fields:
+        ...
+
+
+querysets.py:130 in public method `arffHeaders`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   130:     def arffHeaders(self, whitelist=None):
+   131:         '''the basic headers to be used for the mode. Note that this imlementation is extremely basic, though not as much so as
+   132:         the csv file query set. This will manage foreignkey relations (make sure to define __unicode__ on your models!),
+   133:         but won't handle automagic fields or fields to many objects. It will silently ignore
+   134:         fields that it does not know how to manage.'''
+   135:         headers = OrderedDict()
+   136:         for field in self.model._meta.fields:
+        ...
+
+
+querysets.py:153 in public method `toArff`:
+        D401: First line should be in imperative mood ('output', not 'outputs')
+
+   153:     def toArff(self, writeable, expanded=False, relationName='relation', whitelistHeaders=None, missing="?"):
+   154:         '''outputs to an arff file-like object'''
+   155:         writeable.write('%arff file generated by the Dark Reactions Project provided by Haverford College\n')
+   156:         writeable.write('\n@relation {}\n'.format(relationName))
+   157:         if expanded:
+   158:             headers = self.expandedArffHeaders(whitelistHeaders)
+   159:         else:
+        ...
+
+
+querysets.py:153 in public method `toArff`:
+        D400: First line should end with a period (not 't')
+
+   153:     def toArff(self, writeable, expanded=False, relationName='relation', whitelistHeaders=None, missing="?"):
+   154:         '''outputs to an arff file-like object'''
+   155:         writeable.write('%arff file generated by the Dark Reactions Project provided by Haverford College\n')
+   156:         writeable.write('\n@relation {}\n'.format(relationName))
+   157:         if expanded:
+   158:             headers = self.expandedArffHeaders(whitelistHeaders)
+   159:         else:
+        ...
+
+
+querysets.py:153 in public method `toArff`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   153:     def toArff(self, writeable, expanded=False, relationName='relation', whitelistHeaders=None, missing="?"):
+   154:         '''outputs to an arff file-like object'''
+   155:         writeable.write('%arff file generated by the Dark Reactions Project provided by Haverford College\n')
+   156:         writeable.write('\n@relation {}\n'.format(relationName))
+   157:         if expanded:
+   158:             headers = self.expandedArffHeaders(whitelistHeaders)
+   159:         else:
+        ...
+
+
+querysets.py:169 in public method `toNPArray`:
+        D401: First line should be in imperative mood ('return', not 'returns')
+
+   169:     def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
+   170:         '''returns a numpy array'''
+   171: 
+   172:         matrix = []
+   173:         if expanded:
+   174:             headers = self.expandedArffHeaders(whitelistHeaders)
+   175:         else:
+        ...
+
+
+querysets.py:169 in public method `toNPArray`:
+        D202: No blank lines allowed after function docstring (found 1)
+
+   169:     def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
+   170:         '''returns a numpy array'''
+   171: 
+   172:         matrix = []
+   173:         if expanded:
+   174:             headers = self.expandedArffHeaders(whitelistHeaders)
+   175:         else:
+        ...
+
+
+querysets.py:169 in public method `toNPArray`:
+        D400: First line should end with a period (not 'y')
+
+   169:     def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
+   170:         '''returns a numpy array'''
+   171: 
+   172:         matrix = []
+   173:         if expanded:
+   174:             headers = self.expandedArffHeaders(whitelistHeaders)
+   175:         else:
+        ...
+
+
+querysets.py:169 in public method `toNPArray`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   169:     def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
+   170:         '''returns a numpy array'''
+   171: 
+   172:         matrix = []
+   173:         if expanded:
+   174:             headers = self.expandedArffHeaders(whitelistHeaders)
+   175:         else:
+        ...
+
+
+Reaction.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing only the Reaction class'''
+     2: from django.db import models
+     3: from LabGroup import LabGroup
+     4: from Compound import Compound
+     5: from querysets import CsvQuerySet, ArffQuerySet, MultiQuerySet
+     6: from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
+     7: from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
+        ...
+
+
+Reaction.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing only the Reaction class'''
+     2: from django.db import models
+     3: from LabGroup import LabGroup
+     4: from Compound import Compound
+     5: from querysets import CsvQuerySet, ArffQuerySet, MultiQuerySet
+     6: from descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
+     7: from rxnDescriptorValues import BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
+        ...
+
+
+Reaction.py:24 in public method `__init__`:
+        D401: First line should be in imperative mood ('Initialise', not 'Initialises')
+
+    24:     def __init__(self, model=None, **kwargs):
+    25:         """Initialises the queryset"""
+    26:         model = Reaction if model is None else model
+    27:         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
+
+
+Reaction.py:24 in public method `__init__`:
+        D400: First line should end with a period (not 't')
+
+    24:     def __init__(self, model=None, **kwargs):
+    25:         """Initialises the queryset"""
+    26:         model = Reaction if model is None else model
+    27:         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
+
+
+Reaction.py:29 in public method `maxReactantCount`:
+        D401: First line should be in imperative mood ('Give', not 'Gives')
+
+    29:     def maxReactantCount(self):
+    30:         """Gives a count of the maximum number of reactions associated with this queryset"""
+    31:         m = self.annotate(compoundQuantityCount=models.Count('compoundquantity')).aggregate(max=models.Max('compoundQuantityCount'))['max']
+    32:         if m is None:
+    33:             return 0
+    34:         return m
+
+
+Reaction.py:29 in public method `maxReactantCount`:
+        D400: First line should end with a period (not 't')
+
+    29:     def maxReactantCount(self):
+    30:         """Gives a count of the maximum number of reactions associated with this queryset"""
+    31:         m = self.annotate(compoundQuantityCount=models.Count('compoundquantity')).aggregate(max=models.Max('compoundQuantityCount'))['max']
+    32:         if m is None:
+    33:             return 0
+    34:         return m
+
+
+Reaction.py:39 in public method `csvHeaders`:
+        D401: First line should be in imperative mood ('Generate', not 'Generates')
+
+    39:     def csvHeaders(self, whitelist=None):
+    40:         """Generates the header row information for the CSV"""
+    41:         headers = super(ReactionQuerySet, self).csvHeaders(whitelist)
+    42:         m = Reaction.objects.all().maxReactantCount()
+    43:         for i in range(0, m):
+    44:             h = self._getCompoundQuantityHeaderOrder(i)
+    45:             if whitelist is None or h in whitelist:
+        ...
+
+
+Reaction.py:39 in public method `csvHeaders`:
+        D400: First line should end with a period (not 'V')
+
+    39:     def csvHeaders(self, whitelist=None):
+    40:         """Generates the header row information for the CSV"""
+    41:         headers = super(ReactionQuerySet, self).csvHeaders(whitelist)
+    42:         m = Reaction.objects.all().maxReactantCount()
+    43:         for i in range(0, m):
+    44:             h = self._getCompoundQuantityHeaderOrder(i)
+    45:             if whitelist is None or h in whitelist:
+        ...
+
+
+Reaction.py:50 in public method `arffHeaders`:
+        D401: First line should be in imperative mood ('generate', not 'generates')
+
+    50:     def arffHeaders(self, whitelist=None):
+    51:         """generates headers for the arff file"""
+    52:         headers = super(ReactionQuerySet, self).arffHeaders(whitelist)
+    53:         m = Reaction.objects.all().maxReactantCount()
+    54:         for i in range(0, m):
+    55:             compound_label = 'compound_{}'.format(i)
+    56:             if whitelist is None or compound_label in whitelist:
+        ...
+
+
+Reaction.py:50 in public method `arffHeaders`:
+        D400: First line should end with a period (not 'e')
+
+    50:     def arffHeaders(self, whitelist=None):
+    51:         """generates headers for the arff file"""
+    52:         headers = super(ReactionQuerySet, self).arffHeaders(whitelist)
+    53:         m = Reaction.objects.all().maxReactantCount()
+    54:         for i in range(0, m):
+    55:             compound_label = 'compound_{}'.format(i)
+    56:             if whitelist is None or compound_label in whitelist:
+        ...
+
+
+Reaction.py:72 in public method `expandedCsvHeaders`:
+        D401: First line should be in imperative mood ('Generate', not 'Generates')
+
+    72:     def expandedCsvHeaders(self, whitelist=None):
+    73:         """Generates the expanded header for the csv"""
+    74:         if whitelist is not None:
+    75:             return self.csvHeaders(whitelist) + [d.csvHeader for d in self.descriptors.filter(csvHeader__in=whitelist)]
+    76:         else:
+    77:             return self.csvHeaders(whitelist) + [d.csvHeader for d in self.descriptors]
+
+
+Reaction.py:72 in public method `expandedCsvHeaders`:
+        D400: First line should end with a period (not 'v')
+
+    72:     def expandedCsvHeaders(self, whitelist=None):
+    73:         """Generates the expanded header for the csv"""
+    74:         if whitelist is not None:
+    75:             return self.csvHeaders(whitelist) + [d.csvHeader for d in self.descriptors.filter(csvHeader__in=whitelist)]
+    76:         else:
+    77:             return self.csvHeaders(whitelist) + [d.csvHeader for d in self.descriptors]
+
+
+Reaction.py:80 in public method `descriptors`:
+        D401: First line should be in imperative mood ('Return', not 'Returns')
+
+    80:     def descriptors(self):
+    81:         """
+    82:         Returns all reaction descriptors.
+    83:         Used to return only descriptors which have relationship to the queryset,
+    84:         but this caused enormous slowdowns because of in queries
+    85:         """
+    86:         return MultiQuerySet(BoolRxnDescriptor.objects.all(),
+        ...
+
+
+Reaction.py:145 in public method `batch_iterator`:
+        D400: First line should end with a period (not 'y')
+
+   145:     def batch_iterator(self, chunksize=5000):
+   146:         '''
+   147:         Iterate over a Django Queryset ordered by the primary key
+   148: 
+   149:         This method loads a maximum of chunksize (default: 5000) rows in it's
+   150:         memory at the same time while django normally would load all rows in it's
+   151:         memory. Using the iterator() method only causes it to not preload all the
+        ...
+
+
+Reaction.py:145 in public method `batch_iterator`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   145:     def batch_iterator(self, chunksize=5000):
+   146:         '''
+   147:         Iterate over a Django Queryset ordered by the primary key
+   148: 
+   149:         This method loads a maximum of chunksize (default: 5000) rows in it's
+   150:         memory at the same time while django normally would load all rows in it's
+   151:         memory. Using the iterator() method only causes it to not preload all the
+        ...
+
+
+Reaction.py:177 in public class `ReactionManager`:
+        D203: 1 blank line required before class docstring (found 0)
+
+   177: class ReactionManager(models.Manager):
+   178:     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs"""
+   179:     use_for_related_fields = True
+   180: 
+   181:     def get_queryset(self):
+   182:         return ReactionQuerySet()
+
+
+Reaction.py:177 in public class `ReactionManager`:
+        D204: 1 blank line required after class docstring (found 0)
+
+   177: class ReactionManager(models.Manager):
+   178:     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs"""
+   179:     use_for_related_fields = True
+   180: 
+   181:     def get_queryset(self):
+   182:         return ReactionQuerySet()
+
+
+Reaction.py:177 in public class `ReactionManager`:
+        D400: First line should end with a period (not 's')
+
+   177: class ReactionManager(models.Manager):
+   178:     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs"""
+   179:     use_for_related_fields = True
+   180: 
+   181:     def get_queryset(self):
+   182:         return ReactionQuerySet()
+
+
+Reaction.py:185 in public class `Reaction`:
+        D203: 1 blank line required before class docstring (found 0)
+
+   185: class Reaction(models.Model):
+   186:     '''A base class on which PerformedReactions and RecommendedReactions are built,
+   187:     contains common information to each in a table with an automatically
+   188:     generated one to one relationship with the subclasses.
+   189:     '''
+   190: 
+   191:     class Meta:
+        ...
+
+
+Reaction.py:185 in public class `Reaction`:
+        D400: First line should end with a period (not ',')
+
+   185: class Reaction(models.Model):
+   186:     '''A base class on which PerformedReactions and RecommendedReactions are built,
+   187:     contains common information to each in a table with an automatically
+   188:     generated one to one relationship with the subclasses.
+   189:     '''
+   190: 
+   191:     class Meta:
+        ...
+
+
+Reaction.py:185 in public class `Reaction`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   185: class Reaction(models.Model):
+   186:     '''A base class on which PerformedReactions and RecommendedReactions are built,
+   187:     contains common information to each in a table with an automatically
+   188:     generated one to one relationship with the subclasses.
+   189:     '''
+   190: 
+   191:     class Meta:
+        ...
+
+
+RecommendedReaction.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing only the RecommendedReaction class'''
+     2: from django.db import models
+     3: from Reaction import Reaction
+     4: 
+     5: 
+     6: class RecommendedReaction(Reaction):
+     7: 
+        ...
+
+
+RecommendedReaction.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing only the RecommendedReaction class'''
+     2: from django.db import models
+     3: from Reaction import Reaction
+     4: 
+     5: 
+     6: class RecommendedReaction(Reaction):
+     7: 
+        ...
+
+
+rxnDescriptors.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containing the reactions descriptors'''
+     2: from descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+     3: from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable, DescriptorManager
+     4: import rxnDescriptorValues
+     5: import DRP.models
+     6: 
+     7: 
+        ...
+
+
+rxnDescriptors.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containing the reactions descriptors'''
+     2: from descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+     3: from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable, DescriptorManager
+     4: import rxnDescriptorValues
+     5: import DRP.models
+     6: 
+     7: 
+        ...
+
+
+rxnDescriptors.py:8 in public class `CatRxnDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+     8: class CatRxnDescriptor(CategoricalDescriptor, Predictable):
+     9:     '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
+    10: 
+    11:     class Meta:
+    12:         app_label = 'DRP'
+    13:         verbose_name = 'Categorical Reaction Descriptor'
+    14: 
+        ...
+
+
+rxnDescriptors.py:8 in public class `CatRxnDescriptor`:
+        D400: First line should end with a period (not 'n')
+
+     8: class CatRxnDescriptor(CategoricalDescriptor, Predictable):
+     9:     '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
+    10: 
+    11:     class Meta:
+    12:         app_label = 'DRP'
+    13:         verbose_name = 'Categorical Reaction Descriptor'
+    14: 
+        ...
+
+
+rxnDescriptors.py:8 in public class `CatRxnDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     8: class CatRxnDescriptor(CategoricalDescriptor, Predictable):
+     9:     '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
+    10: 
+    11:     class Meta:
+    12:         app_label = 'DRP'
+    13:         verbose_name = 'Categorical Reaction Descriptor'
+    14: 
+        ...
+
+
+rxnDescriptors.py:21 in public method `createValue`:
+        D400: First line should end with a period (not 't')
+
+    21:     def createValue(self, reaction, value):
+    22:         """Create a new reaction value object"""
+    23:         try:
+    24:             v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
+    25:         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
+    26:             v = rxnDescriptorValues.CatRxnDescriptorValue(descriptor=self, reaction=reaction)
+    27:         v.value = CategoricalDescriptorPermittedValue.objects.get(value=value)
+        ...
+
+
+rxnDescriptors.py:30 in public method `updateOrNewValue`:
+        D401: First line should be in imperative mood ('Update', not 'Updates')
+
+    30:     def updateOrNewValue(self, reaction, value):
+    31:         """
+    32:         Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+    33:         This allows later bulk creation.
+    34:         Returns the new value object or None if no object was created (only updated).
+    35:         """
+    36:         qs = rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
+        ...
+
+
+rxnDescriptors.py:45 in public class `OrdRxnDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    45: class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
+    46:     '''A class which represents an ordinal descriptor'''
+    47: 
+    48:     class Meta:
+    49:         verbose_name = 'Ordinal Reaction Descriptor'
+    50:         app_label = 'DRP'
+    51: 
+        ...
+
+
+rxnDescriptors.py:45 in public class `OrdRxnDescriptor`:
+        D400: First line should end with a period (not 'r')
+
+    45: class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
+    46:     '''A class which represents an ordinal descriptor'''
+    47: 
+    48:     class Meta:
+    49:         verbose_name = 'Ordinal Reaction Descriptor'
+    50:         app_label = 'DRP'
+    51: 
+        ...
+
+
+rxnDescriptors.py:45 in public class `OrdRxnDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    45: class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
+    46:     '''A class which represents an ordinal descriptor'''
+    47: 
+    48:     class Meta:
+    49:         verbose_name = 'Ordinal Reaction Descriptor'
+    50:         app_label = 'DRP'
+    51: 
+        ...
+
+
+rxnDescriptors.py:68 in public method `updateOrNewValue`:
+        D401: First line should be in imperative mood ('Update', not 'Updates')
+
+    68:     def updateOrNewValue(self, reaction, value):
+    69:         """
+    70:         Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+    71:         This allows later bulk creation.
+    72:         Returns the new value object or None if no object was created (only updated).
+    73:         """
+    74:         if not isinstance(value, int) and value is not None:
+        ...
+
+
+rxnDescriptors.py:92 in public class `NumRxnDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    92: class NumRxnDescriptor(NumericDescriptor, Predictable):
+    93:     '''A class which represents a numerical descriptor'''
+    94: 
+    95:     class Meta:
+    96:         app_label = 'DRP'
+    97:         verbose_name = 'Numerical Reaction Descriptor'
+    98: 
+        ...
+
+
+rxnDescriptors.py:92 in public class `NumRxnDescriptor`:
+        D400: First line should end with a period (not 'r')
+
+    92: class NumRxnDescriptor(NumericDescriptor, Predictable):
+    93:     '''A class which represents a numerical descriptor'''
+    94: 
+    95:     class Meta:
+    96:         app_label = 'DRP'
+    97:         verbose_name = 'Numerical Reaction Descriptor'
+    98: 
+        ...
+
+
+rxnDescriptors.py:92 in public class `NumRxnDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    92: class NumRxnDescriptor(NumericDescriptor, Predictable):
+    93:     '''A class which represents a numerical descriptor'''
+    94: 
+    95:     class Meta:
+    96:         app_label = 'DRP'
+    97:         verbose_name = 'Numerical Reaction Descriptor'
+    98: 
+        ...
+
+
+rxnDescriptors.py:116 in public method `updateOrNewValue`:
+        D401: First line should be in imperative mood ('Update', not 'Updates')
+
+   116:     def updateOrNewValue(self, reaction, value):
+   117:         """
+   118:         Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+   119:         This allows later bulk creation.
+   120:         Returns the new value object or None if no object was created (only updated).
+   121:         """
+   122:         if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
+        ...
+
+
+rxnDescriptors.py:140 in public class `BoolRxnDescriptor`:
+        D203: 1 blank line required before class docstring (found 0)
+
+   140: class BoolRxnDescriptor(BooleanDescriptor, Predictable):
+   141:     '''A class which represents a boolean descriptors'''
+   142: 
+   143:     class Meta:
+   144:         app_label = 'DRP'
+   145:         verbose_name = 'Boolean Reaction Descriptor'
+   146: 
+        ...
+
+
+rxnDescriptors.py:140 in public class `BoolRxnDescriptor`:
+        D400: First line should end with a period (not 's')
+
+   140: class BoolRxnDescriptor(BooleanDescriptor, Predictable):
+   141:     '''A class which represents a boolean descriptors'''
+   142: 
+   143:     class Meta:
+   144:         app_label = 'DRP'
+   145:         verbose_name = 'Boolean Reaction Descriptor'
+   146: 
+        ...
+
+
+rxnDescriptors.py:140 in public class `BoolRxnDescriptor`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+   140: class BoolRxnDescriptor(BooleanDescriptor, Predictable):
+   141:     '''A class which represents a boolean descriptors'''
+   142: 
+   143:     class Meta:
+   144:         app_label = 'DRP'
+   145:         verbose_name = 'Boolean Reaction Descriptor'
+   146: 
+        ...
+
+
+rxnDescriptors.py:163 in public method `updateOrNewValue`:
+        D401: First line should be in imperative mood ('Update', not 'Updates')
+
+   163:     def updateOrNewValue(self, reaction, value):
+   164:         """
+   165:         Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+   166:         This allows later bulk creation.
+   167:         Returns a tuple of the value object and whether it is new (needs to be saved).
+   168:         """
+   169:         if not isinstance(value, bool) and value is not None:
+        ...
+
+
+rxnDescriptorValues.py:1 at module level:
+        D400: First line should end with a period (not 's')
+
+     1: '''A module containign only the DescriptorValue class'''
+     2: from django.db import models
+     3: from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
+     4: from rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
+     5: import dataSets
+     6: # Needed to allow for circular dependency.
+     7: import importlib
+        ...
+
+
+rxnDescriptorValues.py:1 at module level:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+     1: '''A module containign only the DescriptorValue class'''
+     2: from django.db import models
+     3: from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
+     4: from rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
+     5: import dataSets
+     6: # Needed to allow for circular dependency.
+     7: import importlib
+        ...
+
+
+rxnDescriptorValues.py:28 in public class `RxnDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    28: class RxnDescriptorValue(models.Model):
+    29:     '''Contains Relationships between Reactions and their descriptors'''
+    30: 
+    31:     class Meta:
+    32:         app_label = "DRP"
+    33:         abstract = True
+    34: 
+        ...
+
+
+rxnDescriptorValues.py:28 in public class `RxnDescriptorValue`:
+        D400: First line should end with a period (not 's')
+
+    28: class RxnDescriptorValue(models.Model):
+    29:     '''Contains Relationships between Reactions and their descriptors'''
+    30: 
+    31:     class Meta:
+    32:         app_label = "DRP"
+    33:         abstract = True
+    34: 
+        ...
+
+
+rxnDescriptorValues.py:28 in public class `RxnDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    28: class RxnDescriptorValue(models.Model):
+    29:     '''Contains Relationships between Reactions and their descriptors'''
+    30: 
+    31:     class Meta:
+    32:         app_label = "DRP"
+    33:         abstract = True
+    34: 
+        ...
+
+
+rxnDescriptorValues.py:59 in public class `CatRxnDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    59: class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
+    60:     '''Contains the value of a categorical descriptor for a reaction'''
+    61: 
+    62:     descriptorClass = CatRxnDescriptor
+    63: 
+    64:     class Meta:
+    65:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:59 in public class `CatRxnDescriptorValue`:
+        D400: First line should end with a period (not 'n')
+
+    59: class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
+    60:     '''Contains the value of a categorical descriptor for a reaction'''
+    61: 
+    62:     descriptorClass = CatRxnDescriptor
+    63: 
+    64:     class Meta:
+    65:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:59 in public class `CatRxnDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    59: class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
+    60:     '''Contains the value of a categorical descriptor for a reaction'''
+    61: 
+    62:     descriptorClass = CatRxnDescriptor
+    63: 
+    64:     class Meta:
+    65:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:70 in public class `BoolRxnDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    70: class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
+    71:     '''Contains the value of a boolean descriptor for a reaction'''
+    72: 
+    73:     descriptorClass = BoolRxnDescriptor
+    74: 
+    75:     class Meta:
+    76:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:70 in public class `BoolRxnDescriptorValue`:
+        D400: First line should end with a period (not 'n')
+
+    70: class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
+    71:     '''Contains the value of a boolean descriptor for a reaction'''
+    72: 
+    73:     descriptorClass = BoolRxnDescriptor
+    74: 
+    75:     class Meta:
+    76:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:70 in public class `BoolRxnDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    70: class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
+    71:     '''Contains the value of a boolean descriptor for a reaction'''
+    72: 
+    73:     descriptorClass = BoolRxnDescriptor
+    74: 
+    75:     class Meta:
+    76:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:81 in public class `NumRxnDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    81: class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
+    82:     '''Contains the numeric value of a descriptor for a reaction'''
+    83: 
+    84:     descriptorClass = NumRxnDescriptor
+    85: 
+    86:     class Meta:
+    87:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:81 in public class `NumRxnDescriptorValue`:
+        D400: First line should end with a period (not 'n')
+
+    81: class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
+    82:     '''Contains the numeric value of a descriptor for a reaction'''
+    83: 
+    84:     descriptorClass = NumRxnDescriptor
+    85: 
+    86:     class Meta:
+    87:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:81 in public class `NumRxnDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    81: class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
+    82:     '''Contains the numeric value of a descriptor for a reaction'''
+    83: 
+    84:     descriptorClass = NumRxnDescriptor
+    85: 
+    86:     class Meta:
+    87:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:92 in public class `OrdRxnDescriptorValue`:
+        D203: 1 blank line required before class docstring (found 0)
+
+    92: class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
+    93:     '''Contains the ordinal value of a descriptor for a reaction'''
+    94: 
+    95:     descriptorClass = OrdRxnDescriptor
+    96: 
+    97:     class Meta:
+    98:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:92 in public class `OrdRxnDescriptorValue`:
+        D400: First line should end with a period (not 'n')
+
+    92: class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
+    93:     '''Contains the ordinal value of a descriptor for a reaction'''
+    94: 
+    95:     descriptorClass = OrdRxnDescriptor
+    96: 
+    97:     class Meta:
+    98:         app_label = "DRP"
+        ...
+
+
+rxnDescriptorValues.py:92 in public class `OrdRxnDescriptorValue`:
+        D300: Use """triple double quotes""" (found '''-quotes)
+
+    92: class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
+    93:     '''Contains the ordinal value of a descriptor for a reaction'''
+    94: 
+    95:     descriptorClass = OrdRxnDescriptor
+    96: 
+    97:     class Meta:
+    98:         app_label = "DRP"
+        ...
+
+

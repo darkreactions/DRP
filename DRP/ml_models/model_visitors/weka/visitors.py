@@ -10,7 +10,7 @@ class KNN(AbstractWekaModelVisitor):
 
 
 class LinearRegression(AbstractWekaModelVisitor):
-    """Weka LinearRegression for predicting numeric responses"""
+    """Weka LinearRegression for predicting numeric responses."""
     wekaCommand = "weka.classifiers.functions.LinearRegression"
 
 
@@ -23,7 +23,7 @@ class LogisticRegression(AbstractWekaModelVisitor):
 
 
 class M5P(AbstractWekaModelVisitor):
-    """Weka M5P for predicting numeric responses"""
+    """Weka M5P for predicting numeric responses."""
     wekaCommand = "weka.classifiers.trees.M5P"
 
 

@@ -27,9 +27,7 @@ class MultiQuerySet(object):
         self.querysets = args
 
     def __getattr__(self, name):
-        """
-        Deals with all names that are not defined explicitly
-        """
+        """Deals with all names that are not defined explicitly"""
         # Check to make sure this is actua
         if name not in models.query.QuerySet.__dict__:
             raise AttributeError("This is not a queryset method")

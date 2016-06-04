@@ -28,11 +28,12 @@ class ApiV1(DRPTestCase):
 
     def test_all(self):
         """Test the database import. For the moment the only test done is to make sure that no exceptions are thrown, since
-        any bugs we can identify so far are caught by the database integrity protection from django, which is well tested"""
+        any bugs we can identify so far are caught by the database integrity protection from django, which is well tested
+        """
         self.databaseOperation()
 
     def test_limit(self):
-        """test the limited import"""
+        """test the limited import."""
         self.databaseOperation(5)
         self.assertEqual(PerformedReaction.objects.all().count(), 5)
 

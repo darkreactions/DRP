@@ -22,12 +22,12 @@ descriptorPlugins = [importlib.import_module(plugin) for
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def __init__(self, model=None, **kwargs):
-        """Initialises the queryset"""
+        """Initialises the queryset."""
         model = Reaction if model is None else model
         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
 
     def maxReactantCount(self):
-        """Gives a count of the maximum number of reactions associated with this queryset"""
+        """Gives a count of the maximum number of reactions associated with this queryset."""
         m = self.annotate(compoundQuantityCount=models.Count('compoundquantity')).aggregate(max=models.Max('compoundQuantityCount'))['max']
         if m is None:
             return 0
@@ -37,7 +37,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         return ['compound_{}'.format(i), 'compound_{}_role'.format(i), 'compound_{}_amount'.format(i)]
 
     def csvHeaders(self, whitelist=None):
-        """Generates the header row information for the CSV"""
+        """Generates the header row information for the CSV."""
         headers = super(ReactionQuerySet, self).csvHeaders(whitelist)
         m = Reaction.objects.all().maxReactantCount()
         for i in range(0, m):
@@ -48,7 +48,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         return headers
 
     def arffHeaders(self, whitelist=None):
-        """generates headers for the arff file"""
+        """generates headers for the arff file."""
         headers = super(ReactionQuerySet, self).arffHeaders(whitelist)
         m = Reaction.objects.all().maxReactantCount()
         for i in range(0, m):
@@ -70,7 +70,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         return headers
 
     def expandedCsvHeaders(self, whitelist=None):
-        """Generates the expanded header for the csv"""
+        """Generates the expanded header for the csv."""
         if whitelist is not None:
             return self.csvHeaders(whitelist) + [d.csvHeader for d in self.descriptors.filter(csvHeader__in=whitelist)]
         else:
@@ -175,7 +175,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
 
 class ReactionManager(models.Manager):
-    """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs"""
+    """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs."""
     use_for_related_fields = True
 
     def get_queryset(self):
