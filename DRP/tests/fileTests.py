@@ -16,11 +16,13 @@ settings_file = os.path.join(settings.APP_DIR, 'settings_example.py')
 
 # Unix patters to exclude
 excludes = [
-            'DRP/research/*',
-            'doc-build/*',
-            'DRP/recommendation/*',
-            'DRP/vis/*'
-            ]
+    'DRP/research/*',
+    'doc-build/*',
+    'DRP/recommendation/*',
+    'DRP/vis/*',
+    'DRP/views/orig_explore_vis.py'
+]
+
 
 class OutputCapture(object):
 
