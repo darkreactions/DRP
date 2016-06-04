@@ -187,7 +187,6 @@ class Command(BaseCommand):
                     except PerformedReaction.DoesNotExist:
                         pass
 
-                    #outValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=outcomeDescriptor, reaction=p)[0]
                     outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range(1, 5))) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
@@ -196,10 +195,8 @@ class Command(BaseCommand):
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
                         outValue = outcomeDescriptor.createValue(p, outcomeValue)
-                        # outValue.save()
                         outValues.append(outValue)
 
-                    #outBoolValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=outcomeBooleanDescriptor, reaction=p)[0]
                     value = True if (outcomeValue > 2) else False
                     try:
                         v = BoolRxnDescriptorValue.objects.get(descriptor=outcomeBooleanDescriptor, reaction=p)
@@ -207,11 +204,9 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
-                        # outBoolValue.save()
                         outBoolValue = outcomeBooleanDescriptor.createValue(p, value)
                         outBoolValues.append(outBoolValue)
 
-                    #purityValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=purityDescriptor, reaction=p)[0]
                     value = int(r['purity']) if (r['purity'] in ('1', '2')) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=purityDescriptor, reaction=p)
@@ -219,11 +214,9 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
-                        # purityValue.save()
                         purityValue = purityDescriptor.createValue(p, value)
                         purityValues.append(purityValue)
 
-                    #temperatureDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=temperatureDescriptor, reaction=p)[0]
                     value = (float(r['temp']) + 273.15) if (r['temp'] not in ('', '?')) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=temperatureDescriptor, reaction=p)
@@ -231,11 +224,9 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        # temperatureDescriptorValue.save()
                         temperatureDescriptorValue = temperatureDescriptor.createValue(p, value)
                         temperatureValues.append(temperatureDescriptorValue)
 
-                    #timeDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=timeDescriptor, reaction=p)[0]
                     value = float(r['time']) * 60 if (r['time'] not in ['', '?']) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=timeDescriptor, reaction=p)
@@ -243,11 +234,9 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        # timeDescriptorValue.save()
                         timeDescriptorValue = timeDescriptor.createValue(p, value)
                         timeValues.append(timeDescriptorValue)
 
-                    #pHDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=pHDescriptor, reaction=p)[0]
                     value = float(r['pH']) if (r['pH'] not in ('', '?')) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=pHDescriptor, reaction=p)
@@ -255,11 +244,9 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        # pHDescriptorValue.save()
                         pHDescriptorValue = pHDescriptor.createValue(p, value)
                         pHValues.append(pHDescriptorValue)
 
-                    #preHeatStandingDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=preHeatStandingDescriptor, reaction=p)[0]
                     value = bool(r['pre_heat standing']) if (r.get('pre_heat standing') not in ('', None)) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=preHeatStandingDescriptor, reaction=p)
@@ -267,11 +254,9 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
-                        # preHeatStandingDescriptorValue.save()
                         preHeatStandingDescriptorValue = preHeatStandingDescriptor.createValue(p, value)
                         preHeatStandingValues.append(preHeatStandingDescriptorValue)
 
-                    #teflonDescriptorValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=teflonDescriptor, reaction=p)[0]
                     value = bool(int(r['teflon_pouch'])) if (r.get('teflon_pouch') not in(None, '')) else None
                     try:
                         v = BoolRxnDescriptorValue.objects.get(descriptor=teflonDescriptor, reaction=p)
@@ -279,7 +264,6 @@ class Command(BaseCommand):
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
-                        # teflonDescriptorValue.save()
                         teflonDescriptorValue = teflonDescriptor.createValue(p, value)
                         teflonValues.append(teflonDescriptorValue)
 

@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 '''This module contains tests for the about page'''
 
 import unittest

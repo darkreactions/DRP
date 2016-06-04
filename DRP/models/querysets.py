@@ -84,12 +84,6 @@ class CsvQuerySet(models.query.QuerySet):
 
     __metaclass__ = abc.ABCMeta
 
-    #@abc.abstractproperty
-    # def expandedCsvHeaders(self):
-    #'''For some classes, like Compounds and Reactions, there needs to be the option to send additional data (descriptors)
-    # as part of the csv. This method permits that expansion, and defaults to return the non-expanded headers.'''
-    # return getExpandedCsvHeaders()
-
     def csvHeaders(self, whitelist=None):
         '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
         and will fail if any field holds a relationship, and will not include automagically generated fields.'''
@@ -165,9 +159,6 @@ class ArffQuerySet(models.query.QuerySet):
         else:
             headers = self.arffHeaders(whitelistHeaders)
 
-        # if whitelistHeaders is not None:
-            #headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
-
         writeable.write('\n'.join(headers.values()))
 
         writeable.write('\n\n@data\n')
@@ -183,9 +174,6 @@ class ArffQuerySet(models.query.QuerySet):
             headers = self.expandedArffHeaders(whitelistHeaders)
         else:
             headers = self.arffHeaders(whitelistHeaders)
-
-        # if whitelistHeaders is not None:
-            #headers = OrderedDict(((k, v) for k, v in headers.items() if k in whitelistHeaders))
 
         for row in self.rows(expanded):
             matrix.append([(row.get(key) if (row.get(key) is not None) else missing) for key in headers.keys()])

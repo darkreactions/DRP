@@ -12,11 +12,7 @@ from validators import notInTheFuture
 
 
 class PerformedReactionQuerySet(ReactionQuerySet):
-    # I assume this was wrong and it should be the one below
-    # def __init__(self, model=None, **kwargs):
-                #"""Initialises the queryset"""
-                #model = Reaction if model is None else model
-                #super(ReactionQuerySet, self).__init__(model=model, **kwargs)
+    """A custom queryset for performed reactions."""
 
     def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""
@@ -25,6 +21,7 @@ class PerformedReactionQuerySet(ReactionQuerySet):
 
 
 class PerformedReactionManager(ReactionManager):
+    """A custom manager for performed reactions."""
 
     def get_queryset(self):
         return PerformedReactionQuerySet(model=PerformedReaction)

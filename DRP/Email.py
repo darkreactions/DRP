@@ -43,7 +43,7 @@ class EmailToAdmins(Email):
 #      super(EmailToLab, self).__init__(subject, messageFrame, messageVars)
 
 
-######################  Email Wrappers  ###########################
+# # # # # # # # # # # # #  Email Wrappers  # # # # # # # # # # # # # # # #
 # def alert_about_new_lab(lab_group):
 #  email_body = "A new lab group has been registered:\n{}\n{}\n{}".format(lab_group.lab_title, lab_group.lab_address, lab_group.lab_email)
 #  email_admins("New Lab Group Registered", email_body)

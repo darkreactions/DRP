@@ -13,6 +13,6 @@ urlpatterns = [
     url(r'^', include(public.urls)),
     url(r'^', include(authentication.urls)),
     url(r'^database', include(database.urls)),
-    #(r'^dashboard/', include(dashboard.urls))
+    # (r'^dashboard/', include(dashboard.urls))
 ]
 '''The base urlconf, which includes modularised urls in the system'''

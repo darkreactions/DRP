@@ -155,7 +155,7 @@ class CompoundFilterFormEmptyFail(BaseFormTest):
         self.assertFalse(self.form.is_valid())
         self.assertTrue(self.form.is_empty())
 
-####The following test one field at a time, (with the labgroup always filled out) to ensure each individual filter returns what is expected####
+# # # # The following test one field at a time, (with the labgroup always filled out) to ensure each individual filter returns what is expected # # # #
 
 
 @createsUser('Gamora', 'pineapple_song')

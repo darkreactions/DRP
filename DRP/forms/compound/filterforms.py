@@ -101,7 +101,6 @@ class AdvancedCompoundFilterForm(CompoundFilterForm):
 
     def is_valid(self):
         '''validates the formsets as well as this form'''
-        #raise RuntimeError([(formSet.is_valid(), formSet._errors) for formSet in self.formSets])
         return super(AdvancedCompoundFilterForm, self).is_valid() and all(formSet.is_valid() for formSet in self.formSets)
 
     def fetch(self):

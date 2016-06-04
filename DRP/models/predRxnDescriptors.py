@@ -167,14 +167,7 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
             for true in xrange(self.minimum, self.maximum + 1)
         }
         for true, guess in self.getPredictionTuples():
-            # if true not in matrix:
-                #matrix[true] = {}
-            try:
-                matrix[true][guess] += 1  # matrix[true][guess]+1 if guess in matrix[true] else 1
-            except KeyError:
-                print true, guess, type(true), type(guess)
-                exit()
-
+            matrix[true][guess] += 1
         return matrix
 
     def getPredictionTuples(self):

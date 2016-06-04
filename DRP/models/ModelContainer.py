@@ -154,7 +154,7 @@ class ModelContainer(models.Model):
     modelVisitorTool = models.CharField(max_length=200)
     # choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
     splitter = models.CharField(max_length=200, blank=True, default='')
-    #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
+    # choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
 
     # TODO XXX these should be validated as json or implemented another way (e.g. key-value store in another table)
     modelVisitorOptions = models.TextField(null=False, blank=True, default="{}")

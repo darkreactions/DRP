@@ -22,6 +22,7 @@ excludes = [
     'DRP/vis/*',
     'DRP/views/orig_explore_vis.py',
     'DRP/wsgi.py',
+    'DRP/models/MetricContainer.py',
 ]
 
 

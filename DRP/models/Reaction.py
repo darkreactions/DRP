@@ -76,19 +76,13 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         else:
             return self.csvHeaders(whitelist) + [d.csvHeader for d in self.descriptors]
 
-    # def descriptors(self):
-        #"""returns the descriptor which have relationship to the queryset"""
-
-        # return chain(
-            # BooleanDescriptor.objects.filter(boolrxndescriptorvalue__isnull=False).distinct(),
-            # NumericDescriptor.objects.filter(numrxndescriptorvalue__isnull=False).distinct(),
-            # OrdinalDescriptor.objects.filter(ordrxndescriptorvalue__isnull=False).distinct(),
-            # CategoricalDescriptor.objects.filter(catrxndescriptorvalue__isnull=False).distinct(),
-        #)
-
     @property
     def descriptors(self):
-        """returns the descriptor which have relationship to the queryset"""
+        """
+        Returns all reaction descriptors.
+        Used to return only descriptors which have relationship to the queryset,
+        but this caused enormous slowdowns because of in queries
+        """
         return MultiQuerySet(BoolRxnDescriptor.objects.all(),
                              NumRxnDescriptor.objects.all(),
                              OrdRxnDescriptor.objects.all(),
@@ -208,10 +202,6 @@ class Reaction(models.Model):
         if calcDescriptors and self.calcDescriptors:
             for plugin in descriptorPlugins:
                 plugin.calculate(self)
-
-    #@property
-    # def descriptorValues(self):
-        # return chain(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
     @property
     def descriptorValues(self):
