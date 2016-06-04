@@ -9,9 +9,10 @@ import CompoundFromCsv
 import CompoundDescriptor
 import CompoundToCsv
 import CompoundToArff
-#import modelBuildingTests
-#import DataImport
+# import modelBuildingTests
+# import DataImport
 import modelValidators
+# import splitters
 
 
 suite = unittest.TestSuite([
@@ -24,8 +25,9 @@ suite = unittest.TestSuite([
     CompoundDescriptor.suite,
     CompoundToCsv.suite,
     CompoundToArff.suite,
-    fileTests.suite,
     modelValidators.suite,
+    # splitters.suite,
+    fileTests.suite,
 ])
 
 
