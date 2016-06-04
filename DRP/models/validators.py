@@ -11,7 +11,7 @@ class GreaterThanValidator(object):
 
     def __call__(self, value):
         if value <= self.floorValue:
-            raise ValidationError('This value must be greater than %(value)', params={'value':self.floorValue})
+            raise ValidationError('This value must be greater than %(value)s', params={'value':self.floorValue})
 
     def __eq__(self, other):
         return self.floorValue == other.floorValue
