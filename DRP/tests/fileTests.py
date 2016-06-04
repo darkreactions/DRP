@@ -69,7 +69,7 @@ class TestFiles(unittest.TestCase):
         self.assertEqual(result.total_errors, 0,
                          "Found pep8 style errors (and warnings).\n{}".format(output))
 
-    def donttest_pep257(self):
+    def test_pep257(self):
         """Test pep257 conformance."""
         # need to coerce into list to get the length.
         # Other option would be to write a generator has next function or something
