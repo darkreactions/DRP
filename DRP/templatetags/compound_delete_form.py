@@ -12,4 +12,4 @@ def compoundDeleteFormId():
 
 @register.simple_tag(takes_context=True)
 def compound_delete_form(context, instance):
-  return CompoundDeleteForm(instance=instance, user=context['user'], auto_id='%s_{}'.format(compoundDeleteFormId())).as_ul()
+  return CompoundDeleteForm(instance=instance, user=context['user'], auto_id='%s_delete_{}'.format(compoundDeleteFormId())).as_ul()

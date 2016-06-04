@@ -1,0 +1,18 @@
+
+  <form action="{% url 'addCompoundDetails' reaction.id %}{% if request.GET|length > 0 %}?{{request.GET.urlencode}}{% endif %}" method="post">
+    {% if testing %} <!-- dc1d5961-a9e7-44d8-8441-5b8402a01c06 --> {% endif %}
+    {% csrf_token %}
+    <fieldset>
+    <legend>Reactant Details</legend>
+    <ol class="reactants_list">
+        {% for reactant_form in reactants_formset %}
+	  <li><ol class="reactant_list">{% include "alt_ul_form.html" with form=reactant_form  %} </ol></li>
+        {% endfor %}
+    </ol>
+    {{ reactants_formset.management_form }}
+    <div class="buttons">
+      <input type="submit" value="Save" />
+      <input type="reset" value="Reset" />
+    </div>
+   </fieldset>
+  </form>

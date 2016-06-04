@@ -17,6 +17,7 @@ import importlib
 from collections import OrderedDict
 import PerformedReaction
 from django.core.validators import RegexValidator
+from decimal import Decimal
 
 descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
@@ -348,7 +349,7 @@ class Compound(models.Model):
                     strStoichiometry += char
                 elif char == '}':
                     inBrackets = False
-                    elements[currentElement]['stoichiometry'] += float(strStoichiometry)
+                    elements[currentElement]['stoichiometry'] += Decimal(strStoichiometry)
                     currentElement = ''
                     strStoichiometry = ''
                 else:

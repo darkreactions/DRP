@@ -72,7 +72,7 @@ class BooleanDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
-    value = models.NullBooleanField('Value for descriptor', null=True, blank=True)
+    value = models.NullBooleanField('Value for descriptor', null=True)
     """Set to true, false or none (missing value) for instances."""
     descriptor = models.ForeignKey(BooleanDescriptor)
     """The descriptor to which this value pertains."""

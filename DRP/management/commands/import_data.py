@@ -3,6 +3,7 @@ from django.utils.encoding import smart_str
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.management.base import BaseCommand
+from decimal import Decimal, getcontext, InvalidOperation
 import requests
 from django.conf import settings
 import DRP
@@ -92,6 +93,14 @@ class Command(BaseCommand):
 
             r = s.get(apiUrl + 'compound_quantities.xml', params=data)
             for cq in serializers.deserialize('xml',smart_str(r.text)):
-                cq.save()
+                if hasattr(cq, 'amount'):
+                    cq.amount = Decimal('{0:.5f}'.format(cq.amount))
+                try:
+                    cq.save()
+                except InvalidOperation as e:
+                    if hasattr(cq, 'amount'):
+                        print(cq.amount)
+                    print(cq)
+                    raise e
         else:
             r.raise_for_status()

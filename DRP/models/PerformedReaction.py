@@ -7,6 +7,8 @@ from itertools import chain
 import DRP
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+from django.forms.forms import NON_FIELD_ERRORS
+from validators import notInTheFuture
 
 class PerformedReactionQuerySet(ReactionQuerySet):
         # I assume this was wrong and it should be the one below
@@ -33,7 +35,7 @@ class PerformedReaction(Reaction):
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
     performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, blank=True, default=None)
-    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None, help_text='Date in format YYYY-MM-DD')
+    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None, help_text='Timezone assumed EST, Date in format YYYY-MM-DD', validators=[notInTheFuture])
     insertedDateTime = models.DateTimeField('Date Reaction Saved', auto_now_add=True)
     recommendation = models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
     legacyRecommendedFlag = models.NullBooleanField(default=None)
@@ -50,7 +52,7 @@ class PerformedReaction(Reaction):
     convertedLegacyRef = models.CharField(max_length=40, null=True, blank=True,
                                           validators=[
                                                         RegexValidator(
-                                                            '[a-z0-9._]*[a-z][a-z0-9._]*',
+                                                            '^[a-z0-9._]*[a-z][a-z0-9._]*$',
                                                             ('Please include only values which are limited to '
                                                              'alphanumeric characters, underscores, periods, '
                                                              'and must include at least one '
@@ -64,7 +66,7 @@ class PerformedReaction(Reaction):
                 max_length=40,
                 validators=[
                     RegexValidator(
-                        '[a-z0-9._]*[a-z][a-z0-9._]*',
+                        '^[a-z0-9\._]*[a-z][a-z0-9\._]*$',
                         ('Please include only values which are limited to '
                          'alphanumeric characters, underscores, periods, '
                          'and must include at least one '
@@ -74,8 +76,9 @@ class PerformedReaction(Reaction):
                 )
 
     def clean(self):
+        super(PerformedReaction, self).clean()
         if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
-            raise ValidationError('Another reaction has the same reference and lab group')
+            raise ValidationError({'reference':'This reference has already been used for this lab group.'}, code="duplicate_reference")
 
     def __unicode__(self):
         return self.reference

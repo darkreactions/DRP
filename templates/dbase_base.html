@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block additional_header %}
+{% if testing %} <!-- 823d22e7-3337-4292-aa67-13f748b2aa65 --> {% endif %}
 {% if user.is_authenticated %}
 <nav>
  <div class="projectNav-wrapper">
