@@ -75,7 +75,7 @@ class NumericFilterFormGE(BaseFormTest):
         cleaned = self.form.cleaned_data
         self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
         self.assertEqual(cleaned["operator"], "ge", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
-        self.assertEqual(float(cleaned["value"]), 12, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(float(cleaned["value"]), 18, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         self.form.is_valid() 
