@@ -353,7 +353,7 @@ class Command(BaseCommand):
                 if cs.count() > 0:
                     c1 = ChemicalClass.objects.get_or_create(label=r['chemicalClass.label'])[0]
                     for c2 in cs:
-                        if not c1 in c2.chemicalClasses.all():
+                        if c1 not in c2.chemicalClasses.all():
                             c2.chemicalClasses.add(c1)
                             c2.save()
         with open(path.join(folder, 'compoundquantities.tsv')) as cqs:

@@ -8,10 +8,19 @@ import os
 import sys
 from cStringIO import StringIO
 import pep257
+import fnmatch
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 settings_file = os.path.join(settings.APP_DIR, 'settings_example.py')
 
+
+# Unix patters to exclude
+excludes = [
+            'DRP/research/*',
+            'doc-build/*',
+            'DRP/recommendation/*',
+            'DRP/vis/*'
+            ]
 
 class OutputCapture(object):
 
@@ -39,13 +48,14 @@ class TestFiles(unittest.TestCase):
     """Test that files conform to python standards."""
 
     def setUp(self):
-        """Get list of all python files in project"""
+        """Get list of all python files in project."""
         # TODO add option to exclude files
         self.files = []
         for root, dirnames, fileNames in os.walk(settings.BASE_DIR):
             for fileName in fileNames:
-                if fileName.endswith('.py'):
-                    self.files.append(os.path.join(root, fileName))
+                filePath = os.path.join(root, fileName)
+                if filePath.endswith('.py') and not any(fnmatch.fnmatchcase(filePath, os.path.join(settings.BASE_DIR, exclude)) for exclude in excludes):
+                    self.files.append(filePath)
 
     def test_pep8(self):
         """Test pep8 conformance."""

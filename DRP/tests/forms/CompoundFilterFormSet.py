@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 '''Test classes for the compound filter form'''
 
-import django
-django.setup()
-
 import unittest
 from DRP.forms import FilterForm, CompoundFilterFormSet
 from BaseFormTest import BaseFormTest
