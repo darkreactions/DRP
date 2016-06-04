@@ -10,11 +10,11 @@
 
 import unittest
 from DRPTestCase import DRPTestCase, runTests
-loadTests = unittest.TestLoader().loadTestsFromTestCase
 from DRP.models import validators
 from django.core.exceptions import ValidationError
 import datetime
 
+loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class NotInTheFuture(DRPTestCase):
     # This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'

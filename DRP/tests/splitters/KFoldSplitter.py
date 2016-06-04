@@ -4,10 +4,10 @@
 import unittest
 from decorators import createsPerformedReactionSetOrd
 from DRPTestCase import DRPTestCase, runTests
-loadTests = unittest.TestLoader().loadTestsFromTestCase
 from DRP.models import Reaction
 from DRP.ml_models.splitters.KFoldSplitter import Splitter
 
+loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @createsPerformedReactionSetOrd
 class BasicWekaSVM(DRPTestCase):

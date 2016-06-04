@@ -20,7 +20,8 @@ excludes = [
     'doc-build/*',
     'DRP/recommendation/*',
     'DRP/vis/*',
-    'DRP/views/orig_explore_vis.py'
+    'DRP/views/orig_explore_vis.py',
+    'DRP/wsgi.py',
 ]
 
 

@@ -1,6 +1,5 @@
-from AbstractSplitter import AbstractSplitter
 import random
-
+from AbstractSplitter import AbstractSplitter
 
 class Splitter(AbstractSplitter):
 
