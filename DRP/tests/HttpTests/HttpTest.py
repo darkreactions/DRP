@@ -54,9 +54,9 @@ class GetHttpTest(DRPTestCase):
 
     # XXX TODO PHIL_FIX_AFTER_CONTEXT_PROCESSOR Had to comment this out because of context_processor issue
     # def test_CorrectTemplate(self):
-        #'''Checks that the expected template is loaded'''
+        # '''Checks that the expected template is loaded'''
         # for testCode in self.testCodes:
-        #self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(testCode, self.response.text))
+            # self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(testCode, self.response.text))
 
     def test_ValidHtml(self):
         '''Checks HTML validity'''
