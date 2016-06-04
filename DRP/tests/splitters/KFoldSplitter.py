@@ -9,6 +9,7 @@ from DRP.ml_models.splitters.KFoldSplitter import Splitter
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
+
 @createsPerformedReactionSetOrd
 class BasicWekaSVM(DRPTestCase):
 

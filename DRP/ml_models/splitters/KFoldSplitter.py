@@ -1,6 +1,7 @@
 import random
 from AbstractSplitter import AbstractSplitter
 
+
 class Splitter(AbstractSplitter):
 
     def __init__(self, namingStub, num_folds=4):
