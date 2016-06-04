@@ -11,13 +11,16 @@ import sys
 
 # from http://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
 class Capturing(list):
+
     def __enter__(self):
         self._stdout = sys.stdout
         sys.stdout = self._stringio = StringIO()
         return self
+
     def __exit__(self, *args):
         self.extend(self._stringio.getvalue().splitlines())
         sys.stdout = self._stdout
+
 
 def filter_reactions(reactions, response_header, verbose=False):
     # filter out reactions with undefined values for the response_descriptor
@@ -38,19 +41,19 @@ def filter_reactions(reactions, response_header, verbose=False):
         raise ValueError("Descriptor header does not match any known type")
 
     if verbose:
-        print "Filtered out {}/{} reactions with no value for {}".format(initial_num-reactions.count(), initial_num, response_header)
+        print "Filtered out {}/{} reactions with no value for {}".format(initial_num - reactions.count(), initial_num, response_header)
 
     return reactions
 
 
 def build_many_models(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
-                        reaction_set_name=None, description="", verbose=False):
+                      reaction_set_name=None, description="", verbose=False):
 
     results = [('header', 'BCR', 'ACC')]
     for response_header in response_headers:
         if training_set_name is not None:
-            trainingSet =  DataSet.objects.get(name=training_set_name)
-            testSet =  DataSet.objects.get(name=test_set_name)
+            trainingSet = DataSet.objects.get(name=training_set_name)
+            testSet = DataSet.objects.get(name=test_set_name)
 
             mod_training_set_name = '_'.join([training_set_name, response_header, str(uuid.uuid4())])
             trainingSetRxns = filter_reactions(trainingSet.reactions.all(), response_header, verbose=verbose)
@@ -64,15 +67,14 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
             mod_test_set_name = None
 
         container = build_model.prepare_build_model(predictor_headers=predictor_headers, response_headers=[response_header], modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                                                        splitter=splitter, training_set_name=mod_training_set_name, test_set_name=mod_test_set_name, reaction_set_name=reaction_set_name, description=description,
-                                                        verbose=verbose)
+                                                    splitter=splitter, training_set_name=mod_training_set_name, test_set_name=mod_test_set_name, reaction_set_name=reaction_set_name, description=description,
+                                                    verbose=verbose)
 
         conf_mtrcs = container.getConfusionMatrices()
 
-
         _, overall_conf_mtrx = conf_mtrcs[0][0]
         ACC = build_model.accuracy(overall_conf_mtrx)
-        BCR = build_model.BCR(overall_conf_mtrx)    
+        BCR = build_model.BCR(overall_conf_mtrx)
         for model_mtrcs in conf_mtrcs:
             for descriptor_header, conf_mtrx in model_mtrcs:
                 ACC = build_model.accuracy(conf_mtrx)
@@ -82,7 +84,7 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
                 print "Accuracy: {:.3}".format(ACC)
                 print "BCR: {:.3}".format(BCR)
 
-        results.append( (response_header, BCR, ACC) )
+        results.append((response_header, BCR, ACC))
 
     print '\n'.join(['\t'.join(map(str, res)) for res in results])
 
@@ -113,8 +115,8 @@ if __name__ == '__main__':
     parser.add_argument('-tes', '--test-set-name', default=None,
                         help='The name of the test set to use. (default: %(default)s)')
     # parser.add_argument('-rxn', '--reaction-set-name', default=None,
-                        # help='The name of the reactions to use as a whole dataset')
+    # help='The name of the reactions to use as a whole dataset')
     args = parser.parse_args()
 
     build_many_models(predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTool=args.model_tool,
-                                splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, description=args.description, verbose=args.verbose)
+                      splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, description=args.description, verbose=args.verbose)

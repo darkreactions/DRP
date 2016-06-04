@@ -49,7 +49,7 @@ class MaxMinValidation(DRPTestCase):
             desc = OrdMolDescriptor(
                 heading='heading',
                 name='test descriptor',
-                calculatorSoftware = 'test_suite',
+                calculatorSoftware='test_suite',
                 calculatorSoftwareVersion=0,
                 maximum=3,
                 minimum=5
@@ -61,7 +61,7 @@ class MaxMinValidation(DRPTestCase):
         desc = OrdMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -74,7 +74,7 @@ class MaxMinValidation(DRPTestCase):
             desc = NumMolDescriptor(
                 heading='heading',
                 name='test descriptor',
-                calculatorSoftware = 'test_suite',
+                calculatorSoftware='test_suite',
                 calculatorSoftwareVersion=0,
                 maximum=3,
                 minimum=5)
@@ -85,7 +85,7 @@ class MaxMinValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -97,7 +97,7 @@ class MaxMinValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=None,
             minimum=3)
@@ -109,7 +109,7 @@ class MaxMinValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=None)
@@ -121,7 +121,7 @@ class MaxMinValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=None,
             minimum=None)
@@ -142,7 +142,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -160,7 +160,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -178,7 +178,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -196,7 +196,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=None,
             minimum=3)
@@ -213,7 +213,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=None,
             minimum=3)
@@ -231,7 +231,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=None)
@@ -249,7 +249,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=None)
@@ -266,7 +266,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = NumMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=None,
             minimum=None)
@@ -284,7 +284,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = OrdMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -302,7 +302,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = OrdMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -320,7 +320,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc = OrdMolDescriptor(
             heading='heading',
             name='test descriptor',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0,
             maximum=5,
             minimum=3)
@@ -347,13 +347,13 @@ class CategoricalValidation(DRPTestCase):
         self.desc = CatMolDescriptor(
             heading='heading',
             name='example',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0)
         self.desc.save()
         self.desc2 = CatMolDescriptor(
             heading='heading2',
             name='example2',
-            calculatorSoftware = 'test_suite',
+            calculatorSoftware='test_suite',
             calculatorSoftwareVersion=0)
         self.desc2.save()
         cmdv = CategoricalDescriptorPermittedValue

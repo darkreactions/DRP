@@ -10,6 +10,7 @@ from DRP.models import Compound, CompoundRole, CompoundQuantity
 from DRP.models import ChemicalClass, Reaction
 from DRP.models import LabGroup, PerformedReaction
 
+
 @login_required
 def api1(request, component):
     "Version 1 of the data export api"
@@ -29,10 +30,10 @@ def api1(request, component):
                 if component == 'lab_groups':
                     return HttpResponse(serializers.serialize('xml', labGroups), content_type='Application/xml')
                 else:
-                    users = (User.objects.filter(labgroup__in=[l for l in labGroups]) | 
-                            User.objects.filter(performedReactions__in=(p for p in performedReactions)) | 
-                            User.objects.filter(performedreaction__in=(p for p in performedReactions)) |
-                            User.objects.filter(pk=request.user.pk))
+                    users = (User.objects.filter(labgroup__in=[l for l in labGroups]) |
+                             User.objects.filter(performedReactions__in=(p for p in performedReactions)) |
+                             User.objects.filter(performedreaction__in=(p for p in performedReactions)) |
+                             User.objects.filter(pk=request.user.pk))
                     users = users.distinct()
                     if component == 'users':
                         return HttpResponse(serializers.serialize('xml', users, fields=('username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'is_superuser')), content_type='Application/xml')
@@ -61,6 +62,6 @@ def api1(request, component):
                                             if component == 'chemical_classes':
                                                 return HttpResponse(serializers.serialize('xml', chemicalClasses), content_type='Application/xml')
                                             else:
-                                                raise Http404 
+                                                raise Http404
     else:
         raise PermissionDenied

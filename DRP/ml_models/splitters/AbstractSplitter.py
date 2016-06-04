@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 import DRP
 import warnings
 
+
 class AbstractSplitter(object):
     __metaclass__ = ABCMeta
 
@@ -17,5 +18,5 @@ class AbstractSplitter(object):
     def package(self, data):
         dataSet = DRP.models.DataSet.create('{}_{}'.format(self.namingStub, self.namingCounter), data)
         self.namingCounter += 1
-    
+
         return dataSet

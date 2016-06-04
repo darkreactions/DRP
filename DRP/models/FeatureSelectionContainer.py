@@ -7,9 +7,10 @@ from itertools import chain
 import datetime
 import json
 
-featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
+featureVisitorModules = {library: importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
 
 FEATURE_SELECTION_TOOL_CHOICES = tuple(tool for library in featureVisitorModules.values() for tool in library.tools)
+
 
 class DescriptorAttribute(object):
 
@@ -58,6 +59,7 @@ class DescriptorAttribute(object):
         featureSelectionContainer.catRxnDescriptors.clear()
         featureSelectionContainer.ordRxnDescriptors.clear()
 
+
 class ChosenDescriptorAttribute(object):
 
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
@@ -105,6 +107,7 @@ class ChosenDescriptorAttribute(object):
         featureSelectionContainer.chosenCatRxnDescriptors.clear()
         featureSelectionContainer.chosenOrdRxnDescriptors.clear()
 
+
 class OutcomeDescriptorAttribute(object):
 
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
@@ -150,8 +153,9 @@ class OutcomeDescriptorAttribute(object):
         featureSelectionContainer.outcomeCatRxnDescriptors.clear()
         featureSelectionContainer.outcomeOrdRxnDescriptors.clear()
 
+
 class FeatureSelectionContainer(models.Model):
-    
+
     description = models.TextField(default='', blank=True)
     featureVisitorLibrary = models.CharField(max_length=200, default='', blank=True)
     featureVisitorTool = models.CharField(max_length=200, default='', blank=True)
@@ -182,11 +186,11 @@ class FeatureSelectionContainer(models.Model):
     @classmethod
     def create(cls, featureVisitorLibrary, featureVisitorTool, predictors, responses, featureVisitorOptions=None, reactions=None, trainingSet=None, description=""):
         container = cls(featureVisitorLibrary=featureVisitorLibrary, featureVisitorTool=featureVisitorTool, description=description)
-        container.save() # need pk
-        
+        container.save()  # need pk
+
         if featureVisitorOptions is not None:
             container.featureVisitorOptions = json.dumps(featureVisitorOptions)
-            
+
         if trainingSet is None:
             assert(reactions is not None)
             container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureVisitorLibrary, container.featureVisitorLibrary, container.pk), reactions)
@@ -195,7 +199,7 @@ class FeatureSelectionContainer(models.Model):
 
         container.descriptors = predictors
         container.outcomeDescriptors = responses
-        
+
         return container
 
     def build(self, verbose=False):
@@ -209,7 +213,7 @@ class FeatureSelectionContainer(models.Model):
 
         if verbose:
             print "{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count())
-        chosen_descriptor_headers = featureVisitor.train(verbose=verbose) 
+        chosen_descriptor_headers = featureVisitor.train(verbose=verbose)
 
         self.endTime = datetime.datetime.now()
         if verbose:
@@ -220,6 +224,6 @@ class FeatureSelectionContainer(models.Model):
         for desc in self.descriptors:
             if desc.csvHeader in chosen_descriptor_headers:
                 chosen_descriptor_list.append(desc)
-            
+
         self.chosenDescriptors = chosen_descriptor_list
         self.built = True

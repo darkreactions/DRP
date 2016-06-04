@@ -63,7 +63,6 @@ class TestFiles(unittest.TestCase):
         self.assertEqual(len(result), 0,
                          "Found pep257 errors (and warnings).\n{}".format('\n'.join([str(err) for err in result])))
 
-
     def test_settingsExamplePresent(self):
         """Test that the settings_example.py file is present."""
         self.assertTrue(

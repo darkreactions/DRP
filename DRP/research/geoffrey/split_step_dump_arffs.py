@@ -11,6 +11,7 @@ from itertools import chain
 import glob
 import os
 
+
 def prepareArff(reactions, whitelistHeaders, filepath, verbose=False):
     """Writes an *.arff file using the provided queryset of reactions."""
     if verbose:

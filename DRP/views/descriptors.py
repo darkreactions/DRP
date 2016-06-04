@@ -7,41 +7,42 @@ from DRP.models import BoolRxnDescriptor as BoolRxnDescriptorModel, CatRxnDescri
 
 # fetch descriptor details (from python, export to .json)
 
+
 class BoolRxnDescriptor(ListView):
 
-   def __init__(self, *args, **kwargs):
-	self.queryset = BoolRxnDescriptorModel.objects.all()
-	super(ListView, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        self.queryset = BoolRxnDescriptorModel.objects.all()
+        super(ListView, self).__init__(*args, **kwargs)
 
-   def dispatch(self, request):
-	return render(request, 'bool_rxn_descriptors.json', {'descriptors':self.queryset})
+    def dispatch(self, request):
+        return render(request, 'bool_rxn_descriptors.json', {'descriptors': self.queryset})
 
 
 class NumRxnDescriptor(ListView):
 
-   def __init__(self):
-	self.des = NumRxnDescriptorModel.objects.all()
-   
-   def dispatch(self, request):
-	return render(request, 'num_rxn_descriptors.json', {'descriptors':self.queryset})
+    def __init__(self):
+        self.des = NumRxnDescriptorModel.objects.all()
+
+    def dispatch(self, request):
+        return render(request, 'num_rxn_descriptors.json', {'descriptors': self.queryset})
 
 
 class OrdRxnDescriptor(ListView):
-   
-   def __init__(self):
-	self.des = OrdRxnDescriptorModel.objects.all()
 
-   def dispatch(self, request):
-	return render(request, 'ord_rxn_descriptors.json', {'descriptors':self.queryset})
+    def __init__(self):
+        self.des = OrdRxnDescriptorModel.objects.all()
+
+    def dispatch(self, request):
+        return render(request, 'ord_rxn_descriptors.json', {'descriptors': self.queryset})
 
 
 class CatRxnDescriptor(ListView):
 
-   def __init__(self):
-	self.des = CatRxnDescriptorModel.objects.all() 
+    def __init__(self):
+        self.des = CatRxnDescriptorModel.objects.all()
 
-   def dispatch(self, request):
-	return render(request, 'cat_rxn_descriptors.json', {'descriptors':self.queryset})
+    def dispatch(self, request):
+        return render(request, 'cat_rxn_descriptors.json', {'descriptors': self.queryset})
 
 
 # these find the descriptors and return them as a json object

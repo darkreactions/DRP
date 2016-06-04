@@ -4,6 +4,7 @@ import django
 from sys import argv
 from DRP.models import Descriptor
 
+
 def strip_desc_headings_threshold(filename, threshold):
     with open(filename, 'rb') as f:
         raw_lines = f.readlines()
@@ -23,6 +24,7 @@ def strip_desc_headings_threshold(filename, threshold):
             found = True
 
     return descriptors
+
 
 def strip_desc_headings_rank(filename, rank):
     with open(filename, 'rb') as f:
@@ -46,9 +48,9 @@ def strip_desc_headings_rank(filename, rank):
     return descriptors
 
 
-
 def get_descs(headings):
     return [d for d in Descriptor.objects.all() if d.csvHeader in headings]
+
 
 def get_headings(descs):
     return [d.heading for d in descs]

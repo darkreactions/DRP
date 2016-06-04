@@ -9,9 +9,10 @@ import copy
 DELETE = "DELETEME"
 TOTAL_FORMS = "TOTAL_FORMS"
 MAX_FORMS = "MAX_FORMS"
-PREFIX="PREFIX"
+PREFIX = "PREFIX"
 ADD_FORM = "ADD_FORM"
-HARD_MAX_FORMS=10000
+HARD_MAX_FORMS = 10000
+
 
 class FormSetManagerForm(forms.Form):
     '''This class acts as a management form for the FormSet class, providing information for the javascript side of things as well as actually functioning in
@@ -30,17 +31,17 @@ class FormSetManagerForm(forms.Form):
             data is the form data which has been passed to the formset (normally request.POST)
             *args, **kwargs; other nonpertinent arguments which are handed on to the forms.Form constructor for completeness
         '''
-        super(FormSetManagerForm, self).__init__(prefix=prefix+'-'+formSetPrefix, data=copy.copy(data), *args, **kwargs)
-        self.fields[TOTAL_FORMS] = forms.IntegerField(min_value=0, widget=forms.widgets.HiddenInput, initial=initialCount if canAdd else initialCount+1) #useful for javascript
-        self.fields[MAX_FORMS] = forms.IntegerField(min_value=0, max_value=maxForms, initial=maxForms, widget=forms.widgets.HiddenInput) #useful for javascript
-        self.fields[PREFIX] = forms.CharField(initial=formSetPrefix, widget=forms.widgets.HiddenInput, required=False) #useful for javascript
+        super(FormSetManagerForm, self).__init__(prefix=prefix + '-' + formSetPrefix, data=copy.copy(data), *args, **kwargs)
+        self.fields[TOTAL_FORMS] = forms.IntegerField(min_value=0, widget=forms.widgets.HiddenInput, initial=initialCount if canAdd else initialCount + 1)  # useful for javascript
+        self.fields[MAX_FORMS] = forms.IntegerField(min_value=0, max_value=maxForms, initial=maxForms, widget=forms.widgets.HiddenInput)  # useful for javascript
+        self.fields[PREFIX] = forms.CharField(initial=formSetPrefix, widget=forms.widgets.HiddenInput, required=False)  # useful for javascript
         if canAdd:
             self.canAdd = canAdd
             if data is None:
                 self.fields[ADD_FORM] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Add one'), required=False)
             else:
                 self.fields[ADD_FORM] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Add another'), required=False)
-                
+
         if canDelete:
             self.canDelete = canDelete
             self.fields[DELETE] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Remove one'), required=False)
@@ -52,14 +53,14 @@ class FormSetManagerForm(forms.Form):
         if cleaned_data.get(TOTAL_FORMS) > cleaned_data.get(MAX_FORMS):
             raise ValidationError('No more may be added.', code='too_many_forms')
         if cleaned_data.get(ADD_FORM):
-            cleaned_data[TOTAL_FORMS] +=1
+            cleaned_data[TOTAL_FORMS] += 1
         if cleaned_data.get(DELETE):
-            cleaned_data[TOTAL_FORMS] -=1
-        self.data[self.add_prefix(TOTAL_FORMS)] = str(self.cleaned_data.get(TOTAL_FORMS)) #YUK.
-        if cleaned_data.get(TOTAL_FORMS) < 1 and (DELETE in self.fields): #this minimum form value should be made a variable at some poitn
+            cleaned_data[TOTAL_FORMS] -= 1
+        self.data[self.add_prefix(TOTAL_FORMS)] = str(self.cleaned_data.get(TOTAL_FORMS))  # YUK.
+        if cleaned_data.get(TOTAL_FORMS) < 1 and (DELETE in self.fields):  # this minimum form value should be made a variable at some poitn
             del self.fields[DELETE]
         if cleaned_data.get(TOTAL_FORMS) < 1 and (ADD_FORM in self.fields):
-            self.fields[ADD_FORM].widget.value = 'Add one' 
+            self.fields[ADD_FORM].widget.value = 'Add one'
         self.cleaned_data = cleaned_data
         return cleaned_data
 
@@ -67,20 +68,21 @@ class FormSetManagerForm(forms.Form):
     def submittedForms(self):
         '''Returns the correct number of forms that were actually submitted with data on this occasion'''
         if self.cleaned_data.get(ADD_FORM):
-            return self.cleaned_data.get(TOTAL_FORMS)-1
+            return self.cleaned_data.get(TOTAL_FORMS) - 1
         else:
             return self.cleaned_data.get(TOTAL_FORMS)
-            
+
     def as_ul(self):
         '''Overrides the html output for this form since it only has submit buttons which don't have labels.
         This is horribly hacky but django doesn't actually offer a better way to do this at present'''
         return self._html_output(
-            normal_row = '<li%(html_class_attr)s>%(errors)s%(field)s%(help_text)s</li>',
-            error_row = '<li>%s</li>',
-            row_ender = "</li>",
-            help_text_html = '<span class="helptext">%s</span>',
+            normal_row='<li%(html_class_attr)s>%(errors)s%(field)s%(help_text)s</li>',
+            error_row='<li>%s</li>',
+            row_ender="</li>",
+            help_text_html='<span class="helptext">%s</span>',
             errors_on_separate_row=False
         )
+
 
 class FormSet(object):
     '''A drop in replacement for django formsets which more accurately supports HTTP standard way of doing things where javascript cannot be
@@ -92,13 +94,13 @@ class FormSet(object):
             formClass is the class of form that is being accepted
         '''
         self.formClass = formClass
-        self.prefix=prefix
+        self.prefix = prefix
         self.initial = initial
         self.canAdd = canAdd
         initialCount = self._initialCount()
         self.managementForm = FormSetManagerForm(maxForms, prefix, initialCount, canAdd, canDelete, prefix='{}-manager'.format(prefix), data=data)
         if self.managementForm.is_bound and self.managementForm.is_valid():
-                formCount = self.managementForm.submittedForms
+            formCount = self.managementForm.submittedForms
         else:
             formCount = initialCount
 
@@ -140,6 +142,7 @@ class FormSet(object):
         '''returns cleaned data for all valid forms'''
         return [f.cleaned_data for f in self.forms if f.is_valid()]
 
+
 class ModelFormSet(FormSet):
     '''A modified formset to deal with django models'''
 
@@ -162,10 +165,10 @@ class ModelFormSet(FormSet):
                 class Meta(object):
                     model = modelClass
                     if outerFields is not None:
-                        fields=outerFields
+                        fields = outerFields
             formClass = ModelFormClass
         elif fields is not None:
-            formClass._meta.fields=outerFields
+            formClass._meta.fields = outerFields
         super(ModelFormSet, self).__init__(formClass, *args, **kwargs)
 
     def _createForms(self, formCount):
@@ -174,7 +177,7 @@ class ModelFormSet(FormSet):
             if self.instances is None:
                 instance = None
             else:
-                instance = self.instances[i] if i in range(0, self.instances.count()) else None 
+                instance = self.instances[i] if i in range(0, self.instances.count()) else None
             self.forms.append(self.formClass(data=self.data, instance=instance, prefix='{}-{}'.format(self.prefix, i)))
 
     def _initialCount(self):

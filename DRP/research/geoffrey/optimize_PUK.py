@@ -9,14 +9,16 @@ from itertools import izip
 import ast
 import sys
 
+
 def next(base, step, geometric=False):
     if geometric:
-        return base*step
+        return base * step
     else:
         return base + step
 
+
 def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, training_set_name=None, test_set_name=None, puk_sigma=None, puk_omega=None,
-                                      reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None, geometric=False):
+             reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None, geometric=False):
 
     if visitorOptions is None:
         visitorOptions = {}
@@ -38,17 +40,17 @@ def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, train
 
     sigma = sigma_min
     omega = omega_min
-    
+
     visitorOptions['puk_sigma'] = sigma
     visitorOptions['puk_omega'] = omega
-    
+
     initialDescription = "{} {} {}".format(modelVisitorTool, visitorOptions, description)
 
     if verbose:
         print "Building initial container with {} {}".format(modelVisitorTool, visitorOptions)
     container = build_model.prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                                    splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=initialDescription,
-                                    verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+                                                splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=initialDescription,
+                                                verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
     build_model.display_model_results(container, heading='sigma={} omega={}'.format(sigma, omega))
 
@@ -66,14 +68,14 @@ def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, train
 
             new_container = container.create_duplicate(modelVisitorOptions=visitorOptions, description=new_description)
             new_container.full_clean()
-    
+
             build_model.build_model(new_container, verbose=verbose)
             build_model.display_model_results(new_container, heading='sigma={} omega={}'.format(sigma, omega))
 
             omega = next(omega, omega_step, geometric)
         omega = omega_min
         sigma = next(sigma, sigma_step, geometric)
-        
+
 
 if __name__ == '__main__':
     django.setup()
@@ -86,10 +88,10 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
                         help='One or more descriptors to predict. '
                         'Note that most models can only handle one response variable (default: %(default)s)')
-    #parser.add_argument('-ml', '--model-library', default="weka",
-                        #help='Model visitor library to use. (default: %(default)s)')
-    #parser.add_argument('-mt', '--model-tools', nargs='+',
-                        #help='Model visitor tools from library to use.')
+    # parser.add_argument('-ml', '--model-library', default="weka",
+    # help='Model visitor library to use. (default: %(default)s)')
+    # parser.add_argument('-mt', '--model-tools', nargs='+',
+    # help='Model visitor tools from library to use.')
     parser.add_argument('-s', '--splitter', default="KFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
                         help='Splitter to use. (default: %(default)s)')
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -115,7 +117,7 @@ if __name__ == '__main__':
                         help='Specify whether to do a geometric search (as opposed to default arithemtic search). '
                               'In this case the step parameter will be taken as a multiplicative factor. '
                               '(default: %(default))')
-                            
+
     try:
         args = parser.parse_args()
     except:
@@ -132,5 +134,5 @@ if __name__ == '__main__':
     visitorOptions = ast.literal_eval(args.visitor_options) if args.visitor_options is not None else None
 
     scan_PUK(predictor_headers=args.predictor_headers, response_headers=args.response_headers, puk_sigma=args.puk_sigma, puk_omega=args.puk_omega,
-                                splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name,
-                                description=args.description, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, geometric=args.geometric_search)
+             splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name,
+             description=args.description, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, geometric=args.geometric_search)

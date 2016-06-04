@@ -84,8 +84,9 @@ class BooleanDescriptorValue(models.Model):
     def clean(self):
         if not (isinstance(self.value, bool) or self.value is None):
             raise ValidationError(
-                    'Only boolean values are allowed for numeric descriptors',
-                    'value_wrong_type')
+                'Only boolean values are allowed for numeric descriptors',
+                'value_wrong_type')
+
 
 class NumericDescriptorValue(models.Model):
 
@@ -104,8 +105,8 @@ class NumericDescriptorValue(models.Model):
         """Ensure that the value is within the prescribed bounds."""
         if not (isinstance(self.value, float) or isinstance(self.value, int) or self.value is None):
             raise ValidationError(
-                    'Only float or integer values are allowed for numeric descriptors.',
-                    'value_wrong_type')
+                'Only float or integer values are allowed for numeric descriptors.',
+                'value_wrong_type')
         if self.value is not None:
             if self.descriptor.maximum is not None and self.value > self.descriptor.maximum:
                 raise ValidationError(
@@ -163,8 +164,8 @@ class OrdinalDescriptorValue(models.Model):
         """Ensure the value is within the prescribed bounds."""
         if not (isinstance(self.value, int) or self.value is None):
             raise ValidationError(
-                    'Only integer values are allowed for numeric descriptors',
-                    'value_wrong_type')
+                'Only integer values are allowed for numeric descriptors',
+                'value_wrong_type')
 
         if self.value is not None:
             if (

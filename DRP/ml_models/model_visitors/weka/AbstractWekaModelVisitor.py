@@ -11,14 +11,15 @@ from abc import abstractmethod, abstractproperty
 import warnings
 from itertools import chain
 
+
 class AbstractWekaModelVisitor(AbstractModelVisitor):
 
     maxResponseCount = 1
-    WEKA_VERSION = "3.6" # The version of WEKA to use.
+    WEKA_VERSION = "3.6"  # The version of WEKA to use.
 
     def __init__(self, BCR=False, *args, **kwargs):
         self.BCR = BCR
-        
+
         super(AbstractWekaModelVisitor, self).__init__(*args, **kwargs)
 
         # This is a bit hackier, but I don't think anything like abstractattribute is implemented in abc
@@ -65,7 +66,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         subprocess.check_output(command, shell=True)
         # TODO XXX. figure out some way to throw an error if weka errors (sends stuff to stderr. weka does not generate proper return codes)
         # This broke things in some cases for reasons not clear to me
-        # wekaProc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True, shell=True) 
+        # wekaProc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True, shell=True)
         # wekaProc.wait()
         # if wekaProc.returncode == 0:
         #     res, resErr = wekaProc.communicate()
@@ -73,7 +74,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         #         raise RuntimeError("Weka returned an error: {}".format(resErr))
         # else:
         #     raise RuntimeError("Weka returned nonzero exit code")
-
 
     def BCR_cost_matrix(self, reactions, response):
         if isinstance(response, CategoricalDescriptor):
@@ -84,7 +84,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         elif isinstance(response, OrdinalDescriptor):
             num_classes = response.maximum - response.minimum + 1
             response_values = OrdRxnDescriptorValue.objects.filter(reaction__in=reactions, descriptor=response)
-            class_counts = [response_values.filter(value=v).count() for v in range(response.minimum, response.maximum+1)]
+            class_counts = [response_values.filter(value=v).count() for v in range(response.minimum, response.maximum + 1)]
         elif isinstance(response, BooleanDescriptor):
             num_classes = 2
             response_values = BoolRxnDescriptorValue.objects.filter(reaction__in=reactions, descriptor=response)
@@ -93,21 +93,20 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
             raise TypeError('Cannot train a classification algorithm to predict a numeric descriptor.')
         else:
             raise TypeError('Response descriptor is not a recognized descriptor type.')
-            
-            
-        ## the i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
-        ## since we want misclassification of an instance to be equally costly regardless of what it is classified as
-        ## all entries in a row not on the diagonal should be the same. The diagonal should always be 0 as correct
-        ## classification has no cost. So that every class is weighted the same as a whole, each class's weight is 
-        ## 1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
-        ## total number of data points, so each class is weighted by (total_instances)/(class_count)
-        ## classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
-        ## For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
-        ## TODO XXX Actually check the order of classes from the arff file?
-        
+
+        # the i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
+        # since we want misclassification of an instance to be equally costly regardless of what it is classified as
+        # all entries in a row not on the diagonal should be the same. The diagonal should always be 0 as correct
+        # classification has no cost. So that every class is weighted the same as a whole, each class's weight is
+        # 1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
+        # total number of data points, so each class is weighted by (total_instances)/(class_count)
+        # classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
+        # For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
+        # TODO XXX Actually check the order of classes from the arff file?
+
         total_instances = sum(class_counts)
-        class_weights = [ (total_instances/float(class_count) if class_count!=0 else 0.0) for class_count in class_counts ]
-        cost_matrix = [ [str(0.0) if i==j else str(class_weights[i]) for j in range(num_classes)] for i in range(num_classes) ]
+        class_weights = [(total_instances / float(class_count) if class_count != 0 else 0.0) for class_count in class_counts]
+        cost_matrix = [[str(0.0) if i == j else str(class_weights[i]) for j in range(num_classes)] for i in range(num_classes)]
 
         cost_matrix_string = '"[' + '; '.join([' '.join(row) for row in cost_matrix]) + ']"'
 
@@ -152,7 +151,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
     def predict(self, reactions, verbose=False):
         descriptorHeaders = [d.csvHeader for d in chain(self.statsModel.container.descriptors, self.statsModel.container.outcomeDescriptors)]
-        
+
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
         model_file = self.statsModel.outputFile.name
 
@@ -187,9 +186,11 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 def numConversion(s):
     return float(s)
 
+
 def ordConversion(s):
     s = s.split(':')[1]
     return int(s)
+
 
 def booleanConversion(s):
     s = s.split(':')[1]

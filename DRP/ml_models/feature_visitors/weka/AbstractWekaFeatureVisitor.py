@@ -12,32 +12,32 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
     maxResponseCount = 1
     wekaOptions = ""
-    
+
     def __init__(self, container, *args, **kwargs):
         super(AbstractWekaFeatureVisitor, self).__init__(*args, **kwargs)
 
         self.container = container
-        
-        self.WEKA_VERSION = "3.6" # The version of WEKA to use.
 
-        # This is a bit hackier, but I don't think anything like abstractattribute is implemented in abc 
+        self.WEKA_VERSION = "3.6"  # The version of WEKA to use.
+
+        # This is a bit hackier, but I don't think anything like abstractattribute is implemented in abc
         try:
             self.wekaCommand
         except AttributeError:
             raise NotImplementedError('Subclasses of AbstractWekaModelVisitor must define wekaCommand')
-    
+
     def _prepareArff(self, reactions, whitelistHeaders, verbose=False):
         """Writes an *.arff file using the provided queryset of reactions."""
         logger.debug("Preparing ARFF file...")
         filename = "featureSelection_{}_{}.arff".format(self.container.pk, uuid.uuid4())
         filepath = os.path.join(settings.TMP_DIR, filename)
-        while os.path.isfile(filepath): #uber paranoid making sure we don't race condition
+        while os.path.isfile(filepath):  # uber paranoid making sure we don't race condition
             filename = "{}_{}.arff".format(self.container.pk, uuid.uuid4())
             filepath = os.path.join(settings.TMP_DIR, filename)
         if verbose:
             print "Writing arff to {}".format(filepath)
         with open(filepath, "w") as f:
-          reactions.toArff(f, expanded=True, whitelistHeaders=whitelistHeaders)
+            reactions.toArff(f, expanded=True, whitelistHeaders=whitelistHeaders)
         return filepath
 
     def _readWekaOutput(self, output):
@@ -46,13 +46,13 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         """
         start_line = "Selected attributes:"
         raw_lines = output.split('\n')
-        
+
         found = False
         descriptors = []
         for line in raw_lines:
             if found:
                 desc = line.strip()
-                if desc: #check if line is just whitespace
+                if desc:  # check if line is just whitespace
                     descriptors.append(desc)
             if line.startswith(start_line):
                 found = True
@@ -70,16 +70,16 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
             print "Running in Shell:\n{}".format(command)
         output = subprocess.check_output(command, shell=True)
         return output
-    
+
     def train(self, verbose=False):
         descriptorHeaders = [d.csvHeader for d in chain(self.container.descriptors, self.container.outcomeDescriptors)]
         reactions = self.container.trainingSet.reactions.all()
-        
+
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)
 
         results_file = "featureSelection_{}_{}.out".format(self.container.pk, uuid.uuid4())
         results_path = os.path.join(settings.TMP_DIR, results_file)
-        
+
         # Currently, we support only one "response" variable.
         headers = [h for h in reactions.expandedCsvHeaders() if h in descriptorHeaders]
         response_index = headers.index(list(self.container.outcomeDescriptors)[0].csvHeader) + 1
@@ -88,7 +88,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
             command = "java {} -i {} -c {} -- {}".format(self.wekaCommand, arff_file, response_index, self.wekaOptions)
         else:
             command = "java {} -i {} -c {}".format(self.wekaCommand, arff_file, response_index)
-        
+
         output = self._runWekaCommand(command, verbose=verbose)
         if verbose:
             print output

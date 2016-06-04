@@ -7,12 +7,13 @@ from StatsModel import StatsModel
 from PerformedReaction import PerformedReaction
 from django.db.models import F
 
+
 class PredictedDescriptor(models.Model):
     modelContainer = models.ForeignKey(ModelContainer)
     statsModel = models.ForeignKey(StatsModel, null=True)
 
     class Meta:
-        app_label="DRP"
+        app_label = "DRP"
         abstract = True
 
     objects = DescriptorManager()
@@ -22,25 +23,25 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
     predictionOf = models.ForeignKey(BoolRxnDescriptor, related_name="prediction_of")
 
     class Meta:
-        app_label='DRP'
+        app_label = 'DRP'
         verbose_name = 'Predicted Boolean Rxn Descriptor'
 
     objects = DescriptorManager()
 
- 
     def summarize(self):
         return "Accuracy: {}".format(self.accuracy())
 
     def accuracy(self):
-      conf = self.getConfusionMatrix()
+        conf = self.getConfusionMatrix()
 
-      correct = 0.0
-      total = 0.0
-      for true, guesses in conf.items():
-        for guess, count in guesses.items():
-          if true == guess: correct += count
-          total += count
-      return correct/total
+        correct = 0.0
+        total = 0.0
+        for true, guesses in conf.items():
+            for guess, count in guesses.items():
+                if true == guess:
+                    correct += count
+                total += count
+        return correct / total
 
     def oldGetConfusionMatrix(self):
         """
@@ -61,9 +62,9 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
           }
         """
         matrix = {
-                    True: {True: 0, False: 0},
-                    False: {True: 0, False: 0}
-                    }
+            True: {True: 0, False: 0},
+            False: {True: 0, False: 0}
+        }
         for true, guess in self.getPredictionTuples():
             matrix[true][guess] += 1
 
@@ -75,7 +76,7 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
         values, the inner keys are the "guessed" values that occurred, and
         the value is the integer number of occurrences of that guess when the
         true descriptor was the second key.
-        
+
         Eg: {true: {guess:#, guess':#},
             true': {guess:#, guess':#}}
         Eg: {"1": {"1": 10
@@ -89,16 +90,16 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
         """
         if reactions is None:
             reactions = PerformedReaction.objects.filter(boolrxndescriptorvalue__descriptor=self).distinct()
-            
+
         permittedValues = [True, False]
 
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self).annotate(predicted_val=F('boolrxndescriptorvalue__value'))
         reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self.predictionOf).annotate(actual_val=F('boolrxndescriptorvalue__value'))
 
-        matrix = {true:{guess:reactions.filter(predicted_val=guess, actual_val=true).count() for guess in permittedValues} for true in permittedValues}
+        matrix = {true: {guess: reactions.filter(predicted_val=guess, actual_val=true).count() for guess in permittedValues} for true in permittedValues}
 
         return matrix
-        
+
     def getPredictionTuples(self):
         """"
         Returns a list of tuples where the first value is the actual value for
@@ -108,42 +109,40 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
             predicts "True"
         """
 
-        
-
         actualDescValues = self.predictionOf.boolrxndescriptorvalue_set.all()
         predictedDescValues = self.boolrxndescriptorvalue_set.all()
 
         predictionTuples = []
         for prediction in predictedDescValues:
             actual = actualDescValues.get(reaction=prediction.reaction)
-            predictionTuples.append( (actual.value, prediction.value) )
+            predictionTuples.append((actual.value, prediction.value))
 
         return predictionTuples
-
 
 
 class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
     predictionOf = models.ForeignKey(OrdRxnDescriptor, related_name="predition_of")
 
     class Meta:
-        app_label='DRP'
+        app_label = 'DRP'
         verbose_name = 'Predicted Ordinal Rxn Descriptor'
 
     objects = DescriptorManager()
- 
+
     def summarize(self):
         return "Accuracy: {}".format(self.accuracy())
 
     def accuracy(self):
-      conf = self.getConfusionMatrix()
+        conf = self.getConfusionMatrix()
 
-      correct = 0.0
-      total = 0.0
-      for true, guesses in conf.items():
-        for guess, count in guesses.items():
-          if true == guess: correct += count
-          total += count
-      return correct/total
+        correct = 0.0
+        total = 0.0
+        for true, guesses in conf.items():
+            for guess, count in guesses.items():
+                if true == guess:
+                    correct += count
+                total += count
+        return correct / total
 
     def getConfusionMatrix(self):
         """Returns a dicionary of dictionaries of dictionaries, where the outer keys
@@ -162,16 +161,16 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
                , ...
                }
               } """
-        
+
         matrix = {
-                    true: {guess: 0 for guess in xrange(self.minimum, self.maximum+1)}
-                    for true in xrange(self.minimum, self.maximum+1)
-                    }
+            true: {guess: 0 for guess in xrange(self.minimum, self.maximum + 1)}
+            for true in xrange(self.minimum, self.maximum + 1)
+        }
         for true, guess in self.getPredictionTuples():
-            #if true not in matrix:
+            # if true not in matrix:
                 #matrix[true] = {}
             try:
-                matrix[true][guess] += 1 #matrix[true][guess]+1 if guess in matrix[true] else 1
+                matrix[true][guess] += 1  # matrix[true][guess]+1 if guess in matrix[true] else 1
             except KeyError:
                 print true, guess, type(true), type(guess)
                 exit()
@@ -189,11 +188,11 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
         actualDescValues = self.predictionOf.ordrxndescriptorvalue_set.all()
         predictedDescValues = self.ordrxndescriptorvalue_set.all()
-        
+
         predictionTuples = []
         for prediction in predictedDescValues:
             actual = actualDescValues.get(reaction=prediction.reaction)
-            predictionTuples.append( (actual.value, prediction.value) )
+            predictionTuples.append((actual.value, prediction.value))
 
         return predictionTuples
 
@@ -202,11 +201,10 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
     predictionOf = models.ForeignKey(NumRxnDescriptor, related_name="prediction_of")
 
     class Meta:
-        app_label='DRP'
+        app_label = 'DRP'
         verbose_name = 'Predicted Numeric Rxn Descriptor'
 
     objects = DescriptorManager()
-    
 
     def getPredictionTuples(self):
         """"
@@ -219,20 +217,20 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
 
         actualDescValues = self.predictionOf.ordrxndescriptorvalue_set.all()
         predictedDescValues = self.ordrxndescriptorvalue_set.all()
-        
+
         predictionTuples = []
         for prediction in predictedDescValues:
             actual = actualDescValues.get(reaction=prediction.reaction)
-            predictionTuples.append( (actual.value, prediction.value) )
+            predictionTuples.append((actual.value, prediction.value))
 
         return predictionTuples
+
 
 class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
     predictionOf = models.ForeignKey(CatRxnDescriptor, related_name="prediction_of")
 
     class Meta:
-        app_label='DRP'
+        app_label = 'DRP'
         verbose_name = 'Predicted Categorical Rxn Descriptor'
 
     objects = DescriptorManager()
-

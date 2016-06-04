@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AbstractFeatureVisitor(object):
     __metaclass__ = ABCMeta
 
@@ -11,4 +12,3 @@ class AbstractFeatureVisitor(object):
         """A function meant to be overridden by actual FeatureVisitor classes.
               The `train` method should prepare the feature selection model for
               attribute selection and save that model if necessary."""
-

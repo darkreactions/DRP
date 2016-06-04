@@ -59,7 +59,7 @@ def calculate(compound, verbose=False, whitelist=None):
         lengthValue = None
 
     arbValue = arbValCalc(compound)
-    
+
     heading = 'length'
     if whitelist is None or heading in whitelist:
         v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': lengthValue}, compound=compound, descriptor=descriptorDict[heading])[0]
@@ -69,7 +69,7 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
-            
+
     arbValue = arbValCalc(compound)
     heading = 'fs'
     if whitelist is None or heading in whitelist:
@@ -80,7 +80,7 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
-            
+
     heading = 'N?'
     if whitelist is None or heading in whitelist:
         v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict[heading])[0]
@@ -100,4 +100,3 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
-    

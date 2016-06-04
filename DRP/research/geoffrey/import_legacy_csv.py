@@ -5,6 +5,7 @@ from sys import argv
 from DRP.models import NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, PerformedReaction, NumRxnDescriptorValue, BoolRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.management.commands import reimport_reactions
 
+
 def create_descriptors(descriptor_type_dict, save=False, overwrite=False, heading_suffix='_legacy', name_prefix='Legacy descriptor with heading ', calculatorSoftware='legacy'):
     descriptor_dict = {}
     for descriptor_heading, descriptor_type in descriptor_type_dict.items():
@@ -13,10 +14,10 @@ def create_descriptors(descriptor_type_dict, save=False, overwrite=False, headin
         desc = None
         if descriptor_type == 'numeric':
             new_desc = NumRxnDescriptor(
-                        heading=heading,
-                        calculatorSoftware=calculatorSoftware,
-                        name=name,
-                        )
+                heading=heading,
+                calculatorSoftware=calculatorSoftware,
+                name=name,
+            )
             try:
                 desc = NumRxnDescriptor.objects.get(heading=heading)
             except NumRxnDescriptor.DoesNotExist:
@@ -25,13 +26,13 @@ def create_descriptors(descriptor_type_dict, save=False, overwrite=False, headin
                 if overwrite:
                     desc.delete()
                     desc = new_desc
-                    
+
         elif descriptor_type == 'boolean':
             new_desc = BoolRxnDescriptor(
-                        heading=heading,
-                        calculatorSoftware=calculatorSoftware,
-                        name=name,
-                        )
+                heading=heading,
+                calculatorSoftware=calculatorSoftware,
+                name=name,
+            )
             try:
                 desc = BoolRxnDescriptor.objects.get(heading=heading)
             except BoolRxnDescriptor.DoesNotExist:
@@ -40,22 +41,22 @@ def create_descriptors(descriptor_type_dict, save=False, overwrite=False, headin
                 if overwrite:
                     desc.delete()
                     desc = new_desc
-                    
+
         elif descriptor_type == 'ordinal':
-            if descriptor_heading == 'purity': #hacky, but whatever
+            if descriptor_heading == 'purity':  # hacky, but whatever
                 new_desc = OrdRxnDescriptor(
-                        heading=heading,
-                        calculatorSoftware='legacy',
-                        minimum=0,
-                        maximum=2
-                        )
-            elif descriptor_heading == 'outcome': #hacky, but whatever
+                    heading=heading,
+                    calculatorSoftware='legacy',
+                    minimum=0,
+                    maximum=2
+                )
+            elif descriptor_heading == 'outcome':  # hacky, but whatever
                 new_desc = OrdRxnDescriptor(
-                        heading=heading,
-                        calculatorSoftware='legacy',
-                        minimum=1,
-                        maximum=4
-                        )
+                    heading=heading,
+                    calculatorSoftware='legacy',
+                    minimum=1,
+                    maximum=4
+                )
             else:
                 raise ValueError('Unrecognized ordinal descriptor')
             try:
@@ -75,7 +76,6 @@ def create_descriptors(descriptor_type_dict, save=False, overwrite=False, headin
             descriptor_dict[descriptor_heading] = desc
             if save:
                 desc.save()
-        
 
     return descriptor_dict
 
@@ -96,7 +96,7 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
         descriptor_type_dict = reader.next()
 
         descriptor_dict = create_descriptors(descriptor_type_dict, save=save, overwrite=overwrite)
-        
+
         #found = []
         #failed = []
 
@@ -105,7 +105,7 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
         bool_vals = []
         cat_vals = []
         rxns_to_bulk_create = set([])
-        
+
         for i, rxn_entry in enumerate(reader):
             ref = reimport_reactions.convert_legacy_reference(rxn_entry['XXXtitle'])
             ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
@@ -151,14 +151,13 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
                             val_list = cat_vals
                         else:
                             raise ValueError('Unrecognized descriptor type {}'.format(type(desc)))
-    
+
                         val = desc.updateOrNewValue(rxn, conv(val_string))
                         if val is not None:
                             val_list.append(val)
-                        #val.save()
+                        # val.save()
                 print "Created values for reaction {}, number {}".format(ref, i)
 
-                
                 if save:
                     if len(bool_vals) > val_save_cutoff:
                         BoolRxnDescriptorValue.objects.bulk_create(bool_vals)
@@ -186,16 +185,15 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
             CatRxnDescriptorValue.objects.bulk_create(cat_vals)
             print "{} categorical values saved".format(len(cat_vals))
 
-    #print "Sucessfully found {} reaction entries".format(len(found))
-    #print "Failed to find {} reaction entries. Skipped.".format(len(failed))
+    # print "Sucessfully found {} reaction entries".format(len(found))
+    # print "Failed to find {} reaction entries. Skipped.".format(len(failed))
+
 
 def startswith_lookup(start):
     print list(PerformedReaction.objects.filter(reference__startswith=start))
-        
 
-    
+
 if __name__ == '__main__':
     filename = argv[1]
 
     parse_reactions(filename, save=True, overwrite=False, val_save_cutoff=5000)
-

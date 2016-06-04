@@ -2,6 +2,7 @@
 import DRP
 from django.db import transaction
 
+
 class LazyDescDict(object):
 
     def __init__(self, descDict):
@@ -9,15 +10,14 @@ class LazyDescDict(object):
         self.descDict = descDict
         self.initialised = False
 
-
     @transaction.atomic
     def initialise(self, descDict):
         if not self.initialised:
-            for k,v in descDict.items():
+            for k, v in descDict.items():
                 args = v.copy()
                 del args['type']
-                args['heading']=k
-                fetchArgs = {k:v for k, v in args.items() if k in ('heading', 'calculatorSoftware', 'calculatorSoftwareVersion')}
+                args['heading'] = k
+                fetchArgs = {k: v for k, v in args.items() if k in ('heading', 'calculatorSoftware', 'calculatorSoftwareVersion')}
                 if v['type'] == 'num':
                     try:
                         # why are we setting internal dict then immediately resetting it?
@@ -68,7 +68,6 @@ class LazyDescDict(object):
         # TODO Is this really not supposed to initialise?
         return item in self.internalDict
 
-
     def __getattr__(self, name):
         """
         Deals with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."
@@ -78,6 +77,7 @@ class LazyDescDict(object):
             return getattr(self.internalDict, name)(*args, **kwargs)
 
         return _pass_attr
+
 
 def setup(descDict):
     return LazyDescDict(descDict)

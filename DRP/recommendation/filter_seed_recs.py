@@ -2,14 +2,16 @@
 from DRP.retrievalFunctions import *
 from DRP.database_construction import *
 
-#Removes "unusable" amines from the recList as per Alex's
+# Removes "unusable" amines from the recList as per Alex's
 #  06-10-14 request.
-def filterSeedRecList(lab, recTupleList):
-  #The result that will eventually be a filtered version of recTupleList.
-  filteredRecs = []
 
-  #The list of "amines that we want to be included in the ... results".
-  valid_reactants = {
+
+def filterSeedRecList(lab, recTupleList):
+    # The result that will eventually be a filtered version of recTupleList.
+    filteredRecs = []
+
+    # The list of "amines that we want to be included in the ... results".
+    valid_reactants = {
         "3-Aminopyrrolidine dihydrochloride",
         "N-Methylethylenediamine",
         "N,N,N',N'-Tetramethyl-1,4-butanediamine",
@@ -35,11 +37,11 @@ def filterSeedRecList(lab, recTupleList):
         "3-(aminomethyl)piperidine",
         "1-(3-aminopropyl)pyrrolidine",
         "2-aminopiperidine",
-        "5-Amino-1,3,3-trimethylcyclohexanemethylamine",#TODO: add cis and trans
-        "4,4'-Methylenebis(2-methylcyclohexylamine)",#TODO: add isomers
+        "5-Amino-1,3,3-trimethylcyclohexanemethylamine",  # TODO: add cis and trans
+        "4,4'-Methylenebis(2-methylcyclohexylamine)",  # TODO: add isomers
         "N,N,N',N'-Tetramethyl-1,3-propanediamine",
         "3-(Dimethylamino)-1-propylamine",
-        "1,3-Cyclohexanebis(methylamine)",#TODO:Add isomers
+        "1,3-Cyclohexanebis(methylamine)",  # TODO:Add isomers
         "N,N,N',N'-Tetramethyl-1,3-butanediamine",
         "2-(Aminomethyl)piperidine",
         "3-(Dimethylamino)-1-propylamine",
@@ -48,26 +50,25 @@ def filterSeedRecList(lab, recTupleList):
         "2-Amino-5-diethylaminopentane",
         "3-(Dibutylamino)propylamine"}
 
-  #Get the valid Recommendation fields.
-  fields = get_model_field_names(model="Recommendation")
+    # Get the valid Recommendation fields.
+    fields = get_model_field_names(model="Recommendation")
 
-  #The elements of recList are detailed below:
-  #[(best_conf, sim(best_candidate, raw_rxn), best_candidate), ...]
+    # The elements of recList are detailed below:
+    #[(best_conf, sim(best_candidate, raw_rxn), best_candidate), ...]
 
-  #Note that "best_candidate" is actually a reaction in the form
-  #  of a list. Thus, below, we simply iterate through the reaction.
+    # Note that "best_candidate" is actually a reaction in the form
+    #  of a list. Thus, below, we simply iterate through the reaction.
 
-  #Also note that recList[2][0] contains the headers for the recList.
+    # Also note that recList[2][0] contains the headers for the recList.
 
-  #Actually "translate" the compounds to abbrevs.
-  for recTuple in recTupleList:
-    for (field, i) in zip(fields, range(len(recTuple[2][1:]))):
-      if field[:8]=="reactant":
-        #If there is an overlap in one of the reactants, throw it in.
-        value = recTuple[2][i+1]
-        if value in valid_reactants:
-          filteredRecs.append(recTuple)
-          break
+    # Actually "translate" the compounds to abbrevs.
+    for recTuple in recTupleList:
+        for (field, i) in zip(fields, range(len(recTuple[2][1:]))):
+            if field[:8] == "reactant":
+                # If there is an overlap in one of the reactants, throw it in.
+                value = recTuple[2][i + 1]
+                if value in valid_reactants:
+                    filteredRecs.append(recTuple)
+                    break
 
-  return filteredRecs
-
+    return filteredRecs

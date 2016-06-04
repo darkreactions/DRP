@@ -13,15 +13,15 @@ import CompoundPages
 import ReactionPages
 
 suite = unittest.TestSuite([
-  AboutPage.suite,
-  AccountPage.suite,
-  ConfirmationPage.suite,
-  ContactPage.suite,
-  CompoundPages.suite,
-  HomePage.suite,
-  LabGroupPage.suite,
-  LicensePage.suite,
-  LoginPage.suite,
-  RegisterPage.suite,
-  ReactionPages.suite
+    AboutPage.suite,
+    AccountPage.suite,
+    ConfirmationPage.suite,
+    ContactPage.suite,
+    CompoundPages.suite,
+    HomePage.suite,
+    LabGroupPage.suite,
+    LicensePage.suite,
+    LoginPage.suite,
+    RegisterPage.suite,
+    ReactionPages.suite
 ])

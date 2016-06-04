@@ -13,6 +13,7 @@ from django.http import HttpResponseNotFound
 from DRP.forms import LabGroupSelectionForm
 from django.http import Http404
 
+
 def userHasLabGroup(view):
     '''This decorator checks that the user is a member of at least one lab group. Assumes login_required is an external decorator'''
     def hasLabGroup(request, *args, **kwargs):
@@ -22,6 +23,7 @@ def userHasLabGroup(view):
         else:
             return view(request, *args, **kwargs)
     return hasLabGroup
+
 
 def hasSignedLicense(view):
     '''This decorator checks that the user has signed the
@@ -33,11 +35,12 @@ def hasSignedLicense(view):
             template = get_template('license_404.html')
             return HttpResponseNotFound(template.render(RequestContext(request)))
         elif not LicenseAgreement.objects.filter(user=request.user, text=License.objects.latest()).exists():
-            return redirect(reverse('license') + '?{0}'.format(urlencode({'next':request.path_info})))
+            return redirect(reverse('license') + '?{0}'.format(urlencode({'next': request.path_info})))
         else:
             return view(request, *args, **kwargs)
-    
+
     return _hasSignedLicense
+
 
 def reactionExists(view, *args, **kwargs):
     """This decorator checks that a reaction exists before continuing with the internal view"""
@@ -50,10 +53,11 @@ def reactionExists(view, *args, **kwargs):
 
     return _reactionExists
 
+
 def labGroupSelected(dispatch_method):
     '''Ensures a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method'''
 
-    def _labGroupSelected(self, request, *args, **kwargs): 
+    def _labGroupSelected(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             self.labForm = LabGroupSelectionForm(request.user)
             if request.user.labgroup_set.all().count() > 1:
@@ -61,7 +65,7 @@ def labGroupSelected(dispatch_method):
                     self.labGroup = request.user.labgroup_set.get(pk=request.session['labgroup_id'])
                     self.labForm.fields['labGroup'].initial = request.session['labgroup_id']
                 elif 'labgroup_id' not in request.session:
-                    return redirect(reverse('selectGroup') + '?{0}'.format(urlencode({'next':request.path_info})))
+                    return redirect(reverse('selectGroup') + '?{0}'.format(urlencode({'next': request.path_info})))
                 else:
                     raise RuntimeError("This shouldn't happen")
                     self.labGroup = None

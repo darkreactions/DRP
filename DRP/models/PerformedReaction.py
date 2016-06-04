@@ -10,27 +10,31 @@ from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
 from validators import notInTheFuture
 
+
 class PerformedReactionQuerySet(ReactionQuerySet):
-        # I assume this was wrong and it should be the one below
-        #def __init__(self, model=None, **kwargs):
+    # I assume this was wrong and it should be the one below
+    # def __init__(self, model=None, **kwargs):
                 #"""Initialises the queryset"""
                 #model = Reaction if model is None else model
                 #super(ReactionQuerySet, self).__init__(model=model, **kwargs)
-        def __init__(self, model=None, **kwargs):
-                """Initialises the queryset"""
-                model = PerformedReaction if model is None else model
-                super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
+
+    def __init__(self, model=None, **kwargs):
+        """Initialises the queryset"""
+        model = PerformedReaction if model is None else model
+        super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
+
 
 class PerformedReactionManager(ReactionManager):
-        def get_queryset(self):
-            return PerformedReactionQuerySet(model=PerformedReaction)
+
+    def get_queryset(self):
+        return PerformedReactionQuerySet(model=PerformedReaction)
 
 
 class PerformedReaction(Reaction):
     '''A class representing concrete instances of reactions that have actually been performed'''
 
     class Meta:
-        app_label="DRP"
+        app_label = "DRP"
 
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
@@ -51,34 +55,34 @@ class PerformedReaction(Reaction):
     '''Reaction reference in legacy database'''
     convertedLegacyRef = models.CharField(max_length=40, null=True, blank=True,
                                           validators=[
-                                                        RegexValidator(
-                                                            '^[a-z0-9._]*[a-z][a-z0-9._]*$',
+                                              RegexValidator(
+                                                  '^[a-z0-9._]*[a-z][a-z0-9._]*$',
                                                             ('Please include only values which are limited to '
                                                              'alphanumeric characters, underscores, periods, '
                                                              'and must include at least one '
                                                              'alphabetic character.')
-                                                        )
-                                                     ]
-                                        )
+                                              )
+                                          ]
+                                          )
     '''Reaction reference in legacy database converted to canonical form by removing spaces and converting to lowercase.
     This could differ from the reference because it is not disambiguated or validated as unique'''
     reference = models.CharField(
-                max_length=40,
-                validators=[
-                    RegexValidator(
-                        '^[a-z0-9\._]*[a-z][a-z0-9\._]*$',
-                        ('Please include only values which are limited to '
-                         'alphanumeric characters, underscores, periods, '
-                         'and must include at least one '
-                         'alphabetic character.')
-                    )
-                ]
-                )
+        max_length=40,
+        validators=[
+            RegexValidator(
+                '^[a-z0-9\._]*[a-z][a-z0-9\._]*$',
+                ('Please include only values which are limited to '
+                 'alphanumeric characters, underscores, periods, '
+                 'and must include at least one '
+                 'alphabetic character.')
+            )
+        ]
+    )
 
     def clean(self):
         super(PerformedReaction, self).clean()
         if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
-            raise ValidationError({'reference':'This reference has already been used for this lab group.'}, code="duplicate_reference")
+            raise ValidationError({'reference': 'This reference has already been used for this lab group.'}, code="duplicate_reference")
 
     def __unicode__(self):
         return self.reference

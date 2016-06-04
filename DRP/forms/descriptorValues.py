@@ -3,6 +3,7 @@ from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantit
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models import NumRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor, OrdRxnDescriptor
 
+
 def descriptorValueFormFactory(modelClass, descriptorClass):
     '''A factory function for producing descriptor value form classes'''
 
@@ -10,8 +11,8 @@ def descriptorValueFormFactory(modelClass, descriptorClass):
         '''A form for a descriptor value'''
 
         class Meta:
-            model=modelClass
-            fields=('descriptor', 'value')
+            model = modelClass
+            fields = ('descriptor', 'value')
 
         def __init__(self, *args, **kwargs):
             super(DescriptorValueForm, self).__init__(*args, **kwargs)
@@ -25,14 +26,15 @@ NumRxnDescValForm = factory(NumRxnDescriptorValue, NumRxnDescriptor)
 OrdRxnDescValForm = factory(OrdRxnDescriptorValue, OrdRxnDescriptor)
 BoolRxnDescValForm = factory(BoolRxnDescriptorValue, BoolRxnDescriptor)
 
+
 class CatRxnDescValForm(forms.ModelForm):
     '''Special case because of the need to group permitted values'''
-    
+
     value = forms.ChoiceField()
 
     class Meta:
-        model=CatRxnDescriptorValue
-        fields=('descriptor', 'value','reaction')
+        model = CatRxnDescriptorValue
+        fields = ('descriptor', 'value', 'reaction')
 
     def __init__(self, *args, **kwargs):
         super(CatRxnDescValForm, self).__init__(*args, **kwargs)

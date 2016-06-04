@@ -18,13 +18,13 @@ suite = unittest.TestSuite([
     Email.suite,
     forms.suite,
     HttpTests.suite,
-#    modelBuildingTests.suite,
-#    DataImport.suite,
+    #    modelBuildingTests.suite,
+    #    DataImport.suite,
     CompoundFromCsv.suite,
     CompoundDescriptor.suite,
     CompoundToCsv.suite,
     CompoundToArff.suite,
-#    fileTests.suite,
+    #    fileTests.suite,
     modelValidators.suite,
 ])
 

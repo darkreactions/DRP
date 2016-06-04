@@ -162,6 +162,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
                 if verbose:
                     print "Done with plugin: {}\n".format(plugin)
 
+
 class CompoundManager(models.Manager):
 
     """A custom manager for the Compound Class which permits the creation of entries to and from CSVs."""

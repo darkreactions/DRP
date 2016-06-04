@@ -11,6 +11,7 @@ from django.db.models.functions import Concat
 
 
 class DescriptorQuerySet(models.query.QuerySet):
+
     def __init__(self, model=None, **kwargs):
         """Initialises the queryset"""
         model = Descriptor if model is None else model

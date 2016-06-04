@@ -2,12 +2,13 @@
 from django.db import models
 from Reaction import Reaction
 
+
 class RecommendedReaction(Reaction):
 
     class Meta:
-        app_label='DRP'
+        app_label = 'DRP'
 
-    score=models.FloatField()
+    score = models.FloatField()
     seed = models.ForeignKey(Reaction, null=True, related_name='seeded')
     nonsense = models.BooleanField(default=None)
     hidden = models.BooleanField(default=None)

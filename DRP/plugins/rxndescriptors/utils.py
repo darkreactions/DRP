@@ -2,6 +2,7 @@
 import DRP
 from django.db import transaction
 
+
 class LazyDescDict(object):
 
     def __init__(self, descDict):
@@ -12,11 +13,11 @@ class LazyDescDict(object):
     @transaction.atomic
     def initialise(self, descDict):
         if not self.initialised:
-            for k,v in descDict.items():
+            for k, v in descDict.items():
                 args = v.copy()
                 del args['type']
                 args['heading'] = k
-                fetchArgs = {k:v for k, v in args.items() if k in ('heading', 'calculatorSoftware', 'calculatorSoftwareVersion')}
+                fetchArgs = {k: v for k, v in args.items() if k in ('heading', 'calculatorSoftware', 'calculatorSoftwareVersion')}
                 if v['type'] == 'num':
                     try:
                         self.internalDict[k] = DRP.models.NumRxnDescriptor.objects.filter(**fetchArgs).update(**args)
@@ -33,11 +34,11 @@ class LazyDescDict(object):
                     try:
                         self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.filter(**fetchArgs).update(**args)
                         self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get(**fetchArgs)
-                    except DRP.models.OrdRxnDescriptor.DoesNotExist: 
+                    except DRP.models.OrdRxnDescriptor.DoesNotExist:
                         self.internalDict[k] = DRP.models.OrdRxnDescriptor.objects.get_or_create(**args)[0]
                 elif v['type'] == 'cat':
                     del args['permittedValues']
-                    try: 
+                    try:
                         DRP.models.CatRxnDescriptor.objects.filter(**fetchArgs).update(**args)
                         self.internalDict[k] = DRP.models.CatRxnDescriptor.objects.get(**fetchArgs)
                     except DRP.models.CatRxnDescriptor.DoesNotExist:
@@ -61,7 +62,6 @@ class LazyDescDict(object):
 
     def __contains__(self, item):
         return item in self.internalDict
-
 
     def __getattr__(self, name):
         """

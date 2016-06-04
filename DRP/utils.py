@@ -6,7 +6,7 @@ from math import sqrt
 
 def average_normalized_conf(confs):
     possible_vals = set(confs[0].keys())
-    sum_conf = {true: {guess:0.0 for guess in possible_vals} for true in possible_vals}
+    sum_conf = {true: {guess: 0.0 for guess in possible_vals} for true in possible_vals}
     for conf in confs:
         total = 0.0
         for true, guesses in conf.items():
@@ -16,10 +16,11 @@ def average_normalized_conf(confs):
             raise RuntimeError('Confusion matrix values sum to 0')
         for true, guesses in conf.items():
             for guess, count in guesses.items():
-                sum_conf[true][guess] += count/total
+                sum_conf[true][guess] += count / total
 
-    average_conf = {true: {guess: count/len(confs) for guess, count in guesses.items()} for true, guesses in sum_conf.items()}
+    average_conf = {true: {guess: count / len(confs) for guess, count in guesses.items()} for true, guesses in sum_conf.items()}
     return average_conf
+
 
 def accuracy(conf):
     correct = 0.0
@@ -29,9 +30,9 @@ def accuracy(conf):
             if true == guess:
                 correct += count
             total += count
-    return (correct/total if total != 0 else 0.0)
+    return (correct / total if total != 0 else 0.0)
 
-    
+
 def BCR(conf):
     class_accuracy_sum = 0.0
     num_classes = 0.0
@@ -43,12 +44,12 @@ def BCR(conf):
                 class_correct += count
             class_total += count
         if class_total != 0:
-            class_accuracy_sum += class_correct/class_total
+            class_accuracy_sum += class_correct / class_total
             num_classes += 1
-    
-    return (class_accuracy_sum/num_classes if num_classes else 0.0)
 
-    
+    return (class_accuracy_sum / num_classes if num_classes else 0.0)
+
+
 def Matthews(conf):
     class_accuracy_sum = 0.0
     num_classes = 0.0
@@ -66,16 +67,17 @@ def Matthews(conf):
     TN = false_guesses[false]
     FP = false_guesses[true]
 
-    PP = TP+FP
-    AP = TP+FN
-    AN = TN+FP
-    PN = TN+FN
+    PP = TP + FP
+    AP = TP + FN
+    AN = TN + FP
+    PN = TN + FN
 
     if 0 in [PP, AP, AN, PN]:
         # the correct value when any part of the denominator is zero
         return 0.0
 
-    return (TP*TN - FP*FN)/sqrt(PP*AP*AN*PN)
+    return (TP * TN - FP * FN) / sqrt(PP * AP * AN * PN)
+
 
 def confusionMatrixString(confusionMatrix, headers=True):
     """

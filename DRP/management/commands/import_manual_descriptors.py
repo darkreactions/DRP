@@ -5,11 +5,11 @@ from django.conf import settings
 from os import path
 import csv
 from django.contrib.auth.models import User
-from DRP.models import LabGroup, Compound, PerformedReaction 
+from DRP.models import LabGroup, Compound, PerformedReaction
 from DRP.models import ChemicalClass, NumRxnDescriptor
 from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue
-from DRP.models import OrdRxnDescriptorValue, NumMolDescriptorValue 
+from DRP.models import OrdRxnDescriptorValue, NumMolDescriptorValue
 from DRP.models import CompoundRole, CompoundQuantity
 from chemspipy import ChemSpider
 import warnings
@@ -21,14 +21,14 @@ outcomeDescriptor = OrdRxnDescriptor.objects.get_or_create(
     calculatorSoftwareVersion='0',
     maximum=4,
     minimum=1
-    )[0]
+)[0]
 
 outcomeBooleanDescriptor = BoolRxnDescriptor.objects.get_or_create(
     heading='boolean_crystallisation_outcome',
     name='Two class crystallisation outcome',
     calculatorSoftware='manual',
-    calculatorSoftwareVersion='0'    
-    )[0]
+    calculatorSoftwareVersion='0'
+)[0]
 
 purityDescriptor = OrdRxnDescriptor.objects.get_or_create(
     heading='crystallisation_purity_outcome',
@@ -37,45 +37,46 @@ purityDescriptor = OrdRxnDescriptor.objects.get_or_create(
     calculatorSoftwareVersion='0',
     maximum=2,
     minimum=1
-    )[0]
+)[0]
 
 temperatureDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='reaction_temperature',
     name='Reaction temperature in degrees C',
     calculatorSoftware='manual',
-    calculatorSoftwareVersion='0' 
-    )[0]
+    calculatorSoftwareVersion='0'
+)[0]
 
 timeDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='reaction_time',
     name='Reaction time in minutes',
     calculatorSoftware='manual',
-    calculatorSoftwareVersion='0'  
-    )[0]
+    calculatorSoftwareVersion='0'
+)[0]
 
 pHDescriptor = NumRxnDescriptor.objects.get_or_create(
-    heading = 'reaction_pH',
+    heading='reaction_pH',
     name='Reaction pH',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 preHeatStandingDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='pre_heat_standing',
     name='Pre heat standing time',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 teflonDescriptor = BoolRxnDescriptor.objects.get_or_create(
     heading='teflon_pouch',
     name='Was this reaction performed in a teflon pouch?',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
+
 
 class Command(BaseCommand):
-    help='Ports database from pre-0.02 to 0.02'
+    help = 'Ports database from pre-0.02 to 0.02'
 
     def add_arguments(self, parser):
         parser.add_argument('directory', help='The directory where the tsv files are')
@@ -128,7 +129,6 @@ class Command(BaseCommand):
             preHeatStandingValues = []
             teflonValues = []
 
-            
             for r in reader:
                 ref = r['reference'].lower()
                 self.stdout.write('Reiterating for reaction with reference {}'.format(r['reference'].lower()))
@@ -150,7 +150,7 @@ class Command(BaseCommand):
                         pass
 
                     #outValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=outcomeDescriptor, reaction=p)[0]
-                    outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range (1, 5))) else None
+                    outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range(1, 5))) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
                         self.stdout.write('\tValue found for descriptor {}.'.format(outcomeDescriptor))
@@ -161,9 +161,9 @@ class Command(BaseCommand):
                     except OrdRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(outcomeDescriptor, outcomeValue))
                         outValue = outcomeDescriptor.createValue(p, outcomeValue)
-                        #outValue.save()
+                        # outValue.save()
                         outValues.append(outValue)
-                    
+
                     #outBoolValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=outcomeBooleanDescriptor, reaction=p)[0]
                     value = True if (outcomeValue > 2) else False
                     try:
@@ -175,10 +175,10 @@ class Command(BaseCommand):
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(outcomeBooleanDescriptor, value))
-                        #outBoolValue.save()
+                        # outBoolValue.save()
                         outBoolValue = outcomeBooleanDescriptor.createValue(p, value)
                         outBoolValues.append(outBoolValue)
-                    
+
                     #purityValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=purityDescriptor, reaction=p)[0]
                     value = int(r['purity']) if (r['purity'] in ('1', '2')) else None
                     try:
@@ -190,10 +190,10 @@ class Command(BaseCommand):
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(purityDescriptor, value))
-                        #purityValue.save()
+                        # purityValue.save()
                         purityValue = purityDescriptor.createValue(p, value)
                         purityValues.append(purityValue)
-                    
+
                     #temperatureDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=temperatureDescriptor, reaction=p)[0]
                     value = (float(r['temp']) + 273.15) if (r['temp'] not in ('', '?')) else None
                     try:
@@ -205,12 +205,12 @@ class Command(BaseCommand):
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(temperatureDescriptor, value))
-                        #temperatureDescriptorValue.save()
+                        # temperatureDescriptorValue.save()
                         temperatureDescriptorValue = temperatureDescriptor.createValue(p, value)
                         temperatureValues.append(temperatureDescriptorValue)
-                    
+
                     #timeDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=timeDescriptor, reaction=p)[0]
-                    value = float(r['time'])*60 if (r['time'] not in ['', '?']) else None
+                    value = float(r['time']) * 60 if (r['time'] not in ['', '?']) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=timeDescriptor, reaction=p)
                         self.stdout.write('\tValue found for descriptor {}.'.format(timeDescriptor))
@@ -220,10 +220,10 @@ class Command(BaseCommand):
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(timeDescriptor, value))
-                        #timeDescriptorValue.save()
+                        # timeDescriptorValue.save()
                         timeDescriptorValue = timeDescriptor.createValue(p, value)
                         timeValues.append(timeDescriptorValue)
-                    
+
                     #pHDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=pHDescriptor, reaction=p)[0]
                     value = float(r['pH']) if (r['pH'] not in ('', '?')) else None
                     try:
@@ -235,10 +235,10 @@ class Command(BaseCommand):
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(pHDescriptor, value))
-                        #pHDescriptorValue.save()
+                        # pHDescriptorValue.save()
                         pHDescriptorValue = pHDescriptor.createValue(p, value)
                         pHValues.append(pHDescriptorValue)
-                    
+
                     #preHeatStandingDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=preHeatStandingDescriptor, reaction=p)[0]
                     value = bool(r['pre_heat standing']) if (r.get('pre_heat standing') not in ('', None)) else None
                     try:
@@ -250,10 +250,10 @@ class Command(BaseCommand):
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(preHeatStandingDescriptor, value))
-                        #preHeatStandingDescriptorValue.save()
+                        # preHeatStandingDescriptorValue.save()
                         preHeatStandingDescriptorValue = preHeatStandingDescriptor.createValue(p, value)
                         preHeatStandingValues.append(preHeatStandingDescriptorValue)
-                    
+
                     #teflonDescriptorValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=teflonDescriptor, reaction=p)[0]
                     value = bool(int(r['teflon_pouch'])) if (r.get('teflon_pouch') not in(None, '')) else None
                     try:
@@ -265,7 +265,7 @@ class Command(BaseCommand):
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
                         self.stdout.write('\tNo value found for descriptor {}. Creating with value {}'.format(teflonDescriptor, value))
-                        #teflonDescriptorValue.save()
+                        # teflonDescriptorValue.save()
                         teflonDescriptorValue = teflonDescriptor.createValue(p, value)
                         teflonValues.append(teflonDescriptorValue)
 
@@ -279,7 +279,7 @@ class Command(BaseCommand):
                         NumRxnDescriptorValue.objects.bulk_create(pHValues)
                         NumRxnDescriptorValue.objects.bulk_create(preHeatStandingValues)
                         BoolRxnDescriptorValue.objects.bulk_create(teflonValues)
-                        
+
                         outValues = []
                         outBoolValues = []
                         purityValues = []
