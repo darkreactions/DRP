@@ -23,7 +23,7 @@ class NumericFilterFormGT(BaseFormTest):
         self.formData = {}
         self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="length").pk
         self.formData["operator"] = 'gt' 
-        self.formData["value"] = 12
+        self.formData["value"] = 11
 
     def setUp(self): 
         '''Creates a user, then a form'''
@@ -39,7 +39,7 @@ class NumericFilterFormGT(BaseFormTest):
         cleaned = self.form.cleaned_data
         self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
         self.assertEqual(cleaned["operator"], "gt", "Got a different result, {}, for the operator than expected".format(cleaned["descriptor"]))
-        self.assertEqual(float(cleaned["value"]), 12, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(float(cleaned["value"]), 11, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         self.form.is_valid() 
@@ -59,7 +59,7 @@ class NumericFilterFormGE(BaseFormTest):
         self.formData = {}
         self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="length").pk
         self.formData["operator"] = 'ge' 
-        self.formData["value"] = 18
+        self.formData["value"] = 11
 
     def setUp(self): 
         '''Creates a user, then a form'''
@@ -75,7 +75,7 @@ class NumericFilterFormGE(BaseFormTest):
         cleaned = self.form.cleaned_data
         self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
         self.assertEqual(cleaned["operator"], "ge", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
-        self.assertEqual(float(cleaned["value"]), 18, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(float(cleaned["value"]), 11, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         self.form.is_valid() 

@@ -11,6 +11,7 @@ import CompoundToCsv
 import CompoundToArff
 import modelBuildingTests
 
+
 suite = unittest.TestSuite([
     Email.suite,
     forms.suite,
@@ -22,3 +23,16 @@ suite = unittest.TestSuite([
     CompoundToArff.suite,
     #fileTests.suite,
 ])
+
+
+modules = [
+    "Email",
+    "forms",
+    "HttpTests",
+    "modelBuildingTests",
+    "CompoundFromCsv",
+    "CompoundDescriptor",
+    "CompoundToCsv",
+    "CompoundToArff",
+    "fileTests",
+]

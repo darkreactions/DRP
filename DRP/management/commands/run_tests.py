@@ -9,7 +9,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('test_modules', nargs='*',
-                            help='List of test modules to use.'
+                            help=('List of test modules to use. '
+                                  'Should be dot-separated module paths starting at the test directory. '
+                                  '(e.g. HttpTests.AboutPage to run just the tests for the about page. '
+                                  'Default is all tests.'
+                                  )
                             )
         parser.add_argument('--failfast', action='store_true',
                             help='Turn on the unittest failfast option. Tests halt at the first failure.'

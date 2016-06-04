@@ -19,9 +19,9 @@ descriptorDict = setup(_descriptorDict)
 
 def fsValueCalc(num):
     """Calculate an ordinal fake size value."""
-    if num < 10:
+    if num < 5:
         return 1
-    elif num < 20:
+    elif num < 10:
         return 2
     else:
         return 3
