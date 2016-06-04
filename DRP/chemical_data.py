@@ -1,4 +1,4 @@
-"""A module containing generally useful chemical data"""
+"""A module containing generally useful chemical data."""
 
 elements = {
     "Ru": {

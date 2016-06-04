@@ -13,7 +13,7 @@ from DRP import settings
 
 
 class Email(object):
-    """The base email class, sends email to a specified recipient from a specified sender"""
+    """The base email class, sends email to a specified recipient from a specified sender."""
 
     def __init__(self, subject, message, to=[], sender=settings.DEFAULT_FROM_EMAIL):
         self.subject = subject
@@ -27,7 +27,8 @@ class Email(object):
 
 class EmailToAdmins(Email):
     """Sends email specifically to administrators, with a specific flag for managers
-    This class is a very thin wrapper for the class Email, so presently no individual tests have been written."""
+    This class is a very thin wrapper for the class Email, so presently no individual tests have been written.
+    """
 
     def __init__(self, subject, message, includeManagers=False, sender=settings.DEFAULT_FROM_EMAIL):
         if includeManagers:

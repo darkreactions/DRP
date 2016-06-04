@@ -1,6 +1,4 @@
-"""
-Miscellaneous utility functions for use in DRP
-"""
+"""Miscellaneous utility functions for use in DRP"""
 from math import sqrt
 
 
@@ -84,7 +82,6 @@ def confusionMatrixString(confusionMatrix, headers=True):
     Returns a string that will display a confusionMatrix
     If headers=True, includes the headers as the first row and first column.
     """
-
     table = confusionMatrixTable(confusionMatrix, headers)
     return ('\n'.join([''.join(['{:^6}'.format(item) for item in row]) for row in table]))
 
@@ -97,7 +94,6 @@ def confusionMatrixTable(confusionMatrix, headers=True):
     counts for each predicted value.
     If headers=True, includes the headers as the first row and first column.
     """
-
     values = confusionMatrix.keys()
     table = [[0 for predicted in values] for true in values]
 
