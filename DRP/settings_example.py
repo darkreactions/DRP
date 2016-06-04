@@ -44,10 +44,10 @@ WEKA_PATH = {
 
 if TESTING:
     MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example',)
-    RXN_DESCRIPTOR_PLUGINS = ()
+    RXN_DESCRIPTOR_PLUGINS = ('DRP.plugins.rxndescriptors.rxnhash',)
 else:
-    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example',)
-    RXN_DESCRIPTOR_PLUGINS = ()
+    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example', 'DRP.plugins.moldescriptors.drp_rdkit', 'DRP.plugins.moldescriptors.drp', 'DRP.plugins.moldescriptors.chemaxon',)
+    RXN_DESCRIPTOR_PLUGINS = ('DRP.plugins.rxndescriptors.rxnhash', 'DRP.plugins.rxndescriptors.drp',)
 
 STATICFILES_DIRS = (STATIC_DIR,)
 

@@ -5,6 +5,7 @@ import importlib
 import DRP
 from django.contrib.auth.models import User
 molDescriptorPlugins = [importlib.import_module(plugin) for plugin in settings.MOL_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
+rxnDescriptorPlugins = [importlib.import_module(plugin) for plugin in settings.RXN_DESCRIPTOR_PLUGINS] #this prevents a cyclic dependency problem
 
 class DRPTestCase(unittest.TestCase):
     '''A quick and dirty safety valve to stop people accidentally running database tests in production environments
@@ -37,6 +38,8 @@ def cleanUpDatabase():
     DRP.models.LabGroup.objects.all().delete()
     keepDescriptors = []
     for plugin in molDescriptorPlugins:
+        keepDescriptors += [plugin.descriptorDict[key].descriptor_ptr.pk for key in plugin.descriptorDict]
+    for plugin in rxnDescriptorPlugins:
         keepDescriptors += [plugin.descriptorDict[key].descriptor_ptr.pk for key in plugin.descriptorDict]
     DRP.models.Descriptor.objects.exclude(pk__in=keepDescriptors).delete()
     User.objects.all().exclude(username='root').delete()
