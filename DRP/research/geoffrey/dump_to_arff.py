@@ -4,6 +4,7 @@ from DRP.models import PerformedReaction, ModelContainer, Descriptor
 from django.db.models import Q
 import operator
 from sys import argv
+from functools import reduce
 
 
 def dump_to_arff(descriptor_header_file, arff_file):

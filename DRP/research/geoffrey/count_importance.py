@@ -25,7 +25,7 @@ def walk_tree(j, feature_set=set()):
 
 walk_tree(j)
 
-rank = sorted(importance.items(), key=lambda (k, v): v, reverse=True)
+rank = sorted(importance.items(), key=lambda k_v: k_v[1], reverse=True)
 mx = float(rank[0][1])
 
 max_width = max(map(len, importance.keys()))

@@ -153,7 +153,7 @@ def generate_grid(reaction, amine_list, debug=True):
 
     model = get_latest_ModelStats()
 
-    if model == None:
+    if model is None:
         raise Exception("Latest model could not be found!")
 
     guesses = model.predict(predictors, table="tmp")

@@ -480,7 +480,7 @@ def build_mutual_calc():
                 exn_cnts[e_type] = 1
             else:
                 exn_cnts[e_type] += 1
-            if type(e) == SystemError:
+            if isinstance(e, SystemError):
                 syst_errs.append(e.message)
 
     # for above debugging code

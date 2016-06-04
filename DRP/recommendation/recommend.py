@@ -4,6 +4,7 @@ import math
 
 import os
 import sys
+from functools import reduce
 full_path = os.path.dirname(os.path.realpath(__file__)) + "/"
 django_path = full_path[:full_path.rfind("/DRP/")]
 if django_path not in sys.path:

@@ -179,7 +179,7 @@ class clusterNode:
 
             return finalList
         else:
-            if tree == None:
+            if tree is None:
                 allPoints = []
                 for node in clusterList:
                     allPoints.append(node.repPoint)

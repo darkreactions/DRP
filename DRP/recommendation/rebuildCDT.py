@@ -146,7 +146,7 @@ def distList(indicator, properties_lists):
 
 def atoms_from_smiles(smiles):
     mols = Chem.MolFromSmiles(str(smiles), sanitize=False)
-    if mols == None:
+    if mols is None:
         return []
     atoms = mols.GetAtoms()
     return [atom.GetSymbol() for atom in atoms]

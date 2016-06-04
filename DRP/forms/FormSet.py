@@ -147,7 +147,7 @@ class ModelFormSet(FormSet):
     '''A modified formset to deal with django models'''
 
     def __init__(self, modelClass, formClass=None, fields=None, instances=None, *args, **kwargs):
-        ''' Overridden initialiser accepts the following arguments: 
+        ''' Overridden initialiser accepts the following arguments:
 
             modelClass is the django model class that this formset is for
             formClass is the class of form to use if there is one already available,

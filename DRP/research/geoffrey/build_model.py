@@ -125,7 +125,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
 
     if training_set_name is None and reaction_set_name is None:
-        assert(test_set_name == None)
+        assert(test_set_name is None)
         reactions = PerformedReaction.objects.filter(valid=True)
         trainingSet = None
         testSet = None

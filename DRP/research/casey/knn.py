@@ -72,7 +72,7 @@ def distance(point, other):
 
 def filter_out_identical(point, others):
     from DRP.models import Data
-    if type(point) == Data:
+    if isinstance(point, Data):
         others = filter(lambda other: other.ref != point.ref, others)
     else:
         point_id = point[id_index]
@@ -265,8 +265,7 @@ def calculate_avg_distance(low, high):
     results = get_knn_research_results(k_range, "exact")
 
     for k, reactions in results.items():
-        dists = [dist for p, dist in reactions]
-        dists.sort()
+        dists = sorted([dist for p, dist in reactions])
 
         # Graph Options
         padding = 0.01  # percent of graph to use as padding.
@@ -307,7 +306,7 @@ def get_k_avgs(csv_filename_or_content, mode):
     exact_K = 50
     avg_K = 50
 
-    if type(csv_filename_or_content) == str:
+    if isinstance(csv_filename_or_content, str):
         with open(csv_filename_or_content, "r") as f:
             reader = csv.reader(f)
             matrix = [row for row in reader]

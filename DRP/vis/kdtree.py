@@ -42,11 +42,11 @@ class KDTree:
         if current_node.point.distTo(search_point) < current_best.point.distTo(search_point):
             current_best = current_node
 
-        if current_node.left == None and current_node.right == None:
+        if current_node.left is None and current_node.right is None:
             return current_best
-        elif current_node.right == None:
+        elif current_node.right is None:
             current_best = self.findNearestNeighborHelper(search_point, current_node.left, current_best)
-        elif (current_node.left == None):
+        elif (current_node.left is None):
             current_best = self.findNearestNeighborHelper(search_point, current_node.right, current_best)
         else:
             splitdim = current_node.dimension % current_node.point.d

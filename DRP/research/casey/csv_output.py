@@ -13,7 +13,7 @@ filename = "dataset_2.csv"
 def write_uniq_csv(matrix, filename):
     def cleanMatrix(matrix):
         def clean(elem):
-            if type(elem) == str or type(elem) == unicode:
+            if isinstance(elem, str) or isinstance(elem, unicode):
                 return elem.replace(u"\u2019", "'")
             else:
                 return elem

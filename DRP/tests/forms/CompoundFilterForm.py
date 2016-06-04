@@ -22,7 +22,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CompoundFilterFormSucceed(BaseFormTest):
     '''This will test the CompoundFilterForm class when it should succeed;
-    Specifically, this test is creating a lab group with some chemical compounds, and 
+    Specifically, this test is creating a lab group with some chemical compounds, and
     searching for one of those compounds (meaning it should definitely be returned)'''
 
     def setUpFormData(self):

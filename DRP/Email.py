@@ -1,6 +1,6 @@
 """
 These Email below are designed to make emailing the admins (us),
-the lab heads, and the lab members easier. Each takes a subject and a 
+the lab heads, and the lab members easier. Each takes a subject and a
 message (and a lab/user if applicable), and sends them an email. If a
 critical error occurs (which probably means the darkreactions email/pass
 is incorrect), an uncaptured exception occurs. Each automatic "worker" process that

@@ -3,7 +3,7 @@ import time
 
 """
 This library contains some functions you may find useful when working with the
-given data.  Feel free to modify this to be more general and/or to point to 
+given data.  Feel free to modify this to be more general and/or to point to
 other data you're looking at.  Or feel free not to use these at all if you don't
  find them useful.
 """

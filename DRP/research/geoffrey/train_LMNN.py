@@ -5,6 +5,7 @@ import operator
 from DRP.research.geoffrey.distance_learning.metricLearn import LMNN
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues
 from django.db.models import Q
+from functools import reduce
 
 
 def train(descriptor_header_file, outfile):

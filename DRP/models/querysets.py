@@ -70,7 +70,7 @@ class MultiQuerySet(object):
         Retrieves an item or slice from the chained set of results from all
         subquerysets.
         """
-        if type(ndx) is slice:
+        if isinstance(ndx, slice):
             return list(islice(self._all(), ndx.start, ndx.stop, ndx.step or 1))
         else:
             return islice(self._all(), ndx, ndx + 1).next()
