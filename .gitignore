@@ -2,6 +2,9 @@ DRP/settings.py
 DRP/data_config.py
 DRP/tmp/
 DRP/research/casey/results/CSVs/*
+DRP/tmp/*
+DRP/models/*
+DRP/models/
 
 tmp/*
 models/*
