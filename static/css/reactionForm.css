@@ -4,82 +4,134 @@ h1 {
  text-align:center;
 }
 
-.reaction-form fieldset {
+input[type="checkbox"] {
+ vertical-align:text-top;
+}
+
+table.reactionformtable, table.reactionformtable>tbody{
+ display:block;
+}
+
+.reactionformtable tr {
+ display:block;
+ margin:0;
+}
+
+.reactionformtable th {
+ vertical-align:top;
+}
+
+div.reactionlist {
+ text-align:center;
+}
+
+.reactionformtable tr>td, .reactionformtable tr>th {
+ display:inline-block;
+ width:45%;
+ margin:0;
+}
+
+.flright {
+ float:right;
+ width:50%;
+}
+.flleft {
+ float:left;
+ width:50%;
+}
+
+fieldset {
  margin:3em 0;
  border:1px solid #658ebd;
 }
 
-.reaction-form legend {
+legend {
  font-weight:700;
  color:#20344b;
 }
 
-.reaction-form label {
- margin-right:1em;
- vertical-align:top;
+.reaction-form input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .reaction-form select, .reaction-form textarea{
+ width:100%;
+ box-sizing:border-box;
 }
 
-.reaction-form fieldset ol {
- padding:0;
- list-style:none;
+.reaction-form textarea {
+ height:100px;
 }
 
-.reaction-form fieldset ol li {
- padding:1em 0;
- float:left;
- margin-right:2em;
-}
-
-.reaction-form fieldset:nth-child(2) ol li {
- float:none;
-}
-
-.reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(1), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(2), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(5), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(6), .reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(8) {
- float:left;
-}
-
-.reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(3) {
+div.buttons {
+ display:block;
  clear:both;
+ text-align:center;
 }
 
-.reaction-form fieldset:nth-child(2) ol:nth-child(2) li:nth-child(7) {
- float:left;
- clear:left;
-}
-
-.reaction-form input[type="submit"] {
+input[type="submit"], input[type="reset"] {
  padding:0;
+ padding-left:1em;
+ padding-right:1em;
  color:white;
  background-color: #8dabce;
  border:1px solid #658ebd;
  border-radius:1em;
- width:7em;
  height:2em;
 }
 
-.reaction-form input[value="Save"] {
- margin: 0 45%;
+form>fieldset ol {
+ list-style:none;
+ padding:0;
 }
 
-
-/*******************   OLD CODE    **********************/
-
-.fieldWrapper {
- display: inline-block;
-
- padding:5px;
- margin:5px;
- min-width:8em;
-
- background-color:#75ADE6;
- color:black;
+.descvallist>li, .reactant_list>li {
+ vertical-align:top;
+ display:inline-block;
 }
 
-.hiddenField { display:none; }
+.reactant_list>li {
+ width:30%;
+}
 
-.reactionWrapper { display:inline-block; }
+.reactant_list>li:nth-child(4) {
+ width:5%;
+}
+.reactant_list input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .reactant_list select, .reactant_list textarea{
+ width:50%;
+ box-sizing:border-box;
+}
 
+.descvallistr>li {
+ width:40%;
+}
 
+.descvallistr>li:nth-child(3) {
+ width:15%;
+}
 
+.descvalform {
+ display:block;
+ width:45%;
+ margin-left:auto;
+ margin-right:auto;
+}
 
+.descvalform input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .descvalform select, .descvalform textarea{
+ width:50%;
+ box-sizing:border-box;
+}
 
+ul.errorlist {
+ background-color:#ededed;
+ list-style:none;
+ border-radius:1em;
+ border:5px solid rgb(139, 44, 39);
+ padding-left:1em;
+ padding-right:1em;
+}
+
+ul.errorlist>li {
+ padding-top:0.5em;
+ padding-bottom:0.5em;
+}
+
+ul.errorlist>li:not(:first-child) {
+ border-top:1px solid rgb(139, 44, 39);
+}

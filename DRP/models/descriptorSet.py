@@ -14,7 +14,6 @@ class RxnDescriptorSet(models.model):
     catRxnDescriptors = models.ManyToManyField(CatRxnDescriptor)
     numRxnDescriptors = models.ManyToManyField(NumRxnDescriptor)
 
-
     def add(self, desc):
         desc = None
         try:
@@ -44,7 +43,6 @@ class RxnDescriptorSet(models.model):
         if desc is None:
             raise ValueError('An invalid object was assigned as a descriptor')
 
-
     def set(self, descriptors):
         self.boolRxnDescriptors.clear()
         self.ordRxnDescriptors.clear()
@@ -55,4 +53,3 @@ class RxnDescriptorSet(models.model):
 
     def get(self):
         return chain(self.boolRxnDescriptors.all(), self.ordRxnDescriptors.all(), self.catRxnDescriptors.all(), self.numRxnDescriptors.all())
-    

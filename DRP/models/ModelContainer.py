@@ -16,15 +16,16 @@ from DRP.utils import accuracy, BCR, Matthews, confusionMatrixString, confusionM
 import json
 import sys
 
-visitorModules = {library:importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "."+ library) for library in settings.STATS_MODEL_LIBS}
+visitorModules = {library: importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "." + library) for library in settings.STATS_MODEL_LIBS}
 
-splitters = {splitter:importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
+splitters = {splitter: importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 
-featureVisitorModules = {library:importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
+featureVisitorModules = {library: importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
 
 MODEL_VISITOR_TOOL_CHOICES = tuple(tool for library in visitorModules.values() for tool in library.tools)
 
 FEATURE_SELECTION_TOOL_CHOICES = tuple(tool for library in featureVisitorModules.values() for tool in library.tools)
+
 
 class PredictsDescriptorsAttribute(object):
 
@@ -45,6 +46,7 @@ class PredictsDescriptorsAttribute(object):
         modelContainer.predordrxndescriptor_set.clear()
         modelContainer.predcatrxndescriptor_set.clear()
         modelContainer.prednumrxndescriptor_set.clear()
+
 
 class DescriptorAttribute(object):
 
@@ -91,6 +93,7 @@ class DescriptorAttribute(object):
         modelContainer.catRxnDescriptors.clear()
         modelContainer.ordRxnDescriptors.clear()
 
+
 class OutcomeDescriptorAttribute(object):
 
     def __get__(self, modelContainer, modelContainerType=None):
@@ -136,13 +139,13 @@ class OutcomeDescriptorAttribute(object):
         modelContainer.outcomeCatRxnDescriptors.clear()
         modelContainer.outcomeOrdRxnDescriptors.clear()
 
+
 class ModelContainer(models.Model):
 
     """A class for describing a group of statistical models."""
 
     class Meta:
         app_label = 'DRP'
-
 
     description = models.TextField(blank=True, null=False)
     active = models.BooleanField('Is this the active model?', default=False)
@@ -151,12 +154,12 @@ class ModelContainer(models.Model):
     modelVisitorTool = models.CharField(max_length=200)
     # choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
     splitter = models.CharField(max_length=200, blank=True, default='')
-    #choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
-    
+    # choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
+
     # TODO XXX these should be validated as json or implemented another way (e.g. key-value store in another table)
     modelVisitorOptions = models.TextField(null=False, blank=True, default="{}")
     splitterOptions = models.TextField(null=False, blank=True, default="{}")
-    
+
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
@@ -184,7 +187,6 @@ class ModelContainer(models.Model):
     predictsDescriptors = PredictsDescriptorsAttribute()
     """The descriptors which this model predicts values for."""
 
-
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
@@ -192,9 +194,9 @@ class ModelContainer(models.Model):
                splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
-        if (splitter is None) ^ (reactions is None): # if these are not the same, there's a problem
+        if (splitter is None) ^ (reactions is None):  # if these are not the same, there's a problem
             raise ValidationError('A full set of reactions must be supplied with a splitter', 'argument_mismatch')
-        if not ((splitter is None) ^ (trainingSets is None)): # if these are not different, there's a problem
+        if not ((splitter is None) ^ (trainingSets is None)):  # if these are not different, there's a problem
             raise ValidationError('Either a splitter or a training set should be provided.', 'argument_mismatch')
 
         if splitterOptions is not None:
@@ -217,8 +219,8 @@ class ModelContainer(models.Model):
         else:
             if verbose:
                 print "Using given test and training sets."
-            data_splits = izip_longest(trainingSets, testSets) #we want the trainingset even if there's no test set
-            
+            data_splits = izip_longest(trainingSets, testSets)  # we want the trainingset even if there's no test set
+
         data_splits = model_container.createStatsModels(data_splits, verbose=verbose)
 
         model_container.descriptors = predictors
@@ -226,7 +228,7 @@ class ModelContainer(models.Model):
 
         return model_container
 
-    def create_duplicate(self, modelVisitorTool=None,  modelVisitorOptions=None, description=None, predictors=None, responses=None):
+    def create_duplicate(self, modelVisitorTool=None, modelVisitorOptions=None, description=None, predictors=None, responses=None):
         """
         Builds a duplicate of this model container optionally with a different model visitor tool.
         If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
@@ -271,7 +273,7 @@ class ModelContainer(models.Model):
             raise RuntimeError('This model container was never properly constructed, so it cannot be duplicated. (It has no stats models)')
 
         return m
-        
+
     def clean(self):
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool {} does not exist in selected library {}'.format(self.modelVisitorTool, self.modelVisitorLibrary), 'wrong_library')
@@ -304,11 +306,11 @@ class ModelContainer(models.Model):
     def build(self, verbose=False):
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
-        
+
         if verbose:
             print "Starting building at {}".format(datetime.datetime.now())
 
-        resDict = {} #set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
+        resDict = {}  # set up a prediction results dictionary. Hold on tight. This gets hairy real fast.
 
         num_models = self.statsmodel_set.all().count()
         num_finished = 0
@@ -329,7 +331,7 @@ class ModelContainer(models.Model):
             statsModel.save()
             if verbose:
                 print "saved"
-            
+
             # Test the model.
             for testSet in statsModel.testSets.all():
                 if testSet.reactions.all().count() != 0:
@@ -339,7 +341,7 @@ class ModelContainer(models.Model):
                     if verbose:
                         print "\t...finished predicting. Storing predictions...",
                     newResDict = self._storePredictionComponents(predictions, statsModel)
-        
+
                     # Update the overall result-dictionary with these new counts.
                     for reaction, responseDict in newResDict.items():
                         for response, outcomeDict in responseDict.items():
@@ -348,23 +350,22 @@ class ModelContainer(models.Model):
                                     resDict[reaction] = {}
                                 if response not in resDict[reaction]:
                                     resDict[reaction][response] = {}
-        
+
                                 if outcome not in resDict[reaction][response]:
                                     resDict[reaction][response][outcome] = count
                                 resDict[reaction][response][outcome] += count
-                    
+
                     if verbose:
                         print "predictions stored."
                         for response in self.outcomeDescriptors:
                             predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=statsModel, predictionOf=response)
                             conf_mtrx = predDesc.getConfusionMatrix()
-                            
+
                             print "Confusion matrix for {}:".format(predDesc.heading)
                             print confusionMatrixString(conf_mtrx)
                             print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
                             print "BCR: {:.3}".format(BCR(conf_mtrx))
-                            
-            
+
                 elif verbose:
                     print "Test set is empty."
 
@@ -372,7 +373,7 @@ class ModelContainer(models.Model):
                 num_finished += 1
                 end_time = datetime.datetime.now()
                 elapsed = (end_time - overall_start_time)
-                expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds()*(num_models/float(num_finished)))) + overall_start_time
+                expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds() * (num_models / float(num_finished)))) + overall_start_time
                 print "{}. {} of {} models built.".format(end_time, num_finished, num_models)
                 print "Elapsed model building time: {}. Expected completion time: {}".format(elapsed, expected_finish)
 
@@ -398,7 +399,7 @@ class ModelContainer(models.Model):
         voting-based prediction.
         """
         resDict = {} if resDict is None else resDict
-        
+
         for response, outcomes in predictions.items():
             predDesc = response.createPredictionDescriptor(self, statsModel)
             predDesc.save()
@@ -412,7 +413,7 @@ class ModelContainer(models.Model):
                     resDict[reaction][response][outcome] = 0
                 resDict[reaction][response][outcome] += 1
                 val = predDesc.createValue(reaction, outcome)
-                if val.pk is None: #if the value already exists
+                if val.pk is None:  # if the value already exists
                     vals.append(val)
                 else:
                     val.save()
@@ -432,13 +433,13 @@ class ModelContainer(models.Model):
                 if predDesc.pk is None:
                     predDesc.save()
                 if isinstance(response, NumRxnDescriptor):
-                    #estimate the weighted average of the estimates from the component models
+                    # estimate the weighted average of the estimates from the component models
                     values = tuple(value for value in resDict[reaction][response].keys())
                     weights = tuple(weight for value, weight in resDict[reaction][response].items())
                     val = predDesc.createValue(reaction, average(values, weights=weights))
                     num_vals.append(val)
                 else:
-                    #find the 'competitors' with the highest number of votes and pick one at random (in case multiple categories have equal numbers of votes)
+                    # find the 'competitors' with the highest number of votes and pick one at random (in case multiple categories have equal numbers of votes)
                     maxVotes = max(count for response, count in outcomeDict.items())
                     winners = [(response, count) for response, count in outcomeDict.items() if count == maxVotes]
                     winner = random.choice(winners)
@@ -456,8 +457,8 @@ class ModelContainer(models.Model):
 
                 if response not in finalPredictions:
                     finalPredictions[response] = []
-                finalPredictions[response].append( (reaction, val) )
-                
+                finalPredictions[response].append((reaction, val))
+
         BoolRxnDescriptorValue.objects.bulk_create(bool_vals)
         NumRxnDescriptorValue.objects.bulk_create(num_vals)
         OrdRxnDescriptorValue.objects.bulk_create(ord_vals)
@@ -499,7 +500,7 @@ class ModelContainer(models.Model):
                     for response in self.outcomeDescriptors:
                         predDesc = response.predictedDescriptorType.objects.get(modelContainer=self, statsModel=model, predictionOf=response)
                         conf_mtrx = predDesc.getConfusionMatrix(reactions=reactions)
-                        
+
                         print "Confusion matrix for {}:".format(predDesc.heading)
                         print confusionMatrixString(conf_mtrx)
                         print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
@@ -508,7 +509,7 @@ class ModelContainer(models.Model):
                     num_finished += 1
                     end_time = datetime.datetime.now()
                     elapsed = (end_time - overall_start_time)
-                    expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds()*(num_models/float(num_finished)))) + overall_start_time
+                    expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds() * (num_models / float(num_finished)))) + overall_start_time
                     print "{}. Predictions from {} of {} models.".format(end_time, num_finished, num_models)
                     print "Elapsed prediction time: {}. Expected completion time: {}".format(elapsed, expected_finish)
 
@@ -520,7 +521,7 @@ class ModelContainer(models.Model):
         confusion_matrix_list = []
         for descriptor in self.predictsDescriptors:
             if descriptor.statsModel is None:
-                confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)) )
+                confusion_matrix_list.append((descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)))
         return confusion_matrix_list
 
     def getComponentConfusionMatrices(self, reactions=None):
@@ -536,8 +537,7 @@ class ModelContainer(models.Model):
             confusion_matrix_list = []
             for descriptor in self.predictsDescriptors:
                 if descriptor.statsModel == model:
-                    confusion_matrix_list.append( (descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)) )
+                    confusion_matrix_list.append((descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)))
             confusion_matrix_lol.append(confusion_matrix_list)
-            
-        return confusion_matrix_lol
 
+        return confusion_matrix_lol

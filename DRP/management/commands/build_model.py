@@ -15,12 +15,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.fromfile_prefix_chars = '@'
-        parser.epilog = "Prefix arguments with '@' to specify a file containing newline-separated values for that argument. e.g.'-p @predictor_headers.txt' to pass multiple descriptors from a file as predictors"
+        parser.epilog = ("Prefix arguments with '@' to specify a file containing newline-separated values for that argument. "
+                         "e.g.'-p @predictor_headers.txt' to pass multiple descriptor headings from a file as predictors.")
 
         parser.add_argument('-p', '--predictor-headers', nargs='+',
-                            help='One or more descriptors to use as predictors.')
+                            help='The headings of one or more descriptors to use as predictors.')
         parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
-                            help='One or more descriptors to predict. '
+                            help='The headings of one or more descriptors to predict. '
                             'Note that most models can only handle one response variable (default: %(default)s)')
         parser.add_argument('-ml', '--model-library', default="weka",
                             help='Model visitor library to use. (default: %(default)s)')
@@ -46,7 +47,6 @@ class Command(BaseCommand):
         # TODO setup argparse to properly check combinations of these arguments as valid.
         # it's actually pretty complicated what the valid options are...
 
-
     def handle(self, *args, **kwargs):
         # This way of accepting splitter options is bad and hacky.
         # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
@@ -60,7 +60,7 @@ class Command(BaseCommand):
 
         # TODO switch to logging and adjust for management command multi-level verbosity
         verbose = (kwargs['verbosity'] > 0)
-    
+
         prepare_build_display_model(predictor_headers=predictor_headers, response_headers=response_headers,
                                     modelVisitorLibrary=kwargs['model_library'], modelVisitorTool=kwargs['model_tool'],
                                     splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=verbose, container_id=kwargs['model_container_id'], splitterOptions=splitterOptions, visitorOptions=visitorOptions)
@@ -98,7 +98,7 @@ def build_model(container, verbose=False):
             sleep(3)
     else:
         raise RuntimeError("Got 5 Operational Errors in a row and gave up")
-    
+
     container.save()
     container.full_clean()
 
@@ -160,18 +160,15 @@ def display_model_results(container, reactions=None, heading=""):
             sum_bcr += bcr
             sum_matthews += matthews
             count += 1
-            
-    print "{} Average accuracy: {:.3}".format(heading, sum_acc/count)
-    print "{} Average BCR: {:.3}".format(heading, sum_bcr/count)
-    print "{} Average Matthews: {:.3}".format(heading, sum_matthews/count)
+
+    print "{} Average accuracy: {:.3}".format(heading, sum_acc / count)
+    print "{} Average BCR: {:.3}".format(heading, sum_bcr / count)
+    print "{} Average Matthews: {:.3}".format(heading, sum_matthews / count)
 
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
                         test_set_name=None, reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
-    """
-    Build a model with the specified tools
-    """
-
+    """Build a model with the specified tools"""
     if predictor_headers is not None:
         predictors = Descriptor.objects.filter(heading__in=predictor_headers)
         if predictors.count() != len(predictor_headers):
@@ -186,7 +183,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
             raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
     else:
         responses = None
-        
+
     if container_id is not None:
         parent_container = ModelContainer.objects.get(id=container_id)
         parent_container.full_clean()
@@ -195,7 +192,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         container = build_model(new_container, verbose=verbose)
     else:
         if training_set_name is None and reaction_set_name is None:
-            assert(test_set_name == None)
+            assert(test_set_name is None)
             reactions = PerformedReaction.objects.filter(valid=True)
             trainingSet = None
             testSet = None
@@ -205,15 +202,15 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
             trainingSet = None
             testSet = None
         else:
-            trainingSet =  DataSet.objects.get(name=training_set_name)
-            testSet =  DataSet.objects.get(name=test_set_name)
-            reactions=None
-        
-        container = create_build_model(reactions=reactions, predictors=predictors, responses=responses, 
-                                modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                                splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
-                                description=description, verbose=verbose, splitterOptions=splitterOptions,
-                                visitorOptions=visitorOptions)
+            trainingSet = DataSet.objects.get(name=training_set_name)
+            testSet = DataSet.objects.get(name=test_set_name)
+            reactions = None
+
+        container = create_build_model(reactions=reactions, predictors=predictors, responses=responses,
+                                       modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                                       splitter=splitter, trainingSet=trainingSet, testSet=testSet,
+                                       description=description, verbose=verbose, splitterOptions=splitterOptions,
+                                       visitorOptions=visitorOptions)
 
     return container
 
@@ -221,12 +218,8 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
 def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
                                 reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
 
-
-
     container = prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
                                     splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description,
                                     verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, container_id=container_id)
 
     display_model_results(container)
-
-

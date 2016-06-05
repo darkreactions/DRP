@@ -14,6 +14,7 @@ descriptorDict = setup(_descriptorDict)
 
 pt = rdkit.Chem.GetPeriodicTable()
 
+
 def calculate_many(compound_set, verbose=False, whitelist=None):
     for i, compound in enumerate(compound_set):
         if verbose:
@@ -23,17 +24,15 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 def calculate(compound, verbose=False, whitelist=None):
     """Calculate the descriptors from this plugin for a compound."""
-
     heading = 'mw'
     if whitelist is None or heading in whitelist:
-        mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
-    
+        mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * float(compound.elements[element]['stoichiometry']) for element in compound.elements)
+
         v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': mw}, descriptor=descriptorDict[heading], compound=compound)[0]
-    
+
         try:
             v.full_clean()
         except ValidationError as e:
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
-    

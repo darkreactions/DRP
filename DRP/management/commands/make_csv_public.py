@@ -3,8 +3,10 @@ from django.core.management.base import BaseCommand
 import csv
 import reimport_reactions
 
+
 class Command(BaseCommand):
-    help='Make reactions from a csv public. References should be in the first column'
+    help = 'Make reactions from a csv public. References should be in the first column'
+
     def add_arguments(self, parser):
         parser.add_argument('filename', help='Path to csv file.')
 
@@ -12,8 +14,8 @@ class Command(BaseCommand):
         fn = kwargs['filename']
         with open(fn) as f:
             reader = csv.reader(f)
-            reader.next() # skip headers
-        
+            reader.next()  # skip headers
+
             for i, row in enumerate(reader):
                 ref = reimport_reactions.convert_legacy_reference(row[0])
                 self.stdout.write('{}: Making reference {} public'.format(i, ref))
@@ -29,4 +31,3 @@ class Command(BaseCommand):
                         raise RuntimeError('Found {} reactions with reference {}'.format(ps.count(), ref))
                 else:
                     ps.update(public=True)
-        

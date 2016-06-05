@@ -6,12 +6,13 @@ import argparse
 import build_model
 import ast
 
+
 def prepare_build_model(predictor_headers=None, response_headers=None, featureVisitorLibrary=None, featureVisitorTool=None, training_set_name=None,
                         output_file=None, description="", visitor_options=None, verbose=False):
     """
     Do feature selection with the specified tools
     """
-    
+
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
@@ -22,10 +23,10 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
 
     if verbose:
         print "Found {} matching predictors and {} matching responses".format(predictors.count(), responses.count())
-    
+
     if training_set_name:
-        trainingSet =  DataSet.objects.get(name=training_set_name)
-        reactions=None
+        trainingSet = DataSet.objects.get(name=training_set_name)
+        reactions = None
     else:
         reactions = PerformedReaction.objects.filter(valid=True)
         reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
@@ -44,12 +45,10 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
     container.save()
     container.full_clean()
 
-       
     if output_file is not None:
         with open(output_file, 'wb') as f:
             f.write('\n'.join([d.heading for d in container.chosenDescriptors]))
-            
-            
+
     return container
 
 

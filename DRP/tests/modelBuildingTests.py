@@ -8,9 +8,11 @@ from DRPTestCase import DRPTestCase, runTests
 from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
+
 class ModelTest(DRPTestCase):
     splitterOptions = None
     visitorOptions = None
+
     def runTest(self):
         reactions = PerformedReaction.objects.all()
         predictors = Descriptor.objects.filter(heading="testNumber")
@@ -22,7 +24,7 @@ class ModelTest(DRPTestCase):
         container.save()
         container.full_clean()
 
-        #TODO: We should test the ModelContainer "predict" method here as well.
+        # TODO: We should test the ModelContainer "predict" method here as well.
 
 
 # TODO XXX more robust testing
@@ -34,25 +36,29 @@ class WekaSVMKFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
     splitter = "KFoldSplitter"
-    
+
+
 @createsPerformedReactionSetOrd
-class WekaSVMMFTest(ModelTest):
+class WekaSVMExpTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
-    splitter = "MutualInfoSplitter"
-    
+    splitter = "ExploratorySplitter"
+
+
 @createsPerformedReactionSetOrd
 class WekaJ48KFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "J48"
     splitter = "KFoldSplitter"
-    
+
+
 @createsPerformedReactionSetBool
 class WekaKNNKFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "KNN"
     splitter = "KFoldSplitter"
-    
+
+
 @createsPerformedReactionSetOrd
 class WekaNBKFTest(ModelTest):
     modelLibrary = "weka"
@@ -61,13 +67,13 @@ class WekaNBKFTest(ModelTest):
 
 
 suite = unittest.TestSuite([
-                    loadTests(WekaSVMKFTest),
-                    loadTests(WekaSVMMFTest),
-                    loadTests(WekaJ48KFTest),
-                    loadTests(WekaKNNKFTest),
-                    loadTests(WekaNBKFTest),
-                    ])
+    loadTests(WekaSVMKFTest),
+    loadTests(WekaSVMExpTest),
+    loadTests(WekaJ48KFTest),
+    loadTests(WekaKNNKFTest),
+    loadTests(WekaNBKFTest),
+])
 
-if __name__=='__main__':
+if __name__ == '__main__':
     runTests(suite)
-    #Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works without having to run all the tests.

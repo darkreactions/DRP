@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.preprocessing import Imputer
 from cPickle import dump, load
 
+
 class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
     maxResponseCount = 1
 
@@ -34,7 +35,7 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
         dif = x - y
 
         return dif.T.dot(Mah).dot(dif)
-        
+
     def save(self, fileName):
         with open(fileName, 'wb') as f:
             dump(self.metric_object, f)

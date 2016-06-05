@@ -1,3 +1,0 @@
-#!/bin/sh
-$PYTHONPATH/manage.py run_tests
-exit $?

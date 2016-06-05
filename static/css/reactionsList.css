@@ -25,7 +25,11 @@ ul.downloads li {
  margin: 0 1em;
 }
 
-div.reaction {
+ul.reactions {
+ list-style:none;
+}
+
+li.reaction {
  color:black;
  width: 80%;
  height:auto;
@@ -35,41 +39,53 @@ div.reaction {
  background-color: #ededed;
 }
 
-div.reaction h2 {
- float:left;
- margin:0;
+.reaction>table, .reaction>table>tbody {
+ display:block;
+ overflow:hidden;
 }
 
-.first_name {
+.reaction>table>tbody>tr {
+ display:block;
+}
+
+.reaction>table>tbody>tr>td,.reaction>table>tbody>tr>th {
+ display:inline-block;
+}
+
+.reaction>table>tbody>tr>th::after {
+ content:":";
+}
+
+.flright {
+ float:right;
+ text-align:right;
+ width:50%;
+}
+
+td.right {
  float:right;
 }
 
-.quantities {
- float: left;
- clear: left;
- margin: .5em 0;
+td.delete:hover, td.invalidate:hover, a.edit:hover{
+ opacity:0.7;
 }
 
-.quantities p {
- margin: 0;
-}
-
-.quantities ul {
- padding:0 2em;
+.fleft {
  float:left;
- clear:left;
- margin:0;
+ width:50%;
 }
 
-.quantities li {
- list-style: none;
- float:left;
- margin:0 1em 0 0;
+tr.quantities th, tr.quantities, td {
+ padding-left:0.5em;
+ padding-right:0.5em;
 }
 
-.inserted_date {
- clear:both;
- margin-bottom:0.5em;
+tr.notes {
+    clear:both;
+}
+
+a.edit {
+ display:inline-block;
 }
 
 ol.pagination {
@@ -85,26 +101,18 @@ ol.pagination li {
  color: #20344b;
 }
 
-input[type="submit"] {
- padding:0;
- color:white;
- background-color: #8dabce;
- border:1px solid #658ebd;
- border-radius:1em;
- width:7em;
- height:2em;
- margin-bottom:.5em;
- float:left;
-}
-
-input.delete {
- margin-left:1em;
+.input_wrapper form {
+ display:inline-block;
+ box-sizing:content-box;
+ white-space:normal;
+ text-rendering:auto;
 }
 
 .input_wrapper {
- height:2em;
- width:17em;
- margin:1em auto 0 auto;
+ text-align:center;
+ margin-left:auto;
+ margin-right:auto;
+ width:30%;
 }
 
 #pagination {

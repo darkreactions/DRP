@@ -4,7 +4,9 @@ from DRP.models import CatRxnDescriptor
 from django.db.models import Count
 import random
 
+
 class Splitter(AbstractSplitter):
+
     def __init__(self, namingStub, num_splits=1, margin_percent=0.01, test_percent=0.33):
         super(Splitter, self).__init__(namingStub)
         self.test_percent = test_percent
@@ -17,12 +19,11 @@ class Splitter(AbstractSplitter):
         splits = [self._single_split(reactions, key_counts, verbose=verbose) for i in xrange(self.num_splits)]
         return splits
 
-
     def _single_split(self, reactions, key_counts, verbose=False):
         random.shuffle(key_counts)
 
         total_size = sum(count for key, count in key_counts)
-        goal_size = self.test_percent*total_size
+        goal_size = self.test_percent * total_size
         margin = total_size * self.margin_percent
         test_size = 0
 
@@ -50,10 +51,8 @@ class Splitter(AbstractSplitter):
 
         return (self.package(train), self.package(test))
 
-
     def _count_compound_sets(self, reactions):
         rxnhash_descriptor = CatRxnDescriptor.objects.get(heading='rxnSpaceHash1')
         rxn_hashes = reactions.filter(catrxndescriptorvalue__descriptor=rxnhash_descriptor)
-        counts = {rxnhash_val: rxn_hashes.filter(catrxndescriptorvalue__value=rxnhash_val).count() for rxnhash_val in rxn_hashes.values_list('catrxndescriptorvalue__value',flat=True).distinct()}
+        counts = {rxnhash_val: rxn_hashes.filter(catrxndescriptorvalue__value=rxnhash_val).count() for rxnhash_val in rxn_hashes.values_list('catrxndescriptorvalue__value', flat=True).distinct()}
         return counts
-

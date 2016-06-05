@@ -4,7 +4,8 @@ from os import path
 import csv
 from DRP.models import PerformedReaction
 import reimport_reactions
-    
+
+
 class Command(BaseCommand):
     help = 'Deletes reactions from a tsv file'
 
@@ -14,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         folder = kwargs['directory']
         self.stdout.write('Deleting reactions')
-        
+
         with transaction.atomic():
             with open(path.join(folder, 'performedReactions.tsv')) as reactions:
                 reader = csv.DictReader(reactions, delimiter='\t')
@@ -25,4 +26,3 @@ class Command(BaseCommand):
                         if ps:
                             self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
                             ps.delete()
-

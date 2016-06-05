@@ -1,3 +1,4 @@
 cd $(git rev-parse --show-toplevel)
 
 .git/hooks/remove-orphaned-pyc
+.git/hooks/check-important-changes-merge
