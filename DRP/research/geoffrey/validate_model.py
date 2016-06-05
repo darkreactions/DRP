@@ -10,12 +10,14 @@ import json
 import build_model
 from django.db.models import Count
 
+
 def check_container(container, predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None,
-                                verbose=False, splitterOptions=None, visitorOptions=None):
+                    verbose=False, splitterOptions=None, visitorOptions=None):
     raise NotImplementedError("Haven't implemented checking a given container")
 
+
 def find_container(model_id=None, predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None,
-                                verbose=False, unique=False, splitterOptions=None, visitorOptions=None):
+                   verbose=False, unique=False, splitterOptions=None, visitorOptions=None):
 
     if model_id is not None:
         try:
@@ -37,7 +39,6 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             if verbose:
                 print "Found {} with correct splitter options".format(containers.count())
 
-
         if modelVisitorLibrary is not None:
             containers = containers.filter(modelVisitorLibrary=modelVisitorLibrary)
             if verbose:
@@ -57,7 +58,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             numDescs = NumRxnDescriptor.objects.filter(heading__in=response_headers)
             num_numDescs = numDescs.count()
             num_boolDescs = boolDescs.count()
-    
+
             setOutBoolDescs = set(boolDescs)
             setOutNumDescs = set(numDescs)
 
@@ -67,7 +68,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
                     if not NumRxnDescriptor.objects.filter(heading=header).exists() and not BoolRxnDescriptor.objects.filter(heading=header).exists():
                         missing_descs.append(header)
                 raise RuntimeError("Did not find correct number of descriptors. Currently only looking at boolean and numeric. Categorical and ordinal unimplemented. Unable to find:{}".format(missing_descs))
-    
+
             containers = containers.filter(num_outNumDescs=num_numDescs).filter(num_outBoolDescs=num_boolDescs)
             if verbose:
                 print "{} containers with appropriate number of responses".format(containers.count())
@@ -78,7 +79,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             numDescs = NumRxnDescriptor.objects.filter(heading__in=predictor_headers)
             num_numDescs = numDescs.count()
             num_boolDescs = boolDescs.count()
-    
+
             setBoolDescs = set(boolDescs)
             setNumDescs = set(numDescs)
 
@@ -88,7 +89,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
                     if not NumRxnDescriptor.objects.filter(heading=header).exists() and not BoolRxnDescriptor.objects.filter(heading=header).exists():
                         missing_descs.append(header)
                 raise RuntimeError("Did not find correct number of descriptors. Currently only looking at boolean and numeric. Categorical and ordinal unimplemented. Unable to find:{}".format(missing_descs))
-    
+
             containers = containers.filter(num_numDescs=num_numDescs).filter(num_boolDescs=num_boolDescs)
             if verbose:
                 print "{} containers with appropriate number of predictors".format(containers.count())
@@ -97,8 +98,7 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             containers = [c for c in containers if (set(c.outcomeNumRxnDescriptors.all()) == setOutNumDescs and set(c.outcomeBoolRxnDescriptors.all()) == setOutBoolDescs)]
             if verbose:
                 print "{} containers with correct responses".format(len(containers))
-            
-            
+
         if predictor_headers is not None:
             containers = [c for c in containers if (set(c.numRxnDescriptors.all()) == setNumDescs and set(c.boolRxnDescriptors.all()) == setBoolDescs)]
             if verbose:
@@ -117,11 +117,12 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
 
         return containers[0]
 
+
 def find_predict_display_model(model_id=None, predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, reaction_set_name=None,
-                                verbose=False, unique=False, splitterOptions=None, visitorOptions=None):
+                               verbose=False, unique=False, splitterOptions=None, visitorOptions=None):
 
     container = find_container(model_id=model_id, predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary,
-                                modelVisitorTool=modelVisitorTool, splitter=splitter, verbose=verbose, unique=unique, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+                               modelVisitorTool=modelVisitorTool, splitter=splitter, verbose=verbose, unique=unique, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
     reaction_set = DataSet.objects.get(name=reaction_set_name)
     reactions = reaction_set.reactions.all()
@@ -159,12 +160,11 @@ if __name__ == '__main__':
                         help='A dictionary of the options to give to the visitor in JSON format')
     parser.add_argument('-rxn', '--reaction-set-name', default=None, required=True,
                         help='The name of the reaction set to predict')
-                        
+
     args = parser.parse_args()
     if args.verbose:
         print argv[1:]
         print args
-
 
     # This way of accepting splitter options is bad and hacky.
     # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
@@ -173,4 +173,4 @@ if __name__ == '__main__':
     visitorOptions = ast.literal_eval(args.visitor_options) if args.visitor_options is not None else None
 
     find_predict_display_model(model_id=args.model_id, predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTool=args.model_tool,
-                                splitter=args.splitter, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, unique=args.unique, reaction_set_name=args.reaction_set_name)
+                               splitter=args.splitter, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, unique=args.unique, reaction_set_name=args.reaction_set_name)

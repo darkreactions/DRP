@@ -1,11 +1,16 @@
 """An example molecular descriptor plugin to demonstrate the 'shape' that the API requires."""
 from utils import setup
 import DRP
+from django.core.exceptions import ValidationError
+import warnings
+
+calculatorSoftware = 'example_plugin'
 
 _descriptorDict = {
-    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 1.5, 'maximum': 3, 'minimum': 1},
-    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0},
-    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': 'example_plugin', 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
+    'length': {'type': 'num', 'name': 'Length of smiles string', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 1.5, 'minimum': 1},
+    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 1.5, 'maximum': 3, 'minimum': 1},
+    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 0},
+    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
 }
 """A dictionary describing the descriptors available in this module. The key should always be the heading for the descriptor."""
 
@@ -14,9 +19,9 @@ descriptorDict = setup(_descriptorDict)
 
 def fsValueCalc(num):
     """Calculate an ordinal fake size value."""
-    if num < 10:
+    if num < 5:
         return 1
-    elif num < 20:
+    elif num < 10:
         return 2
     else:
         return 3
@@ -43,13 +48,26 @@ def calculate(compound, verbose=False, whitelist=None):
     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
     database as this happens.
     """
-
-    if compound.smiles is None:
+    if compound.smiles:
+        nValue = ('n' in compound.smiles or 'N' in compound.smiles)
+        lengthValue = len(compound.smiles)
+        fsValue = fsValueCalc(lengthValue)
+    else:
         fsValue = None
         nValue = None
-    else:
-        nValue = ('n' in compound.smiles or 'N' in compound.smiles)
-        fsValue = fsValueCalc(len(compound.smiles))
+        lengthValue = None
+
+    arbValue = arbValCalc(compound)
+
+    heading = 'length'
+    if whitelist is None or heading in whitelist:
+        v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': lengthValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        try:
+            v.full_clean()
+        except ValidationError as e:
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            v.value = None
+            v.save()
 
     arbValue = arbValCalc(compound)
     heading = 'fs'
@@ -61,7 +79,7 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
-            
+
     heading = 'N?'
     if whitelist is None or heading in whitelist:
         v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict[heading])[0]
@@ -81,4 +99,3 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
-    

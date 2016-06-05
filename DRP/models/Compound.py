@@ -17,6 +17,7 @@ import importlib
 from collections import OrderedDict
 import PerformedReaction
 from django.core.validators import RegexValidator
+from decimal import Decimal
 
 descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
@@ -161,6 +162,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
                 if verbose:
                     print "Done with plugin: {}\n".format(plugin)
 
+
 class CompoundManager(models.Manager):
 
     """A custom manager for the Compound Class which permits the creation of entries to and from CSVs."""
@@ -276,7 +278,7 @@ class Compound(models.Model):
 
     def __unicode__(self):
         """Unicode representation of a compound is it's name and abbreviation."""
-        return u"{} ({})".format(unicode(self.name, 'utf-8'), unicode(self.abbrev, 'utf-8'))
+        return unicode("{} ({})".format(self.name, self.abbrev), 'utf-8')
 
     def csConsistencyCheck(self):
         """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""
@@ -348,7 +350,7 @@ class Compound(models.Model):
                     strStoichiometry += char
                 elif char == '}':
                     inBrackets = False
-                    elements[currentElement]['stoichiometry'] += float(strStoichiometry)
+                    elements[currentElement]['stoichiometry'] += Decimal(strStoichiometry)
                     currentElement = ''
                     strStoichiometry = ''
                 else:

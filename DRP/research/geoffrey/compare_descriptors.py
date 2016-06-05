@@ -5,6 +5,7 @@ django.setup()
 from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, PerformedReaction, DataSet, Compound
 from sys import argv
 
+
 def getDescValueType(desc_heading):
     try:
         BoolRxnDescriptor.objects.get(heading=desc_heading)
@@ -33,7 +34,7 @@ def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=Boo
     if comparison_function is None:
         def _equal(v1, v2):
             return v1 == v2
-        comparison_function = _equal 
+        comparison_function = _equal
     if reactions is None:
         reactions = PerformedReaction.objects.all()
 
@@ -71,6 +72,7 @@ def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=Boo
 
     return different
 
+
 def get_references(reactions):
     references = []
     for rxn in reactions:
@@ -78,18 +80,22 @@ def get_references(reactions):
         references.append(perf_rxn.reference)
     return references
 
+
 def scale_function(scale, tol=0.1):
     def _scale(v1, v2):
-        return (abs(scale*v1 - v2) < tol)
+        return (abs(scale * v1 - v2) < tol)
     return _scale
+
 
 def shift_function(shift, tol=0.1):
     def _shift(v1, v2):
-        return (abs(shift+v1 - v2) < tol)
+        return (abs(shift + v1 - v2) < tol)
     return _shift
+
 
 def round_equal(v1, v2):
     return round(v1) == round(v2)
+
 
 def bool_equal(v1, v2):
     return bool(v1) == bool(v2)

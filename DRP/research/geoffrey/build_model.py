@@ -11,8 +11,9 @@ from django.conf import settings
 import ast
 from sys import argv
 
+
 def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
-                description="", verbose=False, splitterOptions=None, visitorOptions=None):
+                       description="", verbose=False, splitterOptions=None, visitorOptions=None):
 
     if trainingSet is not None:
         container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
@@ -25,6 +26,7 @@ def create_build_model(reactions=None, predictors=None, responses=None, modelVis
     container.full_clean()
     return build_model(container, verbose=verbose)
 
+
 def build_model(container, verbose=False):
     for attempt in range(5):
         try:
@@ -36,11 +38,12 @@ def build_model(container, verbose=False):
             sleep(3)
     else:
         raise RuntimeError("Got 5 Operational Errors in a row and gave up")
-    
+
     container.save()
     container.full_clean()
 
     return container
+
 
 def missing_descriptors(descriptor_headings):
     missing_descs = []
@@ -48,6 +51,7 @@ def missing_descriptors(descriptor_headings):
         if not Descriptor.objects.filter(heading=heading).exists():
             missing_descs.append(heading)
     return missing_descs
+
 
 def display_model_results(container, reactions=None, heading=""):
     """
@@ -96,10 +100,11 @@ def display_model_results(container, reactions=None, heading=""):
             sum_bcr += bcr
             sum_matthews += matthews
             count += 1
-            
-    print "{} Average accuracy: {:.3}".format(heading, sum_acc/count)
-    print "{} Average BCR: {:.3}".format(heading, sum_bcr/count)
-    print "{} Average Matthews: {:.3}".format(heading, sum_matthews/count)
+
+    print "{} Average accuracy: {:.3}".format(heading, sum_acc / count)
+    print "{} Average BCR: {:.3}".format(heading, sum_bcr / count)
+    print "{} Average Matthews: {:.3}".format(heading, sum_matthews / count)
+
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
                         test_set_name=None, reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None):
@@ -110,7 +115,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     # Remove errant empty strings
     predictor_headers = [h for h in predictor_headers if h]
     response_headers = [h for h in response_headers if h]
-    
+
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
@@ -120,7 +125,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
 
     if training_set_name is None and reaction_set_name is None:
-        assert(test_set_name == None)
+        assert(test_set_name is None)
         reactions = PerformedReaction.objects.filter(valid=True)
         trainingSet = None
         testSet = None
@@ -130,18 +135,19 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         trainingSet = None
         testSet = None
     else:
-        trainingSet =  DataSet.objects.get(name=training_set_name)
-        testSet =  DataSet.objects.get(name=test_set_name)
-        reactions=None
-    
-    container = create_build_model(reactions=reactions, predictors=predictors, responses=responses, 
-                            modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                            splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
-                            description=description, verbose=verbose, splitterOptions=splitterOptions,
-                            visitorOptions=visitorOptions)
+        trainingSet = DataSet.objects.get(name=training_set_name)
+        testSet = DataSet.objects.get(name=test_set_name)
+        reactions = None
+
+    container = create_build_model(reactions=reactions, predictors=predictors, responses=responses,
+                                   modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                                   splitter=splitter, trainingSet=trainingSet, testSet=testSet,
+                                   description=description, verbose=verbose, splitterOptions=splitterOptions,
+                                   visitorOptions=visitorOptions)
 
     return container
-    
+
+
 def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
                                 reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None):
 
@@ -183,12 +189,11 @@ if __name__ == '__main__':
                         help='A dictionary of the options to give to the splitter in JSON format')
     parser.add_argument('-vo', '--visitor-options', default=None,
                         help='A dictionary of the options to give to the visitor in JSON format')
-                        
+
     args = parser.parse_args()
     if args.verbose:
         print argv[1:]
         print args
-
 
     # This way of accepting splitter options is bad and hacky.
     # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(

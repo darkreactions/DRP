@@ -18,7 +18,7 @@ class CategoricalDescriptorValue(models.Model):
     descriptor = models.ForeignKey(CategoricalDescriptor)
     """The categorical descriptor to which this pertains."""
     value = models.ForeignKey(CategoricalDescriptorPermittedValue,
-                              null=True,
+                              null=True, blank=True,
                               on_delete=models.PROTECT)
     """The value of the categorical descriptor value.
 
@@ -84,8 +84,9 @@ class BooleanDescriptorValue(models.Model):
     def clean(self):
         if not (isinstance(self.value, bool) or self.value is None):
             raise ValidationError(
-                    'Only boolean values are allowed for numeric descriptors',
-                    'value_wrong_type')
+                'Only boolean values are allowed for numeric descriptors',
+                'value_wrong_type')
+
 
 class NumericDescriptorValue(models.Model):
 
@@ -95,7 +96,7 @@ class NumericDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
-    value = models.FloatField(null=True)
+    value = models.FloatField(null=True, blank=True)
     """Set to the floating point value for instances."""
     descriptor = models.ForeignKey(NumericDescriptor)
     """The descriptor to which a value pertains."""
@@ -104,8 +105,8 @@ class NumericDescriptorValue(models.Model):
         """Ensure that the value is within the prescribed bounds."""
         if not (isinstance(self.value, float) or isinstance(self.value, int) or self.value is None):
             raise ValidationError(
-                    'Only float or integer values are allowed for numeric descriptors.',
-                    'value_wrong_type')
+                'Only float or integer values are allowed for numeric descriptors.',
+                'value_wrong_type')
         if self.value is not None:
             if self.descriptor.maximum is not None and self.value > self.descriptor.maximum:
                 raise ValidationError(
@@ -155,7 +156,7 @@ class OrdinalDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
-    value = models.IntegerField(null=True)
+    value = models.IntegerField(null=True, blank=True)
     """The integer value for the specified descriptor."""
     descriptor = models.ForeignKey(OrdinalDescriptor)
 
@@ -163,8 +164,8 @@ class OrdinalDescriptorValue(models.Model):
         """Ensure the value is within the prescribed bounds."""
         if not (isinstance(self.value, int) or self.value is None):
             raise ValidationError(
-                    'Only integer values are allowed for numeric descriptors',
-                    'value_wrong_type')
+                'Only integer values are allowed for numeric descriptors',
+                'value_wrong_type')
 
         if self.value is not None:
             if (

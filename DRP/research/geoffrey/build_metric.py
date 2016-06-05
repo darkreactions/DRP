@@ -24,11 +24,10 @@ def transform_rxns(container, testSetName=None, outfile=None, verbose=False):
 
     if testSetName is not None:
         if verbose:
-            print "Tranforming test set to new space" 
+            print "Tranforming test set to new space"
         testSet = DataSet.objects.get(name=testSetName)
         reactions = testSet.reactions.all()
         container.transform(reactions, verbose=verbose)
-
 
 
 def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, testSetName=None, outfile=None, verbose=False, num_constraints=None):
@@ -49,7 +48,6 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
     container.save()
     container.full_clean()
 
-
     if verbose:
         print "Transforming training set"
     reactions = trainingSet.reactions.all()
@@ -66,7 +64,7 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
 
     if testSetName is not None:
         if verbose:
-            print "Tranforming test set to new space" 
+            print "Tranforming test set to new space"
         testSet = DataSet.objects.get(name=testSetName)
         reactions = testSet.reactions.all()
         container.transform(reactions, verbose=verbose)
@@ -100,5 +98,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     prepare_build_metric(args.predictor_headers, args.response_headers, args.metric_tool, args.description,
-                        trainingSetName=args.training_set_name, testSetName=args.test_set_name,
-                        num_constraints=args.num_constraints, outfile=args.descriptor_outfile, verbose=args.verbose)
+                         trainingSetName=args.training_set_name, testSetName=args.test_set_name,
+                         num_constraints=args.num_constraints, outfile=args.descriptor_outfile, verbose=args.verbose)

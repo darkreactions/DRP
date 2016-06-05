@@ -8,8 +8,8 @@ import os
 import datetime
 from itertools import chain
 
-metricVisitors = {visitor:importlib.import_module(settings.METRIC_VISITOR_DIR + "." + visitor) for visitor in settings.METRIC_VISITORS}
-splitters = {splitter:importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
+metricVisitors = {visitor: importlib.import_module(settings.METRIC_VISITOR_DIR + "." + visitor) for visitor in settings.METRIC_VISITORS}
+splitters = {splitter: importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 
 
 class DescriptorAttribute(object):
@@ -59,6 +59,7 @@ class DescriptorAttribute(object):
         metricContainer.catRxnDescriptors.clear()
         metricContainer.ordRxnDescriptors.clear()
 
+
 class OutcomeDescriptorAttribute(object):
 
     def __get__(self, metricContainer, metricContainerType=None):
@@ -104,42 +105,42 @@ class OutcomeDescriptorAttribute(object):
         metricContainer.outcomeCatRxnDescriptors.clear()
         metricContainer.outcomeOrdRxnDescriptors.clear()
 
-#class TransformedDescriptorAttribute(object):
+# class TransformedDescriptorAttribute(object):
 
-    ## This style is used to have behavior identical to outcome and regular descriptor properties and the ModelContainer class
-    
-    #def __get__(self, metricContainer, metricContainerType=None):
-        #return metricContainer.transformedRxnDescriptors.all()
+    # This style is used to have behavior identical to outcome and regular descriptor properties and the ModelContainer class
 
-    #def __set__(self, metricContainer, descriptors):
-        #metricContainer.transformedRxnDescriptors.clear()
-        #for descriptor in descriptors:
-            #desc = None
-            #try:
-                #desc = NumRxnDescriptor.objects.get(id=descriptor.id)
-                #metricContainer.transformedRxnDescriptors.add(desc)
-            #except NumRxnDescriptor.DoesNotExist:
-                #pass
+    # def __get__(self, metricContainer, metricContainerType=None):
+        # return metricContainer.transformedRxnDescriptors.all()
 
-            #if desc is None:
-                #raise ValueError('An invalid object was assigned as a descriptor')
+    # def __set__(self, metricContainer, descriptors):
+        # metricContainer.transformedRxnDescriptors.clear()
+        # for descriptor in descriptors:
+        #desc = None
+        # try:
+        #desc = NumRxnDescriptor.objects.get(id=descriptor.id)
+        # metricContainer.transformedRxnDescriptors.add(desc)
+        # except NumRxnDescriptor.DoesNotExist:
+        # pass
 
-    #def __delete__(self, metricContainer):
-        #metricContainer.transformedRxnDescriptors.clear()
+        # if desc is None:
+        #raise ValueError('An invalid object was assigned as a descriptor')
+
+    # def __delete__(self, metricContainer):
+        # metricContainer.transformedRxnDescriptors.clear()
 
 
 class MetricContainer(models.Model):
-    
+
     class Meta:
         app_label = 'DRP'
-        
+
     description = models.TextField(default='', blank=True)
     metricVisitor = models.CharField(max_length=255)
     startTime = models.DateTimeField(default=None, null=True, blank=True)
     endTime = models.DateTimeField(default=None, null=True, blank=True)
     fileName = models.FileField(upload_to='metrics', max_length=200, blank=True)
     """The filename in which this model is stored"""
-    invalid = models.BooleanField(default=False) 
+    invalid = models.BooleanField(default=False)
     trainingSet = models.ForeignKey(DataSet, related_name='trainingSetForMetric', null=True)
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
 
@@ -158,11 +159,10 @@ class MetricContainer(models.Model):
     #transformedDescriptors = TransformedDescriptorAttribute()
     transformedRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='transformedByMetric')
 
-    
     @classmethod
     def create(cls, metricVisitor, reactions, description=''):
         container = cls(metricVisitor=metricVisitor, description=description)
-        container.save() # need a pk
+        container.save()  # need a pk
         container.trainingSet = DataSet.create('{}_{}'.format(container.metricVisitor, container.pk), reactions)
         return container
 
@@ -188,22 +188,22 @@ class MetricContainer(models.Model):
 
         self.built = True
         return transformed
-        
+
     def transform(self, reactions, transformed=None, verbose=False):
         if not self.built:
             raise RuntimeError("Cannot transform using a metric that has not been built.")
-            
+
         if verbose:
             print "{} Generating transformed descriptors for {} reactions".format(datetime.datetime.now(), reactions.count())
-            
+
         if transformed is None:
-            metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor(0) #num_constraints doesn't matter here. TODO make this not stupid
+            metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor(0)  # num_constraints doesn't matter here. TODO make this not stupid
             metricVisitor.recover(str(self.fileName))
             if verbose:
                 print "Transforming..."
             predictorHeaders = [d.csvHeader for d in chain(self.descriptors)]
             transformed = metricVisitor.transform(reactions, predictorHeaders)
-    
+
             if verbose:
                 print "\t...transformed"
         elif verbose:
@@ -226,16 +226,16 @@ class MetricContainer(models.Model):
 
         if verbose:
             print "Inputting values for given reactions..."
-        
+
         for j, desc in enumerate(self.transformedRxnDescriptors.all()):
             values = []
-            for i, rxn in enumerate(reactions):                
+            for i, rxn in enumerate(reactions):
                 try:
                     v = NumRxnDescriptorValue.objects.get(descriptor=desc, reaction=rxn)
                 except:
-                    val = desc.createValue(rxn, transformed[i,j])
+                    val = desc.createValue(rxn, transformed[i, j])
                     values.append(val)
-                    
+
             NumRxnDescriptorValue.objects.bulk_create(values)
 
             if verbose:
@@ -243,4 +243,3 @@ class MetricContainer(models.Model):
 
         if verbose:
             print "\t...finished at {}".format(datetime.datetime.now())
-        

@@ -10,8 +10,8 @@ from PerformedReaction import PerformedReaction
 class DataSet(models.Model):
 
     class Meta:
-        app_label="DRP"
-    
+        app_label = "DRP"
+
     name = models.CharField(max_length=200, unique=True)
     reactions = models.ManyToManyField(PerformedReaction, through="DataSetRelation")
 
@@ -24,12 +24,12 @@ class DataSet(models.Model):
 
         return dataSet
 
+
 class DataSetRelation(models.Model):
 
     class Meta:
-        app_label="DRP"
+        app_label = "DRP"
         unique_together = ("dataSet", "reaction")
-    
+
     reaction = models.ForeignKey(PerformedReaction, on_delete=models.PROTECT)
     dataSet = models.ForeignKey(DataSet)
-    

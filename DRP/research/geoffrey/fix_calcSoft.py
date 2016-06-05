@@ -36,4 +36,3 @@ for d in Descriptor.objects.all():
     except ValidationError:
         print d.name, d.heading, d.calculatorSoftware, d.calculatorSoftwareVersion
         raise
-        

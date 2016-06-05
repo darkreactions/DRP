@@ -22,14 +22,14 @@ outcomeDescriptor = OrdRxnDescriptor.objects.get_or_create(
     calculatorSoftwareVersion='0',
     maximum=4,
     minimum=1
-    )[0]
+)[0]
 
 outcomeBooleanDescriptor = BoolRxnDescriptor.objects.get_or_create(
     heading='boolean_crystallisation_outcome',
     name='Two class crystallisation outcome',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 purityDescriptor = OrdRxnDescriptor.objects.get_or_create(
     heading='crystallisation_purity_outcome',
@@ -38,56 +38,56 @@ purityDescriptor = OrdRxnDescriptor.objects.get_or_create(
     calculatorSoftwareVersion='0',
     maximum=2,
     minimum=1
-    )[0]
+)[0]
 
 temperatureDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='reaction_temperature',
     name='Reaction temperature in degrees C',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 timeDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='reaction_time',
     name='Reaction time in minutes',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 pHDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='reaction_pH',
     name='Reaction pH',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 preHeatStandingDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='pre_heat_standing',
     name='Pre heat standing time',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 teflonDescriptor = BoolRxnDescriptor.objects.get_or_create(
     heading='teflon_pouch',
     name='Was this reaction performed in a teflon pouch?',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 leakDescriptor = BoolRxnDescriptor.objects.get_or_create(
     heading='leak',
     name='Did this reaction leak?',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 slowCoolDescriptor = BoolRxnDescriptor.objects.get_or_create(
     heading='slow_cool',
     name='Was a slow cool performed for this reaction?',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
-    )[0]
+)[0]
 
 # about how many things django can bulk_create at once without getting upset
 save_at_once = 5000
@@ -97,14 +97,16 @@ ref_match = re.compile('[A-Za-z0-9._]*[A-Za-z][A-Za-z0-9._]*')
 reagent_dict = {}
 density_dict = {}
 
+
 def convert_legacy_reference(legacy_reference):
-    ref = legacy_reference.lower().replace(' ', '').replace('-','.')
+    ref = legacy_reference.lower().replace(' ', '').replace('-', '.')
     if ref_match.match(ref) is None:
         ref = 'xxx' + ref
         if ref_match.match(ref) is None:
             raise ValueError('Unhandled mismatch of regex')
     return ref
-    
+
+
 class Command(BaseCommand):
     help = 'Ports database from pre-0.02 to 0.02'
 
@@ -194,7 +196,7 @@ class Command(BaseCommand):
                         legacyRecommendedFlag=(r['legacyRecommendedFlag'] == 'Yes'),
                         insertedDateTime=r['insertedDateTime'],
                         public=int(r['public'])
-                        )
+                    )
                     self.stdout.write('{}: Creating reaction with reference {}'.format(i, ref))
                     p.full_clean()
                     p.save(calcDescriptors=False)
@@ -236,7 +238,7 @@ class Command(BaseCommand):
                             p.notes += 'Marked as duplicate of reaction with legacy reference {}, but more than one reaction with that reference exists'.format(r['duplicateOf.reference'])
                             p.valid = False
                             p.save(calcDescriptors=False)
-    
+
                     outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range(1, 5))) else None
                     try:
                         v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
@@ -277,7 +279,7 @@ class Command(BaseCommand):
                         temperatureDescriptorValue = temperatureDescriptor.createValue(p, value)
                         temperatureValues.append(temperatureDescriptorValue)
 
-                    value = float(r['time'])*60 if (r['time'] not in ['', '?']) else None
+                    value = float(r['time']) * 60 if (r['time'] not in ['', '?']) else None
                     try:
                         v = NumRxnDescriptorValue.objects.get(descriptor=timeDescriptor, reaction=p)
                         if v.value != value:
@@ -442,7 +444,7 @@ class Command(BaseCommand):
                 if not (r['compound.abbrev'] or r['compoundrole.name'] or r['amount']):
                     # this is just a blank entry
                     continue
-                
+
                 legacyID = r['reaction.id']
                 reaction = PerformedReaction.objects.get(legacyID=legacyID)
                 compound_abbrev = r['compound.abbrev']
@@ -497,7 +499,7 @@ class Command(BaseCommand):
                                         except ValidationError:
                                             c.delete()
                                             raise
-                            
+
                             self.stderr.write('Could not get unambiguous chemspider entry for abbreviation {}'.format(correct_abbrev))
                             self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
                             correct_abbrev = raw_input('What is the correct abbreviation for this? ')
@@ -532,8 +534,8 @@ class Command(BaseCommand):
                                     role_label = raw_input('What chemical class does {} belong to? '.format(compound))
                                     cc = ChemicalClass.objects.get(label=role_label)
                                     compound.chemicalClasses.add(cc)
-                                    assert(compound.chemicalClasses.all().count() == 1) # Sanity check
-                                else: # count == 1
+                                    assert(compound.chemicalClasses.all().count() == 1)  # Sanity check
+                                else:  # count == 1
                                     role_label = classes[0].label
                                 self.stderr.write('No reaction role listed for reagent {} with amount {} {} in reaction {}. '
                                                   'Using chemical class {}'.format(compound, reaction, r['amount'], r['unit'], role_label))
@@ -563,14 +565,14 @@ class Command(BaseCommand):
                                             new_role_label = raw_input('What should this label be? ')
                                             role_dict[role_label] = new_role_label
                                             r['compoundrole.name'] = new_role_label
-                                    
+
                                 self.stdout.write('\tadding {} with role {} to {}'.format(compound.abbrev, role_label, reaction.reference))
                                 if r['amount'] in ('', '?'):
                                     amount = None
                                     reaction.notes += ' No amount for reactant {} with role {}'.format(r['compound.abbrev'], r['compoundrole.name'])
                                     reaction.save(calcDescriptors=False)
                                 elif r['unit'] == 'g':
-                                    amount = float(r['amount'])/mw
+                                    amount = float(r['amount']) / mw
                                 elif r['unit'] == 'd' or r['unit'] == 'mL':
                                     valid_density = False
                                     while not valid_density:
@@ -580,13 +582,13 @@ class Command(BaseCommand):
                                             density = float(r['density'])
                                             valid_density = True
                                         except (TypeError, ValueError):
-                                            self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'],compound, r['amount'], r['unit'], reaction))
+                                            self.stderr.write("Density '{}' cannot be converted to float. (Compound {} with amount {} {} in reaction {})".format(r['density'], compound, r['amount'], r['unit'], reaction))
                                             r['density'] = raw_input('What is the density? ')
                                     density_dict[compound.abbrev] = r['density']
                                     if r['unit'] == 'd':
-                                        amount = float(r['amount'])*0.0375*density/mw
+                                        amount = float(r['amount']) * 0.0375 * density / mw
                                     elif r['unit'] == 'mL':
-                                        amount = float(r['amount'])*density/mw
+                                        amount = float(r['amount']) * density / mw
                                 else:
                                     raise RuntimeError('invalid unit entered')
                                 # convert to millimoles
@@ -595,10 +597,9 @@ class Command(BaseCommand):
                                 cqq = CompoundQuantity.objects.filter(compound=compound, reaction=reaction)
                                 if cqq.exists():
                                     cqq.delete()
-            
+
                                 quantity = CompoundQuantity(compound=compound, reaction=reaction, role=compoundrole, amount=amount)
                                 quantities.append(quantity)
-    
 
                             if len(quantities) > save_at_once:
                                 self.stdout.write('Saving...')
@@ -612,7 +613,7 @@ class Command(BaseCommand):
                     reaction.save(calcDescriptors=False)
 
                 writer.writerow(r)
-                
+
         self.stdout.write('Saving...')
         CompoundQuantity.objects.bulk_create(quantities)
         quantities = []

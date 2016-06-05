@@ -12,6 +12,7 @@ import glob
 import os
 import build_model
 
+
 def prepareArff(reactions, whitelistHeaders, filepath, verbose=False):
     """Writes an *.arff file using the provided queryset of reactions."""
     if verbose:
@@ -39,7 +40,7 @@ def dump(response_headers=None, predictor_headers=None, reaction_set_name=None, 
 
     whitelist = [d.csvHeader for d in chain(predictors, responses)]
     prepareArff(reactions, whitelist, output_file, verbose=verbose)
-        
+
 
 if __name__ == '__main__':
     django.setup()

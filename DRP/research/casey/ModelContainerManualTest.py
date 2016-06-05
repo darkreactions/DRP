@@ -1,14 +1,15 @@
-import os, sys
-full_path = os.path.dirname(os.path.realpath(__file__))+"/"
+import os
+import sys
+full_path = os.path.dirname(os.path.realpath(__file__)) + "/"
 django_path = full_path[:full_path.rfind("/DRP/")]
 if django_path not in sys.path:
-  sys.path = [django_path] + sys.path
-  os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+    sys.path = [django_path] + sys.path
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 
 from DRP.models import ModelContainer, Descriptor, PerformedReaction
 from DRP.ml_models.splitters.KFoldSplitter import Splitter
 
-#TODO: Get the predictors
+# TODO: Get the predictors
 responses = Descriptor.objects.filter(heading="crystallisation_outcome")
 predictors = Descriptor.objects.exclude(id__in=responses.values_list('id', flat=True))[:15]
 
@@ -24,9 +25,7 @@ print "# of Responses: {}".format(responses.count())
 
 splitter = Splitter()
 for training, test in splitter.split(reactions):
-  print "\nBuilding a model!"
-  container.build(training, test, predictors, responses, debug=True)
+    print "\nBuilding a model!"
+    container.build(training, test, predictors, responses, debug=True)
 
 print container.summarize()
-
-

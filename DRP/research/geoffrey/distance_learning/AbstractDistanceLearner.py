@@ -4,6 +4,7 @@ from cPickle import dump
 
 logger = logging.getLogger(__name__)
 
+
 class AbstractDistanceLearner(object):
     __metaclass__ = ABCMeta
 
@@ -18,4 +19,3 @@ class AbstractDistanceLearner(object):
     @abstractmethod
     def dist(self, x, y):
         """Returns the distance between x and y under the metric"""
-            

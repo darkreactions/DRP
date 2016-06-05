@@ -2,30 +2,36 @@
 <html>
   <head>
     <title>
-       Dark Reaction Project 
+       Dark Reactions Project 
     </title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/mainStylesheet.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/mainMenu.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/projectMenu.css" />
     
-
   
-<link rel="stylesheet" type="text/css" href="/static//css/login_form.css" /> 
+  <link rel="stylesheet" type="text/css" href="/static/css/reactionForm.css" />
 
+    
   </head>
 
   <body>
 
     <header>
       <img id="mainLogo" src="/static/images/mainLogo.png" alt="DRP logo">
-      <h1 class="mainTitle">Dark Reaction Project</h1>
+      <h1 class="mainTitle">Dark Reactions Project</h1>
 
       <div id="userInfo">
-	<a href="http://github.com/cfalk/DRP" class="github">GitHub</a>
+	<a href="https://github.com/darkreactions/DRP" class="github">GitHub</a>
         
           
-        <a id="userLogin" href="/login.html?next=/login.html">Log In</a>
-        <a id="registrationPrompt" href="/register.html">Register</a>
+            <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
+          
+          <span class="greeting">
+            Hello, 
+            <a class="account" href="/account/" ><img id="userUpdate" title="Update Account" src="/static/icons/gear.png" alt="update account"></a>
+          </span>
+          <a href="/logout.html" id="userLogOut">Log Out</a>
 
         
 
@@ -42,7 +48,8 @@
           </li>
   
           <li>
-            <a href="/database/"
+            <a href="/database.html?page=1"
+               id="dbase"
                class="navLink"
                title="Enter the Dark Reaction Project.">
                Project
@@ -77,25 +84,138 @@
      </div>
     </nav>
     
+ <!-- 823d22e7-3337-4292-aa67-13f748b2aa65 --> 
+
+<nav>
+ <div class="projectNav-wrapper">
+  <ol class="projectNav">
+    <li><a href="/database/">Reactions</a></li>
+    <li><a href="/database/compoundguide/">Compound Guide</a></li>
+  </ol>
+ </div>
+</nav> 
+
+
+
+
+
+<nav>
+ <!-- ea5108a2-0b88-482d-90c5-ea492fd8134e --> 
+ <div class="projectNav-wrapper">
+  <ol class="projectNav" id="projectNav2">
+    <li><a href="/database/">List Performed Reactions</a></li>
+    <li><a href="/database/add.html">Add a Performed Reaction</a></li> 
+  </ol>
+ </div>
+</nav>
+
+
+
+
+
+  
   </header>
   <main>
     
+  <!-- 7b3b6668-981a-4a11-8dc4-23107187de93 -->
+  <h1>Edit Reaction Data</h1>
+  <div class="reactionlist"><a href="/database/">Return to Reaction List</a></div>
+  
+   <form class="reaction-form" action="/database/entry_702/" method="post">
+    <!-- 2758c44c-b7e2-440a-a617-36d9d730bc93 --> 
+    <input type='hidden' name='csrfmiddlewaretoken' value='vgiS02OY7K2DPTOqmdW4sBrGKAp1Rz7q' />
+    <fieldset>
+      <legend>Reaction Details</legend>
+      
+      <table class="reactionformtable">
+        <tbody class="flleft">
+            
+                    
+                <tr><th><label for="id_reference">Reference:</label></th><td><input id="id_reference" maxlength="40" name="reference" type="text" value="turkish_delight" /></td></tr>
+            
+                    
+                <tr><th><label for="id_notes">Notes:</label></th><td><textarea cols="40" id="id_notes" name="notes" rows="10">
+this reaction has been edited</textarea></td></tr>
+            
+                     </tbody><tbody class="flright">
+                <tr><th><label for="id_performedBy">PerformedBy:</label></th><td><select id="id_performedBy" name="performedBy">
+<option value="">---------</option>
+<option value="2625" selected="selected">Aslan</option>
+</select></td></tr>
+            
+                    
+                <tr><th><label for="id_labGroup">LabGroup:</label></th><td><select id="id_labGroup" name="labGroup">
+<option value="2580" selected="selected">narnia</option>
+</select></td></tr>
+            
+                    
+                <tr><th><label for="id_duplicateOf">DuplicateOf:</label></th><td><select id="id_duplicateOf" name="duplicateOf">
+<option value="" selected="selected">---------</option>
+<option value="702">turkish_delight</option>
+</select></td></tr>
+            
+                    
+                <tr><th><label for="id_performedDateTime">Date Reaction Performed:</label></th><td><input id="id_performedDateTime" name="performedDateTime" type="text" />Timezone assumed EST, Date in format YYYY-MM-DD</td></tr>
+            
+                    
+                <tr><th><label for="id_public">Public:</label></th><td><input id="id_public" name="public" type="checkbox" /></td></tr>
+            
+                    
+                <tr><th><label for="id_valid">Valid:</label></th><td><input checked="checked" id="id_valid" name="valid" type="checkbox" /></td></tr>
+            
+        </tbody>
+      </table>
+            
+            <input id="id_recommendation" name="recommendation" type="hidden" />
+            
+    <div class="buttons">
+      <input type="submit" value="Save" />
+      <input type="reset" value="Reset" />
+    </div>
+    </fieldset>
+  </form>
 
-<form method="post" action="/login.html?next=%2Fdatabase%2Fcompoundguide%2Fadd.html">
-  <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
-  <input type='hidden' name='csrfmiddlewaretoken' value='VuOIAsX0LjmQt1nxETRgZHhrT1w821RY' />
-  <ol>
-    <li><label for="id_username">Username:</label> <input id="id_username" maxlength="254" name="username" type="text" /></li>
-<li><label for="id_password">Password:</label> <input id="id_password" name="password" type="password" /></li>
-  </ol>
-  <input type="submit" value="Log In" />
-</form>
+  
+  <form action="/database/entry_702/compoundquantities.html" method="post">
+     <!-- dc1d5961-a9e7-44d8-8441-5b8402a01c06 --> 
+    <input type='hidden' name='csrfmiddlewaretoken' value='vgiS02OY7K2DPTOqmdW4sBrGKAp1Rz7q' />
+    <fieldset>
+    <legend>Reactant Details</legend>
+    <ol class="reactants_list">
+        
+	  <li><ol class="reactant_list"><!-- 634d88bb-9289-448b-a3dc-548ff4c6cda1 -->
 
+
+<li><label for="id_quantities-0-compound">Compound:</label><select id="id_quantities-0-compound" name="quantities-0-compound"><option value="" selected="selected">---------</option></select></li>
+
+<li><label for="id_quantities-0-role">Role:</label><select id="id_quantities-0-role" name="quantities-0-role"><option value="" selected="selected">---------</option></select></li>
+
+<li><label for="id_quantities-0-amount">Amount:</label><input id="id_quantities-0-amount" name="quantities-0-amount" step="0.00001" type="number" /><span class="helptext">(in mmoles, 5 decimal places)</span></li>
+
+<li><label for="id_quantities-0-DELETE">Delete:</label><input id="id_quantities-0-DELETE" name="quantities-0-DELETE" type="checkbox" /><input id="id_quantities-0-id" name="quantities-0-id" type="hidden" /></li>
+
+ </ol></li>
+        
+    </ol>
+    <input id="id_quantities-TOTAL_FORMS" name="quantities-TOTAL_FORMS" type="hidden" value="1" /><input id="id_quantities-INITIAL_FORMS" name="quantities-INITIAL_FORMS" type="hidden" value="0" /><input id="id_quantities-MIN_NUM_FORMS" name="quantities-MIN_NUM_FORMS" type="hidden" value="0" /><input id="id_quantities-MAX_NUM_FORMS" name="quantities-MAX_NUM_FORMS" type="hidden" value="1000" />
+    <div class="buttons">
+      <input type="submit" value="Save" />
+      <input type="reset" value="Reset" />
+    </div>
+   </fieldset>
+  </form>
+
+   
 
   </main>
   <footer>
   &copy; 2016 Dark Reactions Project at Haverford College
   </footer>
+  
+  <script>
+    dbase = document.getElementById('dbase');
+    dbase.setAttribute('href', '/database/');
+  </script>
 </body>
 
 </html>
