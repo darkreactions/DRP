@@ -164,35 +164,38 @@ cxcalcCommands = OrderedDict()
 for key in _descriptorDict.keys():
     cxcalcCommands[key] = key
 
-for descriptor, d in _pHDependentDescriptors.items():
-    for i in range(1, 15):
-        d_copy = d.copy()
-        d_copy['name'] += ' at pH {}'.format(i)
-        _descriptorDict[descriptor + '_pH{}'.format(i)] = d_copy
+def setup_pHdependentDescriptors(_descriptorDict):
+    for descriptor, d in _pHDependentDescriptors.items():
+        for pH in DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).values_list('value', flat=True).distinct():
+            d_copy = d.copy()
+            d_copy['name'] += ' at pH {}'.format(pH)
+            _descriptorDict[descriptor + '_pH{}'.format(pH)] = d_copy
+    
+    descriptorDict = setup(_descriptorDict)
 
-descriptorDict = setup(_descriptorDict)
+    _cxcalcpHCommandStems = {
+        'avgpol_pH{}': 'avgpol -H {}',
+        'molpol_pH{}': 'molpol -H {}',
+        'vanderwaals_pH{}': 'vdwsa -H {}',
+        'asa_pH{}': 'molecularsurfacearea -t ASA -H {}',
+        'asa+_pH{}': 'molecularsurfacearea -t ASA+ -H {}',
+        'asa-_pH{}': 'molecularsurfacearea -t ASA- -H {}',
+        'asa_hydrophobic_pH{}': 'molecularsurfacearea -t ASA_H -H {}',
+        'asa_polar_pH{}': 'molecularsurfacearea -t ASA_P -H {}',
+        'hbda_acc_pH{}': 'acceptorcount -H {}',
+        'hbda_don_pH{}': 'donorcount -H {}',
+        'polar_surface_area_pH{}': 'polarsurfacearea -H {}',
+    }
+    
+    
+    for key, command in _cxcalcpHCommandStems.items():
+        for pH in DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).values_list('value', flat=True).distinct():
+            cxcalcCommands[key.format(pH)] = command.format(pH)
 
-_cxcalcpHCommandStems = {
-    'avgpol_pH{}': 'avgpol -H {}',
-    'molpol_pH{}': 'molpol -H {}',
-    'vanderwaals_pH{}': 'vdwsa -H {}',
-    'asa_pH{}': 'molecularsurfacearea -t ASA -H {}',
-    'asa+_pH{}': 'molecularsurfacearea -t ASA+ -H {}',
-    'asa-_pH{}': 'molecularsurfacearea -t ASA- -H {}',
-    'asa_hydrophobic_pH{}': 'molecularsurfacearea -t ASA_H -H {}',
-    'asa_polar_pH{}': 'molecularsurfacearea -t ASA_P -H {}',
-    'hbda_acc_pH{}': 'acceptorcount -H {}',
-    'hbda_don_pH{}': 'donorcount -H {}',
-    'polar_surface_area_pH{}': 'polarsurfacearea -H {}',
-}
+    if len(cxcalcCommands) != len(_descriptorDict):
+        raise RuntimeError("Need the same number of cxcalc commands as descriptors being calculated")
 
-
-for key, command in _cxcalcpHCommandStems.items():
-    for i in range(1, 15):
-        cxcalcCommands[key.format(i)] = command.format(i)
-
-if len(cxcalcCommands) != len(_descriptorDict):
-    raise RuntimeError("Need the same number of cxcalc commands as descriptors being calculated")
+    return descriptorDict
 
 
 def delete_descriptors(compound_set, cxcalcCommands):
@@ -205,6 +208,9 @@ def delete_descriptors(compound_set, cxcalcCommands):
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
+    if verbose:
+        print "Creating descriptor dictionary"
+    descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
     if whitelist is not None:
         filtered_cxcalcCommands = {k: cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}
     else:
@@ -239,6 +245,9 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 
 def calculate(compound, verbose=False, whitelist=None):
+    if verbose:
+        print "Creating descriptor dictionary"
+    descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
     if whitelist is not None:
         filtered_cxcalcCommands = {k: cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}
     else:
@@ -276,7 +285,7 @@ def _calculate(compound, cxcalcCommands, verbose=False, num_to_create=[], ord_to
             notFound = False
     if not notFound:
         # -N ih means leave off the header row and id column
-        calcProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', '-N', 'ih', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True)
+        calcProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', '-N', 'ih', lec] + [x for x in chain(*(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True)
         calcProc.wait()
         if calcProc.returncode == 0:
             res, resErr = calcProc.communicate()

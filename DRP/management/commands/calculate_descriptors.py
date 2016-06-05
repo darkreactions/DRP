@@ -29,6 +29,10 @@ class Command(BaseCommand):
                            help='Calculate descriptors for reactions only.')
         group.add_argument('-c', '--compounds', action='store_true',
                            help='Calculate descriptors for compounds only.')
+        group.add_argument('--include-invalid', action='store_true',
+                           help='Calculate descriptors for invalid reactions also.')
+        group.add_argument('--include-non-performed', action='store_true',
+                           help='Calculate descriptors for non-performed reactions also.')
 
     def handle(self, *args, **kwargs):
         verbose = (kwargs['verbosity'] > 0)
@@ -53,7 +57,11 @@ class Command(BaseCommand):
         if not only_reactions:
             Compound.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
         if not only_compounds:
+            reactions = Reaction.objects.order_by('pk')
             if only_reactions:
-                Reaction.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
-            else:
-                Reaction.objects.order_by('pk').calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
+                reactions = reactions.filter(pk__gte=start)
+            if not include_invalid:
+                reactions = reactions.exclude(performedreaction__valid=False)
+            if not include_non_performed:
+                reactions = reactions.exclude(performedreaction=None)
+            reactions.calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
