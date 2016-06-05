@@ -12,9 +12,19 @@ from subprocess import Popen, PIPE
 from itertools import chain
 import warnings
 
+# The version of ChemAxon currently in use.
+# Should be matched by a entry in the dictionary in the settings file
+# This version is reflected in, but not necessarily the same as, the
+# descriptor versions
+CHEMAXON_VERSION = '16.5'
 
 calculatorSoftware = 'ChemAxon_cxcalc'
 create_threshold = 5000  # number of values to create at a time. Should probably be <= 5000
+
+
+# The descriptor versions correspond to either the first ChemAxon version in which they were used
+# by the DRP or the oldest ChemAxon version in which a change was made to the methodology for
+# that descriptor's calculation (does not include minor bugfixes) 
 
 _descriptorDict = {
     'refractivity': {
@@ -144,7 +154,7 @@ _pHDependentDescriptors = {
         'type': 'num',
         'name': 'Polar Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '16.5', # this is not a typo. This descriptor was introduced later
         'minimum': 0,
     }
 }
@@ -253,13 +263,13 @@ def calculate(compound, verbose=False, whitelist=None):
 def _calculate(compound, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):
     notFound = True
     if notFound and (compound.smiles is not None and compound.smiles != ''):
-        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer
+        lecProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer
         lecProc.wait()
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
     if notFound and (compound.INCHI is not None and compound.INCHI != ''):
-        lecProc = Popen([settings.CHEMAXON_DIR['15.6'] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer
+        lecProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', compound.INCHI, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer
         lecProc.wait()
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
