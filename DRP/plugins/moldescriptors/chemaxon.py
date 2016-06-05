@@ -198,7 +198,7 @@ def setup_pHdependentDescriptors(_descriptorDict):
     return descriptorDict
 
 
-def delete_descriptors(compound_set, cxcalcCommands):
+def delete_descriptors(compound_set, descriptorDict, cxcalcCommands):
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type'] == 'num'],
                                                     compound__in=compound_set).delete(recalculate_reactions=False)
     DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type'] == 'ord'],
@@ -217,14 +217,14 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
         print "Deleting old descriptor values."
-    delete_descriptors(compound_set, cxcalcCommands)
+    delete_descriptors(compound_set, descriptorDict, cxcalcCommands)
 
     num_to_create = []
     ord_to_create = []
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
-        num_to_create, ord_to_create = _calculate(compound, filtered_cxcalcCommands, verbose=verbose, num_to_create=num_to_create, ord_to_create=ord_to_create)
+        num_to_create, ord_to_create = _calculate(compound, descriptorDict, filtered_cxcalcCommands, verbose=verbose, num_to_create=num_to_create, ord_to_create=ord_to_create)
         if len(num_to_create) > create_threshold:
             if verbose:
                 print 'Creating {} numeric values'.format(len(num_to_create))
@@ -254,14 +254,14 @@ def calculate(compound, verbose=False, whitelist=None):
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
         print "Deleting old descriptor values"
-    delete_descriptors([compound], cxcalcCommands)
+    delete_descriptors([compound], descriptorDict, cxcalcCommands)
     if whitelist is not None:
         filtered_cxcalcCommands = {k: cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}
     else:
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
         print "Creating new descriptor values."
-    num_to_create, ord_to_create = _calculate(compound, filtered_cxcalcCommands, verbose=verbose)
+    num_to_create, ord_to_create = _calculate(compound, descriptorDict, filtered_cxcalcCommands, verbose=verbose)
 
     if verbose:
         print "Creating {} numerical and {} ordinal".format(len(num_to_create), len(ord_to_create))
@@ -269,7 +269,7 @@ def calculate(compound, verbose=False, whitelist=None):
     DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
 
 
-def _calculate(compound, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):
+def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):
     notFound = True
     if notFound and (compound.smiles is not None and compound.smiles != ''):
         lecProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', compound.smiles, 'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer

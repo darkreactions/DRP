@@ -41,6 +41,8 @@ class Command(BaseCommand):
         start = kwargs['start']
         whitelist = kwargs['whitelist']
         plugins = kwargs['plugins']
+        include_invalid = kwargs['include_invalid']
+        include_non_performed = kwargs['include_non_performed']
 
         if whitelist is not None:
             # just a little optimization

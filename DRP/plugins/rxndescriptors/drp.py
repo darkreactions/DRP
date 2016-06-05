@@ -7,12 +7,12 @@ from django.db.models import Sum
 from utils import setup
 import xxhash
 import warnings
+from DRP.plugins.moldescriptors.chemaxon import _pHDependentDescriptors
 
 elements = DRP.chemical_data.elements
 
 calculatorSoftware = 'DRP'
 create_threshold = 5000  # number of values to create at a time. Should probably be <= 5000
-
 
 _descriptorDict = {}
 
@@ -27,6 +27,13 @@ for element in elements:
         'maximum': None,
         'minimum': 0,
     }
+
+
+for descriptor, d in _pHDependentDescriptors.items():
+    d_copy = d.copy()
+    d_copy['name'] += ' at reaction pH'
+    _descriptorDict[descriptor + '_pHreaction'] = d_copy
+
 
 # descriptors for generalised aggregation across compound roles
 
@@ -514,3 +521,20 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                                 n.value = sum(quantity.amount for quantity in quantities)
                             num_vals_to_create.append(n)
     return num_vals_to_create, bool_vals_to_create
+
+
+def _calculateRxnpH(reaction, descriptorDict, verbose=False, whitelist=None, vals_to_create=[]):
+    reaction_pH = NumRxnDescriptorValue.objects.get(reaction=reaction, descriptor__heading='reaction_pH').value
+    for d in NumRxnDescriptorValue.objects.filter(reaction=reaction, heading__contains='_pHreaction_'):
+        if reaction_pH is None:
+            DRP.models.NumRxnDescriptorValue(descriptor=d, reaction=reaction, value=None)
+        else:
+            reaction_pH_descriptor_heading = d.heading.replace('_pHreaction_', '_pH{}_'.format(reaction_pH))
+            pH_descriptor_value = NumRxnDescriptorValue.objects.get(descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction)
+            ph_descriptor_value.descriptor = d
+            ph_descriptor_value.pk = None
+        
+        vals_to_create.append(n)
+        
+    return vals_to_create
+    
