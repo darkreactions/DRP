@@ -7,10 +7,10 @@ import warnings
 calculatorSoftware = 'example_plugin'
 
 _descriptorDict = {
-    'length': {'type': 'num', 'name': 'Length of smiles string', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 1.5, 'minimum': 1},
-    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 1.5, 'maximum': 3, 'minimum': 1},
-    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 0},
-    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 0, 'permittedValues': ('fun', 'dull')}
+    'length': {'type': 'num', 'name': 'Length of smiles string', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': '1_5', 'minimum': 1},
+    'fs': {'type': 'ord', 'name': 'Fake size', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': '1_5', 'maximum': 3, 'minimum': 1},
+    'N?': {'type': 'bool', 'name': 'Has Nitrogen', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': '0'},
+    'arb': {'type': 'cat', 'name': "Phil's arbitrary descriptor", 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': '0', 'permittedValues': ('fun', 'dull')}
 }
 """A dictionary describing the descriptors available in this module. The key should always be the heading for the descriptor."""
 

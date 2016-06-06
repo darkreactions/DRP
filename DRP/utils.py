@@ -3,7 +3,12 @@ from math import sqrt
 
 
 def average_normalized_conf(confs):
-    "Normalise a collection of confusion matrices and then averages them."
+    """
+    Turn a list of confusion matrices into a single normalized confusion matrix.
+
+    First normalize all matrices so their entries sum to 1, then average them.
+    """
+>>>>>>> 00e3a67866925ad7e66cd794c1178d9dc169b6ac
     possible_vals = set(confs[0].keys())
     sum_conf = {true: {guess: 0.0 for guess in possible_vals} for true in possible_vals}
     for conf in confs:
@@ -22,7 +27,9 @@ def average_normalized_conf(confs):
 
 
 def accuracy(conf):
-    "Calculate the accuracy of a confusion matrix."
+    """
+    Compute the accuracy given a confusion matrix.
+    """
     correct = 0.0
     total = 0.0
     for true, guesses in conf.items():
@@ -34,7 +41,9 @@ def accuracy(conf):
 
 
 def BCR(conf):
-    "Calculate the balanced classification rate of a confusion matrix."
+    """
+    Compute the balanced classification rate given a confusion matrix.
+    """
     class_accuracy_sum = 0.0
     num_classes = 0.0
     for true, guesses in conf.items():
@@ -52,7 +61,10 @@ def BCR(conf):
 
 
 def Matthews(conf):
-    "Calculate the Matthews correlation coefficient for a confution matrix."
+    """
+    Compute the Matthews coefficient given a confusion matrix.
+    Only works for two-class confusion matrices.
+    """
     class_accuracy_sum = 0.0
     num_classes = 0.0
     if len(conf) != 2:

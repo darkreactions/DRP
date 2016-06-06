@@ -79,7 +79,7 @@ class Descriptor(models.Model):
         blank=True,
         validators=[
             RegexValidator(
-                '[A-Za-z0-9][A-Za-z0-9_.]*',
+                '[A-Za-z0-9][A-Za-z0-9_]*',
                 ('Please include only values which are limited to '
                  'alphanumeric characters, periods and underscores, and must start '
                  'with an alphabetic character.')

@@ -7,7 +7,7 @@ import DRP
 calculatorSoftware = 'DRP_rdkit'
 
 _descriptorDict = {
-    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 0.02, 'maximum': None, 'minimum': 0},
+    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': '0_02', 'maximum': None, 'minimum': 0},
 }
 
 descriptorDict = setup(_descriptorDict)
@@ -26,7 +26,7 @@ def calculate(compound, verbose=False, whitelist=None):
     """Calculate the descriptors from this plugin for a compound."""
     heading = 'mw'
     if whitelist is None or heading in whitelist:
-        mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * compound.elements[element]['stoichiometry'] for element in compound.elements)
+        mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * float(compound.elements[element]['stoichiometry']) for element in compound.elements)
 
         v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': mw}, descriptor=descriptorDict[heading], compound=compound)[0]
 

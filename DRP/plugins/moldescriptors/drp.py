@@ -39,7 +39,7 @@ for prop in inorgAtomicProperties:
             'type': 'num',
             'name': 'Geometric mean of {} weighted by {}.'.format(prop.replace('_', ' '), weighting[1]),
             'calculatorSoftware': calculatorSoftware,
-            'calculatorSoftwareVersion': '0.02',
+            'calculatorSoftwareVersion': '0_02',
             'maximum': None,
             'minimum': 0,
         }
@@ -47,7 +47,7 @@ for prop in inorgAtomicProperties:
         'type': 'num',
         'name': 'Maximal value of {}'.format(prop.replace('_', '')),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '0.02',
+        'calculatorSoftwareVersion': '0_02',
         'maximum': None,
         'minimum': None
     }
@@ -55,7 +55,7 @@ for prop in inorgAtomicProperties:
         'type': 'num',
         'name': 'Range of {}'.format(prop.replace('_', '')),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '0.02',
+        'calculatorSoftwareVersion': '0_02',
         'maximum': None,
         'minimum': 0,
     }
@@ -65,7 +65,7 @@ for group_num in range(1, 19):
         'type': 'bool',
         'name': 'Presence of inorganic elements in group {}'.format(group_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for period_num in range(1, 8):
@@ -73,7 +73,7 @@ for period_num in range(1, 8):
         'type': 'bool',
         'name': 'Presence of inorganic elements in period {}'.format(period_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for valence_num in range(0, 8):
@@ -81,7 +81,7 @@ for valence_num in range(0, 8):
         'type': 'bool',
         'name': 'Presence of inorganic elements with valence {}'.format(valence_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for group_num in range(1, 19):
@@ -89,7 +89,7 @@ for group_num in range(1, 19):
         'type': 'bool',
         'name': 'Presence of elements in group {}'.format(group_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for period_num in range(1, 8):
@@ -97,7 +97,7 @@ for period_num in range(1, 8):
         'type': 'bool',
         'name': 'Presence of elements in period {}'.format(period_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 descriptorDict = setup(_descriptorDict)
@@ -119,7 +119,6 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
-        _calculate(compound, verbose=verbose, whitelist=whitelist)
         num_vals_to_create, bool_vals_to_create = _calculate(compound, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
         if len(num_vals_to_create) > create_threshold:
             if verbose:
@@ -183,12 +182,12 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
 
             heading = 'drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))
             if whitelist is None or heading in whitelist:
-                if any([(inorgElements[element][prop] * (info['stoichiometry'] / inorgElementNormalisationFactor) == 0) for element, info in compound.elements.items() if element in inorgElements]):
+                if any([(inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor) == 0)) for element, info in compound.elements.items() if element in inorgElements]):
                     val = 0
-                elif any([(inorgElements[element][prop] * (info['stoichiometry'] / inorgElementNormalisationFactor) < 0) for element, info in compound.elements.items() if element in inorgElements]):
+                elif any([(inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor) < 0)) for element, info in compound.elements.items() if element in inorgElements]):
                     raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))]))
                 else:
-                    val = gmean([inorgElements[element][prop] * (info['stoichiometry'] / inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])
+                    val = gmean([inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor)) for element, info in compound.elements.items() if element in inorgElements])
                 n = num(
                     compound=compound,
                     descriptor=descriptorDict[heading],
