@@ -1,8 +1,9 @@
-"""Miscellaneous utility functions for use in DRP"""
+"""Miscellaneous utility functions for use in DRP."""
 from math import sqrt
 
 
 def average_normalized_conf(confs):
+    "Normalise a collection of confusion matrices and then averages them."
     possible_vals = set(confs[0].keys())
     sum_conf = {true: {guess: 0.0 for guess in possible_vals} for true in possible_vals}
     for conf in confs:
@@ -21,6 +22,7 @@ def average_normalized_conf(confs):
 
 
 def accuracy(conf):
+    "Calculate the accuracy of a confusion matrix."
     correct = 0.0
     total = 0.0
     for true, guesses in conf.items():
@@ -32,6 +34,7 @@ def accuracy(conf):
 
 
 def BCR(conf):
+    "Calculate the balanced classification rate of a confusion matrix."
     class_accuracy_sum = 0.0
     num_classes = 0.0
     for true, guesses in conf.items():
@@ -49,6 +52,7 @@ def BCR(conf):
 
 
 def Matthews(conf):
+    "Calculate the Matthews correlation coefficient for a confution matrix."
     class_accuracy_sum = 0.0
     num_classes = 0.0
     if len(conf) != 2:
@@ -79,7 +83,8 @@ def Matthews(conf):
 
 def confusionMatrixString(confusionMatrix, headers=True):
     """
-    Returns a string that will display a confusionMatrix
+    Return a string that will display a confusionMatrix.
+
     If headers=True, includes the headers as the first row and first column.
     """
     table = confusionMatrixTable(confusionMatrix, headers)
@@ -88,7 +93,8 @@ def confusionMatrixString(confusionMatrix, headers=True):
 
 def confusionMatrixTable(confusionMatrix, headers=True):
     """
-    Converts a confusion matrix dictionary to a list of lists.
+    Convert a confusion matrix dictionary to a list of lists.
+
     Primarily for display purposes.
     Each list corresponds to a single true value and contains the
     counts for each predicted value.

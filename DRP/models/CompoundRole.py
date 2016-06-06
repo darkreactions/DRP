@@ -1,7 +1,15 @@
+"""A compound role signifies the role a compound plays in a specific reaction."""
 from django.db import models
 
 
 class CompoundRole(models.Model):
+
+    """
+    A compound role signifies the role a compound plays in a specific reaction.
+
+    This is included as a part of the ontology by being a component of
+    a compound quantity.
+    """
 
     class Meta:
         verbose_name = 'Compound Role Category'
@@ -12,4 +20,5 @@ class CompoundRole(models.Model):
     description = models.TextField()
 
     def __unicode__(self):
+        "Return the label string for the unicode rep."
         return self.label
