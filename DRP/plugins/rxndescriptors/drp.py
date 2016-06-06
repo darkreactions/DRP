@@ -135,7 +135,7 @@ def make_dict():
                 'minimum': 0,
             }
             for w in weightings:
-                _reaction_pH_Descriptors['{}_{}_pHreaction_{}_{}_{}'.format(compoundRole.label, heading, d['calculatorSoftware'], d['calculatorSoftwareVersion'], 'gmean')]  = {
+                _reaction_pH_Descriptors['{}_{}_pHreaction_{}_{}_{}_{}'.format(compoundRole.label, heading, d['calculatorSoftware'], d['calculatorSoftwareVersion'], 'gmean', w)]  = {
                     'type': 'num',
                     'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(d['name'] + ' at reaction pH', compoundRole.label, w),
                     'calculatorSoftware': calculatorSoftware,
