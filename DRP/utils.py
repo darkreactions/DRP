@@ -8,7 +8,6 @@ def average_normalized_conf(confs):
 
     First normalize all matrices so their entries sum to 1, then average them.
     """
->>>>>>> 00e3a67866925ad7e66cd794c1178d9dc169b6ac
     possible_vals = set(confs[0].keys())
     sum_conf = {true: {guess: 0.0 for guess in possible_vals} for true in possible_vals}
     for conf in confs:
