@@ -369,7 +369,7 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
 @createsCompoundQuantity('turkish_delight', '2-amep', 'Org', '2.12')
 @usesCsrf
 class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):  # this is the same view so the invalid case is covered
-    testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
+    testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', '634d88bb-9289-448b-a3dc-548ff4c6cda1', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {
         'quantities-TOTAL_FORMS': '1',
         'quantities-INITIAL_FORMS': '1',
@@ -434,7 +434,7 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)): 
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
 class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory(3)):
-    testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
+    testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _params = {'creating': True}
     _payload = {
         'createOrdDescVals-TOTAL_FORMS': '1',
@@ -462,7 +462,7 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
 class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(1)):  # no edit test required- it uses the same functionality
-    testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
+    testCodes = ['dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {
         'createOrdDescVals-TOTAL_FORMS': '1',
         'createOrdDescVals-INITIAL_FORMS': '0',
@@ -490,7 +490,7 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)
 @usesCsrf
 class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
-    testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
+    testCodes = ['dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {
         'createOrdDescVals-TOTAL_FORMS': '1',
         'createOrdDescVals-INITIAL_FORMS': '1',
