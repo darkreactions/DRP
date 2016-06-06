@@ -3,6 +3,7 @@ from utils import setup
 import DRP
 from DRP import chemical_data
 import warnings
+from django.core.exceptions import ValidationError
 
 calculatorSoftware = 'DRP'
 
