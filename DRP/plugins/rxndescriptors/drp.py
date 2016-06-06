@@ -29,11 +29,11 @@ for element in elements:
     }
 
 
-_reaction_pH_Descriptors = {}
 
 # descriptors for generalised aggregation across compound roles
 
 def make_dict():
+    _reaction_pH_Descriptors = {}
     weightings = ('molarity', 'count')
     for compoundRole in DRP.models.CompoundRole.objects.all():
         for w in weightings:
@@ -148,7 +148,7 @@ def make_dict():
     _descriptorDict.update(_reaction_pH_Descriptors)
                 
     descriptorDict = setup(_descriptorDict)
-    return descriptorDict
+    return descriptorDict, _reaction_pH_Descriptors
 
 # TODO this seems like we're repeating ourselves (below)
 # There's a lot of DRY violation here because I was playing with a few different methods.
@@ -275,7 +275,7 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
     """Calculate descriptors for this plugin for an entire set of reactions."""
     if verbose:
         print "Creating descriptor dictionary"
-    descriptorDict = make_dict()
+    descriptorDict, _reaction_pH_Descriptors = make_dict()
     descriptorDict.initialise(descriptorDict.descDict)  # We're about to use it and leaving it lazy obscures where time is being spent
 
     if whitelist is None:
@@ -331,7 +331,7 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
 
         if verbose:
             print "Calculating new values.".format(reaction, i + 1, len(reaction_set))
-        #num_vals_to_create = _calculateRxnpH(reaction, descriptorDict, verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
+        num_vals_to_create = _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
 
         if len(num_vals_to_create) > create_threshold:
             if verbose:
@@ -370,7 +370,7 @@ def calculate(reaction, verbose=False, whitelist=None):
 
     if verbose:
         print "Calculating reaction pH values"
-    num_vals_to_create = _calculateRxnpH(reaction, descriptorDict, verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
+    num_vals_to_create = _calculateRxnpH(reaction, descriptorDict, _reaction_pH_descriptors, verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
 
     if verbose:
         print "Creating {} Numeric values".format(len(num_vals_to_create))
@@ -398,7 +398,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
             if any(quantity.amount is None for quantity in allCompoundQuantities):
                 n.value = None
             else:
-                n.value = float(sum((float(quantity.compound.elements[element]['stoichiometry']) * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
+                n.value = float(sum((float(quantity.compound.elements[element]['stoichiometry']) * float(quantity.amount) if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
 
             num_vals_to_create.append(n)
 
@@ -440,6 +440,8 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     heading = '{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')
+                    if 'pH' in heading:
+                        print heading
                     if whitelist is None or heading in whitelist:
                         n = num(
                             reaction=reaction,
@@ -476,7 +478,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                         elif any(descriptorValues.get(compound=quantity.compound).value < 0 for quantity in roleQuantities):
                             raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptor))
                         else:
-                            n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value * (quantity.amount / roleMoles) for quantity in roleQuantities))
+                            n.value = gmean(list(descriptorValues.get(compound=quantity.compound).value * float(quantity.amount / roleMoles) for quantity in roleQuantities))
                         num_vals_to_create.append(n)
 
                     heading = '{}_{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'gmean', 'count')
@@ -586,27 +588,24 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
     return num_vals_to_create, bool_vals_to_create
 
 
-def _calculateRxnpH(reaction, descriptorDict, verbose=False, whitelist=None, vals_to_create=[]):
+def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=False, whitelist=None, vals_to_create=[]):
     reaction_pH = DRP.models.NumRxnDescriptorValue.objects.get(reaction=reaction, descriptor__heading='reaction_pH').value
-    #if int(reaction_pH) = reaction_pH:
-        #reaction_pH = int(reaction_pH)
+    reaction_pH_string = str(reaction_pH).replace('.', '_') # R compatibility
     for heading in _reaction_pH_Descriptors.keys():
         d = descriptorDict[heading]
         print heading, d
         if reaction_pH is None:
             pH_descriptor_value = DRP.models.NumRxnDescriptorValue(descriptor=d, reaction=reaction, value=None)
         else:
-            reaction_pH_descriptor_heading = d.heading.replace('_pHreaction_', '_pH{}_'.format(reaction_pH))
+            reaction_pH_descriptor_heading = d.heading.replace('_pHreaction_', '_pH{}_'.format(reaction_pH_string))
             try:
                 pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction)
-            except:
-                print reaction_pH_descriptor_heading
-                DRP.models.NumRxnDescriptor.objects.get(heading=reaction_pH_descriptor_heading)
-                raise
-            ph_descriptor_value.descriptor = d
-            ph_descriptor_value.pk = None
-        
-        vals_to_create.append(pH_descriptor_value)
-        
+            except DRP.models.NumRxnDescriptorValue.DoesNotExist:
+                warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(reaction_pH_descriptor_heading, reaction))
+            else:
+                pH_descriptor_value.descriptor = d
+                pH_descriptor_value.pk = None
+                vals_to_create.append(pH_descriptor_value)
+                
     return vals_to_create
     

@@ -178,8 +178,9 @@ for key in _descriptorDict.keys():
     cxcalcCommands[key] = key
 
 def setup_pHdependentDescriptors(_descriptorDict):
+    pH_vals = DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).values_list('value', flat=True).distinct()
     for descriptor, d in _pHDependentDescriptors.items():
-        for pH in DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).values_list('value', flat=True).distinct():
+        for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility
             d_copy = d.copy()
             d_copy['name'] += ' at pH {}'.format(pH_string)
@@ -203,8 +204,9 @@ def setup_pHdependentDescriptors(_descriptorDict):
     
     
     for key, command in _cxcalcpHCommandStems.items():
-        for pH in DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).values_list('value', flat=True).distinct():
-            cxcalcCommands[key.format(pH)] = command.format(pH)
+        for pH in pH_vals:
+            pH_string = str(pH).replace('.', '_')  # R compatibility
+            cxcalcCommands[key.format(pH_string)] = command.format(pH)
 
     if len(cxcalcCommands) != len(_descriptorDict):
         raise RuntimeError("Need the same number of cxcalc commands as descriptors being calculated")
