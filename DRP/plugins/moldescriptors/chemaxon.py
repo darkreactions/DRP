@@ -178,7 +178,7 @@ for key in _descriptorDict.keys():
     cxcalcCommands[key] = key
 
 def setup_pHdependentDescriptors(_descriptorDict):
-    pH_vals = DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).values_list('value', flat=True).distinct()
+    pH_vals = DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).order_by('value').values_list('value', flat=True).distinct()
     for descriptor, d in _pHDependentDescriptors.items():
         for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility
@@ -271,10 +271,6 @@ def calculate(compound, verbose=False, whitelist=None):
     if verbose:
         print "Deleting old descriptor values"
     delete_descriptors([compound], descriptorDict, cxcalcCommands)
-    if whitelist is not None:
-        filtered_cxcalcCommands = {k: cxcalcCommands[k] for k in cxcalcCommands.keys() if k in whitelist}
-    else:
-        filtered_cxcalcCommands = cxcalcCommands
     if verbose:
         print "Creating new descriptor values."
     num_to_create, ord_to_create = _calculate(compound, descriptorDict, filtered_cxcalcCommands, verbose=verbose)
@@ -339,8 +335,6 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
                             # NOTE: Calculation failure values are not included in the documentation, so I've assumed that it doesn't happen, since we have no way of identifying
                             # for it other than for the database to push it out as a part of validation procedures.
 
-                        return num_to_create, ord_to_create
-
                     else:
                         raise RuntimeError("Number of cxcalc commands ({}) does not match number of results ({})".format(len(commandKeys), len(resList)))
             else:
@@ -350,4 +344,4 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
     else:
         warnings.warn("Compound not found")
 
-    return [], []
+    return num_to_create, ord_to_create

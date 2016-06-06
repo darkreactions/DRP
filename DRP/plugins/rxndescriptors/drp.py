@@ -440,8 +440,6 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     heading = '{}_{}_{}'.format(compoundRole.label, descriptor.csvHeader, 'Max')
-                    if 'pH' in heading:
-                        print heading
                     if whitelist is None or heading in whitelist:
                         n = num(
                             reaction=reaction,
@@ -589,23 +587,26 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
 
 def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=False, whitelist=None, vals_to_create=[]):
-    reaction_pH = DRP.models.NumRxnDescriptorValue.objects.get(reaction=reaction, descriptor__heading='reaction_pH').value
-    reaction_pH_string = str(reaction_pH).replace('.', '_') # R compatibility
-    for heading in _reaction_pH_Descriptors.keys():
-        d = descriptorDict[heading]
-        print heading, d
-        if reaction_pH is None:
-            pH_descriptor_value = DRP.models.NumRxnDescriptorValue(descriptor=d, reaction=reaction, value=None)
-        else:
-            reaction_pH_descriptor_heading = d.heading.replace('_pHreaction_', '_pH{}_'.format(reaction_pH_string))
-            try:
-                pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction)
-            except DRP.models.NumRxnDescriptorValue.DoesNotExist:
-                warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(reaction_pH_descriptor_heading, reaction))
+    try:
+        reaction_pH = DRP.models.NumRxnDescriptorValue.objects.get(reaction=reaction, descriptor__heading='reaction_pH').value
+    except DRP.models.NumRxnDescriptorValue.DoesNotExist:
+        warnings.warn('Reaction {} has no pH value. Cannot create reaction pH descriptors'.format(reaction))
+    else:
+        reaction_pH_string = str(reaction_pH).replace('.', '_') # R compatibility
+        for heading in _reaction_pH_Descriptors.keys():
+            d = descriptorDict[heading]
+            if reaction_pH is None:
+                pH_descriptor_value = DRP.models.NumRxnDescriptorValue(descriptor=d, reaction=reaction, value=None)
             else:
-                pH_descriptor_value.descriptor = d
-                pH_descriptor_value.pk = None
-                vals_to_create.append(pH_descriptor_value)
-                
+                reaction_pH_descriptor_heading = d.heading.replace('_pHreaction_', '_pH{}_'.format(reaction_pH_string))
+                try:
+                    pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction)
+                except DRP.models.NumRxnDescriptorValue.DoesNotExist:
+                    warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(reaction_pH_descriptor_heading, reaction))
+                else:
+                    pH_descriptor_value.descriptor = d
+                    pH_descriptor_value.pk = None
+                    vals_to_create.append(pH_descriptor_value)
+                    
     return vals_to_create
     
