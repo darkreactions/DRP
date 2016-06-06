@@ -13,4 +13,4 @@ def rxnInvalidateFormId():
 
 @register.simple_tag(takes_context=True)
 def performed_rxn_invalidate_form(context, instance):
-  return PerformedRxnInvalidateForm(instance=instance, user=context['user'], auto_id='%s_{}'.format(rxnInvalidateFormId())).as_ul()
+  return PerformedRxnInvalidateForm(instance=instance, user=context['user'], auto_id='%s_invalidate_{}'.format(rxnInvalidateFormId())).as_ul()

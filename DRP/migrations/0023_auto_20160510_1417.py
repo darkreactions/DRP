@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='descriptor',
             name='name',
-            field=models.CharField(unique=True, max_length=255, verbose_name=b'Full name'),
+            field=models.CharField(max_length=300, verbose_name=b'Full name'),
         ),
     ]

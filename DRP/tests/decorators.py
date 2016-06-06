@@ -9,7 +9,7 @@ from django.conf import settings
 from datetime import date, timedelta
 import os
 
-def createsOrdRxnDescriptor(heading, maximum, minimum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
+def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
     '''A class decorator that creates an ordinal reaction descriptor.'''
 
     def _createsOrdRxnDescriptor(c):
@@ -17,11 +17,11 @@ def createsOrdRxnDescriptor(heading, maximum, minimum, calculatorSoftware='manua
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            OrdRxnDescriptor.objects.create(heading=heading, maximum=maximum, minimum=minimum, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
+            OrdRxnDescriptor.objects.create(name=heading, heading=heading, maximum=maximum, minimum=minimum, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
             _oldSetup(self)
             
         def tearDown(self):
-            OrdRxnDescriptor.objects.filter(heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
+            OrdRxnDescriptor.objects.filter(name=heading, heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
             _oldTearDown(self) 
 
         c.setUp = setUp
@@ -29,7 +29,7 @@ def createsOrdRxnDescriptor(heading, maximum, minimum, calculatorSoftware='manua
         
         return c
 
-    return _createsOrdRexnDescriptor
+    return _createsOrdRxnDescriptor
 
 def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
 
@@ -41,16 +41,35 @@ def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
             OrdRxnDescriptorValue.objects.create(descriptor=OrdRxnDescriptor.objects.get(heading=descHeading), reaction=PerformedReaction.objects.get(reference=rxnRef, labGroup=LabGroup.objects.get(title=labGroupTitle)), value=value)
             _oldSetup(self)
     
-        def tearDown(self):
-            OrdRxnDescriptor.objects.filter(heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
-            _oldTearDown(self)
 
         c.setUp = setUp
-        c.tearDown = tearDown
         
         return c
 
     return _createsOrdRxnDescriptorValue
+
+def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
+
+    def _createsCompoundQuantity(c):
+        _oldSetup = c.setUp
+        _oldTearDown = c.tearDown
+
+        def setUp(self):
+            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
+            _oldSetup(self)
+
+        def tearDown(self):
+            if PerformedReaction.objects.filter(reference=rxnRef).exists():
+                CompoundQuantity.objects.get(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols).delete()
+            _oldTearDown(self)
+
+        c.setUp = setUp
+        c.tearDown = tearDown
+
+        return c
+
+    return _createsCompoundQuantity
+
              
 #def createsRxnDescriptor(heading, descriptorClass, options={}):
 #    '''A class decorator that creates a reaction descriptor'''
@@ -95,10 +114,22 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
-        _oldTearDown c.tearDown
-        labGroup = LabGroup.objects.get(title=labTitle)
-        user = User.objects.get(username=username)
-        reaction = PerformedReaction.objects.create(labGroup=labGroup, user=user, reference=reference, valid=valid)
+        _oldTearDown = c.tearDown
+
+        def setUp(self):
+            labGroup = LabGroup.objects.get(title=labTitle)
+            user = User.objects.get(username=username)
+            reaction = PerformedReaction.objects.create(labGroup=labGroup, user=user, reference=reference, valid=valid)
+            _oldSetup(self)
+
+        def tearDown(self):
+            labGroup = LabGroup.objects.get(title=labTitle)
+            user = User.objects.get(username=username)
+            PerformedReaction.objects.filter(labGroup=labGroup, reference=reference).delete()
+            _oldTearDown(self)
+
+        c.setUp = setUp
+        c.tearDown = tearDown
         
         return c
 
@@ -334,13 +365,14 @@ def signsExampleLicense(username):
         def setUp(self):
             user = User.objects.get(username=username)
             license.save()
-            self.agreement = LicenseAgreement(user=user, text=license)
-            self.agreement.save()
+            agreement = LicenseAgreement(user=user, text=license)
+            agreement.save()
             _oldSetup(self)
 
         def tearDown(self):
-            self.agreement.delete()
-            license.delete()
+            LicenseAgreement.objects.filter(user__username=username, text=license).delete()
+            if license.licenseagreement_set.count() < 1:
+                license.delete()
             _oldTearDown(self)
 
         c.setUp = setUp
@@ -368,7 +400,7 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
             _oldSetup(self)
 
         def tearDown(self):
-            Compound.objects.all().delete()
+            CompoundQuantity.objects.all().delete()
             _oldTearDown(self)
 
         c.setUp = setUp

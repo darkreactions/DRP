@@ -13,4 +13,4 @@ def rxnDeleteFormId():
 
 @register.simple_tag(takes_context=True)
 def performed_rxn_delete_form(context, instance):
-  return PerformedRxnDeleteForm(instance=instance, user=context['user'], auto_id='%s_{}'.format(rxnDeleteFormId())).as_ul()
+  return PerformedRxnDeleteForm(instance=instance, user=context['user'], auto_id='%s_delete_{}'.format(rxnDeleteFormId())).as_ul()
