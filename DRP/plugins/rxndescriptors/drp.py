@@ -602,7 +602,13 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
                 try:
                     pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction)
                 except DRP.models.NumRxnDescriptorValue.DoesNotExist:
-                    warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(reaction_pH_descriptor_heading, reaction))
+                    # this creates a ton of warnings about pH and Ox roles because those mostly don't exist
+                    # Not sure that silence wouldn't be better, but I've been burned too many times by silent failure
+                    # Came up with this compromise. The warnings are identical so the default python settings squelch them
+                    if heading.startswith('pH_') or heading.startswith('Ox_'):
+                        warnings.warn('Could not find descriptor value for a pH or Ox role descriptor.')
+                    else:
+                        warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(reaction_pH_descriptor_heading, reaction))
                 else:
                     pH_descriptor_value.descriptor = d
                     pH_descriptor_value.pk = None
