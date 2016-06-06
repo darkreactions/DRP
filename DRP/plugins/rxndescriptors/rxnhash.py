@@ -13,7 +13,7 @@ _descriptorDict = {
             'type': 'cat',
             'name': 'Hash of reaction reactants to partition reaction space',
             'calculatorSoftware': calculatorSoftware,
-            'calculatorSoftwareVersion': '0.02_{}'.format(xxhash.VERSION),
+            'calculatorSoftwareVersion': '0_02_{}'.format(xxhash.VERSION),
             'permittedValues': []
         }
 }

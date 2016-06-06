@@ -7,7 +7,7 @@ import DRP
 calculatorSoftware = 'DRP_rdkit'
 
 _descriptorDict = {
-    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': 0.02, 'maximum': None, 'minimum': 0},
+    'mw': {'type': 'num', 'name': 'Molecular Weight', 'calculatorSoftware': calculatorSoftware, 'calculatorSoftwareVersion': '0_02', 'maximum': None, 'minimum': 0},
 }
 
 descriptorDict = setup(_descriptorDict)

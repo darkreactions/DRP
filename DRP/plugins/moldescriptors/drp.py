@@ -39,7 +39,7 @@ for prop in inorgAtomicProperties:
             'type': 'num',
             'name': 'Geometric mean of {} weighted by {}.'.format(prop.replace('_', ' '), weighting[1]),
             'calculatorSoftware': calculatorSoftware,
-            'calculatorSoftwareVersion': '0.02',
+            'calculatorSoftwareVersion': '0_02',
             'maximum': None,
             'minimum': 0,
         }
@@ -47,7 +47,7 @@ for prop in inorgAtomicProperties:
         'type': 'num',
         'name': 'Maximal value of {}'.format(prop.replace('_', '')),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '0.02',
+        'calculatorSoftwareVersion': '0_02',
         'maximum': None,
         'minimum': None
     }
@@ -55,7 +55,7 @@ for prop in inorgAtomicProperties:
         'type': 'num',
         'name': 'Range of {}'.format(prop.replace('_', '')),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '0.02',
+        'calculatorSoftwareVersion': '0_02',
         'maximum': None,
         'minimum': 0,
     }
@@ -65,7 +65,7 @@ for group_num in range(1, 19):
         'type': 'bool',
         'name': 'Presence of inorganic elements in group {}'.format(group_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for period_num in range(1, 8):
@@ -73,7 +73,7 @@ for period_num in range(1, 8):
         'type': 'bool',
         'name': 'Presence of inorganic elements in period {}'.format(period_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for valence_num in range(0, 8):
@@ -81,7 +81,7 @@ for valence_num in range(0, 8):
         'type': 'bool',
         'name': 'Presence of inorganic elements with valence {}'.format(valence_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for group_num in range(1, 19):
@@ -89,7 +89,7 @@ for group_num in range(1, 19):
         'type': 'bool',
         'name': 'Presence of elements in group {}'.format(group_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 for period_num in range(1, 8):
@@ -97,7 +97,7 @@ for period_num in range(1, 8):
         'type': 'bool',
         'name': 'Presence of elements in period {}'.format(period_num),
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '1.5',
+        'calculatorSoftwareVersion': '1_5',
     }
 
 descriptorDict = setup(_descriptorDict)

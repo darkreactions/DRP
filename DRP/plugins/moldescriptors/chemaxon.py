@@ -31,49 +31,49 @@ _descriptorDict = {
         'type': 'num',
         'name': 'Refractivity',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
         'minimum': 0,
     },
     'maximalprojectionarea': {
         'type': 'num',
         'name': 'Maximal Projection Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
         'minimum': 0,
     },
     'maximalprojectionradius': {
         'type': 'num',
         'name': 'Maximal Projection Radius',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
         'minimum': 0,
     },
     'maximalprojectionsize': {
         'type': 'num',
         'name': 'Maximal Projection Size',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
         'minimum': 0,
     },
     'minimalprojectionarea': {
         'type': 'num',
         'name': 'Minimal Projection Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
         'minimum': 0,
     },
     'minimalprojectionradius': {
         'type': 'num',
         'name': 'Minimal Projection Radius',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
         'minimum': 0,
     },
     'minimalprojectionsize': {
         'type': 'num',
         'name': 'Minimal Projection Size',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
         'minimum': 0,
     }
 }
@@ -86,75 +86,88 @@ _pHDependentDescriptors = {
         'type': 'num',
         'name': 'Average Molecular Polarizability',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
+        'minimum': None,
     },
     'molpol': {
         'type': 'num',
         'name': 'Specific Molecular Polarizability',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6'
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
+        'minimum': None,
     },
     'vanderwaals': {
         'type': 'num',
         'name': 'Van der Waals Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'asa': {
         'type': 'num',
         'name': 'Water Acessible Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'asa+': {
         'type': 'num',
         'name': 'Partial Positive Charged water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'asa-': {
         'type': 'num',
         'name': 'Partial negative Charged water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'asa_hydrophobic': {
         'type': 'num',
         'name': 'Hydrophobic water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'asa_polar': {
         'type': 'num',
         'name': 'Polar water accessible surface area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'hbda_acc': {
         'type': 'num',
         'name': 'Hydrogen bond acceptor count',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'hbda_don': {
         'type': 'num',
         'name': 'Hydrogen bond donor count',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '15.6',
+        'calculatorSoftwareVersion': '15_6',
+        'maximum': None,
         'minimum': 0,
     },
     'polar_surface_area': {
         'type': 'num',
         'name': 'Polar Surface Area',
         'calculatorSoftware': calculatorSoftware,
-        'calculatorSoftwareVersion': '16.5', # this is not a typo. This descriptor was introduced later
+        'calculatorSoftwareVersion': '16_5', # this is not a typo. This descriptor was introduced later
+        'maximum': None,
         'minimum': 0,
     }
 }
@@ -167,9 +180,10 @@ for key in _descriptorDict.keys():
 def setup_pHdependentDescriptors(_descriptorDict):
     for descriptor, d in _pHDependentDescriptors.items():
         for pH in DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).values_list('value', flat=True).distinct():
+            pH_string = str(pH).replace('.', '_')  # R compatibility
             d_copy = d.copy()
-            d_copy['name'] += ' at pH {}'.format(pH)
-            _descriptorDict[descriptor + '_pH{}'.format(pH)] = d_copy
+            d_copy['name'] += ' at pH {}'.format(pH_string)
+            _descriptorDict[descriptor + '_pH{}'.format(pH_string)] = d_copy
     
     descriptorDict = setup(_descriptorDict)
 
