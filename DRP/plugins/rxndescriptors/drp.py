@@ -600,7 +600,7 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
             else:
                 reaction_pH_descriptor_heading = d.heading.replace('_pHreaction_', '_pH{}_'.format(reaction_pH_string))
                 try:
-                    pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction)
+                    pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction).value
                 except DRP.models.NumRxnDescriptorValue.DoesNotExist:
                     # this creates a ton of warnings about pH and Ox roles because those mostly don't exist
                     # Not sure that silence wouldn't be better, but I've been burned too many times by silent failure
@@ -610,9 +610,8 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
                     else:
                         warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(reaction_pH_descriptor_heading, reaction))
                 else:
-                    pH_descriptor_value.descriptor = d
-                    pH_descriptor_value.pk = None
-                    vals_to_create.append(pH_descriptor_value)
+                    reaction_pH_dv = DRP.models.NumRxnDescriptorValue(descriptor=d, reaction=reaction, value=pH_descriptor_value)
+                    vals_to_create.append(reaction_pH_dv)
                     
     return vals_to_create
     

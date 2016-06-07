@@ -183,12 +183,21 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
 
             heading = 'drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))
             if whitelist is None or heading in whitelist:
-                if any([(inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor) == 0)) for element, info in compound.elements.items() if element in inorgElements]):
+                if any([(inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) == 0) for element, info in compound.elements.items() if element in inorgElements]):
                     val = 0
-                elif any([(inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor) < 0)) for element, info in compound.elements.items() if element in inorgElements]):
+                elif any([(inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) < 0) for element, info in compound.elements.items() if element in inorgElements]):
                     raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))]))
                 else:
-                    val = gmean([inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor)) for element, info in compound.elements.items() if element in inorgElements])
+                    try:
+                        val = gmean([inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])
+                    except:
+                        print [inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor)) for element, info in compound.elements.items() if element in inorgElements]
+                        print [inorgElements[element][prop] for element, info in compound.elements.items() if element in inorgElements]
+                        print [float((info['stoichiometry'] / inorgElementNormalisationFactor)) for element, info in compound.elements.items() if element in inorgElements]
+                        print [info['stoichiometry'] / inorgElementNormalisationFactor for element, info in compound.elements.items() if element in inorgElements]
+                        print [info['stoichiometry'] for element, info in compound.elements.items() if element in inorgElements]
+                        print [inorgElementNormalisationFactor for element, info in compound.elements.items() if element in inorgElements]
+                        raise
                 n = num(
                     compound=compound,
                     descriptor=descriptorDict[heading],
