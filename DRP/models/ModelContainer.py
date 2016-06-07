@@ -1,4 +1,4 @@
-"""A module containing only the ModelContainer class."""
+"""A module containing the ModelContainer class and related classes for descriptor attributes."""
 from django.db import models
 from django.conf import settings
 from django.db import transaction
@@ -302,7 +302,7 @@ class ModelContainer(models.Model):
         return m
 
     def clean(self):
-        """Does very rudimentary validation of additional properties. Needs refactoring."""
+        """Perform very rudimentary validation of additional properties. Needs refactoring."""
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool {} does not exist in selected library {}'.format(self.modelVisitorTool, self.modelVisitorLibrary), 'wrong_library')
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
@@ -334,12 +334,12 @@ class ModelContainer(models.Model):
 
     def build(self, verbose=False):
         """
-        Takes all options confirmed so far and generates a full model set.
+        Take all options confirmed so far and generate a full model set.
 
-        Trains a mutlitude of models using the external libraries selected, then saves the
+        Train a mutlitude of models using the external libraries selected, then save the
         relevant information to the database (see the statsmodel class.)
 
-        Runs the tests for the model using the test sets of data, and then saves that information.
+        Run the tests for the model using the test sets of data, and then saves that information.
 
         """
         if self.built:

@@ -1,4 +1,4 @@
-
+"""A module containing FeatureSelectionContainer class and related classes for descriptor attributes."""
 from django.db import models
 from django.conf import settings
 from DRP.models import DataSet, Descriptor, BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
@@ -14,10 +14,14 @@ FEATURE_SELECTION_TOOL_CHOICES = tuple(tool for library in featureVisitorModules
 
 class DescriptorAttribute(object):
 
+    """An attribute manager object which allows the setting and deletion of the related descriptors."""
+
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
+        """Return a chain of each of the querysets."""
         return chain(featureSelectionContainer.boolRxnDescriptors.all(), featureSelectionContainer.ordRxnDescriptors.all(), featureSelectionContainer.catRxnDescriptors.all(), featureSelectionContainer.numRxnDescriptors.all())
 
     def __set__(self, featureSelectionContainer, descriptors):
+        """Clear the descriptor sets and then set them equal to the provided queryset."""
         featureSelectionContainer.boolRxnDescriptors.clear()
         featureSelectionContainer.ordRxnDescriptors.clear()
         featureSelectionContainer.catRxnDescriptors.clear()
@@ -54,6 +58,7 @@ class DescriptorAttribute(object):
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, featureSelectionContainer):
+        """Simply clear the querysets."""
         featureSelectionContainer.boolRxnDescriptors.clear()
         featureSelectionContainer.numRxnDescriptors.clear()
         featureSelectionContainer.catRxnDescriptors.clear()
@@ -62,10 +67,14 @@ class DescriptorAttribute(object):
 
 class ChosenDescriptorAttribute(object):
 
+    """An attribute manager object which allows the setting and deletion of the related descriptors chosen by feature selection."""
+
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
+        """Return a chain of each of the querysets."""
         return chain(featureSelectionContainer.chosenBoolRxnDescriptors.all(), featureSelectionContainer.chosenOrdRxnDescriptors.all(), featureSelectionContainer.chosenCatRxnDescriptors.all(), featureSelectionContainer.chosenNumRxnDescriptors.all())
 
     def __set__(self, featureSelectionContainer, descriptors):
+        """Clear the descriptor sets and then set them equal to the provided queryset."""
         featureSelectionContainer.chosenBoolRxnDescriptors.clear()
         featureSelectionContainer.chosenOrdRxnDescriptors.clear()
         featureSelectionContainer.chosenCatRxnDescriptors.clear()
@@ -102,6 +111,7 @@ class ChosenDescriptorAttribute(object):
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, featureSelectionContainer):
+        """Simply clear the querysets."""
         featureSelectionContainer.chosenBoolRxnDescriptors.clear()
         featureSelectionContainer.chosenNumRxnDescriptors.clear()
         featureSelectionContainer.chosenCatRxnDescriptors.clear()
@@ -110,10 +120,14 @@ class ChosenDescriptorAttribute(object):
 
 class OutcomeDescriptorAttribute(object):
 
+    """An attribute manager object which allows the setting and deletion of the related outcome descriptors."""
+
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
+        """Return a chain of each of the querysets."""
         return chain(featureSelectionContainer.outcomeBoolRxnDescriptors.all(), featureSelectionContainer.outcomeOrdRxnDescriptors.all(), featureSelectionContainer.outcomeCatRxnDescriptors.all(), featureSelectionContainer.outcomeNumRxnDescriptors.all())
 
     def __set__(self, featureSelectionContainer, descriptors):
+        """Clear the descriptor sets and then set them equal to the provided queryset."""
         featureSelectionContainer.outcomeBoolRxnDescriptors.clear()
         featureSelectionContainer.outcomeOrdRxnDescriptors.clear()
         featureSelectionContainer.outcomeCatRxnDescriptors.clear()
@@ -148,6 +162,7 @@ class OutcomeDescriptorAttribute(object):
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, featureSelectionContainer):
+        """Simply clear the querysets."""
         featureSelectionContainer.outcomeBoolRxnDescriptors.clear()
         featureSelectionContainer.outcomeNumRxnDescriptors.clear()
         featureSelectionContainer.outcomeCatRxnDescriptors.clear()
@@ -155,6 +170,8 @@ class OutcomeDescriptorAttribute(object):
 
 
 class FeatureSelectionContainer(models.Model):
+
+    """A class for encapsulating a feature selection model."""
 
     description = models.TextField(default='', blank=True)
     featureVisitorLibrary = models.CharField(max_length=200, default='', blank=True)
@@ -185,6 +202,13 @@ class FeatureSelectionContainer(models.Model):
 
     @classmethod
     def create(cls, featureVisitorLibrary, featureVisitorTool, predictors, responses, featureVisitorOptions=None, reactions=None, trainingSet=None, description=""):
+        """
+        Create a feature selection container with a set of options.
+
+        featureVisitorLibrary sepcifies the library/plugin being used, while the featureVisitorTool should specify the actual tool.
+        predictors is the descriptors being used as independent variables, responses is a descriptor queryset for the independent variables.
+        reactions or training sets should be specified, and this will define how the training data is defined.
+        """
         container = cls(featureVisitorLibrary=featureVisitorLibrary, featureVisitorTool=featureVisitorTool, description=description)
         container.save()  # need pk
 
@@ -203,6 +227,7 @@ class FeatureSelectionContainer(models.Model):
         return container
 
     def build(self, verbose=False):
+        """Take all options confirmed so far and generates a feature set."""
         if self.built:
             raise RuntimeError("Cannot build a feature selection that has already been built.")
 
