@@ -13,6 +13,7 @@ import sys
 from django.core.mail import send_mail
 from DRP import settings
 
+
 class Email(object):
 
     """The base email class, sends email to a specified recipient from a specified sender."""

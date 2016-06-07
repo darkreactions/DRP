@@ -12,7 +12,7 @@ from django.db.models.functions import Concat
 
 
 class DescriptorQuerySet(models.query.QuerySet):
-    
+
     """A queryset to manage a queryset or any of the subtypes thereof."""
 
     def __init__(self, model=None, **kwargs):

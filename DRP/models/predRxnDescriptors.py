@@ -60,7 +60,7 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
         values, the inner keys are the "guessed" values that occurred, and
         the value is the integer number of occurrences of that guess when the
         true descriptor was the second key.
- 
+
         Eg: {true: {guess:#, guess':#},
              true': {guess:#, guess':#}}
         Eg: {"1": {"1": 10
@@ -195,7 +195,7 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
     def getPredictionTuples(self):
         """
         Return the prediction tuples.
- 
+
         Return a list of tuples where the first value is the actual value for
         a descriptor of a reaction and the second value is the predicted value
         of that descriptor in the same reaction.
@@ -228,7 +228,7 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
     def getPredictionTuples(self):
         """
         Return the prediction tuples.
- 
+
         Return a list of tuples where the first value is the actual value for
         a descriptor of a reaction and the second value is the predicted value
         of that descriptor in the same reaction.

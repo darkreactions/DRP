@@ -38,7 +38,7 @@ class CompoundQuantity(models.Model):
 
     """
     A class to contain the relationship between a reaction and a compound.
-    
+
     Contains the amount of a given compound used in a reaction
     with the applicable units. At present, no unit convention is enforced.
     """

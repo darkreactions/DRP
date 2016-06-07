@@ -182,7 +182,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 class ReactionManager(models.Manager):
 
     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs."""
-    
+
     use_for_related_fields = True
 
     def get_queryset(self):

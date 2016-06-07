@@ -68,7 +68,7 @@ class DescriptorAttribute(object):
         modelContainer.catRxnDescriptors.clear()
         modelContainer.numRxnDescriptors.clear()
         for descriptor in descriptors:
-            #downcasting. Yuck.
+            # downcasting. Yuck.
             desc = None
             try:
                 desc = BoolRxnDescriptor.objects.get(id=descriptor.id)

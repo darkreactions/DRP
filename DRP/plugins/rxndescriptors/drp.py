@@ -29,7 +29,6 @@ for element in elements:
     }
 
 
-
 # descriptors for generalised aggregation across compound roles
 
 def make_dict():
@@ -135,7 +134,7 @@ def make_dict():
                 'minimum': 0,
             }
             for w in weightings:
-                _reaction_pH_Descriptors['{}_{}_pHreaction_{}_{}_{}_{}'.format(compoundRole.label, heading, d['calculatorSoftware'], d['calculatorSoftwareVersion'], 'gmean', w)]  = {
+                _reaction_pH_Descriptors['{}_{}_pHreaction_{}_{}_{}_{}'.format(compoundRole.label, heading, d['calculatorSoftware'], d['calculatorSoftwareVersion'], 'gmean', w)] = {
                     'type': 'num',
                     'name': 'Geometric Mean for {} aggregated across compounds in role "{}" normalised by {}'.format(d['name'] + ' at reaction pH', compoundRole.label, w),
                     'calculatorSoftware': calculatorSoftware,
@@ -143,10 +142,9 @@ def make_dict():
                     'maximum': None,
                     'minimum': 0,
                 }
-        
 
     _descriptorDict.update(_reaction_pH_Descriptors)
-                
+
     descriptorDict = setup(_descriptorDict)
     return descriptorDict, _reaction_pH_Descriptors
 
@@ -320,10 +318,9 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
         print "Creating {} Boolean values".format(len(bool_vals_to_create))
     DRP.models.BoolRxnDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
-
     if verbose:
         print "Creating reaction pH values"
-    
+
     num_vals_to_create = []
     for i, reaction in enumerate(reaction_set):
         if verbose:
@@ -592,7 +589,7 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
     except DRP.models.NumRxnDescriptorValue.DoesNotExist:
         warnings.warn('Reaction {} has no pH value. Cannot create reaction pH descriptors'.format(reaction))
     else:
-        reaction_pH_string = str(reaction_pH).replace('.', '_') # R compatibility
+        reaction_pH_string = str(reaction_pH).replace('.', '_')  # R compatibility
         for heading in _reaction_pH_Descriptors.keys():
             d = descriptorDict[heading]
             if reaction_pH is None:
@@ -612,6 +609,5 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
                 else:
                     reaction_pH_dv = DRP.models.NumRxnDescriptorValue(descriptor=d, reaction=reaction, value=pH_descriptor_value)
                     vals_to_create.append(reaction_pH_dv)
-                    
+
     return vals_to_create
-    

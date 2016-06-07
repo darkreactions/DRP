@@ -106,8 +106,8 @@ if __name__ == '__main__':
     tol_point_5 = shift_function(0, 0.55)
     #element = argv[1]
     water = Compound.objects.get(abbrev__iexact='H2O')
-    
-    for valence_num in range(0,8):
+
+    for valence_num in range(0, 8):
         d2_heading = 'Inorg_drpInorgAtom_boolean_valence_{}_DRP_1.5_any'.format(valence_num)
         d1_heading = 'V{}_legacy'.format(valence_num)
         reactions = DataSet.objects.get(name='valid_legacy_rxns_nonzero_compound').reactions.all()
