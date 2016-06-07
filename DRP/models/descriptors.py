@@ -1,4 +1,5 @@
-"""A module containing abstract base classes for descriptors.
+"""
+A module containing abstract base classes for descriptors.
 
 Reaction and Molecular Descriptors should inherit from these
 classes.

@@ -1,4 +1,4 @@
-'''A module containing only the PerformedReaction class'''
+"""A module containing only the PerformedReaction class."""
 from django.db import models
 from Reaction import Reaction, ReactionManager, ReactionQuerySet
 from RecommendedReaction import RecommendedReaction
@@ -12,15 +12,17 @@ from validators import notInTheFuture
 
 
 class PerformedReactionQuerySet(ReactionQuerySet):
+
     """A custom queryset for performed reactions."""
 
     def __init__(self, model=None, **kwargs):
-        """Initialises the queryset."""
+        """Initialise the queryset."""
         model = PerformedReaction if model is None else model
         super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
 
 
 class PerformedReactionManager(ReactionManager):
+
     """A custom manager for performed reactions."""
 
     def get_queryset(self):
@@ -28,7 +30,8 @@ class PerformedReactionManager(ReactionManager):
 
 
 class PerformedReaction(Reaction):
-    '''A class representing concrete instances of reactions that have actually been performed'''
+
+    """A class representing concrete instances of reactions that have actually been performed."""
 
     class Meta:
         app_label = "DRP"
@@ -40,16 +43,16 @@ class PerformedReaction(Reaction):
     insertedDateTime = models.DateTimeField('Date Reaction Saved', auto_now_add=True)
     recommendation = models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
     legacyRecommendedFlag = models.NullBooleanField(default=None)
-    '''If this reaction was based from a recommendation, reference that recommendation'''
+    """If this reaction was based from a recommendation, reference that recommendation."""
     valid = models.BooleanField(default=True)
-    '''A flag to denote reactions which have been found to be invalid, for instance,
-    if the wrong reactant was used or some bad lab record has been found'''
+    """A flag to denote reactions which have been found to be invalid, for instance,
+    if the wrong reactant was used or some bad lab record has been found."""
     public = models.BooleanField(default=False)
     duplicateOf = models.ForeignKey('self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
     legacyID = models.IntegerField(null=True, blank=True, unique=True)
-    '''ID in legacy database'''
+    """ID in legacy database."""
     legacyRef = models.CharField(max_length=40, null=True, blank=True)
-    '''Reaction reference in legacy database'''
+    """Reaction reference in legacy database."""
     convertedLegacyRef = models.CharField(max_length=40, null=True, blank=True,
                                           validators=[
                                               RegexValidator(
@@ -61,8 +64,8 @@ class PerformedReaction(Reaction):
                                               )
                                           ]
                                           )
-    '''Reaction reference in legacy database converted to canonical form by removing spaces and converting to lowercase.
-    This could differ from the reference because it is not disambiguated or validated as unique'''
+    """Reaction reference in legacy database converted to canonical form by removing spaces and converting to lowercase.
+    This could differ from the reference because it is not disambiguated or validated as unique."""
     reference = models.CharField(
         max_length=40,
         validators=[
@@ -77,14 +80,17 @@ class PerformedReaction(Reaction):
     )
 
     def clean(self):
+        """Custom clean method to make sure that the reaction does not already exist within this lab group."""
         super(PerformedReaction, self).clean()
         if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
             raise ValidationError({'reference': 'This reference has already been used for this lab group.'}, code="duplicate_reference")
 
     def __unicode__(self):
+        """Return the reference as the unicode representation."""
         return self.reference
 
     def save(self, invalidate_models=True, *args, **kwargs):
+        """Custom save method makes ure that models based on an updated reaction are invalidated, because the data changed."""
         self.reference = self.reference.lower()
         if self.pk is not None and invalidate_models:
             test = DRP.models.StatsModel.objects.filter(testSets__reactions__in=[self])

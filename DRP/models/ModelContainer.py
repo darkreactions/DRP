@@ -29,10 +29,14 @@ FEATURE_SELECTION_TOOL_CHOICES = tuple(tool for library in featureVisitorModules
 
 class PredictsDescriptorsAttribute(object):
 
+    """An attribute manager object which allows the setting and deletion of the related predictable descriptors."""
+
     def __get__(self, modelContainer, modelContainerType=None):
+        """Return a chain of each of the querysets."""
         return chain(modelContainer.predboolrxndescriptor_set.all(), modelContainer.predordrxndescriptor_set.all(), modelContainer.predcatrxndescriptor_set.all(), modelContainer.prednumrxndescriptor_set.all())
 
     def __set__(self, modelContainer, descriptors):
+        """Clear the descriptor sets and then set them equal to the provided queryset."""
         modelContainer.predboolrxndescriptor_set.clear()
         modelContainer.predordrxndescriptor_set.clear()
         modelContainer.predcatrxndescriptor_set.clear()
@@ -42,6 +46,7 @@ class PredictsDescriptorsAttribute(object):
             descriptors.save()
 
     def __delete__(self, modelContainer):
+        """Simply clear the querysets."""
         modelContainer.predboolrxndescriptor_set.clear()
         modelContainer.predordrxndescriptor_set.clear()
         modelContainer.predcatrxndescriptor_set.clear()
@@ -50,15 +55,20 @@ class PredictsDescriptorsAttribute(object):
 
 class DescriptorAttribute(object):
 
+    """An attribute manager object which allows the setting and deletion of the related descriptors."""
+
     def __get__(self, modelContainer, modelContainerType=None):
+        """Return a chain of each of the querysets."""
         return chain(modelContainer.boolRxnDescriptors.all(), modelContainer.ordRxnDescriptors.all(), modelContainer.catRxnDescriptors.all(), modelContainer.numRxnDescriptors.all())
 
     def __set__(self, modelContainer, descriptors):
+        """Clear the descriptor sets and then set them equal to the provided queryset."""
         modelContainer.boolRxnDescriptors.clear()
         modelContainer.ordRxnDescriptors.clear()
         modelContainer.catRxnDescriptors.clear()
         modelContainer.numRxnDescriptors.clear()
         for descriptor in descriptors:
+            #downcasting. Yuck.
             desc = None
             try:
                 desc = BoolRxnDescriptor.objects.get(id=descriptor.id)
@@ -88,6 +98,7 @@ class DescriptorAttribute(object):
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, modelContainer):
+        """Simply clear the querysets."""
         modelContainer.boolRxnDescriptors.clear()
         modelContainer.numRxnDescriptors.clear()
         modelContainer.catRxnDescriptors.clear()
@@ -96,10 +107,14 @@ class DescriptorAttribute(object):
 
 class OutcomeDescriptorAttribute(object):
 
+    """An attribute manager object which allows the setting and deletion of the related outcome descriptors."""
+
     def __get__(self, modelContainer, modelContainerType=None):
+        """Return a chain of each of the querysets."""
         return chain(modelContainer.outcomeBoolRxnDescriptors.all(), modelContainer.outcomeOrdRxnDescriptors.all(), modelContainer.outcomeCatRxnDescriptors.all(), modelContainer.outcomeNumRxnDescriptors.all())
 
     def __set__(self, modelContainer, descriptors):
+        """Clear the descriptor sets and then set them equal to the provided queryset."""
         modelContainer.outcomeBoolRxnDescriptors.clear()
         modelContainer.outcomeOrdRxnDescriptors.clear()
         modelContainer.outcomeCatRxnDescriptors.clear()
@@ -134,6 +149,7 @@ class OutcomeDescriptorAttribute(object):
                 raise ValueError('An invalid object was assigned as a descriptor')
 
     def __delete__(self, modelContainer):
+        """Simply clear the querysets."""
         modelContainer.outcomeBoolRxnDescriptors.clear()
         modelContainer.outcomeNumRxnDescriptors.clear()
         modelContainer.outcomeCatRxnDescriptors.clear()
@@ -192,6 +208,16 @@ class ModelContainer(models.Model):
     @classmethod
     def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, splitterOptions=None, visitorOptions=None, description="",
                splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
+        """
+        Create a model container with a set of options.
+
+        modelVisitorLibrary sepcifies the library/plugin being used, while the modelVisitorTool should specify the actual tool.
+        predictors is the descriptors being used as independent variables, responses is a descriptor queryset for the independent variables.
+        splitterOptions and visitorOptions depend on the splitter and vistior being used.
+        the splitter is an imported class which instructs data how to be divided into training and test sets.
+        reactions or training sets should be specified, and this will define how the training data is defined, as is testSets.
+
+        """
         model_container = cls(modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool, description=description)
 
         if (splitter is None) ^ (reactions is None):  # if these are not the same, there's a problem
@@ -230,7 +256,8 @@ class ModelContainer(models.Model):
 
     def create_duplicate(self, modelVisitorTool=None, modelVisitorOptions=None, description=None, predictors=None, responses=None):
         """
-        Builds a duplicate of this model container optionally with a different model visitor tool.
+        Build a duplicate of this model container optionally with a different model visitor tool.
+
         If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
         """
         fields = ['description', 'splitter', 'splitterOptions', 'modelVisitorLibrary', 'modelVisitorTool', 'modelVisitorOptions']
@@ -275,6 +302,7 @@ class ModelContainer(models.Model):
         return m
 
     def clean(self):
+        """Does very rudimentary validation of additional properties. Needs refactoring."""
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
             raise ValidationError('Selected tool {} does not exist in selected library {}'.format(self.modelVisitorTool, self.modelVisitorLibrary), 'wrong_library')
         if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
@@ -298,12 +326,22 @@ class ModelContainer(models.Model):
             raise ValidationError('Was unable to expand splitterOptions {} parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(self.splitterOptions, repr(sys.exc_info()[1])))
 
     def createStatsModels(self, data_splits, verbose=False):
+        """Create statistical models which 'vote' on the outcomes. May be singular or multiple."""
         for trainingSet, testSet in data_splits:
             statsModel = StatsModel(container=self, trainingSet=trainingSet)
             statsModel.save()
             statsModel.testSets.add(testSet)
 
     def build(self, verbose=False):
+        """
+        Takes all options confirmed so far and generates a full model set.
+
+        Trains a mutlitude of models using the external libraries selected, then saves the
+        relevant information to the database (see the statsmodel class.)
+
+        Runs the tests for the model using the test sets of data, and then saves that information.
+
+        """
         if self.built:
             raise RuntimeError("Cannot build a model that has already been built.")
 
@@ -391,7 +429,8 @@ class ModelContainer(models.Model):
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         """
-        returns resDict, a dictionary of dictionaries of dictionaries
+        Return resDict, a dictionary of dictionaries of dictionaries.
+
         The first key is the reaction, the second is the response descriptor
         (the descriptor to be predicted), the third is the predicted outcome.
         The value is 1 if that outcome is predicted and 0 otherwise.
@@ -422,6 +461,7 @@ class ModelContainer(models.Model):
         return resDict
 
     def _storePredictions(self, resDict):
+        """Store predictions from the overall container as voted for by each componenet model."""
         finalPredictions = {}
         bool_vals = []
         num_vals = []
@@ -466,6 +506,7 @@ class ModelContainer(models.Model):
         return finalPredictions
 
     def predict(self, reactions, verbose=False):
+        """Make predictions from the voting for a set of provided reactions."""
         if self.built:
             resDict = {}
 
@@ -518,6 +559,7 @@ class ModelContainer(models.Model):
             raise RuntimeError('A model container cannot be used to make predictions before the build method has been called')
 
     def getOverallConfusionMatrices(self, reactions=None):
+        """Return the confusion matrix for the voted predictions from this ModelContainer."""
         confusion_matrix_list = []
         for descriptor in self.predictsDescriptors:
             if descriptor.statsModel is None:
@@ -526,7 +568,8 @@ class ModelContainer(models.Model):
 
     def getComponentConfusionMatrices(self, reactions=None):
         """
-        Returns a list of lists of tuples of confusion matrices.
+        Return a list of lists of tuples of confusion matrices.
+
         Each entry of the outer list is for a different component statsModel.
         For each model there is a list of tuples.
         Each tuple is of the form (descriptor_heading, confusion matrix)

@@ -1,4 +1,4 @@
-'''Models for the DRP app'''
+"""Models for the DRP app."""
 # Anything imported here gets imported on `from DRP.models import *`
 # Not that such behaviour is encouraged!
 
