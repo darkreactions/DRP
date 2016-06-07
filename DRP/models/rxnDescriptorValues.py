@@ -1,4 +1,4 @@
-"""A module containign only the DescriptorValue class"""
+"""A module containign only the DescriptorValue class."""
 from django.db import models
 from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
 from rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor

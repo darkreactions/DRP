@@ -1,4 +1,4 @@
-"""A module containing base classes and decorators for HttpTests"""
+"""A module containing base classes and decorators for HttpTests."""
 
 import requests
 from django.conf import settings
