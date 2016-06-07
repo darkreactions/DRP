@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-'''This package provides tests for the home page'''
+"""This package provides tests for the home page."""
 from HttpTest import GetHttpTest
 import unittest
 import requests
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-
 class HomePage(GetHttpTest):
-    '''Tests the home page for HTML validityi, and that the correct template is rendered.'''
+    """Tests the home page for HTML validity, and that the correct template is rendered."""
 
     url = GetHttpTest.baseUrl
     testCodes = ['2240b1ff-895c-458f-adf2-d04d85a164d1', 'd68a82db-bd18-4a9f-a1a2-03b3bb259595']
