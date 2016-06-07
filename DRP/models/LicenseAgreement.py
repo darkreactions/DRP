@@ -1,4 +1,4 @@
-"""A module containing only the LicenseAgreement class"""
+"""A module containing only the LicenseAgreement class."""
 from django.db import models
 from django.contrib import auth
 from License import License

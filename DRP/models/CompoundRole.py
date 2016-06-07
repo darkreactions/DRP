@@ -20,5 +20,5 @@ class CompoundRole(models.Model):
     description = models.TextField()
 
     def __unicode__(self):
-        "Return the label string for the unicode rep."
+        """Return the label string for the unicode rep."""
         return self.label

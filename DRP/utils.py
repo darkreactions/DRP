@@ -26,9 +26,7 @@ def average_normalized_conf(confs):
 
 
 def accuracy(conf):
-    """
-    Compute the accuracy given a confusion matrix.
-    """
+    """Compute the accuracy given a confusion matrix."""
     correct = 0.0
     total = 0.0
     for true, guesses in conf.items():
@@ -40,9 +38,7 @@ def accuracy(conf):
 
 
 def BCR(conf):
-    """
-    Compute the balanced classification rate given a confusion matrix.
-    """
+    """Compute the balanced classification rate given a confusion matrix."""
     class_accuracy_sum = 0.0
     num_classes = 0.0
     for true, guesses in conf.items():
@@ -62,6 +58,7 @@ def BCR(conf):
 def Matthews(conf):
     """
     Compute the Matthews coefficient given a confusion matrix.
+
     Only works for two-class confusion matrices.
     """
     class_accuracy_sum = 0.0

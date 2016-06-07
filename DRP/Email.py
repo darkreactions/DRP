@@ -25,7 +25,7 @@ class Email(object):
         self.sender = sender
 
     def send(self):
-        "Send the email using django's inbuilt functionality."
+        """Send the email using django's inbuilt functionality."""
         return send_mail(self.subject, self.message, self.sender, self.recipients, fail_silently=False)
 
 

@@ -18,6 +18,7 @@ class LabGroupManager(models.Manager):
 class LabGroup(models.Model):
 
     """A class for describing a collection of scientists belonging to the same group."""
+
     class Meta:
         app_label = "DRP"
         verbose_name = 'Lab Group'

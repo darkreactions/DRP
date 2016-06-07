@@ -24,7 +24,8 @@ class PredictedDescriptor(models.Model):
 
 class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
-    "Reaction boolean descriptor which has been predicted by a model."
+    """Reaction boolean descriptor which has been predicted by a model."""
+
     predictionOf = models.ForeignKey(BoolRxnDescriptor, related_name="prediction_of")
 
     class Meta:
@@ -136,6 +137,7 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
     """Ordinal case of the predicted reaction descriptor."""
+
     predictionOf = models.ForeignKey(OrdRxnDescriptor, related_name="predition_of")
 
     class Meta:
@@ -213,6 +215,9 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
 
 class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
+
+    """Numeric Predicted Reaction Descriptor."""
+
     predictionOf = models.ForeignKey(NumRxnDescriptor, related_name="prediction_of")
 
     class Meta:
@@ -246,6 +251,7 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
 class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
 
     """The categorical case of the predicted reaction descriptor."""
+
     predictionOf = models.ForeignKey(CatRxnDescriptor, related_name="prediction_of")
 
     class Meta:

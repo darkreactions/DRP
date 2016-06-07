@@ -235,6 +235,7 @@ class BooleanDescriptor(Descriptor):
 
 
 class Predictable(models.Model):
+
     """Abstract class to add functionality to descriptors about which predictions can be made."""
 
     class Meta:
