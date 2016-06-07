@@ -177,6 +177,7 @@ cxcalcCommands = OrderedDict()
 for key in _descriptorDict.keys():
     cxcalcCommands[key] = key
 
+
 def setup_pHdependentDescriptors(_descriptorDict):
     pH_vals = DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).order_by('value').values_list('value', flat=True).distinct()
     for descriptor, d in _pHDependentDescriptors.items():
@@ -185,7 +186,7 @@ def setup_pHdependentDescriptors(_descriptorDict):
             d_copy = d.copy()
             d_copy['name'] += ' at pH {}'.format(pH_string)
             _descriptorDict[descriptor + '_pH{}'.format(pH_string)] = d_copy
-    
+
     descriptorDict = setup(_descriptorDict)
 
     _cxcalcpHCommandStems = {
@@ -201,8 +202,7 @@ def setup_pHdependentDescriptors(_descriptorDict):
         'hbda_don_pH{}': 'donorcount -H {}',
         'polar_surface_area_pH{}': 'polarsurfacearea -H {}',
     }
-    
-    
+
     for key, command in _cxcalcpHCommandStems.items():
         for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility

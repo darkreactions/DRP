@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from DRP.models import Reaction, Descriptor, Compound, CatRxnDescriptorValue, CatMolDescriptorValue, ModelContainer, DataSetRelation, DataSet
 from django import db
 
+
 class Command(BaseCommand):
     help = 'Miniaturize the current database.'
 
@@ -26,7 +27,7 @@ class Command(BaseCommand):
         if kwargs['valid_only']:
             rxns = rxns.filter(performedreaction__valid=True)
         if kwargs['balanced']:
-            true_num = kwargs['number']/2
+            true_num = kwargs['number'] / 2
             false_num = kwargs['number'] - true_num
 
             true_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome', boolrxndescriptorvalue__value=True).distinct().order_by('-pk')
@@ -36,7 +37,7 @@ class Command(BaseCommand):
             print true_rxns_to_delete.count()
             assert(true_rxns.count() - true_rxns_to_delete.count() == true_num)
             true_rxns_to_delete.delete()
-            
+
             false_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome', boolrxndescriptorvalue__value=False).distinct().order_by('-pk')
             print false_rxns.count()
             cutoff_pk = false_rxns[false_num].pk

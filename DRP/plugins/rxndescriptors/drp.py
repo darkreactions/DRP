@@ -29,9 +29,7 @@ for element in elements:
     }
 
 
-
 # descriptors for generalised aggregation across compound roles
-
 def make_dict():
     _reaction_pH_Descriptors = {}
     weightings = ('molarity', 'count')
@@ -612,6 +610,18 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
                 else:
                     reaction_pH_dv = DRP.models.NumRxnDescriptorValue(descriptor=d, reaction=reaction, value=pH_descriptor_value)
                     vals_to_create.append(reaction_pH_dv)
-                    
+
     return vals_to_create
-    
+
+
+
+
+
+
+
+
+
+
+
+
+######### TODO REMOVE

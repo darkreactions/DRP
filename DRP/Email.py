@@ -9,7 +9,6 @@ is incorrect), an uncaptured exception occurs. Each automatic "worker" process t
 is added should include emails to admins to indicate failures.
 """
 
-import sys
 from django.core.mail import send_mail
 from DRP import settings
 

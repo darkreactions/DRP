@@ -1,4 +1,4 @@
-'''A module containing urls for the database (reactions, compound guide) components of DRP'''
+"""A module containing urls for the database (reactions, compound guide) components of DRP."""
 
 from django.conf.urls import url
 import DRP.views

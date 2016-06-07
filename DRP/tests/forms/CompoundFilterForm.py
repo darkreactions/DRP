@@ -289,7 +289,7 @@ class CompoundFilterFormName(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CompoundFilterFormChemClass(BaseFormTest):
 
-    """Test that the Compound Filter Form succeeds/returns expected results with only the chemical class specified"""
+    """Test that the Compound Filter Form succeeds/returns expected results with only the chemical class specified."""
 
     def setUpFormData(self):
         """Set up form data."""
@@ -298,7 +298,7 @@ class CompoundFilterFormChemClass(BaseFormTest):
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form"""
+        """Creates a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -306,14 +306,16 @@ class CompoundFilterFormChemClass(BaseFormTest):
         self.form = CompoundFilterForm(self.user, self.labgroup, self.formData)
 
     def test_validation(self):
-        """Create a filter request that should succeed, make sure it returns correct compounds"""
+        """Create a filter request that should succeed, make sure it returns correct compounds."""
         self.validationSucceeds()
 
     def test_is_empty(self):
+        """Test that a populated form is not evaluated to be empty."""
         self.assertTrue(self.form.is_valid())
         self.assertFalse(self.form.is_empty())
 
     def test_fetch(self):
+        """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
         self.assertEqual(fetched.count(), 4, "Expected 4 objects to be returned by form, number of objects returned was {}".format(fetched.count()))
@@ -325,7 +327,7 @@ class CompoundFilterFormChemClass(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CompoundFilterFormCSID(BaseFormTest):
 
-    """Test that Compound Filter Form succeeds/returned expected results with only the CSID specified"""
+    """Test that Compound Filter Form succeeds/returned expected results with only the CSID specified."""
 
     def setUpFormData(self):
         self.formData = {}
@@ -333,7 +335,7 @@ class CompoundFilterFormCSID(BaseFormTest):
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form"""
+        """Creates a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -341,14 +343,16 @@ class CompoundFilterFormCSID(BaseFormTest):
         self.form = CompoundFilterForm(self.user, self.labgroup, self.formData)
 
     def test_validation(self):
-        """Create a filter request that should succeed, make sure it returns correct compounds"""
+        """Create a filter request that should succeed, make sure it returns correct compounds."""
         self.validationSucceeds()
 
     def test_is_empty(self):
+        """Test that a populated form is not evaluated to be empty."""
         self.assertTrue(self.form.is_valid())
         self.assertFalse(self.form.is_empty())
 
     def test_fetch(self):
+        """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
         self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
@@ -361,7 +365,7 @@ class CompoundFilterFormCSID(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CompoundFilterFormINCHI(BaseFormTest):
 
-    """Test that Compound Filter Form succeeds/returned expected results with only the INCHI specified"""
+    """Test that Compound Filter Form succeeds/returned expected results with only the INCHI specified."""
 
     def setUpFormData(self):
         self.formData = {}
@@ -377,14 +381,16 @@ class CompoundFilterFormINCHI(BaseFormTest):
         self.form = CompoundFilterForm(self.user, self.labgroup, self.formData)
 
     def test_validation(self):
-        """Create a filter request that should succeed, make sure it returns correct compounds"""
+        """Create a filter request that should succeed, make sure it returns correct compounds."""
         self.validationSucceeds()
 
     def test_is_empty(self):
+        """Test that a populated form is not evaluated to be empty."""
         self.assertTrue(self.form.is_valid())
         self.assertFalse(self.form.is_empty())
 
     def test_fetch(self):
+        """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
         self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
@@ -397,7 +403,7 @@ class CompoundFilterFormINCHI(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CompoundFilterFormSmiles(BaseFormTest):
 
-    """Test that Compound Filter Form succeeds/returned expected results with only the smiles specified"""
+    """Test that Compound Filter Form succeeds/returned expected results with only the smiles specified."""
 
     def setUpFormData(self):
         self.formData = {}
@@ -405,7 +411,7 @@ class CompoundFilterFormSmiles(BaseFormTest):
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form"""
+        """Creates a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -413,14 +419,16 @@ class CompoundFilterFormSmiles(BaseFormTest):
         self.form = CompoundFilterForm(self.user, self.labgroup, self.formData)
 
     def test_validation(self):
-        """Create a filter request that should succeed, make sure it returns correct compounds"""
+        """Create a filter request that should succeed, make sure it returns correct compounds."""
         self.validationSucceeds()
 
     def test_is_empty(self):
+        """Test that a populated form is not evaluated to be empty."""
         self.assertTrue(self.form.is_valid())
         self.assertFalse(self.form.is_empty())
 
     def test_fetch(self):
+        """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
         self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))

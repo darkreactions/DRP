@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''Test classes for the compound administration form'''
+"""Test classes for the compound administration form."""
 
 import unittest
 from DRP.forms import CompoundAdminForm
@@ -12,14 +12,16 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class CreateTest(BaseFormTest):
-    '''Tests that the form saves data correctly'''
+
+    """Tests that the form saves data correctly."""
 
     def setUpFormData(self):
+        """Set up form data to use for test."""
         self.formData = {'labGroup': self.labGroup.id, 'chemicalClasses': [self.chemicalClass.id], 'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5',
                          'CSID': '682', 'INCHI': r'1S/C2H6O/c1-2-3/h3H,2H2,1H3', 'smiles': 'CCO'}
 
     def setUp(self):
-        '''Creates a user and a chemical class, then a form'''
+        """Creates a user and a chemical class, then a form."""
         self.user = User.objects.create_user('Aslan', 'old_magic')
         self.user.save()
         self.chemicalClass = ChemicalClass(label='Solv', description='Common Solvent')
@@ -30,9 +32,11 @@ class CreateTest(BaseFormTest):
         self.form = CompoundAdminForm(self.formData)
 
     def test_validation(self):
+        """Evaluate whether test is succesful."""
         self.validationSucceeds()
 
     def test_saving(self):
+        """Test whether an object can be saved."""
         if self.form.is_valid():
             compound = self.form.save()
             self.assertIsNotNone(compound.id)
@@ -40,6 +44,7 @@ class CreateTest(BaseFormTest):
             compound.delete()
 
     def tearDown(self):
+        """Delete objects created for testing purposes."""
         self.user.delete()
         self.chemicalClass.delete()
         self.labGroup.delete()
