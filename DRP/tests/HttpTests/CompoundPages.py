@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""This module contains tests for the compound pages"""
+"""This module contains tests for the compound pages."""
 
 from django.conf import settings
 from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest
