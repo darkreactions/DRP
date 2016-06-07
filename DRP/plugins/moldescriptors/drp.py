@@ -188,16 +188,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 elif any([(inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) < 0) for element, info in compound.elements.items() if element in inorgElements]):
                     raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))]))
                 else:
-                    try:
-                        val = gmean([inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])
-                    except:
-                        print [inorgElements[element][prop] * float((info['stoichiometry'] / inorgElementNormalisationFactor)) for element, info in compound.elements.items() if element in inorgElements]
-                        print [inorgElements[element][prop] for element, info in compound.elements.items() if element in inorgElements]
-                        print [float((info['stoichiometry'] / inorgElementNormalisationFactor)) for element, info in compound.elements.items() if element in inorgElements]
-                        print [info['stoichiometry'] / inorgElementNormalisationFactor for element, info in compound.elements.items() if element in inorgElements]
-                        print [info['stoichiometry'] for element, info in compound.elements.items() if element in inorgElements]
-                        print [inorgElementNormalisationFactor for element, info in compound.elements.items() if element in inorgElements]
-                        raise
+                    val = gmean([inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])
                 n = num(
                     compound=compound,
                     descriptor=descriptorDict[heading],
