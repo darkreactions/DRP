@@ -61,6 +61,7 @@ class CategoricalDescriptorValue(models.Model):
         super(CategoricalDescriptorValue, self).save(*args, **kwargs)
 
     def __unicode__(self):
+        """Use the string value of the value to rep."""
         return self.value.value
 
 
@@ -82,6 +83,7 @@ class BooleanDescriptorValue(models.Model):
         return self.value
 
     def clean(self):
+        """Validate the correctness of the value type."""
         if not (isinstance(self.value, bool) or self.value is None):
             raise ValidationError(
                 'Only boolean values are allowed for numeric descriptors',

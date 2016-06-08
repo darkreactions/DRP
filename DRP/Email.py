@@ -1,4 +1,6 @@
 """
+Convenience code for sending emails.
+
 These Email below are designed to make emailing the admins (us),
 the lab heads, and the lab members easier. Each takes a subject and a
 message (and a lab/user if applicable), and sends them an email. If a
@@ -13,24 +15,33 @@ from DRP import settings
 
 
 class Email(object):
+
     """The base email class, sends email to a specified recipient from a specified sender."""
 
     def __init__(self, subject, message, to=[], sender=settings.DEFAULT_FROM_EMAIL):
+        """Standard Constructor."""
         self.subject = subject
         self.message = message
         self.recipients = to
         self.sender = sender
 
     def send(self):
+        """Send the email using django's inbuilt functionality."""
         return send_mail(self.subject, self.message, self.sender, self.recipients, fail_silently=False)
 
 
 class EmailToAdmins(Email):
-    """Sends email specifically to administrators, with a specific flag for managers
-    This class is a very thin wrapper for the class Email, so presently no individual tests have been written.
+
+    """
+    Send email specifically to administrators.
+
+    With a specific flag for managers.
+    This class is a very thin wrapper for the class Email,
+    so presently no individual tests have been written.
     """
 
     def __init__(self, subject, message, includeManagers=False, sender=settings.DEFAULT_FROM_EMAIL):
+        """Standard Constructor."""
         if includeManagers:
             super(EmailToAdmins, self).__init__(subject, message, settings.ADMIN_EMAILS, sender)
         else:

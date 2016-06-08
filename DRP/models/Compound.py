@@ -135,6 +135,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         )
 
     def rows(self, expanded, whitelist=None):
+        """Generate 'row' (list) for each row of the file."""
         if expanded:
             compounds = self.prefetch_related('boolmoldescriptorvalue_set__descriptor')
             compounds = compounds.prefetch_related('catmoldescriptorvalue_set__descriptor')
@@ -154,6 +155,7 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
                 yield row
 
     def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
+        """Calculate descriptors for the current molecule queryset."""
         for plugin in descriptorPlugins:
             if plugins is None or plugin.__name__ in plugins:
                 if verbose:
@@ -230,6 +232,7 @@ class CompoundManager(models.Manager):
 
 
 class Compound(models.Model):
+
     """
     A class for containing data about Compounds used in chemical reactions.
 
@@ -330,11 +333,13 @@ class Compound(models.Model):
 
     @property
     def descriptorValues(self):
+        """Return an iterable of all descriptor values for this compound."""
         return chain(self.boolmoldescriptorvalue_set.all(), self.nummoldescriptorvalue_set.all(), self.ordmoldescriptorvalue_set.all(), self.catmoldescriptorvalue_set.all())
 
     @property
     def elements(self):
-        """Return a dictionary of elemental symbols and their stoichiometry
+        """
+        Return a dictionary of elemental symbols and their stoichiometry.
 
         Note that this method does not validate the data contained in the database.
         """

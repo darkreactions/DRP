@@ -1,4 +1,4 @@
-'''A module for turning querysets into csv files or output'''
+"""A module for turning querysets into csv files or output."""
 import csv
 import numpy as np
 from django.db import models
@@ -8,8 +8,10 @@ from itertools import islice, chain
 
 
 class MultiQuerySet(object):
+
     """
     A set of querysets that quacks like a query set.
+
     For any method called on it, it calls the corresponding method on each of its querysets.
     Be careful that this makes sense for the given querysets.
     For some queryset methods, this doesn't make sense (like order_by) and more work is needed.
@@ -17,6 +19,7 @@ class MultiQuerySet(object):
     Partially stolen from here: http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
     and partially inspired from this: http://ramenlabs.com/2010/12/08/how-to-quack-like-a-queryset/
     """
+
     # queryset methods that return a queryset.
     # These are passed through to the underlying querysets unless defined otherwise
     # Does django indicate these in any way other than reading them from the docs?
@@ -24,10 +27,11 @@ class MultiQuerySet(object):
                   'none', 'all', 'select_related', 'prefetch_related', 'extra', 'defer', 'only', 'using', 'select_for_update', 'raw']
 
     def __init__(self, *args):
+        """Initialise the multiqueryset."""
         self.querysets = args
 
     def __getattr__(self, name):
-        """Deals with all names that are not defined explicitly"""
+        """Deal with all names that are not defined explicitly."""
         # Check to make sure this is actua
         if name not in models.query.QuerySet.__dict__:
             raise AttributeError("This is not a queryset method")
@@ -44,62 +48,66 @@ class MultiQuerySet(object):
     def order_by(self, *args):
         """
         Not implemented because it's a pain and we don't (yet) need it.
+
         See here for an example of how to do so: http://ramenlabs.com/2010/12/08/how-to-quack-like-a-queryset/
         """
         raise NotImplementedError("No order_by implemented for querysetset. File a feature request if you need this feature.")
 
     def count(self):
-        """
-        Performs a .count() for all subquerysets and returns the number of
-        records as an integer.
-        """
+        """Perform a count for all subquerysets and returns the number of records as an integer."""
         return sum(qs.count() for qs in self.querysets)
 
     def _clone(self):
-        "Returns a clone of this queryset chain"
+        """Return a clone of this queryset chain."""
         return self.__class__(*self.querysets)
 
     def _all(self):
-        "Iterates records in all subquerysets"
+        """Iterate records in all subquerysets."""
         return chain(*self.querysets)
 
     def __getitem__(self, ndx):
-        """
-        Retrieves an item or slice from the chained set of results from all
-        subquerysets.
-        """
+        """Retrieve an item or slice from the chained set of results from all subquerysets."""
         if isinstance(ndx, slice):
             return list(islice(self._all(), ndx.start, ndx.stop, ndx.step or 1))
         else:
             return islice(self._all(), ndx, ndx + 1).next()
 
     def exists(self):
+        """Determine if any query result exists."""
         return any(qs.exists() for qs in self.querysets)
 
 
 class CsvQuerySet(models.query.QuerySet):
-    '''This queryset permits the output of the data from a model as a csv'''
+
+    """This queryset permits the output of the data from a model as a csv."""
 
     __metaclass__ = abc.ABCMeta
 
     def csvHeaders(self, whitelist=None):
-        '''The basic headers to be used for the model. Note that the implementation on the CsvQuerySet class is extremely basic,
-        and will fail if any field holds a relationship, and will not include automagically generated fields.'''
+        """
+        The basic headers to be used for the model.
+
+        Note that the implementation on the CsvQuerySet class is extremely basic,
+        and will fail if any field holds a relationship, and will not include automagically generated fields.
+        """
         if whitelist is not None:
             return [field.name for field in self.model._meta.fields if field in whitelist]
         else:
             return [field.name for field in self.model._meta.fields]
 
     def expandedCsvHeaders(self, whitelist=None):
+        """Return the whitelisted headers for the CSV file."""
         return self.csvHeaders(whitelist)
 
     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):  # TODO:figure out most sensible default for missing values
-        '''Writes the csv data to the writeable (file, or for Django a HttpResponse) object. Expanded outputs any expanded
-            information that the corresponding methods provide- this requires the model being called to have a property
-            'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
-            by fetchExpandedHeaders.
-        '''
+        """
+        Write the csv data to the writeable (file, or for Django a HttpResponse) object.
 
+        Expanded outputs any expanded
+        information that the corresponding methods provide- this requires the model being called to have a property
+        'expandedValues', which should be a dictionary like object of values, using fieldNames as keys as output
+        by fetchExpandedHeaders.
+        """
         if expanded:
             headers = self.expandedCsvHeaders(whitelistHeaders)
         else:
@@ -112,24 +120,30 @@ class CsvQuerySet(models.query.QuerySet):
             writer.writerow({k: row.get(k, missing) for k in row.keys() if k in headers})
 
     def rows(self, expanded):
+        """Generate a dictionary, representative of a row in the csv module's dictwriter."""
         for item in self:
             yield {field.name: getattr(item, field.name) for field in self.model._meta.fields}
 
 
 class ArffQuerySet(models.query.QuerySet):
-    '''This queryset class permits data from a model to be output as a .arff file'''
+
+    """This queryset class permits data from a model to be output as a .arff file."""
 
     __metaclass__ = abc.ABCMeta
 
     def expandedArffHeaders(self, whitelist=None):
-        '''returns expanded headers, designed to be overridden by classes that need it'''
+        """Return expanded headers, designed to be overridden by classes that need it."""
         return self.arffHeaders(whitelist)
 
     def arffHeaders(self, whitelist=None):
-        '''the basic headers to be used for the mode. Note that this imlementation is extremely basic, though not as much so as
+        """
+        The basic headers to be used for the mode.
+
+        Note that this imlementation is extremely basic, though not as much so as
         the csv file query set. This will manage foreignkey relations (make sure to define __unicode__ on your models!),
         but won't handle automagic fields or fields to many objects. It will silently ignore
-        fields that it does not know how to manage.'''
+        fields that it does not know how to manage.
+        """
         headers = OrderedDict()
         for field in self.model._meta.fields:
             if whitelist is None or field in whitelist:
@@ -149,7 +163,7 @@ class ArffQuerySet(models.query.QuerySet):
         return headers
 
     def toArff(self, writeable, expanded=False, relationName='relation', whitelistHeaders=None, missing="?"):
-        '''outputs to an arff file-like object'''
+        """Output to an arff file-like object."""
         writeable.write('%arff file generated by the Dark Reactions Project provided by Haverford College\n')
         writeable.write('\n@relation {}\n'.format(relationName))
         if expanded:
@@ -165,8 +179,7 @@ class ArffQuerySet(models.query.QuerySet):
             writeable.write('\n')
 
     def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
-        '''returns a numpy array'''
-
+        """Return a numpy array."""
         matrix = []
         if expanded:
             headers = self.expandedArffHeaders(whitelistHeaders)
@@ -179,5 +192,6 @@ class ArffQuerySet(models.query.QuerySet):
         return np.array(matrix)
 
     def rows(self, expanded=False):
+        """Return a dictionary for writing a row of data using DictWriter from csv module."""
         for item in self:
             yield {field.name: getattr(item, field.name) for field in self.model._meta.fields}

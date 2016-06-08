@@ -1,3 +1,4 @@
+"""Module for information about predicted reaction descriptors."""
 from django.db import models
 from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
 from rxnDescriptorValues import BoolRxnDescriptorValue
@@ -9,6 +10,9 @@ from django.db.models import F
 
 
 class PredictedDescriptor(models.Model):
+
+    """The general case of a predicted descriptor."""
+
     modelContainer = models.ForeignKey(ModelContainer)
     statsModel = models.ForeignKey(StatsModel, null=True)
 
@@ -20,6 +24,9 @@ class PredictedDescriptor(models.Model):
 
 
 class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
+
+    """Reaction boolean descriptor which has been predicted by a model."""
+
     predictionOf = models.ForeignKey(BoolRxnDescriptor, related_name="prediction_of")
 
     class Meta:
@@ -29,9 +36,11 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
     objects = DescriptorManager()
 
     def summarize(self):
+        """Return the accuracy of the boolean predictions."""
         return "Accuracy: {}".format(self.accuracy())
 
     def accuracy(self):
+        """Calculate the accuracy of the boolean predictions."""
         conf = self.getConfusionMatrix()
 
         correct = 0.0
@@ -45,21 +54,23 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
     def oldGetConfusionMatrix(self):
         """
-        Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
-       values, the inner keys are the "guessed" values that occurred, and
-       the value is the integer number of occurrences of that guess when the
-       true descriptor was the second key.
+        The old method of returning confusion matrices.
 
-       Eg: {true: {guess:#, guess':#},
-            true': {guess:#, guess':#}}
-       Eg: {"1": {"1": 10
-                  "2": 10
-                  "3": 13
-                  "4": 0
-                 }
-           , ...
+        Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+        values, the inner keys are the "guessed" values that occurred, and
+        the value is the integer number of occurrences of that guess when the
+        true descriptor was the second key.
+
+        Eg: {true: {guess:#, guess':#},
+             true': {guess:#, guess':#}}
+        Eg: {"1": {"1": 10
+                   "2": 10
+                   "3": 13
+                   "4": 0
+                  }
+            , ...
+            }
            }
-          }
         """
         matrix = {
             True: {True: 0, False: 0},
@@ -72,7 +83,9 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
     def getConfusionMatrix(self, reactions=None):
         """
-        Returns a dicionary of dictionaries, where the outer keys are the "correct" or "true"
+        Return the confusion matrices.
+
+        Return a dicionary of dictionaries, where the outer keys are the "correct" or "true"
         values, the inner keys are the "guessed" values that occurred, and
         the value is the integer number of occurrences of that guess when the
         true descriptor was the second key.
@@ -101,14 +114,15 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
         return matrix
 
     def getPredictionTuples(self):
-        """"
-        Returns a list of tuples where the first value is the actual value for
+        """
+        Return the prediction tuples.
+
+        Return a list of tuples where the first value is the actual value for
         a descriptor of a reaction and the second value is the predicted value
         of that descriptor in the same reaction.
         EG: [(True,True), (False,True), (False,True), (True,True), (True,True)] for a model that always
-            predicts "True"
+        predicts "True"
         """
-
         actualDescValues = self.predictionOf.boolrxndescriptorvalue_set.all()
         predictedDescValues = self.boolrxndescriptorvalue_set.all()
 
@@ -121,6 +135,9 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
 
 class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
+
+    """Ordinal case of the predicted reaction descriptor."""
+
     predictionOf = models.ForeignKey(OrdRxnDescriptor, related_name="predition_of")
 
     class Meta:
@@ -130,9 +147,11 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
     objects = DescriptorManager()
 
     def summarize(self):
+        """Return the accuracy of the predicted reaction descriptor."""
         return "Accuracy: {}".format(self.accuracy())
 
     def accuracy(self):
+        """Calculate the accurate of the predicted reaction descriptor."""
         conf = self.getConfusionMatrix()
 
         correct = 0.0
@@ -145,23 +164,26 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
         return correct / total
 
     def getConfusionMatrix(self):
-        """Returns a dicionary of dictionaries of dictionaries, where the outer keys
-           are the outcomeDescriptors, the middle keys are the "correct" or "true"
-           values, the innermost keys are the "guessed" values that occurred, and
-           the value is the integer number of occurrences of that guess when the
-           true descriptor was the middle key.
+        """
+        Return a confusion matrix.
 
-           IE: {true: {guess:#, guess':#},
-                true': {guess:#, guess':#}}
-           Eg: {"1": {"1": 10
-                      "2": 10
-                      "3": 13
-                      "4": 0
-                     }
-               , ...
-               }
-              } """
+        Return a dicionary of dictionaries of dictionaries, where the outer keys
+        are the outcomeDescriptors, the middle keys are the "correct" or "true"
+        values, the innermost keys are the "guessed" values that occurred, and
+        the value is the integer number of occurrences of that guess when the
+        true descriptor was the middle key.
 
+        IE: {true: {guess:#, guess':#},
+             true': {guess:#, guess':#}}
+        Eg: {"1": {"1": 10
+                   "2": 10
+                   "3": 13
+                   "4": 0
+                  }
+            , ...
+            }
+           }
+        """
         matrix = {
             true: {guess: 0 for guess in xrange(self.minimum, self.maximum + 1)}
             for true in xrange(self.minimum, self.maximum + 1)
@@ -171,14 +193,15 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
         return matrix
 
     def getPredictionTuples(self):
-        """"
-        Returns a list of tuples where the first value is the actual value for
+        """
+        Return the prediction tuples.
+
+        Return a list of tuples where the first value is the actual value for
         a descriptor of a reaction and the second value is the predicted value
         of that descriptor in the same reaction.
         EG: [(1,1), (2,1), (4,1), (3,1), (1,1)] for a model that always
             predicts "1" if there are 4 different values for a descriptor.
         """
-
         actualDescValues = self.predictionOf.ordrxndescriptorvalue_set.all()
         predictedDescValues = self.ordrxndescriptorvalue_set.all()
 
@@ -191,6 +214,9 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
 
 class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
+
+    """Numeric Predicted Reaction Descriptor."""
+
     predictionOf = models.ForeignKey(NumRxnDescriptor, related_name="prediction_of")
 
     class Meta:
@@ -200,14 +226,15 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
     objects = DescriptorManager()
 
     def getPredictionTuples(self):
-        """"
-        Returns a list of tuples where the first value is the actual value for
+        """
+        Return the prediction tuples.
+
+        Return a list of tuples where the first value is the actual value for
         a descriptor of a reaction and the second value is the predicted value
         of that descriptor in the same reaction.
         EG: [(1,1), (2,1), (4,1), (3,1), (1,1)] for a model that always
             predicts "1" if there are 4 different values for a descriptor.
         """
-
         actualDescValues = self.predictionOf.ordrxndescriptorvalue_set.all()
         predictedDescValues = self.ordrxndescriptorvalue_set.all()
 
@@ -220,6 +247,9 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
 
 
 class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
+
+    """The categorical case of the predicted reaction descriptor."""
+
     predictionOf = models.ForeignKey(CatRxnDescriptor, related_name="prediction_of")
 
     class Meta:

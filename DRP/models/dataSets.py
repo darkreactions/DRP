@@ -1,13 +1,19 @@
-'''A module containing classes to provide deletion protection to Performed reactions
+"""
+A module containing classes to group reactions into sets.
+
+These classses provide  deletion protection to Performed reactions
 used in StatsModels. Whilst the DataSet model may, to the uninitiated, appear to be
 an erroneous proxy for a many-to-many relationship between Reactions and Models,
-This allows the datasets to exist independently of the models.'''
+This allows the datasets to exist independently of the models.
+"""
 
 from django.db import models
 from PerformedReaction import PerformedReaction
 
 
 class DataSet(models.Model):
+
+    """A set of reactions."""
 
     class Meta:
         app_label = "DRP"
@@ -26,6 +32,8 @@ class DataSet(models.Model):
 
 
 class DataSetRelation(models.Model):
+
+    """Defines the relationships between a data set and a reaction."""
 
     class Meta:
         app_label = "DRP"

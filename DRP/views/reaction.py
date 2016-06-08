@@ -159,6 +159,7 @@ def editReaction(request, rxn_id):
         perfRxnForm = PerformedRxnForm(request.user, data=request.POST, instance=reaction)
         if perfRxnForm.is_valid():
             perfRxnForm.save()
+            messages.success(request, "Reaction successfully updated.")
     else:
         perfRxnForm = PerformedRxnForm(request.user, instance=reaction)
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)

@@ -3,7 +3,6 @@
 import django
 from DRP.models import PerformedReaction, MetricContainer, Descriptor, rxnDescriptorValues, DataSet
 import argparse
-from DRP.ml_models.splitters.SingleSplitter import Splitter as SingleSplitter
 
 
 def transform_rxns(container, testSetName=None, outfile=None, verbose=False):
@@ -72,7 +71,7 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
 
 if __name__ == '__main__':
     django.setup()
-    parser = argparse.ArgumentParser(description='Builds a model', fromfile_prefix_chars='@',
+    parser = argparse.ArgumentParser(description='Builds a metric', fromfile_prefix_chars='@',
                                      epilog="Prefix arguments with '@' to specify a file containing newline"
                                      "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                      " to pass multiple descriptors from a file as predictors")

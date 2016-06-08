@@ -1,4 +1,4 @@
-'''A module containing only the Reaction class'''
+"""A module containing only the Reaction class."""
 from django.db import models
 from LabGroup import LabGroup
 from Compound import Compound
@@ -21,23 +21,26 @@ descriptorPlugins = [importlib.import_module(plugin) for
 
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
+    """Custom queryset for representing additional functionality for multiple reactions."""
+
     def __init__(self, model=None, **kwargs):
-        """Initialises the queryset."""
+        """Initialise the queryset."""
         model = Reaction if model is None else model
         super(ReactionQuerySet, self).__init__(model=model, **kwargs)
 
     def maxReactantCount(self):
-        """Gives a count of the maximum number of reactions associated with this queryset."""
+        """Give a count of the maximum number of reactions associated with this queryset."""
         m = self.annotate(compoundQuantityCount=models.Count('compoundquantity')).aggregate(max=models.Max('compoundQuantityCount'))['max']
         if m is None:
             return 0
         return m
 
     def _getCompoundQuantityHeaderOrder(self, i):
+        """Return the headers for compound quantities for csv or similar creation, in order."""
         return ['compound_{}'.format(i), 'compound_{}_role'.format(i), 'compound_{}_amount'.format(i)]
 
     def csvHeaders(self, whitelist=None):
-        """Generates the header row information for the CSV."""
+        """Generate the header row information for the CSV."""
         headers = super(ReactionQuerySet, self).csvHeaders(whitelist)
         m = Reaction.objects.all().maxReactantCount()
         for i in range(0, m):
@@ -48,7 +51,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         return headers
 
     def arffHeaders(self, whitelist=None):
-        """generates headers for the arff file."""
+        """Generate headers for the arff file."""
         headers = super(ReactionQuerySet, self).arffHeaders(whitelist)
         m = Reaction.objects.all().maxReactantCount()
         for i in range(0, m):
@@ -65,12 +68,13 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         return headers
 
     def expandedArffHeaders(self, whitelist=None):
+        """Return headers for the expanded Arff file."""
         headers = self.arffHeaders(whitelist)
         headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors.filter(csvHeader__in=whitelist))))
         return headers
 
     def expandedCsvHeaders(self, whitelist=None):
-        """Generates the expanded header for the csv."""
+        """Generate the expanded header for the csv."""
         if whitelist is not None:
             return self.csvHeaders(whitelist) + [d.csvHeader for d in self.descriptors.filter(csvHeader__in=whitelist)]
         else:
@@ -79,7 +83,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     @property
     def descriptors(self):
         """
-        Returns all reaction descriptors.
+        Return all reaction descriptors.
         Used to return only descriptors which have relationship to the queryset,
         but this caused enormous slowdowns because of in queries
         """
@@ -90,6 +94,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                              )
 
     def rows(self, expanded, whitelist=None):
+        """Returns the 'rows' of information in a format suitable for a python dictwriter."""
         if expanded:
             reactions = self
             if whitelist is not None:
@@ -143,7 +148,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     # From https://djangosnippets.org/snippets/1949/
     def batch_iterator(self, chunksize=5000):
-        '''
+        """
         Iterate over a Django Queryset ordered by the primary key
 
         This method loads a maximum of chunksize (default: 5000) rows in it's
@@ -152,7 +157,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         classes.
 
         Note that the implementation of the iterator does not support ordered query sets.
-        '''
+        """
         pk = 0
         last_pk = self.order_by('-pk')[0].pk
         queryset = self.order_by('pk')
@@ -175,18 +180,24 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
 
 class ReactionManager(models.Manager):
+
     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs."""
+
     use_for_related_fields = True
 
     def get_queryset(self):
+        """Return the correct class of queryset."""
         return ReactionQuerySet()
 
 
 class Reaction(models.Model):
-    '''A base class on which PerformedReactions and RecommendedReactions are built,
-    contains common information to each in a table with an automatically
+
+    """
+    A base class on which PerformedReactions and RecommendedReactions are built.
+
+    Contains common information to each in a table with an automatically
     generated one to one relationship with the subclasses.
-    '''
+    """
 
     class Meta:
         app_label = "DRP"
@@ -198,6 +209,7 @@ class Reaction(models.Model):
     calcDescriptors = True  # this is to cope with a hideous problem in xml serialization in the management commands
 
     def save(self, calcDescriptors=False, *args, **kwargs):
+        """Custom save method gives the option to recalculate the descriptors."""
         super(Reaction, self).save(*args, **kwargs)
         if calcDescriptors and self.calcDescriptors:
             for plugin in descriptorPlugins:
@@ -205,7 +217,9 @@ class Reaction(models.Model):
 
     @property
     def descriptorValues(self):
+        """Returns all the descriptor values for this reaction. This should be turned into a multiqueryset."""
         return MultiQuerySet(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
     def __unicode__(self):
+        """Return the unicode representation of the reaction."""
         return "Reaction_{}".format(self.id)

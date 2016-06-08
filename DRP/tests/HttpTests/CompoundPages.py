@@ -216,7 +216,6 @@ class PostCompoundUpload(PostHttpSessionTest, OneRedirectionMixin):
             self.files['csv'] = ('compound_test1.csv', f.read(), 'text/csv')
         super(PostCompoundUpload, self).setUp()
 
-# TODO XXX PHIL_FIX_AFTER_CONTEXT_PROCESSOR
 suite = unittest.TestSuite([
     loadTests(LicenseRedirect),
     loadTests(Lab403Test),

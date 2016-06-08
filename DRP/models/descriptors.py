@@ -1,4 +1,5 @@
-"""A module containing abstract base classes for descriptors.
+"""
+A module containing abstract base classes for descriptors.
 
 Reaction and Molecular Descriptors should inherit from these
 classes.
@@ -12,17 +13,22 @@ from django.db.models.functions import Concat
 
 class DescriptorQuerySet(models.query.QuerySet):
 
+    """A queryset to manage a queryset or any of the subtypes thereof."""
+
     def __init__(self, model=None, **kwargs):
-        """Initialises the queryset."""
+        """Initialise the queryset."""
         model = Descriptor if model is None else model
         super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
 
 
 class DescriptorManager(models.Manager):
 
+    """A generic manager for all of the model subtypes, which annotates them with a heading generated from separated fields."""
+
     use_for_related_fields = True
 
     def get_queryset(self):
+        """Generate and appropriately subtype the queryset."""
         return DescriptorQuerySet(model=self.model).annotate(csvHeader=Concat('heading', models.Value('_'), 'calculatorSoftware', models.Value('_'), 'calculatorSoftwareVersion'))
 
 
@@ -231,11 +237,14 @@ class BooleanDescriptor(Descriptor):
 
 class Predictable(models.Model):
 
+    """Abstract class to add functionality to descriptors about which predictions can be made."""
+
     class Meta:
         app_label = 'DRP'
         abstract = True
 
     def createPredictionDescriptor(self, modelContainer, modelComponent=None):
+        """Create a descriptor with which to associated predicted values."""
         if not self.pk:
             raise self.DoesNotExist('Cannot create a prediction descriptor of a descriptor which has not yet been saved.')
         else:
