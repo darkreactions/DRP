@@ -51,7 +51,7 @@ class MultiQuerySet(object):
 
         See here for an example of how to do so: http://ramenlabs.com/2010/12/08/how-to-quack-like-a-queryset/
         """
-        raise NotImplementedError("No order_by implemented for querysetset. File a feature request if you need this feature.")
+        raise NotImplementedError("No order_by implemented for MultiQuerySet. File a feature request if you need this feature.")
 
     def count(self):
         """Perform a count for all subquerysets and returns the number of records as an integer."""
