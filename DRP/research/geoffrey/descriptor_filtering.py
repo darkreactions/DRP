@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 import django
 django.setup()
-from DRP.models import Descriptor
-from DRP.models import PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDescriptor, PredCatRxnDescriptor
-from DRP.models import PerformedReaction, DataSet, Descriptor, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
+from DRP.models import DataSet, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
+from DRP.models.querysets import MultiQuerySet
 from django.db.models import Count
 from sys import argv
 import sys
-from itertools import chain
 
 
 def is_descriptor_type(descriptor_type, descriptor):
@@ -102,7 +100,7 @@ def print_headers(descriptors, sort=False):
     print '\n'.join(headings)
 
 
-def filter_qset(dqs, include_substring=[], include_prefix=[], require_suffix=[],
+def filter_qset(dqs, require_substring=[], require_prefix=[], require_suffix=[],
                     exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
     for s in exclude_substring:
         dqs = dqs.exclude(heading__contains=s)
@@ -110,9 +108,9 @@ def filter_qset(dqs, include_substring=[], include_prefix=[], require_suffix=[],
         dqs = dqs.exclude(heading__startswith=s)
     for s in exclude_suffix:
         dqs = dqs.exclude(heading__endswith=s)
-    for s in include_substring:
+    for s in require_substring:
         dqs = dqs.filter(heading__contains=s)
-    for s in include_prefix:
+    for s in require_prefix:
         dqs = dqs.filter(heading__startswith=s)
     for s in require_suffix:
         dqs = dqs.filter(heading__endswith=s)
@@ -129,7 +127,7 @@ def rxn_descriptors():
                         )
 
 
-def valid_rxn_descriptors()
+def valid_rxn_descriptors():
     exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "example"]
     exclude_prefix = ["_", "transform"]
     return filter_qset(rxn_descriptors(), exclude_substring=exclude_substring, exclude_prefix=exclude_prefix)
