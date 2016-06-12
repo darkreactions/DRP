@@ -57,8 +57,7 @@ def filter_through_reactions(reactions, descriptors):
                 if qs.exists():
                     qs = qs.exclude(value=None)
                     if qs.exists():
-                        # the latter clause checks whether the values are unique
-                        if qs.values('value').annotate(num=Count('value')).count() != 1:
+                        if qs.values_list('value', flat=True).distinct().count() != 1:
                             valid_descriptors.append(descriptor)
                         else:
                             sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
@@ -161,7 +160,7 @@ if __name__ == '__main__':
     reaction_set_name = argv[1]
 
     descs = nonlegacy_nopHreaction_rxn_descriptors()
-    descs = remove_CA(qsets)
+    descs = remove_CA(descs)
     #descs = nonlegacy_pHless_rxn_descriptors()
 
     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
