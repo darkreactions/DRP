@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/Usr/bin/env python
 import django
 django.setup()
 from DRP.models import DataSet, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
@@ -133,36 +133,35 @@ def valid_rxn_descriptors():
     return filter_qset(rxn_descriptors(), exclude_substring=exclude_substring, exclude_prefix=exclude_prefix)
 
 
-def valid_legacy_rxn_descriptors():
+def legacy_rxn_descriptors():
     require_suffix = ["_legacy", ]
     return filter_qset(valid_rxn_descriptors(), require_suffix=require_suffix)
 
 
-def valid_nonlegacy_rxn_descriptors():
+def nonlegacy_rxn_descriptors():
     exclude_suffix = ["_legacy", ]
     return filter_qset(valid_rxn_descriptors(), exclude_suffix=exclude_suffix)
 
 
 def nonlegacy_pHless_rxn_descriptors():
     exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)]
-    return filter_qset(valid_nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
+    return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
 
 def nonlegacy_nopHreaction_rxn_descriptors():
     exclude_substring = ["_pHreaction_",]
-    return filter_qset(valid_nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
+    return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
 
 def remove_CA(qset):
-    exclude_substring = ["_chemaxoncxcalc_"]
+    exclude_substring = ["_ChemAxon_cxcalc_"]
     return filter_qset(qset, exclude_substring=exclude_substring)
 
 if __name__ == '__main__':
     reaction_set_name = argv[1]
 
-    descs = nonlegacy_nopHreaction_rxn_descriptors()
-    descs = remove_CA(qsets)
-    #descs = nonlegacy_pHless_rxn_descriptors()
+    descs = legacy_rxn_descriptors()
+    #descs = remove_CA(descs)
 
     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 

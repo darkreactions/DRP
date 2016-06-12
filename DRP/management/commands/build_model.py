@@ -171,16 +171,20 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     """Build a model with the specified tools"""
     if predictor_headers is not None:
         predictors = Descriptor.objects.filter(heading__in=predictor_headers)
-        if predictors.count() != len(predictor_headers):
+        if predictors.count() < len(predictor_headers):
             print predictor_headers
             print predictors
             raise KeyError("Could not find all predictors. Missing: {}".format(missing_descriptors(predictor_headers)))
+        elif predictors.count() > len(predictor_headers):
+            raise KeyError("Found more predictor variables than headers ({} and {})!".format(predictors.count(), len(predictor_headers)))
     else:
         predictors = None
     if response_headers is not None:
         responses = Descriptor.objects.filter(heading__in=response_headers)
-        if responses.count() != len(response_headers):
+        if responses.count() < len(response_headers):
             raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
+        elif responses.count() > len(response_headers):
+            raise KeyError("Found more response variables than headers ({} and {})!".format(responses.count(), len(response_headers)))
     else:
         responses = None
 
