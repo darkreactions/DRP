@@ -132,7 +132,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
                 raise warning.warn('Could not find statsModel arff file, but model is valid, so recreating')
                 self.statsModel.inputFile.name = self._prepareArff(reactions, descriptorHeaders, verbose)
                 self.statsModel.save(update_fields=['inputFile'])
-
+        elif verbose:
+            print "Using existing arff file."
+        
         arff_file = self.statsModel.inputFile.name
 
         # Currently, we support only one "response" variable.
