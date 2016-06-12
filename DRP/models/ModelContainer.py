@@ -292,8 +292,8 @@ class ModelContainer(models.Model):
         if self.statsmodel_set.all():
             for sm in self.statsmodel_set.all():
                 statsModel = StatsModel(container=m, trainingSet=sm.trainingSet)
-                if predictors is not None or responses is not None:
-                    inputFile = sm.inputFile
+                if predictors is None and responses is None:
+                    statsModel.inputFile = sm.inputFile
                 statsModel.save()
                 statsModel.testSets = sm.testSets.all()
         else:
