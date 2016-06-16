@@ -33,13 +33,13 @@ class CompoundToArff(DRPTestCase):
         self.assertFalse(resErr)
 
     def test_regular(self):
-        fn = '/tmp/test_csv.arff'
+        fn = '/tmp/' + settings.MAIN_SERVER_USER + '/test_csv.arff'
         with open(fn, 'wb') as arffFile:
             Compound.objects.all().toArff(arffFile)
         self.checkArff(fn)
     
     def test_expanded(self):
-        fn = '/tmp/test_ex_csv.arff'
+        fn = '/tmp/' + settings.MAIN_SERVER_USER + '/test_ex_csv.arff'
         with open(fn, 'wb') as arffFile:
             Compound.objects.all().toArff(arffFile, expanded=True)
         self.checkArff(fn)
