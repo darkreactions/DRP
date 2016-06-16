@@ -113,9 +113,7 @@
       if(inputs[i].getAttribute("type") == "submit") {
         var submit = inputs[i];
         function disableSubmit() {
-          submit.setAttribute("disabled", "disabled");
-          alert(submit.innerHTML);
-          alert(submit.getAttribute("disabled"));
+          submit.disabled = true;
         }
         inputs[i].addEventListener("click", disableSubmit);
       }
