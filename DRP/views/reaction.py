@@ -1,4 +1,4 @@
-'''A module containing views pertinent to the manipulation of reaction objects'''
+"""A module containing views pertinent to the manipulation of reaction objects."""
 
 import urllib
 from django.views.generic import CreateView, ListView, UpdateView
@@ -22,7 +22,8 @@ from django.contrib import messages
 
 
 class ListPerformedReactions(ListView):
-    '''Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies'''
+
+    """Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies."""
 
     template_name = 'reactions_list.html'
     context_object_name = 'reactions'
@@ -31,7 +32,7 @@ class ListPerformedReactions(ListView):
 
     @labGroupSelected  # sets self.labGroup
     def dispatch(self, request, filetype=None, *args, **kwargs):
-
+        """Render the view according to the appropriate filetype."""
         if self.labGroup is not None:
             self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
         else:
@@ -64,9 +65,9 @@ class ListPerformedReactions(ListView):
         return response
 
     def get_context_data(self, **kwargs):
+        """Attaches the lab form as additional context; deprecated."""
         context = super(ListPerformedReactions, self).get_context_data(**kwargs)
         context['lab_form'] = self.labForm
-#    context['filter_formset'] = self.filterFormSet
         return context
 
 
@@ -74,7 +75,7 @@ class ListPerformedReactions(ListView):
 @hasSignedLicense
 @userHasLabGroup
 def createReaction(request):
-    '''A view designed to create performed reaction instances'''
+    """A view designed to create performed reaction instances."""
     if request.method == "POST":
         perfRxnForm = PerformedRxnForm(request.user, data=request.POST)
         if perfRxnForm.is_valid():
@@ -91,7 +92,7 @@ def createReaction(request):
 @userHasLabGroup
 @reactionExists
 def addCompoundDetails(request, rxn_id):
-    '''A view for adding compound details to a reaction'''
+    """A view for adding compound details to a reaction."""
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)
     CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=('creating' not in request.GET), extra=6)
     if request.method == "POST":
@@ -118,7 +119,7 @@ def addCompoundDetails(request, rxn_id):
 @userHasLabGroup
 @reactionExists
 def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader, createNext):
-    '''A generic view function to create descriptor values for reactions'''
+    """A generic view function to create descriptor values for reactions."""
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
     initialDescriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
     descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
@@ -153,7 +154,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
 @userHasLabGroup
 @reactionExists
 def editReaction(request, rxn_id):
-    '''A view designed to edit performed reaction instances'''
+    """A view designed to edit performed reaction instances."""
     reaction = PerformedReaction.objects.get(id=rxn_id)
     if request.method == "POST":
         perfRxnForm = PerformedRxnForm(request.user, data=request.POST, instance=reaction)
@@ -185,7 +186,7 @@ def editReaction(request, rxn_id):
 @hasSignedLicense
 @userHasLabGroup
 def deleteReaction(request, *args, **kwargs):
-    '''A view managing the deletion of reaction objects'''
+    """A view managing the deletion of reaction objects."""
     form = PerformedRxnDeleteForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()
@@ -197,7 +198,7 @@ def deleteReaction(request, *args, **kwargs):
 @hasSignedLicense
 @userHasLabGroup
 def invalidateReaction(request, *args, **kwargs):
-    '''A view managing the deletion of reaction objects'''
+    """A view managing the deletion of reaction objects."""
     form = PerformedRxnInvalidateForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()

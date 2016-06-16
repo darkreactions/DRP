@@ -1,5 +1,4 @@
-'''A module containing the view for selecting a viewing group
-on compound lists and reaction lists'''
+"""A module containing the view for selecting a viewing group on compound lists and reaction lists."""
 
 from django.contrib.auth.decorators import login_required
 from decorators import hasSignedLicense, userHasLabGroup
@@ -12,6 +11,7 @@ from django.template import RequestContext
 @hasSignedLicense
 @userHasLabGroup
 def selectGroup(request):
+    """Make user select a group and then save that in the session. Deprecated and functionality to be removed."""
     if 'next' in request.GET:
         n = request.GET['next']
     else:

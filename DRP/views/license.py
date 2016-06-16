@@ -1,4 +1,4 @@
-'''contains the view which controls license signing'''
+"""contains the view which controls license signing."""
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -13,7 +13,7 @@ import datetime
 
 @login_required
 def license(request):
-    '''Controls requests pertaining to the signing of deployment license agreements'''
+    """Controls requests pertaining to the signing of deployment license agreements."""
     if not License.objects.all().exists():
         template = get_template('license_404.html')
         return HttpResponseNotFound(template.render(RequestContext(request)))

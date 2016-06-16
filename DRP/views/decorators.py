@@ -1,4 +1,4 @@
-'''A group of decorators useful within the DRP views'''
+"""A group of decorators useful within the DRP views."""
 
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
@@ -15,7 +15,7 @@ from django.http import Http404
 
 
 def userHasLabGroup(view):
-    '''This decorator checks that the user is a member of at least one lab group. Assumes login_required is an external decorator'''
+    """Check that the user is a member of at least one lab group. Assumes login_required is an external decorator."""
     def hasLabGroup(request, *args, **kwargs):
         if not request.user.labgroup_set.all().exists():
             template = get_template('labgroup_403.html')
@@ -26,10 +26,11 @@ def userHasLabGroup(view):
 
 
 def hasSignedLicense(view):
-    '''This decorator checks that the user has signed the
-    latest license and redirects them if not
-    Assumes login_required is an external decorator
-    '''
+    """
+    Check that the user has signed the latest license and redirects them if not.
+
+    Assumes login_required is an external decorator.
+    """
     def _hasSignedLicense(request, *args, **kwargs):
         if not License.objects.all().exists():
             template = get_template('license_404.html')
@@ -43,7 +44,7 @@ def hasSignedLicense(view):
 
 
 def reactionExists(view, *args, **kwargs):
-    """This decorator checks that a reaction exists before continuing with the internal view."""
+    """Check that a reaction exists before continuing with the internal view."""
     def _reactionExists(request, *args, **kwargs):
         rxn_id = kwargs['rxn_id']
         if PerformedReaction.objects.filter(id=rxn_id, labGroup__in=request.user.labgroup_set.all()).exists():
@@ -55,7 +56,7 @@ def reactionExists(view, *args, **kwargs):
 
 
 def labGroupSelected(dispatch_method):
-    '''Ensures a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method'''
+    """Ensures a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method."""
 
     def _labGroupSelected(self, request, *args, **kwargs):
         if request.user.is_authenticated():

@@ -1,4 +1,4 @@
-'''A module containing only the views for registration and confirmation'''
+"""A module containing only the views for registration and confirmation."""
 from DRP.forms import UserCreationForm
 from django.template import RequestContext, Context
 from DRP.Email import Email
@@ -14,7 +14,7 @@ from django.conf import settings
 
 
 def register(request):
-    '''A view to permit new users to sign up.'''
+    """A view to permit new users to sign up."""
 
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -37,7 +37,7 @@ def register(request):
 
 
 def confirm(request):
-    '''A view to confirm sign-up, and to render the license agreement binding'''
+    """A view to confirm sign-up, and to render the license agreement binding."""
 
     if 'code' in request.GET.keys():
         if request.method == 'POST':

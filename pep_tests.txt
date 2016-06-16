@@ -659,7 +659,7 @@ AssertionError: Found pep257 errors (and warnings).
         D100: Missing docstring in public module
 /home/padler1/programming/drp/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py:1 at module level:
         D100: Missing docstring in public module
-/home/padler1/programming/drp/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py:15 in public class `AbstractWekaModelVisitor`:
+--->/home/padler1/programming/drp/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py:15 in public class `AbstractWekaModelVisitor`:
         D101: Missing docstring in public class
 /home/padler1/programming/drp/DRP/DRP/ml_models/model_visitors/weka/AbstractWekaModelVisitor.py:20 in public method `__init__`:
         D102: Missing docstring in public method
@@ -719,7 +719,7 @@ AssertionError: Found pep257 errors (and warnings).
         D102: Missing docstring in public method
 /home/padler1/programming/drp/DRP/DRP/ml_models/model_visitors/weka/__init__.py:1 at module level:
         D100: Missing docstring in public module
-/home/padler1/programming/drp/DRP/DRP/ml_models/splitters/ExploratorySplitter.py:1 at module level:
+====/home/padler1/programming/drp/DRP/DRP/ml_models/splitters/ExploratorySplitter.py:1 at module level:
         D100: Missing docstring in public module
 /home/padler1/programming/drp/DRP/DRP/ml_models/splitters/ExploratorySplitter.py:8 in public class `Splitter`:
         D101: Missing docstring in public class
@@ -761,7 +761,7 @@ AssertionError: Found pep257 errors (and warnings).
         D102: Missing docstring in public method
 /home/padler1/programming/drp/DRP/DRP/ml_models/splitters/NoSplitter.py:10 in public method `split`:
         D102: Missing docstring in public method
-/home/padler1/programming/drp/DRP/DRP/ml_models/splitters/__init__.py:1 at module level:
+====/home/padler1/programming/drp/DRP/DRP/ml_models/splitters/__init__.py:1 at module level:
         D100: Missing docstring in public module
 /home/padler1/programming/drp/DRP/DRP/ml_models/feature_visitors/__init__.py:1 at module level:
         D100: Missing docstring in public module
@@ -853,7 +853,7 @@ AssertionError: Found pep257 errors (and warnings).
         D103: Missing docstring in public function
 /home/padler1/programming/drp/DRP/DRP/management/commands/reimport_reactions.py:110 in public class `Command`:
         D101: Missing docstring in public class
-/home/padler1/programming/drp/DRP/DRP/management/commands/reimport_reactions.py:113 in public method `add_arguments`:
+---->/home/padler1/programming/drp/DRP/DRP/management/commands/reimport_reactions.py:113 in public method `add_arguments`:
         D102: Missing docstring in public method
 /home/padler1/programming/drp/DRP/DRP/management/commands/reimport_reactions.py:122 in public method `handle`:
         D102: Missing docstring in public method
@@ -1201,7 +1201,7 @@ AssertionError: Found pep257 errors (and warnings).
         D203: 1 blank line required before class docstring (found 0)
 /home/padler1/programming/drp/DRP/DRP/forms/LabGroup.py:46 in public class `LabGroupJoiningForm`:
         D400: First line should end with a period (not 'e')
-/home/padler1/programming/drp/DRP/DRP/forms/LabGroup.py:46 in public class `LabGroupJoiningForm`:
+--->/home/padler1/programming/drp/DRP/DRP/forms/LabGroup.py:46 in public class `LabGroupJoiningForm`:
         D300: Use """triple double quotes""" (found '''-quotes)
 /home/padler1/programming/drp/DRP/DRP/forms/LabGroup.py:52 in public method `clean`:
         D102: Missing docstring in public method
@@ -1299,7 +1299,7 @@ AssertionError: Found pep257 errors (and warnings).
         D102: Missing docstring in public method
 /home/padler1/programming/drp/DRP/DRP/forms/PerformedReaction.py:74 in public method `save`:
         D102: Missing docstring in public method
-/home/padler1/programming/drp/DRP/DRP/forms/FormSet.py:1 at module level:
+---> /home/padler1/programming/drp/DRP/DRP/forms/FormSet.py:1 at module level:
         D209: Multi-line docstring closing quotes should be on a separate line
 /home/padler1/programming/drp/DRP/DRP/forms/FormSet.py:1 at module level:
         D400: First line should end with a period (not 's')
@@ -1397,7 +1397,7 @@ AssertionError: Found pep257 errors (and warnings).
         D401: First line should be in imperative mood ('Return', not 'Returns')
 /home/padler1/programming/drp/DRP/DRP/forms/FormSet.py:193 in public method `save`:
         D400: First line should end with a period (not 't')
-/home/padler1/programming/drp/DRP/DRP/forms/FormSet.py:193 in public method `save`:
+--->/home/padler1/programming/drp/DRP/DRP/forms/FormSet.py:193 in public method `save`:
         D300: Use """triple double quotes""" (found '''-quotes)
 /home/padler1/programming/drp/DRP/DRP/forms/authentication.py:1 at module level:
         D400: First line should end with a period (not 'n')

@@ -1,4 +1,4 @@
-'''A module containing the reactions descriptors'''
+"""A module containing the reactions descriptors."""
 from descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
 from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable, DescriptorManager
 import rxnDescriptorValues
@@ -6,7 +6,8 @@ import DRP.models
 
 
 class CatRxnDescriptor(CategoricalDescriptor, Predictable):
-    '''A class which describes a descriptor- a value which describes a system such as a compound or a reaction'''
+
+    """A class which describes a descriptor- a value which describes a system such as a compound or a reaction."""
 
     class Meta:
         app_label = 'DRP'
@@ -15,11 +16,12 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
     objects = DescriptorManager()
 
     def __init__(self, *args, **kwargs):
+        """Initialise a new instance of a reaction descriptor."""
         super(CatRxnDescriptor, self).__init__(*args, **kwargs)
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredCatRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
-        """Create a new reaction value object."""
+        """Create a new reaction descriptor value object."""
         try:
             v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
@@ -29,9 +31,10 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
 
     def updateOrNewValue(self, reaction, value):
         """
-        Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+        Update the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+
         This allows later bulk creation.
-        Returns the new value object or None if no object was created (only updated).
+        Return the new value object or None if no object was created (only updated).
         """
         qs = rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
 
@@ -43,7 +46,8 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
 
 
 class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
-    '''A class which represents an ordinal descriptor'''
+
+    """A class which represents an ordinal descriptor."""
 
     class Meta:
         verbose_name = 'Ordinal Reaction Descriptor'
@@ -52,10 +56,12 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
     objects = DescriptorManager()
 
     def __init__(self, *args, **kwargs):
+        """Initialise a new instance of a reaction descriptor."""
         super(OrdRxnDescriptor, self).__init__(*args, **kwargs)
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredOrdRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
 
-    def createValue(self, reaction, value):
+    def createValue(self, reaction, value):#TODO: This feels very inelegant.
+        """Create a new reaction descriptor value object."""
         if not isinstance(value, int) and value is not None:
             raise TypeError("You cannot create a ordinal value with non-integer type {}".format(type(value)))
         try:
@@ -67,9 +73,10 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
 
     def updateOrNewValue(self, reaction, value):
         """
-        Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+        Update the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+
         This allows later bulk creation.
-        Returns the new value object or None if no object was created (only updated).
+        Return the new value object or None if no object was created (only updated).
         """
         if not isinstance(value, int) and value is not None:
             raise TypeError("You cannot create a ordinal value with non-integer type {}".format(type(value)))
@@ -83,6 +90,7 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
             return rxnDescriptorValues.OrdRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
 
     def createPredictionDescriptor(self, *args, **kwargs):
+        """Create a new predicted descriptor which matches this one's parameters."""
         pred = super(OrdRxnDescriptor, self).createPredictionDescriptor(*args, **kwargs)
         pred.maximum = self.maximum
         pred.minimum = self.minimum
@@ -90,7 +98,8 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
 
 
 class NumRxnDescriptor(NumericDescriptor, Predictable):
-    '''A class which represents a numerical descriptor'''
+
+    """A class which represents a numerical descriptor."""
 
     class Meta:
         app_label = 'DRP'
@@ -99,10 +108,12 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
     objects = DescriptorManager()
 
     def __init__(self, *args, **kwargs):
+        """Initialise a new instance of a reaction descriptor."""
         super(NumRxnDescriptor, self).__init__(*args, **kwargs)
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredNumRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
+        """Create a new reaction descriptor value object."""
         # TODO These checks should be part of a more standard 'allowed value' type thing
         if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
             raise TypeError("You cannot create a numerical value with non-float type {}".format(type(value)))
@@ -115,9 +126,10 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
     def updateOrNewValue(self, reaction, value):
         """
-        Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+        Update the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+
         This allows later bulk creation.
-        Returns the new value object or None if no object was created (only updated).
+        Return the new value object or None if no object was created (only updated).
         """
         if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
             raise TypeError("You cannot create a numerical value with non-float type {}".format(type(value)))
@@ -138,7 +150,8 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
 
 class BoolRxnDescriptor(BooleanDescriptor, Predictable):
-    '''A class which represents a boolean descriptors'''
+
+    """A class which represents a boolean descriptors."""
 
     class Meta:
         app_label = 'DRP'
@@ -147,10 +160,12 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
     objects = DescriptorManager()
 
     def __init__(self, *args, **kwargs):
+        """Initialise a new instance of a reaction descriptor."""
         super(BoolRxnDescriptor, self).__init__(*args, **kwargs)
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredBoolRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
 
     def createValue(self, reaction, value):
+        """Create a new reaction descriptor value object."""
         if not isinstance(value, bool) and value is not None:
             raise TypeError("You cannot create a boolean value with non-boolean type {}".format(type(value)))
         try:
@@ -162,9 +177,10 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
 
     def updateOrNewValue(self, reaction, value):
         """
-        Updates the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+        Update the value for the given reaction, saving if necessary, or creates an *unsaved* value for the reaction.
+
         This allows later bulk creation.
-        Returns a tuple of the value object and whether it is new (needs to be saved).
+        Return a tuple of the value object and whether it is new (needs to be saved).
         """
         if not isinstance(value, bool) and value is not None:
             raise TypeError("You cannot create a boolean value with non-boolean type {}".format(type(value)))

@@ -50,9 +50,5 @@ urls = [
     url('^/compoundguide/add.html$', DRP.views.compound.CreateCompound.as_view(), name='newCompound'),
     url('^/compoundguide/delete$', DRP.views.compound.deleteCompound, name='deleteCompound'),
     url('^/compoundguide/edit_(?P<pk>\d+).html', DRP.views.compound.EditCompound.as_view(), name='editCompound'),
-    url('^/compoundguide/upload.html', DRP.views.compound.uploadCompound, name='uploadcompoundcsv'),
-    url('^/jsonapi/boolrxndescriptor.json', DRP.views.descriptors.BoolRxnDescriptor.as_view(), name='boolrxndescriptor'),
-    url('^/jsonapi/catrxndescriptor.json', DRP.views.descriptors.CatRxnDescriptor.as_view(), name='catrxndescriptor'),
-    url('^/jsonapi/numrxndescriptor.json', DRP.views.descriptors.NumRxnDescriptor.as_view(), name='numrxndescriptor'),
-    url('^/jsonapi/ordrxndescriptor.json', DRP.views.descriptors.OrdRxnDescriptor.as_view(), name='ordrxndescriptor')
+    url('^/compoundguide/upload.html', DRP.views.compound.uploadCompound, name='uploadcompoundcsv')
 ]

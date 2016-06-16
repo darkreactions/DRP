@@ -1,4 +1,4 @@
-"Views which correspond to the data extraction api"
+"""Views which correspond to the data extraction api."""
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponse, Http404
@@ -10,10 +10,10 @@ from DRP.models import Compound, CompoundRole, CompoundQuantity
 from DRP.models import ChemicalClass, Reaction
 from DRP.models import LabGroup, PerformedReaction
 
-
+#TODO: command should recognise error codes
 @login_required
 def api1(request, component):
-    "Version 1 of the data export api"
+    """Version 1 of the data export api."""
     if request.user.is_superuser:
         if 'limit' in request.GET:
             limit = int(request.GET['limit'])

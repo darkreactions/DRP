@@ -1,3 +1,4 @@
+"""Model Visitor Concrete classes for use with DRP."""
 from django.conf import settings
 import uuid
 from DRP.models import rxnDescriptors
@@ -14,22 +15,30 @@ from itertools import chain
 
 class AbstractWekaModelVisitor(AbstractModelVisitor):
 
+    """The Abstract visitor class for communicating with Weka."""
+
     maxResponseCount = 1
     WEKA_VERSION = "3.6"  # The version of WEKA to use.
 
     def __init__(self, BCR=False, *args, **kwargs):
+        """
+        Intialise the visitor.
+
+        BCR True will mean that the visitor optimises on BCR.
+        """
         self.BCR = BCR
 
         super(AbstractWekaModelVisitor, self).__init__(*args, **kwargs)
 
         # This is a bit hackier, but I don't think anything like abstractattribute is implemented in abc
+        # TODO: replace this using an @property type function.
         try:
             self.wekaCommand
         except AttributeError:
             raise NotImplementedError('Subclasses of AbstractWekaModelVisitor must define wekaCommand')
 
     def _prepareArff(self, reactions, whitelistHeaders, verbose=False):
-        """Writes an *.arff file using the provided queryset of reactions."""
+        """Write an *.arff file using the provided queryset of reactions."""
         logger.debug("Preparing ARFF file...")
         filename = "{}_{}.arff".format(self.statsModel.pk, uuid.uuid4())
         filepath = os.path.join(settings.TMP_DIR, filename)
@@ -43,10 +52,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         return filepath
 
     def _readWekaOutputFile(self, filename, typeConversionFunction):
-        """
-        Reads a *.out file called `filename` and outputs an ordered list of the
-        predicted values in that file.
-        """
+        """Read a *.out file called `filename` and outputs an ordered list of the predicted values in that file."""
         prediction_index = 2
         with open(filename, "r") as f:
             raw_lines = f.readlines()[5:-1]  # Discard the headers and ending line.
@@ -55,7 +61,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         return predictions
 
     def _runWekaCommand(self, command, verbose=False):
-        """Sets the CLASSPATH necessary to use Weka, then runs a shell `command`."""
+        """Set the CLASSPATH necessary to use Weka, then runs a shell `command`."""
         if not settings.WEKA_PATH[self.WEKA_VERSION]:
             raise ImproperlyConfigured("'WEKA_PATH' is not set in settings.py!")
         set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
@@ -76,6 +82,19 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         #     raise RuntimeError("Weka returned nonzero exit code")
 
     def BCR_cost_matrix(self, reactions, response):
+        """
+        Returns the BCR cost matrix.
+
+        the i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
+        since we want misclassification of an instance to be equally costly regardless of what it is classified as
+        all entries in a row not on the diagonal should be the same. The diagonal should always be 0 as correct
+        classification has no cost. So that every class is weighted the same as a whole, each class's weight is
+        1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
+        total number of data points, so each class is weighted by (total_instances)/(class_count)
+        classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
+        For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
+        """
+        # TODO XXX Actually check the order of classes from the arff file?
         if isinstance(response, CategoricalDescriptor):
             num_classes = response.permittedValues.all().count()
             response_values = CatRxnDescriptorValue.objects().filter(reaction__in=reactions, descriptor=response)
@@ -94,15 +113,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         else:
             raise TypeError('Response descriptor is not a recognized descriptor type.')
 
-        # the i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
-        # since we want misclassification of an instance to be equally costly regardless of what it is classified as
-        # all entries in a row not on the diagonal should be the same. The diagonal should always be 0 as correct
-        # classification has no cost. So that every class is weighted the same as a whole, each class's weight is
-        # 1/(number of instances of that class). To reduce floating point arithmetic errors, we first multiply by
-        # total number of data points, so each class is weighted by (total_instances)/(class_count)
-        # classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
-        # For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
-        # TODO XXX Actually check the order of classes from the arff file?
 
         total_instances = sum(class_counts)
         class_weights = [(total_instances / float(class_count) if class_count != 0 else 0.0) for class_count in class_counts]
@@ -114,10 +124,11 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
     @property
     def wekaTrainOptions(self):
-        """Returns any additional commands specific to the classifier"""
+        """Return any additional commands specific to the classifier."""
         return ""
 
     def train(self, verbose=False):
+        """Train the weka model."""
         reactions = self.statsModel.trainingSet.reactions.all()
         # TODO XXX update this to make use of csvHeader as a query
         descriptorHeaders = [d.csvHeader for d in chain(self.statsModel.container.descriptors, self.statsModel.container.outcomeDescriptors)]
@@ -181,16 +192,18 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         return {response: results}
 
 
+#TODO: WHY IS THIS HERE?
 def numConversion(s):
+    """Convert string to float."""
     return float(s)
 
-
 def ordConversion(s):
+    """Convert ordinal output from weka to an int."""
     s = s.split(':')[1]
     return int(s)
 
-
 def booleanConversion(s):
+    """Convert string bools from weka to real bools."""
     s = s.split(':')[1]
 
     if s.lower() == 'true':

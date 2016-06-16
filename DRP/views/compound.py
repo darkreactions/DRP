@@ -1,4 +1,4 @@
-'''A module containing views pertinent to compound objects'''
+"""A module containing views pertinent to compound objects."""
 
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, ListView, UpdateView
@@ -18,7 +18,8 @@ from django.template import RequestContext
 
 
 class CreateCompound(CreateView):
-    '''A view managing the creation of compound objects'''
+
+    """A view managing the creation of compound objects."""
 
     model = Compound
     form_class = CompoundForm
@@ -26,7 +27,7 @@ class CreateCompound(CreateView):
     success_url = reverse('compoundguide', args=['/'])
 
     def get_form_kwargs(self):
-        '''Overridden to add the request.user value into the kwargs'''
+        """Overridden to add the request.user value into the kwargs."""
         kwargs = super(CreateCompound, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
@@ -35,7 +36,7 @@ class CreateCompound(CreateView):
     @method_decorator(hasSignedLicense)
     @method_decorator(userHasLabGroup)
     def dispatch(self, request, *args, **kwargs):
-        '''Overridden with a decorator to ensure that a user is at least logged in'''
+        """Overridden with a decorator to ensure that a user is at least logged in."""
         return super(CreateCompound, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -45,7 +46,8 @@ class CreateCompound(CreateView):
 
 
 class EditCompound(UpdateView):
-    '''A view managing the editing of compound objects'''
+
+    """A view managing the editing of compound objects."""
 
     form_class = CompoundEditForm
     template_name = 'compound_edit.html'
@@ -56,7 +58,7 @@ class EditCompound(UpdateView):
     @method_decorator(hasSignedLicense)
     @method_decorator(userHasLabGroup)
     def dispatch(self, request, *args, **kwargs):
-        '''Checks user has sufficient credentials and has row-level permissions for this compound'''
+        """Check user has sufficient credentials and has row-level permissions for this compound."""
         try:
             compound = Compound.objects.get(pk=self.get_object().pk, labGroup__in=request.user.labgroup_set.all())
         except Compound.DoesNotExist:
@@ -73,7 +75,7 @@ class EditCompound(UpdateView):
 @hasSignedLicense
 @userHasLabGroup
 def deleteCompound(request, *args, **kwargs):
-    '''A view managing the deletion of compound objects'''
+    """A view managing the deletion of compound objects."""
     form = CompoundDeleteForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()
@@ -86,7 +88,7 @@ def deleteCompound(request, *args, **kwargs):
 @hasSignedLicense
 @userHasLabGroup
 def uploadCompound(request, *args, **kwargs):
-    '''A view managing the upload of compound csvs'''
+    """A view managing the upload of compound csvs."""
     if request.method == 'POST':
         form = CompoundUploadForm(data=request.POST, files=request.FILES, user=request.user)
         if form.is_valid():
@@ -100,7 +102,8 @@ def uploadCompound(request, *args, **kwargs):
 
 
 class ListCompound(ListView):
-    '''A view managing the viewing of the compound guide'''
+
+    """A view managing the viewing of the compound guide."""
 
     template_name = 'compound_list.html'
     context_object_name = 'compounds'
@@ -112,9 +115,11 @@ class ListCompound(ListView):
     @method_decorator(userHasLabGroup)
     @labGroupSelected  # sets self.labGroup
     def dispatch(self, request, *args, **kwargs):
-        '''Overriden with a decorator to ensure that user is logged in and has at least one labGroup
-        Relates the queryset of this view to the logged in user.
-        '''
+        """
+        Overriden with a decorator to ensure that user is logged in and has at least one labGroup.
+
+        Relate the queryset of this view to the logged in user.
+        """
 
         self.queryset = self.labGroup.compound_set.all()
 
@@ -158,7 +163,8 @@ class ListCompound(ListView):
 
 
 class AdvancedCompoundSearchView(ListCompound):
-    '''View for the advanced compounds search'''
+
+    """View for the advanced compounds search."""
 
     formSetClass = AdvancedCompoundFilterFormSet
     template_name = 'adv_compound_search.html'
