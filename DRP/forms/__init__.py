@@ -12,3 +12,4 @@ from PerformedReaction import PerformedRxnAdminForm, PerformedRxnForm, Performed
 from descriptor import CatRxnDescriptorForm, BoolRxnDescriptorForm, NumRxnDescriptorForm, OrdRxnDescriptorForm, CatDescPermittedValueForm
 from descriptorValues import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm
 from FormSet import FormSet, ModelFormSet, FormSetManagerForm
+from CompoundQuantity import compoundQuantityFormFactory

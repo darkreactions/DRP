@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
 from django.contrib.auth.decorators import login_required
 from django.forms.models import modelformset_factory
-from DRP.forms import ModelFormSet, FormSet
+from DRP.forms import compoundQuantityFormFactory
 from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render
 from helpers import redirect
@@ -94,16 +94,12 @@ def createReaction(request):
 def addCompoundDetails(request, rxn_id):
     """A view for adding compound details to a reaction."""
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("amount", "compound", "role"), can_delete=('creating' not in request.GET), extra=6)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, form=compoundQuantityFormFactory(rxn_id), can_delete=('creating' not in request.GET), extra=6)
     if request.method == "POST":
         formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST, prefix='quantities')
         if formset.is_valid():
-            compoundQuantities = formset.save(commit=False)
-            for cq in compoundQuantities:
-                cq.reaction = PerformedReaction.objects.get(id=rxn_id)
-                cq.save()
-            for cq in formset.deleted_objects:
-                CompoundQuantity.objects.filter(id=cq.id).delete()  # copes with a bug in deletion from django
+            formset.save()
+            CompoundQuantity.objects.filter(id__in=[cq.id for cq in formset.deleted_objects]).delete()  # copes with a bug in deletion from django
             messages.success(request, 'Compound details successfully updated')
             if 'creating' in request.GET:
                 return redirect('createNumDescVals', rxn_id, params={'creating': True})
@@ -164,7 +160,7 @@ def editReaction(request, rxn_id):
     else:
         perfRxnForm = PerformedRxnForm(request.user, instance=reaction)
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, fields=("compound", "role", "amount"), can_delete=True, extra=1)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, form=compoundQuantityFormFactory(rxn_id), can_delete=True, extra=1)
     cqFormset = CompoundQuantityFormset(queryset=compoundQuantities, prefix="quantities")
     descriptorFormsets = {}
     descriptorClasses = (('Numeric Descriptors', 'createNumDescVals', NumRxnDescriptorValue, NumRxnDescValForm),

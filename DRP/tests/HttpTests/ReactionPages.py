@@ -288,11 +288,13 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
     }
 
     def setUp(self):
-        self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
+        rxn_id =PerformedReaction.objects.get(reference='turkish_delight').id
+        self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn_id})
         self.payload['quantities-0-id'] = ''
         self.payload['quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload['quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
         self.payload['quantities-0-amount'] = '22'
+        self.payload['quantities-0-reaction'] = str(rxn_id)
         super(PostReactantAddCreatingValid, self).setUp()
 
     def tearDown(self):
@@ -320,7 +322,9 @@ class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory
     }
 
     def setUp(self):
-        self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
+        rxn_id =PerformedReaction.objects.get(reference='turkish_delight').id
+        self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn_id})
+        self.payload['quantities-0-reaction'] = str(rxn_id)
         self.payload['quantities-0-id'] = ''
         self.payload['quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload['quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
@@ -351,7 +355,9 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
     }
 
     def setUp(self):
-        self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
+        rxn_id =PerformedReaction.objects.get(reference='turkish_delight').id
+        self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn_id})
+        self.payload['quantities-0-reaction'] = str(rxn_id)
         self.payload['quantities-0-id'] = ''
         self.payload['quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload['quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
@@ -381,6 +387,7 @@ class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn.id})
         self.quantity = CompoundQuantity.objects.get(reaction=rxn, reaction__labGroup__title='narnia', compound__abbrev='2-amep')
+        self.payload['quantities-0-reaction'] = rxn.id
         self.payload['quantities-0-id'] = self.quantity.id
         self.payload['quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload['quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
@@ -414,6 +421,7 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)): 
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn.id})
         cq = CompoundQuantity.objects.get(compound__abbrev='2-amep', reaction=rxn)
+        self.payload['quantities-0-reaction'] = str(rxn.id)
         self.payload['quantities-0-role'] = cq.role.id
         self.payload['quantities-0-compound'] = cq.compound.id
         self.payload['quantities-0-amount'] = cq.amount
