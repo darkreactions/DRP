@@ -109,8 +109,6 @@ def delete_descriptors(compound_set, whitelist=None):
         descs = descriptorDict.values()
     else:
         descs = [descriptorDict[k] for k in descriptorDict.keys() if k in whitelist]
-    print descs
-    exit()
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
 
@@ -122,7 +120,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
-        num_vals_to_create, bool_vals_to_create = _calculate(compound, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
+        num_vals_to_create, bool_vals_to_create = _calculate(compound, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
         if len(num_vals_to_create) > create_threshold:
             if verbose:
                 print 'Creating {} numeric values'.format(len(num_vals_to_create))
@@ -144,7 +142,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 def calculate(compound):
     delete_descriptors([compound])
-    num_vals_to_create, bool_vals_to_create = _calculate(compound)
+    num_vals_to_create, bool_vals_to_create = _calculate(compound, whitelist=whitelist)
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
         print 'Creating {} numeric values'.format(len(num_vals_to_create))
@@ -180,7 +178,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                     n.full_clean()
                 except ValidationError as e:
                     # TODO check that this is actually a validation error on the value's value and not on the value overall...
-                    # Like 'this value already exists' should throw an error instead 
+                    # Like 'this value already exists' should throw an error instead
                     warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
