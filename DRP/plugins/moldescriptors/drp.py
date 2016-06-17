@@ -177,7 +177,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 

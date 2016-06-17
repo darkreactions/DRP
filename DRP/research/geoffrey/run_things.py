@@ -2,12 +2,10 @@
 import django
 django.setup()
 import DRP
-from DRP.models import Descriptor
-from DRP.models.querysets import MultiQuerySet
+from DRP.models import Descriptor, NumRxnDescriptor, NumMolDescriptor
+from itertools import chain
 
 
-if __name__ == '__main__':
-    descs = rxn_descriptors()
-    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "examplepy"]
-    exclude_prefix = ["_", "transform"]
+headings = chain([d.heading for d in NumMolDescriptor.objects.filter(heading__contains='nominal')], [d.heading for d in NumRxnDescriptor.objects.filter(heading__contains='nominal')])
 
+print '\n'.join(headings)
