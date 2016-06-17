@@ -37,6 +37,7 @@ class ListPerformedReactions(ListView):
             self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
         else:
             self.queryset = PerformedReaction.objects.filter(public=True)
+        self.queryset = self.queryset.order_by('-insertedDateTime')
 
         if filetype is None:
             response = super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)

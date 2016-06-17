@@ -6,6 +6,7 @@ from decorators import createsUser, joinsLabGroup, createsChemicalClass, creates
 from DRP.models import Compound
 import csv
 from DRPTestCase import DRPTestCase, runTests
+from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
@@ -19,7 +20,7 @@ class CsvOutput(DRPTestCase):
     # This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
 
     def test_regular(self):
-        fn = '/tmp/test_csv.csv'
+        fn =  '/tmp/' + settings.MAIN_SERVER_USER +'/test_csv.csv'
         with open(fn, 'wb') as csvFile:
             Compound.objects.all().toCsv(csvFile)
         with open(fn, 'rb') as csvFile:
@@ -36,7 +37,7 @@ class CsvOutput(DRPTestCase):
             self.assertEqual(rowCount, 3)
 
     def test_expanded(self):
-        fn = '/tmp/test_ex_csv.csv'
+        fn =  '/tmp/' + settings.MAIN_SERVER_USER +'/test_csv.csv'
         with open(fn, 'wb') as csvFile:
             Compound.objects.all().toCsv(csvFile, expanded=True)
         with open(fn, 'rb') as csvFile:
@@ -51,7 +52,6 @@ class CsvOutput(DRPTestCase):
                 rowCount += 1
                 self.assertEqual(len(row), len(headerRow), 'headerRow ({}): {}\nrow ({}):{}'.format(len(headerRow), headerRow, len(row), row))
             self.assertEqual(rowCount, 3)
-
 
 suite = unittest.TestSuite([
     loadTests(CsvOutput)
