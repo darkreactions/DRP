@@ -27,7 +27,8 @@ def getDescValueType(desc_heading):
         return CatRxnDescriptorValue
     except CatRxnDescriptor.DoesNotExist:
         pass
-    raise ValueError('Invalid heading {}. Does not match any descriptor'.format(desc_heading))
+    raise ValueError(
+        'Invalid heading {}. Does not match any descriptor'.format(desc_heading))
 
 
 def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=BoolRxnDescriptorValue, desc2ValueType=BoolRxnDescriptorValue, reactions=None):
@@ -38,8 +39,10 @@ def compare(d1_heading, d2_heading, comparison_function=None, desc1ValueType=Boo
     if reactions is None:
         reactions = PerformedReaction.objects.all()
 
-    d1_values = desc1ValueType.objects.filter(descriptor__heading=d1_heading, reaction__in=reactions)
-    d2_values = desc2ValueType.objects.filter(descriptor__heading=d2_heading, reaction__in=reactions)
+    d1_values = desc1ValueType.objects.filter(
+        descriptor__heading=d1_heading, reaction__in=reactions)
+    d2_values = desc2ValueType.objects.filter(
+        descriptor__heading=d2_heading, reaction__in=reactions)
     print "found {} values for descriptor 1, {} for descriptor 2".format(d1_values.count(), d2_values.count())
 
     print d1_heading, d2_heading
@@ -108,13 +111,16 @@ if __name__ == '__main__':
     water = Compound.objects.get(abbrev__iexact='H2O')
 
     for valence_num in range(0, 8):
-        d2_heading = 'Inorg_drpInorgAtom_boolean_valence_{}_DRP_1.5_any'.format(valence_num)
+        d2_heading = 'Inorg_drpInorgAtom_boolean_valence_{}_DRP_1.5_any'.format(
+            valence_num)
         d1_heading = 'V{}_legacy'.format(valence_num)
-        reactions = DataSet.objects.get(name='valid_legacy_rxns_nonzero_compound').reactions.all()
+        reactions = DataSet.objects.get(
+            name='valid_legacy_rxns_nonzero_compound').reactions.all()
         comparison_function = None
         desc1ValueType = getDescValueType(d1_heading)
         desc2ValueType = getDescValueType(d2_heading)
-        different = compare(d1_heading, d2_heading, desc1ValueType=desc1ValueType, desc2ValueType=desc2ValueType, comparison_function=comparison_function, reactions=reactions)
+        different = compare(d1_heading, d2_heading, desc1ValueType=desc1ValueType,
+                            desc2ValueType=desc2ValueType, comparison_function=comparison_function, reactions=reactions)
         references = get_references(different)
         print len(references)
         print references

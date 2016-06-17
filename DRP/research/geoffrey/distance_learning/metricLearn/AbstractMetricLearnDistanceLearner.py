@@ -8,8 +8,10 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
     maxResponseCount = 1
 
     def _prepareArrays(self, reactions, predictor_headers, response_headers):
-        data = reactions.toNPArray(expanded=True, whitelistHeaders=predictor_headers, missing=np.nan)
-        labels = reactions.toNPArray(expanded=True, whitelistHeaders=response_headers).flatten()
+        data = reactions.toNPArray(
+            expanded=True, whitelistHeaders=predictor_headers, missing=np.nan)
+        labels = reactions.toNPArray(
+            expanded=True, whitelistHeaders=response_headers).flatten()
 
         data = Imputer(copy=False).fit_transform(data)
 

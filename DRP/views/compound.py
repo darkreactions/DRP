@@ -61,7 +61,8 @@ class EditCompound(UpdateView):
     def dispatch(self, request, *args, **kwargs):
         """Check user has sufficient credentials and has row-level permissions for this compound."""
         try:
-            compound = Compound.objects.get(pk=self.get_object().pk, labGroup__in=request.user.labgroup_set.all())
+            compound = Compound.objects.get(
+                pk=self.get_object().pk, labGroup__in=request.user.labgroup_set.all())
         except Compound.DoesNotExist:
             raise Http404("A compound matching your query could not be found.")
         if compound.custom:
@@ -91,7 +92,8 @@ def deleteCompound(request, *args, **kwargs):
 def uploadCompound(request, *args, **kwargs):
     """A view managing the upload of compound csvs."""
     if request.method == 'POST':
-        form = CompoundUploadForm(data=request.POST, files=request.FILES, user=request.user)
+        form = CompoundUploadForm(
+            data=request.POST, files=request.FILES, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('compoundguide', '/')
@@ -124,14 +126,17 @@ class ListCompound(ListView):
         self.queryset = self.labGroup.compound_set.all()
 
         if 'filter' in request.GET:
-            self.filterFormSet = self.formSetClass(user=request.user, labGroup=self.labGroup, data=request.GET)
+            self.filterFormSet = self.formSetClass(
+                user=request.user, labGroup=self.labGroup, data=request.GET)
             if self.filterFormSet.is_valid():
                 self.queryset = self.filterFormSet.fetch()
-                self.filterFormSet = self.formSetClass(user=request.user, labGroup=self.labGroup, initial=self.filterFormSet.cleaned_data)
+                self.filterFormSet = self.formSetClass(
+                    user=request.user, labGroup=self.labGroup, initial=self.filterFormSet.cleaned_data)
             else:
                 self.queryset = Compound.objects.none()
         else:
-            self.filterFormSet = self.formSetClass(user=request.user, labGroup=self.labGroup)
+            self.filterFormSet = self.formSetClass(
+                user=request.user, labGroup=self.labGroup)
 
         fileType = kwargs.get('filetype')
 
@@ -146,13 +151,15 @@ class ListCompound(ListView):
                 self.queryset.toCsv(response)
         elif fileType == '.arff':
             response = HttpResponse(content_type='text/vnd.weka.arff')
-            response['Content-Disposition'] = 'attachment; filename="compounds.arff"'
+            response[
+                'Content-Disposition'] = 'attachment; filename="compounds.arff"'
             if 'expanded' in request.GET:
                 self.queryset.toArff(response, True)
             else:
                 self.queryset.toArff(response)
         else:
-            raise RuntimeError('The user should not be able to provoke this code')
+            raise RuntimeError(
+                'The user should not be able to provoke this code')
         return response
 
     def get_context_data(self, **kwargs):

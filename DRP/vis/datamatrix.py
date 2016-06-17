@@ -26,7 +26,9 @@ class dataMatrix:
         self.header_list = data.pop(0)
         # sets number of columns equal to length of headers (length of the first row)--
         # initializes datamatrix
-        self.dataset = data  # calls get_data method to put all rows of the file into a dictionary, with each cell in each row
+        # calls get_data method to put all rows of the file into a dictionary,
+        # with each cell in each row
+        self.dataset = data
         self.num_rows = len(self.dataset)
         self.num_cols = len(self.dataset[0])
         self.convertYesNotoOneZero()
@@ -54,7 +56,8 @@ class dataMatrix:
             for i in range(len(array)):
                 f_csv.writerow(array[i])
 
-    # write file that, for every data point, indicates whether or not it has been modified(
+    # write file that, for every data point, indicates whether or not it has
+    # been modified(
     def writeCleaningFlagFile(self):
         out_file = raw_input('Write flag file where? ...')
         set_to_write = np.transpose(self.cleaningflags)
@@ -62,21 +65,25 @@ class dataMatrix:
 
     # Find the correlation between two columns of the data matrix
     def findLinreg(self, col_num_one, col_num_two):
-        A = np.vstack([self.dataset[col_num_one], np.ones(len(self.dataset[col_num_two]))]).T
+        A = np.vstack([self.dataset[col_num_one], np.ones(
+            len(self.dataset[col_num_two]))]).T
         m, b = np.linalg.lstsq(A, self.dataset[col_num_two])[0]
         return m  # , b
 
-    # find all of the linregs. Returns a list of all comparisons in the form {Col1, Col2, Correl}
+    # find all of the linregs. Returns a list of all comparisons in the form
+    # {Col1, Col2, Correl}
     def findAllLinregs(self):
         linreg_list = []
         for i in range(0, self.num_cols):
             for j in range(0, self.num_cols):
                 if float(i) and float(j) and i != j:
-                    to_add = [self.header_list[i], self.header_list[j], self.findLinreg(i, j)]
+                    to_add = [self.header_list[i],
+                              self.header_list[j], self.findLinreg(i, j)]
                     linreg_list.append(to_add)
         return linreg_list
 
-    # Returns a list of all of the correlations in a list (useful for min/max linreg)
+    # Returns a list of all of the correlations in a list (useful for min/max
+    # linreg)
     def allLinregs(self):
         just_correls = []
         linreg_list = self.findAllLinregs()
@@ -95,7 +102,8 @@ class dataMatrix:
                             self.removeColumn(j)
                             return self.removeCorrelatedLinregs(i, j)
 
-    # Finds the mean value of a given column (helper for filling missing rows with mean)
+    # Finds the mean value of a given column (helper for filling missing rows
+    # with mean)
     def meanCol(self, num_col):
         if (self.is_number(self.dataset[0][num_col]) == False):
             return 0
@@ -140,13 +148,15 @@ class dataMatrix:
             stdev_arr.append(self.stdevCol(i))
         return stdev_arr
 
-    # Creates array of means of all columns in data matrix (helpful when replacing missing tokens with mean)
+    # Creates array of means of all columns in data matrix (helpful when
+    # replacing missing tokens with mean)
     def createMeanArrayAllCols(self):
         mean_arr = [self.meanCol(i) for i in xrange(self.num_cols)]
         # print "Printing length of mean array" + str( len(mean_arr))
         return mean_arr
 
-    # Fills any missing data fields with the mean of its column. Missing data must be marked by a '?' or '-1'
+    # Fills any missing data fields with the mean of its column. Missing data
+    # must be marked by a '?' or '-1'
     def fillMissingFieldsWithMean(self):
         counter = 0
         for i in xrange(0, self.num_cols):
@@ -244,7 +254,8 @@ class dataMatrix:
         self.num_rows = len(self.dataset[0])
 
     # Creates array of mean values of each column, array of all normalized values (by column);
-    # Creates matrix/array? of data points, mean of each column, and normalized data point
+    # Creates matrix/array? of data points, mean of each column, and
+    # normalized data point
     def createPointList(self):
         meanArr = self.createMeanArrayAllCols()
         statArr = self.createStdevArrayAllCols()

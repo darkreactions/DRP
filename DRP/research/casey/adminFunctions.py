@@ -37,11 +37,16 @@ def fix_wrong():
 def update_refs(name, new_comp):
     from DRP.models import Recommendation
 
-    Recommendation.objects.filter(reactant_fk_1__compound__icontains=name).update(reactant_fk_1=new_comp)
-    Recommendation.objects.filter(reactant_fk_2__compound__icontains=name).update(reactant_fk_2=new_comp)
-    Recommendation.objects.filter(reactant_fk_3__compound__icontains=name).update(reactant_fk_3=new_comp)
-    Recommendation.objects.filter(reactant_fk_4__compound__icontains=name).update(reactant_fk_4=new_comp)
-    Recommendation.objects.filter(reactant_fk_5__compound__icontains=name).update(reactant_fk_5=new_comp)
+    Recommendation.objects.filter(
+        reactant_fk_1__compound__icontains=name).update(reactant_fk_1=new_comp)
+    Recommendation.objects.filter(
+        reactant_fk_2__compound__icontains=name).update(reactant_fk_2=new_comp)
+    Recommendation.objects.filter(
+        reactant_fk_3__compound__icontains=name).update(reactant_fk_3=new_comp)
+    Recommendation.objects.filter(
+        reactant_fk_4__compound__icontains=name).update(reactant_fk_4=new_comp)
+    Recommendation.objects.filter(
+        reactant_fk_5__compound__icontains=name).update(reactant_fk_5=new_comp)
 
 
 def update_compounds():

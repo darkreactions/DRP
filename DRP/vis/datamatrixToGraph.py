@@ -31,7 +31,8 @@ class graphNode:
 
 class myGraph:
     # Creates a graph from a datamatrix object as long as csv has: First col == id, Sec col == name of experiments; 3rd == inorg1
-    # 4th col == inorg2, 5th col == org1, 6th(last) == purity; in between are fully numeric, filled in columns;
+    # 4th col == inorg2, 5th col == org1, 6th(last) == purity; in between are
+    # fully numeric, filled in columns;
 
     def __init__(self, datamatrix):
         idCol = -1
@@ -65,7 +66,8 @@ class myGraph:
         tree = KDTree(pointList)
         for point in pointList:
             nnors = tree.findkNearestNeighbors(point, 5)
-            # Because of the way index method works, will find only the first match (ignoring repeated elements)--hopefully not an issue
+            # Because of the way index method works, will find only the first
+            # match (ignoring repeated elements)--hopefully not an issue
             myFriendList = [pointList.index(neighbor) for neighbor in nnors]
             edgeList.append(myFriendList)
         datamatrix.dataset = np.transpose(datamatrix.dataset)
@@ -76,7 +78,8 @@ class myGraph:
         self.nodes = []
         self.numNodes = len(names)
         for i in range(0, self.numNodes):
-            self.nodes.append(graphNode(self.names[i], self.edgeList[i], 1.0 / self.numNodes, self.ids[i], purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
+            self.nodes.append(graphNode(self.names[i], self.edgeList[
+                              i], 1.0 / self.numNodes, self.ids[i], purities[i], outcomes[i], inorg1s[i], inorg2s[i], org1s[i]))
 
     def findNode(self, name):
         for node in self.nodes:
@@ -169,7 +172,8 @@ class myGraph:
                     if (self.numInNodes(currNode) == 0):
                         tsum += currNode.pagerank / (len(self.nodes) - 1.0)
                     else:
-                        tsum += (currNode.pagerank + 0.0) / (currNode.getNumOut() + 0.0)
+                        tsum += (currNode.pagerank + 0.0) / \
+                            (currNode.getNumOut() + 0.0)
 
                 PR += tsum * damping
                 ranklist.append(PR)

@@ -22,7 +22,8 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
     if model_id is not None:
         try:
             container = ModelContainer.objects.get(id=model_id)
-            check_container(container, predictor_headers, response_headers, modelVisitorLibrary, modelVisitorTool, splitter, verbose, splitterOptions, visitorOptions)
+            check_container(container, predictor_headers, response_headers, modelVisitorLibrary,
+                            modelVisitorTool, splitter, verbose, splitterOptions, visitorOptions)
         except ModelContainer.DoesNotExist:
             raise RuntimeError("No model container with that id exists")
     else:
@@ -35,12 +36,14 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             if verbose:
                 print "Found {} with correct splitter".format(containers.count())
         if splitterOptions is not None:
-            containers = containers.filter(splitterOptions=json.dumps(splitterOptions))
+            containers = containers.filter(
+                splitterOptions=json.dumps(splitterOptions))
             if verbose:
                 print "Found {} with correct splitter options".format(containers.count())
 
         if modelVisitorLibrary is not None:
-            containers = containers.filter(modelVisitorLibrary=modelVisitorLibrary)
+            containers = containers.filter(
+                modelVisitorLibrary=modelVisitorLibrary)
             if verbose:
                 print "Found {} with correct visitor library".format(containers.count())
         if modelVisitorTool is not None:
@@ -48,14 +51,18 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
             if verbose:
                 print "Found {} with correct visitor tool".format(containers.count())
         if visitorOptions is not None:
-            containers = containers.filter(modelVisitorOptions=json.dumps(visitorOptions))
+            containers = containers.filter(
+                modelVisitorOptions=json.dumps(visitorOptions))
             if verbose:
                 print "Found {} with correct visitor options".format(containers.count())
 
         if response_headers is not None:
-            containers = containers.annotate(num_outNumDescs=Count('outcomeNumRxnDescriptors', distinct=True)).annotate(num_outBoolDescs=Count('outcomeBoolRxnDescriptors', distinct=True))
-            boolDescs = BoolRxnDescriptor.objects.filter(heading__in=response_headers)
-            numDescs = NumRxnDescriptor.objects.filter(heading__in=response_headers)
+            containers = containers.annotate(num_outNumDescs=Count('outcomeNumRxnDescriptors', distinct=True)).annotate(
+                num_outBoolDescs=Count('outcomeBoolRxnDescriptors', distinct=True))
+            boolDescs = BoolRxnDescriptor.objects.filter(
+                heading__in=response_headers)
+            numDescs = NumRxnDescriptor.objects.filter(
+                heading__in=response_headers)
             num_numDescs = numDescs.count()
             num_boolDescs = boolDescs.count()
 
@@ -67,16 +74,21 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
                 for header in headers:
                     if not NumRxnDescriptor.objects.filter(heading=header).exists() and not BoolRxnDescriptor.objects.filter(heading=header).exists():
                         missing_descs.append(header)
-                raise RuntimeError("Did not find correct number of descriptors. Currently only looking at boolean and numeric. Categorical and ordinal unimplemented. Unable to find:{}".format(missing_descs))
+                raise RuntimeError(
+                    "Did not find correct number of descriptors. Currently only looking at boolean and numeric. Categorical and ordinal unimplemented. Unable to find:{}".format(missing_descs))
 
-            containers = containers.filter(num_outNumDescs=num_numDescs).filter(num_outBoolDescs=num_boolDescs)
+            containers = containers.filter(num_outNumDescs=num_numDescs).filter(
+                num_outBoolDescs=num_boolDescs)
             if verbose:
                 print "{} containers with appropriate number of responses".format(containers.count())
 
         if predictor_headers is not None:
-            containers = containers.annotate(num_numDescs=Count('numRxnDescriptors', distinct=True)).annotate(num_boolDescs=Count('boolRxnDescriptors', distinct=True))
-            boolDescs = BoolRxnDescriptor.objects.filter(heading__in=predictor_headers)
-            numDescs = NumRxnDescriptor.objects.filter(heading__in=predictor_headers)
+            containers = containers.annotate(num_numDescs=Count('numRxnDescriptors', distinct=True)).annotate(
+                num_boolDescs=Count('boolRxnDescriptors', distinct=True))
+            boolDescs = BoolRxnDescriptor.objects.filter(
+                heading__in=predictor_headers)
+            numDescs = NumRxnDescriptor.objects.filter(
+                heading__in=predictor_headers)
             num_numDescs = numDescs.count()
             num_boolDescs = boolDescs.count()
 
@@ -88,19 +100,23 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
                 for header in headers:
                     if not NumRxnDescriptor.objects.filter(heading=header).exists() and not BoolRxnDescriptor.objects.filter(heading=header).exists():
                         missing_descs.append(header)
-                raise RuntimeError("Did not find correct number of descriptors. Currently only looking at boolean and numeric. Categorical and ordinal unimplemented. Unable to find:{}".format(missing_descs))
+                raise RuntimeError(
+                    "Did not find correct number of descriptors. Currently only looking at boolean and numeric. Categorical and ordinal unimplemented. Unable to find:{}".format(missing_descs))
 
-            containers = containers.filter(num_numDescs=num_numDescs).filter(num_boolDescs=num_boolDescs)
+            containers = containers.filter(num_numDescs=num_numDescs).filter(
+                num_boolDescs=num_boolDescs)
             if verbose:
                 print "{} containers with appropriate number of predictors".format(containers.count())
 
         if response_headers is not None:
-            containers = [c for c in containers if (set(c.outcomeNumRxnDescriptors.all()) == setOutNumDescs and set(c.outcomeBoolRxnDescriptors.all()) == setOutBoolDescs)]
+            containers = [c for c in containers if (set(c.outcomeNumRxnDescriptors.all(
+            )) == setOutNumDescs and set(c.outcomeBoolRxnDescriptors.all()) == setOutBoolDescs)]
             if verbose:
                 print "{} containers with correct responses".format(len(containers))
 
         if predictor_headers is not None:
-            containers = [c for c in containers if (set(c.numRxnDescriptors.all()) == setNumDescs and set(c.boolRxnDescriptors.all()) == setBoolDescs)]
+            containers = [c for c in containers if (set(c.numRxnDescriptors.all(
+            )) == setNumDescs and set(c.boolRxnDescriptors.all()) == setBoolDescs)]
             if verbose:
                 print "{} containers with correct predictors".format(len(containers))
 
@@ -113,7 +129,8 @@ def find_container(model_id=None, predictor_headers=None, response_headers=None,
                 except AttributeError:
                     containers = containers.order_by('-pk')
             else:
-                raise RuntimeError("No unique container. If you want a non-unique container, remove the '-u' flag")
+                raise RuntimeError(
+                    "No unique container. If you want a non-unique container, remove the '-u' flag")
 
         return containers[0]
 
@@ -169,8 +186,10 @@ if __name__ == '__main__':
     # This way of accepting splitter options is bad and hacky.
     # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
     # TODO XXX make this not horrible
-    splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else None
-    visitorOptions = ast.literal_eval(args.visitor_options) if args.visitor_options is not None else None
+    splitterOptions = ast.literal_eval(
+        args.splitter_options) if args.splitter_options is not None else None
+    visitorOptions = ast.literal_eval(
+        args.visitor_options) if args.visitor_options is not None else None
 
     find_predict_display_model(model_id=args.model_id, predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTool=args.model_tool,
                                splitter=args.splitter, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, unique=args.unique, reaction_set_name=args.reaction_set_name)

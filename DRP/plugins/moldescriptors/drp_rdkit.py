@@ -1,5 +1,6 @@
 """An example molecular descriptor plugin to demonstrate the 'shape' that the API requires."""
-# I wanted to name this module rdkit, but then we get name conflicts... lol python
+# I wanted to name this module rdkit, but then we get name conflicts...
+# lol python
 from utils import setup
 import rdkit.Chem
 import DRP
@@ -27,13 +28,16 @@ def calculate(compound, verbose=False, whitelist=None):
     """Calculate the descriptors from this plugin for a compound."""
     heading = 'mw'
     if whitelist is None or heading in whitelist:
-        mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * float(compound.elements[element]['stoichiometry']) for element in compound.elements)
+        mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * float(
+            compound.elements[element]['stoichiometry']) for element in compound.elements)
 
-        v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': mw}, descriptor=descriptorDict[heading], compound=compound)[0]
+        v = DRP.models.NumMolDescriptorValue.objects.update_or_create(
+            defaults={'value': mw}, descriptor=descriptorDict[heading], compound=compound)[0]
 
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+                v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()

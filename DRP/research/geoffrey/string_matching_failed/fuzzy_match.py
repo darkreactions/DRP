@@ -5,7 +5,8 @@ from Levenshtein import distance
 from sys import argv
 import re
 
-# from http://stackoverflow.com/questions/1175208/elegant-python-function-to-convert-camelcase-to-snake-case
+# from
+# http://stackoverflow.com/questions/1175208/elegant-python-function-to-convert-camelcase-to-snake-case
 first_cap_re = re.compile('(.)([A-Z][a-z]+)')
 all_cap_re = re.compile('([a-z0-9])([A-Z])')
 
@@ -23,7 +24,8 @@ def strip_and_redorder(s):
     return sorted_snake
 
 
-# modified from http://stackoverflow.com/questions/26990714/algorithm-for-fuzzy-pairing-of-strings-from-two-lists
+# modified from
+# http://stackoverflow.com/questions/26990714/algorithm-for-fuzzy-pairing-of-strings-from-two-lists
 if __name__ == '__main__':
     if len(argv) < 3:
         print("Usage: fuzzy_match.py file file")

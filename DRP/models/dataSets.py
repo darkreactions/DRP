@@ -19,7 +19,8 @@ class DataSet(models.Model):
         app_label = "DRP"
 
     name = models.CharField(max_length=200, unique=True)
-    reactions = models.ManyToManyField(PerformedReaction, through="DataSetRelation")
+    reactions = models.ManyToManyField(
+        PerformedReaction, through="DataSetRelation")
 
     # TODO: This belongs on a manager to be djangonic.
     @classmethod
@@ -27,7 +28,8 @@ class DataSet(models.Model):
         """Bulk create a set of datasetrelations."""
         dataSet = cls(name=name)
         dataSet.save()
-        dsrs = [DataSetRelation(dataSet=dataSet, reaction=datum) for datum in data]
+        dsrs = [DataSetRelation(dataSet=dataSet, reaction=datum)
+                for datum in data]
         DataSetRelation.objects.bulk_create(dsrs)
 
         return dataSet

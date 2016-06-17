@@ -26,7 +26,8 @@ def get_data_list_of_dicts(data_file):
 def get_headers(data_file):
     with open(data_file) as f:
         f_csv = csv.reader(f)
-        # iterates over first row of file, appening each cell (column head) into list of headers
+        # iterates over first row of file, appening each cell (column head)
+        # into list of headers
         headers = next(f_csv)
     return headers
 

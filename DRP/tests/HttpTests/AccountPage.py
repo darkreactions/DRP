@@ -32,7 +32,8 @@ class AccountPageGroups(AccountPageNoGroups):
 
     def setUp(self):
         """Add user to lab group and then ensure that membership displayed properly."""
-        self.labGroup = LabGroup.objects.makeLabGroup('test', 'War Drobe', 'aslan@example.com', 'ancient_magic')
+        self.labGroup = LabGroup.objects.makeLabGroup(
+            'test', 'War Drobe', 'aslan@example.com', 'ancient_magic')
         self.labGroup.save()
         self.labGroup.users.add(User.objects.get(username='Aslan'))
         self.labGroup.save()

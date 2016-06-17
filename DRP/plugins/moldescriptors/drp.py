@@ -8,7 +8,8 @@ from django.core.exceptions import ValidationError
 
 calculatorSoftware = 'DRP'
 
-create_threshold = 5000  # number of values to create at a time. Should probably be <= 5000
+# number of values to create at a time. Should probably be <= 5000
+create_threshold = 5000
 
 elements = chemical_data.elements
 
@@ -110,9 +111,12 @@ def delete_descriptors(compound_set, whitelist=None):
     if whitelist is None:
         descs = descriptorDict.values()
     else:
-        descs = [descriptorDict[k] for k in descriptorDict.keys() if k in whitelist]
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
+        descs = [descriptorDict[k]
+                 for k in descriptorDict.keys() if k in whitelist]
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
@@ -123,16 +127,19 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
-        num_vals_to_create, bool_vals_to_create = _calculate(compound, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
+        num_vals_to_create, bool_vals_to_create = _calculate(
+            compound, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
         if len(num_vals_to_create) > create_threshold:
             if verbose:
                 print 'Creating {} numeric values'.format(len(num_vals_to_create))
-                DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+                DRP.models.NumMolDescriptorValue.objects.bulk_create(
+                    num_vals_to_create)
                 num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
                 print 'Creating {} boolean values'.format(len(bool_vals_to_create))
-            DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
+            DRP.models.BoolMolDescriptorValue.objects.bulk_create(
+                bool_vals_to_create)
             bool_vals_to_create = []
 
     if verbose:
@@ -162,17 +169,22 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
     boolVal = DRP.models.BoolMolDescriptorValue
 
     if any(element in inorgElements for element in compound.elements):
-        inorgElementNormalisationFactor = sum(info['stoichiometry'] for element, info in compound.elements.items() if element in inorgElements)
+        inorgElementNormalisationFactor = sum(
+            info['stoichiometry'] for element, info in compound.elements.items() if element in inorgElements)
         for prop in inorgAtomicProperties:
-            heading = 'drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))
+            heading = 'drpInorgAtom{}_geom_unw'.format(
+                prop.title().replace('_', ''))
             if whitelist is None or heading in whitelist:
-                # zero is what scipy does natively. This is just to avoid warnings that are fine so they don't drown out the real ones
+                # zero is what scipy does natively. This is just to avoid
+                # warnings that are fine so they don't drown out the real ones
                 if any([(inorgElements[element][prop] == 0) for element, info in compound.elements.items() if element in inorgElements]):
                     val = 0
                 elif any([(inorgElements[element][prop] < 0) for element, info in compound.elements.items() if element in inorgElements]):
-                    raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))]))
+                    raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(
+                        descriptorDict['drpInorgAtom{}_geom_unw'.format(prop.title().replace('_', ''))]))
                 else:
-                    val = gmean([inorgElements[element][prop] for element in compound.elements if element in inorgElements])
+                    val = gmean([inorgElements[element][
+                                prop] for element in compound.elements if element in inorgElements])
                 n = num(
                     compound=compound,
                     descriptor=descriptorDict[heading],
@@ -181,18 +193,22 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                        n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)
 
-            heading = 'drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))
+            heading = 'drpInorgAtom{}_geom_stoich'.format(
+                prop.title().replace('_', ''))
             if whitelist is None or heading in whitelist:
                 if any([(inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) == 0) for element, info in compound.elements.items() if element in inorgElements]):
                     val = 0
                 elif any([(inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) < 0) for element, info in compound.elements.items() if element in inorgElements]):
-                    raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))]))
+                    raise ValueError('Cannot take geometric mean of negative values. This descriptor ({}) should not use a geometric mean.'.format(
+                        descriptorDict['drpInorgAtom{}_geom_stoich'.format(prop.title().replace('_', ''))]))
                 else:
-                    val = gmean([inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor) for element, info in compound.elements.items() if element in inorgElements])
+                    val = gmean([inorgElements[element][prop] * float(info['stoichiometry'] / inorgElementNormalisationFactor)
+                                 for element, info in compound.elements.items() if element in inorgElements])
                 n = num(
                     compound=compound,
                     descriptor=descriptorDict[heading],
@@ -201,13 +217,16 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                        n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)
 
-            heading = 'drpInorgAtom{}_max'.format(prop.title().replace('_', ''))
+            heading = 'drpInorgAtom{}_max'.format(
+                prop.title().replace('_', ''))
             if whitelist is None or heading in whitelist:
-                val = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements)
+                val = max(inorgElements[element][
+                          prop] for element in compound.elements if element in inorgElements)
                 n = num(
                     compound=compound,
                     descriptor=descriptorDict[heading],
@@ -216,13 +235,16 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                        n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)
 
-            heading = 'drpInorgAtom{}_range'.format(prop.title().replace('_', ''))
+            heading = 'drpInorgAtom{}_range'.format(
+                prop.title().replace('_', ''))
             if whitelist is None or heading in whitelist:
-                val = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements) - min(inorgElements[element][prop] for element in compound.elements if element in inorgElements)
+                val = max(inorgElements[element][prop] for element in compound.elements if element in inorgElements) - min(
+                    inorgElements[element][prop] for element in compound.elements if element in inorgElements)
                 n = num(
                     compound=compound,
                     descriptor=descriptorDict[heading],
@@ -231,7 +253,8 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(n.value, n.compound, n.descriptor, e.message))
+                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                        n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -242,7 +265,8 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
             bool_vals_to_create.append(boolVal(
                 compound=compound,
                 descriptor=descriptorDict[heading],
-                value=(any(elements[element]['group'] == group_num for element in compound.elements.keys() if element in inorgElements))
+                value=(any(elements[element]['group'] == group_num for element in compound.elements.keys(
+                ) if element in inorgElements))
             ))
     for period_num in range(1, 8):
         heading = 'drpInorgAtom_boolean_period_{}'.format(period_num)
@@ -250,7 +274,8 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
             bool_vals_to_create.append(boolVal(
                 compound=compound,
                 descriptor=descriptorDict[heading],
-                value=(any(elements[element]['period'] == period_num for element in compound.elements.keys() if element in inorgElements))
+                value=(any(elements[element]['period'] == period_num for element in compound.elements.keys(
+                ) if element in inorgElements))
             ))
     for valence_num in range(0, 8):
         heading = 'drpInorgAtom_boolean_valence_{}'.format(valence_num)
@@ -258,7 +283,8 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
             bool_vals_to_create.append(boolVal(
                 compound=compound,
                 descriptor=descriptorDict[heading],
-                value=(any(elements[element]['valence'] == valence_num for element in compound.elements.keys() if element in inorgElements))
+                value=(any(elements[element]['valence'] == valence_num for element in compound.elements.keys(
+                ) if element in inorgElements))
             ))
     # all elements
     for group_num in range(1, 19):
@@ -267,7 +293,8 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
             bool_vals_to_create.append(boolVal(
                 compound=compound,
                 descriptor=descriptorDict[heading],
-                value=(any(elements[element]['group'] == group_num for element in compound.elements.keys()))
+                value=(any(elements[element][
+                       'group'] == group_num for element in compound.elements.keys()))
             ))
     for period_num in range(1, 8):
         heading = 'boolean_period_{}'.format(period_num)
@@ -275,7 +302,8 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
             bool_vals_to_create.append(boolVal(
                 compound=compound,
                 descriptor=descriptorDict[heading],
-                value=(any(elements[element]['period'] == period_num for element in compound.elements.keys()))
+                value=(any(elements[element][
+                       'period'] == period_num for element in compound.elements.keys()))
             ))
 
     return num_vals_to_create, bool_vals_to_create

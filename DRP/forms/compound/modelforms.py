@@ -37,11 +37,13 @@ class CompoundForm(forms.ModelForm):
 
     CAS_ID = forms.CharField(label='CAS ID', required=False)
     """Adding this field, not in the database, allows users to match compounds to a CAS_ID without us incuring issues for storing them."""
-    CSID = forms.IntegerField(label='Chemspider ID', min_value=1, error_messages={'required': 'This value must be set or selected'})
+    CSID = forms.IntegerField(label='Chemspider ID', min_value=1, error_messages={
+                              'required': 'This value must be set or selected'})
     """If the user already knows the right value for this it allows them to skip a step."""
 
     class Meta:
-        fields = ('labGroup', 'abbrev', 'CSID', 'name', 'CAS_ID', 'chemicalClasses')
+        fields = ('labGroup', 'abbrev', 'CSID',
+                  'name', 'CAS_ID', 'chemicalClasses')
         model = Compound
         help_texts = {
             'abbrev': 'A local abbreviation by which the compound is known.',
@@ -61,9 +63,11 @@ class CompoundForm(forms.ModelForm):
 
     def clean_CSID(self):
         """Check that the CSID is actually a valid id from chemspider."""
-        searchResults = self.chemSpider.simple_search(self.cleaned_data['CSID'])
+        searchResults = self.chemSpider.simple_search(
+            self.cleaned_data['CSID'])
         if(len(searchResults) < 1):
-            raise ValidationError('The CSID you have provided is invalid', code='invalid_csid')
+            raise ValidationError(
+                'The CSID you have provided is invalid', code='invalid_csid')
         else:
             self.compound = searchResults[0]
         return self.cleaned_data['CSID']
@@ -72,34 +76,49 @@ class CompoundForm(forms.ModelForm):
         """Verify that the CSID, CAS_ID (where supplied) and name are consistent."""
         self.cleaned_data = super(CompoundForm, self).clean()
         if self.cleaned_data.get('name'):
-            nameResults = self.chemSpider.simple_search(self.cleaned_data['name'])
+            nameResults = self.chemSpider.simple_search(
+                self.cleaned_data['name'])
             if self.cleaned_data.get('CAS_ID') != '':
-                CAS_IDResults = self.chemSpider.simple_search(self.cleaned_data['CAS_ID'])
-                compoundChoices = [compound for compound in nameResults if compound in CAS_IDResults][0:10]
+                CAS_IDResults = self.chemSpider.simple_search(
+                    self.cleaned_data['CAS_ID'])
+                compoundChoices = [
+                    compound for compound in nameResults if compound in CAS_IDResults][0:10]
                 # the CAS_ID always generates a more restrictive set
             else:
                 compoundChoices = nameResults[0:10]
-                # if the CAS_ID is not supplied, then we just create a subset based on the name search alone
+                # if the CAS_ID is not supplied, then we just create a subset
+                # based on the name search alone
 
             if self.compound is None and len(compoundChoices) > 0:
-                self.fields['CSID'] = forms.ChoiceField(choices=((choice.csid, choice.common_name) for choice in compoundChoices), widget=forms.widgets.RadioSelect)
-                # in essence, if a CSID was not supplied, but the chemspider search returned chemspider results, then we offer those results to the user to make a selection.
+                self.fields['CSID'] = forms.ChoiceField(choices=(
+                    (choice.csid, choice.common_name) for choice in compoundChoices), widget=forms.widgets.RadioSelect)
+                # in essence, if a CSID was not supplied, but the chemspider
+                # search returned chemspider results, then we offer those
+                # results to the user to make a selection.
                 return self.cleaned_data
             elif self.compound is None:
-                raise ValidationError('Your search terms failed to validate against the Chemspider database. Please contact a local administrator.', code='no_compounds')
+                raise ValidationError(
+                    'Your search terms failed to validate against the Chemspider database. Please contact a local administrator.', code='no_compounds')
             else:
                 if self.compound not in nameResults:
-                    raise ValidationError('The name provided was not valid for the CSID provided. Please change the entry, or contact your local administrator.', code='name_csid_conflict')
+                    raise ValidationError(
+                        'The name provided was not valid for the CSID provided. Please change the entry, or contact your local administrator.', code='name_csid_conflict')
                 elif self.cleaned_data.get('CAS_ID') and self.compound not in CAS_IDResults:
-                    raise ValidationError('The CAS ID provided is not valid for the CSID provided. Remove, replace, or contact your local administrator.', 'name_cas_id_conflict')
+                    raise ValidationError(
+                        'The CAS ID provided is not valid for the CSID provided. Remove, replace, or contact your local administrator.', 'name_cas_id_conflict')
                 else:
                     return self.cleaned_data
         else:
             if self.compound is not None:
-                # this is probably some of the most horrible code I have written, but it is the only way to get this to work - Phil.
+                # this is probably some of the most horrible code I have
+                # written, but it is the only way to get this to work - Phil.
                 data = self.data.copy()  # because otherwise the query dict is immutable
-                data['name'] = self.compound.common_name  # replace the data directly, as bad as that is...
-                self._errors['name'] = self.error_class(['Please review this suggestion'])  # manually input an error message which is less demanding (this is actually canonical method)
+                # replace the data directly, as bad as that is...
+                data['name'] = self.compound.common_name
+                # manually input an error message which is less demanding (this
+                # is actually canonical method)
+                self._errors['name'] = self.error_class(
+                    ['Please review this suggestion'])
                 self.data = data  # override the old data
             return self.cleaned_data
 
@@ -133,7 +152,8 @@ class CompoundEditForm(forms.ModelForm):
         chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
         nameResults = chemSpider.simple_search(self.cleaned_data['name'])
         if self.instance.CSID not in (nameResult.csid for nameResult in nameResults):
-            raise ValidationError("That name is not a known synonym for this compound")
+            raise ValidationError(
+                "That name is not a known synonym for this compound")
         else:
             return self.cleaned_data['name']
 
@@ -149,12 +169,14 @@ class CompoundDeleteForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         """Lock the id field to an instance."""
         super(CompoundDeleteForm, self).__init__(*args, **kwargs)
-        self.fields['id'] = forms.ModelChoiceField(queryset=Compound.objects.filter(labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
+        self.fields['id'] = forms.ModelChoiceField(queryset=Compound.objects.filter(
+            labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
 
     def clean_id(self):
         """Lock the id field to an instance."""
         if self.cleaned_data['id'].reaction_set.exists():
-            raise ValidationError("This reaction is protected from deletion because it is used in one or more reactions or recommendations.")
+            raise ValidationError(
+                "This reaction is protected from deletion because it is used in one or more reactions or recommendations.")
         return self.cleaned_data['id']
 
     def save(self):
@@ -172,12 +194,14 @@ class CompoundUploadForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         """Restrict the permitted labgroups dynamically."""
         super(CompoundUploadForm, self).__init__(*args, **kwargs)
-        self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all())
+        self.fields['labGroup'] = forms.ModelChoiceField(
+            queryset=user.labgroup_set.all())
 
     def clean(self):
         """Check validity of compounds."""
         if self.cleaned_data.get('csv') is not None and self.cleaned_data.get('labGroup') is not None:
-            self.compounds = self.cleaned_data['labGroup'].compound_set.fromCsv(self.cleaned_data['csv'].temporary_file_path())
+            self.compounds = self.cleaned_data['labGroup'].compound_set.fromCsv(
+                self.cleaned_data['csv'].temporary_file_path())
         for compound in self.compounds:
             compound.csConsistencyCheck()
             compound.full_clean()

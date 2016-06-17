@@ -3,7 +3,8 @@ from AbstractWekaFeatureVisitor import AbstractWekaFeatureVisitor
 import importlib
 from django.conf import settings
 
-modelVisitorModules = {library: importlib.import_module(settings.STATS_MODEL_LIBS_DIR + "." + library) for library in settings.STATS_MODEL_LIBS}
+modelVisitorModules = {library: importlib.import_module(
+    settings.STATS_MODEL_LIBS_DIR + "." + library) for library in settings.STATS_MODEL_LIBS}
 
 
 class CFS(AbstractWekaFeatureVisitor):
@@ -34,8 +35,10 @@ class Wrapper(AbstractWekaFeatureVisitor):
     def __init__(self, modelVisitorTool="J48", modelVisitorLibrary="weka", modelVisitorOptions={}, *args, **kwargs):
         """Specify the model class to be used."""
         getattr(modelVisitorModules[modelVisitorLibrary], modelVisitorTool)
-        modelVisitor = getattr(modelVisitorModules[modelVisitorLibrary], modelVisitorTool)(statsModel=None, **modelVisitorOptions)
-        self.wekaCommand = "weka.attributeSelection.WrapperSubsetEval -s weka.attributeSelection.BestFirst -B {}".format(modelVisitor.wekaCommand)
+        modelVisitor = getattr(modelVisitorModules[modelVisitorLibrary], modelVisitorTool)(
+            statsModel=None, **modelVisitorOptions)
+        self.wekaCommand = "weka.attributeSelection.WrapperSubsetEval -s weka.attributeSelection.BestFirst -B {}".format(
+            modelVisitor.wekaCommand)
         self.wekaOptions = modelVisitor.wekaTrainOptions
 
         super(Wrapper, self).__init__(*args, **kwargs)

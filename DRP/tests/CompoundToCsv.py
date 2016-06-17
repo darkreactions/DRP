@@ -22,38 +22,46 @@ class CsvOutput(DRPTestCase):
 
     def test_regular(self):
         """Test a regular CSV."""
-        fn =  '/tmp/' + settings.MAIN_SERVER_USER +'_test_csv.csv'
+        fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_csv.csv'
         with open(fn, 'wb') as csvFile:
             Compound.objects.all().toCsv(csvFile)
         with open(fn, 'rb') as csvFile:
             reader = csv.reader(csvFile, delimiter=",", quotechar='"')
             headerRow = reader.next()
-            expectedFields = [field.name for field in Compound._meta.fields] + ['chemicalClass_1']
+            expectedFields = [
+                field.name for field in Compound._meta.fields] + ['chemicalClass_1']
             for item in expectedFields:
-                self.assertTrue(item in headerRow, 'item {} not in {}'.format(item, headerRow))
-            self.assertEqual(len(headerRow), len(expectedFields), 'headerRow: {0}\ncsvFields: {1}'.format(headerRow, expectedFields))
+                self.assertTrue(item in headerRow,
+                                'item {} not in {}'.format(item, headerRow))
+            self.assertEqual(len(headerRow), len(
+                expectedFields), 'headerRow: {0}\ncsvFields: {1}'.format(headerRow, expectedFields))
             rowCount = 0
             for row in reader:
                 rowCount += 1
-                self.assertEqual(len(row), len(headerRow), 'headerRow ({}): {}\nrow ({}):{}'.format(len(headerRow), headerRow, len(row), row))
+                self.assertEqual(len(row), len(headerRow), 'headerRow ({}): {}\nrow ({}):{}'.format(
+                    len(headerRow), headerRow, len(row), row))
             self.assertEqual(rowCount, 3)
 
     def test_expanded(self):
         """Test an expanded CSV."""
-        fn =  '/tmp/' + settings.MAIN_SERVER_USER +'_test_csv.csv'
+        fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_csv.csv'
         with open(fn, 'wb') as csvFile:
             Compound.objects.all().toCsv(csvFile, expanded=True)
         with open(fn, 'rb') as csvFile:
             reader = csv.reader(csvFile, delimiter=",")
             headerRow = reader.next()
-            expectedFields = [field.name for field in Compound._meta.fields] + ['chemicalClass_1'] + [d.csvHeader for d in Compound.objects.all().descriptors]
+            expectedFields = [field.name for field in Compound._meta.fields] + [
+                'chemicalClass_1'] + [d.csvHeader for d in Compound.objects.all().descriptors]
             for item in expectedFields:
-                self.assertTrue(item in headerRow, 'item {} not in {}'.format(item, headerRow))
-            self.assertEqual(len(headerRow), len(expectedFields), 'headerRow: {0}\ncsvFields: {1}'.format(headerRow, expectedFields))
+                self.assertTrue(item in headerRow,
+                                'item {} not in {}'.format(item, headerRow))
+            self.assertEqual(len(headerRow), len(
+                expectedFields), 'headerRow: {0}\ncsvFields: {1}'.format(headerRow, expectedFields))
             rowCount = 0
             for row in reader:
                 rowCount += 1
-                self.assertEqual(len(row), len(headerRow), 'headerRow ({}): {}\nrow ({}):{}'.format(len(headerRow), headerRow, len(row), row))
+                self.assertEqual(len(row), len(headerRow), 'headerRow ({}): {}\nrow ({}):{}'.format(
+                    len(headerRow), headerRow, len(row), row))
             self.assertEqual(rowCount, 3)
 
 suite = unittest.TestSuite([
@@ -62,4 +70,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

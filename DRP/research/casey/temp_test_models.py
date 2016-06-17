@@ -27,8 +27,10 @@ from DRP.preprocessors import default_preprocessor as preprocessor
 from DRP.postprocessors import default_postprocessor as postprocessor
 from DRP.model_building.rxn_calculator import headers
 
-filtered_set, _ = postprocessor({"test": preprocessor([headers] + filtered)[1:]}, headers)
-all_set, _ = postprocessor({"all": preprocessor([headers] + all_data)[1:]}, headers)
+filtered_set, _ = postprocessor(
+    {"test": preprocessor([headers] + filtered)[1:]}, headers)
+all_set, _ = postprocessor(
+    {"all": preprocessor([headers] + all_data)[1:]}, headers)
 
 
 from DRP.models import ModelStats

@@ -30,7 +30,8 @@ class Command(BaseCommand):
         failfast = kwargs['failfast']
         if settings.TESTING:
             if kwargs['test_modules']:
-                test_suite = unittest.TestSuite([getattr(importlib.import_module('DRP.tests.' + module), 'suite') for module in kwargs['test_modules']])
+                test_suite = unittest.TestSuite([getattr(importlib.import_module(
+                    'DRP.tests.' + module), 'suite') for module in kwargs['test_modules']])
             else:
                 test_suite = suite
 

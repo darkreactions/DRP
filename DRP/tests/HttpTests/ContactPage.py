@@ -25,7 +25,8 @@ class PostContactPage(PostHttpSessionTest):
 
     def setUp(self):
         """Perform a correctly formed POST request to the contact page to test html validity."""
-        self.response = self.s.post(self.url, data={'email': settings.ADMIN_EMAILS[0], 'content': 'This is a test message.', 'csrfmiddlewaretoken': self.csrf})
+        self.response = self.s.post(self.url, data={'email': settings.ADMIN_EMAILS[
+                                    0], 'content': 'This is a test message.', 'csrfmiddlewaretoken': self.csrf})
 
 
 @usesCsrf
@@ -35,7 +36,8 @@ class PostContactPageBad(PostContactPage):
 
     def setUp(self):
         """Perform a badly formed POST request to the contact page to test html validity."""
-        self.response = self.s.post(self.url, data={'email': settings.ADMIN_EMAILS[0], 'content': '', 'csrfmiddlewaretoken': self.csrf})
+        self.response = self.s.post(self.url, data={'email': settings.ADMIN_EMAILS[
+                                    0], 'content': '', 'csrfmiddlewaretoken': self.csrf})
 
 
 @usesCsrf
@@ -45,7 +47,8 @@ class PostContactPageBad2(PostContactPage):
 
     def setUp(self):
         """Perform a badly formed POST request missing a field entirely to test html validity."""
-        self.response = self.s.post(self.url, data={'content': 'This is a test.', 'csrfmiddlewaretoken': self.csrf})
+        self.response = self.s.post(
+            self.url, data={'content': 'This is a test.', 'csrfmiddlewaretoken': self.csrf})
 
 
 class PostContactPageBad3(PostContactPage):
@@ -54,7 +57,8 @@ class PostContactPageBad3(PostContactPage):
 
     def setUp(self):
         """Confirm that CSRF has been correctly implemented by forgetting the csrf token."""
-        self.response = requests.post(self.url, data={'content': 'This is a test.'})
+        self.response = requests.post(
+            self.url, data={'content': 'This is a test.'})
 
     def test_Status(self):
         """Ensure that the response to a forgotten csrf token is a 403 error."""
@@ -68,5 +72,6 @@ suite = unittest.TestSuite([
 ])
 
 if __name__ == '__main__':
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.
     unittest.main()

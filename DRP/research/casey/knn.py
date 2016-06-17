@@ -434,11 +434,13 @@ def knn_research_graphs(low, high):
         bottom = 0
 
     x_range = list(k_range)
-    write_bucket_to_CSV("results/KNN_distance_chart_{}.csv".format(mode), buckets, x_range, mode)
+    write_bucket_to_CSV(
+        "results/KNN_distance_chart_{}.csv".format(mode), buckets, x_range, mode)
 
     graph = get_graph(buckets, x_range,
                       xLabel="# Nearest Neighbors (K)",
-                      yLabel="{} Distance of K Nearest Neighbors".format(mode.capitalize()),
+                      yLabel="{} Distance of K Nearest Neighbors".format(
+                          mode.capitalize()),
                       tick_range=(bottom, top),
                       major_tick=(top - bottom) / num_major_ticks,
                       minor_tick=(top - bottom) / num_minor_ticks,
@@ -464,7 +466,8 @@ def make_distance_csv(low, high):
     exact_results = get_knn_research_results(k_range, "exact")
     avg_results = get_knn_research_results(k_range, "category-composition")
 
-    # Load the sets of points so we can check which point belongs in which class.
+    # Load the sets of points so we can check which point belongs in which
+    # class.
     with open(django_path + "/DRP/research/casey/raw/030915_intuition.txt") as f:
         int_set = f.read().lower().replace("\n", "").split(" ")
     with open(django_path + "/DRP/research/casey/raw/033115_model.txt") as f:
@@ -519,9 +522,11 @@ def make_distance_csv(low, high):
     columns += ["Category Composition K={}".format(k) for k in k_range]
 
     matrix = [columns]
-    matrix += [[calcs[col] for col in columns] for point, calcs in final.items()]
+    matrix += [[calcs[col] for col in columns]
+               for point, calcs in final.items()]
 
-    filename = "knn_calculations_{}_{}To{}{}.csv".format(SEED, low, high, SUFFIX)
+    filename = "knn_calculations_{}_{}To{}{}.csv".format(
+        SEED, low, high, SUFFIX)
     filepath = "{}/DRP/research/casey/results/{}".format(django_path, filename)
     matrix_to_csv(matrix, filepath)
 

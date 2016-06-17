@@ -77,7 +77,8 @@ class TestFiles(unittest.TestCase):
     def test_pep257(self):
         """Test pep257 conformance."""
         # need to coerce into list to get the length.
-        # Other option would be to write a generator has next function or something
+        # Other option would be to write a generator has next function or
+        # something
         result = list(pep257.check(self.files))
         self.assertEqual(len(result), 0,
                          "Found pep257 errors (and warnings).\n{}".format('\n'.join([str(err) for err in result])))

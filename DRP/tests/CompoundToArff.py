@@ -21,10 +21,12 @@ class CompoundToArff(DRPTestCase):
 
     def checkArff(self, fn):
         """Check the arff is valid."""
-        process = subprocess.Popen(['java', '-cp', settings.WEKA_PATH['3.6'], 'weka.core.Instances', fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(['java', '-cp', settings.WEKA_PATH['3.6'],
+                                    'weka.core.Instances', fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         process.wait()
         c = process.returncode
-        self.assertEqual(0, c)  # on the off chance weka ever returns a non-zero error code
+        # on the off chance weka ever returns a non-zero error code
+        self.assertEqual(0, c)
         res, resErr = process.communicate()
         self.assertFalse(resErr)
 
@@ -48,4 +50,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

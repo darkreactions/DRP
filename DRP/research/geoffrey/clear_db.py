@@ -24,25 +24,33 @@ if __name__ == '__main__':
     StatsModel.objects.all().delete()
 
     print "Deleting CatMolDescriptorValue"
-    CatMolDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
+    CatMolDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
     print "Deleting OrdMolDescriptorValue"
-    OrdMolDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
+    OrdMolDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
     print "Deleting NumMolDescriptorValue"
-    NumMolDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
+    NumMolDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
     print "Deleting BoolMolDescriptorValue"
-    BoolMolDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
+    BoolMolDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual').delete(recalculate_reactions=False)
 
     print "Deleting CatRxnDescriptorValue"
-    CatRxnDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual').delete()
+    CatRxnDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual').delete()
 
     print "Deleting NumRxnDescriptorValue"
-    qs = NumRxnDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual')
+    qs = NumRxnDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual')
     qs._raw_delete(qs.db)
     print "Deleting BoolRxnDescriptorValue"
-    qs = BoolRxnDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual')
+    qs = BoolRxnDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual')
     qs._raw_delete(qs.db)
     print "Deleting OrdRxnDescriptorValue"
-    qs = OrdRxnDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual')
+    qs = OrdRxnDescriptorValue.objects.exclude(
+        descriptor__calculatorSoftware='manual')
     qs._raw_delete(qs.db)
 
     print "Deleting Descriptor"

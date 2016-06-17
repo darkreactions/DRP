@@ -17,7 +17,8 @@ class BaseFormTest(DRPTestCase):
 
     def validationFails(self):
         """A test for cases where the form should not validate."""
-        self.assertFalse(self.form.is_valid(), 'Form should have failed... submitted data: {0}'.format(self.formData))
+        self.assertFalse(self.form.is_valid(
+        ), 'Form should have failed... submitted data: {0}'.format(self.formData))
 
     def validationSucceeds(self):
         """Test that the form does validate."""

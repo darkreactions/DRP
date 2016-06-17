@@ -39,7 +39,8 @@ class Good(DRPTestCase):
     def runTest(self):
         """Run the test."""
         for filename in self.fileNames:
-            compounds = Compound.objects.fromCsv(filename, LabGroup.objects.get(title='Narnia'))
+            compounds = Compound.objects.fromCsv(
+                filename, LabGroup.objects.get(title='Narnia'))
             for compound in compounds:
                 compound.csConsistencyCheck()
                 compound.full_clean()
@@ -59,7 +60,8 @@ class Broken(Good):
         """Run the test."""
         for fileName in self.fileNames:
             with self.assertRaises(ValidationError):
-                compounds = Compound.objects.fromCsv(fileName, LabGroup.objects.get(title='Narnia'))
+                compounds = Compound.objects.fromCsv(
+                    fileName, LabGroup.objects.get(title='Narnia'))
                 for compound in compounds:
                     compound.csConsistencyCheck()
                     compound.full_clean()
@@ -73,4 +75,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

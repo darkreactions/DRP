@@ -30,7 +30,8 @@ with open(csv_out, "w") as f:
 
     # Prepare the CSV file.
     writer = csv.writer(f)
-    headers = ["seed", "spawn", "seed-amine", "spawn-amine", "seed-smiles", "spawn-smiles", "similarity", "error"]
+    headers = ["seed", "spawn", "seed-amine", "spawn-amine",
+               "seed-smiles", "spawn-smiles", "similarity", "error"]
     writer.writerow(headers)
 
     for spawn, seed in zip(spawns, seeds):
@@ -55,6 +56,7 @@ with open(csv_out, "w") as f:
                    spawn_amine.smiles, sim, ""]
 
         except Exception as e:
-            row = [seed, spawn, -1, -1, -1, -1, -1, "{} or {} reaction not found".format(spawn, seed)]
+            row = [seed, spawn, -1, -1, -1, -1, -1,
+                   "{} or {} reaction not found".format(spawn, seed)]
 
         writer.writerow(row)

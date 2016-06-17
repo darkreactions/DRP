@@ -63,41 +63,49 @@ def calculate(compound, verbose=False, whitelist=None):
 
     heading = 'length'
     if whitelist is None or heading in whitelist:
-        v = DRP.models.NumMolDescriptorValue.objects.update_or_create(defaults={'value': lengthValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        v = DRP.models.NumMolDescriptorValue.objects.update_or_create(
+            defaults={'value': lengthValue}, compound=compound, descriptor=descriptorDict[heading])[0]
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+                v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
 
     arbValue = arbValCalc(compound)
     heading = 'fs'
     if whitelist is None or heading in whitelist:
-        v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(
+            defaults={'value': fsValue}, compound=compound, descriptor=descriptorDict[heading])[0]
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+                v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
 
     heading = 'N?'
     if whitelist is None or heading in whitelist:
-        v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(defaults={'value': nValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        v = DRP.models.BoolMolDescriptorValue.objects.update_or_create(
+            defaults={'value': nValue}, compound=compound, descriptor=descriptorDict[heading])[0]
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+                v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()
 
     heading = 'arb'
     if whitelist is None or heading in whitelist:
-        v = DRP.models.CatMolDescriptorValue.objects.update_or_create(defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict[heading])[0]
+        v = DRP.models.CatMolDescriptorValue.objects.update_or_create(
+            defaults={'value': arbValue}, compound=compound, descriptor=descriptorDict[heading])[0]
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(v.value, v.compound, v.descriptor, e.message))
+            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+                v.value, v.compound, v.descriptor, e.message))
             v.value = None
             v.save()

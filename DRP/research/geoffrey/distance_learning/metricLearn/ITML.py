@@ -14,8 +14,10 @@ class MetricVisitor(AbstractMetricLearnDistanceLearner):
 
     def train(self, reactions, predictor_headers, response_headers, filename):
         print "Preparing arrays"
-        data, labels = self._prepareArrays(reactions, predictor_headers, response_headers)
-        old_settings = np.seterr(divide='raise')  # we don't want division by zero to pass
+        data, labels = self._prepareArrays(
+            reactions, predictor_headers, response_headers)
+        # we don't want division by zero to pass
+        old_settings = np.seterr(divide='raise')
 
         # This is how metric learn determines bounds internally
         # but the lower bound can be zero this way (especially for low-dimensional data)
@@ -29,7 +31,8 @@ class MetricVisitor(AbstractMetricLearnDistanceLearner):
             print "Lowerbound was 0. Set to {}".format(bounds[0])
 
         print "Preparing {} constraints with bounds of ({}, {})".format(self.num_constraints, bounds[0], bounds[1])
-        constraints = self.metric_object.prepare_constraints(labels, data.shape[0], self.num_constraints)
+        constraints = self.metric_object.prepare_constraints(
+            labels, data.shape[0], self.num_constraints)
         print "Fitting"
         self.metric_object.fit(data, constraints, bounds=bounds)
 

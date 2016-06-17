@@ -36,6 +36,7 @@ class LogisticRegression(AbstractWekaModelVisitor):
 
     wekaCommand = "weka.classifiers.functions.Logistic"
 
+
 class M5P(AbstractWekaModelVisitor):
 
     """Weka M5P for predicting numeric responses."""
@@ -72,5 +73,6 @@ class SVM_PUK(AbstractWekaModelVisitor):
     @property
     def wekaTrainOptions(self):
         """Attach the additional parameters to the command line function."""
-        kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(self.puk_omega, self.puk_sigma)
+        kernel = '"weka.classifiers.functions.supportVector.Puk -O {} -S {}"'.format(
+            self.puk_omega, self.puk_sigma)
         return "-K {}".format(kernel)

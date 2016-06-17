@@ -14,23 +14,28 @@ if django_path not in sys.path:
 import DRP.model_building.model_methods as mm
 from DRP.model_building import parse_rxn, load_cg
 from DRP.settings import TMP_DIR
-from DRP.models import ModelStats  # TODO: more fully rewrite to use ModelStats objects
+# TODO: more fully rewrite to use ModelStats objects
+from DRP.models import ModelStats
 
 
 # Variable Setup
 cg_props = load_cg.get_cg()
-ml_convert = json.load(open(django_path + "/DRP/model_building/mlConvert.json"))
+ml_convert = json.load(
+    open(django_path + "/DRP/model_building/mlConvert.json"))
 joint_sim = dict()
 restrict_lookup = dict()
 test_variables = False
 
 
 def frange(start, stop, steps, int_return=False):
-    # Creates a float range with n=`steps` intervals between the `start` and `stop`.
+    # Creates a float range with n=`steps` intervals between the `start` and
+    # `stop`.
     current = start
     step = (stop - start) / steps
     while current < stop:
-        value = float("{:.5f}".format(current))  # Round recommendations to a reasonable value. #TODO: STILL HERE, CASEY. Test if it works.
+        # Round recommendations to a reasonable value. #TODO: STILL HERE,
+        # CASEY. Test if it works.
+        value = float("{:.5f}".format(current))
 
         if int_return:
             yield int(value)
@@ -56,11 +61,13 @@ def user_recommend(combinations, similarity_map, range_map):
     explored = set(combinations)  # every combination that is tried
     recommendations = []  # list of tuples. r[0] = score, r[1] = the rec
     for combination in combinations:
-        recs = explore(combination, explored, similarity_map, range_map)  # NOTE: Mutates explored, adds new combinations that have been tried.
+        # NOTE: Mutates explored, adds new combinations that have been tried.
+        recs = explore(combination, explored, similarity_map, range_map)
         recommendations += recs
     recs_source = sorted(recommendations, key=lambda x: x[0])
     print recs_source, "source"
-    recs = sorted(dissimilarity_weighting(recs_source, similarity_map), key=lambda x: x[0])
+    recs = sorted(dissimilarity_weighting(
+        recs_source, similarity_map), key=lambda x: x[0])
     print recs, "reweighted"
     return recs
 
@@ -71,8 +78,10 @@ def reweight(choice, recs, similarity_map):
 
 def dissim(choice, rec, similarity_map, tanimoto=False):
     if not tanimoto:
-        c = make_row(list(choice[1]), 0.1, 0.1, 0.1, 0.1, 1, 36, 70)  # TODO: make valid
-        r = make_row(list(rec[1]), 0.1, 0.1, 0.1, 0.1, 1, 36, 70)  # TODO: make valid
+        c = make_row(list(choice[1]), 0.1, 0.1, 0.1,
+                     0.1, 1, 36, 70)  # TODO: make valid
+        r = make_row(list(rec[1]), 0.1, 0.1, 0.1, 0.1,
+                     1, 36, 70)  # TODO: make valid
         return (rec[0] * (1.0 * euclidean_similarity(c, r)), rec[1], rec[2])
     return (rec[0] / (1.0 + tanimoto_similarity(choice, rec, similarity_map)), rec[1], rec[2])
 
@@ -117,18 +126,22 @@ def explore(combination, explored, similarity_map, range_map):
     def args_yielder(similarity_map, combination, explored):
         for count in range(0, total_sims):
             (i1, i2, i3) = calculate_indices(count, similarity_lengths)
-            new_combination = make_combination(similarity_map, combination, (i1, i2, i3))
+            new_combination = make_combination(
+                similarity_map, combination, (i1, i2, i3))
             if new_combination in explored:
                 continue
             explored.add(new_combination)
             yield (new_combination, range_map)
 
-    similarity_lengths = [len(similarity_map[combination[0]]), len(similarity_map[combination[1]]), len(similarity_map[combination[2]])]
-    total_sims = similarity_lengths[0] * similarity_lengths[1] * similarity_lengths[2]
+    similarity_lengths = [len(similarity_map[combination[0]]), len(
+        similarity_map[combination[1]]), len(similarity_map[combination[2]])]
+    total_sims = similarity_lengths[0] * \
+        similarity_lengths[1] * similarity_lengths[2]
     recs = []
     import multiprocessing
     pool = multiprocessing.Pool(processes=5)
-    recs = pool.map(do_get_evaluate_result, args_yielder(similarity_map, combination, explored))
+    recs = pool.map(do_get_evaluate_result, args_yielder(
+        similarity_map, combination, explored))
     return recs
 
 
@@ -146,7 +159,8 @@ def calculate_indices(count, list_lengths):
 
 def make_combination(similarity_map, combination, i):
     i1, i2, i3 = i
-    names = [similarity_map[combination[0]][i1][0], similarity_map[combination[1]][i2][0], similarity_map[combination[2]][i3][0]]
+    names = [similarity_map[combination[0]][i1][0], similarity_map[
+        combination[1]][i2][0], similarity_map[combination[2]][i3][0]]
     return tuple(sorted(names))
 
 
@@ -177,7 +191,8 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
 
         # Only consider the tuples which have similar confidences.
         conf_threshold = 0.1
-        conf = tuples[0][0] * (1.0 - conf_threshold)  # Assume first = max conf.
+        # Assume first = max conf.
+        conf = tuples[0][0] * (1.0 - conf_threshold)
         tuples = filter(lambda tup: tup[0] >= conf, tuples)
 
         # Gather as many different tuples as possible.
@@ -216,10 +231,12 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
     row_generator = generate_rows_molar(new_combination, range_map, var_ranges)
     rows = [row for row in row_generator]
 
-    # Shuffle the rows such that the search_space_max_size doesn't block combos.
+    # Shuffle the rows such that the search_space_max_size doesn't block
+    # combos.
     random.shuffle(rows)
 
-    # Put the reactions in an appropriate format for handing off to WEKA by removing fields that the model doesn't know.
+    # Put the reactions in an appropriate format for handing off to WEKA by
+    # removing fields that the model doesn't know.
     cleaned = []
     for i, row in enumerate(rows[:search_space_max_size]):
         expanded = parse_rxn.parse_rxn(row, cg_props, ml_convert)
@@ -237,13 +254,18 @@ def evaluate_fitness(new_combination, range_map, var_ranges, debug=True):
     mm.make_arff(name, cleaned, raw_list_input=True, debug=False)
 
     # Run the reactions through the current WEKA model.
-    current_model = ModelStats.objects.last()  # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE MAKING THIS LIVE #daniel
+    # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE
+    # MAKING THIS LIVE #daniel
+    current_model = ModelStats.objects.last()
     model_path = current_model.get_path()  # used to be mm.get_current_model()
 
-    results_location = mm.make_predictions(TMP_DIR + name + ".arff", model_path, debug=debug)
+    results_location = mm.make_predictions(
+        TMP_DIR + name + ".arff", model_path, debug=debug)
 
-    # Get the (confidence, reaction) tuples that WEKA thinks will be "successful".
-    good_reactions = mm.get_good_result_tuples(results_location, rows, debug=debug)
+    # Get the (confidence, reaction) tuples that WEKA thinks will be
+    # "successful".
+    good_reactions = mm.get_good_result_tuples(
+        results_location, rows, debug=debug)
     if debug:
         print "Good Reactions: {}".format(len(good_reactions))
 
@@ -424,7 +446,8 @@ def build_sim_list(name, cg_targets, count=5):
 
 
 def get_range(name):
-    # TODO: calculate min, max, and then choose what upper and lower amount to take
+    # TODO: calculate min, max, and then choose what upper and lower amount to
+    # take
     return (0.001 * cg_props[name]["mw"], 0.01 * cg_props[name]["mw"])
 
 
@@ -482,9 +505,12 @@ def build_baseline(lab_group=None, debug=False):
     from DRP.models import get_good_rxns
     from DRP.models import get_model_field_names
 
-    current_model = ModelStats.objects.last()  # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE MAKING THIS LIVE #daniel
+    # TODO: CHANGE TO ModelStats.objects.filter(active=True).last() BEFORE
+    # MAKING THIS LIVE #daniel
+    current_model = ModelStats.objects.last()
     if not "ref" in get_model_field_names(model="Recommendation"):
-        headers = ["ref"] + get_model_field_names(model="Recommendation")  # Must add "ref" since "ref" is not included as a default model_field.
+        # Must add "ref" since "ref" is not included as a default model_field.
+        headers = ["ref"] + get_model_field_names(model="Recommendation")
     else:
         headers = get_model_field_names(model="Recommendation")
 
@@ -492,7 +518,8 @@ def build_baseline(lab_group=None, debug=False):
 
     combinations = set()
     range_map = dict()
-    quality_map = dict()  # A map of reactants-->reaction outcomes (ie: 1,2,3,4).
+    # A map of reactants-->reaction outcomes (ie: 1,2,3,4).
+    quality_map = dict()
 
     fields_to_range = ["pH", "time", "temp"]
     indexes_to_range = [headers.index(field) for field in fields_to_range]
@@ -510,7 +537,8 @@ def build_baseline(lab_group=None, debug=False):
                 var_ranges[field].append(float(rxn[index]))
 
         # reactants = filter(lambda x: x != 'water' and x != '', [ r[1], r[4], r[7], r[10], r[13]])
-        reactants = [x for x in [r[1], r[4], r[7], r[10], r[13]] if x is not None]
+        reactants = [x for x in [r[1], r[4], r[
+            7], r[10], r[13]] if x is not None]
         reactants = [x.compound.lower() for x in reactants]
         reactants = filter(lambda x: x != 'water' and x != '', reactants)
 
@@ -576,7 +604,8 @@ def get_abbrev_map():
 
 
 def test():
-    combinations = [("NH4VO3", "K2Cr2O7", 'pip'), ("V2O5", "H3PO3", "tmed"), ("NaVO3", "SeO2", "deta")]
+    combinations = [("NH4VO3", "K2Cr2O7", 'pip'),
+                    ("V2O5", "H3PO3", "tmed"), ("NaVO3", "SeO2", "deta")]
     similarity_map = dict()
     for rxn in combinations:
         for reactant in rxn:
@@ -589,7 +618,8 @@ def test():
     range_map['water'] = (3.0, 5.0)
     print user_recommend(combinations, similarity_map, range_map)
 
-class_map = {'Te': [u'sodium tellurite', u'hydrogen telluride', u'tellurium dioxide'], 'Se': [u'Selenium dioxide', u'selenic acid', u'selenous acid', u'Sodium selenite'], 'V': [u'sodium metavanadate', u'lithium metavanadate', u'sodium orthovanadate', u'sodium vanadium trioxide', u'potassium vanadiumtrioxide', u'Oxovanadium(2+) sulfate', u'potassium metavanadate', u'lithium vanadium trioxide', u'ammonium metavanadate', u'vanadium(V) oxide']}
+class_map = {'Te': [u'sodium tellurite', u'hydrogen telluride', u'tellurium dioxide'], 'Se': [u'Selenium dioxide', u'selenic acid', u'selenous acid', u'Sodium selenite'], 'V': [u'sodium metavanadate', u'lithium metavanadate',
+                                                                                                                                                                                 u'sodium orthovanadate', u'sodium vanadium trioxide', u'potassium vanadiumtrioxide', u'Oxovanadium(2+) sulfate', u'potassium metavanadate', u'lithium vanadium trioxide', u'ammonium metavanadate', u'vanadium(V) oxide']}
 
 
 def combo_generator(seed):
@@ -735,11 +765,13 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
     from DRP.compoundGuideFunctions import translate_reactants
 
     # Variable Setup
-    total_to_score = 1000 if not bare_debug else 50  # The number of possible combos to test.
+    # The number of possible combos to test.
+    total_to_score = 1000 if not bare_debug else 50
 
     if debug:
         print "Building baseline..."
-    range_map, quality_map, combinations, var_ranges = build_baseline(debug=debug)
+    range_map, quality_map, combinations, var_ranges = build_baseline(
+        debug=debug)
 
     """
   range_map = {'': (0, 0),
@@ -753,7 +785,8 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
     if debug:
         print "Finding distinct recommendations..."
-    seed = (class_map['V'], class_map['Te'] + class_map['Se'], build_diverse_org(debug=debug))
+    seed = (class_map['V'], class_map['Te'] +
+            class_map['Se'], build_diverse_org(debug=debug))
 
     if debug:
         print "Making abbrev_map..."
@@ -765,7 +798,8 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
 
     if debug:
         print "Ranking possibilities..."
-    # Scores: a list of (score, triple) tuples. (A score is an integer, a triple is a tuple of 3 rxn strings)
+    # Scores: a list of (score, triple) tuples. (A score is an integer, a
+    # triple is a tuple of 3 rxn strings)
     scores = rank_possibilities(seed, combinations)
 
     # A filter for redudant simplifications, using mutual information. Commenting out until fixed.
@@ -785,13 +819,15 @@ def recommendation_generator(use_lab_abbrevs=None, debug=False, bare_debug=False
     for s in scores:
         try:
 
-            reaction_tuples = evaluate_fitness(s[1], range_map, var_ranges, debug=debug)
+            reaction_tuples = evaluate_fitness(
+                s[1], range_map, var_ranges, debug=debug)
             if not reaction_tuples:
                 yield (0, None)
             else:
                 for score, rxn in reaction_tuples:
                     if use_lab_abbrevs:
-                        rxn = translate_reactants(use_lab_abbrevs, rxn, single=True)
+                        rxn = translate_reactants(
+                            use_lab_abbrevs, rxn, single=True)
                     rxn = remove_empty(rxn)
 
                     yield (score * s[0], rxn)
@@ -816,7 +852,8 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
 
     if debug:
         print "-- Creating recommendation generator..."
-    scored_reactions = recommendation_generator(use_lab_abbrevs=lab_group, debug=debug, bare_debug=bare_debug)
+    scored_reactions = recommendation_generator(
+        use_lab_abbrevs=lab_group, debug=debug, bare_debug=bare_debug)
 
     if debug:
         print "-- Storing recommmendations..."
@@ -825,13 +862,15 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
             #if debug: sys.stdout.write("in create_new_recommendations: conf>0\n")
             #if debug: sys.stdout.flush()
             rec = map(str, rec)
-            store_new_Recommendation_list(lab_group, [[conf] + rec], debug=debug)
+            store_new_Recommendation_list(
+                lab_group, [[conf] + rec], debug=debug)
             total += 1
             if debug:
                 print " ... Finished #{}!".format(total)
         else:
             if debug:
-                sys.stdout.write("in create_new_recommendations: conf not >0\n")
+                sys.stdout.write(
+                    "in create_new_recommendations: conf not >0\n")
             if debug:
                 sys.stdout.flush()
 
@@ -847,7 +886,9 @@ def create_new_recommendations(lab_group, debug=True, bare_debug=True):
 if __name__ == "__main__":
     create_new_recommendations("Norquist Lab", debug=True, bare_debug=True)
     # print recommendation_generator()
-    # print get_good_result_tuples("/home/cfalk/DevDRP/tmp/1412533505_recommend.out", [])
+    # print
+    # get_good_result_tuples("/home/cfalk/DevDRP/tmp/1412533505_recommend.out",
+    # [])
 
     #range_map, quality_map, combinations = build_baseline()
     #sim_map = build_sim_map(cg_props)

@@ -48,7 +48,8 @@ class NoLabForUser(NoLabExists):
 
     def setUp(self):
         """Set up lab group for tests."""
-        self.labGroup = LabGroup.objects.makeLabGroup(title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
+        self.labGroup = LabGroup.objects.makeLabGroup(
+            title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
         self.labGroup.save()
         super(NoLabForUser, self).setUp()
 

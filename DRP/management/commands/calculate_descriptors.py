@@ -63,7 +63,8 @@ class Command(BaseCommand):
             warnings.simplefilter('error')
 
         if not only_reactions:
-            Compound.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
+            Compound.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(
+                verbose=verbose, whitelist=whitelist, plugins=plugins)
         if not only_compounds:
             reactions = Reaction.objects.order_by('pk')
             if only_reactions:
@@ -72,4 +73,5 @@ class Command(BaseCommand):
                 reactions = reactions.exclude(performedreaction__valid=False)
             if not include_non_performed:
                 reactions = reactions.exclude(performedreaction=None)
-            reactions.calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
+            reactions.calculate_descriptors(
+                verbose=verbose, whitelist=whitelist, plugins=plugins)

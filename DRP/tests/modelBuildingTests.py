@@ -28,7 +28,8 @@ class ModelTest(DRPTestCase):
         container.save()
         container.full_clean()
 
-        # TODO: We should test the ModelContainer "predict" method here as well.
+        # TODO: We should test the ModelContainer "predict" method here as
+        # well.
 
 
 # TODO XXX more robust testing
@@ -95,4 +96,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

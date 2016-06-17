@@ -19,11 +19,14 @@ def license(request):
         return HttpResponseNotFound(template.render(RequestContext(request)))
     else:
         latestLicense = License.objects.latest()
-        currentSignedLicenseQ = LicenseAgreement.objects.filter(user=request.user, text=latestLicense)
-        nextPage = request.GET['next'] if 'next' in request.GET.keys() else None
+        currentSignedLicenseQ = LicenseAgreement.objects.filter(
+            user=request.user, text=latestLicense)
+        nextPage = request.GET[
+            'next'] if 'next' in request.GET.keys() else None
         if not currentSignedLicenseQ.exists():
             if request.method == 'POST':
-                form = LicenseAgreementForm(request.user, latestLicense, data=request.POST)
+                form = LicenseAgreementForm(
+                    request.user, latestLicense, data=request.POST)
                 if form.is_valid():
                     form.save()
                     if nextPage:
@@ -41,4 +44,5 @@ def license(request):
             else:
                 return render(request, 'license_up_to_date.html', RequestContext(request, {'license': latestLicense}))
         else:
-            raise RuntimeError('Impossible condition occured. Please contact an administrator or developer')
+            raise RuntimeError(
+                'Impossible condition occured. Please contact an administrator or developer')

@@ -48,7 +48,8 @@ class Euclidean:
 
     def apply_center(self, row):
         if not self.headers:
-            raise Exception("Call the `setup` method on this metric before use!")
+            raise Exception(
+                "Call the `setup` method on this metric before use!")
 
         new_row = []
         for i, header in enumerate(self.headers):

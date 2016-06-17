@@ -24,8 +24,10 @@ class Command(BaseCommand):
         ModelContainer.objects.all().delete()
         DataSetRelation.objects.all().delete()
         DataSet.objects.all().delete()
-        CatRxnDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual').delete()
-        CatMolDescriptorValue.objects.exclude(descriptor__calculatorSoftware='manual').delete()
+        CatRxnDescriptorValue.objects.exclude(
+            descriptor__calculatorSoftware='manual').delete()
+        CatMolDescriptorValue.objects.exclude(
+            descriptor__calculatorSoftware='manual').delete()
         Descriptor.objects.exclude(calculatorSoftware='manual').delete()
 
         rxns = Reaction.objects.all()
@@ -36,7 +38,8 @@ class Command(BaseCommand):
             true_num = kwargs['number'] / 2
             false_num = kwargs['number'] - true_num
 
-            true_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome', boolrxndescriptorvalue__value=True).distinct().order_by('-pk')
+            true_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome',
+                                    boolrxndescriptorvalue__value=True).distinct().order_by('-pk')
             print true_rxns.count()
             cutoff_pk = true_rxns[true_num].pk
             true_rxns_to_delete = true_rxns.filter(pk__lte=cutoff_pk)
@@ -44,7 +47,8 @@ class Command(BaseCommand):
             assert(true_rxns.count() - true_rxns_to_delete.count() == true_num)
             true_rxns_to_delete.delete()
 
-            false_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome', boolrxndescriptorvalue__value=False).distinct().order_by('-pk')
+            false_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome',
+                                     boolrxndescriptorvalue__value=False).distinct().order_by('-pk')
             print false_rxns.count()
             cutoff_pk = false_rxns[false_num].pk
             false_rxns_to_delete = false_rxns.filter(pk__lte=cutoff_pk)
@@ -52,8 +56,10 @@ class Command(BaseCommand):
             assert(false_rxns.count() - false_rxns_to_delete.count() == false_num)
             false_rxns_to_delete.delete()
 
-            rxns.exclude(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome').delete()
-            rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome', boolrxndescriptorvalue__value=None).delete()
+            rxns.exclude(
+                boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome').delete()
+            rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome',
+                        boolrxndescriptorvalue__value=None).delete()
         else:
             rxns = rxns.order_by('-pk')
             cutoff_pk = rxns[kwargs['number']]

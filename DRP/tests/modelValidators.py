@@ -19,11 +19,13 @@ class NotInTheFuture(DRPTestCase):
 
     def test_future(self):
         """Test a date in the future."""
-        self.assertRaises(ValidationError, validators.notInTheFuture, datetime.datetime.now() + datetime.timedelta(1))
+        self.assertRaises(ValidationError, validators.notInTheFuture,
+                          datetime.datetime.now() + datetime.timedelta(1))
 
     def test_past(self):
         """Test a date in the past."""
-        validators.notInTheFuture(datetime.datetime.now() - datetime.timedelta(1))
+        validators.notInTheFuture(
+            datetime.datetime.now() - datetime.timedelta(1))
 
     def test_present(self):
         """Test today."""
@@ -65,4 +67,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

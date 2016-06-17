@@ -28,10 +28,13 @@ def dump(response_headers=None, predictor_headers=None, reaction_set_name=None, 
 
     if responses.count() != len(response_headers):
         missing_descriptors = build_model.missing_descriptors(response_headers)
-        raise KeyError("Could not find all responses. Missing {}".format(missing_descriptors))
+        raise KeyError(
+            "Could not find all responses. Missing {}".format(missing_descriptors))
     if predictors.count() != len(predictor_headers):
-        missing_descriptors = build_model.missing_descriptors(predictor_headers)
-        raise KeyError("Could not find all predictors. Missing {}".format(missing_descriptors))
+        missing_descriptors = build_model.missing_descriptors(
+            predictor_headers)
+        raise KeyError(
+            "Could not find all predictors. Missing {}".format(missing_descriptors))
 
     if reaction_set_name is None:
         reactions = PerformedReaction.objects.all()
@@ -62,4 +65,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers, reaction_set_name=args.reaction_set_name, output_file=args.output_file, verbose=args.verbose)
+    dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers,
+         reaction_set_name=args.reaction_set_name, output_file=args.output_file, verbose=args.verbose)

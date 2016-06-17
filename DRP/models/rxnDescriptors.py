@@ -18,14 +18,18 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
     def __init__(self, *args, **kwargs):
         """Initialise a new instance of a reaction descriptor."""
         super(CatRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredCatRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
+        # because of python's flawed dependency resolution, this is what I've
+        # been reduced to.
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredCatRxnDescriptor
 
     def createValue(self, reaction, value):
         """Create a new reaction descriptor value object."""
         try:
-            v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.CatRxnDescriptorValue.objects.get(
+                descriptor=self, reaction=reaction)
         except rxnDescriptorValues.CatRxnDescriptorValue.doesnotExist:
-            v = rxnDescriptorValues.CatRxnDescriptorValue(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.CatRxnDescriptorValue(
+                descriptor=self, reaction=reaction)
         v.value = CategoricalDescriptorPermittedValue.objects.get(value=value)
         return v
 
@@ -36,7 +40,8 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
         This allows later bulk creation.
         Return the new value object or None if no object was created (only updated).
         """
-        qs = rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
+        qs = rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(
+            descriptor=self, reaction=reaction)
 
         if qs.exists():
             qs.exclude(value=value).update(value=value)
@@ -58,16 +63,21 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
     def __init__(self, *args, **kwargs):
         """Initialise a new instance of a reaction descriptor."""
         super(OrdRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredOrdRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
+        # because of python's flawed dependency resolution, this is what I've
+        # been reduced to.
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredOrdRxnDescriptor
 
-    def createValue(self, reaction, value):#TODO: This feels very inelegant.
+    def createValue(self, reaction, value):  # TODO: This feels very inelegant.
         """Create a new reaction descriptor value object."""
         if not isinstance(value, int) and value is not None:
-            raise TypeError("You cannot create a ordinal value with non-integer type {}".format(type(value)))
+            raise TypeError(
+                "You cannot create a ordinal value with non-integer type {}".format(type(value)))
         try:
-            v = rxnDescriptorValues.OrdRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.OrdRxnDescriptorValue.objects.get(
+                descriptor=self, reaction=reaction)
         except rxnDescriptorValues.OrdRxnDescriptorValue.DoesNotExist:
-            v = rxnDescriptorValues.OrdRxnDescriptorValue(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.OrdRxnDescriptorValue(
+                descriptor=self, reaction=reaction)
         v.value = value
         return v
 
@@ -79,9 +89,11 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
         Return the new value object or None if no object was created (only updated).
         """
         if not isinstance(value, int) and value is not None:
-            raise TypeError("You cannot create a ordinal value with non-integer type {}".format(type(value)))
+            raise TypeError(
+                "You cannot create a ordinal value with non-integer type {}".format(type(value)))
 
-        qs = rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
+        qs = rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(
+            descriptor=self, reaction=reaction)
 
         if qs.exists():
             qs.exclude(value=value).update(value=value)
@@ -91,7 +103,8 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
 
     def createPredictionDescriptor(self, *args, **kwargs):
         """Create a new predicted descriptor which matches this one's parameters."""
-        pred = super(OrdRxnDescriptor, self).createPredictionDescriptor(*args, **kwargs)
+        pred = super(OrdRxnDescriptor, self).createPredictionDescriptor(
+            *args, **kwargs)
         pred.maximum = self.maximum
         pred.minimum = self.minimum
         return pred
@@ -110,17 +123,23 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
     def __init__(self, *args, **kwargs):
         """Initialise a new instance of a reaction descriptor."""
         super(NumRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredNumRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
+        # because of python's flawed dependency resolution, this is what I've
+        # been reduced to.
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredNumRxnDescriptor
 
     def createValue(self, reaction, value):
         """Create a new reaction descriptor value object."""
-        # TODO These checks should be part of a more standard 'allowed value' type thing
+        # TODO These checks should be part of a more standard 'allowed value'
+        # type thing
         if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
-            raise TypeError("You cannot create a numerical value with non-float type {}".format(type(value)))
+            raise TypeError(
+                "You cannot create a numerical value with non-float type {}".format(type(value)))
         try:
-            v = rxnDescriptorValues.NumRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.NumRxnDescriptorValue.objects.get(
+                descriptor=self, reaction=reaction)
         except rxnDescriptorValues.NumRxnDescriptorValue.DoesNotExist:
-            v = rxnDescriptorValues.NumRxnDescriptorValue(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.NumRxnDescriptorValue(
+                descriptor=self, reaction=reaction)
         v.value = value
         return v
 
@@ -132,9 +151,11 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
         Return the new value object or None if no object was created (only updated).
         """
         if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
-            raise TypeError("You cannot create a numerical value with non-float type {}".format(type(value)))
+            raise TypeError(
+                "You cannot create a numerical value with non-float type {}".format(type(value)))
 
-        qs = rxnDescriptorValues.NumRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
+        qs = rxnDescriptorValues.NumRxnDescriptorValue.objects.filter(
+            descriptor=self, reaction=reaction)
 
         if qs.exists():
             qs.exclude(value=value).update(value=value)
@@ -144,7 +165,8 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
     def createPredictionDescriptor(self, *args, **kwargs):
         """Create a new predicted descriptor which matches this one's parameters."""
-        pred = super(NumRxnDescriptor, self).createPredictionDescriptor(*args, **kwargs)
+        pred = super(NumRxnDescriptor, self).createPredictionDescriptor(
+            *args, **kwargs)
         pred.maximum = self.maximum
         pred.minimum = self.minimum
         return pred
@@ -163,16 +185,21 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
     def __init__(self, *args, **kwargs):
         """Initialise a new instance of a reaction descriptor."""
         super(BoolRxnDescriptor, self).__init__(*args, **kwargs)
-        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredBoolRxnDescriptor  # because of python's flawed dependency resolution, this is what I've been reduced to.
+        # because of python's flawed dependency resolution, this is what I've
+        # been reduced to.
+        self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredBoolRxnDescriptor
 
     def createValue(self, reaction, value):
         """Create a new reaction descriptor value object."""
         if not isinstance(value, bool) and value is not None:
-            raise TypeError("You cannot create a boolean value with non-boolean type {}".format(type(value)))
+            raise TypeError(
+                "You cannot create a boolean value with non-boolean type {}".format(type(value)))
         try:
-            v = rxnDescriptorValues.BoolRxnDescriptorValue.objects.get(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.BoolRxnDescriptorValue.objects.get(
+                descriptor=self, reaction=reaction)
         except rxnDescriptorValues.BoolRxnDescriptorValue.DoesNotExist:
-            v = rxnDescriptorValues.BoolRxnDescriptorValue(descriptor=self, reaction=reaction)
+            v = rxnDescriptorValues.BoolRxnDescriptorValue(
+                descriptor=self, reaction=reaction)
         v.value = value
         return v
 
@@ -184,8 +211,10 @@ class BoolRxnDescriptor(BooleanDescriptor, Predictable):
         Return a tuple of the value object and whether it is new (needs to be saved).
         """
         if not isinstance(value, bool) and value is not None:
-            raise TypeError("You cannot create a boolean value with non-boolean type {}".format(type(value)))
-        qs = rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor=self, reaction=reaction)
+            raise TypeError(
+                "You cannot create a boolean value with non-boolean type {}".format(type(value)))
+        qs = rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(
+            descriptor=self, reaction=reaction)
 
         if qs.exists():
             qs.exclude(value=value).update(value=value)

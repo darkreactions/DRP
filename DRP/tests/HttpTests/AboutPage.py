@@ -16,5 +16,6 @@ suite = unittest.TestSuite([
 ])
 
 if __name__ == '__main__':
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.
     unittest.main()

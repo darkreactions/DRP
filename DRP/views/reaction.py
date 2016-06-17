@@ -34,19 +34,22 @@ class ListPerformedReactions(ListView):
     def dispatch(self, request, filetype=None, *args, **kwargs):
         """Render the view according to the appropriate filetype."""
         if self.labGroup is not None:
-            self.queryset = PerformedReaction.objects.filter(reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
+            self.queryset = PerformedReaction.objects.filter(
+                reaction_ptr__in=self.labGroup.reaction_set.all()) | PerformedReaction.objects.filter(public=True)
         else:
             self.queryset = PerformedReaction.objects.filter(public=True)
         self.queryset = self.queryset.order_by('-insertedDateTime')
 
         if filetype is None:
-            response = super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
+            response = super(ListPerformedReactions, self).dispatch(
+                request, *args, **kwargs)
         elif filetype == '.html':
             if 'page' not in request.GET:
                 self.paginate_by = None
             if 'reactions_only' in request.GET:
                 self.template_name = 'reactions_divs.html'
-            response = super(ListPerformedReactions, self).dispatch(request, *args, **kwargs)
+            response = super(ListPerformedReactions, self).dispatch(
+                request, *args, **kwargs)
         elif filetype == '.csv':
             self.paginate_by = None
             response = HttpResponse(content_type='text/csv')
@@ -58,7 +61,8 @@ class ListPerformedReactions(ListView):
         elif filetype == '.arff':
             self.paginate_by = None
             response = HttpResponse(content_type='text/vnd.weka.arff')
-            response['Content-Disposition'] = 'attachment; filename="reactions.arff"'
+            response[
+                'Content-Disposition'] = 'attachment; filename="reactions.arff"'
             if 'expanded' in request.GET and request.user.is_authenticated() and user.is_staff:
                 self.queryset.toArff(response, True)
             else:
@@ -67,7 +71,8 @@ class ListPerformedReactions(ListView):
 
     def get_context_data(self, **kwargs):
         """Attach the lab form as additional context; deprecated."""
-        context = super(ListPerformedReactions, self).get_context_data(**kwargs)
+        context = super(ListPerformedReactions,
+                        self).get_context_data(**kwargs)
         context['lab_form'] = self.labForm
         return context
 
@@ -95,19 +100,24 @@ def createReaction(request):
 def addCompoundDetails(request, rxn_id):
     """A view for adding compound details to a reaction."""
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, form=compoundQuantityFormFactory(rxn_id), can_delete=('creating' not in request.GET), extra=6)
+    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, form=compoundQuantityFormFactory(
+        rxn_id), can_delete=('creating' not in request.GET), extra=6)
     if request.method == "POST":
-        formset = CompoundQuantityFormset(queryset=compoundQuantities, data=request.POST, prefix='quantities')
+        formset = CompoundQuantityFormset(
+            queryset=compoundQuantities, data=request.POST, prefix='quantities')
         if formset.is_valid():
             formset.save()
-            CompoundQuantity.objects.filter(id__in=[cq.id for cq in formset.deleted_objects]).delete()  # copes with a bug in deletion from django
+            # copes with a bug in deletion from django
+            CompoundQuantity.objects.filter(
+                id__in=[cq.id for cq in formset.deleted_objects]).delete()
             messages.success(request, 'Compound details successfully updated')
             if 'creating' in request.GET:
                 return redirect('createNumDescVals', rxn_id, params={'creating': True})
             else:
                 return redirect('editReaction', rxn_id)
     else:
-        formset = CompoundQuantityFormset(queryset=compoundQuantities, prefix='quantities')
+        formset = CompoundQuantityFormset(
+            queryset=compoundQuantities, prefix='quantities')
     return render(request, 'reaction_compound_add.html', {'reactants_formset': formset, 'reaction': PerformedReaction.objects.get(id=rxn_id), })
 
 
@@ -117,24 +127,32 @@ def addCompoundDetails(request, rxn_id):
 @reactionExists
 def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader, createNext):
     """A generic view function to create descriptor values for reactions."""
-    descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-    initialDescriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
-    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass(rxn_id), can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
+    descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
+        descriptor__calculatorSoftware="manual")
+    initialDescriptors = descValClass.descriptorClass.objects.filter(
+        calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
+    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass(
+        rxn_id), can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
     if descValClass.descriptorClass.objects.filter(calculatorSoftware="manual").exists():
         if request.method == "POST":
-            formset = descValFormset(queryset=descVals, data=request.POST, prefix=request.resolver_match.url_name)
+            formset = descValFormset(
+                queryset=descVals, data=request.POST, prefix=request.resolver_match.url_name)
             # this weird prefix is caused by the generic nature of this function and the neccessity to namespace
-            # the different form elements in the formsets used in the edit reaction view.
+            # the different form elements in the formsets used in the edit
+            # reaction view.
             if formset.is_valid():
                 descVals = formset.save()
-                descValClass.objects.filter(id__in=[dv.id for dv in formset.deleted_objects]).delete()
-                messages.success(request, 'Reaction descriptor details successfully updated')
+                descValClass.objects.filter(
+                    id__in=[dv.id for dv in formset.deleted_objects]).delete()
+                messages.success(
+                    request, 'Reaction descriptor details successfully updated')
                 if createNext is None or 'creating' not in request.GET:
                     return redirect('editReaction', rxn_id)
                 else:
                     return redirect(createNext, rxn_id, params={'creating': True})
         else:
-            formset = descValFormset(queryset=descVals, initial=[{'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=request.resolver_match.url_name)
+            formset = descValFormset(queryset=descVals, initial=[
+                                     {'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=request.resolver_match.url_name)
         return render(request, 'reaction_detail_add.html', {'formset': formset, 'rxn_id': rxn_id, 'info_header': infoHeader})
     elif createNext is None or 'creating' not in request.GET:
         return redirect('editReaction', rxn_id)
@@ -150,27 +168,37 @@ def editReaction(request, rxn_id):
     """A view designed to edit performed reaction instances."""
     reaction = PerformedReaction.objects.get(id=rxn_id)
     if request.method == "POST":
-        perfRxnForm = PerformedRxnForm(request.user, data=request.POST, instance=reaction)
+        perfRxnForm = PerformedRxnForm(
+            request.user, data=request.POST, instance=reaction)
         if perfRxnForm.is_valid():
             perfRxnForm.save()
             messages.success(request, "Reaction successfully updated.")
     else:
         perfRxnForm = PerformedRxnForm(request.user, instance=reaction)
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)
-    CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, form=compoundQuantityFormFactory(rxn_id), can_delete=True, extra=1)
-    cqFormset = CompoundQuantityFormset(queryset=compoundQuantities, prefix="quantities")
+    CompoundQuantityFormset = modelformset_factory(
+        model=CompoundQuantity, form=compoundQuantityFormFactory(rxn_id), can_delete=True, extra=1)
+    cqFormset = CompoundQuantityFormset(
+        queryset=compoundQuantities, prefix="quantities")
     descriptorFormsets = {}
     descriptorClasses = (('Numeric Descriptors', 'createNumDescVals', NumRxnDescriptorValue, NumRxnDescValFormFactory(rxn_id)),
-                         ('Ordinal Descriptors', 'createOrdDescVals', OrdRxnDescriptorValue, OrdRxnDescValFormFactory(rxn_id)),
-                         ('Boolean Descriptors', 'createBoolDescVals', BoolRxnDescriptorValue, BoolRxnDescValFormFactory(rxn_id)),
+                         ('Ordinal Descriptors', 'createOrdDescVals',
+                          OrdRxnDescriptorValue, OrdRxnDescValFormFactory(rxn_id)),
+                         ('Boolean Descriptors', 'createBoolDescVals',
+                          BoolRxnDescriptorValue, BoolRxnDescValFormFactory(rxn_id)),
                          ('Categorical Descriptors', 'createCatDescVals', CatRxnDescriptorValue, CatRxnDescValFormFactory(rxn_id)))
     for descLabel, urlName, descValClass, descValFormClass in descriptorClasses:
-        descriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual')
+        descriptors = descValClass.descriptorClass.objects.filter(
+            calculatorSoftware='manual')
         if descriptors.exists():
-            descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
-            initialDescriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
-            descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count())
-            descriptorFormsets[descLabel] = {'url': urlName, 'formset': descValFormset(queryset=descVals, initial=[{'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=urlName)}
+            descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
+                descriptor__calculatorSoftware="manual")
+            initialDescriptors = descValClass.descriptorClass.objects.filter(
+                calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
+            descValFormset = modelformset_factory(
+                model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count())
+            descriptorFormsets[descLabel] = {'url': urlName, 'formset': descValFormset(queryset=descVals, initial=[
+                                                                                       {'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=urlName)}
     return render(request, 'reaction_edit.html', {'reaction_form': perfRxnForm, 'reactants_formset': cqFormset, 'descriptor_formsets': descriptorFormsets, 'reaction': reaction})
 
 

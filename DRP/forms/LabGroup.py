@@ -27,7 +27,7 @@ class LabGroupForm(forms.ModelForm):
     def clean_accessCode(self):
         """
         Permit the use of old-style LabGroups by either saving a new access code.
-    
+
         Allow converting the legacy access code (previously stored as a plaintext string) before erasing it.
         """
         if self.instance.legacy_access_code == '' and self.instance.access_code == '' and self.cleaned_data['accessCode'] == '':
@@ -40,7 +40,8 @@ class LabGroupForm(forms.ModelForm):
     def save(self, commit=True):
         """Save an instance of the LabGroup, hashing the access code for storage."""
         labGroup = super(LabGroupForm, self).save(commit=False)
-        labGroup.access_code = make_password(self.cleaned_data['accessCode'], settings.LAB_GROUP_HASH_SALT)
+        labGroup.access_code = make_password(
+            self.cleaned_data['accessCode'], settings.LAB_GROUP_HASH_SALT)
         labGroup.legacy_access_code = ''
         if commit:
             labGroup.save()
@@ -51,8 +52,10 @@ class LabGroupJoiningForm(forms.Form):
 
     """This class is to validate a user to join a lab group using their supplied access code."""
 
-    labGroup = forms.ModelChoiceField(label='Lab Group', queryset=LabGroup.objects.all())
-    accessCode = forms.CharField(label='Access Code', widget=forms.PasswordInput)
+    labGroup = forms.ModelChoiceField(
+        label='Lab Group', queryset=LabGroup.objects.all())
+    accessCode = forms.CharField(
+        label='Access Code', widget=forms.PasswordInput)
 
     def clean(self):
         """Check the various places an access code might be."""
@@ -63,7 +66,8 @@ class LabGroupJoiningForm(forms.Form):
             elif self.cleaned_data.get('accessCode') == self.cleaned_data['labGroup'].legacy_access_code:
                 return self.cleaned_data
             else:
-                raise ValidationError('Invalid Access Code', code='invalid_access')
+                raise ValidationError(
+                    'Invalid Access Code', code='invalid_access')
 
 
 class LabGroupLeavingForm(forms.Form):
@@ -73,7 +77,8 @@ class LabGroupLeavingForm(forms.Form):
     def __init__(self, user, labGroup=None, *args, **kwargs):
         """Limit the valid labgroups for this form to ones the user belongs to."""
         super(LabGroupLeavingForm, self).__init__(*args, **kwargs)
-        self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), widget=forms.HiddenInput, initial=labGroup)
+        self.fields['labGroup'] = forms.ModelChoiceField(
+            queryset=user.labgroup_set.all(), widget=forms.HiddenInput, initial=labGroup)
 
 
 class LabGroupSelectionForm(forms.Form):
@@ -83,4 +88,5 @@ class LabGroupSelectionForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         """Limit the valid labgroups for this form to ones the user belongs to."""
         super(LabGroupSelectionForm, self).__init__(*args, **kwargs)
-        self.fields['labGroup'] = forms.ModelChoiceField(label='Viewing as Lab Group', queryset=user.labgroup_set.all())
+        self.fields['labGroup'] = forms.ModelChoiceField(
+            label='Viewing as Lab Group', queryset=user.labgroup_set.all())

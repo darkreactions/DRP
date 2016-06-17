@@ -49,40 +49,49 @@ def print_descriptor_types():
 def filter_through_reactions(reactions, descriptors):
     valid_descriptors = []
     desc_val_types = [(BoolRxnDescriptor, BoolRxnDescriptorValue), (NumRxnDescriptor, NumRxnDescriptorValue),
-                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor, OrdRxnDescriptorValue)
+                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor,
+                                                                  OrdRxnDescriptorValue)
                       ]
     for descriptor in descriptors:
         for dt, vt in desc_val_types:
             if isinstance(descriptor, dt):
-                qs = vt.objects.filter(descriptor=descriptor, reaction__in=reactions)
+                qs = vt.objects.filter(
+                    descriptor=descriptor, reaction__in=reactions)
 
                 if qs.exists():
                     qs = qs.exclude(value=None)
                     if qs.exists():
-                        # the latter clause checks whether the values are unique
+                        # the latter clause checks whether the values are
+                        # unique
                         if qs.values('value').annotate(num=Count('value')).count() != 1:
                             valid_descriptors.append(descriptor)
                         else:
-                            sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
+                            sys.stderr.write(
+                                "{} excluded because all non-None values are the same\n".format(descriptor.heading))
                     else:
-                        sys.stderr.write("{} excluded because all values are None\n".format(descriptor.heading))
+                        sys.stderr.write(
+                            "{} excluded because all values are None\n".format(descriptor.heading))
                 else:
-                    sys.stderr.write("{} excluded because there are no values\n".format(descriptor.heading))
+                    sys.stderr.write(
+                        "{} excluded because there are no values\n".format(descriptor.heading))
     return valid_descriptors
 
 
 def filter_through_reactions_nonMissing_unique(reactions, descriptors):
     desc_triples = []
     desc_val_types = [(BoolRxnDescriptor, BoolRxnDescriptorValue), (NumRxnDescriptor, NumRxnDescriptorValue),
-                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor, OrdRxnDescriptorValue)
+                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor,
+                                                                  OrdRxnDescriptorValue)
                       ]
     for descriptor in descriptors:
         for dt, vt in desc_val_types:
             if isinstance(descriptor, dt):
-                qs = vt.objects.filter(descriptor=descriptor, reaction__in=reactions).exclude(value=None)
+                qs = vt.objects.filter(
+                    descriptor=descriptor, reaction__in=reactions).exclude(value=None)
 
                 nonNull = qs.count()
-                distinct = qs.values('value').annotate(num=Count('value')).count()
+                distinct = qs.values('value').annotate(
+                    num=Count('value')).count()
 
                 desc_triples.append((descriptor.heading, nonNull, distinct))
 
@@ -128,12 +137,14 @@ def count_qset_list(qset_list):
 
 
 def filtered_rxn_descriptors(**kwargs):
-    descriptor_types = [BoolRxnDescriptor, NumRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor]
+    descriptor_types = [BoolRxnDescriptor,
+                        NumRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor]
     return filter_qset_list([dtype.objects.all() for dtype in descriptor_types], **kwargs)
 
 
 def valid_legacy_rxn_descriptors():
-    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "examplepy"]
+    exclude_substring = ["_prediction_",
+                         "outcome", "rxnSpaceHash", "examplepy"]
     exclude_prefix = ["_", "transform"]
     require_suffix = ["_legacy", ]
 
@@ -141,7 +152,8 @@ def valid_legacy_rxn_descriptors():
 
 
 def valid_nonlegacy_rxn_descriptors():
-    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "examplepy"]
+    exclude_substring = ["_prediction_",
+                         "outcome", "rxnSpaceHash", "examplepy"]
     exclude_prefix = ["_", "transform"]
     exclude_suffix = ["_legacy", ]
 
@@ -175,5 +187,6 @@ if __name__ == '__main__':
     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
     filtered_descriptors = filter_through_reactions(reactions, descriptors)
-    sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), count_qset_list(qsets)))
+    sys.stderr.write("Kept {} of {} descriptors\n".format(
+        len(filtered_descriptors), count_qset_list(qsets)))
     print_headers(filtered_descriptors, sort=True)

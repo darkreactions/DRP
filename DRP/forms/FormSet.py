@@ -19,7 +19,7 @@ class FormSetManagerForm(forms.Form):
     def __init__(self, maxForms, formSetPrefix, initialCount, canAdd, canDelete, prefix='', data=None, *args, **kwargs):
         """
         Initialiser.
-        
+
         Takes the following arguments:
 
         maxForms is the maximum number of forms which can be found in this formset
@@ -32,20 +32,27 @@ class FormSetManagerForm(forms.Form):
         data is the form data which has been passed to the formset (normally request.POST)
         *args, **kwargs; other nonpertinent arguments which are handed on to the forms.Form constructor for completeness
         """
-        super(FormSetManagerForm, self).__init__(prefix=prefix + '-' + formSetPrefix, data=copy.copy(data), *args, **kwargs)
-        self.fields[TOTAL_FORMS] = forms.IntegerField(min_value=0, widget=forms.widgets.HiddenInput, initial=initialCount if canAdd else initialCount + 1)  # useful for javascript
-        self.fields[MAX_FORMS] = forms.IntegerField(min_value=0, max_value=maxForms, initial=maxForms, widget=forms.widgets.HiddenInput)  # useful for javascript
-        self.fields[PREFIX] = forms.CharField(initial=formSetPrefix, widget=forms.widgets.HiddenInput, required=False)  # useful for javascript
+        super(FormSetManagerForm, self).__init__(prefix=prefix + '-' +
+                                                 formSetPrefix, data=copy.copy(data), *args, **kwargs)
+        self.fields[TOTAL_FORMS] = forms.IntegerField(
+            min_value=0, widget=forms.widgets.HiddenInput, initial=initialCount if canAdd else initialCount + 1)  # useful for javascript
+        self.fields[MAX_FORMS] = forms.IntegerField(
+            min_value=0, max_value=maxForms, initial=maxForms, widget=forms.widgets.HiddenInput)  # useful for javascript
+        self.fields[PREFIX] = forms.CharField(
+            initial=formSetPrefix, widget=forms.widgets.HiddenInput, required=False)  # useful for javascript
         if canAdd:
             self.canAdd = canAdd
             if data is None:
-                self.fields[ADD_FORM] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Add one'), required=False)
+                self.fields[ADD_FORM] = forms.BooleanField(
+                    label=None, widget=SubmitButtonWidget('Add one'), required=False)
             else:
-                self.fields[ADD_FORM] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Add another'), required=False)
+                self.fields[ADD_FORM] = forms.BooleanField(
+                    label=None, widget=SubmitButtonWidget('Add another'), required=False)
 
         if canDelete:
             self.canDelete = canDelete
-            self.fields[DELETE] = forms.BooleanField(label=None, widget=SubmitButtonWidget('Remove one'), required=False)
+            self.fields[DELETE] = forms.BooleanField(
+                label=None, widget=SubmitButtonWidget('Remove one'), required=False)
 
     def clean(self):
         """
@@ -55,13 +62,17 @@ class FormSetManagerForm(forms.Form):
         """
         cleaned_data = super(FormSetManagerForm, self).clean()
         if cleaned_data.get(TOTAL_FORMS) > cleaned_data.get(MAX_FORMS):
-            raise ValidationError('No more may be added.', code='too_many_forms')
+            raise ValidationError('No more may be added.',
+                                  code='too_many_forms')
         if cleaned_data.get(ADD_FORM):
             cleaned_data[TOTAL_FORMS] += 1
         if cleaned_data.get(DELETE):
             cleaned_data[TOTAL_FORMS] -= 1
-        self.data[self.add_prefix(TOTAL_FORMS)] = str(self.cleaned_data.get(TOTAL_FORMS))  # YUK.
-        if cleaned_data.get(TOTAL_FORMS) < 1 and (DELETE in self.fields):  # this minimum form value should be made a variable at some poitn
+        # YUK.
+        self.data[self.add_prefix(TOTAL_FORMS)] = str(
+            self.cleaned_data.get(TOTAL_FORMS))
+        # this minimum form value should be made a variable at some poitn
+        if cleaned_data.get(TOTAL_FORMS) < 1 and (DELETE in self.fields):
             del self.fields[DELETE]
         if cleaned_data.get(TOTAL_FORMS) < 1 and (ADD_FORM in self.fields):
             self.fields[ADD_FORM].widget.value = 'Add one'
@@ -107,7 +118,8 @@ class FormSet(object):
         self.initial = initial
         self.canAdd = canAdd
         initialCount = self._initialCount()
-        self.managementForm = FormSetManagerForm(maxForms, prefix, initialCount, canAdd, canDelete, prefix='{}-manager'.format(prefix), data=data)
+        self.managementForm = FormSetManagerForm(
+            maxForms, prefix, initialCount, canAdd, canDelete, prefix='{}-manager'.format(prefix), data=data)
         if self.managementForm.is_bound and self.managementForm.is_valid():
             formCount = self.managementForm.submittedForms
         else:
@@ -118,12 +130,14 @@ class FormSet(object):
 
         if self.managementForm.is_valid():
             if self.managementForm.cleaned_data.get(ADD_FORM):
-                self.forms.append(formClass(prefix='{}-{}'.format(prefix, formCount)))
+                self.forms.append(
+                    formClass(prefix='{}-{}'.format(prefix, formCount)))
 
     def _createForms(self, formCount):
         self.forms = []
         for i in range(0, formCount):
-            self.forms.append(self.formClass(data=self.data, prefix='{}-{}'.format(self.prefix, i)))
+            self.forms.append(self.formClass(
+                data=self.data, prefix='{}-{}'.format(self.prefix, i)))
 
     def _initialCount(self):
         if self.initial is None:
@@ -193,8 +207,10 @@ class ModelFormSet(FormSet):
             if self.instances is None:
                 instance = None
             else:
-                instance = self.instances[i] if i in range(0, self.instances.count()) else None
-            self.forms.append(self.formClass(data=self.data, instance=instance, prefix='{}-{}'.format(self.prefix, i)))
+                instance = self.instances[i] if i in range(
+                    0, self.instances.count()) else None
+            self.forms.append(self.formClass(
+                data=self.data, instance=instance, prefix='{}-{}'.format(self.prefix, i)))
 
     def _initialCount(self):
         if self.instances is None:

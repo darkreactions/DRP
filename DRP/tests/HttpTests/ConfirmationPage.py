@@ -45,12 +45,15 @@ class PostConfirmationPage(PostHttpSessionTest):
 
     def setUp(self):
         """Test the POST request for a user with correct credentials in the correct state."""
-        self.user = User.objects.create_user(username='Aslan', password='banana', email='aslan@example.com')
+        self.user = User.objects.create_user(
+            username='Aslan', password='banana', email='aslan@example.com')
         self.user.is_active = False
         self.user.save()
-        self.code = ConfirmationCode(user=self.user, code=self.confirmationCode)
+        self.code = ConfirmationCode(
+            user=self.user, code=self.confirmationCode)
         self.code.save()
-        self.response = self.s.post(self.url, data={'username': 'Aslan', 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'code': self.code.code})
+        self.response = self.s.post(self.url, data={
+                                    'username': 'Aslan', 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'code': self.code.code})
 
     def tearDown(self):
         """Delete objects created for this test."""
@@ -68,12 +71,15 @@ class PostConfirmationPage2(PostConfirmationPage):
 
     def setUp(self):
         """Set up active use to look for POST confirmation response."""
-        self.user = User.objects.create_user(username='Aslan', password='banana', email='aslan@example.com')
+        self.user = User.objects.create_user(
+            username='Aslan', password='banana', email='aslan@example.com')
         self.user.is_active = False
         self.user.save()
-        self.code = ConfirmationCode(user=self.user, code=self.confirmationCode)
+        self.code = ConfirmationCode(
+            user=self.user, code=self.confirmationCode)
         self.code.save()
-        self.response = self.s.post(self.url, data={'username': self.user.username, 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'code': uuid4()})
+        self.response = self.s.post(self.url, data={
+                                    'username': self.user.username, 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'code': uuid4()})
 
     def test_Status(self):
         """Look for POST confirmation response."""

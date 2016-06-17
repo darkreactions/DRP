@@ -8,14 +8,15 @@ import reimport_reactions
 
 
 class Command(BaseCommand):
-    
+
     """Used for deleting reactions specified in a tsv."""
-    
+
     help = 'Deletes reactions from a tsv file'
 
     def add_arguments(self, parser):
         """Add arguments ot the parser."""
-        parser.add_argument('directory', help='The directory where the tsv files are')
+        parser.add_argument(
+            'directory', help='The directory where the tsv files are')
 
     def handle(self, *args, **kwargs):
         """Handle the command call."""
@@ -28,7 +29,9 @@ class Command(BaseCommand):
                 for i, r in enumerate(reader):
                     ref = r['reference']
                     if ref.lower() != reimport_reactions.convert_legacy_reference(ref):
-                        ps = PerformedReaction.objects.filter(reference=ref.lower())
+                        ps = PerformedReaction.objects.filter(
+                            reference=ref.lower())
                         if ps:
-                            self.stdout.write('{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
+                            self.stdout.write(
+                                '{}: Deleting reaction with converted legacy reference {}'.format(i, ref))
                             ps.delete()

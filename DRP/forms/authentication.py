@@ -35,7 +35,8 @@ class ConfirmationForm(DjangoAuthenticationForm):
         password = self.cleaned_data.get('password')
 
         if username and password:
-            self.user_cache = authenticate(username=username, password=password)
+            self.user_cache = authenticate(
+                username=username, password=password)
             if self.user_cache is None:
                 raise forms.ValidationError(self.error_messages['invalid_login'],
                                             code='invalid_login',
@@ -63,15 +64,19 @@ class LicenseAgreementForm(DjangoAuthenticationForm):
         """A slightly adjusted clean method which checks that the correct license is being signed and checks that the right user is signing."""
         supercleaned = super(LicenseAgreementForm, self).clean()
         if self.user != self.user_cache:
-            raise forms.ValidationError('Incorrect user details entered. Please enter your own user credentials')
+            raise forms.ValidationError(
+                'Incorrect user details entered. Please enter your own user credentials')
         if self.license.id != self.cleaned_data.get('licenseId'):
-            raise forms.ValidationError('Whilst you were signing the agreement, a more up-to-date agreement has been created. Please read the new agreement and sign again.')
+            raise forms.ValidationError(
+                'Whilst you were signing the agreement, a more up-to-date agreement has been created. Please read the new agreement and sign again.')
         return supercleaned.update(self.cleaned_data)
 
     def as_ol(self):
         """Present this form as an ordered list."""
-        text = mark_safe('<pre>{0}</pre>'.format(conditional_escape(self.license.text)))
-        text += mark_safe('<ol>{0}</ol>'.format(super(LicenseAgreementForm, self).as_ul()))
+        text = mark_safe(
+            '<pre>{0}</pre>'.format(conditional_escape(self.license.text)))
+        text += mark_safe('<ol>{0}</ol>'.format(
+            super(LicenseAgreementForm, self).as_ul()))
         return text
 
     def save(self, commit=True):

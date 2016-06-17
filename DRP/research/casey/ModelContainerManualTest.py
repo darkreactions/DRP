@@ -11,9 +11,11 @@ from DRP.ml_models.splitters.KFoldSplitter import Splitter
 
 # TODO: Get the predictors
 responses = Descriptor.objects.filter(heading="crystallisation_outcome")
-predictors = Descriptor.objects.exclude(id__in=responses.values_list('id', flat=True))[:15]
+predictors = Descriptor.objects.exclude(
+    id__in=responses.values_list('id', flat=True))[:15]
 
-container = ModelContainer(library="weka", tool="svm", splitter="KFoldSplitter")
+container = ModelContainer(
+    library="weka", tool="svm", splitter="KFoldSplitter")
 container.save()
 
 #reactions = PerformedReaction.objects.all()

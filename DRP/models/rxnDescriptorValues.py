@@ -60,7 +60,7 @@ class RxnDescriptorValue(models.Model):
 # for model in trainingModels|testModels:
 # model.invalidate()
 # model.save()
-    #super(RxnDescriptorValue, self).delete()
+    # super(RxnDescriptorValue, self).delete()
 
 
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):

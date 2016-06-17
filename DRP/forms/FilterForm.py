@@ -40,14 +40,17 @@ class FilterFormSet(forms.formsets.BaseFormSet):
         self.can_delete = False
         self.can_order = False
         self.validate_min = False  # this is required for django 1.7
-        self.min_num = 0  # this is required for django 1.7. Unclear to me why both are required, but they are.
+        # this is required for django 1.7. Unclear to me why both are required,
+        # but they are.
+        self.min_num = 0
         self.max_num = 10000
         self.validate_max = False
         self.absolute_max = 10000
         if operator in (or_, and_):
             self._operator = operator
         else:
-            raise TypeError('Invalid logical query operator selected, please use operator.or_ or operator.and_')
+            raise TypeError(
+                'Invalid logical query operator selected, please use operator.or_ or operator.and_')
         super(FilterFormSet, self).__init__(*args, **kwargs)
 
     @property

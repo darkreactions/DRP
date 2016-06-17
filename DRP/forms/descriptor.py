@@ -14,12 +14,14 @@ class DescriptorAdmin(forms.ModelForm):
         """Method is purely desingned to stop the overwriting of plugin descriptors."""
         cleaned_data = super(DescriptorAdmin, self).clean(*args, **kwargs)
         if self.instance.pk and self.instance.calculatorSoftware != 'manual':
-            raise ValidationError('This descriptor is not a manual descriptor, and thus cannot be edited using the django admin', 'not_manual')
+            raise ValidationError(
+                'This descriptor is not a manual descriptor, and thus cannot be edited using the django admin', 'not_manual')
         return cleaned_data
 
     def save(self, commit=True, *args, **kwargs):
         """Save the new descriptor, forcing it to be manual."""
-        descriptor = super(DescriptorAdmin, self).save(commit=False, *args, **kwargs)
+        descriptor = super(DescriptorAdmin, self).save(
+            commit=False, *args, **kwargs)
         descriptor.calculatorSoftware = 'manual'
         descriptor.calculatorSoftwareVersion = '0'
         if commit:
@@ -46,16 +48,19 @@ class CatDescPermittedValueForm(forms.ModelForm):
 
     def clean(self, *args, **kwargs):
         """Ensure that the manual descriptor is actually custom."""
-        cleaned_data = super(CatDescPermittedValueForm, self).clean(*args, **kwargs)
+        cleaned_data = super(CatDescPermittedValueForm,
+                             self).clean(*args, **kwargs)
         if not CategoricalDescriptor.objects.filter(calculatorSoftware='manual', descriptor=self.instance.descriptor).exists():
-            raise ValidationError('You may only edit descriptor values for your own custom descriptors')
+            raise ValidationError(
+                'You may only edit descriptor values for your own custom descriptors')
         else:
             return cleaned_data
 
     def __init__(self, *args, **kwargs):
         """Limit the set of related valid descirptors."""
         super(CatDescPermittedValueForm, self).__init__(*args, **kwargs)
-        self.fields['descriptor'].queryset = CategoricalDescriptor.objects.filter(calculatorSoftware='manual')
+        self.fields['descriptor'].queryset = CategoricalDescriptor.objects.filter(
+            calculatorSoftware='manual')
 
 
 class OrdRxnDescriptorForm(DescriptorAdmin):

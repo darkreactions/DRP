@@ -66,14 +66,16 @@ def parse_line(line):
         no_nonsense = line.replace('|   ', '')
         fcv = no_nonsense[:no_nonsense.find(':')]
         fcv = fcv.split()
-        classif = no_nonsense[no_nonsense.find(':') + 1:no_nonsense.find('(')].strip()
+        classif = no_nonsense[no_nonsense.find(
+            ':') + 1:no_nonsense.find('(')].strip()
         return (depth, fcv[0], fcv[1], " ".join(fcv[2:]), classif,
                 parse_count(split[-1]))
 
 
 def parse_tree(lines):
     """Parses input lines into a decision tree."""
-    current_index = [0]  # need mutable container because of closure limitations
+    current_index = [
+        0]  # need mutable container because of closure limitations
 
     def parse(current_depth):
         """Helper recursive function."""
@@ -81,7 +83,8 @@ def parse_tree(lines):
         children = []
         while current_index[0] < len(lines):
             line = lines[current_index[0]]
-            depth, feature, comparator, value, classif, count = parse_line(line)
+            depth, feature, comparator, value, classif, count = parse_line(
+                line)
             if depth < current_depth:
                 # Finished parsing this node.
                 break
@@ -101,7 +104,8 @@ def parse_tree(lines):
                 else:
                     children.append((comparator, value, classif, count))
             else:
-                sys.stderr.write("Parse line output: %s\n" % ((depth, feature, comparator, value, classif, count),))
+                sys.stderr.write("Parse line output: %s\n" % (
+                    (depth, feature, comparator, value, classif, count),))
                 sys.stderr.write("Depth: %s\n" % depth)
                 sys.stderr.write("Current Depth: %s\n" % current_depth)
                 raise Exception("Error : Input jumps two levels at once\n%s."

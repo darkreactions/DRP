@@ -16,25 +16,35 @@ class CompoundFilterForm(FilterForm):
     """A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method."""
 
     model = Compound
-    custom = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=((None, 'Either'), (True, 'True'), (False, 'False'))), initial=None, required=False)
+    custom = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=(
+        (None, 'Either'), (True, 'True'), (False, 'False'))), initial=None, required=False)
 
     def __init__(self, user, labGroup, *args, **kwargs):
         """Set up the form. Because most of the fields are based around models, they must be added dynamically."""
         super(CompoundFilterForm, self).__init__(*args, **kwargs)
-        self.empty_permitted = False  # hard override to cope with a bad piece of programming in django.
-        self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=(('', settings.EMPTY_LABEL),) + tuple(((c['abbrev'], c['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct())), required=False)
-        self.fields['name'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((c['name'], c['name']) for c in labGroup.compound_set.all().values('name').distinct())), required=False)
-        self.fields['chemicalClasses'] = forms.ModelMultipleChoiceField(label='Chemical Classes', queryset=ChemicalClass.objects.filter(compound__in=labGroup.compound_set.all()).distinct(), required=False)
-        self.fields['CSID'] = forms.ChoiceField(choices=(('', settings.EMPTY_LABEL),) + tuple(((c['CSID'], c['CSID']) for c in labGroup.compound_set.all().values('CSID').distinct())), required=False)
+        # hard override to cope with a bad piece of programming in django.
+        self.empty_permitted = False
+        self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=(('', settings.EMPTY_LABEL),) + tuple(
+            ((c['abbrev'], c['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct())), required=False)
+        self.fields['name'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple(
+            (c['name'], c['name']) for c in labGroup.compound_set.all().values('name').distinct())), required=False)
+        self.fields['chemicalClasses'] = forms.ModelMultipleChoiceField(label='Chemical Classes', queryset=ChemicalClass.objects.filter(
+            compound__in=labGroup.compound_set.all()).distinct(), required=False)
+        self.fields['CSID'] = forms.ChoiceField(choices=(('', settings.EMPTY_LABEL),) + tuple(
+            ((c['CSID'], c['CSID']) for c in labGroup.compound_set.all().values('CSID').distinct())), required=False)
         self.fields['INCHI'] = forms.CharField(required=False)
         self.fields['smiles'] = forms.CharField(required=False)
-        self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={'invalid_choice': 'You appear to have borrowed a search from a lab group to which you do not belong.'}, empty_label=settings.EMPTY_LABEL)
-        self.fields['js_active'] = forms.NullBooleanField(widget=HiddenInput, required=False, initial=False)
-        self.checkFields = ('name', 'labGroup', 'abbrev', 'CSID', 'INCHI', 'smiles')
+        self.fields['labGroup'] = forms.ModelChoiceField(queryset=user.labgroup_set.all(), initial=labGroup, widget=HiddenInput, error_messages={
+                                                         'invalid_choice': 'You appear to have borrowed a search from a lab group to which you do not belong.'}, empty_label=settings.EMPTY_LABEL)
+        self.fields['js_active'] = forms.NullBooleanField(
+            widget=HiddenInput, required=False, initial=False)
+        self.checkFields = ('name', 'labGroup', 'abbrev',
+                            'CSID', 'INCHI', 'smiles')
 
     def is_empty(self):
         """Check that the form is empty and performs specific checks for chemicalClasses."""
-        base_empty = super(CompoundFilterForm, self).is_empty()  # performs the normal check on the easy fields
+        base_empty = super(CompoundFilterForm, self).is_empty(
+        )  # performs the normal check on the easy fields
         chemClasses = self.cleaned_data.get('chemicalClasses')
         if chemClasses is None:
             return base_empty and True
@@ -64,7 +74,8 @@ class CompoundFilterForm(FilterForm):
         if self.cleaned_data.get('smiles') not in (None, ''):
             qs = qs.filter(smiles=self.cleaned_data['smiles'])
         if self.cleaned_data.get('custom') not in (None, ''):
-            qs = qs.filter(custom=True if self.cleaned_data.get('custom') is 'True' else False)
+            qs = qs.filter(custom=True if self.cleaned_data.get(
+                'custom') is 'True' else False)
         return qs
 
 
@@ -77,14 +88,22 @@ class AdvancedCompoundFilterForm(CompoundFilterForm):
         if initial is None:
             init = {}
         else:
-            init = initial  # init points at the initial dictionary. What happens to init, happens to initial, and we need this for the pop methods.
-        super(AdvancedCompoundFilterForm, self).__init__(initial=initial, *args, **kwargs)
+            # init points at the initial dictionary. What happens to init,
+            # happens to initial, and we need this for the pop methods.
+            init = initial
+        super(AdvancedCompoundFilterForm, self).__init__(
+            initial=initial, *args, **kwargs)
         data = None if self.data == {} else self.data
-        self.numericFormSet = filterFormSetFactory(NumericFilterForm, NumMolDescriptorValue)(data=data, prefix='{}_num'.format(self.prefix), initial=init.pop('numeric', None), operator=and_)
-        self.ordinalFormSet = filterFormSetFactory(OrdinalFilterForm, OrdMolDescriptorValue)(data=data, prefix='{}_ord'.format(self.prefix), initial=init.pop('ordinal', None), operator=and_)
-        self.categoryFormSet = filterFormSetFactory(CategoryFilterForm, CatMolDescriptorValue)(data=data, prefix='{}_cat'.format(self.prefix), initial=init.pop('category', None), operator=and_)
-        self.booleanFormSet = filterFormSetFactory(BooleanFilterForm, BoolMolDescriptorValue)(data=data, prefix='{}_bool'.format(self.prefix), initial=init.pop('bool', None), operator=and_)
-        self.formSets = [self.numericFormSet, self.ordinalFormSet, self.categoryFormSet, self.booleanFormSet]
+        self.numericFormSet = filterFormSetFactory(NumericFilterForm, NumMolDescriptorValue)(
+            data=data, prefix='{}_num'.format(self.prefix), initial=init.pop('numeric', None), operator=and_)
+        self.ordinalFormSet = filterFormSetFactory(OrdinalFilterForm, OrdMolDescriptorValue)(
+            data=data, prefix='{}_ord'.format(self.prefix), initial=init.pop('ordinal', None), operator=and_)
+        self.categoryFormSet = filterFormSetFactory(CategoryFilterForm, CatMolDescriptorValue)(
+            data=data, prefix='{}_cat'.format(self.prefix), initial=init.pop('category', None), operator=and_)
+        self.booleanFormSet = filterFormSetFactory(BooleanFilterForm, BoolMolDescriptorValue)(
+            data=data, prefix='{}_bool'.format(self.prefix), initial=init.pop('bool', None), operator=and_)
+        self.formSets = [self.numericFormSet, self.ordinalFormSet,
+                         self.categoryFormSet, self.booleanFormSet]
 
     def clean(self):
         """Return cleaned data, with additional data appended for this forms attached formsets."""
@@ -146,7 +165,8 @@ class QuantitativeFilterMixin(forms.Form):
         elif op == 'ne':
             return qs.filter(value__ne=value)
         else:
-            raise RuntimeError('Impossible Value provided to form, and passed validation:{}'.format(op))
+            raise RuntimeError(
+                'Impossible Value provided to form, and passed validation:{}'.format(op))
 
 
 class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
@@ -156,9 +176,12 @@ class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
     def __init__(self, *args, **kwargs):
         """Set up the forms fields, almost all which require some level of dynamism."""
         super(NumericFilterForm, self).__init__(*args, **kwargs)
-        self.fields['descriptor'] = forms.ModelChoiceField(queryset=NumMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
+        self.fields['descriptor'] = forms.ModelChoiceField(
+            queryset=NumMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
         self.fields['value'] = forms.DecimalField(required=False)
-        self.fields['operator'] = self.fields.pop('operator')  # because there isn't a more sensible way of doing the re-ordering for non model forms.
+        # because there isn't a more sensible way of doing the re-ordering for
+        # non model forms.
+        self.fields['operator'] = self.fields.pop('operator')
         self.checkFields = ('value', 'descriptor')
 
     def clean(self):
@@ -166,15 +189,18 @@ class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
         super(NumericFilterForm, self).clean()
         # if False ^ False (meaning that both are supplied), skip to the else (no error)
         # if True ^ True, then False (according to xor logic), skip to else (no error)
-        # Otherwise, if False ^ True | if True ^ False, then if True --> raise error
+        # Otherwise, if False ^ True | if True ^ False, then if True --> raise
+        # error
         if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') is None):
-            raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
+            raise ValidationError(
+                'Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
         else:
             return self.cleaned_data
 
     def fetch(self):
         """fetch the NumMolDescriptor objects which match the supplied form values."""
-        qs = NumMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'))
+        qs = NumMolDescriptorValue.objects.filter(
+            descriptor=self.cleaned_data.get('descriptor'))
         return self.applyFilters(qs)
 
     def is_empty(self):
@@ -190,22 +216,28 @@ class OrdinalFilterForm(QuantitativeFilterMixin, FilterForm):
     def __init__(self, *args, **kwargs):
         """Set the fields up in the right order."""
         super(OrdinalFilterForm, self).__init__(*args, **kwargs)
-        self.fields['descriptor'] = forms.ModelChoiceField(queryset=OrdMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
-        self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value, value) for value in range(md.minimum, md.maximum + 1))) for md in OrdMolDescriptor.objects.all())), required=False)
-        self.fields['operator'] = self.fields.pop('operator')  # because there isn't a more sensible way of doing the re-ordering for non model forms.
+        self.fields['descriptor'] = forms.ModelChoiceField(
+            queryset=OrdMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
+        self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple(
+            (value, value) for value in range(md.minimum, md.maximum + 1))) for md in OrdMolDescriptor.objects.all())), required=False)
+        # because there isn't a more sensible way of doing the re-ordering for
+        # non model forms.
+        self.fields['operator'] = self.fields.pop('operator')
         self.checkFields = ('value', 'descriptor')
 
     def clean(self):
         """Check that the descriptor choice and value have both been supplied, or neither have."""
         super(OrdinalFilterForm, self).clean()
         if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') == ''):
-            raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
+            raise ValidationError(
+                'Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
         else:
             return self.cleaned_data
 
     def fetch(self):
         """fetch the NumMolDescriptor objects which match the supplied form values."""
-        qs = OrdMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'))
+        qs = OrdMolDescriptorValue.objects.filter(
+            descriptor=self.cleaned_data.get('descriptor'))
         return self.applyFilters(qs)
 
     def is_empty(self):
@@ -221,22 +253,29 @@ class CategoryFilterForm(FilterForm):
     def __init__(self, *args, **kwargs):
         """Set teh forms up in the right order."""
         super(CategoryFilterForm, self).__init__(*args, **kwargs)
-        self.fields['descriptor'] = forms.ModelChoiceField(queryset=CatMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
-        self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value.pk, value.value) for value in CategoricalDescriptorPermittedValue.objects.filter(descriptor=md))) for md in CatMolDescriptor.objects.all())), required=False)  # wow, that's hideous... It limits the options available to the available categorical molecular descriptor values, which are categorised according to the particular descriptor.
+        self.fields['descriptor'] = forms.ModelChoiceField(
+            queryset=CatMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
+        # wow, that's hideous... It limits the options available to the
+        # available categorical molecular descriptor values, which are
+        # categorised according to the particular descriptor.
+        self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value.pk, value.value)
+                                                                                                                for value in CategoricalDescriptorPermittedValue.objects.filter(descriptor=md))) for md in CatMolDescriptor.objects.all())), required=False)
         self.checkFields = ('value', 'descriptor')
 
     def clean(self):
         """
         Check that both or neither of value and descriptor have been supplied.
-        
+
         Check that a descriptor value choice appropriate to the
         descriptor has been chosen.
         """
         super(CategoryFilterForm, self).clean()
         if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') is ''):
-            raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
+            raise ValidationError(
+                'Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
         if self.cleaned_data.get('descriptor') is not None and self.cleaned_data.get('descriptor').permittedValues.filter(pk=self.cleaned_data.get("value")).count() < 1:
-            raise ValidationError('The selected value is not appropriate to the selected descriptor', 'wrong_value')
+            raise ValidationError(
+                'The selected value is not appropriate to the selected descriptor', 'wrong_value')
         else:
             return self.cleaned_data
 
@@ -257,8 +296,10 @@ class BooleanFilterForm(FilterForm):
     def __init__(self, *args, **kwargs):
         """Set teh fields up for this form."""
         super(BooleanFilterForm, self).__init__(*args, **kwargs)
-        self.fields['descriptor'] = forms.ModelChoiceField(queryset=BoolMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
-        self.fields['value'] = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=((None, 'Either'), (True, 'True'), (False, 'False'))), initial=None, required=False)
+        self.fields['descriptor'] = forms.ModelChoiceField(
+            queryset=BoolMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
+        self.fields['value'] = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=(
+            (None, 'Either'), (True, 'True'), (False, 'False'))), initial=None, required=False)
         self.checkFields = ('value', 'descriptor')
 
     def fetch(self):

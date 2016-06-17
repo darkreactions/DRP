@@ -24,9 +24,11 @@ class CreateTest(BaseFormTest):
         """Create a user and a chemical class, then a form."""
         self.user = User.objects.create_user('Aslan', 'old_magic')
         self.user.save()
-        self.chemicalClass = ChemicalClass(label='Solv', description='Common Solvent')
+        self.chemicalClass = ChemicalClass(
+            label='Solv', description='Common Solvent')
         self.chemicalClass.save()
-        self.labGroup = LabGroup.objects.makeLabGroup(title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
+        self.labGroup = LabGroup.objects.makeLabGroup(
+            title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
         self.labGroup.save()
         self.setUpFormData()
         self.form = CompoundAdminForm(self.formData)

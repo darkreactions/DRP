@@ -60,10 +60,12 @@ def get_graph_data(request):
         final_clusters = make_clusters_into_single_list(clusters_with_colors)
         #hierarchy = make_clusters_with_radii_into_hierarchy(clusters, clusters_with_radii)
         #small_clusters = check_size_of_clusters(clusters)
-        response = {"nodes": nodes, "links": links, "clusters": final_clusters, "skipTicks": "True"}
+        response = {"nodes": nodes, "links": links,
+                    "clusters": final_clusters, "skipTicks": "True"}
         return HttpResponse(json.dumps(response), content_type="application/json")
 
-    # If vis_data is not created or not up to date, write new vis_data with current data and return that
+    # If vis_data is not created or not up to date, write new vis_data with
+    # current data and return that
     else:
         print "vis_data does not exist"
         # Only grab reactions that have DataCalc objects already generated
@@ -73,14 +75,17 @@ def get_graph_data(request):
         did = [datum.id for datum in data]
         print "just  finished querying for data objects and appending dids"
         # Append the data id of each Reaction(DataCalc object) to the end of the row (will be the last field)
-        # Works because data ids' and expanded_data's reactions are in the same order.
+        # Works because data ids' and expanded_data's reactions are in the same
+        # order.
         expanded_data = expand_data(data)
         for i in xrange(len(expanded_data)):
             expanded_data[i] = expanded_data[i] + [did[i]]
-        # Send headers and expanded data in rough CSV form to vis/dataMatrix function (cleans data) in preparation to be put into JSON object form
+        # Send headers and expanded data in rough CSV form to vis/dataMatrix
+        # function (cleans data) in preparation to be put into JSON object form
         headers = get_expanded_headers() + ["id"]
         cleaned_matrix = dataMatrix([headers] + expanded_data)
-        # Send cleaned matrix to dataMatrixToGraph.myGraph (puts into correct "object" format for  d3 graph)
+        # Send cleaned matrix to dataMatrixToGraph.myGraph (puts into correct
+        # "object" format for  d3 graph)
         print "Just finished creating dataMatrix to graph"
         matrix_formatted_for_vis = myGraph(cleaned_matrix)
         matrix_prepped_for_json = matrix_formatted_for_vis.writeJson()
@@ -96,7 +101,8 @@ def get_graph_data(request):
         file_data.close()
         return HttpResponse(json_formatted_to_string, content_type="application/json")
 
-    # return HttpResponse(json.dumps(matrix_to_json), content_type="application/json")
+    # return HttpResponse(json.dumps(matrix_to_json),
+    # content_type="application/json")
 
 
 def create_vis_data_file(data_to_file):

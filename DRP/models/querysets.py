@@ -22,7 +22,8 @@ class MultiQuerySet(object):
 
     # queryset methods that return a queryset.
     # These are passed through to the underlying querysets unless defined otherwise
-    # Does django indicate these in any way other than reading them from the docs?
+    # Does django indicate these in any way other than reading them from the
+    # docs?
     qs_methods = ['filter', 'exclude', 'annotate', 'order_by', 'reverse', 'distinct', 'values', 'values_list', 'dates', 'datetimes',
                   'none', 'all', 'select_related', 'prefetch_related', 'extra', 'defer', 'only', 'using', 'select_for_update', 'raw']
 
@@ -38,7 +39,8 @@ class MultiQuerySet(object):
 
         # This passing through only works for methods that return a queryset
         if name not in self.qs_methods:
-            raise AttributeError("This queryset method does not return a queryset and therefore cannot be passed through to underlying querysets.")
+            raise AttributeError(
+                "This queryset method does not return a queryset and therefore cannot be passed through to underlying querysets.")
 
         def _map_attr(*args, **kwargs):
             return MultiQuerySet(*[getattr(qs, name)(*args, **kwargs) for qs in self.querysets])
@@ -51,7 +53,8 @@ class MultiQuerySet(object):
 
         See here for an example of how to do so: http://ramenlabs.com/2010/12/08/how-to-quack-like-a-queryset/
         """
-        raise NotImplementedError("No order_by implemented for querysetset. File a feature request if you need this feature.")
+        raise NotImplementedError(
+            "No order_by implemented for querysetset. File a feature request if you need this feature.")
 
     def count(self):
         """Perform a count for all subquerysets and returns the number of records as an integer."""
@@ -99,7 +102,8 @@ class CsvQuerySet(models.query.QuerySet):
         """Return the whitelisted headers for the CSV file."""
         return self.csvHeaders(whitelist)
 
-    def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):  # TODO:figure out most sensible default for missing values
+    # TODO:figure out most sensible default for missing values
+    def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):
         """
         Write the csv data to the writeable (file, or for Django a HttpResponse) object.
 
@@ -117,7 +121,8 @@ class CsvQuerySet(models.query.QuerySet):
 
         writer.writeheader()
         for row in self.rows(expanded):
-            writer.writerow({k: row.get(k, missing) for k in row.keys() if k in headers})
+            writer.writerow({k: row.get(k, missing)
+                             for k in row.keys() if k in headers})
 
     def rows(self, expanded):
         """Generate a dictionary, representative of a row in the csv module's dictwriter."""
@@ -148,23 +153,31 @@ class ArffQuerySet(models.query.QuerySet):
         for field in self.model._meta.fields:
             if whitelist is None or field in whitelist:
                 if isinstance(field, models.IntegerField) or isinstance(field, models.FloatField) or isinstance(field, models.DecimalField):
-                    headers[field.name] = '@attribute {} numeric'.format(field.name)
+                    headers[field.name] = '@attribute {} numeric'.format(
+                        field.name)
                 elif isinstance(field, models.CharField) or isinstance(field, models.TextField):
-                    headers[field.name] = '@attribute {} string'.format(field.name)
+                    headers[field.name] = '@attribute {} string'.format(
+                        field.name)
                 elif isinstance(field, models.DateTimeField):
-                    headers[field.name] = '@attribute {} date "yyyy-MM-dd HH:mm:ss"'.format(field.name)
+                    headers[
+                        field.name] = '@attribute {} date "yyyy-MM-dd HH:mm:ss"'.format(field.name)
                 elif isinstance(field, models.DateField):
-                    headers[field.name] = '@attribute {} date "yyyy-MM-dd"'.format(field.name)
+                    headers[
+                        field.name] = '@attribute {} date "yyyy-MM-dd"'.format(field.name)
                 elif isinstance(field, models.BooleanField):
-                    headers[field.name] = '@attribute {} {{True, False}}'.format(field.name)
+                    headers[field.name] = '@attribute {} {{True, False}}'.format(
+                        field.name)
                 elif isinstance(field, models.ForeignKey):
-                    value_set = {"\"{}\"".format(choice[1]) for choice in field.get_choices()[1:]}
-                    headers[field.name] = '@attribute {} {{{}}}'.format(field.name, ','.join(value_set))
+                    value_set = {"\"{}\"".format(
+                        choice[1]) for choice in field.get_choices()[1:]}
+                    headers[field.name] = '@attribute {} {{{}}}'.format(
+                        field.name, ','.join(value_set))
         return headers
 
     def toArff(self, writeable, expanded=False, relationName='relation', whitelistHeaders=None, missing="?"):
         """Output to an arff file-like object."""
-        writeable.write('%arff file generated by the Dark Reactions Project provided by Haverford College\n')
+        writeable.write(
+            '%arff file generated by the Dark Reactions Project provided by Haverford College\n')
         writeable.write('\n@relation {}\n'.format(relationName))
         if expanded:
             headers = self.expandedArffHeaders(whitelistHeaders)
@@ -175,7 +188,8 @@ class ArffQuerySet(models.query.QuerySet):
 
         writeable.write('\n\n@data\n')
         for row in self.rows(expanded, whitelistHeaders):
-            writeable.write(','.join(('"' + str(row.get(key)) + '"' if (row.get(key) is not None) else missing) for key in headers.keys()))
+            writeable.write(','.join(('"' + str(row.get(key)) + '"' if (row.get(key)
+                                                                        is not None) else missing) for key in headers.keys()))
             writeable.write('\n')
 
     def toNPArray(self, expanded=False, whitelistHeaders=None, missing=np.nan):
@@ -187,7 +201,8 @@ class ArffQuerySet(models.query.QuerySet):
             headers = self.arffHeaders(whitelistHeaders)
 
         for row in self.rows(expanded):
-            matrix.append([(row.get(key) if (row.get(key) is not None) else missing) for key in headers.keys()])
+            matrix.append([(row.get(key) if (row.get(key) is not None)
+                            else missing) for key in headers.keys()])
 
         return np.array(matrix)
 

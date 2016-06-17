@@ -47,9 +47,9 @@ class ApiV1(DRPTestCase):
 @signsExampleLicense("Rorschach")
 @createsPerformedReactionSetOrd
 class ApiV1FailBadUser(ApiV1):
-    
+
     """Direct test made different by using different users."""
-    
+
     pass
 
 suite = unittest.TestSuite([
@@ -59,4 +59,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

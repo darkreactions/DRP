@@ -31,7 +31,8 @@ class CompoundFilterFormSucceed(BaseFormTest):
         self.formData["name"] = "2-aminomethyl-1-ethylpyrrolidine"
         self.formData["chemicalClasses"] = [self.chemicalClass.pk]
         self.formData["CSID"] = "104820"
-        self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
+        self.formData[
+            "INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
         self.formData["smiles"] = "CCN1CCCC1CN"
         self.formData["labGroup"] = self.labgroup.pk
         self.formData["js_active"] = False
@@ -57,8 +58,10 @@ class CompoundFilterFormSucceed(BaseFormTest):
         """Test that the form's fetch method works correctly."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Got more than one result from the filter form")
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched.count(), 1,
+                         "Got more than one result from the filter form")
+        self.assertEqual(fetched[
+                         0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -78,7 +81,8 @@ class CompoundFilterFormDifferentLabGroupFail(BaseFormTest):
         self.formData["name"] = "2-aminomethyl-1-ethylpyrrolidine"
         self.formData["chemicalClasses"] = [self.chemicalClass.pk]
         self.formData["CSID"] = "104820"
-        self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
+        self.formData[
+            "INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
         self.formData["smiles"] = "CCN1CCCC1CN"
         self.formData["labGroup"] = self.labgroup.pk
         self.formData["js_active"] = False
@@ -118,7 +122,8 @@ class CompoundFilterFormWrongLabGroupFail(BaseFormTest):
         self.formData["name"] = "2-aminomethyl-1-ethylpyrrolidine"
         self.formData["chemicalClasses"] = [self.chemicalClass.pk]
         self.formData["CSID"] = "104820"
-        self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
+        self.formData[
+            "INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
         self.formData["smiles"] = "CCN1CCCC1CN"
         self.formData["labGroup"] = self.labgroup.pk
         self.formData["js_active"] = False
@@ -170,7 +175,8 @@ class CompoundFilterFormEmptyFail(BaseFormTest):
         self.assertTrue(self.form.is_empty())
 
 
-# The following test one field at a time, (with the labgroup always filled out) to ensure each individual filter returns what is expected # # # #
+# The following test one field at a time, (with the labgroup always filled
+# out) to ensure each individual filter returns what is expected # # # #
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -207,7 +213,8 @@ class CompoundFilterFormLabGroup(BaseFormTest):
         """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 8, "Expected 8 objects to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched.count(
+        ), 8, "Expected 8 objects to be returned by form, number of objects returned was {}".format(fetched.count()))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -245,8 +252,10 @@ class CompoundFilterFormAbbrev(BaseFormTest):
         """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched.count(
+        ), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched[
+                         0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -284,8 +293,10 @@ class CompoundFilterFormName(BaseFormTest):
         """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched.count(
+        ), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched[
+                         0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -323,7 +334,8 @@ class CompoundFilterFormChemClass(BaseFormTest):
         """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 4, "Expected 4 objects to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched.count(
+        ), 4, "Expected 4 objects to be returned by form, number of objects returned was {}".format(fetched.count()))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -361,8 +373,10 @@ class CompoundFilterFormCSID(BaseFormTest):
         """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched.count(
+        ), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched[
+                         0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -376,7 +390,8 @@ class CompoundFilterFormINCHI(BaseFormTest):
     def setUpFormData(self):
         """Set up form data."""
         self.formData = {}
-        self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
+        self.formData[
+            "INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
@@ -400,8 +415,10 @@ class CompoundFilterFormINCHI(BaseFormTest):
         """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched.count(
+        ), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched[
+                         0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -439,8 +456,10 @@ class CompoundFilterFormSmiles(BaseFormTest):
         """Test that the form's fetch method works as expected."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
-        self.assertEqual(fetched[0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
+        self.assertEqual(fetched.count(
+        ), 1, "Expected 1 object to be returned by form, number of objects returned was {}".format(fetched.count()))
+        self.assertEqual(fetched[
+                         0].abbrev, "2-amep", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].abbrev))
 
 
 suite = unittest.TestSuite([

@@ -39,17 +39,22 @@ class PerformedReaction(Reaction):
 
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
-    performedBy = models.ForeignKey(User, related_name='performedReactions', null=True, blank=True, default=None)
-    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None, help_text='Timezone assumed EST, Date in format YYYY-MM-DD', validators=[notInTheFuture])
-    insertedDateTime = models.DateTimeField('Date Reaction Saved', auto_now_add=True)
-    recommendation = models.ForeignKey(RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
+    performedBy = models.ForeignKey(
+        User, related_name='performedReactions', null=True, blank=True, default=None)
+    performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None,
+                                             help_text='Timezone assumed EST, Date in format YYYY-MM-DD', validators=[notInTheFuture])
+    insertedDateTime = models.DateTimeField(
+        'Date Reaction Saved', auto_now_add=True)
+    recommendation = models.ForeignKey(
+        RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
     legacyRecommendedFlag = models.NullBooleanField(default=None)
     """If this reaction was based from a recommendation, reference that recommendation."""
     valid = models.BooleanField(default=True)
     """A flag to denote reactions which have been found to be invalid, for instance,
     if the wrong reactant was used or some bad lab record has been found."""
     public = models.BooleanField(default=False)
-    duplicateOf = models.ForeignKey('self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
+    duplicateOf = models.ForeignKey(
+        'self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
     legacyID = models.IntegerField(null=True, blank=True, unique=True)
     """ID in legacy database."""
     legacyRef = models.CharField(max_length=40, null=True, blank=True)
@@ -84,7 +89,8 @@ class PerformedReaction(Reaction):
         """Custom clean method to make sure that the reaction does not already exist within this lab group."""
         super(PerformedReaction, self).clean()
         if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
-            raise ValidationError({'reference': 'This reference has already been used for this lab group.'}, code="duplicate_reference")
+            raise ValidationError(
+                {'reference': 'This reference has already been used for this lab group.'}, code="duplicate_reference")
 
     def __unicode__(self):
         """Return the reference as the unicode representation."""
@@ -94,8 +100,10 @@ class PerformedReaction(Reaction):
         """Custom save method makes ure that models based on an updated reaction are invalidated, because the data changed."""
         self.reference = self.reference.lower()
         if self.pk is not None and invalidate_models:
-            test = DRP.models.StatsModel.objects.filter(testSets__reactions__in=[self])
-            train = DRP.models.StatsModel.objects.filter(trainingSet__reactions=self)
+            test = DRP.models.StatsModel.objects.filter(
+                testSets__reactions__in=[self])
+            train = DRP.models.StatsModel.objects.filter(
+                trainingSet__reactions=self)
             for model in chain(test, train):
                 model.invalidate()
         super(PerformedReaction, self).save(*args, **kwargs)

@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
+
 class InactiveUser(DRPTestCase):
 
     """Tests the case where good credentials for an inactive user have been submitted."""
@@ -22,13 +23,15 @@ class InactiveUser(DRPTestCase):
         """Set up."""
         self.username = 'Aslan'
         self.password = 'old_magic'
-        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.user = User.objects.create_user(
+            username=self.username, password=self.password)
         self.user.is_active = False
         self.user.save()
 
     def runTest(self):
         """Run test."""
-        form = ConfirmationForm(data={'username': self.username, 'password': self.password})
+        form = ConfirmationForm(
+            data={'username': self.username, 'password': self.password})
         valid = form.is_valid()
         errString = ''
         for e, m in form.errors.items():
@@ -48,13 +51,15 @@ class ActiveUser(DRPTestCase):
         """Set up a user for the test."""
         self.username = 'Aslan'
         self.password = 'old_magic'
-        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.user = User.objects.create_user(
+            username=self.username, password=self.password)
         self.user.is_active = True
         self.user.save()
 
     def runTest(self):
         """Run test to make sure that the form does not evaluate this as valid."""
-        form = ConfirmationForm(data={'username': self.username, 'password': self.password})
+        form = ConfirmationForm(
+            data={'username': self.username, 'password': self.password})
         self.assertFalse(form.is_valid())
 
     def tearDown(self):
@@ -67,5 +72,6 @@ suite = unittest.TestSuite([
 ])
 
 if __name__ == '__main__':
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.
     unittest.main()

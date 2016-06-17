@@ -160,7 +160,8 @@ def generate_grid(reaction, amine_list, debug=True):
 
     correct = model.load_correct_vals()
 
-    successes = [rxn for i, rxn in enumerate(predictors) if guesses[i] in correct]
+    successes = [rxn for i, rxn in enumerate(
+        predictors) if guesses[i] in correct]
     # TODO: NEED to grab "confidences" from the model.
 
     amines_results = []
@@ -197,16 +198,19 @@ def constructRecsFromSeed(seed_pid):
     try:
         rxn = Data.objects.get(id=seed_pid)
     except Exception as e:
-        raise Exception("Could not use Datum \"{}\" as seed...\n{}".format(seed_pid, e))
+        raise Exception(
+            "Could not use Datum \"{}\" as seed...\n{}".format(seed_pid, e))
 
     # Actually create the recommendations from the supplied amines and Datum.
     try:
         recommendation_list = generate_grid(rxn, amines_names, debug=False)
     except Exception as e:
-        raise Exception("Could not generate_grid for Datum: {}\n{}".format(seed_pid, e))
+        raise Exception(
+            "Could not generate_grid for Datum: {}\n{}".format(seed_pid, e))
 
     if not recommendation_list:
-        raise Exception("No recommendations generated from Datum: {}".format(seed_pid))
+        raise Exception(
+            "No recommendations generated from Datum: {}".format(seed_pid))
 
     # Only return a number of the possible recommendations.
     return recommendation_list

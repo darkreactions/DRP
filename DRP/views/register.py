@@ -24,8 +24,10 @@ def register(request):
             code = uuid4()
             confCode = ConfirmationCode(user=user, code=code)
             confCode.save()
-            emailText = render_to_string('confirmation_email.txt', {'name': user.first_name + ' ' + user.last_name, 'code': code, 'servername': settings.SERVER_NAME, 'testing': settings.TESTING})
-            m = Email('Dark Reactions Project Registration', emailText, [user.email])
+            emailText = render_to_string('confirmation_email.txt', {
+                                         'name': user.first_name + ' ' + user.last_name, 'code': code, 'servername': settings.SERVER_NAME, 'testing': settings.TESTING})
+            m = Email('Dark Reactions Project Registration',
+                      emailText, [user.email])
             m.send()
             return render(request, 'register.html', RequestContext(request, {'form': form, 'submitted': True}))
         else:

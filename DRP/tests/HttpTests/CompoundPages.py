@@ -33,7 +33,8 @@ class LicenseRedirect(GetHttpSessionTest, OneRedirectionMixin):
 
     def setUp(self):
         """Set up an example license object."""
-        self.license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
+        self.license = License(text='This is an example license used in a test',
+                               effectiveDate=date.today() - timedelta(1))
         self.license.save()
         super(LicenseRedirect, self).setUp()
 
@@ -61,7 +62,9 @@ class CreateCompoundGetTest(GetHttpSessionTest):
     """Test that when signed in with full credentials, the create view displays."""
 
     url = newCompoundUrl
-    testCodes = ['575b31b0-60d1-41d3-86a1-83a8a8b3a7a6', 'd41e5f12-88fd-4494-90fd-96aa84e5beea']  # first one tests for textbox CSID input, second tests correct template
+    # first one tests for textbox CSID input, second tests correct template
+    testCodes = ['575b31b0-60d1-41d3-86a1-83a8a8b3a7a6',
+                 'd41e5f12-88fd-4494-90fd-96aa84e5beea']
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -74,13 +77,18 @@ class CreateCompoundRedirTest(PostHttpSessionTest, OneRedirectionMixin):
     """Test that the create compound redirection works, and by proxy that the list displays when compounds are present."""
 
     url = newCompoundUrl
-    testCodes = ['bf3a3711-b21d-4710-a989-6d1ebc1c9ee9', '7f25b7df-2176-455b-9a68-620af1d52e46']  # the first of these tests for correct template, the second tests that the compound table gets displayed
-    _payload = {'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5', 'CSID': '682'}
+    # the first of these tests for correct template, the second tests that the
+    # compound table gets displayed
+    testCodes = ['bf3a3711-b21d-4710-a989-6d1ebc1c9ee9',
+                 '7f25b7df-2176-455b-9a68-620af1d52e46']
+    _payload = {'abbrev': 'etoh', 'name': 'ethanol',
+                'CAS_ID': '64-17-5', 'CSID': '682'}
 
     def setUp(self):
         """Ensure that a create compound redirection works."""
         self.payload['labGroup'] = LabGroup.objects.get(title='Narnia').id
-        self.payload['chemicalClasses'] = [ChemicalClass.objects.get(label='Org').id]
+        self.payload['chemicalClasses'] = [
+            ChemicalClass.objects.get(label='Org').id]
         super(CreateCompoundRedirTest, self).setUp()
 
 
@@ -93,7 +101,8 @@ class CreateCompoundRadioTest(PostHttpSessionTest):
     """Tests for the display of the radio buttons section when presented only with a CSID."""
 
     url = newCompoundUrl
-    testCodes = ['1bf53b3a-ddf0-407b-b565-b732e4fa5ddb']  # tests for presence of CSID radiobuttons
+    # tests for presence of CSID radiobuttons
+    testCodes = ['1bf53b3a-ddf0-407b-b565-b732e4fa5ddb']
     _payload = {'name': 'ethanol'}
 
 
@@ -105,7 +114,8 @@ class NoCompounds(GetHttpSessionTest):
     """Tests that the empy message is displayed when a group has no compounds."""
 
     url = compoundListUrl
-    testCodes = ['1bf53b3a-ddf0-407b-b565-b732e4fa5ddb']  # tests for empty list message
+    # tests for empty list message
+    testCodes = ['1bf53b3a-ddf0-407b-b565-b732e4fa5ddb']
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -165,7 +175,9 @@ class GetCompoundForEditing(GetHttpSessionTest):
 
     def setUp(self):
         """Request to edit a compound."""
-        self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='EtOH').pk])
+        self.url = self.baseUrl + \
+            reverse('editCompound', args=[
+                    Compound.objects.get(abbrev='EtOH').pk])
         super(GetCompoundForEditing, self).setUp()
 
 
@@ -185,7 +197,9 @@ class GetNotMyCompoundForEditing(GetHttpSessionTest):
 
     def setUp(self):
         """Ask for another user's compound."""
-        self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='Pyr').pk])
+        self.url = self.baseUrl + \
+            reverse('editCompound', args=[
+                    Compound.objects.get(abbrev='Pyr').pk])
         super(GetNotMyCompoundForEditing, self).setUp()
 
 
@@ -202,7 +216,9 @@ class GetCustomCompound403(GetHttpSessionTest):
 
     def setUp(self):
         """Test that fetching a compound with the custom flag for editing returns a 403."""
-        self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='EtOH').pk])
+        self.url = self.baseUrl + \
+            reverse('editCompound', args=[
+                    Compound.objects.get(abbrev='EtOH').pk])
         super(GetCustomCompound403, self).setUp()
 
 

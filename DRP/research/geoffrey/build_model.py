@@ -17,7 +17,8 @@ def create_build_model(reactions=None, predictors=None, responses=None, modelVis
 
     if trainingSet is not None:
         container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
-                                          trainingSets=[trainingSet], testSets=[testSet], verbose=verbose, splitterOptions=splitterOptions,
+                                          trainingSets=[trainingSet], testSets=[
+                                              testSet], verbose=verbose, splitterOptions=splitterOptions,
                                           visitorOptions=visitorOptions)
     else:
         container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
@@ -59,7 +60,8 @@ def display_model_results(container, reactions=None, heading=""):
     Optional heading specifies prefix for the summary statistics
     (useful for when multiple model containers are built by a single script)
     """
-    overall_conf_mtrcs = container.getOverallConfusionMatrices(reactions=reactions)
+    overall_conf_mtrcs = container.getOverallConfusionMatrices(
+        reactions=reactions)
     if not overall_conf_mtrcs:
         print "No model results to display"
         return
@@ -120,9 +122,11 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
     if predictors.count() != len(predictor_headers):
-        raise KeyError("Could not find all predictors. Missing: {}".format(missing_descriptors(predictor_headers)))
+        raise KeyError("Could not find all predictors. Missing: {}".format(
+            missing_descriptors(predictor_headers)))
     if responses.count() != len(response_headers):
-        raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
+        raise KeyError("Could not find all responses. Missing: {}".format(
+            missing_descriptors(response_headers)))
 
     if training_set_name is None and reaction_set_name is None:
         assert(test_set_name is None)
@@ -198,8 +202,10 @@ if __name__ == '__main__':
     # This way of accepting splitter options is bad and hacky.
     # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
     # TODO XXX make this not horrible
-    splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else None
-    visitorOptions = ast.literal_eval(args.visitor_options) if args.visitor_options is not None else None
+    splitterOptions = ast.literal_eval(
+        args.splitter_options) if args.splitter_options is not None else None
+    visitorOptions = ast.literal_eval(
+        args.visitor_options) if args.visitor_options is not None else None
 
     prepare_build_display_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTool=args.model_tool,
                                 splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name, description=args.description, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)

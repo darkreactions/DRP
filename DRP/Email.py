@@ -42,9 +42,11 @@ class EmailToAdmins(Email):
     def __init__(self, subject, message, includeManagers=False, sender=settings.DEFAULT_FROM_EMAIL):
         """Standard Constructor."""
         if includeManagers:
-            super(EmailToAdmins, self).__init__(subject, message, settings.ADMIN_EMAILS, sender)
+            super(EmailToAdmins, self).__init__(
+                subject, message, settings.ADMIN_EMAILS, sender)
         else:
-            super(EmailToAdmins, self).__init__(subject, message, settings.ADMIN_EMAILS + settings.MANAGER_EMAILS, sender)
+            super(EmailToAdmins, self).__init__(subject, message,
+                                                settings.ADMIN_EMAILS + settings.MANAGER_EMAILS, sender)
 
 # class EmailToLab(Email):
 #

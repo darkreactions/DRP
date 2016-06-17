@@ -23,7 +23,8 @@ class LabGroup(models.Model):
         app_label = "DRP"
         verbose_name = 'Lab Group'
 
-    title = models.CharField(max_length=200, unique=True, error_messages={'unique': "This name is already taken."})
+    title = models.CharField(max_length=200, unique=True, error_messages={
+                             'unique': "This name is already taken."})
     address = models.CharField(max_length=200)
     email = models.CharField(max_length=254,  # Maximum length of email address
                              default='')

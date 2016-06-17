@@ -30,12 +30,14 @@ class CorrectSynonym(BaseFormTest):
     def setUpFormData(self):
         """Data for the form."""
         self.formData = {'name': 'Ethanol', 'abbrev': 'ban'}
-        self.formData['chemicalClasses'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
+        self.formData['chemicalClasses'] = [
+            c.id for c in ChemicalClass.objects.filter(label='Org')]
 
     def setUp(self):
         """Instantiate the form."""
         super(CorrectSynonym, self).setUp()
-        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
+        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(
+            abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
 
 
 @createsUser('Aslan', 'old_magic')
@@ -49,12 +51,14 @@ class IncorrectSynonym(BaseFormTest):
     def setUpFormData(self):
         """Data for the form."""
         self.formData = {'name': 'Pyrazine', 'abbrev': 'ban'}
-        self.formData['chemicalClasses'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
+        self.formData['chemicalClasses'] = [
+            c.id for c in ChemicalClass.objects.filter(label='Org')]
 
     def setUp(self):
         """Instantiate the form."""
         super(IncorrectSynonym, self).setUp()
-        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
+        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(
+            abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
 
 suite = unittest.TestSuite([
     loadTests(IncorrectSynonym),

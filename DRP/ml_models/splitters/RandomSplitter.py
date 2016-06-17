@@ -16,7 +16,8 @@ class Splitter(AbstractSplitter):
     def split(self, reactions, verbose=False):
         """Actually perform the split."""
         super(Splitter, self).split(reactions, verbose=verbose)
-        splits = [self._single_split(reactions, verbose) for i in xrange(self.num_splits)]
+        splits = [self._single_split(reactions, verbose)
+                  for i in xrange(self.num_splits)]
         return splits
 
     def _single_split(self, reactions, verbose=False):

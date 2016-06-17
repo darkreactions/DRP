@@ -20,7 +20,8 @@ class LicenseAgreementPage(GetHttpSessionTest):
 
     def setUp(self):
         """Set up the test by requesting the page uri."""
-        self.license = License(text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
+        self.license = License(
+            text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
         self.license.save()
         self.response = self.s.get(self.url, params=self.params)
 
@@ -40,9 +41,11 @@ class PostLicenseAgreementPage(PostHttpSessionTest):
 
     def setUp(self):
         """Set up the license."""
-        self.license = License(text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
+        self.license = License(
+            text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
         self.license.save()
-        self.response = self.s.post(self.url, data={'username': 'Aslan', 'password': 'banana', 'licenseId': self.license.id, 'csrfmiddlewaretoken': self.csrf}, params={'next': '/contact.html'})
+        self.response = self.s.post(self.url, data={'username': 'Aslan', 'password': 'banana',
+                                                    'licenseId': self.license.id, 'csrfmiddlewaretoken': self.csrf}, params={'next': '/contact.html'})
 
     def test_Redirect(self):
         """Test the redirection."""
@@ -64,9 +67,11 @@ class PostLicenseAgreementPage2(PostHttpSessionTest):
 
     def setUp(self):
         """Create the license."""
-        self.license = License(text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
+        self.license = License(
+            text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
         self.license.save()
-        self.response = self.s.post(self.url, data={'username': 'Aslan', 'password': 'banana', 'licenseId': self.license.id, 'csrfmiddlewaretoken': self.csrf})
+        self.response = self.s.post(self.url, data={
+                                    'username': 'Aslan', 'password': 'banana', 'licenseId': self.license.id, 'csrfmiddlewaretoken': self.csrf})
 
     def tearDown(self):
         """Delete the license."""
@@ -82,11 +87,13 @@ class PostLicenseAgreementPage3(PostLicenseAgreementPage):
     def setUp(self):
         """Set up a user, license and presigned agreement."""
         self.user = User.objects.get(username='Aslan')
-        self.license = License(text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
+        self.license = License(
+            text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
         self.license.save()
         self.agreement = LicenseAgreement(user=self.user, text=self.license)
         self.agreement.save()
-        self.response = self.s.post(self.url, data={'username': 'Aslan', 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'next': '/contact.html'})
+        self.response = self.s.post(self.url, data={
+                                    'username': 'Aslan', 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'next': '/contact.html'})
 
     def tearDown(self):
         """Delete components."""
@@ -105,11 +112,13 @@ class PostLicenseAgreementPage4(PostLicenseAgreementPage2):
     def setUp(self):
         """Set up license and agreement."""
         self.user = User.objects.get(username='Aslan')
-        self.license = License(text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
+        self.license = License(
+            text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
         self.license.save()
         self.agreement = LicenseAgreement(user=self.user, text=self.license)
         self.agreement.save()
-        self.response = self.s.post(self.url, data={'username': 'Aslan', 'password': 'banana', 'csrfmiddlewaretoken': self.csrf})
+        self.response = self.s.post(self.url, data={
+                                    'username': 'Aslan', 'password': 'banana', 'csrfmiddlewaretoken': self.csrf})
 
     def tearDown(self):
         """Delete components."""

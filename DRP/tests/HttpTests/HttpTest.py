@@ -50,16 +50,19 @@ class GetHttpTest(DRPTestCase):
 
     def validate(self):
         """Validate the html."""
-        self.validationResponse = requests.post(settings.EXTERNAL_HTML_VALIDATOR, headers={'content-type': 'text/html; charset=utf-8'}, data=self.response.text, params={'out': 'json'})
+        self.validationResponse = requests.post(settings.EXTERNAL_HTML_VALIDATOR, headers={
+                                                'content-type': 'text/html; charset=utf-8'}, data=self.response.text, params={'out': 'json'})
 
     def test_Status(self):
         """Check that the http response code is the expected value."""
-        self.assertEqual(self.response.status_code, self.status, 'Url {0} returns code {1}. Expecting {2}. Page content follows:\n\n{3}'.format(self.url, self.response.status_code, self.status, self.response.text))
+        self.assertEqual(self.response.status_code, self.status, 'Url {0} returns code {1}. Expecting {2}. Page content follows:\n\n{3}'.format(
+            self.url, self.response.status_code, self.status, self.response.text))
 
     def test_CorrectTemplate(self):
         """Check that the expected template is loaded."""
         for testCode in self.testCodes:
-            self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(testCode, self.response.text))
+            self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(
+                testCode, self.response.text))
 
     def test_ValidHtml(self):
         """Check HTML validity."""
@@ -72,11 +75,13 @@ class GetHttpTest(DRPTestCase):
                 if 'subtype' in message.keys():
                     if message['subtype'] == 'warning':
                         testPassed = False
-                        failureMessages += self.constructFailureMessage(message)
+                        failureMessages += self.constructFailureMessage(
+                            message)
             if message['type'] in ('error', 'non-document-error'):
                 failureMessages += self.constructFailureMessage(message)
                 testPassed = False
-        self.assertTrue(testPassed, failureMessages + '\n Response html: \n {0}'.format(self.response.text))
+        self.assertTrue(testPassed, failureMessages +
+                        '\n Response html: \n {0}'.format(self.response.text))
 
 
 class PostHttpTest(GetHttpTest):
@@ -96,7 +101,8 @@ class PostHttpTest(GetHttpTest):
 
     def setUp(self):
         """Make the request."""
-        self.response = requests.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
+        self.response = requests.post(
+            self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
 
 
 class GetHttpSessionTest(GetHttpTest):
@@ -110,7 +116,8 @@ class GetHttpSessionTest(GetHttpTest):
 
     def setUp(self):
         """Make the request."""
-        self.response = self.s.get(self.url, params=self.params, headers=self.headers)
+        self.response = self.s.get(
+            self.url, params=self.params, headers=self.headers)
 
 
 class PostHttpSessionTest(PostHttpTest):
@@ -124,7 +131,8 @@ class PostHttpSessionTest(PostHttpTest):
 
     def setUp(self):
         """Send a post request containing specified data by the subclass of this type."""
-        self.response = self.s.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
+        self.response = self.s.post(
+            self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
 
 
 def redirectionMixinFactory(redirectionCount):
@@ -134,13 +142,16 @@ def redirectionMixinFactory(redirectionCount):
         """A mixin for testing redirectionpages."""
 
         def test_redirect(self):
-            self.assertEqual(len(self.response.history), redirectionCount, 'Response history has length: {0}. Page Content is: \n{1}'.format(len(self.response.history), self.response.text))
+            self.assertEqual(len(self.response.history), redirectionCount, 'Response history has length: {0}. Page Content is: \n{1}'.format(
+                len(self.response.history), self.response.text))
             for i in range(0, len(self.response.history) - 1):
                 self.assertEqual(302, self.response.history[i].status_code)
 
     return RedirectionMixin
 
-OneRedirectionMixin = redirectionMixinFactory(1)  # for old tests. TODO: Deprecate this
+OneRedirectionMixin = redirectionMixinFactory(
+    1)  # for old tests. TODO: Deprecate this
+
 
 def usesCsrf(c):
     """A class decorator to indicate the test utilises csrf."""
@@ -148,8 +159,10 @@ def usesCsrf(c):
 
     def setUp(self):
         getResponse = self.s.get(self.url, params=self.params)
-        self.csrf = self.s.cookies.get_dict()['csrftoken']  # for some old-school tests TODO:Deprecate this.
-        self.payload['csrfmiddlewaretoken'] = self.csrf  # special case for post classes
+        # for some old-school tests TODO:Deprecate this.
+        self.csrf = self.s.cookies.get_dict()['csrftoken']
+        # special case for post classes
+        self.payload['csrfmiddlewaretoken'] = self.csrf
         _oldSetup(self)
 
     c.setUp = setUp
@@ -166,13 +179,15 @@ def logsInAs(username, password, csrf=True):
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            user = User.objects.create_user(username=username, password=password)
+            user = User.objects.create_user(
+                username=username, password=password)
             user.save()
             if self.s is None:
                 self.s = requests.Session()
             getResponse = self.s.get(self.loginUrl)
             loginCsrf = self.s.cookies.get_dict()['csrftoken']
-            loginResponse = self.s.post(self.loginUrl, data={'username': username, 'password': password, 'csrfmiddlewaretoken': loginCsrf})
+            loginResponse = self.s.post(self.loginUrl, data={
+                                        'username': username, 'password': password, 'csrfmiddlewaretoken': loginCsrf})
             _oldSetUp(self)
 
         def tearDown(self):
@@ -202,7 +217,8 @@ def choosesLabGroup(username, labGroupTitle):
             user = User.objects.get(username=username)
             getResponse = self.s.get(self.groupSelectUrl)
             selectCsrf = self.s.cookies.get_dict()['csrftoken']
-            self.s.post(self.groupSelectUrl, data={'labGroup': labGroup.id, 'csrfmiddlewaretoken': selectCsrf})
+            self.s.post(self.groupSelectUrl, data={
+                        'labGroup': labGroup.id, 'csrfmiddlewaretoken': selectCsrf})
             _oldSetUp(self)
 
         c.setUp = setUp

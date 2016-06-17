@@ -19,13 +19,14 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @joinsLabGroup('Gamora', 'GalaxyGuardians')
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test16.csv')
 class NumericFilterFormGT(BaseFormTest):
-    
+
     """Test numeric filter form."""
 
     def setUpFormData(self):
         """Populate dictionary with form data."""
         self.formData = {}
-        self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="length").pk
+        self.formData["descriptor"] = NumMolDescriptor.objects.get(
+            heading="length").pk
         self.formData["operator"] = 'gt'
         self.formData["value"] = 11
 
@@ -42,9 +43,12 @@ class NumericFilterFormGT(BaseFormTest):
         """Test that the data is cleaned as expected."""
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
-        self.assertEqual(cleaned["operator"], "gt", "Got a different result, {}, for the operator than expected".format(cleaned["descriptor"]))
-        self.assertEqual(float(cleaned["value"]), 11, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(
+            heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(cleaned["operator"], "gt", "Got a different result, {}, for the operator than expected".format(
+            cleaned["descriptor"]))
+        self.assertEqual(float(cleaned[
+                         "value"]), 11, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         """Ensure that a populated form does not evaluate as empty."""
@@ -55,8 +59,10 @@ class NumericFilterFormGT(BaseFormTest):
         """Test fetch on populated form."""
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Got {} objects ( {} ) instead of 1".format(fetched.count(), [compound for compound in fetched]))
-        self.assertEqual(fetched[0].compound.abbrev, "hmta", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].compound.abbrev))
+        self.assertEqual(fetched.count(), 1, "Got {} objects ( {} ) instead of 1".format(
+            fetched.count(), [compound for compound in fetched]))
+        self.assertEqual(fetched[0].compound.abbrev, "hmta", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(
+            fetched[0].compound.abbrev))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -69,7 +75,8 @@ class NumericFilterFormGE(BaseFormTest):
     def setUpFormData(self):
         """Populate dictionary with form data."""
         self.formData = {}
-        self.formData["descriptor"] = NumMolDescriptor.objects.get(heading="length").pk
+        self.formData["descriptor"] = NumMolDescriptor.objects.get(
+            heading="length").pk
         self.formData["operator"] = 'ge'
         self.formData["value"] = 11
 
@@ -86,9 +93,12 @@ class NumericFilterFormGE(BaseFormTest):
         """Test that the data is cleaned as expected."""
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
-        self.assertEqual(cleaned["operator"], "ge", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
-        self.assertEqual(float(cleaned["value"]), 11, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(cleaned["descriptor"], NumMolDescriptor.objects.get(
+            heading="length"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(cleaned[
+                         "operator"], "ge", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
+        self.assertEqual(float(cleaned[
+                         "value"]), 11, "Got a different result,{}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         """Ensure that a populated form does not evaluate as empty."""
@@ -99,7 +109,8 @@ class NumericFilterFormGE(BaseFormTest):
         """Test fetch on populated form."""
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 2, "Got {} results intead of 2".format(fetched.count()))
+        self.assertEqual(fetched.count(), 2,
+                         "Got {} results intead of 2".format(fetched.count()))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -112,7 +123,8 @@ class OrdinalFilterFormLT(BaseFormTest):
     def setUpFormData(self):
         """Populate dictionary with form data."""
         self.formData = {}
-        self.formData["descriptor"] = OrdMolDescriptor.objects.get(heading="fs").pk
+        self.formData["descriptor"] = OrdMolDescriptor.objects.get(
+            heading="fs").pk
         self.formData["operator"] = "lt"
         self.formData["value"] = 3
 
@@ -127,25 +139,30 @@ class OrdinalFilterFormLT(BaseFormTest):
         """test that this test returned correct compounds."""
         self.validationSucceeds()
 
-    def test_clean(self):         
+    def test_clean(self):
         """Test that the data is cleaned as expected."""
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], OrdMolDescriptor.objects.get(heading="fs"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
-        self.assertEqual(cleaned["operator"], "lt", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
-        self.assertEqual(int(cleaned["value"]), 3, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(cleaned["descriptor"], OrdMolDescriptor.objects.get(
+            heading="fs"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(cleaned[
+                         "operator"], "lt", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
+        self.assertEqual(int(cleaned[
+                         "value"]), 3, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
 
-    def test_is_empty(self):         
+    def test_is_empty(self):
         """Ensure that a populated form does not evaluate as empty."""
         self.form.is_valid()
         self.assertFalse(self.form.is_empty())
 
-    def test_fetch(self):         
+    def test_fetch(self):
         """Test fetch on populated form."""
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Got {} results intead of 1".format(fetched.count()))
-        self.assertEqual(fetched[0].compound.abbrev, "water", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].compound.abbrev))
+        self.assertEqual(fetched.count(), 1,
+                         "Got {} results intead of 1".format(fetched.count()))
+        self.assertEqual(fetched[0].compound.abbrev, "water",
+                         "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].compound.abbrev))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -158,11 +175,12 @@ class OrdinalFilterFormLE(BaseFormTest):
     def setUpFormData(self):
         """Populate dictionary with form data."""
         self.formData = {}
-        self.formData["descriptor"] = OrdMolDescriptor.objects.get(heading="fs").pk
+        self.formData["descriptor"] = OrdMolDescriptor.objects.get(
+            heading="fs").pk
         self.formData["operator"] = "le"
         self.formData["value"] = 3
 
-    def setUp(self):         
+    def setUp(self):
         """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = OrdinalFilterForm(data=self.formData)
@@ -173,13 +191,16 @@ class OrdinalFilterFormLE(BaseFormTest):
         """test that this test returned correct compounds."""
         self.validationSucceeds()
 
-    def test_clean(self):         
+    def test_clean(self):
         """Test that the data is cleaned as expected."""
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], OrdMolDescriptor.objects.get(heading="fs"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
-        self.assertEqual(cleaned["operator"], "le", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
-        self.assertEqual(int(cleaned["value"]), 3, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(cleaned["descriptor"], OrdMolDescriptor.objects.get(
+            heading="fs"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(cleaned[
+                         "operator"], "le", "Got a different result, {}, for the operator than expected".format(cleaned["operator"]))
+        self.assertEqual(int(cleaned[
+                         "value"]), 3, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         """Ensure that a populated form does not evaluate as empty."""
@@ -190,7 +211,8 @@ class OrdinalFilterFormLE(BaseFormTest):
         """Test fetch on populated form."""
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 3, "Got {} results intead of 3".format(fetched.count()))
+        self.assertEqual(fetched.count(), 3,
+                         "Got {} results intead of 3".format(fetched.count()))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -203,8 +225,10 @@ class CategoryFilterFormFun(BaseFormTest):
     def setUpFormData(self):
         """Populate dictionary with form data."""
         self.formData = {}
-        self.formData["descriptor"] = CatMolDescriptor.objects.get(heading="arb").pk
-        self.formData["value"] = str(CategoricalDescriptorPermittedValue.objects.get(value="fun").pk)
+        self.formData["descriptor"] = CatMolDescriptor.objects.get(
+            heading="arb").pk
+        self.formData["value"] = str(
+            CategoricalDescriptorPermittedValue.objects.get(value="fun").pk)
 
     def setUp(self):
         """Create a user, then a form with populated form data."""
@@ -219,8 +243,10 @@ class CategoryFilterFormFun(BaseFormTest):
         """Test that the data is cleaned as expected."""
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], CatMolDescriptor.objects.get(heading="arb"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
-        self.assertEqual(int(cleaned["value"]), CategoricalDescriptorPermittedValue.objects.get(value="fun").pk, "Got {} instead of the expected value, {}".format(cleaned["value"], CategoricalDescriptorPermittedValue.objects.get(value="fun").pk))
+        self.assertEqual(cleaned["descriptor"], CatMolDescriptor.objects.get(
+            heading="arb"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(int(cleaned["value"]), CategoricalDescriptorPermittedValue.objects.get(
+            value="fun").pk, "Got {} instead of the expected value, {}".format(cleaned["value"], CategoricalDescriptorPermittedValue.objects.get(value="fun").pk))
 
     def test_is_empty(self):
         """Ensure that a populated form does not evaluate as empty."""
@@ -231,7 +257,8 @@ class CategoryFilterFormFun(BaseFormTest):
         """Test fetch on populated form."""
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 4, "Got {} compounds instead of 4 compounds".format(fetched.count()))
+        self.assertEqual(fetched.count(
+        ), 4, "Got {} compounds instead of 4 compounds".format(fetched.count()))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -244,8 +271,10 @@ class CategoryFilterFormDull(BaseFormTest):
     def setUpFormData(self):
         """Populate dictionary with form data."""
         self.formData = {}
-        self.formData["descriptor"] = CatMolDescriptor.objects.get(heading="arb").pk
-        self.formData["value"] = CategoricalDescriptorPermittedValue.objects.get(value="dull").pk
+        self.formData["descriptor"] = CatMolDescriptor.objects.get(
+            heading="arb").pk
+        self.formData["value"] = CategoricalDescriptorPermittedValue.objects.get(
+            value="dull").pk
 
     def setUp(self):
         """Create a user, then a form with populated form data."""
@@ -260,8 +289,10 @@ class CategoryFilterFormDull(BaseFormTest):
         """Test that the data is cleaned as expected."""
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], CatMolDescriptor.objects.get(heading="arb"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
-        self.assertEqual(int(cleaned["value"]), CategoricalDescriptorPermittedValue.objects.get(value="dull").pk, "Got {}, rather than the expected result {}".format(cleaned["value"], CategoricalDescriptorPermittedValue.objects.get(value="dull").pk))
+        self.assertEqual(cleaned["descriptor"], CatMolDescriptor.objects.get(
+            heading="arb"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(int(cleaned["value"]), CategoricalDescriptorPermittedValue.objects.get(
+            value="dull").pk, "Got {}, rather than the expected result {}".format(cleaned["value"], CategoricalDescriptorPermittedValue.objects.get(value="dull").pk))
 
     def test_is_empty(self):
         """Ensure that a populated form does not evaluate as empty."""
@@ -272,7 +303,8 @@ class CategoryFilterFormDull(BaseFormTest):
         """Test fetch on populated form."""
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 4, "Got {} instead of 4 compounds".format(fetched.count()))
+        self.assertEqual(
+            fetched.count(), 4, "Got {} instead of 4 compounds".format(fetched.count()))
 
 
 @createsUser('Gamora', 'pineapple_song')
@@ -285,7 +317,8 @@ class BooleanFilterFormTest(BaseFormTest):
     def setUpFormData(self):
         """Populate dictionary with form data."""
         self.formData = {}
-        self.formData["descriptor"] = BoolMolDescriptor.objects.get(heading="N?").pk
+        self.formData["descriptor"] = BoolMolDescriptor.objects.get(
+            heading="N?").pk
         self.formData["value"] = False
 
     def setUp(self):
@@ -301,8 +334,10 @@ class BooleanFilterFormTest(BaseFormTest):
         """Test that the data is cleaned as expected."""
         self.form.is_valid()
         cleaned = self.form.cleaned_data
-        self.assertEqual(cleaned["descriptor"], BoolMolDescriptor.objects.get(heading="N?"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
-        self.assertEqual(cleaned["value"], False, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
+        self.assertEqual(cleaned["descriptor"], BoolMolDescriptor.objects.get(
+            heading="N?"), "Got a different result, {}, for the descriptor than expected".format(cleaned["descriptor"]))
+        self.assertEqual(cleaned[
+                         "value"], False, "Got a different result, {}, for the value than expected".format(cleaned["value"]))
 
     def test_is_empty(self):
         """Ensure that a populated form does not evaluate as empty."""
@@ -313,8 +348,10 @@ class BooleanFilterFormTest(BaseFormTest):
         """Test fetch on populated form."""
         self.form.is_valid()
         fetched = self.form.fetch()
-        self.assertEqual(fetched.count(), 1, "Got {} results instead of 1".format(fetched.count()))
-        self.assertEqual(fetched[0].compound.abbrev, "water", "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].compound.abbrev))
+        self.assertEqual(fetched.count(), 1,
+                         "Got {} results instead of 1".format(fetched.count()))
+        self.assertEqual(fetched[0].compound.abbrev, "water",
+                         "The result returned did not have the expected abbrev attr. Attribute given was {}".format(fetched[0].compound.abbrev))
 
 
 suite = unittest.TestSuite([

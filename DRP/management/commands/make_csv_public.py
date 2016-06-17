@@ -24,16 +24,20 @@ class Command(BaseCommand):
 
             for i, row in enumerate(reader):
                 ref = reimport_reactions.convert_legacy_reference(row[0])
-                self.stdout.write('{}: Making reference {} public'.format(i, ref))
+                self.stdout.write(
+                    '{}: Making reference {} public'.format(i, ref))
                 ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
                 if ps.count() == 0:
                     if ref.startswith('xxx'):
                         unmunged_ref = ref + '0'
-                        self.stdout.write('{}: Making UNMUNGED reference {} public'.format(i, unmunged_ref))
-                        ps = PerformedReaction.objects.filter(convertedLegacyRef=unmunged_ref)
+                        self.stdout.write(
+                            '{}: Making UNMUNGED reference {} public'.format(i, unmunged_ref))
+                        ps = PerformedReaction.objects.filter(
+                            convertedLegacyRef=unmunged_ref)
                         if ps.count() != 1:
                             ps.update(public=True)
                     else:
-                        raise RuntimeError('Found {} reactions with reference {}'.format(ps.count(), ref))
+                        raise RuntimeError(
+                            'Found {} reactions with reference {}'.format(ps.count(), ref))
                 else:
                     ps.update(public=True)
