@@ -34,6 +34,7 @@ class PerformedReactionManager(ReactionManager):
         return PerformedReactionQuerySet(model=self.model)
 
     def valid(self):
+        """Return only the valid reactions."""
         return self.get_queryset().valid()
 
 

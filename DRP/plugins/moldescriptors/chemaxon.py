@@ -188,7 +188,7 @@ def setup_pHdependentDescriptors(_descriptorDict):
         d_copy = d.copy()
         d_copy['name'] += ' for nominal structure'
         _descriptorDict[descriptor + '_nominal'] = d_copy
-        
+
         for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility
             d_copy = d.copy()
@@ -214,7 +214,7 @@ def setup_pHdependentDescriptors(_descriptorDict):
     for key, command in _cxcalcpHCommandStems.items():
         # nominal structure
         cxcalcCommands["{}_nominal".format(key)] = command
-        
+
         for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility
             cxcalcCommands["{}_pH{}".format(key, pH_string)] = "{} -H {}".format(command, pH)

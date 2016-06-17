@@ -168,7 +168,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
                 self.statsModel.save(update_fields=['inputFile'])
         elif verbose:
             print "Using existing arff file."
-        
+
         arff_file = self.statsModel.inputFile.name
 
         # Currently, we support only one "response" variable.

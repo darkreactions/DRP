@@ -8,6 +8,5 @@ from selectGroup import selectGroup
 import compound
 import decorators
 import reaction
-#import descriptors
 from leaveGroup import leaveGroup
 from api import api1
