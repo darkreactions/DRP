@@ -1,4 +1,4 @@
-'''A module containing decorators which are useful in most test cases for the DRP'''
+"""A module containing decorators which are useful in most test cases for the DRP."""
 
 from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
@@ -11,18 +11,19 @@ import os
 
 
 def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
-    '''A class decorator that creates an ordinal reaction descriptor.'''
-
+    """A class decorator that creates an ordinal reaction descriptor."""
     def _createsOrdRxnDescriptor(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            OrdRxnDescriptor.objects.create(name=heading, heading=heading, maximum=maximum, minimum=minimum, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
+            OrdRxnDescriptor.objects.create(name=heading, heading=heading, maximum=maximum, minimum=minimum,
+                                            calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
             _oldSetup(self)
 
         def tearDown(self):
-            OrdRxnDescriptor.objects.filter(name=heading, heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
+            OrdRxnDescriptor.objects.filter(name=heading, heading=heading, calculatorSoftware=calculatorSoftware,
+                                            calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
             _oldTearDown(self)
 
         c.setUp = setUp
@@ -34,13 +35,14 @@ def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manua
 
 
 def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
-
+    """A class decorator that creates an ordinal reaction descriptor value."""
     def _createsOrdRxnDescriptorValue(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            OrdRxnDescriptorValue.objects.create(descriptor=OrdRxnDescriptor.objects.get(heading=descHeading), reaction=PerformedReaction.objects.get(reference=rxnRef, labGroup=LabGroup.objects.get(title=labGroupTitle)), value=value)
+            OrdRxnDescriptorValue.objects.create(descriptor=OrdRxnDescriptor.objects.get(heading=descHeading), reaction=PerformedReaction.objects.get(
+                reference=rxnRef, labGroup=LabGroup.objects.get(title=labGroupTitle)), value=value)
             _oldSetup(self)
 
         c.setUp = setUp
@@ -51,18 +53,20 @@ def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
 
 
 def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
-
+    """Create a compound quantity for use in a test."""
     def _createsCompoundQuantity(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
+            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(
+                abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
             _oldSetup(self)
 
         def tearDown(self):
             if PerformedReaction.objects.filter(reference=rxnRef).exists():
-                CompoundQuantity.objects.get(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols).delete()
+                CompoundQuantity.objects.get(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(
+                    abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols).delete()
             _oldTearDown(self)
 
         c.setUp = setUp
@@ -74,7 +78,7 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 
 
 # def createsRxnDescriptor(heading, descriptorClass, options={}):
-#    '''A class decorator that creates a reaction descriptor'''
+#    """A class decorator that creates a reaction descriptor."""
 #    def _createsRxnDescriptor(c):
 #        _oldSetup = c.setUp
 #        _oldTearDown = c.tearDown
@@ -112,8 +116,7 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 #    return _createsRxnDescriptor
 
 def createsPerformedReaction(labTitle, username, reference, valid=True):
-    '''A class decorator that creates a very minimal reaction with no compounds or reactants'''
-
+    """A class decorator that creates a very minimal reaction with no compounds or reactants."""
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -121,13 +124,15 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
         def setUp(self):
             labGroup = LabGroup.objects.get(title=labTitle)
             user = User.objects.get(username=username)
-            reaction = PerformedReaction.objects.create(labGroup=labGroup, user=user, reference=reference, valid=valid)
+            reaction = PerformedReaction.objects.create(
+                labGroup=labGroup, user=user, reference=reference, valid=valid)
             _oldSetup(self)
 
         def tearDown(self):
             labGroup = LabGroup.objects.get(title=labTitle)
             user = User.objects.get(username=username)
-            PerformedReaction.objects.filter(labGroup=labGroup, reference=reference).delete()
+            PerformedReaction.objects.filter(
+                labGroup=labGroup, reference=reference).delete()
             _oldTearDown(self)
 
         c.setUp = setUp
@@ -140,8 +145,8 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 
 # TODO: finish replacing this
 # def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs=[], compoundRoles=[], compoundAmounts=[], descriptorDict={}, duplicateRef=None):
-#    '''A class decorator that creates a reaction using pre-existing compounds
-#          with pre-existing compoundRoles.'''
+#    """A class decorator that creates a reaction using pre-existing compounds
+#          with pre-existing compoundRoles."""
 #    def _createsPerformedReaction(c):
 #        _oldSetup = c.setUp
 #        _oldTearDown = c.tearDown
@@ -236,15 +241,15 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 
 
 def createsUser(username, password, is_superuser=False):
-    '''A class decorator that creates a user'''
-
+    """A class decorator that creates a user."""
     def _createsUser(c):
 
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            user = User.objects.create_user(username=username, password=password)
+            user = User.objects.create_user(
+                username=username, password=password)
             user.is_superuser = is_superuser
             user.save()
             _oldSetup(self)
@@ -260,7 +265,7 @@ def createsUser(username, password, is_superuser=False):
 
 
 def createsCompoundRole(label, description):
-
+    """Create a compound role in a test."""
     def _createsCompoundRole(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -284,7 +289,7 @@ def createsCompoundRole(label, description):
 
 
 def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
-
+    """Create a compound in a test."""
     def _createsCompound(c):
 
         _oldSetup = c.setUp
@@ -311,8 +316,7 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
 
 
 def createsChemicalClass(label, description):
-    '''A class decorator that creates a test chemical class for the addition of compounds into the database'''
-
+    """A class decorator that creates a test chemical class for the addition of compounds into the database."""
     def _createsChemicalClass(c):
 
         _oldSetup = c.setUp
@@ -335,13 +339,17 @@ def createsChemicalClass(label, description):
 
 
 def joinsLabGroup(username, labGroupTitle):
-    '''A class decorator that creates a test lab group with labGroupTitle as it's title and assigns user identified by
-    username to that lab group'''
+    """
+    A class decorator that creates a test lab group.
+
+    labGroupTitle is it's title and assigns user identified by username to that lab group.
+    """
     def _joinsLabGroup(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
-        labGroup = LabGroup(title=labGroupTitle, address='War drobe', email='Aslan@example.com', access_code='new_magic')
+        labGroup = LabGroup(title=labGroupTitle, address='War drobe',
+                            email='Aslan@example.com', access_code='new_magic')
 
         def setUp(self):
             user = User.objects.get(username=username)
@@ -360,13 +368,14 @@ def joinsLabGroup(username, labGroupTitle):
 
 
 def signsExampleLicense(username):
-    '''A class decorator that creates a test license and makes the user specified by username sign it on setUp'''
+    """A class decorator that creates a test license and makes the user specified by username sign it on setUp."""
     def _signsExampleLicense(c):
 
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
-        license = License(text='This is an example license used in a test', effectiveDate=date.today() - timedelta(1))
+        license = License(text='This is an example license used in a test',
+                          effectiveDate=date.today() - timedelta(1))
 
         def setUp(self):
             user = User.objects.get(username=username)
@@ -376,7 +385,8 @@ def signsExampleLicense(username):
             _oldSetup(self)
 
         def tearDown(self):
-            LicenseAgreement.objects.filter(user__username=username, text=license).delete()
+            LicenseAgreement.objects.filter(
+                user__username=username, text=license).delete()
             if license.licenseagreement_set.count() < 1:
                 license.delete()
             _oldTearDown(self)
@@ -388,8 +398,7 @@ def signsExampleLicense(username):
 
 
 def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
-    '''A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
-
+    """A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder."""
     def _loadsCompoundsFromCsv(c):
 
         _oldSetup = c.setUp
@@ -397,7 +406,8 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
 
         def setUp(self):
             labGroup = LabGroup.objects.get(title=labGroupTitle)
-            compounds = labGroup.compound_set.fromCsv(os.path.join(settings.APP_DIR, 'tests', 'resource', csvFileName))
+            compounds = labGroup.compound_set.fromCsv(os.path.join(
+                settings.APP_DIR, 'tests', 'resource', csvFileName))
 
             # TODO XXX bulk_create? Can't use our custom save then
             for compound in compounds:
@@ -417,24 +427,41 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
 
 
 def createsPerformedReactionSetOrd(c):
+    """a broken decorator for creating a bunch of sample reactions."""
     # Create a bunch of simple sample reactions with ordinal outcomes.
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome": 1, "testNumber": 5.04}, duplicateRef='R15')(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R02", ["EtOH"], ["Org"], [0.71], {"outcome": 1, "testNumber": 5.0})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R03", ["dmed"], ["Org"], [0.1], {"outcome": 1, "testNumber": 5.0})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R04", ["dmed"], ["Org"], [0.18], {"outcome": 1, "testNumber": 5.0})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R05", ["dabco"], ["Org"], [0.71], {"outcome": 1, "testNumber": 5.04})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R06", ["dabco"], ["Org"], [0.14], {"outcome": 1, "testNumber": 5.01})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R07", ["Water"], ["Water"], [0.14], {"outcome": 1, "testNumber": 5.01})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R08", ["EtOH", "dmed", "Water"], ["Org", "Org", "Water"], [0.31, 0.3, 0.5], {"outcome": 4, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R09", ["dmed", "EtOH", "Water"], ["Org", "Org", "Water"], [0.2, 0.34, 0.3], {"outcome": 4, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R10", ["dabco", "Water"], ["Org", "Water"], [0.3, 0.32], {"outcome": 3, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R11", ["Water", "dabco"], ["Water", "Org"], [0.3, 0.34], {"outcome": 3, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R12", ["dmed", "Water"], ["Org", "Water"], [0.3, 0.34], {"outcome": 3, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R13", ["EtOH", "Water"], ["Org", "Water"], [0.3, 0.35], {"outcome": 3, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R14", ["dmed", "Water"], ["Org", "Water"], [0.4, 0.56], {"outcome": 4, "testNumber": 0.01})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R15", ["Water", "EtOH"], ["Water", "Org"], [0.4, 0.57], {"outcome": 4, "testNumber": 0.02})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [
+                                 0.13], {"outcome": 1, "testNumber": 5.04}, duplicateRef='R15')(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R02", ["EtOH"], [
+                                 "Org"], [0.71], {"outcome": 1, "testNumber": 5.0})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R03", ["dmed"], [
+                                 "Org"], [0.1], {"outcome": 1, "testNumber": 5.0})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R04", ["dmed"], [
+                                 "Org"], [0.18], {"outcome": 1, "testNumber": 5.0})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R05", ["dabco"], [
+                                 "Org"], [0.71], {"outcome": 1, "testNumber": 5.04})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R06", ["dabco"], [
+                                 "Org"], [0.14], {"outcome": 1, "testNumber": 5.01})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R07", ["Water"], [
+                                 "Water"], [0.14], {"outcome": 1, "testNumber": 5.01})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R08", ["EtOH", "dmed", "Water"], [
+                                 "Org", "Org", "Water"], [0.31, 0.3, 0.5], {"outcome": 4, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R09", ["dmed", "EtOH", "Water"], [
+                                 "Org", "Org", "Water"], [0.2, 0.34, 0.3], {"outcome": 4, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R10", ["dabco", "Water"], [
+                                 "Org", "Water"], [0.3, 0.32], {"outcome": 3, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R11", ["Water", "dabco"], [
+                                 "Water", "Org"], [0.3, 0.34], {"outcome": 3, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R12", ["dmed", "Water"], [
+                                 "Org", "Water"], [0.3, 0.34], {"outcome": 3, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R13", ["EtOH", "Water"], [
+                                 "Org", "Water"], [0.3, 0.35], {"outcome": 3, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R14", ["dmed", "Water"], [
+                                 "Org", "Water"], [0.4, 0.56], {"outcome": 4, "testNumber": 0.01})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R15", ["Water", "EtOH"], [
+                                 "Water", "Org"], [0.4, 0.57], {"outcome": 4, "testNumber": 0.02})(c)
 
-    c = createsRxnDescriptor("outcome", "OrdRxnDescriptor", options={"maximum": 4, "minimum": 1})(c)
+    c = createsRxnDescriptor("outcome", "OrdRxnDescriptor", options={
+                             "maximum": 4, "minimum": 1})(c)
     c = createsRxnDescriptor("testNumber", "NumRxnDescriptor")(c)
 
     c = createsCompoundRole('Org', 'Organic')(c)
@@ -453,22 +480,38 @@ def createsPerformedReactionSetOrd(c):
 
 
 def createsPerformedReactionSetBool(c):
+    """Broken."""
     # Create a bunch of simple sample reactions with Boolean outcomes.
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome": False, "testNumber": 5.04}, duplicateRef='R15')(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R02", ["EtOH"], ["Org"], [0.71], {"outcome": False, "testNumber": 5.0})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R03", ["dmed"], ["Org"], [0.1], {"outcome": False, "testNumber": 5.0})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R04", ["dmed"], ["Org"], [0.18], {"outcome": False, "testNumber": 5.0})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R05", ["dabco"], ["Org"], [0.71], {"outcome": False, "testNumber": 5.04})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R06", ["dabco"], ["Org"], [0.14], {"outcome": False, "testNumber": 5.01})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R07", ["Water"], ["Water"], [0.14], {"outcome": False, "testNumber": 5.01})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R08", ["EtOH", "dmed", "Water"], ["Org", "Org", "Water"], [0.31, 0.3, 0.5], {"outcome": True, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R09", ["dmed", "EtOH", "Water"], ["Org", "Org", "Water"], [0.2, 0.34, 0.3], {"outcome": True, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R10", ["dabco", "Water"], ["Org", "Water"], [0.3, 0.32], {"outcome": True, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R11", ["Water", "dabco"], ["Water", "Org"], [0.3, 0.34], {"outcome": True, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R12", ["dmed", "Water"], ["Org", "Water"], [0.3, 0.34], {"outcome": True, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R13", ["EtOH", "Water"], ["Org", "Water"], [0.3, 0.35], {"outcome": True, "testNumber": 0.1})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R14", ["dmed", "Water"], ["Org", "Water"], [0.4, 0.56], {"outcome": True, "testNumber": 0.01})(c)
-    c = createsPerformedReaction("Watchmen", "Rorschach", "R15", ["Water", "EtOH"], ["Water", "Org"], [0.4, 0.57], {"outcome": True, "testNumber": 0.02})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [
+                                 0.13], {"outcome": False, "testNumber": 5.04}, duplicateRef='R15')(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R02", ["EtOH"], ["Org"], [
+                                 0.71], {"outcome": False, "testNumber": 5.0})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R03", ["dmed"], [
+                                 "Org"], [0.1], {"outcome": False, "testNumber": 5.0})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R04", ["dmed"], ["Org"], [
+                                 0.18], {"outcome": False, "testNumber": 5.0})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R05", ["dabco"], [
+                                 "Org"], [0.71], {"outcome": False, "testNumber": 5.04})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R06", ["dabco"], [
+                                 "Org"], [0.14], {"outcome": False, "testNumber": 5.01})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R07", ["Water"], [
+                                 "Water"], [0.14], {"outcome": False, "testNumber": 5.01})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R08", ["EtOH", "dmed", "Water"], [
+                                 "Org", "Org", "Water"], [0.31, 0.3, 0.5], {"outcome": True, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R09", ["dmed", "EtOH", "Water"], [
+                                 "Org", "Org", "Water"], [0.2, 0.34, 0.3], {"outcome": True, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R10", ["dabco", "Water"], [
+                                 "Org", "Water"], [0.3, 0.32], {"outcome": True, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R11", ["Water", "dabco"], [
+                                 "Water", "Org"], [0.3, 0.34], {"outcome": True, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R12", ["dmed", "Water"], [
+                                 "Org", "Water"], [0.3, 0.34], {"outcome": True, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R13", ["EtOH", "Water"], [
+                                 "Org", "Water"], [0.3, 0.35], {"outcome": True, "testNumber": 0.1})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R14", ["dmed", "Water"], [
+                                 "Org", "Water"], [0.4, 0.56], {"outcome": True, "testNumber": 0.01})(c)
+    c = createsPerformedReaction("Watchmen", "Rorschach", "R15", ["Water", "EtOH"], [
+                                 "Water", "Org"], [0.4, 0.57], {"outcome": True, "testNumber": 0.02})(c)
 
     c = createsRxnDescriptor("outcome", "BoolRxnDescriptor", options={})(c)
     c = createsRxnDescriptor("testNumber", "NumRxnDescriptor")(c)

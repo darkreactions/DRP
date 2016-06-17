@@ -15,22 +15,26 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='boolmoldescriptorvalue',
             name='value',
-            field=models.NullBooleanField(verbose_name=b'Value for descriptor'),
+            field=models.NullBooleanField(
+                verbose_name=b'Value for descriptor'),
         ),
         migrations.AlterField(
             model_name='boolrxndescriptorvalue',
             name='value',
-            field=models.NullBooleanField(verbose_name=b'Value for descriptor'),
+            field=models.NullBooleanField(
+                verbose_name=b'Value for descriptor'),
         ),
         migrations.AlterField(
             model_name='catmoldescriptorvalue',
             name='value',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, blank=True, to='DRP.CategoricalDescriptorPermittedValue', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    blank=True, to='DRP.CategoricalDescriptorPermittedValue', null=True),
         ),
         migrations.AlterField(
             model_name='catrxndescriptorvalue',
             name='value',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, blank=True, to='DRP.CategoricalDescriptorPermittedValue', null=True),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    blank=True, to='DRP.CategoricalDescriptorPermittedValue', null=True),
         ),
         migrations.AlterField(
             model_name='nummoldescriptorvalue',

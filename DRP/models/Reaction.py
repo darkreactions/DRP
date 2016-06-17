@@ -30,7 +30,8 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def maxReactantCount(self):
         """Give a count of the maximum number of reactions associated with this queryset."""
-        m = self.annotate(compoundQuantityCount=models.Count('compoundquantity')).aggregate(max=models.Max('compoundQuantityCount'))['max']
+        m = self.annotate(compoundQuantityCount=models.Count(
+            'compoundquantity')).aggregate(max=models.Max('compoundQuantityCount'))['max']
         if m is None:
             return 0
         return m
@@ -57,20 +58,24 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         for i in range(0, m):
             compound_label = 'compound_{}'.format(i)
             if whitelist is None or compound_label in whitelist:
-                headers[compound_label] = '@attribute {} string'.format(compound_label)
+                headers[compound_label] = '@attribute {} string'.format(
+                    compound_label)
             role_label = 'compound_{}_role'.format(i)
             if whitelist is None or role_label in whitelist:
-                headers[role_label] = '@attribute {} {{{}}}'.format(role_label, ','.join(('"{}"'.format(role) for role in CompoundRole.objects.all())))
+                headers[role_label] = '@attribute {} {{{}}}'.format(role_label, ','.join(
+                    ('"{}"'.format(role) for role in CompoundRole.objects.all())))
             amount_label = 'compound_{}_amount'.format(i)
             if whitelist is None or amount_label in whitelist:
-                headers[amount_label] = '@attribute {} NUMERIC'.format(amount_label)
+                headers[amount_label] = '@attribute {} NUMERIC'.format(
+                    amount_label)
 
         return headers
 
     def expandedArffHeaders(self, whitelist=None):
         """Return headers for the expanded Arff file."""
         headers = self.arffHeaders(whitelist)
-        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors.filter(csvHeader__in=whitelist))))
+        headers.update(OrderedDict(((d.csvHeader, d.arffHeader)
+                                    for d in self.descriptors.filter(csvHeader__in=whitelist))))
         return headers
 
     def expandedCsvHeaders(self, whitelist=None):
@@ -84,6 +89,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     def descriptors(self):
         """
         Return all reaction descriptors.
+
         Used to return only descriptors which have relationship to the queryset,
         but this caused enormous slowdowns because of in queries
         """
@@ -94,7 +100,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                              )
 
     def rows(self, expanded, whitelist=None):
-        """Returns the 'rows' of information in a format suitable for a python dictwriter."""
+        """Return the 'rows' of information in a format suitable for a python dictwriter."""
         if expanded:
             reactions = self
             if whitelist is not None:
@@ -102,32 +108,50 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                 # First we annotate each descriptor value with its descriptor's csvHeader using the Concat operation
                 # Then we filter on the csvHeader so it's in the whitelist
                 # Then we prefetch descriptor values matching this queryset for each reaction and assign this to filtered __vals
-                # Then we can just iterate through these values to get what we actually want!
-                qs = BoolRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('boolrxndescriptorvalue_set', queryset=qs, to_attr='filtered_boolvals'))
+                # Then we can just iterate through these values to get what we
+                # actually want!
+                qs = BoolRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value(
+                    '_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch(
+                    'boolrxndescriptorvalue_set', queryset=qs, to_attr='filtered_boolvals'))
 
-                qs = NumRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('numrxndescriptorvalue_set', queryset=qs, to_attr='filtered_numvals'))
+                qs = NumRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value(
+                    '_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch(
+                    'numrxndescriptorvalue_set', queryset=qs, to_attr='filtered_numvals'))
 
-                qs = OrdRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('ordrxndescriptorvalue_set', queryset=qs, to_attr='filtered_ordvals'))
+                qs = OrdRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value(
+                    '_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch(
+                    'ordrxndescriptorvalue_set', queryset=qs, to_attr='filtered_ordvals'))
 
-                qs = CatRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value('_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
-                reactions = reactions.prefetch_related(models.Prefetch('catrxndescriptorvalue_set', queryset=qs, to_attr='filtered_catvals'))
+                qs = CatRxnDescriptorValue.objects.annotate(descCsvHeader=Concat('descriptor__heading', models.Value(
+                    '_'), 'descriptor__calculatorSoftware', models.Value('_'), 'descriptor__calculatorSoftwareVersion')).filter(descCsvHeader__in=whitelist)
+                reactions = reactions.prefetch_related(models.Prefetch(
+                    'catrxndescriptorvalue_set', queryset=qs, to_attr='filtered_catvals'))
             else:
-                reactions = reactions.prefetch_related('boolrxndescriptorvalue_set__descriptor')
-                reactions = reactions.prefetch_related('catrxndescriptorvalue_set__descriptor')
-                reactions = reactions.prefetch_related('ordrxndescriptorvalue_set__descriptor')
-                reactions = reactions.prefetch_related('numrxndescriptorvalue_set__descriptor')
+                reactions = reactions.prefetch_related(
+                    'boolrxndescriptorvalue_set__descriptor')
+                reactions = reactions.prefetch_related(
+                    'catrxndescriptorvalue_set__descriptor')
+                reactions = reactions.prefetch_related(
+                    'ordrxndescriptorvalue_set__descriptor')
+                reactions = reactions.prefetch_related(
+                    'numrxndescriptorvalue_set__descriptor')
             reactions = reactions.prefetch_related('compounds')
 
             for item in reactions.batch_iterator():
-                row = {field.name: getattr(item, field.name) for field in self.model._meta.fields}
+                row = {field.name: getattr(item, field.name)
+                       for field in self.model._meta.fields}
                 if whitelist is not None:
-                    row.update({dv.descCsvHeader: dv.value for dv in item.filtered_boolvals})
-                    row.update({dv.descCsvHeader: dv.value for dv in item.filtered_numvals})
-                    row.update({dv.descCsvHeader: dv.value for dv in item.filtered_ordvals})
-                    row.update({dv.descCsvHeader: dv.value for dv in item.filtered_catvals})
+                    row.update(
+                        {dv.descCsvHeader: dv.value for dv in item.filtered_boolvals})
+                    row.update(
+                        {dv.descCsvHeader: dv.value for dv in item.filtered_numvals})
+                    row.update(
+                        {dv.descCsvHeader: dv.value for dv in item.filtered_ordvals})
+                    row.update(
+                        {dv.descCsvHeader: dv.value for dv in item.filtered_catvals})
                     i = 0
                     for compound in item.compounds.all():
                         compound_num = 'compound_{}'.format(i)
@@ -136,7 +160,8 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                         i += 1
                     yield row
                 else:
-                    row.update({dv.descriptor.csvHeader: dv.value for dv in item.descriptorValues})
+                    row.update(
+                        {dv.descriptor.csvHeader: dv.value for dv in item.descriptorValues})
                     i = 0
                     for compound in item.compounds.all():
                         row['compound_{}'.format(i)] = compound.name
@@ -149,7 +174,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     # From https://djangosnippets.org/snippets/1949/
     def batch_iterator(self, chunksize=5000):
         """
-        Iterate over a Django Queryset ordered by the primary key
+        Iterate over a Django Queryset ordered by the primary key.
 
         This method loads a maximum of chunksize (default: 5000) rows in it's
         memory at the same time while django normally would load all rows in it's
@@ -168,6 +193,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
             gc.collect()
 
     def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
+        """Force the calculation of reaction descriptors for a group of reactions."""
         if verbose:
             print "Calculating descriptors for {} reactions".format(self.count())
         for plugin in descriptorPlugins:
@@ -206,7 +232,9 @@ class Reaction(models.Model):
     compounds = models.ManyToManyField(Compound, through="CompoundQuantity")
     notes = models.TextField(blank=True)
     labGroup = models.ForeignKey(LabGroup)
-    calcDescriptors = True  # this is to cope with a hideous problem in xml serialization in the management commands
+    # this is to cope with a hideous problem in xml serialization in the
+    # management commands
+    calcDescriptors = True
 
     def save(self, calcDescriptors=False, *args, **kwargs):
         """Custom save method gives the option to recalculate the descriptors."""
@@ -217,7 +245,7 @@ class Reaction(models.Model):
 
     @property
     def descriptorValues(self):
-        """Returns all the descriptor values for this reaction. This should be turned into a multiqueryset."""
+        """Return all the descriptor values for this reaction. This should be turned into a multiqueryset."""
         return MultiQuerySet(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
     def __unicode__(self):

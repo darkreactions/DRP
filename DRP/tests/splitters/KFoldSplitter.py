@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''A module containing tests for the KFoldSplitter '''
+"""A module containing tests for the KFoldSplitter."""
 
 import unittest
 from decorators import createsPerformedReactionSetOrd
@@ -13,7 +13,10 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsPerformedReactionSetOrd
 class BasicWekaSVM(DRPTestCase):
 
+    """Test the splitter in terms of a basic Weka SVM."""
+
     def runTest(self):
+        """Execute test."""
         splitterObj = Splitter()
 
         reactions = Reaction.objects.all()
@@ -35,4 +38,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

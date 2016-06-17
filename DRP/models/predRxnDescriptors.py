@@ -27,7 +27,8 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
 
     """Reaction boolean descriptor which has been predicted by a model."""
 
-    predictionOf = models.ForeignKey(BoolRxnDescriptor, related_name="prediction_of")
+    predictionOf = models.ForeignKey(
+        BoolRxnDescriptor, related_name="prediction_of")
 
     class Meta:
         app_label = 'DRP'
@@ -102,14 +103,18 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
           }
         """
         if reactions is None:
-            reactions = PerformedReaction.objects.filter(boolrxndescriptorvalue__descriptor=self).distinct()
+            reactions = PerformedReaction.objects.filter(
+                boolrxndescriptorvalue__descriptor=self).distinct()
 
         permittedValues = [True, False]
 
-        reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self).annotate(predicted_val=F('boolrxndescriptorvalue__value'))
-        reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self.predictionOf).annotate(actual_val=F('boolrxndescriptorvalue__value'))
+        reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self).annotate(
+            predicted_val=F('boolrxndescriptorvalue__value'))
+        reactions = reactions.filter(boolrxndescriptorvalue__descriptor=self.predictionOf).annotate(
+            actual_val=F('boolrxndescriptorvalue__value'))
 
-        matrix = {true: {guess: reactions.filter(predicted_val=guess, actual_val=true).count() for guess in permittedValues} for true in permittedValues}
+        matrix = {true: {guess: reactions.filter(predicted_val=guess, actual_val=true).count(
+        ) for guess in permittedValues} for true in permittedValues}
 
         return matrix
 
@@ -138,7 +143,8 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
 
     """Ordinal case of the predicted reaction descriptor."""
 
-    predictionOf = models.ForeignKey(OrdRxnDescriptor, related_name="predition_of")
+    predictionOf = models.ForeignKey(
+        OrdRxnDescriptor, related_name="predition_of")
 
     class Meta:
         app_label = 'DRP'
@@ -217,7 +223,8 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
 
     """Numeric Predicted Reaction Descriptor."""
 
-    predictionOf = models.ForeignKey(NumRxnDescriptor, related_name="prediction_of")
+    predictionOf = models.ForeignKey(
+        NumRxnDescriptor, related_name="prediction_of")
 
     class Meta:
         app_label = 'DRP'
@@ -250,7 +257,8 @@ class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
 
     """The categorical case of the predicted reaction descriptor."""
 
-    predictionOf = models.ForeignKey(CatRxnDescriptor, related_name="prediction_of")
+    predictionOf = models.ForeignKey(
+        CatRxnDescriptor, related_name="prediction_of")
 
     class Meta:
         app_label = 'DRP'

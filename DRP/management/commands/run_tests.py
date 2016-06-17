@@ -1,3 +1,4 @@
+"""Command to run tests for DRP."""
 from django.core.management.base import BaseCommand
 from DRP.tests import suite, runTests
 from django.conf import settings
@@ -6,9 +7,13 @@ import unittest
 
 
 class Command(BaseCommand):
+
+    """Runs the tests using our custom testing framework."""
+
     help = 'Runs the full battery of DRP tests'
 
     def add_arguments(self, parser):
+        """Add arguments for the argument parser."""
         parser.add_argument('test_modules', nargs='*',
                             help=('List of test modules to use. '
                                   'Should be dot-separated module paths starting at the test directory. '
@@ -21,10 +26,12 @@ class Command(BaseCommand):
                             )
 
     def handle(self, *args, **kwargs):
+        """Handle the call for this command."""
         failfast = kwargs['failfast']
         if settings.TESTING:
             if kwargs['test_modules']:
-                test_suite = unittest.TestSuite([getattr(importlib.import_module('DRP.tests.' + module), 'suite') for module in kwargs['test_modules']])
+                test_suite = unittest.TestSuite([getattr(importlib.import_module(
+                    'DRP.tests.' + module), 'suite') for module in kwargs['test_modules']])
             else:
                 test_suite = suite
 

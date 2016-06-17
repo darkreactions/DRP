@@ -7,7 +7,8 @@ from sys import argv
 model_names = argv[1:]
 desc = "Legacy rxns. CFS of new descriptors with ChemAxon at reaction pH. 15 mutual info split."
 
-containers = ModelContainer.objects.filter(description__startswith=desc, built=True)
+containers = ModelContainer.objects.filter(
+    description__startswith=desc, built=True)
 print containers.count()
 
 for m in containers:
@@ -16,4 +17,5 @@ for m in containers:
     print m.splitter
     print m.modelVisitorLibrary, m.modelVisitorTool
 
-    build_model.display_model_results(m, heading=m.modelVisitorTool + m.modelVisitorOptions)
+    build_model.display_model_results(
+        m, heading=m.modelVisitorTool + m.modelVisitorOptions)

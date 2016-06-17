@@ -50,15 +50,18 @@ class CompoundQuantity(models.Model):
     compound = models.ForeignKey(Compound, on_delete=models.PROTECT)
     reaction = models.ForeignKey(Reaction)
     role = models.ForeignKey(CompoundRole)
-    amount = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5, help_text="(in mmoles, 5 decimal places)", validators=[GreaterThanValidator(0)])
+    amount = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5,
+                                 help_text="(in mmoles, 5 decimal places)", validators=[GreaterThanValidator(0)])
 
     def save(self, calcDescriptors=True, invalidate_models=True, *args, **kwargs):
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""
         super(CompoundQuantity, self).save(*args, **kwargs)
         try:
-            self.reaction.performedreaction.save(calcDescriptors=calcDescriptors, invalidate_models=invalidate_models)  # invalidate models
+            self.reaction.performedreaction.save(
+                calcDescriptors=calcDescriptors, invalidate_models=invalidate_models)  # invalidate models
         except PerformedReaction.DoesNotExist:
-            self.reaction.save(calcDescriptors=calcDescriptors)  # descriptor recalculation
+            # descriptor recalculation
+            self.reaction.save(calcDescriptors=calcDescriptors)
 
     def delete(self):
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""

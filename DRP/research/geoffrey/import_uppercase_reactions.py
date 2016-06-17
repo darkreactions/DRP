@@ -78,7 +78,8 @@ class Command(BaseCommand):
     help = 'Ports database from pre-0.02 to 0.02'
 
     def add_arguments(self, parser):
-        parser.add_argument('directory', help='The directory where the tsv files are')
+        parser.add_argument(
+            'directory', help='The directory where the tsv files are')
 
     def handle(self, *args, **kwargs):
         folder = kwargs['directory']
@@ -146,48 +147,59 @@ class Command(BaseCommand):
             teflonValues = []
 
             for r in reader:
-                self.stdout.write('Reiterating for reaction with reference {}'.format(r['reference'].lower()))
-                ps = PerformedReaction.objects.filter(reference=r['reference'].lower())
+                self.stdout.write(
+                    'Reiterating for reaction with reference {}'.format(r['reference'].lower()))
+                ps = PerformedReaction.objects.filter(
+                    reference=r['reference'].lower())
                 if ps.count() > 1:
                     ps = ps.filter(valid=True)
                 if ps.exists():
                     if ps.count() > 1:
-                        raise RuntimeError('{} has more than one reaction'.format(r['reference'].lower()))
+                        raise RuntimeError(
+                            '{} has more than one reaction'.format(r['reference'].lower()))
                     p = ps[0]
                     try:
-                        p.duplicateOf = PerformedReaction.objects.get(reference=r['duplicateOf.reference'].lower())
+                        p.duplicateOf = PerformedReaction.objects.get(
+                            reference=r['duplicateOf.reference'].lower())
                         p.save()
                     except PerformedReaction.DoesNotExist:
                         pass
 
                     #outValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=outcomeDescriptor, reaction=p)[0]
-                    outcomeValue = int(r['outcome']) if (r['outcome'] in (str(x) for x in range(1, 5))) else None
+                    outcomeValue = int(r['outcome']) if (
+                        r['outcome'] in (str(x) for x in range(1, 5))) else None
                     try:
-                        v = OrdRxnDescriptorValue.objects.get(descriptor=outcomeDescriptor, reaction=p)
+                        v = OrdRxnDescriptorValue.objects.get(
+                            descriptor=outcomeDescriptor, reaction=p)
                         if v.value != outcomeValue:
                             v.value = outcomeValue
                             v.save()
                     except OrdRxnDescriptorValue.DoesNotExist:
-                        outValue = outcomeDescriptor.createValue(p, outcomeValue)
+                        outValue = outcomeDescriptor.createValue(
+                            p, outcomeValue)
                         # outValue.save()
                         outValues.append(outValue)
 
                     #outBoolValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=outcomeBooleanDescriptor, reaction=p)[0]
                     value = True if (outcomeValue > 2) else False
                     try:
-                        v = BoolRxnDescriptorValue.objects.get(descriptor=outcomeBooleanDescriptor, reaction=p)
+                        v = BoolRxnDescriptorValue.objects.get(
+                            descriptor=outcomeBooleanDescriptor, reaction=p)
                         if v.value != value:
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
                         # outBoolValue.save()
-                        outBoolValue = outcomeBooleanDescriptor.createValue(p, value)
+                        outBoolValue = outcomeBooleanDescriptor.createValue(
+                            p, value)
                         outBoolValues.append(outBoolValue)
 
                     #purityValue = OrdRxnDescriptorValue.objects.get_or_create(descriptor=purityDescriptor, reaction=p)[0]
-                    value = int(r['purity']) if (r['purity'] in ('1', '2')) else None
+                    value = int(r['purity']) if (
+                        r['purity'] in ('1', '2')) else None
                     try:
-                        v = OrdRxnDescriptorValue.objects.get(descriptor=purityDescriptor, reaction=p)
+                        v = OrdRxnDescriptorValue.objects.get(
+                            descriptor=purityDescriptor, reaction=p)
                         if v.value != value:
                             v.value = value
                             v.save()
@@ -197,33 +209,41 @@ class Command(BaseCommand):
                         purityValues.append(purityValue)
 
                     #temperatureDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=temperatureDescriptor, reaction=p)[0]
-                    value = (float(r['temp']) + 273.15) if (r['temp'] not in ('', '?')) else None
+                    value = (float(r['temp']) + 273.15) if (r['temp']
+                                                            not in ('', '?')) else None
                     try:
-                        v = NumRxnDescriptorValue.objects.get(descriptor=temperatureDescriptor, reaction=p)
+                        v = NumRxnDescriptorValue.objects.get(
+                            descriptor=temperatureDescriptor, reaction=p)
                         if v.value != value:
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
                         # temperatureDescriptorValue.save()
-                        temperatureDescriptorValue = temperatureDescriptor.createValue(p, value)
+                        temperatureDescriptorValue = temperatureDescriptor.createValue(
+                            p, value)
                         temperatureValues.append(temperatureDescriptorValue)
 
                     #timeDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=timeDescriptor, reaction=p)[0]
-                    value = float(r['time']) * 60 if (r['time'] not in ['', '?']) else None
+                    value = float(r['time']) * 60 if (r['time']
+                                                      not in ['', '?']) else None
                     try:
-                        v = NumRxnDescriptorValue.objects.get(descriptor=timeDescriptor, reaction=p)
+                        v = NumRxnDescriptorValue.objects.get(
+                            descriptor=timeDescriptor, reaction=p)
                         if v.value != value:
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
                         # timeDescriptorValue.save()
-                        timeDescriptorValue = timeDescriptor.createValue(p, value)
+                        timeDescriptorValue = timeDescriptor.createValue(
+                            p, value)
                         timeValues.append(timeDescriptorValue)
 
                     #pHDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=pHDescriptor, reaction=p)[0]
-                    value = float(r['pH']) if (r['pH'] not in ('', '?')) else None
+                    value = float(r['pH']) if (
+                        r['pH'] not in ('', '?')) else None
                     try:
-                        v = NumRxnDescriptorValue.objects.get(descriptor=pHDescriptor, reaction=p)
+                        v = NumRxnDescriptorValue.objects.get(
+                            descriptor=pHDescriptor, reaction=p)
                         if v.value != value:
                             v.value = value
                             v.save()
@@ -233,39 +253,50 @@ class Command(BaseCommand):
                         pHValues.append(pHDescriptorValue)
 
                     #preHeatStandingDescriptorValue = NumRxnDescriptorValue.objects.get_or_create(descriptor=preHeatStandingDescriptor, reaction=p)[0]
-                    value = bool(r['pre_heat standing']) if (r.get('pre_heat standing') not in ('', None)) else None
+                    value = bool(r['pre_heat standing']) if (
+                        r.get('pre_heat standing') not in ('', None)) else None
                     try:
-                        v = NumRxnDescriptorValue.objects.get(descriptor=preHeatStandingDescriptor, reaction=p)
+                        v = NumRxnDescriptorValue.objects.get(
+                            descriptor=preHeatStandingDescriptor, reaction=p)
                         if v.value != value:
                             v.value = value
                             v.save()
                     except NumRxnDescriptorValue.DoesNotExist:
                         # preHeatStandingDescriptorValue.save()
-                        preHeatStandingDescriptorValue = preHeatStandingDescriptor.createValue(p, value)
-                        preHeatStandingValues.append(preHeatStandingDescriptorValue)
+                        preHeatStandingDescriptorValue = preHeatStandingDescriptor.createValue(
+                            p, value)
+                        preHeatStandingValues.append(
+                            preHeatStandingDescriptorValue)
 
                     #teflonDescriptorValue = BoolRxnDescriptorValue.objects.get_or_create(descriptor=teflonDescriptor, reaction=p)[0]
-                    value = bool(int(r['teflon_pouch'])) if (r.get('teflon_pouch') not in(None, '')) else None
+                    value = bool(int(r['teflon_pouch'])) if (
+                        r.get('teflon_pouch') not in(None, '')) else None
                     try:
-                        v = BoolRxnDescriptorValue.objects.get(descriptor=teflonDescriptor, reaction=p)
+                        v = BoolRxnDescriptorValue.objects.get(
+                            descriptor=teflonDescriptor, reaction=p)
                         if v.value != value:
                             v.value = value
                             v.save()
                     except BoolRxnDescriptorValue.DoesNotExist:
                         # teflonDescriptorValue.save()
-                        teflonDescriptorValue = teflonDescriptor.createValue(p, value)
+                        teflonDescriptorValue = teflonDescriptor.createValue(
+                            p, value)
                         teflonValues.append(teflonDescriptorValue)
 
                     if len(outValues) > 500:
                         self.stdout.write("Saving...")
                         OrdRxnDescriptorValue.objects.bulk_create(outValues)
-                        BoolRxnDescriptorValue.objects.bulk_create(outBoolValues)
+                        BoolRxnDescriptorValue.objects.bulk_create(
+                            outBoolValues)
                         OrdRxnDescriptorValue.objects.bulk_create(purityValues)
-                        NumRxnDescriptorValue.objects.bulk_create(temperatureValues)
+                        NumRxnDescriptorValue.objects.bulk_create(
+                            temperatureValues)
                         NumRxnDescriptorValue.objects.bulk_create(timeValues)
                         NumRxnDescriptorValue.objects.bulk_create(pHValues)
-                        NumRxnDescriptorValue.objects.bulk_create(preHeatStandingValues)
-                        BoolRxnDescriptorValue.objects.bulk_create(teflonValues)
+                        NumRxnDescriptorValue.objects.bulk_create(
+                            preHeatStandingValues)
+                        BoolRxnDescriptorValue.objects.bulk_create(
+                            teflonValues)
 
                         outValues = []
                         outBoolValues = []
@@ -283,11 +314,13 @@ class Command(BaseCommand):
             for r in reader:
                 l = LabGroup.objects.get(title=r['labGroup.title'])
                 if not Compound.objects.filter(abbrev=r['abbrev']).exists():
-                    self.stdout.write('Importing compound with abbreviation {} and name {}'.format(r['abbrev'], r['name']))
+                    self.stdout.write('Importing compound with abbreviation {} and name {}'.format(
+                        r['abbrev'], r['name']))
                     if r.get('custom') != '1':
                         try:
                             if r.get('CSID') not in ('', None):
-                                c = Compound(CSID=r['CSID'], labGroup=l, abbrev=r['abbrev'])
+                                c = Compound(
+                                    CSID=r['CSID'], labGroup=l, abbrev=r['abbrev'])
                                 c.csConsistencyCheck()
                                 c.save()
                             else:
@@ -296,15 +329,19 @@ class Command(BaseCommand):
                                 else:
                                     CASResults = []
                                 if len(CASResults) != 1:
-                                    nameResults = cs.simple_search(r.get('name'))
+                                    nameResults = cs.simple_search(
+                                        r.get('name'))
                                     if len(nameResults) != 1:
-                                        raise RuntimeError('Could not get unambiguous chemspider entry for CAS ID {} with name {}. Got {} responses'.format(r['CAS_ID'], r['name'], len(CASResults)))
+                                        raise RuntimeError('Could not get unambiguous chemspider entry for CAS ID {} with name {}. Got {} responses'.format(
+                                            r['CAS_ID'], r['name'], len(CASResults)))
                                     else:
-                                        c = Compound(CSID=nameResults[0].csid, labGroup=l, abbrev=r['abbrev'])
+                                        c = Compound(CSID=nameResults[
+                                                     0].csid, labGroup=l, abbrev=r['abbrev'])
                                         c.csConsistencyCheck()
                                         c.save()
                                 else:
-                                    c = Compound(CSID=CASResults[0].csid, labGroup=l, abbrev=r['abbrev'])
+                                    c = Compound(CSID=CASResults[
+                                                 0].csid, labGroup=l, abbrev=r['abbrev'])
                                     c.csConsistencyCheck()
                                     c.save()
                         except ValidationError as e:
@@ -315,16 +352,19 @@ class Command(BaseCommand):
                             r['INCHI'] = ''
                         if r.get('smiles') is None:
                             r['smiles'] = ''
-                        c = Compound.objects.get_or_create(labGroup=l, custom=True, name=r['name'], abbrev=r['abbrev'], formula=r['formula'], smiles=r['smiles'], INCHI=r['INCHI'])[0]
+                        c = Compound.objects.get_or_create(labGroup=l, custom=True, name=r['name'], abbrev=r[
+                                                           'abbrev'], formula=r['formula'], smiles=r['smiles'], INCHI=r['INCHI'])[0]
                     self.stdout.write(c.name.encode('utf-8'))
                     c.save()
         with open(path.join(folder, 'compound_chemicalClasses.tsv')) as chemicalClasses:
             reader = csv.DictReader(chemicalClasses, delimiter='\t')
             for r in reader:
-                self.stdout.write('working with class {}'.format(r['chemicalClass.label']))
+                self.stdout.write('working with class {}'.format(
+                    r['chemicalClass.label']))
                 cs = Compound.objects.filter(abbrev=r['compound.abbrev'])
                 if cs.count() > 0:
-                    c1 = ChemicalClass.objects.get_or_create(label=r['chemicalClass.label'])[0]
+                    c1 = ChemicalClass.objects.get_or_create(
+                        label=r['chemicalClass.label'])[0]
                     for c2 in cs:
                         if not c1 in c2.chemicalClasses.all():
                             c2.chemicalClasses.add(c1)
@@ -334,40 +374,52 @@ class Command(BaseCommand):
             quantities = []
             for r in reader:
                 try:
-                    reaction = PerformedReaction.objects.get(reference=r['reaction.reference'].lower())
-                    compound = Compound.objects.get(abbrev=r['compound.abbrev'], labGroup=reaction.labGroup)
+                    reaction = PerformedReaction.objects.get(
+                        reference=r['reaction.reference'].lower())
+                    compound = Compound.objects.get(
+                        abbrev=r['compound.abbrev'], labGroup=reaction.labGroup)
                     if r['compound.abbrev'] in ('water', 'H2O'):
                         r['density'] = 1
-                    mw = NumMolDescriptorValue.objects.get(compound=compound, descriptor__heading='mw').value
+                    mw = NumMolDescriptorValue.objects.get(
+                        compound=compound, descriptor__heading='mw').value
                     if r['compoundrole.name'] != 'pH':
-                        self.stdout.write('adding {} to {}'.format(compound.abbrev, reaction.reference))
-                        compoundrole = CompoundRole.objects.get_or_create(label=r['compoundrole.name'])[0]
+                        self.stdout.write('adding {} to {}'.format(
+                            compound.abbrev, reaction.reference))
+                        compoundrole = CompoundRole.objects.get_or_create(
+                            label=r['compoundrole.name'])[0]
                         if r['amount'] in ('', '?'):
                             amount = None
                         elif r['unit'] == 'g':
                             amount = float(r['amount']) / mw
                         elif r['unit'] == 'd':
-                            amount = float(r['amount']) * 0.0375 * float(r['density']) / mw
+                            amount = float(r['amount']) * \
+                                0.0375 * float(r['density']) / mw
                         elif r['unit'] == 'mL':
-                            amount = float(r['amount']) * float(r['density']) / mw
+                            amount = float(r['amount']) * \
+                                float(r['density']) / mw
                         else:
                             raise RuntimeError('invalid unit entered')
                         if amount is not None:
                             amount = (amount * 1000)
-                        cqq = CompoundQuantity.objects.filter(role=compoundrole, compound=compound, reaction=reaction)
+                        cqq = CompoundQuantity.objects.filter(
+                            role=compoundrole, compound=compound, reaction=reaction)
                         if cqq.count() > 1:
                             cqq.delete()
                         elif cqq.count() == 0:
-                            quantity = CompoundQuantity(role=compoundrole, compound=compound, reaction=reaction)
+                            quantity = CompoundQuantity(
+                                role=compoundrole, compound=compound, reaction=reaction)
                             quantity.amount = amount
                             # quantities.append(quantity)
                             quantity.save(recalculate=False)
                     else:
-                        reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(r['compound.abbrev'], r['amount'], r['unit'])
+                        reaction.notes += ' pH adjusting reagent used: {}, {}{}'.format(
+                            r['compound.abbrev'], r['amount'], r['unit'])
                         reaction.save(calcDescriptors=False)
                 except Compound.DoesNotExist as e:
-                    self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
-                    reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(r['compound.abbrev'], r['amount'], r['unit'])
+                    self.stderr.write('Unknown Reactant {} with amount {} {} in reaction {}'.format(
+                        r['compound.abbrev'], r['amount'], r['unit'], r['reaction.reference']))
+                    reaction.notes += ' Unknown Reactant {} with amount {} {}'.format(
+                        r['compound.abbrev'], r['amount'], r['unit'])
                     reaction.valid = False
                     reaction.save(calcDescriptors=False)
                 except PerformedReaction.DoesNotExist as e:

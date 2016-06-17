@@ -11,15 +11,22 @@ def notInTheFuture(value):
 
 class GreaterThanValidator(object):
 
+    """Verify that a value is exclusively greater than a limit."""
+
     def __init__(self, floorValue):
+        """Initialise with the floor value."""
         self.floorValue = floorValue
 
     def __call__(self, value):
+        """Make this object callable."""
         if value <= self.floorValue:
-            raise ValidationError('This value must be greater than %(value)s', params={'value': self.floorValue})
+            raise ValidationError('This value must be greater than %(value)s', params={
+                                  'value': self.floorValue})
 
     def __eq__(self, other):
+        """Test for equality; allows django some optimisation."""
         return self.floorValue == other.floorValue
 
     def deconstruct(self):
+        """Allow for serialization into django migrations."""
         return ('DRP.models.validators.GreaterThanValidator', [self.floorValue], {})

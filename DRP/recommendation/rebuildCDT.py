@@ -51,7 +51,8 @@ class PropertiesCalculator:
         # TODO: the name doesn't make sense
         totalOrganic = 0.0
         for k in range(5):
-            totalOrganic += self.compoundMoles[k] * self.organicList[k] * self.compoundAcc[k]
+            totalOrganic += self.compoundMoles[k] * \
+                self.organicList[k] * self.compoundAcc[k]
         return totalOrganic / (self.compoundMoles[self.isWater] * self.compoundDon[self.isWater])
 
     def org_water_donor_on_inorg_ratio(self):
@@ -59,7 +60,8 @@ class PropertiesCalculator:
         # the name doesn't make sense
         totalOrganic = 0.0
         for k in range(5):
-            totalOrganic += self.compoundMoles[k] * self.organicList[k] * self.compoundDon[k]
+            totalOrganic += self.compoundMoles[k] * \
+                self.organicList[k] * self.compoundDon[k]
         return totalOrganic / (self.compoundMoles[self.isWater] * self.compoundAcc[self.isWater])
 
     def inorg_org_mole_ratio(self):
@@ -101,14 +103,14 @@ def dictFix(d):
 
 def distList(indicator, properties_lists):
     from operator import mul
-    ''' Every item in "properties_lists" is a list of values for a set of
+    """ Every item in "properties_lists" is a list of values for a set of
     properties. Alternatively: properties_list is an n x 19 matrix, with 19
     features, where each row corrresponds to a compound.
 
     Only some rows are relevant, so we filter out those rows that indicator
      does not carry a 1 for....
     For each column, I want to take the min, max, average and geometric average
-    '''
+    """
 
     def min_f(l):
         if len(l) == 0:
@@ -131,9 +133,12 @@ def distList(indicator, properties_lists):
         return reduce(mul, l)**(1.0 / float(len(l)))
 
     assert(len(properties_lists) == len(indicator))
-    compressed = [properties_lists[i] for i in range(len(indicator)) if indicator[i] == 1]
-    transposed = zip(*compressed)  # each element is a list of values for that column's property
-    filtered = map(lambda property_set: filter(lambda prop_val: prop_val != -1, property_set), transposed)
+    compressed = [properties_lists[i]
+                  for i in range(len(indicator)) if indicator[i] == 1]
+    # each element is a list of values for that column's property
+    transposed = zip(*compressed)
+    filtered = map(lambda property_set: filter(
+        lambda prop_val: prop_val != -1, property_set), transposed)
 
     minned = map(min_f, filtered)
     maxxed = map(max_f, filtered)
@@ -155,7 +160,8 @@ def atoms_from_smiles(smiles):
 def atomic_properties(atom_list, smiles_pairs, counts=None):
     interesting = ["Se", "Te", "V", "Mo", "Zn", "Ga", "Co", "Cr"]
     if not counts:
-        atom_count = [(filter(lambda x: x in interesting, atoms_from_smiles(k[0])), k[1]) for k in smiles_pairs]
+        atom_count = [(filter(lambda x: x in interesting, atoms_from_smiles(k[0])), k[
+                       1]) for k in smiles_pairs]
 
         counts = {}
         for p in atom_count:
@@ -164,25 +170,33 @@ def atomic_properties(atom_list, smiles_pairs, counts=None):
                     counts[a] = 0
                 counts[a] += min(1, p[0].count(a)) * p[1]
 
-    atoms = {atom: properties[atom] for atom in atom_list if atom in interesting}
+    atoms = {atom: properties[atom]
+             for atom in atom_list if atom in interesting}
 
     props = []
 
     props.append("yes" if any([atoms[b]["Actinide"] for b in atoms]) else "no")
-    props.append("yes" if any([atoms[b]["AlkaliMetal"] for b in atoms]) else "no")
-    props.append("yes" if any([atoms[b]["Lanthanide"] for b in atoms]) else "no")
+    props.append("yes" if any([atoms[b]["AlkaliMetal"]
+                               for b in atoms]) else "no")
+    props.append("yes" if any([atoms[b]["Lanthanide"]
+                               for b in atoms]) else "no")
 
     for i in range(1, 8):
-        props.append("yes" if any([atoms[b]["Period"] == i for b in atoms]) else "no")
+        props.append("yes" if any(
+            [atoms[b]["Period"] == i for b in atoms]) else "no")
 
     for i in range(1, 19):
-        props.append("yes" if any([atoms[b]["Group"] == i for b in atoms]) else "no")
+        props.append("yes" if any(
+            [atoms[b]["Group"] == i for b in atoms]) else "no")
 
     for i in range(0, 8):
-        props.append("yes" if any([atoms[b]["Valence"] == i for b in atoms]) else "no")
+        props.append("yes" if any(
+            [atoms[b]["Valence"] == i for b in atoms]) else "no")
 
-    numeric_props = [[atoms[b]["IonizationEnergies"], atoms[b]["ElectronAffinity"], atoms[b]["PaulingElectronegativity"], atoms[b]["PearsonElectronegativity"], atoms[b]["hardness"], atoms[b]["AtomicRadius"]] for b in atoms]
-    numeric_props_weighted = [map(lambda x: x * counts[b], [atoms[b]["IonizationEnergies"], atoms[b]["ElectronAffinity"], atoms[b]["PaulingElectronegativity"], atoms[b]["PearsonElectronegativity"], atoms[b]["hardness"], atoms[b]["AtomicRadius"]]) for b in atoms]
+    numeric_props = [[atoms[b]["IonizationEnergies"], atoms[b]["ElectronAffinity"], atoms[b]["PaulingElectronegativity"], atoms[
+        b]["PearsonElectronegativity"], atoms[b]["hardness"], atoms[b]["AtomicRadius"]] for b in atoms]
+    numeric_props_weighted = [map(lambda x: x * counts[b], [atoms[b]["IonizationEnergies"], atoms[b]["ElectronAffinity"], atoms[b][
+                                  "PaulingElectronegativity"], atoms[b]["PearsonElectronegativity"], atoms[b]["hardness"], atoms[b]["AtomicRadius"]]) for b in atoms]
     indicator = [1 for i in range(len(atoms))]
     try:
         props += distList(indicator, numeric_props)
@@ -215,13 +229,15 @@ field_names = ["Actinide", "AlkaliMetal", "Lanthanide",
                "IonizationMeanWeighted", "EAMeanWeighted", "PaulingElectronegMeanWeighted", "PearsonElectronegMeanWeighted", "hardnessMeanWeighted", "AtomicRadiusMeanWeighted",
                "IonizationGeomWeighted", "EAGeomWeighted", "PaulingElectronegGeomWeighted", "PearsonElectronegGeomWeighted", "hardnessGeomWeighted", "AtomicRadiusGeomWeighted",
                ]
-atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O', 'N', 'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs', 'Cr', 'Cu']
+atomsz = ['Na', 'Li', 'Te', 'Br', 'K', 'C', 'F', 'I', 'Mo', 'O', 'N',
+          'P', 'S', 'V', 'Se', 'Zn', 'Co', 'Cl', 'Ga', 'Cs', 'Cr', 'Cu']
 headers = ['XXXtitle', 'XXXinorg1', 'XXXinorg1mass',
            'XXXinorg1moles', 'XXXinorg2', 'XXXinorg2mass',
            'XXXinorg2moles', 'XXXinorg3', 'XXXinorg3mass', 'XXXinorg3moles', 'XXXorg1', 'XXXorg1mass',
            'XXXorg1moles', 'XXXorg2', 'XXXorg2mass',
            'XXXorg2moles', 'XXXoxlike1', 'XXXoxlike1mass',
-           'XXXoxlike1moles', 'temp', 'time', 'slowCool', 'pH',  # TODO: Change Temp_max to temp -- will it blend?
+           # TODO: Change Temp_max to temp -- will it blend?
+           'XXXoxlike1moles', 'temp', 'time', 'slowCool', 'pH',
            'leak', 'numberInorg', 'numberOrg', 'numberOxlike',
            'numberComponents', 'orgavgpolMax', 'orgrefractivityMax',
            'orgmaximalprojectionareaMax',

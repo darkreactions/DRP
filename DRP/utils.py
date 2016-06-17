@@ -9,7 +9,8 @@ def average_normalized_conf(confs):
     First normalize all matrices so their entries sum to 1, then average them.
     """
     possible_vals = set(confs[0].keys())
-    sum_conf = {true: {guess: 0.0 for guess in possible_vals} for true in possible_vals}
+    sum_conf = {true: {guess: 0.0 for guess in possible_vals}
+                for true in possible_vals}
     for conf in confs:
         total = 0.0
         for true, guesses in conf.items():
@@ -21,7 +22,8 @@ def average_normalized_conf(confs):
             for guess, count in guesses.items():
                 sum_conf[true][guess] += count / total
 
-    average_conf = {true: {guess: count / len(confs) for guess, count in guesses.items()} for true, guesses in sum_conf.items()}
+    average_conf = {true: {guess: count / len(confs) for guess, count in guesses.items()}
+                    for true, guesses in sum_conf.items()}
     return average_conf
 
 
@@ -64,13 +66,16 @@ def Matthews(conf):
     class_accuracy_sum = 0.0
     num_classes = 0.0
     if len(conf) != 2:
-        raise NotImplementedError("Matthews Correlation Coefficient is only defined for two-class confusion matrices. For a generalization to multi-class problems, investigate markedness and informedness.")
-    # Note it doesn't matter which of these is actually considered true and which false as Matthews Correlation Coefficient is symmetrical
+        raise NotImplementedError(
+            "Matthews Correlation Coefficient is only defined for two-class confusion matrices. For a generalization to multi-class problems, investigate markedness and informedness.")
+    # Note it doesn't matter which of these is actually considered true and
+    # which false as Matthews Correlation Coefficient is symmetrical
     true, true_guesses = conf.items()[0]
     false, false_guesses = conf.items()[1]
 
     if len(true_guesses) != 2 or len(false_guesses) != 2:
-        raise NotImplementedError("Matthews Correlation Coefficient is only defined for two-class confusion matrices. For a generalization to multi-class problems, investigate markedness and informedness.")
+        raise NotImplementedError(
+            "Matthews Correlation Coefficient is only defined for two-class confusion matrices. For a generalization to multi-class problems, investigate markedness and informedness.")
 
     TP = true_guesses[true]
     FN = true_guesses[false]

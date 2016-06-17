@@ -17,10 +17,12 @@ models_to_delete = [DataSet, DataSetRelation, ModelContainer, MetricContainer, F
                     Descriptor
                     ]
 
-special_instruction_models = [CatMolDescriptorValue, OrdMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue]
+special_instruction_models = [
+    CatMolDescriptorValue, OrdMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue]
 
 if __name__ == '__main__':
-    really = raw_input("Are you sure you want to delete all but the raw data in this database? This includes all models, descriptors, descriptor values and containers and is irreversible: ")
+    really = raw_input(
+        "Are you sure you want to delete all but the raw data in this database? This includes all models, descriptors, descriptor values and containers and is irreversible: ")
     if really.lower() == 'yes':
         for m in models_to_delete:
             qs = m.objects.all()
@@ -40,4 +42,5 @@ if __name__ == '__main__':
         for m in models_to_delete:
             qs = m.objects.all()
             if qs.count() != 0:
-                raise RuntimeError("Failed to delete all objects of model {}. {} remain".format(m, qs.count()))
+                raise RuntimeError(
+                    "Failed to delete all objects of model {}. {} remain".format(m, qs.count()))

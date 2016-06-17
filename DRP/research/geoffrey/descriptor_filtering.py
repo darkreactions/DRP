@@ -9,7 +9,7 @@ import sys
 
 
 def is_descriptor_type(descriptor_type, descriptor):
-    """Returns boolean whether descriptor is of type descriptor_type"""
+    """Returns boolean whether descriptor is of type descriptor_type."""
     try:
         descriptor_type.objects.get(id=descriptor.id)
         return True
@@ -18,7 +18,7 @@ def is_descriptor_type(descriptor_type, descriptor):
 
 
 def is_descriptor_types(descriptor_type_list, descriptor):
-    """Returns boolean whether descriptor is any of the types in descriptor_type_list"""
+    """Returns boolean whether descriptor is any of the types in descriptor_type_list."""
     for descriptor_type in descriptor_type_list:
         if is_descriptor_type(descriptor_type, descriptor):
             return True
@@ -52,7 +52,8 @@ def filter_through_reactions(reactions, descriptors):
     for descriptor in descriptors:
         for dt, vt in desc_val_types:
             if isinstance(descriptor, dt):
-                qs = vt.objects.filter(descriptor=descriptor, reaction__in=reactions)
+                qs = vt.objects.filter(
+                    descriptor=descriptor, reaction__in=reactions)
 
                 if qs.exists():
                     qs = qs.exclude(value=None)
@@ -60,11 +61,14 @@ def filter_through_reactions(reactions, descriptors):
                         if qs.values_list('value', flat=True).distinct().count() != 1:
                             valid_descriptors.append(descriptor)
                         else:
-                            sys.stderr.write("{} excluded because all non-None values are the same\n".format(descriptor.heading))
+                            sys.stderr.write(
+                                "{} excluded because all non-None values are the same\n".format(descriptor.heading))
                     else:
-                        sys.stderr.write("{} excluded because all values are None\n".format(descriptor.heading))
+                        sys.stderr.write(
+                            "{} excluded because all values are None\n".format(descriptor.heading))
                 else:
-                    sys.stderr.write("{} excluded because there are no values\n".format(descriptor.heading))
+                    sys.stderr.write(
+                        "{} excluded because there are no values\n".format(descriptor.heading))
                 break
     return valid_descriptors
 
@@ -72,15 +76,18 @@ def filter_through_reactions(reactions, descriptors):
 def filter_through_reactions_nonMissing_unique(reactions, descriptors):
     desc_triples = []
     desc_val_types = [(BoolRxnDescriptor, BoolRxnDescriptorValue), (NumRxnDescriptor, NumRxnDescriptorValue),
-                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor, OrdRxnDescriptorValue)
+                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor,
+                                                                  OrdRxnDescriptorValue)
                       ]
     for descriptor in descriptors:
         for dt, vt in desc_val_types:
             if isinstance(descriptor, dt):
-                qs = vt.objects.filter(descriptor=descriptor, reaction__in=reactions).exclude(value=None)
+                qs = vt.objects.filter(
+                    descriptor=descriptor, reaction__in=reactions).exclude(value=None)
 
                 nonNull = qs.count()
-                distinct = qs.values('value').annotate(num=Count('value')).count()
+                distinct = qs.values('value').annotate(
+                    num=Count('value')).count()
 
                 desc_triples.append((descriptor.heading, nonNull, distinct))
 

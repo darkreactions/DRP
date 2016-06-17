@@ -10,4 +10,5 @@ if __name__ == '__main__':
     outfile = argv[3]
     container = MetricContainer.objects.get(pk=pk)
     print "Calling transform"
-    build_metric.transform_rxns(container, testSetName=testSetName, outfile=outfile, verbose=True)
+    build_metric.transform_rxns(
+        container, testSetName=testSetName, outfile=outfile, verbose=True)

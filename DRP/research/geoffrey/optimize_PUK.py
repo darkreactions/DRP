@@ -24,7 +24,8 @@ def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, train
         visitorOptions = {}
 
     if 'puk_sigma' in visitorOptions or 'puk_omega' in visitorOptions:
-        raise ValueError('Do not specify PUK sigma or omega in visitor options. Instead specify minimum, maximum, and step to scan over')
+        raise ValueError(
+            'Do not specify PUK sigma or omega in visitor options. Instead specify minimum, maximum, and step to scan over')
 
     modelVisitorLibrary = 'weka'
     modelVisitorTool = 'SVM_PUK'
@@ -33,10 +34,12 @@ def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, train
     omega_min, omega_max, omega_step = puk_omega
 
     if geometric and (sigma_step <= 1 or omega_step <= 1):
-        raise ValueError("Geometric search will never complete unless step size is greater than 1")
+        raise ValueError(
+            "Geometric search will never complete unless step size is greater than 1")
 
     if sigma_max < sigma_min or omega_max < omega_min:
-        raise ValueError("Sigma max and omega max must be greater than respective min")
+        raise ValueError(
+            "Sigma max and omega max must be greater than respective min")
 
     sigma = sigma_min
     omega = omega_min
@@ -44,7 +47,8 @@ def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, train
     visitorOptions['puk_sigma'] = sigma
     visitorOptions['puk_omega'] = omega
 
-    initialDescription = "{} {} {}".format(modelVisitorTool, visitorOptions, description)
+    initialDescription = "{} {} {}".format(
+        modelVisitorTool, visitorOptions, description)
 
     if verbose:
         print "Building initial container with {} {}".format(modelVisitorTool, visitorOptions)
@@ -52,7 +56,8 @@ def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, train
                                                 splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=initialDescription,
                                                 verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
-    build_model.display_model_results(container, heading='sigma={} omega={}'.format(sigma, omega))
+    build_model.display_model_results(
+        container, heading='sigma={} omega={}'.format(sigma, omega))
 
     omega = next(omega, omega_step, geometric)
 
@@ -64,13 +69,16 @@ def scan_PUK(predictor_headers=None, response_headers=None, splitter=None, train
             visitorOptions['puk_sigma'] = sigma
             visitorOptions['puk_omega'] = omega
 
-            new_description = "{} {} {}".format(modelVisitorTool, visitorOptions, description)
+            new_description = "{} {} {}".format(
+                modelVisitorTool, visitorOptions, description)
 
-            new_container = container.create_duplicate(modelVisitorOptions=visitorOptions, description=new_description)
+            new_container = container.create_duplicate(
+                modelVisitorOptions=visitorOptions, description=new_description)
             new_container.full_clean()
 
             build_model.build_model(new_container, verbose=verbose)
-            build_model.display_model_results(new_container, heading='sigma={} omega={}'.format(sigma, omega))
+            build_model.display_model_results(
+                new_container, heading='sigma={} omega={}'.format(sigma, omega))
 
             omega = next(omega, omega_step, geometric)
         omega = omega_min
@@ -130,8 +138,10 @@ if __name__ == '__main__':
     # This way of accepting splitter options is bad and hacky.
     # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
     # TODO XXX make this not horrible
-    splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else None
-    visitorOptions = ast.literal_eval(args.visitor_options) if args.visitor_options is not None else None
+    splitterOptions = ast.literal_eval(
+        args.splitter_options) if args.splitter_options is not None else None
+    visitorOptions = ast.literal_eval(
+        args.visitor_options) if args.visitor_options is not None else None
 
     scan_PUK(predictor_headers=args.predictor_headers, response_headers=args.response_headers, puk_sigma=args.puk_sigma, puk_omega=args.puk_omega,
              splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name,

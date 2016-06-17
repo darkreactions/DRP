@@ -1,3 +1,4 @@
+"""The suite of DRP tests."""
 from DRPTestCase import DRPTestCase, runTests
 import fileTests
 import unittest

@@ -1,4 +1,4 @@
-
+"""Import data from your target main server."""
 from django.utils.encoding import smart_str
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -10,9 +10,13 @@ import DRP
 
 
 class Command(BaseCommand):
+
+    """Import data from your target main server."""
+
     help = 'synchronises database with the main server'
 
     def handle(self, reaction_limit=None, *args, **kwargs):
+        """Handle the command call."""
         DRP.models.CompoundQuantity.objects.all().delete()
         DRP.models.Compound.objects.all().delete()
         DRP.models.CompoundRole.objects.all().delete()
@@ -33,7 +37,8 @@ class Command(BaseCommand):
         User.objects.all().delete()
         s = requests.Session()
         s.get(settings.MAIN_SERVER + '/login.html')
-        r = s.post(settings.MAIN_SERVER + '/login.html', data={'username': settings.MAIN_SERVER_USER, 'password': settings.MAIN_SERVER_PASS, 'csrfmiddlewaretoken': s.cookies.get_dict()['csrftoken']})
+        r = s.post(settings.MAIN_SERVER + '/login.html', data={'username': settings.MAIN_SERVER_USER,
+                                                               'password': settings.MAIN_SERVER_PASS, 'csrfmiddlewaretoken': s.cookies.get_dict()['csrftoken']})
         if r.status_code == requests.codes.ok:
             apiUrl = settings.MAIN_SERVER + '/database/import/apiv1/'
             if reaction_limit is None:

@@ -1,4 +1,4 @@
-'''Urls for pages related to authentication and user management'''
+"""Urls for pages related to authentication and user management."""
 from django.conf.urls import url
 import DRP.views
 from django.contrib.auth.views import login, logout

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"A test for making sure that data imports from a remote server."
+"""A test for making sure that data imports from a remote server."""
 
 import unittest
 from DRPTestCase import DRPTestCase, runTests
@@ -18,7 +18,8 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @signsExampleLicense("Rorschach")
 @createsPerformedReactionSetOrd
 class ApiV1(DRPTestCase):
-    """Tests the version 1 api"""
+
+    """Tests the version 1 api."""
 
     @transaction.atomic
     def databaseOperation(self, limit=None):
@@ -27,8 +28,11 @@ class ApiV1(DRPTestCase):
         c.handle()
 
     def test_all(self):
-        """Test the database import. For the moment the only test done is to make sure that no exceptions are thrown, since
-        any bugs we can identify so far are caught by the database integrity protection from django, which is well tested
+        """
+        Test the database import.
+
+        For the moment the only test done is to make sure that no exceptions are thrown, since
+        any bugs we can identify so far are caught by the database integrity protection from django, which is well tested.
         """
         self.databaseOperation()
 
@@ -43,6 +47,9 @@ class ApiV1(DRPTestCase):
 @signsExampleLicense("Rorschach")
 @createsPerformedReactionSetOrd
 class ApiV1FailBadUser(ApiV1):
+
+    """Direct test made different by using different users."""
+
     pass
 
 suite = unittest.TestSuite([
@@ -52,4 +59,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

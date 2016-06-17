@@ -43,7 +43,8 @@ desc_files = {
 splitter = 'RandomSplitter'
 splitterOptions = json.dumps({"num_splits": 15})
 BCR_options = [True, False]
-modelVisitorTools = ['J48', 'KNN', 'LogisticRegression', 'NaiveBayes', 'RandomForest', 'SVM_PUK']
+modelVisitorTools = ['J48', 'KNN', 'LogisticRegression',
+                     'NaiveBayes', 'RandomForest', 'SVM_PUK']
 
 # with open('test.csv', 'w') as f:
 #headers = ['Base Features', 'ChemAxon', 'Feature Selection']
@@ -56,16 +57,19 @@ modelVisitorTools = ['J48', 'KNN', 'LogisticRegression', 'NaiveBayes', 'RandomFo
 
 def get_rows():
     rows = []
-    containers = ModelContainer.objects.filter(built=True).annotate(num_numDescs=Count('numRxnDescriptors', distinct=True)).annotate(num_boolDescs=Count('boolRxnDescriptors', distinct=True))
+    containers = ModelContainer.objects.filter(built=True).annotate(num_numDescs=Count(
+        'numRxnDescriptors', distinct=True)).annotate(num_boolDescs=Count('boolRxnDescriptors', distinct=True))
 
     print "{} built model containers".format(containers.count())
-    containers = containers.filter(splitter=splitter).filter(splitterOptions=splitterOptions)
+    containers = containers.filter(splitter=splitter).filter(
+        splitterOptions=splitterOptions)
 
     print "{} with correct splitter".format(containers.count())
 
     for descriptor_file, desc_set_spec in desc_files.items():
         print "Using {}".format(descriptor_file)
-        descriptor_file_path = os.path.join(descriptor_directory, descriptor_file)
+        descriptor_file_path = os.path.join(
+            descriptor_directory, descriptor_file)
         with open(descriptor_file_path) as f:
             headers = [l.strip() for l in f if l.strip()]
 
@@ -82,10 +86,12 @@ def get_rows():
             for header in headers:
                 if not NumRxnDescriptor.objects.filter(heading=header).exists() and not BoolRxnDescriptor.objects.filter(heading=header).exists():
                     missing_descs.append(header)
-            raise RuntimeError("Did not find correct number of descriptors. Unable to find:{}".format(missing_descs))
+            raise RuntimeError(
+                "Did not find correct number of descriptors. Unable to find:{}".format(missing_descs))
 
         conts = containers
-        conts = conts.filter(num_numDescs=num_numDescs).filter(num_boolDescs=num_boolDescs)
+        conts = conts.filter(num_numDescs=num_numDescs).filter(
+            num_boolDescs=num_boolDescs)
         print "{} containers with appropriate number of descriptors".format(conts.count())
 
         for tool in modelVisitorTools:
@@ -93,8 +99,10 @@ def get_rows():
             for bcr_option in BCR_options:
                 options = {'BCR': bcr_option}
                 options_string = json.dumps(options)
-                option_conts = model_conts.filter(modelVisitorOptions=options_string)
-                option_conts = [c for c in option_conts if (set(c.numRxnDescriptors.all()) == setNumDescs and set(c.boolRxnDescriptors.all()) == setBoolDescs)]
+                option_conts = model_conts.filter(
+                    modelVisitorOptions=options_string)
+                option_conts = [c for c in option_conts if (set(c.numRxnDescriptors.all(
+                )) == setNumDescs and set(c.boolRxnDescriptors.all()) == setBoolDescs)]
 
                 row = desc_set_spec.copy()
                 row['Model'] = tool
@@ -111,8 +119,10 @@ def get_rows():
 
                 cont = option_conts[0]
                 conf_tuples_lol = cont.getComponentConfusionMatrices()
-                # we only care about the confusion matrix of the first descriptor
-                confs = [conf_tuple_list[0][1] for conf_tuple_list in conf_tuples_lol]
+                # we only care about the confusion matrix of the first
+                # descriptor
+                confs = [conf_tuple_list[0][1]
+                         for conf_tuple_list in conf_tuples_lol]
                 average_conf = utils.average_normalized_conf(confs)
 
                 # And here we go into the part that only works for boolean descriptors
@@ -137,14 +147,16 @@ def get_rows():
 
                 row['Accuracy'] = TP + TN
                 row['BCR'] = (TP / AP + TN / AN) / 2
-                row['Matthews'] = (TP * TN - FP * FN) / sqrt(PP * AP * AN * PN) if 0 not in [PP, AP, AN, PN] else 0.0
+                row['Matthews'] = (TP * TN - FP * FN) / sqrt(PP *
+                                                             AP * AN * PN) if 0 not in [PP, AP, AN, PN] else 0.0
                 rows.append(row)
     return rows
 
 if __name__ == '__main__':
     rows = get_rows()
 
-    headers = ['Base Features', 'ChemAxon', 'Feature Selection', 'BCR Weighted', 'Model', 'TP', 'FP', 'FN', 'TN', 'Accuracy', 'BCR', 'Matthews']
+    headers = ['Base Features', 'ChemAxon', 'Feature Selection', 'BCR Weighted',
+               'Model', 'TP', 'FP', 'FN', 'TN', 'Accuracy', 'BCR', 'Matthews']
     csv_fn = argv[1]
 
     with open(csv_fn, 'w') as f:

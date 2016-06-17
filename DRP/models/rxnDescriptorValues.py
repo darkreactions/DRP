@@ -16,8 +16,8 @@ class RxnDescriptorValueQuerySet(models.query.QuerySet):
     pass
     # TODO XXX This breaks because queryset has no attribute descriptor.
     # def delete(self):
-    #trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
-    #testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
+    # trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
+    # testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
     # for model in trainingModels|testModels:
     # model.invalidate()
 
@@ -27,13 +27,13 @@ class RxnDescriptorValueManager(models.Manager):
     """A manager which returns the custom queryset class for Reaction Descriptor Values."""
 
     def get_queryset(self):
-        """Returns the correct queryset class."""
+        """Return the correct queryset class."""
         return RxnDescriptorValueQuerySet(self.model, using=self._db)
 
 
 class RxnDescriptorValue(models.Model):
 
-    """Contains Relationships between Reactions and their descriptors."""
+    """A class to contain Relationships between Reactions and their descriptors."""
 
     class Meta:
         app_label = "DRP"
@@ -52,7 +52,7 @@ class RxnDescriptorValue(models.Model):
 # model.invalidate()
 # except pr.PerformedReaction.DoesNotExist:
 # pass # fine, we don't care, no need to pass this on.
-    #super(RxnDescriptorValue, self).save(*args, **kwargs)
+    # super(RxnDescriptorValue, self).save(*args, **kwargs)
 
     # def delete(self):
 #    trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))
@@ -60,7 +60,7 @@ class RxnDescriptorValue(models.Model):
 # for model in trainingModels|testModels:
 # model.invalidate()
 # model.save()
-    #super(RxnDescriptorValue, self).delete()
+    # super(RxnDescriptorValue, self).delete()
 
 
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):

@@ -21,7 +21,8 @@ def walk_tree(j, feature_set=set()):
             walk_tree(child[2], feature_set.union(set([feature])))
         elif len(child) == 4:
             for leaf_feature in feature_set:
-                importance[leaf_feature] = importance.get(leaf_feature, 0) + child[3][0] + child[3][1]
+                importance[leaf_feature] = importance.get(
+                    leaf_feature, 0) + child[3][0] + child[3][1]
 
 walk_tree(j)
 

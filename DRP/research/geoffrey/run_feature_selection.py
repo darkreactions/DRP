@@ -17,9 +17,11 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
     if predictors.count() != len(predictor_headers):
-        raise KeyError("Could not find all predictors. Missing: {}".format(build_model.missing_descriptors(predictor_headers)))
+        raise KeyError("Could not find all predictors. Missing: {}".format(
+            build_model.missing_descriptors(predictor_headers)))
     if responses.count() != len(response_headers):
-        raise KeyError("Could not find all responses. Missing: {}".format(build_model.missing_descriptors(response_headers)))
+        raise KeyError("Could not find all responses. Missing: {}".format(
+            build_model.missing_descriptors(response_headers)))
 
     if verbose:
         print "Found {} matching predictors and {} matching responses".format(predictors.count(), responses.count())
@@ -29,13 +31,17 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
         reactions = None
     else:
         reactions = PerformedReaction.objects.filter(valid=True)
-        reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
+        reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(
+            descriptor__heading__in=response_headers, value=None))
+        reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(
+            descriptor__heading__in=response_headers, value=None))
+        reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(
+            descriptor__heading__in=response_headers, value=None))
         trainingSet = None
         testSet = None
 
-    visitorOptions = ast.literal_eval(visitor_options) if visitor_options is not None else None
+    visitorOptions = ast.literal_eval(
+        visitor_options) if visitor_options is not None else None
     container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, predictors, responses, description=description, reactions=reactions,
                                                  trainingSet=trainingSet, featureVisitorOptions=visitorOptions)
 
@@ -47,7 +53,8 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
 
     if output_file is not None:
         with open(output_file, 'wb') as f:
-            f.write('\n'.join([d.heading for d in container.chosenDescriptors]))
+            f.write(
+                '\n'.join([d.heading for d in container.chosenDescriptors]))
 
     return container
 

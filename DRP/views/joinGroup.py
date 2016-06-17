@@ -1,4 +1,4 @@
-'''A module containing the view for joining a group'''
+"""A module containing the view for joining a group."""
 
 from DRP.forms import LabGroupJoiningForm
 from django.contrib.auth.decorators import login_required
@@ -13,7 +13,7 @@ from decorators import hasSignedLicense
 @login_required
 @hasSignedLicense
 def joinGroup(request):
-    '''The view which governs the form for joining lab groups'''
+    """The view which governs the form for joining lab groups."""
     if not LabGroup.objects.all().exists():
         template = get_template('labgroup_404.html')
         return HttpResponseNotFound(template.render(RequestContext(request)))

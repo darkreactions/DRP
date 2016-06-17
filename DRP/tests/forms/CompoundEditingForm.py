@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-'''The unit test for the compound editing form.
-  These tests assume that presence tests for the form fields work as expected
-'''
+"""
+The unit test for the compound editing form.
+
+These tests assume that presence tests for the form fields work as expected
+"""
 
 import unittest
 from BaseFormTest import BaseFormTest
@@ -18,19 +20,24 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass('Org', 'Organic Reagent')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class CorrectSynonym(BaseFormTest):
-    '''Tests that the form validates with a correct synonym for the compound submitted'''
+
+    """Tests that the form validates with a correct synonym for the compound submitted."""
 
     def test_validation(self):
+        """Test the validation."""
         self.validationSucceeds()
 
     def setUpFormData(self):
+        """Data for the form."""
         self.formData = {'name': 'Ethanol', 'abbrev': 'ban'}
-        self.formData['chemicalClasses'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
+        self.formData['chemicalClasses'] = [
+            c.id for c in ChemicalClass.objects.filter(label='Org')]
 
     def setUp(self):
-        "Instantiates the form"
+        """Instantiate the form."""
         super(CorrectSynonym, self).setUp()
-        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
+        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(
+            abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
 
 
 @createsUser('Aslan', 'old_magic')
@@ -38,16 +45,20 @@ class CorrectSynonym(BaseFormTest):
 @createsChemicalClass('Org', 'Organic Reagent')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class IncorrectSynonym(BaseFormTest):
-    '''Tests that the form fails to validate when provided with an incorrect synonym'''
+
+    """Tests that the form fails to validate when provided with an incorrect synonym."""
 
     def setUpFormData(self):
+        """Data for the form."""
         self.formData = {'name': 'Pyrazine', 'abbrev': 'ban'}
-        self.formData['chemicalClasses'] = [c.id for c in ChemicalClass.objects.filter(label='Org')]
+        self.formData['chemicalClasses'] = [
+            c.id for c in ChemicalClass.objects.filter(label='Org')]
 
     def setUp(self):
-        "Instantiates the form"
+        """Instantiate the form."""
         super(IncorrectSynonym, self).setUp()
-        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
+        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(
+            abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
 
 suite = unittest.TestSuite([
     loadTests(IncorrectSynonym),

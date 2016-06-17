@@ -8,6 +8,7 @@ import DRP.models
 
 
 class MolDescriptorValueQuerySet(models.query.QuerySet):
+
     """Class to represent a group of Molecular Descriptor Values."""
 
     def delete(self, recalculate_reactions=True):
@@ -23,6 +24,7 @@ class MolDescriptorValueQuerySet(models.query.QuerySet):
 
 
 class MolDescriptorValueManager(models.Manager):
+
     """Manager class to return the custom queryset for MolDescriptorValues."""
 
     def get_queryset(self):
@@ -59,6 +61,7 @@ class MolDescriptorValue(models.Model):
 
 
 class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
+
     """The value of a categorical descriptor for a compound."""
 
     class Meta:

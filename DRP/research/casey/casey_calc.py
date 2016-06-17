@@ -51,14 +51,17 @@ def countif(all_data, lower_dist, upper_dist, k, avg_exact, se_te, desired_outco
 def experiment_equal_sized_buckets(all_data, min, max, bucket_size, k, se_te, model_intuition, rows):
     while min < max:
         upper = min + bucket_size
-        total_for_range = countif(all_data, min, upper, k, 'avg', se_te, 'all', model_intuition)
+        total_for_range = countif(
+            all_data, min, upper, k, 'avg', se_te, 'all', model_intuition)
         rows[0].append(str(min) + '-' + str(upper))
         for outcome in range(1, 5):
-            total_for_outcome = countif(all_data, min, min + bucket_size, k, 'avg', se_te, outcome, model_intuition)
+            total_for_outcome = countif(
+                all_data, min, min + bucket_size, k, 'avg', se_te, outcome, model_intuition)
             if total_for_outcome == 0 or total_for_range == 0:
                 percent_for_outcome = 0
             else:
-                percent_for_outcome = (float(total_for_outcome) / float(total_for_range)) * 100
+                percent_for_outcome = (
+                    float(total_for_outcome) / float(total_for_range)) * 100
             rows[outcome].append(str(percent_for_outcome))
         min = min + bucket_size
 
@@ -82,7 +85,8 @@ def experiment_equal_num_in_buckets(all_data, min, max, num_buckets, k, se_te, m
     avg_k_index = 7 + exact_K + (k - 1)
     dists = sorted([float(row[avg_k_index]) for row in all_data])
     bucket_size = int(math.ceil(float(len(dists) / (num_buckets - 1))))
-    bucket_sizes = [dists[i] for i in xrange(bucket_size, len(dists), bucket_size)] + [dists[-1]]
+    bucket_sizes = [dists[i] for i in xrange(
+        bucket_size, len(dists), bucket_size)] + [dists[-1]]
 
     if dists[0] > min:
         min = dists[0]
@@ -94,14 +98,17 @@ def experiment_equal_num_in_buckets(all_data, min, max, num_buckets, k, se_te, m
         upper = bucket_sizes.pop(0)
 
         rows[0].append(str(min)[:trimmer] + '-' + str(upper)[:trimmer])
-        total_for_range = countif(all_data, min, upper, k, 'avg', se_te, 'all', model_intuition)
+        total_for_range = countif(
+            all_data, min, upper, k, 'avg', se_te, 'all', model_intuition)
 
         for outcome in range(1, 5):
-            total_for_outcome = countif(all_data, min, upper, k, 'avg', se_te, outcome, model_intuition)
+            total_for_outcome = countif(
+                all_data, min, upper, k, 'avg', se_te, outcome, model_intuition)
             if total_for_outcome == 0 or total_for_range == 0:
                 percent_for_outcome = 0
             else:
-                percent_for_outcome = (float(total_for_outcome) / float(total_for_range)) * 100
+                percent_for_outcome = (
+                    float(total_for_outcome) / float(total_for_range)) * 100
             rows[outcome].append(str(percent_for_outcome))
 
         min = upper
@@ -129,7 +136,8 @@ def experiment_sete_fixed(all_data, min, max, num_buckets, k, se_te, model_intui
     rows.append(row3)
     rows.append(row4)
 
-    experiment_equal_sized_buckets(all_data, min, max, bucket_size, k, se_te, model_intuition, rows)
+    experiment_equal_sized_buckets(
+        all_data, min, max, bucket_size, k, se_te, model_intuition, rows)
 
     for i in range(0, 5):
         print rows[i]
@@ -185,7 +193,8 @@ def experiment(all_data, min, max, num_buckets, k):
         for division in ["all", "Se", "Te"]:
             key = "{} {}".format(division, option)
 
-            matrix = bucketer(all_data, min, max, num_buckets, k, division, option)
+            matrix = bucketer(all_data, min, max,
+                              num_buckets, k, division, option)
             rows.append((matrix, key))
 
     make_3d_plot(rows)

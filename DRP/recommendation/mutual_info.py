@@ -31,7 +31,8 @@ def main():
     mut_inf = mutual_information(pdf, dataset)
     time_struct['done_mut'] = time.time()
 
-    time_struct = {key: time_struct[key] - time_struct['start'] for key in time_struct}
+    time_struct = {key: time_struct[key] -
+                   time_struct['start'] for key in time_struct}
 
     print mut_inf
     print time_struct
@@ -59,7 +60,8 @@ def main_triples():
 
     time_struct['done_mut'] = time.time()
 
-    time_struct = {key: time_struct[key] - time_struct['start'] for key in time_struct}
+    time_struct = {key: time_struct[key] -
+                   time_struct['start'] for key in time_struct}
 
     triple_mut_inf = dict()
     for triple in dataset:
@@ -119,11 +121,13 @@ def find_best_row_for_delta_mut(triple_Muts, candidates):
                 best_triple = triple
                 best_prob = prob
         if best_triple is None:
-            infos.append({'idx': i, 'best_prob': 0, 'best_triple': None, 'delta_mut': None, 'previous_mut': None})
+            infos.append({'idx': i, 'best_prob': 0, 'best_triple': None,
+                          'delta_mut': None, 'previous_mut': None})
             print "whaaat?"
             continue
         delta_mut = triple_Muts[best_triple].change_in_mutual(candidates[i])
-        infos.append({'idx': i, 'best_prob': best_prob, 'delta_mut': delta_mut, 'best_triple': best_triple, 'previous_mut': triple_Muts[best_triple].mut_inf})
+        infos.append({'idx': i, 'best_prob': best_prob, 'delta_mut': delta_mut,
+                      'best_triple': best_triple, 'previous_mut': triple_Muts[best_triple].mut_inf})
         if delta_mut > best_delta_mut:
             best_delta_mut = delta_mut
             best_cand = i
@@ -204,9 +208,11 @@ class PDF:
 
     def __init__(self, dataset):
         self.dataset = numpy.array(dataset)
-        # Try-catch around line is for debugging purposes, can be removed at other times
+        # Try-catch around line is for debugging purposes, can be removed at
+        # other times
         try:
-            self.labels = self.dataset[:, -1]  # I believe these are the outcomes
+            # I believe these are the outcomes
+            self.labels = self.dataset[:, -1]
         except:
             #sys.stdout.write("self.dataset: " + str(self.dataset) + "\n")
             #sys.stdout.write("self.dataset.shape: " + str(self.dataset.shape) + "\n")
@@ -218,7 +224,8 @@ class PDF:
 
         four_size = len(self.labels[self.labels == 4])
         if four_size <= 1 or four_size >= len(self.labels) - 1:
-            raise Exception("Not enough not-4s: {0}, {1}, {2}".format(four_size, len(self.labels), self.labels.size))
+            raise Exception(
+                "Not enough not-4s: {0}, {1}, {2}".format(four_size, len(self.labels), self.labels.size))
         else:
             self.mut_inf = True
 
@@ -239,7 +246,8 @@ class PDF:
             # print "self.labels" + str(self.labels)
             # print "self.dataset: " + str(self.dataset)
             # print "self.rows: " + str(self.rows)
-            self.feature_normal = multivariate_normal(mean=self.feature_mean, cov=self.feature_cov)
+            self.feature_normal = multivariate_normal(
+                mean=self.feature_mean, cov=self.feature_cov)
 
             # except Exception as e:
             # print dataset
@@ -296,7 +304,8 @@ def make_joint_pdf(dataset):
         raise e
 
     try:
-        not_fours_mv = multivariate_normal(mean=mean_not_fours, cov=cov_not_fours)
+        not_fours_mv = multivariate_normal(
+            mean=mean_not_fours, cov=cov_not_fours)
     except Exception as e:
         print mean_not_fours, cov_not_fours
         print 'not fours'
@@ -338,7 +347,8 @@ def test_candidates():
             print "failed on {0}: {1}".format(str(triple), e)
 
     import tmp_recs
-    candidates = load_data.convert_to_feature_vectors([r[1] for r in tmp_recs.recs])
+    candidates = load_data.convert_to_feature_vectors(
+        [r[1] for r in tmp_recs.recs])
     clean_dataset(candidates)
     print find_best_row_for_delta_mut(triple_Muts, candidates)
 
@@ -346,7 +356,8 @@ def test_candidates():
 def do_filter(candidate_triples, range_map):
     import json
     from DRP.model_building import load_cg
-    ml_convert = json.load(open(django_path + "/DRP/model_building/mlConvert.json"))
+    ml_convert = json.load(
+        open(django_path + "/DRP/model_building/mlConvert.json"))
 
     write_debug_files = False
     if write_debug_files:
@@ -424,7 +435,8 @@ def build_row(triple, ranges, cg, ml_convert):
     m3 = getMeanAmount(c3, ranges)
     water = getMeanAmount("water", ranges)
 
-    raw_row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water", water, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""]
+    raw_row = ["--", c1, m1, "g", c2, m2, "g", c3, m2, "g", "water",
+               water, "g", "", "", "", 120, 30, 1, "yes", "no", 4, 2, ""]
 
     row = load_data.convert_to_feature_vectors([raw_row], cg, ml_convert)[0][0]
     clean_row(row)
@@ -485,8 +497,10 @@ def build_mutual_calc():
 
     # for above debugging code
     if failed != 0:
-        sys.stdout.write("tried: " + str(tried) + "; failed: " + str(failed) + "\n")
-        sys.stdout.write("exception types and amounts: " + str(exn_cnts) + "\n")
+        sys.stdout.write("tried: " + str(tried) +
+                         "; failed: " + str(failed) + "\n")
+        sys.stdout.write("exception types and amounts: " +
+                         str(exn_cnts) + "\n")
         sys.stdout.write("system errors: " + str(syst_errs) + "\n")
         sys.stdout.flush()
         raise(exc)

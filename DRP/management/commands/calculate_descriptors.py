@@ -1,3 +1,4 @@
+"""Recalculate the descriptors for all compounds and reactions."""
 from django.core.management.base import BaseCommand
 from DRP.models import Reaction, Compound
 from django import db
@@ -5,9 +6,13 @@ import warnings
 
 
 class Command(BaseCommand):
+
+    """Recalculate the descriptors for all compounds and reactions."""
+
     help = 'Recalculate the descriptors for all compounds and reactions.'
 
     def add_arguments(self, parser):
+        """Add arguments for the parser."""
         parser.fromfile_prefix_chars = '@'
         parser.epilog = "Prefix arguments with '@' to specify a file containing newline-separated values for that argument. e.g.'-w @whitelist_headers.txt' to pass multiple descriptors from a file as whitelist."
 
@@ -35,6 +40,7 @@ class Command(BaseCommand):
                            help='Calculate descriptors for non-performed reactions also.')
 
     def handle(self, *args, **kwargs):
+        """Handle the function call."""
         verbose = (kwargs['verbosity'] > 0)
         only_reactions = kwargs['reactions']
         only_compounds = kwargs['compounds']
@@ -57,7 +63,8 @@ class Command(BaseCommand):
             warnings.simplefilter('error')
 
         if not only_reactions:
-            Compound.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
+            Compound.objects.order_by('pk').filter(pk__gte=start).calculate_descriptors(
+                verbose=verbose, whitelist=whitelist, plugins=plugins)
         if not only_compounds:
             reactions = Reaction.objects.order_by('pk')
             if only_reactions:
@@ -66,4 +73,5 @@ class Command(BaseCommand):
                 reactions = reactions.exclude(performedreaction__valid=False)
             if not include_non_performed:
                 reactions = reactions.exclude(performedreaction=None)
-            reactions.calculate_descriptors(verbose=verbose, whitelist=whitelist, plugins=plugins)
+            reactions.calculate_descriptors(
+                verbose=verbose, whitelist=whitelist, plugins=plugins)

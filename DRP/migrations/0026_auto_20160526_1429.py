@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='performedreaction',
             name='performedDateTime',
-            field=models.DateTimeField(default=None, validators=[DRP.models.validators.notInTheFuture], blank=True, help_text=b'Timezone assumed EST, Date in format YYYY-MM-DD', null=True, verbose_name=b'Date Reaction Performed'),
+            field=models.DateTimeField(default=None, validators=[DRP.models.validators.notInTheFuture], blank=True,
+                                       help_text=b'Timezone assumed EST, Date in format YYYY-MM-DD', null=True, verbose_name=b'Date Reaction Performed'),
         ),
     ]
