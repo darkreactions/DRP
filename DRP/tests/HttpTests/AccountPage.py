@@ -29,7 +29,7 @@ class AccountPageGroups(AccountPageNoGroups):
     testCodes = ['48295bf1-5be1-4f94-aab6-1e5b7e97681b']
 
     def setUp(self):
-        """Add user to lab group and then ensure that membership displayed properly"""
+        """Add user to lab group and then ensure that membership displayed properly."""
         self.labGroup = LabGroup.objects.makeLabGroup('test', 'War Drobe', 'aslan@example.com', 'ancient_magic')
         self.labGroup.save()
         self.labGroup.users.add(User.objects.get(username='Aslan'))
@@ -37,7 +37,7 @@ class AccountPageGroups(AccountPageNoGroups):
         self.response = self.s.get(self.url, params=self.params)
 
     def tearDown(self):
-        """Remove created test lab group"""
+        """Remove created test lab group."""
         self.labGroup.delete()
 
 suite = unittest.TestSuite([

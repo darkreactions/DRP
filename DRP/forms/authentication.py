@@ -1,4 +1,4 @@
-'''Forms pertinent to user creation and authentication'''
+"""Forms pertinent to user creation and authentication."""
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 import django.forms as forms
@@ -20,11 +20,11 @@ class UserCreationForm(DjangoUserCreationForm):
 
 
 class ConfirmationForm(DjangoAuthenticationForm):
-    '''A form for confirming a user's credentials, without checking if they are 'active'.'''
+    """A form for confirming a user's credentials, without checking if they are 'active'."""
 
     def clean(self):
-        '''A very close rewrite of the DjangoAuthenticationForm method, but raising an error
-        if the user is already active rather than if it is inactive'''
+        """A very close rewrite of the DjangoAuthenticationForm method, but raising an error
+        if the user is already active rather than if it is inactive."""
 
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
@@ -42,7 +42,7 @@ class ConfirmationForm(DjangoAuthenticationForm):
 
 
 class LicenseAgreementForm(DjangoAuthenticationForm):
-    '''A re-authentication form for the signing of site license agreements for DRP deployments'''
+    """A re-authentication form for the signing of site license agreements for DRP deployments."""
 
     licenseId = forms.IntegerField(widget=forms.widgets.HiddenInput)
 
@@ -53,7 +53,7 @@ class LicenseAgreementForm(DjangoAuthenticationForm):
         self.fields['licenseId'].initial = license.id
 
     def clean(self):
-        '''A slightly adjusted clean method which checks that the correct license is being signed and checks that the right user is signing'''
+        """A slightly adjusted clean method which checks that the correct license is being signed and checks that the right user is signing."""
         supercleaned = super(LicenseAgreementForm, self).clean()
         if self.user != self.user_cache:
             raise forms.ValidationError('Incorrect user details entered. Please enter your own user credentials')

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''A module containing tests for the ModelFactory class'''
+"""A module containing tests for the ModelFactory class."""
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""This module contains tests for the about page"""
+"""This module contains tests for the about page."""
 
 import unittest
 import requests
@@ -8,7 +8,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class AboutPage(GetHttpTest):
-    """Performs a get request on the AboutPage to check for Html Validity"""
+    """Performs a get request on the AboutPage to check for Html Validity."""
 
 suite = unittest.TestSuite([
     loadTests(AboutPage)

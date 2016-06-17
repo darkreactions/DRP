@@ -18,7 +18,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @signsExampleLicense("Rorschach")
 @createsPerformedReactionSetOrd
 class ApiV1(DRPTestCase):
-    """Tests the version 1 api"""
+    """Tests the version 1 api."""
 
     @transaction.atomic
     def databaseOperation(self, limit=None):

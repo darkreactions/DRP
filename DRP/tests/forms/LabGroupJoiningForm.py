@@ -36,23 +36,23 @@ class LegacyPassword(DRPTestCase):
         self.assertTrue(valid, errString)
 
     def tearDown(self):
-        """Removes lab group created for this test"""
+        """Removes lab group created for this test."""
         self.labGroup.delete()
 
 
 class Password(DRPTestCase):
 
-    """Test that legacy passwords work for joining lab groups"""
+    """Test that legacy passwords work for joining lab groups."""
 
     def setUp(self):
-        """Create user and labgroupjoiningform for a new user"""
+        """Create user and labgroupjoiningform for a new user."""
         self.labGroup = LabGroup.objects.makeLabGroup(title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
         self.labGroup.save()
         formData = {'labGroup': self.labGroup.id, 'accessCode': 'old_magic'}
         self.form = LabGroupJoiningForm(formData)
 
     def test_validation(self):
-        """Validate that the user can join using the form"""
+        """Validate that the user can join using the form."""
         valid = self.form.is_valid()
         errString = ''
         for e, m in self.form.errors.items():
@@ -60,7 +60,7 @@ class Password(DRPTestCase):
         self.assertTrue(valid, errString)
 
     def tearDown(self):
-        """Delete test lab group"""
+        """Delete test lab group."""
         self.labGroup.delete()
 
 suite = unittest.TestSuite([

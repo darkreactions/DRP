@@ -53,7 +53,7 @@ class PostConfirmationPage(PostHttpSessionTest):
         self.response = self.s.post(self.url, data={'username': 'Aslan', 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'code': self.code.code})
 
     def tearDown(self):
-        """Delete objects created for this test"""
+        """Delete objects created for this test."""
         self.user.delete()
         self.code.delete()
 
@@ -67,7 +67,7 @@ class PostConfirmationPage2(PostConfirmationPage):
     testCodes = ['b4da5e80-190b-4fe4-a97c-7f8bb9c213a5']
 
     def setUp(self):
-        """Set up active use to look for POST confirmation response"""
+        """Set up active use to look for POST confirmation response."""
         self.user = User.objects.create_user(username='Aslan', password='banana', email='aslan@example.com')
         self.user.is_active = False
         self.user.save()
@@ -76,7 +76,7 @@ class PostConfirmationPage2(PostConfirmationPage):
         self.response = self.s.post(self.url, data={'username': self.user.username, 'password': 'banana', 'csrfmiddlewaretoken': self.csrf}, params={'code': uuid4()})
 
     def test_Status(self):
-        """Look for POST confirmation response"""
+        """Look for POST confirmation response."""
         self.assertEqual(403, self.response.status_code)
 
 suite = unittest.TestSuite([

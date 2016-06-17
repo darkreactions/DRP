@@ -9,7 +9,7 @@ def descriptorValueFormFactoryFactory(modelClass, descriptorClass):
     """A factory function for producing descriptor value form classes."""
 
     def descriptorValueFormFactory(reactionId):
-        """A factory for descriptor value forms"""
+        """A factory for descriptor value forms."""
 
         class DescriptorValueForm(forms.ModelForm):
             """A form for a descriptor value."""

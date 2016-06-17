@@ -1,4 +1,4 @@
-"""Script for parsing descriptor headings into their underlying calculation"""
+"""Script for parsing descriptor headings into their underlying calculation."""
 from sys import argv
 from DRP import chemical_data
 import csv

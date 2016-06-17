@@ -42,7 +42,7 @@ class ActiveUser(DRPTestCase):
     """Tests the case where good credentials for an active user have been sumbitted."""
 
     def setUp(self):
-        """Set up a user for the test"""
+        """Set up a user for the test."""
         self.username = 'Aslan'
         self.password = 'old_magic'
         self.user = User.objects.create_user(username=self.username, password=self.password)
@@ -50,7 +50,7 @@ class ActiveUser(DRPTestCase):
         self.user.save()
 
     def runTest(self):
-        """Run test to make sure that the form does not evaluate this as valid"""
+        """Run test to make sure that the form does not evaluate this as valid."""
         form = ConfirmationForm(data={'username': self.username, 'password': self.password})
         self.assertFalse(form.is_valid())
 

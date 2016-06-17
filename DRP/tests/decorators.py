@@ -1,4 +1,4 @@
-'''A module containing decorators which are useful in most test cases for the DRP'''
+"""A module containing decorators which are useful in most test cases for the DRP."""
 
 from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
@@ -11,7 +11,7 @@ import os
 
 
 def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
-    '''A class decorator that creates an ordinal reaction descriptor.'''
+    """A class decorator that creates an ordinal reaction descriptor."""
 
     def _createsOrdRxnDescriptor(c):
         _oldSetup = c.setUp
@@ -74,7 +74,7 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 
 
 # def createsRxnDescriptor(heading, descriptorClass, options={}):
-#    '''A class decorator that creates a reaction descriptor'''
+#    """A class decorator that creates a reaction descriptor."""
 #    def _createsRxnDescriptor(c):
 #        _oldSetup = c.setUp
 #        _oldTearDown = c.tearDown
@@ -112,7 +112,7 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 #    return _createsRxnDescriptor
 
 def createsPerformedReaction(labTitle, username, reference, valid=True):
-    '''A class decorator that creates a very minimal reaction with no compounds or reactants'''
+    """A class decorator that creates a very minimal reaction with no compounds or reactants."""
 
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
@@ -140,8 +140,8 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 
 # TODO: finish replacing this
 # def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs=[], compoundRoles=[], compoundAmounts=[], descriptorDict={}, duplicateRef=None):
-#    '''A class decorator that creates a reaction using pre-existing compounds
-#          with pre-existing compoundRoles.'''
+#    """A class decorator that creates a reaction using pre-existing compounds
+#          with pre-existing compoundRoles."""
 #    def _createsPerformedReaction(c):
 #        _oldSetup = c.setUp
 #        _oldTearDown = c.tearDown
@@ -236,7 +236,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 
 
 def createsUser(username, password, is_superuser=False):
-    '''A class decorator that creates a user'''
+    """A class decorator that creates a user."""
 
     def _createsUser(c):
 
@@ -311,7 +311,7 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
 
 
 def createsChemicalClass(label, description):
-    '''A class decorator that creates a test chemical class for the addition of compounds into the database'''
+    """A class decorator that creates a test chemical class for the addition of compounds into the database."""
 
     def _createsChemicalClass(c):
 
@@ -335,8 +335,8 @@ def createsChemicalClass(label, description):
 
 
 def joinsLabGroup(username, labGroupTitle):
-    '''A class decorator that creates a test lab group with labGroupTitle as it's title and assigns user identified by
-    username to that lab group'''
+    """A class decorator that creates a test lab group with labGroupTitle as it's title and assigns user identified by
+    username to that lab group."""
     def _joinsLabGroup(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -360,7 +360,7 @@ def joinsLabGroup(username, labGroupTitle):
 
 
 def signsExampleLicense(username):
-    '''A class decorator that creates a test license and makes the user specified by username sign it on setUp'''
+    """A class decorator that creates a test license and makes the user specified by username sign it on setUp."""
     def _signsExampleLicense(c):
 
         _oldSetup = c.setUp
@@ -388,7 +388,7 @@ def signsExampleLicense(username):
 
 
 def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
-    '''A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder.'''
+    """A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder."""
 
     def _loadsCompoundsFromCsv(c):
 

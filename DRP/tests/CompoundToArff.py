@@ -23,7 +23,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @joinsLabGroup('Aslan', 'Narnia')
 @loadsCompoundsFromCsv('Narnia', 'compound_spread_test1.csv')
 class CompoundToArff(DRPTestCase):
-    '''Validates the structure of the Arff- this could be more detailed if we find that we encounter issues later'''
+    """Validates the structure of the Arff- this could be more detailed if we find that we encounter issues later."""
 
     def checkArff(self, fn):
         process = subprocess.Popen(['java', '-cp', settings.WEKA_PATH['3.6'], 'weka.core.Instances', fn], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

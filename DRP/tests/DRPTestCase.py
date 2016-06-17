@@ -1,4 +1,4 @@
-'''A module containing only the DRPTestCase class'''
+"""A module containing only the DRPTestCase class."""
 import unittest
 from django.conf import settings
 import importlib
@@ -9,9 +9,9 @@ rxnDescriptorPlugins = [importlib.import_module(plugin) for plugin in settings.R
 
 
 class DRPTestCase(unittest.TestCase):
-    '''A quick and dirty safety valve to stop people accidentally running database tests in production environments
+    """A quick and dirty safety valve to stop people accidentally running database tests in production environments
     For more information see the documentation.
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
         if not settings.TESTING:
@@ -47,6 +47,6 @@ def cleanUpDatabase():
 
 
 def runTests(suite, failfast=False):
-    '''A function which empties out the database prior to and after running the tests contained in suite'''
+    """A function which empties out the database prior to and after running the tests contained in suite."""
     cleanUpDatabase()
     return unittest.TextTestRunner(verbosity=4, failfast=failfast).run(suite)

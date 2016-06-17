@@ -185,7 +185,7 @@ class GetNotMyCompoundForEditing(GetHttpSessionTest):
     status = 404
 
     def setUp(self):
-        """Ask for another user's compound"""
+        """Ask for another user's compound."""
         self.url = self.baseUrl + reverse('editCompound', args=[Compound.objects.get(abbrev='Pyr').pk])
         super(GetNotMyCompoundForEditing, self).setUp()
 

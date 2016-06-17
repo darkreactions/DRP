@@ -20,7 +20,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test16.csv')
 class NumericFilterFormGT(BaseFormTest):
     
-    """Test numeric filter form"""
+    """Test numeric filter form."""
 
     def setUpFormData(self):
         """Populate dictionary with form data."""

@@ -1,4 +1,4 @@
-"""Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)"""
+"""Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)."""
 from django.core.management.base import BaseCommand
 from DRP.models import Reaction
 from multiprocessing import Process
@@ -14,7 +14,7 @@ def reSave(startIndex, endIndex, stdout):
 
 class Command(BaseCommand):
 
-    """Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)"""
+    """Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)."""
 
     def add_arguments(self, parser):
         """Requires the number of threads to be used."""

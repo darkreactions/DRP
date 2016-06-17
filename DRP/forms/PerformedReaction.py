@@ -1,4 +1,4 @@
-'''A module containing code pertaining to forms for the reaction classes'''
+"""A module containing code pertaining to forms for the reaction classes."""
 from django import forms
 from django.core.exceptions import ValidationError
 from DRP.models import PerformedReaction, RecommendedReaction
@@ -8,8 +8,8 @@ from django.forms.widgets import HiddenInput
 
 
 class PerformedRxnAdminForm(forms.ModelForm):
-    '''A form for the performed reactions in the Django admin, the only things we want editing from
-    there are whether a Reaction is invalid or if it should have the legacy recommended flag set'''
+    """A form for the performed reactions in the Django admin, the only things we want editing from
+    there are whether a Reaction is invalid or if it should have the legacy recommended flag set."""
 
     class Meta:
         fields = ('valid', 'legacyRecommendedFlag')
@@ -17,15 +17,15 @@ class PerformedRxnAdminForm(forms.ModelForm):
 
 
 class PerformedRxnForm(forms.ModelForm):
-    '''A form for creating performed reaction instances in teh databases'''
+    """A form for creating performed reaction instances in teh databases."""
 
     class Meta:
         fields = ('reference', 'notes', 'performedBy', 'labGroup', 'duplicateOf', 'performedDateTime', 'public', 'valid', 'recommendation')
         model = PerformedReaction
 
     def __init__(self, user, *args, **kwargs):
-        '''Overridden __init__ method; requires the user as the first argument so that choice of lab group etc can be validated, as well as to
-        track who enters what'''
+        """Overridden __init__ method; requires the user as the first argument so that choice of lab group etc can be validated, as well as to
+        track who enters what."""
         super(PerformedRxnForm, self).__init__(*args, **kwargs)
         self.user = user
         labGroups = user.labgroup_set.all()
@@ -41,7 +41,7 @@ class PerformedRxnForm(forms.ModelForm):
             self.fields['labGroup'].empty_label = None
 
     def save(self, commit=True, *args, **kwargs):
-        '''Overriden save method automates addition of user that created this instance'''
+        """Overriden save method automates addition of user that created this instance."""
         rxn = super(PerformedRxnForm, self).save(commit=False)
         rxn.user = self.user
         if commit:

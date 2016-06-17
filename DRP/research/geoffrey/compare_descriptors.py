@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Compare the values for two descriptors for the same reaction"""
+"""Compare the values for two descriptors for the same reaction."""
 import django
 django.setup()
 from DRP.models import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor, BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue, PerformedReaction, DataSet, Compound

@@ -1,4 +1,4 @@
-"""Provides tests for the KFoldSplitter used"""
+"""Provides tests for the KFoldSplitter used."""
 
 import KFoldSplitter
 

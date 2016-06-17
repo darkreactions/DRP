@@ -1,7 +1,7 @@
-'''The django forms and model forms used in the DRP
+"""The django forms and model forms used in the DRP
 Classes.
 
-'''
+"""
 from LabGroup import LabGroupForm, LabGroupJoiningForm, LabGroupSelectionForm, LabGroupLeavingForm
 from Contact import ContactForm
 from FilterForm import FilterForm, FilterFormSet, filterFormSetFactory

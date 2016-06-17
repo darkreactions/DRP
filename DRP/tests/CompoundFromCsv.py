@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''Tests for ingesting CSVs into the  compound guide'''
+"""Tests for ingesting CSVs into the  compound guide."""
 
 # This file contains a (very) loose framework from which others can base their test files and be
 # conformant with the local arrangement of test cases.
@@ -24,7 +24,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @joinsLabGroup('Aslan', 'Narnia')
 @createsChemicalClass('Org', 'Organic')
 class Good(DRPTestCase):
-    '''Tests the spreadsheets that should work (whose names end with the ssids)'''
+    """Tests the spreadsheets that should work (whose names end with the ssids)."""
 
     ssids = (1, 3, 5, 9, 11, 13)
     filenameStub = 'compound_spread_test{0}.csv'
@@ -48,7 +48,7 @@ class Good(DRPTestCase):
 
 
 class Broken(Good):
-    '''Tests the broken spreads whose names ends with the values in ssids'''
+    """Tests the broken spreads whose names ends with the values in ssids."""
 
     ssids = (2, 4, 6, 7, 8, 10, 12, 14, 15)
 

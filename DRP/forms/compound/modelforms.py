@@ -1,4 +1,4 @@
-'''A module containing forms for creating compounds'''
+"""A module containing forms for creating compounds."""
 
 import django.forms as forms
 from DRP.models import Compound, CompoundQuantity, ChemicalClass
@@ -10,7 +10,7 @@ from django.db import transaction
 
 
 class CompoundAdminForm(forms.ModelForm):
-    '''Form for the django admin; permits the overriding of CSID absence but forces the existence of the custom flag'''
+    """Form for the django admin; permits the overriding of CSID absence but forces the existence of the custom flag."""
 
     class Meta:
         model = Compound
@@ -26,14 +26,14 @@ class CompoundAdminForm(forms.ModelForm):
 
 
 class CompoundForm(forms.ModelForm):
-    '''A form for users to add compounds to the compound guide. Forces a check against the chemspider database
+    """A form for users to add compounds to the compound guide. Forces a check against the chemspider database
     to ensure no spurious compounds make their way into the compound guide.
-    '''
+    """
 
     CAS_ID = forms.CharField(label='CAS ID', required=False)
-    '''Adding this field, not in the database, allows users to match compounds to a CAS_ID without us incuring issues for storing them'''
+    """Adding this field, not in the database, allows users to match compounds to a CAS_ID without us incuring issues for storing them."""
     CSID = forms.IntegerField(label='Chemspider ID', min_value=1, error_messages={'required': 'This value must be set or selected'})
-    '''If the user already knows the right value for this it allows them to skip a step'''
+    """If the user already knows the right value for this it allows them to skip a step."""
 
     class Meta:
         fields = ('labGroup', 'abbrev', 'CSID', 'name', 'CAS_ID', 'chemicalClasses')
@@ -46,7 +46,7 @@ class CompoundForm(forms.ModelForm):
         }
 
     def __init__(self, user, *args, **kwargs):
-        '''Overridden version of the init method allows us to place the user's lab groups as a restricted set'''
+        """Overridden version of the init method allows us to place the user's lab groups as a restricted set."""
         super(CompoundForm, self).__init__(*args, **kwargs)
         self.compound = None
         self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
@@ -55,7 +55,7 @@ class CompoundForm(forms.ModelForm):
             self.fields['labGroup'].empty_label = None
 
     def clean_CSID(self):
-        '''Checks that the CSID is actually a valid id from chemspider'''
+        """Checks that the CSID is actually a valid id from chemspider."""
         searchResults = self.chemSpider.simple_search(self.cleaned_data['CSID'])
         if(len(searchResults) < 1):
             raise ValidationError('The CSID you have provided is invalid', code='invalid_csid')
@@ -64,7 +64,7 @@ class CompoundForm(forms.ModelForm):
         return self.cleaned_data['CSID']
 
     def clean(self):
-        '''This method verifies that the CSID, CAS_ID (where supplied) and name are consistent'''
+        """This method verifies that the CSID, CAS_ID (where supplied) and name are consistent."""
         self.cleaned_data = super(CompoundForm, self).clean()
         if self.cleaned_data.get('name'):
             nameResults = self.chemSpider.simple_search(self.cleaned_data['name'])
@@ -99,7 +99,7 @@ class CompoundForm(forms.ModelForm):
             return self.cleaned_data
 
     def save(self, commit=True):
-        '''Creates (and if appropriate, saves) the compound instance, and adds Inchi and smiles from chemspider'''
+        """Creates (and if appropriate, saves) the compound instance, and adds Inchi and smiles from chemspider."""
         compound = super(CompoundForm, self).save(commit=False)
         csCompound = self.chemSpider.get_compound(compound.CSID)
         compound.INCHI = csCompound.inchi
@@ -151,7 +151,7 @@ class CompoundDeleteForm(forms.ModelForm):
 
 
 class CompoundUploadForm(forms.Form):
-    '''A form to manage the uploading of compound csv files'''
+    """A form to manage the uploading of compound csv files."""
 
     csv = forms.FileField()
 

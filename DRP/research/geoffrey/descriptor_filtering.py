@@ -11,7 +11,7 @@ from itertools import chain
 
 
 def is_descriptor_type(descriptor_type, descriptor):
-    """Returns boolean whether descriptor is of type descriptor_type"""
+    """Returns boolean whether descriptor is of type descriptor_type."""
     try:
         descriptor_type.objects.get(id=descriptor.id)
         return True
@@ -20,7 +20,7 @@ def is_descriptor_type(descriptor_type, descriptor):
 
 
 def is_descriptor_types(descriptor_type_list, descriptor):
-    """Returns boolean whether descriptor is any of the types in descriptor_type_list"""
+    """Returns boolean whether descriptor is any of the types in descriptor_type_list."""
     for descriptor_type in descriptor_type_list:
         if is_descriptor_type(descriptor_type, descriptor):
             return True

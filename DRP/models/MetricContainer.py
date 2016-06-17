@@ -139,7 +139,7 @@ class MetricContainer(models.Model):
     startTime = models.DateTimeField(default=None, null=True, blank=True)
     endTime = models.DateTimeField(default=None, null=True, blank=True)
     fileName = models.FileField(upload_to='metrics', max_length=200, blank=True)
-    """The filename in which this model is stored"""
+    """The filename in which this model is stored."""
     invalid = models.BooleanField(default=False)
     trainingSet = models.ForeignKey(DataSet, related_name='trainingSetForMetric', null=True)
     built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)

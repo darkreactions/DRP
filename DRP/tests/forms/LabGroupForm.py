@@ -81,7 +81,7 @@ class CreateNew(DRPTestCase):
     """Performs rudimentary tests on form validation for missing data and complete data."""
 
     def setUp(self):
-        """Set up user instances for test"""
+        """Set up user instances for test."""
         self.user1 = User(first_name='Aslan', password=make_password('old_magic'), username="Aslan", email="aslan@example.com")
         self.user2 = User(first_name='White', last_name='Witch', password=make_password('new_magic'), username="whitewitch", email="whitewitch@example.com")
         self.user1.save()
@@ -150,7 +150,7 @@ class DuplicateUniqueValues(DRPTestCase):
         self.assertFalse(form.is_valid())
 
     def tearDown(self):
-        """Deletes labgroup created for this test"""
+        """Deletes labgroup created for this test."""
         self.labGroup.delete()
 
 suite = unittest.TestSuite([

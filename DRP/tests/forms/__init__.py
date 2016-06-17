@@ -1,4 +1,4 @@
-"""Encapsulates unit tests for various forms"""
+"""Encapsulates unit tests for various forms."""
 
 import unittest
 import AdvancedFilterForms

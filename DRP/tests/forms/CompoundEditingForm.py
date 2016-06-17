@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-'''The unit test for the compound editing form.
+"""The unit test for the compound editing form.
   These tests assume that presence tests for the form fields work as expected
-'''
+"""
 
 import unittest
 from BaseFormTest import BaseFormTest
@@ -18,7 +18,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass('Org', 'Organic Reagent')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class CorrectSynonym(BaseFormTest):
-    '''Tests that the form validates with a correct synonym for the compound submitted'''
+    """Tests that the form validates with a correct synonym for the compound submitted."""
 
     def test_validation(self):
         self.validationSucceeds()
@@ -38,7 +38,7 @@ class CorrectSynonym(BaseFormTest):
 @createsChemicalClass('Org', 'Organic Reagent')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class IncorrectSynonym(BaseFormTest):
-    '''Tests that the form fails to validate when provided with an incorrect synonym'''
+    """Tests that the form fails to validate when provided with an incorrect synonym."""
 
     def setUpFormData(self):
         self.formData = {'name': 'Pyrazine', 'abbrev': 'ban'}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''A test suite for checking that queryset to csv output works'''
+"""A test suite for checking that queryset to csv output works."""
 
 import unittest
 from decorators import createsUser, joinsLabGroup, createsChemicalClass, createsCompound

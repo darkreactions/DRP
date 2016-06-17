@@ -41,7 +41,7 @@ def frange(start, stop, steps, int_return=False):
 
 
 def user_recommend(combinations, similarity_map, range_map):
-    ''' Combinations is a SET of tuples, where each tuple is a sorted
+    """ Combinations is a SET of tuples, where each tuple is a sorted
     list of the reactants tried (with any pH / temp / mass information
     stripped out. currently assuming each tuple is length 3.
 
@@ -51,7 +51,7 @@ def user_recommend(combinations, similarity_map, range_map):
     Range map is a map from name to (min, max), where min and max are the
     largest and smallest mass to try. We can make steps in between by using
     (mix - min)/number_steps as a step size.
-    '''
+    """
 
     explored = set(combinations)  # every combination that is tried
     recommendations = []  # list of tuples. r[0] = score, r[1] = the rec

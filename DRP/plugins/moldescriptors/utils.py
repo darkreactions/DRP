@@ -1,4 +1,4 @@
-'''A utilities module for helping with molecular descriptor plugins.'''
+"""A utilities module for helping with molecular descriptor plugins."""
 import DRP
 from django.db import transaction
 

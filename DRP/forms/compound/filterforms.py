@@ -1,4 +1,4 @@
-'''A module containing forms for filtering compound objects'''
+"""A module containing forms for filtering compound objects."""
 import django.forms as forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -12,13 +12,13 @@ from operator import and_
 
 
 class CompoundFilterForm(FilterForm):
-    '''A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method.'''
+    """A filter form to fetch Compound objects, a queryset of which is returned using the fetch() method."""
 
     model = Compound
     custom = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=((None, 'Either'), (True, 'True'), (False, 'False'))), initial=None, required=False)
 
     def __init__(self, user, labGroup, *args, **kwargs):
-        '''Sets up the form. Because most of the fields are based around models, they must be added dynamically.'''
+        """Sets up the form. Because most of the fields are based around models, they must be added dynamically."""
         super(CompoundFilterForm, self).__init__(*args, **kwargs)
         self.empty_permitted = False  # hard override to cope with a bad piece of programming in django.
         self.fields['abbrev'] = forms.ChoiceField(label='Abbreviation', choices=(('', settings.EMPTY_LABEL),) + tuple(((c['abbrev'], c['abbrev']) for c in labGroup.compound_set.all().values('abbrev').distinct())), required=False)
@@ -32,7 +32,7 @@ class CompoundFilterForm(FilterForm):
         self.checkFields = ('name', 'labGroup', 'abbrev', 'CSID', 'INCHI', 'smiles')
 
     def is_empty(self):
-        '''Checks that the form is empty and performs specific checks for chemicalClasses'''
+        """Checks that the form is empty and performs specific checks for chemicalClasses."""
         base_empty = super(CompoundFilterForm, self).is_empty()  # performs the normal check on the easy fields
         chemClasses = self.cleaned_data.get('chemicalClasses')
         if chemClasses is None:
@@ -44,7 +44,7 @@ class CompoundFilterForm(FilterForm):
             return False
 
     def fetch(self):
-        '''Fetches the compounds according to data supplied. Exp the form to have been validated already.'''
+        """Fetches the compounds according to data supplied. Exp the form to have been validated already."""
 
         qs = self.cleaned_data['labGroup'].compound_set.all()
         if self.cleaned_data.get('js_active') not in ('', None, False):
@@ -69,10 +69,10 @@ class CompoundFilterForm(FilterForm):
 
 
 class AdvancedCompoundFilterForm(CompoundFilterForm):
-    '''A form for making more complex queries about compounds, specifically using their descriptor values'''
+    """A form for making more complex queries about compounds, specifically using their descriptor values."""
 
     def __init__(self, initial=None, *args, **kwargs):
-        '''Sets up FormSets for managing the descriptor filters as a part of this form'''
+        """Sets up FormSets for managing the descriptor filters as a part of this form."""
         if initial is None:
             init = {}
         else:
@@ -86,7 +86,7 @@ class AdvancedCompoundFilterForm(CompoundFilterForm):
         self.formSets = [self.numericFormSet, self.ordinalFormSet, self.categoryFormSet, self.booleanFormSet]
 
     def clean(self):
-        '''Returns cleaned data, with additional data appended for this forms attached formsets'''
+        """Returns cleaned data, with additional data appended for this forms attached formsets."""
         cleaned_data = super(AdvancedCompoundFilterForm, self).clean()
         cleaned_data['numeric'] = self.numericFormSet.cleaned_data
         cleaned_data['ordinal'] = self.ordinalFormSet.cleaned_data
@@ -95,16 +95,16 @@ class AdvancedCompoundFilterForm(CompoundFilterForm):
         return cleaned_data
 
     def is_empty(self):
-        '''Checks that the form is empty and performs special checks for the attached formsets'''
+        """Checks that the form is empty and performs special checks for the attached formsets."""
         empty = super(AdvancedCompoundFilterForm, self).is_empty()
         return all([empty] + [formSet.is_empty() for formSet in self.formSets])
 
     def is_valid(self):
-        '''validates the formsets as well as this form'''
+        """validates the formsets as well as this form."""
         return super(AdvancedCompoundFilterForm, self).is_valid() and all(formSet.is_valid() for formSet in self.formSets)
 
     def fetch(self):
-        '''returns compounds as per the filters'''
+        """returns compounds as per the filters."""
         qs = super(AdvancedCompoundFilterForm, self).fetch()
         qs = qs.filter(nummoldescriptorvalue__in=self.numericFormSet.fetch())
         qs = qs.filter(ordmoldescriptorvalue__in=self.ordinalFormSet.fetch())
@@ -123,12 +123,12 @@ OPERATOR_CHOICES = (
 
 
 class QuantitativeFilterMixin(forms.Form):
-    '''A mixin which contains information which is used by both NumericFilterForms and OrdinalFilterForms'''
+    """A mixin which contains information which is used by both NumericFilterForms and OrdinalFilterForms."""
 
     operator = forms.ChoiceField(choices=(OPERATOR_CHOICES))
 
     def applyFilters(self, qs):
-        '''Works applies the correct filtration operator to the queryset'''
+        """Works applies the correct filtration operator to the queryset."""
         op = self.cleaned_data.get('operator')
         value = self.cleaned_data.get('value')
         if op == 'eq':
@@ -148,10 +148,10 @@ class QuantitativeFilterMixin(forms.Form):
 
 
 class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
-    '''A form to obtain numeric descriptor values. Used by the advanced compound filtering form'''
+    """A form to obtain numeric descriptor values. Used by the advanced compound filtering form."""
 
     def __init__(self, *args, **kwargs):
-        '''Sets up the forms fields, almost all which require some level of dynamism'''
+        """Sets up the forms fields, almost all which require some level of dynamism."""
         super(NumericFilterForm, self).__init__(*args, **kwargs)
         self.fields['descriptor'] = forms.ModelChoiceField(queryset=NumMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
         self.fields['value'] = forms.DecimalField(required=False)
@@ -159,7 +159,7 @@ class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
         self.checkFields = ('value', 'descriptor')
 
     def clean(self):
-        '''checks that the descriptor choice and value have both been supplied, or neither have'''
+        """checks that the descriptor choice and value have both been supplied, or neither have."""
         super(NumericFilterForm, self).clean()
         # if False ^ False (meaning that both are supplied), skip to the else (no error)
         # if True ^ True, then False (according to xor logic), skip to else (no error)
@@ -170,21 +170,21 @@ class NumericFilterForm(QuantitativeFilterMixin, FilterForm):
             return self.cleaned_data
 
     def fetch(self):
-        '''fetch the NumMolDescriptor objects which match the supplied form values'''
+        """fetch the NumMolDescriptor objects which match the supplied form values."""
         qs = NumMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'))
         return self.applyFilters(qs)
 
     def is_empty(self):
-        '''returns true if all form fields were empty at submission'''
+        """returns true if all form fields were empty at submission."""
         empty = super(NumericFilterForm, self).is_empty()
         return empty and self.cleaned_data.get('descriptor') is None
 
 
 class OrdinalFilterForm(QuantitativeFilterMixin, FilterForm):
-    '''A form to obtain Ordinal Descriptor values, used by the advanced compound filtering form'''
+    """A form to obtain Ordinal Descriptor values, used by the advanced compound filtering form."""
 
     def __init__(self, *args, **kwargs):
-        '''Sets the fields up in the right order'''
+        """Sets the fields up in the right order."""
         super(OrdinalFilterForm, self).__init__(*args, **kwargs)
         self.fields['descriptor'] = forms.ModelChoiceField(queryset=OrdMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
         self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value, value) for value in range(md.minimum, md.maximum + 1))) for md in OrdMolDescriptor.objects.all())), required=False)
@@ -193,36 +193,36 @@ class OrdinalFilterForm(QuantitativeFilterMixin, FilterForm):
 
     def clean(self):
         super(OrdinalFilterForm, self).clean()
-        '''checks that the descriptor choice and value have both been supplied, or neither have'''
+        """checks that the descriptor choice and value have both been supplied, or neither have."""
         if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') == ''):
             raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
         else:
             return self.cleaned_data
 
     def fetch(self):
-        '''fetch the NumMolDescriptor objects which match the supplied form values'''
+        """fetch the NumMolDescriptor objects which match the supplied form values."""
         qs = OrdMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'))
         return self.applyFilters(qs)
 
     def is_empty(self):
-        '''returns true if all form fields were empty at submission'''
+        """returns true if all form fields were empty at submission."""
         empty = super(OrdinalFilterForm, self).is_empty()
         return empty and self.cleaned_data.get('descriptor') is None
 
 
 class CategoryFilterForm(FilterForm):
-    '''A filter form for obtaining Categorical descriptor values. Used by the advanced compound filtering form'''
+    """A filter form for obtaining Categorical descriptor values. Used by the advanced compound filtering form."""
 
     def __init__(self, *args, **kwargs):
-        '''Sets teh forms up in the right order'''
+        """Sets teh forms up in the right order."""
         super(CategoryFilterForm, self).__init__(*args, **kwargs)
         self.fields['descriptor'] = forms.ModelChoiceField(queryset=CatMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
         self.fields['value'] = forms.ChoiceField(choices=((('', settings.EMPTY_LABEL),) + tuple((md.name, tuple((value.pk, value.value) for value in CategoricalDescriptorPermittedValue.objects.filter(descriptor=md))) for md in CatMolDescriptor.objects.all())), required=False)  # wow, that's hideous... It limits the options available to the available categorical molecular descriptor values, which are categorised according to the particular descriptor.
         self.checkFields = ('value', 'descriptor')
 
     def clean(self):
-        '''Checks that both or neither of value and descriptor have been supplied, and checks that a descriptor value choice appropriate to the
-        descriptor has been chosen'''
+        """Checks that both or neither of value and descriptor have been supplied, and checks that a descriptor value choice appropriate to the
+        descriptor has been chosen."""
         super(CategoryFilterForm, self).clean()
         if (self.cleaned_data.get('descriptor') is None) ^ (self.cleaned_data.get('value') is ''):
             raise ValidationError('Both a descriptor and a value must be provided. Empty the fields completely to ignore this input.')
@@ -232,54 +232,54 @@ class CategoryFilterForm(FilterForm):
             return self.cleaned_data
 
     def fetch(self):
-        '''returns the categorical descriptor value objects'''
+        """returns the categorical descriptor value objects."""
         return CatMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'), value__pk=self.cleaned_data.get('value'))
 
     def is_empty(self):
-        '''returns true if all form fields were empty at submission'''
+        """returns true if all form fields were empty at submission."""
         empty = super(CategoryFilterForm, self).is_empty()
         return empty and self.cleaned_data.get('descriptor') is None and self.cleaned_data.get('value') is None
 
 
 class BooleanFilterForm(FilterForm):
-    '''A form for filtering boolean descriptor values.'''
+    """A form for filtering boolean descriptor values."""
 
     def __init__(self, *args, **kwargs):
-        '''Sets teh fields up for this form'''
+        """Sets teh fields up for this form."""
         super(BooleanFilterForm, self).__init__(*args, **kwargs)
         self.fields['descriptor'] = forms.ModelChoiceField(queryset=BoolMolDescriptor.objects.all(), required=False, empty_label=settings.EMPTY_LABEL)
         self.fields['value'] = forms.NullBooleanField(widget=forms.widgets.RadioSelect(choices=((None, 'Either'), (True, 'True'), (False, 'False'))), initial=None, required=False)
         self.checkFields = ('value', 'descriptor')
 
     def fetch(self):
-        '''returns the appropriate queryset'''
+        """returns the appropriate queryset."""
         return BoolMolDescriptorValue.objects.filter(descriptor=self.cleaned_data.get('descriptor'), value=self.cleaned_data.get('value'))
 
     def is_empty(self):
-        '''returns true if all form fields were empty at submission'''
+        """returns true if all form fields were empty at submission."""
         empty = super(BooleanFilterForm, self).is_empty()
         return empty and self.cleaned_data.get('value') is None and self.cleaned_data.get('descriptor') is None
 
 
 class CompoundFilterFormSet(FilterFormSet):
-    '''A formset for managing multiple filter forms, which OR together the results of each filter form to create a bigger queryset'''
+    """A formset for managing multiple filter forms, which OR together the results of each filter form to create a bigger queryset."""
 
     form = CompoundFilterForm
 
     def __init__(self, user, labGroup, *args, **kwargs):
-        '''Initialises the formset with the user and lab group variables needed to construct the forms'''
+        """Initialises the formset with the user and lab group variables needed to construct the forms."""
         self.user = user
         self.labGroup = labGroup
         super(CompoundFilterFormSet, self).__init__(*args, **kwargs)
 
     def _construct_form(self, i, **kwargs):
-        '''constructs the forms using an overriden private method'''
+        """constructs the forms using an overriden private method."""
         kwargs['user'] = self.user
         kwargs['labGroup'] = self.labGroup
         return super(CompoundFilterFormSet, self)._construct_form(i, **kwargs)
 
 
 class AdvancedCompoundFilterFormSet(CompoundFilterFormSet):
-    '''A formset for advanced compound filtering'''
+    """A formset for advanced compound filtering."""
 
     form = AdvancedCompoundFilterForm

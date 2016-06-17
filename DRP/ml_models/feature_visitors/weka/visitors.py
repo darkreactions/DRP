@@ -28,6 +28,7 @@ class ChiSquared(AbstractWekaFeatureVisitor):
 
 
 class Wrapper(AbstractWekaFeatureVisitor):
+
     """A wrapper for performing feature visitation with respect to a specific model class."""
 
     def __init__(self, modelVisitorTool="J48", modelVisitorLibrary="weka", modelVisitorOptions={}, *args, **kwargs):

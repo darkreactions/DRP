@@ -47,7 +47,7 @@ def parse_count(count_str):
 
 def parse_line(line):
     """Split the line into a tuple
-    (depth, feature, comparator, value, classification/None)"""
+    (depth, feature, comparator, value, classification/None)."""
     # Avoid empty strings from double whitespaces and the likes.
     split = [l for l in re_splitter.split(line) if len(l) > 0]
     depth = 0

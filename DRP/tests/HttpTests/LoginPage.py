@@ -35,13 +35,13 @@ class PostLoginPage(PostHttpSessionTest):
         self.response = self.s.post(self.url, data={'username': "testUser", 'password': "testpass", 'csrfmiddlewaretoken': self.csrf}, params={'next': '/contact.html'})
 
     def test_Status(self):
-        """Ensure that the test redirects to the correct response"""
+        """Ensure that the test redirects to the correct response."""
         self.assertEqual(200, self.response.status_code)
         self.assertTrue(len(self.response.history) > 0, self.response.content)
         self.assertEqual(302, self.response.history[0].status_code, self.response.content)
 
     def tearDown(self):
-        """Delete the temporary user for this test"""
+        """Delete the temporary user for this test."""
         self.tmpUser.delete()
 
 suite = unittest.TestSuite([

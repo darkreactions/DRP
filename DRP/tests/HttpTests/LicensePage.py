@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''This module provides tests for the License agreement page'''
+"""This module provides tests for the License agreement page."""
 
 import unittest
 from django.contrib.auth.models import User
@@ -17,7 +17,7 @@ class LicenseAgreementPage(GetHttpSessionTest):
     testCodes = ['c9e46ba1-cd2a-4080-88b5-97415fa7c484']
 
     def setUp(self):
-        '''Sets up the test by requesting the page uri'''
+        """Sets up the test by requesting the page uri."""
         self.license = License(text='some test', effectiveDate=datetime.date.today() - datetime.timedelta(1))
         self.license.save()
         self.response = self.s.get(self.url, params=self.params)
@@ -29,7 +29,7 @@ class LicenseAgreementPage(GetHttpSessionTest):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage(PostHttpSessionTest):
-    '''defines a test case with good credentials leading to a redirect'''
+    """defines a test case with good credentials leading to a redirect."""
 
     url = PostHttpTest.baseUrl + '/license.html'
     testCodes = ['3a9f74ee-5c78-4ec0-8893-ce0476808131']
@@ -49,7 +49,7 @@ class PostLicenseAgreementPage(PostHttpSessionTest):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage2(PostHttpSessionTest):
-    '''Defines a test case for good credentials with no redirect'''
+    """Defines a test case for good credentials with no redirect."""
 
     url = PostHttpTest.baseUrl + '/license.html'
     testCodes = ['9d6147f1-e321-4aff-8d04-966ca24a2ab0']
@@ -66,7 +66,7 @@ class PostLicenseAgreementPage2(PostHttpSessionTest):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage3(PostLicenseAgreementPage):
-    '''Defines a testcase where the licenseagreement is already signed, with a redirect'''
+    """Defines a testcase where the licenseagreement is already signed, with a redirect."""
 
     def setUp(self):
         self.user = User.objects.get(username='Aslan')
@@ -84,7 +84,7 @@ class PostLicenseAgreementPage3(PostLicenseAgreementPage):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage4(PostLicenseAgreementPage2):
-    '''Defines a testcase where the licenseagreement is already signed, without a redirect'''
+    """Defines a testcase where the licenseagreement is already signed, without a redirect."""
 
     testCodes = ['c87f2095-c8b2-4798-89bd-2b93ee33d338']
 

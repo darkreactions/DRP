@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     """Specific command for making a set of reactions in a csv public."""
 
-   help = 'Make reactions from a csv public. References should be in the first column'
+    help = 'Make reactions from a csv public. References should be in the first column'
 
     def add_arguments(self, parser):
         """Add arguments for the argument parser."""

@@ -101,14 +101,14 @@ def dictFix(d):
 
 def distList(indicator, properties_lists):
     from operator import mul
-    ''' Every item in "properties_lists" is a list of values for a set of
+    """ Every item in "properties_lists" is a list of values for a set of
     properties. Alternatively: properties_list is an n x 19 matrix, with 19
     features, where each row corrresponds to a compound.
 
     Only some rows are relevant, so we filter out those rows that indicator
      does not carry a 1 for....
     For each column, I want to take the min, max, average and geometric average
-    '''
+    """
 
     def min_f(l):
         if len(l) == 0:

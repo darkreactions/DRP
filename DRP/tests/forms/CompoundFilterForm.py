@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Test classes for the compound filter form"""
+"""Test classes for the compound filter form."""
 
 import unittest
 from DRP.forms import FilterForm, CompoundFilterForm
@@ -80,7 +80,7 @@ class CompoundFilterFormDifferentLabGroupFail(BaseFormTest):
         self.formData["js_active"] = False
 
     def setUp(self):
-        """Creates a user, then a form"""
+        """Creates a user, then a form."""
         self.user = User.objects.get(username='Starlord')
         self.labgroup = LabGroup.objects.get(title='Terran')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -92,7 +92,7 @@ class CompoundFilterFormDifferentLabGroupFail(BaseFormTest):
         self.validationFails()
 
     def test_is_empty(self):
-        """create a filter request that should fail, make sure it returns correct compounds"""
+        """create a filter request that should fail, make sure it returns correct compounds."""
         self.assertFalse(self.form.is_valid())
         self.assertFalse(self.form.is_empty())
 
@@ -105,10 +105,10 @@ class CompoundFilterFormDifferentLabGroupFail(BaseFormTest):
 @joinsLabGroup('Starlord', 'Terran')
 class CompoundFilterFormWrongLabGroupFail(BaseFormTest):
 
-    """This will test the CompoundFilterForm when the user tries to input a different labgroup in the form than the labgroup to which the user actually belongs"""
+    """This will test the CompoundFilterForm when the user tries to input a different labgroup in the form than the labgroup to which the user actually belongs."""
 
     def setUpFormData(self):
-        """Set up form data"""
+        """Set up form data."""
         self.formData = {}
         self.formData["abbrev"] = "2-amep"
         self.formData["name"] = "2-aminomethyl-1-ethylpyrrolidine"
@@ -142,7 +142,7 @@ class CompoundFilterFormWrongLabGroupFail(BaseFormTest):
 @loadsCompoundsFromCsv('Terran', 'compound_spread_test9.csv')
 class CompoundFilterFormEmptyFail(BaseFormTest):
 
-    """Test to make sure that CompoundFilterForm fails with an empty form that does not specify the user/labgroup"""
+    """Test to make sure that CompoundFilterForm fails with an empty form that does not specify the user/labgroup."""
 
     def setUpFormData(self):
         """Instantiates an empty dictionary. Wooh."""
@@ -373,7 +373,7 @@ class CompoundFilterFormINCHI(BaseFormTest):
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form"""
+        """Creates a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')

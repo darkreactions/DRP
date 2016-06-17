@@ -20,14 +20,14 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass('Solv', 'Common Solvent')
 class NoLabExists(BaseFormTest):
 
-    """Tests that the form doesn't validate when there are no lab groups"""
+    """Tests that the form doesn't validate when there are no lab groups."""
 
     def setUpFormData(self):
         self.formData = {'labGroup': '5', 'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5', 'CSID': '682',
                          'chemicalClasses': [ChemicalClass.objects.get(label='Solv').pk]}
 
     def setUp(self):
-        """Creates a user and a chemical class, then a form"""
+        """Creates a user and a chemical class, then a form."""
         self.user = User.objects.get(username='Aslan')
         self.user.save()
         self.setUpFormData()
@@ -36,21 +36,21 @@ class NoLabExists(BaseFormTest):
 
 class NoLabForUser(NoLabExists):
 
-    """Tests that the form doesn't validate when there are lab groups but the user is not a member"""
+    """Tests that the form doesn't validate when there are lab groups but the user is not a member."""
 
     def setUpFormData(self):
-        """Set up form data"""
+        """Set up form data."""
         super(NoLabForUser, self).setUpFormData()
         self.formData['labGroup'] = str(self.labGroup.id)
 
     def setUp(self):
-        """Set up lab group for tests"""
+        """Set up lab group for tests."""
         self.labGroup = LabGroup.objects.makeLabGroup(title="LegacyPassTest1", address='1, war drobe, Narnia', email='aslan@example.com', access_code='old_magic')
         self.labGroup.save()
         super(NoLabForUser, self).setUp()
 
     def tearDown(self):
-        """Delete lab group created for this test"""
+        """Delete lab group created for this test."""
         self.labGroup.delete()
         super(NoLabForUser, self).tearDown()
 
@@ -68,7 +68,7 @@ class LabForUser(NoLabForUser):
         self.labGroup.save()
 
     def test_validation(self):
-        """Answer the age old question: Did the test work?"""
+        """Answer the age old question: Did the test work?."""
         self.validationSucceeds()
 
     def test_saving(self):
@@ -139,7 +139,7 @@ class InconsistentNameCSID(LabForUser):
 
 class InconsistentCSIDCAS(LabForUser):
 
-    """Tests that the form does not validate when the CAS number and CSID are not consistent"""
+    """Tests that the form does not validate when the CAS number and CSID are not consistent."""
 
     def setUpFormData(self):
         """Create inconsistency between CAS number and CSID."""

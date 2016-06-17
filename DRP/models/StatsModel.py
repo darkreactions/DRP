@@ -12,7 +12,7 @@ class StatsModel(models.Model):
 
     outputFile = models.FileField(upload_to='models', max_length=200, blank=True)
     inputFile = models.FileField(upload_to='model_inputs', max_length=255, blank=True)
-    """The filename in which this model is stored"""
+    """The filename in which this model is stored."""
     startTime = models.DateTimeField(default=None, null=True)
     endTime = models.DateTimeField(default=None, null=True)
     trainingSet = models.ForeignKey(DataSet, related_name='trainingSetFor')

@@ -11,7 +11,7 @@ class HomePage(GetHttpTest):
 
     url = GetHttpTest.baseUrl
     testCodes = ['2240b1ff-895c-458f-adf2-d04d85a164d1', 'd68a82db-bd18-4a9f-a1a2-03b3bb259595']
-    '''A list of unique IDs. A check is performed to see that these are in the returned HTML'''
+    """A list of unique IDs. A check is performed to see that these are in the returned HTML."""
 
 suite = unittest.TestSuite([
     loadTests(HomePage)

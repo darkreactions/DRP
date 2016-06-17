@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''This contains tests for the registration page'''
+"""This contains tests for the registration page."""
 
 import time
 import unittest
@@ -22,7 +22,7 @@ registrationUrl = GetHttpTest.baseUrl + '/register.html'
 
 
 class RegisterPage(GetHttpTest):
-    '''Checks the register page html validity'''
+    """Checks the register page html validity."""
 
     url = registrationUrl
     testCodes = ['4cf1abe0-9118-471c-ac4e-34e863e87402', 'be088572-3adc-4757-8059-d16db2ea77a6']
@@ -31,7 +31,7 @@ class RegisterPage(GetHttpTest):
 @unittest.skipIf(settings.SKIP_EMAIL_TESTS, 'Email Tests being skipped...')
 @usesCsrf
 class PostRegisterPage(PostHttpSessionTest):
-    '''Checks the register page email response'''
+    """Checks the register page email response."""
 
     url = registrationUrl
     templateId = 'd776703c-bf1c-4a0a-89d1-1fcd83093967'
@@ -49,7 +49,7 @@ class PostRegisterPage(PostHttpSessionTest):
             user.delete()
 
     def emailCheck(self, emailText):
-        '''Worker method for test_email, actually does the checks, but allows test_email to do the heavy lifting of actually fetching the mail'''
+        """Worker method for test_email, actually does the checks, but allows test_email to do the heavy lifting of actually fetching the mail."""
         linkRe = re.compile('http://' + settings.SERVER_NAME + reverse('confirm') + '\?code=(?P<code>\w{8}-\w{4}-\w{4}-\w{4}-\w{12})')
         match = linkRe.search(emailText)
         if self.emailCode in emailText and self.username in emailText:
@@ -73,7 +73,7 @@ class PostRegisterPage(PostHttpSessionTest):
             return False
 
     def test_email(self):
-        '''Checks that the registration email has been recieved and is in good shape.'''
+        """Checks that the registration email has been recieved and is in good shape."""
         messages = ''
         testPass = False
         time.sleep(10)

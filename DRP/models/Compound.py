@@ -244,16 +244,16 @@ class Compound(models.Model):
         unique_together = (('abbrev', 'labGroup'), ('CSID', 'labGroup'))
 
     abbrev = models.CharField("Abbreviation", max_length=100)
-    """A local, often nonstandard abbreviation for a compound"""
+    """A local, often nonstandard abbreviation for a compound."""
     name = models.CharField('Name', max_length=400)
-    """Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)"""
+    """Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)."""
     chemicalClasses = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
-    """The class of the compound- examples include Inorganic Salt"""
+    """The class of the compound- examples include Inorganic Salt."""
     CSID = models.PositiveIntegerField('Chemspider ID', null=True)
-    """The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions"""
+    """The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions."""
     custom = models.BooleanField("Custom", default=False)
     """This flag denotes whether a compound has been added irrespective of other validation.
-    This should be restricted to superusers"""
+    This should be restricted to superusers."""
     INCHI = models.TextField('InCHI key', blank=True, default='')
     """The Inchi key for a compound- a canonical representation of a molecule which is also unique."""
 
@@ -263,7 +263,7 @@ class Compound(models.Model):
     """
 
     labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
-    """Tells us whose compound guide this appears in"""
+    """Tells us whose compound guide this appears in."""
 
     formula = models.CharField(
         max_length=500,

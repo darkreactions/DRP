@@ -99,7 +99,7 @@ class GetReactionEdit2(GetHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 class GetSomeoneElsesReactionEdit(GetHttpSessionTest):
-    '''Attempts to grab someone else\'s reaction, which should fail with a 404.'''
+    """Attempts to grab someone else\'s reaction, which should fail with a 404."""
 
     status = 404
 

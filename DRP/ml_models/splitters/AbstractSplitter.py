@@ -11,7 +11,7 @@ class AbstractSplitter(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, namingStub):
-        """Allows us to name the datasets with a namingstub."""
+        """Allow us to name the datasets with a namingstub."""
         self.namingStub = namingStub
         self.namingCounter = 0
 

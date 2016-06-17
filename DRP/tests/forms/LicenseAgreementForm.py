@@ -49,7 +49,7 @@ class LicenceAgreementForm(DRPTestCase):
             self.assertEqual(c[3], form.is_valid(), errString)
 
     def tearDown(self):
-        """Delete the objects created for this test"""
+        """Delete the objects created for this test."""
         self.user.delete()
         self.invUser.delete()
         self.license.delete()

@@ -27,7 +27,7 @@ class LabGroupPage(GetHttpSessionTest):
         self.response = self.s.get(self.url, params=self.params)
 
     def tearDown(self):
-        """Delete labGroup"""
+        """Delete labGroup."""
         self.labGroup.delete()
 
 
@@ -45,7 +45,7 @@ class LabGroupPage404(GetHttpSessionTest):
         self.response = self.s.get(self.url, params=self.params)
 
     def test_Status(self):
-        """Ensure that a request for a non-existent lab group returns a 404"""
+        """Ensure that a request for a non-existent lab group returns a 404."""
         self.assertEqual(self.response.status_code, 404, 'Url {0} returns code {1}. Page content follows:\n\n{2}'.format(self.url, self.response.status_code, self.response.text))
 
 
