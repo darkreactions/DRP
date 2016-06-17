@@ -5,7 +5,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
-from DRP.forms import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm
+from DRP.forms import NumRxnDescValFormFactory, OrdRxnDescValFormFactory, BoolRxnDescValFormFactory, CatRxnDescValFormFactory
 from DRP.forms import PerformedRxnInvalidateForm, PerformedRxnDeleteForm
 from django.utils.decorators import method_decorator
 from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
@@ -119,19 +119,15 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
     """A generic view function to create descriptor values for reactions."""
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(descriptor__calculatorSoftware="manual")
     initialDescriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
-    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass, can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
+    descValFormset = modelformset_factory(model=descValClass, form=descValFormClass(rxn_id), can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
     if descValClass.descriptorClass.objects.filter(calculatorSoftware="manual").exists():
         if request.method == "POST":
             formset = descValFormset(queryset=descVals, data=request.POST, prefix=request.resolver_match.url_name)
             # this weird prefix is caused by the generic nature of this function and the neccessity to namespace
             # the different form elements in the formsets used in the edit reaction view.
             if formset.is_valid():
-                descVals = formset.save(commit=False)
-                for dv in descVals:
-                    dv.reaction = PerformedReaction.objects.get(id=rxn_id)
-                    dv.save()
-                for dv in formset.deleted_objects:
-                    descValClass.objects.filter(id=dv.id).delete()
+                descVals = formset.save()
+                descValClass.objects.filter(id__in=[dv.id for dv in formset.deleted_objects]).delete()
                 messages.success(request, 'Reaction descriptor details successfully updated')
                 if createNext is None or 'creating' not in request.GET:
                     return redirect('editReaction', rxn_id)
@@ -164,10 +160,10 @@ def editReaction(request, rxn_id):
     CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, form=compoundQuantityFormFactory(rxn_id), can_delete=True, extra=1)
     cqFormset = CompoundQuantityFormset(queryset=compoundQuantities, prefix="quantities")
     descriptorFormsets = {}
-    descriptorClasses = (('Numeric Descriptors', 'createNumDescVals', NumRxnDescriptorValue, NumRxnDescValForm),
-                         ('Ordinal Descriptors', 'createOrdDescVals', OrdRxnDescriptorValue, OrdRxnDescValForm),
-                         ('Boolean Descriptors', 'createBoolDescVals', BoolRxnDescriptorValue, BoolRxnDescValForm),
-                         ('Categorical Descriptors', 'createCatDescVals', CatRxnDescriptorValue, CatRxnDescValForm))
+    descriptorClasses = (('Numeric Descriptors', 'createNumDescVals', NumRxnDescriptorValue, NumRxnDescValFormFactory(rxn_id)),
+                         ('Ordinal Descriptors', 'createOrdDescVals', OrdRxnDescriptorValue, OrdRxnDescValFormFactory(rxn_id)),
+                         ('Boolean Descriptors', 'createBoolDescVals', BoolRxnDescriptorValue, BoolRxnDescValFormFactory(rxn_id)),
+                         ('Categorical Descriptors', 'createCatDescVals', CatRxnDescriptorValue, CatRxnDescValFormFactory(rxn_id)))
     for descLabel, urlName, descValClass, descValFormClass in descriptorClasses:
         descriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware='manual')
         if descriptors.exists():

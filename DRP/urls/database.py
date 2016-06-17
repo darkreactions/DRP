@@ -4,7 +4,7 @@ from django.conf.urls import url
 import DRP.views
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models import OrdRxnDescriptorValue
-from DRP.forms import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm
+from DRP.forms import NumRxnDescValFormFactory, OrdRxnDescValFormFactory, BoolRxnDescValFormFactory, CatRxnDescValFormFactory
 
 urls = [
     url('^(?P<filetype>.csv|.html|.arff)?$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist_typed'),
@@ -13,28 +13,28 @@ urls = [
     url('^/entry_(?P<rxn_id>\d+)/compoundquantities.html', DRP.views.reaction.addCompoundDetails, name="addCompoundDetails"),
     url('^/entry_(?P<rxn_id>\d+)/num_desc_vals.html', DRP.views.reaction.createGenDescVal,
         {'descValClass': NumRxnDescriptorValue,
-         'descValFormClass': NumRxnDescValForm,
+         'descValFormClass': NumRxnDescValFormFactory,
          'infoHeader': 'Numerical Descriptor Values',
          'createNext': 'createOrdDescVals'
          },
         name="createNumDescVals"),
     url('^/entry_(?P<rxn_id>\d+)/ord_desc_vals.html', DRP.views.reaction.createGenDescVal,
         {'descValClass': OrdRxnDescriptorValue,
-         'descValFormClass': OrdRxnDescValForm,
+         'descValFormClass': OrdRxnDescValFormFactory,
          'infoHeader': 'Ordinal Descriptor Values',
          'createNext': 'createBoolDescVals'
          },
         name="createOrdDescVals"),
     url('^/entry_(?P<rxn_id>\d+)/cat_desc_vals.html', DRP.views.reaction.createGenDescVal,
         {'descValClass': CatRxnDescriptorValue,
-         'descValFormClass': CatRxnDescValForm,
+         'descValFormClass': CatRxnDescValFormFactory,
          'infoHeader': 'Categorical Descriptor Values',
          'createNext': None
          },
         name="createCatDescVals"),
     url('^/entry_(?P<rxn_id>\d+)/bool_desc_vals.html', DRP.views.reaction.createGenDescVal,
         {'descValClass': BoolRxnDescriptorValue,
-         'descValFormClass': BoolRxnDescValForm,
+         'descValFormClass': BoolRxnDescValFormFactory,
          'infoHeader': 'Boolean Descriptor Values',
          'createNext': 'createCatDescVals'
          },

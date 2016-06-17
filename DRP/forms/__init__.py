@@ -10,6 +10,6 @@ from compound import CompoundFilterFormSet, AdvancedCompoundFilterForm, Advanced
 from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationForm
 from PerformedReaction import PerformedRxnAdminForm, PerformedRxnForm, PerformedRxnDeleteForm, PerformedRxnInvalidateForm
 from descriptor import CatRxnDescriptorForm, BoolRxnDescriptorForm, NumRxnDescriptorForm, OrdRxnDescriptorForm, CatDescPermittedValueForm
-from descriptorValues import NumRxnDescValForm, OrdRxnDescValForm, BoolRxnDescValForm, CatRxnDescValForm
+from descriptorValues import NumRxnDescValFormFactory, OrdRxnDescValFormFactory, BoolRxnDescValFormFactory, CatRxnDescValFormFactory
 from FormSet import FormSet, ModelFormSet, FormSetManagerForm
 from CompoundQuantity import compoundQuantityFormFactory
