@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""The tests for the LicenseAgreementForm.
+"""
+The tests for the LicenseAgreementForm.
+
 These tests assume that html validation will be covered as a compenent of template testing
 These tests assume that the user authentication provided by the Django Form work as expected.
 These tests assume that the very simple "save" method works as expected (and in any case will be tested by the view tests)

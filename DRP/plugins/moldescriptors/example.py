@@ -36,6 +36,7 @@ def arbValCalc(compound):
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
+    """Batch calculation."""
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
@@ -43,7 +44,8 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 
 def calculate(compound, verbose=False, whitelist=None):
-    """Calculate the descriptors from this plugin for a compound.
+    """
+    Calculate the descriptors from this plugin for a compound.
 
     This should fail silently if a descriptor cannot be calculated for a compound, storing a None value in the
     database as this happens.

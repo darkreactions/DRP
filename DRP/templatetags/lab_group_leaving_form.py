@@ -6,7 +6,7 @@ register = template.Library()
 
 
 def labGroupLeavingFormId():
-    """Ensures that html elements have unique IDs."""
+    """Ensure that html elements have unique IDs."""
     if not hasattr(labGroupLeavingFormId, 'count'):
         labGroupLeavingFormId.count = 0
     else:

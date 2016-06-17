@@ -44,7 +44,7 @@ class PostConfirmationPage(PostHttpSessionTest):
     testCodes = ['9a301eb9-1f13-43ef-b3eb-3d66ebd4d566']
 
     def setUp(self):
-        """Tests the POST request for a user with correct credentials in the correct state."""
+        """Test the POST request for a user with correct credentials in the correct state."""
         self.user = User.objects.create_user(username='Aslan', password='banana', email='aslan@example.com')
         self.user.is_active = False
         self.user.save()
@@ -61,7 +61,7 @@ class PostConfirmationPage(PostHttpSessionTest):
 @usesCsrf
 class PostConfirmationPage2(PostConfirmationPage):
 
-    """Tests for a 403 with non-matching confirmation code."""
+    """Test for a 403 with non-matching confirmation code."""
 
     confirmationCode = uuid4()
     testCodes = ['b4da5e80-190b-4fe4-a97c-7f8bb9c213a5']

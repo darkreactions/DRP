@@ -18,7 +18,11 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CompoundFilterFormSucceed(BaseFormTest):
 
-    """This will test the CompoundFilterForm class when it should succeed; Specifically, this test is creating a lab group with some chemical compounds, and searching for one of those compounds (meaning it should definitely be returned)."""
+    """
+    This will test the CompoundFilterForm class when it should succeed.
+
+    Specifically, this test is creating a lab group with some chemical compounds, and searching for one of those compounds (meaning it should definitely be returned).
+    """
 
     def setUpFormData(self):
         """Set up form data. Custom, for Null, True, or False Boolean Field will be left out."""
@@ -33,7 +37,7 @@ class CompoundFilterFormSucceed(BaseFormTest):
         self.formData["js_active"] = False
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -45,7 +49,7 @@ class CompoundFilterFormSucceed(BaseFormTest):
         self.validationSucceeds()
 
     def test_is_empty(self):
-        """Asserts that a full form is correctly evaluated as valid a not empty."""
+        """Assert that a full form is correctly evaluated as valid a not empty."""
         self.assertTrue(self.form.is_valid(), str(self.form.errors))
         self.assertFalse(self.form.is_empty())
 
@@ -80,7 +84,7 @@ class CompoundFilterFormDifferentLabGroupFail(BaseFormTest):
         self.formData["js_active"] = False
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Starlord')
         self.labgroup = LabGroup.objects.get(title='Terran')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -120,7 +124,7 @@ class CompoundFilterFormWrongLabGroupFail(BaseFormTest):
         self.formData["js_active"] = False
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Starlord')
         self.labgroup = LabGroup.objects.get(title='Terran')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -132,7 +136,7 @@ class CompoundFilterFormWrongLabGroupFail(BaseFormTest):
         self.validationFails()
 
     def test_is_empty(self):
-        """Tests that a populated form is not evaluated to be empty."""
+        """Test that a populated form is not evaluated to be empty."""
         self.assertFalse(self.form.is_valid())
         self.assertFalse(self.form.is_empty())
 
@@ -145,11 +149,11 @@ class CompoundFilterFormEmptyFail(BaseFormTest):
     """Test to make sure that CompoundFilterForm fails with an empty form that does not specify the user/labgroup."""
 
     def setUpFormData(self):
-        """Instantiates an empty dictionary. Wooh."""
+        """Instantiate an empty dictionary. Wooh."""
         self.formData = {}
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Starlord')
         self.labgroup = LabGroup.objects.get(title='Terran')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -178,11 +182,12 @@ class CompoundFilterFormLabGroup(BaseFormTest):
     """Test to make sure that CompoundFilterForm succeeds/returns expected results with only the lab group specified."""
 
     def setUpFormData(self):
+        """Set up form data."""
         self.formData = {}
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -220,7 +225,7 @@ class CompoundFilterFormAbbrev(BaseFormTest):
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -259,7 +264,7 @@ class CompoundFilterFormName(BaseFormTest):
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -298,7 +303,7 @@ class CompoundFilterFormChemClass(BaseFormTest):
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -330,12 +335,13 @@ class CompoundFilterFormCSID(BaseFormTest):
     """Test that Compound Filter Form succeeds/returned expected results with only the CSID specified."""
 
     def setUpFormData(self):
+        """Set up form data."""
         self.formData = {}
         self.formData["CSID"] = "104820"
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -368,12 +374,13 @@ class CompoundFilterFormINCHI(BaseFormTest):
     """Test that Compound Filter Form succeeds/returned expected results with only the INCHI specified."""
 
     def setUpFormData(self):
+        """Set up form data."""
         self.formData = {}
         self.formData["INCHI"] = "InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3"
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -406,12 +413,13 @@ class CompoundFilterFormSmiles(BaseFormTest):
     """Test that Compound Filter Form succeeds/returned expected results with only the smiles specified."""
 
     def setUpFormData(self):
+        """Set up form data."""
         self.formData = {}
         self.formData["smiles"] = "CCN1CCCC1CN"
         self.formData["labGroup"] = self.labgroup.pk
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')

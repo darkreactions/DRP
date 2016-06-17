@@ -26,8 +26,7 @@ compoundListUrl = GetHttpTest.baseUrl + reverse('compoundguide', args=['/'])
 @logsInAs('Aslan', 'old_magic')
 class LicenseRedirect(GetHttpSessionTest, OneRedirectionMixin):
 
-    """Test that the request is redirected if a user tries to view the compound add page in without having
-    signed an EULA."""
+    """Test that the request is redirected if a user tries to view the compound add page in without having signed an EULA."""
 
     url = newCompoundUrl
     testCodes = ['c9e46ba1-cd2a-4080-88b5-97415fa7c484']

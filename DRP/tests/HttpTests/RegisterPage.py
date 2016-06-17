@@ -22,6 +22,7 @@ registrationUrl = GetHttpTest.baseUrl + '/register.html'
 
 
 class RegisterPage(GetHttpTest):
+
     """Checks the register page html validity."""
 
     url = registrationUrl
@@ -31,6 +32,7 @@ class RegisterPage(GetHttpTest):
 @unittest.skipIf(settings.SKIP_EMAIL_TESTS, 'Email Tests being skipped...')
 @usesCsrf
 class PostRegisterPage(PostHttpSessionTest):
+
     """Checks the register page email response."""
 
     url = registrationUrl
@@ -40,10 +42,12 @@ class PostRegisterPage(PostHttpSessionTest):
     testCodes = ['8f7aa6e8-2be5-4630-a205-5fceeea81fe4']
 
     def setUp(self):
+        """Send the http request."""
         self.username = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase) for i in range(6))
         self.response = self.s.post(self.url, data={'username': 'testing', 'first_name': self.username, 'last_name': 'user', 'password1': 'testpass', 'password2': 'testpass', 'email': settings.EMAIL_HOST_USER, 'csrfmiddlewaretoken': self.csrf})
 
     def tearDown(self):
+        """Delete the test user."""
         users = User.objects.filter(username='testing')
         for user in users:
             user.delete()
@@ -73,7 +77,7 @@ class PostRegisterPage(PostHttpSessionTest):
             return False
 
     def test_email(self):
-        """Checks that the registration email has been recieved and is in good shape."""
+        """Check that the registration email has been recieved and is in good shape."""
         messages = ''
         testPass = False
         time.sleep(10)

@@ -12,6 +12,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @logsInAs('Aslan', 'banana')
 class AccountPageNoGroups(GetHttpSessionTest):
+
     """To test that the account page displays correctly with no group memberships."""
 
     url = GetHttpTest.baseUrl + reverse('account')
@@ -24,6 +25,7 @@ class AccountPageNoGroups(GetHttpSessionTest):
 
 @logsInAs('Aslan', 'banana')
 class AccountPageGroups(AccountPageNoGroups):
+
     """To test that the account page displays correctly when the user is a member of at least one group."""
 
     testCodes = ['48295bf1-5be1-4f94-aab6-1e5b7e97681b']

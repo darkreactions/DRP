@@ -17,9 +17,11 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsCompound('Pyr', 8904, 'org', 'Narnia')
 @createsCompound('AcOH', 171, 'org', 'Narnia')
 class CsvOutput(DRPTestCase):
-    # This class exemplifies the standard structure of a test. Check the documentation for 'rolling your own'
+
+    """Tests the output of CSV."""
 
     def test_regular(self):
+        """Test a regular CSV."""
         fn =  '/tmp/' + settings.MAIN_SERVER_USER +'_test_csv.csv'
         with open(fn, 'wb') as csvFile:
             Compound.objects.all().toCsv(csvFile)
@@ -37,6 +39,7 @@ class CsvOutput(DRPTestCase):
             self.assertEqual(rowCount, 3)
 
     def test_expanded(self):
+        """Test an expanded CSV."""
         fn =  '/tmp/' + settings.MAIN_SERVER_USER +'_test_csv.csv'
         with open(fn, 'wb') as csvFile:
             Compound.objects.all().toCsv(csvFile, expanded=True)

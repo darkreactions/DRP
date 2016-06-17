@@ -13,6 +13,8 @@ from django.contrib.auth.models import User
 
 class GetHttpTest(DRPTestCase):
 
+    """A test to check a simple GET request."""
+
     baseUrl = 'http://' + settings.SERVER_NAME
     url = baseUrl
     testCodes = []
@@ -23,17 +25,18 @@ class GetHttpTest(DRPTestCase):
     _headers = {}
 
     def __init__(self, *args, **kwargs):
+        """Allow for dynamic payloads."""
         super(GetHttpTest, self).__init__(*args, **kwargs)
         self.params = self._params.copy()
         self.headers = self._headers.copy()
 
     def setUp(self):
-        """Sets up the test by requesting the home page uri."""
+        """Set up the test by requesting the home page uri."""
         self.response = requests.get(self.url, params=self.params)
 
     @staticmethod
     def constructFailureMessage(message):
-        """Constructs failure messages by parsing the output from the w3c validator."""
+        """Construct failure messages by parsing the output from the w3c validator."""
         m = message['type'] + ':'
         if 'subtype' in message.keys():
             m += message['subtype'] + ':'
@@ -46,20 +49,20 @@ class GetHttpTest(DRPTestCase):
         return m + '\n'
 
     def validate(self):
+        """Validate the html."""
         self.validationResponse = requests.post(settings.EXTERNAL_HTML_VALIDATOR, headers={'content-type': 'text/html; charset=utf-8'}, data=self.response.text, params={'out': 'json'})
 
     def test_Status(self):
-        """Checks that the http response code is the expected value."""
+        """Check that the http response code is the expected value."""
         self.assertEqual(self.response.status_code, self.status, 'Url {0} returns code {1}. Expecting {2}. Page content follows:\n\n{3}'.format(self.url, self.response.status_code, self.status, self.response.text))
 
-    # XXX TODO PHIL_FIX_AFTER_CONTEXT_PROCESSOR Had to comment this out because of context_processor issue
     def test_CorrectTemplate(self):
-        """Checks that the expected template is loaded."""
+        """Check that the expected template is loaded."""
         for testCode in self.testCodes:
             self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(testCode, self.response.text))
 
     def test_ValidHtml(self):
-        """Checks HTML validity."""
+        """Check HTML validity."""
         self.validate()
         responseData = json.loads(self.validationResponse.content)
         testPassed = True
@@ -77,6 +80,7 @@ class GetHttpTest(DRPTestCase):
 
 
 class PostHttpTest(GetHttpTest):
+
     """A test for post requests that do not use sessions."""
 
     _payload = {}
@@ -85,25 +89,32 @@ class PostHttpTest(GetHttpTest):
     """File data to be POSTed."""
 
     def __init__(self, *args, **kwargs):
+        """Set up the payload."""
         super(PostHttpTest, self).__init__(*args, **kwargs)
         self.payload = self._payload.copy()
         self.files = self._files.copy()
 
     def setUp(self):
+        """Make the request."""
         self.response = requests.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
 
 
 class GetHttpSessionTest(GetHttpTest):
 
+    """Makes a get request as a part of a session."""
+
     def __init__(self, *args, **kwargs):
+        """INitialise the session."""
         super(GetHttpSessionTest, self).__init__(*args, **kwargs)
         self.s = requests.Session()
 
     def setUp(self):
+        """Make the request."""
         self.response = self.s.get(self.url, params=self.params, headers=self.headers)
 
 
 class PostHttpSessionTest(PostHttpTest):
+
     """A test for post requests that use sessions (e.g. get decorated with logsInAs)."""
 
     def __init__(self, *args, **kwargs):
@@ -112,13 +123,12 @@ class PostHttpSessionTest(PostHttpTest):
         self.s = requests.Session()
 
     def setUp(self):
-        """Sends a post request containing specified data by the subclass of this type."""
+        """Send a post request containing specified data by the subclass of this type."""
         self.response = self.s.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
 
 
 def redirectionMixinFactory(redirectionCount):
     """A factory for generating class mixins which test redirection."""
-
     class RedirectionMixin(object):
 
         """A mixin for testing redirectionpages."""

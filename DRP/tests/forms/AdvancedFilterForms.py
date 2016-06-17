@@ -30,7 +30,7 @@ class NumericFilterFormGT(BaseFormTest):
         self.formData["value"] = 11
 
     def setUp(self):
-        """Creates a user, then a form with populated form data."""
+        """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = NumericFilterForm(data=self.formData)
 
@@ -74,7 +74,7 @@ class NumericFilterFormGE(BaseFormTest):
         self.formData["value"] = 11
 
     def setUp(self):
-        """Creates a user, then a form with populated form data."""
+        """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = NumericFilterForm(data=self.formData)
 
@@ -107,14 +107,17 @@ class NumericFilterFormGE(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test16.csv')
 class OrdinalFilterFormLT(BaseFormTest):
 
+    """Tests the less than case for filter forms."""
+
     def setUpFormData(self):
+        """Populate dictionary with form data."""
         self.formData = {}
         self.formData["descriptor"] = OrdMolDescriptor.objects.get(heading="fs").pk
         self.formData["operator"] = "lt"
         self.formData["value"] = 3
 
     def setUp(self):
-        """Creates a user, then a form with populated form data."""
+        """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = OrdinalFilterForm(data=self.formData)
 
@@ -150,14 +153,17 @@ class OrdinalFilterFormLT(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test16.csv')
 class OrdinalFilterFormLE(BaseFormTest):
 
+    """Tests filtering with less than or equal for an ordinal descriptor."""
+
     def setUpFormData(self):
+        """Populate dictionary with form data."""
         self.formData = {}
         self.formData["descriptor"] = OrdMolDescriptor.objects.get(heading="fs").pk
         self.formData["operator"] = "le"
         self.formData["value"] = 3
 
     def setUp(self):         
-        """Creates a user, then a form with populated form data."""
+        """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = OrdinalFilterForm(data=self.formData)
 
@@ -192,13 +198,16 @@ class OrdinalFilterFormLE(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CategoryFilterFormFun(BaseFormTest):
 
+    """Tests categorical filtering."""
+
     def setUpFormData(self):
+        """Populate dictionary with form data."""
         self.formData = {}
         self.formData["descriptor"] = CatMolDescriptor.objects.get(heading="arb").pk
         self.formData["value"] = str(CategoricalDescriptorPermittedValue.objects.get(value="fun").pk)
 
     def setUp(self):
-        """Creates a user, then a form with populated form data."""
+        """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = CategoryFilterForm(data=self.formData)
 
@@ -230,13 +239,16 @@ class CategoryFilterFormFun(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CategoryFilterFormDull(BaseFormTest):
 
+    """Tests categorical filtering."""
+
     def setUpFormData(self):
+        """Populate dictionary with form data."""
         self.formData = {}
         self.formData["descriptor"] = CatMolDescriptor.objects.get(heading="arb").pk
         self.formData["value"] = CategoricalDescriptorPermittedValue.objects.get(value="dull").pk
 
     def setUp(self):
-        """Creates a user, then a form with populated form data."""
+        """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = CategoryFilterForm(data=self.formData)
 
@@ -268,13 +280,16 @@ class CategoryFilterFormDull(BaseFormTest):
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test16.csv')
 class BooleanFilterFormTest(BaseFormTest):
 
+    """Filters for boolean descriptors."""
+
     def setUpFormData(self):
+        """Populate dictionary with form data."""
         self.formData = {}
         self.formData["descriptor"] = BoolMolDescriptor.objects.get(heading="N?").pk
         self.formData["value"] = False
 
     def setUp(self):
-        """Creates a user, then a form with populated form data."""
+        """Create a user, then a form with populated form data."""
         self.setUpFormData()
         self.form = BooleanFilterForm(data=self.formData)
 

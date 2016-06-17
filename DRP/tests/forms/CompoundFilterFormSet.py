@@ -56,7 +56,7 @@ class CompoundFilterSetSucceed(BaseFormTest):
         self.formData["form-2-js_active"] = False
 
     def setUp(self):
-        """Creates a user, then a form."""
+        """Create a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')

@@ -12,6 +12,8 @@ from django.contrib.auth import authenticate
 
 class UserCreationForm(DjangoUserCreationForm):
 
+    """A form for creating users."""
+
     email = forms.EmailField(required=True)
 
     class Meta:
@@ -20,12 +22,15 @@ class UserCreationForm(DjangoUserCreationForm):
 
 
 class ConfirmationForm(DjangoAuthenticationForm):
+
     """A form for confirming a user's credentials, without checking if they are 'active'."""
 
     def clean(self):
-        """A very close rewrite of the DjangoAuthenticationForm method, but raising an error
-        if the user is already active rather than if it is inactive."""
+        """
+        A very close rewrite of the DjangoAuthenticationForm method.
 
+        Raise an error if the user is already active rather than if it is inactive.
+        """
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
 
@@ -42,11 +47,13 @@ class ConfirmationForm(DjangoAuthenticationForm):
 
 
 class LicenseAgreementForm(DjangoAuthenticationForm):
+
     """A re-authentication form for the signing of site license agreements for DRP deployments."""
 
     licenseId = forms.IntegerField(widget=forms.widgets.HiddenInput)
 
     def __init__(self, user, license, *args, **kwargs):
+        """Initilaiser."""
         super(LicenseAgreementForm, self).__init__(*args, **kwargs)
         self.user = user
         self.license = license
@@ -62,11 +69,13 @@ class LicenseAgreementForm(DjangoAuthenticationForm):
         return supercleaned.update(self.cleaned_data)
 
     def as_ol(self):
+        """Present this form as an ordered list."""
         text = mark_safe('<pre>{0}</pre>'.format(conditional_escape(self.license.text)))
         text += mark_safe('<ol>{0}</ol>'.format(super(LicenseAgreementForm, self).as_ul()))
         return text
 
     def save(self, commit=True):
+        """Save the agreement to the license."""
         agreement = LicenseAgreement(user=self.user, text=self.license)
         if commit:
             agreement.save()

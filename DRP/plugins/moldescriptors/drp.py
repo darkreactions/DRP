@@ -1,3 +1,4 @@
+"""DRP calculated descriptors using chemical data from Mathematica."""
 from scipy.stats import gmean
 from utils import setup
 import DRP
@@ -105,6 +106,7 @@ descriptorDict = setup(_descriptorDict)
 
 
 def delete_descriptors(compound_set, whitelist=None):
+    """Bulk deletion of descriptor values."""
     if whitelist is None:
         descs = descriptorDict.values()
     else:
@@ -114,6 +116,7 @@ def delete_descriptors(compound_set, whitelist=None):
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
+    """Bulk creation of descriptor values."""
     delete_descriptors(compound_set, whitelist=whitelist)
     num_vals_to_create = []
     bool_vals_to_create = []
@@ -141,6 +144,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 
 def calculate(compound):
+    """Calculation of descriptor values."""
     delete_descriptors([compound])
     num_vals_to_create, bool_vals_to_create = _calculate(compound)
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)

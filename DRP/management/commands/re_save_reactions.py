@@ -17,7 +17,7 @@ class Command(BaseCommand):
     """Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)."""
 
     def add_arguments(self, parser):
-        """Requires the number of threads to be used."""
+        """Require the number of threads to be used."""
         parser.add_argument('threads', type=int, help='Number of threads to spawn.')
 
     def handle(self, *args, **kwargs):

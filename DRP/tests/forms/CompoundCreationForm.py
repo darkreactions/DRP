@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-"""The unit test for the compound Creation form.
-These tests assume that presence tests for the form fields work as expected
+"""
+The unit test for the compound Creation form.
+
+These tests assume that presence tests for the form fields work as expected.
 """
 
 import unittest
@@ -23,11 +25,12 @@ class NoLabExists(BaseFormTest):
     """Tests that the form doesn't validate when there are no lab groups."""
 
     def setUpFormData(self):
+        """Set up form data."""
         self.formData = {'labGroup': '5', 'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5', 'CSID': '682',
                          'chemicalClasses': [ChemicalClass.objects.get(label='Solv').pk]}
 
     def setUp(self):
-        """Creates a user and a chemical class, then a form."""
+        """Create a user and a chemical class, then a form."""
         self.user = User.objects.get(username='Aslan')
         self.user.save()
         self.setUpFormData()
@@ -89,7 +92,7 @@ class LabForBadUser(LabForUser):
     """Tests that the form doesn't validate when the user doesn't choose a lab group."""
 
     def setUpFormData(self):
-        """Gets a user and sets its labgroup to an empty string."""
+        """Get a user and sets its labgroup to an empty string."""
         super(LabForBadUser, self).setUpFormData()
         self.formData['labGroup'] = ''
 

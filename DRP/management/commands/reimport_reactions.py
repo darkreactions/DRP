@@ -100,7 +100,7 @@ density_dict = {}
 
 
 def convert_legacy_reference(legacy_reference):
-    """Converts the legacy reference codes to conformant codes."""
+    """Convert the legacy reference codes to conformant codes."""
     ref = legacy_reference.lower().replace(' ', '').replace('-', '.')
     if ref_match.match(ref) is None:
         ref = 'xxx' + ref

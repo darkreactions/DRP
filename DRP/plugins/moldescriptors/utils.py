@@ -5,13 +5,17 @@ from django.db import transaction
 
 class LazyDescDict(object):
 
+    """An attempt at making descriptor loading lazy."""
+
     def __init__(self, descDict):
+        """Initialiser."""
         self.internalDict = {}
         self.descDict = descDict
         self.initialised = False
 
     @transaction.atomic
     def initialise(self, descDict):
+        """Initialise the dictionary in a lazy way."""
         if not self.initialised:
             for k, v in descDict.items():
                 args = v.copy()
@@ -50,26 +54,28 @@ class LazyDescDict(object):
                     raise RuntimeError("Invalid descriptor type provided")
             self.initialised = True
 
-    # TODO Can these all be deleted because of the magic below?
 
     def __len__(self):
-        # TODO Is this really not supposed to initialise?
+        """Length."""
         return len(self.internalDict)
 
     def __iter__(self):
+        """Iterator."""
         self.initialise(self.descDict)
         return iter(self.internalDict)
 
     def __getitem__(self, key):
+        """Key fetch."""
         self.initialise(self.descDict)
         return self.internalDict[key]
 
     def __contains__(self, item):
-        # TODO Is this really not supposed to initialise?
+        """Check key."""
         return item in self.internalDict
 
+    # TODO: Get rid of this magic shortcut.
     def __getattr__(self, name):
-        """Deals with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."""
+        """Deal with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."""
         def _pass_attr(*args, **kwargs):
             self.initialise(self.descDict)
             return getattr(self.internalDict, name)(*args, **kwargs)
@@ -78,4 +84,5 @@ class LazyDescDict(object):
 
 
 def setup(descDict):
+    """Lazily sets up dictionary."""
     return LazyDescDict(descDict)

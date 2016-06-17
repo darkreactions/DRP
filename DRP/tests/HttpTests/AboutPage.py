@@ -8,6 +8,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class AboutPage(GetHttpTest):
+
     """Performs a get request on the AboutPage to check for Html Validity."""
 
 suite = unittest.TestSuite([

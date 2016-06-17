@@ -9,11 +9,15 @@ rxnDescriptorPlugins = [importlib.import_module(plugin) for plugin in settings.R
 
 
 class DRPTestCase(unittest.TestCase):
-    """A quick and dirty safety valve to stop people accidentally running database tests in production environments
+
+    """
+    A quick and dirty safety valve to stop people accidentally running database tests in production environments.
+
     For more information see the documentation.
     """
 
     def __init__(self, *args, **kwargs):
+        """Quick break if it looks like you're about to really delete things."""
         if not settings.TESTING:
             raise RuntimeError('Testing environment not enabled')
         else:
@@ -22,6 +26,7 @@ class DRPTestCase(unittest.TestCase):
 
 
 def cleanUpDatabase():
+    """Truncate the whole database."""
     DRP.models.CompoundQuantity.objects.all().delete()
     DRP.models.Compound.objects.all().delete()
     DRP.models.CompoundRole.objects.all().delete()

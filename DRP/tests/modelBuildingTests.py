@@ -10,10 +10,14 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class ModelTest(DRPTestCase):
+
+    """Tests for model building."""
+
     splitterOptions = None
     visitorOptions = None
 
     def runTest(self):
+        """The actual test."""
         reactions = PerformedReaction.objects.all()
         predictors = Descriptor.objects.filter(heading="testNumber")
         responses = Descriptor.objects.filter(heading="outcome")
@@ -33,6 +37,9 @@ class ModelTest(DRPTestCase):
 
 @createsPerformedReactionSetOrd
 class WekaSVMKFTest(ModelTest):
+
+    """Tests Weka SVM."""
+
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
     splitter = "KFoldSplitter"
@@ -40,6 +47,9 @@ class WekaSVMKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaSVMExpTest(ModelTest):
+
+    """Tests Weka SVM."""
+
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
     splitter = "ExploratorySplitter"
@@ -47,6 +57,9 @@ class WekaSVMExpTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaJ48KFTest(ModelTest):
+
+    """Tests Weka j48."""
+
     modelLibrary = "weka"
     modelTool = "J48"
     splitter = "KFoldSplitter"
@@ -54,6 +67,9 @@ class WekaJ48KFTest(ModelTest):
 
 @createsPerformedReactionSetBool
 class WekaKNNKFTest(ModelTest):
+
+    """Tests Weka KNN."""
+
     modelLibrary = "weka"
     modelTool = "KNN"
     splitter = "KFoldSplitter"
@@ -61,6 +77,9 @@ class WekaKNNKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaNBKFTest(ModelTest):
+
+    """Some kind of Bayes test..."""
+
     modelLibrary = "weka"
     modelTool = "NaiveBayes"
     splitter = "KFoldSplitter"

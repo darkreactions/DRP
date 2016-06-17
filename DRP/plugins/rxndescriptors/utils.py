@@ -5,13 +5,17 @@ from django.db import transaction
 
 class LazyDescDict(object):
 
+    """An attempt to make loading of descriptors lazy."""
+
     def __init__(self, descDict):
+        """Initiliser."""
         self.internalDict = {}
         self.descDict = descDict
         self.initialised = False
 
     @transaction.atomic
     def initialise(self, descDict):
+        """Lazy initialiser."""
         if not self.initialised:
             for k, v in descDict.items():
                 args = v.copy()
@@ -50,21 +54,26 @@ class LazyDescDict(object):
         self.initialised = True
 
     def __len__(self):
+        """Length."""
         return len(self.internalDict)
 
     def __iter__(self):
+        """Iterator."""
         self.initialise(self.descDict)
         return iter(self.internalDict)
 
     def __getitem__(self, key):
+        """Fetch from internal dictionary."""
         self.initialise(self.descDict)
         return self.internalDict[key]
 
     def __contains__(self, item):
+        """Containment check."""
         return item in self.internalDict
 
+    # TODO: delete this magic.
     def __getattr__(self, name):
-        """Deals with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."""
+        """Deal with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."""
         def _pass_attr(*args, **kwargs):
             self.initialise(self.descDict)
             return getattr(self.internalDict, name)(*args, **kwargs)
@@ -73,4 +82,5 @@ class LazyDescDict(object):
 
 
 def setup(descDict):
+    """Actually lazily setup a dictionary."""
     return LazyDescDict(descDict)

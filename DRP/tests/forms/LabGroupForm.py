@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""The unit test for the LabGroupForm class.
+"""
+The unit test for the LabGroupForm class.
+
 This test suite assumes that Django's inbuilt email testing is already
 conformant to the relevant standards.
 This test suite assumes that Django's check_password functions as
@@ -21,6 +23,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class LegacyPassword(DRPTestCase):
+
     """Tests for a case where a legacy password is set but no new password has been entered."""
 
     def setUp(self):
@@ -31,7 +34,7 @@ class LegacyPassword(DRPTestCase):
         self.labGroup.save()
 
     def test_validation(self):
-        """Asserts that the test worked."""
+        """Assert that the test worked."""
         valid = self.form.is_valid()
         errString = ''
         for e, m in self.form.errors.items():
@@ -39,20 +42,20 @@ class LegacyPassword(DRPTestCase):
         self.assertTrue(valid, errString)
 
     def test_databaseChange(self):
-        """Tests that saving the form (changing the databases) makes the appropriate changes."""
+        """Test that saving the form (changing the databases) makes the appropriate changes."""
         self.form.save()
         self.labGroup = LabGroup.objects.get(pk=self.labGroup.id)
         self.assertEqual(self.labGroup.legacy_access_code, '')
         self.assertTrue(check_password('old_magic', self.labGroup.access_code))
 
     def tearDown(self):
-        """Gets rid of the things created for this test."""
+        """Get rid of the things created for this test."""
         self.labGroup.delete()
 
 
 class LegacyPassword2(DRPTestCase):
 
-    """Tests for a case where a legacy password is set and a new password has been entered."""
+    """Test for a case where a legacy password is set and a new password has been entered."""
 
     def setUp(self):
         """instantiate the labgroup."""
@@ -62,11 +65,11 @@ class LegacyPassword2(DRPTestCase):
         self.form = LabGroupForm(formData, instance=self.labGroup)
 
     def test_validation(self):
-        """Evaluates whether the test should pass or fail."""
+        """Evaluate whether the test should pass or fail."""
         self.assertTrue(self.form.is_valid())
 
     def test_databaseChange(self):
-        """Evaluates that a new password is updated correctly from a legacy password."""
+        """Evaluate that a new password is updated correctly from a legacy password."""
         self.form.save()
         self.labGroup = LabGroup.objects.get(pk=self.labGroup.id)
         self.assertEqual(self.labGroup.legacy_access_code, '')
@@ -78,6 +81,7 @@ class LegacyPassword2(DRPTestCase):
 
 
 class CreateNew(DRPTestCase):
+
     """Performs rudimentary tests on form validation for missing data and complete data."""
 
     def setUp(self):
@@ -145,12 +149,12 @@ class DuplicateUniqueValues(DRPTestCase):
         self.labGroup.save()
 
     def test_duplicateTitle(self):
-        """Ensures that a duplicate lab group title is accepted."""
+        """Ensure that a duplicate lab group title is accepted."""
         form = LabGroupForm({'title': 'DuplicateValues', 'address': '2, war drobe, Narnia', 'email': 'whitewitch@example.com', 'accessCode': 'old_magic'})
         self.assertFalse(form.is_valid())
 
     def tearDown(self):
-        """Deletes labgroup created for this test."""
+        """Delete labgroup created for this test."""
         self.labGroup.delete()
 
 suite = unittest.TestSuite([

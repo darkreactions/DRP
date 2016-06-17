@@ -16,6 +16,7 @@ pt = rdkit.Chem.GetPeriodicTable()
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
+    """Calculate in bulk."""
     for i, compound in enumerate(compound_set):
         if verbose:
             print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))

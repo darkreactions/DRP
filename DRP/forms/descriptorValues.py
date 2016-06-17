@@ -7,11 +7,10 @@ from DRP.models import NumRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor, Or
 
 def descriptorValueFormFactoryFactory(modelClass, descriptorClass):
     """A factory function for producing descriptor value form classes."""
-
     def descriptorValueFormFactory(reactionId):
         """A factory for descriptor value forms."""
-
         class DescriptorValueForm(forms.ModelForm):
+
             """A form for a descriptor value."""
     
             class Meta:
@@ -38,8 +37,8 @@ BoolRxnDescValFormFactory = factory(BoolRxnDescriptorValue, BoolRxnDescriptor)
 
 def CatRxnDescValFormFactory(reactionId):
     """A specific factory for categorical descriptor value forms."""
-
     class CatRxnDescValForm(forms.ModelForm):
+
         """Special case because of the need to group permitted values."""
     
         value = forms.ChoiceField()

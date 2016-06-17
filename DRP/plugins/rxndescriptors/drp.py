@@ -31,6 +31,7 @@ for element in elements:
 
 # descriptors for generalised aggregation across compound roles
 def make_dict():
+    """Make a dictionary of descriptors based on known patterns."""
     _reaction_pH_Descriptors = {}
     weightings = ('molarity', 'count')
     for compoundRole in DRP.models.CompoundRole.objects.all():
@@ -153,6 +154,7 @@ def make_dict():
 
 
 def delete_descriptors_many(reaction_set, descriptorDict):
+    """Bulk deletion of descriptors."""
     # This could be the same as delete descriptors if we're ok with deleting the descriptor even if not
     # descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues)
     # I think yes, but wasn't completely sure, so made the separate function
@@ -198,6 +200,7 @@ def delete_descriptors_many(reaction_set, descriptorDict):
 
 
 def delete_descriptors(reaction, descriptorDict, whitelist=None):
+    """Deletion of descriptors with some restrictions."""
     allCompoundQuantities = DRP.models.CompoundQuantity.objects.filter(reaction=reaction)
     NumRxnDescriptor = DRP.models.NumRxnDescriptor
     BoolRxnDescriptor = DRP.models.BoolRxnDescriptor
@@ -374,7 +377,7 @@ def calculate(reaction, verbose=False, whitelist=None):
 
 
 def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals_to_create=[], bool_vals_to_create=[]):
-    """Calculates with the descriptorDict already created and previous descriptor values deleted."""
+    """Calculate with the descriptorDict already created and previous descriptor values deleted."""
     # descriptor Value classes
     CompoundQuantity = DRP.models.CompoundQuantity
     num = DRP.models.NumRxnDescriptorValue

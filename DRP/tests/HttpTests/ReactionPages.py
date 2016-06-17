@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Tests for the various stages of creating a reaction."""
 
 from django.conf import settings
 from HttpTest import GetHttpTest, PostHttpTest, GetHttpSessionTest, PostHttpSessionTest
@@ -29,6 +30,8 @@ reactionBaseCodes = ['ea5108a2-0b88-482d-90c5-ea492fd8134e', '823d22e7-3337-4292
 @joinsLabGroup('Aslan', 'narnia')
 class GetReactionCreate(GetHttpSessionTest):
 
+    """Simply get the page."""
+
     url = newReactionUrl
     testCodes = ['6813e404-f1a3-48ed-ae97-600a41cf63cb', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
 
@@ -39,11 +42,14 @@ class GetReactionCreate(GetHttpSessionTest):
 @usesCsrf
 class PostReactionCreateValid(PostHttpSessionTest, redirectionMixinFactory(1)):  # effectively tests GET for add_reactants view
 
+    """Make a valid creation request."""
+
     url = newReactionUrl
     testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {'reference': 'turkish_delight'}
 
     def setUp(self):
+        """Add the labgroup to the payload."""
         self.payload['labGroup'] = LabGroup.objects.get(title='narnia').id
         super(PostReactionCreateValid, self).setUp()
 
@@ -54,11 +60,14 @@ class PostReactionCreateValid(PostHttpSessionTest, redirectionMixinFactory(1)): 
 @usesCsrf
 class PostReactionCreateInvalid(PostHttpSessionTest):
 
+    """Make an invalid creation request."""
+
     url = newReactionUrl
     testCodes = ['6813e404-f1a3-48ed-ae97-600a41cf63cb', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
     _payload = {'reference': ''}
 
     def setUp(self):
+        """Set up payload."""
         self.payload['labGroup'] = LabGroup.objects.get(title='narnia').id
         super(PostReactionCreateInvalid, self).setUp()
 
@@ -69,9 +78,12 @@ class PostReactionCreateInvalid(PostHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 class GetReactionEdit(GetHttpSessionTest):
 
+    """Fetch the reaction editing page."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
 
     def setUp(self):
+        """The url here will be dynamic."""
         self.url = self.url + reverse('editReaction', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia').id})
         super(GetReactionEdit, self).setUp()
 
@@ -83,9 +95,12 @@ class GetReactionEdit(GetHttpSessionTest):
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 class GetReactionEdit2(GetHttpSessionTest):
 
+    """Fetch the reaction editing page with a descriptor componenet."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06', '634d88bb-9289-448b-a3dc-548ff4c6cda1', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
 
     def setUp(self):
+        """THe url for this will be dynamic."""
         self.url = self.url + reverse('editReaction', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia').id})
         super(GetReactionEdit2, self).setUp()
 
@@ -99,11 +114,13 @@ class GetReactionEdit2(GetHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 class GetSomeoneElsesReactionEdit(GetHttpSessionTest):
-    """Attempts to grab someone else\'s reaction, which should fail with a 404."""
+
+    """Attempts to grab someone else's reaction, which should fail with a 404."""
 
     status = 404
 
     def setUp(self):
+        """Allow for dynamic url."""
         self.url = self.url + reverse('editReaction', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='WhiteQueensArmy').id})
         super(GetSomeoneElsesReactionEdit, self).setUp()
 
@@ -112,10 +129,13 @@ class GetSomeoneElsesReactionEdit(GetHttpSessionTest):
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 class GetNonexistentReactionEdit(GetHttpSessionTest):
+    
+    """Try to edit a nonexistent reaction."""
 
     status = 404
 
     def setUp(self):
+        """Allow for dynamic url."""
         self.url = self.url + reverse('editReaction', kwargs={'rxn_id': 4})
         super(GetNonexistentReactionEdit, self).setUp()
 
@@ -127,15 +147,19 @@ class GetNonexistentReactionEdit(GetHttpSessionTest):
 @usesCsrf
 class PostReactionEditValid(PostHttpSessionTest):
 
+    """Edit a reaction."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06', '2758c44c-b7e2-440a-a617-36d9d730bc93', 'd96fc7a1-69cf-44ac-975d-a67f9e2c74d0'] + reactionBaseCodes
 
     def setUp(self):
+        """Allow for dynamic url."""
         self.url = self.url + reverse('editReaction', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia').id})
         self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia')
         self.payload.update({'notes': 'this reaction has been edited', 'reference': self.reaction.reference, 'labGroup': self.reaction.labGroup.id, 'performedBy': self.reaction.user.id, 'performedDateTime': self.reaction.performedDateTime, 'valid': self.reaction.valid, 'duplicateOf': ""})
         super(PostReactionEditValid, self).setUp()
 
     def test_edit(self):
+        """Test that the edition actually worked."""
         self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia')
         self.assertEqual(self.reaction.notes, 'this reaction has been edited')
 
@@ -147,15 +171,19 @@ class PostReactionEditValid(PostHttpSessionTest):
 @usesCsrf
 class PostReactionEditInvalid(PostHttpSessionTest):
 
+    """Invalid request to edit a reaction."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
 
     def setUp(self):
+        """Allow for dynamic url."""
         self.url = self.url + reverse('editReaction', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia').id})
         self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia')
         self.payload.update({'notes': 'this reaction has been edited', 'labGroup': self.reaction.labGroup.id, 'performedBy': self.reaction.user.id, 'performedDateTime': self.reaction.performedDateTime, 'valid': self.reaction.valid, 'duplicateOf': ""})
         super(PostReactionEditInvalid, self).setUp()
 
     def test_edit(self):
+        """Test the edition."""
         self.assertNotEqual(self.reaction.notes, 'this reaction has been edited')
 
 
@@ -166,15 +194,19 @@ class PostReactionEditInvalid(PostHttpSessionTest):
 @usesCsrf
 class DeletePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 
+    """Delete a performed reaction."""
+
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
 
     def setUp(self):
+        """Allow for dynamic url."""
         self.url = self.url + reverse('deleteReaction')
         self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia')
         self.payload['id'] = self.reaction.id
         super(DeletePerformedReaction, self).setUp()
 
     def tests_deleted(self):
+        """Test the deletion."""
         self.assertFalse(PerformedReaction.objects.filter(reference='turkish_delight', labGroup__title='narnia').exists())
 
 
@@ -188,15 +220,20 @@ class DeletePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
 class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+    
+    """Try to delete a reaction you do not own."""
+
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
     url = PostHttpSessionTest.url + reverse('deleteReaction')
 
     def setUp(self):
+        """Allow for dynamic url."""
         self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='WhiteQueensArmy')
         self.payload['id'] = self.reaction.id
         super(DeleteSomeoneElsesReaction, self).setUp()
 
     def tests_deleted(self):
+        """Test the deletion."""
         self.assertTrue(PerformedReaction.objects.filter(reference='turkish_delight', labGroup__title='narnia').exists())
 
 
@@ -206,10 +243,13 @@ class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)
 @usesCsrf
 class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 
+    """Try to delete a nonexistent reaction."""
+
     url = PostHttpSessionTest.url + reverse('deleteReaction')
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
 
     def setUp(self):
+        """Nothingi n the db, so this could be anything."""
         self.payload['id'] = 5
         super(DeleteNonexistentReaction, self).setUp()
 
@@ -221,15 +261,19 @@ class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1))
 @usesCsrf
 class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 
+    """Test for invalidation of a reaction."""
+
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
 
     def setUp(self):
+        """Setup."""
         self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia')
         self.payload['id'] = self.reaction.id
         super(InvalidatePerformedReaction, self).setUp()
 
-    def tests_deleted(self):
+    def test_invalidation(self):
+        """Test the invalidation."""
         self.assertFalse(PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia').valid)
 
 
@@ -243,15 +287,20 @@ class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
 class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+
+    """Try to invalidate a reaction you do not own."""
+
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
 
     def setUp(self):
+        """Set up."""
         self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='WhiteQueensArmy')
         self.payload['id'] = self.reaction.id
         super(InvalidateSomeoneElsesReaction, self).setUp()
 
-    def tests_deleted(self):
+    def test_invalidation(self):
+        """Test the invalidation."""
         self.assertTrue(PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia').valid)
 
 
@@ -261,10 +310,13 @@ class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactor
 @usesCsrf
 class InvalidateNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 
+    """Try to invalidate a reaction that does not exist."""
+
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
 
     def setUp(self):
+        """Set up."""
         self.payload['id'] = 5
         super(InvalidateNonexistentReaction, self).setUp()
 
@@ -278,6 +330,9 @@ class InvalidateNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory
 @createsCompoundRole('inOrg', 'inOrganic')
 @usesCsrf
 class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(5)):  # we expect 5 redirections because we have initialised no manual reaction descriptors
+
+    """Add a reactant to a reaction in the creation pipeline."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93'] + reactionBaseCodes
     _params = {'creating': True}
     _payload = {
@@ -288,6 +343,7 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxn_id =PerformedReaction.objects.get(reference='turkish_delight').id
         self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn_id})
         self.payload['quantities-0-id'] = ''
@@ -298,6 +354,7 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
         super(PostReactantAddCreatingValid, self).setUp()
 
     def tearDown(self):
+        """Additional db clean."""
         CompoundQuantity.objects.all().delete()
         super(PostReactantAddCreatingValid, self).tearDown()
 
@@ -312,6 +369,9 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
 class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory(2)):  # we expect 4 redirections because we have initialised no manual reaction descriptors
+
+    """Add a reactant to the reaction."""
+
     testCodes = ['9fa2cfb6-aabe-40f7-80ea-4ecbcf8c0bda', '634d88bb-9289-448b-a3dc-548ff4c6cda1'] + reactionBaseCodes
     _params = {'creating': True}
     _payload = {
@@ -322,6 +382,7 @@ class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxn_id =PerformedReaction.objects.get(reference='turkish_delight').id
         self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn_id})
         self.payload['quantities-0-reaction'] = str(rxn_id)
@@ -332,6 +393,7 @@ class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory
         super(PostReactantAddCreatingValid2, self).setUp()
 
     def tearDown(self):
+        """Additional database clean."""
         CompoundQuantity.objects.all().delete()
         super(PostReactantAddCreatingValid2, self).tearDown()
 
@@ -345,6 +407,9 @@ class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory
 @createsCompoundRole('inOrg', 'inOrganic')
 @usesCsrf
 class PostReactantAddCreatingInvalid(PostHttpSessionTest):
+
+    """Make an invalid request to create a reactant."""
+
     _params = {'creating': True}
     testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {
@@ -355,6 +420,7 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
     }
 
     def setUp(self):
+        """set up the dynamic payload."""
         rxn_id =PerformedReaction.objects.get(reference='turkish_delight').id
         self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn_id})
         self.payload['quantities-0-reaction'] = str(rxn_id)
@@ -375,6 +441,9 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
 @createsCompoundQuantity('turkish_delight', '2-amep', 'Org', '2.12')
 @usesCsrf
 class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):  # this is the same view so the invalid case is covered
+
+    """Edit a reactant."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', '634d88bb-9289-448b-a3dc-548ff4c6cda1', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {
         'quantities-TOTAL_FORMS': '1',
@@ -384,6 +453,7 @@ class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn.id})
         self.quantity = CompoundQuantity.objects.get(reaction=rxn, reaction__labGroup__title='narnia', compound__abbrev='2-amep')
@@ -396,6 +466,7 @@ class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
         self.quantity.refresh_from_db()
 
     def test_edit(self):
+        """Check the invalidation."""
         self.assertEqual(self.quantity.amount, 15)
 
 
@@ -409,6 +480,9 @@ class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsCompoundQuantity('turkish_delight', '2-amep', 'Org', '2.12')
 @usesCsrf
 class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)):  # we expect 4 redirections because we have initialised no manual reaction descriptors
+
+    """Delete a reactant."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93'] + reactionBaseCodes
     _payload = {
         'quantities-TOTAL_FORMS': '1',
@@ -418,6 +492,7 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)): 
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.url = self.url + reverse('addCompoundDetails', kwargs={'rxn_id': rxn.id})
         cq = CompoundQuantity.objects.get(compound__abbrev='2-amep', reaction=rxn)
@@ -430,6 +505,7 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)): 
         super(PostReactantDeleteValid, self).setUp()
 
     def test_delete(self):
+        """Check the deletion."""
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.assertEqual(CompoundQuantity.objects.filter(compound__abbrev='2-amep', reaction=rxn).count(), 0)
 
@@ -442,6 +518,9 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)): 
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
 class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory(3)):
+
+    """Test the creation of a descriptor value."""
+
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _params = {'creating': True}
     _payload = {
@@ -452,6 +531,7 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxnId = PerformedReaction.objects.get(reference='turkish_delight').id
         self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': rxnId })
         self.payload['createOrdDescVals-0-id'] = ''
@@ -461,6 +541,7 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
         super(CreateReactionDescValCreating, self).setUp()
 
     def test_created(self):
+        """test the creation."""
         self.assertTrue(OrdRxnDescriptorValue.objects.all().exists())
 
 
@@ -472,6 +553,9 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
 class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(1)):  # no edit test required- it uses the same functionality
+
+    """Test the creation of a reaction descriptor value as an edit."""
+
     testCodes = ['dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {
         'createOrdDescVals-TOTAL_FORMS': '1',
@@ -481,6 +565,7 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxnId = PerformedReaction.objects.get(reference='turkish_delight').id
         self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': rxnId })
         self.payload['createOrdDescVals-0-reaction'] = rxnId
@@ -490,6 +575,7 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
         super(CreateReactionDescValEditing, self).setUp()
 
     def test_created(self):
+        """Test the object creation."""
         self.assertTrue(OrdRxnDescriptorValue.objects.all().exists())
 
 
@@ -502,6 +588,9 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)
 @usesCsrf
 class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
+
+    """Test the deletion of a reaction descriptor value."""
+
     testCodes = ['dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {
         'createOrdDescVals-TOTAL_FORMS': '1',
@@ -511,6 +600,7 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': rxn.id})
         self.payload['createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness')
@@ -521,6 +611,7 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
         super(DeleteReactionDescVal, self).setUp()
 
     def test_deleted(self):
+        """Test the deletion."""
         self.assertFalse(OrdRxnDescriptorValue.objects.all().exists())
 
 
@@ -533,6 +624,9 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)
 @usesCsrf
 class EditReactionDescValInvalid(PostHttpSessionTest):
+
+    """Make an invalid edition to a descriptor value."""
+
     testCodes = ['9fa2cfb6-aabe-40f7-80ea-4ecbcf8c0bda', '634d88bb-9289-448b-a3dc-548ff4c6cda1'] + reactionBaseCodes
     _payload = {
         'createOrdDescVals-TOTAL_FORMS': '1',
@@ -542,6 +636,7 @@ class EditReactionDescValInvalid(PostHttpSessionTest):
     }
 
     def setUp(self):
+        """Set up the dynamic payload."""
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': rxn.id})
         self.payload['createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
@@ -551,6 +646,7 @@ class EditReactionDescValInvalid(PostHttpSessionTest):
         super(EditReactionDescValInvalid, self).setUp()
 
     def test_created(self):
+        """Test the creation."""
         self.assertTrue(OrdRxnDescriptorValue.objects.all().exists())
 
 suite = unittest.TestSuite([

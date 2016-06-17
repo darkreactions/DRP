@@ -10,7 +10,9 @@ import DRP
 
 
 class Command(BaseCommand):
+
     """Import data from your target main server."""
+
     help = 'synchronises database with the main server'
 
     def handle(self, reaction_limit=None, *args, **kwargs):

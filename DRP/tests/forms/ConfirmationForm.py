@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""A module containing tests for the Confirmation Form class.
+"""
+A module containing tests for the Confirmation Form class.
+
 Since the only novel component is the check for active
 and inactive users, this is the only code which is tested.
 """
@@ -13,6 +15,7 @@ from django.contrib.auth.models import User
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class InactiveUser(DRPTestCase):
+
     """Tests the case where good credentials for an inactive user have been submitted."""
 
     def setUp(self):

@@ -77,6 +77,7 @@ class LabGroupLeavingForm(forms.Form):
 
 
 class LabGroupSelectionForm(forms.Form):
+
     """Validate a user to select a group in order to view the compound lists and reaction lists."""
 
     def __init__(self, user, *args, **kwargs):

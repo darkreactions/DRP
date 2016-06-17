@@ -12,7 +12,6 @@ import os
 
 def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
     """A class decorator that creates an ordinal reaction descriptor."""
-
     def _createsOrdRxnDescriptor(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -34,7 +33,7 @@ def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manua
 
 
 def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
-
+    """A class decorator that creates an ordinal reaction descriptor value."""
     def _createsOrdRxnDescriptorValue(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -51,7 +50,7 @@ def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
 
 
 def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
-
+    """Create a compound quantity for use in a test."""
     def _createsCompoundQuantity(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -113,7 +112,6 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 
 def createsPerformedReaction(labTitle, username, reference, valid=True):
     """A class decorator that creates a very minimal reaction with no compounds or reactants."""
-
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -237,7 +235,6 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 
 def createsUser(username, password, is_superuser=False):
     """A class decorator that creates a user."""
-
     def _createsUser(c):
 
         _oldSetup = c.setUp
@@ -260,7 +257,7 @@ def createsUser(username, password, is_superuser=False):
 
 
 def createsCompoundRole(label, description):
-
+    """Create a compound role in a test."""
     def _createsCompoundRole(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -284,7 +281,7 @@ def createsCompoundRole(label, description):
 
 
 def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
-
+    """Create a compound in a test."""
     def _createsCompound(c):
 
         _oldSetup = c.setUp
@@ -312,7 +309,6 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
 
 def createsChemicalClass(label, description):
     """A class decorator that creates a test chemical class for the addition of compounds into the database."""
-
     def _createsChemicalClass(c):
 
         _oldSetup = c.setUp
@@ -335,8 +331,11 @@ def createsChemicalClass(label, description):
 
 
 def joinsLabGroup(username, labGroupTitle):
-    """A class decorator that creates a test lab group with labGroupTitle as it's title and assigns user identified by
-    username to that lab group."""
+    """
+    A class decorator that creates a test lab group.
+
+    labGroupTitle is it's title and assigns user identified by username to that lab group.
+    """
     def _joinsLabGroup(c):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
@@ -389,7 +388,6 @@ def signsExampleLicense(username):
 
 def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
     """A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder."""
-
     def _loadsCompoundsFromCsv(c):
 
         _oldSetup = c.setUp
@@ -417,6 +415,7 @@ def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
 
 
 def createsPerformedReactionSetOrd(c):
+    """a broken decorator for creating a bunch of sample reactions."""
     # Create a bunch of simple sample reactions with ordinal outcomes.
     c = createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome": 1, "testNumber": 5.04}, duplicateRef='R15')(c)
     c = createsPerformedReaction("Watchmen", "Rorschach", "R02", ["EtOH"], ["Org"], [0.71], {"outcome": 1, "testNumber": 5.0})(c)
@@ -453,6 +452,7 @@ def createsPerformedReactionSetOrd(c):
 
 
 def createsPerformedReactionSetBool(c):
+    """Broken."""
     # Create a bunch of simple sample reactions with Boolean outcomes.
     c = createsPerformedReaction("Watchmen", "Rorschach", "R01", ["EtOH"], ["Org"], [0.13], {"outcome": False, "testNumber": 5.04}, duplicateRef='R15')(c)
     c = createsPerformedReaction("Watchmen", "Rorschach", "R02", ["EtOH"], ["Org"], [0.71], {"outcome": False, "testNumber": 5.0})(c)

@@ -21,7 +21,7 @@ class CreateTest(BaseFormTest):
                          'CSID': '682', 'INCHI': r'1S/C2H6O/c1-2-3/h3H,2H2,1H3', 'smiles': 'CCO'}
 
     def setUp(self):
-        """Creates a user and a chemical class, then a form."""
+        """Create a user and a chemical class, then a form."""
         self.user = User.objects.create_user('Aslan', 'old_magic')
         self.user.save()
         self.chemicalClass = ChemicalClass(label='Solv', description='Common Solvent')

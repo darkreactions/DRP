@@ -179,6 +179,7 @@ for key in _descriptorDict.keys():
 
 
 def setup_pHdependentDescriptors(_descriptorDict):
+    """Set up for calculation of pH dependent descriptors."""
     pH_vals = DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(value=None).order_by('value').values_list('value', flat=True).distinct()
     for descriptor, d in _pHDependentDescriptors.items():
         for pH in pH_vals:
@@ -215,6 +216,7 @@ def setup_pHdependentDescriptors(_descriptorDict):
 
 
 def delete_descriptors(compound_set, descriptorDict, cxcalcCommands):
+    """Bulk deletion of descriptors."""
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type'] == 'num'],
                                                     compound__in=compound_set).delete(recalculate_reactions=False)
     DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type'] == 'ord'],
@@ -224,6 +226,7 @@ def delete_descriptors(compound_set, descriptorDict, cxcalcCommands):
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
+    """Bulk calculation of descriptors."""
     if verbose:
         print "Creating descriptor dictionary"
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
@@ -261,6 +264,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 
 def calculate(compound, verbose=False, whitelist=None):
+    """Calculate descriptor values."""
     if verbose:
         print "Creating descriptor dictionary"
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)

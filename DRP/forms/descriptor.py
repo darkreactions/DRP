@@ -18,7 +18,7 @@ class DescriptorAdmin(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True, *args, **kwargs):
-        """Saves the new descriptor, forcing it to be manual."""
+        """Save the new descriptor, forcing it to be manual."""
         descriptor = super(DescriptorAdmin, self).save(commit=False, *args, **kwargs)
         descriptor.calculatorSoftware = 'manual'
         descriptor.calculatorSoftwareVersion = '0'

@@ -5,7 +5,9 @@ from django import db
 
 
 class Command(BaseCommand):
+
     """Miniaturise the current database."""
+
     help = 'Miniaturize the current database.'
 
     def add_arguments(self, parser):

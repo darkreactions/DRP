@@ -14,6 +14,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class EmailSendsAndRecieves(DRPTestCase):
+
     """Sends and recieves a test email, and checks that the contents are correct."""
 
     def setUp(self):
@@ -22,7 +23,7 @@ class EmailSendsAndRecieves(DRPTestCase):
         self.email = DRP.Email.Email('Test Subject Header: {0}'.format(self.headerId), 'This message is a test. Please disregard but do not delete this email.', [settings.EMAIL_HOST_USER])
 
     def runTest(self):
-        """Sends an email using SMTP and fetches it via IMAP."""
+        """Send an email using SMTP and fetches it via IMAP."""
         errMessage = 'False is not True'
         messages = ''
         testPass = False

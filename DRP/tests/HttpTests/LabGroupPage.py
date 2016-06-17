@@ -15,6 +15,7 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @logsInAs('Aslan', 'banana')
 @signsExampleLicense('Aslan')
 class LabGroupPage(GetHttpSessionTest):
+
     """Gets the page when we have lab groups."""
 
     url = GetHttpTest.baseUrl + reverse('joinGroup')
