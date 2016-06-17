@@ -1,3 +1,4 @@
+"""Library of weka model visitors."""
 from visitors import SVM_PUK, KNN, NaiveBayes, J48, LogisticRegression, BayesianLogisticRegression, RandomForest
 from visitors import LinearRegression, M5P
 

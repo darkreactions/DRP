@@ -21,8 +21,10 @@ class DataSet(models.Model):
     name = models.CharField(max_length=200, unique=True)
     reactions = models.ManyToManyField(PerformedReaction, through="DataSetRelation")
 
+    # TODO: This belongs on a manager to be djangonic.
     @classmethod
     def create(cls, name, data):
+        """Bulk create a set of datasetrelations."""
         dataSet = cls(name=name)
         dataSet.save()
         dsrs = [DataSetRelation(dataSet=dataSet, reaction=datum) for datum in data]

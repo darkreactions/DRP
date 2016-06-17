@@ -1,11 +1,11 @@
-"""A module containing only the ChemicalClass class"""
+"""A module containing only the ChemicalClass class."""
 from django.db import models
 from django.conf import settings
 
 
 class ChemicalClass(models.Model):
 
-    """Represents the class of compound to which compounds may belong."""
+    """The class of compound to which compounds may belong."""
 
     class Meta:
         app_label = 'DRP'

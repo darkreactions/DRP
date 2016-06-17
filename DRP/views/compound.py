@@ -40,6 +40,7 @@ class CreateCompound(CreateView):
         return super(CreateCompound, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """Add a page heading to the normal context data."""
         context = super(CreateCompound, self).get_context_data(**kwargs)
         context['page_heading'] = 'Add a New Compound'
         return context
@@ -120,7 +121,6 @@ class ListCompound(ListView):
 
         Relate the queryset of this view to the logged in user.
         """
-
         self.queryset = self.labGroup.compound_set.all()
 
         if 'filter' in request.GET:
@@ -156,6 +156,7 @@ class ListCompound(ListView):
         return response
 
     def get_context_data(self, **kwargs):
+        """Add a lab Form and the filter formset to the existing context data."""
         context = super(ListCompound, self).get_context_data(**kwargs)
         context['lab_form'] = self.labForm
         context['filter_formset'] = self.filterFormSet

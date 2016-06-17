@@ -143,6 +143,7 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
             return rxnDescriptorValues.NumRxnDescriptorValue(descriptor=self, reaction=reaction, value=value)
 
     def createPredictionDescriptor(self, *args, **kwargs):
+        """Create a new predicted descriptor which matches this one's parameters."""
         pred = super(NumRxnDescriptor, self).createPredictionDescriptor(*args, **kwargs)
         pred.maximum = self.maximum
         pred.minimum = self.minimum

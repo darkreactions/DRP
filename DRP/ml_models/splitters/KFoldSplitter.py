@@ -1,14 +1,19 @@
+"""Contains a class for performing k-fold validation splits."""
 import random
 from AbstractSplitter import AbstractSplitter
 
 
 class Splitter(AbstractSplitter):
 
+    """The splitter class for K-fold validation."""
+
     def __init__(self, namingStub, num_folds=4):
+        """Standard splitter initialisation."""
         super(Splitter, self).__init__(namingStub)
         self.k = num_folds
 
     def split(self, reactions, verbose=False):
+        """Perform the split."""
         super(Splitter, self).split(reactions, verbose=verbose)
         # Split the reactions' IDs into K randomly-organized buckets.
         rxn_ids = [reaction.id for reaction in reactions]

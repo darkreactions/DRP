@@ -1,12 +1,15 @@
+"""Miniaturise the current database."""
 from django.core.management.base import BaseCommand
 from DRP.models import Reaction, Descriptor, Compound, CatRxnDescriptorValue, CatMolDescriptorValue, ModelContainer, DataSetRelation, DataSet
 from django import db
 
 
 class Command(BaseCommand):
+    """Miniaturise the current database."""
     help = 'Miniaturize the current database.'
 
     def add_arguments(self, parser):
+        """Add arguments to the parser."""
         parser.add_argument('-n', '--number', type=int, default=200,
                             help='Number of reactions to include.')
         parser.add_argument('-b', '--balanced', action='store_true',
@@ -15,6 +18,7 @@ class Command(BaseCommand):
                             help='Whether to only include valid reactions.')
 
     def handle(self, *args, **kwargs):
+        """Handle the command call."""
         ModelContainer.objects.all().delete()
         DataSetRelation.objects.all().delete()
         DataSet.objects.all().delete()

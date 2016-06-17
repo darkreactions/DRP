@@ -56,9 +56,9 @@ def reactionExists(view, *args, **kwargs):
 
 
 def labGroupSelected(dispatch_method):
-    """Ensures a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method."""
-
+    """Ensure a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method."""
     def _labGroupSelected(self, request, *args, **kwargs):
+        """The actual decorator function."""
         if request.user.is_authenticated():
             self.labForm = LabGroupSelectionForm(request.user)
             if request.user.labgroup_set.all().count() > 1:

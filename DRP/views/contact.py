@@ -6,7 +6,9 @@ from django.shortcuts import render
 
 
 def contact(request):
-    """The contact view. Validates a ContactForm against postdata, including CSRF (as part of the template).
+    """The contact view.
+
+    Validate a ContactForm against postdata, including CSRF (as part of the template).
     If a user is authenticated, prompts but does not enforce the authenticated user's email
     """
     success = False

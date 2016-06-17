@@ -83,9 +83,9 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
     def BCR_cost_matrix(self, reactions, response):
         """
-        Returns the BCR cost matrix.
+        Return the BCR cost matrix.
 
-        the i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
+        The i,j entry in cost matrix corresponds to cost of classifying an instance of class i as class j
         since we want misclassification of an instance to be equally costly regardless of what it is classified as
         all entries in a row not on the diagonal should be the same. The diagonal should always be 0 as correct
         classification has no cost. So that every class is weighted the same as a whole, each class's weight is
@@ -159,6 +159,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         self._runWekaCommand(command, verbose=verbose)
 
     def predict(self, reactions, verbose=False):
+        """Create the predictions for these reactions for the model."""
         descriptorHeaders = [d.csvHeader for d in chain(self.statsModel.container.descriptors, self.statsModel.container.outcomeDescriptors)]
 
         arff_file = self._prepareArff(reactions, descriptorHeaders, verbose=verbose)

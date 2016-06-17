@@ -27,13 +27,13 @@ class RxnDescriptorValueManager(models.Manager):
     """A manager which returns the custom queryset class for Reaction Descriptor Values."""
 
     def get_queryset(self):
-        """Returns the correct queryset class."""
+        """Return the correct queryset class."""
         return RxnDescriptorValueQuerySet(self.model, using=self._db)
 
 
 class RxnDescriptorValue(models.Model):
 
-    """Contains Relationships between Reactions and their descriptors."""
+    """A class to contain Relationships between Reactions and their descriptors."""
 
     class Meta:
         app_label = "DRP"

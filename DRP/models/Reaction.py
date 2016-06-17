@@ -84,6 +84,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     def descriptors(self):
         """
         Return all reaction descriptors.
+
         Used to return only descriptors which have relationship to the queryset,
         but this caused enormous slowdowns because of in queries
         """
@@ -94,7 +95,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                              )
 
     def rows(self, expanded, whitelist=None):
-        """Returns the 'rows' of information in a format suitable for a python dictwriter."""
+        """Return the 'rows' of information in a format suitable for a python dictwriter."""
         if expanded:
             reactions = self
             if whitelist is not None:
@@ -149,7 +150,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     # From https://djangosnippets.org/snippets/1949/
     def batch_iterator(self, chunksize=5000):
         """
-        Iterate over a Django Queryset ordered by the primary key
+        Iterate over a Django Queryset ordered by the primary key.
 
         This method loads a maximum of chunksize (default: 5000) rows in it's
         memory at the same time while django normally would load all rows in it's
@@ -168,6 +169,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
             gc.collect()
 
     def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
+        """Force the calculation of reaction descriptors for a group of reactions."""
         if verbose:
             print "Calculating descriptors for {} reactions".format(self.count())
         for plugin in descriptorPlugins:
@@ -217,7 +219,7 @@ class Reaction(models.Model):
 
     @property
     def descriptorValues(self):
-        """Returns all the descriptor values for this reaction. This should be turned into a multiqueryset."""
+        """Return all the descriptor values for this reaction. This should be turned into a multiqueryset."""
         return MultiQuerySet(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
     def __unicode__(self):

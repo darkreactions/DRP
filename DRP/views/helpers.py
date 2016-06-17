@@ -4,7 +4,7 @@ import urllib
 
 
 def redirect(url, *args, **kwargs):
-    """As per django's inbuilt redirect, but add get perameters to the uri."""
+    """Substitute for django's inbuilt redirect, but add get perameters to the uri."""
     params = kwargs.pop('params', {})
     response = django_redir(url, *args, **kwargs)
     if len(params) > 0:

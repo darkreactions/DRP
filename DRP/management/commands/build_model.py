@@ -1,3 +1,4 @@
+"""Command for building statistical/machine learning models in DRP."""
 from django.core.management.base import BaseCommand
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues, DataSet
 import operator
@@ -11,9 +12,13 @@ from sys import argv
 
 
 class Command(BaseCommand):
+
+    """Command for building statistical/machine learning models in DRP."""
+
     help = 'Builds a machine learning model'
 
     def add_arguments(self, parser):
+        """Add arguments for the argument parser."""
         parser.fromfile_prefix_chars = '@'
         parser.epilog = ("Prefix arguments with '@' to specify a file containing newline-separated values for that argument. "
                          "e.g.'-p @predictor_headers.txt' to pass multiple descriptor headings from a file as predictors.")
@@ -48,6 +53,7 @@ class Command(BaseCommand):
         # it's actually pretty complicated what the valid options are...
 
     def handle(self, *args, **kwargs):
+        """Handle the call for this command."""
         # This way of accepting splitter options is bad and hacky.
         # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
         # TODO XXX make this not horrible
@@ -74,6 +80,7 @@ class Command(BaseCommand):
 
 def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
                        description=None, verbose=False, splitterOptions=None, visitorOptions=None):
+    """Builds the model and puts it into the DB."""
 
     if trainingSet is not None:
         container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
@@ -88,6 +95,7 @@ def create_build_model(reactions=None, predictors=None, responses=None, modelVis
 
 
 def build_model(container, verbose=False):
+    """An additional function by GMN to build models. I don't really know what it's for- PA.'""" 
     for attempt in range(5):
         try:
             container.build(verbose=verbose)
@@ -106,6 +114,7 @@ def build_model(container, verbose=False):
 
 
 def missing_descriptors(descriptor_headings):
+    """Find descriptors which were requested but aren't in the DB.'"""
     missing_descs = []
     for heading in descriptor_headings:
         if not Descriptor.objects.filter(heading=heading).exists():
@@ -116,6 +125,7 @@ def missing_descriptors(descriptor_headings):
 def display_model_results(container, reactions=None, heading=""):
     """
     Displays confusion matrices for a model container.
+
     Optional heading specifies prefix for the summary statistics
     (useful for when multiple model containers are built by a single script)
     """
@@ -217,6 +227,7 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
 
 def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
                                 reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
+    """I'm not exactly clear on what this function by GMN is for- PA."""
 
     container = prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
                                     splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description,

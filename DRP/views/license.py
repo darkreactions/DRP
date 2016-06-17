@@ -13,7 +13,7 @@ import datetime
 
 @login_required
 def license(request):
-    """Controls requests pertaining to the signing of deployment license agreements."""
+    """Control requests pertaining to the signing of deployment license agreements."""
     if not License.objects.all().exists():
         template = get_template('license_404.html')
         return HttpResponseNotFound(template.render(RequestContext(request)))

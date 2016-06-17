@@ -1,3 +1,4 @@
+"""Factories for descriptor value Forms."""
 from django import forms
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity, Reaction
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
@@ -5,18 +6,20 @@ from DRP.models import NumRxnDescriptor, BoolRxnDescriptor, CatRxnDescriptor, Or
 
 
 def descriptorValueFormFactoryFactory(modelClass, descriptorClass):
-    '''A factory function for producing descriptor value form classes'''
+    """A factory function for producing descriptor value form classes."""
 
     def descriptorValueFormFactory(reactionId):
+        """A factory for descriptor value forms"""
 
         class DescriptorValueForm(forms.ModelForm):
-            '''A form for a descriptor value'''
+            """A form for a descriptor value."""
     
             class Meta:
                 model = modelClass
                 fields = ('descriptor', 'value', 'reaction')
     
             def __init__(self, *args, **kwargs):
+                """Lock the reaction to the specified value."""
                 super(DescriptorValueForm, self).__init__(*args, **kwargs)
                 self.fields['descriptor'].queryset = descriptorClass.objects.filter(calculatorSoftware='manual')
                 self.fields['reaction'].widget = forms.HiddenInput()
@@ -34,9 +37,10 @@ OrdRxnDescValFormFactory = factory(OrdRxnDescriptorValue, OrdRxnDescriptor)
 BoolRxnDescValFormFactory = factory(BoolRxnDescriptorValue, BoolRxnDescriptor)
 
 def CatRxnDescValFormFactory(reactionId):
+    """A specific factory for categorical descriptor value forms."""
 
     class CatRxnDescValForm(forms.ModelForm):
-        '''Special case because of the need to group permitted values'''
+        """Special case because of the need to group permitted values."""
     
         value = forms.ChoiceField()
     
@@ -45,6 +49,7 @@ def CatRxnDescValFormFactory(reactionId):
             fields = ('descriptor', 'value', 'reaction')
     
         def __init__(self, *args, **kwargs):
+            """Lock the reaction to the specified value."""
             super(CatRxnDescValForm, self).__init__(*args, **kwargs)
             descriptors = CatRxnDescriptor.objects.filter(calculatorSoftware='manual').prefetch_related('permittedValues')
             self.fields['descriptor'].queryset = descriptors

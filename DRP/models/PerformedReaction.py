@@ -26,6 +26,7 @@ class PerformedReactionManager(ReactionManager):
     """A custom manager for performed reactions."""
 
     def get_queryset(self):
+        """Return the correct custom queryset."""
         return PerformedReactionQuerySet(model=PerformedReaction)
 
 

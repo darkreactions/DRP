@@ -1,15 +1,20 @@
+"""Contains a class for splitting reactions into datasets purely at pseudorandom."""
 from AbstractSplitter import AbstractSplitter
 import random
 
 
 class Splitter(AbstractSplitter):
 
+    """The splitter visitor."""
+
     def __init__(self, namingStub, test_percent=0.33, num_splits=1):
+        """Standard splitter initialisation."""
         super(Splitter, self).__init__(namingStub)
         self.test_percent = test_percent
         self.num_splits = num_splits
 
     def split(self, reactions, verbose=False):
+        """Actually perform the split."""
         super(Splitter, self).split(reactions, verbose=verbose)
         splits = [self._single_split(reactions, verbose) for i in xrange(self.num_splits)]
         return splits

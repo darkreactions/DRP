@@ -1,3 +1,4 @@
+"""Command for re-importing the DRP database from a csv."""
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -99,6 +100,7 @@ density_dict = {}
 
 
 def convert_legacy_reference(legacy_reference):
+    """Converts the legacy reference codes to conformant codes."""
     ref = legacy_reference.lower().replace(' ', '').replace('-', '.')
     if ref_match.match(ref) is None:
         ref = 'xxx' + ref
@@ -108,9 +110,13 @@ def convert_legacy_reference(legacy_reference):
 
 
 class Command(BaseCommand):
+
+    """Convert data from a pre-0.02 csv dump to the post 0.02 database."""
+
     help = 'Ports database from pre-0.02 to 0.02'
 
     def add_arguments(self, parser):
+        """Add arguments for the parser."""
         parser.add_argument('directory', help='The directory where the tsv files are')
         parser.add_argument('start_number', type=int, nargs='?', default=0, help='Number to start on. By default this specifies a reaction. If descriptors or quantities is specified it refers to those.')
         parser.add_argument('--reactions', action='store_true', help='Start at importing the reactions')
@@ -120,6 +126,7 @@ class Command(BaseCommand):
         parser.add_argument('--no-compound-prompts', action='store_true', help="Don't prompt user to identify compounds. Mark unknown.")
 
     def handle(self, *args, **kwargs):
+        """Handle the command call."""
         folder = kwargs['directory']
         start_at_reactions = kwargs['reactions']
         start_at_descriptors = kwargs['descriptors']

@@ -452,10 +452,12 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
     }
 
     def setUp(self):
-        self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
+        rxnId = PerformedReaction.objects.get(reference='turkish_delight').id
+        self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': rxnId })
         self.payload['createOrdDescVals-0-id'] = ''
         self.payload['createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '0'
+        self.payload['createOrdDescVals-0-reaction'] = rxnId
         super(CreateReactionDescValCreating, self).setUp()
 
     def test_created(self):
@@ -479,7 +481,9 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
     }
 
     def setUp(self):
-        self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
+        rxnId = PerformedReaction.objects.get(reference='turkish_delight').id
+        self.url = self.url + reverse('createOrdDescVals', kwargs={'rxn_id': rxnId })
+        self.payload['createOrdDescVals-0-reaction'] = rxnId
         self.payload['createOrdDescVals-0-id'] = ''
         self.payload['createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '0'
@@ -513,6 +517,7 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
         self.payload['createOrdDescVals-0-value'] = '0'
         self.payload['createOrdDescVals-0-DELETE'] = 'on'
         self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(reaction=rxn, descriptor__heading='deliciousness').id
+        self.payload['createOrdDescVals-0-reaction'] = rxn.id
         super(DeleteReactionDescVal, self).setUp()
 
     def test_deleted(self):
@@ -542,6 +547,7 @@ class EditReactionDescValInvalid(PostHttpSessionTest):
         self.payload['createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '-1'
         self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(reaction=rxn, descriptor__heading='deliciousness').id
+        self.payload['createOrdDescVals-0-reaction'] = rxn.id
         super(EditReactionDescValInvalid, self).setUp()
 
     def test_created(self):

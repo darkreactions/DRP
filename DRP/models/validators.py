@@ -11,7 +11,7 @@ def notInTheFuture(value):
 
 class GreaterThanValidator(object):
 
-    """Verifies that a value is exclusively greater than a limit."""
+    """Verify that a value is exclusively greater than a limit."""
 
     def __init__(self, floorValue):
         """Initialise with the floor value."""
@@ -27,5 +27,5 @@ class GreaterThanValidator(object):
         return self.floorValue == other.floorValue
 
     def deconstruct(self):
-        """This method allows for serialization into django migrations."""
+        """Allow for serialization into django migrations."""
         return ('DRP.models.validators.GreaterThanValidator', [self.floorValue], {})

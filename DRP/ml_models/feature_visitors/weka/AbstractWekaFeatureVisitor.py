@@ -1,3 +1,4 @@
+"""An abstracted feature visitor designed to work with weka."""
 from django.conf import settings
 import uuid
 from DRP.ml_models.feature_visitors.AbstractFeatureVisitor import AbstractFeatureVisitor, logger
@@ -10,10 +11,13 @@ from itertools import chain
 
 class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
+    """An abstracted feature visitor designed to work with weka."""
+
     maxResponseCount = 1
     wekaOptions = ""
 
     def __init__(self, container, *args, **kwargs):
+        """Specify the modelcontainer which this feature selection process is being performed with."""
         super(AbstractWekaFeatureVisitor, self).__init__(*args, **kwargs)
 
         self.container = container
@@ -27,7 +31,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
             raise NotImplementedError('Subclasses of AbstractWekaModelVisitor must define wekaCommand')
 
     def _prepareArff(self, reactions, whitelistHeaders, verbose=False):
-        """Writes an *.arff file using the provided queryset of reactions."""
+        """Write an *.arff file using the provided queryset of reactions."""
         logger.debug("Preparing ARFF file...")
         filename = "featureSelection_{}_{}.arff".format(self.container.pk, uuid.uuid4())
         filepath = os.path.join(settings.TMP_DIR, filename)
@@ -41,7 +45,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         return filepath
 
     def _readWekaOutput(self, output):
-        """Reads a weka feature selection output and outputs a list of descriptors"""
+        """Read a weka feature selection output and outputs a list of descriptors."""
         start_line = "Selected attributes:"
         raw_lines = output.split('\n')
 
@@ -58,7 +62,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         return descriptors
 
     def _runWekaCommand(self, command, verbose=False):
-        """Sets the CLASSPATH necessary to use Weka, then runs a shell `command`."""
+        """Set the CLASSPATH necessary to use Weka, then runs a shell `command`."""
         if not settings.WEKA_PATH[self.WEKA_VERSION]:
             raise ImproperlyConfigured("'WEKA_PATH' is not set in settings.py!")
         set_path = "export CLASSPATH=$CLASSPATH:{}; ".format(settings.WEKA_PATH[self.WEKA_VERSION])
@@ -70,6 +74,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         return output
 
     def train(self, verbose=False):
+        """Train the feature selection."""
         descriptorHeaders = [d.csvHeader for d in chain(self.container.descriptors, self.container.outcomeDescriptors)]
         reactions = self.container.trainingSet.reactions.all()
 

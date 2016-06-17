@@ -1,3 +1,4 @@
+"""A splitter to create training and test sets dependent upon apparently disctinct chemistry."""
 from AbstractSplitter import AbstractSplitter
 from DRP.models.Compound import Compound
 from DRP.models import CatRxnDescriptor
@@ -7,13 +8,22 @@ import random
 
 class Splitter(AbstractSplitter):
 
+    """
+    The splitter class.
+
+    This uses the reaction hash descriptor calculated from the reactant names to determine
+    whether or not reactions have distinct chemistry.
+    """
+
     def __init__(self, namingStub, num_splits=1, margin_percent=0.01, test_percent=0.33):
+        """Specify the number of splits, naming pattern, and ratio of test/traning dataset sizes."""
         super(Splitter, self).__init__(namingStub)
         self.test_percent = test_percent
         self.margin_percent = margin_percent
         self.num_splits = num_splits
 
     def split(self, reactions, verbose=False):
+        """Actually perform the split."""
         super(Splitter, self).split(reactions, verbose=verbose)
         key_counts = self._count_compound_sets(reactions).items()
         splits = [self._single_split(reactions, key_counts, verbose=verbose) for i in xrange(self.num_splits)]

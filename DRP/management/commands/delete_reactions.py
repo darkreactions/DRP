@@ -1,3 +1,4 @@
+"""Used for deleting reactions specified in a tsv."""
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from os import path
@@ -7,12 +8,17 @@ import reimport_reactions
 
 
 class Command(BaseCommand):
+    
+    """Used for deleting reactions specified in a tsv."""
+    
     help = 'Deletes reactions from a tsv file'
 
     def add_arguments(self, parser):
+        """Add arguments ot the parser."""
         parser.add_argument('directory', help='The directory where the tsv files are')
 
     def handle(self, *args, **kwargs):
+        """Handle the command call."""
         folder = kwargs['directory']
         self.stdout.write('Deleting reactions')
 

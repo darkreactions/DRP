@@ -1,4 +1,4 @@
-
+"""Import data from your target main server."""
 from django.utils.encoding import smart_str
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -10,9 +10,11 @@ import DRP
 
 
 class Command(BaseCommand):
+    """Import data from your target main server."""
     help = 'synchronises database with the main server'
 
     def handle(self, reaction_limit=None, *args, **kwargs):
+        """Handle the command call."""
         DRP.models.CompoundQuantity.objects.all().delete()
         DRP.models.Compound.objects.all().delete()
         DRP.models.CompoundRole.objects.all().delete()

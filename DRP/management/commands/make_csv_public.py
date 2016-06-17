@@ -1,3 +1,4 @@
+"""Specific command for making a set of reactions in a csv public."""
 from DRP.models import PerformedReaction
 from django.core.management.base import BaseCommand
 import csv
@@ -5,12 +6,17 @@ import reimport_reactions
 
 
 class Command(BaseCommand):
-    help = 'Make reactions from a csv public. References should be in the first column'
+
+    """Specific command for making a set of reactions in a csv public."""
+
+   help = 'Make reactions from a csv public. References should be in the first column'
 
     def add_arguments(self, parser):
+        """Add arguments for the argument parser."""
         parser.add_argument('filename', help='Path to csv file.')
 
     def handle(self, *args, **kwargs):
+        """Handle the call for this command."""
         fn = kwargs['filename']
         with open(fn) as f:
             reader = csv.reader(f)

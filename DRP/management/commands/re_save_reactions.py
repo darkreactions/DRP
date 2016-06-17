@@ -1,3 +1,4 @@
+"""Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)"""
 from django.core.management.base import BaseCommand
 from DRP.models import Reaction
 from multiprocessing import Process
@@ -5,6 +6,7 @@ from django import db
 
 
 def reSave(startIndex, endIndex, stdout):
+    """Resave function."""
     for r in Reaction.objects.all()[startIndex: endIndex]:
         r.save()
         stdout.write(str(r.id))
@@ -12,10 +14,14 @@ def reSave(startIndex, endIndex, stdout):
 
 class Command(BaseCommand):
 
+    """Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)"""
+
     def add_arguments(self, parser):
+        """Requires the number of threads to be used."""
         parser.add_argument('threads', type=int, help='Number of threads to spawn.')
 
     def handle(self, *args, **kwargs):
+        """Run in 20 reaction blocks across n threads."""
         threads = kwargs['threads']
         examined = 0
         while examined * 20 < Reaction.objects.all().count():

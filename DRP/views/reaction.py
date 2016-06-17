@@ -66,7 +66,7 @@ class ListPerformedReactions(ListView):
         return response
 
     def get_context_data(self, **kwargs):
-        """Attaches the lab form as additional context; deprecated."""
+        """Attach the lab form as additional context; deprecated."""
         context = super(ListPerformedReactions, self).get_context_data(**kwargs)
         context['lab_form'] = self.labForm
         return context

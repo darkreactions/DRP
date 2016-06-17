@@ -1,4 +1,4 @@
-
+"""This command is to check whether the hashing algorithm for non-alike reactions has clashed."""
 from django.core.management.base import BaseCommand
 from DRP.Email import EmailToAdmins
 from DRP.models import Reaction
@@ -16,6 +16,7 @@ class Command(BaseCommand):
     help = 'Checks Reaction Chemical Space Hashes for collisions, which could cause problematic behaviour in model building'
 
     def handle(self, *args, **kwargs):
+        """Handle the command call."""
         hashDictionary = {}
         collisionCount = 0
         for reaction in Reaction.objects.all():
