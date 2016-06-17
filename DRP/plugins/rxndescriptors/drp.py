@@ -30,7 +30,6 @@ for element in elements:
 
 
 # descriptors for generalised aggregation across compound roles
-
 def make_dict():
     _reaction_pH_Descriptors = {}
     weightings = ('molarity', 'count')

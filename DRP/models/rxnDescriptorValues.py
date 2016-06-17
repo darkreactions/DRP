@@ -16,8 +16,8 @@ class RxnDescriptorValueQuerySet(models.query.QuerySet):
     pass
     # TODO XXX This breaks because queryset has no attribute descriptor.
     # def delete(self):
-    #trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
-    #testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
+    # trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
+    # testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
     # for model in trainingModels|testModels:
     # model.invalidate()
 
@@ -52,7 +52,7 @@ class RxnDescriptorValue(models.Model):
 # model.invalidate()
 # except pr.PerformedReaction.DoesNotExist:
 # pass # fine, we don't care, no need to pass this on.
-    #super(RxnDescriptorValue, self).save(*args, **kwargs)
+    # super(RxnDescriptorValue, self).save(*args, **kwargs)
 
     # def delete(self):
 #    trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions=self.reaction.performedreaction))

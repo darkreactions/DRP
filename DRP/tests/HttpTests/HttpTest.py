@@ -1,4 +1,4 @@
-'''A module containing base classes and decorators for HttpTests'''
+"""A module containing base classes and decorators for HttpTests."""
 
 import requests
 from django.conf import settings
@@ -17,9 +17,9 @@ class GetHttpTest(DRPTestCase):
     url = baseUrl
     testCodes = []
     _params = {}
-    '''any GET params to be added to the request.'''
+    """any GET params to be added to the request."""
     status = 200
-    '''The expected status code for this test case'''
+    """The expected status code for this test case"""
     _headers = {}
 
     def __init__(self, *args, **kwargs):
@@ -28,12 +28,12 @@ class GetHttpTest(DRPTestCase):
         self.headers = self._headers.copy()
 
     def setUp(self):
-        '''Sets up the test by requesting the home page uri'''
+        """Sets up the test by requesting the home page uri"""
         self.response = requests.get(self.url, params=self.params)
 
     @staticmethod
     def constructFailureMessage(message):
-        '''Constructs failure messages by parsing the output from the w3c validator'''
+        """Constructs failure messages by parsing the output from the w3c validator"""
         m = message['type'] + ':'
         if 'subtype' in message.keys():
             m += message['subtype'] + ':'
@@ -49,17 +49,17 @@ class GetHttpTest(DRPTestCase):
         self.validationResponse = requests.post(settings.EXTERNAL_HTML_VALIDATOR, headers={'content-type': 'text/html; charset=utf-8'}, data=self.response.text, params={'out': 'json'})
 
     def test_Status(self):
-        '''Checks that the http response code is the expected value'''
+        """Checks that the http response code is the expected value"""
         self.assertEqual(self.response.status_code, self.status, 'Url {0} returns code {1}. Expecting {2}. Page content follows:\n\n{3}'.format(self.url, self.response.status_code, self.status, self.response.text))
 
     # XXX TODO PHIL_FIX_AFTER_CONTEXT_PROCESSOR Had to comment this out because of context_processor issue
     def test_CorrectTemplate(self):
-        '''Checks that the expected template is loaded'''
+        """Checks that the expected template is loaded"""
         for testCode in self.testCodes:
             self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(testCode, self.response.text))
 
     def test_ValidHtml(self):
-        '''Checks HTML validity'''
+        """Checks HTML validity"""
         self.validate()
         responseData = json.loads(self.validationResponse.content)
         testPassed = True
@@ -77,12 +77,12 @@ class GetHttpTest(DRPTestCase):
 
 
 class PostHttpTest(GetHttpTest):
-    '''A test for post requests that do not use sessions'''
+    """A test for post requests that do not use sessions"""
 
     _payload = {}
-    '''The data to be POSTed to the sever'''
+    """The data to be POSTed to the sever"""
     _files = {}
-    '''File data to be POSTed'''
+    """File data to be POSTed"""
 
     def __init__(self, *args, **kwargs):
         super(PostHttpTest, self).__init__(*args, **kwargs)
@@ -104,21 +104,24 @@ class GetHttpSessionTest(GetHttpTest):
 
 
 class PostHttpSessionTest(PostHttpTest):
-    '''A test for post requests that use sessions (e.g. get decorated with logsInAs)'''
+    """A test for post requests that use sessions (e.g. get decorated with logsInAs)"""
 
     def __init__(self, *args, **kwargs):
+        """Standard constructor"""
         super(PostHttpSessionTest, self).__init__(*args, **kwargs)
         self.s = requests.Session()
 
     def setUp(self):
+        """Sends a post request containing specified data by the subclass of this type"""
         self.response = self.s.post(self.url, data=self.payload, files=self.files, params=self.params, headers=self.headers)
 
 
 def redirectionMixinFactory(redirectionCount):
-    '''A facotry for generating class mixins which test redirection'''
+    """A factory for generating class mixins which test redirection."""
 
     class RedirectionMixin(object):
-        '''A mixin for testing redirectionpages'''
+
+        """A mixin for testing redirectionpages."""
 
         def test_redirect(self):
             self.assertEqual(len(self.response.history), redirectionCount, 'Response history has length: {0}. Page Content is: \n{1}'.format(len(self.response.history), self.response.text))
@@ -129,10 +132,8 @@ def redirectionMixinFactory(redirectionCount):
 
 OneRedirectionMixin = redirectionMixinFactory(1)  # for old tests. TODO: Deprecate this
 
-
 def usesCsrf(c):
-    '''A class decorator to indicate the test utilises csrf'''
-
+    """A class decorator to indicate the test utilises csrf."""
     _oldSetup = c.setUp
 
     def setUp(self):
@@ -147,8 +148,7 @@ def usesCsrf(c):
 
 
 def logsInAs(username, password, csrf=True):
-    '''A class decorator that creates and logs in a user on setup, and deletes it on teardown. Should be applied BEFORE usesCsrf decorator'''
-
+    """A class decorator that creates and logs in a user on setup, and deletes it on teardown. Should be applied BEFORE usesCsrf decorator."""
     def _logsInAs(c):
 
         c.loginUrl = c.baseUrl + reverse('login')
@@ -177,10 +177,10 @@ def logsInAs(username, password, csrf=True):
 
 
 def choosesLabGroup(username, labGroupTitle):
-    '''A class decorator that sets up a user to be using a given labgroup for a session to view e.g. compound lists
-    Necessarily assumes that the user has been logged in and adjoined to the lab group
-    '''
+    """A class decorator that sets up a user to be using a given labgroup for a session to view e.g. compound lists.
 
+    Necessarily assumes that the user has been logged in and adjoined to the lab group.
+    """
     def _choosesLabGroup(c):
 
         _oldSetUp = c.setUp

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''Test classes for the compound filter form'''
+"""Test classes for the compound filter form"""
 
 import unittest
 from DRP.forms import FilterForm, CompoundFilterFormSet
@@ -18,9 +18,11 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass("Inorg", "descr")
 @loadsCompoundsFromCsv('GalaxyGuardians', 'compound_spread_test1.csv')
 class CompoundFilterSetSucceed(BaseFormTest):
-    '''Three different forms searching for different compounds, should all succeed'''
+
+    """Three different forms searching for different compounds, should all succeed."""
 
     def setUpFormData(self):
+        """Three different forms searching for different compounds."""
         self.formData = {}
         self.formData["form-TOTAL_FORMS"] = 3
         self.formData["form-INITIAL_FORMS"] = 0
@@ -54,7 +56,7 @@ class CompoundFilterSetSucceed(BaseFormTest):
         self.formData["form-2-js_active"] = False
 
     def setUp(self):
-        '''Creates a user, then a form'''
+        """Creates a user, then a form."""
         self.user = User.objects.get(username='Gamora')
         self.labgroup = LabGroup.objects.get(title='GalaxyGuardians')
         self.chemicalClass = ChemicalClass.objects.get(label='Amine')
@@ -63,19 +65,22 @@ class CompoundFilterSetSucceed(BaseFormTest):
         self.form = CompoundFilterFormSet(user=self.user, labGroup=self.labgroup, data=self.formData)
 
     def test_validation(self):
-        '''test that this test returned correct compounds'''
+        """Test that this test returned correct compounds."""
         self.validationSucceeds()
 
     def test_is_empty(self):
+        """Test that this test is correctly evaluated as valid and not empty."""
         self.assertTrue(self.form.is_valid(), str(self.form.errors))
         self.assertFalse(self.form.is_empty())
 
     def test_cleaned_data(self):
+        """Test that this will clean data correctly."""
         self.assertTrue(self.form.is_valid())
         cleaned = self.form.cleaned_data
         self.assertEqual(len(cleaned), 3, "Got more than one result from the filter form, or cleaned more than the results returned from the form")
 
     def test_fetch(self):
+        """Test that the form fetch method works correctly."""
         self.assertTrue(self.form.is_valid())
         fetched = self.form.fetch()
         self.assertEqual(fetched.count(), 3, "{} results found.".format(fetched.count()))

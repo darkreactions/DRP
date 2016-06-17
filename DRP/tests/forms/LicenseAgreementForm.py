@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-'''The tests for the LicenseAgreementForm.
+"""The tests for the LicenseAgreementForm.
 These tests assume that html validation will be covered as a compenent of template testing
 These tests assume that the user authentication provided by the Django Form work as expected.
 These tests assume that the very simple "save" method works as expected (and in any case will be tested by the view tests)
-'''
+"""
 
 import unittest
 from DRP.tests import DRPTestCase
@@ -17,7 +17,10 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 class LicenceAgreementForm(DRPTestCase):
 
+    """Test a form for licensing agreement."""
+
     def setUp(self):
+        """Set upa valid and an invalid lincense form."""
         self.passes = ['banana', 'turkishdelight']
         self.user = User.objects.create_user(username='Aslan', password=self.passes[0])
         self.user.save()
@@ -35,6 +38,7 @@ class LicenceAgreementForm(DRPTestCase):
         )
 
     def runTest(self):
+        """Ensure that the license agreement form works as intended."""
         i = 0
         for c in self.combinations:
             i += 1
@@ -45,6 +49,7 @@ class LicenceAgreementForm(DRPTestCase):
             self.assertEqual(c[3], form.is_valid(), errString)
 
     def tearDown(self):
+        """Delete the objects created for this test"""
         self.user.delete()
         self.invUser.delete()
         self.license.delete()

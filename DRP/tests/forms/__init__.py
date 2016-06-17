@@ -1,3 +1,5 @@
+"""Encapsulates unit tests for various forms"""
+
 import unittest
 import AdvancedFilterForms
 import CompoundAdminForm

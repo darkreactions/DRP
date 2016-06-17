@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-'''A module containing tests for the Confirmation Form class.
+"""A module containing tests for the Confirmation Form class.
 Since the only novel component is the check for active
 and inactive users, this is the only code which is tested.
-'''
+"""
 
 import unittest
 from DRP.tests import DRPTestCase
@@ -12,11 +12,11 @@ from django.contrib.auth.models import User
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
-
 class InactiveUser(DRPTestCase):
-    '''Tests the case where good credentials for an inactive user have been submitted'''
+    """Tests the case where good credentials for an inactive user have been submitted."""
 
     def setUp(self):
+        """Set up."""
         self.username = 'Aslan'
         self.password = 'old_magic'
         self.user = User.objects.create_user(username=self.username, password=self.password)
@@ -24,6 +24,7 @@ class InactiveUser(DRPTestCase):
         self.user.save()
 
     def runTest(self):
+        """Run test."""
         form = ConfirmationForm(data={'username': self.username, 'password': self.password})
         valid = form.is_valid()
         errString = ''
@@ -32,13 +33,16 @@ class InactiveUser(DRPTestCase):
         self.assertTrue(valid, errString)
 
     def tearDown(self):
+        """Delete user object created for the test."""
         self.user.delete()
 
 
 class ActiveUser(DRPTestCase):
-    '''Tests the case where good credentials for an active user have been sumbitted'''
+
+    """Tests the case where good credentials for an active user have been sumbitted."""
 
     def setUp(self):
+        """Set up a user for the test"""
         self.username = 'Aslan'
         self.password = 'old_magic'
         self.user = User.objects.create_user(username=self.username, password=self.password)
@@ -46,10 +50,12 @@ class ActiveUser(DRPTestCase):
         self.user.save()
 
     def runTest(self):
+        """Run test to make sure that the form does not evaluate this as valid"""
         form = ConfirmationForm(data={'username': self.username, 'password': self.password})
         self.assertFalse(form.is_valid())
 
     def tearDown(self):
+        """Delete user object created for the test."""
         self.user.delete()
 
 suite = unittest.TestSuite([
