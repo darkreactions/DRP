@@ -1,7 +1,7 @@
 from copy import deepcopy
 from itertools import product
 
-from DRP.models import RecommendedReaction, CompoundQuantity, LabGroup, Reaction
+from DRP.models import RecommendedReaction, CompoundQuantity, LabGroup, Reaction, NumRxnDescriptorValue
 
 class ReactionGenerator(object):
     """Generate the reaction grid space."""
@@ -47,10 +47,14 @@ class ReactionGenerator(object):
 
 
                     for desc, dvalue in zip(descs, desc_values_instance):
-                        new_desc = deepcopy(desc)
+                        #TODO Make this work for general descriptors
+                        new_desc = NumRxnDescriptorValue() 
                         new_desc.id = None
                         new_desc.reaction = new_rxn
+                        new_desc.descriptor = desc
+                        new_desc.value = dvalue
                         new_desc.save()
+                   
 
 
                     for compound, amount in zip(triple, compound_amts):
@@ -64,7 +68,11 @@ class ReactionGenerator(object):
                         compound_quantity.amount = amount
 
                         compound_quantity.save()
+                       
+                    new_rxn.save(calcDescriptors=True)
 
                     yield new_rxn
+              
+        
 
 

@@ -142,6 +142,9 @@ class NumericDescriptorValue(models.Model):
             return self.value < other.value
         else:
             return self.value < other
+        
+    def __unicode__(self):
+        return "Num descriptor value -" + unicode(descriptor) + ":" + value 
 
 
 class OrdinalDescriptorValue(models.Model):
