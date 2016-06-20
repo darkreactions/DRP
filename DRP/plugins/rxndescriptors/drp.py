@@ -406,7 +406,7 @@ def calculate(reaction, verbose=False, whitelist=None):
     # Set up the actual descriptor dictionary.
     if verbose:
         print "Creating descriptor dictionary"
-    descriptorDict = make_dict()
+    descriptorDict = make_dict()[0]
     if whitelist is None:
         descs_to_delete = descriptorDict.values()
     else:

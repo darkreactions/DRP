@@ -53,7 +53,7 @@ class CompoundQuantity(models.Model):
     amount = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5,
                                  help_text="(in mmoles, 5 decimal places)", validators=[GreaterThanValidator(0)])
 
-    def save(self, calcDescriptors=True, invalidate_models=True, *args, **kwargs):
+    def save(self, calcDescriptors=False, invalidate_models=True, *args, **kwargs):
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""
         super(CompoundQuantity, self).save(*args, **kwargs)
         try:
