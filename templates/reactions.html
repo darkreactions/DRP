@@ -15,3 +15,14 @@
 {% endif %}
 
 {% endblock %}
+
+{% block additional_js %}
+  <script>
+    inputs = document.getElementsByClassName('singleclicker');
+    for (var i=0; i<inputs.length; i++) {
+        var submit = inputs[i];
+        submit.addEventListener("click", function() {submit.disabled=true; submit.form.submit();});
+    }
+  </script>
+
+{% endblock %}
