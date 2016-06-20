@@ -42,7 +42,7 @@ class CompoundForm(forms.ModelForm):
     """If the user already knows the right value for this it allows them to skip a step."""
 
     class Meta:
-        fields = ('labGroup', 'abbrev', 'CSID',
+        fields = ('labGroups', 'abbrev', 'CSID',
                   'name', 'CAS_ID', 'chemicalClasses')
         model = Compound
         help_texts = {
@@ -57,9 +57,9 @@ class CompoundForm(forms.ModelForm):
         super(CompoundForm, self).__init__(*args, **kwargs)
         self.compound = None
         self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
-        self.fields['labGroup'].queryset = user.labgroup_set.all()
+        self.fields['labGroups'].queryset = user.labgroup_set.all()
         if user.labgroup_set.all().exists():
-            self.fields['labGroup'].empty_label = None
+            self.fields['labGroups'].empty_label = None
 
     def clean_CSID(self):
         """Check that the CSID is actually a valid id from chemspider."""
@@ -170,7 +170,7 @@ class CompoundDeleteForm(forms.ModelForm):
         """Lock the id field to an instance."""
         super(CompoundDeleteForm, self).__init__(*args, **kwargs)
         self.fields['id'] = forms.ModelChoiceField(queryset=Compound.objects.filter(
-            labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
+            labGroups__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
 
     def clean_id(self):
         """Lock the id field to an instance."""
@@ -194,7 +194,7 @@ class CompoundUploadForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         """Restrict the permitted labgroups dynamically."""
         super(CompoundUploadForm, self).__init__(*args, **kwargs)
-        self.fields['labGroup'] = forms.ModelChoiceField(
+        self.fields['labGroups'] = forms.ModelChoiceField(
             queryset=user.labgroup_set.all())
 
     def clean(self):

@@ -285,7 +285,8 @@ class Compound(models.Model):
     but is nevertheless useful for calculating descriptors
     """
 
-    labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
+    labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group", related_name="old_compounds")
+    labGroups = models.ManyToManyField(LabGroup, verbose_name="Lab Groups")
     """Tells us whose compound guide this appears in."""
 
     formula = models.CharField(
