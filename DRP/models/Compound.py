@@ -23,7 +23,6 @@ descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 # This prevents a cyclic dependency problem
 
-
 def elementsFormatValidator(molFormula):
     """A validator for molecular formulae."""
     elements = {}
@@ -286,7 +285,7 @@ class Compound(models.Model):
     """
 
     labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group", related_name="old_compounds")
-    labGroups = models.ManyToManyField(LabGroup, verbose_name="Lab Groups")
+    labGroups = models.ManyToManyField(LabGroup, verbose_name="Lab Groups", through="DRP.CompoundGuideEntry")
     """Tells us whose compound guide this appears in."""
 
     formula = models.CharField(
@@ -406,6 +405,18 @@ class Compound(models.Model):
         if currentElement != '':
             elements[currentElement] = {'stoichiometry': 1}
         return elements
+
+
+class CompoundGuideEntry(models.Model):
+
+    class Meta:
+        app_label='DRP'
+        unique_together=(('compound', 'labGroup'), ('abbrev', 'labGroup'))
+
+    compound = models.ForeignKey(Compound)
+    labGroup = models.ForeignKey(LabGroup)
+    abbrev = models.CharField("Abbreviation", max_length=100)
+    
 
 
 class ElementsException(Exception):
