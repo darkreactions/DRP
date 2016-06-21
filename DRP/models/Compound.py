@@ -262,7 +262,7 @@ class Compound(models.Model):
 
     class Meta:
         app_label = "DRP"
-        unique_together = (('abbrev', 'labGroup'), ('CSID', 'labGroup'))
+        unique_together = tuple()
 
     abbrev = models.CharField("Abbreviation", max_length=100)
     """A local, often nonstandard abbreviation for a compound."""
