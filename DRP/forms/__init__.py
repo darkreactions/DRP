@@ -6,5 +6,4 @@ from authentication import ConfirmationForm, LicenseAgreementForm, UserCreationF
 from PerformedReaction import PerformedRxnAdminForm, PerformedRxnForm, PerformedRxnDeleteForm, PerformedRxnInvalidateForm
 from descriptor import CatRxnDescriptorForm, BoolRxnDescriptorForm, NumRxnDescriptorForm, OrdRxnDescriptorForm, CatDescPermittedValueForm
 from descriptorValues import NumRxnDescValFormFactory, OrdRxnDescValFormFactory, BoolRxnDescValFormFactory, CatRxnDescValFormFactory
-from FormSet import FormSet, ModelFormSet, FormSetManagerForm
 from CompoundQuantity import compoundQuantityFormFactory

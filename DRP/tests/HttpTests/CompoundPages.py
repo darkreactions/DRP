@@ -222,35 +222,6 @@ class GetCustomCompound403(GetHttpSessionTest):
         super(GetCustomCompound403, self).setUp()
 
 
-@logsInAs('Aslan', 'old_magic')
-@signsExampleLicense('Aslan')
-@joinsLabGroup('Aslan', 'Narnia')
-class GetCompoundUpload(GetHttpSessionTest):
-
-    """Test that GETing the compound upload page works."""
-
-    url = GetHttpSessionTest.baseUrl + reverse('uploadcompoundcsv')
-    testCodes = ["d16ff9ed-752c-405e-bc4b-cae3a27dd7b2"]
-
-
-@logsInAs('Aslan', 'old_magic')
-@signsExampleLicense('Aslan')
-@joinsLabGroup('Aslan', 'Narnia')
-@usesCsrf
-class PostCompoundUpload(PostHttpSessionTest, OneRedirectionMixin):
-
-    """Make a POST request to upload a compound."""
-
-    url = PostHttpSessionTest.baseUrl + reverse('uploadcompoundcsv')
-    testCodes = ["bf3a3711-b21d-4710-a989-6d1ebc1c9ee9"]
-
-    def setUp(self):
-        """Make a request to create a compound from a test csv."""
-        self.payload['labGroup'] = LabGroup.objects.get(title="Narnia").pk
-        with open(path.join(settings.APP_DIR, 'tests', 'resource', 'compound_spread_test1.csv'), 'rb') as f:
-            self.files['csv'] = ('compound_test1.csv', f.read(), 'text/csv')
-        super(PostCompoundUpload, self).setUp()
-
 suite = unittest.TestSuite([
     loadTests(LicenseRedirect),
     loadTests(Lab403Test),

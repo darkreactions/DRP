@@ -3,7 +3,7 @@
 from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, NumRxnDescriptor
-from DRP.models import DataSet
+from DRP.models import DataSet, CompoundGuideEntry
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
@@ -295,11 +295,11 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
-        compound = Compound(abbrev=abbrev, CSID=csid, custom=custom)
+        compound = Compound(CSID=csid, custom=custom)
 
         def setUp(self):
-            compound.labGroup = LabGroup.objects.get(title=labTitle)
             compound.save()
+            CompoundGuideEntry.objects.create(labGroup = LabGroup.objects.get(title=labTitle), abbrev=abbrev, compound=compound)
             for c in ChemicalClass.objects.filter(label=classLabel):
                 compound.chemicalClasses.add(c)
             compound.save()
