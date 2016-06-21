@@ -199,31 +199,3 @@ class CompoundDeleteForm(forms.ModelForm):
         """Ironic saving."""
         self.cleaned_data['id'].delete()
         return self.cleaned_data['id']
-
-
-class CompoundUploadForm(forms.Form):
-
-    """A form to manage the uploading of compound csv files."""
-
-    csv = forms.FileField()
-
-    def __init__(self, user, *args, **kwargs):
-        """Restrict the permitted labgroups dynamically."""
-        super(CompoundUploadForm, self).__init__(*args, **kwargs)
-        self.fields['labGroups'] = forms.ModelChoiceField(
-            queryset=user.labgroup_set.all())
-
-    def clean(self):
-        """Check validity of compounds."""
-        if self.cleaned_data.get('csv') is not None and self.cleaned_data.get('labGroup') is not None:
-            self.compounds = self.cleaned_data['labGroup'].compound_set.fromCsv(
-                self.cleaned_data['csv'].temporary_file_path())
-        for compound in self.compounds:
-            compound.csConsistencyCheck()
-            compound.full_clean()
-        return self.cleaned_data
-
-    def save(self):
-        """Save compounds."""
-        for compound in self.compounds:
-            compound.save()

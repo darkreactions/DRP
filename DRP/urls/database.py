@@ -50,8 +50,6 @@ urls = [
     url('^/select_viewing_group.html', DRP.views.selectGroup, name='selectGroup'),
     url('^/compoundguide(?P<filetype>.csv|.html|.arff|/)$',
         DRP.views.compound.ListCompound.as_view(), name='compoundguide'),
-    url('^/compoundguide/search(?P<filetype>.html|.csv|.arff)$',
-        DRP.views.compound.ListCompound.as_view(), name='compoundSearch'),
     url('^/compoundguide/advanced_search(?P<filetype>.html|.csv|.arff)$',
         DRP.views.compound.AdvancedCompoundSearchView.as_view(), name='advCompoundSearch'),
     url('^/compoundguide/add.html$',
@@ -59,7 +57,5 @@ urls = [
     url('^/compoundguide/delete$',
         DRP.views.compound.deleteCompound, name='deleteCompound'),
     url('^/compoundguide/edit_(?P<pk>\d+).html',
-        DRP.views.compound.EditCompound.as_view(), name='editCompound'),
-    url('^/compoundguide/upload.html',
-        DRP.views.compound.uploadCompound, name='uploadcompoundcsv')
+        DRP.views.compound.EditCompound.as_view(), name='editCompound')
 ]

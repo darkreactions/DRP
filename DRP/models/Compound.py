@@ -188,69 +188,6 @@ class CompoundManager(models.Manager):
         """Return the default queryset."""
         return CompoundQuerySet()
 
-    def fromCsv(self, fileName, labGroup=None):
-        """Read a CSV into the creating objects, returning a list of compounds which have not yet been saved.
-
-        This assumes that the uploaded csv will have headers which map to the names of the fields and that compound classes are
-        stored as comma separated lists of the chemicalClass LABEL only.
-
-        Each compound will perform a chemspider-based consistency check on the information it has been created with to ensure
-        information is consistent- this throws an ValidationError if it is not.
-        """
-        if labGroup is None and hasattr(self, 'instance'):
-            # we presume that if this is being called without a labgroup that's
-            # because this manager belongs to a lab group
-            labGroup = self.instance
-
-        compoundsList = []
-        cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
-        with open(fileName) as f:
-            reader = csv.DictReader(f, restkey='restKey')
-            rowCount = 0
-            errors = []
-            for row in reader:
-                try:
-                    rowCount += 1
-                    if 'chemicalClasses' in row:
-                        classes = (c.strip()
-                                   for c in row['chemicalClasses'].split(','))
-                        chemicalClasses = []
-                        for c in classes:
-                            chemicalClass, created = ChemicalClass.objects.get_or_create(
-                                label=c)
-                            chemicalClasses.append(chemicalClass)
-                    if row.get('CAS') not in ('', None) and row.get('CSID') in ('', None):
-                        CASResults = cs.simple_search(row['CAS'])
-                        if len(CASResults) < 1:
-                            errors.append(ValidationError(
-                                'CAS Number returned no results from ChemSpider on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
-                        elif len(CASResults) == 1:
-                            # a little hacky, but it gets the job done
-                            row['CSID'] = CASResults[0].csid
-                        else:
-                            errors.append(ValidationError(
-                                'CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
-                    elif row.get('CSID') in ('', None):
-                        errors.append(ValidationError(
-                            'No CSID provided on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
-                    kwargs = {}
-                    kwargs['CSID'] = row.get('CSID')
-                    kwargs['abbrev'] = row.get('abbrev')
-                    kwargs['smiles'] = row.get('smiles')
-                    kwargs['name'] = row.get('name')
-                    kwargs['INCHI'] = row.get('INCHI')
-                    compound = Compound(labGroup=labGroup, **kwargs)
-                    for chemicalClass in chemicalClasses:
-                        compound.lazyChemicalClasses.append(chemicalClass)
-                    compoundsList.append(compound)
-                except ValidationError as e:
-                    for message in e.messages:
-                        errors.append(ValidationError(
-                            message + ' on row %(rowCount)d of uploaded csv', params={'rowCount': rowCount}))
-            if len(errors) > 0:
-                raise ValidationError(errors)
-        return compoundsList
-
 
 class Compound(models.Model):
 
@@ -347,14 +284,6 @@ class Compound(models.Model):
                 except PerformedReaction.PerformedReaction.DoesNotExist:
                     pass  # it doesn't matter
         super(Compound, self).save(*args, **kwargs)
-        if self.pk is not None:
-            # coping mechanism for compounds loaded from csv files; not to be
-            # used by other means
-            for lcc in self.lazyChemicalClasses:
-                self.chemicalClasses.add(lcc)
-            if calcDescriptors:  # not generally done, but useful for debugging
-                for descriptorPlugin in descriptorPlugins:
-                    descriptorPlugin.calculate(self)
 
     @property
     def descriptorValues(self):
