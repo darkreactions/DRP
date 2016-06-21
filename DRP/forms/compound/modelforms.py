@@ -42,11 +42,10 @@ class CompoundForm(forms.ModelForm):
     """If the user already knows the right value for this it allows them to skip a step."""
 
     class Meta:
-        fields = ('labGroups', 'abbrev', 'CSID',
+        fields = ('labGroups', 'CSID',
                   'name', 'CAS_ID', 'chemicalClasses')
         model = Compound
         help_texts = {
-            'abbrev': 'A local abbreviation by which the compound is known.',
             'name': 'A common or IUPAC name for the compound.',
             'CAS_ID': 'The CAS number for the compound. Optional.',
             'CSID': 'The Chemspider ID for the compound. If this is not included, a list will be provided for you to choose from.'
@@ -140,10 +139,9 @@ class CompoundEditForm(forms.ModelForm):
     """A form for editing compounds."""
 
     class Meta:
-        fields = ('name', 'abbrev', 'chemicalClasses')
+        fields = ('name', 'chemicalClasses')
         model = Compound
         help_texts = {
-            'abbrev': 'A local abbreviation by which the compound is known.',
             'name': 'A common or IUPAC name for the compound.',
         }
 

@@ -262,16 +262,13 @@ class Compound(models.Model):
 
     class Meta:
         app_label = "DRP"
-        unique_together = tuple()
 
-    abbrev = models.CharField("Abbreviation", max_length=100)
-    """A local, often nonstandard abbreviation for a compound."""
     name = models.CharField('Name', max_length=400)
     """Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)."""
     chemicalClasses = models.ManyToManyField(
         ChemicalClass, verbose_name="Chemical Class")
     """The class of the compound- examples include Inorganic Salt."""
-    CSID = models.PositiveIntegerField('Chemspider ID', null=True)
+    CSID = models.PositiveIntegerField('Chemspider ID', null=True, unique=True)
     """The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions."""
     custom = models.BooleanField("Custom", default=False)
     """This flag denotes whether a compound has been added irrespective of other validation.
@@ -284,7 +281,6 @@ class Compound(models.Model):
     but is nevertheless useful for calculating descriptors
     """
 
-    labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group", related_name="old_compounds")
     labGroups = models.ManyToManyField(LabGroup, verbose_name="Lab Groups", through="DRP.CompoundGuideEntry")
     """Tells us whose compound guide this appears in."""
 
