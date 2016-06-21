@@ -2,7 +2,6 @@
 from django import forms
 from DRP.models import CompoundQuantity, Reaction, Compound
 
-
 def compoundQuantityFormFactory(reactionId):
     """Return a class of compound quantity model form specified to a reaction."""
     class CompoundQuantityForm(forms.ModelForm):

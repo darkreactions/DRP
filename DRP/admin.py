@@ -5,6 +5,7 @@ from models import LabGroup, License, Compound, ChemicalClass, CompoundRole
 from models import PerformedReaction, OrdRxnDescriptor, NumRxnDescriptor
 from models import BoolRxnDescriptor, CatRxnDescriptor
 from models import CategoricalDescriptorPermittedValue
+from models import CompoundGuideEntry
 from forms import LabGroupForm, CompoundAdminForm, PerformedRxnAdminForm
 from forms import OrdRxnDescriptorForm, NumRxnDescriptorForm
 from forms import BoolRxnDescriptorForm
@@ -30,6 +31,13 @@ class LicenseAdmin(admin.ModelAdmin):
     """Provides a more specific display for licenses in the django admin."""
 
     list_display = (licenseSnippet, 'effectiveDate')
+
+
+class CompoundGuideEntryAdmin(admin.ModelAdmin):
+
+    """Provides a more specific display for compound guide entries"""
+
+    list_display = ('abbrev', 'labGroup', 'compound')
 
 
 class CompoundAdmin(admin.ModelAdmin):
@@ -127,3 +135,4 @@ register(NumRxnDescriptor, NumRxnDescriptorAdmin)
 register(CatRxnDescriptor, CatRxnDescriptorAdmin)
 register(OrdRxnDescriptor, OrdRxnDescriptorAdmin)
 register(CategoricalDescriptorPermittedValue, CatDescPermValAdmin)
+register(CompoundGuideEntry, CompoundGuideEntryAdmin)
