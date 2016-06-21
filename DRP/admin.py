@@ -37,7 +37,7 @@ class CompoundAdmin(admin.ModelAdmin):
     """Specifies the form and list display of a compound in django."""
 
     form = CompoundAdminForm
-    list_display = ('abbrev', 'name', 'CSID', 'custom', 'labGroup')
+    list_display = ('name', 'CSID', 'custom')
 
 
 class ChemicalClassAdmin(admin.ModelAdmin):
