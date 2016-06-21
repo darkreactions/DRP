@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 from django.db import transaction
+from models import Compound, CompoundGuideEntry
 
 
 class CompoundAdminForm(forms.ModelForm):
@@ -40,9 +41,10 @@ class CompoundForm(forms.ModelForm):
     CSID = forms.IntegerField(label='Chemspider ID', min_value=1, error_messages={
                               'required': 'This value must be set or selected'})
     """If the user already knows the right value for this it allows them to skip a step."""
+    abbrev = forms.CharField(label="Abbreviation", max_length=100)
 
     class Meta:
-        fields = ('labGroups', 'CSID',
+        fields = ('labGroups', 'CSID', 'abbrev',
                   'name', 'CAS_ID', 'chemicalClasses')
         model = Compound
         help_texts = {
@@ -57,6 +59,7 @@ class CompoundForm(forms.ModelForm):
         self.compound = None
         self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
         self.fields['labGroups'].queryset = user.labgroup_set.all()
+        self.fields['labGroups'].widget = forms.Select
         if user.labgroup_set.all().exists():
             self.fields['labGroups'].empty_label = None
 
@@ -74,6 +77,10 @@ class CompoundForm(forms.ModelForm):
     def clean(self):
         """Verify that the CSID, CAS_ID (where supplied) and name are consistent."""
         self.cleaned_data = super(CompoundForm, self).clean()
+        if 'labGroup' in self.cleaned_data:
+            for labGroup in self.cleaned_data.get('labGroup')
+                if CompoundGuideEntry.objects.filter(abbrev=self.cleaned_data.get('abbrev'), labGroup = labGroup).exclude(compound=self.instance).exists()
+                    self.add_error('abbrev', 'A compound with this abbreviation already exists for the selected labgroup.')
         if self.cleaned_data.get('name'):
             nameResults = self.chemSpider.simple_search(
                 self.cleaned_data['name'])
@@ -134,7 +141,14 @@ class CompoundForm(forms.ModelForm):
         compound.formula = csCompound.molecular_formula
         if commit:
             compound.save()
-            self.save_m2m()
+            if 'labGroup' in self.cleaned_data:
+                for labGroup in self.cleaned_data['labGroup']:
+                    try:
+                        cgEntry = CompoundGuideEntry.objects.get(labGroup=labGroup, abbrev=self.cleaned_data['abbrev'])
+                        cgEntry.compound = compound
+                        cgEntry.save()
+                    except CompoundGuideEntry.DoesNotExist:
+                        CompoundGuideEntry.objects.create(labGroup=labGroup, abbrev=self.cleaned_data['abbrev'], compound=compound)
         return compound
 
 
