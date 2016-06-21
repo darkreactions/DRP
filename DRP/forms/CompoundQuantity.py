@@ -1,6 +1,6 @@
 """Form related things for Compound Quantity creation."""
 from django import forms
-from DRP.models import CompoundQuantity, Reaction
+from DRP.models import CompoundQuantity, Reaction, Compound
 
 
 def compoundQuantityFormFactory(reactionId):
@@ -20,5 +20,8 @@ def compoundQuantityFormFactory(reactionId):
             self.fields['reaction'].initial = reactionId
             self.fields['reaction'].queryset = Reaction.objects.filter(
                 id=reactionId)
+            self.fields['compound'].queryset = Compound.objects.filter(
+                labGroups__in=[self.fields['reaction'].queryset[0].labGroup]
+            )
 
     return CompoundQuantityForm
