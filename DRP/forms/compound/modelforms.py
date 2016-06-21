@@ -123,6 +123,10 @@ class CompoundForm(forms.ModelForm):
 
     def save(self, commit=True):
         """Create (and if appropriate, saves) the compound instance, and adds Inchi and smiles from chemspider."""
+        try:
+            self.instance = Compound.objects.get(CSID=self.cleaned_data['CSID'])
+        except Compound.DoesNotExist:
+            pass # Hakuna Matata
         compound = super(CompoundForm, self).save(commit=False)
         csCompound = self.chemSpider.get_compound(compound.CSID)
         compound.INCHI = csCompound.inchi
