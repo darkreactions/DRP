@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 from django.db import transaction
-from models import Compound, CompoundGuideEntry
+from DRP.models import Compound, CompoundGuideEntry
 
 
 class CompoundAdminForm(forms.ModelForm):
@@ -78,8 +78,8 @@ class CompoundForm(forms.ModelForm):
         """Verify that the CSID, CAS_ID (where supplied) and name are consistent."""
         self.cleaned_data = super(CompoundForm, self).clean()
         if 'labGroup' in self.cleaned_data:
-            for labGroup in self.cleaned_data.get('labGroup')
-                if CompoundGuideEntry.objects.filter(abbrev=self.cleaned_data.get('abbrev'), labGroup = labGroup).exclude(compound=self.instance).exists()
+            for labGroup in self.cleaned_data.get('labGroup'):
+                if CompoundGuideEntry.objects.filter(abbrev=self.cleaned_data.get('abbrev'), labGroup = labGroup).exclude(compound=self.instance).exists():
                     self.add_error('abbrev', 'A compound with this abbreviation already exists for the selected labgroup.')
         if self.cleaned_data.get('name'):
             nameResults = self.chemSpider.simple_search(

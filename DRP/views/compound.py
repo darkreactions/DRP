@@ -90,7 +90,7 @@ class ListCompound(ListView):
     """A view managing the viewing of the compound guide."""
 
     template_name = 'compound_list.html'
-    context_object_name = 'compounds'
+    context_object_name = 'cg_entries'
     model = Compound
 
     @method_decorator(login_required)
@@ -103,7 +103,7 @@ class ListCompound(ListView):
 
         Relate the queryset of this view to the logged in user.
         """
-        self.queryset = self.labGroup.compound_set.all()
+        self.queryset = self.labGroup.compoundguideentry_set.all()
 
         fileType = kwargs.get('filetype')
 
