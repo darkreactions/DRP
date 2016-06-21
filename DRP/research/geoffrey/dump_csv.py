@@ -17,8 +17,8 @@ def dump_csv(file_name, descriptor_headers, reaction_set_name=None):
 
     whitelist = [d.csvHeader for d in descriptors]
 
-    whitelist += ['id', 'notes', 'labGroup', 'user', 'performedBy', 'reference', 'valid', 'compound_0', 'compound_0_role', 'compound_0_amount', 'compound_1', 'compound_1_role', 'compound_1_amount', 'compound_2', 'compound_2_role', 'compound_2_amount', 'compound_3', 'compound_3_role', 'compound_3_amount', 'compound_4', 'compound_4_role', 'compound_4_amount']
-
+    whitelist += ['id', 'notes', 'labGroup', 'user', 'performedBy', 'reference', 'valid', 'compound_0', 'compound_0_role', 'compound_0_amount', 'compound_1', 'compound_1_role',
+                  'compound_1_amount', 'compound_2', 'compound_2_role', 'compound_2_amount', 'compound_3', 'compound_3_role', 'compound_3_amount', 'compound_4', 'compound_4_role', 'compound_4_amount']
 
     with open(file_name, 'wb') as f:
         rxns.toCsv(f, whitelistHeaders=whitelist, expanded=True)

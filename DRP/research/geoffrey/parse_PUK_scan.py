@@ -3,6 +3,7 @@ from sys import argv
 import csv
 import glob
 
+
 def extract_results(fn, statistic):
     result_line = r"^sigma=([0-9.]+) omega=([0-9.]+) Average {}: ([0-9.]+)".format(statistic)
     results = []
@@ -14,13 +15,14 @@ def extract_results(fn, statistic):
 
     return results
 
+
 def extract_and_write(fn, csv_fn, statistic):
     results = extract_results(fn, statistic)
-    
+
     sigmas = sorted(set([res[0] for res in results]))
     omegas = sorted(set([res[0] for res in results]))
 
-    results_dict = {sigma:{} for sigma in sigmas}
+    results_dict = {sigma: {} for sigma in sigmas}
 
     for res in results:
         sigma, omega, stat = res
@@ -46,6 +48,3 @@ if __name__ == '__main__':
         csv_fn = fn.replace('.out', '.csv')
 
         extract_and_write(fn, csv_fn, statistic)
-        
-
-

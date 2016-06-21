@@ -3,7 +3,6 @@
 import django
 from DRP.models import PerformedReaction, MetricContainer, Descriptor, rxnDescriptorValues, DataSet
 import argparse
-from DRP.ml_models.splitters.SingleSplitter import Splitter as SingleSplitter
 
 
 def transform_rxns(container, testSetName=None, outfile=None, verbose=False):
@@ -24,11 +23,10 @@ def transform_rxns(container, testSetName=None, outfile=None, verbose=False):
 
     if testSetName is not None:
         if verbose:
-            print "Tranforming test set to new space" 
+            print "Tranforming test set to new space"
         testSet = DataSet.objects.get(name=testSetName)
         reactions = testSet.reactions.all()
         container.transform(reactions, verbose=verbose)
-
 
 
 def prepare_build_metric(descriptor_headers=None, response_headers=None, metricVisitorTool=None, description="", trainingSetName=None, testSetName=None, outfile=None, verbose=False, num_constraints=None):
@@ -40,15 +38,16 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
     predictors = Descriptor.objects.filter(heading__in=descriptor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
-    container = MetricContainer(metricVisitor=metricVisitorTool, trainingSet=trainingSet, description=description)
+    container = MetricContainer(
+        metricVisitor=metricVisitorTool, trainingSet=trainingSet, description=description)
     container.save()
     container.full_clean()
     if verbose:
         print "Created MetricContainer {}".format(container.pk)
-    transformed = container.build(predictors, responses, verbose=verbose, num_constraints=num_constraints)
+    transformed = container.build(
+        predictors, responses, verbose=verbose, num_constraints=num_constraints)
     container.save()
     container.full_clean()
-
 
     if verbose:
         print "Transforming training set"
@@ -66,7 +65,7 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
 
     if testSetName is not None:
         if verbose:
-            print "Tranforming test set to new space" 
+            print "Tranforming test set to new space"
         testSet = DataSet.objects.get(name=testSetName)
         reactions = testSet.reactions.all()
         container.transform(reactions, verbose=verbose)
@@ -74,7 +73,7 @@ def prepare_build_metric(descriptor_headers=None, response_headers=None, metricV
 
 if __name__ == '__main__':
     django.setup()
-    parser = argparse.ArgumentParser(description='Builds a model', fromfile_prefix_chars='@',
+    parser = argparse.ArgumentParser(description='Builds a metric', fromfile_prefix_chars='@',
                                      epilog="Prefix arguments with '@' to specify a file containing newline"
                                      "-separated values for that argument. e.g.'-p @predictor_headers.txt'"
                                      " to pass multiple descriptors from a file as predictors")
@@ -100,5 +99,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     prepare_build_metric(args.predictor_headers, args.response_headers, args.metric_tool, args.description,
-                        trainingSetName=args.training_set_name, testSetName=args.test_set_name,
-                        num_constraints=args.num_constraints, outfile=args.descriptor_outfile, verbose=args.verbose)
+                         trainingSetName=args.training_set_name, testSetName=args.test_set_name,
+                         num_constraints=args.num_constraints, outfile=args.descriptor_outfile, verbose=args.verbose)

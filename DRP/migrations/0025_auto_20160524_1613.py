@@ -15,16 +15,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='performedreaction',
             name='convertedLegacyRef',
-            field=models.CharField(blank=True, max_length=40, null=True, validators=[django.core.validators.RegexValidator(b'^[a-z0-9._]*[a-z][a-z0-9._]*$', b'Please include only values which are limited to alphanumeric characters, underscores, periods, and must include at least one alphabetic character.')]),
+            field=models.CharField(blank=True, max_length=40, null=True, validators=[django.core.validators.RegexValidator(
+                b'^[a-z0-9._]*[a-z][a-z0-9._]*$', b'Please include only values which are limited to alphanumeric characters, underscores, periods, and must include at least one alphabetic character.')]),
         ),
         migrations.AlterField(
             model_name='performedreaction',
             name='performedDateTime',
-            field=models.DateTimeField(default=None, help_text=b'Timezone assumed EST, Date in format YYYY-MM-DD', null=True, verbose_name=b'Date Reaction Performed', blank=True),
+            field=models.DateTimeField(default=None, help_text=b'Timezone assumed EST, Date in format YYYY-MM-DD',
+                                       null=True, verbose_name=b'Date Reaction Performed', blank=True),
         ),
         migrations.AlterField(
             model_name='performedreaction',
             name='reference',
-            field=models.CharField(max_length=40, validators=[django.core.validators.RegexValidator(b'^[a-z0-9\\._]*[a-z][a-z0-9\\._]*$', b'Please include only values which are limited to alphanumeric characters, underscores, periods, and must include at least one alphabetic character.')]),
+            field=models.CharField(max_length=40, validators=[django.core.validators.RegexValidator(
+                b'^[a-z0-9\\._]*[a-z][a-z0-9\\._]*$', b'Please include only values which are limited to alphanumeric characters, underscores, periods, and must include at least one alphabetic character.')]),
         ),
     ]

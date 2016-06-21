@@ -37,11 +37,13 @@ def elementsFormatValidator(molFormula):
                 strStoichiometry += char
             elif char == '}':
                 inBrackets = False
-                elements[currentElement]['stoichiometry'] += float(strStoichiometry)
+                elements[currentElement][
+                    'stoichiometry'] += float(strStoichiometry)
                 currentElement = ''
                 strStoichiometry = ''
             else:
-                raise ValidationError('Invalid molecular formula format.', 'mol_malform')
+                raise ValidationError(
+                    'Invalid molecular formula format.', 'mol_malform')
         elif char.isalpha():
             if char.isupper():
                 if currentElement != '':
@@ -58,7 +60,8 @@ def elementsFormatValidator(molFormula):
         elif char == '_':
             pass
         else:
-            raise ValidationError('Invalid molecular formula format.', code='mol_malform')
+            raise ValidationError(
+                'Invalid molecular formula format.', code='mol_malform')
 
 
 class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
@@ -94,14 +97,17 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         m = Compound.objects.all().maxChemicalClassCount()
         for x in range(0, m):
             label = 'chemicalClass_{0}'.format(x + 1)
-            clsStrings = ('"{}"'.format(chemicalClass) for chemicalClass in ChemicalClass.objects.all())
-            headers[label] = '@attribute {} {{{}}}'.format(label, ','.join(clsStrings))
+            clsStrings = ('"{}"'.format(chemicalClass)
+                          for chemicalClass in ChemicalClass.objects.all())
+            headers[label] = '@attribute {} {{{}}}'.format(
+                label, ','.join(clsStrings))
         return headers
 
     def expandedArffHeaders(self, whitelist=None):
         """Generate expanded headers for the arff file."""
         headers = self.arffHeaders(whitelist)
-        headers.update(OrderedDict(((d.csvHeader, d.arffHeader) for d in self.descriptors)))
+        headers.update(OrderedDict(((d.csvHeader, d.arffHeader)
+                                    for d in self.descriptors)))
         return headers
 
     def expandedCsvHeaders(self, whitelist=None):
@@ -135,15 +141,22 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         )
 
     def rows(self, expanded, whitelist=None):
+        """Generate 'row' (list) for each row of the file."""
         if expanded:
-            compounds = self.prefetch_related('boolmoldescriptorvalue_set__descriptor')
-            compounds = compounds.prefetch_related('catmoldescriptorvalue_set__descriptor')
-            compounds = compounds.prefetch_related('ordmoldescriptorvalue_set__descriptor')
-            compounds = compounds.prefetch_related('nummoldescriptorvalue_set__descriptor')
+            compounds = self.prefetch_related(
+                'boolmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related(
+                'catmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related(
+                'ordmoldescriptorvalue_set__descriptor')
+            compounds = compounds.prefetch_related(
+                'nummoldescriptorvalue_set__descriptor')
             compounds = compounds.prefetch_related('chemicalClasses')
             for item in compounds:
-                row = {field.name: getattr(item, field.name) for field in self.model._meta.fields}
-                row.update({dv.descriptor.csvHeader: dv.value for dv in item.descriptorValues})
+                row = {field.name: getattr(item, field.name)
+                       for field in self.model._meta.fields}
+                row.update(
+                    {dv.descriptor.csvHeader: dv.value for dv in item.descriptorValues})
                 i = 1
                 for cc in item.chemicalClasses.all():
                     row['chemicalClass_{}'.format(i)] = cc.label
@@ -153,19 +166,24 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             for row in super(CompoundQuerySet, self).rows(expanded):
                 yield row
 
-    def calculate_descriptors(self, verbose=False):
-        for descriptorPlugin in descriptorPlugins:
-            if verbose:
-                print "Calculating for {}".format(descriptorPlugin)
-            descriptorPlugin.calculate_many(self, verbose=verbose)
-            if verbose:
-                print "Done with {}\n".format(descriptorPlugin)
+    def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
+        """Calculate descriptors for the current molecule queryset."""
+        for plugin in descriptorPlugins:
+            if plugins is None or plugin.__name__ in plugins:
+                if verbose:
+                    print "Calculating for plugin: {}".format(plugin)
+                plugin.calculate_many(self, verbose=verbose, **kwargs)
+                if verbose:
+                    print "Done with plugin: {}\n".format(plugin)
+
 
 class CompoundManager(models.Manager):
 
     """A custom manager for the Compound Class which permits the creation of entries to and from CSVs."""
 
-    use_for_related_fields = True  # NOTE:This doesn't actually work, but no-one's sure which way django is going to jump on this.
+    # NOTE:This doesn't actually work, but no-one's sure which way django is
+    # going to jump on this.
+    use_for_related_fields = True
 
     def get_queryset(self):
         """Return the default queryset."""
@@ -181,7 +199,8 @@ class CompoundManager(models.Manager):
         information is consistent- this throws an ValidationError if it is not.
         """
         if labGroup is None and hasattr(self, 'instance'):
-            # we presume that if this is being called without a labgroup that's because this manager belongs to a lab group
+            # we presume that if this is being called without a labgroup that's
+            # because this manager belongs to a lab group
             labGroup = self.instance
 
         compoundsList = []
@@ -194,21 +213,27 @@ class CompoundManager(models.Manager):
                 try:
                     rowCount += 1
                     if 'chemicalClasses' in row:
-                        classes = (c.strip() for c in row['chemicalClasses'].split(','))
+                        classes = (c.strip()
+                                   for c in row['chemicalClasses'].split(','))
                         chemicalClasses = []
                         for c in classes:
-                            chemicalClass, created = ChemicalClass.objects.get_or_create(label=c)
+                            chemicalClass, created = ChemicalClass.objects.get_or_create(
+                                label=c)
                             chemicalClasses.append(chemicalClass)
                     if row.get('CAS') not in ('', None) and row.get('CSID') in ('', None):
                         CASResults = cs.simple_search(row['CAS'])
                         if len(CASResults) < 1:
-                            errors.append(ValidationError('CAS Number returned no results from ChemSpider on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
+                            errors.append(ValidationError(
+                                'CAS Number returned no results from ChemSpider on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
                         elif len(CASResults) == 1:
-                            row['CSID'] = CASResults[0].csid  # a little hacky, but it gets the job done
+                            # a little hacky, but it gets the job done
+                            row['CSID'] = CASResults[0].csid
                         else:
-                            errors.append(ValidationError('CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
+                            errors.append(ValidationError(
+                                'CAS number returns more than one ChemSpider ID on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
                     elif row.get('CSID') in ('', None):
-                        errors.append(ValidationError('No CSID provided on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
+                        errors.append(ValidationError(
+                            'No CSID provided on row %(rowCount)d of uploaded csv.', params={'rowCount': rowCount}))
                     kwargs = {}
                     kwargs['CSID'] = row.get('CSID')
                     kwargs['abbrev'] = row.get('abbrev')
@@ -221,13 +246,15 @@ class CompoundManager(models.Manager):
                     compoundsList.append(compound)
                 except ValidationError as e:
                     for message in e.messages:
-                        errors.append(ValidationError(message + ' on row %(rowCount)d of uploaded csv', params={'rowCount': rowCount}))
+                        errors.append(ValidationError(
+                            message + ' on row %(rowCount)d of uploaded csv', params={'rowCount': rowCount}))
             if len(errors) > 0:
                 raise ValidationError(errors)
         return compoundsList
 
 
 class Compound(models.Model):
+
     """
     A class for containing data about Compounds used in chemical reactions.
 
@@ -239,16 +266,17 @@ class Compound(models.Model):
         unique_together = (('abbrev', 'labGroup'), ('CSID', 'labGroup'))
 
     abbrev = models.CharField("Abbreviation", max_length=100)
-    """A local, often nonstandard abbreviation for a compound"""
+    """A local, often nonstandard abbreviation for a compound."""
     name = models.CharField('Name', max_length=400)
-    """Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)"""
-    chemicalClasses = models.ManyToManyField(ChemicalClass, verbose_name="Chemical Class")
-    """The class of the compound- examples include Inorganic Salt"""
+    """Normally the IUPAC name of the compound, however this may not be the most parsable name (which is preferable)."""
+    chemicalClasses = models.ManyToManyField(
+        ChemicalClass, verbose_name="Chemical Class")
+    """The class of the compound- examples include Inorganic Salt."""
     CSID = models.PositiveIntegerField('Chemspider ID', null=True)
-    """The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions"""
+    """The chemspider ID for the compound- preferable to the CAS_ID since it is not subject to licensing restrictions."""
     custom = models.BooleanField("Custom", default=False)
     """This flag denotes whether a compound has been added irrespective of other validation.
-    This should be restricted to superusers"""
+    This should be restricted to superusers."""
     INCHI = models.TextField('InCHI key', blank=True, default='')
     """The Inchi key for a compound- a canonical representation of a molecule which is also unique."""
 
@@ -258,7 +286,7 @@ class Compound(models.Model):
     """
 
     labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
-    """Tells us whose compound guide this appears in"""
+    """Tells us whose compound guide this appears in."""
 
     formula = models.CharField(
         max_length=500,
@@ -273,11 +301,11 @@ class Compound(models.Model):
         """Instantiate an object."""
         super(Compound, self).__init__(*args, **kwargs)
         self.lazyChemicalClasses = []
-    '''
+
     def __unicode__(self):
         """Unicode representation of a compound is it's name and abbreviation."""
-        return u"{} ({})".format(unicode(self.name, 'utf-8'), unicode(self.abbrev, 'utf-8'))
-    '''
+        return unicode("{} ({})".format(self.name, self.abbrev), 'utf-8')
+
     def csConsistencyCheck(self):
         """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""
         if not self.custom:
@@ -290,21 +318,25 @@ class Compound(models.Model):
                 if self.name not in ('', None):
                     nameResults = cs.simple_search(self.name)
                     if csCompound not in nameResults:
-                        errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid name', code='invalid_inchi'))
+                        errorList.append(ValidationError(
+                            'A compound was consistency checked and was found to have an invalid name', code='invalid_inchi'))
                 else:
                     self.name = csCompound.common_name
                 if self.INCHI == '':
                     self.INCHI = csCompound.stdinchi
                 elif self.INCHI != csCompound.stdinchi:
-                    errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid InChi', code='invalid_inchi'))
+                    errorList.append(ValidationError(
+                        'A compound was consistency checked and was found to have an invalid InChi', code='invalid_inchi'))
                 if self.smiles == '':
                     self.smiles = csCompound.smiles
                 elif self.smiles != csCompound.smiles:
-                    errorList.append(ValidationError('A compound was consistency checked and was found to have an invalid smiles string', code='invalid_smiles'))
+                    errorList.append(ValidationError(
+                        'A compound was consistency checked and was found to have an invalid smiles string', code='invalid_smiles'))
                 if self.formula == '':
                     self.formula = csCompound.molecular_formula
                 elif self.formula != csCompound.molecular_formula:
-                    errorsList.append(ValidationError('A compound was consistency checked and was found to have an invalid formula', code="invalid_formula"))
+                    errorsList.append(ValidationError(
+                        'A compound was consistency checked and was found to have an invalid formula', code="invalid_formula"))
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
 
@@ -320,7 +352,9 @@ class Compound(models.Model):
                     pass  # it doesn't matter
         super(Compound, self).save(*args, **kwargs)
         if self.pk is not None:
-            for lcc in self.lazyChemicalClasses:  # coping mechanism for compounds loaded from csv files; not to be used by other means
+            # coping mechanism for compounds loaded from csv files; not to be
+            # used by other means
+            for lcc in self.lazyChemicalClasses:
                 self.chemicalClasses.add(lcc)
             if calcDescriptors:  # not generally done, but useful for debugging
                 for descriptorPlugin in descriptorPlugins:
@@ -328,11 +362,13 @@ class Compound(models.Model):
 
     @property
     def descriptorValues(self):
+        """Return an iterable of all descriptor values for this compound."""
         return chain(self.boolmoldescriptorvalue_set.all(), self.nummoldescriptorvalue_set.all(), self.ordmoldescriptorvalue_set.all(), self.catmoldescriptorvalue_set.all())
 
     @property
     def elements(self):
-        """Return a list of the elemental symbols for this molecular species.
+        """
+        Return a dictionary of elemental symbols and their stoichiometry.
 
         Note that this method does not validate the data contained in the database.
         """
@@ -348,7 +384,8 @@ class Compound(models.Model):
                     strStoichiometry += char
                 elif char == '}':
                     inBrackets = False
-                    elements[currentElement]['stoichiometry'] += Decimal(strStoichiometry)
+                    elements[currentElement][
+                        'stoichiometry'] += Decimal(strStoichiometry)
                     currentElement = ''
                     strStoichiometry = ''
                 else:

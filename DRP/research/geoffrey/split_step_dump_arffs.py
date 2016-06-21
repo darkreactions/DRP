@@ -11,6 +11,7 @@ from itertools import chain
 import glob
 import os
 
+
 def prepareArff(reactions, whitelistHeaders, filepath, verbose=False):
     """Writes an *.arff file using the provided queryset of reactions."""
     if verbose:
@@ -41,7 +42,8 @@ def split_and_dump(response_headers=None, reaction_set_name=None, description=""
     with open('../legacy_tests/descs/new_full.dsc') as f:
         old_predictor_headers = [l.strip() for l in f.readlines() if l.strip()]
 
-    old_predictors = Descriptor.objects.filter(heading__in=old_predictor_headers)
+    old_predictors = Descriptor.objects.filter(
+        heading__in=old_predictor_headers)
 
     if old_predictors.count() != len(old_predictor_headers):
         raise KeyError("Could not find all predictors")
@@ -49,16 +51,21 @@ def split_and_dump(response_headers=None, reaction_set_name=None, description=""
     for trainingSet, testSet in data_splits:
         for desc_file in filepaths:
             with open(desc_file) as f:
-                predictor_headers = [l.strip() for l in f.readlines() if l.strip()]
-            predictors = Descriptor.objects.filter(heading__in=predictor_headers)
+                predictor_headers = [l.strip()
+                                     for l in f.readlines() if l.strip()]
+            predictors = Descriptor.objects.filter(
+                heading__in=predictor_headers)
 
             if predictors.count() != len(predictor_headers):
                 raise KeyError("Could not find all predictors")
 
-            whitelist = [d.csvHeader for d in chain(old_predictors, predictors, responses)]
+            whitelist = [d.csvHeader for d in chain(
+                old_predictors, predictors, responses)]
             desc_file_description = os.path.basename(desc_file)[:-4]
-            prepareArff(trainingSet.reactions.all(), whitelist, "{}_{}_train.arff".format(desc_file_description, trainingSet.name), verbose=verbose)
-            prepareArff(testSet.reactions.all(), whitelist, "{}_{}_test.arff".format(desc_file_description, testSet.name), verbose=verbose)
+            prepareArff(trainingSet.reactions.all(), whitelist, "{}_{}_train.arff".format(
+                desc_file_description, trainingSet.name), verbose=verbose)
+            prepareArff(testSet.reactions.all(), whitelist, "{}_{}_test.arff".format(
+                desc_file_description, testSet.name), verbose=verbose)
 
 if __name__ == '__main__':
     django.setup()
@@ -75,4 +82,5 @@ if __name__ == '__main__':
                         help='The name of the reactions to use as a whole dataset')
     args = parser.parse_args()
 
-    split_and_dump(response_headers=args.response_headers, reaction_set_name=args.reaction_set_name, verbose=args.verbose)
+    split_and_dump(response_headers=args.response_headers,
+                   reaction_set_name=args.reaction_set_name, verbose=args.verbose)

@@ -1,4 +1,5 @@
-"""A module containing abstract base classes for descriptors.
+"""
+A module containing abstract base classes for descriptors.
 
 Reaction and Molecular Descriptors should inherit from these
 classes.
@@ -7,22 +8,27 @@ classes.
 from django.db import models
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-#from DRP.utils import generate_csvHeader
 from django.db.models.functions import Concat
 
 
 class DescriptorQuerySet(models.query.QuerySet):
+
+    """A queryset to manage a queryset or any of the subtypes thereof."""
+
     def __init__(self, model=None, **kwargs):
-        """Initialises the queryset"""
+        """Initialise the queryset."""
         model = Descriptor if model is None else model
         super(DescriptorQuerySet, self).__init__(model=model, **kwargs)
 
 
 class DescriptorManager(models.Manager):
 
+    """A generic manager for all of the model subtypes, which annotates them with a heading generated from separated fields."""
+
     use_for_related_fields = True
 
     def get_queryset(self):
+        """Generate and appropriately subtype the queryset."""
         return DescriptorQuerySet(model=self.model).annotate(csvHeader=Concat('heading', models.Value('_'), 'calculatorSoftware', models.Value('_'), 'calculatorSoftwareVersion'))
 
 
@@ -74,19 +80,13 @@ class Descriptor(models.Model):
         blank=True,
         validators=[
             RegexValidator(
-                '[A-Za-z0-9][A-Za-z0-9_.]*',
+                '[A-Za-z0-9][A-Za-z0-9_]*',
                 ('Please include only values which are limited to '
                  'alphanumeric characters, periods and underscores, and must start '
                  'with an alphabetic character.')
             )
         ]
     )
-    
-
-    #@property
-    #def csvHeader(self):
-        #"""Generate a csv header for placing values for a descriptor."""
-        #return generate_csvHeader(self.heading, self.calculatorSoftware, self.calculatorSoftwareVersion)
 
     @property
     def arffHeader(self):
@@ -237,13 +237,17 @@ class BooleanDescriptor(Descriptor):
 
 class Predictable(models.Model):
 
+    """Abstract class to add functionality to descriptors about which predictions can be made."""
+
     class Meta:
         app_label = 'DRP'
         abstract = True
 
     def createPredictionDescriptor(self, modelContainer, modelComponent=None):
+        """Create a descriptor with which to associated predicted values."""
         if not self.pk:
-            raise self.DoesNotExist('Cannot create a prediction descriptor of a descriptor which has not yet been saved.')
+            raise self.DoesNotExist(
+                'Cannot create a prediction descriptor of a descriptor which has not yet been saved.')
         else:
             try:
                 return self.predictedDescriptorType.objects.get(modelContainer=modelContainer, statsModel=modelComponent, predictionOf=self)
@@ -251,11 +255,15 @@ class Predictable(models.Model):
                 pred = self.predictedDescriptorType()
 
                 if modelComponent is None:
-                    headingSuffix = '_prediction_{}_summative'.format(modelContainer.pk)
-                    nameSuffix = ' prediction for modelContainer {}'.format(modelContainer.pk)
+                    headingSuffix = '_prediction_{}_summative'.format(
+                        modelContainer.pk)
+                    nameSuffix = ' prediction for modelContainer {}'.format(
+                        modelContainer.pk)
                 else:
-                    headingSuffix = '_prediction_{}_component_{}'.format(modelContainer.pk, modelComponent.pk)
-                    nameSuffix = ' prediction for modelcontainer {} component {}'.format(modelContainer.pk, modelComponent.pk)
+                    headingSuffix = '_prediction_{}_component_{}'.format(
+                        modelContainer.pk, modelComponent.pk)
+                    nameSuffix = ' prediction for modelcontainer {} component {}'.format(
+                        modelContainer.pk, modelComponent.pk)
 
                 pred.heading = self.heading + headingSuffix
                 pred.name = self.name + nameSuffix

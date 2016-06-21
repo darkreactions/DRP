@@ -238,7 +238,19 @@ This command checks the hashed values of the reactions calculated by
 the DRP descriptor plugin for clashes. If there is a clash,
 the lead developer should be notified ASAP.
 
-**import_data**
+**build\_model**
+
+Builds a machine learning model. The most basic usage is
+`python manage.py build_model -p 'reaction_temperature'`
+this will build a model using only the reaction temperature
+as a descriptor to predict the default outcome descriptor
+(currently boolean crystallisation outcome) using the default
+model (currently a Weka SVM using the PUK kernel and cross-validated using
+a 4-fold split to analyze model performance).
+More advanced usage should be well documented in the help text
+`python manage.py build_model -h`
+
+**import\_data**
 
 Imports reaction data from the main Haverford Dark Reactions server.
 Accepts one positional argument importing the corresponding number
@@ -247,7 +259,7 @@ persons who are not administrators on the main server.
 
 Note that at present this command does not import reaction descriptors.
 
-**re_save_reactions**
+**re\_save\_reactions**
 
 Starts a batch parralell task to re-save each reaction, forcing
 descriptor calculation. Useful in conjunction with the above
@@ -258,9 +270,7 @@ set up.
 **run_tests**
 
 Runs all of the tests correctly imported in the test suite.
-
-**import_manual_descriptors**
-
-An untested component for pulling in custom descriptor data from a live
-server for a local development server. Use with caution.
-
+To only run some tests, one may enter a list of test modules
+to run as positional arguments. The --failfast option causes
+tests to halt on the first failure. Otherwise all tests will
+be run and error details output at the end.

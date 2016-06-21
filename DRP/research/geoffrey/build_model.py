@@ -11,12 +11,14 @@ from django.conf import settings
 import ast
 from sys import argv
 
+
 def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
-                description="", verbose=False, splitterOptions=None, visitorOptions=None):
+                       description="", verbose=False, splitterOptions=None, visitorOptions=None):
 
     if trainingSet is not None:
         container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
-                                          trainingSets=[trainingSet], testSets=[testSet], verbose=verbose, splitterOptions=splitterOptions,
+                                          trainingSets=[trainingSet], testSets=[
+                                              testSet], verbose=verbose, splitterOptions=splitterOptions,
                                           visitorOptions=visitorOptions)
     else:
         container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
@@ -24,6 +26,7 @@ def create_build_model(reactions=None, predictors=None, responses=None, modelVis
 
     container.full_clean()
     return build_model(container, verbose=verbose)
+
 
 def build_model(container, verbose=False):
     for attempt in range(5):
@@ -36,11 +39,12 @@ def build_model(container, verbose=False):
             sleep(3)
     else:
         raise RuntimeError("Got 5 Operational Errors in a row and gave up")
-    
+
     container.save()
     container.full_clean()
 
     return container
+
 
 def missing_descriptors(descriptor_headings):
     missing_descs = []
@@ -49,13 +53,15 @@ def missing_descriptors(descriptor_headings):
             missing_descs.append(heading)
     return missing_descs
 
+
 def display_model_results(container, reactions=None, heading=""):
     """
     Displays confusion matrices for a model container.
     Optional heading specifies prefix for the summary statistics
     (useful for when multiple model containers are built by a single script)
     """
-    overall_conf_mtrcs = container.getOverallConfusionMatrices(reactions=reactions)
+    overall_conf_mtrcs = container.getOverallConfusionMatrices(
+        reactions=reactions)
     if not overall_conf_mtrcs:
         print "No model results to display"
         return
@@ -96,10 +102,11 @@ def display_model_results(container, reactions=None, heading=""):
             sum_bcr += bcr
             sum_matthews += matthews
             count += 1
-            
-    print "{} Average accuracy: {:.3}".format(heading, sum_acc/count)
-    print "{} Average BCR: {:.3}".format(heading, sum_bcr/count)
-    print "{} Average Matthews: {:.3}".format(heading, sum_matthews/count)
+
+    print "{} Average accuracy: {:.3}".format(heading, sum_acc / count)
+    print "{} Average BCR: {:.3}".format(heading, sum_bcr / count)
+    print "{} Average Matthews: {:.3}".format(heading, sum_matthews / count)
+
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
                         test_set_name=None, reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None):
@@ -110,21 +117,20 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     # Remove errant empty strings
     predictor_headers = [h for h in predictor_headers if h]
     response_headers = [h for h in response_headers if h]
-    
+
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
     if predictors.count() != len(predictor_headers):
-        raise KeyError("Could not find all predictors. Missing: {}".format(missing_descriptors(predictor_headers)))
+        raise KeyError("Could not find all predictors. Missing: {}".format(
+            missing_descriptors(predictor_headers)))
     if responses.count() != len(response_headers):
-        raise KeyError("Could not find all responses. Missing: {}".format(missing_descriptors(response_headers)))
+        raise KeyError("Could not find all responses. Missing: {}".format(
+            missing_descriptors(response_headers)))
 
     if training_set_name is None and reaction_set_name is None:
-        assert(test_set_name == None)
+        assert(test_set_name is None)
         reactions = PerformedReaction.objects.filter(valid=True)
-        #reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        #reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        #reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
         trainingSet = None
         testSet = None
     elif reaction_set_name is not None:
@@ -133,18 +139,19 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         trainingSet = None
         testSet = None
     else:
-        trainingSet =  DataSet.objects.get(name=training_set_name)
-        testSet =  DataSet.objects.get(name=test_set_name)
-        reactions=None
-    
-    container = create_build_model(reactions=reactions, predictors=predictors, responses=responses, 
-                            modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                            splitter=splitter, trainingSet=trainingSet, testSet=testSet, 
-                            description=description, verbose=verbose, splitterOptions=splitterOptions,
-                            visitorOptions=visitorOptions)
+        trainingSet = DataSet.objects.get(name=training_set_name)
+        testSet = DataSet.objects.get(name=test_set_name)
+        reactions = None
+
+    container = create_build_model(reactions=reactions, predictors=predictors, responses=responses,
+                                   modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
+                                   splitter=splitter, trainingSet=trainingSet, testSet=testSet,
+                                   description=description, verbose=verbose, splitterOptions=splitterOptions,
+                                   visitorOptions=visitorOptions)
 
     return container
-    
+
+
 def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
                                 reaction_set_name=None, description="", verbose=False, splitterOptions=None, visitorOptions=None):
 
@@ -186,18 +193,19 @@ if __name__ == '__main__':
                         help='A dictionary of the options to give to the splitter in JSON format')
     parser.add_argument('-vo', '--visitor-options', default=None,
                         help='A dictionary of the options to give to the visitor in JSON format')
-                        
+
     args = parser.parse_args()
     if args.verbose:
         print argv[1:]
         print args
 
-
     # This way of accepting splitter options is bad and hacky.
     # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
     # TODO XXX make this not horrible
-    splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else None
-    visitorOptions = ast.literal_eval(args.visitor_options) if args.visitor_options is not None else None
+    splitterOptions = ast.literal_eval(
+        args.splitter_options) if args.splitter_options is not None else None
+    visitorOptions = ast.literal_eval(
+        args.visitor_options) if args.visitor_options is not None else None
 
     prepare_build_display_model(predictor_headers=args.predictor_headers, response_headers=args.response_headers, modelVisitorLibrary=args.model_library, modelVisitorTool=args.model_tool,
                                 splitter=args.splitter, training_set_name=args.training_set_name, test_set_name=args.test_set_name, reaction_set_name=args.reaction_set_name, description=args.description, verbose=args.verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)

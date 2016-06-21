@@ -1,12 +1,1 @@
-{'BCR': True}
-{'BCR': True}
-{'BCR': True}
-{'BCR': True}
-{'BCR': True}
-{'BCR': True}
-{'BCR': False}
-{'BCR': False}
-{'BCR': False}
-{'BCR': False}
-{'BCR': False}
-{'BCR': False}
+{'BCR': True, 'puk_sigma': 0.5, 'puk_omega': 0.5}

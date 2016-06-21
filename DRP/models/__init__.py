@@ -1,6 +1,6 @@
-'''Models for the DRP app'''
-#Anything imported here gets imported on `from DRP.models import *`
-#Not that such behaviour is encouraged!
+"""Models for the DRP app."""
+# Anything imported here gets imported on `from DRP.models import *`
+# Not that such behaviour is encouraged!
 
 # Classes that should get included.
 

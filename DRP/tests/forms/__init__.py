@@ -1,3 +1,5 @@
+"""Encapsulates unit tests for various forms."""
+
 import unittest
 import AdvancedFilterForms
 import CompoundAdminForm
@@ -11,14 +13,14 @@ import LabGroupJoiningForm
 import LicenseAgreementForm
 
 suite = unittest.TestSuite([
-      CompoundAdminForm.suite,
-      CompoundCreationForm.suite,
-      CompoundEditingForm.suite,
-      CompoundFilterForm.suite,
-      CompoundFilterFormSet.suite,
-      ConfirmationForm.suite,
-      LabGroupForm.suite,
-      LabGroupJoiningForm.suite,
-      LicenseAgreementForm.suite,
-      AdvancedFilterForms.suite
-      ])
+    CompoundAdminForm.suite,
+    CompoundCreationForm.suite,
+    CompoundEditingForm.suite,
+    CompoundFilterForm.suite,
+    CompoundFilterFormSet.suite,
+    ConfirmationForm.suite,
+    LabGroupForm.suite,
+    LabGroupJoiningForm.suite,
+    LicenseAgreementForm.suite,
+    AdvancedFilterForms.suite
+])

@@ -1,13 +1,16 @@
-'''A module containing only the RecommendedReaction class'''
+"""A module containing only the RecommendedReaction class."""
 from django.db import models
 from Reaction import Reaction
 
+
 class RecommendedReaction(Reaction):
 
-    class Meta:
-        app_label='DRP'
+    """A class to store information about reactions recommended by the machine learning infrastructure."""
 
-    score=models.FloatField()
+    class Meta:
+        app_label = 'DRP'
+
+    score = models.FloatField()
     seed = models.ForeignKey(Reaction, null=True, related_name='seeded')
     nonsense = models.BooleanField(default=None)
     hidden = models.BooleanField(default=None)

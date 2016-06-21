@@ -3,12 +3,15 @@ import numpy as np
 from sklearn.preprocessing import Imputer
 from cPickle import dump, load
 
+
 class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
     maxResponseCount = 1
 
     def _prepareArrays(self, reactions, predictor_headers, response_headers):
-        data = reactions.toNPArray(expanded=True, whitelistHeaders=predictor_headers, missing=np.nan)
-        labels = reactions.toNPArray(expanded=True, whitelistHeaders=response_headers).flatten()
+        data = reactions.toNPArray(
+            expanded=True, whitelistHeaders=predictor_headers, missing=np.nan)
+        labels = reactions.toNPArray(
+            expanded=True, whitelistHeaders=response_headers).flatten()
 
         data = Imputer(copy=False).fit_transform(data)
 
@@ -34,7 +37,7 @@ class AbstractMetricLearnDistanceLearner(AbstractDistanceLearner):
         dif = x - y
 
         return dif.T.dot(Mah).dot(dif)
-        
+
     def save(self, fileName):
         with open(fileName, 'wb') as f:
             dump(self.metric_object, f)

@@ -6,35 +6,42 @@ import argparse
 import build_model
 import ast
 
+
 def prepare_build_model(predictor_headers=None, response_headers=None, featureVisitorLibrary=None, featureVisitorTool=None, training_set_name=None,
                         output_file=None, description="", visitor_options=None, verbose=False):
     """
     Do feature selection with the specified tools
     """
-    
+
     predictors = Descriptor.objects.filter(heading__in=predictor_headers)
     responses = Descriptor.objects.filter(heading__in=response_headers)
 
     if predictors.count() != len(predictor_headers):
-        raise KeyError("Could not find all predictors. Missing: {}".format(build_model.missing_descriptors(predictor_headers)))
+        raise KeyError("Could not find all predictors. Missing: {}".format(
+            build_model.missing_descriptors(predictor_headers)))
     if responses.count() != len(response_headers):
-        raise KeyError("Could not find all responses. Missing: {}".format(build_model.missing_descriptors(response_headers)))
+        raise KeyError("Could not find all responses. Missing: {}".format(
+            build_model.missing_descriptors(response_headers)))
 
     if verbose:
         print "Found {} matching predictors and {} matching responses".format(predictors.count(), responses.count())
-    
+
     if training_set_name:
-        trainingSet =  DataSet.objects.get(name=training_set_name)
-        reactions=None
+        trainingSet = DataSet.objects.get(name=training_set_name)
+        reactions = None
     else:
         reactions = PerformedReaction.objects.filter(valid=True)
-        reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
-        reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(descriptor__heading__in=response_headers, value=None))
+        reactions = reactions.exclude(ordrxndescriptorvalue__in=rxnDescriptorValues.OrdRxnDescriptorValue.objects.filter(
+            descriptor__heading__in=response_headers, value=None))
+        reactions = reactions.exclude(boolrxndescriptorvalue__in=rxnDescriptorValues.BoolRxnDescriptorValue.objects.filter(
+            descriptor__heading__in=response_headers, value=None))
+        reactions = reactions.exclude(catrxndescriptorvalue__in=rxnDescriptorValues.CatRxnDescriptorValue.objects.filter(
+            descriptor__heading__in=response_headers, value=None))
         trainingSet = None
         testSet = None
 
-    visitorOptions = ast.literal_eval(visitor_options) if visitor_options is not None else None
+    visitorOptions = ast.literal_eval(
+        visitor_options) if visitor_options is not None else None
     container = FeatureSelectionContainer.create(featureVisitorLibrary, featureVisitorTool, predictors, responses, description=description, reactions=reactions,
                                                  trainingSet=trainingSet, featureVisitorOptions=visitorOptions)
 
@@ -44,12 +51,11 @@ def prepare_build_model(predictor_headers=None, response_headers=None, featureVi
     container.save()
     container.full_clean()
 
-       
     if output_file is not None:
         with open(output_file, 'wb') as f:
-            f.write('\n'.join([d.heading for d in container.chosenDescriptors]))
-            
-            
+            f.write(
+                '\n'.join([d.heading for d in container.chosenDescriptors]))
+
     return container
 
 

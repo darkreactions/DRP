@@ -19,14 +19,16 @@ calcSoftVersMap = [
 print Descriptor.objects.values('calculatorSoftware').distinct()
 
 for old, new in calcSoftMap:
-    Descriptor.objects.filter(calculatorSoftware=old).update(calculatorSoftware=new)
+    Descriptor.objects.filter(calculatorSoftware=old).update(
+        calculatorSoftware=new)
 
 print Descriptor.objects.values('calculatorSoftware').distinct()
 
 print Descriptor.objects.values('calculatorSoftwareVersion').distinct()
 
 for old, new in calcSoftVersMap:
-    Descriptor.objects.filter(calculatorSoftwareVersion=old).update(calculatorSoftwareVersion=new)
+    Descriptor.objects.filter(calculatorSoftwareVersion=old).update(
+        calculatorSoftwareVersion=new)
 
 print Descriptor.objects.values('calculatorSoftwareVersion').distinct()
 
@@ -36,4 +38,3 @@ for d in Descriptor.objects.all():
     except ValidationError:
         print d.name, d.heading, d.calculatorSoftware, d.calculatorSoftwareVersion
         raise
-        
