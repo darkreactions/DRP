@@ -100,7 +100,9 @@ def print_headers(descriptors, sort=False):
 
 
 def filter_qset(dqs, require_substring=[], require_prefix=[], require_suffix=[],
-                    exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
+                    exclude=[], exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
+    
+    dqs = dqs.exclude(heading__in=exclude)
     for s in exclude_substring:
         dqs = dqs.exclude(heading__contains=s)
     for s in exclude_prefix:
@@ -127,7 +129,7 @@ def rxn_descriptors():
 
 
 def valid_rxn_descriptors():
-    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "example"]
+    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "example", "purity"]
     exclude_prefix = ["_", "transform"]
     return filter_qset(rxn_descriptors(), exclude_substring=exclude_substring, exclude_prefix=exclude_prefix)
 
@@ -143,7 +145,7 @@ def nonlegacy_rxn_descriptors():
 
 
 def nonlegacy_pHless_rxn_descriptors():
-    exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)]
+    exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)] + ["_nominal_"]
     return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
 
@@ -151,16 +153,24 @@ def nonlegacy_nopHreaction_rxn_descriptors():
     exclude_substring = ["_pHreaction_",]
     return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
+def orthogonalized_descs():
+    exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)] + ["boolean_period", "boolean_group", "boolean_valence", "_mw_DRP", "moleratio"]
+    exclude_suffix = ["_mols"]
+    exclude_prefix = ["org", "oxlike", "AtomicRadius", "EA", "hardness", "Ionization", "number", "PaulingElectroneg", "PearsonElectroneg",]
+    exclude = ["reaction_pH", "slow_cool", "reaction_time", "leak"]
+
+    return filter_qset(valid_rxn_descriptors(), exclude_substring=exclude_substring, exclude_suffix=exclude_suffix, exclude_prefix=exclude_prefix, exclude=exclude)
 
 def remove_CA(qset):
     exclude_substring = ["_ChemAxon_cxcalc_"]
     return filter_qset(qset, exclude_substring=exclude_substring)
 
+
 if __name__ == '__main__':
     reaction_set_name = argv[1]
 
-    descs = legacy_rxn_descriptors()
-    #descs = remove_CA(descs)
+    descs = orthogonalized_descs()
+    descs = remove_CA(descs)
 
     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
