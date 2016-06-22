@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block additional_head %}
+
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
+{% endblock %}
 {% block title %}Dark Reactions Project - Forbidden{% endblock %}
 
 {% block content %}
@@ -7,4 +11,8 @@
   <p>You are not authorised to view this content or have otherwise attempted an operation that is not permitted.</p>
   <p>If you think you are seeing this page in error, please <a href="{% url 'contact' %}">contact us</a></p>
   <!-- b4da5e80-190b-4fe4-a97c-7f8bb9c213a5 -->
+
+  <blockquote cite="https://books.google.com/books?id=rUBIvuSijkoC&pg=PA22&lpg=PA22&dq=At+the+source+of+every+error+which+isblamed+on+the+computer+you+will+find+atleast+two+human+errors,+including+the+error+of+blaming+it+on+the+computer.-&source=bl&ots=g5mQCgPiF6&sig=3l8M74InatoweD5tZR1QDC6ogSI&hl=en&sa=X&ved=0ahUKEwiEusfcpLfNAhWBViYKHQdRAHgQ6AEIMDAD#v=onepage&q=At%20the%20source%20of%20every%20error%20which%20isblamed%20on%20the%20computer%20you%20will%20find%20atleast%20two%20human%20errors%2C%20including%20the%20error%20of%20blaming%20it%20on%20the%20computer.-&f=false">At the source of every error which is blamed on a computer, you will find at least two human errors, including the error of blaming it on the computer.</blockquote>
+    <p>~Tom Glib (Quotations of Wit &amp; Wisdom by Dr. N. Sreedharan)</p>
+
 {% endblock %}

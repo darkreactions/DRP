@@ -6,6 +6,10 @@ aside.bannerText {
  font-weight:700;
 }
 
+blockquote {
+ font-style: italic;
+}
+
 p {
  width: 70%;
  margin: 1em auto;

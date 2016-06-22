@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block additional_head %}
+
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
+{% endblock %}
 {% block content %}
 <h1 class="bannerText">No Lab Group Joined</h1>
 <p>You are not permitted to edit that compound.</p>
