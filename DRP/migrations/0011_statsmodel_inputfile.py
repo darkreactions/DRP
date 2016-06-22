@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='statsmodel',
             name='inputFile',
-            field=models.FileField(max_length=255, upload_to=b'model_inputs', blank=True),
+            field=models.FileField(
+                max_length=255, upload_to=b'model_inputs', blank=True),
         ),
     ]

@@ -108,6 +108,16 @@
   <script>
     dbase = document.getElementById('dbase');
     dbase.setAttribute('href', '{% url "reactionlist" %}');
+    inputs = document.getElementsByTagName('input');
+    for (var i=0; i<inputs.length; i++) {
+      if(inputs[i].getAttribute("type") == "submit") {
+        var submit = inputs[i];
+        function disableSubmit() {
+          submit.disabled = true;
+        }
+        inputs[i].addEventListener("click", disableSubmit);
+      }
+    }
   </script>
 </body>
 {% comment %}

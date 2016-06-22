@@ -1,6 +1,6 @@
-from modshogun import LMNN as shogun_LMNN
-from modshogun import RealFeatures, MulticlassLabels
-import numpy as np
+# from modshogun import LMNN as shogun_LMNN
+# from modshogun import RealFeatures, MulticlassLabels
+# import numpy as np
 from metric_learn import LMNN
 from sklearn.datasets import load_iris
 

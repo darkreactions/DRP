@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='metriccontainer',
             name='built',
-            field=models.BooleanField(default=False, verbose_name=b'Has the build procedure been called with this container?', editable=False),
+            field=models.BooleanField(
+                default=False, verbose_name=b'Has the build procedure been called with this container?', editable=False),
         ),
         migrations.AddField(
             model_name='metriccontainer',
@@ -29,7 +30,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='metriccontainer',
             name='fileName',
-            field=models.FileField(max_length=200, upload_to=b'metrics', blank=True),
+            field=models.FileField(
+                max_length=200, upload_to=b'metrics', blank=True),
         ),
         migrations.AddField(
             model_name='metriccontainer',
@@ -44,7 +46,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='metriccontainer',
             name='trainingSet',
-            field=models.ForeignKey(related_name='trainingSetForMetric', to='DRP.DataSet', null=True),
+            field=models.ForeignKey(
+                related_name='trainingSetForMetric', to='DRP.DataSet', null=True),
         ),
         migrations.AlterField(
             model_name='modelcontainer',
@@ -64,7 +67,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='modelcontainer',
             name='fully_trained',
-            field=models.ForeignKey(blank=True, to='DRP.StatsModel', null=True),
+            field=models.ForeignKey(
+                blank=True, to='DRP.StatsModel', null=True),
         ),
         migrations.AlterField(
             model_name='modelcontainer',

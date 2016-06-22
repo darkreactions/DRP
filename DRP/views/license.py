@@ -1,4 +1,4 @@
-'''contains the view which controls license signing'''
+"""contains the view which controls license signing."""
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -13,17 +13,20 @@ import datetime
 
 @login_required
 def license(request):
-    '''Controls requests pertaining to the signing of deployment license agreements'''
+    """Control requests pertaining to the signing of deployment license agreements."""
     if not License.objects.all().exists():
         template = get_template('license_404.html')
         return HttpResponseNotFound(template.render(RequestContext(request)))
     else:
         latestLicense = License.objects.latest()
-        currentSignedLicenseQ = LicenseAgreement.objects.filter(user=request.user, text=latestLicense)
-        nextPage = request.GET['next'] if 'next' in request.GET.keys() else None
+        currentSignedLicenseQ = LicenseAgreement.objects.filter(
+            user=request.user, text=latestLicense)
+        nextPage = request.GET[
+            'next'] if 'next' in request.GET.keys() else None
         if not currentSignedLicenseQ.exists():
             if request.method == 'POST':
-                form = LicenseAgreementForm(request.user, latestLicense, data=request.POST)
+                form = LicenseAgreementForm(
+                    request.user, latestLicense, data=request.POST)
                 if form.is_valid():
                     form.save()
                     if nextPage:
@@ -41,4 +44,5 @@ def license(request):
             else:
                 return render(request, 'license_up_to_date.html', RequestContext(request, {'license': latestLicense}))
         else:
-            raise RuntimeError('Impossible condition occured. Please contact an administrator or developer')
+            raise RuntimeError(
+                'Impossible condition occured. Please contact an administrator or developer')

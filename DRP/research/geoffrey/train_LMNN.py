@@ -16,7 +16,8 @@ def train(descriptor_header_file, outfile):
         descriptorHeaders = [l.strip() for l in f.readlines()]
 
     predictors = get_descriptors_by_header(descriptorHeaders)
-    responses = Descriptor.objects.filter(heading="boolean_crystallisation_outcome")
+    responses = Descriptor.objects.filter(
+        heading="boolean_crystallisation_outcome")
 
     predictorHeaders = [d.csvHeader for d in predictors]
     responseHeaders = [d.csvHeader for d in responses]

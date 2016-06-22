@@ -30,7 +30,8 @@ class Point:
             if stdev != 0 and mean != 0:
                 nv.append(value - mean / stdev)
             else:
-                nv.append(-9999)  # Just want to return a very large negative number
+                # Just want to return a very large negative number
+                nv.append(-9999)
         return nv
 
     def equals(self, otherPoint):
@@ -140,7 +141,8 @@ class clusterNode:
             allPoints.append(node.repPoint)
         myTree = KDTree(allPoints)
         nearestPoint = myTree.findNearestNeighbor(queryPoint)
-        nearestNode = clusterList[findNodePosbyID(clusterList, nearestPoint.point.id)]
+        nearestNode = clusterList[findNodePosbyID(
+            clusterList, nearestPoint.point.id)]
         return nearestNode
 
     def equals(self, otherNode):
@@ -190,7 +192,8 @@ class clusterNode:
 
             # print nearestPoint.point.id
             # tree.removePoint(nearestPoint.point)
-            nearestNode = clusterList[findNodePosbyID(clusterList, nearestPoint.point.id)]
+            nearestNode = clusterList[findNodePosbyID(
+                clusterList, nearestPoint.point.id)]
             # print "nodeID: ", nearestNode.id
 
             neighborList.append(nearestNode)
@@ -198,7 +201,8 @@ class clusterNode:
 
 
 def combineClusters(clusterOne, clusterTwo, allPoints):
-    combinedCluster = clusterNode(clusterOne.repPoint, [clusterOne, clusterTwo])
+    combinedCluster = clusterNode(
+        clusterOne.repPoint, [clusterOne, clusterTwo])
 
     for item in clusterOne.idsInCluster:
         combinedCluster.idsInCluster.append(item)
@@ -212,7 +216,8 @@ def combineClusters(clusterOne, clusterTwo, allPoints):
 
 def combineClusterList(clusterList, allPoints):
     combineIndex = random.randint(0, len(clusterList) - 1)
-    combinedCluster = clusterNode(clusterList[combineIndex].repPoint, clusterList)
+    combinedCluster = clusterNode(
+        clusterList[combineIndex].repPoint, clusterList)
     for cluster in clusterList:
         for item in cluster.idsInCluster:
             combinedCluster.idsInCluster.append(item)
@@ -232,7 +237,8 @@ def createHierCluster(points):
             NN = clusterList[combineIndex].findNearestNode(clusterList)
             nodePos = findNodePos(clusterList, NN)
 
-            # print "CLLen: ", len(clusterList), "CombInd: ", combineIndex, "NodePos: ", nodePos
+            # print "CLLen: ", len(clusterList), "CombInd: ", combineIndex,
+            # "NodePos: ", nodePos
             firstNode = clusterList.pop(combineIndex)
             if (nodePos >= combineIndex):
                 nodePos = nodePos - 1
@@ -276,7 +282,8 @@ def createHierClusterBetter(points):
             for item in NNors:
                 nodePos = findNodePos(clusterList, item)
                 if (nodePos != -1):
-                    # print "CLLen: ", len(clusterList), "CombInd: ", combineIndex, "PopInd: ", nodePos, "id: ", item.id
+                    # print "CLLen: ", len(clusterList), "CombInd: ",
+                    # combineIndex, "PopInd: ", nodePos, "id: ", item.id
                     clusterList.pop(nodePos)
             clusterList.append(combineClusterList(combineList, points))
 
@@ -292,7 +299,8 @@ def createHierClusterBetter(points):
             for item in NNors:
                 nodePos = findNodePos(clusterList, item)
                 if (nodePos != -1):
-                    # print "CLLen: ", len(clusterList), "CombInd: ", combineIndex, "PopInd: ", nodePos, "id: ", item.id
+                    # print "CLLen: ", len(clusterList), "CombInd: ",
+                    # combineIndex, "PopInd: ", nodePos, "id: ", item.id
                     clusterList.pop(nodePos)
             clusterList.append(combineClusterList(combineList, points))
 
@@ -308,7 +316,8 @@ def createHierClusterBetter(points):
             for item in NNors:
                 nodePos = findNodePos(clusterList, item)
                 if (nodePos != -1):
-                    # print "CLLen: ", len(clusterList), "CombInd: ", combineIndex, "PopInd: ", nodePos, "id: ", item.id
+                    # print "CLLen: ", len(clusterList), "CombInd: ",
+                    # combineIndex, "PopInd: ", nodePos, "id: ", item.id
                     clusterList.pop(nodePos)
             clusterList.append(combineClusterList(combineList, points))
 
@@ -321,10 +330,12 @@ def createHierClusterBetter(points):
             firstNode = clusterList.pop(combineIndex)
             if (nodePos >= combineIndex):
                 nodePos = nodePos - 1
-            # print "CLLen: ", len(clusterList), "CombInd: ", combineIndex, "NodePos: ", nodePos
+            # print "CLLen: ", len(clusterList), "CombInd: ", combineIndex,
+            # "NodePos: ", nodePos
             if (nodePos != -1):
                 secondNode = clusterList.pop(nodePos)
-                clusterList.append(combineClusters(firstNode, secondNode, points))
+                clusterList.append(combineClusters(
+                    firstNode, secondNode, points))
 
     return clusterList[0]
 

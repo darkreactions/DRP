@@ -9,7 +9,8 @@ from cStringIO import StringIO
 import sys
 
 
-# from http://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
+# from
+# http://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
 class Capturing(list):
 
     def __enter__(self):
@@ -26,17 +27,25 @@ def filter_reactions(reactions, response_header, verbose=False):
     # filter out reactions with undefined values for the response_descriptor
     initial_num = reactions.count()
     if BoolRxnDescriptor.objects.filter(heading=response_header).exists():
-        reactions = reactions.exclude(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
-        reactions = reactions.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+        reactions = reactions.exclude(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(boolrxndescriptorvalue__in=BoolRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header))
     elif NumRxnDescriptor.objects.filter(heading=response_header).exists():
-        reactions = reactions.exclude(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
-        reactions = reactions.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+        reactions = reactions.exclude(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(numrxndescriptorvalue__in=NumRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header))
     elif OrdRxnDescriptor.objects.filter(heading=response_header).exists():
-        reactions = reactions.exclude(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
-        reactions = reactions.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+        reactions = reactions.exclude(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(ordrxndescriptorvalue__in=OrdRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header))
     elif CatRxnDescriptor.objects.filter(heading=response_header).exists():
-        reactions = reactions.exclude(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header, value=None))
-        reactions = reactions.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(descriptor__heading=response_header))
+        reactions = reactions.exclude(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header, value=None))
+        reactions = reactions.filter(catrxndescriptorvalue__in=CatRxnDescriptorValue.objects.filter(
+            descriptor__heading=response_header))
     else:
         raise ValueError("Descriptor header does not match any known type")
 
@@ -55,12 +64,16 @@ def build_many_models(predictor_headers=None, response_headers=None, modelVisito
             trainingSet = DataSet.objects.get(name=training_set_name)
             testSet = DataSet.objects.get(name=test_set_name)
 
-            mod_training_set_name = '_'.join([training_set_name, response_header, str(uuid.uuid4())])
-            trainingSetRxns = filter_reactions(trainingSet.reactions.all(), response_header, verbose=verbose)
+            mod_training_set_name = '_'.join(
+                [training_set_name, response_header, str(uuid.uuid4())])
+            trainingSetRxns = filter_reactions(
+                trainingSet.reactions.all(), response_header, verbose=verbose)
             DataSet.create(mod_training_set_name, trainingSetRxns)
 
-            mod_test_set_name = '_'.join([test_set_name, response_header, str(uuid.uuid4())])
-            testSetRxns = filter_reactions(testSet.reactions.all(), response_header)
+            mod_test_set_name = '_'.join(
+                [test_set_name, response_header, str(uuid.uuid4())])
+            testSetRxns = filter_reactions(
+                testSet.reactions.all(), response_header)
             DataSet.create(mod_test_set_name, testSetRxns)
         else:
             mod_training_set_name = None

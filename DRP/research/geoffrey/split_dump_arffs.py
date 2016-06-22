@@ -12,7 +12,8 @@ from django.conf import settings
 import importlib
 import ast
 
-splitters = {splitter: importlib.import_module(settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
+splitters = {splitter: importlib.import_module(
+    settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 
 
 def prepareArff(reactions, whitelistHeaders, description, verbose=False):
@@ -40,7 +41,8 @@ def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_n
         reactions = PerformedReaction.objects.all()
 
     splitter_name_stub = "{}_{}".format(description, uuid.uuid4())
-    splitterObj = splitters[splitter].Splitter(splitter_name_stub, **splitterOptions)
+    splitterObj = splitters[splitter].Splitter(
+        splitter_name_stub, **splitterOptions)
     if verbose:
         print "Splitting using {}".format(splitter)
     data_splits = splitterObj.split(reactions, verbose=verbose)
@@ -48,8 +50,10 @@ def split_and_dump(predictor_headers=None, response_headers=None, reaction_set_n
     whitelist = [d.csvHeader for d in chain(predictors, responses)]
 
     for trainingSet, testSet in data_splits:
-        prepareArff(trainingSet.reactions.all(), whitelist, trainingSet.name + '_train', verbose=verbose)
-        prepareArff(testSet.reactions.all(), whitelist, testSet.name + '_test', verbose=verbose)
+        prepareArff(trainingSet.reactions.all(), whitelist,
+                    trainingSet.name + '_train', verbose=verbose)
+        prepareArff(testSet.reactions.all(), whitelist,
+                    testSet.name + '_test', verbose=verbose)
 
 if __name__ == '__main__':
     django.setup()
@@ -74,7 +78,8 @@ if __name__ == '__main__':
                         help='The name of the reactions to use as a whole dataset')
     args = parser.parse_args()
 
-    splitterOptions = ast.literal_eval(args.splitter_options) if args.splitter_options is not None else {}
+    splitterOptions = ast.literal_eval(
+        args.splitter_options) if args.splitter_options is not None else {}
 
     split_and_dump(predictor_headers=args.predictor_headers, response_headers=args.response_headers, reaction_set_name=args.reaction_set_name,
                    description=args.description, verbose=args.verbose, splitterOptions=splitterOptions, splitter=args.splitter)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''A module containing tests for the ModelFactory class'''
+"""A module containing tests for the ModelFactory class."""
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
@@ -10,10 +10,14 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class ModelTest(DRPTestCase):
+
+    """Tests for model building."""
+
     splitterOptions = None
     visitorOptions = None
 
     def runTest(self):
+        """The actual test."""
         reactions = PerformedReaction.objects.all()
         predictors = Descriptor.objects.filter(heading="testNumber")
         responses = Descriptor.objects.filter(heading="outcome")
@@ -24,7 +28,8 @@ class ModelTest(DRPTestCase):
         container.save()
         container.full_clean()
 
-        # TODO: We should test the ModelContainer "predict" method here as well.
+        # TODO: We should test the ModelContainer "predict" method here as
+        # well.
 
 
 # TODO XXX more robust testing
@@ -33,6 +38,9 @@ class ModelTest(DRPTestCase):
 
 @createsPerformedReactionSetOrd
 class WekaSVMKFTest(ModelTest):
+
+    """Tests Weka SVM."""
+
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
     splitter = "KFoldSplitter"
@@ -40,6 +48,9 @@ class WekaSVMKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaSVMExpTest(ModelTest):
+
+    """Tests Weka SVM."""
+
     modelLibrary = "weka"
     modelTool = "SVM_PUK"
     splitter = "ExploratorySplitter"
@@ -47,6 +58,9 @@ class WekaSVMExpTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaJ48KFTest(ModelTest):
+
+    """Tests Weka j48."""
+
     modelLibrary = "weka"
     modelTool = "J48"
     splitter = "KFoldSplitter"
@@ -54,6 +68,9 @@ class WekaJ48KFTest(ModelTest):
 
 @createsPerformedReactionSetBool
 class WekaKNNKFTest(ModelTest):
+
+    """Tests Weka KNN."""
+
     modelLibrary = "weka"
     modelTool = "KNN"
     splitter = "KFoldSplitter"
@@ -61,6 +78,9 @@ class WekaKNNKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaNBKFTest(ModelTest):
+
+    """Some kind of Bayes test..."""
+
     modelLibrary = "weka"
     modelTool = "NaiveBayes"
     splitter = "KFoldSplitter"
@@ -76,4 +96,5 @@ suite = unittest.TestSuite([
 
 if __name__ == '__main__':
     runTests(suite)
-    # Runs the test- a good way to check that this particular test set works without having to run all the tests.
+    # Runs the test- a good way to check that this particular test set works
+    # without having to run all the tests.

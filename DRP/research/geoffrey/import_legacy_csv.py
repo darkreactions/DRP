@@ -70,7 +70,8 @@ def create_descriptors(descriptor_type_dict, save=False, overwrite=False, headin
         elif descriptor_type == 'label':
             print "Skipping label descriptor with heading {}".format(descriptor_heading)
         else:
-            raise ValueError('Unrecognized descriptor type: {}'.format(descriptor_type))
+            raise ValueError(
+                'Unrecognized descriptor type: {}'.format(descriptor_type))
 
         if desc is not None:
             descriptor_dict[descriptor_heading] = desc
@@ -86,7 +87,8 @@ def stringToBool(s):
     elif s.lower() == 'false':
         return False
     else:
-        raise ValueError("Tried to convert string to boolean when string was neither 'True' nor 'False' but {}".format(s))
+        raise ValueError(
+            "Tried to convert string to boolean when string was neither 'True' nor 'False' but {}".format(s))
 
 
 def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000):
@@ -95,7 +97,8 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
 
         descriptor_type_dict = reader.next()
 
-        descriptor_dict = create_descriptors(descriptor_type_dict, save=save, overwrite=overwrite)
+        descriptor_dict = create_descriptors(
+            descriptor_type_dict, save=save, overwrite=overwrite)
 
         #found = []
         #failed = []
@@ -107,19 +110,23 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
         rxns_to_bulk_create = set([])
 
         for i, rxn_entry in enumerate(reader):
-            ref = reimport_reactions.convert_legacy_reference(rxn_entry['XXXtitle'])
+            ref = reimport_reactions.convert_legacy_reference(rxn_entry[
+                                                              'XXXtitle'])
             ps = PerformedReaction.objects.filter(convertedLegacyRef=ref)
             if ps.count() == 0:
                 if ref.startswith('xxx'):
                     unmunged_ref = ref + '0'
                     print '{}: Using UNMUNGED reference {} public'.format(i, unmunged_ref)
-                    ps = PerformedReaction.objects.filter(convertedLegacyRef=unmunged_ref)
+                    ps = PerformedReaction.objects.filter(
+                        convertedLegacyRef=unmunged_ref)
                 else:
-                    raise RuntimeError('Found {} reactions with reference {}'.format(ps.count(), ref))
+                    raise RuntimeError(
+                        'Found {} reactions with reference {}'.format(ps.count(), ref))
 
             for rxn in ps:
                 if rxn in rxns_to_bulk_create and save:
-                    # need to save now because this reaction already has values to bulk_create
+                    # need to save now because this reaction already has values
+                    # to bulk_create
                     BoolRxnDescriptorValue.objects.bulk_create(bool_vals)
                     print "{} boolean values saved".format(len(bool_vals))
                     NumRxnDescriptorValue.objects.bulk_create(num_vals)
@@ -150,7 +157,8 @@ def parse_reactions(filename, save=False, overwrite=False, val_save_cutoff=8000)
                             conv = str
                             val_list = cat_vals
                         else:
-                            raise ValueError('Unrecognized descriptor type {}'.format(type(desc)))
+                            raise ValueError(
+                                'Unrecognized descriptor type {}'.format(type(desc)))
 
                         val = desc.updateOrNewValue(rxn, conv(val_string))
                         if val is not None:

@@ -1,4 +1,4 @@
-"""Script for parsing descriptor headings into their underlying calculation"""
+"""Script for parsing descriptor headings into their underlying calculation."""
 from sys import argv
 from DRP import chemical_data
 import csv
@@ -13,7 +13,8 @@ def strip_headers(fn, legacy=True):
     else:
         strip_method = new_strip
 
-    headers = [(header, compress(strip_method(header)).lower()) for header in headers]
+    headers = [(header, compress(strip_method(header)).lower())
+               for header in headers]
 
     return headers
 
@@ -116,7 +117,8 @@ if __name__ == '__main__':
 
     header_tuples = strip_headers(fn, legacy=False)
 
-    # print '\n'.join(['\t'.join(header_tuple) for header_tuple in header_tuples])
+    # print '\n'.join(['\t'.join(header_tuple) for header_tuple in
+    # header_tuples])
 
     header_dict = {}
 

@@ -7,9 +7,11 @@ from itertools import chain
 import datetime
 import json
 
-featureVisitorModules = {library: importlib.import_module(settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
+featureVisitorModules = {library: importlib.import_module(
+    settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
 
-FEATURE_SELECTION_TOOL_CHOICES = tuple(tool for library in featureVisitorModules.values() for tool in library.tools)
+FEATURE_SELECTION_TOOL_CHOICES = tuple(
+    tool for library in featureVisitorModules.values() for tool in library.tools)
 
 
 class DescriptorAttribute(object):
@@ -55,7 +57,8 @@ class DescriptorAttribute(object):
             if desc is None:
                 print descriptor.heading
                 print type(descriptor)
-                raise ValueError('An invalid object was assigned as a descriptor')
+                raise ValueError(
+                    'An invalid object was assigned as a descriptor')
 
     def __delete__(self, featureSelectionContainer):
         """Simply clear the querysets."""
@@ -108,7 +111,8 @@ class ChosenDescriptorAttribute(object):
             if desc is None:
                 print descriptor.heading
                 print type(descriptor)
-                raise ValueError('An invalid object was assigned as a descriptor')
+                raise ValueError(
+                    'An invalid object was assigned as a descriptor')
 
     def __delete__(self, featureSelectionContainer):
         """Simply clear the querysets."""
@@ -159,7 +163,8 @@ class OutcomeDescriptorAttribute(object):
                 pass
 
             if desc is None:
-                raise ValueError('An invalid object was assigned as a descriptor')
+                raise ValueError(
+                    'An invalid object was assigned as a descriptor')
 
     def __delete__(self, featureSelectionContainer):
         """Simply clear the querysets."""
@@ -174,13 +179,18 @@ class FeatureSelectionContainer(models.Model):
     """A class for encapsulating a feature selection model."""
 
     description = models.TextField(default='', blank=True)
-    featureVisitorLibrary = models.CharField(max_length=200, default='', blank=True)
-    featureVisitorTool = models.CharField(max_length=200, default='', blank=True)
-    featureVisitorOptions = models.TextField(null=False, blank=True, default="{}")
+    featureVisitorLibrary = models.CharField(
+        max_length=200, default='', blank=True)
+    featureVisitorTool = models.CharField(
+        max_length=200, default='', blank=True)
+    featureVisitorOptions = models.TextField(
+        null=False, blank=True, default="{}")
     startTime = models.DateTimeField(default=None, null=True, blank=True)
     endTime = models.DateTimeField(default=None, null=True, blank=True)
-    trainingSet = models.ForeignKey(DataSet, related_name='trainingSetForFeatureSelection', null=True)
-    built = models.BooleanField('Has the build procedure been called with this container?', editable=False, default=False)
+    trainingSet = models.ForeignKey(
+        DataSet, related_name='trainingSetForFeatureSelection', null=True)
+    built = models.BooleanField(
+        'Has the build procedure been called with this container?', editable=False, default=False)
 
     descriptors = DescriptorAttribute()
     boolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor)
@@ -189,16 +199,24 @@ class FeatureSelectionContainer(models.Model):
     numRxnDescriptors = models.ManyToManyField(NumRxnDescriptor)
 
     outcomeDescriptors = OutcomeDescriptorAttribute()
-    outcomeBoolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor, related_name='outcomeForFeatureSelection')
-    outcomeOrdRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor, related_name='outcomeForFeatureSelections')
-    outcomeCatRxnDescriptors = models.ManyToManyField(CatRxnDescriptor, related_name='outcomeForFeatureSelections')
-    outcomeNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='outcomeForFeatureSelections')
+    outcomeBoolRxnDescriptors = models.ManyToManyField(
+        BoolRxnDescriptor, related_name='outcomeForFeatureSelection')
+    outcomeOrdRxnDescriptors = models.ManyToManyField(
+        OrdRxnDescriptor, related_name='outcomeForFeatureSelections')
+    outcomeCatRxnDescriptors = models.ManyToManyField(
+        CatRxnDescriptor, related_name='outcomeForFeatureSelections')
+    outcomeNumRxnDescriptors = models.ManyToManyField(
+        NumRxnDescriptor, related_name='outcomeForFeatureSelections')
 
     chosenDescriptors = ChosenDescriptorAttribute()
-    chosenBoolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor, related_name='chosenForFeatureSelection')
-    chosenOrdRxnDescriptors = models.ManyToManyField(OrdRxnDescriptor, related_name='chosenForFeatureSelection')
-    chosenCatRxnDescriptors = models.ManyToManyField(CatRxnDescriptor, related_name='chosenForFeatureSelection')
-    chosenNumRxnDescriptors = models.ManyToManyField(NumRxnDescriptor, related_name='chosenForFeatureSelection')
+    chosenBoolRxnDescriptors = models.ManyToManyField(
+        BoolRxnDescriptor, related_name='chosenForFeatureSelection')
+    chosenOrdRxnDescriptors = models.ManyToManyField(
+        OrdRxnDescriptor, related_name='chosenForFeatureSelection')
+    chosenCatRxnDescriptors = models.ManyToManyField(
+        CatRxnDescriptor, related_name='chosenForFeatureSelection')
+    chosenNumRxnDescriptors = models.ManyToManyField(
+        NumRxnDescriptor, related_name='chosenForFeatureSelection')
 
     @classmethod
     def create(cls, featureVisitorLibrary, featureVisitorTool, predictors, responses, featureVisitorOptions=None, reactions=None, trainingSet=None, description=""):
@@ -209,7 +227,8 @@ class FeatureSelectionContainer(models.Model):
         predictors is the descriptors being used as independent variables, responses is a descriptor queryset for the independent variables.
         reactions or training sets should be specified, and this will define how the training data is defined.
         """
-        container = cls(featureVisitorLibrary=featureVisitorLibrary, featureVisitorTool=featureVisitorTool, description=description)
+        container = cls(featureVisitorLibrary=featureVisitorLibrary,
+                        featureVisitorTool=featureVisitorTool, description=description)
         container.save()  # need pk
 
         if featureVisitorOptions is not None:
@@ -217,7 +236,8 @@ class FeatureSelectionContainer(models.Model):
 
         if trainingSet is None:
             assert(reactions is not None)
-            container.trainingSet = DataSet.create('{}_{}_{}'.format(container.featureVisitorLibrary, container.featureVisitorLibrary, container.pk), reactions)
+            container.trainingSet = DataSet.create('{}_{}_{}'.format(
+                container.featureVisitorLibrary, container.featureVisitorLibrary, container.pk), reactions)
         else:
             container.trainingSet = trainingSet
 
@@ -229,10 +249,12 @@ class FeatureSelectionContainer(models.Model):
     def build(self, verbose=False):
         """Take all options confirmed so far and generates a feature set."""
         if self.built:
-            raise RuntimeError("Cannot build a feature selection that has already been built.")
+            raise RuntimeError(
+                "Cannot build a feature selection that has already been built.")
 
         visitorOptions = json.loads(self.featureVisitorOptions)
-        featureVisitor = getattr(featureVisitorModules[self.featureVisitorLibrary], self.featureVisitorTool)(container=self, **visitorOptions)
+        featureVisitor = getattr(featureVisitorModules[
+                                 self.featureVisitorLibrary], self.featureVisitorTool)(container=self, **visitorOptions)
 
         self.startTime = datetime.datetime.now()
 

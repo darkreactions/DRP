@@ -31,11 +31,14 @@ class KDTree:
         if plen == 1:
             return Node(pointList[0], split_dimension, parent)
         else:
-            pointList = sorted(pointList, key=lambda point: point.values[split_dimension])
+            pointList = sorted(
+                pointList, key=lambda point: point.values[split_dimension])
             median = int(plen / 2)
             node = Node(pointList[median], split_dimension, parent)
-            node.left = self.makeKDTree(pointList[0:median], splitIndex + 1, node)
-            node.right = self.makeKDTree(pointList[median:], splitIndex + 1, node)
+            node.left = self.makeKDTree(
+                pointList[0:median], splitIndex + 1, node)
+            node.right = self.makeKDTree(
+                pointList[median:], splitIndex + 1, node)
             return node
 
     def findNearestNeighborHelper(self, search_point, current_node, current_best):
@@ -45,9 +48,11 @@ class KDTree:
         if current_node.left is None and current_node.right is None:
             return current_best
         elif current_node.right is None:
-            current_best = self.findNearestNeighborHelper(search_point, current_node.left, current_best)
+            current_best = self.findNearestNeighborHelper(
+                search_point, current_node.left, current_best)
         elif (current_node.left is None):
-            current_best = self.findNearestNeighborHelper(search_point, current_node.right, current_best)
+            current_best = self.findNearestNeighborHelper(
+                search_point, current_node.right, current_best)
         else:
             splitdim = current_node.dimension % current_node.point.d
             searchSplitVal = search_point.values[splitdim]
@@ -59,19 +64,26 @@ class KDTree:
             bestDist = search_point.distTo(current_best.point)
             try:
                 if searchSplitVal < currentNodeSplitVal:
-                    current_best = self.findNearestNeighborHelper(search_point, left, current_best)
+                    current_best = self.findNearestNeighborHelper(
+                        search_point, left, current_best)
                 if (math.fabs(currentNodeVal - searchVal) < bestDist):
-                    current_best = self.findNearestNeighborHelper(search_point, right, current_best)
+                    current_best = self.findNearestNeighborHelper(
+                        search_point, right, current_best)
                 else:
-                    current_best = self.findNearestNeighborHelper(search_point, right, current_best)
+                    current_best = self.findNearestNeighborHelper(
+                        search_point, right, current_best)
                     if math.fabs(currentNodeSplitVal - searchSplitVal) < bestDist:
-                        current_best = self.findNearestNeighborHelper(search_point, left, current_best)
+                        current_best = self.findNearestNeighborHelper(
+                            search_point, left, current_best)
             except:
-                left_best = self.findNearestNeighborHelper(search_point, left, current_best)
-                right_best = self.findNearestNeighborHelper(search_point, right, current_best)
+                left_best = self.findNearestNeighborHelper(
+                    search_point, left, current_best)
+                right_best = self.findNearestNeighborHelper(
+                    search_point, right, current_best)
                 leftDist = search_point.distTo(left_best.point)
                 rightDist = search_point.distTo(right_best.point)
-                tuples = [(leftDist, left_best), (rightDist, right_best), (bestDist, current_best)]
+                tuples = [(leftDist, left_best), (rightDist,
+                                                  right_best), (bestDist, current_best)]
                 current_best = min(tuples, key=lambda x: x[0])[1]
         return current_best
 

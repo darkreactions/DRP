@@ -18,4 +18,4 @@ class AbstractDistanceLearner(object):
 
     @abstractmethod
     def dist(self, x, y):
-        """Returns the distance between x and y under the metric"""
+        """Returns the distance between x and y under the metric."""

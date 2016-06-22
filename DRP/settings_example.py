@@ -46,8 +46,10 @@ if TESTING:
     MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example',)
     RXN_DESCRIPTOR_PLUGINS = ('DRP.plugins.rxndescriptors.rxnhash',)
 else:
-    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example', 'DRP.plugins.moldescriptors.drp_rdkit', 'DRP.plugins.moldescriptors.drp', 'DRP.plugins.moldescriptors.chemaxon',)
-    RXN_DESCRIPTOR_PLUGINS = ('DRP.plugins.rxndescriptors.rxnhash', 'DRP.plugins.rxndescriptors.drp',)
+    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example', 'DRP.plugins.moldescriptors.drp_rdkit',
+                              'DRP.plugins.moldescriptors.drp', 'DRP.plugins.moldescriptors.chemaxon',)
+    RXN_DESCRIPTOR_PLUGINS = (
+        'DRP.plugins.rxndescriptors.rxnhash', 'DRP.plugins.rxndescriptors.drp',)
 
 STATICFILES_DIRS = (STATIC_DIR,)
 
@@ -272,7 +274,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 STATS_MODEL_LIBS_DIR = "DRP.ml_models.model_visitors"
 STATS_MODEL_LIBS = ("weka",)
 REACTION_DATASET_SPLITTERS_DIR = "DRP.ml_models.splitters"
-REACTION_DATASET_SPLITTERS = ("KFoldSplitter", "ExploratorySplitter", "NoSplitter", "RandomSplitter")
+REACTION_DATASET_SPLITTERS = (
+    "KFoldSplitter", "ExploratorySplitter", "NoSplitter", "RandomSplitter")
 FEATURE_SELECTION_LIBS_DIR = "DRP.ml_models.feature_visitors"
 FEATURE_SELECTION_LIBS = ("weka",)
 METRIC_VISITORS = ("ITML",)

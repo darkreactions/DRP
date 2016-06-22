@@ -41,7 +41,8 @@ from DRP.recommendation.metrics import Tanimoto
 dist = Tanimoto("test")
 
 
-matrix[0] = ["XXX-Seed", "XXX-Se", "XXX-Te", "XXX-Intuition", "Similarity Index"] + matrix[0]
+matrix[0] = ["XXX-Seed", "XXX-Se", "XXX-Te",
+             "XXX-Intuition", "Similarity Index"] + matrix[0]
 for i, elem in enumerate(data):
 
     if (i % 100 == 0):
