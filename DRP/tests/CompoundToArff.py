@@ -2,8 +2,8 @@
 """File for testing Arff output."""
 
 import unittest
-from decorators import createsUser, joinsLabGroup
-from decorators import loadsCompoundsFromCsv
+from decorators import createsUser, joinsLabGroup, createsChemicalClass
+from decorators import createsCompound
 from DRP.models import Compound
 from django.conf import settings
 import subprocess
@@ -14,7 +14,10 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @createsUser('Aslan', 'old_magic')
 @joinsLabGroup('Aslan', 'Narnia')
-@loadsCompoundsFromCsv('Narnia', 'compound_spread_test1.csv')
+@createsChemicalClass('Org', 'organic')
+@createsCompound('2-amep', 104820, 'Org', 'Narnia', custom=False)
+@createsCompound('hmta', 3959, 'Org', 'Narnia', custom=False)
+@createsCompound('sp', 1071, 'Org', 'Narnia', custom=False)
 class CompoundToArff(DRPTestCase):
 
     """Validates the structure of the Arff- this could be more detailed if we find that we encounter issues later."""

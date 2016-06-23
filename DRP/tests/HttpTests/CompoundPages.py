@@ -10,6 +10,7 @@ from DRP.tests.decorators import createsUser, createsCompound
 from DRP.tests import runTests
 from django.contrib.auth.models import User
 from DRP.models import ConfirmationCode, LabGroup, ChemicalClass, License, Compound
+from DRP.models import CompoundGuideEntry
 from django.core.urlresolvers import reverse
 from uuid import uuid4
 import requests
@@ -86,7 +87,7 @@ class CreateCompoundRedirTest(PostHttpSessionTest, OneRedirectionMixin):
 
     def setUp(self):
         """Ensure that a create compound redirection works."""
-        self.payload['labGroup'] = LabGroup.objects.get(title='Narnia').id
+        self.payload['labGroups'] = LabGroup.objects.get(title='Narnia').id
         self.payload['chemicalClasses'] = [
             ChemicalClass.objects.get(label='Org').id]
         super(CreateCompoundRedirTest, self).setUp()
@@ -176,8 +177,11 @@ class GetCompoundForEditing(GetHttpSessionTest):
     def setUp(self):
         """Request to edit a compound."""
         self.url = self.baseUrl + \
-            reverse('editCompound', args=[
-                    Compound.objects.get(abbrev='EtOH').pk])
+            reverse('editCompound', kwargs={
+                    'pk': CompoundGuideEntry.objects.get(
+                        abbrev='EtOH',
+                        labGroup__title='Narnia'
+                    ).compound.pk})
         super(GetCompoundForEditing, self).setUp()
 
 
@@ -198,8 +202,11 @@ class GetNotMyCompoundForEditing(GetHttpSessionTest):
     def setUp(self):
         """Ask for another user's compound."""
         self.url = self.baseUrl + \
-            reverse('editCompound', args=[
-                    Compound.objects.get(abbrev='Pyr').pk])
+            reverse('editCompound', kwargs={
+                    'pk': CompoundGuideEntry.objects.get(
+                        abbrev='Pyr',
+                        labGroup__title='stone table'
+                    ).compound.pk})
         super(GetNotMyCompoundForEditing, self).setUp()
 
 
@@ -217,8 +224,11 @@ class GetCustomCompound403(GetHttpSessionTest):
     def setUp(self):
         """Test that fetching a compound with the custom flag for editing returns a 403."""
         self.url = self.baseUrl + \
-            reverse('editCompound', args=[
-                    Compound.objects.get(abbrev='EtOH').pk])
+            reverse('editCompound', kwargs={
+                    'pk': CompoundGuideEntry.objects.get(
+                        abbrev='EtOH',
+                        labGroup__title='Narnia'
+                    ).compound.pk})
         super(GetCustomCompound403, self).setUp()
 
 
@@ -235,8 +245,6 @@ suite = unittest.TestSuite([
     loadTests(GetCompoundForEditing),
     loadTests(GetNotMyCompoundForEditing),
     loadTests(GetCustomCompound403),
-    loadTests(GetCompoundUpload),
-    loadTests(PostCompoundUpload)
 ])
 
 if __name__ == '__main__':

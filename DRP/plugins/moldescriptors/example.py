@@ -71,9 +71,8 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
-            v.save()
+        v.save()
 
-    arbValue = arbValCalc(compound)
     heading = 'fs'
     if whitelist is None or heading in whitelist:
         v = DRP.models.OrdMolDescriptorValue.objects.update_or_create(
@@ -84,7 +83,7 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
-            v.save()
+        v.save()
 
     heading = 'N?'
     if whitelist is None or heading in whitelist:
@@ -96,7 +95,7 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
-            v.save()
+        v.save()
 
     heading = 'arb'
     if whitelist is None or heading in whitelist:
@@ -108,4 +107,4 @@ def calculate(compound, verbose=False, whitelist=None):
             warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
-            v.save()
+        v.save()

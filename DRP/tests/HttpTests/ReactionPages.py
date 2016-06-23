@@ -7,7 +7,7 @@ from HttpTest import redirectionMixinFactory, logsInAs, usesCsrf
 from HttpTest import choosesLabGroup
 from DRP.tests.decorators import joinsLabGroup, createsChemicalClass, signsExampleLicense
 from DRP.tests.decorators import createsUser, createsCompound, createsPerformedReaction
-from DRP.tests.decorators import createsOrdRxnDescriptor, loadsCompoundsFromCsv
+from DRP.tests.decorators import createsOrdRxnDescriptor
 from DRP.tests.decorators import createsCompoundRole, createsCompoundQuantity
 from DRP.tests.decorators import createsOrdRxnDescriptorValue
 from DRP.tests import runTests
@@ -17,6 +17,7 @@ import requests
 import unittest
 from DRP.models import LabGroup, CompoundRole, Compound, PerformedReaction
 from DRP.models import CompoundQuantity, OrdRxnDescriptor, OrdRxnDescriptorValue
+from DRP.models import CompoundGuideEntry
 from urllib import urlencode
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
@@ -352,10 +353,10 @@ class InvalidateNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsCompoundRole('Org', 'Organic')
 @createsCompoundRole('inOrg', 'inOrganic')
+@createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @usesCsrf
 # we expect 5 redirections because we have initialised no manual reaction
 # descriptors
@@ -381,7 +382,7 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
         self.payload[
             'quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload[
-            'quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
+            'quantities-0-compound'] = CompoundGuideEntry.objects.get(labGroup__title='narnia', abbrev='2-amep').compound.id
         self.payload['quantities-0-amount'] = '22'
         self.payload['quantities-0-reaction'] = str(rxn_id)
         super(PostReactantAddCreatingValid, self).setUp()
@@ -395,10 +396,10 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsCompoundRole('Org', 'Organic')
 @createsCompoundRole('inOrg', 'inOrganic')
+@createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
 # we expect 4 redirections because we have initialised no manual reaction
@@ -427,7 +428,7 @@ class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory
         self.payload[
             'quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload[
-            'quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
+            'quantities-0-compound'] = CompoundGuideEntry.objects.get(labGroup__title='narnia', abbrev='2-amep').compound.id
         self.payload['quantities-0-amount'] = '22'
         super(PostReactantAddCreatingValid2, self).setUp()
 
@@ -440,10 +441,10 @@ class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsCompoundRole('Org', 'Organic')
 @createsCompoundRole('inOrg', 'inOrganic')
+@createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @usesCsrf
 class PostReactantAddCreatingInvalid(PostHttpSessionTest):
 
@@ -469,7 +470,7 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
         self.payload[
             'quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload[
-            'quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
+            'quantities-0-compound'] = CompoundGuideEntry.objects.get(labGroup__title='narnia', abbrev='2-amep').compound.id
         self.payload['quantities-0-amount'] = '-1'
         super(PostReactantAddCreatingInvalid, self).setUp()
 
@@ -477,10 +478,10 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsCompoundRole('Org', 'Organic')
 @createsCompoundRole('inOrg', 'inOrganic')
+@createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @createsCompoundQuantity('turkish_delight', '2-amep', 'Org', '2.12')
 @usesCsrf
 # this is the same view so the invalid case is covered
@@ -503,13 +504,13 @@ class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
         self.url = self.url + \
             reverse('addCompoundDetails', kwargs={'rxn_id': rxn.id})
         self.quantity = CompoundQuantity.objects.get(
-            reaction=rxn, reaction__labGroup__title='narnia', compound__abbrev='2-amep')
+            reaction=rxn, reaction__labGroup__title='narnia', compound__compoundguideentry__abbrev='2-amep')
         self.payload['quantities-0-reaction'] = rxn.id
         self.payload['quantities-0-id'] = self.quantity.id
         self.payload[
             'quantities-0-role'] = CompoundRole.objects.get(label='Org').id
         self.payload[
-            'quantities-0-compound'] = Compound.objects.get(abbrev='2-amep').id
+            'quantities-0-compound'] = CompoundGuideEntry.objects.get(labGroup__title='narnia', abbrev='2-amep').compound.id
         self.payload['quantities-0-amount'] = '15'
         super(PostReactantEditingValid, self).setUp()
         self.quantity.refresh_from_db()
@@ -522,10 +523,10 @@ class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsCompoundRole('Org', 'Organic')
 @createsCompoundRole('inOrg', 'inOrganic')
+@createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @createsCompoundQuantity('turkish_delight', '2-amep', 'Org', '2.12')
 @usesCsrf
 # we expect 4 redirections because we have initialised no manual reaction
@@ -548,27 +549,26 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)):
         self.url = self.url + \
             reverse('addCompoundDetails', kwargs={'rxn_id': rxn.id})
         cq = CompoundQuantity.objects.get(
-            compound__abbrev='2-amep', reaction=rxn)
+            compound__compoundguideentry__abbrev='2-amep', reaction=rxn)
         self.payload['quantities-0-reaction'] = str(rxn.id)
         self.payload['quantities-0-role'] = cq.role.id
         self.payload['quantities-0-compound'] = cq.compound.id
         self.payload['quantities-0-amount'] = cq.amount
         self.payload['quantities-0-DELETE'] = 'on'
         self.payload['quantities-0-id'] = CompoundQuantity.objects.get(
-            compound__abbrev='2-amep', reaction=rxn).id
+            compound__compoundguideentry__abbrev='2-amep', reaction=rxn).id
         super(PostReactantDeleteValid, self).setUp()
 
     def test_delete(self):
         """Check the deletion."""
         rxn = PerformedReaction.objects.get(reference='turkish_delight')
         self.assertEqual(CompoundQuantity.objects.filter(
-            compound__abbrev='2-amep', reaction=rxn).count(), 0)
+            compound__compoundguideentry__abbrev='2-amep', reaction=rxn).count(), 0)
 
 
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
@@ -606,7 +606,6 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
@@ -643,7 +642,6 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)
@@ -682,7 +680,6 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@loadsCompoundsFromCsv('narnia', 'compound_spread_test1.csv')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)

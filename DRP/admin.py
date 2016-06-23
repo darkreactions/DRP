@@ -35,7 +35,7 @@ class LicenseAdmin(admin.ModelAdmin):
 
 class CompoundGuideEntryAdmin(admin.ModelAdmin):
 
-    """Provides a more specific display for compound guide entries"""
+    """Provides a more specific display for compound guide entries."""
 
     list_display = ('abbrev', 'labGroup', 'compound')
 

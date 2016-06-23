@@ -26,7 +26,7 @@ class NoLabExists(BaseFormTest):
 
     def setUpFormData(self):
         """Set up form data."""
-        self.formData = {'labGroup': '5', 'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5', 'CSID': '682',
+        self.formData = {'labGroups': ['5'], 'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5', 'CSID': '682',
                          'chemicalClasses': [ChemicalClass.objects.get(label='Solv').pk]}
 
     def setUp(self):
@@ -44,7 +44,7 @@ class NoLabForUser(NoLabExists):
     def setUpFormData(self):
         """Set up form data."""
         super(NoLabForUser, self).setUpFormData()
-        self.formData['labGroup'] = str(self.labGroup.id)
+        self.formData['labGroups'] = [str(self.labGroup.id)]
 
     def setUp(self):
         """Set up lab group for tests."""
@@ -95,7 +95,7 @@ class LabForBadUser(LabForUser):
     def setUpFormData(self):
         """Get a user and sets its labgroup to an empty string."""
         super(LabForBadUser, self).setUpFormData()
-        self.formData['labGroup'] = ''
+        self.formData['labGroups'] = []
 
     def test_validation(self):
         """Ensure that the form fails for a user without a lab group."""

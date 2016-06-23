@@ -8,7 +8,7 @@ These tests assume that presence tests for the form fields work as expected
 import unittest
 from BaseFormTest import BaseFormTest
 from DRP.forms import CompoundEditForm
-from DRP.models import LabGroup, ChemicalClass, Compound, LabGroup
+from DRP.models import LabGroup, ChemicalClass, Compound, LabGroup, CompoundGuideEntry
 from django.conf import settings
 from DRP.tests.decorators import createsCompound, createsUser, joinsLabGroup, createsChemicalClass
 from DRP.tests import runTests
@@ -36,8 +36,11 @@ class CorrectSynonym(BaseFormTest):
     def setUp(self):
         """Instantiate the form."""
         super(CorrectSynonym, self).setUp()
-        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(
-            abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
+        compoundEntry = CompoundGuideEntry.objects.get(
+            abbrev='EtOH',
+            labGroup=LabGroup.objects.get(title="Narnia")
+        )
+        self.form = CompoundEditForm(data=self.formData, instance=compoundEntry.compound)
 
 
 @createsUser('Aslan', 'old_magic')
@@ -57,8 +60,11 @@ class IncorrectSynonym(BaseFormTest):
     def setUp(self):
         """Instantiate the form."""
         super(IncorrectSynonym, self).setUp()
-        self.form = CompoundEditForm(data=self.formData, instance=Compound.objects.get(
-            abbrev='EtOH', labGroup=LabGroup.objects.get(title="Narnia")))
+        compoundEntry = CompoundGuideEntry.objects.get(
+            abbrev='EtOH',
+            labGroup=LabGroup.objects.get(title="Narnia")
+        )
+        self.form = CompoundEditForm(data=self.formData, instance=compoundEntry.compound)
 
 suite = unittest.TestSuite([
     loadTests(IncorrectSynonym),

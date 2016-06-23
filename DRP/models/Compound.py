@@ -23,6 +23,7 @@ descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 # This prevents a cyclic dependency problem
 
+
 def elementsFormatValidator(molFormula):
     """A validator for molecular formulae."""
     elements = {}
@@ -229,6 +230,7 @@ class Compound(models.Model):
     )
 
     objects = CompoundManager()
+    calcDescriptors = True
 
     def __init__(self, *args, **kwargs):
         """Instantiate an object."""
@@ -284,6 +286,9 @@ class Compound(models.Model):
                 except PerformedReaction.PerformedReaction.DoesNotExist:
                     pass  # it doesn't matter
         super(Compound, self).save(*args, **kwargs)
+        if calcDescriptors and self.calcDescriptors:
+            for plugin in descriptorPlugins:
+                plugin.calculate(self)
 
     @property
     def descriptorValues(self):
@@ -334,14 +339,15 @@ class Compound(models.Model):
 
 class CompoundGuideEntry(models.Model):
 
+    """Represents the relationship between a labgroup, a compound and an abbrevation."""
+
     class Meta:
-        app_label='DRP'
-        unique_together=(('compound', 'labGroup'), ('abbrev', 'labGroup'))
+        app_label = 'DRP'
+        unique_together = (('compound', 'labGroup'), ('abbrev', 'labGroup'))
 
     compound = models.ForeignKey(Compound)
     labGroup = models.ForeignKey(LabGroup)
     abbrev = models.CharField("Abbreviation", max_length=100)
-    
 
 
 class ElementsException(Exception):

@@ -61,7 +61,7 @@ class EditCompound(UpdateView):
         """Check user has sufficient credentials and has row-level permissions for this compound."""
         try:
             compound = Compound.objects.get(
-                pk=self.get_object().pk, labGroup__in=request.user.labgroup_set.all())
+                pk=self.get_object().pk, labGroups__in=request.user.labgroup_set.all())
         except Compound.DoesNotExist:
             raise Http404("A compound matching your query could not be found.")
         if compound.custom:

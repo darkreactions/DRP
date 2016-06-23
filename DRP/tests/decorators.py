@@ -3,7 +3,7 @@
 from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, NumRxnDescriptor
-from DRP.models import DataSet, CompoundGuideEntry
+from DRP.models import DataSet, CompoundGuideEntry, PerformedReaction
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
@@ -59,8 +59,9 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(
-                abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
+            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=CompoundGuideEntry.objects.get(
+                abbrev=compRef,
+                labGroup=PerformedReaction.objects.get(reference=rxnRef).labGroup).compound, role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
             _oldSetup(self)
 
         def tearDown(self):
@@ -298,8 +299,10 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
         compound = Compound(CSID=csid, custom=custom)
 
         def setUp(self):
+            if not compound.custom:
+                compound.csConsistencyCheck()
             compound.save()
-            CompoundGuideEntry.objects.create(labGroup = LabGroup.objects.get(title=labTitle), abbrev=abbrev, compound=compound)
+            CompoundGuideEntry.objects.create(labGroup=LabGroup.objects.get(title=labTitle), abbrev=abbrev, compound=compound)
             for c in ChemicalClass.objects.filter(label=classLabel):
                 compound.chemicalClasses.add(c)
             compound.save()
@@ -395,35 +398,6 @@ def signsExampleLicense(username):
         c.tearDown = tearDown
         return c
     return _signsExampleLicense
-
-
-def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
-    """A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder."""
-    def _loadsCompoundsFromCsv(c):
-
-        _oldSetup = c.setUp
-        _oldTearDown = c.tearDown
-
-        def setUp(self):
-            labGroup = LabGroup.objects.get(title=labGroupTitle)
-            compounds = labGroup.compound_set.fromCsv(os.path.join(
-                settings.APP_DIR, 'tests', 'resource', csvFileName))
-
-            # TODO XXX bulk_create? Can't use our custom save then
-            for compound in compounds:
-                compound.csConsistencyCheck()
-                compound.save()
-
-            _oldSetup(self)
-
-        def tearDown(self):
-            CompoundQuantity.objects.all().delete()
-            _oldTearDown(self)
-
-        c.setUp = setUp
-        c.tearDown = tearDown
-        return c
-    return _loadsCompoundsFromCsv
 
 
 def createsPerformedReactionSetOrd(c):

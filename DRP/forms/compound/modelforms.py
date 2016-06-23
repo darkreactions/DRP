@@ -16,7 +16,7 @@ class CompoundAdminForm(forms.ModelForm):
 
     class Meta:
         model = Compound
-        exclude = ('descriptors', 'custom')
+        exclude = ('descriptors', 'custom', 'labGroups')
 
     def save(self, commit=True):
         """Save the compound."""
@@ -59,7 +59,6 @@ class CompoundForm(forms.ModelForm):
         self.compound = None
         self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
         self.fields['labGroups'].queryset = user.labgroup_set.all()
-        self.fields['labGroups'].widget = forms.Select
         if user.labgroup_set.all().exists():
             self.fields['labGroups'].empty_label = None
 
@@ -77,9 +76,9 @@ class CompoundForm(forms.ModelForm):
     def clean(self):
         """Verify that the CSID, CAS_ID (where supplied) and name are consistent."""
         self.cleaned_data = super(CompoundForm, self).clean()
-        if 'labGroup' in self.cleaned_data:
-            for labGroup in self.cleaned_data.get('labGroup'):
-                if CompoundGuideEntry.objects.filter(abbrev=self.cleaned_data.get('abbrev'), labGroup = labGroup).exclude(compound=self.instance).exists():
+        if 'labGroups' in self.cleaned_data:
+            for labGroup in self.cleaned_data.get('labGroups'):
+                if CompoundGuideEntry.objects.filter(abbrev=self.cleaned_data.get('abbrev'), labGroup=labGroup).exclude(compound=self.instance).exists():
                     self.add_error('abbrev', 'A compound with this abbreviation already exists for the selected labgroup.')
         if self.cleaned_data.get('name'):
             nameResults = self.chemSpider.simple_search(
@@ -133,7 +132,7 @@ class CompoundForm(forms.ModelForm):
         try:
             self.instance = Compound.objects.get(CSID=self.cleaned_data['CSID'])
         except Compound.DoesNotExist:
-            pass # Hakuna Matata
+            pass  # Hakuna Matata
         compound = super(CompoundForm, self).save(commit=False)
         csCompound = self.chemSpider.get_compound(compound.CSID)
         compound.INCHI = csCompound.inchi
@@ -141,8 +140,8 @@ class CompoundForm(forms.ModelForm):
         compound.formula = csCompound.molecular_formula
         if commit:
             compound.save()
-            if 'labGroup' in self.cleaned_data:
-                for labGroup in self.cleaned_data['labGroup']:
+            if 'labGroups' in self.cleaned_data:
+                for labGroup in self.cleaned_data['labGroups']:
                     try:
                         cgEntry = CompoundGuideEntry.objects.get(labGroup=labGroup, abbrev=self.cleaned_data['abbrev'])
                         cgEntry.compound = compound

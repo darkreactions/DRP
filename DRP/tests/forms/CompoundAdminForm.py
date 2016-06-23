@@ -17,7 +17,7 @@ class CreateTest(BaseFormTest):
 
     def setUpFormData(self):
         """Set up form data to use for test."""
-        self.formData = {'labGroup': self.labGroup.id, 'chemicalClasses': [self.chemicalClass.id], 'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5',
+        self.formData = {'chemicalClasses': [self.chemicalClass.id], 'abbrev': 'etoh', 'name': 'ethanol', 'CAS_ID': '64-17-5',
                          'CSID': '682', 'INCHI': r'1S/C2H6O/c1-2-3/h3H,2H2,1H3', 'smiles': 'CCO'}
 
     def setUp(self):
