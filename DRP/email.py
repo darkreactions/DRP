@@ -14,7 +14,6 @@ from DRP import settings
 
 
 class Email(object):
-
     """The base email class, sends email to a specified recipient from a specified sender."""
 
     def __init__(self, subject, message, to=[], sender=settings.DEFAULT_FROM_EMAIL):
@@ -30,7 +29,6 @@ class Email(object):
 
 
 class EmailToAdmins(Email):
-
     """
     Send email specifically to administrators.
 
