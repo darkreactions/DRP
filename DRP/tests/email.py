@@ -35,8 +35,8 @@ class EmailSendsAndRecieves(DRPTestCase):
         sel_rv, data = m.select(settings.EMAIL_IMAP_INBOX)
         try:
             if sel_rv == 'OK':
-                search_rv, data = m.search(None, 'FROM', settings.DEFAULT_FROM_EMAIL,
-                                           'SUBJECT', 'Test Subject Header: {0}'.format(self.headerId))
+                search_rv, data = m.search(None, b'FROM', settings.DEFAULT_FROM_EMAIL.encode(),
+                                           b'SUBJECT', '"Test Subject Header: {0}"'.format(self.headerId).encode())
                 if search_rv == 'OK':
                     for num in data[0].split():
                         fetch_rv, msgData = m.fetch(num, '(RFC822)')
@@ -55,7 +55,6 @@ class EmailSendsAndRecieves(DRPTestCase):
         except RuntimeError as e:
             errMessage = repr(e)
         finally:
-            m.close()
             m.logout()
         self.assertTrue(testPass, errMessage + messages)
 

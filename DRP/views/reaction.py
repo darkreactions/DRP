@@ -1,6 +1,5 @@
 """A module containing views pertinent to the manipulation of reaction objects."""
 
-import urllib
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue

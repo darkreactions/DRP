@@ -18,7 +18,7 @@ import unittest
 from DRP.models import LabGroup, CompoundRole, Compound, PerformedReaction
 from DRP.models import CompoundQuantity, OrdRxnDescriptor, OrdRxnDescriptorValue
 from DRP.models import CompoundGuideEntry
-from urllib import urlencode
+from urllib.parse import urlencode
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 

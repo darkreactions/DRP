@@ -8,11 +8,11 @@ from . import labGroupPage
 from . import licensePage
 from . import loginPage
 from . import registerPage
-from . import unittest
+import unittest
 from . import compoundPages
 from . import reactionPages
 
-suite = unittestTestSuite([
+suite = unittest.TestSuite([
     aboutPage.suite,
     accountPage.suite,
     confirmationPage.suite,

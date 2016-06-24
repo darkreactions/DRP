@@ -6,7 +6,7 @@ import pep8
 from django.conf import settings
 import os
 import sys
-from cStringIO import StringIO
+from io import StringIO
 import pep257
 import fnmatch
 loadTests = unittest.TestLoader().loadTestsFromTestCase

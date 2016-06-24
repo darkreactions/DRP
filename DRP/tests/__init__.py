@@ -1,7 +1,7 @@
 """The suite of DRP tests."""
-from . from drpTestCase import DRPTestCase, runTests
+from .drpTestCase import DRPTestCase, runTests
 from . import fileTests
-from . import unittest
+import unittest
 from . import email
 from . import forms
 from . import httpTests
@@ -11,7 +11,7 @@ from . import compoundToCsv
 from . import compoundToArff
 # import modelBuildingTests
 # import DataImport
-import modelValidators
+from . import modelValidators
 # import splitters
 
 

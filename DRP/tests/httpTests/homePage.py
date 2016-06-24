@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """This package provides tests for the home page."""
-from httpTest import GetHttpTest
+from .httpTest import GetHttpTest
 import unittest
 import requests
 

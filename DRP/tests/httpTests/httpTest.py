@@ -67,7 +67,7 @@ class GetHttpTest(DRPTestCase):
     def test_ValidHtml(self):
         """Check HTML validity."""
         self.validate()
-        responseData = json.loads(self.validationResponse.content)
+        responseData = json.loads(self.validationResponse.content.decode('utf8'))
         testPassed = True
         failureMessages = ''
         for message in responseData['messages']:

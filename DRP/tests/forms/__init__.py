@@ -1,13 +1,13 @@
 """Encapsulates unit tests for various forms."""
 
 import unittest
-import compoundAdminForm
-import compoundCreationForm
-import compoundEditingForm
-import confirmationForm
-import labGroupForm
-import labGroupJoiningForm
-import licenseAgreementForm
+from . import compoundAdminForm
+from . import compoundCreationForm
+from . import compoundEditingForm
+from . import confirmationForm
+from . import labGroupForm
+from . import labGroupJoiningForm
+from . import licenseAgreementForm
 
 suite = unittest.TestSuite([
     compoundAdminForm.suite,
