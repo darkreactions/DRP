@@ -139,7 +139,7 @@ def display_model_results(container, reactions=None, heading=""):
     overall_conf_mtrcs = container.getOverallConfusionMatrices(
         reactions=reactions)
     if not overall_conf_mtrcs:
-        print "No model results to display"
+        print("No model results to display")
         return
     if len(overall_conf_mtrcs) != 1:
         raise NotImplementedError('Can only handle one response')
@@ -147,11 +147,11 @@ def display_model_results(container, reactions=None, heading=""):
         acc = accuracy(conf_mtrx)
         bcr = BCR(conf_mtrx)
         matthews = Matthews(conf_mtrx)
-        print "Confusion matrix for {}:".format(descriptor_header)
-        print confusionMatrixString(conf_mtrx)
-        print "Accuracy: {:.3}".format(acc)
-        print "BCR: {:.3}".format(bcr)
-        print "Matthews: {:.3}".format(matthews)
+        print("Confusion matrix for {}:".format(descriptor_header))
+        print(confusionMatrixString(conf_mtrx))
+        print("Accuracy: {:.3}".format(acc))
+        print("BCR: {:.3}".format(bcr))
+        print("Matthews: {:.3}".format(matthews))
     conf_mtrcs = container.getComponentConfusionMatrices(reactions=reactions)
 
     sum_acc = 0.0
@@ -166,11 +166,11 @@ def display_model_results(container, reactions=None, heading=""):
             acc = accuracy(conf_mtrx)
             bcr = BCR(conf_mtrx)
             matthews = Matthews(conf_mtrx)
-            print "Confusion matrix for {}:".format(descriptor_header)
-            print confusionMatrixString(conf_mtrx)
-            print "Accuracy: {:.3}".format(acc)
-            print "BCR: {:.3}".format(bcr)
-            print "Matthews: {:.3}".format(matthews)
+            print("Confusion matrix for {}:".format(descriptor_header))
+            print(confusionMatrixString(conf_mtrx))
+            print("Accuracy: {:.3}".format(acc))
+            print("BCR: {:.3}".format(bcr))
+            print("Matthews: {:.3}".format(matthews))
 
             # This only works for one response. Sorry...
             # TODO XXX make this work for multiple responses
@@ -179,9 +179,9 @@ def display_model_results(container, reactions=None, heading=""):
             sum_matthews += matthews
             count += 1
 
-    print "{} Average accuracy: {:.3}".format(heading, sum_acc / count)
-    print "{} Average BCR: {:.3}".format(heading, sum_bcr / count)
-    print "{} Average Matthews: {:.3}".format(heading, sum_matthews / count)
+    print("{} Average accuracy: {:.3}".format(heading, sum_acc / count))
+    print("{} Average BCR: {:.3}".format(heading, sum_bcr / count))
+    print("{} Average Matthews: {:.3}".format(heading, sum_matthews / count))
 
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,

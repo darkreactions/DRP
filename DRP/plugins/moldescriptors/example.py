@@ -2,7 +2,9 @@
 from utils import setup
 import DRP
 from django.core.exceptions import ValidationError
-import warnings
+import logging
+
+logger = logging.getLogger(__name__)
 
 calculatorSoftware = 'example_plugin'
 
@@ -39,7 +41,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     """Batch calculation."""
     for i, compound in enumerate(compound_set):
         if verbose:
-            print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
+            logger.info("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
         calculate(compound, verbose=verbose, whitelist=whitelist)
 
 
@@ -68,7 +70,7 @@ def calculate(compound, verbose=False, whitelist=None):
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+            logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
         v.save()
@@ -80,7 +82,7 @@ def calculate(compound, verbose=False, whitelist=None):
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+            logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
         v.save()
@@ -92,7 +94,7 @@ def calculate(compound, verbose=False, whitelist=None):
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+            logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
         v.save()
@@ -104,7 +106,7 @@ def calculate(compound, verbose=False, whitelist=None):
         try:
             v.full_clean()
         except ValidationError as e:
-            warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+            logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                 v.value, v.compound, v.descriptor, e.message))
             v.value = None
         v.save()
