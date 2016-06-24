@@ -23,7 +23,7 @@ splitters = ['RandomSplitter',
 
 response = BoolRxnDescriptor.objects.filter(heading='boolean_crystallisation_outcome')
 
-built_containers = ModelContainer.objects.filter(built=True)
+built_containers = ModelContainer.objects.filter(built=True).annotate(numpredictor_count=
 
 for fn in descriptor_filenames:
     path = os.path.join(descriptor_directory, fn)
