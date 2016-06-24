@@ -23,7 +23,6 @@ registrationUrl = GetHttpTest.baseUrl + '/register.html'
 
 
 class RegisterPage(GetHttpTest):
-
     """Checks the register page html validity."""
 
     url = registrationUrl
@@ -34,7 +33,6 @@ class RegisterPage(GetHttpTest):
 @unittest.skipIf(settings.SKIP_EMAIL_TESTS, 'Email Tests being skipped...')
 @usesCsrf
 class PostRegisterPage(PostHttpSessionTest):
-
     """Checks the register page email response."""
 
     url = registrationUrl

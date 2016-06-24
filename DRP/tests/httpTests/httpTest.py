@@ -12,7 +12,6 @@ from django.contrib.auth.models import User
 
 
 class GetHttpTest(DRPTestCase):
-
     """A test to check a simple GET request."""
 
     baseUrl = 'http://' + settings.SERVER_NAME
@@ -85,7 +84,6 @@ class GetHttpTest(DRPTestCase):
 
 
 class PostHttpTest(GetHttpTest):
-
     """A test for post requests that do not use sessions."""
 
     _payload = {}
@@ -106,7 +104,6 @@ class PostHttpTest(GetHttpTest):
 
 
 class GetHttpSessionTest(GetHttpTest):
-
     """Makes a get request as a part of a session."""
 
     def __init__(self, *args, **kwargs):
@@ -121,7 +118,6 @@ class GetHttpSessionTest(GetHttpTest):
 
 
 class PostHttpSessionTest(PostHttpTest):
-
     """A test for post requests that use sessions (e.g. get decorated with logsInAs)."""
 
     def __init__(self, *args, **kwargs):
@@ -138,7 +134,6 @@ class PostHttpSessionTest(PostHttpTest):
 def redirectionMixinFactory(redirectionCount):
     """A factory for generating class mixins which test redirection."""
     class RedirectionMixin(object):
-
         """A mixin for testing redirectionpages."""
 
         def test_redirect(self):

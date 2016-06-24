@@ -6,7 +6,6 @@ import xxhash
 
 
 class Command(BaseCommand):
-
     """Runs a check on the database to make sure reaction hashes don't have collisions.
 
     The current hash is the same as the one used in rxnSpaceHash1 descriptor.

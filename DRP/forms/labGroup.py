@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 
 
 class LabGroupForm(forms.ModelForm):
-
     """
     This class is for use in the Django admin for creating lab groups.
 
@@ -49,7 +48,6 @@ class LabGroupForm(forms.ModelForm):
 
 
 class LabGroupJoiningForm(forms.Form):
-
     """This class is to validate a user to join a lab group using their supplied access code."""
 
     labGroup = forms.ModelChoiceField(
@@ -71,7 +69,6 @@ class LabGroupJoiningForm(forms.Form):
 
 
 class LabGroupLeavingForm(forms.Form):
-
     """This class is a form to allow a user to leave a research group."""
 
     def __init__(self, user, labGroup=None, *args, **kwargs):
@@ -82,7 +79,6 @@ class LabGroupLeavingForm(forms.Form):
 
 
 class LabGroupSelectionForm(forms.Form):
-
     """Validate a user to select a group in order to view the compound lists and reaction lists."""
 
     def __init__(self, user, *args, **kwargs):

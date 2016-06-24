@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractFeatureVisitor(object):
-
     """The Abstracted feature visitor."""
 
     __metaclass__ = ABCMeta

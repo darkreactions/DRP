@@ -3,7 +3,6 @@ import django.forms as forms
 
 
 class ContactForm(forms.Form):
-
     """A very simple form for the contacting of site Admins by all people viewing the DRP site."""
 
     email = forms.EmailField(label="Your Email Address",

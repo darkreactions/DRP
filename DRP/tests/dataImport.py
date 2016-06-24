@@ -18,7 +18,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @signsExampleLicense("Rorschach")
 @createsPerformedReactionSetOrd
 class ApiV1(DRPTestCase):
-
     """Tests the version 1 api."""
 
     @transaction.atomic
@@ -47,7 +46,6 @@ class ApiV1(DRPTestCase):
 @signsExampleLicense("Rorschach")
 @createsPerformedReactionSetOrd
 class ApiV1FailBadUser(ApiV1):
-
     """Direct test made different by using different users."""
 
     pass

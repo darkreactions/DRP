@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     """Miniaturise the current database."""
 
     help = 'Miniaturize the current database.'

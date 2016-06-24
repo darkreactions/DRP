@@ -16,7 +16,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class InactiveUser(DRPTestCase):
-
     """Tests the case where good credentials for an inactive user have been submitted."""
 
     def setUp(self):
@@ -44,7 +43,6 @@ class InactiveUser(DRPTestCase):
 
 
 class ActiveUser(DRPTestCase):
-
     """Tests the case where good credentials for an active user have been sumbitted."""
 
     def setUp(self):

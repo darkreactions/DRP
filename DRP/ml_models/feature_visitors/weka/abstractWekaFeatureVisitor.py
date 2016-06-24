@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
-
     """An abstracted feature visitor designed to work with weka."""
 
     maxResponseCount = 1

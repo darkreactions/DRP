@@ -12,7 +12,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @createsPerformedReactionSetOrd
 class BasicWekaSVM(DRPTestCase):
-
     """Test the splitter in terms of a basic Weka SVM."""
 
     def runTest(self):

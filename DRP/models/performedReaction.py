@@ -12,7 +12,6 @@ from .validators import notInTheFuture
 
 
 class PerformedReactionQuerySet(ReactionQuerySet):
-
     """A custom queryset for performed reactions."""
 
     def __init__(self, model=None, **kwargs):
@@ -22,7 +21,6 @@ class PerformedReactionQuerySet(ReactionQuerySet):
 
 
 class PerformedReactionManager(ReactionManager):
-
     """A custom manager for performed reactions."""
 
     def get_queryset(self):
@@ -31,7 +29,6 @@ class PerformedReactionManager(ReactionManager):
 
 
 class PerformedReaction(Reaction):
-
     """A class representing concrete instances of reactions that have actually been performed."""
 
     class Meta:
@@ -92,7 +89,7 @@ class PerformedReaction(Reaction):
             raise ValidationError(
                 {'reference': 'This reference has already been used for this lab group.'}, code="duplicate_reference")
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the reference as the unicode representation."""
         return self.reference
 

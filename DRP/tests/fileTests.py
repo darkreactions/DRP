@@ -32,7 +32,6 @@ excludes = [
 
 
 class OutputCapture(object):
-
     """A class as a workaround for broken parts in a pep8 module."""
 
     def __enter__(self):
@@ -53,7 +52,6 @@ class OutputCapture(object):
 
 
 class TestFiles(unittest.TestCase):
-
     """Test that files conform to python standards."""
 
     def setUp(self):

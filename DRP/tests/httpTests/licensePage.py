@@ -12,7 +12,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 @logsInAs('Aslan', 'banana')
 class LicenseAgreementPage(GetHttpSessionTest):
-
     """Test the get of the page."""
 
     url = GetHttpTest.baseUrl + '/license.html'
@@ -33,7 +32,6 @@ class LicenseAgreementPage(GetHttpSessionTest):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage(PostHttpSessionTest):
-
     """defines a test case with good credentials leading to a redirect."""
 
     url = PostHttpTest.baseUrl + '/license.html'
@@ -59,7 +57,6 @@ class PostLicenseAgreementPage(PostHttpSessionTest):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage2(PostHttpSessionTest):
-
     """Defines a test case for good credentials with no redirect."""
 
     url = PostHttpTest.baseUrl + '/license.html'
@@ -81,7 +78,6 @@ class PostLicenseAgreementPage2(PostHttpSessionTest):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage3(PostLicenseAgreementPage):
-
     """Defines a testcase where the licenseagreement is already signed, with a redirect."""
 
     def setUp(self):
@@ -104,7 +100,6 @@ class PostLicenseAgreementPage3(PostLicenseAgreementPage):
 @logsInAs('Aslan', 'banana')
 @usesCsrf
 class PostLicenseAgreementPage4(PostLicenseAgreementPage2):
-
     """Defines a testcase where the licenseagreement is already signed, without a redirect."""
 
     testCodes = ['c87f2095-c8b2-4798-89bd-2b93ee33d338']

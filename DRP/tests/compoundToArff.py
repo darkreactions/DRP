@@ -19,7 +19,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsCompound('hmta', 3959, 'Org', 'Narnia', custom=False)
 @createsCompound('sp', 1071, 'Org', 'Narnia', custom=False)
 class CompoundToArff(DRPTestCase):
-
     """Validates the structure of the Arff- this could be more detailed if we find that we encounter issues later."""
 
     def checkArff(self, fn):
@@ -36,14 +35,14 @@ class CompoundToArff(DRPTestCase):
     def test_regular(self):
         """Test a regular arff."""
         fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_csv.arff'
-        with open(fn, 'wt') as arffFile:
+        with open(fn, 'wb') as arffFile:
             Compound.objects.all().toArff(arffFile)
         self.checkArff(fn)
 
     def test_expanded(self):
         """Test an expanded arff."""
         fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_ex_csv.arff'
-        with open(fn, 'wt') as arffFile:
+        with open(fn, 'wb') as arffFile:
             Compound.objects.all().toArff(arffFile, expanded=True)
         self.checkArff(fn)
 

@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractModelVisitor(object):
-
     """An abstract class to define the API for a model visitor."""
 
     __metaclass__ = ABCMeta

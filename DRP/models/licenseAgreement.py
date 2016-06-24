@@ -5,7 +5,6 @@ from .license import License
 
 
 class LicenseAgreement(models.Model):
-
     """The LicenseAgreement class details the date and time a license was agreed to by a user."""
 
     class Meta:

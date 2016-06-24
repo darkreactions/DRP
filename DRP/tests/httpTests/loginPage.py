@@ -15,7 +15,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class LoginPage(GetHttpTest):
-
     """Confirms that GETing the login page results in valid html."""
 
     url = GetHttpTest.baseUrl + '/login.html'
@@ -23,7 +22,6 @@ class LoginPage(GetHttpTest):
 
 @usesCsrf
 class PostLoginPage(PostHttpSessionTest):
-
     """Confirms that posting valid data to the login page results in a redirect."""
 
     url = PostHttpTest.baseUrl + '/login.html'

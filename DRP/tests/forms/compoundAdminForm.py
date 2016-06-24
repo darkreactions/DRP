@@ -12,7 +12,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class CreateTest(BaseFormTest):
-
     """Tests that the form saves data correctly."""
 
     def setUpFormData(self):

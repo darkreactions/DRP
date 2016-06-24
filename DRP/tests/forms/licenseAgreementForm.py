@@ -18,7 +18,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class LicenceAgreementForm(DRPTestCase):
-
     """Test a form for licensing agreement."""
 
     def setUp(self):

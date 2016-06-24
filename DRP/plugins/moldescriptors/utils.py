@@ -4,7 +4,6 @@ from django.db import transaction
 
 
 class LazyDescDict(object):
-
     """An attempt at making descriptor loading lazy."""
 
     def __init__(self, descDict):

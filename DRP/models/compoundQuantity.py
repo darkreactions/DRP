@@ -10,7 +10,6 @@ from .validators import GreaterThanValidator
 
 
 class CompoundQuantityQuerySet(models.query.QuerySet):
-
     """A queryset representing a collection of compounds quantities."""
 
     def delete(self):
@@ -26,7 +25,6 @@ class CompoundQuantityQuerySet(models.query.QuerySet):
 
 
 class CompoundQuantityManager(models.Manager):
-
     """A manager for CompoundQuantity objects."""
 
     def get_queryset(self):
@@ -35,7 +33,6 @@ class CompoundQuantityManager(models.Manager):
 
 
 class CompoundQuantity(models.Model):
-
     """
     A class to contain the relationship between a reaction and a compound.
 
@@ -71,6 +68,6 @@ class CompoundQuantity(models.Model):
             self.reaction.save()  # descriptor recalculation
         super(CompoundQuantity, self).save()
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the compound, amount and reaction as a unicode representation."""
         return u'{} {} with role {} in {}'.format(self.amount, self.compound, self.role, self.reaction)

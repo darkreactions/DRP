@@ -8,7 +8,6 @@ import reimport_reactions
 
 
 class Command(BaseCommand):
-
     """Used for deleting reactions specified in a tsv."""
 
     help = 'Deletes reactions from a tsv file'

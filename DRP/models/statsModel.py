@@ -4,7 +4,6 @@ from django.db import models
 
 
 class StatsModel(models.Model):
-
     """A class for describing a statistical model."""
 
     class Meta:

@@ -8,7 +8,6 @@ from django.forms.widgets import HiddenInput
 
 
 class PerformedRxnAdminForm(forms.ModelForm):
-
     """
     A form for the performed reactions in the Django admin.
 
@@ -21,7 +20,6 @@ class PerformedRxnAdminForm(forms.ModelForm):
 
 
 class PerformedRxnForm(forms.ModelForm):
-
     """A form for creating performed reaction instances in teh databases."""
 
     class Meta:
@@ -59,7 +57,6 @@ class PerformedRxnForm(forms.ModelForm):
 
 
 class PerformedRxnDeleteForm(forms.Form):
-
     """A form for deleting a reaction."""
 
     def __init__(self, user, instance=None, *args, **kwargs):
@@ -82,7 +79,6 @@ class PerformedRxnDeleteForm(forms.Form):
 
 
 class PerformedRxnInvalidateForm(forms.Form):
-
     """A form for Invalidating a reaction."""
 
     def __init__(self, user, instance=None, *args, **kwargs):

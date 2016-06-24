@@ -7,7 +7,6 @@ from django.conf import settings
 
 
 class LabGroupManager(models.Manager):
-
     """A custom manager with a convenience function so that we can create new lab groups."""
 
     def makeLabGroup(self, title, address, email, access_code):
@@ -16,7 +15,6 @@ class LabGroupManager(models.Manager):
 
 
 class LabGroup(models.Model):
-
     """A class for describing a collection of scientists belonging to the same group."""
 
     class Meta:
@@ -35,6 +33,6 @@ class LabGroup(models.Model):
     users = models.ManyToManyField(User, blank=True)
     objects = LabGroupManager()
 
-    def __unicode__(self):
+    def __str__(self):
         """Use the title as the unicode rep."""
         return self.title

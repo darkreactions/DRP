@@ -110,7 +110,6 @@ def convert_legacy_reference(legacy_reference):
 
 
 class Command(BaseCommand):
-
     """Convert data from a pre-0.02 csv dump to the post 0.02 database."""
 
     help = 'Ports database from pre-0.02 to 0.02'

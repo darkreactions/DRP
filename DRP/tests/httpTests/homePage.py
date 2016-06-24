@@ -8,7 +8,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class HomePage(GetHttpTest):
-
     """Tests the home page for HTML validity, and that the correct template is rendered."""
 
     url = GetHttpTest.baseUrl

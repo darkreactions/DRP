@@ -7,7 +7,6 @@ import DRP.models
 
 
 class MolDescriptorValueQuerySet(models.query.QuerySet):
-
     """Class to represent a group of Molecular Descriptor Values."""
 
     def delete(self, recalculate_reactions=True):
@@ -23,7 +22,6 @@ class MolDescriptorValueQuerySet(models.query.QuerySet):
 
 
 class MolDescriptorValueManager(models.Manager):
-
     """Manager class to return the custom queryset for MolDescriptorValues."""
 
     def get_queryset(self):
@@ -32,7 +30,6 @@ class MolDescriptorValueManager(models.Manager):
 
 
 class MolDescriptorValue(models.Model):
-
     """The django model representing the value of a given descriptor for a given compound."""
 
     class Meta:
@@ -54,13 +51,12 @@ class MolDescriptorValue(models.Model):
                 except DRP.models.performedReaction.PerformedReaction.DoesNotExist:
                     pass  # we don't care
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the name, compound and value as the unicode rep."""
         return '{} for {} is {}'.format(self.descriptor.name, str(self.compound), self.value)
 
 
 class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
-
     """The value of a categorical descriptor for a compound."""
 
     class Meta:
@@ -68,13 +64,12 @@ class CatMolDescriptorValue(CategoricalDescriptorValue, MolDescriptorValue):
         verbose_name = 'Categorical Molecular Descriptor Value'
         unique_together = ('descriptor', 'compound')
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the value of the value for the unicode rep."""
         return self.value.value
 
 
 class BoolMolDescriptorValue(BooleanDescriptorValue, MolDescriptorValue):
-
     """The value of a boolean descriptor for a compound."""
 
     class Meta:
@@ -84,7 +79,6 @@ class BoolMolDescriptorValue(BooleanDescriptorValue, MolDescriptorValue):
 
 
 class NumMolDescriptorValue(NumericDescriptorValue, MolDescriptorValue):
-
     """The numeric value of a descriptor for a compound."""
 
     class Meta:
@@ -94,7 +88,6 @@ class NumMolDescriptorValue(NumericDescriptorValue, MolDescriptorValue):
 
 
 class OrdMolDescriptorValue(OrdinalDescriptorValue, MolDescriptorValue):
-
     """The ordinal value of a descriptor for a compound."""
 
     class Meta:

@@ -12,7 +12,6 @@ from django.db import models
 
 
 class CategoricalDescriptorValue(models.Model):
-
     """A concrete value for a categorical descriptor."""
 
     descriptor = models.ForeignKey(CategoricalDescriptor)
@@ -60,13 +59,12 @@ class CategoricalDescriptorValue(models.Model):
         self.clean()
         super(CategoricalDescriptorValue, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         """Use the string value of the value to rep."""
         return self.value.value
 
 
 class BooleanDescriptorValue(models.Model):
-
     """A concrete value for a boolean descriptor."""
 
     class Meta:
@@ -91,7 +89,6 @@ class BooleanDescriptorValue(models.Model):
 
 
 class NumericDescriptorValue(models.Model):
-
     """A concrete value for a numeric descriptor."""
 
     class Meta:
@@ -151,7 +148,6 @@ class NumericDescriptorValue(models.Model):
 
 
 class OrdinalDescriptorValue(models.Model):
-
     """Describes a concrete value for an ordinal descriptor."""
 
     class Meta:

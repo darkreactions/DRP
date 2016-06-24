@@ -11,7 +11,6 @@ from DRP.models import Compound, CompoundGuideEntry
 
 
 class CompoundAdminForm(forms.ModelForm):
-
     """Form for the django admin; permits the overriding of CSID absence but forces the existence of the custom flag."""
 
     class Meta:
@@ -29,7 +28,6 @@ class CompoundAdminForm(forms.ModelForm):
 
 
 class CompoundForm(forms.ModelForm):
-
     """
     A form for users to add compounds to the compound guide.
 
@@ -152,7 +150,6 @@ class CompoundForm(forms.ModelForm):
 
 
 class CompoundEditForm(forms.ModelForm):
-
     """A form for editing compounds."""
 
     class Meta:
@@ -174,7 +171,6 @@ class CompoundEditForm(forms.ModelForm):
 
 
 class CompoundDeleteForm(forms.ModelForm):
-
     """A form for deleting compounds."""
 
     class Meta:

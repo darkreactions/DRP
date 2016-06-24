@@ -3,7 +3,6 @@ from django.db import models
 
 
 class CompoundRole(models.Model):
-
     """
     A compound role signifies the role a compound plays in a specific reaction.
 
@@ -19,6 +18,6 @@ class CompoundRole(models.Model):
     label = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the label string for the unicode rep."""
         return self.label

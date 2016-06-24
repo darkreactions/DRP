@@ -13,7 +13,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class ConfirmationPage(GetHttpTest):
-
     """Tests the simple GET request."""
 
     _params = {'code': uuid4()}
@@ -22,7 +21,6 @@ class ConfirmationPage(GetHttpTest):
 
 
 class ConfirmationPage2(GetHttpTest):
-
     """Tests the simple GET request without the required URL parameter (403)."""
 
     url = GetHttpTest.baseUrl + '/confirm.html'
@@ -35,7 +33,6 @@ class ConfirmationPage2(GetHttpTest):
 
 @usesCsrf
 class PostConfirmationPage(PostHttpSessionTest):
-
     """Tests the POST request for a user with correct credentials in the correct state."""
 
     confirmationCode = uuid4()
@@ -63,7 +60,6 @@ class PostConfirmationPage(PostHttpSessionTest):
 
 @usesCsrf
 class PostConfirmationPage2(PostConfirmationPage):
-
     """Test for a 403 with non-matching confirmation code."""
 
     confirmationCode = uuid4()

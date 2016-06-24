@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class Splitter(AbstractSplitter):
-
     """The splitter visitor."""
 
     def __init__(self, namingStub, test_percent=0.33, num_splits=1):

@@ -31,7 +31,6 @@ reactionBaseCodes = ['ea5108a2-0b88-482d-90c5-ea492fd8134e',
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 class GetReactionCreate(GetHttpSessionTest):
-
     """Simply get the page."""
 
     url = newReactionUrl
@@ -45,7 +44,6 @@ class GetReactionCreate(GetHttpSessionTest):
 @usesCsrf
 # effectively tests GET for add_reactants view
 class PostReactionCreateValid(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Make a valid creation request."""
 
     url = newReactionUrl
@@ -64,7 +62,6 @@ class PostReactionCreateValid(PostHttpSessionTest, redirectionMixinFactory(1)):
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
 class PostReactionCreateInvalid(PostHttpSessionTest):
-
     """Make an invalid creation request."""
 
     url = newReactionUrl
@@ -83,7 +80,6 @@ class PostReactionCreateInvalid(PostHttpSessionTest):
 @joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 class GetReactionEdit(GetHttpSessionTest):
-
     """Fetch the reaction editing page."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
@@ -102,7 +98,6 @@ class GetReactionEdit(GetHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 class GetReactionEdit2(GetHttpSessionTest):
-
     """Fetch the reaction editing page with a descriptor componenet."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
@@ -124,7 +119,6 @@ class GetReactionEdit2(GetHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 class GetSomeoneElsesReactionEdit(GetHttpSessionTest):
-
     """Attempts to grab someone else's reaction, which should fail with a 404."""
 
     status = 404
@@ -140,7 +134,6 @@ class GetSomeoneElsesReactionEdit(GetHttpSessionTest):
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 class GetNonexistentReactionEdit(GetHttpSessionTest):
-
     """Try to edit a nonexistent reaction."""
 
     status = 404
@@ -157,7 +150,6 @@ class GetNonexistentReactionEdit(GetHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @usesCsrf
 class PostReactionEditValid(PostHttpSessionTest):
-
     """Edit a reaction."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
@@ -186,7 +178,6 @@ class PostReactionEditValid(PostHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @usesCsrf
 class PostReactionEditInvalid(PostHttpSessionTest):
-
     """Invalid request to edit a reaction."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
@@ -214,7 +205,6 @@ class PostReactionEditInvalid(PostHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @usesCsrf
 class DeletePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Delete a performed reaction."""
 
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
@@ -243,7 +233,6 @@ class DeletePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
 class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Try to delete a reaction you do not own."""
 
     testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
@@ -267,7 +256,6 @@ class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
 class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Try to delete a nonexistent reaction."""
 
     url = PostHttpSessionTest.url + reverse('deleteReaction')
@@ -285,7 +273,6 @@ class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1))
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @usesCsrf
 class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Test for invalidation of a reaction."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
@@ -314,7 +301,6 @@ class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
 class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Try to invalidate a reaction you do not own."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
@@ -338,7 +324,6 @@ class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactor
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
 class InvalidateNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Try to invalidate a reaction that does not exist."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
@@ -361,7 +346,6 @@ class InvalidateNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory
 # we expect 5 redirections because we have initialised no manual reaction
 # descriptors
 class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(5)):
-
     """Add a reactant to a reaction in the creation pipeline."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93'] + reactionBaseCodes
@@ -405,7 +389,6 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
 # we expect 4 redirections because we have initialised no manual reaction
 # descriptors
 class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory(2)):
-
     """Add a reactant to the reaction."""
 
     testCodes = ['9fa2cfb6-aabe-40f7-80ea-4ecbcf8c0bda',
@@ -447,7 +430,6 @@ class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory
 @createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @usesCsrf
 class PostReactantAddCreatingInvalid(PostHttpSessionTest):
-
     """Make an invalid request to create a reactant."""
 
     _params = {'creating': True}
@@ -486,7 +468,6 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
 @usesCsrf
 # this is the same view so the invalid case is covered
 class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Edit a reactant."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', '634d88bb-9289-448b-a3dc-548ff4c6cda1',
@@ -532,7 +513,6 @@ class PostReactantEditingValid(PostHttpSessionTest, redirectionMixinFactory(1)):
 # we expect 4 redirections because we have initialised no manual reaction
 # descriptors
 class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Delete a reactant."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93'] + reactionBaseCodes
@@ -573,7 +553,6 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @usesCsrf
 class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory(3)):
-
     """Test the creation of a descriptor value."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93',
@@ -611,7 +590,6 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
 @usesCsrf
 # no edit test required- it uses the same functionality
 class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Test the creation of a reaction descriptor value as an edit."""
 
     testCodes = ['dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
@@ -647,7 +625,6 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)
 @usesCsrf
 class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
-
     """Test the deletion of a reaction descriptor value."""
 
     testCodes = ['dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
@@ -685,7 +662,6 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)
 @usesCsrf
 class EditReactionDescValInvalid(PostHttpSessionTest):
-
     """Make an invalid edition to a descriptor value."""
 
     testCodes = ['9fa2cfb6-aabe-40f7-80ea-4ecbcf8c0bda',

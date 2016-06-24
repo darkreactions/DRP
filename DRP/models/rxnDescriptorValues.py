@@ -8,7 +8,6 @@ import DRP.models.performedReaction
 
 
 class RxnDescriptorValueQuerySet(models.query.QuerySet):
-
     """A queryset which represents a collection of concrete values of a Reaction Descriptor."""
 
     pass
@@ -21,7 +20,6 @@ class RxnDescriptorValueQuerySet(models.query.QuerySet):
 
 
 class RxnDescriptorValueManager(models.Manager):
-
     """A manager which returns the custom queryset class for Reaction Descriptor Values."""
 
     def get_queryset(self):
@@ -30,7 +28,6 @@ class RxnDescriptorValueManager(models.Manager):
 
 
 class RxnDescriptorValue(models.Model):
-
     """A class to contain Relationships between Reactions and their descriptors."""
 
     class Meta:
@@ -62,7 +59,6 @@ class RxnDescriptorValue(models.Model):
 
 
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
-
     """Contains the value of a categorical descriptor for a reaction."""
 
     descriptorClass = CatRxnDescriptor
@@ -74,7 +70,6 @@ class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
 
 
 class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
-
     """Contains the value of a boolean descriptor for a reaction."""
 
     descriptorClass = BoolRxnDescriptor
@@ -86,7 +81,6 @@ class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
 
 
 class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
-
     """Contains the numeric value of a descriptor for a reaction."""
 
     descriptorClass = NumRxnDescriptor
@@ -98,7 +92,6 @@ class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
 
 
 class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
-
     """Contains the ordinal value of a descriptor for a reaction."""
 
     descriptorClass = OrdRxnDescriptor

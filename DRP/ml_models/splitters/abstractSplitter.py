@@ -5,7 +5,6 @@ import warnings
 
 
 class AbstractSplitter(object):
-
     """An abstracted splitter class on which other splitters may be based."""
 
     __metaclass__ = ABCMeta

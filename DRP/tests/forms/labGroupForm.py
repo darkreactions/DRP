@@ -23,7 +23,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class LegacyPassword(DRPTestCase):
-
     """Tests for a case where a legacy password is set but no new password has been entered."""
 
     def setUp(self):
@@ -56,7 +55,6 @@ class LegacyPassword(DRPTestCase):
 
 
 class LegacyPassword2(DRPTestCase):
-
     """Test for a case where a legacy password is set and a new password has been entered."""
 
     def setUp(self):
@@ -85,7 +83,6 @@ class LegacyPassword2(DRPTestCase):
 
 
 class CreateNew(DRPTestCase):
-
     """Performs rudimentary tests on form validation for missing data and complete data."""
 
     def setUp(self):
@@ -147,7 +144,6 @@ class CreateNew(DRPTestCase):
 
 
 class DuplicateUniqueValues(DRPTestCase):
-
     """Verifies that values which should be unique validate as false."""
 
     def setUp(self):

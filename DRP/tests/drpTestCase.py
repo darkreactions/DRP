@@ -13,7 +13,6 @@ rxnDescriptorPlugins = [importlib.import_module(
 
 
 class DRPTestCase(unittest.TestCase):
-
     """
     A quick and dirty safety valve to stop people accidentally running database tests in production environments.
 

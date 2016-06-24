@@ -4,7 +4,6 @@ from django.conf import settings
 
 
 class ChemicalClass(models.Model):
-
     """The class of compound to which compounds may belong."""
 
     class Meta:
@@ -15,6 +14,6 @@ class ChemicalClass(models.Model):
                              'unique': 'A chemical class with this label already exists'})
     description = models.CharField(max_length=20)
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the label as the unicode representation."""
         return self.label

@@ -23,7 +23,6 @@ descriptorPlugins = [importlib.import_module(plugin) for
 
 
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
-
     """Custom queryset for representing additional functionality for multiple reactions."""
 
     def __init__(self, model=None, **kwargs):
@@ -209,7 +208,6 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
 
 class ReactionManager(models.Manager):
-
     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs."""
 
     use_for_related_fields = True
@@ -220,7 +218,6 @@ class ReactionManager(models.Manager):
 
 
 class Reaction(models.Model):
-
     """
     A base class on which PerformedReactions and RecommendedReactions are built.
 
@@ -251,6 +248,6 @@ class Reaction(models.Model):
         """Return all the descriptor values for this reaction. This should be turned into a multiqueryset."""
         return MultiQuerySet(self.boolrxndescriptorvalue_set.all(), self.numrxndescriptorvalue_set.all(), self.ordrxndescriptorvalue_set.all(), self.catrxndescriptorvalue_set.all())
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the unicode representation of the reaction."""
         return "Reaction_{}".format(self.id)

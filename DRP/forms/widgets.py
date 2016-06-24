@@ -5,7 +5,6 @@ from django.utils import html
 
 
 class SubmitButtonWidget(forms.Widget):
-
     """Submit button widget borrowed from https://djangosnippets.org/snippets/2312."""
 
     def __init__(self, value, attrs=None):

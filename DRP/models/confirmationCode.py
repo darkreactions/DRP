@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 
 class ConfirmationCode(models.Model):
-
     """
     Class to store confirmation codes for emails.
 

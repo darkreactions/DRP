@@ -15,7 +15,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @logsInAs('Aslan', 'banana')
 @signsExampleLicense('Aslan')
 class LabGroupPage(GetHttpSessionTest):
-
     """Gets the page when we have lab groups."""
 
     url = GetHttpTest.baseUrl + reverse('joinGroup')
@@ -36,7 +35,6 @@ class LabGroupPage(GetHttpSessionTest):
 @logsInAs('Aslan', 'banana')
 @signsExampleLicense('Aslan')
 class LabGroupPage404(GetHttpSessionTest):
-
     """Gets the page when we have no lab groups."""
 
     url = GetHttpTest.baseUrl + reverse('joinGroup')
@@ -56,7 +54,6 @@ class LabGroupPage404(GetHttpSessionTest):
 @signsExampleLicense('Aslan')
 @usesCsrf
 class PostLabGroupPage(PostHttpSessionTest):
-
     """Posts to the page and checks that we joined the group."""
 
     url = PostHttpTest.baseUrl + reverse('joinGroup')

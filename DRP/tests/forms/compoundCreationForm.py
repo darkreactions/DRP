@@ -21,7 +21,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @joinsLabGroup('Aslan', 'Narnia')
 @createsChemicalClass('Solv', 'Common Solvent')
 class NoLabExists(BaseFormTest):
-
     """Tests that the form doesn't validate when there are no lab groups."""
 
     def setUpFormData(self):
@@ -38,7 +37,6 @@ class NoLabExists(BaseFormTest):
 
 
 class NoLabForUser(NoLabExists):
-
     """Tests that the form doesn't validate when there are lab groups but the user is not a member."""
 
     def setUpFormData(self):
@@ -60,7 +58,6 @@ class NoLabForUser(NoLabExists):
 
 
 class LabForUser(NoLabForUser):
-
     """Tests that the form validates when the user is a member of the lab. Also checks that the save method works correctly."""
 
     compound = None
@@ -89,7 +86,6 @@ class LabForUser(NoLabForUser):
 
 
 class LabForBadUser(LabForUser):
-
     """Tests that the form doesn't validate when the user doesn't choose a lab group."""
 
     def setUpFormData(self):
@@ -103,7 +99,6 @@ class LabForBadUser(LabForUser):
 
 
 class NoCAS(LabForUser):
-
     """Tests that the form validates with no CAS number provided."""
 
     def setUpFormData(self):
@@ -113,7 +108,6 @@ class NoCAS(LabForUser):
 
 
 class InconsistentCASName(LabForUser):
-
     """Test that the form does not validate when the CAS number and name are not consistent."""
 
     def setUpFormData(self):
@@ -128,7 +122,6 @@ class InconsistentCASName(LabForUser):
 
 
 class InconsistentNameCSID(LabForUser):
-
     """Tests that the form does not validate when the name and CSID are not consistent."""
 
     def setUpFormData(self):
@@ -142,7 +135,6 @@ class InconsistentNameCSID(LabForUser):
 
 
 class InconsistentCSIDCAS(LabForUser):
-
     """Tests that the form does not validate when the CAS number and CSID are not consistent."""
 
     def setUpFormData(self):

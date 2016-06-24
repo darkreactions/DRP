@@ -14,7 +14,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class EmailSendsAndRecieves(DRPTestCase):
-
     """Sends and recieves a test email, and checks that the contents are correct."""
 
     def setUp(self):

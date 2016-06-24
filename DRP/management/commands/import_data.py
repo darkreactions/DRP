@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     """Import data from your target main server."""
 
     help = 'synchronises database with the main server'

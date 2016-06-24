@@ -21,7 +21,6 @@ from django.contrib import messages
 
 
 class ListPerformedReactions(ListView):
-
     """Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies."""
 
     template_name = 'reactions_list.html'

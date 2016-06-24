@@ -17,7 +17,6 @@ from django.template import RequestContext
 
 
 class CreateCompound(CreateView):
-
     """A view managing the creation of compound objects."""
 
     model = Compound
@@ -46,7 +45,6 @@ class CreateCompound(CreateView):
 
 
 class EditCompound(UpdateView):
-
     """A view managing the editing of compound objects."""
 
     form_class = CompoundEditForm
@@ -86,7 +84,6 @@ def deleteCompound(request, *args, **kwargs):
 
 
 class ListCompound(ListView):
-
     """A view managing the viewing of the compound guide."""
 
     template_name = 'compound_list.html'

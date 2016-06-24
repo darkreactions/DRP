@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 class Splitter(AbstractSplitter):
-
     """The splitter class for K-fold validation."""
 
     def __init__(self, namingStub, num_folds=4):

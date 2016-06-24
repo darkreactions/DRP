@@ -36,7 +36,6 @@ FEATURE_SELECTION_TOOL_CHOICES = tuple(
 
 
 class PredictsDescriptorsAttribute(object):
-
     """An attribute manager object which allows the setting and deletion of the related predictable descriptors."""
 
     def __get__(self, modelContainer, modelContainerType=None):
@@ -62,7 +61,6 @@ class PredictsDescriptorsAttribute(object):
 
 
 class DescriptorAttribute(object):
-
     """An attribute manager object which allows the setting and deletion of the related descriptors."""
 
     def __get__(self, modelContainer, modelContainerType=None):
@@ -115,7 +113,6 @@ class DescriptorAttribute(object):
 
 
 class OutcomeDescriptorAttribute(object):
-
     """An attribute manager object which allows the setting and deletion of the related outcome descriptors."""
 
     def __get__(self, modelContainer, modelContainerType=None):
@@ -167,7 +164,6 @@ class OutcomeDescriptorAttribute(object):
 
 
 class ModelContainer(models.Model):
-
     """A class for describing a group of statistical models."""
 
     class Meta:

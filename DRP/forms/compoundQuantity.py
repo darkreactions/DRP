@@ -6,7 +6,6 @@ from DRP.models import CompoundQuantity, Reaction, Compound
 def compoundQuantityFormFactory(reactionId):
     """Return a class of compound quantity model form specified to a reaction."""
     class CompoundQuantityForm(forms.ModelForm):
-
         """A form for creating compound quantities."""
 
         class Meta:

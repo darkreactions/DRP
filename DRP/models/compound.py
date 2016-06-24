@@ -68,7 +68,6 @@ def elementsFormatValidator(molFormula):
 
 
 class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
-
     """A specialised queryset for outputting Compounds in specific formats."""
 
     def __init__(self, **kwargs):
@@ -181,7 +180,6 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
 
 
 class CompoundManager(models.Manager):
-
     """A custom manager for the Compound Class which permits the creation of entries to and from CSVs."""
 
     # NOTE:This doesn't actually work, but no-one's sure which way django is
@@ -194,7 +192,6 @@ class CompoundManager(models.Manager):
 
 
 class Compound(models.Model):
-
     """
     A class for containing data about Compounds used in chemical reactions.
 
@@ -240,7 +237,7 @@ class Compound(models.Model):
         super(Compound, self).__init__(*args, **kwargs)
         self.lazyChemicalClasses = []
 
-    def __unicode__(self):
+    def __str__(self):
         """Unicode representation of a compound is it's name and abbreviation."""
         return unicode("{}".format(self.name), 'utf-8')
 
@@ -341,7 +338,6 @@ class Compound(models.Model):
 
 
 class CompoundGuideEntry(models.Model):
-
     """Represents the relationship between a labgroup, a compound and an abbrevation."""
 
     class Meta:
@@ -354,7 +350,6 @@ class CompoundGuideEntry(models.Model):
 
 
 class ElementsException(Exception):
-
     """An exception for element formats."""
 
     pass

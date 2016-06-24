@@ -20,7 +20,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass('Org', 'Organic Reagent')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class CorrectSynonym(BaseFormTest):
-
     """Tests that the form validates with a correct synonym for the compound submitted."""
 
     def test_validation(self):
@@ -48,7 +47,6 @@ class CorrectSynonym(BaseFormTest):
 @createsChemicalClass('Org', 'Organic Reagent')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class IncorrectSynonym(BaseFormTest):
-
     """Tests that the form fails to validate when provided with an incorrect synonym."""
 
     def setUpFormData(self):

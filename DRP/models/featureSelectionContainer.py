@@ -18,7 +18,6 @@ FEATURE_SELECTION_TOOL_CHOICES = tuple(
 
 
 class DescriptorAttribute(object):
-
     """An attribute manager object which allows the setting and deletion of the related descriptors."""
 
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
@@ -70,7 +69,6 @@ class DescriptorAttribute(object):
 
 
 class ChosenDescriptorAttribute(object):
-
     """An attribute manager object which allows the setting and deletion of the related descriptors chosen by feature selection."""
 
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
@@ -122,7 +120,6 @@ class ChosenDescriptorAttribute(object):
 
 
 class OutcomeDescriptorAttribute(object):
-
     """An attribute manager object which allows the setting and deletion of the related outcome descriptors."""
 
     def __get__(self, featureSelectionContainer, featureSelectionContainerType=None):
@@ -174,7 +171,6 @@ class OutcomeDescriptorAttribute(object):
 
 
 class FeatureSelectionContainer(models.Model):
-
     """A class for encapsulating a feature selection model."""
 
     description = models.TextField(default='', blank=True)

@@ -11,7 +11,6 @@ from django.contrib.auth import authenticate
 
 
 class UserCreationForm(DjangoUserCreationForm):
-
     """A form for creating users."""
 
     email = forms.EmailField(required=True)
@@ -22,7 +21,6 @@ class UserCreationForm(DjangoUserCreationForm):
 
 
 class ConfirmationForm(DjangoAuthenticationForm):
-
     """A form for confirming a user's credentials, without checking if they are 'active'."""
 
     def clean(self):
@@ -48,7 +46,6 @@ class ConfirmationForm(DjangoAuthenticationForm):
 
 
 class LicenseAgreementForm(DjangoAuthenticationForm):
-
     """A re-authentication form for the signing of site license agreements for DRP deployments."""
 
     licenseId = forms.IntegerField(widget=forms.widgets.HiddenInput)

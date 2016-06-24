@@ -4,7 +4,6 @@ from .reaction import Reaction
 
 
 class RecommendedReaction(Reaction):
-
     """A class to store information about reactions recommended by the machine learning infrastructure."""
 
     class Meta:

@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractWekaModelVisitor(AbstractModelVisitor):
-
     """The Abstract visitor class for communicating with Weka."""
 
     maxResponseCount = 1

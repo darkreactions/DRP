@@ -17,7 +17,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsCompound('Pyr', 8904, 'org', 'Narnia')
 @createsCompound('AcOH', 171, 'org', 'Narnia')
 class CsvOutput(DRPTestCase):
-
     """Tests the output of CSV."""
 
     def test_regular(self):

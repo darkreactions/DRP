@@ -19,7 +19,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass('org', 'Organic')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class DescriptorsCalced(DRPTestCase):
-
     """Checks that when a compound is created the descriptors are created."""
 
     def runTest(self):
@@ -31,7 +30,6 @@ class DescriptorsCalced(DRPTestCase):
 
 
 class DoublePluginImport(DRPTestCase):
-
     """Checks no duplicate key errors on module reload."""
 
     def runTest(self):
@@ -41,7 +39,6 @@ class DoublePluginImport(DRPTestCase):
 
 
 class MaxMinValidation(DRPTestCase):
-
     """Ensures that descriptor minimums and maximums are enforced."""
 
     def test_ordinal(self):
@@ -135,7 +132,6 @@ class MaxMinValidation(DRPTestCase):
 @createsChemicalClass('Org', 'Organic')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class MaxMinValueValidation(DRPTestCase):
-
     """Ensures that descriptor values cannot exceed their prescribed range."""
 
     def test_numeric_ok(self):
@@ -340,7 +336,6 @@ class MaxMinValueValidation(DRPTestCase):
 @createsChemicalClass('Org', 'Organic')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class CategoricalValidation(DRPTestCase):
-
     """Ensures that validation for categorical descriptors works."""
 
     def setUp(self):

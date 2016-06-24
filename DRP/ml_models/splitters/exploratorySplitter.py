@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class Splitter(AbstractSplitter):
-
     """
     The splitter class.
 

@@ -19,7 +19,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class LegacyPassword(DRPTestCase):
-
     """Test for a legacy password check set but no new password has been entered."""
 
     def setUp(self):
@@ -44,7 +43,6 @@ class LegacyPassword(DRPTestCase):
 
 
 class Password(DRPTestCase):
-
     """Test that legacy passwords work for joining lab groups."""
 
     def setUp(self):

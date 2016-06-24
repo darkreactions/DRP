@@ -12,7 +12,6 @@ from .performedReaction import PerformedReaction
 
 
 class DataSet(models.Model):
-
     """A set of reactions."""
 
     class Meta:
@@ -36,7 +35,6 @@ class DataSet(models.Model):
 
 
 class DataSetRelation(models.Model):
-
     """Defines the relationships between a data set and a reaction."""
 
     class Meta:

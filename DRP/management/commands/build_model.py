@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     """Command for building statistical/machine learning models in DRP."""
 
     help = 'Builds a machine learning model'

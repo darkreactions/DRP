@@ -4,7 +4,6 @@ from DRP.tests import DRPTestCase
 
 
 class BaseFormTest(DRPTestCase):
-
     """Testing basic form validation."""
 
     def setUp(self):

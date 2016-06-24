@@ -5,7 +5,6 @@ import DRP.models
 
 
 class CatRxnDescriptor(CategoricalDescriptor, Predictable):
-
     """A class which describes a descriptor- a value which describes a system such as a compound or a reaction."""
 
     class Meta:
@@ -50,7 +49,6 @@ class CatRxnDescriptor(CategoricalDescriptor, Predictable):
 
 
 class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
-
     """A class which represents an ordinal descriptor."""
 
     class Meta:
@@ -110,7 +108,6 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
 
 
 class NumRxnDescriptor(NumericDescriptor, Predictable):
-
     """A class which represents a numerical descriptor."""
 
     class Meta:
@@ -172,7 +169,6 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
 
 class BoolRxnDescriptor(BooleanDescriptor, Predictable):
-
     """A class which represents a boolean descriptors."""
 
     class Meta:

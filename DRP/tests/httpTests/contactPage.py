@@ -9,7 +9,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class ContactPage(GetHttpTest):
-
     """Perform a simple get request on the contact page to test html validity."""
 
     url = GetHttpTest.baseUrl + '/contact.html'
@@ -18,7 +17,6 @@ class ContactPage(GetHttpTest):
 
 @usesCsrf
 class PostContactPage(PostHttpSessionTest):
-
     """Perform a correctly formed POST request to the contact page to test html validity."""
 
     url = GetHttpTest.baseUrl + '/contact.html'
@@ -31,7 +29,6 @@ class PostContactPage(PostHttpSessionTest):
 
 @usesCsrf
 class PostContactPageBad(PostContactPage):
-
     """Perform a badly formed POST request to the contact page to test html validity."""
 
     def setUp(self):
@@ -42,7 +39,6 @@ class PostContactPageBad(PostContactPage):
 
 @usesCsrf
 class PostContactPageBad2(PostContactPage):
-
     """Perform a badly formed POST request missing a field entirely to test html validity."""
 
     def setUp(self):
@@ -52,7 +48,6 @@ class PostContactPageBad2(PostContactPage):
 
 
 class PostContactPageBad3(PostContactPage):
-
     """Confirm that CSRF has been correctly implemented by forgetting the csrf token."""
 
     def setUp(self):

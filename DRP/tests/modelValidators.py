@@ -10,7 +10,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class NotInTheFuture(DRPTestCase):
-
     """Ensures that the validator for things in the future functions properly."""
 
     def setUp(self):
@@ -37,7 +36,6 @@ class NotInTheFuture(DRPTestCase):
 
 
 class GreaterThan(DRPTestCase):
-
     """Tests the greater than decorator."""
 
     def setUp(self):

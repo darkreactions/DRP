@@ -10,7 +10,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class ModelTest(DRPTestCase):
-
     """Tests for model building."""
 
     splitterOptions = None
@@ -38,7 +37,6 @@ class ModelTest(DRPTestCase):
 
 @createsPerformedReactionSetOrd
 class WekaSVMKFTest(ModelTest):
-
     """Tests Weka SVM."""
 
     modelLibrary = "weka"
@@ -48,7 +46,6 @@ class WekaSVMKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaSVMExpTest(ModelTest):
-
     """Tests Weka SVM."""
 
     modelLibrary = "weka"
@@ -58,7 +55,6 @@ class WekaSVMExpTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaJ48KFTest(ModelTest):
-
     """Tests Weka j48."""
 
     modelLibrary = "weka"
@@ -68,7 +64,6 @@ class WekaJ48KFTest(ModelTest):
 
 @createsPerformedReactionSetBool
 class WekaKNNKFTest(ModelTest):
-
     """Tests Weka KNN."""
 
     modelLibrary = "weka"
@@ -78,7 +73,6 @@ class WekaKNNKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaNBKFTest(ModelTest):
-
     """Some kind of Bayes test..."""
 
     modelLibrary = "weka"

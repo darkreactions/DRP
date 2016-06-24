@@ -26,7 +26,6 @@ compoundListUrl = GetHttpTest.baseUrl + reverse('compoundguide', args=['/'])
 
 @logsInAs('Aslan', 'old_magic')
 class LicenseRedirect(GetHttpSessionTest, OneRedirectionMixin):
-
     """Test that the request is redirected if a user tries to view the compound add page in without having signed an EULA."""
 
     url = newCompoundUrl
@@ -47,7 +46,6 @@ class LicenseRedirect(GetHttpSessionTest, OneRedirectionMixin):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 class Lab403Test(GetHttpSessionTest):
-
     """Test that the view returns the special 403 page when trying to look at a compound guide without being in a research group."""
 
     url = newCompoundUrl
@@ -59,7 +57,6 @@ class Lab403Test(GetHttpSessionTest):
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 class CreateCompoundGetTest(GetHttpSessionTest):
-
     """Test that when signed in with full credentials, the create view displays."""
 
     url = newCompoundUrl
@@ -74,7 +71,6 @@ class CreateCompoundGetTest(GetHttpSessionTest):
 @createsChemicalClass('Org', 'Organic')
 @usesCsrf
 class CreateCompoundRedirTest(PostHttpSessionTest, OneRedirectionMixin):
-
     """Test that the create compound redirection works, and by proxy that the list displays when compounds are present."""
 
     url = newCompoundUrl
@@ -98,7 +94,6 @@ class CreateCompoundRedirTest(PostHttpSessionTest, OneRedirectionMixin):
 @joinsLabGroup('Aslan', 'Narnia')
 @usesCsrf
 class CreateCompoundRadioTest(PostHttpSessionTest):
-
     """Tests for the display of the radio buttons section when presented only with a CSID."""
 
     url = newCompoundUrl
@@ -111,7 +106,6 @@ class CreateCompoundRadioTest(PostHttpSessionTest):
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'Narnia')
 class NoCompounds(GetHttpSessionTest):
-
     """Tests that the empy message is displayed when a group has no compounds."""
 
     url = compoundListUrl
@@ -124,7 +118,6 @@ class NoCompounds(GetHttpSessionTest):
 @joinsLabGroup('Aslan', 'Narnia')
 @joinsLabGroup('Aslan', 'Stone Table')
 class ManyGroupsRedirect(GetHttpSessionTest, OneRedirectionMixin):
-
     """Tests that a user with many lab groups but no session data for a lab group gets redirected. Tests the display of the lab group selection template by proxy."""
 
     url = compoundListUrl
@@ -137,7 +130,6 @@ class ManyGroupsRedirect(GetHttpSessionTest, OneRedirectionMixin):
 @joinsLabGroup('Aslan', 'Stone Table')
 @choosesLabGroup('Aslan', 'Narnia')
 class ManyLabGroupsDisplays(GetHttpSessionTest):
-
     """Tests that a user with many lab groups with session data for a lab group does not get redirected."""
 
     url = compoundListUrl
@@ -150,7 +142,6 @@ class ManyLabGroupsDisplays(GetHttpSessionTest):
 @joinsLabGroup('Aslan', 'Stone table')
 @usesCsrf
 class LabGroupSelectionRedirect(PostHttpSessionTest, OneRedirectionMixin):
-
     """Test for the redirection after the choice of lab group has been made."""
 
     url = PostHttpSessionTest.baseUrl + reverse('selectGroup')
@@ -169,7 +160,6 @@ class LabGroupSelectionRedirect(PostHttpSessionTest, OneRedirectionMixin):
 @createsChemicalClass('Org', 'Organic')
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 class GetCompoundForEditing(GetHttpSessionTest):
-
     """Test that fetching a compound for editing works."""
 
     testCodes = ['7d3763bc-c7d0-4102-a036-8c184263fe21']
@@ -194,7 +184,6 @@ class GetCompoundForEditing(GetHttpSessionTest):
 @createsCompound('EtOH', 682, 'Org', 'Narnia')
 @createsCompound('Pyr', 8904, 'Org', 'stone table')
 class GetNotMyCompoundForEditing(GetHttpSessionTest):
-
     """Test that fetching someone elses compound returns a 404."""
 
     status = 404
@@ -216,7 +205,6 @@ class GetNotMyCompoundForEditing(GetHttpSessionTest):
 @createsChemicalClass('Org', 'Organic')
 @createsCompound('EtOH', 682, 'Ethanol', 'Narnia', custom=True)
 class GetCustomCompound403(GetHttpSessionTest):
-
     """Test that fetching a compound with the custom flag for editing returns a 403."""
 
     status = 403
