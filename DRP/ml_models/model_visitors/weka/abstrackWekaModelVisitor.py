@@ -11,6 +11,9 @@ import os
 from abc import abstractmethod, abstractproperty
 import warnings
 from itertools import chain
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AbstractWekaModelVisitor(AbstractModelVisitor):
@@ -48,7 +51,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
             filename = "{}_{}.arff".format(self.statsModel.pk, uuid.uuid4())
             filepath = os.path.join(settings.TMP_DIR, filename)
         if verbose:
-            print "Writing arff to {}".format(filepath)
+            logger.info("Writing arff to {}".format(filepath))
         with open(filepath, "w") as f:
             reactions.toArff(f, expanded=True,
                              whitelistHeaders=whitelistHeaders)
@@ -76,7 +79,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         command = set_path + command
         logger.debug("Running in Shell:\n{}".format(command))
         if verbose:
-            print "Running in Shell:\n{}".format(command)
+            logger.info("Running in Shell:\n{}".format(command))
         subprocess.check_output(command, shell=True)
         # TODO XXX. figure out some way to throw an error if weka errors (sends stuff to stderr. weka does not generate proper return codes)
         # This broke things in some cases for reasons not clear to me
@@ -206,7 +209,7 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         command = "java {} -T {} -l {} -p 0 -c {} 1> {}".format(
             self.wekaCommand, arff_file, model_file, response_index, results_path)
         if verbose:
-            print "Writing results to {}".format(results_path)
+            logger.info("Writing results to {}".format(results_path))
         self._runWekaCommand(command, verbose=verbose)
 
         if isinstance(response, rxnDescriptors.BoolRxnDescriptor):

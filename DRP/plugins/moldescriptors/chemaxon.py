@@ -11,6 +11,8 @@ from collections import OrderedDict
 from subprocess import Popen, PIPE
 from itertools import chain
 import warnings
+import logging
+logger = logging.getLogger(__name__)
 
 # The version of ChemAxon currently in use.
 # Should be matched by a entry in the dictionary in the settings file
@@ -232,7 +234,7 @@ def delete_descriptors(compound_set, descriptorDict, cxcalcCommands):
 def calculate_many(compound_set, verbose=False, whitelist=None):
     """Bulk calculation of descriptors."""
     if verbose:
-        print "Creating descriptor dictionary"
+        logger.info("Creating descriptor dictionary")
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
     if whitelist is not None:
         filtered_cxcalcCommands = {k: cxcalcCommands[
@@ -240,39 +242,39 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     else:
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
-        print "Deleting old descriptor values."
+        logger.info("Deleting old descriptor values.")
     delete_descriptors(compound_set, descriptorDict, cxcalcCommands)
 
     num_to_create = []
     ord_to_create = []
     for i, compound in enumerate(compound_set):
         if verbose:
-            print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
+            logger.info("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
         num_to_create, ord_to_create = _calculate(
             compound, descriptorDict, filtered_cxcalcCommands, verbose=verbose, num_to_create=num_to_create, ord_to_create=ord_to_create)
         if len(num_to_create) > create_threshold:
             if verbose:
-                print 'Creating {} numeric values'.format(len(num_to_create))
+                logger.info('Creating {} numeric values'.format(len(num_to_create)))
             DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
             num_to_create = []
         if len(ord_to_create) > create_threshold:
             if verbose:
-                print 'Creating {} ordinal values'.format(len(Ord_to_create))
+                logger.info('Creating {} ordinal values'.format(len(Ord_to_create)))
             DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
             ord_to_create = []
 
     if verbose:
-        print 'Creating {} numeric values'.format(len(num_to_create))
+        logger.info('Creating {} numeric values'.format(len(num_to_create)))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
     if verbose:
-        print 'Creating {} ordinal values'.format(len(ord_to_create))
+        logger.info('Creating {} ordinal values'.format(len(ord_to_create)))
     DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
 
 
 def calculate(compound, verbose=False, whitelist=None):
     """Calculate descriptor values."""
     if verbose:
-        print "Creating descriptor dictionary"
+        logger.info("Creating descriptor dictionary")
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
     if whitelist is not None:
         filtered_cxcalcCommands = {k: cxcalcCommands[
@@ -280,15 +282,15 @@ def calculate(compound, verbose=False, whitelist=None):
     else:
         filtered_cxcalcCommands = cxcalcCommands
     if verbose:
-        print "Deleting old descriptor values"
+        logger.info("Deleting old descriptor values")
     delete_descriptors([compound], descriptorDict, cxcalcCommands)
     if verbose:
-        print "Creating new descriptor values."
+        logger.info("Creating new descriptor values.")
     num_to_create, ord_to_create = _calculate(
         compound, descriptorDict, filtered_cxcalcCommands, verbose=verbose)
 
     if verbose:
-        print "Creating {} numerical and {} ordinal".format(len(num_to_create), len(ord_to_create))
+        logger.info("Creating {} numerical and {} ordinal".format(len(num_to_create), len(ord_to_create)))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
     DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
 

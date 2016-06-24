@@ -14,6 +14,9 @@ import importlib
 from django.conf import settings
 import gc
 from django.db.models.functions import Concat
+import logging
+
+logger = logging.getLogger()
 
 descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.RXN_DESCRIPTOR_PLUGINS]
@@ -195,14 +198,14 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
         """Force the calculation of reaction descriptors for a group of reactions."""
         if verbose:
-            print "Calculating descriptors for {} reactions".format(self.count())
+            logger.info("Calculating descriptors for {} reactions".format(self.count()))
         for plugin in descriptorPlugins:
             if plugins is None or plugin.__name__ in plugins:
                 if verbose:
-                    print "Calculating for plugin: {}".format(plugin)
+                    logger.info("Calculating for plugin: {}".format(plugin))
                 plugin.calculate_many(self, verbose=verbose, **kwargs)
                 if verbose:
-                    print "Done with plugin: {}\n".format(plugin)
+                    logger.info("Done with plugin: {}\n".format(plugin))
 
 
 class ReactionManager(models.Manager):

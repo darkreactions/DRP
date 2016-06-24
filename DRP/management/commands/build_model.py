@@ -9,6 +9,8 @@ from DRP.utils import accuracy, BCR, Matthews, confusionMatrixString, confusionM
 from django.conf import settings
 import ast
 from sys import argv
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -107,8 +109,7 @@ def build_model(container, verbose=False):
             container.build(verbose=verbose)
             break
         except OperationalError as e:
-            print "Caught OperationalError {}".format(e)
-            print "\nRestarting in 3 seconds...\n"
+            logger.warning("Caught OperationalError {}\nRestarting in 3 seconds...\n".format(e))
             sleep(3)
     else:
         raise RuntimeError("Got 5 Operational Errors in a row and gave up")
@@ -189,8 +190,6 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     if predictor_headers is not None:
         predictors = Descriptor.objects.filter(heading__in=predictor_headers)
         if predictors.count() != len(predictor_headers):
-            print predictor_headers
-            print predictors
             raise KeyError("Could not find all predictors. Missing: {}".format(
                 missing_descriptors(predictor_headers)))
     else:

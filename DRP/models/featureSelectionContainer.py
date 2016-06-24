@@ -6,6 +6,9 @@ import importlib
 from itertools import chain
 import datetime
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 featureVisitorModules = {library: importlib.import_module(
     settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
@@ -55,10 +58,8 @@ class DescriptorAttribute(object):
                 pass
 
             if desc is None:
-                print descriptor.heading
-                print type(descriptor)
                 raise ValueError(
-                    'An invalid object was assigned as a descriptor')
+                    'An invalid object with heading {} and type {} was assigned as a descriptor'.format(descriptor.heading, type(descriptor)))
 
     def __delete__(self, featureSelectionContainer):
         """Simply clear the querysets."""
@@ -109,10 +110,8 @@ class ChosenDescriptorAttribute(object):
                 pass
 
             if desc is None:
-                print descriptor.heading
-                print type(descriptor)
                 raise ValueError(
-                    'An invalid object was assigned as a descriptor')
+                    'An invalid object with heading {} and type {} was assigned as a descriptor'.format(descriptor.heading, type(descriptor)))
 
     def __delete__(self, featureSelectionContainer):
         """Simply clear the querysets."""
@@ -259,12 +258,12 @@ class FeatureSelectionContainer(models.Model):
         self.startTime = datetime.datetime.now()
 
         if verbose:
-            print "{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count())
+            logger.info("{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count()))
         chosen_descriptor_headers = featureVisitor.train(verbose=verbose)
 
         self.endTime = datetime.datetime.now()
         if verbose:
-            print "\t...Trained. Finished at {}.".format(self.endTime)
+            logging.info("\t...Trained. Finished at {}.".format(self.endTime))
 
         # TODO XXX Make this not hacky af
         chosen_descriptor_list = []

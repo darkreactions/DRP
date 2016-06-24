@@ -4,6 +4,8 @@ from DRP.models.Compound import Compound
 from DRP.models import CatRxnDescriptor
 from django.db.models import Count
 import random
+import logging
+logger = logginer.getLogger(__name__)
 
 
 class Splitter(AbstractSplitter):
@@ -64,7 +66,7 @@ class Splitter(AbstractSplitter):
         train = rxn_hashes.exclude(catrxndescriptorvalue__value__in=test_keys)
 
         if verbose:
-            print "Split into train ({}), test ({})".format(train.count(), test.count())
+            logger.info("Split into train ({}), test ({})".format(train.count(), test.count()))
 
         return (self.package(train), self.package(test))
 

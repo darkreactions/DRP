@@ -2,6 +2,8 @@
 from django.core.management.base import BaseCommand
 from DRP.models import Reaction, Descriptor, Compound, CatRxnDescriptorValue, CatMolDescriptorValue, ModelContainer, DataSetRelation, DataSet
 from django import db
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -40,19 +42,19 @@ class Command(BaseCommand):
 
             true_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome',
                                     boolrxndescriptorvalue__value=True).distinct().order_by('-pk')
-            print true_rxns.count()
+            logger.debug(true_rxns.count())
             cutoff_pk = true_rxns[true_num].pk
             true_rxns_to_delete = true_rxns.filter(pk__lte=cutoff_pk)
-            print true_rxns_to_delete.count()
+            logger.debug(true_rxns_to_delete.count())
             assert(true_rxns.count() - true_rxns_to_delete.count() == true_num)
             true_rxns_to_delete.delete()
 
             false_rxns = rxns.filter(boolrxndescriptorvalue__descriptor__heading='boolean_crystallisation_outcome',
                                      boolrxndescriptorvalue__value=False).distinct().order_by('-pk')
-            print false_rxns.count()
+            logger.debug(false_rxns.count())
             cutoff_pk = false_rxns[false_num].pk
             false_rxns_to_delete = false_rxns.filter(pk__lte=cutoff_pk)
-            print false_rxns_to_delete.count()
+            logger.debug(false_rxns_to_delete.count())
             assert(false_rxns.count() - false_rxns_to_delete.count() == false_num)
             false_rxns_to_delete.delete()
 
@@ -65,6 +67,6 @@ class Command(BaseCommand):
             cutoff_pk = rxns[kwargs['number']]
             rxns.filter(pk__lte=cutoff_pk).delete()
 
-        print Reaction.objects.all().count()
+        logger.debug(Reaction.objects.all().count())
 
         Compound.objects.filter(compoundquantity=None).delete()

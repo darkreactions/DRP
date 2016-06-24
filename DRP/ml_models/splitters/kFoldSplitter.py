@@ -1,6 +1,8 @@
 """Contains a class for performing k-fold validation splits."""
 import random
 from .abstractSplitter import AbstractSplitter
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Splitter(AbstractSplitter):
@@ -21,7 +23,7 @@ class Splitter(AbstractSplitter):
         buckets = [rxn_ids[i::self.k] for i in xrange(self.k)]
 
         if verbose:
-            print "Split into {} buckets with sizes: {}".format(len(buckets), map(len, buckets))
+            logger.info("Split into {} buckets with sizes: {}".format(len(buckets), map(len, buckets)))
 
         splits = []
         for i in range(self.k):

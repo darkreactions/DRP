@@ -18,6 +18,9 @@ from collections import OrderedDict
 import .performedReaction
 from django.core.validators import RegexValidator
 from decimal import Decimal
+import logging
+
+logger = logging.getLogger(__name__)
 
 descriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
@@ -171,10 +174,10 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
         for plugin in descriptorPlugins:
             if plugins is None or plugin.__name__ in plugins:
                 if verbose:
-                    print "Calculating for plugin: {}".format(plugin)
+                    logging.info("Calculating for plugin: {}".format(plugin))
                 plugin.calculate_many(self, verbose=verbose, **kwargs)
                 if verbose:
-                    print "Done with plugin: {}\n".format(plugin)
+                    logging.info("Done with plugin: {}\n".format(plugin))
 
 
 class CompoundManager(models.Manager):

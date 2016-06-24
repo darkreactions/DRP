@@ -7,6 +7,8 @@ import subprocess
 import os
 from abc import abstractmethod
 from itertools import chain
+import logging
+logger = logging.getLogger(__name__)
 
 
 class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
@@ -43,7 +45,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
             filename = "{}_{}.arff".format(self.container.pk, uuid.uuid4())
             filepath = os.path.join(settings.TMP_DIR, filename)
         if verbose:
-            print "Writing arff to {}".format(filepath)
+            logger.info("Writing arff to {}".format(filepath))
         with open(filepath, "w") as f:
             reactions.toArff(f, expanded=True,
                              whitelistHeaders=whitelistHeaders)
@@ -76,7 +78,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
         command = set_path + command
         logger.debug("Running in Shell:\n{}".format(command))
         if verbose:
-            print "Running in Shell:\n{}".format(command)
+            logger.info("Running in Shell:\n{}".format(command))
         output = subprocess.check_output(command, shell=True)
         return output
 
@@ -108,7 +110,7 @@ class AbstractWekaFeatureVisitor(AbstractFeatureVisitor):
 
         output = self._runWekaCommand(command, verbose=verbose)
         if verbose:
-            print output
+            logger.info(output)
 
         descriptor_headers = self._readWekaOutput(output)
         return descriptor_headers

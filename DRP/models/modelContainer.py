@@ -15,6 +15,9 @@ from .statsModel import StatsModel
 from DRP.utils import accuracy, BCR, Matthews, confusionMatrixString, confusionMatrixTable
 import json
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 visitorModules = {library: importlib.import_module(
     settings.STATS_MODEL_LIBS_DIR + "." + library) for library in settings.STATS_MODEL_LIBS}
@@ -261,11 +264,11 @@ class ModelContainer(models.Model):
             splitterObj = splitters[model_container.splitter].Splitter(
                 splitter_name_stub, **json.loads(model_container.splitterOptions))
             if verbose:
-                print "Splitting using {}".format(model_container.splitter)
+                logger.info("Splitting using {}".format(model_container.splitter))
             data_splits = splitterObj.split(reactions, verbose=verbose)
         else:
             if verbose:
-                print "Using given test and training sets."
+                logger.info()"Using given test and training sets.")
             # we want the trainingset even if there's no test set
             data_splits = izip_longest(trainingSets, testSets)
 
@@ -381,7 +384,7 @@ class ModelContainer(models.Model):
                 "Cannot build a model that has already been built.")
 
         if verbose:
-            print "Starting building at {}".format(datetime.datetime.now())
+            logger.info("Starting building at {}".format(datetime.datetime.now()))
 
         # set up a prediction results dictionary. Hold on tight. This gets
         # hairy real fast.
@@ -400,24 +403,24 @@ class ModelContainer(models.Model):
                 self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
             statsModel.outputFile = fileName
             if verbose:
-                print "{} statsModel {}, saving to {}, training...".format(statsModel.startTime, statsModel.pk, fileName)
+                logger.info("{} statsModel {}, saving to {}, training...".format(statsModel.startTime, statsModel.pk, fileName))
             modelVisitor.train(verbose=verbose)
             statsModel.endTime = datetime.datetime.now()
             if verbose:
-                print "\t...Trained. Finished at {}. Saving statsModel...".format(statsModel.endTime),
+                logger.info("\t...Trained. Finished at {}. Saving statsModel...".format(statsModel.endTime)),
             statsModel.save()
             if verbose:
-                print "saved"
+                logger.info("saved")
 
             # Test the model.
             for testSet in statsModel.testSets.all():
                 if testSet.reactions.all().count() != 0:
                     if verbose:
-                        print "Predicting test set..."
+                        logger.info("Predicting test set...")
                     predictions = modelVisitor.predict(
                         testSet.reactions.all(), verbose=verbose)
                     if verbose:
-                        print "\t...finished predicting. Storing predictions...",
+                        logger.info("\t...finished predicting. Storing predictions...",)
                     newResDict = self._storePredictionComponents(
                         predictions, statsModel)
 
@@ -437,19 +440,19 @@ class ModelContainer(models.Model):
                                 resDict[reaction][response][outcome] += count
 
                     if verbose:
-                        print "predictions stored."
+                        logger.info("predictions stored.")
                         for response in self.outcomeDescriptors:
                             predDesc = response.predictedDescriptorType.objects.get(
                                 modelContainer=self, statsModel=statsModel, predictionOf=response)
                             conf_mtrx = predDesc.getConfusionMatrix()
 
-                            print "Confusion matrix for {}:".format(predDesc.heading)
-                            print confusionMatrixString(conf_mtrx)
-                            print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
-                            print "BCR: {:.3}".format(BCR(conf_mtrx))
+                            logger.info("Confusion matrix for {}:".format(predDesc.heading))
+                            logger.info(confusionMatrixString(conf_mtrx))
+                            logger.info("Accuracy: {:.3}".format(accuracy(conf_mtrx)))
+                            logger.info("BCR: {:.3}".format(BCR(conf_mtrx)))
 
                 elif verbose:
-                    print "Test set is empty."
+                    logger.info("Test set is empty.")
 
             if verbose:
                 num_finished += 1
@@ -457,20 +460,20 @@ class ModelContainer(models.Model):
                 elapsed = (end_time - overall_start_time)
                 expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds(
                 ) * (num_models / float(num_finished)))) + overall_start_time
-                print "{}. {} of {} models built.".format(end_time, num_finished, num_models)
-                print "Elapsed model building time: {}. Expected completion time: {}".format(elapsed, expected_finish)
+                logger.info("{}. {} of {} models built.".format(end_time, num_finished, num_models))
+                logger.info("Elapsed model building time: {}. Expected completion time: {}".format(elapsed, expected_finish))
 
         if resDict:
             if verbose:
-                print "Storing overall model predictions...",
+                logger.info("Storing overall model predictions...")
             self._storePredictions(resDict)
             if verbose:
-                print "Predictions stored"
+                logger.info("Predictions stored")
 
         self.built = True
         if verbose:
             overall_end_time = datetime.datetime.now()
-            print "Finished at {}".format(overall_end_time)
+            logger.info("Finished at {}".format(overall_end_time))
 
     def _storePredictionComponents(self, predictions, statsModel, resDict=None):
         """
@@ -572,10 +575,10 @@ class ModelContainer(models.Model):
                 modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(
                     statsModel=model, **visitorOptions)
                 if verbose:
-                    print "statsModel {}, saved at {}, predicting...".format(model.pk, model.outputFile)
+                    logger.info("statsModel {}, saved at {}, predicting...".format(model.pk, model.outputFile))
                 predictions = modelVisitor.predict(reactions, verbose=verbose)
                 if verbose:
-                    print "\t...finished predicting. Storing predictions...",
+                    logger.info("\t...finished predicting. Storing predictions...")
                 newResDict = self._storePredictionComponents(
                     predictions, model)
 
@@ -593,25 +596,25 @@ class ModelContainer(models.Model):
                             resDict[reaction][response][outcome] += count
 
                 if verbose:
-                    print "predictions stored."
+                    logger.info("predictions stored.")
                     for response in self.outcomeDescriptors:
                         predDesc = response.predictedDescriptorType.objects.get(
                             modelContainer=self, statsModel=model, predictionOf=response)
                         conf_mtrx = predDesc.getConfusionMatrix(
                             reactions=reactions)
 
-                        print "Confusion matrix for {}:".format(predDesc.heading)
-                        print confusionMatrixString(conf_mtrx)
-                        print "Accuracy: {:.3}".format(accuracy(conf_mtrx))
-                        print "BCR: {:.3}".format(BCR(conf_mtrx))
-                        print "Matthews: {:.3}".format(Matthews(conf_mtrx))
+                        logger.info("Confusion matrix for {}:".format(predDesc.heading))
+                        logger.info(confusionMatrixString(conf_mtrx))
+                        logger.info("Accuracy: {:.3}".format(accuracy(conf_mtrx)))
+                        logger.info("BCR: {:.3}".format(BCR(conf_mtrx)))
+                        logger.info("Matthews: {:.3}".format(Matthews(conf_mtrx)))
                     num_finished += 1
                     end_time = datetime.datetime.now()
                     elapsed = (end_time - overall_start_time)
                     expected_finish = datetime.timedelta(seconds=(elapsed.total_seconds(
                     ) * (num_models / float(num_finished)))) + overall_start_time
-                    print "{}. Predictions from {} of {} models.".format(end_time, num_finished, num_models)
-                    print "Elapsed prediction time: {}. Expected completion time: {}".format(elapsed, expected_finish)
+                    logger.info("{}. Predictions from {} of {} models.".format(end_time, num_finished, num_models))
+                    logger.info("Elapsed prediction time: {}. Expected completion time: {}".format(elapsed, expected_finish))
 
             return self._storePredictions(resDict)
         else:

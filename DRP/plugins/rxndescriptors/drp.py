@@ -6,8 +6,9 @@ from scipy.stats import gmean
 from django.db.models import Sum
 from utils import setup
 import xxhash
-import warnings
 from DRP.plugins.moldescriptors.chemaxon import _pHDependentDescriptors
+import logging
+logger = logging.getLogger(__name__)
 
 elements = DRP.chemical_data.elements
 
@@ -324,7 +325,7 @@ def _delete_values(reaction_set, descriptors_to_delete):
 def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=None):
     """Calculate descriptors for this plugin for an entire set of reactions."""
     if verbose:
-        print "Creating descriptor dictionary"
+        logger.info("Creating descriptor dictionary")
     descriptorDict, _reaction_pH_Descriptors = make_dict()
     # We're about to use it and leaving it lazy obscures where time is being
     # spent
@@ -338,66 +339,66 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
 
     if bulk_delete:
         if verbose:
-            print "Deleting all old descriptor values"
+            logger.info("Deleting all old descriptor values")
         _delete_values(reaction_set, descs_to_delete)
 
     num_vals_to_create = []
     bool_vals_to_create = []
     for i, reaction in enumerate(reaction_set):
         if verbose:
-            print "{} ({}/{})".format(reaction, i + 1, len(reaction_set))
+            logger.info("{} ({}/{})".format(reaction, i + 1, len(reaction_set)))
         if not bulk_delete:
             if verbose:
-                print "Deleting old descriptor values"
+                logger.info("Deleting old descriptor values")
             _delete_values([reaction], descs_to_delete)
 
         if verbose:
-            print "Calculating new values.".format(reaction, i + 1, len(reaction_set))
+            logger.info("Calculating new values.".format(reaction, i + 1, len(reaction_set)))
         num_vals_to_create, bool_vals_to_create = _calculate(
             reaction, descriptorDict, verbose=verbose, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
 
         if len(num_vals_to_create) > create_threshold:
             if verbose:
-                print "Creating {} Numeric values".format(len(num_vals_to_create))
+                logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
             DRP.models.NumRxnDescriptorValue.objects.bulk_create(
                 num_vals_to_create)
             num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
-                print "Creating {} Boolean values".format(len(bool_vals_to_create))
+                logger.info("Creating {} Boolean values".format(len(bool_vals_to_create)))
             DRP.models.BoolRxnDescriptorValue.objects.bulk_create(
                 bool_vals_to_create)
             bool_vals_to_create = []
 
     if verbose:
-        print "Creating {} Numeric values".format(len(num_vals_to_create))
+        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        print "Creating {} Boolean values".format(len(bool_vals_to_create))
+        logger.info("Creating {} Boolean values".format(len(bool_vals_to_create)))
     DRP.models.BoolRxnDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
     if verbose:
-        print "Creating reaction pH values"
+        logger.info("Creating reaction pH values")
 
     num_vals_to_create = []
     for i, reaction in enumerate(reaction_set):
         if verbose:
-            print "{} ({}/{})".format(reaction, i + 1, len(reaction_set))
+            logger.info("{} ({}/{})".format(reaction, i + 1, len(reaction_set)))
 
         if verbose:
-            print "Calculating new values.".format(reaction, i + 1, len(reaction_set))
+            logger.info("Calculating new values.".format(reaction, i + 1, len(reaction_set)))
         num_vals_to_create = _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors,
                                              verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
 
         if len(num_vals_to_create) > create_threshold:
             if verbose:
-                print "Creating {} Numeric values".format(len(num_vals_to_create))
+                logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
             DRP.models.NumRxnDescriptorValue.objects.bulk_create(
                 num_vals_to_create)
             num_vals_to_create = []
 
     if verbose:
-        print "Creating {} Numeric values".format(len(num_vals_to_create))
+        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
 
 
@@ -405,7 +406,7 @@ def calculate(reaction, verbose=False, whitelist=None):
     """Calculate the descriptors for this plugin."""
     # Set up the actual descriptor dictionary.
     if verbose:
-        print "Creating descriptor dictionary"
+        logger.info("Creating descriptor dictionary")
     descriptorDict = make_dict()[0]
     if whitelist is None:
         descs_to_delete = descriptorDict.values()
@@ -413,27 +414,27 @@ def calculate(reaction, verbose=False, whitelist=None):
         descs_to_delete = [k[v]
                            for k in descriptorDict.keys() if k in whitelist]
     if verbose:
-        print "Deleting old values"
+        logger.info("Deleting old values")
     _delete_values([reaction], descs_to_delete)
     if verbose:
-        print "Calculating new values"
+        logger.info("Calculating new values")
     num_vals_to_create, bool_vals_to_create = _calculate(
         reaction, descriptorDict, verbose=verbose, whitelist=whitelist)
 
     if verbose:
-        print "Creating {} Numeric values".format(len(num_vals_to_create))
+        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        print "Creating {} Boolean values".format(len(bool_vals_to_create))
+        logger.info("Creating {} Boolean values".format(len(bool_vals_to_create)))
     DRP.models.BoolRxnDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
     if verbose:
-        print "Calculating reaction pH values"
+        logger.info("Calculating reaction pH values")
     num_vals_to_create = _calculateRxnpH(reaction, descriptorDict, _reaction_pH_descriptors,
                                          verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
 
     if verbose:
-        print "Creating {} Numeric values".format(len(num_vals_to_create))
+        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
 
 
@@ -568,9 +569,9 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                                 compound=quantity.compound).value for quantity in roleQuantities))
                         num_vals_to_create.append(n)
                 # elif descriptorValues.count() != roleQuantities.count():
-                    # warnings.warn("Skipping {} because there are {} descriptorValues and {} roleQuantities".format(descriptor.heading, descriptorValues.count(), roleQuantities.count()))
+                    # logger.warning("Skipping {} because there are {} descriptorValues and {} roleQuantities".format(descriptor.heading, descriptorValues.count(), roleQuantities.count()))
                 # else:
-                    # warnings.warn("Skipping {} because some descriptorValues are None".format(descriptor.heading))
+                    # logger.warning("Skipping {} because some descriptorValues are None".format(descriptor.heading))
             for descriptor in DRP.models.OrdMolDescriptor.objects.all():
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
                 # TODO XXX this count now takes longer than actually creating
@@ -685,7 +686,7 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
         reaction_pH = DRP.models.NumRxnDescriptorValue.objects.get(
             reaction=reaction, descriptor__heading='reaction_pH').value
     except DRP.models.NumRxnDescriptorValue.DoesNotExist:
-        warnings.warn(
+        logger.warning(
             'Reaction {} has no pH value. Cannot create reaction pH descriptors'.format(reaction))
     else:
         reaction_pH_string = str(reaction_pH).replace(
@@ -707,10 +708,10 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
                     # Came up with this compromise. The warnings are identical
                     # so the default python settings squelch them
                     if heading.startswith('pH_') or heading.startswith('Ox_'):
-                        warnings.warn(
+                        logger.warning(
                             'Could not find descriptor value for a pH or Ox role descriptor.')
                     else:
-                        warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(
+                        logger.warning('Could not find descriptor value for descriptor {} and reaction {}'.format(
                             reaction_pH_descriptor_heading, reaction))
                 else:
                     reaction_pH_dv = DRP.models.NumRxnDescriptorValue(
