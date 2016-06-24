@@ -270,7 +270,7 @@ class ModelContainer(models.Model):
             if verbose:
                 logger.info("Using given test and training sets.")
             # we want the trainingset even if there's no test set
-            data_splits = izip_longest(trainingSets, testSets)
+            data_splits = zip_longest(trainingSets, testSets)
 
         data_splits = model_container.createStatsModels(
             data_splits, verbose=verbose)
