@@ -1,5 +1,5 @@
 """Feature visitors appropriate to the weka modelling engine."""
-from AbstractWekaFeatureVisitor import AbstractWekaFeatureVisitor
+from .abstractWekaFeatureVisitor import AbstractWekaFeatureVisitor
 import importlib
 from django.conf import settings
 

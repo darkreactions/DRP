@@ -8,13 +8,13 @@ from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
 from DRP.forms import NumRxnDescValFormFactory, OrdRxnDescValFormFactory, BoolRxnDescValFormFactory, CatRxnDescValFormFactory
 from DRP.forms import PerformedRxnInvalidateForm, PerformedRxnDeleteForm
 from django.utils.decorators import method_decorator
-from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
+from .decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
 from django.contrib.auth.decorators import login_required
 from django.forms.models import modelformset_factory
 from DRP.forms import compoundQuantityFormFactory
 from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render
-from helpers import redirect
+from .helpers import redirect
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied

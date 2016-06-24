@@ -1,7 +1,7 @@
 """A module containing the reactions descriptors."""
-from descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
-from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable, DescriptorManager
-import rxnDescriptorValues
+from .descriptors import CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+from .descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, Predictable, DescriptorManager
+import .rxnDescriptorValues
 import DRP.models
 
 

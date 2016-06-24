@@ -1,5 +1,5 @@
 """Weka's model visitor library."""
-from DRP.ml_models.model_visitors.weka.AbstractWekaModelVisitor import AbstractWekaModelVisitor
+from DRP.ml_models.model_visitors.weka.abstractWekaModelVisitor import AbstractWekaModelVisitor
 
 
 class J48(AbstractWekaModelVisitor):

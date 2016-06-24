@@ -1,6 +1,6 @@
 """This command is to check whether the hashing algorithm for non-alike reactions has clashed."""
 from django.core.management.base import BaseCommand
-from DRP.Email import EmailToAdmins
+from DRP.email import EmailToAdmins
 from DRP.models import Reaction
 import xxhash
 

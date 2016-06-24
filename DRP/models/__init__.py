@@ -4,25 +4,25 @@
 
 # Classes that should get included.
 
-from dataSets import DataSet, DataSetRelation
-from descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
-from rxnDescriptors import CatRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor
-from predRxnDescriptors import PredCatRxnDescriptor, PredOrdRxnDescriptor, PredBoolRxnDescriptor, PredNumRxnDescriptor
-from molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
-from molDescriptorValues import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
-from rxnDescriptorValues import RxnDescriptorValue, CatRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue
-from LabGroup import LabGroup
-from LicenseAgreement import LicenseAgreement
-from License import License
-from Reaction import Reaction
-from PerformedReaction import PerformedReaction
-from Compound import Compound, CompoundGuideEntry
-from CompoundQuantity import CompoundQuantity
-from RecommendedReaction import RecommendedReaction
-from StatsModel import StatsModel
-from ChemicalClass import ChemicalClass
-from ConfirmationCode import ConfirmationCode
-from CompoundRole import CompoundRole
-from ModelContainer import ModelContainer
-from MetricContainer import MetricContainer
-from FeatureSelectionContainer import FeatureSelectionContainer
+from .dataSets import DataSet, DataSetRelation
+from .descriptors import Descriptor, CategoricalDescriptor, BooleanDescriptor, NumericDescriptor, OrdinalDescriptor, CategoricalDescriptorPermittedValue
+from .rxnDescriptors import CatRxnDescriptor, OrdRxnDescriptor, BoolRxnDescriptor, NumRxnDescriptor
+from .predRxnDescriptors import PredCatRxnDescriptor, PredOrdRxnDescriptor, PredBoolRxnDescriptor, PredNumRxnDescriptor
+from .molDescriptors import CatMolDescriptor, BoolMolDescriptor, NumMolDescriptor, OrdMolDescriptor
+from .molDescriptorValues import CatMolDescriptorValue, BoolMolDescriptorValue, NumMolDescriptorValue, OrdMolDescriptorValue
+from .rxnDescriptorValues import RxnDescriptorValue, CatRxnDescriptorValue, BoolRxnDescriptorValue, NumRxnDescriptorValue, OrdRxnDescriptorValue
+from .labGroup import LabGroup
+from .licenseAgreement import LicenseAgreement
+from .license import License
+from .reaction import Reaction
+from .performedReaction import PerformedReaction
+from .compound import Compound, CompoundGuideEntry
+from .compoundQuantity import CompoundQuantity
+from .recommendedReaction import RecommendedReaction
+from .statsModel import StatsModel
+from .chemicalClass import ChemicalClass
+from .confirmationCode import ConfirmationCode
+from .compoundRole import CompoundRole
+from .modelContainer import ModelContainer
+from .metricContainer import MetricContainer
+from .featureSelectionContainer import FeatureSelectionContainer

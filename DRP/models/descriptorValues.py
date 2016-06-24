@@ -4,9 +4,9 @@ Descriptor values are not instantiated in and of themselves because they
 must be related to another entity- for instance a reaction or a compound.
 """
 
-from descriptors import CategoricalDescriptorPermittedValue
-from descriptors import CategoricalDescriptor, NumericDescriptor
-from descriptors import BooleanDescriptor, OrdinalDescriptor
+from .descriptors import CategoricalDescriptorPermittedValue
+from .descriptors import CategoricalDescriptor, NumericDescriptor
+from .descriptors import BooleanDescriptor, OrdinalDescriptor
 from django.core.exceptions import ValidationError
 from django.db import models
 

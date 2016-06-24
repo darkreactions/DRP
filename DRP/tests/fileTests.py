@@ -25,9 +25,9 @@ excludes = [
     'DRP/vis/*',
     'DRP/views/orig_explore_vis.py',
     'DRP/wsgi.py',
-    'DRP/models/MetricContainer.py',
+    'DRP/models/metricContainer.py',
     'DRP/migrations/*',
-    'DRP/tests/TemplateTest.py'
+    'DRP/tests/templateTest.py'
 ]
 
 

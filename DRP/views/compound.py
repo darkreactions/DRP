@@ -5,7 +5,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import Compound
 from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm
 from django.utils.decorators import method_decorator
-from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
+from .decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.shortcuts import render, redirect

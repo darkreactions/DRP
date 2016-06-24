@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Tests for custom model validators."""
 import unittest
-from DRPTestCase import DRPTestCase, runTests
+from .drpTestCase import DRPTestCase, runTests
 from DRP.models import validators
 from django.core.exceptions import ValidationError
 import datetime

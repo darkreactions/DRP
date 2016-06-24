@@ -1,12 +1,11 @@
 """A module containign only the DescriptorValue class."""
 from django.db import models
-from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
-from rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
-import dataSets
+from .descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
+from .rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
+import .dataSets
 # Needed to allow for circular dependency.
-import importlib
 import DRP.models
-pr = importlib.import_module("DRP.models.PerformedReaction")
+import DRP.models.performedReaction
 
 
 class RxnDescriptorValueQuerySet(models.query.QuerySet):

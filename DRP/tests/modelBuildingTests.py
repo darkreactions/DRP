@@ -3,8 +3,8 @@
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
-from DRPTestCase import DRPTestCase, runTests
+from .decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
+from .drpTestCase import DRPTestCase, runTests
 from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 

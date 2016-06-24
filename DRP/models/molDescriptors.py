@@ -1,7 +1,7 @@
 """A module containing Classes permitting the representation of molecular descriptors."""
 from django.db import models
-from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
-from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, DescriptorManager
+from .descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+from .descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, DescriptorManager
 
 
 class CatMolDescriptor(CategoricalDescriptor):

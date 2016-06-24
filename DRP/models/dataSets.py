@@ -8,7 +8,7 @@ This allows the datasets to exist independently of the models.
 """
 
 from django.db import models
-from PerformedReaction import PerformedReaction
+from .performedReaction import PerformedReaction
 
 
 class DataSet(models.Model):

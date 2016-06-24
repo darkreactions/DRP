@@ -1,9 +1,9 @@
 """A module containign only the DescriptorValue class."""
 from django.db import models
-from descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue, OrdinalDescriptorValue
+from .descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue, OrdinalDescriptorValue
 # from Compound import DRP.Compound - retain this line for clarity
 from django.core.exceptions import ValidationError
-import PerformedReaction
+import .performedReaction
 import DRP.models
 
 

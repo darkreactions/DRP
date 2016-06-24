@@ -2,7 +2,7 @@
 from django.conf import settings
 import uuid
 from DRP.models import rxnDescriptors
-from DRP.ml_models.model_visitors.AbstractModelVisitor import AbstractModelVisitor, logger
+from DRP.ml_models.model_visitors.abstractModelVisitor import AbstractModelVisitor, logger
 from DRP.models.descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, BoolRxnDescriptorValue
 from django.core.exceptions import ImproperlyConfigured

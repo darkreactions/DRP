@@ -1,15 +1,15 @@
 """Contains admin information for Django."""
 
 from django.contrib import admin
-from models import LabGroup, License, Compound, ChemicalClass, CompoundRole
-from models import PerformedReaction, OrdRxnDescriptor, NumRxnDescriptor
-from models import BoolRxnDescriptor, CatRxnDescriptor
-from models import CategoricalDescriptorPermittedValue
-from models import CompoundGuideEntry
-from forms import LabGroupForm, CompoundAdminForm, PerformedRxnAdminForm
-from forms import OrdRxnDescriptorForm, NumRxnDescriptorForm
-from forms import BoolRxnDescriptorForm
-from forms import CatRxnDescriptorForm, CatDescPermittedValueForm
+from .models import LabGroup, License, Compound, ChemicalClass, CompoundRole
+from .models import PerformedReaction, OrdRxnDescriptor, NumRxnDescriptor
+from .models import BoolRxnDescriptor, CatRxnDescriptor
+from .models import CategoricalDescriptorPermittedValue
+from .models import CompoundGuideEntry
+from .forms import LabGroupForm, CompoundAdminForm, PerformedRxnAdminForm
+from .forms import OrdRxnDescriptorForm, NumRxnDescriptorForm
+from .forms import BoolRxnDescriptorForm
+from .forms import CatRxnDescriptorForm, CatDescPermittedValueForm
 
 
 class LabGroupAdmin(admin.ModelAdmin):

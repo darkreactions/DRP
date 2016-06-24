@@ -1,11 +1,11 @@
 """Module for information about predicted reaction descriptors."""
 from django.db import models
-from rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
-from rxnDescriptorValues import BoolRxnDescriptorValue
-from descriptors import DescriptorManager
-from ModelContainer import ModelContainer
-from StatsModel import StatsModel
-from PerformedReaction import PerformedReaction
+from .rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, NumRxnDescriptor, CatRxnDescriptor
+from .rxnDescriptorValues import BoolRxnDescriptorValue
+from .descriptors import DescriptorManager
+from .modelContainer import ModelContainer
+from .statsModel import StatsModel
+from .performedReaction import PerformedReaction
 from django.db.models import F
 
 
