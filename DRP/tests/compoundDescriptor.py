@@ -10,6 +10,7 @@ from DRP.models import CatMolDescriptor, CategoricalDescriptorPermittedValue
 from .decorators import createsCompound, joinsLabGroup, createsUser
 from .decorators import createsChemicalClass
 from django.core.exceptions import ValidationError
+from importlib import reload
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 

@@ -36,14 +36,14 @@ class CompoundToArff(DRPTestCase):
     def test_regular(self):
         """Test a regular arff."""
         fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_csv.arff'
-        with open(fn, 'wb') as arffFile:
+        with open(fn, 'wt') as arffFile:
             Compound.objects.all().toArff(arffFile)
         self.checkArff(fn)
 
     def test_expanded(self):
         """Test an expanded arff."""
         fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_ex_csv.arff'
-        with open(fn, 'wb') as arffFile:
+        with open(fn, 'wt') as arffFile:
             Compound.objects.all().toArff(arffFile, expanded=True)
         self.checkArff(fn)
 

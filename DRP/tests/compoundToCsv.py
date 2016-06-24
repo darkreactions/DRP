@@ -23,11 +23,11 @@ class CsvOutput(DRPTestCase):
     def test_regular(self):
         """Test a regular CSV."""
         fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_csv.csv'
-        with open(fn, 'wb') as csvFile:
+        with open(fn, 'wt') as csvFile:
             Compound.objects.all().toCsv(csvFile)
-        with open(fn, 'rb') as csvFile:
+        with open(fn, 'rt') as csvFile:
             reader = csv.reader(csvFile, delimiter=",", quotechar='"')
-            headerRow = reader.next()
+            headerRow = next(reader)
             expectedFields = [
                 field.name for field in Compound._meta.fields] + ['chemicalClass_1']
             for item in expectedFields:
@@ -45,11 +45,11 @@ class CsvOutput(DRPTestCase):
     def test_expanded(self):
         """Test an expanded CSV."""
         fn = '/tmp/' + settings.MAIN_SERVER_USER + '_test_csv.csv'
-        with open(fn, 'wb') as csvFile:
+        with open(fn, 'wt') as csvFile:
             Compound.objects.all().toCsv(csvFile, expanded=True)
-        with open(fn, 'rb') as csvFile:
+        with open(fn, 'rt') as csvFile:
             reader = csv.reader(csvFile, delimiter=",")
-            headerRow = reader.next()
+            headerRow = next(reader)
             expectedFields = [field.name for field in Compound._meta.fields] + [
                 'chemicalClass_1'] + [d.csvHeader for d in Compound.objects.all().descriptors]
             for item in expectedFields:
