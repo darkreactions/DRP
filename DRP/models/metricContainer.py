@@ -101,7 +101,7 @@ class OutcomeDescriptorAttribute(object):
                 pass
 
             if desc is None:
-                    'An invalid object with heading {} and type {} was assigned as a descriptor'.format(descriptor.heading, type(descriptor)))
+                raise ValueError('An invalid object with heading {} and type {} was assigned as a descriptor'.format(descriptor.heading, type(descriptor)))
 
     def __delete__(self, metricContainer):
         metricContainer.outcomeBoolRxnDescriptors.clear()

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from numpy import average
-from itertools import chain, izip_longest
+from itertools import chain, zip_longest
 import random
 import datetime
 import importlib
@@ -268,7 +268,7 @@ class ModelContainer(models.Model):
             data_splits = splitterObj.split(reactions, verbose=verbose)
         else:
             if verbose:
-                logger.info()"Using given test and training sets.")
+                logger.info("Using given test and training sets.")
             # we want the trainingset even if there's no test set
             data_splits = izip_longest(trainingSets, testSets)
 

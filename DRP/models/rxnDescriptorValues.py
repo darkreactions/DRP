@@ -2,7 +2,6 @@
 from django.db import models
 from .descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
 from .rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
-import .dataSets
 # Needed to allow for circular dependency.
 import DRP.models
 import DRP.models.performedReaction

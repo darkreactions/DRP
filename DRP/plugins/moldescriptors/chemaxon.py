@@ -4,13 +4,12 @@ Requires cxcalc (part of JChem) to be installed and licensed.
 
 """
 import DRP
-from utils import setup
+from .utils import setup
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from collections import OrderedDict
 from subprocess import Popen, PIPE
 from itertools import chain
-import warnings
 import logging
 logger = logging.getLogger(__name__)
 
@@ -332,7 +331,7 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
                                 try:
                                     n.full_clean()
                                 except ValidationError as e:
-                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+                                    logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                                         n.value, n.compound, n.descriptor, e))
                                     n.value = None
                                 num_to_create.append(n)
@@ -342,7 +341,7 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
                                 try:
                                     o.full_clean()
                                 except ValidationError as e:
-                                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
+                                    logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                                         o.value, o.compound, o.descriptor, e))
                                     o.value = None
                                 ord_to_create.append(o)
@@ -361,11 +360,11 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
                         raise RuntimeError("Number of cxcalc commands ({}) does not match number of results ({})".format(
                             len(commandKeys), len(resList)))
             else:
-                warnings.warn("cxcalc returned error: {}".format(resErr))
+                logger.warning("cxcalc returned error: {}".format(resErr))
         else:
-            warnings.warn("cxcalc exited with nonzero return code {}".format(
+            logger.warning("cxcalc exited with nonzero return code {}".format(
                 calcProc.returncode))
     else:
-        warnings.warn("Compound not found")
+        logger.warning("Compound not found")
 
     return num_to_create, ord_to_create

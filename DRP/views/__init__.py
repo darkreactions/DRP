@@ -5,8 +5,8 @@ from .registerViews import register, confirm
 from .licenseView import license
 from .joinGroupView import joinGroup
 from .selectGroupView import selectGroup
-import .compound
-import .decorators
-import .reaction
+from . import compound
+from . import decorators
+from .import reaction
 from .leaveGroupView import leaveGroup
-from api import api1
+from .api import api1

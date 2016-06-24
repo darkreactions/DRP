@@ -6,16 +6,16 @@ from .descriptors import CategoricalDescriptor, OrdinalDescriptor
 from .molDescriptorValues import BoolMolDescriptorValue, NumMolDescriptorValue
 from .molDescriptorValues import CatMolDescriptorValue, OrdMolDescriptorValue
 from .chemicalClass import ChemicalClass
-from .LabGroup import LabGroup
+from .labGroup import LabGroup
 import csv
 from .querysets import CsvQuerySet, ArffQuerySet
-from .chemspipy import ChemSpider
+from chemspipy import ChemSpider
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from itertools import chain
 import importlib
 from collections import OrderedDict
-import .performedReaction
+import DRP
 from django.core.validators import RegexValidator
 from decimal import Decimal
 import logging
@@ -286,7 +286,7 @@ class Compound(models.Model):
                 reaction.save()  # descriptor recalculation
                 try:
                     reaction.performedreaction.save()  # invalidate models
-                except PerformedReaction.PerformedReaction.DoesNotExist:
+                except DRP.models.performedReaction.performedReaction.DoesNotExist:
                     pass  # it doesn't matter
         super(Compound, self).save(*args, **kwargs)
         if calcDescriptors and self.calcDescriptors:

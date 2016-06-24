@@ -7,7 +7,7 @@ from uuid import uuid4
 import imaplib
 import time
 import email
-import DRP.Email
+import DRP.email
 from .drpTestCase import DRPTestCase, runTests
 
 loadTests = unittest.TestLoader().loadTestsFromTestCase
@@ -20,7 +20,7 @@ class EmailSendsAndRecieves(DRPTestCase):
     def setUp(self):
         """Create an email with a unique header."""
         self.headerId = uuid4()
-        self.email = DRP.Email.Email('Test Subject Header: {0}'.format(
+        self.email = DRP.email.Email('Test Subject Header: {0}'.format(
             self.headerId), 'This message is a test. Please disregard but do not delete this email.', [settings.EMAIL_HOST_USER])
 
     def runTest(self):

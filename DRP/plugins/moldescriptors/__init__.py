@@ -1,2 +1,2 @@
 """Calculations of molecular descriptors."""
-import example
+from . import example

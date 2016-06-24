@@ -276,7 +276,7 @@ STATS_MODEL_LIBS_DIR = "DRP.ml_models.model_visitors"
 STATS_MODEL_LIBS = ("weka",)
 REACTION_DATASET_SPLITTERS_DIR = "DRP.ml_models.splitters"
 REACTION_DATASET_SPLITTERS = (
-    "KFoldSplitter", "ExploratorySplitter", "NoSplitter", "RandomSplitter")
+    "kFoldSplitter", "exploratorySplitter", "noSplitter", "randomSplitter")
 FEATURE_SELECTION_LIBS_DIR = "DRP.ml_models.feature_visitors"
 FEATURE_SELECTION_LIBS = ("weka",)
 METRIC_VISITORS = ("ITML",)

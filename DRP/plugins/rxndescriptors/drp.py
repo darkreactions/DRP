@@ -4,7 +4,7 @@ from itertools import chain
 from numpy import mean, average as wmean
 from scipy.stats import gmean
 from django.db.models import Sum
-from utils import setup
+from .utils import setup
 import xxhash
 from DRP.plugins.moldescriptors.chemaxon import _pHDependentDescriptors
 import logging

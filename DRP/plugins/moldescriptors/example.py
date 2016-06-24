@@ -1,5 +1,5 @@
 """An example molecular descriptor plugin to demonstrate the 'shape' that the API requires."""
-from utils import setup
+from .utils import setup
 import DRP
 from django.core.exceptions import ValidationError
 import logging

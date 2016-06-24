@@ -1,7 +1,7 @@
 """A module containing only the default contact view."""
 from DRP.forms import ContactForm
 from django.template import RequestContext
-from DRP.Email import EmailToAdmins
+from DRP.email import EmailToAdmins
 from django.shortcuts import render
 
 

@@ -1,6 +1,6 @@
 """DRP calculated descriptors using chemical data from Mathematica."""
 from scipy.stats import gmean
-from utils import setup
+from .utils import setup
 import DRP
 from DRP import chemical_data
 from django.core.exceptions import ValidationError
@@ -31,8 +31,9 @@ weightings = (
 
 inorgElements = {}
 for element, info in elements.items():
-    if (element == 'Se') or (info['group'] in range(3, 13)) or ((info['group'] > 12) and ((not info['nonmetal']) or info['metalloid'])):
-        inorgElements[element] = info
+    if info['group'] is not None:
+        if (element == 'Se') or (info['group'] in range(3, 13)) or ((info['group'] > 12) and ((not info['nonmetal']) or info['metalloid'])):
+            inorgElements[element] = info
 
 _descriptorDict = {}
 

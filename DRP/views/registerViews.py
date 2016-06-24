@@ -1,7 +1,7 @@
 """A module containing only the views for registration and confirmation."""
 from DRP.forms import UserCreationForm
 from django.template import RequestContext, Context
-from DRP.Email import Email
+from DRP.email import Email
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.core.urlresolvers import reverse

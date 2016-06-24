@@ -1,6 +1,9 @@
 """Contains a class for splitting reactions into datasets purely at pseudorandom."""
 from .abstractSplitter import AbstractSplitter
 import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Splitter(AbstractSplitter):
@@ -32,6 +35,6 @@ class Splitter(AbstractSplitter):
         train = reactions.filter(id__in=rxn_ids[test_size:])
 
         if verbose:
-            print "Split into train ({}), test ({})".format(train.count(), test.count())
+            logger.info("Split into train ({}), test ({})".format(train.count(), test.count()))
 
         return (self.package(train), self.package(test))

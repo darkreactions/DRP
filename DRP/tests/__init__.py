@@ -1,14 +1,14 @@
 """The suite of DRP tests."""
-from .drpTestCase import DRPTestCase, runTests
-import .fileTests
-import .unittest
-import .email
-import .forms
-import .httpTests
-import .decorators
-import .compoundDescriptor
-import .compoundToCsv
-import .compoundToArff
+from . from drpTestCase import DRPTestCase, runTests
+from . import fileTests
+from . import unittest
+from . import email
+from . import forms
+from . import httpTests
+from . import decorators
+from . import compoundDescriptor
+from . import compoundToCsv
+from . import compoundToArff
 # import modelBuildingTests
 # import DataImport
 import modelValidators

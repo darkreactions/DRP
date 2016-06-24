@@ -1,7 +1,7 @@
 """An abstracted feature visitor designed to work with weka."""
 from django.conf import settings
 import uuid
-from DRP.ml_models.feature_visitors.AbstractFeatureVisitor import AbstractFeatureVisitor, logger
+from DRP.ml_models.feature_visitors.abstractFeatureVisitor import AbstractFeatureVisitor, logger
 from django.core.exceptions import ImproperlyConfigured
 import subprocess
 import os

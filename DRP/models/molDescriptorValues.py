@@ -3,7 +3,6 @@ from django.db import models
 from .descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue, OrdinalDescriptorValue
 # from Compound import DRP.Compound - retain this line for clarity
 from django.core.exceptions import ValidationError
-import .performedReaction
 import DRP.models
 
 
@@ -52,7 +51,7 @@ class MolDescriptorValue(models.Model):
                 reaction.save()  # recalculate descriptors
                 try:
                     reaction.performedreaction.save()
-                except PerformedReaction.PerformedReaction.DoesNotExist:
+                except DRP.models.performedReaction.PerformedReaction.DoesNotExist:
                     pass  # we don't care
 
     def __unicode__(self):

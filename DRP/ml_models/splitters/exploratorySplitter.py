@@ -1,11 +1,11 @@
 """A splitter to create training and test sets dependent upon apparently disctinct chemistry."""
 from .abstractSplitter import AbstractSplitter
-from DRP.models.Compound import Compound
+from DRP.models.compound import Compound
 from DRP.models import CatRxnDescriptor
 from django.db.models import Count
 import random
 import logging
-logger = logginer.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Splitter(AbstractSplitter):

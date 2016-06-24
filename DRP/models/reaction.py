@@ -1,6 +1,6 @@
 """A module containing only the Reaction class."""
 from django.db import models
-from labGroup import LabGroup
+from .labGroup import LabGroup
 from .compound import Compound
 from .querysets import CsvQuerySet, ArffQuerySet, MultiQuerySet
 from .descriptors import BooleanDescriptor, NumericDescriptor, CategoricalDescriptor, OrdinalDescriptor
