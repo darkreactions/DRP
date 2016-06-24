@@ -100,7 +100,7 @@ class PostRegisterPage(PostHttpSessionTest):
         try:
             if sel_rv == 'OK':
                 search_rv, data = m.search(
-                    None, 'FROM', settings.DEFAULT_FROM_EMAIL, 'SUBJECT', '{0}'.format(self.emailHeader))
+                    None, 'FROM', settings.DEFAULT_FROM_EMAIL, 'SUBJECT', '"{0}"'.format(self.emailHeader))
                 if search_rv == 'OK':
                     if len(data[0].split()) > 0:
                         for num in data[0].split():
@@ -108,12 +108,12 @@ class PostRegisterPage(PostHttpSessionTest):
                             if fetch_rv == 'OK':
                                 # This check should do something to make sure
                                 # that the email is unique
-                                if self.emailCheck(str(email.message_from_string(msgData[0][1]))):
+                                if self.emailCheck(str(email.message_from_bytes(msgData[0][1]))):
                                     m.store(num, '+FLAGS', '\\DELETED')
                                     m.expunge()
                             else:
                                 messages += str(
-                                    email.message_from_string(msgData[0][1]))
+                                    email.message_from_bytes(msgData[0][1]))
                     else:
                         raise RuntimeError('Message not found in inbox')
                 else:
