@@ -10,35 +10,19 @@ import json
 import csv
 from math import sqrt
 
-descriptor_directory = 'legacy_tests/final_descs/use/'
+descriptor_directory = 'thesis_paper/descs'
 
 # dictionary from file name to descriptor set specification
 #
 desc_files = {
-    'CFS_legacy_mw_noCA_nonZeroVariance.dsc': {'Base Features': 'legacy', 'ChemAxon': False, 'Feature Selection': 'CFS'},
-    'CFS_legacy_mw_noPSA_nonZeroVariance.dsc': {'Base Features': 'legacy', 'ChemAxon': True, 'Feature Selection': 'CFS'},
-    'CFS_new_leak_slowcool_group_period_valence_nonZeroVariance.dsc': {'Base Features': 'new', 'ChemAxon': True, 'Feature Selection': 'CFS'},
-    'CFS_new_legacy_bothCA_noPSA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'Both', 'Feature Selection': 'CFS'},
-    'CFS_new_legacy_legCA_noPSA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'Legacy', 'Feature Selection': 'CFS'},
-    'CFS_new_legacy_newCA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'New', 'Feature Selection': 'CFS'},
-    'CFS_new_legacy_noCA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': False, 'Feature Selection': 'CFS'},
-    'CFS_new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc': {'Base Features': 'new', 'ChemAxon': False, 'Feature Selection': 'CFS'},
-    'legacy_mw_noCA_nonZeroInfo.dsc': {'Base Features': 'legacy', 'ChemAxon': False, 'Feature Selection': 'Positive Info'},
-    'legacy_mw_noCA_nonZeroVariance.dsc': {'Base Features': 'legacy', 'ChemAxon': False, 'Feature Selection': 'Positive Variance'},
-    'legacy_mw_noPSA_nonZeroInfo.dsc': {'Base Features': 'legacy', 'ChemAxon': True, 'Feature Selection': 'Positive Info'},
-    'legacy_mw_noPSA_nonZeroVariance.dsc': {'Base Features': 'legacy', 'ChemAxon': True, 'Feature Selection': 'Positive Variance'},
-    'new_leak_slowcool_group_period_valence_nonZeroInfo.dsc': {'Base Features': 'new', 'ChemAxon': True, 'Feature Selection': 'Positive Info'},
-    'new_leak_slowcool_group_period_valence_nonZeroVariance.dsc': {'Base Features': 'new', 'ChemAxon': True, 'Feature Selection': 'Positive Variance'},
-    'new_legacy_bothCA_noPSA_nonZeroInfo.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'Both', 'Feature Selection': 'Positive Info'},
-    'new_legacy_bothCA_noPSA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'Both', 'Feature Selection': 'Positive Variance'},
-    'new_legacy_legCA_noPSA_nonZeroInfo.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'Legacy', 'Feature Selection': 'Positive Info'},
-    'new_legacy_legCA_noPSA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'Legacy', 'Feature Selection': 'Positive Variance'},
-    'new_legacy_newCA_nonZeroInfo.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'New', 'Feature Selection': 'Positive Info'},
-    'new_legacy_newCA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': 'New', 'Feature Selection': 'Positive Variance'},
-    'new_legacy_noCA_nonZeroInfo.dsc': {'Base Features': 'new + legacy', 'ChemAxon': False, 'Feature Selection': 'Positive Info'},
-    'new_legacy_noCA_nonZeroVariance.dsc': {'Base Features': 'new + legacy', 'ChemAxon': False, 'Feature Selection': 'Positive Variance'},
-    'new_noCA_leak_slowcool_group_period_valence_nonZeroInfo.dsc': {'Base Features': 'new', 'ChemAxon': False, 'Feature Selection': 'Positive Info'},
-    'new_noCA_leak_slowcool_group_period_valence_nonZeroVariance.dsc': {'Base Features': 'new', 'ChemAxon': False, 'Feature Selection': 'Positive Variance'},
+    'base_noCA.dsc': {'Descriptors': 'base', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
+    'base_CA.dsc': {'Descriptors': 'base', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
+    'orthogonal_noCA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
+    'orthogonal_CA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
+    'orthogonal_CA_noInorgCA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': 'Org only', 'Feature Selection': 'Variance+'},
+    'orthogonal_plus_noCA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
+    'orthogonal_plus_CA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
+    'orthogonal_plus_CA_noInorgCA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': 'Org only', 'Feature Selection': 'Variance+'},
 }
 splitter = 'RandomSplitter'
 splitterOptions = json.dumps({"num_splits": 15})
@@ -155,7 +139,7 @@ def get_rows():
 if __name__ == '__main__':
     rows = get_rows()
 
-    headers = ['Base Features', 'ChemAxon', 'Feature Selection', 'BCR Weighted',
+    headers = ['Descriptors', 'ChemAxon', 'Feature Selection', 'BCR Weighted',
                'Model', 'TP', 'FP', 'FN', 'TN', 'Accuracy', 'BCR', 'Matthews']
     csv_fn = argv[1]
 
