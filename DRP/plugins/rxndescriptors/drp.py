@@ -17,6 +17,14 @@ create_threshold = 5000
 
 _descriptorDict = {}
 
+
+_descriptorDict['boolean_crystallisation_outcome'] = {
+        'type': 'bool',
+        'name': 'Two class crystallisation outcome',
+        'calculatorSoftware': calculatorSoftware,
+        'calculatorSoftwareVersion': '1_7',
+    }
+
 # The following adds descriptors to the dictionary in an automated way to
 # save on voluminous code
 
@@ -154,7 +162,7 @@ def make_dict():
 # TODO this seems like we're repeating ourselves (below)
 # There's a lot of DRY violation here because I was playing with a few different methods.
 # We should decide which method we want for deletion and work on
-# variations of that.
+# variations of that. -GMN
 
 
 def delete_descriptors_many(reaction_set, descriptorDict):
@@ -444,6 +452,17 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
     num = DRP.models.NumRxnDescriptorValue
     cat = DRP.models.CatRxnDescriptorValue
     perm = DRP.models.CategoricalDescriptorPermittedValue
+
+
+    heading = 'boolean_crystallisation_outcome'
+    if whitelist is None or heading in whitelist:
+        four_class = DRP.models.OrdRxnDescriptorValue.objects.get(descriptor__heading='crystallisation_outcome', descriptor__calculatorSoftware='manual', reaction=reaction).value
+        b = DRP.models.BoolRxnDescriptorValue(
+            reaction=reaction,
+            descriptor=descriptorDict[heading],
+            value=(four_class > 2)
+        )
+        bool_vals_to_create.append(b)
 
     # Calculate the elemental molarities
     allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
