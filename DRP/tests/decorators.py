@@ -144,7 +144,6 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
     return _createsPerformedReaction
 
 
-# TODO: finish replacing this
 # def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs=[], compoundRoles=[], compoundAmounts=[], descriptorDict={}, duplicateRef=None):
 #    """A class decorator that creates a reaction using pre-existing compounds
 #          with pre-existing compoundRoles."""
@@ -175,12 +174,12 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 #                compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
 #                                                                                        role=compoundRole, amount=quantity)
 #
-#                # TODO XXX bulk_create? Can't use the special save
+#                # bulk_create? Can't use the special save
 #                compoundQuantity.save()
 #
 #                compoundQuantities.append(compoundQuantity)
 #
-#            #TODO: This is hideous and I'm not proud of it.
+#            # This is hideous and I'm not proud of it.
 #            for desc_heading,val in descriptorDict.items():
 #                descriptor = None
 #                try:
@@ -211,7 +210,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 #                    error = "Unknown descriptorValue type for '{}'".format(descriptor)
 #                    raise NotImplementedError(error)
 #
-#                # TODO XXX: bulk_create?
+#                #  bulk_create?
 #                descriptorVal.descriptor = descriptor
 #                descriptorVal.value = val
 #                descriptorVal.reaction = reaction
@@ -224,7 +223,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 #        def tearDown(self):
 #            _oldTearDown(self)
 #
-#            # TODO XXX bulk deletion?
+#            # bulk deletion?
 #            for cq in compoundQuantities:
 #                cq.delete()
 #

@@ -64,7 +64,7 @@ class OrdRxnDescriptor(OrdinalDescriptor, Predictable):
         # been reduced to.
         self.predictedDescriptorType = DRP.models.predRxnDescriptors.PredOrdRxnDescriptor
 
-    def createValue(self, reaction, value):  # TODO: This feels very inelegant.
+    def createValue(self, reaction, value):
         """Create a new reaction descriptor value object."""
         if not isinstance(value, int) and value is not None:
             raise TypeError(
@@ -125,7 +125,6 @@ class NumRxnDescriptor(NumericDescriptor, Predictable):
 
     def createValue(self, reaction, value):
         """Create a new reaction descriptor value object."""
-        # TODO These checks should be part of a more standard 'allowed value'
         # type thing
         if not (isinstance(value, float) or isinstance(value, int)) and value is not None:
             raise TypeError(

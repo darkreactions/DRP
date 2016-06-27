@@ -6,4 +6,3 @@ echo "Deleting..."
 find . -name '*.pyc' -exec bash -c 'test ! -e "${1%c}"' -- {} \; -delete
 echo "...Deleted, repeating check"
 find . -name '*.pyc' -exec bash -c 'test ! -e "${1%c}"' -- {} \; -print
-# TODO XXX write something to make an obvious warning if this somehow fails

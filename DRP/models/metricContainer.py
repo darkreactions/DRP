@@ -216,7 +216,6 @@ class MetricContainer(models.Model):
             logger.info("{} Generating transformed descriptors for {} reactions".format(datetime.datetime.now(), reactions.count()))
 
         if transformed is None:
-            # num_constraints doesn't matter here. TODO make this not stupid
             metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor(0)
             metricVisitor.recover(str(self.fileName))
             if verbose:

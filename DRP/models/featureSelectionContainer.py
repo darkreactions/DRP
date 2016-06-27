@@ -261,7 +261,6 @@ class FeatureSelectionContainer(models.Model):
         if verbose:
             logging.info("\t...Trained. Finished at {}.".format(self.endTime))
 
-        # TODO XXX Make this not hacky af
         chosen_descriptor_list = []
         for desc in self.descriptors:
             if desc.csvHeader in chosen_descriptor_headers:

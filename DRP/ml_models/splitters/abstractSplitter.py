@@ -17,7 +17,7 @@ class AbstractSplitter(object):
     @abstractmethod
     def split(self, data, verbose=False):
         """Actually perform the split."""
-        if data.count() < 20:  # TODO: This should not be done here.
+        if data.count() < 20:
             warnings.warn(
                 'You are only using {} reactions. This may cause problems (e.g. Weka SVMs require at least 10 data points in the training set)'.format(data.count()))
 

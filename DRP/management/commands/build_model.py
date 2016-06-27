@@ -50,14 +50,9 @@ class Command(BaseCommand):
         parser.add_argument('-vo', '--visitor-options', default=None,
                             help='A dictionary of the options to give to the visitor in JSON format')
 
-        # TODO setup argparse to properly check combinations of these arguments as valid.
-        # it's actually pretty complicated what the valid options are...
 
     def handle(self, *args, **kwargs):
         """Handle the call for this command."""
-        # This way of accepting splitter options is bad and hacky.
-        # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
-        # TODO XXX make this not horrible
         splitterOptions = ast.literal_eval(kwargs['splitter_options']) if kwargs[
             'splitter_options'] is not None else None
         visitorOptions = ast.literal_eval(kwargs['visitor_options']) if kwargs[
@@ -69,8 +64,6 @@ class Command(BaseCommand):
         response_headers = [h for h in kwargs['response_headers'] if h] if kwargs[
             'response_headers'] is not None else None
 
-        # TODO switch to logging and adjust for management command multi-level
-        # verbosity
         verbose = (kwargs['verbosity'] > 0)
 
         prepare_build_display_model(predictor_headers=predictor_headers, response_headers=response_headers,
@@ -78,12 +71,6 @@ class Command(BaseCommand):
                                         'model_library'], modelVisitorTool=kwargs['model_tool'],
                                     splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=verbose, container_id=kwargs['model_container_id'], splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
-
-# TODO refactor this so these functions can be used in other places more naturally
-# Also so this workflow makes some freaking sense. What the hell was I thinking?
-# Handle should call each part in turn, not have a bunch of parameters that keep getting passed through till someone uses them
-# I think I did that so that other files could call model building at the point it was need and jump into the pipeline,
-# but wow there has to be a better way - GCMN
 
 def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
                        description=None, verbose=False, splitterOptions=None, visitorOptions=None):

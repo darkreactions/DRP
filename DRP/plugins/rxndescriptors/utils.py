@@ -84,7 +84,6 @@ class LazyDescDict(object):
         """Containment check."""
         return item in self.internalDict
 
-    # TODO: delete this magic.
     def __getattr__(self, name):
         """Deal with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."""
         def _pass_attr(*args, **kwargs):

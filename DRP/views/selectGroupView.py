@@ -15,8 +15,7 @@ def selectGroup(request):
     if 'next' in request.GET:
         n = request.GET['next']
     else:
-        n = '/database/'  # TODO: make me non absolute
-        # TODO: write a test for me!
+        n = '/database/'
     if request.method == "POST":
         form = LabGroupSelectionForm(request.user, data=request.POST)
         if form.is_valid():

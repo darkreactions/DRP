@@ -100,7 +100,6 @@ class CsvQuerySet(models.query.QuerySet):
         """Return the whitelisted headers for the CSV file."""
         return self.csvHeaders(whitelist)
 
-    # TODO:figure out most sensible default for missing values
     def toCsv(self, writeable, expanded=False, whitelistHeaders=None, missing="?"):
         """
         Write the csv data to the writeable (file, or for Django a HttpResponse) object.

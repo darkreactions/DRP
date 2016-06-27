@@ -21,7 +21,6 @@ class DataSet(models.Model):
     reactions = models.ManyToManyField(
         PerformedReaction, through="DataSetRelation")
 
-    # TODO: This belongs on a manager to be djangonic.
     @classmethod
     def create(cls, name, data):
         """Bulk create a set of datasetrelations."""

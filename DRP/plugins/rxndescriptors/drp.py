@@ -152,7 +152,6 @@ def make_dict():
     descriptorDict = setup(_descriptorDict)
     return descriptorDict, _reaction_pH_Descriptors
 
-# TODO this seems like we're repeating ourselves (below)
 # There's a lot of DRY violation here because I was playing with a few different methods.
 # We should decide which method we want for deletion and work on
 # variations of that.
@@ -496,7 +495,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                 descriptorValues = DRP.models.NumMolDescriptorValue.objects.filter(
                     compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)
                 # Only do the calculation if the right number of descriptor values are present and all of them are not NULL
-                # TODO XXX this count now takes longer than actually creating the value. Can we remove it? (Same below)
+                # this count now takes longer than actually creating the value. Can we remove it? (Same below)
                 # Ah looks like this is silently skipping inorganic properties for organics. That seems like a bad way to do it...
                 # Means I have to silence the warnings below (which previously lead me to a whole bunch of uncalculated stuff.
                 # I really don't like failing silently and it seems to have
@@ -574,7 +573,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                     # logger.warning("Skipping {} because some descriptorValues are None".format(descriptor.heading))
             for descriptor in DRP.models.OrdMolDescriptor.objects.all():
                 #  Only do the calculation if the right number of descriptor values are present and all of them are not NULL
-                # TODO XXX this count now takes longer than actually creating
+                # this count now takes longer than actually creating
                 # the value. Can we remove it? (Same below)
                 descriptorValues = DRP.models.OrdMolDescriptorValue.objects.filter(
                     compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)

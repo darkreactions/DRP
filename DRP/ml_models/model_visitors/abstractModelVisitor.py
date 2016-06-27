@@ -1,9 +1,6 @@
 """An abstract class to define the API for a model visitor."""
 from abc import ABCMeta, abstractmethod
 import logging
-# TODO: set attribute methods to be transactions
-# TODO: set descriptors to forbid the word predicted
-# TODO: input logging options into the settings files
 
 logger = logging.getLogger(__name__)
 

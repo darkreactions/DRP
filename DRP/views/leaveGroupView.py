@@ -5,11 +5,6 @@ from DRP.views.decorators import hasSignedLicense
 from DRP.forms import LabGroupLeavingForm
 from django.shortcuts import redirect
 
-# TODO:change this so that memberships are tracked explicitly; at the moment this will break reaction validation if it is manually altered
-# instead, change reaction validation so that it checks PRESENT members, and track membership as a boolean in an intermediary table
-# between users and lab groups, this way validation will not break for
-# historic members.
-
 
 @login_required
 @hasSignedLicense

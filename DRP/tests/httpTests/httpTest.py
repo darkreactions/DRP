@@ -145,7 +145,7 @@ def redirectionMixinFactory(redirectionCount):
     return RedirectionMixin
 
 OneRedirectionMixin = redirectionMixinFactory(
-    1)  # for old tests. TODO: Deprecate this
+    1)
 
 
 def usesCsrf(c):
@@ -154,7 +154,6 @@ def usesCsrf(c):
 
     def setUp(self):
         getResponse = self.s.get(self.url, params=self.params)
-        # for some old-school tests TODO:Deprecate this.
         self.csrf = self.s.cookies.get_dict()['csrftoken']
         # special case for post classes
         self.payload['csrfmiddlewaretoken'] = self.csrf

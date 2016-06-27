@@ -27,11 +27,7 @@ class ModelTest(DRPTestCase):
         container.save()
         container.full_clean()
 
-        # TODO: We should test the ModelContainer "predict" method here as
-        # well.
 
-
-# TODO XXX more robust testing
 # Some of these use bool and some ord
 # Should really do tests with more descriptors
 

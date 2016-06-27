@@ -61,7 +61,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = ""
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""  # TODO: Change me in production!
+EMAIL_HOST_PASSWORD = "" 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_IMAP_HOST = ''  # leave blank in production. Necessary for unit tests.
 EMAIL_IMAP_INBOX = 'Inbox'  # The inbox to use for email tests. Inbox for gmail
@@ -71,7 +71,7 @@ SKIP_EMAIL_TESTS = False
 
 
 # Change to "False" to see standard errors:
-DEBUG = True  # TODO: Change me in production to "False"!
+DEBUG = True 
 # DEBUG = False if TESTING else True  #useful in dev environments
 TEMPLATE_DEBUG = DEBUG
 
@@ -92,7 +92,6 @@ DATABASES = {  # Production database.
         'NAME': '',  # Or path to database file if using sqlite3.
         # Test_DRP_db should be used next time!
         'USER': '',
-        # TODO: Change me in production!
         'PASSWORD': 'SecurePassword',
         'HOST': '',
         # Empty for localhost through domain sockets or '127.0.0.1'
@@ -129,7 +128,6 @@ DATABASES = {  # Production database.
 #           # Or path to database file if using sqlite3.
 #           # Test_DRP_db should be used next time!
 #           'USER': 'root',
-#  	        # TODO: Change me in production!
 #          'PASSWORD': '',
 #          'HOST': '',
 #           # Empty for localhost through domain sockets or '127.0.0.1'

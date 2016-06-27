@@ -11,7 +11,6 @@ class RxnDescriptorValueQuerySet(models.query.QuerySet):
     """A queryset which represents a collection of concrete values of a Reaction Descriptor."""
 
     pass
-    # TODO XXX This breaks because queryset has no attribute descriptor.
     # def delete(self):
     # trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
     # testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))

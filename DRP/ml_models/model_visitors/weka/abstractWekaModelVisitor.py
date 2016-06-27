@@ -32,8 +32,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
 
         super(AbstractWekaModelVisitor, self).__init__(*args, **kwargs)
 
-        # This is a bit hackier, but I don't think anything like abstractattribute is implemented in abc
-        # TODO: replace this using an @property type function.
         try:
             self.wekaCommand
         except AttributeError:
@@ -80,16 +78,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         if verbose:
             logger.info("Running in Shell:\n{}".format(command))
         subprocess.check_output(command, shell=True)
-        # TODO XXX. figure out some way to throw an error if weka errors (sends stuff to stderr. weka does not generate proper return codes)
-        # This broke things in some cases for reasons not clear to me
-        # wekaProc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True, shell=True)
-        # wekaProc.wait()
-        # if wekaProc.returncode == 0:
-        #     res, resErr = wekaProc.communicate()
-        #     if resErr:
-        #         raise RuntimeError("Weka returned an error: {}".format(resErr))
-        # else:
-        #     raise RuntimeError("Weka returned nonzero exit code")
 
     def BCR_cost_matrix(self, reactions, response):
         """
@@ -104,12 +92,10 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         classes for which class_count is 0 do not matter, so their weight is 0 (to avoid division by 0)
         For boolean classification, True is class 0 and False is class 1 (Because that's how it's set up in the toArff function)
         """
-        # TODO XXX Actually check the order of classes from the arff file?
         if isinstance(response, CategoricalDescriptor):
             num_classes = response.permittedValues.all().count()
             response_values = CatRxnDescriptorValue.objects().filter(
                 reaction__in=reactions, descriptor=response)
-            # TODO XXX Make this happen in the right order
             class_counts = [response_values.filter(
                 value=v).count() for v in response.permittedValues().all()]
         elif isinstance(response, OrdinalDescriptor):
@@ -150,7 +136,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
     def train(self, verbose=False):
         """Train the weka model."""
         reactions = self.statsModel.trainingSet.reactions.all()
-        # TODO XXX update this to make use of csvHeader as a query
         descriptorHeaders = [d.csvHeader for d in chain(
             self.statsModel.container.descriptors, self.statsModel.container.outcomeDescriptors)]
         filePath = self.statsModel.outputFile.name
@@ -204,7 +189,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         response = list(self.statsModel.container.outcomeDescriptors)[0]
         response_index = headers.index(response.csvHeader) + 1
 
-        # TODO: Validate this input.
         command = "java {} -T {} -l {} -p 0 -c {} 1> {}".format(
             self.wekaCommand, arff_file, model_file, response_index, results_path)
         if verbose:
@@ -227,7 +211,6 @@ class AbstractWekaModelVisitor(AbstractModelVisitor):
         return {response: results}
 
 
-# TODO: WHY IS THIS HERE?
 def numConversion(s):
     """Convert string to float."""
     return float(s)

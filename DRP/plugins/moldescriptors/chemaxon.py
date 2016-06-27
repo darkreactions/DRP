@@ -348,7 +348,7 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
                             else:
                                 return ValueError('Descriptor has unrecognized type {}'.format(_descriptorDict[commandKeys[i]]['type']))
                             # elif _descriptorDict[commandKeys[i]]['type'] == 'bool':
-                                # TODO Not sure whether cxcalc even returns any boolean values, but if it does I don't know how it notates them and they should be coerced correctly
+                                # Not sure whether cxcalc even returns any boolean values, but if it does I don't know how it notates them and they should be coerced correctly
                                 # commenting out this bit since it should be double checked before anyone uses it
                                 # bool_to_create.append(DRP.models.BoolMolDescriptorValue(descriptor=descriptorDict[commandKeys[i]], compound=compound, bool(int(value=resList[i])))
                             # NOTE: No categorical descriptors are included yet, and since they are more complicated to code I've left it for the moment.

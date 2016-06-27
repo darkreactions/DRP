@@ -56,7 +56,6 @@ class TestFiles(unittest.TestCase):
 
     def setUp(self):
         """Get list of all python files in project."""
-        # TODO add option to exclude files
         self.files = []
         for root, dirnames, fileNames in os.walk(settings.BASE_DIR):
             for fileName in fileNames:
