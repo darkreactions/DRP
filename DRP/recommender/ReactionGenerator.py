@@ -1,6 +1,7 @@
 from copy import deepcopy
 from itertools import product
 
+from DRP.plugins.rxndescriptors.rxnhash import calculate
 from DRP.models import RecommendedReaction, CompoundQuantity, LabGroup, Reaction, NumRxnDescriptorValue
 
 class ReactionGenerator(object):
@@ -41,11 +42,13 @@ class ReactionGenerator(object):
             for triple in triples_and_amounts:
                 for compound_amts in triples_and_amounts[triple]:
                     new_rxn = Reaction()
-                    new_rxn.labGroup_id = 1 # LabGroup.objects.get(pk=1)
+                    #Currently assigning all of these to Alex's group 
+                    new_rxn.labGroup_id = 1 
                     new_rxn.notes = 'Part of a grid search'
                     new_rxn.save()
 
 
+                    # Generate (numeric) descriptor values for this reaction
                     for desc, dvalue in zip(descs, desc_values_instance):
                         #TODO Make this work for general descriptors
                         new_desc = NumRxnDescriptorValue() 
@@ -55,8 +58,7 @@ class ReactionGenerator(object):
                         new_desc.value = dvalue
                         new_desc.save()
                    
-
-
+                    # Populate the compond quantity fields for the reaction
                     for compound, amount in zip(triple, compound_amts):
                         compound_quantity = CompoundQuantity()
                         compound_quantity.compound = compound
@@ -70,7 +72,11 @@ class ReactionGenerator(object):
                         compound_quantity.save()
                        
                     new_rxn.save(calcDescriptors=True)
+                    
+                    # Calculate reaction hash for the proposed reaction
+                    calculate(new_rxn)
 
+                    # Save us from calculating the obscene number of reactions in the grid until necessary
                     yield new_rxn
               
         

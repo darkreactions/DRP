@@ -150,7 +150,7 @@ class NumericDescriptorValue(models.Model):
             return self.value < other
         
     def __unicode__(self):
-        return "Num descriptor value -" + unicode(descriptor) + ":" + value 
+        return "Num descriptor value -" + unicode(self.descriptor) + ":" + unicode(self.value)
 
 
 class OrdinalDescriptorValue(models.Model):

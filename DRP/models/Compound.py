@@ -301,10 +301,10 @@ class Compound(models.Model):
         """Instantiate an object."""
         super(Compound, self).__init__(*args, **kwargs)
         self.lazyChemicalClasses = []
-
-    def __unicode__(self):
-        """Unicode representation of a compound is it's name and abbreviation."""
-        return unicode("{} ({})".format(self.name, self.abbrev), 'utf-8')
+#
+#    def __unicode__(self):
+#        """Unicode representation of a compound is it's name and abbreviation."""
+#        return unicode("{} ({})".format(self.name, self.abbrev), 'utf-8')
 
     def csConsistencyCheck(self):
         """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""

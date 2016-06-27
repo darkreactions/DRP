@@ -12,7 +12,7 @@ class GridValueGenerator:
         self.compound_roles = {} #Change if a compound can have more than one role in a reaction
         
     def vary_manual(self):
-        self.desc_dict[NumericDescriptor.objects.get(pk=6)] = [1, 2, 3] #, 5, 7, 8]
+        self.desc_dict[NumericDescriptor.objects.get(pk=6)] = [1, 2, 3, 8] #, 5, 7, 8]
         self.desc_dict[NumericDescriptor.objects.get(pk=5)] = [1440, 3600]#, 4140, 5040]
         self.desc_dict[NumericDescriptor.objects.get(pk=4)] = [363.15, 423.15]#, 473.15]
         
@@ -24,15 +24,15 @@ class GridValueGenerator:
         
         a = Compound.objects.filter(chemicalClasses=4)
         
-        org = sample(a,5)
+        org = sample(a,30)
                     
         b = Compound.objects.filter(chemicalClasses=1)
         
         #assuming inorg = inorg2
-        inorg = sample(b, 6)
+        inorg = sample(b, 30)
 
-        inorg2= inorg[:3]
-        inorg1=inorg[3:]
+        inorg2= inorg[:15]
+        inorg1=inorg[15:]
         
         
         def get_reasonable_compound_amounts(compounds, role):
@@ -52,6 +52,7 @@ class GridValueGenerator:
 #                     assert(False)
                 quantity_sd = np.std(quantities)
                 sample_quantities = [mean_quantity - 2 * quantity_sd, mean_quantity - quantity_sd, mean_quantity, mean_quantity + quantity_sd, mean_quantity + 2 * quantity_sd]
+                sample_quantities = [mean_quantity - quantity_sd]
                 sample_quantities = [sq for sq in sample_quantities if sq > 0]
                 compound_dict[compound] = sample_quantities
             return compound_dict
