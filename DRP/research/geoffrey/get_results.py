@@ -2,7 +2,7 @@
 import django
 django.setup()
 from DRP.models import ModelContainer, NumRxnDescriptor, BoolRxnDescriptor
-from sys import argv
+import sys
 import os
 from django.db.models import Count
 from DRP import utils
@@ -14,7 +14,7 @@ descriptor_directory = 'thesis_paper/descs'
 
 # dictionary from file name to descriptor set specification
 #
-desc_files = {
+_desc_files = {
     'base_noCA.dsc': {'Descriptors': 'base', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
     'base_CA.dsc': {'Descriptors': 'base', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
     'orthogonal_noCA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
@@ -24,7 +24,24 @@ desc_files = {
     'orthogonal_plus_CA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
     'orthogonal_plus_CA_noInorgCA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': 'Org only', 'Feature Selection': 'Variance+'},
 }
-splitter = 'RandomSplitter'
+
+desc_files = {}
+
+for fn, attr in _desc_files.items():
+    info_fn = fn[:-4] + '_info.dsc'
+    CFS_fn = 'CFS_' + fn
+
+    new_attr = attr.copy()
+    new_attr['Feature Selection'] = 'Info+'
+    desc_files[info_fn] = new_attr
+
+    new_attr = attr.copy()
+    new_attr['Feature Selection'] = 'CFS'
+    desc_files[CFS_fn] = new_attr
+
+desc_files.update(_desc_files)
+
+splitter = 'ExploratorySplitter'
 splitterOptions = json.dumps({"num_splits": 15})
 BCR_options = [True, False]
 modelVisitorTools = ['J48', 'KNN', 'LogisticRegression',
@@ -93,15 +110,16 @@ def get_rows():
                 row['BCR Weighted'] = bcr_option
 
                 if len(option_conts) != 1:
-                    print "Was unable to find a unique model container matching given specification {}. Found {}".format(row, len(option_conts))
+                    sys.stderr.write("Was unable to find a unique model container matching given specification {}. Found {}\n".format(row, len(option_conts)))
                     if len(option_conts) > 1:
-                        print "Using container with largest pk"
+                        sys.stderr.write("Using container with largest pk\n")
                         option_conts.sort(key=lambda x: x.pk, reverse=True)
                     else:
-                        print "Skipping this setup"
+                        print sys.stderr.write("Skipping this setup\n")
                         continue
 
                 cont = option_conts[0]
+                print "{}\t{}".format(row, cont.id)
                 conf_tuples_lol = cont.getComponentConfusionMatrices()
                 # we only care about the confusion matrix of the first
                 # descriptor
@@ -141,7 +159,7 @@ if __name__ == '__main__':
 
     headers = ['Descriptors', 'ChemAxon', 'Feature Selection', 'BCR Weighted',
                'Model', 'TP', 'FP', 'FN', 'TN', 'Accuracy', 'BCR', 'Matthews']
-    csv_fn = argv[1]
+    csv_fn = sys.argv[1]
 
     with open(csv_fn, 'w') as f:
         writer = csv.DictWriter(f, headers)
