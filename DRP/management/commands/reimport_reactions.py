@@ -43,7 +43,7 @@ purityDescriptor = OrdRxnDescriptor.objects.get_or_create(
 
 temperatureDescriptor = NumRxnDescriptor.objects.get_or_create(
     heading='reaction_temperature',
-    name='Reaction temperature in degrees C',
+    name='Reaction temperature in Kelvin',
     calculatorSoftware='manual',
     calculatorSoftwareVersion='0'
 )[0]
