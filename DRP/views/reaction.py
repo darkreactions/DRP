@@ -52,7 +52,7 @@ class ListPerformedReactions(ListView):
             self.paginate_by = None
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="reactions.csv"'
-            if 'expanded' in request.GET and request.user.is_authenticated() and user.is_staff:
+            if 'expanded' in request.GET and request.user.is_authenticated() and request.user.is_staff:
                 self.queryset.toCsv(response, True)
             else:
                 self.queryset.toCsv(response)
@@ -61,7 +61,7 @@ class ListPerformedReactions(ListView):
             response = HttpResponse(content_type='text/vnd.weka.arff')
             response[
                 'Content-Disposition'] = 'attachment; filename="reactions.arff"'
-            if 'expanded' in request.GET and request.user.is_authenticated() and user.is_staff:
+            if 'expanded' in request.GET and request.user.is_authenticated() and request.user.is_staff:
                 self.queryset.toArff(response, True)
             else:
                 self.queryset.toArff(response)
