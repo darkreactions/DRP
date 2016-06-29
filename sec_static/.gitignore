@@ -1,0 +1,3 @@
+# this folder must be present for DRP
+# But no files inside it should be added to the repo
+!.gitignore
