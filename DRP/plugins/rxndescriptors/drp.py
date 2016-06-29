@@ -406,7 +406,7 @@ def calculate(reaction, verbose=False, whitelist=None):
     # Set up the actual descriptor dictionary.
     if verbose:
         print "Creating descriptor dictionary"
-    descriptorDict = make_dict()
+    descriptorDict, _reaction_pH_Descriptors = make_dict()
     if whitelist is None:
         descs_to_delete = descriptorDict.values()
     else:
@@ -691,29 +691,29 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
         reaction_pH_string = str(reaction_pH).replace(
             '.', '_')  # R compatibility
         for heading in _reaction_pH_Descriptors.keys():
-            if whitelist is None or heading in whitelist:
-                d = descriptorDict[heading]
-                if reaction_pH is None:
-                    pH_descriptor_value = DRP.models.NumRxnDescriptorValue(
-                        descriptor=d, reaction=reaction, value=None)
-                else:
-                    reaction_pH_descriptor_heading = d.heading.replace(
-                        '_pHreaction_', '_pH{}_'.format(reaction_pH_string))
-                    try:
-                        pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(
-                            descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction).value
-                    except DRP.models.NumRxnDescriptorValue.DoesNotExist:
-                        # this creates a ton of warnings about pH and Ox roles because those mostly don't exist
-                        # Not sure that silence wouldn't be better, but I've been burned too many times by silent failure
-                        # Came up with this compromise. The warnings are identical so the default python settings squelch them
-                        if heading.startswith('pH_') or heading.startswith('Ox_'):
-                            warnings.warn(
-                                'Could not find descriptor value for a pH or Ox role descriptor.')
-                        else:
-                            warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(
-                                reaction_pH_descriptor_heading, reaction))
+            d = descriptorDict[heading]
+            if reaction_pH is None:
+                pH_descriptor_value = DRP.models.NumRxnDescriptorValue(
+                    descriptor=d, reaction=reaction, value=None)
+            else:
+                reaction_pH_descriptor_heading = d.heading.replace(
+                    '_pHreaction_', '_pH{}_'.format(reaction_pH_string))
+                try:
+                    pH_descriptor_value = DRP.models.NumRxnDescriptorValue.objects.get(
+                        descriptor__heading=reaction_pH_descriptor_heading, reaction=reaction).value
+                except DRP.models.NumRxnDescriptorValue.DoesNotExist:
+                    # this creates a ton of warnings about pH and Ox roles because those mostly don't exist
+                    # Not sure that silence wouldn't be better, but I've been burned too many times by silent failure
+                    # Came up with this compromise. The warnings are identical
+                    # so the default python settings squelch them
+                    if heading.startswith('pH_') or heading.startswith('Ox_'):
+                        warnings.warn(
+                            'Could not find descriptor value for a pH or Ox role descriptor.')
                     else:
-                        reaction_pH_dv = DRP.models.NumRxnDescriptorValue(
-                            descriptor=d, reaction=reaction, value=pH_descriptor_value)
-                        vals_to_create.append(reaction_pH_dv)
+                        warnings.warn('Could not find descriptor value for descriptor {} and reaction {}'.format(
+                            reaction_pH_descriptor_heading, reaction))
+                else:
+                    reaction_pH_dv = DRP.models.NumRxnDescriptorValue(
+                        descriptor=d, reaction=reaction, value=pH_descriptor_value)
+                    vals_to_create.append(reaction_pH_dv)
     return vals_to_create

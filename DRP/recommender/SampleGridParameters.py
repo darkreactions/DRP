@@ -9,8 +9,7 @@ class GridValueGenerator:
         self.desc_dict = {}
         self.compounddict = {}
         self.compound_amounts_dict = {}
-        self.compound_roles = {} #Change if a compound can have more than one role in a reaction
-        
+
     def vary_manual(self):
         self.desc_dict[NumericDescriptor.objects.get(pk=6)] = [1, 2, 3, 8] #, 5, 7, 8]
         self.desc_dict[NumericDescriptor.objects.get(pk=5)] = [1440, 3600]#, 4140, 5040]
@@ -22,17 +21,12 @@ class GridValueGenerator:
         org = None
         #TODO Add water / solvent
         
-        a = Compound.objects.filter(chemicalClasses=4)
-        
-        org = sample(a,30)
+        org = Compound.objects.filter(chemicalClasses=4)
                     
-        b = Compound.objects.filter(chemicalClasses=1)
-        
-        #assuming inorg = inorg2
-        inorg = sample(b, 30)
+        inorg = Compound.objects.filter(chemicalClasses=1)
 
-        inorg2= inorg[:15]
-        inorg1=inorg[15:]
+        inorg2 = inorg
+        inorg1 = inorg
         
         
         def get_reasonable_compound_amounts(compounds, role):
@@ -43,16 +37,10 @@ class GridValueGenerator:
                 self.compound_roles[compound] = CompoundRole.objects.get(pk = role)
                 quantities = [quantity.amount for quantity in quantities]
                 quantities = np.array(quantities)
-#                 try:
                 mean_quantity = np.mean(quantities)
-#                 except:
-#                     for i in quantities:
-#                         print i
-#                         assert(isinstance(i, float))
-#                     assert(False)
                 quantity_sd = np.std(quantities)
                 sample_quantities = [mean_quantity - 2 * quantity_sd, mean_quantity - quantity_sd, mean_quantity, mean_quantity + quantity_sd, mean_quantity + 2 * quantity_sd]
-                sample_quantities = [mean_quantity - quantity_sd]
+
                 sample_quantities = [sq for sq in sample_quantities if sq > 0]
                 compound_dict[compound] = sample_quantities
             return compound_dict
@@ -63,15 +51,16 @@ class GridValueGenerator:
 
         
         inorg1 = get_reasonable_compound_amounts(inorg1, 6)
-        inorg2 = get_reasonable_compound_amounts(inorg2, 6)
+        # inorg2 = get_reasonable_compound_amounts(inorg2, 6)
         org = get_reasonable_compound_amounts(org, 7)
 
         self.compound_amounts_dict.update(inorg1)
-        self.compound_amounts_dict.update(inorg2)
         self.compound_amounts_dict.update(org)
+
+        return self.compound_amounts_dict
         
     def main(self):
         self.vary_manual()
-        self.vary_compound()
-        return self.desc_dict, self.compounddict, self.compound_amounts_dict, self.compound_roles
+        #self.vary_compound()
+        return self.desc_dict #, self.compounddict, self.compound_amounts_dict #, self.compound_roles
         
