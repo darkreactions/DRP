@@ -239,7 +239,7 @@ class Compound(models.Model):
 
     def __str__(self):
         """Unicode representation of a compound is it's name and abbreviation."""
-        return unicode("{}".format(self.name), 'utf-8')
+        return "{}".format(self.name)
 
     def csConsistencyCheck(self):
         """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""
