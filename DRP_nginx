@@ -36,7 +36,7 @@ server {
                 }
         }
 
-	location /database/reactions/files/ {
+	location /sec_static/ {
 		internal;
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/sec_static/;
 	}
