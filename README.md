@@ -25,7 +25,7 @@ Install the necessary programs.
 
 `sudo apt-get install python3-dev python3-pip mysql-server libmysql-dev nginx uwsgi-python3 uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy`
 
-`sudo pip3 install numpy pygraphviz`
+`sudo pip3 install numpy pygraphviz pillow`
 
 Install Django. The current version of DRP is designed to work with Django 1.8
 
