@@ -135,3 +135,8 @@ ul.errorlist>li {
 ul.errorlist>li:not(:first-child) {
  border-top:1px solid rgb(139, 44, 39);
 }
+
+.labPage {
+ text-align:center;
+ margin-bottom:1em;
+}
