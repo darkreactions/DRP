@@ -169,6 +169,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 # Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = '/media/'
 
+SECURE_MEDIA_ROOT = os.path.join(BASE_DIR, 'sec_media')
 
 # List of finder classes that know how to find static files in
 # various locations.

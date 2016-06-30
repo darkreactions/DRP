@@ -9,7 +9,22 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
 from .validators import notInTheFuture
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+import os.path
 
+labBookStorage = FileSystemStorage(location=os.path.join(settings.SECURE_MEDIA_ROOT, 'lab_notes'), base_url='/database/lab_notes/')
+
+class UploadLabNotesTo:
+    """A callable for placing the reaction lab books in the right place."""
+
+    def __call__(instance, filename):
+        """We are storing all images as jpeg files, and the references should be unique per lab."""
+        return os.path.join(instance.labGroup.title, instance.reference + '.jpg')
+
+    def deconstruct(self):
+        """Allow for django serialisation."""
+        return ('DRP.models.performedReaction.UploadLabNotesTo', [], {})
 
 class PerformedReactionQuerySet(ReactionQuerySet):
     """A custom queryset for performed reactions."""
@@ -81,6 +96,8 @@ class PerformedReaction(Reaction):
             )
         ]
     )
+
+    labBookPage = models.ImageField(storage=labBookStorage, upload_to=UploadLabNotesTo(), null=True, blank=False)
 
     def clean(self):
         """Custom clean method to make sure that the reaction does not already exist within this lab group."""

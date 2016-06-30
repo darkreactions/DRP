@@ -16,7 +16,6 @@ from itertools import chain
 import importlib
 from collections import OrderedDict
 import DRP
-from django.core.validators import RegexValidator
 from decimal import Decimal
 import logging
 
