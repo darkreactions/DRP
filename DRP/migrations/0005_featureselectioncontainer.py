@@ -16,17 +16,17 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
-                ('description', models.TextField(default=b'', blank=True)),
+                ('description', models.TextField(default='', blank=True)),
                 ('featureLibrary', models.CharField(
-                    default=b'', max_length=200, blank=True)),
+                    default='', max_length=200, blank=True)),
                 ('featureTool', models.CharField(
-                    default=b'', max_length=200, blank=True)),
+                    default='', max_length=200, blank=True)),
                 ('startTime', models.DateTimeField(
                     default=None, null=True, blank=True)),
                 ('endTime', models.DateTimeField(
                     default=None, null=True, blank=True)),
                 ('built', models.BooleanField(default=False,
-                                              verbose_name=b'Has the build procedure been called with this container?', editable=False)),
+                                              verbose_name='Has the build procedure been called with this container?', editable=False)),
                 ('boolRxnDescriptors', models.ManyToManyField(
                     to='DRP.BoolRxnDescriptor')),
                 ('catRxnDescriptors', models.ManyToManyField(

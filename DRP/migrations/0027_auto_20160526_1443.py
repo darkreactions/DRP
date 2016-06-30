@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='compoundquantity',
             name='amount',
-            field=models.FloatField(blank=True, help_text=b'(in mmoles)', null=True, validators=[
+            field=models.FloatField(blank=True, help_text='(in mmoles)', null=True, validators=[
                                     DRP.models.validators.GreaterThanValidator(0)]),
         ),
     ]

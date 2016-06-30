@@ -16,13 +16,13 @@ class Migration(migrations.Migration):
             model_name='boolmoldescriptorvalue',
             name='value',
             field=models.NullBooleanField(
-                verbose_name=b'Value for descriptor'),
+                verbose_name='Value for descriptor'),
         ),
         migrations.AlterField(
             model_name='boolrxndescriptorvalue',
             name='value',
             field=models.NullBooleanField(
-                verbose_name=b'Value for descriptor'),
+                verbose_name='Value for descriptor'),
         ),
         migrations.AlterField(
             model_name='catmoldescriptorvalue',

@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='performedreaction',
             name='performedDateTime',
-            field=models.DateTimeField(default=None, help_text=b'Date in format YYYY-MM-DD',
-                                       null=True, verbose_name=b'Date Reaction Performed', blank=True),
+            field=models.DateTimeField(default=None, help_text='Date in format YYYY-MM-DD',
+                                       null=True, verbose_name='Date Reaction Performed', blank=True),
         ),
     ]
