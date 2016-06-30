@@ -231,7 +231,7 @@ class Reaction(models.Model):
     objects = ReactionManager()
     compounds = models.ManyToManyField(Compound, through="CompoundQuantity")
     notes = models.TextField(blank=True)
-    labGroup = models.ForeignKey(LabGroup)
+    labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
     # this is to cope with a hideous problem in xml serialization in the
     # management commands
     calcDescriptors = True

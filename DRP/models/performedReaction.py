@@ -52,7 +52,7 @@ class PerformedReaction(Reaction):
     objects = PerformedReactionManager()
     user = models.ForeignKey(User)
     performedBy = models.ForeignKey(
-        User, related_name='performedReactions', null=True, blank=True, default=None)
+        User, related_name='performedReactions', null=True, blank=True, default=None, verbose_name="Performed By")
     performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None,
                                              help_text='Timezone assumed EST, Date in format YYYY-MM-DD', validators=[notInTheFuture])
     insertedDateTime = models.DateTimeField(
@@ -66,7 +66,7 @@ class PerformedReaction(Reaction):
     if the wrong reactant was used or some bad lab record has been found."""
     public = models.BooleanField(default=False)
     duplicateOf = models.ForeignKey(
-        'self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None)
+        'self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None, verbose_name="Duplicate Of")
     legacyID = models.IntegerField(null=True, blank=True, unique=True)
     """ID in legacy database."""
     legacyRef = models.CharField(max_length=40, null=True, blank=True)
@@ -97,7 +97,7 @@ class PerformedReaction(Reaction):
         ]
     )
 
-    labBookPage = models.ImageField(storage=labBookStorage, upload_to=UploadLabNotesTo(), null=True, blank=False)
+    labBookPage = models.ImageField(storage=labBookStorage, upload_to=UploadLabNotesTo(), null=True, blank=False, verbose_name="Lab Book Image")
 
     def clean(self):
         """Custom clean method to make sure that the reaction does not already exist within this lab group."""

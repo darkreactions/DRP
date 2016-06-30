@@ -5,6 +5,8 @@ from DRP.models import PerformedReaction, RecommendedReaction
 from DRP.models import DataSetRelation
 from django.contrib.auth.models import User
 from django.forms.widgets import HiddenInput
+from django.core.files.uploadedfile import TemporaryUploadedFile
+from PIL import Image
 
 
 class PerformedRxnAdminForm(forms.ModelForm):
@@ -24,7 +26,7 @@ class PerformedRxnForm(forms.ModelForm):
 
     class Meta:
         fields = ('reference', 'notes', 'performedBy', 'labGroup', 'duplicateOf',
-                  'performedDateTime', 'public', 'valid', 'recommendation')
+                  'performedDateTime', 'public', 'valid', 'recommendation', 'labBookPage')
         model = PerformedReaction
 
     def __init__(self, user, *args, **kwargs):
@@ -46,6 +48,19 @@ class PerformedRxnForm(forms.ModelForm):
             self.fields['valid'].widget = forms.HiddenInput()
         if labGroups.exists():
             self.fields['labGroup'].empty_label = None
+
+    def clean_labBookPage(self):
+        "Validate that we have an image and convert it to a jpeg."
+        if 'labBookPage' in self.cleaned_data:
+            f = self.cleaned_data['labBookPage']
+            newF = TemporaryUploadedFile(name=f.name+'.jpg', content_type='image/jpeg', size=None, charset=None, content_type_extra=None) 
+            try:
+                Image.open(f).save(newF, 'JPEG', dpi=[300,300], quality=70)
+            except IOError:
+                raise ValidationError('The file you uploaded is not a valid image.')
+        f.close()
+        self.cleaned_data['labBookPage'] = newF
+        return newF
 
     def save(self, commit=True, *args, **kwargs):
         """Overriden save method automates addition of user that created this instance."""
