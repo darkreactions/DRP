@@ -1,11 +1,13 @@
 
-   <form class="reaction-form" action="{{ request.path }}" method="post">
+   <form class="reaction-form" action="{{ request.path }}" method="post" enctype="multipart/form-data">
    {% if testing %} <!-- 2758c44c-b7e2-440a-a617-36d9d730bc93 --> {% endif %}
     {% csrf_token %}
     <fieldset>
       <legend>Reaction Details</legend>
-      {% if reaction.labBookPage is not None %}
-        <img src="{{reaction.labBookPage.url}}" alt="An image of the notes taken in the lab for this reaction" title="Notes for reaction {{reaction.reference}}" />
+      {% if reaction.labBookPage != None %}
+      <div class="labPage">
+        <a href="{{reaction.labBookPage.url}}"><img src="{{reaction.labBookPage.url}}" alt="An image of the notes taken in the lab for this reaction" title="Notes for reaction {{reaction.reference}}" /></a>
+      </div>
       {% endif %}
       {{ reaction_form.non_field_errors }}
       <table class="reactionformtable">

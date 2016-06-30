@@ -1,6 +1,7 @@
 """A module containing urls for the database (reactions, compound guide) components of DRP."""
 
 from django.conf.urls import url
+from django.views.defaults import permission_denied
 import DRP.views
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models import OrdRxnDescriptorValue
@@ -46,6 +47,8 @@ urls = [
     url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
     url('^/invalidate$', DRP.views.reaction.invalidateReaction,
         name='invalidateReaction'),
+    url('^/lab_notes/$', permission_denied),
+    url('^/lab_notes/(?P<labgroup_id>\d+)_(?P<reference>[^//]*).jpg', DRP.views.reaction.labBookImage),
     url('^/import/apiv1/(?P<component>[^//]*).xml', DRP.views.api1),
     url('^/select_viewing_group.html', DRP.views.selectGroup, name='selectGroup'),
     url('^/compoundguide(?P<filetype>.csv|.html|.arff|/)$',

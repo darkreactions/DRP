@@ -170,6 +170,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 MEDIA_URL = '/media/'
 
 SECURE_MEDIA_ROOT = os.path.join(BASE_DIR, 'sec_media')
+SECURE_MEDIA_URL = '/sec_media/'
+MEDIA_X_HEADER = 'X-Accel-Redirect'
+# This header allows us to do security checking before serving
+# some restricted files. on nginx this is X-Accel-Redirect
+# apache calls this XSendFile
 
 # List of finder classes that know how to find static files in
 # various locations.

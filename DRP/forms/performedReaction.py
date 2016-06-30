@@ -48,19 +48,18 @@ class PerformedRxnForm(forms.ModelForm):
             self.fields['valid'].widget = forms.HiddenInput()
         if labGroups.exists():
             self.fields['labGroup'].empty_label = None
+        self.fields['labBookPage'].widget = forms.FileInput()
 
     def clean_labBookPage(self):
         "Validate that we have an image and convert it to a jpeg."
         if 'labBookPage' in self.cleaned_data:
             f = self.cleaned_data['labBookPage']
+            f.seek(0)
             newF = TemporaryUploadedFile(name=f.name+'.jpg', content_type='image/jpeg', size=None, charset=None, content_type_extra=None) 
-            try:
-                Image.open(f).save(newF, 'JPEG', dpi=[300,300], quality=70)
-            except IOError:
-                raise ValidationError('The file you uploaded is not a valid image.')
-        f.close()
-        self.cleaned_data['labBookPage'] = newF
-        return newF
+            Image.open(f).convert('RGB').save(newF, 'JPEG', dpi=[300,300], quality=70)
+            f.close()
+            self.cleaned_data['labBookPage'] = newF
+        return self.cleaned_data['labBookPage']
 
     def save(self, commit=True, *args, **kwargs):
         """Overriden save method automates addition of user that created this instance."""

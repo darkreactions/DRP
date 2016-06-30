@@ -8,19 +8,19 @@ import DRP
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
+from .fileStorage import OverwriteStorage 
 from .validators import notInTheFuture
-from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os.path
 
-labBookStorage = FileSystemStorage(location=os.path.join(settings.SECURE_MEDIA_ROOT, 'lab_notes'), base_url='/database/lab_notes/')
+labBookStorage = OverwriteStorage(location=os.path.join(settings.SECURE_MEDIA_ROOT, 'lab_notes'), base_url='/database/lab_notes/')
 
 class UploadLabNotesTo:
     """A callable for placing the reaction lab books in the right place."""
 
-    def __call__(instance, filename):
+    def __call__(self, instance, filename):
         """We are storing all images as jpeg files, and the references should be unique per lab."""
-        return os.path.join(instance.labGroup.title, instance.reference + '.jpg')
+        return str(instance.labGroup.id) + '_' + instance.reference + '.jpg'
 
     def deconstruct(self):
         """Allow for django serialisation."""
