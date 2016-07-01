@@ -65,7 +65,7 @@ class ReactionGenerator(object):
                 compounds = Compound.objects.filter(pk__in=triple).order_by('abbrev')
                 for reactant in compounds:
                     h.update(reactant.abbrev)
-                triples_dict[h] = compounds
+                triples_dict[h.hexdigest()] = compounds
         return triples_dict
 
     def get_triples_and_amounts(self, compound_triples):
