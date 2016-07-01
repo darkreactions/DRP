@@ -7,6 +7,7 @@ from DRP.models import DataSet, CompoundGuideEntry, PerformedReaction
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
+from django.core.files import File as dFile
 import os
 
 
@@ -116,7 +117,7 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 #        return c
 #    return _createsRxnDescriptor
 
-def createsPerformedReaction(labTitle, username, reference, valid=True):
+def createsPerformedReaction(labTitle, username, reference, valid=True, image=None):
     """A class decorator that creates a very minimal reaction with no compounds or reactants."""
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
@@ -127,6 +128,10 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
             user = User.objects.get(username=username)
             reaction = PerformedReaction.objects.create(
                 labGroup=labGroup, user=user, reference=reference, valid=valid)
+            if image is not None:
+                with open(image) as f:
+                    reaction.labBookPage.save('example.jpg', dFile(f))
+                
             _oldSetup(self)
 
         def tearDown(self):
