@@ -129,7 +129,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True, image=No
             reaction = PerformedReaction.objects.create(
                 labGroup=labGroup, user=user, reference=reference, valid=valid)
             if image is not None:
-                with open(image) as f:
+                with open(image, 'rb') as f:
                     reaction.labBookPage.save('example.jpg', dFile(f))
                 
             _oldSetup(self)

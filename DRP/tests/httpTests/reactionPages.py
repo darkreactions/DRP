@@ -34,7 +34,7 @@ class PostsImage:
 
     def setUp(self):
         """Adds the file to the payload."""
-        self.imageFile = open(os.path.join(settings.APP_DIR, 'tests', 'resource', self.imageFileName))
+        self.imageFile = open(os.path.join(settings.APP_DIR, 'tests', 'resource', self.imageFileName), 'rb')
         self.files['labBookPage'] = self.imageFile
 
 
