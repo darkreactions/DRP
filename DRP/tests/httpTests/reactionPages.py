@@ -36,6 +36,7 @@ class PostsImage:
         """Adds the file to the payload."""
         self.imageFile = open(os.path.join(settings.APP_DIR, 'tests', 'resource', self.imageFileName), 'rb')
         self.files['labBookPage'] = self.imageFile
+        super(PostsImage, self).setUp()
 
 
     def tearDown(self):
@@ -76,13 +77,12 @@ class GetReactionCreate(GetHttpSessionTest):
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
 # effectively tests GET for add_reactants view
-class PostReactionCreateValid(PostHttpSessionTest, GetsImage, PostsImage, redirectionMixinFactory(1)):
+class PostReactionCreateValid(PostsImage, PostHttpSessionTest, GetsImage, redirectionMixinFactory(1)):
     """Make a valid creation request."""
 
     url = newReactionUrl
     testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d',
-                 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'
-                '3da06262-2869-497f-9bf5-910ddfcae9e4'] + reactionBaseCodes
+                 'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {'reference': 'turkish_delight'}
     labTitle='narnia' #for checking the image presence
     reactionRef='turkish_delight'
@@ -226,7 +226,7 @@ class PostReactionEditValid(PostHttpSessionTest, GetsImage):
 @joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg'))
 @usesCsrf
-class PostReactionEditValid2(PostReactionEditValid, PostsImage):
+class PostReactionEditValid2(PostsImage, PostReactionEditValid):
     """Ensures nothing odd happens when we upload an image which overwrites the old one."""
     pass # Everything is inherited. Awesome.
     
