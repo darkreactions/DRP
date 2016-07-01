@@ -194,7 +194,7 @@ class GetNonexistentReactionEdit(GetHttpSessionTest):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'example_lab_page.jpg'))
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg'))
 @usesCsrf
 class PostReactionEditValid(PostHttpSessionTest, GetsImage):
     """Edit a reaction."""
@@ -224,7 +224,7 @@ class PostReactionEditValid(PostHttpSessionTest, GetsImage):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
-@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'example_lab_page.jpg'))
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg'))
 @usesCsrf
 class PostReactionEditValid2(PostReactionEditValid, PostsImage):
     """Ensures nothing odd happens when we upload an image which overwrites the old one."""
