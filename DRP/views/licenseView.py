@@ -24,7 +24,9 @@ def license(request):
         nextPage = request.GET[
             'next'] if 'next' in request.GET.keys() else None
         if nextPage is not None:
-            nextPage = nextPage[:-len('delete')-1] if nextPage.endswith('delete') else nextPage #  Prevents against weird redirects to pages that require postdata.
+            # Prevents against weird redirects to pages that require postdata.
+            nextPage = nextPage[
+                :-len('delete') - 1] if nextPage.endswith('delete') else nextPage
         if not currentSignedLicenseQ.exists():
             if request.method == 'POST':
                 form = LicenseAgreementForm(

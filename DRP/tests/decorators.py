@@ -131,7 +131,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True, image=No
             if image is not None:
                 with open(image, 'rb') as f:
                     reaction.labBookPage.save('example.jpg', dFile(f))
-                
+
             _oldSetup(self)
 
         def tearDown(self):
@@ -306,7 +306,8 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
             if not compound.custom:
                 compound.csConsistencyCheck()
             compound.save()
-            CompoundGuideEntry.objects.create(labGroup=LabGroup.objects.get(title=labTitle), abbrev=abbrev, compound=compound)
+            CompoundGuideEntry.objects.create(labGroup=LabGroup.objects.get(
+                title=labTitle), abbrev=abbrev, compound=compound)
             for c in ChemicalClass.objects.filter(label=classLabel):
                 compound.chemicalClasses.add(c)
             compound.save()

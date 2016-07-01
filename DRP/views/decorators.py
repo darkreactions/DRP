@@ -59,7 +59,8 @@ def reactionExists(view, *args, **kwargs):
             else:
                 raise Http404("This reaction cannot be found")
         else:
-           raise KeyError("reactionExists view decorator expects rxn_id or a performed reaction reference.") 
+            raise KeyError(
+                "reactionExists view decorator expects rxn_id or a performed reaction reference.")
     return _reactionExists
 
 

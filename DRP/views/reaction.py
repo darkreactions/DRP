@@ -19,15 +19,20 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
+
 @login_required
 @hasSignedLicense
 @userHasLabGroup
 @reactionExists
 def labBookImage(request, labgroup_id, reference=None):
+    """view that does security checking before prompting the server to show an image."""
     response = HttpResponse()
-    response[settings.MEDIA_X_HEADER] = settings.SECURE_MEDIA_URL + '/lab_notes/' + PerformedReaction.objects.get(reference=reference, labGroup__id=labgroup_id).labBookPage.name 
+    response[settings.MEDIA_X_HEADER] = settings.SECURE_MEDIA_URL + '/lab_notes/' + \
+        PerformedReaction.objects.get(
+            reference=reference, labGroup__id=labgroup_id).labBookPage.name
     response['Content-Type'] = 'image/jpeg'
     return response
+
 
 class ListPerformedReactions(ListView):
     """Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies."""
@@ -90,7 +95,8 @@ class ListPerformedReactions(ListView):
 def createReaction(request):
     """A view designed to create performed reaction instances."""
     if request.method == "POST":
-        perfRxnForm = PerformedRxnForm(request.user, data=request.POST, files=request.FILES)
+        perfRxnForm = PerformedRxnForm(
+            request.user, data=request.POST, files=request.FILES)
         if perfRxnForm.is_valid():
             rxn = perfRxnForm.save()
             messages.success(request, "Reaction Created Successfully")

@@ -51,12 +51,14 @@ class PerformedRxnForm(forms.ModelForm):
         self.fields['labBookPage'].widget = forms.FileInput()
 
     def clean_labBookPage(self):
-        "Validate that we have an image and convert it to a jpeg."
+        """Validate that we have an image and convert it to a jpeg."""
         if 'labBookPage' in self.cleaned_data:
             f = self.cleaned_data['labBookPage']
             f.seek(0)
-            newF = TemporaryUploadedFile(name=f.name+'.jpg', content_type='image/jpeg', size=None, charset=None, content_type_extra=None) 
-            Image.open(f).convert('RGB').save(newF, 'JPEG', dpi=[300,300], quality=70)
+            newF = TemporaryUploadedFile(
+                name=f.name + '.jpg', content_type='image/jpeg', size=None, charset=None, content_type_extra=None)
+            Image.open(f).convert('RGB').save(
+                newF, 'JPEG', dpi=[300, 300], quality=70)
             f.close()
             self.cleaned_data['labBookPage'] = newF
         return self.cleaned_data['labBookPage']

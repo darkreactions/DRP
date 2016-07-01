@@ -218,7 +218,8 @@ class Compound(models.Model):
     but is nevertheless useful for calculating descriptors
     """
 
-    labGroups = models.ManyToManyField(LabGroup, verbose_name="Lab Groups", through="DRP.CompoundGuideEntry")
+    labGroups = models.ManyToManyField(
+        LabGroup, verbose_name="Lab Groups", through="DRP.CompoundGuideEntry")
     """Tells us whose compound guide this appears in."""
 
     formula = models.CharField(

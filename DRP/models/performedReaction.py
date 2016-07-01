@@ -8,12 +8,14 @@ import DRP
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.forms.forms import NON_FIELD_ERRORS
-from .fileStorage import OverwriteStorage 
+from .fileStorage import OverwriteStorage
 from .validators import notInTheFuture
 from django.conf import settings
 import os.path
 
-labBookStorage = OverwriteStorage(location=os.path.join(settings.SECURE_MEDIA_ROOT, 'lab_notes'), base_url='/database/lab_notes/')
+labBookStorage = OverwriteStorage(location=os.path.join(
+    settings.SECURE_MEDIA_ROOT, 'lab_notes'), base_url='/database/lab_notes/')
+
 
 class UploadLabNotesTo:
     """A callable for placing the reaction lab books in the right place."""
@@ -25,6 +27,7 @@ class UploadLabNotesTo:
     def deconstruct(self):
         """Allow for django serialisation."""
         return ('DRP.models.performedReaction.UploadLabNotesTo', [], {})
+
 
 class PerformedReactionQuerySet(ReactionQuerySet):
     """A custom queryset for performed reactions."""
@@ -97,7 +100,8 @@ class PerformedReaction(Reaction):
         ]
     )
 
-    labBookPage = models.ImageField(storage=labBookStorage, upload_to=UploadLabNotesTo(), null=True, blank=False, verbose_name="Lab Book Image")
+    labBookPage = models.ImageField(storage=labBookStorage, upload_to=UploadLabNotesTo(
+    ), null=True, blank=False, verbose_name="Lab Book Image")
 
     def clean(self):
         """Custom clean method to make sure that the reaction does not already exist within this lab group."""

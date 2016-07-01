@@ -27,38 +27,40 @@ newReactionUrl = GetHttpTest.url + reverse('newReaction')
 reactionBaseCodes = ['ea5108a2-0b88-482d-90c5-ea492fd8134e',
                      '823d22e7-3337-4292-aa67-13f748b2aa65', '1f47e7ab-1900-4683-ba1c-63330ec2f71a']
 
+
 class PostsImage:
     """A mixin for posting an example image as a part of the request."""
 
     imageFileName = 'example_lab_page.jpg'
 
     def setUp(self):
-        """Adds the file to the payload."""
-        self.imageFile = open(os.path.join(settings.APP_DIR, 'tests', 'resource', self.imageFileName), 'rb')
+        """Add the file to the payload."""
+        self.imageFile = open(os.path.join(
+            settings.APP_DIR, 'tests', 'resource', self.imageFileName), 'rb')
         self.files['labBookPage'] = self.imageFile
         super(PostsImage, self).setUp()
-
 
     def tearDown(self):
         """Close the sent file."""
         self.imageFile.close()
+
 
 class GetsImage:
     """A mixin for testing the presence of an image to download."""
 
     labTitle = ''
     imageStatus = 200
-    reactionRef= ''
+    reactionRef = ''
 
     def test_image(self):
-        """Tests the files presence."""
-        image = self.s.get(GetHttpTest.url + reverse('labBookImage', 
-            kwargs={
-                'labgroup_id': LabGroup.objects.get(title=self.labTitle).id,
-                'reference': self.reactionRef 
-            }
-        ))
-        self.assertEqual(image.status_code, self.imageStatus) 
+        """Test the files presence."""
+        image = self.s.get(GetHttpTest.url + reverse('labBookImage',
+                                                     kwargs={
+                                                         'labgroup_id': LabGroup.objects.get(title=self.labTitle).id,
+                                                         'reference': self.reactionRef
+                                                     }
+                                                     ))
+        self.assertEqual(image.status_code, self.imageStatus)
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -84,8 +86,8 @@ class PostReactionCreateValid(PostsImage, PostHttpSessionTest, GetsImage, redire
     testCodes = ['008d2580-5be2-4112-8297-a9e53490bb6d',
                  'dc1d5961-a9e7-44d8-8441-5b8402a01c06'] + reactionBaseCodes
     _payload = {'reference': 'turkish_delight'}
-    labTitle='narnia' #for checking the image presence
-    reactionRef='turkish_delight'
+    labTitle = 'narnia'  # for checking the image presence
+    reactionRef = 'turkish_delight'
 
     def setUp(self):
         """Add the labgroup to the payload."""
@@ -98,11 +100,12 @@ class PostReactionCreateValid(PostsImage, PostHttpSessionTest, GetsImage, redire
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
 class PostReactionCreateInvalidImage(PostReactionCreateValid):
-    """Makes a creation request using a non image file"""
+    """Makes a creation request using a non image file."""
 
     labTitle = 'narnia'
     imageFileName = 'compound_spread_test10.csv'
     imageStatus = 400
+
 
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
@@ -203,7 +206,7 @@ class PostReactionEditValid(PostHttpSessionTest, GetsImage):
                  '2758c44c-b7e2-440a-a617-36d9d730bc93', 'd96fc7a1-69cf-44ac-975d-a67f9e2c74d0'] + reactionBaseCodes
 
     labTitle = 'narnia'
-    reactionRef='turkish_delight'
+    reactionRef = 'turkish_delight'
 
     def setUp(self):
         """Allow for dynamic url."""
@@ -221,6 +224,7 @@ class PostReactionEditValid(PostHttpSessionTest, GetsImage):
             reference='turkish_delight', labGroup__title='narnia')
         self.assertEqual(self.reaction.notes, 'this reaction has been edited')
 
+
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
@@ -228,8 +232,9 @@ class PostReactionEditValid(PostHttpSessionTest, GetsImage):
 @usesCsrf
 class PostReactionEditValid2(PostsImage, PostReactionEditValid):
     """Ensures nothing odd happens when we upload an image which overwrites the old one."""
-    pass # Everything is inherited. Awesome.
-    
+
+    pass  # Everything is inherited. Awesome.
+
 
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')

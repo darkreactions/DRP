@@ -61,7 +61,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = ""
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = "" 
+EMAIL_HOST_PASSWORD = ""
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_IMAP_HOST = ''  # leave blank in production. Necessary for unit tests.
 EMAIL_IMAP_INBOX = 'Inbox'  # The inbox to use for email tests. Inbox for gmail
@@ -71,7 +71,7 @@ SKIP_EMAIL_TESTS = False
 
 
 # Change to "False" to see standard errors:
-DEBUG = True 
+DEBUG = True
 # DEBUG = False if TESTING else True  #useful in dev environments
 TEMPLATE_DEBUG = DEBUG
 

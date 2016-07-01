@@ -50,7 +50,6 @@ class Command(BaseCommand):
         parser.add_argument('-vo', '--visitor-options', default=None,
                             help='A dictionary of the options to give to the visitor in JSON format')
 
-
     def handle(self, *args, **kwargs):
         """Handle the call for this command."""
         splitterOptions = ast.literal_eval(kwargs['splitter_options']) if kwargs[
@@ -95,7 +94,8 @@ def build_model(container, verbose=False):
             container.build(verbose=verbose)
             break
         except OperationalError as e:
-            logger.warning("Caught OperationalError {}\nRestarting in 3 seconds...\n".format(e))
+            logger.warning(
+                "Caught OperationalError {}\nRestarting in 3 seconds...\n".format(e))
             sleep(3)
     else:
         raise RuntimeError("Got 5 Operational Errors in a row and gave up")

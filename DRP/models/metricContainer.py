@@ -101,7 +101,8 @@ class OutcomeDescriptorAttribute(object):
                 pass
 
             if desc is None:
-                raise ValueError('An invalid object with heading {} and type {} was assigned as a descriptor'.format(descriptor.heading, type(descriptor)))
+                raise ValueError('An invalid object with heading {} and type {} was assigned as a descriptor'.format(
+                    descriptor.heading, type(descriptor)))
 
     def __delete__(self, metricContainer):
         metricContainer.outcomeBoolRxnDescriptors.clear()
@@ -197,7 +198,8 @@ class MetricContainer(models.Model):
         self.fileName = os.path.join(
             settings.METRIC_DIR, '{}_{}'.format(self.metricVisitor, self.pk))
         if verbose:
-            logger.info("{}, saving to {}, training on {} reactions...".format(self.startTime, self.fileName, self.trainingSet.reactions.count()))
+            logger.info("{}, saving to {}, training on {} reactions...".format(
+                self.startTime, self.fileName, self.trainingSet.reactions.count()))
         transformed = metricVisitor.train(self.trainingSet.reactions.all(
         ), predictorHeaders, responseHeaders, str(self.fileName))
         self.endTime = datetime.datetime.now()
@@ -213,7 +215,8 @@ class MetricContainer(models.Model):
                 "Cannot transform using a metric that has not been built.")
 
         if verbose:
-            logger.info("{} Generating transformed descriptors for {} reactions".format(datetime.datetime.now(), reactions.count()))
+            logger.info("{} Generating transformed descriptors for {} reactions".format(
+                datetime.datetime.now(), reactions.count()))
 
         if transformed is None:
             metricVisitor = metricVisitors[self.metricVisitor].MetricVisitor(0)
@@ -230,7 +233,8 @@ class MetricContainer(models.Model):
 
         if not self.transformedRxnDescriptors.exists():
             if verbose:
-                logger.info("No existing descriptors found for this metric container. Creating them...")
+                logger.info(
+                    "No existing descriptors found for this metric container. Creating them...")
             for col in range(transformed.shape[1]):
                 desc = NumRxnDescriptor(heading='transform_{}_metric_{}'.format(self.pk, col),
                                         name='transformed descriptor {} for metric container {}'.format(col, self.pk))
@@ -242,7 +246,8 @@ class MetricContainer(models.Model):
             raise RuntimeError(
                 "Metric container already has descriptors, but not the same number as the number of columns in data transformed by the metric visitor.")
         elif verbose:
-            logger.info("Existing transformed descriptors found. Skipping creation.")
+            logger.info(
+                "Existing transformed descriptors found. Skipping creation.")
 
         if verbose:
             logger.info("Inputting values for given reactions...")
@@ -260,7 +265,8 @@ class MetricContainer(models.Model):
             NumRxnDescriptorValue.objects.bulk_create(values)
 
             if verbose:
-                logger.info("Done with descriptor {} of {}".format(j, self.transformedRxnDescriptors.count()))
+                logger.info("Done with descriptor {} of {}".format(
+                    j, self.transformedRxnDescriptors.count()))
 
         if verbose:
             logger.info("\t...finished at {}".format(datetime.datetime.now()))

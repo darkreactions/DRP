@@ -107,7 +107,8 @@ class Command(BaseCommand):
                     cq.save()
                 except InvalidOperation as e:
                     if hasattr(cq, 'amount'):
-                        logger.debug("An invalid decimal conversion occured. Value is: {} from CompoundQuantity object {}".format(cq.amount, cq))
+                        logger.debug(
+                            "An invalid decimal conversion occured. Value is: {} from CompoundQuantity object {}".format(cq.amount, cq))
                     raise e
         else:
             r.raise_for_status()

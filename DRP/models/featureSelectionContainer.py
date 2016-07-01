@@ -254,7 +254,8 @@ class FeatureSelectionContainer(models.Model):
         self.startTime = datetime.datetime.now()
 
         if verbose:
-            logger.info("{}, training on {} reactions...".format(self.startTime, self.trainingSet.reactions.count()))
+            logger.info("{}, training on {} reactions...".format(
+                self.startTime, self.trainingSet.reactions.count()))
         chosen_descriptor_headers = featureVisitor.train(verbose=verbose)
 
         self.endTime = datetime.datetime.now()

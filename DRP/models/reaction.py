@@ -197,7 +197,8 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
         """Force the calculation of reaction descriptors for a group of reactions."""
         if verbose:
-            logger.info("Calculating descriptors for {} reactions".format(self.count()))
+            logger.info(
+                "Calculating descriptors for {} reactions".format(self.count()))
         for plugin in descriptorPlugins:
             if plugins is None or plugin.__name__ in plugins:
                 if verbose:
