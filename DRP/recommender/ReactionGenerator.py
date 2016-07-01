@@ -55,7 +55,6 @@ class ReactionGenerator(object):
             compound_dict[compound] = sample_quantities
 
         self.compound_amounts_dict = compound_dict
-        # print '~~~~', self.compound_amounts_dict
 
     def get_all_triple_hashes(self):
         compound_triples = self.get_all_compound_triples()

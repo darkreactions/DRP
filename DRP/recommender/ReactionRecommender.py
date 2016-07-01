@@ -1,17 +1,19 @@
 from copy import deepcopy
 
-import numpy as np
 from sklearn.metrics.cluster import adjusted_mutual_info_score
 
 from DRP.plugins.rxndescriptors.rxnhash import calculate
 from DRP.recommender.AbstractRecommender import AbstractRecommender
 from DRP.recommender.ReactionGenerator import ReactionGenerator
 from DRP.recommender.ReactionSieve import ReactionSieve
-from DRP.models import PerformedReaction, BoolRxnDescriptorValue, CatRxnDescriptorValue, CompoundQuantity, Reaction, Compound
+from DRP.models import PerformedReaction, BoolRxnDescriptorValue, CatRxnDescriptorValue, CompoundQuantity, Reaction, Compound, RecommendedReaction
 
+headers_to_use = ['Pu_mols_DRP_0.02', 'Tb_mols_DRP_0.02', 'Lu_mols_DRP_0.02', 'Ru_mols_DRP_0.02', 'Ga_mols_DRP_0.02', 'Au_mols_DRP_0.02', 'B_mols_DRP_0.02', 'Li_mols_DRP_0.02', 'Ca_mols_DRP_0.02', 'Hf_mols_DRP_0.02', 'Pd_mols_DRP_0.02', 'In_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_Range_DRP_DRP', 'Pr_mols_DRP_0.02', 'Ho_mols_DRP_0.02', 'Na_mols_DRP_0.02', 'Cu_mols_DRP_0.02', 'reaction_pH_manual_0', 'Po_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_gmean_molarity_DRP_DRP', 'Zn_mols_DRP_0.02', 'Tm_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_Range_DRP_DRP', 'H_mols_DRP_0.02', 'reaction_temperature_manual_0', 'At_mols_DRP_0.02', 'Te_mols_DRP_0.02', 'Rh_mols_DRP_0.02', 'Yb_mols_DRP_0.02', 'Inorg_amount_count_DRP_0.02', 'Pt_mols_DRP_0.02', 'Pm_mols_DRP_0.02', 'Sb_mols_DRP_0.02', 'Al_mols_DRP_0.02', 'F_mols_DRP_0.02', 'S_mols_DRP_0.02', 'Mn_mols_DRP_0.02', 'Cr_mols_DRP_0.02', 'Nd_mols_DRP_0.02', 'Co_mols_DRP_0.02', 'Fe_mols_DRP_0.02', 'C_mols_DRP_0.02', 'Os_mols_DRP_0.02', 'Ti_mols_DRP_0.02', 'Ir_mols_DRP_0.02', 'Si_mols_DRP_0.02', 'Re_mols_DRP_0.02', 'Ar_mols_DRP_0.02', 'Solv_amount_count_DRP_0.02', 'W_mols_DRP_0.02', 'Dy_mols_DRP_0.02', 'Y_mols_DRP_0.02', 'Cd_mols_DRP_0.02', 'Ce_mols_DRP_0.02', 'As_mols_DRP_0.02', 'Ag_mols_DRP_0.02', 'La_mols_DRP_0.02', 'U_mols_DRP_0.02', 'Np_mols_DRP_0.02', 'Eu_mols_DRP_0.02', 'Er_mols_DRP_0.02', 'K_mols_DRP_0.02', 'Pa_mols_DRP_0.02', 'Ni_mols_DRP_0.02', 'pH_amount_molarity_DRP_0.02', 'Ox_amount_molarity_DRP_0.02', 'N_mols_DRP_0.02', 'Am_mols_DRP_0.02', 'Tl_mols_DRP_0.02', 'Kr_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_Max_DRP_DRP', 'Ra_mols_DRP_0.02', 'Org_amount_count_DRP_0.02', 'Se_mols_DRP_0.02', 'Be_mols_DRP_0.02', 'Th_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_gmean_count_DRP_DRP', 'Mg_mols_DRP_0.02', 'Rn_mols_DRP_0.02', 'Tc_mols_DRP_0.02', 'Cl_mols_DRP_0.02', 'Sn_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_gmean_molarity_DRP_DRP', 'Sc_mols_DRP_0.02', 'Ac_mols_DRP_0.02', 'Gd_mols_DRP_0.02', 'Xe_mols_DRP_0.02', 'Hg_mols_DRP_0.02', 'Ge_mols_DRP_0.02', 'Mo_mols_DRP_0.02', 'Cs_mols_DRP_0.02', 'Sr_mols_DRP_0.02', 'O_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_gmean_count_DRP_DRP', 'Nb_mols_DRP_0.02', 'I_mols_DRP_0.02', 'Ta_mols_DRP_0.02', 'Fr_mols_DRP_0.02', 'Rb_mols_DRP_0.02', 'Ox_amount_count_DRP_0.02', 'pH_amount_count_DRP_0.02', 'Zr_mols_DRP_0.02', 'He_mols_DRP_0.02', 'Ne_mols_DRP_0.02', 'reaction_time_manual_0', 'Pb_mols_DRP_0.02', 'Br_mols_DRP_0.02', 'Inorg_amount_molarity_DRP_0.02', 'V_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_Max_DRP_DRP', 'Bi_mols_DRP_0.02', 'Sm_mols_DRP_0.02', 'Solv_amount_molarity_DRP_0.02', 'Ba_mols_DRP_0.02', 'Org_amount_molarity_DRP_0.02', 'P_mols_DRP_0.02']
+headers_to_use = ['Pu_mols_DRP_0.02', 'Tb_mols_DRP_0.02', 'Lu_mols_DRP_0.02', 'Ru_mols_DRP_0.02', 'Ga_mols_DRP_0.02', 'Au_mols_DRP_0.02', 'B_mols_DRP_0.02', 'Li_mols_DRP_0.02', 'Ca_mols_DRP_0.02', 'Hf_mols_DRP_0.02', 'Pd_mols_DRP_0.02', 'In_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_Range_DRP_DRP', 'Pr_mols_DRP_0.02', 'Ho_mols_DRP_0.02', 'Na_mols_DRP_0.02', 'Cu_mols_DRP_0.02', 'reaction_pH_manual_0', 'Po_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_gmean_molarity_DRP_DRP', 'Zn_mols_DRP_0.02', 'Tm_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_Range_DRP_DRP', 'H_mols_DRP_0.02', 'reaction_temperature_manual_0', 'At_mols_DRP_0.02', 'Te_mols_DRP_0.02', 'Rh_mols_DRP_0.02', 'Yb_mols_DRP_0.02', 'Inorg_amount_count_DRP_0.02', 'Pt_mols_DRP_0.02', 'Pm_mols_DRP_0.02', 'Sb_mols_DRP_0.02', 'Al_mols_DRP_0.02', 'F_mols_DRP_0.02', 'S_mols_DRP_0.02', 'Mn_mols_DRP_0.02', 'Cr_mols_DRP_0.02', 'Nd_mols_DRP_0.02', 'Co_mols_DRP_0.02', 'Fe_mols_DRP_0.02', 'C_mols_DRP_0.02', 'Os_mols_DRP_0.02', 'Ti_mols_DRP_0.02', 'Ir_mols_DRP_0.02', 'Si_mols_DRP_0.02', 'Re_mols_DRP_0.02', 'Ar_mols_DRP_0.02', 'Solv_amount_count_DRP_0.02', 'W_mols_DRP_0.02', 'Dy_mols_DRP_0.02', 'Y_mols_DRP_0.02', 'Cd_mols_DRP_0.02', 'Ce_mols_DRP_0.02', 'As_mols_DRP_0.02', 'Ag_mols_DRP_0.02', 'La_mols_DRP_0.02', 'U_mols_DRP_0.02', 'Np_mols_DRP_0.02', 'Eu_mols_DRP_0.02', 'Er_mols_DRP_0.02', 'K_mols_DRP_0.02', 'Pa_mols_DRP_0.02', 'Ni_mols_DRP_0.02', 'pH_amount_molarity_DRP_0.02', 'Ox_amount_molarity_DRP_0.02', 'N_mols_DRP_0.02', 'Am_mols_DRP_0.02', 'Tl_mols_DRP_0.02', 'Kr_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_Max_DRP_DRP', 'Ra_mols_DRP_0.02', 'Org_amount_count_DRP_0.02', 'Se_mols_DRP_0.02', 'Be_mols_DRP_0.02', 'Th_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_gmean_count_DRP_DRP', 'Mg_mols_DRP_0.02', 'Rn_mols_DRP_0.02', 'Tc_mols_DRP_0.02', 'Cl_mols_DRP_0.02', 'Sn_mols_DRP_0.02', 'Inorg_mw_drp/rdkit_0_gmean_molarity_DRP_DRP', 'Sc_mols_DRP_0.02', 'Ac_mols_DRP_0.02', 'Gd_mols_DRP_0.02', 'Xe_mols_DRP_0.02', 'Hg_mols_DRP_0.02', 'Ge_mols_DRP_0.02', 'Mo_mols_DRP_0.02', 'Cs_mols_DRP_0.02', 'Sr_mols_DRP_0.02', 'O_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_gmean_count_DRP_DRP', 'Nb_mols_DRP_0.02', 'I_mols_DRP_0.02', 'Ta_mols_DRP_0.02', 'Fr_mols_DRP_0.02', 'Rb_mols_DRP_0.02', 'Ox_amount_count_DRP_0.02', 'pH_amount_count_DRP_0.02', 'Zr_mols_DRP_0.02', 'He_mols_DRP_0.02', 'Ne_mols_DRP_0.02', 'reaction_time_manual_0', 'Pb_mols_DRP_0.02', 'Br_mols_DRP_0.02', 'Inorg_amount_molarity_DRP_0.02', 'V_mols_DRP_0.02', 'Org_mw_drp/rdkit_0_Max_DRP_DRP', 'Bi_mols_DRP_0.02', 'Sm_mols_DRP_0.02', 'Solv_amount_molarity_DRP_0.02', 'Ba_mols_DRP_0.02', 'Org_amount_molarity_DRP_0.02', 'P_mols_DRP_0.02']
+headers_to_use = ['reaction_temperature_manual_0', 'reaction_time_manual_0']
 
 class Recommender(AbstractRecommender):
-    def __init__(self, model_container, grid_params, desired_desc_dict):
+    def __init__(self, model_container, grid_params, desired_desc_dict, seed = None):
         """
         All Descriptor Dicts use (Descriptor, Value List) pairs, where the
         Value List is a list of any values this Descriptor should have.
@@ -24,31 +26,22 @@ class Recommender(AbstractRecommender):
         self.model_container = model_container
         self.desired_desc_dict = desired_desc_dict
 
-        # react_min = min(reaction_ids)
-        # react_max = max(reaction_ids)
-        # react_range = (react_min, react_max)
-        #
-        # self.plausible_reactions =  Reaction.objects.filter(pk__range=react_range)
-
-        # self.plausible_reactions = self.sieve.filter(Reaction.objects.filter(pk__range=react_range))
-        # self.committed = []
-        
         # TODO remove
         self.desc_dict = grid_params
 
-
-        # [0]
-        # self.compound_dict = grid_params[1]
-
-        # self.react_range = react_range
+        self.hash_MI = {}
 
         self.lshash = None
+        self.headers = None
+
+        # Might remove?
+        self.seed = seed
 
 
     def build_hash_outcome_dict(self):
         outcome_dict = {}
         count = 0
-        for rxn in PerformedReaction.objects.all(): 
+        for rxn in PerformedReaction.objects.all():
             count +=1
             # if count % 500 == 0:
             #     print count, '/', len(PerformedReaction.objects.all())
@@ -60,7 +53,7 @@ class Recommender(AbstractRecommender):
                 try:
                     rxn_hash = CatRxnDescriptorValue.objects.get(descriptor__pk=6793,reaction=rxn).value
                 except CatRxnDescriptorValue.DoesNotExist: # missing or incorrect reactant set up
-                    continue                        
+                    continue
 
             try:
                 reaction_outcome = BoolRxnDescriptorValue.objects.get(descriptor__pk=2,reaction=rxn)
@@ -76,15 +69,15 @@ class Recommender(AbstractRecommender):
                 outcome_dict[rxn_hash].append(reaction_outcome)
             else:
                 outcome_dict[rxn_hash] = [reaction_outcome]
-                
+
         to_remove = []
-        
+
         for i in outcome_dict:
             if 1 not in outcome_dict[i] or 0 not in outcome_dict[i]:
                 to_remove.append(i)
             else:
                 pass
-            
+
         for i in to_remove:
             del outcome_dict[i]
 
@@ -92,7 +85,7 @@ class Recommender(AbstractRecommender):
 
     def get_mutual_info(self, outcome_dict):
         hashes, outcomes = zip(*list(outcome_dict.items()))
-        
+
         return adjusted_mutual_info_score(hashes, outcomes)
 
     def hash_perform_generator(self, compound_dict, anash):
@@ -109,11 +102,14 @@ class Recommender(AbstractRecommender):
     def get_best_delta_MI(self, k=100):
         base_dict = self.build_hash_outcome_dict()
 
-        triples_dict =  self.generator.get_all_triple_hashes()
+        triples_dict = self.generator.get_all_triple_hashes()
 
         hash_min_delta_MI = []
         for rxn_hash in triples_dict:
-            hash_min_delta_MI.append(self.hash_perform_generator(base_dict, rxn_hash))
+            result = self.hash_perform_generator(base_dict, rxn_hash)
+            hash_min_delta_MI.append(result)
+            print rxn_hash,  result[1]
+            self.hash_MI[rxn_hash] = result[1]
 
         hash_min_delta_MI.sort(key=(lambda x: x[1]), reverse=True)
 
@@ -125,41 +121,83 @@ class Recommender(AbstractRecommender):
 
     def get_lshash(self):
         from lshash import LSHash
-        lsh = None
-        headers = []
-        for i in self.plausible_reactions.rows(True):
-            print i
-            print len(i)
-            for header in i :
-                headers.append(header)
-        #
-        # lsh = LSHash(24, len(headers))
-        # for i in PerformedReaction.objects.all().rows(True):
-        #     to__index = []
-        #     print type(i)
-        #     print i.keys()
-        #     for header in headers:
-        #         print 'iiiii', [header]
-        #         print type(header)
-        #         to__index.append(i[header])
-        #
-        #     print 'to_index', to__index
-        #     lsh.index(to__index)
-        #
-        # self.lshash = lsh
-        #
-        # return headers
+        headers = headers_to_use
+        count = 0
 
-    def get_furthest(self,k=100):
-        headers = self.get_lshash()
+        lsh = LSHash(1, len(headers))
+        for i in PerformedReaction.objects.all().rows(True):
+            to__index = []
+            for header in headers:
+                try:
+                    to__index.append(i[header])
+                except KeyError:
+                    continue
+            if len(to__index) == len(headers):
+                lsh.index(to__index)
+                count += 1
+            else:
+                pass
+
+        print 'count', count
+        self.lshash = lsh
+        self.headers = headers
+
+    def normalize_dist_dict(self, dist_dict):
+        min_knn_dist = min(dist_dict.values())
+        max_knn_dist = max(dist_dict.values())
+        split = max_knn_dist - min_knn_dist
+        for key in dist_dict:
+            dist_dict[key] = (dist_dict[key] - min_knn_dist) / split
+
+    def get_distance_dict(self, number_of_neighbors=20, normalize=True):
+        dist_dict = {}
+
+        if self.lshash is None:
+            self.get_lshash()
+
+        for rxn, rxn_row in zip(self.plausible_reactions, self.plausible_reactions.rows(True)):
+            point = []
+            for header in self.headers:
+               point.append(rxn_row[header])
+            # Point : Average distance from 20 nearest neighbors
+            dist_dict[rxn] = sum([query_result[1] for query_result in self.lshash.query(point, num_results=number_of_neighbors)])/number_of_neighbors
+
+        if normalize:
+            self.normalize_dist_dict(dist_dict)
+
+        return dist_dict
+
+
+    def score_candidates(self):
+
+        score_dict = {}
+
+        dist_dict = self.get_distance_dict()
+
         for rxn in self.plausible_reactions:
-            pass
+            rxn_hash = CatRxnDescriptorValue.objects.get(descriptor__pk=6793,reaction=rxn).value.value
+
+            score_dict[rxn] = self.hash_MI[rxn_hash] * dist_dict[rxn] #*confidence
+
+        return score_dict
 
 
-    def recommend(self):
+    def create_recommendations(self):
+        score_dict = self.score_candidates()
+
+        for rxn, score in score_dict.viewitems():
+            rec_rxn = RecommendedReaction()
+            rec_rxn.reaction_ptr = rxn
+            rec_rxn.seed = self.seed
+            rec_rxn.hidden = True
+            rec_rxn.reference = 'Holdingforlaterreplacethis' # What is this supposed to be?
+            rec_rxn.score = score
+            rec_rxn.save()
+
+    def recommend(self, k=1000):
 
         self.generator.get_reasonable_compound_amounts(Compound.objects.filter(pk__in=(CompoundQuantity.objects.exclude(amount=None).values_list('compound__pk', flat=True))))
-        top_MI_gain_reactant_triples = self.get_best_delta_MI(k=12)
+        top_MI_gain_reactant_triples = self.get_best_delta_MI(k=k)
 
         print top_MI_gain_reactant_triples
 
@@ -171,14 +209,21 @@ class Recommender(AbstractRecommender):
 
         print 'step2'
 
+        import time
+        start_time = time.time()
+
+        #~~~
         count = 0
         plausible_reaction_ids = []
         for i in self.plausible_reactions:
             plausible_reaction_ids.append(i.pk)
-            if count > 1000:
+            if count > 80:
                 break
             else:
-                count += 12
+                count += 120
+        #~~~
+
+        print("--- %s seconds ---" % (time.time() - start_time))
 
         # plausible_reaction_ids = [rxn.pk for rxn in self.plausible_reactions][0:100]
 
@@ -194,20 +239,4 @@ class Recommender(AbstractRecommender):
 
         print 'step5'
 
-        self.get_lshash()
-
-        # self.plausible_reactions = self.get_furthest(k=12)
-        #
-        # self.commit_reactions_to_database()
-
-        return self.plausible_reactions
-        #
-        # self.plausible_reactions = self.plausible_reactions.filter(pk__in=top_MI_reaction_pks)
-        #
-        # self.sieve = ReactionSieve(self.model_container, tuple(), self.desired_desc_dict)
-        #
-        # self.plausible_reactions = self.sieve.filter(self.plausible_reactions)
-
-
-
-
+        self.create_recommendations()

@@ -11,9 +11,9 @@ class GridValueGenerator:
         self.compound_amounts_dict = {}
 
     def vary_manual(self):
-        self.desc_dict[NumericDescriptor.objects.get(pk=6)] = [1, 2, 3, 8] #, 5, 7, 8]
-        self.desc_dict[NumericDescriptor.objects.get(pk=5)] = [1440, 3600]#, 4140, 5040]
-        self.desc_dict[NumericDescriptor.objects.get(pk=4)] = [363.15, 423.15]#, 473.15]
+        self.desc_dict[NumericDescriptor.objects.get(pk=6)] = [1]#, 2, 3, 8] #, 5, 7, 8]
+        self.desc_dict[NumericDescriptor.objects.get(pk=5)] = [1440]#, 3600]#, 4140, 5040]
+        self.desc_dict[NumericDescriptor.objects.get(pk=4)] = [363.15]#, 423.15]#, 473.15]
         
     def vary_compound(self):
         inorg1 = None
