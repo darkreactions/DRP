@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd $(git rev-parse --show-toplevel)
 
 # based on http://stackoverflow.com/questions/16840184/how-can-i-automatically-be-warned-if-a-specific-file-changes
