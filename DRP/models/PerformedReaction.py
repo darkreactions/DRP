@@ -31,16 +31,12 @@ class PerformedReactionQuerySet(ReactionQuerySet):
         # All manual descriptors must have values
         for d in NumRxnDescriptor.objects.filter(calculatorSoftware='manual'):
             qs = qs.filter(numrxndescriptorvalue__descriptor=d)
-            qs = qs.exclude(numrxndescriptorvalue__descriptor=d, numrxndescriptorvalue__value=None)
         for d in BoolRxnDescriptor.objects.filter(calculatorSoftware='manual'):
             qs = qs.filter(boolrxndescriptorvalue__descriptor=d)
-            qs = qs.exclude(boolrxndescriptorvalue__descriptor=d, boolrxndescriptorvalue__value=None)
         for d in OrdRxnDescriptor.objects.filter(calculatorSoftware='manual'):
             qs = qs.filter(ordrxndescriptorvalue__descriptor=d)
-            qs = qs.exclude(ordrxndescriptorvalue__descriptor=d, ordrxndescriptorvalue__value=None)
         for d in CatRxnDescriptor.objects.filter(calculatorSoftware='manual'):
             qs = qs.filter(catrxndescriptorvalue__descriptor=d)
-            qs = qs.exclude(catrxndescriptorvalue__descriptor=d, catrxndescriptorvalue__value=None)
 
         return qs
 
