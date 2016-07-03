@@ -15,14 +15,14 @@ descriptor_directory = 'thesis_paper/descs'
 # dictionary from file name to descriptor set specification
 #
 _desc_files = {
-    'base_noCA.dsc': {'Descriptors': 'base', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
-    'base_CA.dsc': {'Descriptors': 'base', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
-    'orthogonal_noCA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
-    'orthogonal_CA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
-    'orthogonal_CA_noInorgCA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': 'Org only', 'Feature Selection': 'Variance+'},
+    # 'base_noCA.dsc': {'Descriptors': 'base', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
+    # 'base_CA.dsc': {'Descriptors': 'base', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
+    # 'orthogonal_noCA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
+    # 'orthogonal_CA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
+    # 'orthogonal_CA_noInorgCA.dsc': {'Descriptors': 'orthogonal', 'ChemAxon': 'Org only', 'Feature Selection': 'Variance+'},
     'orthogonal_plus_noCA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': False, 'Feature Selection': 'Variance+'},
-    'orthogonal_plus_CA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
-    'orthogonal_plus_CA_noInorgCA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': 'Org only', 'Feature Selection': 'Variance+'},
+    # 'orthogonal_plus_CA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': True, 'Feature Selection': 'Variance+'},
+    # 'orthogonal_plus_CA_noInorgCA.dsc': {'Descriptors': 'orthogonal+', 'ChemAxon': 'Org only', 'Feature Selection': 'Variance+'},
 }
 
 desc_files = {}
