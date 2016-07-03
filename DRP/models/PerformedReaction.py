@@ -2,6 +2,8 @@
 from django.db import models
 from Reaction import Reaction, ReactionManager, ReactionQuerySet
 from RecommendedReaction import RecommendedReaction
+from rxnDescriptors import NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor
+from rxnDescriptorValues import NumRxnDescriptorValue, BoolRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from django.contrib.auth.models import User
 from itertools import chain
 import DRP
@@ -22,7 +24,25 @@ class PerformedReactionQuerySet(ReactionQuerySet):
 
     def valid(self):
         """Return only the valid subset of these reactions."""
-        return self.filter(valid=True).exclude(compounds=None).exclude(compoundquantity__amount=None).exclude(compoundquantity__role=None).exclude(compoundquantity__compound=None)
+        qs = self.filter(valid=True).exclude(compounds=None).exclude(
+                compoundquantity__amount=None).exclude(compoundquantity__role=None).exclude(
+                compoundquantity__compound=None)
+
+        # All manual descriptors must have values
+        for d in NumRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(numrxndescriptorvalue__descriptor=d)
+            qs = qs.exclude(numrxndescriptorvalue__descriptor=d, value=None)
+        for d in BoolRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(boolrxndescriptorvalue__descriptor=d)
+            qs = qs.exclude(boolrxndescriptorvalue__descriptor=d, value=None)
+        for d in OrdRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(ordrxndescriptorvalue__descriptor=d)
+            qs = qs.exclude(ordrxndescriptorvalue__descriptor=d, value=None)
+        for d in CatRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(catrxndescriptorvalue__descriptor=d)
+            qs = qs.exclude(catrxndescriptorvalue__descriptor=d, value=None)
+
+        return qs
 
 
 class PerformedReactionManager(ReactionManager):
