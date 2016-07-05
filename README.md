@@ -23,7 +23,7 @@ The following instructions are written to work with Ubuntu 12+ and have (mostly)
 
 Install the necessary programs.
 
-`sudo apt-get install python3-dev python3-pip mysql-server libmysql-dev nginx uwsgi-python3 uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy python3-Pillow`
+`sudo apt-get install python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy python3-Pillow`
 
 `sudo pip3 install numpy pygraphviz`
 
