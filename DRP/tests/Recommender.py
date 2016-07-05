@@ -6,7 +6,7 @@ import os
 from DRP.models import BoolRxnDescriptor, PerformedReaction, ModelContainer, Descriptor, NumericDescriptor
 from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
-from DRPTestCase import DRPTestCase, runTests
+from .drpTestCase import DRPTestCase, runTests
 from DRP.recommender import SampleGridParameters, ReactionSieve, ReactionRecommender
 
 
