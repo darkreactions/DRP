@@ -1,5 +1,9 @@
 /* stylesheet for reaction_form.html */
 
+.labPage img {
+ height:2in;
+}
+
 h1 {
  text-align:center;
 }
