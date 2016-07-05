@@ -1,18 +1,18 @@
 """Contains admin information for Django."""
 
 from django.contrib import admin
-from models import LabGroup, License, Compound, ChemicalClass, CompoundRole
-from models import PerformedReaction, OrdRxnDescriptor, NumRxnDescriptor
-from models import BoolRxnDescriptor, CatRxnDescriptor
-from models import CategoricalDescriptorPermittedValue
-from forms import LabGroupForm, CompoundAdminForm, PerformedRxnAdminForm
-from forms import OrdRxnDescriptorForm, NumRxnDescriptorForm
-from forms import BoolRxnDescriptorForm
-from forms import CatRxnDescriptorForm, CatDescPermittedValueForm
+from .models import LabGroup, License, Compound, ChemicalClass, CompoundRole
+from .models import PerformedReaction, OrdRxnDescriptor, NumRxnDescriptor
+from .models import BoolRxnDescriptor, CatRxnDescriptor
+from .models import CategoricalDescriptorPermittedValue
+from .models import CompoundGuideEntry
+from .forms import LabGroupForm, CompoundAdminForm, PerformedRxnAdminForm
+from .forms import OrdRxnDescriptorForm, NumRxnDescriptorForm
+from .forms import BoolRxnDescriptorForm
+from .forms import CatRxnDescriptorForm, CatDescPermittedValueForm
 
 
 class LabGroupAdmin(admin.ModelAdmin):
-
     """Specifies a form to use for administrating lab groups."""
 
     form = LabGroupForm
@@ -26,36 +26,37 @@ licenseSnippet.short_description = 'License Snippet'
 
 
 class LicenseAdmin(admin.ModelAdmin):
-
     """Provides a more specific display for licenses in the django admin."""
 
     list_display = (licenseSnippet, 'effectiveDate')
 
 
-class CompoundAdmin(admin.ModelAdmin):
+class CompoundGuideEntryAdmin(admin.ModelAdmin):
+    """Provides a more specific display for compound guide entries."""
 
+    list_display = ('abbrev', 'labGroup', 'compound')
+
+
+class CompoundAdmin(admin.ModelAdmin):
     """Specifies the form and list display of a compound in django."""
 
     form = CompoundAdminForm
-    list_display = ('abbrev', 'name', 'CSID', 'custom', 'labGroup')
+    list_display = ('name', 'CSID', 'custom')
 
 
 class ChemicalClassAdmin(admin.ModelAdmin):
-
     """Specifies a list display for chemical classes."""
 
     list_display = ('label', 'description')
 
 
 class CompoundRoleAdmin(admin.ModelAdmin):
-
     """Specifies a list display for compound roles."""
 
     list_display = ('label', 'description')
 
 
 class PerformedRxnAdmin(admin.ModelAdmin):
-
     """Defines a list display and form for Performed Reactions in django."""
 
     list_display = ('reference', 'user', 'labGroup', 'performedDateTime')
@@ -63,7 +64,6 @@ class PerformedRxnAdmin(admin.ModelAdmin):
 
 
 class BoolRxnDescriptorAdmin(admin.ModelAdmin):
-
     """Specifies a form and list display for custom boolean rxn descriptors."""
 
     list_display = ('heading', 'name')
@@ -71,7 +71,6 @@ class BoolRxnDescriptorAdmin(admin.ModelAdmin):
 
 
 class NumRxnDescriptorAdmin(admin.ModelAdmin):
-
     """Specifies a form, list display for custom numerical rxn descriptors."""
 
     list_display = ('heading', 'name', 'maximum', 'minimum')
@@ -86,7 +85,6 @@ class NumRxnDescriptorAdmin(admin.ModelAdmin):
 
 
 class OrdRxnDescriptorAdmin(admin.ModelAdmin):
-
     """Specifies a form, list display for custom numerical rxn descriptors."""
 
     list_display = ('heading', 'name', 'maximum', 'minimum')
@@ -101,7 +99,6 @@ class OrdRxnDescriptorAdmin(admin.ModelAdmin):
 
 
 class CatRxnDescriptorAdmin(admin.ModelAdmin):
-
     """Specifies a form, list display for custom category rxn descriptors."""
 
     list_display = ('heading', 'name')
@@ -109,7 +106,6 @@ class CatRxnDescriptorAdmin(admin.ModelAdmin):
 
 
 class CatDescPermValAdmin(admin.ModelAdmin):
-
     """Specifies a form, list display for permitted categorical values."""
 
     list_display = ('value', 'descriptor')
@@ -127,3 +123,4 @@ register(NumRxnDescriptor, NumRxnDescriptorAdmin)
 register(CatRxnDescriptor, CatRxnDescriptorAdmin)
 register(OrdRxnDescriptor, OrdRxnDescriptorAdmin)
 register(CategoricalDescriptorPermittedValue, CatDescPermValAdmin)
+register(CompoundGuideEntry, CompoundGuideEntryAdmin)

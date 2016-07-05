@@ -10,7 +10,6 @@ def notInTheFuture(value):
 
 
 class GreaterThanValidator(object):
-
     """Verify that a value is exclusively greater than a limit."""
 
     def __init__(self, floorValue):

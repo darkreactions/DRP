@@ -12,7 +12,6 @@ from django.db.models.functions import Concat
 
 
 class DescriptorQuerySet(models.query.QuerySet):
-
     """A queryset to manage a queryset or any of the subtypes thereof."""
 
     def __init__(self, model=None, **kwargs):
@@ -22,7 +21,6 @@ class DescriptorQuerySet(models.query.QuerySet):
 
 
 class DescriptorManager(models.Manager):
-
     """A generic manager for all of the model subtypes, which annotates them with a heading generated from separated fields."""
 
     use_for_related_fields = True
@@ -33,7 +31,6 @@ class DescriptorManager(models.Manager):
 
 
 class Descriptor(models.Model):
-
     """A class which describes a descriptor.
 
     A descriptor is a classification of values which describe
@@ -98,13 +95,12 @@ class Descriptor(models.Model):
         """
         return'@attribute {} ' .format(self.csvHeader)
 
-    def __unicode__(self):
+    def __str__(self):
         """Unicode represenation of a descriptor is it's name."""
         return self.name
 
 
 class CategoricalDescriptor(Descriptor):
-
     """A a class of descriptors which are broken up into categories."""
 
     class Meta:
@@ -119,7 +115,6 @@ class CategoricalDescriptor(Descriptor):
 
 
 class CategoricalDescriptorPermittedValue(models.Model):
-
     """Each instance is a value that a given descriptor may take."""
 
     class Meta:
@@ -132,13 +127,12 @@ class CategoricalDescriptorPermittedValue(models.Model):
         related_name='permittedValues'
     )
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the literal value the instance represents."""
         return self.value
 
 
 class OrdinalDescriptor(Descriptor):
-
     """A descriptor which is ordinal in nature.
 
     It may be valued by discrete categories, but can be
@@ -178,7 +172,6 @@ class OrdinalDescriptor(Descriptor):
 
 
 class NumericDescriptor(Descriptor):
-
     """A descriptor which is numeric in nature.
 
     Numeric descriptors are stored as floating
@@ -221,7 +214,6 @@ class NumericDescriptor(Descriptor):
 
 
 class BooleanDescriptor(Descriptor):
-
     """A descriptor which can be represented by either True or False."""
 
     class Meta:
@@ -236,7 +228,6 @@ class BooleanDescriptor(Descriptor):
 
 
 class Predictable(models.Model):
-
     """Abstract class to add functionality to descriptors about which predictions can be made."""
 
     class Meta:

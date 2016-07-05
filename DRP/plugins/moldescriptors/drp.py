@@ -1,10 +1,11 @@
 """DRP calculated descriptors using chemical data from Mathematica."""
 from scipy.stats import gmean
-from utils import setup
+from .utils import setup
 import DRP
 from DRP import chemical_data
-import warnings
 from django.core.exceptions import ValidationError
+import logging
+logger = logging.getLogger(__name__)
 
 calculatorSoftware = 'DRP'
 
@@ -30,8 +31,9 @@ weightings = (
 
 inorgElements = {}
 for element, info in elements.items():
-    if (element == 'Se') or (info['group'] in range(3, 13)) or ((info['group'] > 12) and ((not info['nonmetal']) or info['metalloid'])):
-        inorgElements[element] = info
+    if info['group'] is not None:
+        if (element == 'Se') or (info['group'] in range(3, 13)) or ((info['group'] > 12) and ((not info['nonmetal']) or info['metalloid'])):
+            inorgElements[element] = info
 
 _descriptorDict = {}
 
@@ -126,40 +128,40 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     bool_vals_to_create = []
     for i, compound in enumerate(compound_set):
         if verbose:
-            print "{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set))
+            logger.debug("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
         num_vals_to_create, bool_vals_to_create = _calculate(
-            compound, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
+            compound, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
         if len(num_vals_to_create) > create_threshold:
             if verbose:
-                print 'Creating {} numeric values'.format(len(num_vals_to_create))
+                logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))
                 DRP.models.NumMolDescriptorValue.objects.bulk_create(
                     num_vals_to_create)
                 num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
-                print 'Creating {} boolean values'.format(len(bool_vals_to_create))
+                logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
             DRP.models.BoolMolDescriptorValue.objects.bulk_create(
                 bool_vals_to_create)
             bool_vals_to_create = []
 
     if verbose:
-        print 'Creating {} numeric values'.format(len(num_vals_to_create))
+        logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        print 'Creating {} boolean values'.format(len(bool_vals_to_create))
+        logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
 
 def calculate(compound):
     """Calculation of descriptor values."""
     delete_descriptors([compound])
-    num_vals_to_create, bool_vals_to_create = _calculate(compound, whitelist=whitelist)
+    num_vals_to_create, bool_vals_to_create = _calculate(compound)
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        print 'Creating {} numeric values'.format(len(num_vals_to_create))
+        logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        print 'Creating {} boolean values'.format(len(bool_vals_to_create))
+        logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
 
@@ -193,10 +195,8 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    # TODO check that this is actually a validation error on the value's value and not on the value overall...
-                    # Like 'this value already exists' should throw an error instead
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e))
+                    logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                        n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -219,7 +219,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                    logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
                         n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)
@@ -237,7 +237,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                    logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
                         n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)
@@ -255,7 +255,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                 try:
                     n.full_clean()
                 except ValidationError as e:
-                    warnings.warn('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
+                    logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
                         n.value, n.compound, n.descriptor, e.message))
                     n.value = None
                 num_vals_to_create.append(n)

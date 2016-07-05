@@ -7,7 +7,6 @@ import unittest
 
 
 class Command(BaseCommand):
-
     """Runs the tests using our custom testing framework."""
 
     help = 'Runs the full battery of DRP tests'

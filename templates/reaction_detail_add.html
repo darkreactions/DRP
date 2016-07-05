@@ -17,7 +17,7 @@
         {% for form in formset %}<li><ol class="descvallist">{% include "alt_ul_form.html" %}</ol></li>{% endfor %}
       </ol>
     <div class="buttons">
-      <input type="submit" value="Save" />
+      <input id="singleclicker" type="submit" value="Save" />
       <input type="reset" value="Reset" />
     </div>
     <a href="{% url 'editReaction' rxn_id %}">Return to Reaction</a>

@@ -1,31 +1,29 @@
 """The suite of DRP tests."""
-from DRPTestCase import DRPTestCase, runTests
-import fileTests
+from .drpTestCase import DRPTestCase, runTests
+from . import fileTests
 import unittest
-import Email
-import forms
-import HttpTests
-import decorators
-import CompoundFromCsv
-import CompoundDescriptor
-import CompoundToCsv
-import CompoundToArff
+from . import email
+from . import forms
+from . import httpTests
+from . import decorators
+from . import compoundDescriptor
+from . import compoundToCsv
+from . import compoundToArff
 # import modelBuildingTests
 # import DataImport
-import modelValidators
+from . import modelValidators
 # import splitters
 
 
 suite = unittest.TestSuite([
-    Email.suite,
+    email.suite,
     forms.suite,
-    HttpTests.suite,
+    httpTests.suite,
     # modelBuildingTests.suite,
     # DataImport.suite,
-    CompoundFromCsv.suite,
-    CompoundDescriptor.suite,
-    CompoundToCsv.suite,
-    CompoundToArff.suite,
+    compoundDescriptor.suite,
+    compoundToCsv.suite,
+    compoundToArff.suite,
     modelValidators.suite,
     # splitters.suite,
     fileTests.suite,
@@ -33,15 +31,15 @@ suite = unittest.TestSuite([
 
 
 modules = [
-    "Email",
+    "email",
     "forms",
-    "HttpTests",
+    "httpTests",
     # "modelBuildingTests",
     # "DataImport",
-    "CompoundFromCsv",
-    "CompoundDescriptor",
-    "CompoundToCsv",
-    "CompoundToArff",
+    "compoundFromCsv",
+    "compoundDescriptor",
+    "compoundToCsv",
+    "compoundToArff",
     "fileTests",
     "modelValidators",
 ]

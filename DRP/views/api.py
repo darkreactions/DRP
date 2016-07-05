@@ -10,8 +10,6 @@ from DRP.models import Compound, CompoundRole, CompoundQuantity
 from DRP.models import ChemicalClass, Reaction
 from DRP.models import LabGroup, PerformedReaction
 
-# TODO: command should recognise error codes
-
 
 @login_required
 def api1(request, component):

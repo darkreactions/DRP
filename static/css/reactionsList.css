@@ -19,6 +19,10 @@ ul.downloads {
  margin: auto;
 }
 
+.reaction form {
+ margin-bottom:0;
+}
+
 ul.downloads li {
  list-style:none;
  float: left;

@@ -4,7 +4,6 @@ from django.db import transaction
 
 
 class LazyDescDict(object):
-
     """An attempt at making descriptor loading lazy."""
 
     def __init__(self, descDict):
@@ -87,7 +86,6 @@ class LazyDescDict(object):
         """Check key."""
         return item in self.internalDict
 
-    # TODO: Get rid of this magic shortcut.
     def __getattr__(self, name):
         """Deal with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."""
         def _pass_attr(*args, **kwargs):

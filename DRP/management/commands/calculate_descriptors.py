@@ -6,7 +6,6 @@ import warnings
 
 
 class Command(BaseCommand):
-
     """Recalculate the descriptors for all compounds and reactions."""
 
     help = 'Recalculate the descriptors for all compounds and reactions.'

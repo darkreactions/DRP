@@ -3,10 +3,11 @@
 from DRP.models import Compound, LabGroup, ChemicalClass, License, LicenseAgreement, PerformedReaction, CompoundQuantity, CompoundRole
 from DRP.models.rxnDescriptorValues import BoolRxnDescriptorValue, OrdRxnDescriptorValue, NumRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models.rxnDescriptors import BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor, NumRxnDescriptor
-from DRP.models import DataSet
+from DRP.models import DataSet, CompoundGuideEntry, PerformedReaction
 from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import date, timedelta
+from django.core.files import File as dFile
 import os
 
 
@@ -59,8 +60,9 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=Compound.objects.get(
-                abbrev=compRef), role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
+            CompoundQuantity.objects.create(reaction=PerformedReaction.objects.get(reference=rxnRef), compound=CompoundGuideEntry.objects.get(
+                abbrev=compRef,
+                labGroup=PerformedReaction.objects.get(reference=rxnRef).labGroup).compound, role=CompoundRole.objects.get(label=CompRoleAbbrev), amount=mmols)
             _oldSetup(self)
 
         def tearDown(self):
@@ -115,7 +117,7 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 #        return c
 #    return _createsRxnDescriptor
 
-def createsPerformedReaction(labTitle, username, reference, valid=True):
+def createsPerformedReaction(labTitle, username, reference, valid=True, image=None):
     """A class decorator that creates a very minimal reaction with no compounds or reactants."""
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
@@ -126,6 +128,10 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
             user = User.objects.get(username=username)
             reaction = PerformedReaction.objects.create(
                 labGroup=labGroup, user=user, reference=reference, valid=valid)
+            if image is not None:
+                with open(image, 'rb') as f:
+                    reaction.labBookPage.save('example.jpg', dFile(f))
+
             _oldSetup(self)
 
         def tearDown(self):
@@ -143,7 +149,6 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
     return _createsPerformedReaction
 
 
-# TODO: finish replacing this
 # def createsPerformedReaction(labTitle, username, reference, compoundAbbrevs=[], compoundRoles=[], compoundAmounts=[], descriptorDict={}, duplicateRef=None):
 #    """A class decorator that creates a reaction using pre-existing compounds
 #          with pre-existing compoundRoles."""
@@ -174,12 +179,12 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 #                compoundQuantity = CompoundQuantity(compound=compound, reaction=reaction,
 #                                                                                        role=compoundRole, amount=quantity)
 #
-#                # TODO XXX bulk_create? Can't use the special save
+#                # bulk_create? Can't use the special save
 #                compoundQuantity.save()
 #
 #                compoundQuantities.append(compoundQuantity)
 #
-#            #TODO: This is hideous and I'm not proud of it.
+#            # This is hideous and I'm not proud of it.
 #            for desc_heading,val in descriptorDict.items():
 #                descriptor = None
 #                try:
@@ -210,7 +215,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 #                    error = "Unknown descriptorValue type for '{}'".format(descriptor)
 #                    raise NotImplementedError(error)
 #
-#                # TODO XXX: bulk_create?
+#                #  bulk_create?
 #                descriptorVal.descriptor = descriptor
 #                descriptorVal.value = val
 #                descriptorVal.reaction = reaction
@@ -223,7 +228,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True):
 #        def tearDown(self):
 #            _oldTearDown(self)
 #
-#            # TODO XXX bulk deletion?
+#            # bulk deletion?
 #            for cq in compoundQuantities:
 #                cq.delete()
 #
@@ -295,11 +300,14 @@ def createsCompound(abbrev, csid, classLabel, labTitle, custom=False):
         _oldSetup = c.setUp
         _oldTearDown = c.tearDown
 
-        compound = Compound(abbrev=abbrev, CSID=csid, custom=custom)
+        compound = Compound(CSID=csid, custom=custom)
 
         def setUp(self):
-            compound.labGroup = LabGroup.objects.get(title=labTitle)
+            if not compound.custom:
+                compound.csConsistencyCheck()
             compound.save()
+            CompoundGuideEntry.objects.create(labGroup=LabGroup.objects.get(
+                title=labTitle), abbrev=abbrev, compound=compound)
             for c in ChemicalClass.objects.filter(label=classLabel):
                 compound.chemicalClasses.add(c)
             compound.save()
@@ -395,35 +403,6 @@ def signsExampleLicense(username):
         c.tearDown = tearDown
         return c
     return _signsExampleLicense
-
-
-def loadsCompoundsFromCsv(labGroupTitle, csvFileName):
-    """A class decorator that creates a test set of compounds using the csvFileName, which should be stored in the tests directory resource folder."""
-    def _loadsCompoundsFromCsv(c):
-
-        _oldSetup = c.setUp
-        _oldTearDown = c.tearDown
-
-        def setUp(self):
-            labGroup = LabGroup.objects.get(title=labGroupTitle)
-            compounds = labGroup.compound_set.fromCsv(os.path.join(
-                settings.APP_DIR, 'tests', 'resource', csvFileName))
-
-            # TODO XXX bulk_create? Can't use our custom save then
-            for compound in compounds:
-                compound.csConsistencyCheck()
-                compound.save()
-
-            _oldSetup(self)
-
-        def tearDown(self):
-            CompoundQuantity.objects.all().delete()
-            _oldTearDown(self)
-
-        c.setUp = setUp
-        c.tearDown = tearDown
-        return c
-    return _loadsCompoundsFromCsv
 
 
 def createsPerformedReactionSetOrd(c):

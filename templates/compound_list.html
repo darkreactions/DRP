@@ -8,33 +8,15 @@
 {% block content %}
 
 <h1 class="bannerText">Compound Guide</h1>
-<nav>
-  <ol class="downloads">
-    <li><a href="{% url 'uploadcompoundcsv' %}">Upload csv file</a></li>
-    <li><a href="{% url 'advCompoundSearch' '.html' %}">Advanced Search</a></li>
-  </ol>
-</nav>
 {% include "lab_form.html" %}
-{% block filter_form %}
-  <form action="{% url 'compoundSearch' '.html' %}" method="get">
-    {{ filter_formset.management_form}}
-    <ol class="list-style-none">
-      <li><fieldset class="compound-form list-style-none"><ol class="list-style-none">{{ filter_formset.forms.0.as_ul }}</ol></fieldset></li>
-      {% for form in filter_formset.forms|slice:"1:" %}
-        <li><div>OR</div><fieldset><ol>{{ form.as_ul }}</ol></fieldset></li>
-      {% endfor %}
-    </ol>
-    <input type="submit" value="Filter" name="filter" />
-  </form>
-{% endblock %}
-{% if compounds|length >  0 %}
+{% if cg_entries|length >  0 %}
   <section class="downloads">
     <h1>Downloads</h1>
     <ul>
       <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
-      <li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
       <li><a href="{% url request.resolver_match.url_name '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
-      <li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
     </ul>
   </section>
   <table>
@@ -46,27 +28,27 @@
         <th>Compound Classes</th>
       </tr>
     </thead>
-  {% for compound in compounds %}
+  {% for cg_entry in cg_entries %}
     <tr>
       <td>
-        <a href="{% url 'editCompound' compound.pk %}">
-          {{ compound.abbrev }}
+        <a href="{% url 'editCompound' pk=cg_entry.compound.pk %}">
+          {{ cg_entry.abbrev }}
         </a>
       </td>
-      <td>{{ compound.name }}</td>
-      <td>{{ compound.CSID }}</td>
+      <td>{{ cg_entry.compound.name }}</td>
+      <td>{{ cg_entry.compound.CSID }}</td>
       <td>
         <ul>
-          {% for class in compound.chemicalClasses.all %}
+          {% for class in cg_entry.compound.chemicalClasses.all %}
             <li>{{ class }}</li>
           {% endfor %}
         </ul>
       </td>
       <td>
-        {% if not compound.reaction_set.all.exists %}
+        {% if not cg_entry.compound.reaction_set.all.exists %}
         <form action="{% url 'deleteCompound' %}" method="post">
           {% csrf_token %}
-          {% compound_delete_form compound %}
+          {% compound_delete_form cg_entry.compound %}
           <input type="Submit" value="delete" />
         </form>
         {% endif %}

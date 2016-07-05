@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='boolmoldescriptorvalue',
             name='value',
-            field=models.NullBooleanField(verbose_name=b'Value'),
+            field=models.NullBooleanField(verbose_name='Value'),
         ),
         migrations.AlterField(
             model_name='boolrxndescriptorvalue',
             name='value',
-            field=models.NullBooleanField(verbose_name=b'Value'),
+            field=models.NullBooleanField(verbose_name='Value'),
         ),
     ]

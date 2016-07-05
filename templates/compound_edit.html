@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1 class="bannerText">Edit Compound</h1>
-<form action="{% url 'editCompound' object.pk %}" method="post">
+<form action="{% url 'editCompound' pk=object.pk %}" method="post">
   {% csrf_token %}
   <ol>
     {{ form.as_ul }}

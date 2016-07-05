@@ -1,6 +1,7 @@
 """A module containing urls for the database (reactions, compound guide) components of DRP."""
 
 from django.conf.urls import url
+from django.views.defaults import permission_denied
 import DRP.views
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
 from DRP.models import OrdRxnDescriptorValue
@@ -46,20 +47,16 @@ urls = [
     url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
     url('^/invalidate$', DRP.views.reaction.invalidateReaction,
         name='invalidateReaction'),
+    url('^/lab_notes/$', permission_denied),
+    url('^/lab_notes/(?P<labgroup_id>\d+)_(?P<reference>[^//]*).jpg', DRP.views.reaction.labBookImage, name="labBookImage"),
     url('^/import/apiv1/(?P<component>[^//]*).xml', DRP.views.api1),
     url('^/select_viewing_group.html', DRP.views.selectGroup, name='selectGroup'),
     url('^/compoundguide(?P<filetype>.csv|.html|.arff|/)$',
         DRP.views.compound.ListCompound.as_view(), name='compoundguide'),
-    url('^/compoundguide/search(?P<filetype>.html|.csv|.arff)$',
-        DRP.views.compound.ListCompound.as_view(), name='compoundSearch'),
-    url('^/compoundguide/advanced_search(?P<filetype>.html|.csv|.arff)$',
-        DRP.views.compound.AdvancedCompoundSearchView.as_view(), name='advCompoundSearch'),
     url('^/compoundguide/add.html$',
         DRP.views.compound.CreateCompound.as_view(), name='newCompound'),
     url('^/compoundguide/delete$',
         DRP.views.compound.deleteCompound, name='deleteCompound'),
     url('^/compoundguide/edit_(?P<pk>\d+).html',
-        DRP.views.compound.EditCompound.as_view(), name='editCompound'),
-    url('^/compoundguide/upload.html',
-        DRP.views.compound.uploadCompound, name='uploadcompoundcsv')
+        DRP.views.compound.EditCompound.as_view(), name='editCompound')
 ]

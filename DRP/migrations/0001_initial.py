@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-from DRP.models.Compound import elementsFormatValidator
+from DRP.models.compound import elementsFormatValidator
 import django.db.models.deletion
 from django.conf import settings
 import django.core.validators
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.NullBooleanField(
-                    verbose_name=b'Value for descriptor')),
+                    verbose_name='Value for descriptor')),
             ],
             options={
                 'verbose_name': 'Boolean Molecular Descriptor Value',
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.NullBooleanField(
-                    verbose_name=b'Value for descriptor')),
+                    verbose_name='Value for descriptor')),
             ],
             options={
                 'verbose_name': 'Boolean Reaction Descriptor Value',
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.CharField(
-                    max_length=255, verbose_name=b'Permitted Value')),
+                    max_length=255, verbose_name='Permitted Value')),
             ],
         ),
         migrations.CreateModel(
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('label', models.CharField(unique=True, max_length=30, error_messages={
-                 b'unique': b'A chemical class with this label already exists'})),
+                 'unique': 'A chemical class with this label already exists'})),
                 ('description', models.CharField(max_length=20)),
             ],
             options={
@@ -87,20 +87,20 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('abbrev', models.CharField(
-                    max_length=100, verbose_name=b'Abbreviation')),
-                ('name', models.CharField(max_length=400, verbose_name=b'Name')),
+                    max_length=100, verbose_name='Abbreviation')),
+                ('name', models.CharField(max_length=400, verbose_name='Name')),
                 ('CSID', models.PositiveIntegerField(
-                    null=True, verbose_name=b'Chemspider ID')),
+                    null=True, verbose_name='Chemspider ID')),
                 ('custom', models.BooleanField(
-                    default=False, verbose_name=b'Custom')),
-                ('INCHI', models.TextField(default=b'',
-                                           verbose_name=b'InCHI key', blank=True)),
-                ('smiles', models.TextField(default=b'',
-                                            verbose_name=b'Smiles', blank=True)),
+                    default=False, verbose_name='Custom')),
+                ('INCHI', models.TextField(default='',
+                                           verbose_name='InCHI key', blank=True)),
+                ('smiles', models.TextField(default='',
+                                            verbose_name='Smiles', blank=True)),
                 ('formula', models.CharField(
-                    blank=True, help_text=b'A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.', max_length=500, validators=[elementsFormatValidator])),
+                    blank=True, help_text='A formula should be made up of element names. C_{4}H_{8} type notation should be use for subscript digits.', max_length=500, validators=[elementsFormatValidator])),
                 ('chemicalClasses', models.ManyToManyField(
-                    to='DRP.ChemicalClass', verbose_name=b'Chemical Class')),
+                    to='DRP.ChemicalClass', verbose_name='Chemical Class')),
             ],
         ),
         migrations.CreateModel(
@@ -164,8 +164,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('heading', models.CharField(max_length=200, validators=[django.core.validators.RegexValidator(
-                    b'[A-Za-z0-9][A-Za-z0-9_]+', b'Please include only values which are limited toalphanumeric characters and underscores, and must startwith an alphabetic character.')])),
-                ('name', models.CharField(max_length=300, verbose_name=b'Full name')),
+                    '[A-Za-z0-9][A-Za-z0-9_]+', 'Please include only values which are limited toalphanumeric characters and underscores, and must startwith an alphabetic character.')])),
+                ('name', models.CharField(max_length=300, verbose_name='Full name')),
                 ('calculatorSoftware', models.CharField(max_length=100)),
                 ('calculatorSoftwareVersion', models.CharField(max_length=20)),
             ],
@@ -176,9 +176,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(unique=True, max_length=200,
-                                           error_messages={b'unique': b'This name is already taken.'})),
+                                           error_messages={'unique': 'This name is already taken.'})),
                 ('address', models.CharField(max_length=200)),
-                ('email', models.CharField(default=b'', max_length=254)),
+                ('email', models.CharField(default='', max_length=254)),
                 ('access_code', models.CharField(max_length=128)),
                 ('legacy_access_code', models.CharField(max_length=20)),
                 ('users', models.ManyToManyField(
@@ -195,7 +195,7 @@ class Migration(migrations.Migration):
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('text', models.TextField()),
                 ('effectiveDate', models.DateField(
-                    help_text=b'The license will become effective on midnight of the provided date.', verbose_name=b'Effective Date')),
+                    help_text='The license will become effective on midnight of the provided date.', verbose_name='Effective Date')),
             ],
             options={
                 'get_latest_by': 'effectiveDate',
@@ -226,19 +226,19 @@ class Migration(migrations.Migration):
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('description', models.TextField()),
                 ('active', models.BooleanField(default=False,
-                                               verbose_name=b'Is this the active model?')),
+                                               verbose_name='Is this the active model?')),
                 ('modelVisitorLibrary', models.CharField(
-                    max_length=200, choices=[(b'weka', b'weka')])),
+                    max_length=200, choices=[('weka', 'weka')])),
                 ('modelVisitorTool', models.CharField(max_length=200, choices=[
-                 ((b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')), (b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')))])),
-                ('featureLibrary', models.CharField(default=b'',
-                                                    max_length=200, choices=[(b'weka', b'weka')])),
-                ('featureTool', models.CharField(default=b'', max_length=200, choices=[
-                 ((b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')), (b'weka', (b'SVM_PUK_basic', b'SVM_PUK_BCR', b'KNN', b'NaiveBayes', b'J48')))])),
-                ('splitter', models.CharField(blank=True, max_length=200, null=True, choices=[(b'KFoldSplitter', b'KFoldSplitter'), (
-                    b'MutualInfoSplitter', b'MutualInfoSplitter'), (b'NoSplitter', b'NoSplitter'), (b'RandomSplitter', b'RandomSplitter')])),
+                 (('weka', ('SVM_PUK_basic', 'SVM_PUK_BCR', 'KNN', 'NaiveBayes', 'J48')), ('weka', ('SVM_PUK_basic', 'SVM_PUK_BCR', 'KNN', 'NaiveBayes', 'J48')))])),
+                ('featureLibrary', models.CharField(default='',
+                                                    max_length=200, choices=[('weka', 'weka')])),
+                ('featureTool', models.CharField(default='', max_length=200, choices=[
+                 (('weka', ('SVM_PUK_basic', 'SVM_PUK_BCR', 'KNN', 'NaiveBayes', 'J48')), ('weka', ('SVM_PUK_basic', 'SVM_PUK_BCR', 'KNN', 'NaiveBayes', 'J48')))])),
+                ('splitter', models.CharField(blank=True, max_length=200, null=True, choices=[('KFoldSplitter', 'KFoldSplitter'), (
+                    'MutualInfoSplitter', 'MutualInfoSplitter'), ('NoSplitter', 'NoSplitter'), ('RandomSplitter', 'RandomSplitter')])),
                 ('built', models.BooleanField(default=False,
-                                              verbose_name=b'Has the build procedure been called with this container?', editable=False)),
+                                              verbose_name='Has the build procedure been called with this container?', editable=False)),
             ],
         ),
         migrations.CreateModel(
@@ -301,7 +301,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID',
                                         serialize=False, auto_created=True, primary_key=True)),
                 ('fileName', models.FileField(
-                    max_length=200, upload_to=b'models', blank=True)),
+                    max_length=200, upload_to='models', blank=True)),
                 ('startTime', models.DateTimeField(default=None, null=True)),
                 ('endTime', models.DateTimeField(default=None, null=True)),
                 ('invalid', models.BooleanField(default=False)),
@@ -357,9 +357,9 @@ class Migration(migrations.Migration):
                                                       primary_key=True, serialize=False, to='DRP.Reaction')),
                 ('reference', models.CharField(unique=True, max_length=40)),
                 ('performedDateTime', models.DateTimeField(
-                    default=None, help_text=b'Date in format YYYY-MM-DD', null=True, verbose_name=b'Date Reaction Performed')),
+                    default=None, help_text='Date in format YYYY-MM-DD', null=True, verbose_name='Date Reaction Performed')),
                 ('insertedDateTime', models.DateTimeField(
-                    auto_now_add=True, verbose_name=b'Date Reaction Saved')),
+                    auto_now_add=True, verbose_name='Date Reaction Saved')),
                 ('legacyRecommendedFlag', models.NullBooleanField(default=None)),
                 ('valid', models.BooleanField(default=True)),
                 ('public', models.BooleanField(default=False)),
@@ -380,7 +380,7 @@ class Migration(migrations.Migration):
                 ('hidden', models.BooleanField(default=None)),
                 ('saved', models.BooleanField(default=None)),
                 ('reference', models.CharField(
-                    max_length=200, verbose_name=b'Text Reference')),
+                    max_length=200, verbose_name='Text Reference')),
             ],
             bases=('DRP.reaction',),
         ),
@@ -429,7 +429,7 @@ class Migration(migrations.Migration):
             model_name='compound',
             name='labGroup',
             field=models.ForeignKey(
-                verbose_name=b'Lab Group', to='DRP.LabGroup'),
+                verbose_name='Lab Group', to='DRP.LabGroup'),
         ),
         migrations.AddField(
             model_name='catrxndescriptorvalue',

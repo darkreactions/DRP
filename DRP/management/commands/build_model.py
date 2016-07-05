@@ -9,10 +9,11 @@ from DRP.utils import accuracy, BCR, Matthews, confusionMatrixString, confusionM
 from django.conf import settings
 import ast
 from sys import argv
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     """Command for building statistical/machine learning models in DRP."""
 
     help = 'Builds a machine learning model'
@@ -49,14 +50,8 @@ class Command(BaseCommand):
         parser.add_argument('-vo', '--visitor-options', default=None,
                             help='A dictionary of the options to give to the visitor in JSON format')
 
-        # TODO setup argparse to properly check combinations of these arguments as valid.
-        # it's actually pretty complicated what the valid options are...
-
     def handle(self, *args, **kwargs):
         """Handle the call for this command."""
-        # This way of accepting splitter options is bad and hacky.
-        # Unfortunately, the only good ways I can think of are also very complicated and I don't have time right now :-(
-        # TODO XXX make this not horrible
         splitterOptions = ast.literal_eval(kwargs['splitter_options']) if kwargs[
             'splitter_options'] is not None else None
         visitorOptions = ast.literal_eval(kwargs['visitor_options']) if kwargs[
@@ -68,8 +63,6 @@ class Command(BaseCommand):
         response_headers = [h for h in kwargs['response_headers'] if h] if kwargs[
             'response_headers'] is not None else None
 
-        # TODO switch to logging and adjust for management command multi-level
-        # verbosity
         verbose = (kwargs['verbosity'] > 0)
 
         prepare_build_display_model(predictor_headers=predictor_headers, response_headers=response_headers,
@@ -77,12 +70,6 @@ class Command(BaseCommand):
                                         'model_library'], modelVisitorTool=kwargs['model_tool'],
                                     splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=verbose, container_id=kwargs['model_container_id'], splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
-
-# TODO refactor this so these functions can be used in other places more naturally
-# Also so this workflow makes some freaking sense. What the hell was I thinking?
-# Handle should call each part in turn, not have a bunch of parameters that keep getting passed through till someone uses them
-# I think I did that so that other files could call model building at the point it was need and jump into the pipeline,
-# but wow there has to be a better way - GCMN
 
 def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
                        description=None, verbose=False, splitterOptions=None, visitorOptions=None):
@@ -107,8 +94,8 @@ def build_model(container, verbose=False):
             container.build(verbose=verbose)
             break
         except OperationalError as e:
-            print "Caught OperationalError {}".format(e)
-            print "\nRestarting in 3 seconds...\n"
+            logger.warning(
+                "Caught OperationalError {}\nRestarting in 3 seconds...\n".format(e))
             sleep(3)
     else:
         raise RuntimeError("Got 5 Operational Errors in a row and gave up")
@@ -138,7 +125,7 @@ def display_model_results(container, reactions=None, heading=""):
     overall_conf_mtrcs = container.getOverallConfusionMatrices(
         reactions=reactions)
     if not overall_conf_mtrcs:
-        print "No model results to display"
+        print("No model results to display")
         return
     if len(overall_conf_mtrcs) != 1:
         raise NotImplementedError('Can only handle one response')
@@ -146,11 +133,11 @@ def display_model_results(container, reactions=None, heading=""):
         acc = accuracy(conf_mtrx)
         bcr = BCR(conf_mtrx)
         matthews = Matthews(conf_mtrx)
-        print "Confusion matrix for {}:".format(descriptor_header)
-        print confusionMatrixString(conf_mtrx)
-        print "Accuracy: {:.3}".format(acc)
-        print "BCR: {:.3}".format(bcr)
-        print "Matthews: {:.3}".format(matthews)
+        print("Confusion matrix for {}:".format(descriptor_header))
+        print(confusionMatrixString(conf_mtrx))
+        print("Accuracy: {:.3}".format(acc))
+        print("BCR: {:.3}".format(bcr))
+        print("Matthews: {:.3}".format(matthews))
     conf_mtrcs = container.getComponentConfusionMatrices(reactions=reactions)
 
     sum_acc = 0.0
@@ -165,11 +152,11 @@ def display_model_results(container, reactions=None, heading=""):
             acc = accuracy(conf_mtrx)
             bcr = BCR(conf_mtrx)
             matthews = Matthews(conf_mtrx)
-            print "Confusion matrix for {}:".format(descriptor_header)
-            print confusionMatrixString(conf_mtrx)
-            print "Accuracy: {:.3}".format(acc)
-            print "BCR: {:.3}".format(bcr)
-            print "Matthews: {:.3}".format(matthews)
+            print("Confusion matrix for {}:".format(descriptor_header))
+            print(confusionMatrixString(conf_mtrx))
+            print("Accuracy: {:.3}".format(acc))
+            print("BCR: {:.3}".format(bcr))
+            print("Matthews: {:.3}".format(matthews))
 
             # This only works for one response. Sorry...
             # TODO XXX make this work for multiple responses
@@ -178,9 +165,9 @@ def display_model_results(container, reactions=None, heading=""):
             sum_matthews += matthews
             count += 1
 
-    print "{} Average accuracy: {:.3}".format(heading, sum_acc / count)
-    print "{} Average BCR: {:.3}".format(heading, sum_bcr / count)
-    print "{} Average Matthews: {:.3}".format(heading, sum_matthews / count)
+    print("{} Average accuracy: {:.3}".format(heading, sum_acc / count))
+    print("{} Average BCR: {:.3}".format(heading, sum_bcr / count))
+    print("{} Average Matthews: {:.3}".format(heading, sum_matthews / count))
 
 
 def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
@@ -188,26 +175,16 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     """Build a model with the specified tools."""
     if predictor_headers is not None:
         predictors = Descriptor.objects.filter(heading__in=predictor_headers)
-        if predictors.count() < len(predictor_headers):
-            print predictor_headers
-            print predictors
-            raise KeyError("Could not find all predictors. Missing: {}".format(
-                missing_descriptors(predictor_headers)))
-        elif predictors.count() > len(predictor_headers):
-            raise KeyError("Found more predictor variables than headers ({} and {})!".format(
-                predictors.count(), len(predictor_headers)))
+        if predictors.count() != len(predictor_headers):
             raise KeyError("Could not find all predictors. Missing: {}".format(
                 missing_descriptors(predictor_headers)))
     else:
         predictors = None
     if response_headers is not None:
         responses = Descriptor.objects.filter(heading__in=response_headers)
-        if responses.count() < len(response_headers):
+        if responses.count() != len(response_headers):
             raise KeyError("Could not find all responses. Missing: {}".format(
                 missing_descriptors(response_headers)))
-        elif responses.count() > len(response_headers):
-            raise KeyError("Found more response variables than headers ({} and {})!".format(
-                responses.count(), len(response_headers)))
     else:
         responses = None
 

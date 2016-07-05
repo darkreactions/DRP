@@ -3,7 +3,6 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
 
-#TODO: Abstract these out/remove these.
 from core_views import upload_prompt, upload_CSV, data_form, check_compound, compound_guide_form, compound_guide_entry, edit_CG_entry, change_Recommendation, assign_user_to_rec, edit_recommendation
 
 # Uncomment the next two lines to enable the admin: ###C

@@ -13,7 +13,6 @@ def reSave(startIndex, endIndex, stdout):
 
 
 class Command(BaseCommand):
-
     """Parellellised code for re-saving reaction instances (and incidentally recalculating their descriptors.)."""
 
     def add_arguments(self, parser):
