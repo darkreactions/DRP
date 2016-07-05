@@ -10,9 +10,6 @@ server {
         access_log /home/drp/web/darkreactions.haverford.edu/logs/access.log;
         error_log /home/drp/web/darkreactions.haverford.edu/logs/error.log;
 
-        root  /home/drp/web/darkreactions.haverford.edu/app;
-                autoindex on;
-
         location /favicon.ico {
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/static/favicon.ico;
         }
