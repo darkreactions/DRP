@@ -254,7 +254,7 @@ def _calculate(reaction, descriptorDict, verbose=False):
         if any(quantity.amount is None for quantity in allCompoundQuantities):
             n.value = None
         else:
-            n.value=float(sum((quantity.compound.elements[element]['stoichiometry'] * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
+            n.value=float(sum((float(quantity.compound.elements[element]['stoichiometry']) * quantity.amount if element in quantity.compound.elements else 0) for quantity in allCompoundQuantities))
 
         vals_to_create.append(n)
 
