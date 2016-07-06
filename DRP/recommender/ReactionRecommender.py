@@ -22,7 +22,7 @@ class Recommender(AbstractRecommender):
         Value List is a list of any values this Descriptor should have.
         """
 
-        print grid_params
+        print(grid_params)
         self.generator = ReactionGenerator(grid_params)
 
         # self.plausible_reactions]
@@ -87,7 +87,7 @@ class Recommender(AbstractRecommender):
 
     def get_mutual_info(self, outcome_dict):
         """Gets mutual information given hash strings and outcomes using sklearn function."""
-        hashes, outcomes = zip(*list(outcome_dict.items()))
+        hashes, outcomes = list(zip(*list(outcome_dict.items())))
         return adjusted_mutual_info_score(hashes, outcomes)
 
     def hash_perform_generator(self, compound_dict, anash):
@@ -142,7 +142,7 @@ class Recommender(AbstractRecommender):
             else:
                 pass
 
-        print 'count', count
+        print('count', count)
         self.lshash = lsh
         self.headers = headers
 
@@ -195,8 +195,8 @@ class Recommender(AbstractRecommender):
         """Take scored reactions and create RecommendedReaction objects."""
         score_dict = self.score_candidates()
 
-        for rxn, score in score_dict.viewitems():
-            print rxn, score
+        for rxn, score in score_dict.items():
+            print(rxn, score)
             rec_rxn = RecommendedReaction()
             rec_rxn.reaction_ptr = rxn
             rec_rxn.seed = self.seed
@@ -231,5 +231,5 @@ class Recommender(AbstractRecommender):
 
         self.create_recommendations()
 
-        print str(k) + " reactions recommended"
-        print("--- %s seconds ---" % (time.time() - start_time))
+        print(str(k) + " reactions recommended")
+        print(("--- %s seconds ---" % (time.time() - start_time)))

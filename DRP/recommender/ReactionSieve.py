@@ -16,8 +16,8 @@ class ReactionSieve(object):
         plausible_reactions = []
         if verbose:
             print('''DESIRED DESCRIPTORS:''')
-            print(self.desired_desc_dict)
-        for desc, desc_vals in self.desired_desc_dict.items():
+            print((self.desired_desc_dict))
+        for desc, desc_vals in list(self.desired_desc_dict.items()):
             for i in desc_vals:
                 for a in a[i]:
                     plausible_reactions.append(a[0])
@@ -25,5 +25,5 @@ class ReactionSieve(object):
         reactions = reactions.filter(pk__in=plausible_reactions_ids)
 
         if verbose:
-            print '''EXITING FILTER'''
+            print('''EXITING FILTER''')
         return reactions

@@ -81,8 +81,8 @@ class ReactionGenerator(object):
       """Populate the database with every recommended reaction within the grid"""
       # TODO change this line of Casey's code to use .values() method
       #desc_vals = [desc_vals for _, desc_vals in self.desc_dict.iteritems()]
-      descs = self.desc_dict.keys()
-      desc_vals = self.desc_dict.values()
+      descs = list(self.desc_dict.keys())
+      desc_vals = list(self.desc_dict.values())
     
       # Create a new reaction for each possible pair.
 
