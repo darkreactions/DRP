@@ -1,0 +1,46 @@
+{% extends 'reactions.html' %}
+{% block additional_head %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/reactionDisplay.css"/>
+{% endblock %}
+{% block title %}Reaction Data Display{% endblock %}
+{% block content %}
+<h1>Reaction Data Display</h1>       
+<h2> Details</h2>
+<table>
+<tr>
+<th>Reference </th> 
+<th>Performed by </th> 
+<th>Performed date </th>
+<th>Inserted date </th>
+<th>Valid </th>
+<th>Public </th>
+</tr>
+<tr>
+<td> {{reaction.reference}}</td>
+<td> {{reaction.performedBy}}</td>
+<td> {{reaction.performedDateTime}} </td>
+<td> {{reaction.insertedDateTime}} </td>
+<td> {{reaction.valid}}</td>
+<td> {{reaction.public}}</td>
+</tr>
+</table>
+<h2>Reaction</h2>
+<table>              
+<tr>
+<th> Compound </th>
+<th> Role </th> 
+<th> Amount </th>       
+</tr>
+<tr>     
+{% for compound in compoundQuantities %}
+<td>{{compound.compound}}</td>
+<td>{{compound.role}}</td>
+<td>{{compound.amount}}</td>
+</tr>
+{% endfor %}
+</table>
+<p>
+</p>
+     <td class="right"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" target="_blank"><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative CommonsAttribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></a></td>
+{% endblock %}
