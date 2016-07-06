@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='featureselectioncontainer',
             name='featureVisitorOptions',
-            field=models.TextField(default=b'{}', blank=True),
+            field=models.TextField(default='{}', blank=True),
         ),
     ]

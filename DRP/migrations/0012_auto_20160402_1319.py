@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='modelcontainer',
             name='modelVisitorOptions',
-            field=models.TextField(default=b'', blank=True),
+            field=models.TextField(default='', blank=True),
         ),
         migrations.AddField(
             model_name='modelcontainer',
             name='splitterOptions',
-            field=models.TextField(default=b'', blank=True),
+            field=models.TextField(default='', blank=True),
         ),
     ]

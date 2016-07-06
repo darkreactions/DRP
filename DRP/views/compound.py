@@ -3,10 +3,9 @@
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import Compound
-from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm, CompoundUploadForm, CompoundFilterForm
-from DRP.forms import CompoundFilterFormSet, AdvancedCompoundFilterFormSet
+from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm
 from django.utils.decorators import method_decorator
-from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
+from .decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.shortcuts import render, redirect
@@ -18,7 +17,6 @@ from django.template import RequestContext
 
 
 class CreateCompound(CreateView):
-
     """A view managing the creation of compound objects."""
 
     model = Compound
@@ -47,7 +45,6 @@ class CreateCompound(CreateView):
 
 
 class EditCompound(UpdateView):
-
     """A view managing the editing of compound objects."""
 
     form_class = CompoundEditForm
@@ -62,7 +59,7 @@ class EditCompound(UpdateView):
         """Check user has sufficient credentials and has row-level permissions for this compound."""
         try:
             compound = Compound.objects.get(
-                pk=self.get_object().pk, labGroup__in=request.user.labgroup_set.all())
+                pk=self.get_object().pk, labGroups__in=request.user.labgroup_set.all())
         except Compound.DoesNotExist:
             raise Http404("A compound matching your query could not be found.")
         if compound.custom:
@@ -86,32 +83,12 @@ def deleteCompound(request, *args, **kwargs):
     return redirect('compoundguide', '/')
 
 
-@login_required
-@hasSignedLicense
-@userHasLabGroup
-def uploadCompound(request, *args, **kwargs):
-    """A view managing the upload of compound csvs."""
-    if request.method == 'POST':
-        form = CompoundUploadForm(
-            data=request.POST, files=request.FILES, user=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect('compoundguide', '/')
-        else:
-            return render(request, 'compound_upload.html', {'form': form})
-    else:
-        form = CompoundUploadForm(user=request.user)
-        return render(request, 'compound_upload.html', {'form': form})
-
-
 class ListCompound(ListView):
-
     """A view managing the viewing of the compound guide."""
 
     template_name = 'compound_list.html'
-    context_object_name = 'compounds'
+    context_object_name = 'cg_entries'
     model = Compound
-    formSetClass = CompoundFilterFormSet
 
     @method_decorator(login_required)
     @method_decorator(hasSignedLicense)
@@ -123,20 +100,7 @@ class ListCompound(ListView):
 
         Relate the queryset of this view to the logged in user.
         """
-        self.queryset = self.labGroup.compound_set.all()
-
-        if 'filter' in request.GET:
-            self.filterFormSet = self.formSetClass(
-                user=request.user, labGroup=self.labGroup, data=request.GET)
-            if self.filterFormSet.is_valid():
-                self.queryset = self.filterFormSet.fetch()
-                self.filterFormSet = self.formSetClass(
-                    user=request.user, labGroup=self.labGroup, initial=self.filterFormSet.cleaned_data)
-            else:
-                self.queryset = Compound.objects.none()
-        else:
-            self.filterFormSet = self.formSetClass(
-                user=request.user, labGroup=self.labGroup)
+        self.queryset = self.labGroup.compoundguideentry_set.all()
 
         fileType = kwargs.get('filetype')
 
@@ -166,13 +130,4 @@ class ListCompound(ListView):
         """Add a lab Form and the filter formset to the existing context data."""
         context = super(ListCompound, self).get_context_data(**kwargs)
         context['lab_form'] = self.labForm
-        context['filter_formset'] = self.filterFormSet
         return context
-
-
-class AdvancedCompoundSearchView(ListCompound):
-
-    """View for the advanced compounds search."""
-
-    formSetClass = AdvancedCompoundFilterFormSet
-    template_name = 'adv_compound_search.html'

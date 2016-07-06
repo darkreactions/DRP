@@ -7,15 +7,15 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.forms.widgets import HiddenInput
 from django.db import transaction
+from DRP.models import Compound, CompoundGuideEntry
 
 
 class CompoundAdminForm(forms.ModelForm):
-
     """Form for the django admin; permits the overriding of CSID absence but forces the existence of the custom flag."""
 
     class Meta:
         model = Compound
-        exclude = ('descriptors', 'custom')
+        exclude = ('descriptors', 'custom', 'labGroups')
 
     def save(self, commit=True):
         """Save the compound."""
@@ -28,7 +28,6 @@ class CompoundAdminForm(forms.ModelForm):
 
 
 class CompoundForm(forms.ModelForm):
-
     """
     A form for users to add compounds to the compound guide.
 
@@ -40,13 +39,13 @@ class CompoundForm(forms.ModelForm):
     CSID = forms.IntegerField(label='Chemspider ID', min_value=1, error_messages={
                               'required': 'This value must be set or selected'})
     """If the user already knows the right value for this it allows them to skip a step."""
+    abbrev = forms.CharField(label="Abbreviation", max_length=100)
 
     class Meta:
-        fields = ('labGroup', 'abbrev', 'CSID',
+        fields = ('labGroups', 'CSID', 'abbrev',
                   'name', 'CAS_ID', 'chemicalClasses')
         model = Compound
         help_texts = {
-            'abbrev': 'A local abbreviation by which the compound is known.',
             'name': 'A common or IUPAC name for the compound.',
             'CAS_ID': 'The CAS number for the compound. Optional.',
             'CSID': 'The Chemspider ID for the compound. If this is not included, a list will be provided for you to choose from.'
@@ -57,9 +56,9 @@ class CompoundForm(forms.ModelForm):
         super(CompoundForm, self).__init__(*args, **kwargs)
         self.compound = None
         self.chemSpider = ChemSpider(settings.CHEMSPIDER_TOKEN)
-        self.fields['labGroup'].queryset = user.labgroup_set.all()
+        self.fields['labGroups'].queryset = user.labgroup_set.all()
         if user.labgroup_set.all().exists():
-            self.fields['labGroup'].empty_label = None
+            self.fields['labGroups'].empty_label = None
 
     def clean_CSID(self):
         """Check that the CSID is actually a valid id from chemspider."""
@@ -75,6 +74,10 @@ class CompoundForm(forms.ModelForm):
     def clean(self):
         """Verify that the CSID, CAS_ID (where supplied) and name are consistent."""
         self.cleaned_data = super(CompoundForm, self).clean()
+        if 'labGroups' in self.cleaned_data:
+            for labGroup in self.cleaned_data.get('labGroups'):
+                if CompoundGuideEntry.objects.filter(abbrev=self.cleaned_data.get('abbrev'), labGroup=labGroup).exclude(compound=self.instance).exists():
+                    self.add_error('abbrev', 'A compound with this abbreviation already exists for the selected labgroup.')
         if self.cleaned_data.get('name'):
             nameResults = self.chemSpider.simple_search(
                 self.cleaned_data['name'])
@@ -124,6 +127,10 @@ class CompoundForm(forms.ModelForm):
 
     def save(self, commit=True):
         """Create (and if appropriate, saves) the compound instance, and adds Inchi and smiles from chemspider."""
+        try:
+            self.instance = Compound.objects.get(CSID=self.cleaned_data['CSID'])
+        except Compound.DoesNotExist:
+            pass  # Hakuna Matata
         compound = super(CompoundForm, self).save(commit=False)
         csCompound = self.chemSpider.get_compound(compound.CSID)
         compound.INCHI = csCompound.inchi
@@ -131,19 +138,24 @@ class CompoundForm(forms.ModelForm):
         compound.formula = csCompound.molecular_formula
         if commit:
             compound.save()
-            self.save_m2m()
+            if 'labGroups' in self.cleaned_data:
+                for labGroup in self.cleaned_data['labGroups']:
+                    try:
+                        cgEntry = CompoundGuideEntry.objects.get(labGroup=labGroup, abbrev=self.cleaned_data['abbrev'])
+                        cgEntry.compound = compound
+                        cgEntry.save()
+                    except CompoundGuideEntry.DoesNotExist:
+                        CompoundGuideEntry.objects.create(labGroup=labGroup, abbrev=self.cleaned_data['abbrev'], compound=compound)
         return compound
 
 
 class CompoundEditForm(forms.ModelForm):
-
     """A form for editing compounds."""
 
     class Meta:
-        fields = ('name', 'abbrev', 'chemicalClasses')
+        fields = ('name', 'chemicalClasses')
         model = Compound
         help_texts = {
-            'abbrev': 'A local abbreviation by which the compound is known.',
             'name': 'A common or IUPAC name for the compound.',
         }
 
@@ -159,7 +171,6 @@ class CompoundEditForm(forms.ModelForm):
 
 
 class CompoundDeleteForm(forms.ModelForm):
-
     """A form for deleting compounds."""
 
     class Meta:
@@ -170,7 +181,7 @@ class CompoundDeleteForm(forms.ModelForm):
         """Lock the id field to an instance."""
         super(CompoundDeleteForm, self).__init__(*args, **kwargs)
         self.fields['id'] = forms.ModelChoiceField(queryset=Compound.objects.filter(
-            labGroup__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
+            labGroups__in=user.labgroup_set.all()), initial=self.instance.pk, widget=HiddenInput)
 
     def clean_id(self):
         """Lock the id field to an instance."""
@@ -183,31 +194,3 @@ class CompoundDeleteForm(forms.ModelForm):
         """Ironic saving."""
         self.cleaned_data['id'].delete()
         return self.cleaned_data['id']
-
-
-class CompoundUploadForm(forms.Form):
-
-    """A form to manage the uploading of compound csv files."""
-
-    csv = forms.FileField()
-
-    def __init__(self, user, *args, **kwargs):
-        """Restrict the permitted labgroups dynamically."""
-        super(CompoundUploadForm, self).__init__(*args, **kwargs)
-        self.fields['labGroup'] = forms.ModelChoiceField(
-            queryset=user.labgroup_set.all())
-
-    def clean(self):
-        """Check validity of compounds."""
-        if self.cleaned_data.get('csv') is not None and self.cleaned_data.get('labGroup') is not None:
-            self.compounds = self.cleaned_data['labGroup'].compound_set.fromCsv(
-                self.cleaned_data['csv'].temporary_file_path())
-        for compound in self.compounds:
-            compound.csConsistencyCheck()
-            compound.full_clean()
-        return self.cleaned_data
-
-    def save(self):
-        """Save compounds."""
-        for compound in self.compounds:
-            compound.save()

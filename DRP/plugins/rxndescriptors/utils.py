@@ -4,7 +4,6 @@ from django.db import transaction
 
 
 class LazyDescDict(object):
-
     """An attempt to make loading of descriptors lazy."""
 
     def __init__(self, descDict):
@@ -85,7 +84,6 @@ class LazyDescDict(object):
         """Containment check."""
         return item in self.internalDict
 
-    # TODO: delete this magic.
     def __getattr__(self, name):
         """Deal with all names that are not defined explicitly by passing them to the internal dictionary (after initialising it)."""
         def _pass_attr(*args, **kwargs):

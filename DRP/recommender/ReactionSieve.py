@@ -2,7 +2,6 @@
 
 
 class ReactionSieve(object):
-
     """Reaction seive class."""
 
     def __init__(self, model_container, desired_desc_dict):

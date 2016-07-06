@@ -7,10 +7,12 @@ from decimal import Decimal, getcontext, InvalidOperation
 import requests
 from django.conf import settings
 import DRP
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     """Import data from your target main server."""
 
     help = 'synchronises database with the main server'
@@ -105,8 +107,8 @@ class Command(BaseCommand):
                     cq.save()
                 except InvalidOperation as e:
                     if hasattr(cq, 'amount'):
-                        print(cq.amount)
-                    print(cq)
+                        logger.debug(
+                            "An invalid decimal conversion occured. Value is: {} from CompoundQuantity object {}".format(cq.amount, cq))
                     raise e
         else:
             r.raise_for_status()

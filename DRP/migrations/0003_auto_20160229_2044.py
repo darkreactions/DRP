@@ -15,12 +15,12 @@ class Migration(migrations.Migration):
             model_name='metriccontainer',
             name='built',
             field=models.BooleanField(
-                default=False, verbose_name=b'Has the build procedure been called with this container?', editable=False),
+                default=False, verbose_name='Has the build procedure been called with this container?', editable=False),
         ),
         migrations.AddField(
             model_name='metriccontainer',
             name='description',
-            field=models.TextField(default=b''),
+            field=models.TextField(default=''),
         ),
         migrations.AddField(
             model_name='metriccontainer',
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
             model_name='metriccontainer',
             name='fileName',
             field=models.FileField(
-                max_length=200, upload_to=b'metrics', blank=True),
+                max_length=200, upload_to='metrics', blank=True),
         ),
         migrations.AddField(
             model_name='metriccontainer',
@@ -57,12 +57,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='modelcontainer',
             name='featureLibrary',
-            field=models.CharField(default=b'', max_length=200, blank=True),
+            field=models.CharField(default='', max_length=200, blank=True),
         ),
         migrations.AlterField(
             model_name='modelcontainer',
             name='featureTool',
-            field=models.CharField(default=b'', max_length=200, blank=True),
+            field=models.CharField(default='', max_length=200, blank=True),
         ),
         migrations.AlterField(
             model_name='modelcontainer',
@@ -83,6 +83,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='modelcontainer',
             name='splitter',
-            field=models.CharField(default=b'', max_length=200, blank=True),
+            field=models.CharField(default='', max_length=200, blank=True),
         ),
     ]

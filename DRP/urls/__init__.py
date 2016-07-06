@@ -1,10 +1,10 @@
 """The url configuration for the DRP project."""
 from django.conf.urls import include, url
 from django.contrib import admin
-import public
-import authentication
-import database
-import dashboard
+from . import public
+from . import authentication
+from . import database
+from . import dashboard
 
 admin.autodiscover()
 

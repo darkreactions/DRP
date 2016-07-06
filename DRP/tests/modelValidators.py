@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Tests for custom model validators."""
 import unittest
-from DRPTestCase import DRPTestCase, runTests
+from .drpTestCase import DRPTestCase, runTests
 from DRP.models import validators
 from django.core.exceptions import ValidationError
 import datetime
@@ -10,7 +10,6 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class NotInTheFuture(DRPTestCase):
-
     """Ensures that the validator for things in the future functions properly."""
 
     def setUp(self):
@@ -37,7 +36,6 @@ class NotInTheFuture(DRPTestCase):
 
 
 class GreaterThan(DRPTestCase):
-
     """Tests the greater than decorator."""
 
     def setUp(self):

@@ -1,11 +1,10 @@
 """A module containing Classes permitting the representation of molecular descriptors."""
 from django.db import models
-from descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
-from descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, DescriptorManager
+from .descriptors import Descriptor, CategoricalDescriptor, OrdinalDescriptor, BooleanDescriptor
+from .descriptors import CategoricalDescriptorPermittedValue, NumericDescriptor, DescriptorManager
 
 
 class CatMolDescriptor(CategoricalDescriptor):
-
     """A class which describes a categorical molecular descriptors."""
 
     class Meta:
@@ -16,7 +15,6 @@ class CatMolDescriptor(CategoricalDescriptor):
 
 
 class OrdMolDescriptor(OrdinalDescriptor):
-
     """A class which represents an ordinal descriptor."""
 
     class Meta:
@@ -27,7 +25,6 @@ class OrdMolDescriptor(OrdinalDescriptor):
 
 
 class NumMolDescriptor(NumericDescriptor):
-
     """A class which represents a numerical descriptor."""
 
     class Meta:
@@ -38,7 +35,6 @@ class NumMolDescriptor(NumericDescriptor):
 
 
 class BoolMolDescriptor(BooleanDescriptor):
-
     """A class which represents a boolean descriptor."""
 
     class Meta:

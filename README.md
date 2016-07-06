@@ -1,10 +1,16 @@
 Dark Reaction Project README
 ===========================
 
-######Last Updated by Philip Adler 29 April 2016
+######Last Updated by Philip Adler 27 June 2016
 
 General Information
 =============================
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Always make sure to check the latest version of the README on the master branch.
 
@@ -16,16 +22,17 @@ Setting up your own instance of the DRP
 The following instructions are written to work with Ubuntu 12+ and have (mostly) been tested on Ubuntu 13. These instructions assume familiarity with Linux and a Command Line.
 
 Install the necessary programs.
-`sudo apt-get install python-dev python-pip mysql-server python-mysqldb nginx uwsgi uwsgi-plugin-python python-rdkit git virtualenvwrapper weka graphviz memcached python-memcache mailutils`
 
-`sudo pip install numpy scipy pygraphviz`
+`sudo apt-get install python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy python3-Pillow`
+
+`sudo pip3 install numpy pygraphviz mysqlclient`
 
 Install Django. The current version of DRP is designed to work with Django 1.8
 
-`sudo pip install django==1.8`
+`sudo pip3 install django==1.8`
 
 Install required pip python libraries
-`sudo pip install chemspipy requests pep8 pep257 xxhash`
+`sudo pip3 install chemspipy requests pep8 pep257 xxhash`
 
 ###Clone from the Git Repository into your directory of choice.
 
@@ -36,6 +43,10 @@ Install required pip python libraries
 DRP is distributed in release versions. To use a specific version of the code, use the following template command:
 
 `git checkout <version number>`
+
+###Git Hooks
+
+DRP comes distributed with a number of useful git hooks in the drp\_hooks directory in this repo. These warn you if the expected structure of the settings.py file changes, or if you need to run database migrations for the DRP Django application. They also remove orphaned .pyc files, which have been known to confuse the test suite historically. These should be added to your local git repository as per the git documentation.
 
 ####Server settings
 
@@ -75,10 +86,6 @@ To run specific tests, provided the test is conformant to the template test (whi
 Else, one can run the entire test suite from the management script:
 
 `./manage.py run_tests`
-
-###Contribution Guidlines
-
-Can be found in the "CONTRIBUTING.md" file.
 
 ###On Development Servers
 

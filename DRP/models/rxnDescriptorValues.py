@@ -1,20 +1,16 @@
 """A module containign only the DescriptorValue class."""
 from django.db import models
-from descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
-from rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
-import dataSets
+from .descriptorValues import CategoricalDescriptorValue, OrdinalDescriptorValue, BooleanDescriptorValue, NumericDescriptorValue
+from .rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor
 # Needed to allow for circular dependency.
-import importlib
 import DRP.models
-pr = importlib.import_module("DRP.models.PerformedReaction")
+import DRP.models.performedReaction
 
 
 class RxnDescriptorValueQuerySet(models.query.QuerySet):
-
     """A queryset which represents a collection of concrete values of a Reaction Descriptor."""
 
     pass
-    # TODO XXX This breaks because queryset has no attribute descriptor.
     # def delete(self):
     # trainingModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, testset__in=dataSets.TestSet.objects.filter(reactions__in=set(v.reaction.performedreaction for v in self)))
     # testModels = DRP.models.StatsModel.objects.filter(descriptors=self.descriptor, trainingset__in=dataSets.TrainingSet.objects.filter(reaction__in=set(v.reaction.performedreaction for v in self)))
@@ -23,7 +19,6 @@ class RxnDescriptorValueQuerySet(models.query.QuerySet):
 
 
 class RxnDescriptorValueManager(models.Manager):
-
     """A manager which returns the custom queryset class for Reaction Descriptor Values."""
 
     def get_queryset(self):
@@ -32,7 +27,6 @@ class RxnDescriptorValueManager(models.Manager):
 
 
 class RxnDescriptorValue(models.Model):
-
     """A class to contain Relationships between Reactions and their descriptors."""
 
     class Meta:
@@ -64,7 +58,6 @@ class RxnDescriptorValue(models.Model):
 
 
 class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
-
     """Contains the value of a categorical descriptor for a reaction."""
 
     descriptorClass = CatRxnDescriptor
@@ -76,7 +69,6 @@ class CatRxnDescriptorValue(CategoricalDescriptorValue, RxnDescriptorValue):
 
 
 class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
-
     """Contains the value of a boolean descriptor for a reaction."""
 
     descriptorClass = BoolRxnDescriptor
@@ -88,7 +80,6 @@ class BoolRxnDescriptorValue(BooleanDescriptorValue, RxnDescriptorValue):
 
 
 class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
-
     """Contains the numeric value of a descriptor for a reaction."""
 
     descriptorClass = NumRxnDescriptor
@@ -100,7 +91,6 @@ class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
 
 
 class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
-
     """Contains the ordinal value of a descriptor for a reaction."""
 
     descriptorClass = OrdRxnDescriptor

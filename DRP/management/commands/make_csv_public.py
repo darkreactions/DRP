@@ -6,7 +6,6 @@ import reimport_reactions
 
 
 class Command(BaseCommand):
-
     """Specific command for making a set of reactions in a csv public."""
 
     help = 'Make reactions from a csv public. References should be in the first column'

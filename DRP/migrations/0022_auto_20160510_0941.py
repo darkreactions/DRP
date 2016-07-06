@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
             model_name='compoundquantity',
             name='amount',
             field=models.FloatField(
-                help_text=b'(in mmoles)', null=True, blank=True),
+                help_text='(in mmoles)', null=True, blank=True),
         ),
     ]

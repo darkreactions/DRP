@@ -1,7 +1,7 @@
 """Provides tests for the KFoldSplitter used."""
 
-import KFoldSplitter
+from . import kFoldSplitter
 
 suite = unittest.TestSuite([
-    KFoldSplitter.suite,
+    kFoldSplitter.suite,
 ])

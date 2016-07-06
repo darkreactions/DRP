@@ -1,9 +1,15 @@
 
-   <form class="reaction-form" action="{{ request.path }}" method="post">
+   <form class="reaction-form" action="{{ request.path }}" method="post" enctype="multipart/form-data">
    {% if testing %} <!-- 2758c44c-b7e2-440a-a617-36d9d730bc93 --> {% endif %}
     {% csrf_token %}
     <fieldset>
       <legend>Reaction Details</legend>
+      {% if reaction.labBookPage != None and reaction.labBookPage != '' %}
+      {% if testing %}<!-- 3da06262-2869-497f-9bf5-910ddfcae9e4 --> {% endif %}
+      <div class="labPage">
+        <a href="{{reaction.labBookPage.url}}"><img src="{{reaction.labBookPage.url}}" alt="An image of the notes taken in the lab for this reaction" title="Notes for reaction {{reaction.reference}}" /></a>
+      </div>
+      {% endif %}
       {{ reaction_form.non_field_errors }}
       <table class="reactionformtable">
         <tbody class="flleft">

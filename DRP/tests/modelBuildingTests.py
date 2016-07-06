@@ -3,14 +3,13 @@
 
 import unittest
 from DRP.models import PerformedReaction, ModelContainer, Descriptor
-from decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
-from DRPTestCase import DRPTestCase, runTests
+from .decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
+from .drpTestCase import DRPTestCase, runTests
 from django.conf import settings
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
 class ModelTest(DRPTestCase):
-
     """Tests for model building."""
 
     splitterOptions = None
@@ -28,17 +27,12 @@ class ModelTest(DRPTestCase):
         container.save()
         container.full_clean()
 
-        # TODO: We should test the ModelContainer "predict" method here as
-        # well.
 
-
-# TODO XXX more robust testing
 # Some of these use bool and some ord
 # Should really do tests with more descriptors
 
 @createsPerformedReactionSetOrd
 class WekaSVMKFTest(ModelTest):
-
     """Tests Weka SVM."""
 
     modelLibrary = "weka"
@@ -48,7 +42,6 @@ class WekaSVMKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaSVMExpTest(ModelTest):
-
     """Tests Weka SVM."""
 
     modelLibrary = "weka"
@@ -58,7 +51,6 @@ class WekaSVMExpTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaJ48KFTest(ModelTest):
-
     """Tests Weka j48."""
 
     modelLibrary = "weka"
@@ -68,7 +60,6 @@ class WekaJ48KFTest(ModelTest):
 
 @createsPerformedReactionSetBool
 class WekaKNNKFTest(ModelTest):
-
     """Tests Weka KNN."""
 
     modelLibrary = "weka"
@@ -78,7 +69,6 @@ class WekaKNNKFTest(ModelTest):
 
 @createsPerformedReactionSetOrd
 class WekaNBKFTest(ModelTest):
-
     """Some kind of Bayes test..."""
 
     modelLibrary = "weka"

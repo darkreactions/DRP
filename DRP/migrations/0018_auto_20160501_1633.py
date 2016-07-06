@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
             model_name='performedreaction',
             name='reference',
             field=models.CharField(max_length=40, validators=[django.core.validators.RegexValidator(
-                b'[A-Za-z0-9\\._]*[A-Za-z][A-Za-z0-9\\._]*', b'Please include only values which are limited to alphanumeric characters, underscores, periods, and must include at least one alphabetic character.')]),
+                '[A-Za-z0-9\\._]*[A-Za-z][A-Za-z0-9\\._]*', 'Please include only values which are limited to alphanumeric characters, underscores, periods, and must include at least one alphabetic character.')]),
         ),
     ]

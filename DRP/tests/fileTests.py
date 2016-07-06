@@ -6,7 +6,7 @@ import pep8
 from django.conf import settings
 import os
 import sys
-from cStringIO import StringIO
+from io import StringIO
 import pep257
 import fnmatch
 loadTests = unittest.TestLoader().loadTestsFromTestCase
@@ -25,14 +25,13 @@ excludes = [
     'DRP/vis/*',
     'DRP/views/orig_explore_vis.py',
     'DRP/wsgi.py',
-    'DRP/models/MetricContainer.py',
+    'DRP/models/metricContainer.py',
     'DRP/migrations/*',
-    'DRP/tests/TemplateTest.py'
+    'DRP/tests/templateTest.py'
 ]
 
 
 class OutputCapture(object):
-
     """A class as a workaround for broken parts in a pep8 module."""
 
     def __enter__(self):
@@ -53,12 +52,10 @@ class OutputCapture(object):
 
 
 class TestFiles(unittest.TestCase):
-
     """Test that files conform to python standards."""
 
     def setUp(self):
         """Get list of all python files in project."""
-        # TODO add option to exclude files
         self.files = []
         for root, dirnames, fileNames in os.walk(settings.BASE_DIR):
             for fileName in fileNames:

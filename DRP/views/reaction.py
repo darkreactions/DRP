@@ -1,6 +1,5 @@
 """A module containing views pertinent to the manipulation of reaction objects."""
-
-import urllib
+from django.conf import settings
 from django.views.generic import CreateView, ListView, UpdateView
 from DRP.models import PerformedReaction, OrdRxnDescriptorValue, CompoundQuantity
 from DRP.models import NumRxnDescriptorValue, BoolRxnDescriptorValue, CatRxnDescriptorValue
@@ -8,21 +7,34 @@ from DRP.forms import PerformedRxnForm, PerformedRxnDeleteForm
 from DRP.forms import NumRxnDescValFormFactory, OrdRxnDescValFormFactory, BoolRxnDescValFormFactory, CatRxnDescValFormFactory
 from DRP.forms import PerformedRxnInvalidateForm, PerformedRxnDeleteForm
 from django.utils.decorators import method_decorator
-from decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
+from .decorators import userHasLabGroup, hasSignedLicense, labGroupSelected, reactionExists
 from django.contrib.auth.decorators import login_required
 from django.forms.models import modelformset_factory
 from DRP.forms import compoundQuantityFormFactory
 from django.forms.formsets import TOTAL_FORM_COUNT
 from django.shortcuts import render
-from helpers import redirect
+from .helpers import redirect
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 
 
-class ListPerformedReactions(ListView):
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+@reactionExists
+def labBookImage(request, labgroup_id, reference=None):
+    """view that does security checking before prompting the server to show an image."""
+    response = HttpResponse()
+    response[settings.MEDIA_X_HEADER] = settings.SECURE_MEDIA_URL + '/lab_notes/' + \
+        PerformedReaction.objects.get(
+            reference=reference, labGroup__id=labgroup_id).labBookPage.name
+    response['Content-Type'] = 'image/jpeg'
+    return response
 
+
+class ListPerformedReactions(ListView):
     """Standard list view of performed reactions, adjusted to deal with a few DRP idiosyncrasies."""
 
     template_name = 'reactions_list.html'
@@ -54,7 +66,7 @@ class ListPerformedReactions(ListView):
             self.paginate_by = None
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="reactions.csv"'
-            if 'expanded' in request.GET and request.user.is_authenticated() and user.is_staff:
+            if 'expanded' in request.GET and request.user.is_authenticated() and request.user.is_staff:
                 self.queryset.toCsv(response, True)
             else:
                 self.queryset.toCsv(response)
@@ -63,7 +75,7 @@ class ListPerformedReactions(ListView):
             response = HttpResponse(content_type='text/vnd.weka.arff')
             response[
                 'Content-Disposition'] = 'attachment; filename="reactions.arff"'
-            if 'expanded' in request.GET and request.user.is_authenticated() and user.is_staff:
+            if 'expanded' in request.GET and request.user.is_authenticated() and request.user.is_staff:
                 self.queryset.toArff(response, True)
             else:
                 self.queryset.toArff(response)
@@ -83,7 +95,8 @@ class ListPerformedReactions(ListView):
 def createReaction(request):
     """A view designed to create performed reaction instances."""
     if request.method == "POST":
-        perfRxnForm = PerformedRxnForm(request.user, data=request.POST)
+        perfRxnForm = PerformedRxnForm(
+            request.user, data=request.POST, files=request.FILES)
         if perfRxnForm.is_valid():
             rxn = perfRxnForm.save()
             messages.success(request, "Reaction Created Successfully")
@@ -169,7 +182,7 @@ def editReaction(request, rxn_id):
     reaction = PerformedReaction.objects.get(id=rxn_id)
     if request.method == "POST":
         perfRxnForm = PerformedRxnForm(
-            request.user, data=request.POST, instance=reaction)
+            request.user, data=request.POST, instance=reaction, files=request.FILES)
         if perfRxnForm.is_valid():
             perfRxnForm.save()
             messages.success(request, "Reaction successfully updated.")

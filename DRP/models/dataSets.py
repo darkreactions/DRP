@@ -8,11 +8,10 @@ This allows the datasets to exist independently of the models.
 """
 
 from django.db import models
-from PerformedReaction import PerformedReaction
+from .performedReaction import PerformedReaction
 
 
 class DataSet(models.Model):
-
     """A set of reactions."""
 
     class Meta:
@@ -22,7 +21,6 @@ class DataSet(models.Model):
     reactions = models.ManyToManyField(
         PerformedReaction, through="DataSetRelation")
 
-    # TODO: This belongs on a manager to be djangonic.
     @classmethod
     def create(cls, name, data):
         """Bulk create a set of datasetrelations."""
@@ -36,7 +34,6 @@ class DataSet(models.Model):
 
 
 class DataSetRelation(models.Model):
-
     """Defines the relationships between a data set and a reaction."""
 
     class Meta:

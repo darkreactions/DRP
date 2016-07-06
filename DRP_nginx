@@ -36,6 +36,11 @@ server {
                 }
         }
 
+	location /sec_static/ {
+		internal;
+                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/sec_static/;
+	}
+
         location / {
                 include uwsgi_params;
                 #include /home/drp/web/darkreactions.haverford.edu/uwsgi_params;

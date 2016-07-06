@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class ChemspiderErrorMiddleware(object):
-
     """
     Handling for Chemspider Server Errors.
 

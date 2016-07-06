@@ -7,7 +7,6 @@ from DRP.models import CategoricalDescriptorPermittedValue, CategoricalDescripto
 
 
 class DescriptorAdmin(forms.ModelForm):
-
     """A mixin for behaviours common to all descriptor admin forms."""
 
     def clean(self, *args, **kwargs):
@@ -30,7 +29,6 @@ class DescriptorAdmin(forms.ModelForm):
 
 
 class CatRxnDescriptorForm(DescriptorAdmin):
-
     """An admin form for custom Categorical Reaction Descriptors."""
 
     class Meta:
@@ -39,7 +37,6 @@ class CatRxnDescriptorForm(DescriptorAdmin):
 
 
 class CatDescPermittedValueForm(forms.ModelForm):
-
     """A mechanism to create permitted values for custom Categorical Reaction descriptors."""
 
     class Meta:
@@ -64,7 +61,6 @@ class CatDescPermittedValueForm(forms.ModelForm):
 
 
 class OrdRxnDescriptorForm(DescriptorAdmin):
-
     """An admin form for creating custom Ordinal reaction descriptors."""
 
     class Meta:
@@ -73,7 +69,6 @@ class OrdRxnDescriptorForm(DescriptorAdmin):
 
 
 class NumRxnDescriptorForm(DescriptorAdmin):
-
     """An admin form for creating custom numeric reaction descriptors."""
 
     class Meta:
@@ -82,7 +77,6 @@ class NumRxnDescriptorForm(DescriptorAdmin):
 
 
 class BoolRxnDescriptorForm(DescriptorAdmin):
-
     """An admin form for creating custom boolean reaction descriptors."""
 
     class Meta:
