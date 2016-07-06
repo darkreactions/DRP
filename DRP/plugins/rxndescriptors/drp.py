@@ -10,7 +10,7 @@ from django.db.models import Sum
 import DRP
 from DRP.plugins.moldescriptors.chemaxon import _pHDependentDescriptors
 from .utils import setup
-from DRP.checmical_data import elements
+from DRP.chemical_data import elements
 
 logger = logging.getLogger(__name__)
 
