@@ -456,11 +456,16 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
     heading = 'boolean_crystallisation_outcome'
     if whitelist is None or heading in whitelist:
-        four_class = DRP.models.OrdRxnDescriptorValue.objects.get(descriptor__heading='crystallisation_outcome', descriptor__calculatorSoftware='manual', reaction=reaction).value
+        try:
+            four_class = DRP.models.OrdRxnDescriptorValue.objects.get(descriptor__heading='crystallisation_outcome', descriptor__calculatorSoftware='manual', reaction=reaction).value
+        except DRP.models.rxnDescriptorValues.DoesNotExist:
+            val = None
+        else:
+            val = (four_class > 2)
         b = DRP.models.BoolRxnDescriptorValue(
             reaction=reaction,
             descriptor=descriptorDict[heading],
-            value=(four_class > 2)
+            value=val,
         )
         bool_vals_to_create.append(b)
 
