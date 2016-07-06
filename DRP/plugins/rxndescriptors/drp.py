@@ -458,7 +458,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
     if whitelist is None or heading in whitelist:
         try:
             four_class = DRP.models.OrdRxnDescriptorValue.objects.get(descriptor__heading='crystallisation_outcome', descriptor__calculatorSoftware='manual', reaction=reaction).value
-        except DRP.models.rxnDescriptorValues.DoesNotExist:
+        except DRP.models.OrdRxnDescriptorValue.DoesNotExist:
             val = None
         else:
             val = (four_class > 2)
