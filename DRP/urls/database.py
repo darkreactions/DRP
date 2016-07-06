@@ -41,6 +41,7 @@ urls = [
          'createNext': 'createCatDescVals'
          },
         name="createBoolDescVals"),
+    url('^/entry_(?P<rxn_id>\d+)/display', DRP.views.reaction.displayReaction, name='reactionInfo'), 
     url('^/entry_(?P<rxn_id>\d+)/',
         DRP.views.reaction.editReaction, name='editReaction'),
     url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
