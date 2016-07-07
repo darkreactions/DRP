@@ -35,7 +35,7 @@ class Command(BaseCommand):
                             help='Model visitor tool from library to use. (default: %(default)s)')
         parser.add_argument('-mid', '--model-container-id', default=None, type=int,
                             help='Use the same splits as the specified model container. (default: %(default)s)')
-        parser.add_argument('-s', '--splitter', default="KFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
+        parser.add_argument('-s', '--splitter', default="kFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
                             help='Splitter to use. (default: %(default)s)')
         parser.add_argument('-d', '--description', default="",
                             help='Description of model. (default: %(default)s)')
