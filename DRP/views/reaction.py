@@ -143,10 +143,11 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
         descriptor__calculatorSoftware="manual")
     initialDescriptors = descValClass.descriptorClass.objects.filter(
+        isDefaultForLabGroups__reaction__id=rxn_id,
         calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
     descValFormset = modelformset_factory(model=descValClass, form=descValFormClass(
         rxn_id), can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
-    if descValClass.descriptorClass.objects.filter(calculatorSoftware="manual").exists():
+    if initialDescriptors.exists():
         if request.method == "POST":
             formset = descValFormset(
                 queryset=descVals, data=request.POST, prefix=request.resolver_match.url_name)
@@ -201,15 +202,16 @@ def editReaction(request, rxn_id):
                           BoolRxnDescriptorValue, BoolRxnDescValFormFactory(rxn_id)),
                          ('Categorical Descriptors', 'createCatDescVals', CatRxnDescriptorValue, CatRxnDescValFormFactory(rxn_id)))
     for descLabel, urlName, descValClass, descValFormClass in descriptorClasses:
+        descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
+            descriptor__calculatorSoftware="manual")
         descriptors = descValClass.descriptorClass.objects.filter(
             calculatorSoftware='manual')
+        initialDescriptors = descValClass.descriptorClass.objects.filter(
+            isDefaultForLabGroups=reaction.labGroup,
+            calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
         if descriptors.exists():
-            descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
-                descriptor__calculatorSoftware="manual")
-            initialDescriptors = descValClass.descriptorClass.objects.filter(
-                calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
             descValFormset = modelformset_factory(
-                model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count())
+                model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count() + 1)
             descriptorFormsets[descLabel] = {'url': urlName, 'formset': descValFormset(queryset=descVals, initial=[
                                                                                        {'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=urlName)}
     return render(request, 'reaction_edit.html', {'reaction_form': perfRxnForm, 'reactants_formset': cqFormset, 'descriptor_formsets': descriptorFormsets, 'reaction': reaction})
