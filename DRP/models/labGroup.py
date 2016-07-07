@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.conf import settings
+from .descriptors import Descriptor
 
 
 class LabGroupManager(models.Manager):
@@ -32,6 +33,7 @@ class LabGroup(models.Model):
     """An older version of the access code. Made a part of this model for legacy support."""
     users = models.ManyToManyField(User, blank=True)
     objects = LabGroupManager()
+    defaultDescriptors = models.ManyToManyField(Descriptor, related_name='isDefaultForLabGroups')
 
     def __str__(self):
         """Use the title as the unicode rep."""
