@@ -33,7 +33,7 @@ class LabGroup(models.Model):
     """An older version of the access code. Made a part of this model for legacy support."""
     users = models.ManyToManyField(User, blank=True)
     objects = LabGroupManager()
-    defaultDescriptors = models.ManyToManyField(Descriptor, related_name='isDefaultForLabGroups', limit_choices_to={'calculatorSoftware':'manual'})
+    defaultDescriptors = models.ManyToManyField(Descriptor, related_name='isDefaultForLabGroups', limit_choices_to={'calculatorSoftware': 'manual'}, blank=True)
 
     def __str__(self):
         """Use the title as the unicode rep."""

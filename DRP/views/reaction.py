@@ -142,12 +142,13 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
     """A generic view function to create descriptor values for reactions."""
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
         descriptor__calculatorSoftware="manual")
+    descriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware="manual")
     initialDescriptors = descValClass.descriptorClass.objects.filter(
         isDefaultForLabGroups__reaction__id=rxn_id,
         calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
     descValFormset = modelformset_factory(model=descValClass, form=descValFormClass(
         rxn_id), can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
-    if initialDescriptors.exists():
+    if ('creating' in request.GET and initialDescriptors.exists()) or descriptors.exists():
         if request.method == "POST":
             formset = descValFormset(
                 queryset=descVals, data=request.POST, prefix=request.resolver_match.url_name)
