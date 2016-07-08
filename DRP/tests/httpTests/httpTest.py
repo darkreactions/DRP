@@ -17,6 +17,7 @@ class GetHttpTest(DRPTestCase):
     baseUrl = 'http://' + settings.SERVER_NAME
     url = baseUrl
     testCodes = []
+    invalidTestCodes = []
     _params = {}
     """any GET params to be added to the request."""
     status = 200
@@ -61,6 +62,9 @@ class GetHttpTest(DRPTestCase):
         """Check that the expected template is loaded."""
         for testCode in self.testCodes:
             self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(
+                testCode, self.response.text))
+        for testCode in self.invalidTestCodes:
+            self.assertNotIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, unexpected TestCode: {}. Template returns the following:\n{1}'.format(
                 testCode, self.response.text))
 
     def test_ValidHtml(self):

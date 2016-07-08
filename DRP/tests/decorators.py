@@ -34,6 +34,21 @@ def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manua
 
     return _createsOrdRxnDescriptor
 
+def setsOrdRxnDescriptorDefault(labGroupTitle, descHeading):
+    """A class decorator that makes a descriptor a default descriptor for a lab group."""
+
+    def _setsOrdRxnDescriptorDefault(c)
+        _oldSetup = c.setUp
+
+        def setUp(self):
+            LabGroup.objects.get(title=labGroupTitle).defaultDescriptors.add(OrdRxnDescriptor.objects.get(heading=heading)) 
+            _oldSetup(self)
+
+        c.setUp = setUp
+
+        return c
+
+    return _setsOrdRxnDescriptorDefault
 
 def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):
     """A class decorator that creates an ordinal reaction descriptor value."""

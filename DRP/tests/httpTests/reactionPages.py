@@ -10,7 +10,7 @@ from DRP.tests.decorators import joinsLabGroup, createsChemicalClass, signsExamp
 from DRP.tests.decorators import createsUser, createsCompound, createsPerformedReaction
 from DRP.tests.decorators import createsOrdRxnDescriptor
 from DRP.tests.decorators import createsCompoundRole, createsCompoundQuantity
-from DRP.tests.decorators import createsOrdRxnDescriptorValue
+from DRP.tests.decorators import createsOrdRxnDescriptorValue setsOrdRxnDescriptorDefault
 from DRP.tests import runTests
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -148,16 +148,36 @@ class GetReactionEdit(GetHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 class GetReactionEdit2(GetHttpSessionTest):
-    """Fetch the reaction editing page with a descriptor componenet."""
+    """Fetch the reaction editing page with a descriptor component."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
-                 '634d88bb-9289-448b-a3dc-548ff4c6cda1', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
+                 '634d88bb-9289-448b-a3dc-548ff4c6cda1'] + reactionBaseCodes
+    invalidTestCodes = ['2758c44c-b7e2-440a-a617-36d9d730bc93']
 
     def setUp(self):
         """THe url for this will be dynamic."""
         self.url = self.url + reverse('editReaction', kwargs={'rxn_id': PerformedReaction.objects.get(
             reference='turkish_delight', labGroup__title='narnia').id})
         super(GetReactionEdit2, self).setUp()
+
+
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'narnia')
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
+@createsOrdRxnDescriptor('deliciousness', 0, 4)
+@setsOrdRxnDescriptorDefault('deliciousness', 'narnia')
+class GetReactionEdit3(GetHttpSessionTest):
+    """Fetch the reaction editing page with a descriptor component which has been made default."""
+
+    testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
+                 '634d88bb-9289-448b-a3dc-548ff4c6cda1', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
+
+    def setUp(self):
+        """The url for this will be dynamic."""
+        self.url = self.url + reverse('editReaction', kwargs={'rxn_id': PerformedReaction.objects.get(
+            reference='turkish_delight', labGroup__title='narnia').id})
+        super(GetReactionEdit3, self).setUp()
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -440,6 +460,18 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
         CompoundQuantity.objects.all().delete()
         super(PostReactantAddCreatingValid, self).tearDown()
 
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'narnia')
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
+@createsCompoundRole('Org', 'Organic')
+@createsCompoundRole('inOrg', 'inOrganic')
+@createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
+@createsOrdRxnDescriptor('deliciousness', 0, 4)
+@usesCsrf
+class PostReactantAddCreatingValid2(PostReactantCreatingValid):
+    """This ensures identical behaviour where no defaults are set."""
+    pass
 
 @logsInAs('Aslan', 'oldmagic')
 @signsExampleLicense('Aslan')
@@ -449,9 +481,8 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
 @createsCompoundRole('inOrg', 'inOrganic')
 @createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
+@setsOrdRxnDescriptorDefault('deliciousness', 'narnia')
 @usesCsrf
-# we expect 4 redirections because we have initialised no manual reaction
-# descriptors
 class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory(2)):
     """Add a reactant to the reaction."""
 
