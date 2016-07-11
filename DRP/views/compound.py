@@ -15,8 +15,15 @@ from django.template.loader import get_template
 from django.views.decorators.http import require_POST
 from django.template import RequestContext
 
+class FormFailureMixin:
 
-class CreateCompound(CreateView):
+    def form_invalid(self, *args, **kwargs):
+        resp = super(FormFailureMixin, self).form_invalid(*args, **kwargs)
+        resp.status_code = 422
+        return resp
+
+
+class CreateCompound(FormFailureMixin, CreateView):
     """A view managing the creation of compound objects."""
 
     model = Compound
@@ -44,7 +51,7 @@ class CreateCompound(CreateView):
         return context
 
 
-class EditCompound(UpdateView):
+class EditCompound(FormFailureMixin, UpdateView):
     """A view managing the editing of compound objects."""
 
     form_class = CompoundEditForm
