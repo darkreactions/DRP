@@ -15,9 +15,12 @@ from django.template.loader import get_template
 from django.views.decorators.http import require_POST
 from django.template import RequestContext
 
+
 class FormFailureMixin:
+    """This class adds a desireable status code to generic form views."""
 
     def form_invalid(self, *args, **kwargs):
+        """Add a 422 status code if the form does not validate."""
         resp = super(FormFailureMixin, self).form_invalid(*args, **kwargs)
         resp.status_code = 422
         return resp
@@ -85,9 +88,9 @@ def deleteCompound(request, *args, **kwargs):
     form = CompoundDeleteForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()
+        return redirect('compoundguide', '/')
     else:
-        raise RuntimeError(str(form.errors))
-    return redirect('compoundguide', '/')
+        return HttpResponse(status=422)
 
 
 class ListCompound(ListView):

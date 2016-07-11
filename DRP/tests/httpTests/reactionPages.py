@@ -114,6 +114,7 @@ class PostReactionCreateInvalidImage(PostReactionCreateValid):
 class PostReactionCreateInvalid(PostHttpSessionTest):
     """Make an invalid creation request."""
 
+    status = 422
     url = newReactionUrl
     testCodes = ['6813e404-f1a3-48ed-ae97-600a41cf63cb',
                  '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
@@ -246,6 +247,7 @@ class PostReactionEditInvalid(PostHttpSessionTest):
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
                  '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Allow for dynamic url."""
@@ -296,11 +298,11 @@ class DeletePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
-class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class DeleteSomeoneElsesReaction(PostHttpSessionTest):
     """Try to delete a reaction you do not own."""
 
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
     url = PostHttpSessionTest.url + reverse('deleteReaction')
+    status = 422
 
     def setUp(self):
         """Allow for dynamic url."""
@@ -308,6 +310,10 @@ class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)
             reference='turkish_delight', labGroup__title='WhiteQueensArmy')
         self.payload['id'] = self.reaction.id
         super(DeleteSomeoneElsesReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
     def tests_deleted(self):
         """Test the deletion."""
@@ -319,16 +325,20 @@ class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
-class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class DeleteNonexistentReaction(PostHttpSessionTest):
     """Try to delete a nonexistent reaction."""
 
     url = PostHttpSessionTest.url + reverse('deleteReaction')
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Nothingi n the db, so this could be anything."""
         self.payload['id'] = 5
         super(DeleteNonexistentReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -336,7 +346,7 @@ class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1))
 @joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @usesCsrf
-class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class InvalidatePerformedReaction(PostHttpSessionTest):
     """Test for invalidation of a reaction."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
@@ -348,6 +358,10 @@ class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1
             reference='turkish_delight', labGroup__title='narnia')
         self.payload['id'] = self.reaction.id
         super(InvalidatePerformedReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
     def test_invalidation(self):
         """Test the invalidation."""
@@ -364,11 +378,11 @@ class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
-class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class InvalidateSomeoneElsesReaction(PostHttpSessionTest):
     """Try to invalidate a reaction you do not own."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Set up."""
@@ -376,6 +390,10 @@ class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactor
             reference='turkish_delight', labGroup__title='WhiteQueensArmy')
         self.payload['id'] = self.reaction.id
         super(InvalidateSomeoneElsesReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
     def test_invalidation(self):
         """Test the invalidation."""
@@ -387,16 +405,20 @@ class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactor
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
-class InvalidateNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class InvalidateNonexistentReaction(PostHttpSessionTest):
     """Try to invalidate a reaction that does not exist."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Set up."""
         self.payload['id'] = 5
         super(InvalidateNonexistentReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -504,6 +526,7 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
         'quantities-MIN_NUM_FORMS': '0',
         'quantities-MAX_NUM_FORMS': '1000'
     }
+    status = 422
 
     def setUp(self):
         """set up the dynamic payload."""

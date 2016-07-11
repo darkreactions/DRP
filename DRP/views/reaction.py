@@ -106,7 +106,7 @@ def createReaction(request):
             status = 422
     else:
         perfRxnForm = PerformedRxnForm(request.user)
-    return render(request, 'reaction_create.html', {'reaction_form': perfRxnForm}, status=422)
+    return render(request, 'reaction_create.html', {'reaction_form': perfRxnForm}, status=status)
 
 
 @login_required
@@ -148,7 +148,8 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
     """A generic view function to create descriptor values for reactions."""
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
         descriptor__calculatorSoftware="manual")
-    descriptors = descValClass.descriptorClass.objects.filter(calculatorSoftware="manual")
+    descriptors = descValClass.descriptorClass.objects.filter(
+        calculatorSoftware="manual")
     initialDescriptors = descValClass.descriptorClass.objects.filter(
         isDefaultForLabGroups__reaction__id=rxn_id,
         calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
@@ -173,7 +174,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
                 else:
                     return redirect(createNext, rxn_id, params={'creating': True})
             else:
-                status=200
+                status = 200
         else:
             formset = descValFormset(queryset=descVals, initial=[
                                      {'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=request.resolver_match.url_name)
@@ -239,7 +240,9 @@ def deleteReaction(request, *args, **kwargs):
     form = PerformedRxnDeleteForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()
-    return redirect('reactionlist')
+        return redirect('reactionlist')
+    else:
+        return HttpResponse(status=422)
 
 
 @require_POST
@@ -251,4 +254,6 @@ def invalidateReaction(request, *args, **kwargs):
     form = PerformedRxnInvalidateForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()
-    return redirect('reactionlist')
+        return redirect('reactionlist')
+    else:
+        return HttpResponse(status=422)

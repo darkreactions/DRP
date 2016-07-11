@@ -25,7 +25,7 @@ def joinGroup(request):
             form = LabGroupJoiningForm()
         else:
             status = 422
-        return render(request, 'join_group.html', {'form': form}, status=422)
+        return render(request, 'join_group.html', {'form': form}, status=status)
     else:
         form = LabGroupJoiningForm()
         return render(request, 'join_group.html', {'form': form})
