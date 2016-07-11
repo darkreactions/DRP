@@ -48,7 +48,7 @@ class CompoundQuantity(models.Model):
     reaction = models.ForeignKey(Reaction)
     role = models.ForeignKey(CompoundRole)
     amount = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5,
-                                 help_text="(in mmoles, 5 decimal places)", validators=[GreaterThanValidator(0)])
+                                 help_text="(in mmoles, up to 5 decimal places)", validators=[GreaterThanValidator(0)])
 
     def save(self, calcDescriptors=False, invalidate_models=True, *args, **kwargs):
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""
