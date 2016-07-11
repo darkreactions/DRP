@@ -38,7 +38,7 @@ def license(request):
                     else:
                         return render(request, 'license_signed.html')
                 else:
-                    return render(request, 'license.html', RequestContext(request, {'form': form, 'next': nextPage}))
+                    return render(request, 'license.html', RequestContext(request, {'form': form, 'next': nextPage}), status=422)
             else:
                 form = LicenseAgreementForm(request.user, latestLicense)
                 return render(request, 'license.html', RequestContext(request, {'form': form, 'next': nextPage}))

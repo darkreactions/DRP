@@ -12,6 +12,7 @@ def contact(request):
     If a user is authenticated, prompts but does not enforce the authenticated user's email
     """
     success = False
+    status = 200
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -21,10 +22,12 @@ def contact(request):
                 success = True
             else:
                 success = False
+        else:
+            status = 422
     else:
         u = request.user
         if u.is_authenticated():
             form = ContactForm(initial={'email': u.email})
         else:
             form = ContactForm()
-    return render(request, 'contact.html', RequestContext(request, {'success': success, 'form': form}))
+    return render(request, 'contact.html', RequestContext(request, {'success': success, 'form': form}), status=status)
