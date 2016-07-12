@@ -1,3 +1,4 @@
+"""Module containing management command for building machine learning models in DRP."""
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues, DataSet
 import operator
 import argparse
@@ -9,7 +10,6 @@ import ast
 from sys import argv
 import logging
 logger = logging.getLogger(__name__)
-
 
 class Command(BaseCommand):
     """Command for building statistical/machine learning models in DRP."""
