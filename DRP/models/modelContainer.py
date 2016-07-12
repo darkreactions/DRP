@@ -659,3 +659,7 @@ class ModelContainer(models.Model):
             confusion_matrix_lol.append(confusion_matrix_list)
 
         return confusion_matrix_lol
+
+    def __unicode__(self):
+        """Unicode representation of a ModelContainer is it's description."""
+        return unicode("{}".format(self.description), 'utf-8')

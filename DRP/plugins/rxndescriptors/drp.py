@@ -18,6 +18,14 @@ create_threshold = 5000
 
 _descriptorDict = {}
 
+
+_descriptorDict['boolean_crystallisation_outcome'] = {
+    'type': 'bool',
+    'name': 'Two class crystallisation outcome',
+    'calculatorSoftware': calculatorSoftware,
+    'calculatorSoftwareVersion': '1_7',
+}
+
 # The following adds descriptors to the dictionary in an automated way to
 # save on voluminous code
 
@@ -154,7 +162,7 @@ def make_dict():
 
 # There's a lot of DRY violation here because I was playing with a few different methods.
 # We should decide which method we want for deletion and work on
-# variations of that.
+# variations of that. -GMN
 
 
 def delete_descriptors_many(reaction_set, descriptorDict):
@@ -345,35 +353,41 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
     bool_vals_to_create = []
     for i, reaction in enumerate(reaction_set):
         if verbose:
-            logger.info("{} ({}/{})".format(reaction, i + 1, len(reaction_set)))
+            logger.info("{} ({}/{})".format(reaction,
+                                            i + 1, len(reaction_set)))
         if not bulk_delete:
             if verbose:
                 logger.info("Deleting old descriptor values")
             _delete_values([reaction], descs_to_delete)
 
         if verbose:
-            logger.info("Calculating new values.".format(reaction, i + 1, len(reaction_set)))
+            logger.info("Calculating new values.".format(
+                reaction, i + 1, len(reaction_set)))
         num_vals_to_create, bool_vals_to_create = _calculate(
             reaction, descriptorDict, verbose=verbose, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
 
         if len(num_vals_to_create) > create_threshold:
             if verbose:
-                logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
+                logger.info("Creating {} Numeric values".format(
+                    len(num_vals_to_create)))
             DRP.models.NumRxnDescriptorValue.objects.bulk_create(
                 num_vals_to_create)
             num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
-                logger.info("Creating {} Boolean values".format(len(bool_vals_to_create)))
+                logger.info("Creating {} Boolean values".format(
+                    len(bool_vals_to_create)))
             DRP.models.BoolRxnDescriptorValue.objects.bulk_create(
                 bool_vals_to_create)
             bool_vals_to_create = []
 
     if verbose:
-        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
+        logger.info("Creating {} Numeric values".format(
+            len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        logger.info("Creating {} Boolean values".format(len(bool_vals_to_create)))
+        logger.info("Creating {} Boolean values".format(
+            len(bool_vals_to_create)))
     DRP.models.BoolRxnDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
     if verbose:
@@ -382,22 +396,26 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
     num_vals_to_create = []
     for i, reaction in enumerate(reaction_set):
         if verbose:
-            logger.info("{} ({}/{})".format(reaction, i + 1, len(reaction_set)))
+            logger.info("{} ({}/{})".format(reaction,
+                                            i + 1, len(reaction_set)))
 
         if verbose:
-            logger.info("Calculating new values.".format(reaction, i + 1, len(reaction_set)))
+            logger.info("Calculating new values.".format(
+                reaction, i + 1, len(reaction_set)))
         num_vals_to_create = _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors,
                                              verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
 
         if len(num_vals_to_create) > create_threshold:
             if verbose:
-                logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
+                logger.info("Creating {} Numeric values".format(
+                    len(num_vals_to_create)))
             DRP.models.NumRxnDescriptorValue.objects.bulk_create(
                 num_vals_to_create)
             num_vals_to_create = []
 
     if verbose:
-        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
+        logger.info("Creating {} Numeric values".format(
+            len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
 
 
@@ -421,10 +439,12 @@ def calculate(reaction, verbose=False, whitelist=None):
         reaction, descriptorDict, verbose=verbose, whitelist=whitelist)
 
     if verbose:
-        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
+        logger.info("Creating {} Numeric values".format(
+            len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        logger.info("Creating {} Boolean values".format(len(bool_vals_to_create)))
+        logger.info("Creating {} Boolean values".format(
+            len(bool_vals_to_create)))
     DRP.models.BoolRxnDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
     if verbose:
@@ -433,7 +453,8 @@ def calculate(reaction, verbose=False, whitelist=None):
                                          verbose=verbose, whitelist=whitelist, vals_to_create=num_vals_to_create)
 
     if verbose:
-        logger.info("Creating {} Numeric values".format(len(num_vals_to_create)))
+        logger.info("Creating {} Numeric values".format(
+            len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
 
 
@@ -444,6 +465,22 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
     num = DRP.models.NumRxnDescriptorValue
     cat = DRP.models.CatRxnDescriptorValue
     perm = DRP.models.CategoricalDescriptorPermittedValue
+
+    heading = 'boolean_crystallisation_outcome'
+    if whitelist is None or heading in whitelist:
+        try:
+            four_class = DRP.models.OrdRxnDescriptorValue.objects.get(
+                descriptor__heading='crystallisation_outcome', descriptor__calculatorSoftware='manual', reaction=reaction).value
+        except DRP.models.OrdRxnDescriptorValue.DoesNotExist:
+            val = None
+        else:
+            val = (four_class > 2)
+        b = DRP.models.BoolRxnDescriptorValue(
+            reaction=reaction,
+            descriptor=descriptorDict[heading],
+            value=val,
+        )
+        bool_vals_to_create.append(b)
 
     # Calculate the elemental molarities
     allCompoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)

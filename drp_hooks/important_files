@@ -1,0 +1,11 @@
+# Add imporant files that should be checked for changes on checkout and merge
+# format is
+# "FILE_PATH"		"Message to display when changes are detected"
+
+IMPORTANT_FILES=(
+	        "DRP/migrations/"		 "Migrations have changed! Run migrations to update your database."
+		"drp_hooks/"         		 "Hooks have changed! Copy them to .git/hooks (after looking at the changes)."
+		"DRP/settings_example.py"   	 "settings_example.py has changed! Update your settings."
+		"DRP_nginx"			 "DRP_nginx config file has changed. Update your nginx file"
+		"DRP_uwsgi.ini"			 "DRP_uwsgi.ini config file has changed. Update your uwsgi file"
+)

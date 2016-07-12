@@ -11,6 +11,7 @@ from sys import argv
 import logging
 logger = logging.getLogger(__name__)
 
+
 class Command(BaseCommand):
     """Command for building statistical/machine learning models in DRP."""
 
@@ -82,6 +83,7 @@ def create_build_model(reactions=None, predictors=None, responses=None, modelVis
                                           splitter=splitter, verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
     container.full_clean()
+    container.save()
     return build_model(container, verbose=verbose)
 
 
