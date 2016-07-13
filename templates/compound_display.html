@@ -1,0 +1,40 @@
+{% extends 'reactions.html' %}
+{% block additional_head %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/compoundDisplay.css" />
+{% endblock %}
+{% block title %}Compound Data Display{% endblock %}
+{% block content %} 
+<h1>Compound Data</h1>
+{% if compound.CSID != None %}
+  <img src=http://www.chemspider.com/ImagesHandler.ashx?id={{compound.CSID}}>
+{% endif %} 
+<table>
+<tr>
+<th>Compound</th>
+<td>{{compound.name}}</td>
+</tr>
+<tr>
+<th>ChemSpider ID</th>
+<td>{{compound.CSID}}</td>
+</tr>
+<tr>
+<th>Chemical Classes</th>
+<td>{% for class in compound.chemicalClasses.all %}
+      {{ class }}
+    {% endfor %}</td>
+</tr>
+<tr>
+<th>INCHI</th>
+<td>{{compound.INCHI}}</td>
+</tr>
+<tr>
+<th>Smiles</th>
+<td>{{compound.smiles}}</td>
+</tr>
+<tr>
+<th>Formula</th>
+<td>{{compound.formula}}</td>
+</tr>
+</table>
+{% endblock %}

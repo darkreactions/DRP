@@ -2,11 +2,10 @@ tr:nth-child(odd)
    {background-color: #f2f2f2}
 
 table{ 
-    max-width: 60%; 
     margin: auto;
     text-align: center;
     }
 th, td{
-    padding: .5cm;
+    padding: 1em;
     text-align: center;
 }

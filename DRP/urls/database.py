@@ -59,5 +59,7 @@ urls = [
     url('^/compoundguide/delete$',
         DRP.views.compound.deleteCompound, name='deleteCompound'),
     url('^/compoundguide/edit_(?P<pk>\d+).html',
-        DRP.views.compound.EditCompound.as_view(), name='editCompound')
+        DRP.views.compound.EditCompound.as_view(), name='editCompound'),
+    url('^/compoundguide/display_(?P<pk>\d+).html', 
+        DRP.views.compound.displayCompound, name='displayCompound')
 ]

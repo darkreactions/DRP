@@ -3,9 +3,9 @@
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/reactionDisplay.css"/>
 {% endblock %}
-{% block title %}Reaction Data Display{% endblock %}
+{% block title %}Reaction Data{% endblock %}
 {% block content %}
-<h1>Reaction Data Display</h1>       
+<h1>Reaction Data</h1>       
 <h2> Details</h2>
 <table>
 <tr>
@@ -33,10 +33,10 @@
 <th> Amount </th>       
 </tr>
 <tr>     
-{% for compound in compoundQuantities %}
-<td>{{compound.compound}}</td>
-<td>{{compound.role}}</td>
-<td>{{compound.amount}}</td>
+{% for compoundQuantity in compoundQuantities %}
+<td><a href="{% url 'displayCompound' pk=compoundQuantity.compound.pk %}"> {{compoundQuantity.compound}}</a></td>
+<td>{{compoundQuantity.role}}</td>
+<td>{{compoundQuantity.amount}}</td>
 </tr>
 {% endfor %}
 </table>
