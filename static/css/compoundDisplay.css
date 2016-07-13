@@ -1,0 +1,9 @@
+table{ 
+    max-width: 10em; 
+    margin: auto;
+    text-align: center;
+    }
+th, td{
+    padding: .8em;
+    text-align: center;
+}
