@@ -4,6 +4,10 @@ import os
 SITE_ID = 1
 
 SERVER_NAME = ''
+# FOR HTTPS
+# SECURE_SSL_REDIRECT=True
+# SESSION_COOKIE_SECURE=True
+# CSRF_COOKIE_SECURE=True
 
 # Tells the system that you are happy for tests,
 # some of which run on the live database to be run.
@@ -25,7 +29,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = APP_DIR + "/static_served/"
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
-MAIN_SERVER = 'http://darkreactions.haverford.edu'
+MAIN_SERVER = 'https://darkreactions.haverford.edu'
 MAIN_SERVER_USER = ''  # Your login credentials to the website, not the machine
 MAIN_SERVER_PASS = ''
 
@@ -199,6 +203,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # FOR HTTPS
+    #    'django.middleware.security.SecurityMiddleWare',
     'django.contrib.messages.middleware.MessageMiddleware',
     'DRP.middleware.ChemspiderErrorMiddleware'
     # Uncomment the next line for simple clickjacking protection:

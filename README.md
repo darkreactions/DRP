@@ -19,7 +19,7 @@ This repository contains the software for the [https://www.djangoproject.com/](D
 Setting up your own instance of the DRP
 =============================
 
-The following instructions are written to work with Ubuntu 12+ and have (mostly) been tested on Ubuntu 13. These instructions assume familiarity with Linux and a Command Line.
+The following instructions are written to work with Ubuntu 14 and have (mostly) been tested. These instructions assume familiarity with Linux and a Command Line, and that you are using nginx as your webserver.
 
 Install the necessary programs.
 
@@ -68,6 +68,10 @@ In DRP/DRP, there is a file called 'settings\_example.py'. This must be copied t
 To pass the unit tests, at least one `ADMIN_EMAILS` should be provided
 
 To pass the unit tests, the EMAIL\_HOST\_USER and related settings should be set.  
+
+###https
+
+If you are setting up a publicly viewable instance of DRP, there are additional settings for these protocols present in the configuration file for nginx, and the Django settings_example.py file, which have been left commented out. Setting up https access varies greatly depending on your local server environment and organisation so there will be no further documentation here. Additional information for a simple method to set up https can be found at [https://letsencrypt.org](https://letsencrypt.org).
 
 ###Running tests
 
