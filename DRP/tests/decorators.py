@@ -32,7 +32,6 @@ def createsCatRxnDescriptor(heading, calculatorSoftware='manual', calculatorSoft
     return _createsCatRxnDescriptor
             
 
-
 def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
     """A class decorator that creates an ordinal reaction descriptor."""
     def _createsOrdRxnDescriptor(c):

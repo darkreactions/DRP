@@ -8,6 +8,7 @@ from . import confirmationForm
 from . import labGroupForm
 from . import labGroupJoiningForm
 from . import licenseAgreementForm
+from . import rxnDescriptorAdminForms
 
 suite = unittest.TestSuite([
     compoundAdminForm.suite,
@@ -17,4 +18,5 @@ suite = unittest.TestSuite([
     labGroupForm.suite,
     labGroupJoiningForm.suite,
     licenseAgreementForm.suite,
+    rxnDescriptorAdminForms.suite,
 ])
