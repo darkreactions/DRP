@@ -10,19 +10,21 @@ from datetime import date, timedelta
 from django.core.files import File as dFile
 import os
 
+
 def createsCatRxnDescriptor(heading, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
     """A class decorator that creates a categorical reaction descriptor."""
-
     def _createsCatRxnDescriptor(c):
-        _oldSetup = c.setUp
+        _oldSetUp = c.setUp
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            CatRxnDescriptor.objects.create(name=heading, heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
+            CatRxnDescriptor.objects.create(
+                name=heading, heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
             _oldSetUp(self)
 
         def tearDown(self):
-            catRxnDescriptor.objects.filter(name=heading, heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
+            CatRxnDescriptor.objects.filter(name=heading, heading=heading, calculatorSoftware=calculatorSoftware,
+                                            calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
             _oldTearDown(self)
 
         c.setUp = setUp
@@ -30,7 +32,7 @@ def createsCatRxnDescriptor(heading, calculatorSoftware='manual', calculatorSoft
         return c
 
     return _createsCatRxnDescriptor
-            
+
 
 def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
     """A class decorator that creates an ordinal reaction descriptor."""
@@ -62,7 +64,8 @@ def setsOrdRxnDescriptorDefault(labGroupTitle, descHeading):
         _oldSetup = c.setUp
 
         def setUp(self):
-            LabGroup.objects.get(title=labGroupTitle).defaultDescriptors.add(OrdRxnDescriptor.objects.get(heading=descHeading))
+            LabGroup.objects.get(title=labGroupTitle).defaultDescriptors.add(
+                OrdRxnDescriptor.objects.get(heading=descHeading))
             _oldSetup(self)
 
         c.setUp = setUp
