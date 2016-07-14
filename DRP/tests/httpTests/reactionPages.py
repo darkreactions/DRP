@@ -239,6 +239,58 @@ class PostReactionEditValid2(PostsImage, PostReactionEditValid):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg'))
+@usesCsrf
+class GetReactionView(GetHttpSessionTest):
+    """Ensure reaction view page is found with a valid reaction."""
+
+    testCodes = ['c1f32838-1ea1-4630-96a5-a9232bbdd93f'] + reactionBaseCodes
+
+    def setUp(self):
+        """Dynamic url needed."""
+        labTitle = 'narnia'
+        reactionRef = 'turkish_delight'
+        self.url = self.url + reverse('reactionInfo', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labgroup_title='narnia').id})
+        self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labgroup__title='narnia')
+
+
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'StoneTable')
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg'))
+@usesCsrf
+class GetSomeoneElsesReactionInfoInvalid(GetHttpSessionTest):
+    """Ensure reaction view page is not found with a valid reaction that is not one's own and not public."""
+
+    testCodes = ['c1f32838-1ea1-4630-96a5-a9232bbdd93f'] + reactionBaseCodes
+
+    def setUp(self):
+        """Dynamic url needed."""
+        labTitle = 'narnia'
+        reactionRef = 'turkish_delight'
+        self.url = self.url + reverse('reactionInfo', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labgroup_title='narnia').id})
+
+
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'StoneTable')
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg', True))
+@usesCsrf
+class GetSomeoneElsesReactionInfoValid(GetHttpSessionTest):
+    """Ensure reaction view page is not found with a valid reaction that is not one's own and not public."""
+
+    testCodes = ['c1f32838-1ea1-4630-96a5-a9232bbdd93f'] + reactionBaseCodes
+
+    def setUp(self):
+        """Dynamic url needed."""
+        labTitle = 'narnia'
+        reactionRef = 'turkish_delight'
+        self.url = self.url + reverse('reactionInfo', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight', labgroup_title='narnia').id})
+
+
+@logsInAs('Aslan', 'old_magic')
+@signsExampleLicense('Aslan')
+@joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @usesCsrf
 class PostReactionEditInvalid(PostHttpSessionTest):
@@ -763,6 +815,7 @@ suite = unittest.TestSuite([
     loadTests(GetSomeoneElsesReactionEdit),
     loadTests(GetNonexistentReactionEdit),
     loadTests(PostReactionEditValid),
+    loadTests(GetReactionView),
     loadTests(PostReactionEditInvalid),
     loadTests(DeletePerformedReaction),
     loadTests(DeleteSomeoneElsesReaction),

@@ -238,14 +238,13 @@ def invalidateReaction(request, *args, **kwargs):
         form.save()
     return redirect('reactionlist')
 
+
 @login_required
 @hasSignedLicense
 @userHasLabGroup
 @reactionExists
 def displayReaction(request, rxn_id):
-    """Displays reaction details without ability to edit."""
+    """Display reaction details without ability to edit."""
     reaction = PerformedReaction.objects.get(id=rxn_id)
     compoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
     return render(request, 'reaction_display.html', {'reaction': reaction, 'compoundQuantities': compoundQuantities})
-
-

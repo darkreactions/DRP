@@ -132,10 +132,11 @@ class ListCompound(ListView):
         context['lab_form'] = self.labForm
         return context
 
+
 @login_required
 @hasSignedLicense
 @userHasLabGroup
 def displayCompound(request, pk):
-    """Displays a given compound."""
-    compound = Compound.objects.get(id=pk) 
+    """Display a given compound."""
+    compound = Compound.objects.get(id=pk)
     return render(request, 'compound_display.html', {'compound': compound})
