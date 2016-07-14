@@ -274,7 +274,7 @@ class GetSomeoneElsesReactionInfoInvalid(GetHttpSessionTest):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'StoneTable')
-@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg', True))
+@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight', image=os.path.join(settings.APP_DIR, 'tests', 'resource', 'example_lab_page.jpg'), True)
 @usesCsrf
 class GetSomeoneElsesReactionInfoValid(GetHttpSessionTest):
     """Ensure reaction view page is not found with a valid reaction that is not one's own and not public."""
