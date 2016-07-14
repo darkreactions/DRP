@@ -124,7 +124,7 @@ def createsPerformedReaction(labTitle, username, reference, valid=True, image=No
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            public=public
+            public = public
             labGroup = LabGroup.objects.get(title=labTitle)
             user = User.objects.get(username=username)
             reaction = PerformedReaction.objects.create(
