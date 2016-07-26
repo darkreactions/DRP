@@ -11,6 +11,7 @@
   {% include "reaction_form.html" %}
   {% include "reactant_form.html" %}
   {% for label, formset in descriptor_formsets.items %}
+    <!-- 7b268589-32b1-46ea-b836-93e786be88f9 -->
     {% spaceless %}
     <form class="descvalform" action="{% url formset.url reaction.id %}" method="post">
     {% csrf_token %}

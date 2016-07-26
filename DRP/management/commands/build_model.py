@@ -1,5 +1,4 @@
-"""Command for building statistical/machine learning models in DRP."""
-from django.core.management.base import BaseCommand
+"""Module containing management command for building machine learning models in DRP."""
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues, DataSet
 import operator
 import argparse
@@ -35,7 +34,7 @@ class Command(BaseCommand):
                             help='Model visitor tool from library to use. (default: %(default)s)')
         parser.add_argument('-mid', '--model-container-id', default=None, type=int,
                             help='Use the same splits as the specified model container. (default: %(default)s)')
-        parser.add_argument('-s', '--splitter', default="KFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
+        parser.add_argument('-s', '--splitter', default="kFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
                             help='Splitter to use. (default: %(default)s)')
         parser.add_argument('-d', '--description', default="",
                             help='Description of model. (default: %(default)s)')
@@ -84,6 +83,7 @@ def create_build_model(reactions=None, predictors=None, responses=None, modelVis
                                           splitter=splitter, verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
 
     container.full_clean()
+    container.save()
     return build_model(container, verbose=verbose)
 
 
@@ -175,16 +175,25 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
     """Build a model with the specified tools."""
     if predictor_headers is not None:
         predictors = Descriptor.objects.filter(heading__in=predictor_headers)
-        if predictors.count() != len(predictor_headers):
+        if predictors.count() < len(predictor_headers):
+            logger.info(predictors)
+            raise KeyError("Could not find all predictors. Missing: {}".format(
+                missing_descriptors(predictor_headers)))
+        elif predictors.count() > len(predictor_headers):
+            raise KeyError("Found more predictor variables than headers ({} and {})!".format(
+                predictors.count(), len(predictor_headers)))
             raise KeyError("Could not find all predictors. Missing: {}".format(
                 missing_descriptors(predictor_headers)))
     else:
         predictors = None
     if response_headers is not None:
         responses = Descriptor.objects.filter(heading__in=response_headers)
-        if responses.count() != len(response_headers):
+        if responses.count() < len(response_headers):
             raise KeyError("Could not find all responses. Missing: {}".format(
                 missing_descriptors(response_headers)))
+        elif responses.count() > len(response_headers):
+            raise KeyError("Found more response variables than headers ({} and {})!".format(
+                responses.count(), len(response_headers)))
     else:
         responses = None
 

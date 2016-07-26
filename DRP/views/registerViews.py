@@ -31,7 +31,7 @@ def register(request):
             m.send()
             return render(request, 'register.html', RequestContext(request, {'form': form, 'submitted': True}))
         else:
-            return render(request, 'register.html', RequestContext(request, {'form': form, 'submitted': False}))
+            return render(request, 'register.html', RequestContext(request, {'form': form, 'submitted': False}), status=422)
     else:
         form = UserCreationForm()
         return render(request, 'register.html', RequestContext(request, {'form': form, 'submitted': False}))
@@ -54,7 +54,7 @@ def confirm(request):
                 if form.user_cache.is_active:
                     return redirect(reverse('reactionlist'))
             else:
-                return render(request, 'confirm.html', RequestContext(request, {'form': form, 'success': False, 'code': request.GET['code']}))
+                return render(request, 'confirm.html', RequestContext(request, {'form': form, 'success': False, 'code': request.GET['code']}), status=422)
         else:
             form = ConfirmationForm(request)
             return render(request, 'confirm.html', RequestContext(request, {'form': form, 'success': False, 'code': request.GET['code']}))

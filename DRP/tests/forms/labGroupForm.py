@@ -30,7 +30,7 @@ class LegacyPassword(DRPTestCase):
         self.labGroup = LabGroup(title="LegacyPassTest1", address='1, war drobe, Narnia',
                                  email='aslan@example.com', legacy_access_code='old_magic')
         formData = {'title': 'LegacyPasstest1', 'address': '1, war drobe',
-                    'email': 'aslan@example.com', 'users': []}
+                    'email': 'aslan@example.com', 'users': [], 'defaultDescriptors': []}
         self.form = LabGroupForm(formData, instance=self.labGroup)
         self.labGroup.save()
 
@@ -63,7 +63,7 @@ class LegacyPassword2(DRPTestCase):
                                  email='whitewitch@example.com', legacy_access_code='old_magic')
         self.labGroup.save()
         formData = {'title': 'LegacyPasstest2', 'address': '2, war drobe',
-                    'email': 'whitewitch@example.com', 'accessCode': 'new_magic'}
+                    'email': 'whitewitch@example.com', 'accessCode': 'new_magic', 'defaultDescriptors': []}
         self.form = LabGroupForm(formData, instance=self.labGroup)
 
     def test_validation(self):
@@ -95,7 +95,7 @@ class CreateNew(DRPTestCase):
         self.user2.save()
         self.users = [self.user1, self.user2]
         self.formData = {'title': 'CreationTest', 'address': 'war drobe',
-                         'email': 'whitewitch@example.com', 'accessCode': 'turkishdelight'}
+                         'email': 'whitewitch@example.com', 'accessCode': 'turkishdelight', 'defaultDescriptors': []}
 
     def test_missingTitle(self):
         """Test to determine whether a form is correctly marked as invalid when a title is not present."""

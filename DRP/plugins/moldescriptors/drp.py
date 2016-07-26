@@ -130,7 +130,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
         if verbose:
             logger.debug("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
         num_vals_to_create, bool_vals_to_create = _calculate(
-            compound, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
+            compound, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
         if len(num_vals_to_create) > create_threshold:
             if verbose:
                 logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))
@@ -155,7 +155,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 def calculate(compound):
     """Calculation of descriptor values."""
     delete_descriptors([compound])
-    num_vals_to_create, bool_vals_to_create = _calculate(compound)
+    num_vals_to_create, bool_vals_to_create = _calculate(compound, whitelist=whitelist)
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
         logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))

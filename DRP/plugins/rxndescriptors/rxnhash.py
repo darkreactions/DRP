@@ -1,11 +1,13 @@
 """Module for calculating reaction hash descriptor."""
-import DRP
 from utils import setup
 import logging
+
 import xxhash
 
+import DRP
+from DRP.chemical_data import elements
+
 logger = logging.getLogger(__name__)
-elements = DRP.chemical_data.elements
 
 calculatorSoftware = 'DRP_xxhash'
 

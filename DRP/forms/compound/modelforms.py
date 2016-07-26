@@ -187,7 +187,7 @@ class CompoundDeleteForm(forms.ModelForm):
         """Lock the id field to an instance."""
         if self.cleaned_data['id'].reaction_set.exists():
             raise ValidationError(
-                "This reaction is protected from deletion because it is used in one or more reactions or recommendations.")
+                "This compound is protected from deletion because it is used in one or more reactions or recommendations.")
         return self.cleaned_data['id']
 
     def save(self):

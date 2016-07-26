@@ -22,7 +22,7 @@ def selectGroup(request):
             request.session['labgroup_id'] = form.cleaned_data['labGroup'].id
             return redirect(n)
         else:
-            return render(request, 'select_group.html', {'form': form, 'next': n})
+            return render(request, 'select_group.html', {'form': form, 'next': n}, status=422)
     else:
         form = LabGroupSelectionForm(request.user)
         return render(request, 'select_group.html', {'form': form, 'next': n})

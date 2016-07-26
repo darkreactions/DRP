@@ -1,13 +1,11 @@
-#!/usr/bin/env python
+#!/Usr/bin/env python
 import django
 django.setup()
-from DRP.models import Descriptor
-from DRP.models import PredBoolRxnDescriptor, PredOrdRxnDescriptor, PredNumRxnDescriptor, PredCatRxnDescriptor
-from DRP.models import PerformedReaction, DataSet, Descriptor, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
+from DRP.models import DataSet, BoolRxnDescriptor, BoolRxnDescriptorValue, NumRxnDescriptor, NumRxnDescriptorValue, OrdRxnDescriptor, OrdRxnDescriptorValue, CatRxnDescriptor, CatRxnDescriptorValue
+from DRP.models.querysets import MultiQuerySet
 from django.db.models import Count
 from sys import argv
 import sys
-from itertools import chain
 
 
 def is_descriptor_type(descriptor_type, descriptor):
@@ -48,9 +46,8 @@ def print_descriptor_types():
 
 def filter_through_reactions(reactions, descriptors):
     valid_descriptors = []
-    desc_val_types = [(BoolRxnDescriptor, BoolRxnDescriptorValue), (NumRxnDescriptor, NumRxnDescriptorValue),
-                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor,
-                                                                  OrdRxnDescriptorValue)
+    desc_val_types = [(NumRxnDescriptor, NumRxnDescriptorValue), (BoolRxnDescriptor, BoolRxnDescriptorValue),
+                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor, OrdRxnDescriptorValue)
                       ]
     for descriptor in descriptors:
         for dt, vt in desc_val_types:
@@ -61,9 +58,7 @@ def filter_through_reactions(reactions, descriptors):
                 if qs.exists():
                     qs = qs.exclude(value=None)
                     if qs.exists():
-                        # the latter clause checks whether the values are
-                        # unique
-                        if qs.values('value').annotate(num=Count('value')).count() != 1:
+                        if qs.values_list('value', flat=True).distinct().count() != 1:
                             valid_descriptors.append(descriptor)
                         else:
                             sys.stderr.write(
@@ -74,6 +69,7 @@ def filter_through_reactions(reactions, descriptors):
                 else:
                     sys.stderr.write(
                         "{} excluded because there are no values\n".format(descriptor.heading))
+                break
     return valid_descriptors
 
 
@@ -110,83 +106,81 @@ def print_headers(descriptors, sort=False):
     print '\n'.join(headings)
 
 
-def filter_queryset(dqs, include_substring=[], include_prefix=[], include_suffix=[],
-                    exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
+def filter_qset(dqs, require_substring=[], require_prefix=[], require_suffix=[],
+                    exclude=[], exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
+    
+    dqs = dqs.exclude(heading__in=exclude)
     for s in exclude_substring:
         dqs = dqs.exclude(heading__contains=s)
     for s in exclude_prefix:
         dqs = dqs.exclude(heading__startswith=s)
     for s in exclude_suffix:
         dqs = dqs.exclude(heading__endswith=s)
-    for s in include_substring:
+    for s in require_substring:
         dqs = dqs.filter(heading__contains=s)
-    for s in include_prefix:
+    for s in require_prefix:
         dqs = dqs.filter(heading__startswith=s)
-    for s in include_suffix:
+    for s in require_suffix:
         dqs = dqs.filter(heading__endswith=s)
 
     return dqs
 
 
-def filter_qset_list(qset_list, **kwargs):
-    return [filter_queryset(qs, **kwargs) for qs in qset_list]
+def rxn_descriptors():
+    return MultiQuerySet(
+                        NumRxnDescriptor.objects.all(),
+                        BoolRxnDescriptor.objects.all(),
+                        CatRxnDescriptor.objects.all(),
+                        OrdRxnDescriptor.objects.all(),
+                        )
 
 
-def count_qset_list(qset_list):
-    return sum([qs.count() for qs in qset_list])
-
-
-def filtered_rxn_descriptors(**kwargs):
-    descriptor_types = [BoolRxnDescriptor,
-                        NumRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor]
-    return filter_qset_list([dtype.objects.all() for dtype in descriptor_types], **kwargs)
-
-
-def valid_legacy_rxn_descriptors():
-    exclude_substring = ["_prediction_",
-                         "outcome", "rxnSpaceHash", "examplepy"]
+def valid_rxn_descriptors():
+    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "example", "purity"]
     exclude_prefix = ["_", "transform"]
+    return filter_qset(rxn_descriptors(), exclude_substring=exclude_substring, exclude_prefix=exclude_prefix)
+
+
+def legacy_rxn_descriptors():
     require_suffix = ["_legacy", ]
+    return filter_qset(valid_rxn_descriptors(), require_suffix=require_suffix)
 
-    return filtered_rxn_descriptors(exclude_substring=exclude_substring, exclude_prefix=exclude_prefix, include_suffix=require_suffix)
 
-
-def valid_nonlegacy_rxn_descriptors():
-    exclude_substring = ["_prediction_",
-                         "outcome", "rxnSpaceHash", "examplepy"]
-    exclude_prefix = ["_", "transform"]
+def nonlegacy_rxn_descriptors():
     exclude_suffix = ["_legacy", ]
-
-    return filtered_rxn_descriptors(exclude_substring=exclude_substring, exclude_prefix=exclude_prefix, exclude_suffix=exclude_suffix)
+    return filter_qset(valid_rxn_descriptors(), exclude_suffix=exclude_suffix)
 
 
 def nonlegacy_pHless_rxn_descriptors():
-    exclude_substring = ["_pH{}_".format(n) for n in range(1, 15)]
-
-    return filter_qset_list(valid_nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
+    exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)] + ["_nominal_"]
+    return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
 
 def nonlegacy_nopHreaction_rxn_descriptors():
-    exclude_substring = ["_pHreaction_".format(n) for n in range(1, 15)]
+    exclude_substring = ["_pHreaction_",]
+    return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
-    return filter_qset_list(valid_nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
+def orthogonalized_descs():
+    exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)] + ["boolean_period", "boolean_group", "boolean_valence", "_mw_DRP", "moleratio"]
+    exclude_suffix = ["_mols"]
+    exclude_prefix = ["org", "oxlike", "AtomicRadius", "EA", "hardness", "Ionization", "number", "PaulingElectroneg", "PearsonElectroneg",]
+    exclude = ["reaction_pH", "slow_cool", "reaction_time", "leak"]
 
+    return filter_qset(valid_rxn_descriptors(), exclude_substring=exclude_substring, exclude_suffix=exclude_suffix, exclude_prefix=exclude_prefix, exclude=exclude)
 
-def remove_CA(qset_list):
-    exclude_substring = ["_chemaxoncxcalc_"]
-    return filter_qset_list(qset_list, exclude_substring=exclude_substring)
+def remove_CA(qset):
+    exclude_substring = ["_ChemAxon_cxcalc_"]
+    return filter_qset(qset, exclude_substring=exclude_substring)
+
 
 if __name__ == '__main__':
     reaction_set_name = argv[1]
 
-    qsets = nonlegacy_nopHreaction_rxn_descriptors()
-    qsets = remove_CA(qsets)
-    #qsets = nonlegacy_pHless_rxn_descriptors()
-    descriptors = chain(*qsets)
+    descs = orthogonalized_descs()
+    descs = remove_CA(descs)
 
     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
-    filtered_descriptors = filter_through_reactions(reactions, descriptors)
-    sys.stderr.write("Kept {} of {} descriptors\n".format(
-        len(filtered_descriptors), count_qset_list(qsets)))
+    filtered_descriptors = filter_through_reactions(reactions, descs)
+    sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), descs.count()))
     print_headers(filtered_descriptors, sort=True)

@@ -1,25 +1,17 @@
+#!/bin/bash
+
 cd $(git rev-parse --show-toplevel)
 
 # based on http://stackoverflow.com/questions/16840184/how-can-i-automatically-be-warned-if-a-specific-file-changes
 
-CHANGED=`git diff $1 $2 --name-only -- DRP/settings_example.py`
-NUM_CHANGED=`echo $CHANGED | wc -w`
-if [ $NUM_CHANGED -gt 0 ];
-then
-    echo "settings_example.py has changed! Update your settings."
-fi
+source .git/hooks/important_files
 
-CHANGED=`git diff $1 $2 --name-only -- drp_hooks/`
-NUM_CHANGED=`echo $CHANGED | wc -w`
-if [ $NUM_CHANGED -gt 0 ];
-then
-    echo "Hooks have changed! Copy them to .git/hooks (after looking at the changes)."
-fi
-
-CHANGED=`git diff $1 $2 --name-only -- DRP/migrations/`
-NUM_CHANGED=`echo $CHANGED | wc -w`
-if [ $NUM_CHANGED -gt 0 ];
-then
-    echo "Migrations have changed! Run migrations to update your database."
-    echo $CHANGED | tr " " "\n"
-fi
+for (( i=0; i<${#IMPORTANT_FILES[@]}; i=i+2 ))
+do
+    CHANGED=`git diff $1 $2 --name-only -- ${IMPORTANT_FILES[i]}`
+    NUM_CHANGED=`echo $CHANGED | wc -w`
+    if [ $NUM_CHANGED -gt 0 ];
+    then
+	echo ${IMPORTANT_FILES[i+1]}
+    fi
+done

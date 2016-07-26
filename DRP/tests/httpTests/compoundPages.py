@@ -100,6 +100,7 @@ class CreateCompoundRadioTest(PostHttpSessionTest):
     # tests for presence of CSID radiobuttons
     testCodes = ['1bf53b3a-ddf0-407b-b565-b732e4fa5ddb']
     _payload = {'name': 'ethanol'}
+    status = 422
 
 
 @logsInAs('Aslan', 'old_magic')

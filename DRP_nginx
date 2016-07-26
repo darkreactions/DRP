@@ -1,17 +1,20 @@
 server {
         listen          80;
+# For https
+#        listen          80 ssl;
         listen          8000;
         server_name     darkreactions.haverford.edu;
         server_name     localhost;
+# For https
+#	ssl_certificate /path/to/certificate;
+#	ssl_certificate_key /path/to/key;
         charset         utf-8;
+
 
         client_max_body_size    75M;
 
         access_log /home/drp/web/darkreactions.haverford.edu/logs/access.log;
         error_log /home/drp/web/darkreactions.haverford.edu/logs/error.log;
-
-        root  /home/drp/web/darkreactions.haverford.edu/app;
-                autoindex on;
 
         location /favicon.ico {
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/static/favicon.ico;
@@ -44,6 +47,8 @@ server {
         location / {
                 include uwsgi_params;
                 #include /home/drp/web/darkreactions.haverford.edu/uwsgi_params;
+#for HTTPS
+#		uwsgi_param HTTPS $https if_not_empty;
                 uwsgi_pass      127.0.0.1:3031;
                 uwsgi_read_timeout 600;
         }

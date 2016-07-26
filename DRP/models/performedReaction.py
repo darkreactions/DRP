@@ -2,6 +2,8 @@
 from django.db import models
 from .reaction import Reaction, ReactionManager, ReactionQuerySet
 from .recommendedReaction import RecommendedReaction
+from .rxnDescriptors import NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor
+from .rxnDescriptorValues import NumRxnDescriptorValue, BoolRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from django.contrib.auth.models import User
 from itertools import chain
 import DRP
@@ -37,13 +39,35 @@ class PerformedReactionQuerySet(ReactionQuerySet):
         model = PerformedReaction if model is None else model
         super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
 
+    def valid(self):
+        """Return only the valid subset of these reactions."""
+        qs = self.filter(valid=True).exclude(compounds=None).exclude(
+            compoundquantity__amount=None).exclude(compoundquantity__role=None).exclude(
+            compoundquantity__compound=None)
+
+        # All manual descriptors must have values
+        for d in NumRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(numrxndescriptorvalue__descriptor=d)
+        for d in BoolRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(boolrxndescriptorvalue__descriptor=d)
+        for d in OrdRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(ordrxndescriptorvalue__descriptor=d)
+        for d in CatRxnDescriptor.objects.filter(calculatorSoftware='manual'):
+            qs = qs.filter(catrxndescriptorvalue__descriptor=d)
+
+        return qs
+
 
 class PerformedReactionManager(ReactionManager):
     """A custom manager for performed reactions."""
 
     def get_queryset(self):
         """Return the correct custom queryset."""
-        return PerformedReactionQuerySet(model=PerformedReaction)
+        return PerformedReactionQuerySet(model=self.model)
+
+    def valid(self):
+        """Return only the valid reactions."""
+        return self.get_queryset().valid()
 
 
 class PerformedReaction(Reaction):

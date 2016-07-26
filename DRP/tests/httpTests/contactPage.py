@@ -31,6 +31,8 @@ class PostContactPage(PostHttpSessionTest):
 class PostContactPageBad(PostContactPage):
     """Perform a badly formed POST request to the contact page to test html validity."""
 
+    status = 422
+
     def setUp(self):
         """Perform a badly formed POST request to the contact page to test html validity."""
         self.response = self.s.post(self.url, data={'email': settings.ADMIN_EMAILS[
@@ -40,6 +42,8 @@ class PostContactPageBad(PostContactPage):
 @usesCsrf
 class PostContactPageBad2(PostContactPage):
     """Perform a badly formed POST request missing a field entirely to test html validity."""
+
+    status = 422
 
     def setUp(self):
         """Perform a badly formed POST request missing a field entirely to test html validity."""

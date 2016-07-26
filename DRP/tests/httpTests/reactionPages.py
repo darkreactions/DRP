@@ -10,7 +10,7 @@ from DRP.tests.decorators import joinsLabGroup, createsChemicalClass, signsExamp
 from DRP.tests.decorators import createsUser, createsCompound, createsPerformedReaction
 from DRP.tests.decorators import createsOrdRxnDescriptor
 from DRP.tests.decorators import createsCompoundRole, createsCompoundQuantity
-from DRP.tests.decorators import createsOrdRxnDescriptorValue
+from DRP.tests.decorators import createsOrdRxnDescriptorValue, setsOrdRxnDescriptorDefault
 from DRP.tests import runTests
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -114,6 +114,7 @@ class PostReactionCreateInvalidImage(PostReactionCreateValid):
 class PostReactionCreateInvalid(PostHttpSessionTest):
     """Make an invalid creation request."""
 
+    status = 422
     url = newReactionUrl
     testCodes = ['6813e404-f1a3-48ed-ae97-600a41cf63cb',
                  '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
@@ -148,10 +149,10 @@ class GetReactionEdit(GetHttpSessionTest):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 class GetReactionEdit2(GetHttpSessionTest):
-    """Fetch the reaction editing page with a descriptor componenet."""
+    """Fetch the reaction editing page with a descriptor component."""
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
-                 '634d88bb-9289-448b-a3dc-548ff4c6cda1', '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
+                 '634d88bb-9289-448b-a3dc-548ff4c6cda1'] + reactionBaseCodes
 
     def setUp(self):
         """THe url for this will be dynamic."""
@@ -298,6 +299,7 @@ class PostReactionEditInvalid(PostHttpSessionTest):
 
     testCodes = ['7b3b6668-981a-4a11-8dc4-23107187de93', 'dc1d5961-a9e7-44d8-8441-5b8402a01c06',
                  '2758c44c-b7e2-440a-a617-36d9d730bc93'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Allow for dynamic url."""
@@ -348,11 +350,11 @@ class DeletePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
-class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class DeleteSomeoneElsesReaction(PostHttpSessionTest):
     """Try to delete a reaction you do not own."""
 
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
     url = PostHttpSessionTest.url + reverse('deleteReaction')
+    status = 422
 
     def setUp(self):
         """Allow for dynamic url."""
@@ -360,6 +362,10 @@ class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)
             reference='turkish_delight', labGroup__title='WhiteQueensArmy')
         self.payload['id'] = self.reaction.id
         super(DeleteSomeoneElsesReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
     def tests_deleted(self):
         """Test the deletion."""
@@ -371,16 +377,20 @@ class DeleteSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
-class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class DeleteNonexistentReaction(PostHttpSessionTest):
     """Try to delete a nonexistent reaction."""
 
     url = PostHttpSessionTest.url + reverse('deleteReaction')
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Nothingi n the db, so this could be anything."""
         self.payload['id'] = 5
         super(DeleteNonexistentReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -388,7 +398,7 @@ class DeleteNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1))
 @joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @usesCsrf
-class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class InvalidatePerformedReaction(PostHttpSessionTest):
     """Test for invalidation of a reaction."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
@@ -400,6 +410,10 @@ class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1
             reference='turkish_delight', labGroup__title='narnia')
         self.payload['id'] = self.reaction.id
         super(InvalidatePerformedReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
     def test_invalidation(self):
         """Test the invalidation."""
@@ -416,11 +430,11 @@ class InvalidatePerformedReaction(PostHttpSessionTest, redirectionMixinFactory(1
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
 @usesCsrf
-class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class InvalidateSomeoneElsesReaction(PostHttpSessionTest):
     """Try to invalidate a reaction you do not own."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Set up."""
@@ -428,6 +442,10 @@ class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactor
             reference='turkish_delight', labGroup__title='WhiteQueensArmy')
         self.payload['id'] = self.reaction.id
         super(InvalidateSomeoneElsesReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
     def test_invalidation(self):
         """Test the invalidation."""
@@ -439,16 +457,20 @@ class InvalidateSomeoneElsesReaction(PostHttpSessionTest, redirectionMixinFactor
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 @usesCsrf
-class InvalidateNonexistentReaction(PostHttpSessionTest, redirectionMixinFactory(1)):
+class InvalidateNonexistentReaction(PostHttpSessionTest):
     """Try to invalidate a reaction that does not exist."""
 
     url = PostHttpSessionTest.url + reverse('invalidateReaction')
-    testCodes = ['ba960469-5fad-4142-a0a1-a10b37e9432e'] + reactionBaseCodes
+    status = 422
 
     def setUp(self):
         """Set up."""
         self.payload['id'] = 5
         super(InvalidateNonexistentReaction, self).setUp()
+
+    def test_ValidHtml(self):
+        """Method is turned silent."""
+        pass
 
 
 @logsInAs('Aslan', 'old_magic')
@@ -501,9 +523,8 @@ class PostReactantAddCreatingValid(PostHttpSessionTest, redirectionMixinFactory(
 @createsCompoundRole('inOrg', 'inOrganic')
 @createsCompound('2-amep', '104820', 'Org', 'narnia', custom=False)
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
+@setsOrdRxnDescriptorDefault('narnia', 'deliciousness')
 @usesCsrf
-# we expect 4 redirections because we have initialised no manual reaction
-# descriptors
 class PostReactantAddCreatingValid2(PostHttpSessionTest, redirectionMixinFactory(2)):
     """Add a reactant to the reaction."""
 
@@ -557,6 +578,7 @@ class PostReactantAddCreatingInvalid(PostHttpSessionTest):
         'quantities-MIN_NUM_FORMS': '0',
         'quantities-MAX_NUM_FORMS': '1000'
     }
+    status = 422
 
     def setUp(self):
         """set up the dynamic payload."""
@@ -667,6 +689,7 @@ class PostReactantDeleteValid(PostHttpSessionTest, redirectionMixinFactory(1)):
 @joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
+@setsOrdRxnDescriptorDefault('narnia', 'deliciousness')
 @usesCsrf
 class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory(3)):
     """Test the creation of a descriptor value."""
@@ -703,6 +726,7 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
 @joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
+@setsOrdRxnDescriptorDefault('narnia', 'deliciousness')
 @usesCsrf
 # no edit test required- it uses the same functionality
 class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(1)):
@@ -776,6 +800,7 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
 @createsOrdRxnDescriptor('deliciousness', 0, 4)
 @createsOrdRxnDescriptorValue('narnia', 'turkish_delight', 'deliciousness', 3)
+@setsOrdRxnDescriptorDefault('narnia', 'deliciousness')
 @usesCsrf
 class EditReactionDescValInvalid(PostHttpSessionTest):
     """Make an invalid edition to a descriptor value."""
