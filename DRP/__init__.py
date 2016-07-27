@@ -1,4 +1,4 @@
 """The Dark Reactions Project main body of code."""
 
-import chemical_data
-import settings
+import DRP.chemical_data as chemical_data
+import DRP.settings as settings
