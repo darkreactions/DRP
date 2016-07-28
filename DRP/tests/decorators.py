@@ -164,11 +164,10 @@ def createsPerformedReaction(labTitle, username, reference, valid=True, image=No
         _oldTearDown = c.tearDown
 
         def setUp(self):
-            public = public
             labGroup = LabGroup.objects.get(title=labTitle)
             user = User.objects.get(username=username)
             reaction = PerformedReaction.objects.create(
-                labGroup=labGroup, user=user, reference=reference, valid=valid)
+                labGroup=labGroup, user=user, reference=reference, valid=valid, public=public)
             if image is not None:
                 with open(image, 'rb') as f:
                     reaction.labBookPage.save('example.jpg', dFile(f))

@@ -1,3 +1,73 @@
+test_saving (DRP.tests.forms.compoundAdminForm.CreateTest)
+Test whether an object can be saved. ... ok
+test_validation (DRP.tests.forms.compoundAdminForm.CreateTest)
+Evaluate whether test is succesful. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.NoLabExists)
+A test for cases where the form should validate. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.NoLabForUser)
+A test for cases where the form should validate. ... ok
+test_saving (DRP.tests.forms.compoundCreationForm.LabForUser)
+Make sure that saving a valid form works. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.LabForUser)
+Answer the age old question: Did the test work?. ... ok
+test_saving (DRP.tests.forms.compoundCreationForm.LabForBadUser)
+Make sure that saving a valid form works. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.LabForBadUser)
+Ensure that the form fails for a user without a lab group. ... ok
+test_saving (DRP.tests.forms.compoundCreationForm.NoCAS)
+Make sure that saving a valid form works. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.NoCAS)
+Answer the age old question: Did the test work?. ... ok
+test_saving (DRP.tests.forms.compoundCreationForm.InconsistentCASName)
+Make sure that saving a valid form works. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.InconsistentCASName)
+Execute test. ... ok
+test_saving (DRP.tests.forms.compoundCreationForm.InconsistentNameCSID)
+Make sure that saving a valid form works. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.InconsistentNameCSID)
+Execute test. ... ok
+test_saving (DRP.tests.forms.compoundCreationForm.InconsistentCSIDCAS)
+Make sure that saving a valid form works. ... ok
+test_validation (DRP.tests.forms.compoundCreationForm.InconsistentCSIDCAS)
+Execute test. ... ok
+test_validation (DRP.tests.forms.compoundEditingForm.IncorrectSynonym)
+A test for cases where the form should validate. ... ok
+test_validation (DRP.tests.forms.compoundEditingForm.CorrectSynonym)
+Test the validation. ... ok
+runTest (DRP.tests.forms.confirmationForm.InactiveUser)
+Run test. ... ok
+runTest (DRP.tests.forms.confirmationForm.ActiveUser)
+Run test to make sure that the form does not evaluate this as valid. ... ok
+test_databaseChange (DRP.tests.forms.labGroupForm.LegacyPassword)
+Test that saving the form (changing the databases) makes the appropriate changes. ... ok
+test_validation (DRP.tests.forms.labGroupForm.LegacyPassword)
+Assert that the test worked. ... ok
+test_databaseChange (DRP.tests.forms.labGroupForm.LegacyPassword2)
+Evaluate that a new password is updated correctly from a legacy password. ... ok
+test_validation (DRP.tests.forms.labGroupForm.LegacyPassword2)
+Evaluate whether the test should pass or fail. ... ok
+test_missingAddress (DRP.tests.forms.labGroupForm.CreateNew)
+Test to determine whether a form is correctly marked as invalid when an address is not present. ... ok
+test_missingEmail (DRP.tests.forms.labGroupForm.CreateNew)
+Test to determine whether a form is correctly marked as invalid when an email address is not present. ... ok
+test_missingPass (DRP.tests.forms.labGroupForm.CreateNew)
+Test to determine whether a form is correctly marked as invalid when a password is not present. ... ok
+test_missingTitle (DRP.tests.forms.labGroupForm.CreateNew)
+Test to determine whether a form is correctly marked as invalid when a title is not present. ... ok
+test_duplicateTitle (DRP.tests.forms.labGroupForm.DuplicateUniqueValues)
+Ensure that a duplicate lab group title is accepted. ... ok
+test_validation (DRP.tests.forms.labGroupJoiningForm.LegacyPassword)
+Validate test. ... ok
+test_validation (DRP.tests.forms.labGroupJoiningForm.Password)
+Validate that the user can join using the form. ... ok
+test_validation (DRP.tests.forms.descriptorAdminForms.CatCleanTest)
+Test that the validation succeeds. ... ok
+test_validation (DRP.tests.forms.descriptorAdminForms.CatCleanTestFail)
+A test for cases where the form should validate. ... ok
+test_validation (DRP.tests.forms.descriptorAdminForms.CatValCleanTest)
+Test that the validation succeeds. ... ok
+test_validation (DRP.tests.forms.descriptorAdminForms.CatValCleanTestFail)
+A test for cases where the form should validate. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.aboutPage.AboutPage)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.aboutPage.AboutPage)
@@ -88,13 +158,19 @@ Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest)
-Check HTML validity. ... FAIL
+Check HTML validity. ... ok
 test_redirect (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.CreateCompoundRadioTest)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.compoundPages.CreateCompoundRadioTest)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.compoundPages.CreateCompoundRadioTest)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.getCompoundView)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.compoundPages.getCompoundView)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.getCompoundView)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.NoCompounds)
 Check that the expected template is loaded. ... ok
@@ -240,23 +316,23 @@ Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionCreateInvalid)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionEdit)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.GetReactionEdit)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionEdit)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetNonexistentReactionEdit)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.GetNonexistentReactionEdit)
@@ -264,1625 +340,233 @@ Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetNonexistentReactionEdit)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_edit (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Test that the edition actually worked. ... ERROR
+Test that the edition actually worked. ... ok
 test_image (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Test the files presence. ... ERROR
+Test the files presence. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionView)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.GetReactionView)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionView)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPrivate)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPrivate)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPrivate)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPublic)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPublic)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPublic)
+Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_edit (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Test the edition. ... ERROR
+Test the edition. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Check HTML validity. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.DeletePerformedReaction) ... ERROR
+Check HTML validity. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.DeletePerformedReaction) ... ok
 tests_deleted (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Test the deletion. ... ERROR
+Test the deletion. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Check HTML validity. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction) ... ERROR
+Method is turned silent. ... ok
 tests_deleted (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Test the deletion. ... ERROR
+Test the deletion. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction)
-Check HTML validity. ... ok
-test_redirect (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction) ... ok
+Method is turned silent. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Check HTML validity. ... ERROR
+Method is turned silent. ... ok
 test_invalidation (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Test the invalidation. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction) ... ERROR
+Test the invalidation. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Check HTML validity. ... ERROR
+Method is turned silent. ... ok
 test_invalidation (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Test the invalidation. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction) ... ERROR
+Test the invalidation. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction)
-Check HTML validity. ... ok
-test_redirect (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction) ... ok
+Method is turned silent. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
-Check HTML validity. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid) ... ERROR
+Check HTML validity. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
-Check HTML validity. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2) ... ERROR
+Check HTML validity. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_edit (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check the invalidation. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.PostReactantEditingValid) ... ERROR
+Check the invalidation. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantEditingValid) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_delete (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check the deletion. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid) ... ERROR
+Check the deletion. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_created (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-test the creation. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating) ... ERROR
+test the creation. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_created (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Test the object creation. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing) ... ERROR
+Test the object creation. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_deleted (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Test the deletion. ... ERROR
-test_redirect (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal) ... ERROR
+Test the deletion. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal) ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Check that the expected template is loaded. ... ERROR
+Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Check that the http response code is the expected value. ... ERROR
+Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Check HTML validity. ... ERROR
+Check HTML validity. ... ok
 test_created (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Test the creation. ... ERROR
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionEdit)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.GetReactionEdit)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionEdit)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_edit (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Test that the edition actually worked.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_image (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
-Test the files presence.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionView)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.GetReactionView)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionView)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_edit (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
-Test the edition.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: tests_deleted (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
-Test the deletion.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: tests_deleted (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
-Test the deletion.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_invalidation (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-Test the invalidation.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_invalidation (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-Test the invalidation.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 261, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_edit (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-Check the invalidation.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_delete (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-Check the deletion.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_created (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-test the creation.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_created (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-Test the object creation.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_deleted (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-Test the deletion.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_redirect (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_CorrectTemplate (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Check that the expected template is loaded.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_Status (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Check that the http response code is the expected value.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_ValidHtml (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-ERROR: test_created (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
-Test the creation.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 186, in setUp
-    _oldSetUp(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 394, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 367, in setUp
-    _oldSetup(self)
-  File "/home/mdbyars/DRP/DRP/tests/decorators.py", line 127, in setUp
-    public = public
-UnboundLocalError: local variable 'public' referenced before assignment
-
-======================================================================
-FAIL: test_ValidHtml (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest)
-Check HTML validity.
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/mdbyars/DRP/DRP/tests/httpTests/httpTest.py", line 84, in test_ValidHtml
-    '\n Response html: \n {0}'.format(self.response.text))
-AssertionError: False is not true : error:Stray end tag “img”.
-
- Response html: 
- <!DOCTYPE html>
-<html>
-  <head>
-    <title>
-       Dark Reactions Project 
-    </title>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="/static/css/mainStylesheet.css" />
-    <link rel="stylesheet" type="text/css" href="/static/css/mainMenu.css" />
-    <link rel="stylesheet" type="text/css" href="/static/css/projectMenu.css" />
-    
-<link rel="stylesheet" type="text/css" href="/static/css/compoundList.css" />
-
-  
-    
-  </head>
-
-  <body>
-
-    <header>
-      <img id="mainLogo" src="/static/images/mainLogo.png" alt="DRP logo">
-      <h1 class="mainTitle">Dark Reactions Project</h1>
-
-      <div id="userInfo">
-	<a href="https://github.com/darkreactions/DRP" class="github">GitHub</a>
-        
-          
-            <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
-          
-          <span class="greeting">
-            Hello, 
-            <a class="account" href="/account/" ><img id="userUpdate" title="Update Account" src="/static/icons/gear.png" alt="update account"></a>
-          </span>
-          <a href="/logout.html" id="userLogOut">Log Out</a>
-
-        
-
-        </div>
-      
-      <nav>
-       <div class="nav-wrapper">
-        <ol id="navigationMenu">
-  
-          <li>
-            <a href="/" class="navLink" title="The basics of the Project.">
-              Home
-            </a>
-          </li>
-  
-          <li>
-            <a href="/database.html?page=1"
-               id="dbase"
-               class="navLink"
-               title="Enter the Dark Reaction Project.">
-               Project
-            </a>
-          </li>
-  
-          <li>
-            <a href="/about.html"
-               class="navLink"
-               title="More info about the Project.">
-               About
-            </a>
-          </li>
-  
-            <li>
-              <a href="/contact.html"
-                 class="navLink"
-                 title="Send a bug report, comment, or complaint.">
-                 Contact
-              </a>
-          </li>
-        </ol>
-     </div>
-    </nav>
-    
- <!-- 823d22e7-3337-4292-aa67-13f748b2aa65 --> 
-
-<nav>
- <div class="projectNav-wrapper">
-  <ol class="projectNav">
-    <li><a href="/database/">Reactions</a></li>
-    <li><a href="/database/compoundguide/">Compound Guide</a></li>
-  </ol>
- </div>
-</nav> 
-
-
-
-
-<nav>
- <div class="projectNav-wrapper">
-  <ol class="projectNav" id="projectNav2">
-    <li><a href="/database/compoundguide/">List Compounds</a></li> 
-    <li><a href="/database/compoundguide/add.html">Add a compound</a></li>
-  </ol>
- </div>
-</nav>
-
-
-
-
-  
-  </header>
-  <main>
-    
-
-<h1 class="bannerText">Compound Guide</h1>
-
-
-
-  <section class="downloads">
-    <h1>Downloads</h1>
-    <ul>
-      <li><a href="/database/compoundguide.csv?">csv</a></li>
-      
-      <li><a href="/database/compoundguide.arff?">arff</a></li>
-      
-    </ul>
-  </section>
-  <table>
-    <thead>
-      <tr>
-	<th></th>
-        <th>Abbreviation</th>
-        <th>Name</th>
-        <th>ChemSpider ID</th>
-        <th>Compound Classes</th>
-      </tr>
-    </thead>
-  
-    <tr>
-      <td> 
-	<a class="edit" href="/database/compoundguide/edit_239.html">
-	  <img src="/static/icons/edit.png" alt="edit this compound" title="edit this compound" height="25" width="25"></img>
-        </a>
-      </td>
-      <td>
-        <a href="/database/compoundguide/display_239.html">
-          etoh
-	</a>
-      </td>
-      <td>ethanol</td>
-      <td>682</td>
-      <td>
-        <ul>
-          
-        </ul>
-      </td>
-      <td>
-        
-        <form action="/database/compoundguide/delete" method="post">
-          <input type='hidden' name='csrfmiddlewaretoken' value='Yhb5dGOcxDlKr2Ztdqw15WQnIPFEug3o' />
-          <input id="id_delete_14" name="id" type="hidden" value="239" />
-          <input type="Submit" value="delete" />
-        </form>
-        
-      </td>
-    </tr>
-  
-  </table>
-  <!-- 7f25b7df-2176-455b-9a68-620af1d52e46 -->
-
-<!-- bf3a3711-b21d-4710-a989-6d1ebc1c9ee9 -->
-
-  </main>
-  <footer>
-  &copy; 2016 Dark Reactions Project at Haverford College
-  </footer>
-  
-  <script>
-    dbase = document.getElementById('dbase');
-    dbase.setAttribute('href', '/database/');
-  </script>
-</body>
-</html>
-
-
-----------------------------------------------------------------------
-Ran 215 tests in 43.906s
-
-FAILED (failures=1, errors=81, skipped=4)
+Test the creation. ... ok
+runTest (DRP.tests.compoundDescriptor.DescriptorsCalced)
+Run the test. ... ok
+runTest (DRP.tests.compoundDescriptor.DoublePluginImport)
+Run the test. ... ok
+test_numeric (DRP.tests.compoundDescriptor.MaxMinValidation)
+Test ordinal descriptors. ... ok
+test_numeric_lims_null (DRP.tests.compoundDescriptor.MaxMinValidation)
+Test creating a numeric descriptor w/a null min, max value works. ... ok
+test_numeric_max_null (DRP.tests.compoundDescriptor.MaxMinValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_min_null (DRP.tests.compoundDescriptor.MaxMinValidation)
+Test creating a numeric descriptor with a null min value works. ... ok
+test_numeric_ok (DRP.tests.compoundDescriptor.MaxMinValidation)
+Test a working numeric descriptor. ... ok
+test_ordinal (DRP.tests.compoundDescriptor.MaxMinValidation)
+Test ordinal descriptors. ... ok
+test_ordinal_ok (DRP.tests.compoundDescriptor.MaxMinValidation)
+Test a working ordinal descriptor. ... ok
+test_numeric_lims_null (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor w/a null min, max value works. ... ok
+test_numeric_loolow (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is below the minimum. ... ok
+test_numeric_max_null (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_max_null_toohigh (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_max_null_toolow (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null max value works. ... ok
+test_numeric_min_null (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test creating a numeric descriptor with a null min value works. ... ok
+test_numeric_ok (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test a working numeric descriptor. ... ok
+test_numeric_toohigh (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is above the maximum. ... ok
+test_ordinal_loolow (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is below the minimum. ... ok
+test_ordinal_ok (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test a working ordinal descriptor. ... ok
+test_ordinal_toohigh (DRP.tests.compoundDescriptor.MaxMinValueValidation)
+Test a descriptor value that is above the maximum. ... ok
+test_broken (DRP.tests.compoundDescriptor.CategoricalValidation)
+Test broken cases. ... ok
+test_fine (DRP.tests.compoundDescriptor.CategoricalValidation)
+Test cases that should work. ... ok
+test_expanded (DRP.tests.compoundToCsv.CsvOutput)
+Test an expanded CSV. ... ok
+test_regular (DRP.tests.compoundToCsv.CsvOutput)
+Test a regular CSV. ... ok
+test_expanded (DRP.tests.compoundToArff.CompoundToArff)
+Test an expanded arff. ... ok
+test_regular (DRP.tests.compoundToArff.CompoundToArff)
+Test a regular arff. ... ok
+test_equal (DRP.tests.modelValidators.GreaterThan)
+Test an equal value. ... ok
+test_greater (DRP.tests.modelValidators.GreaterThan)
+Test a greater value. ... ok
+test_less (DRP.tests.modelValidators.GreaterThan)
+Test a less than value. ... ok
+test_future (DRP.tests.modelValidators.NotInTheFuture)
+Test a date in the future. ... ok
+test_past (DRP.tests.modelValidators.NotInTheFuture)
+Test a date in the past. ... ok
+test_present (DRP.tests.modelValidators.NotInTheFuture)
+Test today. ... ok
+testInitPresence (DRP.tests.fileTests.TestFiles)
+Test that any listed modules have the requisite __init__.py file. ... ok
+test_pep257 (DRP.tests.fileTests.TestFiles)
+Test pep257 conformance. ... ok
+test_pep8 (DRP.tests.fileTests.TestFiles)
+Test pep8 conformance. ... ok
+test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
+Test that the settings_example.py file is present. ... ok
+
+----------------------------------------------------------------------
+Ran 290 tests in 110.426s
+
+OK (skipped=4)

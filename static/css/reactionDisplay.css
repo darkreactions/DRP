@@ -4,6 +4,7 @@ tr:nth-child(odd)
 table{ 
     margin: auto;
     text-align: center;
+    padding-bottom: 4em;
     }
 th, td{
     padding: 1em;

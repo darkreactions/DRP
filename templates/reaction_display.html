@@ -33,15 +33,13 @@
 <th> Role </th> 
 <th> Amount </th>       
 </tr>
-<tr>     
 {% for compoundQuantity in compoundQuantities %}
+<tr>     
 <td><a href="{% url 'displayCompound' pk=compoundQuantity.compound.pk %}"> {{compoundQuantity.compound}}</a></td>
 <td>{{compoundQuantity.role}}</td>
 <td>{{compoundQuantity.amount}}</td>
 </tr>
 {% endfor %}
 </table>
-<p>
-</p>
-     <td class="right"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" target="_blank"><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative CommonsAttribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></a></td>
+     <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode" target="_blank"><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Licensed under the Creative CommonsAttribution Sharealike License" title="Licensed under the Creative Commons Attribution Sharalike License" height="31" width="88"/></a>
 {% endblock %}
