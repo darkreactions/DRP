@@ -103,13 +103,12 @@ class ReactionGenerator(object):
 
                     # Generate (numeric) descriptor values for this reaction
                     for desc, dvalue in zip(descs, desc_values_instance):
-                        #TODO Make this work for general descriptors
-                        new_desc = NumRxnDescriptorValue() 
-                        new_desc.id = None
-                        new_desc.reaction = new_rxn
-                        new_desc.descriptor = desc
-                        new_desc.value = dvalue
-                        new_desc.save()
+                        new_desc_value = dvalue.__class__()
+                        new_desc_value.id = None
+                        new_desc_value.reaction = new_rxn
+                        new_desc_value.descriptor = desc
+                        new_desc_value.value = dvalue.value
+                        new_desc_value.save()
 
                     # Populate the compound quantity fields for the reaction
                     for compound, amount, role in zip(triple, compound_amts, [7,7,6]):
