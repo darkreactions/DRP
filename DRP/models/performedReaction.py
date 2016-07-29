@@ -37,13 +37,21 @@ class PerformedReactionQuerySet(ReactionQuerySet):
         model = PerformedReaction if model is None else model
         super(PerformedReactionQuerySet, self).__init__(model=model, **kwargs)
 
+    def valid(self):
+        """Return only the valid subset of these reactions."""
+        return self.filter(valid=True).exclude(compounds=None).exclude(compoundquantity__amount=None).exclude(compoundquantity__role=None).exclude(compoundquantity__compound=None)
+
 
 class PerformedReactionManager(ReactionManager):
     """A custom manager for performed reactions."""
 
     def get_queryset(self):
         """Return the correct custom queryset."""
-        return PerformedReactionQuerySet(model=PerformedReaction)
+        return PerformedReactionQuerySet(model=self.model)
+
+    def valid(self):
+        """Return only the valid reactions."""
+        return self.get_queryset().valid()
 
 
 class PerformedReaction(Reaction):

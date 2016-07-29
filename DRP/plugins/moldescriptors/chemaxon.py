@@ -186,6 +186,10 @@ def setup_pHdependentDescriptors(_descriptorDict):
     pH_vals = DRP.models.NumRxnDescriptorValue.objects.filter(descriptor__heading='reaction_pH', reaction__performedreaction__valid=True).exclude(
         value=None).order_by('value').values_list('value', flat=True).distinct()
     for descriptor, d in _pHDependentDescriptors.items():
+        d_copy = d.copy()
+        d_copy['name'] += ' for nominal structure'
+        _descriptorDict[descriptor + '_nominal'] = d_copy
+
         for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility
             d_copy = d.copy()
@@ -195,23 +199,26 @@ def setup_pHdependentDescriptors(_descriptorDict):
     descriptorDict = setup(_descriptorDict)
 
     _cxcalcpHCommandStems = {
-        'avgpol_pH{}': 'avgpol -H {}',
-        'molpol_pH{}': 'molpol -H {}',
-        'vanderwaals_pH{}': 'vdwsa -H {}',
-        'asa_pH{}': 'molecularsurfacearea -t ASA -H {}',
-        'asa+_pH{}': 'molecularsurfacearea -t ASA+ -H {}',
-        'asa-_pH{}': 'molecularsurfacearea -t ASA- -H {}',
-        'asa_hydrophobic_pH{}': 'molecularsurfacearea -t ASA_H -H {}',
-        'asa_polar_pH{}': 'molecularsurfacearea -t ASA_P -H {}',
-        'hbda_acc_pH{}': 'acceptorcount -H {}',
-        'hbda_don_pH{}': 'donorcount -H {}',
-        'polar_surface_area_pH{}': 'polarsurfacearea -H {}',
+        'avgpol': 'avgpol',
+        'molpol': 'molpol',
+        'vanderwaals': 'vdwsa',
+        'asa': 'molecularsurfacearea -t ASA',
+        'asa+': 'molecularsurfacearea -t ASA+',
+        'asa-': 'molecularsurfacearea -t ASA-',
+        'asa_hydrophobic': 'molecularsurfacearea -t ASA_H',
+        'asa_polar': 'molecularsurfacearea -t ASA_P',
+        'hbda_acc': 'acceptorcount',
+        'hbda_don': 'donorcount',
+        'polar_surface_area': 'polarsurfacearea',
     }
 
     for key, command in _cxcalcpHCommandStems.items():
+        # nominal structure
+        cxcalcCommands["{}_nominal".format(key)] = command
+
         for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility
-            cxcalcCommands[key.format(pH_string)] = command.format(pH)
+            cxcalcCommands["{}_pH{}".format(key, pH_string)] = "{} -H {}".format(command, pH)
 
     if len(cxcalcCommands) != len(_descriptorDict):
         raise RuntimeError(

@@ -25,3 +25,4 @@ metrics/*
 
 
 *.bak
+*.pynb

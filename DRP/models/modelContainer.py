@@ -316,8 +316,8 @@ class ModelContainer(models.Model):
             for sm in self.statsmodel_set.all():
                 statsModel = StatsModel(
                     container=m, trainingSet=sm.trainingSet)
-                if predictors is not None or responses is not None:
-                    inputFile = sm.inputFile
+                if set(m.descriptors) == set(self.descriptors) and set(m.outcomeDescriptors) == set(self.outcomeDescriptors):
+                    statsModel.inputFile = sm.inputFile
                 statsModel.save()
                 statsModel.testSets = sm.testSets.all()
         else:
