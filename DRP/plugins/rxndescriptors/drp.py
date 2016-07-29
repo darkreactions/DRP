@@ -1,22 +1,25 @@
 """Basic reaction descriptors calculation module."""
-import DRP
+import logging
 from itertools import chain
+
+import xxhash
 from numpy import mean, average as wmean
 from scipy.stats import gmean
 from django.db.models import Sum
-from .utils import setup
-import xxhash
-from DRP.plugins.moldescriptors.chemaxon import _pHDependentDescriptors
-import logging
-logger = logging.getLogger(__name__)
 
-elements = DRP.chemical_data.elements
+import DRP
+from DRP.plugins.moldescriptors.chemaxon import _pHDependentDescriptors
+from .utils import setup
+from DRP.chemical_data import elements
+
+logger = logging.getLogger(__name__)
 
 calculatorSoftware = 'DRP'
 # number of values to create at a time. Should probably be <= 5000
 create_threshold = 5000
 
 _descriptorDict = {}
+
 
 # The following adds descriptors to the dictionary in an automated way to
 # save on voluminous code
@@ -718,3 +721,5 @@ def _calculateRxnpH(reaction, descriptorDict, _reaction_pH_Descriptors, verbose=
                     vals_to_create.append(reaction_pH_dv)
 
     return vals_to_create
+
+

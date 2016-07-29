@@ -6,6 +6,8 @@ from DRP.models import PerformedReaction, ModelContainer, Descriptor
 from .decorators import createsPerformedReactionSetOrd, createsPerformedReactionSetBool
 from .drpTestCase import DRPTestCase, runTests
 from django.conf import settings
+from django.core.management import call_command
+
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
@@ -74,6 +76,11 @@ class WekaNBKFTest(ModelTest):
     modelLibrary = "weka"
     modelTool = "NaiveBayes"
     splitter = "KFoldSplitter"
+
+
+
+class managementCommandTest():
+    call_command("build_model", "-p 'reaction_temperature'")
 
 
 suite = unittest.TestSuite([

@@ -50,6 +50,7 @@ def cleanUpDatabase():
         keepDescriptors += [plugin.descriptorDict[key]
                             .descriptor_ptr.pk for key in plugin.descriptorDict]
     for plugin in rxnDescriptorPlugins:
+        print(plugin)
         keepDescriptors += [plugin.descriptorDict[key]
                             .descriptor_ptr.pk for key in plugin.descriptorDict]
     DRP.models.Descriptor.objects.exclude(pk__in=keepDescriptors).delete()
