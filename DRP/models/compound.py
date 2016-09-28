@@ -21,10 +21,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-descriptorPlugins = [importlib.import_module(plugin) for
-                     plugin in settings.MOL_DESCRIPTOR_PLUGINS]
-# This prevents a cyclic dependency problem
-
 
 def elementsFormatValidator(molFormula):
     """A validator for molecular formulae."""
@@ -167,15 +163,6 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             for row in super(CompoundQuerySet, self).rows(expanded):
                 yield row
 
-    def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
-        """Calculate descriptors for the current molecule queryset."""
-        for plugin in descriptorPlugins:
-            if plugins is None or plugin.__name__ in plugins:
-                if verbose:
-                    logging.info("Calculating for plugin: {}".format(plugin))
-                plugin.calculate_many(self, verbose=verbose, **kwargs)
-                if verbose:
-                    logging.info("Done with plugin: {}\n".format(plugin))
 
 
 class CompoundManager(models.Manager):

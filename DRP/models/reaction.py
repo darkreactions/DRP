@@ -18,8 +18,6 @@ import logging
 
 logger = logging.getLogger()
 
-descriptorPlugins = [importlib.import_module(plugin) for
-                     plugin in settings.RXN_DESCRIPTOR_PLUGINS]
 
 
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
@@ -193,20 +191,6 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                 pk = row.pk
                 yield row
             gc.collect()
-
-    def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
-        """Force the calculation of reaction descriptors for a group of reactions."""
-        if verbose:
-            logger.info(
-                "Calculating descriptors for {} reactions".format(self.count()))
-        for plugin in descriptorPlugins:
-            if plugins is None or plugin.__name__ in plugins:
-                if verbose:
-                    logger.info("Calculating for plugin: {}".format(plugin))
-                plugin.calculate_many(self, verbose=verbose, **kwargs)
-                if verbose:
-                    logger.info("Done with plugin: {}\n".format(plugin))
-
 
 class ReactionManager(models.Manager):
     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs."""
