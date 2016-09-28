@@ -5,6 +5,7 @@ from .rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescripto
 # Needed to allow for circular dependency.
 import DRP.models
 import DRP.models.performedReaction
+import uuid
 
 
 class RxnDescriptorValueQuerySet(models.query.QuerySet):
@@ -25,6 +26,11 @@ class RxnDescriptorValueManager(models.Manager):
         """Return the correct queryset class."""
         return RxnDescriptorValueQuerySet(self.model, using=self._db)
 
+def rxnUid():
+    uid = uuid.uuid4()
+    while CatRxnDescriptorValue.objects.filter(uid=uid).count() > 0 or BoolRxnDescriptorValue.objects.filter(uid=uid).count() > 0 or NumRxnDescriptorValue.objects.filter(uid=uid).count() > 0 or OrdRxnDescriptorValue.objects.filter(uid=uid).count() > 0:
+        uid = uuid.uuid4()
+    return uid
 
 class RxnDescriptorValue(models.Model):
     """A class to contain Relationships between Reactions and their descriptors."""
@@ -33,6 +39,7 @@ class RxnDescriptorValue(models.Model):
         app_label = "DRP"
         abstract = True
 
+    uid = models.CharField(max_length=36, default=rxnUid, primary_key=True)
     objects = RxnDescriptorValueManager()
     reaction = models.ForeignKey("DRP.Reaction", unique=False)
 

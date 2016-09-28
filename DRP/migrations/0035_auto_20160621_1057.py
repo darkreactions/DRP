@@ -8,11 +8,12 @@ def fix_sql_mess(apps, schema_editor):
     constraints = schema_editor._constraint_names(Compound, ["labGroup_id", "CSID",], unique=True)
     if len(constraints) > 1:
         raise RuntimeError("This has not fixed the problem!")
-    schema_editor.execute(schema_editor._delete_constraint_sql(
-            schema_editor.sql_delete_index,
-            Compound,
-            constraints[0]
-        ))
+    elif len(constraints) == 1:
+        schema_editor.execute(schema_editor._delete_constraint_sql(
+                schema_editor.sql_delete_index,
+                Compound,
+                constraints[0]
+            ))
 
 
 class Migration(migrations.Migration):

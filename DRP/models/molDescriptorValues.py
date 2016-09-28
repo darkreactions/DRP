@@ -4,7 +4,7 @@ from .descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue
 # from Compound import DRP.Compound - retain this line for clarity
 from django.core.exceptions import ValidationError
 import DRP.models
-
+import uuid
 
 class MolDescriptorValueQuerySet(models.query.QuerySet):
     """Class to represent a group of Molecular Descriptor Values."""
@@ -28,6 +28,11 @@ class MolDescriptorValueManager(models.Manager):
         """Return the custom queryset."""
         return MolDescriptorValueQuerySet(self.model, using=self._db)
 
+def molUid():
+    uid = uuid.uuid4()
+    while CatMolDescriptorValue.objects.filter(uid=uid).count() > 0 or BoolMolDescriptorValue.objects.filter(uid=uid).count() > 0 or NumMolDescriptorValue.objects.filter(uid=uid).count() > 0 or OrdMolDescriptorValue.objects.filter(uid=uid).count() > 0:
+        uid = uuid.uuid4()
+    return uid
 
 class MolDescriptorValue(models.Model):
     """The django model representing the value of a given descriptor for a given compound."""
@@ -36,6 +41,8 @@ class MolDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
+
+    uid = models.CharField(max_length=36, default=molUid, primary_key=True)
     objects = MolDescriptorValueManager()
     compound = models.ForeignKey('DRP.Compound')
 
