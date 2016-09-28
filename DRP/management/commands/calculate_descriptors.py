@@ -102,6 +102,7 @@ class Command(BaseCommand):
         if not only_compounds:
             with transaction.atomic():
                 reactions = Reaction.objects.order_by('pk').exclude(calculating=True)
+                reactions = reactions.exclude(compound__dirty=True)
                 if only_dirty
                     reactions = reactions.objects.filter(dirty=True) 
                 if only_reactions:
