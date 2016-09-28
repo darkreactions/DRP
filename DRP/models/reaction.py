@@ -242,13 +242,6 @@ class Reaction(models.Model):
     # management commands
     calcDescriptors = True
 
-    def save(self, calcDescriptors=False, *args, **kwargs):
-        """Custom save method gives the option to recalculate the descriptors."""
-        super(Reaction, self).save(*args, **kwargs)
-        if calcDescriptors and self.calcDescriptors:
-            for plugin in descriptorPlugins:
-                plugin.calculate(self)
-
     @property
     def descriptorValues(self):
         """Return all the descriptor values for this reaction. This should be turned into a multiqueryset."""

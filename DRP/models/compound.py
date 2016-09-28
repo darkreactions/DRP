@@ -281,21 +281,6 @@ class Compound(models.Model):
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
 
-    @transaction.atomic
-    def save(self, calcDescriptors=True, invalidateReactions=True, *args, **kwargs):
-        """Save the compound, invalidating any consequent objects like reactions and models."""
-        if self.pk is not None and invalidateReactions:
-            for reaction in self.reaction_set.all():
-                reaction.save()  # descriptor recalculation
-                try:
-                    reaction.performedreaction.save()  # invalidate models
-                except DRP.models.performedReaction.performedReaction.DoesNotExist:
-                    pass  # it doesn't matter
-        super(Compound, self).save(*args, **kwargs)
-        if calcDescriptors and self.calcDescriptors:
-            for plugin in descriptorPlugins:
-                plugin.calculate(self)
-
     @property
     def descriptorValues(self):
         """Return an iterable of all descriptor values for this compound."""
