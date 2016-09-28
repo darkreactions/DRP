@@ -222,6 +222,12 @@ class Compound(models.Model):
         LabGroup, verbose_name="Lab Groups", through="DRP.CompoundGuideEntry")
     """Tells us whose compound guide this appears in."""
 
+    # These three fields are used to govern when descriptor calculation procedures, which are now
+    # asynchronous with the save operation
+    dirty = models.BooleanField(default=True)
+    calculating = models.BooleanField(default=False)
+    recalculate = models.BooleanField(default=False)
+
     formula = models.CharField(
         max_length=500,
         blank=True,

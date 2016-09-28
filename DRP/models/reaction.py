@@ -233,6 +233,11 @@ class Reaction(models.Model):
     compounds = models.ManyToManyField(Compound, through="CompoundQuantity")
     notes = models.TextField(blank=True)
     labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
+    # These three fields are used to govern when descriptor calculation procedures, which are now
+    # asynchronous with the save operation
+    dirty = models.BooleanField(default=True)
+    calculating = models.BooleanField(default=False)
+    recalculate = models.BooleanField(default=False)
     # this is to cope with a hideous problem in xml serialization in the
     # management commands
     calcDescriptors = True
