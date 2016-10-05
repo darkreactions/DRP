@@ -40,7 +40,7 @@ class Command(BaseCommand):
         s = requests.Session()
         s.get(settings.MAIN_SERVER + '/login.html')
         r = s.post(settings.MAIN_SERVER + '/login.html', data={'username': settings.MAIN_SERVER_USER,
-                                                               'password': settings.MAIN_SERVER_PASS, 'csrfmiddlewaretoken': s.cookies.get_dict()['csrftoken']})
+                                                               'password': settings.MAIN_SERVER_PASS, 'csrfmiddlewaretoken': s.cookies.get_dict()['csrftoken']}, headers={'referer':settings.MAIN_SERVER + '/login.html'})
         if r.status_code == requests.codes.ok:
             apiUrl = settings.MAIN_SERVER + '/database/import/apiv1/'
             if reaction_limit is None:
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                 pr2 = DRP.models.PerformedReaction.objects.get(pk=pr.object.pk)
                 try:
                     pr2.duplicateOf = pr.object.duplicateOf
-                    pr2.save(calcDescriptors=False)
+                    pr2.save()
                 except DRP.models.PerformedReaction.DoesNotExist as e:
                     pass
 
@@ -111,4 +111,6 @@ class Command(BaseCommand):
                             "An invalid decimal conversion occured. Value is: {} from CompoundQuantity object {}".format(cq.amount, cq))
                     raise e
         else:
+            print(s.cookies.get_dict())
+            print(r.text)
             r.raise_for_status()

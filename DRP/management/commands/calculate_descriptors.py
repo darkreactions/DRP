@@ -2,9 +2,10 @@
 from django.core.management.base import BaseCommand
 from DRP.models import Reaction, Compound
 from django import db
+from django.conf import settings
 import logging
+import importlib
 from django.db import transaction
-
 molDescriptorPlugins = [importlib.import_module(plugin) for
                      plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 
@@ -88,11 +89,11 @@ class Command(BaseCommand):
         if not only_reactions:
             with transaction.atomic():
                 compounds = Compound.objects.order_by('pk').filter(pk__gte=start).exclude(calculating=True)
-                if only_dirty
+                if only_dirty:
                     compounds = compounds.objects.filter(dirty=True) 
                 compounds.update(calculating=True)
             while compounds.count() > 1:
-                calculate_descriptors(compounds, molDescriptorPlugins
+                calculate_descriptors(compounds, molDescriptorPlugins,
                     verbose=verbose, whitelist=whitelist, plugins=plugins)
                 with transaction.atomic():
                     compounds = compounds.all() # Refresh the queryset
@@ -103,7 +104,7 @@ class Command(BaseCommand):
             with transaction.atomic():
                 reactions = Reaction.objects.order_by('pk').exclude(calculating=True)
                 reactions = reactions.exclude(compound__dirty=True)
-                if only_dirty
+                if only_dirty:
                     reactions = reactions.objects.filter(dirty=True) 
                 if only_reactions:
                     reactions = reactions.filter(pk__gte=start)
@@ -113,7 +114,7 @@ class Command(BaseCommand):
                     reactions = reactions.exclude(performedreaction=None)
                 reactions.update(calculating=True)
             while reactions.count() > 1:
-                calculate_descriptors(reactions, rxnDescriptorPlugins
+                calculate_descriptors(reactions, rxnDescriptorPlugins,
                     verbose=verbose, whitelist=whitelist, plugins=plugins)
                 with transaction.atomic():
                     reactions = reactions.all() #refresh the qs
