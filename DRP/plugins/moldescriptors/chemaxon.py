@@ -11,13 +11,28 @@ from collections import OrderedDict
 from subprocess import Popen, PIPE
 from itertools import chain
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("DRP")
 
 # The version of ChemAxon currently in use.
 # Should be matched by a entry in the dictionary in the settings file
 # This version is reflected in, but not necessarily the same as, the
 # descriptor versions
-CHEMAXON_VERSION = '16.5'
+MIN_CHEMAXON_VERSION = '16.5'
+MAX_CHEMAXON_VERSION = '16.10'
+
+MIN_CHEMAXON_VERSION = tuple(int(element) for element in MIN_CHEMAXON_VERSION.split('.'))
+MAX_CHEMAXON_VERSION = tuple(int(element) for element in MAX_CHEMAXON_VERSION.split('.'))
+
+CHEMAXON_VERSION = None
+for key in settings.CHEMAXON_DIR.keys():
+    tuplekey = tuple(int(element) for element in key.split('.'))
+    if tuplekey >= MIN_CHEMAXON_VERSION and tuplekey <= MAX_CHEMAXON_VERSION:
+        if CHEMAXON_VERSION == None or tuple(int(element) for element in CHEMAXON_VERSION.split('.')) < tuplekey:
+             CHEMAXON_VERSION = key
+
+if CHEMAXON_VERSION == None:
+    raise ValueError('There must be a chemaxon install with versions between {} and {}'.format(MIN_CHEMAXON_VERSION, MAX_CHEMAXON_VERSION))
+
 
 calculatorSoftware = 'ChemAxon_cxcalc'
 # number of values to create at a time. Should probably be <= 5000
@@ -325,10 +340,10 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
         if calcProc.returncode == 0:
             res, resErr = calcProc.communicate()
             if not resErr:
-                resLines = res.split('\n')
+                resLines = res.decode('UTF-8').split('\n')
                 if len(resLines) == 2:  # last line is blank
                     resList = resLines[0].split('\t')
-                    commandKeys = cxcalcCommands.keys()
+                    commandKeys = tuple(cxcalcCommands.keys())
 
                     if len(resList) == len(commandKeys):
                         for i in range(len(resList)):
