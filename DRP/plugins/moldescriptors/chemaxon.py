@@ -195,6 +195,14 @@ cxcalcCommands = OrderedDict()
 for key in _descriptorDict.keys():
     cxcalcCommands[key] = key
 
+_descriptorDict['vdw_area_N_ratio'] = {
+    'type': 'num',
+    'name': 'vdw area divided by nitrogen count',
+    'calculatorSoftware': 'drp_chemaxon',
+    'calculatorSoftwareVersion':'16_5',
+    'maximum':None,
+    'minimum':0
+}
 
 def setup_pHdependentDescriptors(_descriptorDict):
     """Set up for calculation of pH dependent descriptors."""
@@ -235,21 +243,17 @@ def setup_pHdependentDescriptors(_descriptorDict):
             pH_string = str(pH).replace('.', '_')  # R compatibility
             cxcalcCommands["{}_pH{}".format(key, pH_string)] = "{} -H {}".format(command, pH)
 
-    if len(cxcalcCommands) != len(_descriptorDict):
-        raise RuntimeError(
-            "Need the same number of cxcalc commands as descriptors being calculated")
-
     return descriptorDict
 
 
-def delete_descriptors(compound_set, descriptorDict, cxcalcCommands):
+def delete_descriptors(compound_set, descriptorDict):
     """Bulk deletion of descriptors."""
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type'] == 'num'],
-                                                    compound__in=compound_set).delete(recalculate_reactions=False)
-    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type'] == 'ord'],
-                                                    compound__in=compound_set).delete(recalculate_reactions=False)
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in cxcalcCommands.keys() if _descriptorDict[ck]['type'] == 'bool'],
-                                                     compound__in=compound_set).delete(recalculate_reactions=False)
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'num'],
+                                                    compound__in=compound_set).delete()
+    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if  _descriptorDict[ck]['type'] == 'ord'],
+                                                    compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'bool'],
+                                                     compound__in=compound_set).delete()
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
@@ -257,17 +261,17 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     if verbose:
         logger.info("Creating descriptor dictionary")
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
-    if whitelist is not None:
-        filtered_cxcalcCommands = {k: cxcalcCommands[
-            k] for k in cxcalcCommands.keys() if k in whitelist}
+    if whitelist is None:
+        descriptorDict = {k:v for k,v in descriptorDict.items()}
     else:
-        filtered_cxcalcCommands = cxcalcCommands
+        descriptorDict = {k:v for k,v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
-    delete_descriptors(compound_set, descriptorDict, cxcalcCommands)
+    delete_descriptors(compound_set, descriptorDict)
 
     num_to_create = []
     ord_to_create = []
+    filtered_cxcalcCommands = {k:v for k,v in cxcalcCommands.items() if k in descriptorDict.keys()}
     for i, compound in enumerate(compound_set):
         if verbose:
             logger.info("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
@@ -297,14 +301,14 @@ def calculate(compound, verbose=False, whitelist=None):
     if verbose:
         logger.info("Creating descriptor dictionary")
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
-    if whitelist is not None:
-        filtered_cxcalcCommands = {k: cxcalcCommands[
-            k] for k in cxcalcCommands.keys() if k in whitelist}
+    if whitelist is None:
+        descriptorDict = {k:v for k,v in descriptorDict.items()}
     else:
-        filtered_cxcalcCommands = cxcalcCommands
+        descriptorDict = {k:v for k,v in descriptorDict.items() if k in whitelist}
     if verbose:
-        logger.info("Deleting old descriptor values")
+        logger.info("Deleting old descriptor values.")
     delete_descriptors([compound], descriptorDict, cxcalcCommands)
+    filtered_cxcalcCommands = {k:v for k,v in cxcalcCommands.items() if k in descriptorDict.keys()}
     if verbose:
         logger.info("Creating new descriptor values.")
     num_to_create, ord_to_create = _calculate(
@@ -350,13 +354,22 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
                             if _descriptorDict[commandKeys[i]]['type'] == 'num':
                                 n = DRP.models.NumMolDescriptorValue(descriptor=descriptorDict[commandKeys[
                                                                      i]], compound=compound, value=float(resList[i]))
+                                if commandKeys[i] == 'vanderwaals' and 'N' in compound.elements.keys(): # I hate this special case, but this might not stick around so I'm leaving it for now
+                                    n2 = DRP.models.NumMolDescriptorValue(descriptor=descriptorDict['vdw_area_N_ratio'], compound=compound, 
+                                                                     value= float(resList[i])/compound.elements['N']['stoichiometry'])  
+                                else:
+                                    n2=None
                                 try:
                                     n.full_clean()
+                                    if n2 is not None:
+                                        n2.full_clean()
                                 except ValidationError as e:
                                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
                                         n.value, n.compound, n.descriptor, e))
                                     n.value = None
                                 num_to_create.append(n)
+                                if n2 is not None:
+                                    num_to_create.append(n2)
                             elif _descriptorDict[commandKeys[i]]['type'] == 'ord':
                                 o = DRP.models.OrdMolDescriptorValue(descriptor=descriptorDict[commandKeys[
                                                                      i]], compound=compound, value=int(resList[i]))

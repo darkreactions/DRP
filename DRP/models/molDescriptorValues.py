@@ -6,32 +6,30 @@ from django.core.exceptions import ValidationError
 import DRP.models
 import uuid
 
-class MolDescriptorValueQuerySet(models.query.QuerySet):
-    """Class to represent a group of Molecular Descriptor Values."""
+#class MolDescriptorValueQuerySet(models.query.QuerySet):
+#    """Class to represent a group of Molecular Descriptor Values."""
 
-    def delete(self, recalculate_reactions=True):
-        """Deletion of a queryset of Descriptor Values should change calculations which arise from them."""
-        if recalculate_reactions:
-            compounds = set(d.compound for d in self)
-        super(MolDescriptorValueQuerySet, self).delete()
-        if recalculate_reactions:
-            for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
-                reaction.save()  # recalculate descriptors
-            for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
-                reaction.save()  # invalidate models
+#    def delete(self, recalculate_reactions=True):
+#        """Deletion of a queryset of Descriptor Values should change calculations which arise from them."""
+#        if recalculate_reactions:
+#            compounds = set(d.compound for d in self)
+#        super(MolDescriptorValueQuerySet, self).delete()
+#        if recalculate_reactions:
+#            for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
+#                reaction.save()  # recalculate descriptors
+#            for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
+#                reaction.save()  # invalidate models
 
 
 class MolDescriptorValueManager(models.Manager):
     """Manager class to return the custom queryset for MolDescriptorValues."""
-
-    def get_queryset(self):
-        """Return the custom queryset."""
-        return MolDescriptorValueQuerySet(self.model, using=self._db)
+    pass
+#    def get_queryset(self):
+#        """Return the custom queryset."""
+#        return MolDescriptorValueQuerySet(self.model, using=self._db)
 
 def molUid():
-    uid = uuid.uuid4()
-    while CatMolDescriptorValue.objects.filter(uid=uid).count() > 0 or BoolMolDescriptorValue.objects.filter(uid=uid).count() > 0 or NumMolDescriptorValue.objects.filter(uid=uid).count() > 0 or OrdMolDescriptorValue.objects.filter(uid=uid).count() > 0:
-        uid = uuid.uuid4()
+    uid = uuid.uuid1()
     return uid
 
 class MolDescriptorValue(models.Model):

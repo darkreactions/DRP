@@ -102,8 +102,12 @@ class Command(BaseCommand):
                 compounds.update(calculating=True)
             logger.debug('Compounds count is {}'.format(compounds.count()))
             while compounds.count() > 1:
-                calculate_descriptors(compounds, molDescriptorPlugins,
-                    verbose=verbose, whitelist=whitelist, plugins=plugins)
+                try:
+                    calculate_descriptors(compounds, molDescriptorPlugins,
+                        verbose=verbose, whitelist=whitelist, plugins=plugins)
+                except Exception as e:
+                    compounds.update(calculating=False)
+                    raise e
                 with transaction.atomic():
                     compounds = compounds.all() # Refresh the queryset
                     compounds.filter(recalculate=False).update(dirty=False, calculating=False)
@@ -125,8 +129,12 @@ class Command(BaseCommand):
                 reactions = Reaction.objects.filter(id__in=(reaction.id for reaction in reactions))
                 reactions.update(calculating=True)
             while reactions.count() > 1:
-                calculate_descriptors(reactions, rxnDescriptorPlugins,
-                    verbose=verbose, whitelist=whitelist, plugins=plugins)
+                try:
+                    calculate_descriptors(reactions, rxnDescriptorPlugins,
+                        verbose=verbose, whitelist=whitelist, plugins=plugins)
+                except Exception as e:
+                    reactions.update(calculating=False)
+                    raise e
                 with transaction.atomic():
                     reactions = reactions.all() #refresh the qs
                     reactions.filter(recalculate=False).update(dirty=False, calculating=False)
