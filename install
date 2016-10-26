@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#WARNING: MOVE THIS FILE SOMEWHERE ELSE!
+
+#Install background software
+apt-get install python3 python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy python3-pillow;
+
+pip3 install django==1.8 numpy pygraphviz mysqlclient;
+
+#install this software
+
+git clone git@github.com:darkreactions/DRP;
+cd DRP;
+git checkout "$1";
+
+#TODO: uwsgi and nginx config files
+#TODO: settings file.
+
+##install rdkit
+sudo apt-get install bison cmake flux build-essential sqlite3 libsqlite3-dev libboost-all-dev;
+pip3 install cairocffi;
+pip3 install chemspipy requests pep8 pep257 xxhash;
+
+
+git clone https://github.com/shadowadler/rdkit.git;
+cd rdkit;
+
+export RDBASE=$(pwd);
+
+export LD_LIBRARY_PATH="$(pwd)/lib";
+
+export PYTHONPATH="$(pwd)/lib";
+
+mkdir build;
+
+cd build;
+
+cmake -DRDK_BUILD_INCHI_SUPPORT=ON -D PYTHON_LIBRARY=/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu/libpython3.4.so -D PYTHON_INCLUDE_DIR=/usr/include/python3.4/ -D PYTHON_EXECUTABLE=/usr/bin/python3.4 -DBOOST_ROOT=/usr/lib/x86_64-linux-gnu/ ..;
+
+make install
+unset LD_LIBRARY_PATH;
+unset RDBASE;
+unset PYTHONPATH;
+
+cd ../rdkit;
+
+sudo ln -s "$(pwd)" /usr/lib/python3.4/rdkit;
+
+cd ../lib;
+
+sudo cp -i *.so.2 /usr/lib;
+
+python3.4 -c "import rdkit.Chem";
