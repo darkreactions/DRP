@@ -8,7 +8,8 @@ import rdkit.Chem
 from rdkit.Chem import Descriptors
 import logging
 from django.core.exceptions import ValidationError
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('DRP')
+tracer = logging.getLogger('DRP.tracer')
 
 calculatorSoftware = 'DRP_rdkit'
 
@@ -40,6 +41,7 @@ for i in range(0, 9):
                 'calculatorSoftware':calculatorSoftware,
                 'calculatorSoftwareVersion':'1_9',
             }
+tracer.debug('Setting up lazydescdict')
 descriptorDict = setup(_descriptorDict)
 
 pt = rdkit.Chem.GetPeriodicTable()
@@ -47,6 +49,7 @@ pt = rdkit.Chem.GetPeriodicTable()
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
     """Calculate in bulk."""
+    tracer.debug('Calculating Many')
     whitelist = descriptorDict.keys() if whitelist is None else whitelist
     DRP.models.NumMolDescriptorValue.objects.filter(
             compound__in=compound_set,
@@ -60,9 +63,11 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
         if verbose:
             logger.info("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
         nums, bools = calculate(compound, verbose=verbose, whitelist=whitelist)
-        resnums += resnums
+        resnums += nums
         resbools += bools
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(resnums)
+    for n in resnums:
+        n.save()
+#    DRP.models.NumMolDescriptorValue.objects.bulk_create(resnums)
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(resbools)
     
 
@@ -90,6 +95,7 @@ def calculate(compound, verbose=False, whitelist=None):
     heading = 'mw'
     nums = []
     bools = []
+    tracer.debug('Calculate function.')
     if whitelist is None or heading in whitelist:
         mw = sum(pt.GetAtomicWeight(pt.GetAtomicNumber(str(element))) * float(
             compound.elements[element]['stoichiometry']) for element in compound.elements)
@@ -101,22 +107,25 @@ def calculate(compound, verbose=False, whitelist=None):
     mol = rdkit.Chem.MolFromSmiles(compound.smiles)
     if mol is None:
         logger.warning('Compound {} has no smiles. Skipping calculations for rdkit molecular descriptors.')
-    else:
-        if whitelist is None or 'rbc' in whitelist:
-            rbc = Descriptors.NumRotatableBonds(mol)
-            v = DRP.models.NumMolDescriptorValue(value=rbc, descriptor=descriptorDict['rbc'], compound=compound)
-            validateNumeric(v)
+    elif whitelist is None or 'rbc' in whitelist:
+        rbc = Descriptors.NumRotatableBonds(mol)
+        v = DRP.models.NumMolDescriptorValue(value=rbc, descriptor=descriptorDict['rbc'], compound=compound)
+        validateNumeric(v)
+    elif whitelist is None or 'Chi0v' in whitelist:
             chi0v = Descriptors.Chi0v(mol)
             v = DRP.models.NumMolDescriptorValue(value=chi0v, descriptor=descriptorDict['Chi0v'], compound=compound)
             validateNumeric(v)
-
-        for element in inorgElements:
-            oxStates = []
-            for atom in mol.GetAtoms(): #weird capitalisation is weird, but correct.
-                if atom.GetSymbol() == element:
-                    oxStates.append(recurseSumCharge(atom) + atom.GetTotalValence())
-            for ox in range(0,9):
-                v = DRP.models.BoolMolDescriptorValue(value=ox in oxStates, descriptor=descriptorDict['{}@{}'.format(element, ox)], compound=compound)
+    for element in inorgElements.keys():
+        oxStates = []
+        for atom in mol.GetAtoms(): #weird capitalisation is weird, but correct.
+            if atom.GetSymbol() == element:
+                oxStates.append(recurseSumCharge(atom) + atom.GetTotalValence())
+        for ox in range(0,9):
+            oxString = '{}@{}'.format(element, ox)
+            if (whitelist is None) or (oxString in whitelist):
+                v = DRP.models.BoolMolDescriptorValue(value=ox in oxStates, descriptor=descriptorDict[oxString], compound=compound)
                 validateNumeric(v)
                 bools.append(v)
+    tracer.debug("here are nums: {}".format(str(nums)))
+    tracer.debug("here are bools: {}".format(str(bools)))
     return nums, bools

@@ -733,8 +733,8 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
         self.payload['createOrdDescVals-0-value'] = '0'
         self.payload['createOrdDescVals-0-DELETE'] = 'on'
         self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(
-            reaction=rxn, descriptor__heading='deliciousness').id
-        self.payload['createOrdDescVals-0-reaction'] = rxn.id
+            reaction=rxn, descriptor__heading='deliciousness').pk
+        self.payload['createOrdDescVals-0-reaction'] = rxn.pk
         super(DeleteReactionDescVal, self).setUp()
 
     def test_deleted(self):
@@ -771,8 +771,8 @@ class EditReactionDescValInvalid(PostHttpSessionTest):
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '-1'
         self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(
-            reaction=rxn, descriptor__heading='deliciousness').id
-        self.payload['createOrdDescVals-0-reaction'] = rxn.id
+            reaction=rxn, descriptor__heading='deliciousness').pk
+        self.payload['createOrdDescVals-0-reaction'] = rxn.pk
         super(EditReactionDescValInvalid, self).setUp()
 
     def test_created(self):

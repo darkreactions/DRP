@@ -9,7 +9,7 @@ from django.conf import settings
 import DRP
 import logging
 
-logger = logging.getLogger(DRP.management)
+logger = logging.getLogger('DRP.management')
 
 
 class Command(BaseCommand):
