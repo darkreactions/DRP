@@ -657,7 +657,7 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
         rxnId = PerformedReaction.objects.get(reference='turkish_delight').id
         self.url = self.url + \
             reverse('createOrdDescVals', kwargs={'rxn_id': rxnId})
-        self.payload['createOrdDescVals-0-id'] = ''
+        self.payload['createOrdDescVals-0-uid'] = ''
         self.payload[
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '0'
@@ -694,7 +694,7 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
         self.url = self.url + \
             reverse('createOrdDescVals', kwargs={'rxn_id': rxnId})
         self.payload['createOrdDescVals-0-reaction'] = rxnId
-        self.payload['createOrdDescVals-0-id'] = ''
+        self.payload['createOrdDescVals-0-uid'] = ''
         self.payload[
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '0'
@@ -732,7 +732,7 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness')
         self.payload['createOrdDescVals-0-value'] = '0'
         self.payload['createOrdDescVals-0-DELETE'] = 'on'
-        self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(
+        self.payload['createOrdDescVals-0-uid'] = OrdRxnDescriptorValue.objects.get(
             reaction=rxn, descriptor__heading='deliciousness').pk
         self.payload['createOrdDescVals-0-reaction'] = rxn.pk
         super(DeleteReactionDescVal, self).setUp()
@@ -770,7 +770,7 @@ class EditReactionDescValInvalid(PostHttpSessionTest):
         self.payload[
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '-1'
-        self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(
+        self.payload['createOrdDescVals-0-uid'] = OrdRxnDescriptorValue.objects.get(
             reaction=rxn, descriptor__heading='deliciousness').pk
         self.payload['createOrdDescVals-0-reaction'] = rxn.pk
         super(EditReactionDescValInvalid, self).setUp()

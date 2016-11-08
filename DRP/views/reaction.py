@@ -166,7 +166,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
             if formset.is_valid():
                 descVals = formset.save()
                 descValClass.objects.filter(
-                    id__in=[dv.id for dv in formset.deleted_objects]).delete()
+                    pk__in=[dv.pk for dv in formset.deleted_objects]).delete()
                 messages.success(
                     request, 'Reaction descriptor details successfully updated')
                 if createNext is None or 'creating' not in request.GET:
