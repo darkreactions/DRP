@@ -115,17 +115,18 @@ def calculate(compound, verbose=False, whitelist=None):
             chi0v = Descriptors.Chi0v(mol)
             v = DRP.models.NumMolDescriptorValue(value=chi0v, descriptor=descriptorDict['Chi0v'], compound=compound)
             validateNumeric(v)
-    for element in inorgElements.keys():
-        oxStates = []
-        for atom in mol.GetAtoms(): #weird capitalisation is weird, but correct.
-            if atom.GetSymbol() == element:
-                oxStates.append(recurseSumCharge(atom) + atom.GetTotalValence())
-        for ox in range(0,9):
-            oxString = '{}@{}'.format(element, ox)
-            if (whitelist is None) or (oxString in whitelist):
-                v = DRP.models.BoolMolDescriptorValue(value=ox in oxStates, descriptor=descriptorDict[oxString], compound=compound)
-                validateNumeric(v)
-                bools.append(v)
+    if mol is not None:
+        for element in inorgElements.keys():
+            oxStates = []
+            for atom in mol.GetAtoms(): #weird capitalisation is weird, but correct.
+                if atom.GetSymbol() == element:
+                    oxStates.append(recurseSumCharge(atom) + atom.GetTotalValence())
+            for ox in range(0,9):
+                oxString = '{}@{}'.format(element, ox)
+                if (whitelist is None) or (oxString in whitelist):
+                    v = DRP.models.BoolMolDescriptorValue(value=ox in oxStates, descriptor=descriptorDict[oxString], compound=compound)
+                    validateNumeric(v)
+                    bools.append(v)
     tracer.debug("here are nums: {}".format(str(nums)))
     tracer.debug("here are bools: {}".format(str(bools)))
     return nums, bools

@@ -336,7 +336,7 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
-    if not notFound:
+    if not notFound or lec != '':
         # -N ih means leave off the header row and id column
         calcProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', '-N', 'ih', lec] + [x for x in chain(
             *(command.split(' ') for command in cxcalcCommands.values()))], stdout=PIPE, stderr=PIPE, close_fds=True)
