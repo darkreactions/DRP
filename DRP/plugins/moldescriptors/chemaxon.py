@@ -322,6 +322,7 @@ def calculate(compound, verbose=False, whitelist=None):
 
 def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):
     notFound = True
+    lec = ''
     if notFound and (compound.smiles is not None and compound.smiles != ''):
         lecProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', compound.smiles,
                          'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer

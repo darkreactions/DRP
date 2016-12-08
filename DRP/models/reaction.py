@@ -168,7 +168,15 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                         i += 1
                     yield row
         else:
-            for row in super(ReactionQuerySet, self).rows(expanded):
+            for item in self.batch_iterator():
+                row = {field.name: getattr(item, field.name)
+                       for field in self.model._meta.fields}
+                i = 0
+                for compoundQ in item.compoundquantity_set.all():
+                    row['compound_{}'.format(i)] = compoundQ.compound.name
+                    row['compound_{}_role'.format(i)] = compoundQ.role.label
+                    row['compound_{}_amount'.format(i)] = compoundQ.amount
+                    i += 1
                 yield row
 
     # From https://djangosnippets.org/snippets/1949/
