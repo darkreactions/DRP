@@ -381,7 +381,6 @@ class CategoricalValidation(DRPTestCase):
         self.desc2.delete()
 
 suite = unittest.TestSuite([
-    loadTests(DescriptorsCalced),
     loadTests(DoublePluginImport),
     loadTests(MaxMinValidation),
     loadTests(MaxMinValueValidation),

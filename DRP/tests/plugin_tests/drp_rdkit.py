@@ -1,6 +1,6 @@
 '''A test suite for the drp_rdkit plugin for calculating molecular descriptors.'''
 
-import unittest
+import unittest, math, sys
 from ..drpTestCase import DRPTestCase, runTests
 from DRP.tests.decorators import createsUser, joinsLabGroup, createsChemicalClass
 from DRP.tests.decorators import createsCompound
@@ -23,7 +23,7 @@ class DescriptorCalculation(DRPTestCase):
     def test_molecularWeight(self):
         tracer.debug('MWTest')
         nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130), whitelist=['mw'])
-        self.assertEqual(nums[0].value, 181.8800)
+        self.assertTrue(math.fabs(nums[0].value - 181.8800) < 0.001, math.fabs(nums[0].value - 181.8800))
         self.assertEqual(len(bools), 0)
         drp_rdkit.descriptorDict.initialised=False
 
@@ -36,7 +36,7 @@ class DescriptorCalculation(DRPTestCase):
 
     def test_chi0v(self):
         tracer.debug('ChiTest')
-        nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130), whitelist=['rbc'])
+        nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130), whitelist=['Chi0v'])
         self.assertEqual(len(nums), 1)
         self.assertEqual(nums[0].descriptor.heading,'Chi0v')
         drp_rdkit.descriptorDict.initialised=False
