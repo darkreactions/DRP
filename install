@@ -262,7 +262,7 @@ echo "EMAIL_PORT = 587" |  tee -a  $start_dir/DRP/DRP/settings.py;
 echo "EMAIL_HOST_USER = \"$smtp_username\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
 echo "EMAIL_HOST_PASSWORD = \"$smtp_pass\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
 echo "DEFAULT_FROM_EMAIL = EMAIL_HOST_USER" |  tee -a  $start_dir/DRP/DRP/settings.py;
-echo "EMAIL_IMAP_HOST = 'imap_host'  # leave blank in production. Necessary for unit tests." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_IMAP_HOST = '$imap_host'  # leave blank in production. Necessary for unit tests." |  tee -a  $start_dir/DRP/DRP/settings.py;
 echo "EMAIL_IMAP_INBOX = 'Inbox'  # The inbox to use for email tests. Inbox for gmail" |  tee -a  $start_dir/DRP/DRP/settings.py;
 echo "SKIP_EMAIL_TESTS = False" |  tee -a  $start_dir/DRP/DRP/settings.py;
 echo "# These tests are slow, so if you haven't tweaked this" |  tee -a  $start_dir/DRP/DRP/settings.py;

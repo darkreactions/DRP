@@ -14,20 +14,6 @@ from importlib import reload
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
-@createsUser('Aslan', 'old_magic')
-@joinsLabGroup('Aslan', 'Narnia')
-@createsChemicalClass('org', 'Organic')
-@createsCompound('EtOH', 682, 'Org', 'Narnia')
-class DescriptorsCalced(DRPTestCase):
-    """Checks that when a compound is created the descriptors are created."""
-
-    def runTest(self):
-        """Run the test."""
-        self.assertEqual(1, OrdMolDescriptorValue.objects.count())
-        self.assertEqual(1, NumMolDescriptorValue.objects.count())
-        self.assertEqual(1, CatMolDescriptorValue.objects.count())
-        self.assertEqual(1, BoolMolDescriptorValue.objects.count())
-
 
 class DoublePluginImport(DRPTestCase):
     """Checks no duplicate key errors on module reload."""
