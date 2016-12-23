@@ -107,15 +107,17 @@ def calculate(compound, verbose=False, whitelist=None):
     mol = rdkit.Chem.MolFromSmiles(compound.smiles)
     if mol is None:
         logger.warning('Compound {} has no smiles. Skipping calculations for rdkit molecular descriptors.')
-    elif whitelist is None or 'rbc' in whitelist:
-        rbc = Descriptors.NumRotatableBonds(mol)
-        v = DRP.models.NumMolDescriptorValue(value=rbc, descriptor=descriptorDict['rbc'], compound=compound)
-        validateNumeric(v)
-    elif whitelist is None or 'Chi0v' in whitelist:
+    else:
+        if whitelist is None or 'rbc' in whitelist:
+            rbc = Descriptors.NumRotatableBonds(mol)
+            v = DRP.models.NumMolDescriptorValue(value=rbc, descriptor=descriptorDict['rbc'], compound=compound)
+            validateNumeric(v)
+            nums.append(v)
+        if whitelist is None or 'Chi0v' in whitelist:
             chi0v = Descriptors.Chi0v(mol)
             v = DRP.models.NumMolDescriptorValue(value=chi0v, descriptor=descriptorDict['Chi0v'], compound=compound)
             validateNumeric(v)
-    if mol is not None:
+            nums.append(v)
         for element in inorgElements.keys():
             oxStates = []
             for atom in mol.GetAtoms(): #weird capitalisation is weird, but correct.
