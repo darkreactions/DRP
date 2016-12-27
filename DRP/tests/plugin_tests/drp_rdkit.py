@@ -1,4 +1,4 @@
-'''A test suite for the drp_rdkit plugin for calculating molecular descriptors.'''
+"""A test suite for the drp_rdkit plugin for calculating molecular descriptors."""
 
 import unittest, math, sys
 from ..drpTestCase import DRPTestCase, runTests
@@ -17,10 +17,12 @@ loadTests = unittest.TestLoader().loadTestsFromTestCase
 @createsChemicalClass('inorg', 'inorganic')
 @createsCompound('VOx', 14130, 'inorg', 'Narnia')
 class DescriptorCalculation(DRPTestCase):
+    """Tests for descriptor calculations. Presently rudimentary."""
 
     deleteDescriptors=False
 
     def test_molecularWeight(self):
+        """Test for the molecular weight calculation."""
         tracer.debug('MWTest')
         nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130), whitelist=['mw'])
         self.assertTrue(math.fabs(nums[0].value - 181.8800) < 0.001, math.fabs(nums[0].value - 181.8800))
@@ -28,6 +30,7 @@ class DescriptorCalculation(DRPTestCase):
         drp_rdkit.descriptorDict.initialised=False
 
     def test_rbc(self):
+        """Test for the rotatable bond count calculation."""
         tracer.debug('RBCTest')
         nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130), whitelist=['rbc'])
         self.assertEqual(len(nums), 1)
@@ -35,6 +38,7 @@ class DescriptorCalculation(DRPTestCase):
         drp_rdkit.descriptorDict.initialised=False
 
     def test_chi0v(self):
+        """Test for teh Chi0v calculation."""
         tracer.debug('ChiTest')
         nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130), whitelist=['Chi0v'])
         self.assertEqual(len(nums), 1)
@@ -42,6 +46,7 @@ class DescriptorCalculation(DRPTestCase):
         drp_rdkit.descriptorDict.initialised=False
 
     def test_ox(self):
+        """Test the boolean descriptors for the presence of atoms in certain oxidation states."""
         tracer.debug('OxTest')
         nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130), whitelist=['V@5'])
         self.assertTrue(bools[0].value)
@@ -49,6 +54,7 @@ class DescriptorCalculation(DRPTestCase):
         drp_rdkit.descriptorDict.initialised=False
         
     def test_all(self):
+        """Test the calculation of all descriptors."""
         tracer.debug('AllTest')
         nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130))
         self.assertEqual(len(nums), 3)
@@ -62,10 +68,12 @@ class DescriptorCalculation(DRPTestCase):
 @createsCompound('VOx', 14130, 'inorg', 'Narnia')
 @createsCompound('EtOH', 682, 'org', 'Narnia')
 class MultipleDescriptorCalculation(DRPTestCase):
+    """Tests for the calculation of multiple descriptors simultaneously."""
 
     deleteDescriptors = False
 
     def test_all(self):
+        """Test the calculation of all descriptors."""
         tracer.debug('AllTest2')
         drp_rdkit.calculate_many(Compound.objects.all())
         tracer.debug("Here is a list: {}".format(str(NumMolDescriptorValue.objects.all())))
@@ -74,6 +82,7 @@ class MultipleDescriptorCalculation(DRPTestCase):
         drp_rdkit.descriptorDict.initialised=False
 
     def test_whitelist(self):
+        """Test the calculation of a whitelist of descriptors."""
         tracer.debug('WLTest')
         drp_rdkit.calculate_many(Compound.objects.all(), whitelist=['mw'])
         self.assertEqual(NumMolDescriptorValue.objects.all().count(), 2)

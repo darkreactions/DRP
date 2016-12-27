@@ -24,6 +24,7 @@ class DRPTestCase(unittest.TestCase):
     deleteDescriptors = True
 
     def __init__(self, *args, **kwargs):
+        """Break start of a test if testing mode is not set."""
         self.cleaned=False
         """Quick break if it looks like you're about to really delete things."""
         if not settings.TESTING:
@@ -32,12 +33,14 @@ class DRPTestCase(unittest.TestCase):
             super(DRPTestCase, self).__init__(*args, **kwargs)
 
     def __getattribute__(self, attribute_name):
+        """Clear the database if setting up a test."""
         if attribute_name == 'setUp' and self.cleaned == False:
             cleanUpDatabase(self.deleteDescriptors)
             self.cleaned = True
         return super(DRPTestCase, self).__getattribute__(attribute_name)
         
     def doCleanups(self):
+        """Clean the database if required."""
         self.cleaned=False
         return super(DRPTestCase, self).doCleanups()
             
@@ -45,7 +48,6 @@ class DRPTestCase(unittest.TestCase):
 
 def cleanUpDatabase(deleteDescriptors=False):
     """Truncate the whole database."""
-
     tracer.debug('Erasing DB')
     DRP.models.CompoundQuantity.objects.all().delete()
     DRP.models.Compound.objects.all().delete()

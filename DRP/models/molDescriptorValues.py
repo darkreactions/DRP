@@ -23,12 +23,14 @@ import uuid
 
 class MolDescriptorValueManager(models.Manager):
     """Manager class to return the custom queryset for MolDescriptorValues."""
+
     pass
 #    def get_queryset(self):
 #        """Return the custom queryset."""
 #        return MolDescriptorValueQuerySet(self.model, using=self._db)
 
 def molUid():
+    """Returns a unique identifier for a molecular descriptor value."""
     uid = uuid.uuid1()
     return uid
 

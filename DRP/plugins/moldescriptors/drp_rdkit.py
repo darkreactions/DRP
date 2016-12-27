@@ -73,6 +73,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 
 def validateNumeric(v):
+    "Validate a numeric descriptor without breaking the calculation script."
     try:
         v.clean()
     except ValidationError as e:
@@ -81,6 +82,7 @@ def validateNumeric(v):
         v.value = None
 
 def recurseSumCharge(atom, already_seen_ids=None):
+    """Calculate the formal charge for atoms in an inorganic compound arising from an ingested smiles."""
     if already_seen_ids is None:
         already_seen_ids = set()
     already_seen_ids.add(atom.GetIdx())
