@@ -5,4 +5,3 @@ import unittest
 suite = unittest.TestSuite([
     drp_rdkit.suite
 ])
-

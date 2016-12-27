@@ -26,12 +26,14 @@ class RxnDescriptorValueManager(models.Manager):
         """Return the correct queryset class."""
         return RxnDescriptorValueQuerySet(self.model, using=self._db)
 
+
 def rxnUid():
     """Return a unique identifier for a reaction descriptor value."""
     uid = uuid.uuid4()
     while CatRxnDescriptorValue.objects.filter(uid=uid).count() > 0 or BoolRxnDescriptorValue.objects.filter(uid=uid).count() > 0 or NumRxnDescriptorValue.objects.filter(uid=uid).count() > 0 or OrdRxnDescriptorValue.objects.filter(uid=uid).count() > 0:
         uid = uuid.uuid4()
     return uid
+
 
 class RxnDescriptorValue(models.Model):
     """A class to contain Relationships between Reactions and their descriptors."""

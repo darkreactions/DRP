@@ -77,7 +77,8 @@ class CompoundForm(forms.ModelForm):
         if 'labGroups' in self.cleaned_data:
             for labGroup in self.cleaned_data.get('labGroups'):
                 if CompoundGuideEntry.objects.filter(abbrev=self.cleaned_data.get('abbrev'), labGroup=labGroup).exclude(compound=self.instance).exists():
-                    self.add_error('abbrev', 'A compound with this abbreviation already exists for the selected labgroup.')
+                    self.add_error(
+                        'abbrev', 'A compound with this abbreviation already exists for the selected labgroup.')
         if self.cleaned_data.get('name'):
             nameResults = self.chemSpider.simple_search(
                 self.cleaned_data['name'])
@@ -128,7 +129,8 @@ class CompoundForm(forms.ModelForm):
     def save(self, commit=True):
         """Create (and if appropriate, saves) the compound instance, and adds Inchi and smiles from chemspider."""
         try:
-            self.instance = Compound.objects.get(CSID=self.cleaned_data['CSID'])
+            self.instance = Compound.objects.get(
+                CSID=self.cleaned_data['CSID'])
         except Compound.DoesNotExist:
             pass  # Hakuna Matata
         compound = super(CompoundForm, self).save(commit=False)
@@ -141,11 +143,13 @@ class CompoundForm(forms.ModelForm):
             if 'labGroups' in self.cleaned_data:
                 for labGroup in self.cleaned_data['labGroups']:
                     try:
-                        cgEntry = CompoundGuideEntry.objects.get(labGroup=labGroup, abbrev=self.cleaned_data['abbrev'])
+                        cgEntry = CompoundGuideEntry.objects.get(
+                            labGroup=labGroup, abbrev=self.cleaned_data['abbrev'])
                         cgEntry.compound = compound
                         cgEntry.save()
                     except CompoundGuideEntry.DoesNotExist:
-                        CompoundGuideEntry.objects.create(labGroup=labGroup, abbrev=self.cleaned_data['abbrev'], compound=compound)
+                        CompoundGuideEntry.objects.create(labGroup=labGroup, abbrev=self.cleaned_data[
+                                                          'abbrev'], compound=compound)
         return compound
 
 

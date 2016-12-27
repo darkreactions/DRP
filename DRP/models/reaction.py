@@ -19,7 +19,6 @@ import logging
 logger = logging.getLogger()
 
 
-
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     """Custom queryset for representing additional functionality for multiple reactions."""
 
@@ -199,6 +198,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                 pk = row.pk
                 yield row
             gc.collect()
+
 
 class ReactionManager(models.Manager):
     """A custom manager for the Reaction Class which permits the creation of entries to and from CSVs."""

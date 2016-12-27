@@ -33,7 +33,8 @@ class LazyDescDict(object):
                         self.internalDict[
                             k] = DRP.models.NumMolDescriptor.objects.get(**fetchArgs)
                     except DRP.models.NumMolDescriptor.DoesNotExist:
-                        tracer.debug('Creating descriptor with key {}'.format(k))
+                        tracer.debug(
+                            'Creating descriptor with key {}'.format(k))
                         self.internalDict[
                             k] = DRP.models.NumMolDescriptor.objects.create(**args)
                         tracer.debug('Number of num mol descriptors is {}'.format(

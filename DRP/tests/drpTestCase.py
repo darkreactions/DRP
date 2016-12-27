@@ -25,7 +25,7 @@ class DRPTestCase(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         """Break start of a test if testing mode is not set."""
-        self.cleaned=False
+        self.cleaned = False
         """Quick break if it looks like you're about to really delete things."""
         if not settings.TESTING:
             raise RuntimeError('Testing environment not enabled')
@@ -34,16 +34,15 @@ class DRPTestCase(unittest.TestCase):
 
     def __getattribute__(self, attribute_name):
         """Clear the database if setting up a test."""
-        if attribute_name == 'setUp' and self.cleaned == False:
+        if attribute_name == 'setUp' and self.cleaned is False:
             cleanUpDatabase(self.deleteDescriptors)
             self.cleaned = True
         return super(DRPTestCase, self).__getattribute__(attribute_name)
-        
+
     def doCleanups(self):
         """Clean the database if required."""
-        self.cleaned=False
+        self.cleaned = False
         return super(DRPTestCase, self).doCleanups()
-            
 
 
 def cleanUpDatabase(deleteDescriptors=False):

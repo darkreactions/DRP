@@ -164,7 +164,6 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
                 yield row
 
 
-
 class CompoundManager(models.Manager):
     """A custom manager for the Compound Class which permits the creation of entries to and from CSVs."""
 

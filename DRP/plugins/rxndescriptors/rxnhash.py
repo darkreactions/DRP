@@ -35,7 +35,8 @@ def calculate_many(reaction_set, verbose=False, whitelist=None):
 
     for i, reaction in enumerate(reaction_set):
         if verbose:
-            logger.info("Calculating {} ({}/{})".format(reaction, i + 1, len(reaction_set)))
+            logger.info("Calculating {} ({}/{})".format(reaction,
+                                                        i + 1, len(reaction_set)))
         _calculate(reaction, descriptorDict,
                    verbose=verbose, whitelist=whitelist)
 

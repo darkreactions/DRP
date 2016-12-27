@@ -40,7 +40,7 @@ class Command(BaseCommand):
         s = requests.Session()
         s.get(settings.MAIN_SERVER + '/login.html')
         r = s.post(settings.MAIN_SERVER + '/login.html', data={'username': settings.MAIN_SERVER_USER,
-                                                               'password': settings.MAIN_SERVER_PASS, 'csrfmiddlewaretoken': s.cookies.get_dict()['csrftoken']}, headers={'referer':settings.MAIN_SERVER + '/login.html'})
+                                                               'password': settings.MAIN_SERVER_PASS, 'csrfmiddlewaretoken': s.cookies.get_dict()['csrftoken']}, headers={'referer': settings.MAIN_SERVER + '/login.html'})
         if r.status_code == requests.codes.ok:
             apiUrl = settings.MAIN_SERVER + '/database/import/apiv1/'
             if reaction_limit is None:

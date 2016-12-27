@@ -47,41 +47,49 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='boolmoldescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
         migrations.AddField(
             model_name='boolrxndescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
         migrations.AddField(
             model_name='catmoldescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
         migrations.AddField(
             model_name='catrxndescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
         migrations.AddField(
             model_name='nummoldescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
         migrations.AddField(
             model_name='numrxndescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
         migrations.AddField(
             model_name='ordmoldescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
         migrations.AddField(
             model_name='ordrxndescriptorvalue',
             name='uid',
-            field=models.CharField(max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
+            field=models.CharField(
+                max_length=36, serialize=False, primary_key=True, default=uuid.uuid4),
         ),
     ]

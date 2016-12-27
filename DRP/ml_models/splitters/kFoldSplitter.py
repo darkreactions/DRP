@@ -22,7 +22,8 @@ class Splitter(AbstractSplitter):
         buckets = [rxn_ids[i::self.k] for i in range(self.k)]
 
         if verbose:
-            logger.info("Split into {} buckets with sizes: {}".format(len(buckets), map(len, buckets)))
+            logger.info("Split into {} buckets with sizes: {}".format(
+                len(buckets), map(len, buckets)))
 
         splits = []
         for i in range(self.k):

@@ -20,18 +20,21 @@ logger = logging.getLogger("DRP")
 MIN_CHEMAXON_VERSION = '16.5'
 MAX_CHEMAXON_VERSION = '16.10'
 
-MIN_CHEMAXON_VERSION = tuple(int(element) for element in MIN_CHEMAXON_VERSION.split('.'))
-MAX_CHEMAXON_VERSION = tuple(int(element) for element in MAX_CHEMAXON_VERSION.split('.'))
+MIN_CHEMAXON_VERSION = tuple(int(element)
+                             for element in MIN_CHEMAXON_VERSION.split('.'))
+MAX_CHEMAXON_VERSION = tuple(int(element)
+                             for element in MAX_CHEMAXON_VERSION.split('.'))
 
 CHEMAXON_VERSION = None
 for key in settings.CHEMAXON_DIR.keys():
     tuplekey = tuple(int(element) for element in key.split('.'))
     if tuplekey >= MIN_CHEMAXON_VERSION and tuplekey <= MAX_CHEMAXON_VERSION:
-        if CHEMAXON_VERSION == None or tuple(int(element) for element in CHEMAXON_VERSION.split('.')) < tuplekey:
-             CHEMAXON_VERSION = key
+        if CHEMAXON_VERSION is None or tuple(int(element) for element in CHEMAXON_VERSION.split('.')) < tuplekey:
+            CHEMAXON_VERSION = key
 
-if CHEMAXON_VERSION == None:
-    raise ValueError('There must be a chemaxon install with versions between {} and {}'.format(MIN_CHEMAXON_VERSION, MAX_CHEMAXON_VERSION))
+if CHEMAXON_VERSION is None:
+    raise ValueError('There must be a chemaxon install with versions between {} and {}'.format(
+        MIN_CHEMAXON_VERSION, MAX_CHEMAXON_VERSION))
 
 
 calculatorSoftware = 'ChemAxon_cxcalc'
@@ -199,10 +202,11 @@ _descriptorDict['vdw_area_N_ratio'] = {
     'type': 'num',
     'name': 'vdw area divided by nitrogen count',
     'calculatorSoftware': 'drp_chemaxon',
-    'calculatorSoftwareVersion':'16_5',
-    'maximum':None,
-    'minimum':0
+    'calculatorSoftwareVersion': '16_5',
+    'maximum': None,
+    'minimum': 0
 }
+
 
 def setup_pHdependentDescriptors(_descriptorDict):
     """Set up for calculation of pH dependent descriptors."""
@@ -241,7 +245,8 @@ def setup_pHdependentDescriptors(_descriptorDict):
 
         for pH in pH_vals:
             pH_string = str(pH).replace('.', '_')  # R compatibility
-            cxcalcCommands["{}_pH{}".format(key, pH_string)] = "{} -H {}".format(command, pH)
+            cxcalcCommands["{}_pH{}".format(
+                key, pH_string)] = "{} -H {}".format(command, pH)
 
     return descriptorDict
 
@@ -250,7 +255,7 @@ def delete_descriptors(compound_set, descriptorDict):
     """Bulk deletion of descriptors."""
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'num'],
                                                     compound__in=compound_set).delete()
-    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if  _descriptorDict[ck]['type'] == 'ord'],
+    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'ord'],
                                                     compound__in=compound_set).delete()
     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'bool'],
                                                      compound__in=compound_set).delete()
@@ -262,29 +267,34 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
         logger.info("Creating descriptor dictionary")
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
     if whitelist is None:
-        descriptorDict = {k:v for k,v in descriptorDict.items()}
+        descriptorDict = {k: v for k, v in descriptorDict.items()}
     else:
-        descriptorDict = {k:v for k,v in descriptorDict.items() if k in whitelist}
+        descriptorDict = {k: v for k,
+                          v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
     delete_descriptors(compound_set, descriptorDict)
 
     num_to_create = []
     ord_to_create = []
-    filtered_cxcalcCommands = {k:v for k,v in cxcalcCommands.items() if k in descriptorDict.keys()}
+    filtered_cxcalcCommands = {
+        k: v for k, v in cxcalcCommands.items() if k in descriptorDict.keys()}
     for i, compound in enumerate(compound_set):
         if verbose:
-            logger.info("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
+            logger.info("{}; Compound {} ({}/{})".format(compound,
+                                                         compound.pk, i + 1, len(compound_set)))
         num_to_create, ord_to_create = _calculate(
             compound, descriptorDict, filtered_cxcalcCommands, verbose=verbose, num_to_create=num_to_create, ord_to_create=ord_to_create)
         if len(num_to_create) > create_threshold:
             if verbose:
-                logger.info('Creating {} numeric values'.format(len(num_to_create)))
+                logger.info('Creating {} numeric values'.format(
+                    len(num_to_create)))
             DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
             num_to_create = []
         if len(ord_to_create) > create_threshold:
             if verbose:
-                logger.info('Creating {} ordinal values'.format(len(Ord_to_create)))
+                logger.info('Creating {} ordinal values'.format(
+                    len(Ord_to_create)))
             DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
             ord_to_create = []
 
@@ -302,20 +312,23 @@ def calculate(compound, verbose=False, whitelist=None):
         logger.info("Creating descriptor dictionary")
     descriptorDict = setup_pHdependentDescriptors(_descriptorDict)
     if whitelist is None:
-        descriptorDict = {k:v for k,v in descriptorDict.items()}
+        descriptorDict = {k: v for k, v in descriptorDict.items()}
     else:
-        descriptorDict = {k:v for k,v in descriptorDict.items() if k in whitelist}
+        descriptorDict = {k: v for k,
+                          v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
     delete_descriptors([compound], descriptorDict, cxcalcCommands)
-    filtered_cxcalcCommands = {k:v for k,v in cxcalcCommands.items() if k in descriptorDict.keys()}
+    filtered_cxcalcCommands = {
+        k: v for k, v in cxcalcCommands.items() if k in descriptorDict.keys()}
     if verbose:
         logger.info("Creating new descriptor values.")
     num_to_create, ord_to_create = _calculate(
         compound, descriptorDict, filtered_cxcalcCommands, verbose=verbose)
 
     if verbose:
-        logger.info("Creating {} numerical and {} ordinal".format(len(num_to_create), len(ord_to_create)))
+        logger.info("Creating {} numerical and {} ordinal".format(
+            len(num_to_create), len(ord_to_create)))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
     DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
 
@@ -355,11 +368,13 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
                             if _descriptorDict[commandKeys[i]]['type'] == 'num':
                                 n = DRP.models.NumMolDescriptorValue(descriptor=descriptorDict[commandKeys[
                                                                      i]], compound=compound, value=float(resList[i]))
-                                if commandKeys[i] == 'vanderwaals' and 'N' in compound.elements.keys(): # I hate this special case, but this might not stick around so I'm leaving it for now
-                                    n2 = DRP.models.NumMolDescriptorValue(descriptor=descriptorDict['vdw_area_N_ratio'], compound=compound, 
-                                                                     value= float(resList[i])/compound.elements['N']['stoichiometry'])  
+                                # I hate this special case, but this might not
+                                # stick around so I'm leaving it for now
+                                if commandKeys[i] == 'vanderwaals' and 'N' in compound.elements.keys():
+                                    n2 = DRP.models.NumMolDescriptorValue(descriptor=descriptorDict['vdw_area_N_ratio'], compound=compound,
+                                                                          value=float(resList[i]) / compound.elements['N']['stoichiometry'])
                                 else:
-                                    n2=None
+                                    n2 = None
                                 try:
                                     n.full_clean()
                                     if n2 is not None:

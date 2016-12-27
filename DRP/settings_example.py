@@ -21,8 +21,6 @@ EXTERNAL_HTML_VALIDATOR = 'http://validator.w3.org/nu/'
 CHEMSPIDER_TOKEN = ''
 
 
-
-
 LOGIN_REDIRECT_URL = '/'
 
 APP_DIR = (os.path.join(os.path.dirname(__file__)))

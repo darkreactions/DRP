@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 import DRP.models
 import uuid
 
-#class MolDescriptorValueQuerySet(models.query.QuerySet):
+# class MolDescriptorValueQuerySet(models.query.QuerySet):
 #    """Class to represent a group of Molecular Descriptor Values."""
 
 #    def delete(self, recalculate_reactions=True):
@@ -29,10 +29,12 @@ class MolDescriptorValueManager(models.Manager):
 #        """Return the custom queryset."""
 #        return MolDescriptorValueQuerySet(self.model, using=self._db)
 
+
 def molUid():
-    """Returns a unique identifier for a molecular descriptor value."""
+    """Return a unique identifier for a molecular descriptor value."""
     uid = uuid.uuid1()
     return uid
+
 
 class MolDescriptorValue(models.Model):
     """The django model representing the value of a given descriptor for a given compound."""
@@ -40,7 +42,6 @@ class MolDescriptorValue(models.Model):
     class Meta:
         app_label = 'DRP'
         abstract = True
-
 
     uid = models.CharField(max_length=36, default=molUid, primary_key=True)
     objects = MolDescriptorValueManager()

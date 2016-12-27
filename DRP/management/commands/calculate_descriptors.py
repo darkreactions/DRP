@@ -8,12 +8,13 @@ import importlib
 from django.db import transaction
 
 molDescriptorPlugins = [importlib.import_module(plugin) for
-                     plugin in settings.MOL_DESCRIPTOR_PLUGINS]
+                        plugin in settings.MOL_DESCRIPTOR_PLUGINS]
 
 rxnDescriptorPlugins = [importlib.import_module(plugin) for
-                     plugin in settings.RXN_DESCRIPTOR_PLUGINS]
+                        plugin in settings.RXN_DESCRIPTOR_PLUGINS]
 
 logger = logging.getLogger('DRP.management')
+
 
 def calculate_descriptors(queryset, descriptorPlugins, verbose=False, plugins=None, **kwargs):
     """Helper function for descriptor calculation."""
@@ -27,6 +28,7 @@ def calculate_descriptors(queryset, descriptorPlugins, verbose=False, plugins=No
             plugin.calculate_many(queryset, verbose=verbose, **kwargs)
             if verbose:
                 logger.info("Done with plugin: {}\n".format(plugin))
+
 
 class Command(BaseCommand):
     """Recalculate the descriptors for all compounds and reactions."""
@@ -92,51 +94,60 @@ class Command(BaseCommand):
 
         if not only_reactions:
             with transaction.atomic():
-                compounds = Compound.objects.order_by('pk').filter(pk__gte=start).exclude(calculating=True)
+                compounds = Compound.objects.order_by('pk').filter(
+                    pk__gte=start).exclude(calculating=True)
                 logger.debug('Compounds count is {}'.format(compounds.count()))
                 if only_dirty:
-                    compounds = compounds.objects.filter(dirty=True) 
+                    compounds = compounds.objects.filter(dirty=True)
                 compounds = compounds[:limit]
-                # This hits our database again, but we have to because slices can't be updated and we need to call these specific reactions back.'
-                compounds = Compound.objects.filter(id__in=(compound.id for compound in compounds)) 
+                # This hits our database again, but we have to because slices
+                # can't be updated and we need to call these specific reactions
+                # back.'
+                compounds = Compound.objects.filter(
+                    id__in=(compound.id for compound in compounds))
                 compounds.update(calculating=True)
             logger.debug('Compounds count is {}'.format(compounds.count()))
             while compounds.count() > 1:
                 try:
                     calculate_descriptors(compounds, molDescriptorPlugins,
-                        verbose=verbose, whitelist=whitelist, plugins=plugins)
+                                          verbose=verbose, whitelist=whitelist, plugins=plugins)
                 except Exception as e:
                     compounds.update(calculating=False)
                     raise e
                 with transaction.atomic():
-                    compounds = compounds.all() # Refresh the queryset
-                    compounds.filter(recalculate=False).update(dirty=False, calculating=False)
+                    compounds = compounds.all()  # Refresh the queryset
+                    compounds.filter(recalculate=False).update(
+                        dirty=False, calculating=False)
                     compounds = compounds.filter(recalculate=True)
                     compounds.update(recalculate=False)
         if not only_compounds:
             with transaction.atomic():
-                reactions = Reaction.objects.order_by('pk').exclude(calculating=True)
+                reactions = Reaction.objects.order_by(
+                    'pk').exclude(calculating=True)
                 reactions = reactions.exclude(compounds__dirty=True)
                 if only_dirty:
-                    reactions = reactions.objects.filter(dirty=True) 
+                    reactions = reactions.objects.filter(dirty=True)
                 if only_reactions:
                     reactions = reactions.filter(pk__gte=start)
                 if not include_invalid:
-                    reactions = reactions.exclude(performedreaction__valid=False)
+                    reactions = reactions.exclude(
+                        performedreaction__valid=False)
                 if not include_non_performed:
                     reactions = reactions.exclude(performedreaction=None)
                 reactions = reactions[:limit]
-                reactions = Reaction.objects.filter(id__in=(reaction.id for reaction in reactions))
+                reactions = Reaction.objects.filter(
+                    id__in=(reaction.id for reaction in reactions))
                 reactions.update(calculating=True)
             while reactions.count() > 1:
                 try:
                     calculate_descriptors(reactions, rxnDescriptorPlugins,
-                        verbose=verbose, whitelist=whitelist, plugins=plugins)
+                                          verbose=verbose, whitelist=whitelist, plugins=plugins)
                 except Exception as e:
                     reactions.update(calculating=False)
                     raise e
                 with transaction.atomic():
-                    reactions = reactions.all() #refresh the qs
-                    reactions.filter(recalculate=False).update(dirty=False, calculating=False)
+                    reactions = reactions.all()  # refresh the qs
+                    reactions.filter(recalculate=False).update(
+                        dirty=False, calculating=False)
                     reactions = reactions.filter(recalculate=True)
                     reactions.update(recalculate=False)
