@@ -52,7 +52,7 @@ class DescriptorCalculation(DRPTestCase):
         tracer.debug('AllTest')
         nums, bools = drp_rdkit.calculate(Compound.objects.get(CSID=14130))
         self.assertEqual(len(nums), 3)
-        self.assertEqual(len(bools), 45)
+        self.assertEqual(len(bools), 405)
         drp_rdkit.descriptorDict.initialised=False
 
 @createsUser('Aslan', 'old_magic')
@@ -70,7 +70,7 @@ class MultipleDescriptorCalculation(DRPTestCase):
         drp_rdkit.calculate_many(Compound.objects.all())
         tracer.debug("Here is a list: {}".format(str(NumMolDescriptorValue.objects.all())))
         self.assertEqual(NumMolDescriptorValue.objects.all().count(), 6)
-        self.assertEqual(BoolMolDescriptorValue.objects.all().count(), 90)
+        self.assertEqual(BoolMolDescriptorValue.objects.all().count(), 810, ', '.join(str(dvo)+'\n' for dvo in BoolMolDescriptorValue.objects.all()))
         drp_rdkit.descriptorDict.initialised=False
 
     def test_whitelist(self):
