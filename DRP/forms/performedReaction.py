@@ -42,6 +42,8 @@ class PerformedRxnForm(forms.ModelForm):
             labGroup__in=labGroups) | PerformedReaction.objects.filter(public=True)
         self.fields['performedBy'].queryset = User.objects.filter(
             labgroup__in=labGroups)
+        self.fields['performedBy'].label_from_instance = lambda obj: "{} ({})".format(
+            obj.username, obj.get_full_name())
         if not kwargs.get('instance', False):
             self.fields['valid'].initial = False
             # a little hacky, but this is faster than making another form...

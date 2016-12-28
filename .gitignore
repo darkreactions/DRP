@@ -8,7 +8,7 @@ models/*
 metrics/*
 
 *.pyc
-.sql
+*.sql
 *.sw*
 *.log
 *.cxl

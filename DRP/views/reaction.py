@@ -94,6 +94,7 @@ class ListPerformedReactions(ListView):
 @userHasLabGroup
 def createReaction(request):
     """A view designed to create performed reaction instances."""
+    status = 200
     if request.method == "POST":
         perfRxnForm = PerformedRxnForm(
             request.user, data=request.POST, files=request.FILES)
@@ -101,9 +102,11 @@ def createReaction(request):
             rxn = perfRxnForm.save()
             messages.success(request, "Reaction Created Successfully")
             return redirect('addCompoundDetails', rxn.id, params={'creating': True})
+        else:
+            status = 422
     else:
         perfRxnForm = PerformedRxnForm(request.user)
-    return render(request, 'reaction_create.html', {'reaction_form': perfRxnForm})
+    return render(request, 'reaction_create.html', {'reaction_form': perfRxnForm}, status=status)
 
 
 @login_required
@@ -112,6 +115,7 @@ def createReaction(request):
 @reactionExists
 def addCompoundDetails(request, rxn_id):
     """A view for adding compound details to a reaction."""
+    status = 200
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)
     CompoundQuantityFormset = modelformset_factory(model=CompoundQuantity, form=compoundQuantityFormFactory(
         rxn_id), can_delete=('creating' not in request.GET), extra=6)
@@ -128,10 +132,12 @@ def addCompoundDetails(request, rxn_id):
                 return redirect('createNumDescVals', rxn_id, params={'creating': True})
             else:
                 return redirect('editReaction', rxn_id)
+        else:
+            status = 422
     else:
         formset = CompoundQuantityFormset(
             queryset=compoundQuantities, prefix='quantities')
-    return render(request, 'reaction_compound_add.html', {'reactants_formset': formset, 'reaction': PerformedReaction.objects.get(id=rxn_id), })
+    return render(request, 'reaction_compound_add.html', {'reactants_formset': formset, 'reaction': PerformedReaction.objects.get(id=rxn_id), }, status=status)
 
 
 @login_required
@@ -142,11 +148,15 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
     """A generic view function to create descriptor values for reactions."""
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
         descriptor__calculatorSoftware="manual")
+    descriptors = descValClass.descriptorClass.objects.filter(
+        calculatorSoftware="manual")
     initialDescriptors = descValClass.descriptorClass.objects.filter(
+        isDefaultForLabGroups__reaction__id=rxn_id,
         calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
     descValFormset = modelformset_factory(model=descValClass, form=descValFormClass(
         rxn_id), can_delete=('creating' not in request.GET), extra=initialDescriptors.count())
-    if descValClass.descriptorClass.objects.filter(calculatorSoftware="manual").exists():
+    status = 200
+    if ('creating' in request.GET and initialDescriptors.exists()) or descriptors.exists():
         if request.method == "POST":
             formset = descValFormset(
                 queryset=descVals, data=request.POST, prefix=request.resolver_match.url_name)
@@ -156,17 +166,19 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
             if formset.is_valid():
                 descVals = formset.save()
                 descValClass.objects.filter(
-                    id__in=[dv.id for dv in formset.deleted_objects]).delete()
+                    pk__in=[dv.pk for dv in formset.deleted_objects]).delete()
                 messages.success(
                     request, 'Reaction descriptor details successfully updated')
                 if createNext is None or 'creating' not in request.GET:
                     return redirect('editReaction', rxn_id)
                 else:
                     return redirect(createNext, rxn_id, params={'creating': True})
+            else:
+                status = 200
         else:
             formset = descValFormset(queryset=descVals, initial=[
                                      {'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=request.resolver_match.url_name)
-        return render(request, 'reaction_detail_add.html', {'formset': formset, 'rxn_id': rxn_id, 'info_header': infoHeader})
+        return render(request, 'reaction_detail_add.html', {'formset': formset, 'rxn_id': rxn_id, 'info_header': infoHeader}, status=status)
     elif createNext is None or 'creating' not in request.GET:
         return redirect('editReaction', rxn_id)
     else:
@@ -179,6 +191,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
 @reactionExists
 def editReaction(request, rxn_id):
     """A view designed to edit performed reaction instances."""
+    status = 200
     reaction = PerformedReaction.objects.get(id=rxn_id)
     if request.method == "POST":
         perfRxnForm = PerformedRxnForm(
@@ -186,6 +199,8 @@ def editReaction(request, rxn_id):
         if perfRxnForm.is_valid():
             perfRxnForm.save()
             messages.success(request, "Reaction successfully updated.")
+        else:
+            status = 422
     else:
         perfRxnForm = PerformedRxnForm(request.user, instance=reaction)
     compoundQuantities = CompoundQuantity.objects.filter(reaction__id=rxn_id)
@@ -201,18 +216,19 @@ def editReaction(request, rxn_id):
                           BoolRxnDescriptorValue, BoolRxnDescValFormFactory(rxn_id)),
                          ('Categorical Descriptors', 'createCatDescVals', CatRxnDescriptorValue, CatRxnDescValFormFactory(rxn_id)))
     for descLabel, urlName, descValClass, descValFormClass in descriptorClasses:
+        descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
+            descriptor__calculatorSoftware="manual")
         descriptors = descValClass.descriptorClass.objects.filter(
             calculatorSoftware='manual')
+        initialDescriptors = descValClass.descriptorClass.objects.filter(
+            isDefaultForLabGroups=reaction.labGroup,
+            calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
         if descriptors.exists():
-            descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
-                descriptor__calculatorSoftware="manual")
-            initialDescriptors = descValClass.descriptorClass.objects.filter(
-                calculatorSoftware='manual').exclude(id__in=set(descVal.descriptor.id for descVal in descVals))
             descValFormset = modelformset_factory(
-                model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count())
+                model=descValClass, form=descValFormClass, can_delete=True, extra=initialDescriptors.count() + 1)
             descriptorFormsets[descLabel] = {'url': urlName, 'formset': descValFormset(queryset=descVals, initial=[
                                                                                        {'descriptor': descriptor.id} for descriptor in initialDescriptors], prefix=urlName)}
-    return render(request, 'reaction_edit.html', {'reaction_form': perfRxnForm, 'reactants_formset': cqFormset, 'descriptor_formsets': descriptorFormsets, 'reaction': reaction})
+    return render(request, 'reaction_edit.html', {'reaction_form': perfRxnForm, 'reactants_formset': cqFormset, 'descriptor_formsets': descriptorFormsets, 'reaction': reaction}, status=status)
 
 
 @require_POST
@@ -224,7 +240,9 @@ def deleteReaction(request, *args, **kwargs):
     form = PerformedRxnDeleteForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()
-    return redirect('reactionlist')
+        return redirect('reactionlist')
+    else:
+        return HttpResponse(status=422)
 
 
 @require_POST
@@ -236,4 +254,6 @@ def invalidateReaction(request, *args, **kwargs):
     form = PerformedRxnInvalidateForm(data=request.POST, user=request.user)
     if form.is_valid():
         form.save()
-    return redirect('reactionlist')
+        return redirect('reactionlist')
+    else:
+        return HttpResponse(status=422)

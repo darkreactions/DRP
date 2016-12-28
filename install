@@ -1,0 +1,500 @@
+!/bin/bash
+
+#WARNING: MOVE THIS FILE SOMEWHERE ELSE!
+
+#Install background software
+sudo apt-get install python3 python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy python3-pillow cmake libboost-all-dev python3-cffi graphviz-dev pkg-config pwgen dnsmasq;
+
+sudo -H pip3 install -U pip
+
+sudo -H pip3 install django==1.8 numpy pygraphviz mysqlclient;
+
+#install this software
+
+start_dir="$(pwd)";
+git clone https://github.com/darkreactions/DRP;
+cd DRP;
+if [ -z $1 ]
+    then
+    branch="master";
+else
+    branch="$1";
+fi
+git checkout "$branch";
+
+##install rdkit
+sudo apt-get install bison cmake flux build-essential sqlite3 libsqlite3-dev libboost-all-dev;
+sudo -H pip3 install cairocffi;
+sudo -H pip3 install chemspipy requests pep8 pep257 xxhash sqlparse;
+
+cd ..
+
+git clone https://github.com/shadowadler/rdkit.git;
+cd rdkit;
+
+export RDBASE="$(pwd)";
+
+export LD_LIBRARY_PATH="$(pwd)/lib";
+
+export PYTHONPATH="$(pwd)/lib";
+
+mkdir build;
+
+cd build;
+
+cmake -DRDK_BUILD_INCHI_SUPPORT=ON -D PYTHON_LIBRARY=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/libpython3.5.so -D PYTHON_INCLUDE_DIR=/usr/include/python3.5/ -D PYTHON_EXECUTABLE=/usr/bin/python3.5 -DBOOST_LIBRARY_DIR=/usr/include/boost/ ..;
+
+make install
+unset LD_LIBRARY_PATH;
+unset RDBASE;
+unset PYTHONPATH;
+
+cd ../rdkit;
+
+sudo ln -s "$(pwd)" /usr/lib/python3.5/rdkit;
+
+cd ../lib;
+
+sudo cp -n *.so.2 /usr/lib;
+
+cd $start_dir
+mkdir $start_dir/logs;
+
+python3 -c "import rdkit.Chem";
+echo "During setup, what was the mysql password you entered?";
+read -s mysqlpass;
+
+echo "What is your username on the main server?";
+read main_server_uname;
+echo "What is your password on the main server?";
+read -s main_server_pass;
+echo "Please type your chemspider token.";
+read cstoken;
+
+echo "What is your email smtp host?";
+read smtp_host;
+echo "What is your email smtp username?";
+read smtp_username;
+echo "What is your email password?";
+read -s smtp_pass;
+
+echo "What is your email imap host?";
+read imap_host;
+#create nginx file
+sudo rm /etc/nginx/sites-enabled/DRP_nginx;
+
+sudo touch /etc/nginx/sites-enabled/DRP_nginx;
+
+echo "server {" | sudo tee -a /etc/nginx/sites-enabled/DRP_nginx;
+echo "        listen          80;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        listen          8000;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        server_name     darkreactions.loc;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        server_name     localhost;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        charset         utf-8;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        client_max_body_size    75M;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        access_log $start_dir/logs/access.log;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        error_log $start_dir/logs/error.log;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        root  $start_dir/DRP/DRP/;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                autoindex on;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        location /favicon.ico {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                alias $start_dir/DRP/static/favicon.ico;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        }" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        location /documentation/ {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                alias $start_dir/DRP/documentation/;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                index index.html; " | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        }" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        location /media/ {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                alias $start_dir/DRP/media/;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                if (\$query_string) {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                        expires max;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                }" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        }" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        location /static/ {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                alias $start_dir/DRP/static/;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                if (\$query_string) {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                        expires max;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                }" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        }" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "	location /sec_media/ {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "		internal;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                alias $start_dir/DRP/sec_media/;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "	}" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        location / {" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                include uwsgi_params;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                #include $start_dir/DRP/DRP/uwsgi_params;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                uwsgi_pass      127.0.0.1:3031;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "                uwsgi_read_timeout 600;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        }" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "#        error_page 400 /static/400.html;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "#        error_page 403 /static/403.html;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "#        error_page 404 /static/404.html;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "#        error_page 500 502 503 504 /static/500.html;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip on;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_http_version 1.0;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_comp_level 5;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_proxied any;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_min_length 1100;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_buffers 16 8k;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_disable \"MSIE [1-6].(?!.*SV1)\";" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "        gzip_vary on;" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+echo "}" | sudo tee -a  /etc/nginx/sites-enabled/DRP_nginx;
+
+#set up uwsgi
+
+sudo rm /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+
+sudo touch /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "[uwsgi]" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+uname="$(whoami)";
+echo "uid=$uname" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "processes=1" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "socket= 127.0.0.1:3031" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "chdir=$start_dir/DRP/" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "plugins=python3" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "env=DJANGO_SETTINGS_MODULE=DRP.settings" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "module=DRP.wsgi:application" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "master=True" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "buffer-size=32768" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "vacuum=True" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "max-requests=5000" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "die-on-term=true" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "daemonize=$start_dir/logs/uwsgi.log" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "env = LC_ALL=en_US.UTF-8" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+echo "env = LANG=en_US.UTF-8" | sudo tee -a  /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+
+sudo rm /etc/systemd/system/uwsgi.service;
+sudo touch /etc/systemd/system/uwsgi.service;
+
+echo "[Unit]" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "Description=uWSGI Emporer Service" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "After=syslog.target" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "[Service]" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "ExecStart=/usr/bin/uwsgi --emperor /etc/uwsgi/apps-enabled/" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "Restart=always" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "KillSignal=SIGQUIT" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "Type=notify" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "StandardError=syslog" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "NotifyAccess=all" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "[Install]" | sudo tee -a /etc/systemd/system/uwsgi.service;
+echo "WantedBy=multi-user.target" | sudo tee -a /etc/systemd/system/uwsgi.service;
+
+#set up settings.py
+rm $start_dir/DRP/DRP/settings.py;
+touch $start_dir/DRP/DRP/settings.py;
+
+
+echo "import os" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SITE_ID = 1" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SERVER_NAME = 'darkreactions.loc'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Tells the system that you are happy for tests," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# some of which run on the live database to be run." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# DO NOT SET TO TRUE IN PRODUCTION." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "TESTING = False" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# The external html validator. You shouldn't need to change this." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EXTERNAL_HTML_VALIDATOR = 'http://validator.w3.org/nu/'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "CHEMSPIDER_TOKEN = '$cstoken'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "LOGIN_REDIRECT_URL = '/'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "APP_DIR = (os.path.join(os.path.dirname(__file__)))" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# URLs" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "STATIC_URL = '/static/'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "STATIC_ROOT = APP_DIR + \"/static_served/\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MAIN_SERVER = 'http://darkreactions.haverford.edu'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MAIN_SERVER_USER = '$main_server_uname'  # Your login credentials to the website, not the machine" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MAIN_SERVER_PASS = '$main_server_pass'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Directories" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "STATIC_DIR = os.path.join(BASE_DIR, \"static\")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "TMP_DIR = os.path.join(BASE_DIR, \"tmp\")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "RESEARCH_DIR = os.path.join(BASE_DIR + \"research\")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "LOG_DIR = os.path.join(BASE_DIR, \"logs\")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MODEL_DIR = os.path.join(BASE_DIR, \"models\")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "CHEMAXON_DIR = {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "}" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# {version: directory}" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "WEKA_PATH = {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    '3.6': '/usr/share/java/weka.jar'}  # default path on Ubuntu" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "if TESTING:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example',)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    RXN_DESCRIPTOR_PLUGINS = ('DRP.plugins.rxndescriptors.rxnhash',)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "else:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    MOL_DESCRIPTOR_PLUGINS = ('DRP.plugins.moldescriptors.example', 'DRP.plugins.moldescriptors.drp_rdkit'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "                              'DRP.plugins.moldescriptors.drp', 'DRP.plugins.moldescriptors.chemaxon',)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    RXN_DESCRIPTOR_PLUGINS = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        'DRP.plugins.rxndescriptors.rxnhash', 'DRP.plugins.rxndescriptors.drp',)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "STATICFILES_DIRS = (STATIC_DIR,)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Changes to Default Django Behavior" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "LOGIN_URL = \"/login.html\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Email Settings" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_USE_TLS = True" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_HOST = \"$smtp_host\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_PORT = 587" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_HOST_USER = \"$smtp_username\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_HOST_PASSWORD = \"$smtp_pass\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "DEFAULT_FROM_EMAIL = EMAIL_HOST_USER" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_IMAP_HOST = '$imap_host'  # leave blank in production. Necessary for unit tests." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMAIL_IMAP_INBOX = 'Inbox'  # The inbox to use for email tests. Inbox for gmail" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SKIP_EMAIL_TESTS = False" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# These tests are slow, so if you haven't tweaked this" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# then skip the tests, but don't abuse this." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Change to \"False\" to see standard errors:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "DEBUG = True" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# DEBUG = False if TESTING else True  #useful in dev environments" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "TEMPLATE_DEBUG = DEBUG" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "ALLOWED_HOSTS = []" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Emails of the Site Admins and Project Managers for the DRP." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "ADMINS = ()" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MANAGERS = ADMINS" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "ADMIN_EMAILS = tuple(admin[0] for admin in ADMINS)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MANAGER_EMAILS = tuple(manager[0] for manager in MANAGERS)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# ==== Another Useful Hack for Testing Environments -" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# use this INSTEAD of the above block ===" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "if TESTING:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    DATABASES = { #Production database." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "       'default': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'ENGINE': 'django.db.backends.mysql'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'NAME': 'DRP_testing'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           #Or path to database file if using sqlite3." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           # Test_DRP_db should be used next time!" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'USER': 'root'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'PASSWORD': '$mysqlpass'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'HOST': ''," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            # Empty for localhost through domain sockets or '127.0.0.1'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            # for localhost through TCP." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'PORT': '3306'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            # Set to empty string for default." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "       }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "   }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "else:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    DATABASES = { #Production database." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "       'default': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'ENGINE': 'django.db.backends.mysql'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'NAME': 'DRP'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           # Or path to database file if using sqlite3." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           # Test_DRP_db should be used next time!" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           'USER': 'root'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "          'PASSWORD': '$mysqlpass'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "          'HOST': ''," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           # Empty for localhost through domain sockets or '127.0.0.1'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "           # for localhost through TCP." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "          'PORT': '3306'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            # Set to empty string for default." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "      }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "  }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Local time zone for this installation. Choices can be found here:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# although not all choices may be available on all operating systems." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# In a Windows environment this must be set to your system time zone." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "TIME_ZONE = \"America/New_York\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Language code for this installation. All choices can be found here:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# http://www.i18nguy.com/unicode/language-identifiers.html" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "LANGUAGE_CODE = 'en-us'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SITE_ID = 1" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# If you set this to False, Django will make some optimizations so as not" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# to load the internationalization machinery." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "USE_I18N = True" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# If you set this to False, Django will not format dates, numbers and" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# calendars according to the current locale." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "USE_L10N = True" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# If you set this to False, Django will not use timezone-aware datetimes." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "USE_TZ = False" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Absolute filesystem path to the directory that will hold user-uploaded files." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Example: \"/var/www/example.com/media/\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# URL that handles the media served from MEDIA_ROOT. Make sure to use a" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# trailing slash." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Examples: \"http://example.com/media/\", \"http://media.example.com/\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MEDIA_URL = '/media/'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SECURE_MEDIA_ROOT = os.path.join(BASE_DIR, 'sec_media')" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SECURE_MEDIA_URL = '/sec_media/'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MEDIA_X_HEADER = 'X-Accel-Redirect'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# This header allows us to do security checking before serving" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# some restricted files. on nginx this is X-Accel-Redirect" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# apache calls this XSendFile" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# List of finder classes that know how to find static files in" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# various locations." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "STATICFILES_FINDERS = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.staticfiles.finders.FileSystemFinder'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.staticfiles.finders.AppDirectoriesFinder'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    # 'django.contrib.staticfiles.finders.DefaultStorageFinder'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo ")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Make this unique, and don't share it with anybody." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SECRET_KEY = '$(pwgen 13 1)'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# List of callables that know how to import templates from various sources." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "TEMPLATE_LOADERS = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.template.loaders.filesystem.Loader'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.template.loaders.app_directories.Loader'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    # 'django.template.loaders.eggs.Loader'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo ")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "MIDDLEWARE_CLASSES = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.middleware.common.CommonMiddleware'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.sessions.middleware.SessionMiddleware'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.middleware.csrf.CsrfViewMiddleware'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.auth.middleware.AuthenticationMiddleware'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.messages.middleware.MessageMiddleware'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'DRP.middleware.ChemspiderErrorMiddleware'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    # Uncomment the next line for simple clickjacking protection:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    # 'django.middleware.clickjacking.XFrameOptionsMiddleware'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo ")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "ROOT_URLCONF = 'DRP.urls'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Python dotted path to the WSGI application used by Django's runserver." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "WSGI_APPLICATION = 'DRP.wsgi.application'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "INSTALLED_APPS = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.auth'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.contenttypes'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.sessions'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.sites'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.messages'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.staticfiles'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    # Uncomment the next line to enable the admin:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.admin'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    # Uncomment the next line to enable admin documentation:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'django.contrib.admindocs'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"DRP\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo ")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# A sample logging configuration. The only tangible logging" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# performed by this configuration is to send an email to" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# the site admins on every HTTP 500 error when DEBUG=False." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# See http://docs.djangoproject.com/en/dev/topics/logging for" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# more details on how to customize your logging configuration." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "LOGGING = {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'version': 1," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'disable_existing_loggers': False," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'filters': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        'require_debug_false': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            '()': 'django.utils.log.RequireDebugFalse'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    }," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'handlers': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        'mail_admins': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            'level': 'ERROR'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            'filters': ['require_debug_false']," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            'class': 'django.utils.log.AdminEmailHandler'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    }," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'loggers': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        'django.request': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            'handlers': ['mail_admins']," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            'level': 'ERROR'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "            'propagate': True," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        }," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "}" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "TEMPLATE_CONTEXT_PROCESSORS = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.contrib.auth.context_processors.auth\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.core.context_processors.debug\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.core.context_processors.i18n\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.core.context_processors.media\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.core.context_processors.static\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.core.context_processors.request\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.core.context_processors.tz\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.contrib.messages.context_processors.messages\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'DRP.context_processors.testing'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo ")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Set up Memcached caching:" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "CACHES = {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    'default': {" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "        'LOCATION': '0.0.0.0:11211'," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    }" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "}" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# Force users to log out when the browser is closed." |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "SESSION_EXPIRE_AT_BROWSER_CLOSE = True" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "STATS_MODEL_LIBS_DIR = \"DRP.ml_models.model_visitors\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "STATS_MODEL_LIBS = (\"weka\",)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "REACTION_DATASET_SPLITTERS_DIR = \"DRP.ml_models.splitters\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "REACTION_DATASET_SPLITTERS = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"kFoldSplitter\", \"exploratorySplitter\", \"noSplitter\", \"randomSplitter\")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "FEATURE_SELECTION_LIBS_DIR = \"DRP.ml_models.feature_visitors\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "FEATURE_SELECTION_LIBS = (\"weka\",)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "METRIC_VISITORS = tuple()" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "METRIC_VISITOR_DIR = \"DRP.research.geoffrey.distance_learning.metricLearn\"" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "EMPTY_LABEL = '----'" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "LAB_GROUP_HASH_SALT = ''" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "# force temporary file creation for uploads (required for some views to work)" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "FILE_UPLOAD_HANDLERS = (" |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo "    \"django.core.files.uploadhandler.TemporaryFileUploadHandler\"," |  tee -a  $start_dir/DRP/DRP/settings.py;
+echo ")" |  tee -a  $start_dir/DRP/DRP/settings.py;
+
+#configure dnsmasq
+
+echo "address=/loc/127.0.0.1" | sudo tee -a /etc/dnsmasq.conf;
+
+#create mysql databases
+echo "[client]" > ~/.my.cnf;
+echo "user=root" >> ~/.my.cnf;
+echo "password=$mysqlpass" >> ~/.my.cnf
+
+mysql -e "CREATE DATABASE DRP CHARACTER SET utf8 COLLATE utf8_bin"
+mysql -e "CREATE DATABASE DRP_test CHARACTER SET utf8 COLLATE utf8_bin"
+
+#restart servers
+sudo service nginx restart;
+sudo systemctl daemon-reload;
+sudo systemctl restart uwsgi;
+
+cd $start_dir/DRP;
+./manage.py migrate;

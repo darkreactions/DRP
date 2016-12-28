@@ -116,9 +116,9 @@ def delete_descriptors(compound_set, whitelist=None):
         descs = [descriptorDict[k]
                  for k in descriptorDict.keys() if k in whitelist]
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-        desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
+        desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete(recalculate_reactions=False)
+        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
@@ -128,40 +128,48 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     bool_vals_to_create = []
     for i, compound in enumerate(compound_set):
         if verbose:
-            logger.debug("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
+            logger.debug("{}; Compound {} ({}/{})".format(compound,
+                                                          compound.pk, i + 1, len(compound_set)))
         num_vals_to_create, bool_vals_to_create = _calculate(
-            compound, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
+            compound, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
         if len(num_vals_to_create) > create_threshold:
             if verbose:
-                logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))
+                logger.debug('Creating {} numeric values'.format(
+                    len(num_vals_to_create)))
                 DRP.models.NumMolDescriptorValue.objects.bulk_create(
                     num_vals_to_create)
                 num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
-                logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
+                logger.debug('Creating {} boolean values'.format(
+                    len(bool_vals_to_create)))
             DRP.models.BoolMolDescriptorValue.objects.bulk_create(
                 bool_vals_to_create)
             bool_vals_to_create = []
 
     if verbose:
-        logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))
+        logger.debug('Creating {} numeric values'.format(
+            len(num_vals_to_create)))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
+        logger.debug('Creating {} boolean values'.format(
+            len(bool_vals_to_create)))
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
 
 def calculate(compound):
     """Calculation of descriptor values."""
     delete_descriptors([compound])
-    num_vals_to_create, bool_vals_to_create = _calculate(compound)
+    num_vals_to_create, bool_vals_to_create = _calculate(
+        compound, whitelist=whitelist)
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        logger.debug('Creating {} numeric values'.format(len(num_vals_to_create)))
+        logger.debug('Creating {} numeric values'.format(
+            len(num_vals_to_create)))
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
     if verbose:
-        logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
+        logger.debug('Creating {} boolean values'.format(
+            len(bool_vals_to_create)))
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
 

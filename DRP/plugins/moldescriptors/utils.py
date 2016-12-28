@@ -1,21 +1,25 @@
 """A utilities module for helping with molecular descriptor plugins."""
 import DRP
 from django.db import transaction
+import logging
+
+tracer = logging.getLogger('DRP.tracer')
 
 
 class LazyDescDict(object):
-    """An attempt at making descriptor loading lazy."""
+    """An attempt at making descriptor loading lazy-ish."""
 
     def __init__(self, descDict):
         """Initialiser."""
         self.internalDict = {}
-        self.descDict = descDict
         self.initialised = False
+        self.descDict = descDict
 
     @transaction.atomic
     def initialise(self, descDict):
         """Initialise the dictionary in a lazy way."""
         if not self.initialised:
+            tracer.debug("Initialising LazyDescDict")
             for k, v in descDict.items():
                 args = v.copy()
                 del args['type']
@@ -24,18 +28,20 @@ class LazyDescDict(object):
                     'heading', 'calculatorSoftware', 'calculatorSoftwareVersion')}
                 if v['type'] == 'num':
                     try:
-                        # why are we setting internal dict then immediately
-                        # resetting it?
-                        self.internalDict[k] = DRP.models.NumMolDescriptor.objects.filter(
+                        DRP.models.NumMolDescriptor.objects.filter(
                             **fetchArgs).update(**args)
                         self.internalDict[
                             k] = DRP.models.NumMolDescriptor.objects.get(**fetchArgs)
                     except DRP.models.NumMolDescriptor.DoesNotExist:
+                        tracer.debug(
+                            'Creating descriptor with key {}'.format(k))
                         self.internalDict[
                             k] = DRP.models.NumMolDescriptor.objects.create(**args)
+                        tracer.debug('Number of num mol descriptors is {}'.format(
+                            DRP.models.NumMolDescriptor.objects.all().count()))
                 elif v['type'] == 'bool':
                     try:
-                        self.internalDict[k] = DRP.models.BoolMolDescriptor.objects.filter(
+                        DRP.models.BoolMolDescriptor.objects.filter(
                             **fetchArgs).update(**args)
                         self.internalDict[
                             k] = DRP.models.BoolMolDescriptor.objects.get(**fetchArgs)
@@ -44,7 +50,7 @@ class LazyDescDict(object):
                             k] = DRP.models.BoolMolDescriptor.objects.create(**args)
                 elif v['type'] == 'ord':
                     try:
-                        self.internalDict[k] = DRP.models.OrdMolDescriptor.objects.filter(
+                        DRP.models.OrdMolDescriptor.objects.filter(
                             **fetchArgs).update(**args)
                         self.internalDict[
                             k] = DRP.models.OrdMolDescriptor.objects.get(**fetchArgs)
@@ -66,7 +72,7 @@ class LazyDescDict(object):
                             value=permittedValue, descriptor=self.internalDict[k])[0]
                 else:
                     raise RuntimeError("Invalid descriptor type provided")
-            self.initialised = True
+        self.initialised = True
 
     def __len__(self):
         """Length."""

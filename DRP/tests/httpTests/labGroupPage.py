@@ -60,7 +60,7 @@ class PostLabGroupPage(PostHttpSessionTest):
     testCodes = ['00c9fe70-a51f-4c9a-9d99-b88292ece120']
 
     def setUp(self):
-        """Test that a lab group can be succesfully created."""
+        """Test that a lab group can be succesfully joined."""
         self.labGroup = LabGroup.objects.makeLabGroup(
             'test', 'narnia', 'Aslan@example.com', 'old_magic')
         self.labGroup.save()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Test classes for the compound administration form."""
 
 import unittest

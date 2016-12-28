@@ -70,8 +70,8 @@ def Matthews(conf):
             "Matthews Correlation Coefficient is only defined for two-class confusion matrices. For a generalization to multi-class problems, investigate markedness and informedness.")
     # Note it doesn't matter which of these is actually considered true and
     # which false as Matthews Correlation Coefficient is symmetrical
-    true, true_guesses = conf.items()[0]
-    false, false_guesses = conf.items()[1]
+    true, true_guesses = list(conf.items())[0]
+    false, false_guesses = list(conf.items())[1]
 
     if len(true_guesses) != 2 or len(false_guesses) != 2:
         raise NotImplementedError(
@@ -123,6 +123,6 @@ def confusionMatrixTable(confusionMatrix, headers=True):
     if headers:
         for j, predicted in enumerate(values):
             table[j].insert(0, str(predicted))
-        table.insert(0, [""] + map(str, values))
+        table.insert(0, [""] + list(map(str, values)))
 
     return table

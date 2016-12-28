@@ -11,6 +11,29 @@ from django.core.files import File as dFile
 import os
 
 
+def createsCatRxnDescriptor(heading, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
+    """A class decorator that creates a categorical reaction descriptor."""
+    def _createsCatRxnDescriptor(c):
+        _oldSetUp = c.setUp
+        _oldTearDown = c.tearDown
+
+        def setUp(self):
+            CatRxnDescriptor.objects.create(
+                name=heading, heading=heading, calculatorSoftware=calculatorSoftware, calculatorSoftwareVersion=calculatorSoftwareVersion)
+            _oldSetUp(self)
+
+        def tearDown(self):
+            CatRxnDescriptor.objects.filter(name=heading, heading=heading, calculatorSoftware=calculatorSoftware,
+                                            calculatorSoftwareVersion=calculatorSoftwareVersion).delete()
+            _oldTearDown(self)
+
+        c.setUp = setUp
+        c.tearDown = tearDown
+        return c
+
+    return _createsCatRxnDescriptor
+
+
 def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manual', calculatorSoftwareVersion='0'):
     """A class decorator that creates an ordinal reaction descriptor."""
     def _createsOrdRxnDescriptor(c):
@@ -33,6 +56,23 @@ def createsOrdRxnDescriptor(heading, minimum, maximum, calculatorSoftware='manua
         return c
 
     return _createsOrdRxnDescriptor
+
+
+def setsOrdRxnDescriptorDefault(labGroupTitle, descHeading):
+    """A class decorator that makes a descriptor a default descriptor for a lab group."""
+    def _setsOrdRxnDescriptorDefault(c):
+        _oldSetup = c.setUp
+
+        def setUp(self):
+            LabGroup.objects.get(title=labGroupTitle).defaultDescriptors.add(
+                OrdRxnDescriptor.objects.get(heading=descHeading))
+            _oldSetup(self)
+
+        c.setUp = setUp
+
+        return c
+
+    return _setsOrdRxnDescriptorDefault
 
 
 def createsOrdRxnDescriptorValue(labGroupTitle, rxnRef, descHeading, value):

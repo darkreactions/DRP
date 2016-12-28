@@ -12,7 +12,7 @@ class DescriptorAdmin(forms.ModelForm):
     def clean(self, *args, **kwargs):
         """Method is purely desingned to stop the overwriting of plugin descriptors."""
         cleaned_data = super(DescriptorAdmin, self).clean(*args, **kwargs)
-        if self.instance.pk and self.instance.calculatorSoftware != 'manual':
+        if self.instance.id is not None and self.instance.calculatorSoftware != 'manual':
             raise ValidationError(
                 'This descriptor is not a manual descriptor, and thus cannot be edited using the django admin', 'not_manual')
         return cleaned_data
@@ -47,10 +47,10 @@ class CatDescPermittedValueForm(forms.ModelForm):
         """Ensure that the manual descriptor is actually custom."""
         cleaned_data = super(CatDescPermittedValueForm,
                              self).clean(*args, **kwargs)
-        if not CategoricalDescriptor.objects.filter(calculatorSoftware='manual', descriptor=self.instance.descriptor).exists():
-            raise ValidationError(
-                'You may only edit descriptor values for your own custom descriptors')
-        else:
+        if self.cleaned_data.get('descriptor') is not None:
+            if not CategoricalDescriptor.objects.filter(calculatorSoftware='manual', id=self.cleaned_data.get('descriptor').id).exists():
+                raise ValidationError(
+                    'You may only edit descriptor values for your own custom descriptors')
             return cleaned_data
 
     def __init__(self, *args, **kwargs):

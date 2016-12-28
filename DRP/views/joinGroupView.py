@@ -19,10 +19,13 @@ def joinGroup(request):
         return HttpResponseNotFound(template.render(RequestContext(request)))
     elif request.method == 'POST':
         form = LabGroupJoiningForm(data=request.POST)
+        status = 200
         if form.is_valid():
             form.cleaned_data['labGroup'].users.add(request.user)
             form = LabGroupJoiningForm()
-        return render(request, 'join_group.html', {'form': form})
+        else:
+            status = 422
+        return render(request, 'join_group.html', {'form': form}, status=status)
     else:
         form = LabGroupJoiningForm()
         return render(request, 'join_group.html', {'form': form})

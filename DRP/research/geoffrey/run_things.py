@@ -2,7 +2,11 @@
 import django
 django.setup()
 import DRP
-from DRP.models import Descriptor
+from DRP.models import Descriptor, NumRxnDescriptor, NumMolDescriptor
+from itertools import chain
 
 
-print '\n'.join([d.heading for d in Descriptor.objects.filter(heading__contains='polar_surface_area')])
+headings = [d.heading for d in NumRxnDescriptor.objects.filter(
+    heading__contains='pHreaction')]
+
+print '\n'.join(headings)
