@@ -9,7 +9,7 @@ import DRP.models.rxnDescriptorValues
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('DRP', '0042_auto_20160927_1551'),
+        ('DRP', '0042_2_manual_hotfix'),
     ]
 
     operations = [
