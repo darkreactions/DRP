@@ -158,7 +158,6 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 def calculate(compound):
     """Calculation of descriptor values."""
     delete_descriptors(set([compound]))
-    print(DRP.models.NumMolDescriptorValue.objects.filter(compound=compound))
     num_vals_to_create, bool_vals_to_create = _calculate(
         compound)
     verbose = True
@@ -167,22 +166,23 @@ def calculate(compound):
             len(num_vals_to_create)))
     to_save = []
     for a_descval in num_vals_to_create:
-        if DRP.models.NumMolDescriptorValue.objects.filter(pk=a_descval.pk).count() == 0:
-            to_save.append(a_descval)
+        if DRP.models.NumMolDescriptorValue.objects.filter(value=a_descval.value, compound=compound).count() >= 0:
+            pass
         else:
-            if a_descval != DRP.models.NumMolDescriptorValue.objects.filter(pk=a_descval.pk):
-                print('uh-oh')
-                # Shove stick into bike spokes and say "gosh darn Phil Adlers'"
-                assert(False)
-            else:
-                pass # This will break later (2 lines), more informatively
+            to_save.append(a_descval)
 
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+    DRP.models.NumMolDescriptorValue.objects.bulk_create(to_save)
  
     if verbose:
         logger.debug('Creating {} boolean values'.format(
             len(bool_vals_to_create)))
-    DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
+
+    to_save = []
+    if DRP.models.BoolMolDescriptorValue.objects.filter(value=a_descval.value, compound=compound).count() >= 0:
+        pass
+    else:
+        to_save.append(a_descval)
+    DRP.models.BoolMolDescriptorValue.objects.bulk_create(to_save)
 
 
 def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], bool_vals_to_create=[]):
