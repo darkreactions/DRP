@@ -253,13 +253,17 @@ def setup_pHdependentDescriptors(_descriptorDict):
 
 def delete_descriptors(compound_set, descriptorDict):
     """Bulk deletion of descriptors."""
+    """
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'num'],
                                                     compound__in=compound_set).delete()
     DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'ord'],
                                                     compound__in=compound_set).delete()
     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'bool'],
                                                      compound__in=compound_set).delete()
-
+    """
+    map(lambda x: x.delete, DRP.models.NumMolDescriptorValue.objects.filter(compound__in=compound_set))
+    map(lambda x: x.delete, DRP.models.OrdMolDescriptorValue.objects.filter(compound__in=compound_set))
+    map(lambda x: x.delete, DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=compound_set))
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
     """Bulk calculation of descriptors."""
