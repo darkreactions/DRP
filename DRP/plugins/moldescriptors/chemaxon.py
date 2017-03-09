@@ -1,4 +1,4 @@
-"""A descriptor calculator to wrap and use calls to ChemAxon.
+"""A DESCRIPTOR calculator to wrap and use calls to ChemAxon.
 
 Requires cxcalc (part of JChem) to be installed and licensed.
 
@@ -253,17 +253,14 @@ def setup_pHdependentDescriptors(_descriptorDict):
 
 def delete_descriptors(compound_set, descriptorDict):
     """Bulk deletion of descriptors."""
-    """
+    
     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'num'],
                                                     compound__in=compound_set).delete()
     DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'ord'],
                                                     compound__in=compound_set).delete()
     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'bool'],
                                                      compound__in=compound_set).delete()
-    """
-    map(lambda x: x.delete, DRP.models.NumMolDescriptorValue.objects.filter(compound__in=compound_set))
-    map(lambda x: x.delete, DRP.models.OrdMolDescriptorValue.objects.filter(compound__in=compound_set))
-    map(lambda x: x.delete, DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=compound_set))
+    
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
     """Bulk calculation of descriptors."""
@@ -322,7 +319,6 @@ def calculate(compound, verbose=False, whitelist=None):
                           v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
-    delete_descriptors(set([compound]), descriptorDict)
     filtered_cxcalcCommands = {
         k: v for k, v in cxcalcCommands.items() if k in descriptorDict.keys()}
     if verbose:
@@ -333,8 +329,23 @@ def calculate(compound, verbose=False, whitelist=None):
     if verbose:
         logger.info("Creating {} numerical and {} ordinal".format(
             len(num_to_create), len(ord_to_create)))
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
-    DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
+
+    to_save = []
+    for a_descval in num_to_create:
+        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
+            pass
+        else:
+            to_save.append(a_descval)
+    DRP.models.NumMolDescriptorValue.objects.bulk_create(to_save)
+
+    to_save = []
+    for a_descval in ord_to_create:
+        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
+            pass
+        else:
+            to_save.append(a_descval)
+    
+    DRP.models.OrdMolDescriptorValue.objects.bulk_create(to_save)
 
 
 def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):

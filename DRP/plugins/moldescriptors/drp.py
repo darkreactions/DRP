@@ -157,16 +157,21 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 def calculate(compound):
     """Calculation of descriptor values."""
-    delete_descriptors(set([compound]))
     num_vals_to_create, bool_vals_to_create = _calculate(
         compound)
     verbose = True
     if verbose:
         logger.debug('Creating {} numeric values'.format(
             len(num_vals_to_create)))
+    (val.save() for val in num_vals_to_create)
+    (val.save() for val in bool_vals_to_create)
+    """
     to_save = []
+    
+   
+    # Remove descriptors that effectively still exist. They shouldn't, but they may so soon.
     for a_descval in num_vals_to_create:
-        if DRP.models.NumMolDescriptorValue.objects.filter(value=a_descval.value, compound=compound).count() >= 0:
+        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
             pass
         else:
             to_save.append(a_descval)
@@ -178,12 +183,13 @@ def calculate(compound):
             len(bool_vals_to_create)))
 
     to_save = []
-    if DRP.models.BoolMolDescriptorValue.objects.filter(value=a_descval.value, compound=compound).count() >= 0:
-        pass
-    else:
-        to_save.append(a_descval)
+    for a_descval in bool_vals_to_create:
+        if DRP.models.BoolMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
+            pass
+        else:
+            to_save.append(a_descval)
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(to_save)
-
+    """
 
 def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], bool_vals_to_create=[]):
 
