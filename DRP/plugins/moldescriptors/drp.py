@@ -115,10 +115,8 @@ def delete_descriptors(compound_set, whitelist=None):
     else:
         descs = [descriptorDict[k]
                  for k in descriptorDict.keys() if k in whitelist]
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-        desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.NumMolDescriptorValue.objects.filter(compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=compound_set).delete()
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
@@ -159,14 +157,28 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 def calculate(compound):
     """Calculation of descriptor values."""
-    delete_descriptors([compound])
+    delete_descriptors(set([compound]))
+    print(DRP.models.NumMolDescriptorValue.objects.filter(compound=compound))
     num_vals_to_create, bool_vals_to_create = _calculate(
-        compound, whitelist=whitelist)
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+        compound)
+    verbose = True
     if verbose:
         logger.debug('Creating {} numeric values'.format(
             len(num_vals_to_create)))
+    to_save = []
+    for a_descval in num_vals_to_create:
+        if DRP.models.NumMolDescriptorValue.objects.filter(pk=a_descval.pk).count() == 0:
+            to_save.append(a_descval)
+        else:
+            if a_descval != DRP.models.NumMolDescriptorValue.objects.filter(pk=a_descval.pk):
+                print('uh-oh')
+                # Shove stick into bike spokes and say "gosh darn Phil Adlers'"
+                assert(False)
+            else:
+                pass # This will break later (2 lines), more informatively
+
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+ 
     if verbose:
         logger.debug('Creating {} boolean values'.format(
             len(bool_vals_to_create)))

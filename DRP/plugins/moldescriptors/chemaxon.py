@@ -13,7 +13,7 @@ from itertools import chain
 import logging
 logger = logging.getLogger("DRP")
 
-# The version of ChemAxon currently in use.
+# the version of ChemAxon currently in use.
 # Should be matched by a entry in the dictionary in the settings file
 # This version is reflected in, but not necessarily the same as, the
 # descriptor versions
@@ -318,7 +318,7 @@ def calculate(compound, verbose=False, whitelist=None):
                           v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
-    delete_descriptors([compound], descriptorDict, cxcalcCommands)
+    delete_descriptors([compound], descriptorDict)
     filtered_cxcalcCommands = {
         k: v for k, v in cxcalcCommands.items() if k in descriptorDict.keys()}
     if verbose:
