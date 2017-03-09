@@ -124,7 +124,6 @@ def delete_descriptors(compound_set, whitelist=None):
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
     """Bulk creation of descriptor values."""
-    delete_descriptors(compound_set, whitelist=whitelist)
     num_vals_to_create = []
     bool_vals_to_create = []
     for i, compound in enumerate(compound_set):
