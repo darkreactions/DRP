@@ -156,32 +156,27 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
 
 
 def calculate(compound):
-    """Calculation of descriptor values."""
+    """Calculation of descriptor values."""    
     num_vals_to_create, bool_vals_to_create = _calculate(
         compound)
     verbose = True
     if verbose:
         logger.debug('Creating {} numeric values'.format(
             len(num_vals_to_create)))
-    (val.save() for val in num_vals_to_create)
-    (val.save() for val in bool_vals_to_create)
-    """
     to_save = []
-    
-   
     # Remove descriptors that effectively still exist. They shouldn't, but they may so soon.
     for a_descval in num_vals_to_create:
-        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
+        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
             pass
         else:
             to_save.append(a_descval)
-
+    
     DRP.models.NumMolDescriptorValue.objects.bulk_create(to_save)
  
     if verbose:
         logger.debug('Creating {} boolean values'.format(
             len(bool_vals_to_create)))
-
+    
     to_save = []
     for a_descval in bool_vals_to_create:
         if DRP.models.BoolMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
@@ -189,9 +184,14 @@ def calculate(compound):
         else:
             to_save.append(a_descval)
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(to_save)
-    """
+   
 
-def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], bool_vals_to_create=[]):
+def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):
+
+    if num_vals_to_create == None:
+        num_vals_to_create = []
+    if bool_vals_to_create == None:
+        bool_vals_to_create = []
 
     num = DRP.models.NumMolDescriptorValue
     boolVal = DRP.models.BoolMolDescriptorValue

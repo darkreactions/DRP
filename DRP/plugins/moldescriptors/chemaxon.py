@@ -348,7 +348,11 @@ def calculate(compound, verbose=False, whitelist=None):
     DRP.models.OrdMolDescriptorValue.objects.bulk_create(to_save)
 
 
-def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):
+def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=None, ord_to_create=None):
+    if num_to_create == None:
+        num_to_create=[]
+    if ord_to_create == None:
+        ord_to_create=[]
     notFound = True
     lec = ''
     if notFound and (compound.smiles is not None and compound.smiles != ''):
