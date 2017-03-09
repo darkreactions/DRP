@@ -319,7 +319,7 @@ def calculate(compound, verbose=False, whitelist=None):
                           v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
-    delete_descriptors([compound], descriptorDict, cxcalcCommands)
+    delete_descriptors([compound], descriptorDict)
     filtered_cxcalcCommands = {
         k: v for k, v in cxcalcCommands.items() if k in descriptorDict.keys()}
     if verbose:
