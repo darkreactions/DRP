@@ -115,8 +115,11 @@ def delete_descriptors(compound_set, whitelist=None):
     else:
         descs = [descriptorDict[k]
                  for k in descriptorDict.keys() if k in whitelist]
-    DRP.models.NumMolDescriptorValue.objects.filter(compound__in=compound_set).delete()
-    DRP.models.BoolMolDescriptorValue.objects.filter(compound__in=compound_set).delete()
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+                desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+                desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
+        
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
