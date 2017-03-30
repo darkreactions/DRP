@@ -1,7 +1,11 @@
 """Recalculate the descriptors for all compounds and reactions."""
-
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
 import django
+
 django.setup()
+
+
 
 
 from DRP import settings
