@@ -224,7 +224,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None,
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -248,7 +248,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None,
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -266,7 +266,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None,
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -284,7 +284,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None,
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
