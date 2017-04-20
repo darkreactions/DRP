@@ -153,7 +153,8 @@ class OrdinalDescriptor(Descriptor):
     """The minimal permitted value for a given descriptor instance."""
 
     user = models.ForeignKey(User)
-    ratedBy = models.ForeignKey(User, related_name='performedReactions', null=True, blank=True, default=None, verbose_name="Rated By")
+    #changed performedReactions to ratedReactions because of related_name issue (clashing with PerformedReactions FOreignKey)
+    ratedBy = models.ForeignKey(User, related_name='ratedReactions', null=True, blank=True, default=None, verbose_name="Rated By")
     def clean(self):
         """Special cleaning method. Ensures max < min."""
         if self.maximum is not None and self.minimum is not None and self.maximum < self.minimum:

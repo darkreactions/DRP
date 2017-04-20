@@ -1,7 +1,7 @@
 """An example molecular descriptor plugin to demonstrate the 'shape' that the API requires."""
 # I wanted to name this module rdkit, but then we get name conflicts...
 # lol python
-from utils import setup
+from .utils import setup
 import rdkit.Chem
 import DRP
 import logging

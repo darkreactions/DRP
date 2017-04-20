@@ -1,5 +1,5 @@
 """Module for calculating reaction hash descriptor."""
-from utils import setup
+from .utils import setup
 import logging
 
 import xxhash
