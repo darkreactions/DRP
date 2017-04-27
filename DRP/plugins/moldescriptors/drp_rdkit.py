@@ -4,6 +4,9 @@
 from .utils import setup
 import DRP
 from DRP import chemical_data
+
+#importing from rdkit version 2.2016.03.4
+
 import rdkit.Chem
 from rdkit.Chem import Descriptors
 import logging

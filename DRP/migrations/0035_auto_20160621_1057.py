@@ -5,7 +5,6 @@ from django.db import models, migrations
 
 
 def fix_sql_mess(apps, schema_editor):
-<<<<<<< HEAD
     Compound = apps.get_model("DRP", "Compound") 
     constraints = schema_editor._constraint_names(Compound, ["labGroup_id", "CSID",], unique=True)
     if len(constraints) > 0:
@@ -14,7 +13,6 @@ def fix_sql_mess(apps, schema_editor):
                 Compound,
                 constraints[0]
             ))
-=======
     Compound = apps.get_model("DRP", "Compound")
     constraints = schema_editor._constraint_names(
         Compound, ["labGroup_id", "CSID", ], unique=True)
@@ -26,7 +24,6 @@ def fix_sql_mess(apps, schema_editor):
             Compound,
             constraints[0]
         ))
->>>>>>> master
 
 
 class Migration(migrations.Migration):
