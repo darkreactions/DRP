@@ -2,7 +2,6 @@
 # I wanted to name this module rdkit, but then we get name conflicts...
 # lol python
 from .utils import setup
-import rdkit.Chem
 import DRP
 from DRP import chemical_data
 import rdkit.Chem

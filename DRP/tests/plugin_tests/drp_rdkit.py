@@ -6,7 +6,7 @@ import sys
 from ..drpTestCase import DRPTestCase, runTests
 from DRP.tests.decorators import createsUser, joinsLabGroup, createsChemicalClass
 from DRP.tests.decorators import createsCompound
-from DRP.plugins.moldescriptors import drp_rdkit
+#from DRP.plugins.moldescriptors import drp_rdkit
 from DRP.tests.decorators import createsCompound
 from DRP.models import Compound, NumMolDescriptorValue, BoolMolDescriptorValue
 import logging
