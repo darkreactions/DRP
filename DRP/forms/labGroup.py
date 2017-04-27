@@ -21,7 +21,8 @@ class LabGroupForm(forms.ModelForm):
 
     class Meta:
         model = LabGroup
-        fields = ("title", "address", "email", 'accessCode', 'users', 'defaultDescriptors')
+        fields = ("title", "address", "email", 'accessCode',
+                  'users', 'defaultDescriptors')
 
     def clean_accessCode(self):
         """

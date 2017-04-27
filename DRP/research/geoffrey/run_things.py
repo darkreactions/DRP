@@ -6,6 +6,7 @@ from DRP.models import Descriptor, NumRxnDescriptor, NumMolDescriptor
 from itertools import chain
 
 
-headings = [d.heading for d in NumRxnDescriptor.objects.filter(heading__contains='pHreaction')]
+headings = [d.heading for d in NumRxnDescriptor.objects.filter(
+    heading__contains='pHreaction')]
 
 print '\n'.join(headings)

@@ -14,8 +14,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CompoundGuideEntry',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('abbrev', models.CharField(max_length=100, verbose_name='Abbreviation')),
+                ('id', models.AutoField(verbose_name='ID',
+                                        serialize=False, auto_created=True, primary_key=True)),
+                ('abbrev', models.CharField(
+                    max_length=100, verbose_name='Abbreviation')),
                 ('compound', models.ForeignKey(to='DRP.Compound')),
                 ('labGroup', models.ForeignKey(to='DRP.LabGroup')),
             ],
@@ -23,10 +25,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='compound',
             name='labGroups',
-            field=models.ManyToManyField(to='DRP.LabGroup', verbose_name='Lab Groups', through='DRP.CompoundGuideEntry'),
+            field=models.ManyToManyField(
+                to='DRP.LabGroup', verbose_name='Lab Groups', through='DRP.CompoundGuideEntry'),
         ),
         migrations.AlterUniqueTogether(
             name='compoundguideentry',
-            unique_together=set([('compound', 'labGroup'), ('abbrev', 'labGroup')]),
+            unique_together=set(
+                [('compound', 'labGroup'), ('abbrev', 'labGroup')]),
         ),
     ]

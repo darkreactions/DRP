@@ -3,7 +3,9 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 
+
 def fix_sql_mess(apps, schema_editor):
+<<<<<<< HEAD
     Compound = apps.get_model("DRP", "Compound") 
     constraints = schema_editor._constraint_names(Compound, ["labGroup_id", "CSID",], unique=True)
     if len(constraints) > 0:
@@ -12,6 +14,19 @@ def fix_sql_mess(apps, schema_editor):
                 Compound,
                 constraints[0]
             ))
+=======
+    Compound = apps.get_model("DRP", "Compound")
+    constraints = schema_editor._constraint_names(
+        Compound, ["labGroup_id", "CSID", ], unique=True)
+    if len(constraints) > 1:
+        raise RuntimeError("This has not fixed the problem!")
+    elif len(constraints) == 1:
+        schema_editor.execute(schema_editor._delete_constraint_sql(
+            schema_editor.sql_delete_index,
+            Compound,
+            constraints[0]
+        ))
+>>>>>>> master
 
 
 class Migration(migrations.Migration):
@@ -23,6 +38,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.SeparateDatabaseAndState(
             [migrations.RunPython(fix_sql_mess)],
-            [migrations.AlterUniqueTogether(name='compound', unique_together=set([]))]
+            [migrations.AlterUniqueTogether(
+                name='compound', unique_together=set([]))]
         )
     ]

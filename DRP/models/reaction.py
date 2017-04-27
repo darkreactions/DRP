@@ -18,9 +18,6 @@ import logging
 
 logger = logging.getLogger()
 
-descriptorPlugins = [importlib.import_module(plugin) for
-                     plugin in settings.RXN_DESCRIPTOR_PLUGINS]
-
 
 class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
     """Custom queryset for representing additional functionality for multiple reactions."""
@@ -170,7 +167,15 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                         i += 1
                     yield row
         else:
-            for row in super(ReactionQuerySet, self).rows(expanded):
+            for item in self.batch_iterator():
+                row = {field.name: getattr(item, field.name)
+                       for field in self.model._meta.fields}
+                i = 0
+                for compoundQ in item.compoundquantity_set.all():
+                    row['compound_{}'.format(i)] = compoundQ.compound.name
+                    row['compound_{}_role'.format(i)] = compoundQ.role.label
+                    row['compound_{}_amount'.format(i)] = compoundQ.amount
+                    i += 1
                 yield row
 
     # From https://djangosnippets.org/snippets/1949/
@@ -193,19 +198,6 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                 pk = row.pk
                 yield row
             gc.collect()
-
-    def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
-        """Force the calculation of reaction descriptors for a group of reactions."""
-        if verbose:
-            logger.info(
-                "Calculating descriptors for {} reactions".format(self.count()))
-        for plugin in descriptorPlugins:
-            if plugins is None or plugin.__name__ in plugins:
-                if verbose:
-                    logger.info("Calculating for plugin: {}".format(plugin))
-                plugin.calculate_many(self, verbose=verbose, **kwargs)
-                if verbose:
-                    logger.info("Done with plugin: {}\n".format(plugin))
 
 
 class ReactionManager(models.Manager):
@@ -233,16 +225,14 @@ class Reaction(models.Model):
     compounds = models.ManyToManyField(Compound, through="CompoundQuantity")
     notes = models.TextField(blank=True)
     labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
+    # These three fields are used to govern when descriptor calculation procedures, which are now
+    # asynchronous with the save operation
+    dirty = models.BooleanField(default=True)
+    calculating = models.BooleanField(default=False)
+    recalculate = models.BooleanField(default=False)
     # this is to cope with a hideous problem in xml serialization in the
     # management commands
     calcDescriptors = True
-
-    def save(self, calcDescriptors=False, *args, **kwargs):
-        """Custom save method gives the option to recalculate the descriptors."""
-        super(Reaction, self).save(*args, **kwargs)
-        if calcDescriptors and self.calcDescriptors:
-            for plugin in descriptorPlugins:
-                plugin.calculate(self)
 
     @property
     def descriptorValues(self):

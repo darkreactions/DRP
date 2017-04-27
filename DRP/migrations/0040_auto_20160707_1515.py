@@ -16,11 +16,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='labgroup',
             name='defaultDescriptors',
-            field=models.ManyToManyField(related_name='isDefaultForLabGroups', to='DRP.Descriptor'),
+            field=models.ManyToManyField(
+                related_name='isDefaultForLabGroups', to='DRP.Descriptor'),
         ),
         migrations.AlterField(
             model_name='performedreaction',
             name='labBookPage',
-            field=models.ImageField(null=True, storage=DRP.models.fileStorage.OverwriteStorage(base_url='/database/lab_notes/', location='/home/padler1/programming/drp/DRP/sec_media/lab_notes'), upload_to=DRP.models.performedReaction.UploadLabNotesTo(), verbose_name='Lab Book Image'),
+            field=models.ImageField(null=True, storage=DRP.models.fileStorage.OverwriteStorage(base_url='/database/lab_notes/',
+                                                                                               location='/home/padler1/programming/drp/DRP/sec_media/lab_notes'), upload_to=DRP.models.performedReaction.UploadLabNotesTo(), verbose_name='Lab Book Image'),
         ),
     ]

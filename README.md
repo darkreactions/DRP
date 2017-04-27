@@ -23,9 +23,9 @@ The following instructions are written to work with Ubuntu 14 and have (mostly) 
 
 Install the necessary programs.
 
-`sudo apt-get install python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy python3-Pillow`
+`sudo apt-get install python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi-plugin-python3 git weka graphviz memcached python-memcache mailutils python3-scipy python3-Pillow`
 
-`sudo pip3 install numpy pygraphviz mysqlclient`
+`sudo pip3 install numpy pygraphviz mysqlclient sqlparse`
 
 Install Django. The current version of DRP is designed to work with Django 1.8
 
@@ -33,6 +33,56 @@ Install Django. The current version of DRP is designed to work with Django 1.8
 
 Install required pip python libraries
 `sudo pip3 install chemspipy requests pep8 pep257 xxhash`
+
+####For RDKit Descriptors
+
+If you wish to use calculations from RDKit as a part of your install, the following is also necessary *these installation instructions are ubuntu 14.04 specific*.
+
+`sudo apt-get install bison cmake flux build-essential sqlite3 libsqlite3-dev libboost-all-dev`
+
+`sudo pip3 install cairocffi`
+
+Then, in a directory *that is not* your main installation directory for git.
+
+`git clone https://github.com/shadowadler/rdkit.git`
+
+Change into the rdkit repository directory and then
+
+`export RDBASE=$(pwd)`
+
+`export LD_LIBRARY_PATH="$(pwd)/lib"`
+
+`export PYTHONPATH="$(pwd)/lib"
+
+`mkdir build`
+
+`cd build`
+
+`cmake -DRDK_BUILD_INCHI_SUPPORT=ON -D PYTHON_LIBRARY=/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu/libpython3.4.so -D PYTHON_INCLUDE_DIR=/usr/include/python3.4/ -D PYTHON_EXECUTABLE=/usr/bin/python3.4 -DBOOST_ROOT=/usr/lib/x86_64-linux-gnu/ ..`
+
+`make install`
+
+`ctest`
+
+If any of this generates an error, unless you are *very* familiar with compiling new code for linux operating systems, seek the assistance of Philip Adler via the rdkit repository provided in this document.
+
+Otherwise:
+
+`unset LD_LIBRARY_PATH`
+`unset RDBASE`
+`unset PYTHONPATH`
+
+`cd ../rdkit`
+
+`sudo ln -s "$(pwd)" /usr/lib/python3.4/rdkit
+
+`cd ../lib`
+
+`sudo cp -i *.so.2 /usr/lib`
+
+`python3.4 -c "import rdkit.Chem"`
+
+If that runs without error messages, congratulations, you have compiled and installed rdkit for use with DRP.
 
 ###Clone from the Git Repository into your directory of choice.
 

@@ -34,6 +34,7 @@ class Splitter(AbstractSplitter):
         train = reactions.filter(id__in=rxn_ids[test_size:])
 
         if verbose:
-            logger.info("Split into train ({}), test ({})".format(train.count(), test.count()))
+            logger.info("Split into train ({}), test ({})".format(
+                train.count(), test.count()))
 
         return (self.package(train), self.package(test))
