@@ -5,10 +5,10 @@ from .utils import setup
 import DRP
 from DRP import chemical_data
 
-#importing from rdkit version 2.2016.03.4
+# importing from rdkit version 2.2016.03.4
 
 import rdkit.Chem
-from rdkit.Chem import Descriptors
+from rdkit.Chem import rdMolDescriptors
 import logging
 from django.core.exceptions import ValidationError
 logger = logging.getLogger('DRP')

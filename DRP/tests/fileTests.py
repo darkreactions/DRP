@@ -17,6 +17,7 @@ settings_file = os.path.join(settings.APP_DIR, 'settings_example.py')
 # Unix patters to exclude
 excludes = [
     'DRP/views/*',
+    'rdkit/*',
     'DRP/settings.py',
     'manage.py',
     'static/*',

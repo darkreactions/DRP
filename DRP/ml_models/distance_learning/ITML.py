@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+"""Placeholder summary line.
+
+Placeholder description.
+"""
+
 from DRP.ml_models.distance_learning import ITML as ml_ITML
 import numpy as np
 from sklearn.metrics import pairwise_distances
@@ -6,13 +11,16 @@ from DRP.ml_models.distance_learning.AbstractMetricLearnDistanceLearner import A
 
 
 class MetricVisitor(AbstractMetricLearnDistanceLearner):
+    """Place holder doc string."""
 
     def __init__(self, num_constraints, *args, **kwargs):
+        """Place holder doc string."""
         self.metric_object = ml_ITML()
         self.num_constraints = num_constraints if num_constraints is not None else 200
         super(MetricVisitor, self).__init__(*args, **kwargs)
 
     def train(self, reactions, predictor_headers, response_headers, filename):
+        """Place holder doc string."""
         print("Preparing arrays")
         data, labels = self._prepareArrays(
             reactions, predictor_headers, response_headers)
@@ -28,7 +36,7 @@ class MetricVisitor(AbstractMetricLearnDistanceLearner):
         # the extra check ensures against divide-by-zero errors later
         if bounds[0] == 0:
             bounds[0] = min(pair_dists[np.nonzero(pair_dists)])
-            print( "Lowerbound was 0. Set to {}".format(bounds[0]))
+            print("Lowerbound was 0. Set to {}".format(bounds[0]))
 
         print("Preparing {} constraints with bounds of ({}, {})".format(self.num_constraints, bounds[0], bounds[1]))
         constraints = self.metric_object.prepare_constraints(
