@@ -29,7 +29,7 @@ sudo -H pip3 install chemspipy requests pep8 pep257 xxhash sqlparse;
 
 cd ..
 
-git clone https://github.com/shadowadler/rdkit.git;
+git clone https://github.com/darkreactions/rdkit.git;
 cd rdkit;
 
 export RDBASE="$(pwd)";

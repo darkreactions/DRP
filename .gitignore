@@ -1,3 +1,4 @@
+.vagrant
 DRP/settings.py
 DRP/data_config.py
 DRP/tmp/

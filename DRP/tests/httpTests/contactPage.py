@@ -15,6 +15,7 @@ class ContactPage(GetHttpTest):
     testCodes = ['3a9f74ee-5c78-4ec0-8893-ce0476808131']
 
 
+@unittest.skipIf(settings.SKIP_EMAIL_TESTS, 'Email Tests being skipped...')
 @usesCsrf
 class PostContactPage(PostHttpSessionTest):
     """Perform a correctly formed POST request to the contact page to test html validity."""
