@@ -27,7 +27,8 @@ excludes = [
     'DRP/wsgi.py',
     'DRP/models/metricContainer.py',
     'DRP/migrations/*',
-    'DRP/tests/templateTest.py'
+    'DRP/tests/templateTest.py',
+    'vagrant/*'
 ]
 
 

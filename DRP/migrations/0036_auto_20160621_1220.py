@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='compound',
             name='CSID',
-            field=models.PositiveIntegerField(unique=True, null=True, verbose_name='Chemspider ID'),
+            field=models.PositiveIntegerField(
+                unique=True, null=True, verbose_name='Chemspider ID'),
         ),
     ]

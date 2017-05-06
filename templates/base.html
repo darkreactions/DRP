@@ -16,7 +16,7 @@
   <body>
 
     <header>
-      <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo"/>
+      <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo">
       <h1 class="mainTitle">Dark Reactions Project</h1>
 
       <div id="userInfo">
@@ -27,7 +27,7 @@
           {% endif %}
           <span class="greeting">
             Hello, {{ user.first_name }}
-            <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"/></a>
+            <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
           </span>
           <a href="/logout.html" id="userLogOut">Log Out</a>
 

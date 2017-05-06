@@ -1,6 +1,7 @@
 """The demonstration django settings for DRP."""
 
 import os
+import sys
 SITE_ID = 1
 
 SERVER_NAME = ''
@@ -18,6 +19,7 @@ TESTING = False
 EXTERNAL_HTML_VALIDATOR = 'http://validator.w3.org/nu/'
 
 CHEMSPIDER_TOKEN = ''
+
 
 LOGIN_REDIRECT_URL = '/'
 

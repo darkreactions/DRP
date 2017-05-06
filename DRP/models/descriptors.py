@@ -9,7 +9,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.db.models.functions import Concat
-from django.contrib.auth.models import User
+
 
 class DescriptorQuerySet(models.query.QuerySet):
     """A queryset to manage a queryset or any of the subtypes thereof."""
@@ -152,9 +152,6 @@ class OrdinalDescriptor(Descriptor):
     minimum = models.IntegerField()
     """The minimal permitted value for a given descriptor instance."""
 
-    user = models.ForeignKey(User)
-    #changed performedReactions to ratedReactions because of related_name issue (clashing with PerformedReactions FOreignKey)
-    ratedBy = models.ForeignKey(User, related_name='ratedReactions', null=True, blank=True, default=None, verbose_name="Rated By")
     def clean(self):
         """Special cleaning method. Ensures max < min."""
         if self.maximum is not None and self.minimum is not None and self.maximum < self.minimum:

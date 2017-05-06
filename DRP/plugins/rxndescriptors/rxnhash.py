@@ -35,7 +35,8 @@ def calculate_many(reaction_set, verbose=False, whitelist=None):
 
     for i, reaction in enumerate(reaction_set):
         if verbose:
-            logger.info("Calculating {} ({}/{})".format(reaction, i + 1, len(reaction_set)))
+            logger.info("Calculating {} ({}/{})".format(reaction,
+                                                        i + 1, len(reaction_set)))
         _calculate(reaction, descriptorDict,
                    verbose=verbose, whitelist=whitelist)
 
@@ -60,8 +61,8 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None):
     heading = 'rxnSpaceHash1'
     if whitelist is None or heading in whitelist:
         h = xxhash.xxh64()  # generates a hash
-        for reactant in reaction.compounds.order_by('abbrev'):
-            h.update(reactant.abbrev)
+        for reactant in reaction.compounds.order_by('pk'):
+            h.update('{0:20d}'.format(reactant.pk))
         p = perm.objects.get_or_create(descriptor=descriptorDict[
                                        heading], value=h.hexdigest())[0]
         cat.objects.update_or_create(defaults={

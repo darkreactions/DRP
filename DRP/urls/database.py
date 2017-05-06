@@ -42,14 +42,14 @@ urls = [
          'createNext': 'createCatDescVals'
          },
         name="createBoolDescVals"),
-    url('^/entry_(?P<rxn_id>\d+)/display', DRP.views.reaction.displayReaction, name='reactionInfo'),
     url('^/entry_(?P<rxn_id>\d+)/',
         DRP.views.reaction.editReaction, name='editReaction'),
     url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
     url('^/invalidate$', DRP.views.reaction.invalidateReaction,
         name='invalidateReaction'),
     url('^/lab_notes/$', permission_denied),
-    url('^/lab_notes/(?P<labgroup_id>\d+)_(?P<reference>[^//]*).jpg', DRP.views.reaction.labBookImage, name="labBookImage"),
+    url('^/lab_notes/(?P<labgroup_id>\d+)_(?P<reference>[^//]*).jpg',
+        DRP.views.reaction.labBookImage, name="labBookImage"),
     url('^/import/apiv1/(?P<component>[^//]*).xml', DRP.views.api1),
     url('^/select_viewing_group.html', DRP.views.selectGroup, name='selectGroup'),
     url('^/compoundguide(?P<filetype>.csv|.html|.arff|/)$',
@@ -59,7 +59,5 @@ urls = [
     url('^/compoundguide/delete$',
         DRP.views.compound.deleteCompound, name='deleteCompound'),
     url('^/compoundguide/edit_(?P<pk>\d+).html',
-        DRP.views.compound.EditCompound.as_view(), name='editCompound'),
-    url('^/compoundguide/display_(?P<pk>\d+).html',
-        DRP.views.compound.displayCompound, name='displayCompound')
+        DRP.views.compound.EditCompound.as_view(), name='editCompound')
 ]

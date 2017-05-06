@@ -7,8 +7,7 @@
         <tbody>
             <tr>
                 <th>Reference</th>
-                <td><a href="{% url 'reactionInfo' rxn_id=reaction.id %}">
-                  {{ reaction.reference }}</a></td>
+                <td>{{ reaction.reference }}</td>
                 {% if user.is_authenticated %}
                     {% if reaction.labGroup in user.labgroup_set.all %}
     	                <td><a class="edit" href="{% url 'editReaction' reaction.pk %}"><img src="/static/icons/edit.png" alt="edit this reaction" height="25" width="25" title="edit this reaction"/></a></td>

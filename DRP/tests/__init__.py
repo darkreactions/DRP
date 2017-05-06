@@ -12,6 +12,7 @@ from . import compoundToArff
 # import modelBuildingTests
 # import DataImport
 from . import modelValidators
+from . import plugin_tests
 # import splitters
 
 
@@ -27,6 +28,7 @@ suite = unittest.TestSuite([
     modelValidators.suite,
     # splitters.suite,
     fileTests.suite,
+    plugin_tests.suite
 ])
 
 

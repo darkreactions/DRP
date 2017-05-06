@@ -1,8 +1,8 @@
 """A module containing views pertinent to compound objects."""
 
 from django.contrib.auth.models import User
-from django.views.generic import CreateView, ListView, UpdateView, DetailView
-from DRP.models import *
+from django.views.generic import CreateView, ListView, UpdateView
+from DRP.models import Compound
 from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, CompoundDeleteForm
 from django.utils.decorators import method_decorator
 from .decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
@@ -141,12 +141,3 @@ class ListCompound(ListView):
         context = super(ListCompound, self).get_context_data(**kwargs)
         context['lab_form'] = self.labForm
         return context
-
-
-@login_required
-@hasSignedLicense
-@userHasLabGroup
-def displayCompound(request, pk):
-    """Display a given compound."""
-    compound = Compound.objects.get(id=pk)
-    return render(request, 'compound_display.html', {'compound': compound})

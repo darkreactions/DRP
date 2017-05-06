@@ -110,7 +110,8 @@ def get_rows():
                 row['BCR Weighted'] = bcr_option
 
                 if len(option_conts) != 1:
-                    sys.stderr.write("Was unable to find a unique model container matching given specification {}. Found {}\n".format(row, len(option_conts)))
+                    sys.stderr.write("Was unable to find a unique model container matching given specification {}. Found {}\n".format(
+                        row, len(option_conts)))
                     if len(option_conts) > 1:
                         sys.stderr.write("Using container with largest pk\n")
                         option_conts.sort(key=lambda x: x.pk, reverse=True)

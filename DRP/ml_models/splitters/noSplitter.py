@@ -16,7 +16,8 @@ class Splitter(AbstractSplitter):
         """Perform the split."""
         super(Splitter, self).split(reactions, verbose=verbose)
         if verbose:
-            logger.info("Training set ({}) and no test set.".format(reactions.count()))
+            logger.info("Training set ({}) and no test set.".format(
+                reactions.count()))
         splits = [(self.package(reactions), self.package([]))]
 
         return splits

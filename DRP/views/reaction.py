@@ -23,7 +23,7 @@ from django.contrib import messages
 @login_required
 @hasSignedLicense
 @userHasLabGroup
-@reactionExists(True)
+@reactionExists
 def labBookImage(request, labgroup_id, reference=None):
     """view that does security checking before prompting the server to show an image."""
     response = HttpResponse()
@@ -112,7 +112,7 @@ def createReaction(request):
 @login_required
 @hasSignedLicense
 @userHasLabGroup
-@reactionExists(False)
+@reactionExists
 def addCompoundDetails(request, rxn_id):
     """A view for adding compound details to a reaction."""
     status = 200
@@ -143,7 +143,7 @@ def addCompoundDetails(request, rxn_id):
 @login_required
 @hasSignedLicense
 @userHasLabGroup
-@reactionExists(False)
+@reactionExists
 def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader, createNext):
     """A generic view function to create descriptor values for reactions."""
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
@@ -166,7 +166,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
             if formset.is_valid():
                 descVals = formset.save()
                 descValClass.objects.filter(
-                    id__in=[dv.id for dv in formset.deleted_objects]).delete()
+                    pk__in=[dv.pk for dv in formset.deleted_objects]).delete()
                 messages.success(
                     request, 'Reaction descriptor details successfully updated')
                 if createNext is None or 'creating' not in request.GET:
@@ -188,7 +188,7 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
 @login_required
 @hasSignedLicense
 @userHasLabGroup
-@reactionExists(False)
+@reactionExists
 def editReaction(request, rxn_id):
     """A view designed to edit performed reaction instances."""
     status = 200
@@ -257,14 +257,3 @@ def invalidateReaction(request, *args, **kwargs):
         return redirect('reactionlist')
     else:
         return HttpResponse(status=422)
-
-
-@login_required
-@hasSignedLicense
-@userHasLabGroup
-@reactionExists(True)
-def displayReaction(request, rxn_id):
-    """Display reaction details without ability to edit."""
-    reaction = PerformedReaction.objects.get(id=rxn_id)
-    compoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
-    return render(request, 'reaction_display.html', {'reaction': reaction, 'compoundQuantities': compoundQuantities})

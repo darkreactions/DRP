@@ -39,7 +39,8 @@ class CorrectSynonym(BaseFormTest):
             abbrev='EtOH',
             labGroup=LabGroup.objects.get(title="Narnia")
         )
-        self.form = CompoundEditForm(data=self.formData, instance=compoundEntry.compound)
+        self.form = CompoundEditForm(
+            data=self.formData, instance=compoundEntry.compound)
 
 
 @createsUser('Aslan', 'old_magic')
@@ -62,7 +63,8 @@ class IncorrectSynonym(BaseFormTest):
             abbrev='EtOH',
             labGroup=LabGroup.objects.get(title="Narnia")
         )
-        self.form = CompoundEditForm(data=self.formData, instance=compoundEntry.compound)
+        self.form = CompoundEditForm(
+            data=self.formData, instance=compoundEntry.compound)
 
 suite = unittest.TestSuite([
     loadTests(IncorrectSynonym),

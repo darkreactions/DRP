@@ -4,29 +4,36 @@ from .descriptorValues import CategoricalDescriptorValue, BooleanDescriptorValue
 # from Compound import DRP.Compound - retain this line for clarity
 from django.core.exceptions import ValidationError
 import DRP.models
+import uuid
 
+# class MolDescriptorValueQuerySet(models.query.QuerySet):
+#    """Class to represent a group of Molecular Descriptor Values."""
 
-class MolDescriptorValueQuerySet(models.query.QuerySet):
-    """Class to represent a group of Molecular Descriptor Values."""
-
-    def delete(self, recalculate_reactions=True):
-        """Deletion of a queryset of Descriptor Values should change calculations which arise from them."""
-        if recalculate_reactions:
-            compounds = set(d.compound for d in self)
-        super(MolDescriptorValueQuerySet, self).delete()
-        if recalculate_reactions:
-            for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
-                reaction.save()  # recalculate descriptors
-            for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
-                reaction.save()  # invalidate models
+#    def delete(self, recalculate_reactions=True):
+#        """Deletion of a queryset of Descriptor Values should change calculations which arise from them."""
+#        if recalculate_reactions:
+#            compounds = set(d.compound for d in self)
+#        super(MolDescriptorValueQuerySet, self).delete()
+#        if recalculate_reactions:
+#            for reaction in DRP.models.Reaction.objects.filter(compounds__in=compounds):
+#                reaction.save()  # recalculate descriptors
+#            for reaction in DRP.models.PerformedReaction.objects.filter(compounds__in=compounds):
+#                reaction.save()  # invalidate models
 
 
 class MolDescriptorValueManager(models.Manager):
     """Manager class to return the custom queryset for MolDescriptorValues."""
 
-    def get_queryset(self):
-        """Return the custom queryset."""
-        return MolDescriptorValueQuerySet(self.model, using=self._db)
+    pass
+#    def get_queryset(self):
+#        """Return the custom queryset."""
+#        return MolDescriptorValueQuerySet(self.model, using=self._db)
+
+
+def molUid():
+    """Return a unique identifier for a molecular descriptor value."""
+    uid = uuid.uuid1()
+    return uid
 
 
 class MolDescriptorValue(models.Model):
@@ -36,6 +43,7 @@ class MolDescriptorValue(models.Model):
         app_label = 'DRP'
         abstract = True
 
+    uid = models.CharField(max_length=36, default=molUid, primary_key=True)
     objects = MolDescriptorValueManager()
     compound = models.ForeignKey('DRP.Compound')
 

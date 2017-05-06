@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 
-{% block additional_head %}
-
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL}}/css/home.css" />
-{% endblock %}
 {% block content %}
 <h1 class="bannerText">No Lab Group Joined</h1>
 <p>It appears that you are not yet affiliated with a lab group. Not to worry- you can do that <a href="{% url 'joinGroup' %}">here</a>.</p>

@@ -238,68 +238,6 @@ class PostReactionEditValid2(PostsImage, PostReactionEditValid):
 
 
 @logsInAs('Aslan', 'old_magic')
-@createsUser('WhiteQueen', 'New Magic')
-@signsExampleLicense('Aslan')
-@signsExampleLicense('WhiteQueen')
-@joinsLabGroup('Aslan', 'narnia')
-@joinsLabGroup('WhiteQueen', 'WhiteQueensArmy')
-@createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
-class GetReactionView(GetHttpSessionTest):
-    """Ensure reaction view page is found with a valid reaction."""
-
-    testCodes = ['c1f32838-1ea1-4630-96a5-a9232bbdd93f'] + reactionBaseCodes
-
-    def setUp(self):
-        """Dynamic url needed."""
-        labTitle = 'narnia'
-        reactionRef = 'turkish_delight'
-        self.url = self.url + reverse('reactionInfo', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
-        self.reaction = PerformedReaction.objects.get(reference='turkish_delight', labGroup__title='narnia')
-        super(GetReactionView, self).setUp()
-
-
-@logsInAs('Aslan', 'old_magic')
-@createsUser('WhiteQueen', 'New Magic')
-@signsExampleLicense('Aslan')
-@signsExampleLicense('WhiteQueen')
-@joinsLabGroup('Aslan', 'narnia')
-@joinsLabGroup('WhiteQueen', 'WhiteQueensArmy')
-@createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight')
-class GetSomeoneElsesReactionInfoPrivate(GetHttpSessionTest):
-    """Ensure reaction view page is not found with a valid reaction that is not one's own and not public."""
-
-    status = 404
-    testCodes = ['529c3d5b-b973-463c-a5f2-53ba075ac4f1']
-
-    def setUp(self):
-        """Dynamic url needed."""
-        labTitle = 'narnia'
-        reactionRef = 'turkish_delight'
-        self.url = self.url + reverse('reactionInfo', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
-        super(GetSomeoneElsesReactionInfoPrivate, self).setUp()
-
-
-@logsInAs('Aslan', 'old_magic')
-@createsUser('WhiteQueen', 'New Magic')
-@signsExampleLicense('Aslan')
-@signsExampleLicense('WhiteQueen')
-@joinsLabGroup('Aslan', 'narnia')
-@joinsLabGroup('WhiteQueen', 'WhiteQueensArmy')
-@createsPerformedReaction('WhiteQueensArmy', 'WhiteQueen', 'turkish_delight', public=True)
-class GetSomeoneElsesReactionInfoPublic(GetHttpSessionTest):
-    """Ensure reaction view page is found with a valid reaction that is not one's own and not public."""
-
-    testCodes = ['c1f32838-1ea1-4630-96a5-a9232bbdd93f'] + reactionBaseCodes
-
-    def setUp(self):
-        """Dynamic url needed."""
-        labTitle = 'narnia'
-        reactionRef = 'turkish_delight'
-        self.url = self.url + reverse('reactionInfo', kwargs={'rxn_id': PerformedReaction.objects.get(reference='turkish_delight').id})
-        super(GetSomeoneElsesReactionInfoPublic, self).setUp()
-
-
-@logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'narnia')
 @createsPerformedReaction('narnia', 'Aslan', 'turkish_delight')
@@ -719,7 +657,7 @@ class CreateReactionDescValCreating(PostHttpSessionTest, redirectionMixinFactory
         rxnId = PerformedReaction.objects.get(reference='turkish_delight').id
         self.url = self.url + \
             reverse('createOrdDescVals', kwargs={'rxn_id': rxnId})
-        self.payload['createOrdDescVals-0-id'] = ''
+        self.payload['createOrdDescVals-0-uid'] = ''
         self.payload[
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '0'
@@ -756,7 +694,7 @@ class CreateReactionDescValEditing(PostHttpSessionTest, redirectionMixinFactory(
         self.url = self.url + \
             reverse('createOrdDescVals', kwargs={'rxn_id': rxnId})
         self.payload['createOrdDescVals-0-reaction'] = rxnId
-        self.payload['createOrdDescVals-0-id'] = ''
+        self.payload['createOrdDescVals-0-uid'] = ''
         self.payload[
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '0'
@@ -794,9 +732,9 @@ class DeleteReactionDescVal(PostHttpSessionTest, redirectionMixinFactory(1)):
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness')
         self.payload['createOrdDescVals-0-value'] = '0'
         self.payload['createOrdDescVals-0-DELETE'] = 'on'
-        self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(
-            reaction=rxn, descriptor__heading='deliciousness').id
-        self.payload['createOrdDescVals-0-reaction'] = rxn.id
+        self.payload['createOrdDescVals-0-uid'] = OrdRxnDescriptorValue.objects.get(
+            reaction=rxn, descriptor__heading='deliciousness').pk
+        self.payload['createOrdDescVals-0-reaction'] = rxn.pk
         super(DeleteReactionDescVal, self).setUp()
 
     def test_deleted(self):
@@ -832,9 +770,9 @@ class EditReactionDescValInvalid(PostHttpSessionTest):
         self.payload[
             'createOrdDescVals-0-descriptor'] = OrdRxnDescriptor.objects.get(heading='deliciousness').id
         self.payload['createOrdDescVals-0-value'] = '-1'
-        self.payload['createOrdDescVals-0-id'] = OrdRxnDescriptorValue.objects.get(
-            reaction=rxn, descriptor__heading='deliciousness').id
-        self.payload['createOrdDescVals-0-reaction'] = rxn.id
+        self.payload['createOrdDescVals-0-uid'] = OrdRxnDescriptorValue.objects.get(
+            reaction=rxn, descriptor__heading='deliciousness').pk
+        self.payload['createOrdDescVals-0-reaction'] = rxn.pk
         super(EditReactionDescValInvalid, self).setUp()
 
     def test_created(self):
@@ -850,9 +788,6 @@ suite = unittest.TestSuite([
     loadTests(GetSomeoneElsesReactionEdit),
     loadTests(GetNonexistentReactionEdit),
     loadTests(PostReactionEditValid),
-    loadTests(GetReactionView),
-    loadTests(GetSomeoneElsesReactionInfoPrivate),
-    loadTests(GetSomeoneElsesReactionInfoPublic),
     loadTests(PostReactionEditInvalid),
     loadTests(DeletePerformedReaction),
     loadTests(DeleteSomeoneElsesReaction),

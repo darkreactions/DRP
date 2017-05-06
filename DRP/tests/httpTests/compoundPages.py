@@ -106,27 +106,6 @@ class CreateCompoundRadioTest(PostHttpSessionTest):
 @logsInAs('Aslan', 'old_magic')
 @signsExampleLicense('Aslan')
 @joinsLabGroup('Aslan', 'Narnia')
-@createsChemicalClass('Org', 'Organic')
-@createsCompound('EtOH', 682, 'Org', 'Narnia')
-class getCompoundView(GetHttpSessionTest):
-    """Tests the compound pages for individual compounds."""
-
-    testCodes = ['2bcca55b-b4bb-45ab-bba2-8b8967e468e8']
-
-    def setUp(self):
-        """Request to view a compound."""
-        self.url = self.baseUrl + \
-            reverse('displayCompound', kwargs={
-                    'pk': CompoundGuideEntry.objects.get(
-                        abbrev='EtOH',
-                        labGroup__title='Narnia'
-                    ).compound.pk})
-        super(getCompoundView, self).setUp()
-
-
-@logsInAs('Aslan', 'old_magic')
-@signsExampleLicense('Aslan')
-@joinsLabGroup('Aslan', 'Narnia')
 class NoCompounds(GetHttpSessionTest):
     """Tests that the empy message is displayed when a group has no compounds."""
 
@@ -248,7 +227,6 @@ suite = unittest.TestSuite([
     loadTests(CreateCompoundGetTest),
     loadTests(CreateCompoundRedirTest),
     loadTests(CreateCompoundRadioTest),
-    loadTests(getCompoundView),
     loadTests(NoCompounds),
     loadTests(ManyGroupsRedirect),
     loadTests(ManyLabGroupsDisplays),
