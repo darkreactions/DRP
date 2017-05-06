@@ -1,0 +1,14 @@
+[Unit]
+Description=uWSGI Emporer Service
+After=syslog.target
+
+[Service]
+ExecStart=/usr/bin/uwsgi --emperor /etc/uwsgi/apps-enabled/
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1 @@
+{"virtualbox":{"/vagrant":{"disabled":false,"guestpath":"/vagrant","hostpath":"/home/shadowadler/projects/DRP","rsync__args":["--verbose","--archive","-z","--copy-links"],"__vagrantfile":true}}}
