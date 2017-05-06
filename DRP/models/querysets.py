@@ -72,7 +72,7 @@ class MultiQuerySet(object):
         if isinstance(ndx, slice):
             return list(islice(self._all(), ndx.start, ndx.stop, ndx.step or 1))
         else:
-            return islice(self._all(), ndx, ndx + 1).__next__()
+            return next(islice(self._all(), ndx, ndx + 1))
 
     def exists(self):
         """Determine if any query result exists."""

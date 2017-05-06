@@ -14,7 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='reaction',
             name='labGroup',
-            field=models.ForeignKey(
-                verbose_name='Lab Group', to='DRP.LabGroup'),
+            field=models.ForeignKey(verbose_name='Lab Group', to='DRP.LabGroup'),
         ),
     ]

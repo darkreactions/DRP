@@ -21,6 +21,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+descriptorPlugins = [importlib.import_module(plugin) for
+                     plugin in settings.MOL_DESCRIPTOR_PLUGINS]
+# This prevents a cyclic dependency problem
+
 
 def elementsFormatValidator(molFormula):
     """A validator for molecular formulae."""
@@ -163,6 +167,16 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
             for row in super(CompoundQuerySet, self).rows(expanded):
                 yield row
 
+    def calculate_descriptors(self, verbose=False, plugins=None, **kwargs):
+        """Calculate descriptors for the current molecule queryset."""
+        for plugin in descriptorPlugins:
+            if plugins is None or plugin.__name__ in plugins:
+                if verbose:
+                    logging.info("Calculating for plugin: {}".format(plugin))
+                plugin.calculate_many(self, verbose=verbose, **kwargs)
+                if verbose:
+                    logging.info("Done with plugin: {}\n".format(plugin))
+
 
 class CompoundManager(models.Manager):
     """A custom manager for the Compound Class which permits the creation of entries to and from CSVs."""
@@ -207,12 +221,6 @@ class Compound(models.Model):
     labGroups = models.ManyToManyField(
         LabGroup, verbose_name="Lab Groups", through="DRP.CompoundGuideEntry")
     """Tells us whose compound guide this appears in."""
-
-    # These three fields are used to govern when descriptor calculation procedures, which are now
-    # asynchronous with the save operation
-    dirty = models.BooleanField(default=True)
-    calculating = models.BooleanField(default=False)
-    recalculate = models.BooleanField(default=False)
 
     formula = models.CharField(
         max_length=500,
@@ -266,6 +274,21 @@ class Compound(models.Model):
                         'A compound was consistency checked and was found to have an invalid formula', code="invalid_formula"))
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
+
+    @transaction.atomic
+    def save(self, calcDescriptors=True, invalidateReactions=True, *args, **kwargs):
+        """Save the compound, invalidating any consequent objects like reactions and models."""
+        if self.pk is not None and invalidateReactions:
+            for reaction in self.reaction_set.all():
+                reaction.save()  # descriptor recalculation
+                try:
+                    reaction.performedreaction.save()  # invalidate models
+                except DRP.models.performedReaction.performedReaction.DoesNotExist:
+                    pass  # it doesn't matter
+        super(Compound, self).save(*args, **kwargs)
+        if calcDescriptors and self.calcDescriptors:
+            for plugin in descriptorPlugins:
+                plugin.calculate(self)
 
     @property
     def descriptorValues(self):

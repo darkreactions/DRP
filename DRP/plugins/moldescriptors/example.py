@@ -41,8 +41,7 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     """Batch calculation."""
     for i, compound in enumerate(compound_set):
         if verbose:
-            logger.info("{}; Compound {} ({}/{})".format(compound,
-                                                         compound.pk, i + 1, len(compound_set)))
+            logger.info("{}; Compound {} ({}/{})".format(compound, compound.pk, i + 1, len(compound_set)))
         calculate(compound, verbose=verbose, whitelist=whitelist)
 
 

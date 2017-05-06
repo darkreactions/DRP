@@ -15,13 +15,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='compoundquantity',
             name='amount',
-            field=models.DecimalField(null=True, max_digits=12, decimal_places=5, help_text='(in mmoles, up to 5 decimal places)', blank=True, validators=[
-                                      DRP.models.validators.GreaterThanValidator(0)]),
+            field=models.DecimalField(null=True, max_digits=12, decimal_places=5, help_text='(in mmoles, up to 5 decimal places)', blank=True, validators=[DRP.models.validators.GreaterThanValidator(0)]),
         ),
         migrations.AlterField(
             model_name='labgroup',
             name='defaultDescriptors',
-            field=models.ManyToManyField(
-                related_name='isDefaultForLabGroups', to='DRP.Descriptor', blank=True),
+            field=models.ManyToManyField(related_name='isDefaultForLabGroups', to='DRP.Descriptor', blank=True),
         ),
     ]

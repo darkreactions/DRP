@@ -14,6 +14,21 @@ from importlib import reload
 loadTests = unittest.TestLoader().loadTestsFromTestCase
 
 
+@createsUser('Aslan', 'old_magic')
+@joinsLabGroup('Aslan', 'Narnia')
+@createsChemicalClass('org', 'Organic')
+@createsCompound('EtOH', 682, 'Org', 'Narnia')
+class DescriptorsCalced(DRPTestCase):
+    """Checks that when a compound is created the descriptors are created."""
+
+    def runTest(self):
+        """Run the test."""
+        self.assertEqual(1, OrdMolDescriptorValue.objects.count())
+        self.assertEqual(1, NumMolDescriptorValue.objects.count())
+        self.assertEqual(1, CatMolDescriptorValue.objects.count())
+        self.assertEqual(1, BoolMolDescriptorValue.objects.count())
+
+
 class DoublePluginImport(DRPTestCase):
     """Checks no duplicate key errors on module reload."""
 
@@ -130,8 +145,7 @@ class MaxMinValueValidation(DRPTestCase):
             minimum=3)
         desc.save()
         descVal = NumMolDescriptorValue(
-            compound=CompoundGuideEntry.objects.get(
-                abbrev='EtOH', labGroup__title='Narnia').compound,
+            compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
             descriptor=desc,
             value=3)
         descVal.save()
@@ -150,8 +164,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.save()
         with self.assertRaises(ValidationError):
             descVal = NumMolDescriptorValue(
-                compound=CompoundGuideEntry.objects.get(
-                    abbrev='EtOH', labGroup__title='Narnia').compound,
+                compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
                 descriptor=desc,
                 value=6)
             descVal.save()
@@ -169,8 +182,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.save()
         with self.assertRaises(ValidationError):
             descVal = NumMolDescriptorValue(
-                compound=CompoundGuideEntry.objects.get(
-                    abbrev='EtOH', labGroup__title='Narnia').compound,
+                compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
                 descriptor=desc,
                 value=2)
             descVal.save()
@@ -187,8 +199,7 @@ class MaxMinValueValidation(DRPTestCase):
             minimum=3)
         desc.save()
         descVal = NumMolDescriptorValue(
-            compound=CompoundGuideEntry.objects.get(
-                abbrev='EtOH', labGroup__title='Narnia').compound,
+            compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
             descriptor=desc,
             value=3)
         descVal.save()
@@ -206,8 +217,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.save()
         with self.assertRaises(ValidationError):
             descVal = NumMolDescriptorValue(
-                compound=CompoundGuideEntry.objects.get(
-                    abbrev='EtOH', labGroup__title='Narnia').compound,
+                compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
                 descriptor=desc,
                 value=2)
             descVal.save()
@@ -225,8 +235,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.save()
         with self.assertRaises(ValidationError):
             descVal = NumMolDescriptorValue(
-                compound=CompoundGuideEntry.objects.get(
-                    abbrev='EtOH', labGroup__title='Narnia').compound,
+                compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
                 descriptor=desc,
                 value=6)
             descVal.save()
@@ -243,8 +252,7 @@ class MaxMinValueValidation(DRPTestCase):
             minimum=None)
         desc.save()
         descVal = NumMolDescriptorValue(
-            compound=CompoundGuideEntry.objects.get(
-                abbrev='EtOH', labGroup__title='Narnia').compound,
+            compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
             descriptor=desc,
             value=3)
         descVal.save()
@@ -261,8 +269,7 @@ class MaxMinValueValidation(DRPTestCase):
             minimum=None)
         desc.save()
         descVal = NumMolDescriptorValue(
-            compound=CompoundGuideEntry.objects.get(
-                abbrev='EtOH', labGroup__title='Narnia').compound,
+            compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
             descriptor=desc,
             value=3)
         descVal.save()
@@ -280,8 +287,7 @@ class MaxMinValueValidation(DRPTestCase):
             minimum=3)
         desc.save()
         descVal = OrdMolDescriptorValue(
-            compound=CompoundGuideEntry.objects.get(
-                abbrev='EtOH', labGroup__title='Narnia').compound,
+            compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
             descriptor=desc,
             value=3)
         descVal.save()
@@ -300,8 +306,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.save()
         with self.assertRaises(ValidationError):
             descVal = OrdMolDescriptorValue(
-                compound=CompoundGuideEntry.objects.get(
-                    abbrev='EtOH', labGroup__title='Narnia').compound,
+                compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
                 descriptor=desc,
                 value=6)
             descVal.save()
@@ -319,8 +324,7 @@ class MaxMinValueValidation(DRPTestCase):
         desc.save()
         with self.assertRaises(ValidationError):
             descVal = OrdMolDescriptorValue(
-                compound=CompoundGuideEntry.objects.get(
-                    abbrev='EtOH', labGroup__title='Narnia').compound,
+                compound=CompoundGuideEntry.objects.get(abbrev='EtOH', labGroup__title='Narnia').compound,
                 descriptor=desc,
                 value=2)
             descVal.save()
@@ -391,6 +395,7 @@ class CategoricalValidation(DRPTestCase):
         self.desc2.delete()
 
 suite = unittest.TestSuite([
+    loadTests(DescriptorsCalced),
     loadTests(DoublePluginImport),
     loadTests(MaxMinValidation),
     loadTests(MaxMinValueValidation),

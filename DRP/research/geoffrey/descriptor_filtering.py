@@ -47,8 +47,7 @@ def print_descriptor_types():
 def filter_through_reactions(reactions, descriptors):
     valid_descriptors = []
     desc_val_types = [(NumRxnDescriptor, NumRxnDescriptorValue), (BoolRxnDescriptor, BoolRxnDescriptorValue),
-                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor,
-                                                                  OrdRxnDescriptorValue)
+                      (CatRxnDescriptor, CatRxnDescriptorValue), (OrdRxnDescriptor, OrdRxnDescriptorValue)
                       ]
     for descriptor in descriptors:
         for dt, vt in desc_val_types:
@@ -108,8 +107,8 @@ def print_headers(descriptors, sort=False):
 
 
 def filter_qset(dqs, require_substring=[], require_prefix=[], require_suffix=[],
-                exclude=[], exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
-
+                    exclude=[], exclude_substring=[], exclude_prefix=[], exclude_suffix=[]):
+    
     dqs = dqs.exclude(heading__in=exclude)
     for s in exclude_substring:
         dqs = dqs.exclude(heading__contains=s)
@@ -129,16 +128,15 @@ def filter_qset(dqs, require_substring=[], require_prefix=[], require_suffix=[],
 
 def rxn_descriptors():
     return MultiQuerySet(
-        NumRxnDescriptor.objects.all(),
-        BoolRxnDescriptor.objects.all(),
-        CatRxnDescriptor.objects.all(),
-        OrdRxnDescriptor.objects.all(),
-    )
+                        NumRxnDescriptor.objects.all(),
+                        BoolRxnDescriptor.objects.all(),
+                        CatRxnDescriptor.objects.all(),
+                        OrdRxnDescriptor.objects.all(),
+                        )
 
 
 def valid_rxn_descriptors():
-    exclude_substring = ["_prediction_", "outcome",
-                         "rxnSpaceHash", "example", "purity"]
+    exclude_substring = ["_prediction_", "outcome", "rxnSpaceHash", "example", "purity"]
     exclude_prefix = ["_", "transform"]
     return filter_qset(rxn_descriptors(), exclude_substring=exclude_substring, exclude_prefix=exclude_prefix)
 
@@ -154,26 +152,21 @@ def nonlegacy_rxn_descriptors():
 
 
 def nonlegacy_pHless_rxn_descriptors():
-    exclude_substring = ["_pH{}_".format(n)
-                         for n in range(0, 15)] + ["_nominal_"]
+    exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)] + ["_nominal_"]
     return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
 
 def nonlegacy_nopHreaction_rxn_descriptors():
-    exclude_substring = ["_pHreaction_", ]
+    exclude_substring = ["_pHreaction_",]
     return filter_qset(nonlegacy_rxn_descriptors(), exclude_substring=exclude_substring)
 
-
 def orthogonalized_descs():
-    exclude_substring = ["_pH{}_".format(n) for n in range(
-        0, 15)] + ["boolean_period", "boolean_group", "boolean_valence", "_mw_DRP", "moleratio"]
+    exclude_substring = ["_pH{}_".format(n) for n in range(0, 15)] + ["boolean_period", "boolean_group", "boolean_valence", "_mw_DRP", "moleratio"]
     exclude_suffix = ["_mols"]
-    exclude_prefix = ["org", "oxlike", "AtomicRadius", "EA", "hardness",
-                      "Ionization", "number", "PaulingElectroneg", "PearsonElectroneg", ]
+    exclude_prefix = ["org", "oxlike", "AtomicRadius", "EA", "hardness", "Ionization", "number", "PaulingElectroneg", "PearsonElectroneg",]
     exclude = ["reaction_pH", "slow_cool", "reaction_time", "leak"]
 
     return filter_qset(valid_rxn_descriptors(), exclude_substring=exclude_substring, exclude_suffix=exclude_suffix, exclude_prefix=exclude_prefix, exclude=exclude)
-
 
 def remove_CA(qset):
     exclude_substring = ["_ChemAxon_cxcalc_"]
@@ -189,6 +182,5 @@ if __name__ == '__main__':
     reactions = DataSet.objects.get(name=reaction_set_name).reactions.all()
 
     filtered_descriptors = filter_through_reactions(reactions, descs)
-    sys.stderr.write("Kept {} of {} descriptors\n".format(
-        len(filtered_descriptors), descs.count()))
+    sys.stderr.write("Kept {} of {} descriptors\n".format(len(filtered_descriptors), descs.count()))
     print_headers(filtered_descriptors, sort=True)
