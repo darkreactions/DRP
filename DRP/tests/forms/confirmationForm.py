@@ -20,7 +20,7 @@ class InactiveUser(DRPTestCase):
 
     def setUp(self):
         """Set up."""
-        self.username = 'Aslan'
+        self.username = 'Aslan1'
         self.password = 'old_magic'
         self.user = User.objects.create_user(
             username=self.username, password=self.password)

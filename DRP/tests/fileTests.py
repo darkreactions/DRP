@@ -22,6 +22,7 @@ excludes = [
     'manage.py',
     'static/*',
     'DRP/research/*',
+    'DRP/models/user.py',
     'doc-build/*',
     'DRP/recommendation/*',
     'DRP/vis/*',

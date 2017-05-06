@@ -24,7 +24,7 @@ class LicenceAgreementForm(DRPTestCase):
         """Set upa valid and an invalid lincense form."""
         self.passes = ['banana', 'turkishdelight']
         self.user = User.objects.create_user(
-            username='Aslan', password=self.passes[0])
+            username='Aslan3', password=self.passes[0])
         self.user.save()
         # license was created yesterday, always.
         self.license = License(
