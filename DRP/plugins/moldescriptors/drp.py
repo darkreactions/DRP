@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 calculatorSoftware = 'DRP'
 
 # number of values to create at a time. Should probably be <= 5000
-create_threshold = 5000
+create_threshold = 000
 
 elements = chemical_data.elements
 
@@ -136,9 +136,9 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
             if verbose:
                 logger.debug('Creating {} numeric values'.format(
                     len(num_vals_to_create)))
-                DRP.models.NumMolDescriptorValue.objects.bulk_create(
+            DRP.models.NumMolDescriptorValue.objects.bulk_create(
                     num_vals_to_create)
-                num_vals_to_create = []
+            num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
                 logger.debug('Creating {} boolean values'.format(
@@ -168,24 +168,40 @@ def calculate(compound):
     to_save = []
     # Remove descriptors that effectively still exist. They shouldn't, but they may so soon.
     for a_descval in num_vals_to_create:
-        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
-            pass
+        desc_in_db = DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value,
+                                                            descriptor__heading=a_descval.descriptor.heading,
+                                                            compound=compound)
+        if desc_in_db.count() > 0:
+            desc_in_db.delete()
         else:
-            to_save.append(a_descval)
-    
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(to_save)
- 
+            #to_save.append(a_descval)
+#            a_descval.save()
+    #DRP.models.NumMolDescriptorValue.objects.bulk_create(to_save)
+            if a_descval.value is None:
+                pass
+            else:
+                a_descval.save()
+
+            
     if verbose:
         logger.debug('Creating {} boolean values'.format(
             len(bool_vals_to_create)))
     
     to_save = []
     for a_descval in bool_vals_to_create:
-        if DRP.models.BoolMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
+        if DRP.models.BoolMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
             pass
         else:
-            to_save.append(a_descval)
-    DRP.models.BoolMolDescriptorValue.objects.bulk_create(to_save)
+            if a_descval.value is None:
+                pass
+            else:
+                try:
+                    a_descval.save()
+                except django.db.utils.IntegrityError:
+                    pass
+                
+ #           to_save.append(a_descval)
+#    DRP.models.BoolMolDescriptorValue.objects.bulk_create(to_save)
    
 
 def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):
