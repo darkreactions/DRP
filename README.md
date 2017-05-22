@@ -1,10 +1,6 @@
-Dark Reaction Project README
-===========================
+# Dark Reaction Project README
 
-######Last Updated by Philip Adler 27 June 2016
-
-General Information
-=============================
+## General Information
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -16,10 +12,27 @@ Always make sure to check the latest version of the README on the master branch.
 
 This repository contains the software for the [https://www.djangoproject.com/](Django)-based source code for the Dark Reactions Project Software. If you are looking to contribute to the chemistry aspects of the project, please visit the main project site at [http://darkreactions.haverford.edu](http://darkreactions.haverford.edu). If you are looking to contribute to the source code of the project __and are not a member of haverford college__, please fork this repository and issue a pull request with any changes or fixes you may have made. A list of known bugs can be found at [http://bugs.darkreactions.haverford.edu](our instance of Mantis Bug Tracker). Please note that you will to sign up for an account, and that the authentication credentials for the bug reporting page and the main project page are separate.
 
-Setting up your own instance of the DRP
-=============================
+## Setting up your own instance of the DRP
 
-The following instructions are written to work with Ubuntu 14 and have (mostly) been tested. These instructions assume familiarity with Linux and a Command Line, and that you are using nginx as your webserver.
+The following setup methods are suitable for use with Ubuntu 16.04.
+
+### On a Physical Machine
+
+The fastest method is probably to use the install script provided (named install in the root directory of this repository).
+
+### On a Virtual Machine
+
+This software supports development using [https://www.vagrantup.com](Vagrant), and has a Vagrantfile included in the root directory.
+
+Vagrant can be installed using apt-get:
+
+`sudo apt-get install vagrant virtualbox`
+
+Then setting up a virtual machine should be as simple as issuing the command `vagrant up` from anywhere in the repository.
+
+### Manual Instructions
+
+The following instructions are written to work with Ubuntu 14 and 16 and have (mostly) been tested. These instructions assume familiarity with Linux and a Command Line, and that you are using nginx as your webserver.
 
 Install the necessary programs.
 
@@ -36,15 +49,26 @@ Install required pip python libraries
 
 ####For RDKit Descriptors
 
-If you wish to use calculations from RDKit as a part of your install, the following is also necessary *these installation instructions are ubuntu 14.04 specific*.
+We have a repo set up for a python 3 specific build of rdkit which should not clash with other packages in the ubuntu repositories, however, we make no guarantees to that effect, and installation is at your own risk.
+
+Add:
+
+`deb [trusted=yes] https://darkreactions.haverford.edu/software ./`
+
+To your `/etc/apt/sources.list` file, then, in a command prompt:
+
+`sudo apt-get install python3-rdkit`
+
+
+Alternatively you can compile from source at your discretion:
 
 `sudo apt-get install bison cmake flux build-essential sqlite3 libsqlite3-dev libboost-all-dev`
 
 `sudo pip3 install cairocffi`
 
-Then, in a directory *that is not* your main installation directory for git.
+Then, in a directory *that is not* your main installation directory for DRP.
 
-`git clone https://github.com/shadowadler/rdkit.git`
+`git clone https://github.com/darkreactions/rdkit.git`
 
 Change into the rdkit repository directory and then
 
@@ -281,8 +305,7 @@ is reserved for releases. There are no working long-term support branches
 at present. Persons editing this code should set up their own branches,
 with one marked as stable, such that all tests pass in that branch.    
 
-Django Management Commands
-=========================
+### Django Management Commands
 
 Django management commands (that is, the commands that pass through
 manage.py) can be called as `python manage.py <the command>` when
