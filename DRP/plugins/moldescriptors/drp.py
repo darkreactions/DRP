@@ -161,7 +161,6 @@ def calculate(compound, verbose=False, whitelist=None):
     """Calculation of descriptor values."""
     num_vals_to_create, bool_vals_to_create = _calculate(
         compound)
-    verbose = True
     if verbose:
         logger.debug('Creating {} numeric values'.format(
             len(num_vals_to_create)))

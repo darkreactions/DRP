@@ -13,7 +13,7 @@ from itertools import chain
 import logging
 logger = logging.getLogger("DRP")
 
-# the version of ChemAxon currently in use.
+# The version of ChemAxon currently in use.
 # Should be matched by a entry in the dictionary in the settings file
 # This version is reflected in, but not necessarily the same as, the
 # descriptor versions
