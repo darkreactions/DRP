@@ -333,7 +333,7 @@ def calculate(compound, verbose=False, whitelist=None):
 
     to_save = []
     for a_descval in num_to_create:
-        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
+        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
             pass
         else:
             to_save.append(a_descval)
@@ -341,7 +341,7 @@ def calculate(compound, verbose=False, whitelist=None):
 
     to_save = []
     for a_descval in ord_to_create:
-        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() >= 0:
+        if DRP.models.OrdMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
             pass
         else:
             to_save.append(a_descval)

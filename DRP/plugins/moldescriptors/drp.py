@@ -157,8 +157,8 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
 
-def calculate(compound):
-    """Calculation of descriptor values."""    
+def calculate(compound, verbose=False, whitelist=None):
+    """Calculation of descriptor values."""
     num_vals_to_create, bool_vals_to_create = _calculate(
         compound)
     verbose = True
@@ -182,11 +182,11 @@ def calculate(compound):
             else:
                 a_descval.save()
 
-            
+
     if verbose:
         logger.debug('Creating {} boolean values'.format(
             len(bool_vals_to_create)))
-    
+
     to_save = []
     for a_descval in bool_vals_to_create:
         if DRP.models.BoolMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
@@ -199,10 +199,31 @@ def calculate(compound):
                     a_descval.save()
                 except django.db.utils.IntegrityError:
                     pass
-                
+
  #           to_save.append(a_descval)
 #    DRP.models.BoolMolDescriptorValue.objects.bulk_create(to_save)
-   
+
+    # """Calculation of descriptor values."""
+    # delete_descriptors([compound])
+    # num_vals_to_create, bool_vals_to_create = _calculate(
+    #     compound, whitelist=whitelist)
+    #
+    # num_vals_to_create = [num_val for num_val in num_vals_to_create if num_val.value is not None]
+    # bool_vals_to_create = [bool_val for bool_val in num_vals_to_create if bool_val.value is not None]
+    #
+    # for val in num_vals_to_create:
+    #     print(val.descriptor.heading)
+    #     print(val)
+    #
+    # if verbose:
+    #     logger.debug('Creating {} numeric values'.format(
+    #         len(num_vals_to_create)))
+    # DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+    # if verbose:
+    #     logger.debug('Creating {} boolean values'.format(
+    #         len(bool_vals_to_create)))
+    # DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
+
 
 def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):
 

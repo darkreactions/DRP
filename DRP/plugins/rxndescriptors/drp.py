@@ -368,7 +368,7 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=Non
         if verbose:
             logger.info("{} ({}/{})".format(reaction,
                                             i + 1, len(reaction_set)))
-        if not bulk_delete:
+        if bulk_delete: # TODO should this be a not?
             if verbose:
                 logger.info("Deleting old descriptor values")
             _delete_values([reaction], descs_to_delete)
@@ -471,6 +471,22 @@ def calculate(reaction, verbose=False, whitelist=None):
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
 
 
+regular_headings = ['Org_mw_DRP_rdkit_0_02_gmean_count',
+ 'Inorg_mw_DRP_rdkit_0_02_gmean_count',
+ 'Org_mw_DRP_rdkit_0_02_Max',
+ 'Org_mw_DRP_rdkit_0_02_gmean_molarity',
+ 'Inorg_mw_DRP_rdkit_0_02_gmean_molarity',
+ 'Inorg_mw_DRP_rdkit_0_02_Range',
+ 'Inorg_mw_DRP_rdkit_0_02_Max']
+
+def is_rdkit_descriptor(heading):
+    # if 'rdkit' in heading.lower():
+    if heading in regular_headings:
+        I = 'found it'
+        return True
+    else:
+        return False
+
 def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):
     """Calculate with the descriptorDict already created and previous descriptor values deleted."""
     if num_vals_to_create is None:
@@ -494,7 +510,10 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
         except AttributeError:
             val = None
         else:
-            val = (four_class > 2)
+            if four_class is not None:
+                val = (four_class > 2)
+            else:
+                val = None
         b = DRP.models.BoolRxnDescriptorValue(
             reaction=reaction,
             descriptor=descriptorDict[heading],
@@ -507,6 +526,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
     for element in elements:
         heading = element + '_mols'
+        is_rdkit_descriptor(heading)
         if whitelist is None or heading in whitelist:
             n = num(
                 reaction=reaction,
@@ -561,6 +581,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
                     heading = '{}_{}_{}'.format(
                         compoundRole.label, descriptor.csvHeader, 'Max')
+                    is_rdkit_descriptor(heading)
                     if whitelist is None or heading in whitelist:
                         n = num(
                             reaction=reaction,
@@ -575,6 +596,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
                     heading = '{}_{}_{}'.format(
                         compoundRole.label, descriptor.csvHeader, 'Range')
+                    is_rdkit_descriptor(heading)
                     if whitelist is None or heading in whitelist:
                         n = num(
                             reaction=reaction,
@@ -589,6 +611,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
                     heading = '{}_{}_{}_{}'.format(
                         compoundRole.label, descriptor.csvHeader, 'gmean', 'molarity')
+                    is_rdkit_descriptor(heading)
                     if whitelist is None or heading in whitelist:
                         n = num(
                             reaction=reaction,
@@ -608,6 +631,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
                     heading = '{}_{}_{}_{}'.format(
                         compoundRole.label, descriptor.csvHeader, 'gmean', 'count')
+                    is_rdkit_descriptor(heading)
                     if whitelist is None or heading in whitelist:
                         n = num(
                             reaction=reaction,
@@ -639,6 +663,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                     for i in range(descriptor.minimum, descriptor.maximum + 1):
                         heading = '{}_{}_{}_count'.format(
                             compoundRole.label, descriptor.csvHeader, i)
+                        is_rdkit_descriptor(heading)
                         if whitelist is None or heading in whitelist:
                             n = num(
                                 reaction=reaction,
@@ -650,6 +675,7 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
 
                         heading = '{}_{}_{}_molarity'.format(
                             compoundRole.label, descriptor.csvHeader, i)
+                        is_rdkit_descriptor(heading)
                         if whitelist is None or heading in whitelist:
                             n = num(
                                 reaction=reaction,
@@ -666,35 +692,27 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
             for descriptor in DRP.models.BoolMolDescriptor.objects.all():
                 descriptorValues = DRP.models.BoolMolDescriptorValue.objects.filter(
                     compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)
-                logger.info("printing desc vals and role quantities")
-                logger.info(descriptorValues)
-                logger.info(roleQuantities)
-                logger.info([descriptorValue.value for descriptorValue in descriptorValues])
 
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
-                    logger.info("we are here")
                     
                     for i in (True, False):  # because Still python...
                         heading = '{}_{}_{}_count'.format(
                             compoundRole.label, descriptor.csvHeader, i)
-                        logger.info(heading)
+                        is_rdkit_descriptor(heading)
                         if whitelist is None or heading in whitelist:
 
-                            logger.info("checkpoint")
                             n = num(
                                 reaction=reaction,
                                 descriptor=descriptorDict[heading],
                             )
                             n.value = sum(
                                 1 for value in descriptorValues if value.value == i)
-                            logger.info("first n value")
-                            logger.info(n.value)
                             num_vals_to_create.append(n)
 
                         heading = '{}_{}_{}_molarity'.format(
                             compoundRole.label, descriptor.csvHeader, i)
+                        is_rdkit_descriptor(heading)
                         if whitelist is None or heading in whitelist:
-                            logger.info("checkpoint 2")
                             n = num(
                                 reaction=reaction,
                                 descriptor=descriptorDict[heading],
@@ -706,11 +724,10 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                             else:
                                 n.value = sum(
                                     quantity.amount for quantity in quantities)
-                            logger.info("second n value")
-                            logger.info(n.value)
                             num_vals_to_create.append(n)
                     heading = '{}_{}_any'.format(
                         compoundRole.label, descriptor.csvHeader)
+                    is_rdkit_descriptor(heading)
                     if whitelist is None or heading in whitelist:
                         b = DRP.models.BoolRxnDescriptorValue(
                             reaction=reaction,
@@ -734,8 +751,6 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                             n.value = descriptorValues.filter(
                                 value=permValue).count()
 
-                            logger.info("third n value")
-                            logger.info(n.value)
                             num_vals_to_create.append(n)
                         heading = '{}_{}_{}_molarity'.format(
                             compoundRole.label, descriptor.csvHeader, permValue.value)
@@ -752,8 +767,6 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                                 n.value = sum(
                                     quantity.amount for quantity in quantities)
 
-                            logger.info("fourth n value")
-                            logger.info(n.value)
                             num_vals_to_create.append(n)
     return num_vals_to_create, bool_vals_to_create
 

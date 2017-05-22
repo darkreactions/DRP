@@ -71,6 +71,7 @@ class Command(BaseCommand):
         """Handle the function call."""
         verbose = (kwargs['verbosity'] > 0)
         only_reactions = kwargs['reactions']
+        print(only_reactions)
         only_compounds = kwargs['compounds']
         start = kwargs['start']
         whitelist = kwargs['whitelist']
@@ -78,6 +79,7 @@ class Command(BaseCommand):
         include_invalid = kwargs['include_invalid']
         include_non_performed = kwargs['include_non_performed']
         only_dirty = kwargs['only_dirty']
+        print(only_dirty)
         limit = kwargs['count']
 
         if whitelist is not None:
@@ -124,11 +126,14 @@ class Command(BaseCommand):
             with transaction.atomic():
                 reactions = Reaction.objects.order_by(
                     'pk').exclude(calculating=True)
-                reactions = reactions.exclude(compounds__dirty=True)
+                print(reactions.count())
+#                reactions = reactions.exclude(compounds__dirty=True)
+                print(reactions.count())
                 if only_dirty:
                     reactions = reactions.objects.filter(dirty=True)
                 if only_reactions:
                     reactions = reactions.filter(pk__gte=start)
+                    print(reactions.count())
                 if not include_invalid:
                     reactions = reactions.exclude(
                         performedreaction__valid=False)
@@ -138,6 +143,7 @@ class Command(BaseCommand):
                 reactions = Reaction.objects.filter(
                     id__in=(reaction.id for reaction in reactions))
                 reactions.update(calculating=True)
+                print(reactions.count())
             while reactions.count() > 1:
                 try:
                     calculate_descriptors(reactions, rxnDescriptorPlugins,

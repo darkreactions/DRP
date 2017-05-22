@@ -1,19 +1,14 @@
 a = []
 
 with open('/home/h205c/DRP/DRP/descdescdescs.csv', 'r') as f:
+    text = f.read()
+
+not_there = []
+
+
+with open('/home/h205c/Downloads/orthogonal_plus_noCA_info.dsc', 'r') as f:
     for line in f.readlines():
-        count = 0
-        found = False
-        this_string = ''
-        while not found:
-                char = line[count]
-                if char == '\t' or char == '{':
-                    not_found = True
-                else:
-                    this_string += char
-                count += 1
+        if line[:-1] in text:
+            not_there.append(line[:-1])
 
-        a.append(this_string)
-
-
-print(a)
+print(not_there)
