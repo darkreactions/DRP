@@ -76,7 +76,7 @@ Change into the rdkit repository directory and then
 
 `export LD_LIBRARY_PATH="$(pwd)/lib"`
 
-`export PYTHONPATH="$(pwd)/lib"
+`export PYTHONPATH="$(pwd)/lib"`
 
 `mkdir build`
 
