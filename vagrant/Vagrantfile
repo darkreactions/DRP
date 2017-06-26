@@ -116,6 +116,9 @@ Vagrant.configure(2) do |config|
     echo "address=/loc/127.0.0.1" | sudo tee -a /etc/dnsmasq.conf;
     sudo cp /vagrant/vagrant/my.cnf /home/vagrant/.my.cnf;
     sudo chown vagrant:vagrant /home/vagrant/.my.cnf;
+    sudo mkdir /home/vagrant;
+    sudo touch /home/vagrant/uwsgi.log;
+    sudo chown -R vagrant:vagrant /home/vagrant;
 SHELL
 
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
