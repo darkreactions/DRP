@@ -129,7 +129,6 @@ class Command(BaseCommand):
                     reactions = reactions.objects.filter(dirty=True)
                 if only_reactions:
                     reactions = reactions.filter(pk__gte=start)
-                    print(reactions.count())
                 if not include_invalid:
                     reactions = reactions.exclude(
                         performedreaction__valid=False)
