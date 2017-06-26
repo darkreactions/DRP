@@ -167,14 +167,6 @@ def make_dict():
 # We should decide which method we want for deletion and work on
 # variations of that. -GMN
 
-#
-# class derivedDict(dict):
-#     def __init__(self, desc_dict):
-#
-#         self.accessed
-#     def __getitem__(self, item):
-#
-#
 
 def delete_descriptors_many(reaction_set, descriptorDict):
     """Bulk deletion of descriptors."""
