@@ -1,67 +1,84 @@
-!/bin/bash
+#!/bin/bash
+
+install_dir="$(dirname "$(readlink -f "$0")")"
 
 #WARNING: MOVE THIS FILE SOMEWHERE ELSE!
+echo "What is the mysql database password?";
+read -s mysqlpass;
 
-#Install background software
-sudo apt-get install python3 python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache mailutils python3-scipy python3-pillow cmake libboost-all-dev python3-cffi graphviz-dev pkg-config pwgen dnsmasq;
+echo "What should the mysql database be called? (The testing database will be the same name + '_test')";
+read -s db_name;
 
-sudo -H pip3 install -U pip
+echo "What is the fully qualified domain name of the server (a good example is darkreactions.loc)";
+read -s server_name;
 
-sudo -H pip3 install django==1.8 numpy pygraphviz mysqlclient;
+https_response="banana"
+
+while [ $https_response -ne "Yes" && $https_response -ne "No" ]; do 
+  echo "Is this being served on a https server? (Type exactly 'Yes' or 'No').";
+  read -s https_response;
+done;
+
+if [ $https_response -eq "Yes" ]; then
+  echo "What is the location of the certificate?";
+  read -s https_cert;
+
+  echo "What is the location of the certificate key?";
+  read -s https_key;
+fi
+
+REPO="deb [trusted=yes] https://darkreactions.haverford.edu/software ./";
+sudo apt-add-repository -r $REPO;
+sudo apt-add-repository $REPO;
+sudo apt-get update;
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $mysqlpass";
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $mysqlpass";
+sudo debconf-set-selections <<< "postfix postfix/mailname string $(hostname)";
+sudo debconf-set-selections <<< 'postfix postfix/main_mailer_type string "Internet site"';
+
+# Base software
+sudo apt-get install -y python3 python3-dev python3-pip mailutils mysql-server libmysqlclient-dev nginx uwsgi uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache python3-scipy python3-pillow cmake libboost-all-dev python3-cffi graphviz-dev pkg-config pwgen dnsmasq;
+sudo pip3 install --upgrade pip;
+sudo pip3 install numpy pygraphviz mysqlclient sqlparse;
+sudo pip3 install django==1.8;
+sudo pip3 install chemspipy requests pep8 pep257 xxhash sqlparse;
+sudo apt-get install -y python3-rdkit;
 
 #install this software
+mysql -e "CREATE DATABASE $db_name CHARACTER SET utf8 COLLATE utf8_bin";
 
-start_dir="$(pwd)";
-git clone https://github.com/darkreactions/DRP;
-cd DRP;
-if [ -z $1 ]
-    then
-    branch="master";
-else
-    branch="$1";
+db_failure=$?
+
+mysql -e "CREATE DATABASE ${db_name}_test CHARACTER SET utf8 COLLATE utf8_bin";
+
+db_failure=$(($db_failure + $?))
+
+if [ db_failure -gt 0 ]; then
+    echo "Failed to create database. Exiting safely." 1>&2;
+    exit 1;
 fi
-git checkout "$branch";
 
-##install rdkit
-sudo apt-get install bison cmake flux build-essential sqlite3 libsqlite3-dev libboost-all-dev;
-sudo -H pip3 install cairocffi;
-sudo -H pip3 install chemspipy requests pep8 pep257 xxhash sqlparse;
+sudo cp "${install_dir}/DRP_nginx.conf" /etc/nginx/sites-enabled/DRP.conf;
+sudo cp "${install_dir}/DRP_uwsgi.ini" /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+sudo cp "${install_dir}/uwsgi.service" /etc/systemd/system/uwsgi.service;
 
-cd ..
+sudo sed -e "s/21d9a6c1-b1d2-47de-acac-6dbf7fddcb96/$server_name/" -i /etc/nginx/sites-enabled/DRP.conf/
+sudo sed -e "s/5af9584c-fa06-4813-ba3f-ad575277d2dc/$install_dir/g" -i /etc/nginx/sites-enabled/DRP.conf/
 
-git clone https://github.com/darkreactions/rdkit.git;
-cd rdkit;
+if [ https_response -eq "Yes" ]; then
 
-export RDBASE="$(pwd)";
+  sudo sed -e "s/#ac032bb9-22f7-4360-86f9-6f44fcd902c0//g" -i /etc/nginx/sites-enabled/DRP.conf/
+  sudo sed -e "s/31f7ef07-ef67-4afd-81cb-2b9b389ab2e9/$https_cert/g" -i /etc/nginx/sites-enabled/DRP.conf/
+  sudo sed -e "s/4b93d936-d291-4650-bc38-93115c3d7b1f/$https_key/g" -i /etc/nginx/sites-enabled/DRP.conf/
 
-export LD_LIBRARY_PATH="$(pwd)/lib";
+fi
 
-export PYTHONPATH="$(pwd)/lib";
-
-mkdir build;
-
-cd build;
-
-cmake -DRDK_BUILD_INCHI_SUPPORT=ON -D PYTHON_LIBRARY=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/libpython3.5.so -D PYTHON_INCLUDE_DIR=/usr/include/python3.5/ -D PYTHON_EXECUTABLE=/usr/bin/python3.5 -DBOOST_LIBRARY_DIR=/usr/include/boost/ ..;
-
-make install
-unset LD_LIBRARY_PATH;
-unset RDBASE;
-unset PYTHONPATH;
-
-cd ../rdkit;
-
-sudo ln -s "$(pwd)" /usr/lib/python3.5/rdkit;
-
-cd ../lib;
-
-sudo cp -n *.so.2 /usr/lib;
+#TODO: Replacements for uwsgi.ini
 
 cd $start_dir
 mkdir $start_dir/logs;
 
-python3 -c "import rdkit.Chem";
-echo "During setup, what was the mysql password you entered?";
+echo "During the previous steps, what was the mysql password you entered?";
 read -s mysqlpass;
 
 echo "What is your username on the main server?";

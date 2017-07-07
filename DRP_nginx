@@ -1,39 +1,33 @@
 server {
         listen          80;
 # For https
-#        listen          80 ssl;
+#ac032bb9-22f7-4360-86f9-6f44fcd902c0        listen          80 ssl;
         listen          8000;
-        server_name     darkreactions.haverford.edu;
+        server_name     21d9a6c1-b1d2-47de-acac-6dbf7fddcb96;
         server_name     localhost;
 # For https
-#	ssl_certificate /path/to/certificate;
-#	ssl_certificate_key /path/to/key;
+#ac032bb9-22f7-4360-86f9-6f44fcd902c0	ssl_certificate 31f7ef07-ef67-4afd-81cb-2b9b389ab2e9;
+#ac032bb9-22f7-4360-86f9-6f44fcd902c0	ssl_certificate_key 4b93d936-d291-4650-bc38-93115c3d7b1f;
         charset         utf-8;
-
 
         client_max_body_size    75M;
 
-        access_log /home/drp/web/darkreactions.haverford.edu/logs/access.log;
-        error_log /home/drp/web/darkreactions.haverford.edu/logs/error.log;
+        access_log /var/log/nginx/DRP/access.log;
+        error_log /var/log/nginx/DRP/error.log;
 
         location /favicon.ico {
-                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/static/favicon.ico;
-        }
-
-        location /documentation/ {
-                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/documentation/;
-                index index.html; 
+                alias 5af9584c-fa06-4813-ba3f-ad575277d2dc/static/favicon.ico;
         }
 
         location /media/ {
-                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/media/;
+                alias 5af9584c-fa06-4813-ba3f-ad575277d2dc/DRP/media/;
                 if ($query_string) {
                         expires max;
                 }
         }
 
         location /static/ {
-                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/static/;
+                alias 5af9584c-fa06-4813-ba3f-ad575277d2dc/DRP/static/;
                 if ($query_string) {
                         expires max;
                 }
@@ -41,22 +35,15 @@ server {
 
 	location /sec_static/ {
 		internal;
-                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/sec_static/;
+                alias 5af9584c-fa06-4813-ba3f-ad575277d2dc/DRP/sec_static/;
 	}
 
         location / {
                 include uwsgi_params;
-                #include /home/drp/web/darkreactions.haverford.edu/uwsgi_params;
-#for HTTPS
-#		uwsgi_param HTTPS $https if_not_empty;
+#ac032bb9-22f7-4360-86f9-6f44fcd902c0		uwsgi_param HTTPS $https if_not_empty;
                 uwsgi_pass      127.0.0.1:3031;
                 uwsgi_read_timeout 600;
         }
-
-#        error_page 400 /static/400.html;
-#        error_page 403 /static/403.html;
-#        error_page 404 /static/404.html;
-#        error_page 500 502 503 504 /static/500.html;
 
         gzip on;
         gzip_http_version 1.0;
