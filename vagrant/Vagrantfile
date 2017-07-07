@@ -92,7 +92,9 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    echo "deb [trusted=yes] https://darkreactions.haverford.edu/software ./" | sudo tee -a /etc/apt/sources.list;
+    REPO="deb [trusted=yes] https://darkreactions.haverford.edu/software ./"
+    sudo apt-add-repository -r $REPO
+    sudo apt-add-repository $REPO
     sudo apt-get update;
     sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password rootpass';
     sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password rootpass';
