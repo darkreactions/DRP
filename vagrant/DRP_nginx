@@ -8,9 +8,6 @@ server {
         access_log /var/log/nginx/access.log;
         error_log /var/log/nginx/error.log;
 
-        root /vagrant;
-        autoindex on;
-
         location /favicon.ico {
                 alias /vagrant/static/favicon.ico;
         }
