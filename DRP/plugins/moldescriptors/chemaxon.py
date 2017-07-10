@@ -273,8 +273,8 @@ def delete_descriptors(compound_set, descriptorDict, whitelist=None):
         desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
         desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.OrdMolDescriptor)], compound__in=compound_set).delete()
 
 
 
@@ -335,7 +335,9 @@ def calculate(compound, verbose=False, whitelist=None):
                           v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
-    delete_descriptors([compound], descriptorDict)
+
+    delete_descriptors([compound], descriptorDict, whitelist=whitelist)
+
     filtered_cxcalcCommands = {
         k: v for k, v in cxcalcCommands.items() if k in descriptorDict.keys()}
     if verbose:
