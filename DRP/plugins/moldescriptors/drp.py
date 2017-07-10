@@ -130,8 +130,12 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
         if verbose:
             logger.debug("{}; Compound {} ({}/{})".format(compound,
                                                           compound.pk, i + 1, len(compound_set)))
+
+        delete_descriptors(compound_set, whitelist=whitelist)
+
         num_vals_to_create, bool_vals_to_create = _calculate(
             compound, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
+
         if len(num_vals_to_create) > create_threshold:
             if verbose:
                 logger.debug('Creating {} numeric values'.format(
@@ -146,73 +150,6 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
             DRP.models.BoolMolDescriptorValue.objects.bulk_create(
                 bool_vals_to_create)
             bool_vals_to_create = []
-
-    if verbose:
-        logger.debug('Creating {} numeric values'.format(
-            len(num_vals_to_create)))
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
-    if verbose:
-        logger.debug('Creating {} boolean values'.format(
-            len(bool_vals_to_create)))
-    DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
-
-
-def calculate(compound, verbose=False, whitelist=None):
-    """Calculation of descriptor values."""
-    num_vals_to_create, bool_vals_to_create = _calculate(
-        compound)
-    if verbose:
-        logger.debug('Creating {} numeric values'.format(
-            len(num_vals_to_create)))
-    to_save = []
-    # Remove descriptors that effectively still exist. They shouldn't, but they may so soon.
-    for a_descval in num_vals_to_create:
-        desc_in_db = DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value,
-                                                            descriptor__heading=a_descval.descriptor.heading,
-                                                            compound=compound)
-        if desc_in_db.count() > 0:
-            desc_in_db.delete()
-        else:
-            #to_save.append(a_descval)
-#            a_descval.save()
-    #DRP.models.NumMolDescriptorValue.objects.bulk_create(to_save)
-            if a_descval.value is None:
-                pass
-            else:
-                a_descval.save()
-
-
-    if verbose:
-        logger.debug('Creating {} boolean values'.format(
-            len(bool_vals_to_create)))
-
-    to_save = []
-    for a_descval in bool_vals_to_create:
-        if DRP.models.BoolMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
-            pass
-        else:
-            if a_descval.value is None:
-                pass
-            else:
-                try:
-                    a_descval.save()
-                except django.db.utils.IntegrityError:
-                    pass
-
- #           to_save.append(a_descval)
-#    DRP.models.BoolMolDescriptorValue.objects.bulk_create(to_save)
-
-    # """Calculation of descriptor values."""
-    # delete_descriptors([compound])
-    # num_vals_to_create, bool_vals_to_create = _calculate(
-    #     compound, whitelist=whitelist)
-    #
-    # num_vals_to_create = [num_val for num_val in num_vals_to_create if num_val.value is not None]
-    # bool_vals_to_create = [bool_val for bool_val in num_vals_to_create if bool_val.value is not None]
-    #
-    # for val in num_vals_to_create:
-    #     print(val.descriptor.heading)
-    #     print(val)
     #
     # if verbose:
     #     logger.debug('Creating {} numeric values'.format(
@@ -222,6 +159,25 @@ def calculate(compound, verbose=False, whitelist=None):
     #     logger.debug('Creating {} boolean values'.format(
     #         len(bool_vals_to_create)))
     # DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
+
+
+def calculate(compound, verbose=False, whitelist=None):
+    """Calculation of descriptor values."""
+    # Delete existing descriptors that we'll be re-calculating
+    delete_descriptors([compound], whitelist=whitelist)
+
+    # Generate drp descriptor values
+    num_vals_to_create, bool_vals_to_create = _calculate(
+        compound)
+
+    if verbose:
+        logger.debug('Creating {} numeric values'.format(
+            len(num_vals_to_create)))
+    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+    if verbose:
+        logger.debug('Creating {} boolean values'.format(
+            len(bool_vals_to_create)))
+    DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
 
 def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):

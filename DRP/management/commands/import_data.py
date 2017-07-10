@@ -19,7 +19,6 @@ class Command(BaseCommand):
 
     def handle(self, reaction_limit=None, *args, **kwargs):
         """Handle the command call."""
-        
         DRP.models.CompoundQuantity.objects.all().delete()
         DRP.models.Compound.objects.all().delete()
         DRP.models.CompoundRole.objects.all().delete()
@@ -38,7 +37,6 @@ class Command(BaseCommand):
         DRP.models.LabGroup.objects.all().delete()
         DRP.models.Descriptor.objects.all().delete()
         User.objects.all().delete()
-        
         s = requests.Session()
         s.get(settings.MAIN_SERVER + '/login.html')
         r = s.post(settings.MAIN_SERVER + '/login.html', data={'username': settings.MAIN_SERVER_USER,
@@ -57,7 +55,7 @@ class Command(BaseCommand):
             user = User.objects.get(username=settings.MAIN_SERVER_USER)
             user.set_password(settings.MAIN_SERVER_PASS)
             user.save()
-            
+
             r = s.get(apiUrl + 'licenses.xml', params=data)
             for l in serializers.deserialize('xml', smart_str(r.text)):
                 l.save()
@@ -92,7 +90,7 @@ class Command(BaseCommand):
                 pr.object.calcDescriptors = False
                 pr.object.duplicateOf = None
                 pr.save()
-                    
+
             for pr in serializers.deserialize('xml', smart_str(r.text)):
                 pr2 = DRP.models.PerformedReaction.objects.get(pk=pr.object.pk)
                 try:

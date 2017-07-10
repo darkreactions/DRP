@@ -104,3 +104,7 @@ class LazyDescDict(object):
 def setup(descDict):
     """Lazily sets up dictionary."""
     return LazyDescDict(descDict)
+
+#
+# def clean_descriptor_values(desc_values):
+#     for i in desc_values:

@@ -250,17 +250,33 @@ def setup_pHdependentDescriptors(_descriptorDict):
 
     return descriptorDict
 
+#
+# def delete_descriptors(compound_set, descriptorDict):
+#     """Bulk deletion of descriptors."""
+#
+#     DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'num'],
+#                                                     compound__in=compound_set).delete()
+#     DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'ord'],
+#                                                     compound__in=compound_set).delete()
+#     DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'bool'],
+#                                                      compound__in=compound_set).delete()
 
-def delete_descriptors(compound_set, descriptorDict):
-    """Bulk deletion of descriptors."""
-    
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'num'],
-                                                    compound__in=compound_set).delete()
-    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'ord'],
-                                                    compound__in=compound_set).delete()
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'bool'],
-                                                     compound__in=compound_set).delete()
-    
+
+def delete_descriptors(compound_set, descriptorDict, whitelist=None):
+    """Bulk deletion of descriptor values."""
+    if whitelist is None:
+        descs = descriptorDict.values()
+    else:
+        descs = [descriptorDict[k]
+                 for k in descriptorDict.keys() if k in whitelist]
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
+
+
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
     """Bulk calculation of descriptors."""
@@ -331,22 +347,26 @@ def calculate(compound, verbose=False, whitelist=None):
         logger.info("Creating {} numerical and {} ordinal".format(
             len(num_to_create), len(ord_to_create)))
 
-    to_save = []
-    for a_descval in num_to_create:
-        if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
-            pass
-        else:
-            to_save.append(a_descval)
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(to_save)
+    num_to_create = [desc_val for desc_val in num_to_create if desc_val.value is not None]
 
-    to_save = []
-    for a_descval in ord_to_create:
-        if DRP.models.OrdMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
-            pass
-        else:
-            to_save.append(a_descval)
+    ord_to_create = [desc_val for desc_val in ord_to_create if desc_val.value is not None]
+
+    # to_save = []
+    # for a_descval in num_to_create:
+    #     if DRP.models.NumMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
+    #         pass
+    #     else:
+    #         to_save.append(a_descval)
+    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
+    #
+    # to_save = []
+    # for a_descval in ord_to_create:
+    #     if DRP.models.OrdMolDescriptorValue.objects.filter(descriptor=a_descval.descriptor, value=a_descval.value, compound=compound).count() > 0:
+    #         pass
+    #     else:
+    #         to_save.append(a_descval)
     
-    DRP.models.OrdMolDescriptorValue.objects.bulk_create(to_save)
+    DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
 
 
 def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=None, ord_to_create=None):
