@@ -16,10 +16,6 @@ This repository contains the software for the [https://www.djangoproject.com/](D
 
 The following setup methods are suitable for use with Ubuntu 16.04.
 
-### On a Physical Machine
-
-The fastest method is probably to use the install script provided (named install in the root directory of this repository).
-
 ### On a Virtual Machine
 
 This software supports development using [https://www.vagrantup.com](Vagrant), and has a Vagrantfile included in the root directory.
@@ -30,15 +26,16 @@ Vagrant can be installed using apt-get:
 
 Then setting up a virtual machine should be as simple as issuing the command `vagrant up` from anywhere in the repository.
 
-### Manual Instructions
+### Manual Instructions - for a physical machine
 
 The following instructions are written to work with Ubuntu 14 and 16 and have (mostly) been tested. These instructions assume familiarity with Linux and a Command Line, and that you are using nginx as your webserver.
 
-Install the necessary programs.
+Install the necessary programs. It should be noted here that we require mysql, but only prefer uwsgi. Other wsgi solutions are available and may be compatible with DRP.
 
-`sudo apt-get install python3-dev python3-pip mysql-server libmysqlclient-dev nginx uwsgi-plugin-python3 git weka graphviz memcached python-memcache mailutils python3-scipy python3-Pillow`
+`sudo apt-get install -y python3 python3-dev python3-pip mailutils mysql-server libmysqlclient-dev nginx uwsgi uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache python3-scipy python3-pillow cmake libboost-all-dev python3-cffi graphviz-dev pkg-config pwgen dnsmasq`
 
-`sudo pip3 install numpy pygraphviz mysqlclient sqlparse`
+`sudo pip3 install numpy pygraphviz mysqlclient`
+`sudo -H pip3 install chemspipy requests pep8 pep257 xxhash sqlparse`
 
 Install Django. The current version of DRP is designed to work with Django 1.8
 
@@ -46,6 +43,45 @@ Install Django. The current version of DRP is designed to work with Django 1.8
 
 Install required pip python libraries
 `sudo pip3 install chemspipy requests pep8 pep257 xxhash`
+
+You should then log in to mysql, and create two databases:
+
+```
+   CREATE DATABASE DRP CHARACTER SET utf8 COLLATE utf8_bin;
+   CREATE DATABASE DRP_test CHARACTER SET utf8 COLLATE utf8_bin;
+```
+
+In the DRP repository, _copy_ the settings\_example.py to settings.py.
+
+In the settings.py file, set:
+
+```
+CHEMSPIDER\_TOKEN
+MAIN\_SERVER
+MAIN\_SERVER\_USER
+MAIN\_SERVER\_PASS 
+EMAIL\_HOST
+EMAIL\_HOST\_USER
+EMAIL\_HOST\_PASS
+EMAIL\_IMAP\_HOST
+ADMINS 
+```
+
+Which have placeholders. You will also need to set the standard database settings as per the [https://docs.djangoproject.com/en/1.8/](django documentation).
+
+You then need to copy DRP\_nginx from the DRP folder to the /etc/nginx/sites-available folder.
+
+Once the file has been copied, it should be edited. Many of the values are self-evident placeholders and should be replaced by values appropriate to your system setup. A symlink to this file should then be made in the /set/nginx/sites-enabled folder
+
+The DRP\_uwsgi.ini file, similarly, should be copied ot the /etc/uwsgi/apps-available folder. This should then be populated correctly, and symlinked from /etc/uwsgi/apps-enabled.
+
+Then the following commands should be issued at a command prompt:
+
+`sudo service uwsgi restart`
+`sudo service nginx restart`
+
+At this point, you should have a working version of the DRP.
+    
 
 ####For RDKit Descriptors
 
@@ -107,10 +143,6 @@ Otherwise:
 `python3.4 -c "import rdkit.Chem"`
 
 If that runs without error messages, congratulations, you have compiled and installed rdkit for use with DRP.
-
-###Clone from the Git Repository into your directory of choice.
-
-`git clone git@github.com:darkreactions/DRP`
 
 ###Release Versions
 
