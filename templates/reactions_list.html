@@ -1,0 +1,50 @@
+{% extends 'reactions.html' %}
+
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionsList.css" />
+{% endblock %}
+
+
+{% block content %}
+{% if testing %}<!-- ba960469-5fad-4142-a0a1-a10b37e9432e -->{% endif %}
+<h1 class="bannerText">Reactions Database</h1>  
+{% if user.is_authenticated %}
+    {% include "lab_form.html" %}
+  <div class="downloads">
+    <h1 class="downloads">Downloads</h1>
+    <ul class="downloads">
+      <li><a href="{% url 'reactionlist_typed' '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url 'reactionlist_typed' '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
+      <li><a href="{% url 'reactionlist_typed' '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url 'reactionlist_typed' '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
+    </ul>
+  </div>
+
+{% endif %}
+{% if reactions|length > 0 %}
+<ul class="reactions">
+  {% include "reactions_divs.html" %}
+</ul>
+{% if paginator.num_pages > 1 %}
+<nav id="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{page_obj.previous_page_number}}">Previous</a>
+    {% endif %}
+    <span>Page Number: {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}">Next</a>
+    {% endif %}
+</nav>
+{% if not request.GET.page %}
+    <script>
+        pagNav = document.getElementById("pagination");
+        pagNav.parentNode.removeChild(pagNav);
+    </script>
+    <script src="/static/js/reaction_list.js" ></script>
+{% endif %}
+{% endif %}
+{% else %}
+<p>There are currently no reactions to display</p>
+{% endif %}
+
+{% endblock %}

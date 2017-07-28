@@ -1,0 +1,4 @@
+python -u build_metric.py -p @descs/CFS_thesis.dsc -m ITML -v -d "ITML CFS 10k" -o itml_10k_CFS_thesis.txt -trs geoffrey_split_for_thesis_0 -n 10000 &> itml_10k_CFS_thesis.out &
+python -u build_metric.py -p @descs/CFS_thesis.dsc -m ITML -v -d "ITML CFS 5k" -o itml_5k_CFS_thesis.txt -trs geoffrey_split_for_thesis_0 -n 5000 &> itml_5k_CFS_thesis.out &
+python -u build_metric.py -p @descs/CFS_thesis.dsc -m ITML -v -d "ITML CFS 1k" -o itml_1k_CFS_thesis.txt -trs geoffrey_split_for_thesis_0 -n 1000 &> itml_1k_CFS_thesis.out &
+#python -u build_metric.py -p @descs/CFS_thesis.dsc -m ITML -v -d "ITML CFS 500" -o itml_500_CFS_thesis.txt -trs geoffrey_split_for_thesis_0 -n 500 &> itml_500_CFS_thesis.out &

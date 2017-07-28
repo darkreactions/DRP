@@ -1,0 +1,1525 @@
+Relation Name:  relation
+Num Instances:  3142
+Num Attributes: 1519
+
+     Name                      Type  Nom  Int Real     Missing      Unique  Dist
+   1 G5_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+   2 V3_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+   3 Br_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+   4 Na_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+   5 P_legacy_legacy_           Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+   6 leak_legacy_legacy_        Nom  99%   0%   0%    35 /  1%     0 /  0%     2 
+   7 P5_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+   8 Mo_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+   9 Ga_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  10 P4_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  11 K_legacy_legacy_           Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  12 Zn_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  13 G6_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  14 G9_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  15 S_legacy_legacy_           Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  16 N_legacy_legacy_           Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  17 V_legacy_legacy_           Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  18 G13_legacy_legacy_         Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  19 G12_legacy_legacy_         Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  20 Se_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  21 Co_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  22 Cl_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  23 Te_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  24 V2_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  25 V4_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  26 V5_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  27 V6_legacy_legacy_          Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  28 I_legacy_legacy_           Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  29 slowCool_legacy_legacy_    Nom  98%   0%   0%    77 /  2%     0 /  0%     2 
+  30 G16_legacy_legacy_         Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  31 boolean_crystallisation_o  Nom 100%   0%   0%     0 /  0%     0 /  0%     2 
+  32 IonizationMaxWeighted_leg  Num   0%   0% 100%     0 /  0%  2045 / 65%  2519 
+  33 EAMaxWeighted_legacy_lega  Num   0%   1%  99%     0 /  0%  1547 / 49%  2151 
+  34 EAMax_legacy_legacy_       Num   0%  44%  56%     0 /  0%     0 /  0%     7 
+  35 oxlikeminimalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  36 orgmolpolMin_legacy_legac  Num   0%   0% 100%     0 /  0%     3 /  0%    60 
+  37 orgmaximalprojectionareaA  Num   0%   0% 100%     0 /  0%     6 /  0%    73 
+  38 oxlikeminimalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  39 orgmaximalprojectionsizeA  Num   0%   0% 100%     0 /  0%     7 /  0%    68 
+  40 oxlikeASA+GeomAvg_legacy_  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  41 oxlikehbdamsdonMax_legacy  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+  42 numberOxlike_legacy_legac  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  43 hardnessMaxWeighted_legac  Num   0%   0% 100%     0 /  0%  1969 / 63%  2471 
+  44 orghbdamsdonMin_legacy_le  Num   0%  66%  34%     0 /  0%    17 /  1%   111 
+  45 orgminimalprojectionsizeA  Num   0%   0% 100%     0 /  0%     7 /  0%    74 
+  46 oxlikeASA+Max_legacy_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  47 oxlikeminimalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  48 oxlikeASA_HGeomAvg_legacy  Num   0%  98%   2%     0 /  0%     0 /  0%     3 
+  49 orgASAGeomAvg_legacy_lega  Num   0%   0% 100%     0 /  0%    15 /  0%   126 
+  50 orgmaximalprojectionradiu  Num   0%   0% 100%     0 /  0%     2 /  0%    53 
+  51 orgmolpolMax_legacy_legac  Num   0%   0% 100%     0 /  0%     3 /  0%    66 
+  52 oxlikevanderwaalsMin_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  53 oxlikeminimalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  54 orgASA-ArithAvg_legacy_le  Num   0%  10%  90%     0 /  0%    15 /  0%   124 
+  55 oxlikeminimalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  56 oxlikemaximalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  57 oxlikehbdamsaccMin_legacy  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+  58 hardnessMin_legacy_legacy  Num   0%   2%  98%     0 /  0%     0 /  0%     5 
+  59 orgASA_HArithAvg_legacy_l  Num   0%   2%  98%     0 /  0%    15 /  0%   126 
+  60 orgmaximalprojectionsizeM  Num   0%   0% 100%     0 /  0%     1 /  0%    51 
+  61 PearsonElectronegMax_lega  Num   0%  43%  57%     0 /  0%     0 /  0%     7 
+  62 oxlikehbdamsaccMax_legacy  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+  63 oxlikeminimalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  64 oxlikeASA_HMin_legacy_leg  Num   0%  98%   2%     0 /  0%     0 /  0%     3 
+  65 EAGeomWeighted_legacy_leg  Num   0%   1%  99%     0 /  0%   992 / 32%  1752 
+  66 oxlikevanderwaalsMax_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  67 oxlikeASA-Min_legacy_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  68 oxlikeavgpolArithAvg_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+  69 orgmaximalprojectionareaM  Num   0%   0% 100%     0 /  0%     1 /  0%    53 
+  70 orgmaximalprojectionradiu  Num   0%   0% 100%     0 /  0%     2 /  0%    53 
+  71 oxlikehbdamsaccGeomAvg_le  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+  72 oxlikeASA-Max_legacy_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  73 oxlikeavgpol_pHdependentA  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  74 EAMean_legacy_legacy_      Num   0%   1%  99%     0 /  0%     1 /  0%     8 
+  75 orgacc-waterdonratio_lega  Num   0%  58%  42%     0 /  0%   226 /  7%   378 
+  76 oxlikeASA_HMax_legacy_leg  Num   0%  98%   2%     0 /  0%     0 /  0%     3 
+  77 hardnessGeomWeighted_lega  Num   0%   0% 100%     0 /  0%  2030 / 65%  2529 
+  78 oxlikerefractivityMax_leg  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+  79 PearsonElectronegMin_lega  Num   0%   0% 100%     0 /  0%     0 /  0%     5 
+  80 oxlikevanderwaalsGeomAvg_  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  81 oxlikemaximalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  82 orgavgpol_pHdependentMax_  Num   0%   0% 100%     0 /  0%     7 /  0%    97 
+  83 IonizationMinWeighted_leg  Num   0%   0% 100%     0 /  0%  1406 / 45%  1949 
+  84 orgmaximalprojectionareaM  Num   0%   0% 100%     0 /  0%     1 /  0%    54 
+  85 AtomicRadiusMaxWeighted_l  Num   0%   0% 100%     0 /  0%  1775 / 56%  2345 
+  86 oxlikeminimalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  87 orgmaximalprojectionsizeM  Num   0%   0% 100%     0 /  0%     1 /  0%    49 
+  88 PaulingElectronegMinWeigh  Num   0%   0% 100%     0 /  0%    29 /  1%   117 
+  89 oxlikeASA_PGeomAvg_legacy  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  90 orgASAArithAvg_legacy_leg  Num   0%   0% 100%     0 /  0%    15 /  0%   126 
+  91 numberOrg_legacy_legacy_   Num   0% 100%   0%     0 /  0%     0 /  0%     3 
+  92 orgavgpolMin_legacy_legac  Num   0%   0% 100%     0 /  0%     2 /  0%    51 
+  93 orgrefractivityGeomAvg_le  Num   0%   2%  98%     0 /  0%     8 /  0%    72 
+  94 oxlikeminimalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  95 oxlikeavgpol_pHdependentM  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+  96 AtomicRadiusMinWeighted_l  Num   0%   0% 100%     0 /  0%  1154 / 37%  1690 
+  97 hardnessMax_legacy_legacy  Num   0%  45%  55%     0 /  0%     0 /  0%     7 
+  98 oxlikemaximalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+  99 orghbdamsaccArithAvg_lega  Num   0%  64%  36%     0 /  0%    22 /  1%    96 
+ 100 oxlikemaximalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 101 oxlikeminimalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 102 orgvanderwaalsArithAvg_le  Num   0%   0% 100%     0 /  0%    15 /  0%   126 
+ 103 orgmaximalprojectionareaG  Num   0%   0% 100%     0 /  0%     7 /  0%    74 
+ 104 oxlikeASA_PArithAvg_legac  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 105 oxlikeminimalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 106 oxlikemaximalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 107 AtomicRadiusMeanWeighted_  Num   0%   0% 100%     0 /  0%  1599 / 51%  2235 
+ 108 AtomicRadiusMax_legacy_le  Num   0% 100%   0%     0 /  0%     0 /  0%     5 
+ 109 orgASAMin_legacy_legacy_   Num   0%   0% 100%     0 /  0%     6 /  0%    89 
+ 110 oxlikeASA_PMax_legacy_leg  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 111 orgavgpolGeomAvg_legacy_l  Num   0%   0% 100%     0 /  0%     8 /  0%    73 
+ 112 oxlikeASAArithAvg_legacy_  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 113 orgASA+ArithAvg_legacy_le  Num   0%   2%  98%     0 /  0%    14 /  0%   125 
+ 114 orgmolpolArithAvg_legacy_  Num   0%   0% 100%     0 /  0%     9 /  0%    89 
+ 115 orgdon-wateraccratio_lega  Num   0%   7%  93%     0 /  0%   780 / 25%  1242 
+ 116 oxlikevanderwaalsArithAvg  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 117 orgASAMax_legacy_legacy_   Num   0%   0% 100%     0 /  0%     6 /  0%    98 
+ 118 orgavgpolMax_legacy_legac  Num   0%   0% 100%     0 /  0%     2 /  0%    52 
+ 119 oxlikemolpolMin_legacy_le  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 120 oxlikerefractivityArithAv  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+ 121 oxlikeASA_PMin_legacy_leg  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 122 AtomicRadiusMin_legacy_le  Num   0% 100%   0%     0 /  0%     0 /  0%     7 
+ 123 orgASA_PArithAvg_legacy_l  Num   0%   2%  98%     0 /  0%    15 /  0%   124 
+ 124 oxlikeASAGeomAvg_legacy_l  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 125 EAMinWeighted_legacy_lega  Num   0%   1%  99%     0 /  0%   544 / 17%  1097 
+ 126 IonizationMin_legacy_lega  Num   0%   0% 100%     0 /  0%     0 /  0%     5 
+ 127 orgavgpol_pHdependentArit  Num   0%   0% 100%     0 /  0%    14 /  0%   124 
+ 128 oxlikeASA+ArithAvg_legacy  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 129 oxlikemolpolMax_legacy_le  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 130 orgASA_HMax_legacy_legacy  Num   0%   2%  98%     0 /  0%     6 /  0%    98 
+ 131 PearsonElectronegGeom_leg  Num   0%   0% 100%     0 /  0%     1 /  0%     8 
+ 132 orghbdamsdonMax_legacy_le  Num   0%  64%  36%     0 /  0%    22 /  1%   122 
+ 133 oxlikemaximalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 134 AtomicRadiusMean_legacy_l  Num   0% 100%   0%     0 /  0%     1 /  0%     8 
+ 135 orgASA_HMin_legacy_legacy  Num   0%   2%  98%     0 /  0%     6 /  0%    89 
+ 136 PaulingElectronegMax_lega  Num   0%   0% 100%     0 /  0%     0 /  0%     7 
+ 137 orgavgpol_pHdependentGeom  Num   0%   0% 100%     0 /  0%    14 /  0%   124 
+ 138 oxlikehbdamsdonGeomAvg_le  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+ 139 oxlikeASAMin_legacy_legac  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 140 oxlikeASAMax_legacy_legac  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 141 PearsonElectronegMeanWeig  Num   0%   0% 100%     0 /  0%  2378 / 76%  2727 
+ 142 numberComponents_legacy_l  Num   0% 100%   0%     0 /  0%     0 /  0%     3 
+ 143 orgmaximalprojectionradiu  Num   0%   0% 100%     0 /  0%     8 /  0%    75 
+ 144 oxlikeminimalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 145 orgminimalprojectionradiu  Num   0%   0% 100%     0 /  0%     7 /  0%    68 
+ 146 orgvanderwaalsMax_legacy_  Num   0%   0% 100%     0 /  0%     6 /  0%    98 
+ 147 orgvanderwaalsMin_legacy_  Num   0%   0% 100%     0 /  0%     6 /  0%    89 
+ 148 pH_legacy_legacy_          Num   0% 100%   0%     0 /  0%     0 /  0%    13 
+ 149 IonizationMax_legacy_lega  Num   0%  43%  57%     0 /  0%     0 /  0%     7 
+ 150 PearsonElectronegMinWeigh  Num   0%   0% 100%     0 /  0%  1323 / 42%  1864 
+ 151 oxlikemaximalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 152 orgmaximalprojectionsizeG  Num   0%   0% 100%     0 /  0%     7 /  0%    70 
+ 153 orghbdamsaccMin_legacy_le  Num   0%  64%  36%     0 /  0%    14 /  0%    81 
+ 154 PaulingElectronegMin_lega  Num   0%   0% 100%     0 /  0%     0 /  0%     5 
+ 155 IonizationMean_legacy_leg  Num   0%   0% 100%     0 /  0%     1 /  0%     8 
+ 156 numberInorg_legacy_legacy  Num   0% 100%   0%     0 /  0%     0 /  0%     3 
+ 157 PearsonElectronegGeomWeig  Num   0%   0% 100%     0 /  0%  2140 / 68%  2593 
+ 158 orgminimalprojectionradiu  Num   0%   0% 100%     0 /  0%     8 /  0%    70 
+ 159 oxlikemolpolGeomAvg_legac  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 160 orgminimalprojectionsizeM  Num   0%   0% 100%     0 /  0%     1 /  0%    53 
+ 161 orgASA+Min_legacy_legacy_  Num   0%   2%  98%     0 /  0%     5 /  0%    88 
+ 162 orghbdamsaccMax_legacy_le  Num   0%  67%  33%     0 /  0%    12 /  0%    72 
+ 163 orgminimalprojectionsizeG  Num   0%   0% 100%     0 /  0%     7 /  0%    75 
+ 164 oxlikerefractivityGeomAvg  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+ 165 orgASA+Max_legacy_legacy_  Num   0%   2%  98%     0 /  0%     7 /  0%    98 
+ 166 orgASA_PMax_legacy_legacy  Num   0%   2%  98%     0 /  0%     5 /  0%    86 
+ 167 orgASA_PGeomAvg_legacy_le  Num   0%   2%  98%     0 /  0%    15 /  0%   123 
+ 168 EAGeom_legacy_legacy_      Num   0%   1%  99%     0 /  0%     1 /  0%     8 
+ 169 oxlikemaximalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 170 oxlikeavgpolMax_legacy_le  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+ 171 PaulingElectronegGeom_leg  Num   0%   0% 100%     0 /  0%     1 /  0%     8 
+ 172 temp_legacy_legacy_        Num   0% 100%   0%     0 /  0%     0 /  0%    17 
+ 173 orgvanderwaalsGeomAvg_leg  Num   0%   0% 100%     0 /  0%    15 /  0%   126 
+ 174 PaulingElectronegMean_leg  Num   0%   0% 100%     0 /  0%     1 /  0%     8 
+ 175 oxlikeminimalprojectionra  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 176 oxlikemaximalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 177 oxlikeavgpolMin_legacy_le  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+ 178 AtomicRadiusGeomWeighted_  Num   0%   0% 100%     0 /  0%  1443 / 46%  2110 
+ 179 oxlikeASA_HArithAvg_legac  Num   0%  98%   2%     0 /  0%     0 /  0%     3 
+ 180 IonizationMeanWeighted_le  Num   0%   0% 100%     0 /  0%  2584 / 82%  2845 
+ 181 inorg-org-moleratio_legac  Num   0%   0% 100%     0 /  0%  2890 / 92%  2980 
+ 182 orgminimalprojectionareaG  Num   0%   1%  99%     0 /  0%     8 /  0%    76 
+ 183 orghbdamsdonGeomAvg_legac  Num   0%  63%  37%     0 /  0%    32 /  1%   144 
+ 184 orgASA-Min_legacy_legacy_  Num   0%   9%  91%     0 /  0%     6 /  0%    90 
+ 185 PaulingElectronegMeanWeig  Num   0%   0% 100%     0 /  0%    36 /  1%   195 
+ 186 PearsonElectronegMean_leg  Num   0%   0% 100%     0 /  0%     1 /  0%     8 
+ 187 oxlikeavgpolGeomAvg_legac  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+ 188 oxlikerefractivityMin_leg  Num   0%  82%  18%     0 /  0%     0 /  0%     2 
+ 189 orgASA-Max_legacy_legacy_  Num   0%   9%  91%     0 /  0%     6 /  0%    95 
+ 190 AtomicRadiusGeom_legacy_l  Num   0%  35%  65%     0 /  0%     1 /  0%     8 
+ 191 orgminimalprojectionareaA  Num   0%   1%  99%     0 /  0%     8 /  0%    76 
+ 192 orgrefractivityMin_legacy  Num   0%   2%  98%     0 /  0%     2 /  0%    50 
+ 193 orgASA_HGeomAvg_legacy_le  Num   0%   2%  98%     0 /  0%    15 /  0%   126 
+ 194 orghbdamsdonArithAvg_lega  Num   0%  62%  38%     0 /  0%    29 /  1%   142 
+ 195 hardnessMeanWeighted_lega  Num   0%   0% 100%     0 /  0%  2187 / 70%  2606 
+ 196 oxlikeavgpol_pHdependentM  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 197 orgASA_PMin_legacy_legacy  Num   0%   2%  98%     0 /  0%     7 /  0%    96 
+ 198 inorg-water-moleratio_leg  Num   0%   0% 100%     0 /  0%   196 /  6%   632 
+ 199 orgASA+GeomAvg_legacy_leg  Num   0%   2%  98%     0 /  0%    15 /  0%   126 
+ 200 notwater-water-moleratio_  Num   0%   0% 100%     0 /  0%   461 / 15%   967 
+ 201 IonizationGeom_legacy_leg  Num   0%   0% 100%     0 /  0%     1 /  0%     8 
+ 202 EAMeanWeighted_legacy_leg  Num   0%   1%  99%     0 /  0%  1512 / 48%  2121 
+ 203 oxlikemaximalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 204 oxlikemolpolArithAvg_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 205 orgrefractivityMax_legacy  Num   0%   2%  98%     0 /  0%     2 /  0%    51 
+ 206 oxlikehbdamsdonArithAvg_l  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+ 207 oxlikehbdamsdonMin_legacy  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+ 208 oxlikemaximalprojectionar  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 209 orgminimalprojectionradiu  Num   0%   0% 100%     0 /  0%     1 /  0%    48 
+ 210 orgminimalprojectionareaM  Num   0%   1%  99%     0 /  0%     2 /  0%    55 
+ 211 PaulingElectronegGeomWeig  Num   0%   0% 100%     0 /  0%    27 /  1%   125 
+ 212 time_legacy_legacy_        Num   0% 100%   0%     0 /  0%     0 /  0%    27 
+ 213 hardnessMean_legacy_legac  Num   0%   2%  98%     0 /  0%     1 /  0%     8 
+ 214 oxlikeASA+Min_legacy_lega  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 215 orgavgpolArithAvg_legacy_  Num   0%   0% 100%     0 /  0%     7 /  0%    72 
+ 216 oxlikehbdamsaccArithAvg_l  Num   0%  82%  18%     0 /  0%     0 /  0%     6 
+ 217 oxlikeASA-GeomAvg_legacy_  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 218 oxlikemaximalprojectionsi  Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 219 orgmaximalprojectionradiu  Num   0%   0% 100%     0 /  0%     7 /  0%    73 
+ 220 orgminimalprojectionsizeM  Num   0%   0% 100%     0 /  0%     1 /  0%    54 
+ 221 IonizationGeomWeighted_le  Num   0%   0% 100%     0 /  0%  2408 / 77%  2748 
+ 222 orgminimalprojectionareaM  Num   0%   1%  99%     0 /  0%     2 /  0%    54 
+ 223 orgmolpolGeomAvg_legacy_l  Num   0%   0% 100%     0 /  0%     9 /  0%    89 
+ 224 oxlikeASA-ArithAvg_legacy  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 225 PearsonElectronegMaxWeigh  Num   0%   0% 100%     0 /  0%  1994 / 63%  2488 
+ 226 hardnessGeom_legacy_legac  Num   0%   2%  98%     0 /  0%     1 /  0%     8 
+ 227 org-water-moleratio_legac  Num   0%   0% 100%     0 /  0%   361 / 11%   679 
+ 228 orgavgpol_pHdependentMin_  Num   0%   0% 100%     0 /  0%     6 /  0%    88 
+ 229 oxlikeavgpol_pHdependentG  Num   0%  82%  18%     0 /  0%     0 /  0%     4 
+ 230 orgASA-GeomAvg_legacy_leg  Num   0%   9%  91%     0 /  0%    15 /  0%   123 
+ 231 PaulingElectronegMaxWeigh  Num   0%   0% 100%     0 /  0%    76 /  2%   294 
+ 232 hardnessMinWeighted_legac  Num   0%   0% 100%     0 /  0%  1292 / 41%  1845 
+ 233 orgrefractivityArithAvg_l  Num   0%   2%  98%     0 /  0%     8 /  0%    71 
+ 234 orgminimalprojectionradiu  Num   0%   0% 100%     0 /  0%     2 /  0%    48 
+ 235 orghbdamsaccGeomAvg_legac  Num   0%  64%  36%     0 /  0%    21 /  1%    95 
+ 236 EAMin_legacy_legacy_       Num   0%   1%  99%     0 /  0%     0 /  0%     5 
+ 237 Org_vanderwaals_pH14_chem  Num   0%   0%  99%    28 /  1%   151 /  5%   200 
+ 238 Org_asa_hydrophobic_pH11_  Num   0%   0%  99%    28 /  1%   151 /  5%   199 
+ 239 Org_asa+_pH12_chemaxoncxc  Num   0%   5%  94%    28 /  1%   151 /  5%   200 
+ 240 Inorg_asa_pH9_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 241 Inorg_vanderwaals_pH7_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 242 Org_hbda_don_pH3_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 243 Org_avgpol_pH2_chemaxoncx  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 244 Org_asa_hydrophobic_pH9_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 245 Inorg_maximalprojectionra  Num   0%   0%  98%    69 /  2%  2043 / 65%  2056 
+ 246 Inorg_maximalprojectionsi  Num   0%   0%  98%    67 /  2%     2 /  0%    17 
+ 247 Org_vanderwaals_pH9_chema  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 248 Inorg_drpInorgAtomPearson  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 249 Org_maximalprojectionsize  Num   0%   0%  99%    22 /  1%     2 /  0%    45 
+ 250 Inorg_molpol_pH11_chemaxo  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 251 Inorg_drpInorgAtomIonizat  Num   0%  42%  55%    77 /  2%     0 /  0%     7 
+ 252 Org_asa+_pH12_chemaxoncxc  Num   0%   5%  95%    22 /  1%     7 /  0%    73 
+ 253 Inorg_vanderwaals_pH11_ch  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 254 Inorg_vanderwaals_pH10_ch  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 255 Org_asa_polar_pH8_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+ 256 Org_asa_hydrophobic_pH2_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 257 Inorg_avgpol_pH6_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 258 Org_asa+_pH12_chemaxoncxc  Num   0%   5%  95%    22 /  1%     2 /  0%    53 
+ 259 Inorg_molpol_pH14_chemaxo  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 260 Inorg_maximalprojectionsi  Num   0%   0%  98%    67 /  2%     0 /  0%     9 
+ 261 Org_asa_pH8_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 262 Org_asa-_pH14_chemaxoncxc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 263 Org_hbda_don_pH5_chemaxon  Num   0%  95%   4%    22 /  1%     1 /  0%     9 
+ 264 Org_molpol_pH12_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    33 
+ 265 Inorg_asa-_pH7_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 266 Org_molpol_pH13_chemaxonc  Num   0%   0%  99%    22 /  1%     4 /  0%    46 
+ 267 Inorg_hbda_don_pH8_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 268 Inorg_drpInorgAtomPauling  Num   0%   0%  98%    77 /  2%     1 /  0%     9 
+ 269 Org_asa_polar_pH7_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 270 Org_molpol_pH1_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    47 
+ 271 Org_asa_hydrophobic_pH5_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 272 Inorg_drpInorgAtomPearson  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 273 Inorg_molpol_pH2_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 274 Inorg_mw_drprdkit_0_Range  Num   0%  33%  65%    39 /  1%     2 /  0%    18 
+ 275 Org_asa_polar_pH4_chemaxo  Num   0%  95%   4%    22 /  1%     5 /  0%    23 
+ 276 Org_asa_polar_pH3_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 277 Inorg_hbda_don_pH2_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+ 278 Inorg_molpol_pH11_chemaxo  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 279 Inorg_minimalprojectionsi  Num   0%   0%  98%    67 /  2%     2 /  0%    21 
+ 280 Inorg_molpol_pH1_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 281 Inorg_drpInorgAtomPearson  Num   0%   0%  97%    77 /  2%     1 /  0%     9 
+ 282 Org_hbda_don_pH6_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 283 Inorg_asa_hydrophobic_pH6  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 284 Org_asa-_pH9_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 285 Org_asa_hydrophobic_pH11_  Num   0%   0%  99%    22 /  1%     7 /  0%    72 
+ 286 Org_asa+_pH7_chemaxoncxca  Num   0%   5%  95%    22 /  1%     2 /  0%    51 
+ 287 Org_hbda_acc_pH7_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     5 
+ 288 Org_hbda_don_pH13_chemaxo  Num   0%  95%   4%    28 /  1%   125 /  4%   132 
+ 289 Org_asa_pH2_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 290 Inorg_asa_hydrophobic_pH5  Num   0%  47%  52%    39 /  1%     1 /  0%     6 
+ 291 Inorg_asa_polar_pH5_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 292 Inorg_avgpol_pH8_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 293 Se_mols_DRP_0.02           Num   0%  57%  43%     5 /  0%   913 / 29%  1097 
+ 294 Org_minimalprojectionarea  Num   0%   2%  97%    28 /  1%   151 /  5%   203 
+ 295 Inorg_avgpol_pH7_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 296 S_mols_DRP_0.02            Num   0%  89%  11%     5 /  0%   206 /  7%   262 
+ 297 Inorg_molpol_pH12_chemaxo  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 298 Inorg_molpol_pH7_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 299 Inorg_asa-_pH3_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 300 Inorg_avgpol_pH8_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 301 Org_asa_pH11_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    53 
+ 302 Org_asa_hydrophobic_pH3_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 303 Inorg_molpol_pH2_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 304 Inorg_drpInorgAtomHardnes  Num   0%  45%  53%    77 /  2%     0 /  0%     7 
+ 305 Org_minimalprojectionradi  Num   0%   0%  99%    28 /  1%   150 /  5%   196 
+ 306 Org_refractivity_chemaxon  Num   0%  95%   4%    22 /  1%     3 /  0%    22 
+ 307 Inorg_hbda_acc_pH4_chemax  Num   0%  33%  65%    41 /  1%  2042 / 65%  2050 
+ 308 Inorg_molpol_pH4_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 309 Org_mw_drprdkit_0_gmean_c  Num   0%   0%  99%    22 /  1%     4 /  0%    52 
+ 310 Org_hbda_acc_pH4_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 311 Inorg_asa-_pH13_chemaxonc  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 312 Inorg_hbda_don_pH12_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 313 Inorg_hbda_don_pH8_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 314 Org_hbda_acc_pH12_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 315 Inorg_avgpol_pH11_chemaxo  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+ 316 Org_molpol_pH6_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    17 
+ 317 Inorg_hbda_don_pH6_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 318 Org_avgpol_pH11_chemaxonc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 319 Inorg_asa_polar_pH13_chem  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+ 320 Org_asa+_pH8_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 321 Org_vanderwaals_pH10_chem  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 322 Org_hbda_acc_pH4_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 323 Org_asa_polar_pH1_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 324 Inorg_asa-_pH12_chemaxonc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 325 Org_molpol_pH3_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    47 
+ 326 Inorg_hbda_don_pH2_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+ 327 Inorg_hbda_acc_pH8_chemax  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+ 328 Inorg_hbda_don_pH3_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 329 Inorg_avgpol_pH14_chemaxo  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 330 Inorg_asa+_pH8_chemaxoncx  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+ 331 Inorg_asa_pH5_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 332 Org_asa-_pH5_chemaxoncxca  Num   0%  11%  89%    22 /  1%     7 /  0%    67 
+ 333 Org_vanderwaals_pH13_chem  Num   0%   0%  99%    22 /  1%     7 /  0%    73 
+ 334 Inorg_drpInorgAtomPauling  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 335 Org_asa_polar_pH6_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 336 Org_asa_polar_pH2_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+ 337 Org_molpol_pH13_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   180 
+ 338 Org_molpol_pH12_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   180 
+ 339 Org_asa+_pH2_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 340 Inorg_molpol_pH12_chemaxo  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 341 Org_hbda_acc_pH6_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     4 
+ 342 Org_avgpol_pH12_chemaxonc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 343 Inorg_asa_hydrophobic_pH6  Num   0%  56%  43%    39 /  1%     0 /  0%     3 
+ 344 Org_hbda_don_pH1_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+ 345 Org_hbda_acc_pH11_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 346 Org_hbda_don_pH6_chemaxon  Num   0%  96%   4%    22 /  1%     1 /  0%     9 
+ 347 Inorg_molpol_pH6_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 348 Inorg_asa-_pH6_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 349 Inorg_hbda_don_pH12_chema  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+ 350 Inorg_asa_polar_pH3_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+ 351 Org_hbda_don_pH7_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 352 Org_avgpol_pH1_chemaxoncx  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 353 Inorg_vanderwaals_pH9_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+ 354 Inorg_asa_pH1_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+ 355 Org_asa_hydrophobic_pH9_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 356 Inorg_drpInorgAtomHardnes  Num   0%   2%  95%    79 /  3%  2005 / 64%  2016 
+ 357 Inorg_asa+_pH4_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 358 Inorg_refractivity_chemax  Num   0%  42%  57%    39 /  1%     1 /  0%    12 
+ 359 Ox_amount_count_DRP_0.02   Num   0% 100%   0%     0 /  0%     0 /  0%     2 
+ 360 Inorg_avgpol_pH8_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+ 361 Inorg_molpol_pH3_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 362 Inorg_drpInorgAtomElectro  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+ 363 Inorg_molpol_pH7_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 364 Inorg_asa_polar_pH9_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 365 Org_asa-_pH3_chemaxoncxca  Num   0%  11%  89%    22 /  1%     7 /  0%    67 
+ 366 Inorg_drpInorgAtomPearson  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+ 367 Org_hbda_don_pH12_chemaxo  Num   0%  95%   4%    28 /  1%   125 /  4%   132 
+ 368 Org_molpol_pH9_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    18 
+ 369 Inorg_hbda_acc_pH6_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+ 370 Org_asa_pH12_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    54 
+ 371 Inorg_drpInorgAtomIonizat  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 372 Org_asa_hydrophobic_pH13_  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 373 Org_asa_hydrophobic_pH2_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 374 Org_maximalprojectionsize  Num   0%   0%  99%    22 /  1%     6 /  0%    64 
+ 375 Org_asa_hydrophobic_pH1_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 376 Inorg_drpInorgAtomPearson  Num   0%  43%  55%    77 /  2%     0 /  0%     7 
+ 377 Org_asa+_pH1_chemaxoncxca  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 378 Inorg_minimalprojectionsi  Num   0%  32%  65%    67 /  2%     2 /  0%    14 
+ 379 Org_avgpol_pH10_chemaxonc  Num   0%  94%   5%    22 /  1%     3 /  0%    22 
+ 380 Org_hbda_acc_pH1_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 381 Org_asa_pH2_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 382 Org_asa_hydrophobic_pH5_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 383 Inorg_minimalprojectionar  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 384 Org_asa_hydrophobic_pH1_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 385 Org_asa_hydrophobic_pH2_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 386 Inorg_vanderwaals_pH1_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 387 Inorg_avgpol_pH2_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+ 388 Inorg_hbda_don_pH4_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+ 389 Org_hbda_acc_pH3_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 390 Org_asa-_pH1_chemaxoncxca  Num   0%  11%  88%    28 /  1%   133 /  4%   178 
+ 391 Org_hbda_acc_pH13_chemaxo  Num   0%  95%   4%    22 /  1%     0 /  0%     8 
+ 392 Inorg_asa_pH9_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 393 Inorg_asa+_pH13_chemaxonc  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+ 394 Inorg_hbda_acc_pH2_chemax  Num   0%  33%  65%    41 /  1%  2042 / 65%  2050 
+ 395 Inorg_asa+_pH6_chemaxoncx  Num   0%   0%  99%    39 /  1%     1 /  0%    14 
+ 396 Inorg_asa-_pH2_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 397 Inorg_asa-_pH8_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 398 Inorg_asa-_pH13_chemaxonc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 399 Org_molpol_pH11_chemaxonc  Num   0%  95%   5%    22 /  1%     2 /  0%    16 
+ 400 Org_avgpol_pH3_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 401 Org_avgpol_pH14_chemaxonc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 402 Inorg_avgpol_pH14_chemaxo  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 403 Inorg_asa-_pH1_chemaxoncx  Num   0%   0%  99%    41 /  1%  2042 / 65%  2056 
+ 404 Inorg_molpol_pH10_chemaxo  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 405 Org_vanderwaals_pH5_chema  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 406 Org_vanderwaals_pH4_chema  Num   0%   4%  95%    22 /  1%     7 /  0%    70 
+ 407 Inorg_drpInorgAtomIonizat  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 408 Org_molpol_pH11_chemaxonc  Num   0%   0%  99%    22 /  1%     4 /  0%    47 
+ 409 Inorg_hbda_acc_pH10_chema  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+ 410 Org_molpol_pH6_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   184 
+ 411 Mo_mols_DRP_0.02           Num   0%  71%  29%     5 /  0%   599 / 19%   737 
+ 412 Org_asa+_pH11_chemaxoncxc  Num   0%   5%  95%    22 /  1%     2 /  0%    52 
+ 413 Org_vanderwaals_pH3_chema  Num   0%   4%  95%    22 /  1%     2 /  0%    50 
+ 414 Inorg_avgpol_pH3_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 415 Inorg_asa-_pH7_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 416 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+ 417 Inorg_vanderwaals_pH5_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 418 Org_asa-_pH11_chemaxoncxc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 419 Inorg_hbda_acc_pH3_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 420 Inorg_hbda_don_pH3_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 421 Inorg_hbda_don_pH14_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 422 Org_hbda_acc_pH14_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 423 Inorg_asa_hydrophobic_pH1  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+ 424 Org_asa+_pH4_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 425 Inorg_asa-_pH11_chemaxonc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 426 Org_asa_pH14_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 427 Org_asa_hydrophobic_pH10_  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 428 Org_asa+_pH7_chemaxoncxca  Num   0%   5%  95%    22 /  1%     7 /  0%    71 
+ 429 Inorg_avgpol_pH2_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 430 Inorg_asa+_pH9_chemaxoncx  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+ 431 Inorg_asa+_pH10_chemaxonc  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+ 432 Inorg_molpol_pH9_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 433 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 434 Inorg_asa+_pH10_chemaxonc  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+ 435 Org_avgpol_pH3_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 436 Org_asa_hydrophobic_pH6_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 437 Inorg_molpol_pH5_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 438 Org_avgpol_pH2_chemaxoncx  Num   0%   2%  97%    28 /  1%   151 /  5%   198 
+ 439 Org_hbda_don_pH9_chemaxon  Num   0%  96%   4%    22 /  1%     0 /  0%     8 
+ 440 Inorg_asa_polar_pH2_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 441 Org_avgpol_pH4_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 442 Inorg_minimalprojectionar  Num   0%   0%  99%    39 /  1%     2 /  0%    21 
+ 443 Org_asa+_pH14_chemaxoncxc  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 444 Org_hbda_acc_pH10_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 445 Org_vanderwaals_pH1_chema  Num   0%   4%  95%    22 /  1%     7 /  0%    70 
+ 446 Inorg_drpInorgAtomPauling  Num   0%   0%  98%    77 /  2%     0 /  0%     7 
+ 447 Inorg_drpInorgAtomPauling  Num   0%   0%  98%    77 /  2%     0 /  0%     7 
+ 448 Inorg_hbda_don_pH10_chema  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+ 449 Inorg_asa-_pH1_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 450 Org_asa-_pH7_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   197 
+ 451 Inorg_asa_pH6_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 452 Inorg_drpInorgAtomPauling  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 453 Inorg_molpol_pH8_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 454 Org_hbda_acc_pH1_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     2 
+ 455 Inorg_asa-_pH8_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 456 Org_vanderwaals_pH1_chema  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 457 Org_asa_polar_pH13_chemax  Num   0%   0%  99%    28 /  1%   148 /  5%   194 
+ 458 Inorg_asa_pH14_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 459 Inorg_hbda_don_pH13_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 460 Org_asa_pH10_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    72 
+ 461 Org_asa-_pH6_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   197 
+ 462 Org_maximalprojectionarea  Num   0%   0%  99%    28 /  1%   151 /  5%   201 
+ 463 Inorg_vanderwaals_pH1_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+ 464 Org_asa_hydrophobic_pH7_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 465 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 466 Org_molpol_pH11_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    34 
+ 467 Inorg_hbda_don_pH9_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+ 468 Org_asa-_pH8_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 469 Org_vanderwaals_pH14_chem  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 470 Inorg_hbda_acc_pH7_chemax  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+ 471 Inorg_asa_hydrophobic_pH1  Num   0%  56%  42%    39 /  1%     1 /  0%     3 
+ 472 Inorg_hbda_don_pH14_chema  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+ 473 Org_hbda_acc_pH2_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 474 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 475 Inorg_drpInorgAtomIonizat  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+ 476 Inorg_vanderwaals_pH7_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 477 Inorg_hbda_acc_pH1_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+ 478 Org_vanderwaals_pH11_chem  Num   0%   0%  99%    22 /  1%     7 /  0%    72 
+ 479 Inorg_minimalprojectionra  Num   0%   0%  98%    67 /  2%     2 /  0%    20 
+ 480 Inorg_avgpol_pH10_chemaxo  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 481 Org_asa_hydrophobic_pH13_  Num   0%   0%  99%    22 /  1%     2 /  0%    53 
+ 482 Org_refractivity_chemaxon  Num   0%   2%  98%    22 /  1%     2 /  0%    47 
+ 483 Org_asa_polar_pH6_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+ 484 Org_asa_pH11_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    73 
+ 485 Org_asa_pH13_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    74 
+ 486 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+ 487 Inorg_mw_drprdkit_0_Max_D  Num   0%   0%  99%    39 /  1%     0 /  0%    17 
+ 488 Inorg_avgpol_pH10_chemaxo  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 489 Inorg_molpol_pH5_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 490 Org_hbda_acc_pH9_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 491 Org_hbda_don_pH4_chemaxon  Num   0%  95%   4%    22 /  1%     1 /  0%     9 
+ 492 Org_asa_pH9_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 493 Org_avgpol_pH14_chemaxonc  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+ 494 Inorg_hbda_acc_pH10_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 495 Inorg_avgpol_pH1_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+ 496 Inorg_hbda_acc_pH3_chemax  Num   0%  33%  65%    41 /  1%  2042 / 65%  2050 
+ 497 Org_asa_pH3_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 498 Inorg_asa+_pH14_chemaxonc  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+ 499 Org_asa_hydrophobic_pH6_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 500 Org_hbda_acc_pH6_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 501 Org_asa+_pH9_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 502 Inorg_vanderwaals_pH6_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 503 Org_asa_hydrophobic_pH11_  Num   0%   0%  99%    22 /  1%     2 /  0%    52 
+ 504 Org_hbda_acc_pH1_chemaxon  Num   0%  99%   0%    28 /  1%     0 /  0%     3 
+ 505 Inorg_hbda_don_pH6_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 506 Inorg_hbda_don_pH1_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+ 507 Org_molpol_pH10_chemaxonc  Num   0%  94%   5%    22 /  1%     2 /  0%    20 
+ 508 Org_vanderwaals_pH5_chema  Num   0%   4%  95%    22 /  1%     2 /  0%    49 
+ 509 Inorg_vanderwaals_pH4_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 510 Inorg_asa+_pH5_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 511 Inorg_asa_hydrophobic_pH9  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+ 512 Inorg_avgpol_pH1_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 513 Org_asa-_pH6_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    50 
+ 514 Org_asa-_pH10_chemaxoncxc  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 515 Org_asa_polar_pH6_chemaxo  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 516 Inorg_vanderwaals_pH10_ch  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 517 Org_hbda_don_pH2_chemaxon  Num   0%  94%   5%    28 /  1%   147 /  5%   153 
+ 518 Inorg_drpInorgAtomElectro  Num   0%   1%  96%    77 /  2%     1 /  0%     9 
+ 519 Org_asa-_pH14_chemaxoncxc  Num   0%   0%  99%    28 /  1%   151 /  5%   199 
+ 520 Org_asa_pH8_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 521 Org_asa_pH9_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 522 Inorg_asa_hydrophobic_pH5  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 523 Inorg_drpInorgAtomIonizat  Num   0%  42%  55%    77 /  2%     0 /  0%     7 
+ 524 Inorg_asa-_pH12_chemaxonc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 525 Inorg_asa_polar_pH5_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 526 Org_asa+_pH14_chemaxoncxc  Num   0%   5%  95%    22 /  1%     2 /  0%    53 
+ 527 Inorg_asa_pH13_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 528 Org_mw_drprdkit_0_Range_D  Num   0%  94%   5%    22 /  1%     2 /  0%    16 
+ 529 Inorg_asa-_pH6_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 530 Org_vanderwaals_pH13_chem  Num   0%   0%  99%    22 /  1%     2 /  0%    53 
+ 531 Inorg_asa+_pH12_chemaxonc  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+ 532 Inorg_asa_pH12_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 533 Org_asa_pH7_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   197 
+ 534 Org_vanderwaals_pH11_chem  Num   0%   0%  99%    28 /  1%   151 /  5%   199 
+ 535 Org_avgpol_pH13_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   196 
+ 536 Inorg_avgpol_pH5_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 537 Org_asa-_pH13_chemaxoncxc  Num   0%   0%  99%    22 /  1%     1 /  0%    52 
+ 538 Inorg_asa_pH5_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 539 Inorg_asa_pH1_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 540 Org_asa_pH6_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+ 541 Org_maximalprojectionarea  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 542 Org_asa+_pH3_chemaxoncxca  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 543 Inorg_drpInorgAtomAtomicR  Num   0%  33%  64%    77 /  2%     1 /  0%     9 
+ 544 Org_asa_hydrophobic_pH7_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 545 Inorg_asa_polar_pH14_chem  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+ 546 Org_asa_pH3_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 547 Inorg_mw_drprdkit_0_gmean  Num   0%   0%  99%    39 /  1%     2 /  0%    30 
+ 548 Inorg_hbda_acc_pH5_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+ 549 Inorg_molpol_pH10_chemaxo  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 550 Org_asa_hydrophobic_pH12_  Num   0%   0%  99%    22 /  1%     2 /  0%    53 
+ 551 Inorg_molpol_pH13_chemaxo  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 552 Org_asa_hydrophobic_pH8_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 553 Inorg_drpInorgAtomPauling  Num   0%   0%  98%    77 /  2%     1 /  0%     9 
+ 554 Org_asa+_pH6_chemaxoncxca  Num   0%   5%  94%    28 /  1%   151 /  5%   198 
+ 555 Org_avgpol_pH2_chemaxoncx  Num   0%   2%  97%    22 /  1%     2 /  0%    51 
+ 556 Org_asa_pH9_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 557 Inorg_hbda_don_pH12_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 558 Org_molpol_pH2_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   180 
+ 559 Inorg_molpol_pH9_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 560 Org_asa-_pH12_chemaxoncxc  Num   0%   0%  99%    22 /  1%     7 /  0%    72 
+ 561 Inorg_asa_pH2_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 562 Org_vanderwaals_pH3_chema  Num   0%   4%  95%    22 /  1%     7 /  0%    70 
+ 563 Inorg_vanderwaals_pH4_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 564 Org_asa_pH7_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 565 Org_hbda_don_pH2_chemaxon  Num   0%  95%   5%    22 /  1%     1 /  0%     9 
+ 566 N_mols_DRP_0.02            Num   0%   1%  99%     5 /  0%  2665 / 85%  2870 
+ 567 Inorg_vanderwaals_pH11_ch  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+ 568 Inorg_avgpol_pH1_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 569 Org_asa+_pH10_chemaxoncxc  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 570 Inorg_avgpol_pH2_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 571 Inorg_hbda_acc_pH7_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 572 Org_vanderwaals_pH5_chema  Num   0%   4%  95%    22 /  1%     7 /  0%    69 
+ 573 Inorg_minimalprojectionsi  Num   0%   0%  98%    69 /  2%  2043 / 65%  2056 
+ 574 K_mols_DRP_0.02            Num   0%  99%   0%     5 /  0%    14 /  0%    15 
+ 575 Inorg_vanderwaals_pH7_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+ 576 Org_molpol_pH8_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    52 
+ 577 Inorg_drpInorgAtomIonizat  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 578 Org_asa-_pH8_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 579 Inorg_asa_polar_pH11_chem  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+ 580 Inorg_avgpol_pH13_chemaxo  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 581 Inorg_hbda_don_pH10_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+ 582 Org_asa-_pH12_chemaxoncxc  Num   0%   0%  99%    22 /  1%     1 /  0%    52 
+ 583 Org_asa_pH14_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   201 
+ 584 Inorg_avgpol_pH5_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 585 Inorg_asa+_pH8_chemaxoncx  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+ 586 Org_hbda_don_pH9_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 587 Inorg_asa_pH2_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 588 Inorg_molpol_pH13_chemaxo  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 589 Org_avgpol_pH4_chemaxoncx  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 590 Org_asa_polar_pH3_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+ 591 Org_asa+_pH3_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 592 Org_asa_pH4_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 593 Org_hbda_acc_pH4_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 594 Org_asa_polar_pH14_chemax  Num   0%   0%  99%    28 /  1%   148 /  5%   194 
+ 595 Inorg_molpol_pH2_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 596 Inorg_molpol_pH5_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 597 Org_amount_molarity_DRP_0  Num   0%   1%  99%     4 /  0%  2588 / 82%  2823 
+ 598 Inorg_molpol_pH2_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 599 Inorg_asa_polar_pH7_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 600 Inorg_refractivity_chemax  Num   0%  48%  51%    39 /  1%     1 /  0%    12 
+ 601 Org_asa_polar_pH13_chemax  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 602 Inorg_avgpol_pH11_chemaxo  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 603 Org_asa_pH1_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 604 Inorg_asa_pH5_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 605 Org_avgpol_pH5_chemaxoncx  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 606 Org_hbda_acc_pH12_chemaxo  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+ 607 Inorg_molpol_pH6_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 608 Inorg_molpol_pH12_chemaxo  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 609 Inorg_molpol_pH3_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 610 Org_asa-_pH10_chemaxoncxc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 611 Org_asa_pH12_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 612 Org_molpol_pH4_chemaxoncx  Num   0%   0%  99%    22 /  1%     5 /  0%    49 
+ 613 Org_asa_pH4_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 614 Inorg_asa+_pH12_chemaxonc  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+ 615 Org_asa_pH1_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 616 Inorg_hbda_don_pH1_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 617 Inorg_avgpol_pH12_chemaxo  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 618 Inorg_hbda_acc_pH12_chema  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+ 619 Inorg_asa-_pH10_chemaxonc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 620 Org_hbda_don_pH10_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 621 Org_asa+_pH1_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 622 Inorg_vanderwaals_pH6_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+ 623 Org_asa+_pH3_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 624 Inorg_avgpol_pH12_chemaxo  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 625 Inorg_drpInorgAtomIonizat  Num   0%  42%  55%    77 /  2%     0 /  0%     7 
+ 626 Org_avgpol_pH9_chemaxoncx  Num   0%   0%  99%    22 /  1%     5 /  0%    67 
+ 627 Inorg_molpol_pH13_chemaxo  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 628 I_mols_DRP_0.02            Num   0%  99%   1%     5 /  0%    29 /  1%    30 
+ 629 Inorg_avgpol_pH13_chemaxo  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 630 Org_asa_pH13_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 631 Inorg_vanderwaals_pH1_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 632 Inorg_asa_hydrophobic_pH7  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+ 633 Inorg_asa+_pH14_chemaxonc  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+ 634 Inorg_avgpol_pH7_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 635 Org_asa_pH4_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 636 Inorg_drpInorgAtomElectro  Num   0%   1%  96%    77 /  2%     1 /  0%     9 
+ 637 Org_molpol_pH2_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    46 
+ 638 Inorg_asa_pH1_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 639 Org_hbda_don_pH3_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 640 Inorg_asa_hydrophobic_pH1  Num   0%  55%  44%    39 /  1%     1 /  0%     4 
+ 641 Inorg_minimalprojectionar  Num   0%   0%  99%    41 /  1%  2043 / 65%  2056 
+ 642 Org_hbda_don_pH12_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 643 Inorg_asa-_pH13_chemaxonc  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+ 644 Org_vanderwaals_pH14_chem  Num   0%   0%  99%    22 /  1%     7 /  0%    73 
+ 645 Inorg_asa-_pH9_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 646 Org_asa_pH1_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 647 Org_asa+_pH5_chemaxoncxca  Num   0%   5%  95%    22 /  1%     2 /  0%    51 
+ 648 Inorg_drpInorgAtomElectro  Num   0%   1%  96%    77 /  2%     1 /  0%     9 
+ 649 Org_asa_polar_pH4_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+ 650 Org_asa_hydrophobic_pH8_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 651 Inorg_drpInorgAtomHardnes  Num   0%   2%  95%    77 /  2%     1 /  0%     9 
+ 652 Inorg_maximalprojectionar  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 653 Inorg_asa+_pH8_chemaxoncx  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+ 654 Org_asa+_pH9_chemaxoncxca  Num   0%   5%  95%    22 /  1%     2 /  0%    51 
+ 655 Inorg_minimalprojectionar  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 656 Inorg_drpInorgAtomPearson  Num   0%  43%  55%    77 /  2%     0 /  0%     7 
+ 657 Org_asa_polar_pH12_chemax  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+ 658 Inorg_drpInorgAtomAtomicR  Num   0%  33%  64%    77 /  2%     1 /  0%     9 
+ 659 Org_hbda_don_pH11_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 660 Org_asa_polar_pH9_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+ 661 Org_vanderwaals_pH7_chema  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+ 662 Org_asa-_pH4_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    22 
+ 663 Org_asa_pH5_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 664 Inorg_vanderwaals_pH11_ch  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 665 Org_asa_polar_pH2_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 666 Inorg_hbda_acc_pH13_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 667 Inorg_vanderwaals_pH11_ch  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 668 Org_asa+_pH13_chemaxoncxc  Num   0%   5%  94%    28 /  1%   151 /  5%   200 
+ 669 Org_asa-_pH12_chemaxoncxc  Num   0%   0%  99%    28 /  1%   151 /  5%   199 
+ 670 Org_molpol_pH5_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    17 
+ 671 Inorg_asa_hydrophobic_pH8  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+ 672 Inorg_mw_drprdkit_0_gmean  Num   0%   0%  99%    41 /  1%  2043 / 65%  2060 
+ 673 Org_asa_pH13_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   201 
+ 674 Inorg_molpol_pH8_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 675 Inorg_hbda_acc_pH8_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 676 Org_asa_hydrophobic_pH2_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 677 Inorg_amount_molarity_DRP  Num   0%   1%  99%     2 /  0%  2786 / 89%  2932 
+ 678 Inorg_drpInorgAtomIonizat  Num   0%   0%  97%    77 /  2%     1 /  0%     9 
+ 679 Org_asa+_pH5_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 680 Org_asa+_pH10_chemaxoncxc  Num   0%   5%  94%    28 /  1%   151 /  5%   198 
+ 681 Inorg_avgpol_pH5_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+ 682 Org_asa_polar_pH8_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+ 683 Inorg_asa_polar_pH3_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 684 Org_maximalprojectionsize  Num   0%  94%   5%    22 /  1%     4 /  0%    21 
+ 685 Org_asa-_pH14_chemaxoncxc  Num   0%   0%  99%    22 /  1%     1 /  0%    52 
+ 686 Inorg_maximalprojectionra  Num   0%   0%  98%    67 /  2%     0 /  0%    11 
+ 687 Inorg_asa_hydrophobic_pH7  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+ 688 Org_asa_polar_pH8_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 689 Inorg_asa_polar_pH9_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+ 690 Inorg_asa-_pH14_chemaxonc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 691 Org_hbda_acc_pH13_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 692 Inorg_vanderwaals_pH14_ch  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 693 Org_hbda_don_pH10_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 694 Inorg_asa_polar_pH12_chem  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+ 695 Org_asa-_pH2_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    22 
+ 696 Inorg_avgpol_pH11_chemaxo  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 697 Org_hbda_acc_pH14_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 698 Org_asa_hydrophobic_pH14_  Num   0%   0%  99%    28 /  1%   151 /  5%   200 
+ 699 Inorg_asa-_pH13_chemaxonc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 700 Org_hbda_acc_pH12_chemaxo  Num   0%  95%   4%    22 /  1%     0 /  0%     8 
+ 701 Inorg_avgpol_pH7_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 702 Solv_amount_molarity_DRP_  Num   0%   0% 100%     0 /  0%  2100 / 67%  2474 
+ 703 Inorg_drpInorgAtomIonizat  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+ 704 Inorg_asa-_pH4_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 705 C_mols_DRP_0.02            Num   0%   1%  99%     5 /  0%  2799 / 89%  2952 
+ 706 Inorg_asa_hydrophobic_pH2  Num   0%  56%  43%    39 /  1%     1 /  0%     4 
+ 707 Org_asa_pH5_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 708 Org_asa_hydrophobic_pH14_  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 709 Inorg_hbda_acc_pH6_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 710 Org_asa_pH11_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   200 
+ 711 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 712 Org_asa_polar_pH3_chemaxo  Num   0%  95%   4%    22 /  1%     5 /  0%    23 
+ 713 Inorg_hbda_don_pH4_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 714 Org_hbda_acc_pH9_chemaxon  Num   0%  97%   2%    28 /  1%    76 /  2%    81 
+ 715 Inorg_amount_count_DRP_0.  Num   0% 100%   0%     0 /  0%     0 /  0%     4 
+ 716 Inorg_asa+_pH11_chemaxonc  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+ 717 Org_asa_pH4_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 718 Inorg_asa+_pH8_chemaxoncx  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+ 719 Inorg_asa_polar_pH10_chem  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 720 Inorg_drpInorgAtomPauling  Num   0%  33%  64%    77 /  2%     0 /  0%     3 
+ 721 Org_vanderwaals_pH7_chema  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+ 722 Inorg_avgpol_pH6_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 723 Org_avgpol_pH13_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+ 724 Org_avgpol_pH12_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+ 725 Inorg_asa_pH10_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 726 Inorg_avgpol_pH9_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+ 727 Inorg_hbda_acc_pH6_chemax  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+ 728 Inorg_asa-_pH12_chemaxonc  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+ 729 Org_hbda_acc_pH5_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     4 
+ 730 Org_hbda_acc_pH5_chemaxon  Num   0%  99%   0%    28 /  1%    10 /  0%    14 
+ 731 Inorg_avgpol_pH14_chemaxo  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+ 732 Inorg_asa_hydrophobic_pH1  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+ 733 Inorg_asa+_pH7_chemaxoncx  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+ 734 Org_hbda_don_pH13_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 735 Inorg_asa_hydrophobic_pH1  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+ 736 Inorg_asa-_pH7_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 737 Inorg_minimalprojectionra  Num   0%  32%  65%    67 /  2%     1 /  0%    13 
+ 738 Inorg_asa_pH6_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 739 Org_vanderwaals_pH1_chema  Num   0%   4%  95%    28 /  1%   151 /  5%   197 
+ 740 Org_hbda_acc_pH8_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     5 
+ 741 Inorg_asa_polar_pH10_chem  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 742 Inorg_vanderwaals_pH8_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 743 Inorg_asa_polar_pH1_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+ 744 Org_avgpol_pH8_chemaxoncx  Num   0%   0%  99%    22 /  1%     5 /  0%    67 
+ 745 Inorg_molpol_pH12_chemaxo  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 746 Inorg_asa+_pH9_chemaxoncx  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+ 747 Inorg_asa_polar_pH1_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 748 Org_asa_hydrophobic_pH12_  Num   0%   0%  99%    22 /  1%     7 /  0%    73 
+ 749 Inorg_asa_polar_pH5_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+ 750 Inorg_hbda_don_pH5_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 751 Inorg_hbda_don_pH5_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 752 Inorg_asa-_pH8_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 753 Inorg_vanderwaals_pH5_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 754 Inorg_asa+_pH2_chemaxoncx  Num   0%  11%  88%    41 /  1%  1707 / 54%  1720 
+ 755 Inorg_asa_polar_pH8_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 756 Org_asa_hydrophobic_pH7_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 757 Org_avgpol_pH1_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 758 Org_asa+_pH8_chemaxoncxca  Num   0%   5%  95%    22 /  1%     2 /  0%    51 
+ 759 Inorg_asa_hydrophobic_pH3  Num   0%  56%  43%    39 /  1%     1 /  0%     4 
+ 760 Org_molpol_pH7_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    17 
+ 761 Org_hbda_acc_pH11_chemaxo  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+ 762 Org_asa_polar_pH10_chemax  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 763 Inorg_hbda_acc_pH7_chemax  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+ 764 Org_asa_polar_pH7_chemaxo  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 765 Inorg_asa_pH2_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 766 Inorg_asa+_pH7_chemaxoncx  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+ 767 Inorg_asa+_pH14_chemaxonc  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+ 768 Inorg_asa_hydrophobic_pH8  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 769 Org_hbda_acc_pH9_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     5 
+ 770 Inorg_asa-_pH10_chemaxonc  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+ 771 Inorg_asa_hydrophobic_pH7  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 772 Org_vanderwaals_pH1_chema  Num   0%   4%  95%    22 /  1%     2 /  0%    50 
+ 773 Org_asa+_pH5_chemaxoncxca  Num   0%   5%  95%    22 /  1%     7 /  0%    71 
+ 774 Org_hbda_don_pH11_chemaxo  Num   0%  96%   3%    22 /  1%     0 /  0%     8 
+ 775 Org_asa_pH10_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   199 
+ 776 Inorg_asa-_pH12_chemaxonc  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 777 Inorg_hbda_acc_pH3_chemax  Num   0%  73%  26%    39 /  1%     1 /  0%     6 
+ 778 Inorg_asa+_pH5_chemaxoncx  Num   0%   0%  99%    39 /  1%     1 /  0%    14 
+ 779 Inorg_molpol_pH7_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 780 Org_asa-_pH13_chemaxoncxc  Num   0%   0%  99%    22 /  1%     7 /  0%    72 
+ 781 Org_asa-_pH6_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+ 782 Org_vanderwaals_pH14_chem  Num   0%   0%  99%    22 /  1%     2 /  0%    53 
+ 783 Org_asa_polar_pH9_chemaxo  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 784 Org_asa_polar_pH4_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+ 785 Inorg_hbda_acc_pH14_chema  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+ 786 Inorg_drpInorgAtomPauling  Num   0%  33%  64%    77 /  2%     0 /  0%     3 
+ 787 Org_avgpol_pH8_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   195 
+ 788 Org_vanderwaals_pH4_chema  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 789 Org_avgpol_pH5_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 790 Inorg_drpInorgAtomAtomicR  Num   0%  33%  64%    79 /  3%  2005 / 64%  2016 
+ 791 Org_hbda_acc_pH8_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     6 
+ 792 Org_hbda_acc_pH14_chemaxo  Num   0%  95%   4%    22 /  1%     0 /  0%     8 
+ 793 Inorg_molpol_pH7_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 794 Org_asa_polar_pH12_chemax  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 795 Org_maximalprojectionarea  Num   0%   0%  99%    22 /  1%     7 /  0%    74 
+ 796 Org_molpol_pH6_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    51 
+ 797 Org_avgpol_pH10_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   197 
+ 798 Inorg_hbda_don_pH13_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+ 799 Inorg_drpInorgAtomElectro  Num   0%   1%  96%    79 /  3%  2005 / 64%  2015 
+ 800 Org_avgpol_pH9_chemaxoncx  Num   0%  94%   5%    22 /  1%     3 /  0%    22 
+ 801 Inorg_molpol_pH11_chemaxo  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+ 802 Org_asa-_pH12_chemaxoncxc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 803 Inorg_asa_pH13_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 804 Inorg_hbda_don_pH10_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 805 Org_hbda_don_pH10_chemaxo  Num   0%  96%   3%    22 /  1%     0 /  0%     8 
+ 806 Org_asa+_pH7_chemaxoncxca  Num   0%   5%  94%    28 /  1%   151 /  5%   198 
+ 807 Org_avgpol_pH13_chemaxonc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 808 Org_asa_polar_pH4_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+ 809 Inorg_asa_hydrophobic_pH9  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+ 810 Org_avgpol_pH13_chemaxonc  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+ 811 Org_hbda_don_pH10_chemaxo  Num   0%  95%   4%    28 /  1%   135 /  4%   142 
+ 812 Inorg_asa_hydrophobic_pH6  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+ 813 Inorg_drpInorgAtomPearson  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 814 Inorg_asa+_pH3_chemaxoncx  Num   0%  11%  88%    41 /  1%  1707 / 54%  1720 
+ 815 Inorg_asa_pH14_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 816 Inorg_asa_hydrophobic_pH1  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+ 817 Org_hbda_acc_pH11_chemaxo  Num   0%  95%   4%    22 /  1%     0 /  0%     8 
+ 818 Inorg_asa_pH7_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 819 Org_asa_pH12_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   201 
+ 820 Inorg_drpInorgAtomAtomicR  Num   0%  98%   0%    77 /  2%     0 /  0%     3 
+ 821 Org_asa_hydrophobic_pH10_  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 822 Org_avgpol_pH9_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    48 
+ 823 Inorg_maximalprojectionar  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 824 Inorg_asa_pH8_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 825 Inorg_asa_hydrophobic_pH2  Num   0%  97%   2%    39 /  1%     0 /  0%     3 
+ 826 Org_asa+_pH2_chemaxoncxca  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 827 Na_mols_DRP_0.02           Num   0%  44%  56%     5 /  0%  1363 / 43%  1520 
+ 828 Org_asa_polar_pH14_chemax  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+ 829 Org_asa_hydrophobic_pH7_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 830 Inorg_vanderwaals_pH6_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 831 Inorg_asa_pH4_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 832 Org_hbda_acc_pH3_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 833 Org_vanderwaals_pH5_chema  Num   0%   4%  95%    28 /  1%   151 /  5%   196 
+ 834 Org_asa-_pH6_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 835 Inorg_avgpol_pH10_chemaxo  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 836 Inorg_asa+_pH5_chemaxoncx  Num   0%  11%  88%    39 /  1%     2 /  0%    19 
+ 837 Org_minimalprojectionradi  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 838 Org_avgpol_pH8_chemaxoncx  Num   0%  94%   5%    22 /  1%     3 /  0%    22 
+ 839 Inorg_hbda_acc_pH12_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 840 Org_vanderwaals_pH13_chem  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 841 Org_asa_pH10_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 842 Inorg_asa_hydrophobic_pH1  Num   0%  97%   2%    39 /  1%     0 /  0%     3 
+ 843 Inorg_hbda_acc_pH13_chema  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+ 844 Inorg_vanderwaals_pH2_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+ 845 Org_asa-_pH10_chemaxoncxc  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 846 Inorg_asa_hydrophobic_pH3  Num   0%  97%   2%    39 /  1%     0 /  0%     3 
+ 847 Inorg_asa-_pH10_chemaxonc  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 848 Inorg_vanderwaals_pH14_ch  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+ 849 Org_vanderwaals_pH7_chema  Num   0%   0%  99%    28 /  1%   151 /  5%   196 
+ 850 Inorg_drpInorgAtomHardnes  Num   0%   2%  95%    79 /  3%  2005 / 64%  2016 
+ 851 Org_hbda_don_pH4_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+ 852 Inorg_asa_polar_pH9_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 853 Inorg_hbda_don_pH5_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 854 Org_asa-_pH7_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 855 Inorg_asa-_pH11_chemaxonc  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+ 856 Inorg_drpInorgAtomElectro  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+ 857 Inorg_hbda_don_pH9_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+ 858 Inorg_avgpol_pH9_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 859 Inorg_molpol_pH8_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 860 Inorg_hbda_acc_pH5_chemax  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+ 861 Inorg_hbda_acc_pH11_chema  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+ 862 Org_amount_count_DRP_0.02  Num   0% 100%   0%     0 /  0%     0 /  0%     3 
+ 863 Inorg_asa-_pH14_chemaxonc  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+ 864 Org_hbda_acc_pH2_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 865 Org_hbda_don_pH8_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+ 866 Inorg_asa+_pH1_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 867 Org_vanderwaals_pH6_chema  Num   0%   0%  99%    28 /  1%   151 /  5%   196 
+ 868 Org_asa-_pH7_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+ 869 Org_hbda_don_pH4_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 870 Org_asa-_pH4_chemaxoncxca  Num   0%  11%  89%    22 /  1%     7 /  0%    67 
+ 871 Org_maximalprojectionarea  Num   0%   0%  99%    22 /  1%     2 /  0%    54 
+ 872 Inorg_asa-_pH5_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 873 Org_vanderwaals_pH3_chema  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 874 Inorg_avgpol_pH4_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 875 Org_asa_pH5_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 876 Inorg_hbda_don_pH2_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 877 Org_hbda_acc_pH2_chemaxon  Num   0%  99%   0%    28 /  1%     1 /  0%     4 
+ 878 Inorg_molpol_pH4_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 879 Org_vanderwaals_pH12_chem  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 880 Inorg_hbda_acc_pH14_chema  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+ 881 Inorg_drpInorgAtomAtomicR  Num   0%  33%  64%    79 /  3%  2005 / 64%  2016 
+ 882 Inorg_drpInorgAtomIonizat  Num   0%   0%  97%    77 /  2%     1 /  0%     9 
+ 883 Org_molpol_pH5_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    48 
+ 884 Inorg_hbda_don_pH4_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 885 Org_hbda_don_pH5_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+ 886 Org_asa-_pH11_chemaxoncxc  Num   0%   0%  99%    22 /  1%     7 /  0%    72 
+ 887 Org_avgpol_pH7_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   196 
+ 888 Inorg_hbda_don_pH9_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 889 Inorg_avgpol_pH1_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 890 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 891 Org_hbda_don_pH1_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 892 Org_asa-_pH7_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    50 
+ 893 Org_hbda_acc_pH6_chemaxon  Num   0%  97%   2%    28 /  1%    58 /  2%    62 
+ 894 Inorg_asa_hydrophobic_pH1  Num   0%  97%   2%    41 /  1%     0 /  0%     3 
+ 895 Org_hbda_don_pH12_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+ 896 Org_avgpol_pH3_chemaxoncx  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 897 Inorg_asa+_pH3_chemaxoncx  Num   0%   0%  99%    39 /  1%     1 /  0%    14 
+ 898 Org_maximalprojectionsize  Num   0%   0%  99%    28 /  1%   151 /  5%   193 
+ 899 Inorg_asa_pH10_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 900 Inorg_asa_pH3_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 901 Org_asa_pH11_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 902 Org_asa-_pH10_chemaxoncxc  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 903 Inorg_hbda_don_pH8_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+ 904 Inorg_maximalprojectionra  Num   0%  32%  65%    67 /  2%     2 /  0%    14 
+ 905 Inorg_asa+_pH13_chemaxonc  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+ 906 Inorg_asa_polar_pH12_chem  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 907 Org_vanderwaals_pH10_chem  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+ 908 Org_asa_pH2_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 909 Inorg_avgpol_pH3_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 910 Org_vanderwaals_pH12_chem  Num   0%   0%  99%    28 /  1%   151 /  5%   200 
+ 911 O_mols_DRP_0.02            Num   0%   0% 100%     5 /  0%  3133 /100%  3135 
+ 912 Org_hbda_don_pH5_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 913 Inorg_asa_pH13_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 914 Org_asa_hydrophobic_pH3_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 915 Org_avgpol_pH7_chemaxoncx  Num   0%  94%   5%    22 /  1%     3 /  0%    22 
+ 916 Org_avgpol_pH6_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   196 
+ 917 Inorg_drpInorgAtomIonizat  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+ 918 Inorg_asa-_pH4_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 919 Inorg_hbda_don_pH9_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+ 920 Org_asa_polar_pH14_chemax  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 921 Org_hbda_acc_pH14_chemaxo  Num   0%  94%   5%    28 /  1%   147 /  5%   153 
+ 922 Inorg_drpInorgAtomElectro  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+ 923 Inorg_asa_pH11_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 924 Org_molpol_pH14_chemaxonc  Num   0%   0%  99%    22 /  1%     4 /  0%    46 
+ 925 Org_minimalprojectionsize  Num   0%   3%  97%    22 /  1%     7 /  0%    71 
+ 926 Inorg_asa-_pH14_chemaxonc  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+ 927 Org_hbda_acc_pH10_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     6 
+ 928 Inorg_maximalprojectionar  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+ 929 Org_molpol_pH4_chemaxoncx  Num   0%  94%   5%    22 /  1%     3 /  0%    17 
+ 930 Org_asa-_pH8_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 931 Inorg_asa_hydrophobic_pH3  Num   0%  97%   2%    41 /  1%     0 /  0%     3 
+ 932 Inorg_asa_pH3_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 933 Inorg_asa_pH7_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+ 934 Org_hbda_don_pH7_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 935 Inorg_molpol_pH11_chemaxo  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 936 Inorg_asa_pH3_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 937 Org_asa_hydrophobic_pH14_  Num   0%   0%  99%    22 /  1%     2 /  0%    53 
+ 938 Org_hbda_acc_pH6_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     4 
+ 939 Org_avgpol_pH7_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+ 940 Org_asa-_pH9_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 941 Org_avgpol_pH4_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+ 942 Org_hbda_don_pH12_chemaxo  Num   0%  96%   3%    22 /  1%     0 /  0%     8 
+ 943 Org_vanderwaals_pH6_chema  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+ 944 Org_asa_pH13_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    54 
+ 945 Org_asa+_pH8_chemaxoncxca  Num   0%   5%  95%    22 /  1%     7 /  0%    71 
+ 946 Inorg_asa+_pH7_chemaxoncx  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+ 947 Inorg_asa_polar_pH6_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+ 948 Org_asa+_pH9_chemaxoncxca  Num   0%   5%  95%    22 /  1%     7 /  0%    71 
+ 949 Org_molpol_pH13_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    33 
+ 950 Org_asa_pH9_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 951 Org_asa_polar_pH6_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+ 952 Org_mw_drprdkit_0_Max_DRP  Num   0%   0%  99%    22 /  1%     2 /  0%    40 
+ 953 Inorg_drpInorgAtomAtomicR  Num   0%  98%   0%    77 /  2%     0 /  0%     3 
+ 954 Inorg_molpol_pH1_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+ 955 Org_asa_hydrophobic_pH4_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 956 Inorg_asa_pH2_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 957 Inorg_hbda_acc_pH14_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+ 958 Inorg_asa+_pH4_chemaxoncx  Num   0%  11%  88%    39 /  1%     2 /  0%    19 
+ 959 Org_asa-_pH11_chemaxoncxc  Num   0%   0%  99%    28 /  1%   151 /  5%   199 
+ 960 Inorg_asa_polar_pH14_chem  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+ 961 Org_molpol_pH3_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    34 
+ 962 Org_asa+_pH3_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+ 963 Org_asa+_pH2_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+ 964 Inorg_asa_pH14_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 965 Org_hbda_don_pH9_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+ 966 Org_asa_polar_pH11_chemax  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 967 Inorg_hbda_acc_pH4_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+ 968 Org_asa+_pH13_chemaxoncxc  Num   0%   5%  95%    22 /  1%     7 /  0%    73 
+ 969 Zn_mols_DRP_0.02           Num   0%  99%   1%     5 /  0%    37 /  1%    38 
+ 970 Org_hbda_acc_pH3_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+ 971 Inorg_avgpol_pH4_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+ 972 Org_molpol_pH8_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    18 
+ 973 Org_vanderwaals_pH7_chema  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 974 Inorg_molpol_pH6_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+ 975 Org_avgpol_pH10_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    50 
+ 976 Org_molpol_pH6_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    37 
+ 977 Inorg_asa_pH6_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 978 Inorg_drpInorgAtomPauling  Num   0%  33%  64%    77 /  2%     0 /  0%     3 
+ 979 Org_asa_pH3_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+ 980 Org_avgpol_pH1_chemaxoncx  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 981 Org_avgpol_pH12_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   196 
+ 982 Inorg_hbda_acc_pH11_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+ 983 Inorg_asa_polar_pH4_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+ 984 Org_asa-_pH9_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+ 985 Inorg_asa_hydrophobic_pH6  Num   0%  47%  51%    39 /  1%     0 /  0%     5 
+ 986 Org_vanderwaals_pH12_chem  Num   0%   0%  99%    22 /  1%     2 /  0%    53 
+ 987 Inorg_avgpol_pH9_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+ 988 Inorg_molpol_pH9_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+ 989 Org_asa-_pH3_chemaxoncxca  Num   0%  10%  89%    22 /  1%     1 /  0%    49 
+ 990 Org_asa-_pH5_chemaxoncxca  Num   0%  11%  88%    28 /  1%   133 /  4%   178 
+ 991 Org_molpol_pH5_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    34 
+ 992 Inorg_asa_pH4_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+ 993 Inorg_asa_hydrophobic_pH2  Num   0%  97%   2%    41 /  1%     0 /  0%     3 
+ 994 Inorg_drpInorgAtomPauling  Num   0%   0%  97%    79 /  3%  2005 / 64%  2016 
+ 995 Inorg_asa_polar_pH12_chem  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+ 996 Inorg_asa+_pH9_chemaxoncx  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+ 997 Inorg_avgpol_pH13_chemaxo  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+ 998 Inorg_asa_hydrophobic_pH4  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+ 999 Org_molpol_pH7_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    51 
+1000 Org_asa-_pH4_chemaxoncxca  Num   0%  11%  88%    28 /  1%   133 /  4%   178 
+1001 Inorg_asa_hydrophobic_pH4  Num   0%  47%  52%    39 /  1%     1 /  0%     6 
+1002 Inorg_asa_polar_pH6_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1003 Org_hbda_acc_pH13_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1004 Inorg_minimalprojectionra  Num   0%   0%  98%    69 /  2%  2043 / 65%  2055 
+1005 Org_hbda_don_pH1_chemaxon  Num   0%  95%   5%    22 /  1%     0 /  0%     8 
+1006 Org_molpol_pH12_chemaxonc  Num   0%   0%  99%    22 /  1%     4 /  0%    46 
+1007 Inorg_asa_polar_pH6_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1008 Inorg_asa+_pH12_chemaxonc  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+1009 Org_asa_hydrophobic_pH8_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1010 Org_hbda_don_pH8_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1011 V_mols_DRP_0.02            Num   0%  33%  66%     5 /  0%   751 / 24%  1151 
+1012 Org_asa_polar_pH13_chemax  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+1013 Org_hbda_acc_pH5_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1014 Org_avgpol_pH2_chemaxoncx  Num   0%   2%  97%    22 /  1%     7 /  0%    71 
+1015 Inorg_hbda_don_pH14_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+1016 Inorg_asa_polar_pH11_chem  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1017 Inorg_molpol_pH10_chemaxo  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+1018 Inorg_hbda_don_pH6_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+1019 Org_molpol_pH9_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   184 
+1020 Org_molpol_pH10_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    40 
+1021 Org_asa+_pH13_chemaxoncxc  Num   0%   5%  95%    22 /  1%     2 /  0%    53 
+1022 Inorg_asa_pH8_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1023 Inorg_asa+_pH11_chemaxonc  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+1024 Inorg_hbda_acc_pH5_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1025 Org_molpol_pH7_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   184 
+1026 Inorg_vanderwaals_pH6_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1027 Org_asa_hydrophobic_pH1_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1028 Inorg_asa-_pH10_chemaxonc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1029 Org_vanderwaals_pH11_chem  Num   0%   0%  99%    22 /  1%     2 /  0%    52 
+1030 Org_hbda_don_pH6_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1031 Org_asa_hydrophobic_pH4_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1032 Org_asa_polar_pH5_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+1033 Org_hbda_acc_pH9_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     6 
+1034 Org_vanderwaals_pH4_chema  Num   0%   4%  95%    22 /  1%     2 /  0%    50 
+1035 Inorg_drpInorgAtomHardnes  Num   0%   2%  95%    79 /  3%  2005 / 64%  2016 
+1036 Inorg_asa_hydrophobic_pH1  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+1037 Inorg_asa_pH12_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1038 Inorg_asa-_pH11_chemaxonc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1039 Inorg_hbda_acc_pH12_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1040 Inorg_drpInorgAtomPearson  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+1041 Inorg_asa_polar_pH13_chem  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1042 Org_asa_polar_pH5_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+1043 Inorg_hbda_acc_pH9_chemax  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+1044 Org_asa_pH1_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1045 Org_asa+_pH11_chemaxoncxc  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1046 Org_molpol_pH4_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   182 
+1047 Inorg_asa_polar_pH4_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1048 Org_asa_pH3_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1049 Org_avgpol_pH14_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   196 
+1050 Inorg_drpInorgAtomElectro  Num   0%   1%  96%    79 /  3%  2005 / 64%  2015 
+1051 Org_hbda_don_pH8_chemaxon  Num   0%  96%   4%    22 /  1%     0 /  0%     8 
+1052 Inorg_hbda_don_pH11_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+1053 Inorg_asa-_pH6_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1054 Org_minimalprojectionradi  Num   0%   0%  99%    22 /  1%     6 /  0%    69 
+1055 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+1056 Inorg_drpInorgAtomHardnes  Num   0%   2%  95%    77 /  2%     1 /  0%     9 
+1057 Inorg_hbda_acc_pH9_chemax  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+1058 Inorg_hbda_don_pH7_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+1059 Inorg_drpInorgAtomElectro  Num   0%   1%  96%    79 /  3%  2005 / 64%  2015 
+1060 Inorg_asa+_pH1_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1061 Inorg_drpInorgAtomAtomicR  Num   0%  98%   0%    77 /  2%     0 /  0%     3 
+1062 Org_minimalprojectionsize  Num   0%   3%  97%    22 /  1%     2 /  0%    51 
+1063 Inorg_hbda_acc_pH10_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1064 Inorg_minimalprojectionra  Num   0%   0%  98%    67 /  2%     0 /  0%     9 
+1065 Co_mols_DRP_0.02           Num   0% 100%   0%     5 /  0%     2 /  0%     3 
+1066 Org_asa+_pH4_chemaxoncxca  Num   0%   5%  95%    22 /  1%     2 /  0%    51 
+1067 Org_maximalprojectionradi  Num   0%   0%  99%    22 /  1%     7 /  0%    68 
+1068 Org_asa-_pH4_chemaxoncxca  Num   0%  10%  89%    22 /  1%     1 /  0%    49 
+1069 Org_asa_polar_pH7_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1070 Inorg_vanderwaals_pH8_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1071 Org_asa_hydrophobic_pH3_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1072 Inorg_drpInorgAtomElectro  Num   0%  44%  54%    77 /  2%     0 /  0%     7 
+1073 Org_asa+_pH7_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1074 Org_maximalprojectionradi  Num   0%   0%  99%    28 /  1%   151 /  5%   195 
+1075 Inorg_avgpol_pH7_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+1076 Org_asa_polar_pH2_chemaxo  Num   0%  95%   4%    22 /  1%     5 /  0%    23 
+1077 Inorg_hbda_don_pH11_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1078 Inorg_hbda_don_pH11_chema  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+1079 Org_avgpol_pH3_chemaxoncx  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1080 Inorg_asa+_pH14_chemaxonc  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+1081 Org_avgpol_pH10_chemaxonc  Num   0%   0%  99%    22 /  1%     5 /  0%    69 
+1082 Inorg_hbda_don_pH10_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1083 Org_hbda_don_pH14_chemaxo  Num   0%  96%   3%    22 /  1%     0 /  0%     8 
+1084 Inorg_asa+_pH5_chemaxoncx  Num   0%  11%  88%    41 /  1%  1707 / 54%  1720 
+1085 Inorg_asa_hydrophobic_pH5  Num   0%  56%  43%    39 /  1%     1 /  0%     4 
+1086 Inorg_drpInorgAtomPearson  Num   0%   0%  97%    77 /  2%     1 /  0%     9 
+1087 Org_avgpol_pH12_chemaxonc  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+1088 Org_hbda_don_pH7_chemaxon  Num   0%  96%   4%    22 /  1%     1 /  0%     9 
+1089 Org_asa-_pH3_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    22 
+1090 Org_vanderwaals_pH6_chema  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+1091 Org_hbda_don_pH3_chemaxon  Num   0%  95%   5%    22 /  1%     1 /  0%     9 
+1092 Inorg_asa_polar_pH14_chem  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1093 Inorg_asa+_pH2_chemaxoncx  Num   0%   0%  99%    39 /  1%     1 /  0%    14 
+1094 Org_avgpol_pH11_chemaxonc  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1095 Inorg_asa-_pH4_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1096 Ox_amount_molarity_DRP_0.  Num   0%  82%  18%     0 /  0%   274 /  9%   391 
+1097 Org_asa_hydrophobic_pH5_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1098 Org_molpol_pH1_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   181 
+1099 Inorg_asa_polar_pH5_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1100 Inorg_maximalprojectionsi  Num   0%   0%  98%    69 /  2%  2043 / 65%  2055 
+1101 Inorg_drpInorgAtomPauling  Num   0%   0%  98%    77 /  2%     0 /  0%     7 
+1102 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+1103 Inorg_molpol_pH8_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1104 Inorg_asa_hydrophobic_pH1  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+1105 Inorg_asa_polar_pH4_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+1106 Inorg_asa-_pH9_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1107 Org_molpol_pH11_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   181 
+1108 Org_asa+_pH10_chemaxoncxc  Num   0%   5%  95%    22 /  1%     2 /  0%    51 
+1109 Org_hbda_don_pH5_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1110 Inorg_vanderwaals_pH2_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1111 Inorg_vanderwaals_pH4_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1112 Inorg_vanderwaals_pH3_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1113 Org_vanderwaals_pH4_chema  Num   0%   4%  95%    28 /  1%   151 /  5%   197 
+1114 Inorg_drpInorgAtomPearson  Num   0%   0%  97%    77 /  2%     1 /  0%     9 
+1115 Inorg_vanderwaals_pH14_ch  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1116 Org_molpol_pH8_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    37 
+1117 Org_hbda_don_pH2_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1118 Inorg_hbda_don_pH3_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+1119 Inorg_vanderwaals_pH8_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1120 Inorg_asa+_pH4_chemaxoncx  Num   0%   0%  99%    39 /  1%     1 /  0%    14 
+1121 Org_asa_hydrophobic_pH4_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1122 Org_asa_polar_pH10_chemax  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1123 Inorg_asa_polar_pH1_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1124 Inorg_drpInorgAtomElectro  Num   0%  44%  54%    77 /  2%     0 /  0%     7 
+1125 Org_molpol_pH4_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    35 
+1126 Org_asa_pH5_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1127 Inorg_asa_hydrophobic_pH2  Num   0%  54%  44%    39 /  1%     1 /  0%     5 
+1128 Org_molpol_pH9_chemaxoncx  Num   0%   0%  99%    22 /  1%     4 /  0%    52 
+1129 Inorg_avgpol_pH5_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+1130 Org_asa_polar_pH3_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+1131 Inorg_hbda_acc_pH11_chema  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+1132 Org_asa_polar_pH11_chemax  Num   0%   0%  99%    22 /  1%     2 /  0%    48 
+1133 Inorg_vanderwaals_pH7_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1134 Inorg_hbda_acc_pH2_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1135 Inorg_hbda_don_pH11_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+1136 Ga_mols_DRP_0.02           Num   0%  98%   2%     5 /  0%    64 /  2%    68 
+1137 Inorg_drpInorgAtomHardnes  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+1138 Inorg_hbda_acc_pH8_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1139 Inorg_hbda_don_pH3_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1140 Inorg_molpol_pH4_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1141 Inorg_hbda_acc_pH10_chema  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+1142 Org_vanderwaals_pH11_chem  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1143 Org_asa_hydrophobic_pH12_  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1144 Org_vanderwaals_pH8_chema  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1145 Org_asa_polar_pH1_chemaxo  Num   0%  95%   4%    22 /  1%     5 /  0%    23 
+1146 Org_molpol_pH12_chemaxonc  Num   0%  95%   5%    22 /  1%     2 /  0%    16 
+1147 Org_hbda_don_pH4_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+1148 Inorg_vanderwaals_pH2_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1149 Org_molpol_pH3_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   181 
+1150 Org_asa_polar_pH5_chemaxo  Num   0%  95%   4%    22 /  1%     5 /  0%    23 
+1151 Inorg_hbda_acc_pH6_chemax  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+1152 Org_hbda_acc_pH2_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1153 Inorg_hbda_acc_pH2_chemax  Num   0%  73%  26%    39 /  1%     1 /  0%     6 
+1154 Inorg_hbda_acc_pH1_chemax  Num   0%  73%  26%    39 /  1%     1 /  0%     6 
+1155 Org_hbda_acc_pH1_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+1156 Inorg_asa_polar_pH2_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1157 Org_asa+_pH10_chemaxoncxc  Num   0%   5%  95%    22 /  1%     7 /  0%    71 
+1158 Org_asa+_pH1_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1159 Inorg_vanderwaals_pH12_ch  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1160 Org_asa_pH6_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    50 
+1161 Inorg_asa+_pH1_chemaxoncx  Num   0%   0%  99%    39 /  1%     1 /  0%    14 
+1162 Org_asa_polar_pH8_chemaxo  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1163 Inorg_molpol_pH14_chemaxo  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1164 Inorg_drpInorgAtomAtomicR  Num   0%  33%  64%    77 /  2%     1 /  0%     9 
+1165 Org_avgpol_pH6_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+1166 Org_hbda_don_pH11_chemaxo  Num   0%  95%   4%    28 /  1%   125 /  4%   132 
+1167 Inorg_drpInorgAtomHardnes  Num   0%  45%  53%    77 /  2%     0 /  0%     7 
+1168 Inorg_asa_polar_pH10_chem  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1169 Inorg_hbda_don_pH2_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1170 Inorg_asa_polar_pH7_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1171 Org_asa_polar_pH5_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1172 Org_avgpol_pH9_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   195 
+1173 Org_asa_pH8_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1174 Org_hbda_acc_pH10_chemaxo  Num   0%  96%   3%    28 /  1%   107 /  3%   113 
+1175 H_mols_DRP_0.02            Num   0%   0% 100%     5 /  0%  3128 /100%  3132 
+1176 Inorg_asa_hydrophobic_pH1  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+1177 Inorg_asa_polar_pH8_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1178 Org_avgpol_pH5_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1179 Inorg_vanderwaals_pH13_ch  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1180 Inorg_asa_hydrophobic_pH8  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+1181 Inorg_vanderwaals_pH3_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1182 Org_asa-_pH13_chemaxoncxc  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1183 Inorg_hbda_acc_pH1_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1184 Inorg_hbda_acc_pH8_chemax  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+1185 Org_asa+_pH9_chemaxoncxca  Num   0%   5%  94%    28 /  1%   151 /  5%   198 
+1186 Inorg_vanderwaals_pH10_ch  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1187 Org_hbda_acc_pH13_chemaxo  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+1188 Inorg_vanderwaals_pH13_ch  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1189 Inorg_asa_polar_pH7_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1190 Inorg_asa+_pH6_chemaxoncx  Num   0%  11%  88%    39 /  1%     2 /  0%    19 
+1191 Inorg_asa+_pH9_chemaxoncx  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+1192 Inorg_molpol_pH3_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1193 Inorg_asa-_pH2_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1194 Inorg_asa_pH11_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1195 Inorg_asa-_pH2_chemaxoncx  Num   0%   0%  99%    41 /  1%  2042 / 65%  2056 
+1196 Inorg_hbda_don_pH7_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+1197 Org_asa_polar_pH12_chemax  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+1198 Inorg_asa_pH14_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1199 Inorg_hbda_don_pH12_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+1200 Inorg_vanderwaals_pH5_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1201 Inorg_asa-_pH9_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+1202 Inorg_vanderwaals_pH9_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1203 Inorg_asa_polar_pH14_chem  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1204 Org_avgpol_pH14_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+1205 Org_molpol_pH2_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    16 
+1206 Inorg_hbda_acc_pH14_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1207 Inorg_drpInorgAtomAtomicR  Num   0%  98%   0%    77 /  2%     0 /  0%     6 
+1208 Org_asa_hydrophobic_pH13_  Num   0%   0%  99%    22 /  1%     7 /  0%    73 
+1209 Org_avgpol_pH11_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   197 
+1210 Inorg_drpInorgAtomPearson  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+1211 Inorg_vanderwaals_pH13_ch  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1212 Org_asa+_pH6_chemaxoncxca  Num   0%   5%  95%    22 /  1%     2 /  0%    51 
+1213 Org_avgpol_pH7_chemaxoncx  Num   0%   0%  99%    22 /  1%     5 /  0%    68 
+1214 Inorg_hbda_acc_pH7_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1215 Inorg_asa+_pH7_chemaxoncx  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+1216 Org_vanderwaals_pH8_chema  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1217 Inorg_molpol_pH6_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1218 Org_asa-_pH14_chemaxoncxc  Num   0%   0%  99%    22 /  1%     7 /  0%    72 
+1219 Org_vanderwaals_pH3_chema  Num   0%   4%  95%    28 /  1%   151 /  5%   197 
+1220 Org_asa_hydrophobic_pH5_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1221 Org_maximalprojectionradi  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1222 Org_hbda_don_pH14_chemaxo  Num   0%  95%   4%    28 /  1%   125 /  4%   132 
+1223 Inorg_asa_pH1_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1224 Inorg_asa_hydrophobic_pH1  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+1225 Inorg_asa_hydrophobic_pH4  Num   0%  56%  43%    39 /  1%     1 /  0%     4 
+1226 Org_asa_hydrophobic_pH9_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1227 Org_molpol_pH7_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    37 
+1228 Inorg_asa_pH7_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+1229 Inorg_hbda_don_pH13_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+1230 Inorg_asa_polar_pH12_chem  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1231 Org_asa_hydrophobic_pH13_  Num   0%   0%  99%    28 /  1%   151 /  5%   200 
+1232 Org_asa-_pH5_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    22 
+1233 Inorg_asa_pH13_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+1234 Inorg_asa_pH3_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1235 Inorg_vanderwaals_pH12_ch  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1236 Org_hbda_acc_pH8_chemaxon  Num   0%  97%   2%    28 /  1%    76 /  2%    81 
+1237 Org_hbda_don_pH6_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+1238 Org_hbda_don_pH7_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+1239 Inorg_hbda_don_pH14_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     2 
+1240 Org_hbda_don_pH9_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+1241 Inorg_hbda_acc_pH13_chema  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+1242 Inorg_asa+_pH13_chemaxonc  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+1243 Inorg_drpInorgAtomElectro  Num   0%  44%  54%    77 /  2%     0 /  0%     7 
+1244 Inorg_asa-_pH1_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1245 Org_asa_pH7_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1246 Inorg_asa-_pH4_chemaxoncx  Num   0%   0%  99%    41 /  1%  2042 / 65%  2056 
+1247 Inorg_asa-_pH11_chemaxonc  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1248 Inorg_asa-_pH1_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1249 Inorg_asa_pH5_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1250 Inorg_asa+_pH3_chemaxoncx  Num   0%  11%  88%    39 /  1%     2 /  0%    19 
+1251 Org_vanderwaals_pH2_chema  Num   0%   4%  95%    28 /  1%   151 /  5%   197 
+1252 Org_molpol_pH14_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   180 
+1253 Inorg_asa_polar_pH1_chema  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1254 Org_asa_pH14_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    74 
+1255 Inorg_asa_pH4_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1256 Inorg_asa-_pH14_chemaxonc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1257 Org_asa_hydrophobic_pH10_  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1258 Inorg_asa+_pH6_chemaxoncx  Num   0%  11%  88%    41 /  1%  1707 / 54%  1720 
+1259 Org_asa_hydrophobic_pH1_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1260 Org_asa_polar_pH9_chemaxo  Num   0%   0%  99%    28 /  1%   148 /  5%   195 
+1261 Inorg_asa_polar_pH3_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1262 Inorg_asa+_pH10_chemaxonc  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+1263 Inorg_asa_polar_pH6_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1264 Inorg_hbda_acc_pH5_chemax  Num   0%  72%  26%    39 /  1%     1 /  0%     6 
+1265 Inorg_asa-_pH3_chemaxoncx  Num   0%   0%  99%    41 /  1%  2042 / 65%  2056 
+1266 Org_refractivity_chemaxon  Num   0%   2%  98%    28 /  1%   151 /  5%   193 
+1267 Inorg_hbda_acc_pH3_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1268 Inorg_vanderwaals_pH3_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1269 Inorg_avgpol_pH11_chemaxo  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+1270 Inorg_asa_hydrophobic_pH4  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+1271 Inorg_asa_pH9_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1272 Org_asa_hydrophobic_pH4_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1273 Inorg_avgpol_pH6_chemaxon  Num   0%   1%  98%    39 /  1%     2 /  0%    22 
+1274 Org_asa_polar_pH2_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1275 Inorg_asa_polar_pH3_chema  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1276 Inorg_asa+_pH2_chemaxoncx  Num   0%  11%  88%    39 /  1%     2 /  0%    19 
+1277 Inorg_drpInorgAtomAtomicR  Num   0%  33%  64%    79 /  3%  2005 / 64%  2016 
+1278 Org_asa+_pH12_chemaxoncxc  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1279 Org_avgpol_pH8_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    48 
+1280 Org_asa_polar_pH1_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+1281 Org_asa_pH8_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1282 Org_vanderwaals_pH9_chema  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1283 Org_asa+_pH14_chemaxoncxc  Num   0%   5%  95%    22 /  1%     7 /  0%    73 
+1284 Inorg_asa+_pH6_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1285 Org_minimalprojectionarea  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1286 Inorg_hbda_acc_pH9_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1287 Inorg_hbda_don_pH6_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+1288 Inorg_drpInorgAtomHardnes  Num   0%   2%  95%    77 /  2%     1 /  0%     9 
+1289 Inorg_asa_polar_pH11_chem  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+1290 Org_molpol_pH2_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    32 
+1291 Inorg_vanderwaals_pH3_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1292 Inorg_asa+_pH3_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1293 Org_molpol_pH10_chemaxonc  Num   0%   0%  99%    28 /  1%   151 /  5%   187 
+1294 Org_asa_hydrophobic_pH14_  Num   0%   0%  99%    22 /  1%     7 /  0%    73 
+1295 Inorg_drpInorgAtomHardnes  Num   0%  45%  53%    77 /  2%     0 /  0%     7 
+1296 Org_asa_pH14_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    54 
+1297 Inorg_drpInorgAtomHardnes  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+1298 Org_hbda_don_pH2_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     3 
+1299 Org_hbda_don_pH14_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1300 Inorg_asa_hydrophobic_pH1  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+1301 Org_asa+_pH8_chemaxoncxca  Num   0%   5%  94%    28 /  1%   151 /  5%   198 
+1302 Org_vanderwaals_pH2_chema  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1303 Inorg_drpInorgAtomHardnes  Num   0%  33%  64%    77 /  2%     1 /  0%     4 
+1304 Inorg_asa_hydrophobic_pH3  Num   0%  54%  44%    39 /  1%     1 /  0%     5 
+1305 Inorg_hbda_acc_pH13_chema  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1306 Inorg_molpol_pH3_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1307 Org_molpol_pH14_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    33 
+1308 Org_hbda_don_pH11_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1309 Org_asa-_pH3_chemaxoncxca  Num   0%  11%  88%    28 /  1%   133 /  4%   178 
+1310 Org_asa-_pH8_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1311 Org_molpol_pH1_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    16 
+1312 Cl_mols_DRP_0.02           Num   0%  95%   5%     5 /  0%   142 /  5%   146 
+1313 Org_hbda_acc_pH5_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     4 
+1314 Org_asa_polar_pH1_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1315 Inorg_asa_polar_pH9_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+1316 Org_asa_hydrophobic_pH9_c  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1317 Org_hbda_don_pH14_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1318 Inorg_asa_pH6_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1319 Org_mw_drprdkit_0_gmean_m  Num   0%   0%  99%    28 /  1%   151 /  5%   186 
+1320 Inorg_asa_pH11_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+1321 Org_asa_polar_pH10_chemax  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+1322 Inorg_avgpol_pH10_chemaxo  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+1323 Inorg_asa-_pH5_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1324 Org_hbda_don_pH13_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1325 Inorg_asa_pH10_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1326 Org_minimalprojectionarea  Num   0%   2%  97%    22 /  1%     2 /  0%    56 
+1327 Inorg_hbda_don_pH1_chemax  Num   0%  98%   1%    41 /  1%    23 /  1%    25 
+1328 Inorg_asa_polar_pH2_chema  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1329 Inorg_avgpol_pH13_chemaxo  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+1330 Inorg_maximalprojectionsi  Num   0%  32%  65%    67 /  2%     2 /  0%    10 
+1331 Org_vanderwaals_pH13_chem  Num   0%   0%  99%    28 /  1%   151 /  5%   200 
+1332 Inorg_asa_polar_pH11_chem  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1333 Org_asa+_pH5_chemaxoncxca  Num   0%   5%  94%    28 /  1%   151 /  5%   198 
+1334 Inorg_asa_polar_pH13_chem  Num   0%  42%  56%    41 /  1%   717 / 23%   730 
+1335 Inorg_asa+_pH4_chemaxoncx  Num   0%  11%  88%    41 /  1%  1707 / 54%  1720 
+1336 Org_molpol_pH9_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    37 
+1337 Org_refractivity_chemaxon  Num   0%   2%  98%    22 /  1%     5 /  0%    65 
+1338 Inorg_hbda_don_pH1_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1339 Org_vanderwaals_pH2_chema  Num   0%   4%  95%    22 /  1%     2 /  0%    50 
+1340 Org_asa-_pH11_chemaxoncxc  Num   0%   0%  99%    22 /  1%     1 /  0%    52 
+1341 Org_avgpol_pH5_chemaxoncx  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1342 Inorg_asa+_pH2_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1343 Org_vanderwaals_pH12_chem  Num   0%   0%  99%    22 /  1%     7 /  0%    73 
+1344 Inorg_refractivity_chemax  Num   0%   0%  99%    39 /  1%     2 /  0%    20 
+1345 Org_avgpol_pH6_chemaxoncx  Num   0%   0%  99%    22 /  1%     5 /  0%    68 
+1346 Org_asa_polar_pH9_chemaxo  Num   0%   0%  99%    22 /  1%     7 /  0%    70 
+1347 Org_asa+_pH6_chemaxoncxca  Num   0%   5%  95%    22 /  1%     7 /  0%    71 
+1348 Inorg_avgpol_pH2_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+1349 Inorg_vanderwaals_pH8_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1350 Org_asa-_pH2_chemaxoncxca  Num   0%  11%  88%    28 /  1%   133 /  4%   178 
+1351 Inorg_drpInorgAtomPearson  Num   0%  43%  55%    77 /  2%     0 /  0%     7 
+1352 Inorg_molpol_pH4_chemaxon  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1353 Org_asa-_pH2_chemaxoncxca  Num   0%  11%  89%    22 /  1%     7 /  0%    67 
+1354 Inorg_avgpol_pH8_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+1355 Org_asa_hydrophobic_pH6_c  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1356 Inorg_minimalprojectionsi  Num   0%   0%  98%    67 /  2%     0 /  0%    12 
+1357 Inorg_vanderwaals_pH1_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1358 Inorg_vanderwaals_pH2_che  Num   0%  33%  65%    39 /  1%     2 /  0%    14 
+1359 Inorg_molpol_pH13_chemaxo  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+1360 Org_asa_polar_pH11_chemax  Num   0%   0%  99%    28 /  1%   148 /  5%   193 
+1361 Org_asa_hydrophobic_pH8_c  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1362 Inorg_hbda_acc_pH2_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1363 Inorg_asa-_pH5_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1364 Org_asa_polar_pH10_chemax  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1365 Inorg_asa_polar_pH8_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+1366 Org_asa+_pH13_chemaxoncxc  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1367 Org_vanderwaals_pH9_chema  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+1368 Org_vanderwaals_pH8_chema  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1369 Org_hbda_acc_pH8_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1370 Org_asa_polar_pH7_chemaxo  Num   0%   0%  99%    22 /  1%     1 /  0%    49 
+1371 Inorg_hbda_acc_pH11_chema  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1372 Inorg_asa_pH4_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1373 Org_molpol_pH13_chemaxonc  Num   0%  95%   5%    22 /  1%     2 /  0%    16 
+1374 Inorg_asa_pH8_chemaxoncxc  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+1375 Inorg_asa_polar_pH4_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1376 Inorg_asa_polar_pH2_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+1377 Inorg_vanderwaals_pH14_ch  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1378 Inorg_avgpol_pH3_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+1379 Inorg_asa-_pH6_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1380 Inorg_asa-_pH9_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1381 Org_hbda_don_pH13_chemaxo  Num   0%  96%   3%    22 /  1%     0 /  0%     8 
+1382 Inorg_asa+_pH11_chemaxonc  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+1383 Inorg_drpInorgAtomIonizat  Num   0%   0%  97%    77 /  2%     1 /  0%     9 
+1384 Inorg_asa-_pH5_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1385 Inorg_vanderwaals_pH10_ch  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1386 Org_hbda_don_pH1_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1387 Inorg_avgpol_pH4_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+1388 Inorg_asa_hydrophobic_pH1  Num   0%  28%  71%    39 /  1%     0 /  0%     5 
+1389 Inorg_molpol_pH5_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1390 Org_asa-_pH13_chemaxoncxc  Num   0%   0%  99%    28 /  1%   151 /  5%   199 
+1391 Org_asa_pH2_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1392 Org_asa+_pH11_chemaxoncxc  Num   0%   5%  94%    28 /  1%   151 /  5%   199 
+1393 Org_asa-_pH9_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    51 
+1394 Inorg_asa+_pH13_chemaxonc  Num   0%  34%  65%    39 /  1%     2 /  0%    12 
+1395 Org_asa+_pH4_chemaxoncxca  Num   0%   5%  94%    28 /  1%   151 /  5%   198 
+1396 Inorg_asa+_pH10_chemaxonc  Num   0%  30%  68%    41 /  1%  1106 / 35%  1115 
+1397 Org_avgpol_pH6_chemaxoncx  Num   0%  94%   5%    22 /  1%     3 /  0%    22 
+1398 Inorg_asa_polar_pH8_chema  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1399 Inorg_hbda_don_pH13_chema  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+1400 Org_vanderwaals_pH9_chema  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1401 Inorg_asa_pH7_chemaxoncxc  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1402 Inorg_maximalprojectionar  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1403 Inorg_molpol_pH14_chemaxo  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+1404 Inorg_asa_polar_pH10_chem  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+1405 Org_vanderwaals_pH10_chem  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1406 Org_asa_polar_pH12_chemax  Num   0%   0%  99%    28 /  1%   148 /  5%   194 
+1407 Inorg_maximalprojectionra  Num   0%   0%  98%    67 /  2%     2 /  0%    21 
+1408 Inorg_hbda_don_pH7_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1409 Inorg_asa_hydrophobic_pH9  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+1410 Inorg_avgpol_pH4_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+1411 Org_vanderwaals_pH10_chem  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1412 Org_asa_pH6_chemaxoncxcal  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1413 Org_asa_hydrophobic_pH6_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1414 Org_hbda_don_pH3_chemaxon  Num   0%  94%   5%    28 /  1%   146 /  5%   153 
+1415 Inorg_hbda_don_pH4_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1416 Org_avgpol_pH11_chemaxonc  Num   0%   0%  99%    22 /  1%     2 /  0%    50 
+1417 Inorg_asa-_pH3_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1418 Org_molpol_pH5_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   181 
+1419 Org_asa_pH10_chemaxoncxca  Num   0%   0%  99%    22 /  1%     1 /  0%    52 
+1420 Inorg_molpol_pH10_chemaxo  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1421 Org_molpol_pH3_chemaxoncx  Num   0%  94%   5%    22 /  1%     2 /  0%    16 
+1422 Org_minimalprojectionradi  Num   0%   0%  99%    22 /  1%     1 /  0%    48 
+1423 Org_asa_hydrophobic_pH3_c  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1424 Org_asa_hydrophobic_pH11_  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1425 Inorg_vanderwaals_pH9_che  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1426 Inorg_avgpol_pH14_chemaxo  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+1427 Org_hbda_acc_pH12_chemaxo  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1428 Org_hbda_acc_pH4_chemaxon  Num   0%  99%   0%    28 /  1%     2 /  0%     5 
+1429 Org_hbda_don_pH8_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1430 Org_asa_hydrophobic_pH10_  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1431 Inorg_asa+_pH1_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1432 Inorg_asa_pH11_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1433 Inorg_asa_polar_pH7_chema  Num   0%  42%  56%    39 /  1%     1 /  0%    17 
+1434 Org_minimalprojectionsize  Num   0%  95%   4%    22 /  1%     5 /  0%    23 
+1435 Org_asa_polar_pH13_chemax  Num   0%   0%  99%    22 /  1%     2 /  0%    49 
+1436 Inorg_molpol_pH1_chemaxon  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1437 Inorg_avgpol_pH12_chemaxo  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+1438 Inorg_asa_hydrophobic_pH7  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+1439 Te_mols_DRP_0.02           Num   0%  78%  22%     5 /  0%   370 / 12%   498 
+1440 Org_asa-_pH1_chemaxoncxca  Num   0%  11%  89%    22 /  1%     7 /  0%    67 
+1441 Org_avgpol_pH1_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1442 Inorg_vanderwaals_pH13_ch  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1443 Inorg_molpol_pH9_chemaxon  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1444 Org_minimalprojectionsize  Num   0%   3%  96%    28 /  1%   151 /  5%   198 
+1445 Inorg_asa_hydrophobic_pH8  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+1446 Org_asa_pH6_chemaxoncxcal  Num   0%   0%  99%    28 /  1%   151 /  5%   197 
+1447 Org_asa+_pH11_chemaxoncxc  Num   0%   5%  95%    22 /  1%     7 /  0%    72 
+1448 Inorg_hbda_acc_pH9_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     3 
+1449 Org_vanderwaals_pH6_chema  Num   0%  94%   5%    22 /  1%     5 /  0%    23 
+1450 Org_minimalprojectionarea  Num   0%   2%  97%    22 /  1%     7 /  0%    76 
+1451 Inorg_vanderwaals_pH12_ch  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1452 Org_asa+_pH14_chemaxoncxc  Num   0%   5%  94%    28 /  1%   151 /  5%   200 
+1453 Org_asa_pH12_chemaxoncxca  Num   0%   0%  99%    22 /  1%     7 /  0%    74 
+1454 Inorg_hbda_acc_pH4_chemax  Num   0%  99%   0%    39 /  1%     1 /  0%     3 
+1455 Inorg_asa_pH12_chemaxoncx  Num   0%   0%  99%    41 /  1%  2043 / 65%  2057 
+1456 Org_asa_polar_pH14_chemax  Num   0%   0%  99%    22 /  1%     7 /  0%    69 
+1457 Org_asa-_pH1_chemaxoncxca  Num   0%  10%  89%    22 /  1%     1 /  0%    49 
+1458 Org_molpol_pH14_chemaxonc  Num   0%  95%   5%    22 /  1%     2 /  0%    16 
+1459 Inorg_drpInorgAtomAtomicR  Num   0%  98%   0%    77 /  2%     0 /  0%     6 
+1460 Inorg_avgpol_pH6_chemaxon  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+1461 Inorg_asa-_pH7_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+1462 Inorg_avgpol_pH12_chemaxo  Num   0%   1%  98%    39 /  1%     0 /  0%    13 
+1463 Inorg_hbda_acc_pH1_chemax  Num   0%  33%  65%    41 /  1%  2042 / 65%  2050 
+1464 Inorg_hbda_don_pH7_chemax  Num   0%  99%   0%    39 /  1%     0 /  0%     2 
+1465 Inorg_vanderwaals_pH5_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1466 Org_vanderwaals_pH8_chema  Num   0%   0%  99%    22 /  1%     2 /  0%    51 
+1467 Org_hbda_acc_pH11_chemaxo  Num   0%  99%   0%    22 /  1%     0 /  0%     7 
+1468 Org_asa_hydrophobic_pH12_  Num   0%   0%  99%    28 /  1%   151 /  5%   200 
+1469 Org_vanderwaals_pH2_chema  Num   0%   4%  95%    22 /  1%     7 /  0%    70 
+1470 Inorg_asa-_pH3_chemaxoncx  Num   0%  33%  65%    39 /  1%     1 /  0%    13 
+1471 Org_asa+_pH2_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1472 Inorg_vanderwaals_pH4_che  Num   0%   0%  99%    39 /  1%     0 /  0%    10 
+1473 Inorg_molpol_pH1_chemaxon  Num   0%   2%  97%    39 /  1%     0 /  0%    13 
+1474 Org_hbda_acc_pH3_chemaxon  Num   0%  99%   0%    28 /  1%     1 /  0%     4 
+1475 Inorg_drpInorgAtomPauling  Num   0%   0%  98%    77 /  2%     1 /  0%     9 
+1476 Org_maximalprojectionradi  Num   0%   0%  99%    22 /  1%     2 /  0%    48 
+1477 Inorg_avgpol_pH3_chemaxon  Num   0%   1%  98%    41 /  1%  2043 / 65%  2057 
+1478 Br_mols_DRP_0.02           Num   0% 100%   0%     5 /  0%     3 /  0%     4 
+1479 Inorg_vanderwaals_pH9_che  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1480 Inorg_asa-_pH8_chemaxoncx  Num   0%   0%  99%    39 /  1%     0 /  0%    11 
+1481 Org_molpol_pH10_chemaxonc  Num   0%   0%  99%    22 /  1%     4 /  0%    57 
+1482 Inorg_asa_pH12_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+1483 Inorg_asa_pH9_chemaxoncxc  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1484 Inorg_hbda_acc_pH4_chemax  Num   0%  73%  26%    39 /  1%     1 /  0%     6 
+1485 Inorg_refractivity_chemax  Num   0%   0%  98%    41 /  1%  2043 / 65%  2056 
+1486 Inorg_asa_hydrophobic_pH1  Num   0%  36%  62%    39 /  1%     0 /  0%     3 
+1487 Org_asa+_pH6_chemaxoncxca  Num   0%  95%   5%    22 /  1%     5 /  0%    23 
+1488 Inorg_hbda_don_pH5_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+1489 Org_hbda_acc_pH7_chemaxon  Num   0%  99%   0%    22 /  1%     0 /  0%     5 
+1490 Org_hbda_acc_pH10_chemaxo  Num   0%  98%   2%    22 /  1%     0 /  0%     7 
+1491 Inorg_vanderwaals_pH12_ch  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1492 Inorg_hbda_don_pH8_chemax  Num   0%  99%   0%    41 /  1%     0 /  0%     2 
+1493 Org_hbda_acc_pH7_chemaxon  Num   0%  99%   0%    22 /  1%     1 /  0%     3 
+1494 Inorg_drpInorgAtomAtomicR  Num   0%  98%   0%    77 /  2%     0 /  0%     6 
+1495 Org_asa+_pH4_chemaxoncxca  Num   0%   5%  95%    22 /  1%     7 /  0%    71 
+1496 Inorg_hbda_acc_pH12_chema  Num   0%  33%  65%    41 /  1%  2043 / 65%  2051 
+1497 Inorg_asa_hydrophobic_pH5  Num   0%  90%   9%    41 /  1%     0 /  0%     4 
+1498 Inorg_asa_polar_pH13_chem  Num   0%  33%  65%    39 /  1%     1 /  0%    12 
+1499 Inorg_asa_hydrophobic_pH9  Num   0%  90%   9%    39 /  1%     0 /  0%     4 
+1500 Inorg_asa+_pH11_chemaxonc  Num   0%  30%  68%    39 /  1%     1 /  0%    15 
+1501 Org_avgpol_pH4_chemaxoncx  Num   0%   0%  99%    22 /  1%     7 /  0%    71 
+1502 Inorg_avgpol_pH9_chemaxon  Num   0%  65%  34%    39 /  1%     2 /  0%    14 
+1503 Inorg_molpol_pH14_chemaxo  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1504 Org_asa+_pH1_chemaxoncxca  Num   0%   0%  99%    28 /  1%   151 /  5%   198 
+1505 Org_asa-_pH2_chemaxoncxca  Num   0%  10%  89%    22 /  1%     1 /  0%    49 
+1506 Inorg_asa-_pH2_chemaxoncx  Num   0%   0%  99%    39 /  1%     2 /  0%    22 
+1507 Inorg_asa_pH8_chemaxoncxc  Num   0%   0%  99%    39 /  1%     0 /  0%     9 
+1508 Org_asa_polar_pH11_chemax  Num   0%   0%  99%    22 /  1%     7 /  0%    68 
+1509 Inorg_asa_pH10_chemaxoncx  Num   0%  33%  65%    39 /  1%     2 /  0%    13 
+1510 Org_asa-_pH1_chemaxoncxca  Num   0%  94%   5%    22 /  1%     5 /  0%    22 
+1511 Org_asa_pH7_chemaxoncxcal  Num   0%   0%  99%    22 /  1%     1 /  0%    50 
+1512 Org_molpol_pH8_chemaxoncx  Num   0%   0%  99%    28 /  1%   151 /  5%   184 
+1513 Inorg_asa+_pH12_chemaxonc  Num   0%   1%  98%    39 /  1%     1 /  0%    12 
+1514 Org_molpol_pH1_chemaxoncx  Num   0%   0%  99%    22 /  1%     2 /  0%    33 
+1515 Org_asa-_pH5_chemaxoncxca  Num   0%  10%  89%    22 /  1%     1 /  0%    49 
+1516 Org_hbda_acc_pH7_chemaxon  Num   0%  97%   2%    28 /  1%    58 /  2%    63 
+1517 reaction_temperature_manu  Num   0%   0% 100%     0 /  0%     0 /  0%    17 
+1518 reaction_time_manual_0     Num   0% 100%   0%     0 /  0%     0 /  0%    27 
+1519 reaction_pH_manual_0       Num   0%  92%   8%     0 /  0%     1 /  0%    22 
+

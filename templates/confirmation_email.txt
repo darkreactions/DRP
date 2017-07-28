@@ -1,0 +1,14 @@
+Dear {{ name }}
+
+
+Thankyou for registering with the Dark Reactions Project. Please copy and paste the text below into the address bar of your web browser to complete your registration.
+
+Copy-able text: http://{{ servername }}{% url 'confirm' %}?code={{ code|urlencode:"" }}
+
+Yours sincerely,
+
+The Dark Reactions Project Team
+
+{% if testing %}
+  ff5327c2-9e62-4f4b-b64c-67bd9e9935c2
+{% endif %}

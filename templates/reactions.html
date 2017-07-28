@@ -1,0 +1,28 @@
+{% extends 'dbase_base.html' %}
+
+{% block submenu %}
+
+{% if user.is_authenticated %}
+<nav>
+ {% if testing %}<!-- ea5108a2-0b88-482d-90c5-ea492fd8134e --> {% endif %}
+ <div class="projectNav-wrapper">
+  <ol class="projectNav" id="projectNav2">
+    <li><a href="{% url 'reactionlist' %}">List Performed Reactions</a></li>
+    <li><a href="{% url 'newReaction' %}">Add a Performed Reaction</a></li> 
+  </ol>
+ </div>
+</nav>
+{% endif %}
+
+{% endblock %}
+
+{% block additional_js %}
+  <script>
+    inputs = document.getElementsByClassName('singleclicker');
+    for (var i=0; i<inputs.length; i++) {
+        var submit = inputs[i];
+        submit.addEventListener("click", function() {submit.disabled=true; submit.form.submit();});
+    }
+  </script>
+
+{% endblock %}

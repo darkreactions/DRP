@@ -1,0 +1,65 @@
+{% extends 'compound_base.html' %}
+{% load compound_delete_form %}
+
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/compoundList.css" />
+{% endblock %}
+
+{% block content %}
+
+<h1 class="bannerText">Compound Guide</h1>
+{% include "lab_form.html" %}
+{% if cg_entries|length >  0 %}
+  <section class="downloads">
+    <h1>Downloads</h1>
+    <ul>
+      <li><a href="{% url request.resolver_match.url_name '.csv' %}?{{ request.GET.urlencode }}">csv</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url request.resolver_match.url_name '.csv' %}?expanded=&{{ request.GET.urlencode }}">Expanded csv</a></li>{% endif %}
+      <li><a href="{% url request.resolver_match.url_name '.arff' %}?{{ request.GET.urlencode }}">arff</a></li>
+      {% if user.is_authenticated and user.is_staff %}<li><a href="{% url request.resolver_match.url_name '.arff' %}?expanded=&{{ request.GET.urlencode }}">Expanded arff</a></li>{% endif %}
+    </ul>
+  </section>
+  <table>
+    <thead>
+      <tr>
+        <th>Abbreviation</th>
+        <th>Name</th>
+        <th>ChemSpider ID</th>
+        <th>Compound Classes</th>
+      </tr>
+    </thead>
+  {% for cg_entry in cg_entries %}
+    <tr>
+      <td>
+        <a href="{% url 'editCompound' pk=cg_entry.compound.pk %}">
+          {{ cg_entry.abbrev }}
+        </a>
+      </td>
+      <td>{{ cg_entry.compound.name }}</td>
+      <td>{{ cg_entry.compound.CSID }}</td>
+      <td>
+        <ul>
+          {% for class in cg_entry.compound.chemicalClasses.all %}
+            <li>{{ class }}</li>
+          {% endfor %}
+        </ul>
+      </td>
+      <td>
+        {% if not cg_entry.compound.reaction_set.all.exists %}
+        <form action="{% url 'deleteCompound' %}" method="post">
+          {% csrf_token %}
+          {% compound_delete_form cg_entry.compound %}
+          <input type="Submit" value="delete" />
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </table>
+  <!-- 7f25b7df-2176-455b-9a68-620af1d52e46 -->
+{% else %}
+  <p> There are no compounds to display.</p>
+  <!-- 1bf53b3a-ddf0-407b-b565-b732e4fa5ddb -->
+{% endif %}
+<!-- bf3a3711-b21d-4710-a989-6d1ebc1c9ee9 -->
+{% endblock %}

@@ -1,0 +1,52 @@
+.infoFormContainer {
+  margin: 0 auto;
+  text-align:center;
+}
+
+.downloadForm,
+.uploadForm,
+.infoForm {
+  margin: 0 auto;
+  padding:1em;
+  text-align:center;
+  max-width:50em;
+}
+
+.infoForm ol {
+ padding:0;
+}
+
+.infoForm li {
+ list-style:none;
+}
+
+.infoForm textarea {
+  height:5em;
+  vertical-align:middle;
+  resize:vertical;
+}
+
+.infoForm label {
+  display:block;
+  vertical-align:middle;
+  padding: 0.5em 0em;
+}
+
+.infoForm label input, .infoForm label textarea, .infoForm label select {
+  margin-left:2em;
+}
+
+.infoForm input.submit {
+  background-color:#8dabce;
+  border:1px solid #658ebd;
+  outline: none;
+  color: white;
+  border-radius:1em;
+  width:7em;
+  height:2em;
+  padding:0;
+}
+
+.form_text_short { width:6em; }
+.form_text_long { width:20em; }
+

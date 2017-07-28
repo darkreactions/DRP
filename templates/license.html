@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="bannerText">Please sign this license agreement</h1>
+<p>Our records show that you have not yet signed this version of the license agreement. Please read the terms carefully,
+input and submit your credentials to indicate your assent to the terms therein.</p>
+<form action="{% url 'license' %}{% if next %}?next={{ next|urlencode:"" }}{% endif %}" method="post">
+  {% csrf_token %}
+  {{ form.as_ol }}
+  <input type="submit" value="Sign Agreement"/> 
+</form>
+{% if testing %}
+<!-- c9e46ba1-cd2a-4080-88b5-97415fa7c484 -->
+{% endif %}
+{% endblock %}

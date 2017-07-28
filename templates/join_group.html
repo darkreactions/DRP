@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="bannerText">Join Lab Groups</h1>
+  {% if user.labgroup_set.count < 1 %}
+  <p>You have not yet joined any lab groups</p>
+  {% if testing %}
+   <!-- 660d4702-1621-406a-a78e-fe34c8a5a721 --> 
+  {% endif %}
+  {% else %}
+  <ul>
+  {% for labgroup in user.labgroup_set.all %}
+    <li>{{ labgroup }}{% if testing %}<!-- 00c9fe70-a51f-4c9a-9d99-b88292ece120 -->{% endif %}</li>
+  {% endfor %}
+  </ul>
+  {% endif %}  
+  <form action="{% url 'joinGroup' %}" method="post" >
+    {% csrf_token %}
+    <ol>
+      {{ form.as_ul }}
+    </ol>
+    <input type="submit" value="Join" />
+  </form> 
+
+{% endblock %}

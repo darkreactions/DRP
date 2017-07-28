@@ -1,0 +1,102 @@
+Random Forest BCR Weighted. Legacy rxns. New descriptors with CA at rxn pH NonzeroVariance. 15 mutual info split.
+pk: 255
+MutualInfoSplitter
+weka RandomForest
+Confusion matrix for boolean_outcome_legacy_prediction_255_summative__:
+      False  True 
+False  227   189  
+ True  313   1274 
+Accuracy: 0.749
+BCR: 0.646
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1136__:
+      False  True 
+False  133   138  
+ True  123   550  
+Accuracy: 0.724
+BCR: 0.659
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1140__:
+      False  True 
+False  102    76  
+ True  199   566  
+Accuracy: 0.708
+BCR: 0.61
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1145__:
+      False  True 
+False  119   121  
+ True  123   583  
+Accuracy: 0.742
+BCR: 0.66
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1148__:
+      False  True 
+False  115   129  
+ True  167   542  
+Accuracy: 0.689
+BCR: 0.608
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1153__:
+      False  True 
+False  104    87  
+ True  156   596  
+Accuracy: 0.742
+BCR: 0.636
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1157__:
+      False  True 
+False   97   132  
+ True  130   587  
+Accuracy: 0.723
+BCR: 0.622
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1163__:
+      False  True 
+False  121   127  
+ True  157   538  
+Accuracy: 0.699
+BCR: 0.622
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1166__:
+      False  True 
+False  101    86  
+ True  180   581  
+Accuracy: 0.719
+BCR: 0.615
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1171__:
+      False  True 
+False  109   125  
+ True  151   559  
+Accuracy: 0.708
+BCR: 0.618
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1175__:
+      False  True 
+False  116   149  
+ True  148   537  
+Accuracy: 0.687
+BCR: 0.611
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1179__:
+      False  True 
+False  109   124  
+ True  122   592  
+Accuracy: 0.74
+BCR: 0.649
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1184__:
+      False  True 
+False   89   154  
+ True  147   571  
+Accuracy: 0.687
+BCR: 0.582
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1187__:
+      False  True 
+False  107   143  
+ True  150   550  
+Accuracy: 0.692
+BCR: 0.605
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1191__:
+      False  True 
+False  104    97  
+ True  141   601  
+Accuracy: 0.748
+BCR: 0.643
+Confusion matrix for boolean_outcome_legacy_prediction_255_component_1196__:
+      False  True 
+False  104   119  
+ True  145   576  
+Accuracy: 0.72
+BCR: 0.623
+Average accuracy: 0.715
+Average BCR: 0.624

@@ -1,0 +1,26 @@
+{% extends 'reactions.html' %}
+
+
+{% block additional_head %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
+{% endblock %}
+
+{% block content %}
+  {% if testing %} <!-- 9fa2cfb6-aabe-40f7-80ea-4ecbcf8c0bda -->{% endif %}
+  <h1>Add Reaction Details</h1>
+  <form class="descvalform" action="{{ request.get_full_path }}" method="post">
+    {% csrf_token %}
+    <fieldset>
+      <legend> {{ info_header }}</legend>
+        {{ formset.management_form }}	
+      <ol>
+        {% for form in formset %}<li><ol class="descvallist">{% include "alt_ul_form.html" %}</ol></li>{% endfor %}
+      </ol>
+    <div class="buttons">
+      <input id="singleclicker" type="submit" value="Save" />
+      <input type="reset" value="Reset" />
+    </div>
+    <a href="{% url 'editReaction' rxn_id %}">Return to Reaction</a>
+    </fieldset>
+  </form> 
+{% endblock %}

@@ -1,0 +1,10 @@
+abbrev,name,CAS,chemicalClasses,CSID,INCHI,smiles
+2-amep,2-aminomethyl-1-ethylpyrrolidine,26116-12-1,"Org,
+ Amine",104820,"InChI=1S/C7H16N2/c1-2-9-5-3-4-7(9)6-8/h7H,2-6,8H2,1H3",CCN1CCCC1CN
+"1,10-dad","1,10-diaminodecane ",646-25-3,"Org, Amine",1277,InChI=1S/C10H24N2/c11-9-7-5-3-1-2-4-6-8-10-12/h1-12H2,C(CCCCCN)CCCCN
+hmta,"1,3,5,7-tetraazaadamantane",24911-88-4,"Org, Amine",3959,InChI=1S/C6H12N4/c1-7-2-9-4-8(1)5-10(3-7)6-9/h1-6H2,C1N2CN3CN1CN(C2)C3
+"1,3-chbma","1,3-cyclohexanebis(methylamine)",2579-20-6,"Org, Amine. Diamine",16469,"InChI=1S/C8H18N2/c9-5-7-2-1-3-8(4-7)6-10/h7-8H,1-6,9-10H2",C1CC(CC(C1)CN)CN
+1-chp,1-cyclohexylpiperazine ,241-750-0,"Org, Amine",78749,"InChI=1S/C10H20N2/c1-2-4-10(5-3-1)12-8-6-11-7-9-12/h10-11H,1-9H2",C1CCC(CC1)N2CCNCC2
+1-mpip,1-methylpiperazine,109-01-3,Org,48024,"InChI=1S/C5H12N2/c1-7-4-2-6-3-5-7/h6H,2-5H2,1H3",CN1CCNCC1
+sov,Sodium Orthovanadate,15066-70-3,Inorg,55575,InChI=1S/3Na.4O.V/q3*+1;;3*-1;,[O-][V](=O)([O-])[O-].[Na+].[Na+].[Na+]
+sp,Spermidine,124-20-9,Org,1071,"InChI=1S/C7H19N3/c8-4-1-2-6-10-7-3-5-9/h10H,1-9H2",C(CCNCCCN)CN

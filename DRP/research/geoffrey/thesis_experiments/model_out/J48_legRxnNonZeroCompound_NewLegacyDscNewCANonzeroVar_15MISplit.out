@@ -1,0 +1,402 @@
+Starting building at 2016-03-30 21:24:30.599223
+Splitting using MutualInfoSplitter
+Split into train (2198), test (944)
+Split into train (2196), test (946)
+Split into train (2188), test (954)
+Split into train (2198), test (944)
+Split into train (2194), test (948)
+Split into train (2196), test (946)
+Split into train (2199), test (943)
+Split into train (2199), test (943)
+Split into train (2193), test (949)
+Split into train (2198), test (944)
+Split into train (2181), test (961)
+Split into train (2172), test (970)
+Split into train (2189), test (953)
+Split into train (2192), test (950)
+Split into train (2189), test (953)
+2016-03-30 21:29:35.540247 statsModel 807, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_807_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/807_67ccc2ff-36aa-46c3-b01f-1e51187a088b.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/807_67ccc2ff-36aa-46c3-b01f-1e51187a088b.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_807_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 21:34:43.904001. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/807_581e850b-f622-4655-a9a0-4374b46f17cb.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/807_23e7e7f1-3dc4-496e-a183-874a3df34fdd.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/807_581e850b-f622-4655-a9a0-4374b46f17cb.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_807_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/807_23e7e7f1-3dc4-496e-a183-874a3df34fdd.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_807:
+      False  True 
+False  159   148  
+ True  127   510  
+Accuracy: 0.709
+BCR: 0.666
+2016-03-30 21:36:03.302290. 1 of 15 models built.
+Elapsed model building time: 0:06:27.798672. Expected completion time: 2016-03-30 23:06:32.483698
+2016-03-30 21:36:03.344739 statsModel 811, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_811_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/811_eaba9eef-2706-4339-b6f9-3ea796484bf1.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/811_eaba9eef-2706-4339-b6f9-3ea796484bf1.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_811_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 21:40:50.329149. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/811_63ccb480-81d0-4613-a9e3-802a90556c57.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/811_a6ce2d98-3b34-4b1c-8f3e-028a1eacbbd8.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/811_63ccb480-81d0-4613-a9e3-802a90556c57.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_811_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/811_a6ce2d98-3b34-4b1c-8f3e-028a1eacbbd8.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_811:
+      False  True 
+False  115   102  
+ True  160   569  
+Accuracy: 0.723
+BCR: 0.633
+2016-03-30 21:42:09.121542. 2 of 15 models built.
+Elapsed model building time: 0:12:33.617924. Expected completion time: 2016-03-30 23:03:47.638048
+2016-03-30 21:42:09.152924 statsModel 817, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_817_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/817_1b09e59f-8a90-4ed0-9591-8926ca394cd0.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/817_1b09e59f-8a90-4ed0-9591-8926ca394cd0.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_817_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 21:46:33.733965. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/817_27b90b59-5245-4686-977a-ba962f7c4d58.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/817_9cceb277-aedb-4b82-85ba-82b49f766c2c.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/817_27b90b59-5245-4686-977a-ba962f7c4d58.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_817_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/817_9cceb277-aedb-4b82-85ba-82b49f766c2c.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_817:
+      False  True 
+False  124   103  
+ True  164   563  
+Accuracy: 0.72
+BCR: 0.638
+2016-03-30 21:48:18.177729. 3 of 15 models built.
+Elapsed model building time: 0:18:42.674111. Expected completion time: 2016-03-30 23:03:08.874173
+2016-03-30 21:48:18.222229 statsModel 822, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_822_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/822_91a553b0-175b-4fdd-94ef-6317c4ea5b88.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/822_91a553b0-175b-4fdd-94ef-6317c4ea5b88.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_822_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 21:53:03.591757. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/822_b37ecc2e-3a98-4e51-96f5-cb66e22923d0.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/822_38ef5cc2-7915-4c3f-8347-dca5ed0b8f05.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/822_b37ecc2e-3a98-4e51-96f5-cb66e22923d0.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_822_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/822_38ef5cc2-7915-4c3f-8347-dca5ed0b8f05.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_822:
+      False  True 
+False   95   100  
+ True  168   581  
+Accuracy: 0.716
+BCR: 0.607
+2016-03-30 21:54:12.033377. 4 of 15 models built.
+Elapsed model building time: 0:24:36.529759. Expected completion time: 2016-03-30 23:01:52.490214
+2016-03-30 21:54:12.070072 statsModel 826, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_826_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/826_e3609268-32f6-4285-8b3c-a8fff4cceffe.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/826_e3609268-32f6-4285-8b3c-a8fff4cceffe.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_826_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 21:58:42.084968. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/826_b7701907-0561-4de2-8220-1426f614fec2.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/826_ef422040-21f9-45f8-bd48-93e77b5d542f.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/826_b7701907-0561-4de2-8220-1426f614fec2.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_826_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/826_ef422040-21f9-45f8-bd48-93e77b5d542f.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_826:
+      False  True 
+False  120   146  
+ True  135   547  
+Accuracy: 0.704
+BCR: 0.63
+2016-03-30 22:00:00.059577. 5 of 15 models built.
+Elapsed model building time: 0:30:24.555959. Expected completion time: 2016-03-30 23:00:49.171495
+2016-03-30 22:00:00.091995 statsModel 830, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_830_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/830_1b3d5ab6-3e1c-4951-8a56-f855e2402f41.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/830_1b3d5ab6-3e1c-4951-8a56-f855e2402f41.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_830_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:04:57.351126. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/830_fc3fb03f-bf7f-4e6c-b329-9d581f53e1a6.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/830_644c571b-afa5-4017-8472-6343cd5d2048.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/830_fc3fb03f-bf7f-4e6c-b329-9d581f53e1a6.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_830_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/830_644c571b-afa5-4017-8472-6343cd5d2048.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_830:
+      False  True 
+False  126   102  
+ True  135   583  
+Accuracy: 0.749
+BCR: 0.667
+2016-03-30 22:06:14.133657. 6 of 15 models built.
+Elapsed model building time: 0:36:38.630039. Expected completion time: 2016-03-30 23:01:12.078716
+2016-03-30 22:06:14.171177 statsModel 836, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_836_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/836_a133a704-53f8-47a5-9eec-63fda302127f.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/836_a133a704-53f8-47a5-9eec-63fda302127f.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_836_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:10:58.680809. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/836_88a8e617-c95b-48c1-9be4-980700e08ae7.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/836_c9ba47c0-e487-4771-97d9-0ced4bcc9b0d.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/836_88a8e617-c95b-48c1-9be4-980700e08ae7.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_836_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/836_c9ba47c0-e487-4771-97d9-0ced4bcc9b0d.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_836:
+      False  True 
+False  101   110  
+ True  157   575  
+Accuracy: 0.717
+BCR: 0.615
+2016-03-30 22:12:14.895291. 7 of 15 models built.
+Elapsed model building time: 0:42:39.391673. Expected completion time: 2016-03-30 23:00:59.914346
+2016-03-30 22:12:14.941000 statsModel 842, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_842_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/842_76191d89-7fa2-4d75-be2c-e38d0d810697.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/842_76191d89-7fa2-4d75-be2c-e38d0d810697.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_842_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:17:19.076175. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/842_92a167b0-bc29-4ef1-888b-07a22889e45c.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/842_48cbc97b-1de5-43e7-8d53-be53068a18ca.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/842_92a167b0-bc29-4ef1-888b-07a22889e45c.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_842_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/842_48cbc97b-1de5-43e7-8d53-be53068a18ca.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_842:
+      False  True 
+False   98   126  
+ True  158   561  
+Accuracy: 0.699
+BCR: 0.6
+2016-03-30 22:18:34.931534. 8 of 15 models built.
+Elapsed model building time: 0:48:59.427916. Expected completion time: 2016-03-30 23:01:26.930961
+2016-03-30 22:18:34.964307 statsModel 846, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_846_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/846_c0ca6e1d-1f0b-4bb0-8c0d-e2cf41c5274e.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/846_c0ca6e1d-1f0b-4bb0-8c0d-e2cf41c5274e.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_846_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:23:28.162213. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/846_f6171934-0cd0-4ffa-8d6d-6bac0005ec1b.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/846_b53aefd0-f9f5-431f-a909-6fed5af5951d.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/846_f6171934-0cd0-4ffa-8d6d-6bac0005ec1b.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_846_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/846_b53aefd0-f9f5-431f-a909-6fed5af5951d.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_846:
+      False  True 
+False  124   107  
+ True  124   594  
+Accuracy: 0.757
+BCR: 0.674
+2016-03-30 22:24:51.188693. 9 of 15 models built.
+Elapsed model building time: 0:55:15.685075. Expected completion time: 2016-03-30 23:01:41.645410
+2016-03-30 22:24:51.224867 statsModel 851, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_851_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/851_5654de06-f8bd-43d4-9ab2-6472ba61729a.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/851_5654de06-f8bd-43d4-9ab2-6472ba61729a.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_851_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:29:33.869998. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/851_91c55118-9271-4d41-a8a9-be338d0702bc.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/851_6e631e1b-201b-4f83-b28b-b84bd0b9e876.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/851_91c55118-9271-4d41-a8a9-be338d0702bc.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_851_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/851_6e631e1b-201b-4f83-b28b-b84bd0b9e876.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_851:
+      False  True 
+False  144   111  
+ True  130   559  
+Accuracy: 0.745
+BCR: 0.68
+2016-03-30 22:31:10.539668. 10 of 15 models built.
+Elapsed model building time: 1:01:35.036050. Expected completion time: 2016-03-30 23:01:58.057693
+2016-03-30 22:31:10.573974 statsModel 857, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_857_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/857_ad3c4f6a-6b3b-4c0d-bc3d-f3d02a9ece96.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/857_ad3c4f6a-6b3b-4c0d-bc3d-f3d02a9ece96.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_857_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:35:41.983538. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/857_4280bff0-a1bb-4483-afec-97b01f22fce9.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/857_46321ec2-12bc-46c5-b97a-02ff2557adc6.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/857_4280bff0-a1bb-4483-afec-97b01f22fce9.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_857_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/857_46321ec2-12bc-46c5-b97a-02ff2557adc6.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_857:
+      False  True 
+False  115   110  
+ True  160   576  
+Accuracy: 0.719
+BCR: 0.629
+2016-03-30 22:36:51.525784. 11 of 15 models built.
+Elapsed model building time: 1:07:16.022166. Expected completion time: 2016-03-30 23:01:19.170208
+2016-03-30 22:36:51.804226 statsModel 860, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_860_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/860_a7fa3083-a7ce-4fae-8d89-4f89231a2581.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/860_a7fa3083-a7ce-4fae-8d89-4f89231a2581.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_860_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:41:04.162698. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/860_58e923fb-a3b8-4e97-964c-68042e9b0718.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/860_db4198ec-06a9-4592-95ac-3f846df71dd9.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/860_58e923fb-a3b8-4e97-964c-68042e9b0718.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_860_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/860_db4198ec-06a9-4592-95ac-3f846df71dd9.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_860:
+      False  True 
+False   82    85  
+ True  186   617  
+Accuracy: 0.721
+BCR: 0.592
+2016-03-30 22:42:13.904905. 12 of 15 models built.
+Elapsed model building time: 1:12:38.401287. Expected completion time: 2016-03-30 23:00:23.505227
+2016-03-30 22:42:13.951006 statsModel 863, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_863_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/863_c4b28899-6cc3-40bd-b26e-5da93234e394.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/863_c4b28899-6cc3-40bd-b26e-5da93234e394.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_863_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:46:31.282427. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/863_aa65a424-21c9-4043-ba80-7031fdd12909.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/863_7da801b7-9115-46f9-9839-77e68de32157.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/863_aa65a424-21c9-4043-ba80-7031fdd12909.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_863_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/863_7da801b7-9115-46f9-9839-77e68de32157.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_863:
+      False  True 
+False  116   142  
+ True  163   532  
+Accuracy: 0.68
+BCR: 0.603
+2016-03-30 22:47:36.998968. 13 of 15 models built.
+Elapsed model building time: 1:18:01.495350. Expected completion time: 2016-03-30 22:59:37.229022
+2016-03-30 22:47:37.032502 statsModel 867, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_867_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/867_49dfc08f-15e9-4af0-a6c3-281a792243f3.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/867_49dfc08f-15e9-4af0-a6c3-281a792243f3.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_867_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:51:56.129005. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/867_447e5c49-a437-4881-9c47-e46b50c69641.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/867_8787f6b0-cca6-46ea-8f33-e00bdabb9c53.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/867_447e5c49-a437-4881-9c47-e46b50c69641.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_867_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/867_8787f6b0-cca6-46ea-8f33-e00bdabb9c53.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_867:
+      False  True 
+False  151   105  
+ True   97   597  
+Accuracy: 0.787
+BCR: 0.73
+2016-03-30 22:52:59.178648. 14 of 15 models built.
+Elapsed model building time: 1:23:23.675030. Expected completion time: 2016-03-30 22:58:56.584007
+2016-03-30 22:52:59.214856 statsModel 870, saving to /home/gmartinn/DRP_main/DRP_repo/models/212_870_weka_J48.model, training...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/870_53e74bcf-3685-4c1d-a283-b9b98c20d315.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -t /home/gmartinn/DRP_main/DRP_repo/tmp/870_53e74bcf-3685-4c1d-a283-b9b98c20d315.arff -d /home/gmartinn/DRP_main/DRP_repo/models/212_870_weka_J48.model -p 0 -c 6
+	...Trained. Finished at 2016-03-30 22:57:09.935977. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/870_2b28e9f1-e184-434f-93c6-e5be0f90c731.arff
+Writing results to /home/gmartinn/DRP_main/DRP_repo/tmp/870_6c3b2795-c9eb-4fde-914d-081cf07fe6d6.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/gmartinn/DRP_main/DRP_repo/tmp/870_2b28e9f1-e184-434f-93c6-e5be0f90c731.arff -l /home/gmartinn/DRP_main/DRP_repo/models/212_870_weka_J48.model -p 0 -c 6 1> /home/gmartinn/DRP_main/DRP_repo/tmp/870_6c3b2795-c9eb-4fde-914d-081cf07fe6d6.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_870:
+      False  True 
+False  133    90  
+ True  168   562  
+Accuracy: 0.729
+BCR: 0.652
+2016-03-30 22:58:15.011179. 15 of 15 models built.
+Elapsed model building time: 1:28:39.507561. Expected completion time: 2016-03-30 22:58:15.011179
+Storing overall model predictions... Predictions stored
+Finished at 2016-03-30 22:58:25.702017
+Confusion matrix for boolean_outcome_legacy_prediction_212_summative__:
+      False  True 
+False  233   176  
+ True  307   1287 
+Accuracy: 0.759
+BCR: 0.656
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_807__:
+      False  True 
+False  159   148  
+ True  127   510  
+Accuracy: 0.709
+BCR: 0.666
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_811__:
+      False  True 
+False  115   102  
+ True  160   569  
+Accuracy: 0.723
+BCR: 0.633
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_817__:
+      False  True 
+False  124   103  
+ True  164   563  
+Accuracy: 0.72
+BCR: 0.638
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_822__:
+      False  True 
+False   95   100  
+ True  168   581  
+Accuracy: 0.716
+BCR: 0.607
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_826__:
+      False  True 
+False  120   146  
+ True  135   547  
+Accuracy: 0.704
+BCR: 0.63
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_830__:
+      False  True 
+False  126   102  
+ True  135   583  
+Accuracy: 0.749
+BCR: 0.667
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_836__:
+      False  True 
+False  101   110  
+ True  157   575  
+Accuracy: 0.717
+BCR: 0.615
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_842__:
+      False  True 
+False   98   126  
+ True  158   561  
+Accuracy: 0.699
+BCR: 0.6
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_846__:
+      False  True 
+False  124   107  
+ True  124   594  
+Accuracy: 0.757
+BCR: 0.674
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_851__:
+      False  True 
+False  144   111  
+ True  130   559  
+Accuracy: 0.745
+BCR: 0.68
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_857__:
+      False  True 
+False  115   110  
+ True  160   576  
+Accuracy: 0.719
+BCR: 0.629
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_860__:
+      False  True 
+False   82    85  
+ True  186   617  
+Accuracy: 0.721
+BCR: 0.592
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_863__:
+      False  True 
+False  116   142  
+ True  163   532  
+Accuracy: 0.68
+BCR: 0.603
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_867__:
+      False  True 
+False  151   105  
+ True   97   597  
+Accuracy: 0.787
+BCR: 0.73
+Confusion matrix for boolean_outcome_legacy_prediction_212_component_870__:
+      False  True 
+False  133    90  
+ True  168   562  
+Accuracy: 0.729
+BCR: 0.652
+Average accuracy: 0.759
+Average BCR: 0.656

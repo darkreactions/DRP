@@ -1,0 +1,32 @@
+Found 122 matching predictors and 1 matching responses
+2016-04-09 22:33:31.089114, training on 3142 reactions...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_30_a34f66bc-8b8a-4be3-9464-7d41c63ceae4.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.attributeSelection.CfsSubsetEval -s weka.attributeSelection.BestFirst -i /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_30_a34f66bc-8b8a-4be3-9464-7d41c63ceae4.arff -c 3
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 1180
+	Merit of best subset found:    0.122
+
+Attribute Subset Evaluator (supervised, Class (nominal): 3 boolean_outcome_legacy_legacy_):
+	CFS Subset Evaluator
+	Including locally predictive attributes
+
+Selected attributes: 4,8,64,71,95,103,122 : 7
+                     leak_legacy_legacy_
+                     G9_legacy_legacy_
+                     Inorg_amount_count_DRP_0.02
+                     Na_mols_DRP_0.02
+                     Ox_amount_molarity_DRP_0.02
+                     H_mols_DRP_0.02
+                     reaction_time_manual_0
+
+
+	...Trained. Finished at 2016-04-09 22:34:29.370996.

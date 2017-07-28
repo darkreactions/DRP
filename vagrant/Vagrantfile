@@ -1,0 +1,135 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+
+  config.vm.post_up_message = <<-POSTUP
+
+    Welcome to the DRP development VM environment; don't forget that not all
+    of the settings will have been done, and so some tests fail if
+    the following changes are not present:
+
+    In the settings.py file, set:
+
+    CHEMSPIDER_TOKEN
+    MAIN_SERVER
+    MAIN_SERVER_USER
+    MAIN_SERVER_PASS 
+    EMAIL_HOST
+    EMAIL_HOST_USER
+    EMAIL_HOST_PASS
+    EMAIL_IMAP_HOST
+    ADMINS 
+
+    Which have placeholders.
+    
+
+  POSTUP
+
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder "..", "/vagrant", rsync__args: ["--verbose", "--archive", "-z", "--copy-links"]
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  # config.vm.network "private_network", ip: "192.168.5.10"
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+    vb.gui = true
+    vb.name = "vagrant_DRP"
+  #
+  #   # Customize the amount of memory on the VM:
+    vb.memory = "2048"
+  end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
+  # such as FTP and Heroku are also available. See the documentation at
+  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
+  # config.push.define "atlas" do |push|
+  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+  # end
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "deb [trusted=yes] https://darkreactions.haverford.edu/software ./" | sudo tee -a /etc/apt/sources.list;
+    sudo apt-get update;
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password rootpass';
+    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password rootpass';
+    sudo debconf-set-selections <<< 'postfix postfix/mailname string vagrant.vm';
+    sudo debconf-set-selections <<< 'postfix postfix/main_mailer_type string "Internet site"';
+    # Base software
+    sudo apt-get install -y python3 python3-dev python3-pip mailutils mysql-server libmysqlclient-dev nginx uwsgi uwsgi-plugin-python3 python-rdkit git weka graphviz memcached python-memcache python3-scipy python3-pillow cmake libboost-all-dev python3-cffi graphviz-dev pkg-config pwgen dnsmasq;
+    sudo pip3 install --upgrade pip;
+    sudo pip3 install numpy pygraphviz mysqlclient sqlparse;
+    sudo pip3 install django==1.8;
+    sudo -H pip3 install chemspipy requests pep8 pep257 xxhash sqlparse;
+    # For descriptor calculation
+    sudo apt-get install -y python3-rdkit;
+    sudo ln -s /vagrant/vagrant/DRP_nginx /etc/nginx/sites-enabled/DRP.conf;
+    sudo ln -s /vagrant/vagrant/DRP_uwsgi.ini /etc/uwsgi/apps-enabled/DRP_uwsgi.ini;
+    sudo ln -s /vagrant/vagrant/uwsgi.service /etc/systemd/system/uwsgi.service;
+    sudo cp /vagrant/vagrant/settings.py /vagrant/DRP/settings.py;
+    echo "SECRET_KEY = '$(pwgen 13 1)'" | sudo tee -a /vagrant/DRP/settings.py;
+    sudo service uwsgi restart;
+    sudo service nginx restart;
+    echo "address=/loc/127.0.0.1" | sudo tee -a /etc/dnsmasq.conf;
+    sudo cp /vagrant/vagrant/my.cnf /home/vagrant/.my.cnf;
+    sudo chown vagrant:vagrant /home/vagrant/.my.cnf;
+    sudo mkdir /home/vagrant;
+    sudo touch /home/vagrant/uwsgi.log;
+    sudo chown -R vagrant:vagrant /home/vagrant;
+SHELL
+
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    mysql -e "CREATE DATABASE DRP CHARACTER SET utf8 COLLATE utf8_bin";
+    mysql -e "CREATE DATABASE DRP_test CHARACTER SET utf8 COLLATE utf8_bin";
+    /vagrant/manage.py migrate;
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo service nginx restart;
+    sudo systemctl daemon-reload;
+    sudo systemctl restart uwsgi;
+  SHELL
+end

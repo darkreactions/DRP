@@ -1,0 +1,17 @@
+Org_maximalprojectionsize_chemaxoncxcalc_15.6_Max
+Inorg_asa_hydrophobic_pH6_chemaxoncxcalc_15.6_gmean_count
+S_mols
+Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_molarity
+Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Max
+N_mols
+Inorg_amount_molarity
+Solv_amount_molarity
+C_mols
+Na_mols
+Ox_amount_molarity
+Ga_mols
+H_mols
+Org_asa-_pH14_chemaxoncxcalc_15.6_gmean_count
+Te_mols
+Org_minimalprojectionarea_chemaxoncxcalc_15.6_gmean_count
+Inorg_refractivity_chemaxoncxcalc_15.6_gmean_molarity

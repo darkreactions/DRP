@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block additional_head %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dashboard.css" />
+{% endblock %}
+
+{% block content %}
+<div class="infoContainer">
+ <div class="live">
+  <h2>Live Models</h2>
+  <div id="liveGraph">
+   <svg viewBox="0 0 450 500" width="500" height="450">
+    {% comment %}
+    <defs>
+     can define "point" and other objects here
+    </defs>
+    {% endcomment %}
+    <title>Live Models</title>
+    <g class="graph">
+     <g class="plot">
+      <rect class="background" height="314" width="445" x="0" y="0"></rect>
+      <g class="y-axis">
+       <g class="guides">
+        <path class="line" d="M0 307 h445"></path>
+        <text x="-5" y="311">0.0</text>
+        <title>0.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 272 h445"></path>
+        <text x="-5" y="276">10.0</text>
+        <title>10.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 237 h445"></path>
+        <text x="-5" y="241">20.0</text>
+        <title>20.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 202 h445"></path>
+        <text x="-5" y="206">30.0</text>
+        <title>30.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 167 h445"></path>
+        <text x="-5" y="171">40.0</text>
+        <title>40.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 132 h445"></path>
+        <text x="-5" y="136">50.0</text>
+        <title>50.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 97 h445"></path>
+        <text x="-5" y="101">60.0</text>
+        <title>60.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 62 h445"></path>
+        <text x="-5" y="66">70.0</text>
+        <title>70.0</title>
+       </g>
+       <g class="guides">
+        <path class="line" d="M0 27 h445"></path>
+        <text x="-5" y="31">80.0</text>
+        <title>80.0</title>
+       </g>
+      </g>
+      <g class="x-axis">
+       <g class="guides">
+        <path class="line" d="M8 0 v314"></path>
+        <text x="8" y="329">2005</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M51 0 v314"></path>
+        <text x="51" y="329">2006</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M94 0 v314"></path>
+        <text x="94" y="329">2007</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M137 0 v314"></path>
+        <text x="137" y="329">2008</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M180 0 v314"></path>
+        <text x="180" y="329">2009</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M223 0 v314"></path>
+        <text x="223" y="329">2010</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M266 0 v314"></path>
+        <text x="266" y="329">2011</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M309 0 v314"></path>
+        <text x="309" y="329">2012</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M352 0 v314"></path>
+        <text x="352" y="329">2013</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M395 0 v314"></path>
+        <text x="395" y="329">2014</text>
+       </g>
+       <g class="guides">
+        <path class="guide line" d="M438 0 v314"></path>
+        <text x="438" y="329">2006</text>
+       </g>
+      </g>
+     </g>
+     <g class="titles">
+      <text class="title" x="100" y="20">Live Models</text>
+     </g>
+     <g class="legends"></g>
+    </g>
+   </svg>
+  </div>
+ </div>
+
+ <div class="stats">
+  <h2>Experimental Statistics</h2>
+  <div class="statsWrapper">
+   <div id="liveStats"></div>
+   <div class="experimentsWrapper">
+    <div id="experimentsStats"></div>
+   </div>
+  </div>
+ </div>
+</div>
+
+{% comment %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/d3.v2.js" ></script>
+{% endcomment %}
+{% endblock %}

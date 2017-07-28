@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      {% block title %} Dark Reactions Project {% endblock %}
+    </title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainStylesheet.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mainMenu.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/projectMenu.css" />
+    {% block additional_css %}{% endblock %}
+  {% block additional_head %}{% endblock %}
+    {% block head_js %}{% endblock %}
+  </head>
+
+  <body>
+
+    <header>
+      <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo">
+      <h1 class="mainTitle">Dark Reactions Project</h1>
+
+      <div id="userInfo">
+	<a href="https://github.com/darkreactions/DRP" class="github">GitHub</a>
+        {% if user.is_authenticated %}
+          {% if testing %}
+            <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
+          {% endif %}
+          <span class="greeting">
+            Hello, {{ user.first_name }}
+            <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+          </span>
+          <a href="/logout.html" id="userLogOut">Log Out</a>
+
+        {% else %}
+          {% if testing %}
+            <!-- d68a82db-bd18-4a9f-a1a2-03b3bb259595 --> 
+          {% endif %}
+        <a id="userLogin" href="/login.html{% block login_next %}?next={{ request.path_info|urlencode }}{% endblock %}">Log In</a>
+        <a id="registrationPrompt" href="/register.html">Register</a>
+
+        {% endif %}
+
+        </div>
+      
+      <nav>
+       <div class="nav-wrapper">
+        <ol id="navigationMenu">
+  
+          <li>
+            <a href="/" class="navLink{% if template == "home"%} currentTitle{%endif%}" title="The basics of the Project.">
+              Home
+            </a>
+          </li>
+  
+          <li>
+            <a href="{% url "reactionlist_typed" ".html" %}?page=1"
+               id="dbase"
+               class="navLink{% if template == "database"%} currentTitle{%endif%}"
+               title="Enter the Dark Reaction Project.">
+               Project
+            </a>
+          </li>
+  
+          <li>
+            <a href="/about.html"
+               class="navLink{% if template == "about"%} currentTitle{%endif%}"
+               title="More info about the Project.">
+               About
+            </a>
+          </li>
+  
+            <li>
+              <a href="/contact.html"
+                 class="navLink{% if template == "contact"%} currentTitle{%endif%}"
+                 title="Send a bug report, comment, or complaint.">
+                 Contact
+              </a>
+          </li>
+        </ol>
+     </div>
+    </nav>
+    {% block additional_header %}{% endblock %}
+  {% if messages %}
+    {% if testing %}<!-- d96fc7a1-69cf-44ac-975d-a67f9e2c74d0  -->{% endif %}
+    <ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="message_text">{{ message }}</span></li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+  &copy; {% now "Y" %} Dark Reactions Project at Haverford College
+  </footer>
+  {% block additional_js %}{% endblock %}
+  <script>
+    dbase = document.getElementById('dbase');
+    dbase.setAttribute('href', '{% url "reactionlist" %}');
+  </script>
+</body>
+</html>

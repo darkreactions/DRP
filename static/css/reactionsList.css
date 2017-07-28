@@ -1,0 +1,124 @@
+/* stylesheet for reactions_list.html */
+
+h1 {
+ text-align: center;
+}
+
+div.downloads {
+ margin-bottom: 4em;
+}
+
+h1.downloads {
+ margin-bottom: 0;
+ font-size: 1.5em;
+}
+
+ul.downloads {
+ padding: 0;
+ width: 25em;
+ margin: auto;
+}
+
+.reaction form {
+ margin-bottom:0;
+}
+
+ul.downloads li {
+ list-style:none;
+ float: left;
+ margin: 0 1em;
+}
+
+ul.reactions {
+ list-style:none;
+}
+
+li.reaction {
+ color:black;
+ width: 80%;
+ height:auto;
+ padding:1em;
+ margin:1em auto;
+ border-radius:1em;
+ background-color: #ededed;
+}
+
+.reaction>table, .reaction>table>tbody {
+ display:block;
+ overflow:hidden;
+}
+
+.reaction>table>tbody>tr {
+ display:block;
+}
+
+.reaction>table>tbody>tr>td,.reaction>table>tbody>tr>th {
+ display:inline-block;
+}
+
+.reaction>table>tbody>tr>th::after {
+ content:":";
+}
+
+.flright {
+ float:right;
+ text-align:right;
+ width:50%;
+}
+
+td.right {
+ float:right;
+}
+
+td.delete:hover, td.invalidate:hover, a.edit:hover{
+ opacity:0.7;
+}
+
+.fleft {
+ float:left;
+ width:50%;
+}
+
+tr.quantities th, tr.quantities, td {
+ padding-left:0.5em;
+ padding-right:0.5em;
+}
+
+tr.notes {
+    clear:both;
+}
+
+a.edit {
+ display:inline-block;
+}
+
+ol.pagination {
+ list-style:none;
+ padding: 0;
+ width:18em;
+ margin:1em auto 0 auto;
+}
+
+ol.pagination li {
+ float:left;
+ margin:0 1em;
+ color: #20344b;
+}
+
+.input_wrapper form {
+ display:inline-block;
+ box-sizing:content-box;
+ white-space:normal;
+ text-rendering:auto;
+}
+
+.input_wrapper {
+ text-align:center;
+ margin-left:auto;
+ margin-right:auto;
+ width:30%;
+}
+
+#pagination {
+    text-align:center;
+}

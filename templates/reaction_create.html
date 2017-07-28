@@ -1,0 +1,10 @@
+{% extends 'reactions.html' %}
+
+{% block additional_head %}
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/reactionForm.css" />
+{% endblock %}
+
+{% block content %}
+{% if testing %}<!-- 6813e404-f1a3-48ed-ae97-600a41cf63cb --> {% endif %}
+    {% include "reaction_form.html" %}
+{% endblock %}

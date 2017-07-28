@@ -1,0 +1,28 @@
+Splitting using MutualInfoSplitter
+Split into train (104), test (60)
+Split into train (103), test (61)
+Starting building at 2016-04-02 22:50:54.257936
+2016-04-02 22:50:54.259523 statsModel 1509, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/532_1509_weka_J48.model, training...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1509_edc363bc-1706-471f-b5ce-2ac199ecfcaa.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 3.05882352941; 1.48571428571 0.0]" -W weka.classifiers.trees.J48 -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1509_edc363bc-1706-471f-b5ce-2ac199ecfcaa.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/532_1509_weka_J48.model -p 0 -c 1 -- 
+	...Trained. Finished at 2016-04-02 22:50:55.054627. Saving statsModel... saved
+Predicting test set...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1509_add9ce40-fcc5-4881-b2ba-739a1b8d083d.arff
+Writing results to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1509_76e60b91-6596-4add-9b10-36aa393b3d32.out
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.trees.J48 -T /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1509_add9ce40-fcc5-4881-b2ba-739a1b8d083d.arff -l /home/geoffrey/repos/DRP_main/DRP_repo/models/532_1509_weka_J48.model -p 0 -c 1 1> /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1509_76e60b91-6596-4add-9b10-36aa393b3d32.out
+	...finished predicting. Storing predictions... predictions stored.
+Confusion matrix for boolean_crystallisation_outcome_prediction_532_component_1509:
+      False  True 
+False   4     6   
+ True   0     50  
+Accuracy: 0.9
+BCR: 0.946
+2016-04-02 22:50:55.880660. 1 of 2 models built.
+Elapsed model building time: 0:00:01.621958. Expected completion time: 2016-04-02 22:50:57.502618
+2016-04-02 22:50:55.880769 statsModel 1510, saving to /home/geoffrey/repos/DRP_main/DRP_repo/models/532_1510_weka_J48.model, training...
+Writing arff to /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1510_d282d086-96d4-4253-9ae4-d55f1117ebef.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 2.94285714286; 1.51470588235 0.0]" -W weka.classifiers.trees.J48 -t /home/geoffrey/repos/DRP_main/DRP_repo/tmp/1510_d282d086-96d4-4253-9ae4-d55f1117ebef.arff -d /home/geoffrey/repos/DRP_main/DRP_repo/models/532_1510_weka_J48.model -p 0 -c 1 -- 
+	...Trained. Finished at 2016-04-02 22:50:56.624423. Saving statsModel...

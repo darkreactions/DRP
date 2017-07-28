@@ -1,0 +1,29 @@
+ol {
+ list-style: none;
+ width: 23em;
+ padding: 1em;
+ margin: auto;
+}
+
+li {
+ margin-bottom: 1em;
+}
+
+label {
+ margin-right: 1em;
+}
+
+li:nth-child(2) label {
+ margin-right: 1.3em;
+}
+
+input[type="submit"] {
+ margin-left: 45%;
+ color: white;
+ background-color: #8dabce;
+ border: 1px solid #658ebd;
+ border-radius: 1em;
+ width: 7em;
+ height: 2em;
+}
+

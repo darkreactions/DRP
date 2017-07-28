@@ -1,0 +1,33 @@
+{% extends 'compound_base.html' %}
+
+{% block content %}
+<h1 class="bannerText">{{ page_heading }}</h1>
+<form action="{% url 'newCompound' %}" method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <ol>
+    <li>{{ form.labGroup.errors }}{{form.labGroups.label_tag}}{{form.labGroups}}{{form.labGroups.help_text}}</li>
+    <li>{{ form.abbrev.errors }}{{ form.abbrev.label_tag }}{{ form.abbrev }}{{ form.abbrev.help_text }}</li>
+    <li>{{ form.name.errors}}{{ form.name.label_tag }}{{ form.name }}{{ form.name.help_text }}</li>
+    <li>{{ form.CAS_ID.errors }}{{ form.CAS_ID.label_tag }}{{ form.CAS_ID }}{{ form.CAS_ID.help_text }}</li>
+    <li>
+        {{ form.CSID.errors }}
+        {% if form.CSID.field.choices %}
+          <!-- 1bf53b3a-ddf0-407b-b565-b732e4fa5ddb -->
+          <ul>
+          {% for radio in form.CSID %}
+            <li><label><img src="http://www.chemspider.com/ImagesHandler.ashx?id={{ radio.choice_value }}" alt="The image for the compound with ChemSpider ID {{ radio.choice_value }}" /> {{ radio.tag }}</label></li>
+          {% endfor %}
+          </ul>
+        {% else %}
+          {{ form.CSID.label_tag }}{{ form.CSID }}{{ form.CSID.help_text }}
+          <!-- 575b31b0-60d1-41d3-86a1-83a8a8b3a7a6  -->
+        {% endif %}
+    </li>
+    <li>{{ form.chemicalClasses.errors }}{{ form.chemicalClasses.label_tag }}{{ form.chemicalClasses }}{{ form.chemicalClasses.help_text}}</li>
+  </ol>
+  <input type="submit" value="Save" />
+  <!-- d41e5f12-88fd-4494-90fd-96aa84e5beea -->
+</form>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block additional_head %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/about.css" />
+{% endblock %}
+
+{% block content %}
+
+
+<section>
+  <h1 class="cite bannerText">How to Cite Us</h1>
+  <p class="citation"><a href="http://www.nature.com/nature/journal/v533/n7601/full/nature17439.html">
+      Raccuglia, P. <span class="latin" style="font-style:italic">et. al.</span> Machine-learning-assisted materials discovery using failed experiments.
+      <span class="journaltitle" style="font-style:italic">Nature</span> <span class="volume" style="font-weight:bold">533</span>, 73&ndash;76 (2016)
+  </a></p>
+  
+</section>
+<section>
+  <h1 class="bannerText">
+    Contributors
+  </h1>
+  <figure class="contributor">
+    <img class="soloPicture" src="{{STATIC_URL}}images/Sorelle.jpg" alt="Sorelle Friedler"/>
+    <figcaption class="soloInfo">
+      <a href="http://sorelle.friedler.net">Sorelle Friedler</a>
+      <p>Assistant Professor of Computer Science</p>
+      <p>Haverford College</p>
+    </figcaption>
+  </figure>
+  
+  <figure class="contributor">
+    <img class="soloPicture" src="{{STATIC_URL}}images/Alex.jpg" alt="Alex Norquist"/>
+    <figcaption class="soloInfo">
+      <a href="http://www.haverford.edu/chem/Norquist/">Alex Norquist</a>
+      <p>Associate Professor of Chemistry</p>
+      <p>Haverford College</p>
+    </figcaption>
+  </figure>
+  
+  <figure class="contributor">
+    <img class="soloPicture" src="{{STATIC_URL}}images/Joshua.jpg" alt="Joshua Schrier"/>
+    <figcaption class="soloInfo">
+      <a href="http://www.haverford.edu/chem/schrier/">Joshua Schrier</a>
+      <p>Associate Professor of Chemistry</p>
+      <p>Haverford College</p>
+    </figcaption>
+  </figure>
+
+  <h1 class="groupName">Friedler Lab</h1>
+  
+  <div class="row2">
+  <figure class="contributorGroup">
+    <img src="{{STATIC_URL}}images/FriedlerLab2.jpg" class="groupPicture" alt="left to Right: Casey Falk, Geoffrey Martin-Noble, Philip Addler, Skyler Ellenburg" />
+    <figcaption class="groupInfo info">
+      <p>
+      December 2015 -
+      (Left to Right)
+      <a href="http://caseyfalk.com">Casey Falk</a>,
+      Geoffrey Martin-Noble,
+      <a href="http://dler.me.uk">Philip Adler</a>,
+      Skyler Ellenburg
+      </p>
+    </figcaption> 
+  </figure>
+  
+  <figure class="contributorGroup richard">
+    <img src="{{STATIC_URL}}images/Richard.png" class="groupPicture" alt="Richard"/>
+    <figcaption class="groupInfo info">
+      <p>
+      January 2016 -
+      <a href="http://richardlp.com">Richard Phillips</a>
+      </p>
+    </figcaption>
+  </figure>
+  </div>
+  
+  <figure class="contributorGroup">
+    <img src="{{STATIC_URL}}images/FriedlerLab.jpg" class="groupPicture" alt="Left to Right: Paul Raccuglia, Nora Tien, Casey Falk, Daniel Washburn" />
+    <figcaption class="groupInfo info">
+      <p>
+      May 2015 -
+      (Left to Right)
+      Paul Raccuglia,
+      Nora Tien,
+      <a href="http://caseyfalk.com">Casey Falk</a>,
+      Daniel Washburn
+      </p>
+    </figcaption>
+  </figure>
+  
+  <section id="contributorContainer">
+  
+    <a href="http://www.nsf.gov/awardsearch/showAward?AWD_ID=1307801"
+      title="See the full NSF award.">
+      <img class="contributorLogo" src="{{STATIC_URL}}images/NSF.gif" alt="The NSF logo"/>
+    </a>
+  
+    <a href="http://www.haverford.edu/">
+      <img class="contributorLogo"
+          id="haverfordLogo" src="{{STATIC_URL}}images/haverford_logo.png" alt="The Haverford College Logo"/>
+    </a>
+  
+  </section>
+  
+  <section>
+    <h1 class="bannerText">Acknowledgements</h1> 
+    <p>This site uses <a href="https://design.google.com/icons">Material Icons by Google</a></p>
+  </section>
+</section>
+
+{% endblock %}

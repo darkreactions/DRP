@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cd $(git rev-parse --show-toplevel)
+
+# based on http://stackoverflow.com/questions/16840184/how-can-i-automatically-be-warned-if-a-specific-file-changes
+
+source .git/hooks/important_files
+
+
+for (( i=0; i<${#IMPORTANT_FILES[@]}; i=i+2 ))
+do
+    CHANGED=`git diff HEAD@{1} --name-only -- ${IMPORTANT_FILES[i]}`
+    NUM_CHANGED=`echo $CHANGED | wc -w`
+    if [ $NUM_CHANGED -gt 0 ];
+    then
+	echo ${IMPORTANT_FILES[i+1]}
+    fi
+done

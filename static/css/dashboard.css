@@ -1,0 +1,151 @@
+.infoContainer {
+ 
+}
+
+.infoContainer h2 {
+ text-align:center;
+}
+
+.infoContainer .live {
+ height:25em;
+ margin-top:7em;
+}
+
+.infoContainer #liveGraph {
+ height:25em;
+ width:38em;
+ margin:auto;
+ background-color:rgb(207,223,191);
+}
+
+.infoContainer .stats {
+ height:25em;
+ 
+}
+
+.infoContainer .stats .statsWrapper {
+ height:20em;
+ width:30em;
+ margin:auto;
+ background-color:rgb(207,223,231);
+}
+
+.infoContainer #liveStats {
+ height:16em;
+ width:14em;
+ background-color:rgb(255,255,255);
+ float:left;
+ margin:3em 0 2em 1em;
+}
+
+.infoContainer .experimentsWrapper {
+ height:18em;
+ width:14em;
+ float:left;
+ margin: 1em 0 0 0;
+}
+
+.infoContainer #experimentsStats {
+ height:16em;
+ background-color:rgb(235,235,235);
+ margin:2em 0 0 0;
+}
+
+
+/******************** SVG - GRAPH 1 **********************/
+
+svg .graph {
+
+}
+
+svg .plot {
+
+}
+
+svg .plot rect.background {
+ fill:white;
+}
+
+svg .plot .line {
+ stroke:rgb(0,0,0);
+}
+
+svg .plot .guide.line {
+ opacity:0;
+}
+
+svg .legends {
+
+}
+
+
+/****************** END OF SVG - GRAPH 1 *****************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************  OLD CODE BELOW  ***************/
+
+.modelStatsName{
+ font-style:oblique;
+}
+
+.modelStatsEntry {
+ margin-bottom:20px;
+}
+
+.modelStatsEntry > span {
+ display:block;
+}
+
+.nvtooltip.xy-tooltip { /* NVD3's Tooltips */
+ padding:0em 1em;
+ position:fixed;
+ opacity:0.9 !important;
+}
+
+.modelTitle {
+ font-size:1.2em;
+ padding:1em;
+ width:100%;
+ text-align:center;
+}
+
+.modelDescription {
+  font-size:0.8em;
+  padding-bottom:1em;
+}
+
+.modelConfusionTable {
+ width:100%;
+ text-align:center;
+}
+
+.modelConfusionTable table {
+  width:100%;
+  text-align:center;
+}
+
+.modelConfusionTable tr:nth-child(1), .modelConfusionTable td:nth-child(1),
+.modelConfusionTable tr:nth-child(3) {
+ font-weight:bold;
+}
+
+.confusionTableLabel {
+ font-size:0.8em;
+}
+
+/***************  END OLD CODE  ******************/
+

@@ -1,0 +1,36 @@
+Found 1373 matching predictors and 1 matching responses
+2016-04-09 22:28:37.991781, training on 3142 reactions...
+Writing arff to /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_29_8a31efdf-a1f2-425c-aa27-00207a87933d.arff
+Running in Shell:
+export CLASSPATH=$CLASSPATH:/usr/share/java/weka.jar; java weka.attributeSelection.CfsSubsetEval -s weka.attributeSelection.BestFirst -i /home/gmartinn/DRP_main/DRP_repo/tmp/featureSelection_29_8a31efdf-a1f2-425c-aa27-00207a87933d.arff -c 6
+
+
+=== Attribute Selection on all input data ===
+
+Search Method:
+	Best first.
+	Start set: no attributes
+	Search direction: forward
+	Stale search after 5 node expansions
+	Total number of subsets evaluated: 20491
+	Merit of best subset found:    0.14 
+
+Attribute Subset Evaluator (supervised, Class (nominal): 6 boolean_outcome_legacy_legacy_):
+	CFS Subset Evaluator
+	Including locally predictive attributes
+
+Selected attributes: 7,50,65,83,271,282,682,951,1030,1073,1373 : 11
+                     leak_legacy_legacy_
+                     AtomicRadiusMeanWeighted_legacy_legacy_
+                     numberInorg_legacy_legacy_
+                     time_legacy_legacy_
+                     Inorg_asa_hydrophobic_pH11_chemaxoncxcalc_15.6_gmean_molarity_DRP_DRP
+                     Org_asa_hydrophobic_pH10_chemaxoncxcalc_15.6_Max_DRP_DRP
+                     Na_mols_DRP_0.02
+                     Ox_amount_molarity_DRP_0.02
+                     H_mols_DRP_0.02
+                     Org_asa-_pH14_chemaxoncxcalc_15.6_gmean_count_DRP_DRP
+                     reaction_time_manual_0
+
+
+	...Trained. Finished at 2016-04-09 22:33:20.801527.

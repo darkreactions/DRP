@@ -1,0 +1,24 @@
+.vagrant
+DRP/settings.py
+DRP/data_config.py
+DRP/tmp/
+DRP/research/casey/results/CSVs/*
+
+tmp/*
+models/*
+metrics/*
+
+*.pyc
+*.sql
+*.sw*
+*.log
+*.cxl
+*~
+
+#For OS X users
+.DS_Store
+
+#For Emacs
+*~
+\#*\#
+.\#*

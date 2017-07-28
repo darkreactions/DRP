@@ -1,0 +1,146 @@
+/* stylesheet for reaction_form.html */
+
+.labPage img {
+ height:2in;
+}
+
+h1 {
+ text-align:center;
+}
+
+input[type="checkbox"] {
+ vertical-align:text-top;
+}
+
+table.reactionformtable, table.reactionformtable>tbody{
+ display:block;
+}
+
+.reactionformtable tr {
+ display:block;
+ margin:0;
+}
+
+.reactionformtable th {
+ vertical-align:top;
+}
+
+div.reactionlist {
+ text-align:center;
+}
+
+.reactionformtable tr>td, .reactionformtable tr>th {
+ display:inline-block;
+ width:45%;
+ margin:0;
+}
+
+.flright {
+ float:right;
+ width:50%;
+}
+.flleft {
+ float:left;
+ width:50%;
+}
+
+fieldset {
+ margin:3em 0;
+ border:1px solid #658ebd;
+}
+
+legend {
+ font-weight:700;
+ color:#20344b;
+}
+
+.reaction-form input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .reaction-form select, .reaction-form textarea{
+ width:100%;
+ box-sizing:border-box;
+}
+
+.reaction-form textarea {
+ height:100px;
+}
+
+div.buttons {
+ display:block;
+ clear:both;
+ text-align:center;
+}
+
+input[type="submit"], input[type="reset"] {
+ padding:0;
+ padding-left:1em;
+ padding-right:1em;
+ color:white;
+ background-color: #8dabce;
+ border:1px solid #658ebd;
+ border-radius:1em;
+ height:2em;
+}
+
+form>fieldset ol {
+ list-style:none;
+ padding:0;
+}
+
+.descvallist>li, .reactant_list>li {
+ vertical-align:top;
+ display:inline-block;
+}
+
+.reactant_list>li {
+ width:30%;
+}
+
+.reactant_list>li:nth-child(4) {
+ width:5%;
+}
+.reactant_list input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .reactant_list select, .reactant_list textarea{
+ width:50%;
+ box-sizing:border-box;
+}
+
+.descvallistr>li {
+ width:40%;
+}
+
+.descvallistr>li:nth-child(3) {
+ width:15%;
+}
+
+.descvalform {
+ display:block;
+ width:45%;
+ margin-left:auto;
+ margin-right:auto;
+}
+
+.descvalform input:not([type="submit"]):not([type="checkbox"]):not([type="reset"]), .descvalform select, .descvalform textarea{
+ width:50%;
+ box-sizing:border-box;
+}
+
+ul.errorlist {
+ background-color:#ededed;
+ list-style:none;
+ border-radius:1em;
+ border:5px solid rgb(139, 44, 39);
+ padding-left:1em;
+ padding-right:1em;
+}
+
+ul.errorlist>li {
+ padding-top:0.5em;
+ padding-bottom:0.5em;
+}
+
+ul.errorlist>li:not(:first-child) {
+ border-top:1px solid rgb(139, 44, 39);
+}
+
+.labPage {
+ text-align:center;
+ margin-bottom:1em;
+}

@@ -1,0 +1,129 @@
+
+span.greeting {
+ padding:.5em 0 .5em .5em;;
+ background-color:#b7cae0;
+}
+
+#userInfo span.greeting a.account {
+ margin:1em 0;
+}
+
+img#mainLogo {
+ width:3em;
+ float:left;
+ margin: 0 1em;
+}
+
+h1.mainTitle {
+ margin:.1em 0 0 0;
+ float:left;
+ color:#d1d1d1;
+}
+
+#userInfo {
+ height:1em;
+ padding:1em;
+ float:right;
+}
+
+#userInfo a:link {
+ background-color:#b7cae0;
+ text-decoration:none;
+ color:black;
+ padding:.5em;
+ margin:1em;
+} #userInfo a:visited {
+ color:black;
+} #userInfo a:hover {
+ color:#20344b;
+} #userInfo a:active {
+}
+
+div.nav-wrapper {
+ background-color:#658ebd;
+ width:100%;
+}
+
+
+#navigationMenu {
+ display:block;
+ width:50%;
+ padding:10px 0px;
+ text-align:center;
+ background-color:#658ebd;
+ margin:4em auto 0em auto;
+}
+
+#navigationMenu li {
+ margin:2em;
+}
+
+a.navLink:link {
+ font-size:1.25em;
+ color:black;
+ text-decoration:none;
+ margin:0px;
+} a.navLink:visited {
+ color:black;
+} a.navLink:hover {
+ color:#20344b;
+} a.navLink:active {
+}
+
+nav ol {
+ list-style:none;
+ padding:0;
+}
+
+nav ol li {
+ display:inline;
+}
+
+img#userUpdate {
+ width: 1em;
+}
+
+main {
+ margin:1em;
+}
+
+main a:link {
+ text-decoration: none;
+ color: #658EBD;
+}
+main a:visited {
+ text-decoration: none;
+ color: #658EBD;
+}
+main a:hover {
+ text-decoration: none;
+ color: #20344B; 
+ opacity: .7;
+}
+main a:active {
+}
+
+.currentTitle { font-weight:bold; }
+
+footer {
+ font-size: .7em;
+ color: #658ebd; /* the tan from top menu but slightly darker */
+ margin: 0 0 .5em 1em;
+ clear:both;
+ text-align:center;
+}
+ul.messages {
+ margin-top:0;
+ text-align:center;
+ padding-left:0;
+}
+
+li.success {
+ background-color:#689868;
+ list-style-image:url('/static/icons/tick.png');
+}
+
+span.message_text {
+ position:relative;
+ top:-4px;
+}

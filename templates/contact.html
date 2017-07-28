@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block additional_head %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/contact.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/infoForm.css" />
+{% endblock %}
+
+{% block content %}
+<h1 class='bannerText'>
+Contact Us
+</h1>
+  {% if success %}
+  <p>Thankyou for contributing to the dark reactions project. We'll get back to you soon.</p>
+  {% else %}
+  <form method="post" action="/contact.html" class="inlineForm infoForm">
+    {% csrf_token %}
+      <ol>
+      {{ form.as_ul }} 
+      </ol>
+    <input class="submit" type="submit" value="Send" />
+  </form>
+  {% endif %}
+  {% if testing %}
+    <!-- 3a9f74ee-5c78-4ec0-8893-ce0476808131 -->
+  {% endif %}
+{% endblock %}
