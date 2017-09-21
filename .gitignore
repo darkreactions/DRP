@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 .vagrant
+=======
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 DRP/settings.py
 DRP/data_config.py
 DRP/tmp/

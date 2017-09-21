@@ -1,0 +1,1 @@
+-bash: ./manage.py: No such file or directory

@@ -22,6 +22,10 @@
   <table>
     <thead>
       <tr>
+<<<<<<< HEAD
+=======
+	<th></th>
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
         <th>Abbreviation</th>
         <th>Name</th>
         <th>ChemSpider ID</th>
@@ -30,10 +34,22 @@
     </thead>
   {% for cg_entry in cg_entries %}
     <tr>
+<<<<<<< HEAD
       <td>
         <a href="{% url 'editCompound' pk=cg_entry.compound.pk %}">
           {{ cg_entry.abbrev }}
         </a>
+=======
+      <td> 
+	<a class="edit" href="{% url 'editCompound' pk=cg_entry.compound.pk %}">
+	  <img src="/static/icons/edit.png" alt="edit this compound" title="edit this compound" height="25" width="25"/>
+        </a>
+      </td>
+      <td>
+        <a href="{% url 'displayCompound' pk=cg_entry.compound.pk %}">
+          {{ cg_entry.abbrev }}
+	</a>
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
       </td>
       <td>{{ cg_entry.compound.name }}</td>
       <td>{{ cg_entry.compound.CSID }}</td>

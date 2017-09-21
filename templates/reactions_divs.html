@@ -7,7 +7,12 @@
         <tbody>
             <tr>
                 <th>Reference</th>
+<<<<<<< HEAD
                 <td>{{ reaction.reference }}</td>
+=======
+                <td><a href="{% url 'reactionInfo' rxn_id=reaction.id %}">
+                  {{ reaction.reference }}</a></td>
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
                 {% if user.is_authenticated %}
                     {% if reaction.labGroup in user.labgroup_set.all %}
     	                <td><a class="edit" href="{% url 'editReaction' reaction.pk %}"><img src="/static/icons/edit.png" alt="edit this reaction" height="25" width="25" title="edit this reaction"/></a></td>

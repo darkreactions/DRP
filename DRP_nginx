@@ -39,9 +39,15 @@ server {
                 }
         }
 
+<<<<<<< HEAD
 	location /sec_media/ {
 		internal;
                 alias /home/drp/web/darkreactions.haverford.edu/app/DRP/sec_media/;
+=======
+	location /sec_static/ {
+		internal;
+                alias /home/drp/web/darkreactions.haverford.edu/app/DRP/sec_static/;
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 	}
 
         location / {

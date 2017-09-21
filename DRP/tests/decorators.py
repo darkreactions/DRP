@@ -157,7 +157,11 @@ def createsCompoundQuantity(rxnRef, compRef, CompRoleAbbrev, mmols):
 #        return c
 #    return _createsRxnDescriptor
 
+<<<<<<< HEAD
 def createsPerformedReaction(labTitle, username, reference, valid=True, image=None):
+=======
+def createsPerformedReaction(labTitle, username, reference, valid=True, image=None, public=False):
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
     """A class decorator that creates a very minimal reaction with no compounds or reactants."""
     def _createsPerformedReaction(c):
         _oldSetup = c.setUp
@@ -167,7 +171,11 @@ def createsPerformedReaction(labTitle, username, reference, valid=True, image=No
             labGroup = LabGroup.objects.get(title=labTitle)
             user = User.objects.get(username=username)
             reaction = PerformedReaction.objects.create(
+<<<<<<< HEAD
                 labGroup=labGroup, user=user, reference=reference, valid=valid)
+=======
+                labGroup=labGroup, user=user, reference=reference, valid=valid, public=public)
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
             if image is not None:
                 with open(image, 'rb') as f:
                     reaction.labBookPage.save('example.jpg', dFile(f))

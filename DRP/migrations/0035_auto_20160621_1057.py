@@ -5,6 +5,17 @@ from django.db import models, migrations
 
 
 def fix_sql_mess(apps, schema_editor):
+<<<<<<< HEAD
+=======
+    Compound = apps.get_model("DRP", "Compound") 
+    constraints = schema_editor._constraint_names(Compound, ["labGroup_id", "CSID",], unique=True)
+    if len(constraints) > 0:
+        schema_editor.execute(schema_editor._delete_constraint_sql(
+                schema_editor.sql_delete_index,
+                Compound,
+                constraints[0]
+            ))
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
     Compound = apps.get_model("DRP", "Compound")
     constraints = schema_editor._constraint_names(
         Compound, ["labGroup_id", "CSID", ], unique=True)

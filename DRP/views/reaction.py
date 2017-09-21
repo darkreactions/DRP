@@ -23,7 +23,11 @@ from django.contrib import messages
 @login_required
 @hasSignedLicense
 @userHasLabGroup
+<<<<<<< HEAD
 @reactionExists
+=======
+@reactionExists(True)
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 def labBookImage(request, labgroup_id, reference=None):
     """view that does security checking before prompting the server to show an image."""
     response = HttpResponse()
@@ -112,7 +116,11 @@ def createReaction(request):
 @login_required
 @hasSignedLicense
 @userHasLabGroup
+<<<<<<< HEAD
 @reactionExists
+=======
+@reactionExists(False)
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 def addCompoundDetails(request, rxn_id):
     """A view for adding compound details to a reaction."""
     status = 200
@@ -143,7 +151,11 @@ def addCompoundDetails(request, rxn_id):
 @login_required
 @hasSignedLicense
 @userHasLabGroup
+<<<<<<< HEAD
 @reactionExists
+=======
+@reactionExists(False)
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader, createNext):
     """A generic view function to create descriptor values for reactions."""
     descVals = descValClass.objects.filter(reaction__id=rxn_id).filter(
@@ -188,7 +200,11 @@ def createGenDescVal(request, rxn_id, descValClass, descValFormClass, infoHeader
 @login_required
 @hasSignedLicense
 @userHasLabGroup
+<<<<<<< HEAD
 @reactionExists
+=======
+@reactionExists(False)
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 def editReaction(request, rxn_id):
     """A view designed to edit performed reaction instances."""
     status = 200
@@ -257,3 +273,17 @@ def invalidateReaction(request, *args, **kwargs):
         return redirect('reactionlist')
     else:
         return HttpResponse(status=422)
+<<<<<<< HEAD
+=======
+
+
+@login_required
+@hasSignedLicense
+@userHasLabGroup
+@reactionExists(True)
+def displayReaction(request, rxn_id):
+    """Display reaction details without ability to edit."""
+    reaction = PerformedReaction.objects.get(id=rxn_id)
+    compoundQuantities = CompoundQuantity.objects.filter(reaction=reaction)
+    return render(request, 'reaction_display.html', {'reaction': reaction, 'compoundQuantities': compoundQuantities})
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e

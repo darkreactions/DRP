@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+<<<<<<< HEAD
+=======
+
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 from django.db import models, migrations
 import uuid
 import time

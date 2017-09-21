@@ -24,5 +24,9 @@ from .chemicalClass import ChemicalClass
 from .confirmationCode import ConfirmationCode
 from .compoundRole import CompoundRole
 from .modelContainer import ModelContainer
+<<<<<<< HEAD
 from .metricContainer import MetricContainer
+=======
+# from .metricContainer import MetricContainer
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 from .featureSelectionContainer import FeatureSelectionContainer

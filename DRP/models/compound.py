@@ -66,7 +66,11 @@ class CompoundQuerySet(CsvQuerySet, ArffQuerySet):
     """A specialised queryset for outputting Compounds in specific formats."""
 
     def __init__(self, **kwargs):
+<<<<<<< HEAD
         """Initialise teh queryset."""
+=======
+        """Initialise the queryset."""
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
         kwargs.pop('model', None)
         super(CompoundQuerySet, self).__init__(Compound, **kwargs)
 

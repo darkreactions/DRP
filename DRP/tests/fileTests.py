@@ -16,10 +16,19 @@ settings_file = os.path.join(settings.APP_DIR, 'settings_example.py')
 
 # Unix patters to exclude
 excludes = [
+<<<<<<< HEAD
+=======
+    'DRP/views/*',
+    'rdkit/*',
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
     'DRP/settings.py',
     'manage.py',
     'static/*',
     'DRP/research/*',
+<<<<<<< HEAD
+=======
+    'DRP/models/user.py',
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
     'doc-build/*',
     'DRP/recommendation/*',
     'DRP/vis/*',
@@ -27,8 +36,12 @@ excludes = [
     'DRP/wsgi.py',
     'DRP/models/metricContainer.py',
     'DRP/migrations/*',
+<<<<<<< HEAD
     'DRP/tests/templateTest.py',
     'vagrant/*'
+=======
+    'DRP/tests/templateTest.py'
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 ]
 
 

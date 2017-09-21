@@ -75,19 +75,31 @@ Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.aboutPage.AboutPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.accountPage.AccountPageNoGroups)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.accountPage.AccountPageNoGroups)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.accountPage.AccountPageNoGroups)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.accountPage.AccountPageGroups)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.accountPage.AccountPageGroups)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.accountPage.AccountPageGroups)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.confirmationPage.ConfirmationPage)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.confirmationPage.ConfirmationPage)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.confirmationPage.ConfirmationPage)
@@ -99,6 +111,7 @@ Ensure that response code correctly 403 when missing URL parameter. ... ok
 test_ValidHtml (DRP.tests.httpTests.confirmationPage.ConfirmationPage2)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.confirmationPage.PostConfirmationPage)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.confirmationPage.PostConfirmationPage)
 Check that the http response code is the expected value. ... FAIL
@@ -112,11 +125,27 @@ test_ValidHtml (DRP.tests.httpTests.confirmationPage.PostConfirmationPage2)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.contactPage.ContactPage)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.confirmationPage.PostConfirmationPage)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.confirmationPage.PostConfirmationPage)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.confirmationPage.PostConfirmationPage2)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.confirmationPage.PostConfirmationPage2)
+Look for POST confirmation response. ... ok
+test_ValidHtml (DRP.tests.httpTests.confirmationPage.PostConfirmationPage2)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.contactPage.ContactPage)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.contactPage.ContactPage)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.contactPage.ContactPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.contactPage.PostContactPage)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... skipped 'Email Tests being skipped...'
 test_Status (DRP.tests.httpTests.contactPage.PostContactPage)
 Check that the http response code is the expected value. ... skipped 'Email Tests being skipped...'
@@ -136,10 +165,32 @@ test_ValidHtml (DRP.tests.httpTests.contactPage.PostContactPageBad3)
 Check HTML validity. ... skipped 'Email Tests being skipped...'
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.LicenseRedirect)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.contactPage.PostContactPage)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.contactPage.PostContactPage)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.contactPage.PostContactPageBad2)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.contactPage.PostContactPageBad2)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.contactPage.PostContactPageBad2)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.contactPage.PostContactPageBad3)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.contactPage.PostContactPageBad3)
+Ensure that the response to a forgotten csrf token is a 403 error. ... ok
+test_ValidHtml (DRP.tests.httpTests.contactPage.PostContactPageBad3)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.LicenseRedirect)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.compoundPages.LicenseRedirect)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.compoundPages.LicenseRedirect)
 Check HTML validity. ... ok
+<<<<<<< HEAD
 test_redirect (DRP.tests.httpTests.compoundPages.LicenseRedirect) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest)
 Check that the expected template is loaded. ... FAIL
@@ -168,24 +219,71 @@ test_ValidHtml (DRP.tests.httpTests.compoundPages.CreateCompoundGetTest)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.NoCompounds)
 Check that the expected template is loaded. ... FAIL
+=======
+test_redirect (DRP.tests.httpTests.compoundPages.LicenseRedirect) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.Lab403Test)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.compoundPages.Lab403Test)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.Lab403Test)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.CreateCompoundGetTest)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.compoundPages.CreateCompoundGetTest)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.CreateCompoundGetTest)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest)
+Check HTML validity. ... ok
+test_redirect (DRP.tests.httpTests.compoundPages.CreateCompoundRedirTest) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.CreateCompoundRadioTest)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.compoundPages.CreateCompoundRadioTest)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.CreateCompoundRadioTest)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.getCompoundView)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.compoundPages.getCompoundView)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.getCompoundView)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.NoCompounds)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.compoundPages.NoCompounds)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.compoundPages.NoCompounds)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.ManyGroupsRedirect)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.compoundPages.ManyGroupsRedirect)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.compoundPages.ManyGroupsRedirect)
 Check HTML validity. ... ok
+<<<<<<< HEAD
 test_redirect (DRP.tests.httpTests.compoundPages.ManyGroupsRedirect) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.ManyLabGroupsDisplays)
 Check that the expected template is loaded. ... FAIL
+=======
+test_redirect (DRP.tests.httpTests.compoundPages.ManyGroupsRedirect) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.ManyLabGroupsDisplays)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.compoundPages.ManyLabGroupsDisplays)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.compoundPages.ManyLabGroupsDisplays)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.LabGroupSelectionRedirect)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.compoundPages.LabGroupSelectionRedirect)
 Check that the http response code is the expected value. ... FAIL
@@ -194,6 +292,16 @@ Check HTML validity. ... ok
 test_redirect (DRP.tests.httpTests.compoundPages.LabGroupSelectionRedirect) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.GetCompoundForEditing)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.compoundPages.LabGroupSelectionRedirect)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.LabGroupSelectionRedirect)
+Check HTML validity. ... ok
+test_redirect (DRP.tests.httpTests.compoundPages.LabGroupSelectionRedirect) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.compoundPages.GetCompoundForEditing)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.compoundPages.GetCompoundForEditing)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.compoundPages.GetCompoundForEditing)
@@ -201,28 +309,45 @@ Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.GetNotMyCompoundForEditing)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.compoundPages.GetNotMyCompoundForEditing)
+<<<<<<< HEAD
 Check that the http response code is the expected value. ... FAIL
+=======
+Check that the http response code is the expected value. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_ValidHtml (DRP.tests.httpTests.compoundPages.GetNotMyCompoundForEditing)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.compoundPages.GetCustomCompound403)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.compoundPages.GetCustomCompound403)
+<<<<<<< HEAD
 Check that the http response code is the expected value. ... FAIL
 test_ValidHtml (DRP.tests.httpTests.compoundPages.GetCustomCompound403)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.homePage.HomePage)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.compoundPages.GetCustomCompound403)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.homePage.HomePage)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.homePage.HomePage)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.homePage.HomePage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.labGroupPage.LabGroupPage)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.labGroupPage.LabGroupPage)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.labGroupPage.LabGroupPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.labGroupPage.PostLabGroupPage)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.labGroupPage.PostLabGroupPage)
 Check that the http response code is the expected value. ... FAIL
@@ -230,19 +355,35 @@ test_ValidHtml (DRP.tests.httpTests.labGroupPage.PostLabGroupPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.licensePage.LicenseAgreementPage)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.labGroupPage.PostLabGroupPage)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.labGroupPage.PostLabGroupPage)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.licensePage.LicenseAgreementPage)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.licensePage.LicenseAgreementPage)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.licensePage.LicenseAgreementPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Redirect (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage)
 Test the redirection. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Redirect (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage)
+Test the redirection. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage2)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage2)
 Check that the http response code is the expected value. ... FAIL
@@ -252,14 +393,31 @@ test_CorrectTemplate (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage3)
 Check that the expected template is loaded. ... FAIL
 test_Redirect (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage3)
 Test the redirection. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage2)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage2)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage3)
+Check that the expected template is loaded. ... ok
+test_Redirect (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage3)
+Test the redirection. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage3)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage3)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage4)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage4)
 Check that the http response code is the expected value. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage4)
+Check that the http response code is the expected value. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_ValidHtml (DRP.tests.httpTests.licensePage.PostLicenseAgreementPage4)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.loginPage.LoginPage)
@@ -269,6 +427,7 @@ Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.loginPage.LoginPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.loginPage.PostLoginPage)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.loginPage.PostLoginPage)
 Ensure that the test redirects to the correct response. ... FAIL
@@ -276,6 +435,15 @@ test_ValidHtml (DRP.tests.httpTests.loginPage.PostLoginPage)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.registerPage.RegisterPage)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.loginPage.PostLoginPage)
+Ensure that the test redirects to the correct response. ... ok
+test_ValidHtml (DRP.tests.httpTests.loginPage.PostLoginPage)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.registerPage.RegisterPage)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.registerPage.RegisterPage)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.registerPage.RegisterPage)
@@ -289,12 +457,17 @@ Check HTML validity. ... skipped 'Email Tests being skipped...'
 test_email (DRP.tests.httpTests.registerPage.PostRegisterPage)
 Check that the registration email has been recieved and is in good shape. ... skipped 'Email Tests being skipped...'
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionCreate)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.GetReactionCreate)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionCreate)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionCreateValid)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... ERROR
 test_Status (DRP.tests.httpTests.reactionPages.PostReactionCreateValid)
 Check that the http response code is the expected value. ... ERROR
@@ -311,12 +484,34 @@ test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionCreateInvalid)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionEdit)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.PostReactionCreateValid)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionCreateValid)
+Check HTML validity. ... ok
+test_image (DRP.tests.httpTests.reactionPages.PostReactionCreateValid)
+Test the files presence. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactionCreateValid) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionCreateInvalid)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.PostReactionCreateInvalid)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionCreateInvalid)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionEdit)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.GetReactionEdit)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionEdit)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionEdit2)
@@ -324,22 +519,35 @@ Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
+<<<<<<< HEAD
 Check that the http response code is the expected value. ... FAIL
+=======
+Check that the http response code is the expected value. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionEdit)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetNonexistentReactionEdit)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.GetNonexistentReactionEdit)
+<<<<<<< HEAD
 Check that the http response code is the expected value. ... FAIL
 test_ValidHtml (DRP.tests.httpTests.reactionPages.GetNonexistentReactionEdit)
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.GetNonexistentReactionEdit)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
 Check HTML validity. ... ok
 test_edit (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
+<<<<<<< HEAD
 Test that the edition actually worked. ... FAIL
 test_image (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
 Test the files presence. ... ok
@@ -347,11 +555,39 @@ test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
 Check that the http response code is the expected value. ... FAIL
+=======
+Test that the edition actually worked. ... ok
+test_image (DRP.tests.httpTests.reactionPages.PostReactionEditValid)
+Test the files presence. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetReactionView)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.GetReactionView)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.GetReactionView)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPrivate)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPrivate)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPrivate)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPublic)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPublic)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.GetSomeoneElsesReactionInfoPublic)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
+Check that the http response code is the expected value. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
 Check HTML validity. ... ok
 test_edit (DRP.tests.httpTests.reactionPages.PostReactionEditInvalid)
 Test the edition. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
+<<<<<<< HEAD
 Check that the expected template is loaded. ... FAIL
 test_Status (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
 Check that the http response code is the expected value. ... FAIL
@@ -364,6 +600,20 @@ test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReacti
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
 Check that the http response code is the expected value. ... FAIL
+=======
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
+Check HTML validity. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.DeletePerformedReaction) ... ok
+tests_deleted (DRP.tests.httpTests.reactionPages.DeletePerformedReaction)
+Test the deletion. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
+Check that the http response code is the expected value. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
 Method is turned silent. ... ok
 tests_deleted (DRP.tests.httpTests.reactionPages.DeleteSomeoneElsesReaction)
@@ -371,6 +621,7 @@ Test the deletion. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction)
+<<<<<<< HEAD
 Check that the http response code is the expected value. ... FAIL
 test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction)
 Method is turned silent. ... ok
@@ -386,6 +637,23 @@ test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesRe
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
 Check that the http response code is the expected value. ... FAIL
+=======
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteNonexistentReaction)
+Method is turned silent. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
+Method is turned silent. ... ok
+test_invalidation (DRP.tests.httpTests.reactionPages.InvalidatePerformedReaction)
+Test the invalidation. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
+Check that the http response code is the expected value. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
 Method is turned silent. ... ok
 test_invalidation (DRP.tests.httpTests.reactionPages.InvalidateSomeoneElsesReaction)
@@ -393,22 +661,37 @@ Test the invalidation. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction)
 Check that the expected template is loaded. ... ok
 test_Status (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction)
+<<<<<<< HEAD
 Check that the http response code is the expected value. ... FAIL
 test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction)
 Method is turned silent. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
 Check that the expected template is loaded. ... FAIL
+=======
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.InvalidateNonexistentReaction)
+Method is turned silent. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid)
 Check HTML validity. ... ok
+<<<<<<< HEAD
 test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
 Check that the expected template is loaded. ... FAIL
+=======
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2)
 Check HTML validity. ... ok
+<<<<<<< HEAD
 test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
 Check that the expected template is loaded. ... FAIL
@@ -418,57 +701,108 @@ test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid
 Check HTML validity. ... ok
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
 Check that the expected template is loaded. ... FAIL
+=======
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingValid2) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
+Check that the expected template is loaded. ... ok
+test_Status (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
+Check that the http response code is the expected value. ... ok
+test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantAddCreatingInvalid)
+Check HTML validity. ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
 Check HTML validity. ... ok
 test_edit (DRP.tests.httpTests.reactionPages.PostReactantEditingValid)
+<<<<<<< HEAD
 Check the invalidation. ... FAIL
 test_redirect (DRP.tests.httpTests.reactionPages.PostReactantEditingValid) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
 Check that the expected template is loaded. ... FAIL
+=======
+Check the invalidation. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantEditingValid) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
 Check HTML validity. ... ok
 test_delete (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid)
+<<<<<<< HEAD
 Check the deletion. ... FAIL
 test_redirect (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
 Check that the expected template is loaded. ... FAIL
+=======
+Check the deletion. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.PostReactantDeleteValid) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
 Check HTML validity. ... ok
 test_created (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating)
+<<<<<<< HEAD
 test the creation. ... FAIL
 test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
 Check that the expected template is loaded. ... FAIL
+=======
+test the creation. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValCreating) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
 Check HTML validity. ... ok
 test_created (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing)
+<<<<<<< HEAD
 Test the object creation. ... FAIL
 test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
 Check that the expected template is loaded. ... FAIL
+=======
+Test the object creation. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.CreateReactionDescValEditing) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
 Check HTML validity. ... ok
 test_deleted (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal)
+<<<<<<< HEAD
 Test the deletion. ... FAIL
 test_redirect (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal) ... FAIL
 test_CorrectTemplate (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
 Check that the expected template is loaded. ... FAIL
+=======
+Test the deletion. ... ok
+test_redirect (DRP.tests.httpTests.reactionPages.DeleteReactionDescVal) ... ok
+test_CorrectTemplate (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
+Check that the expected template is loaded. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 test_Status (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
 Check that the http response code is the expected value. ... ok
 test_ValidHtml (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
 Check HTML validity. ... ok
 test_created (DRP.tests.httpTests.reactionPages.EditReactionDescValInvalid)
 Test the creation. ... ok
+<<<<<<< HEAD
+=======
+runTest (DRP.tests.compoundDescriptor.DescriptorsCalced)
+Run the test. ... ok
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 runTest (DRP.tests.compoundDescriptor.DoublePluginImport)
 Run the test. ... ok
 test_numeric (DRP.tests.compoundDescriptor.MaxMinValidation)
@@ -539,6 +873,7 @@ test_pep8 (DRP.tests.fileTests.TestFiles)
 Test pep8 conformance. ... ok
 test_settingsExamplePresent (DRP.tests.fileTests.TestFiles)
 Test that the settings_example.py file is present. ... ok
+<<<<<<< HEAD
 test_all (DRP.tests.plugin_tests.drp_rdkit.DescriptorCalculation)
 Test the calculation of all descriptors. ... ok
 test_chi0v (DRP.tests.plugin_tests.drp_rdkit.DescriptorCalculation)
@@ -7456,3 +7791,10 @@ AssertionError: '9fa2cfb6-aabe-40f7-80ea-4ecbcf8c0bda' not found in '<!DOCTYPE h
 Ran 284 tests in 313.978s
 
 FAILED (failures=88, errors=5, skipped=13)
+=======
+
+----------------------------------------------------------------------
+Ran 290 tests in 110.426s
+
+OK (skipped=4)
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e

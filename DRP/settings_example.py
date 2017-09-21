@@ -291,7 +291,11 @@ REACTION_DATASET_SPLITTERS = (
     "kFoldSplitter", "exploratorySplitter", "noSplitter", "randomSplitter")
 FEATURE_SELECTION_LIBS_DIR = "DRP.ml_models.feature_visitors"
 FEATURE_SELECTION_LIBS = ("weka",)
+<<<<<<< HEAD
 METRIC_VISITORS = tuple()
+=======
+METRIC_VISITORS = ("ITML",)
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 METRIC_VISITOR_DIR = "DRP.research.geoffrey.distance_learning.metricLearn"
 
 EMPTY_LABEL = '----'

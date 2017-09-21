@@ -42,6 +42,10 @@ urls = [
          'createNext': 'createCatDescVals'
          },
         name="createBoolDescVals"),
+<<<<<<< HEAD
+=======
+    url('^/entry_(?P<rxn_id>\d+)/display', DRP.views.reaction.displayReaction, name='reactionInfo'),
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
     url('^/entry_(?P<rxn_id>\d+)/',
         DRP.views.reaction.editReaction, name='editReaction'),
     url('^/delete$', DRP.views.reaction.deleteReaction, name='deleteReaction'),
@@ -59,5 +63,11 @@ urls = [
     url('^/compoundguide/delete$',
         DRP.views.compound.deleteCompound, name='deleteCompound'),
     url('^/compoundguide/edit_(?P<pk>\d+).html',
+<<<<<<< HEAD
         DRP.views.compound.EditCompound.as_view(), name='editCompound')
+=======
+        DRP.views.compound.EditCompound.as_view(), name='editCompound'),
+    url('^/compoundguide/display_(?P<pk>\d+).html',
+        DRP.views.compound.displayCompound, name='displayCompound')
+>>>>>>> e08a9d8bcd64b253b8f31062a7cf280d17bb3a0e
 ]
