@@ -4,8 +4,6 @@ from DRP.models import PerformedReaction
 
 rxns = PerformedReaction.objects.all().rows(expanded=True)
 
-#print (type(rxns))
-
 key_set = set()
 for i in rxns:
     for key in i:
