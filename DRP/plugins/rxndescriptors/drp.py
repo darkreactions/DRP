@@ -20,7 +20,6 @@ create_threshold = 000
 
 _descriptorDict = {}
 
-
 _descriptorDict['boolean_crystallisation_outcome'] = {
     'type': 'bool',
     'name': 'Two class crystallisation outcome',
@@ -355,12 +354,12 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=True, whitelist=None
 
     num_vals_to_create = []
     bool_vals_to_create = []
-   
+
     for i, reaction in enumerate(reaction_set):
         if verbose:
             logger.info("{} ({}/{})".format(reaction,
                                             i + 1, len(reaction_set)))
-        if bulk_delete: # TODO should this be a not?
+        if bulk_delete:  # TODO should this be a not?
             if verbose:
                 logger.info("Deleting old descriptor values")
             _delete_values([reaction], descs_to_delete)
@@ -370,7 +369,7 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=True, whitelist=None
                 reaction, i + 1, len(reaction_set)))
         num_vals_to_create, bool_vals_to_create = _calculate(
             reaction, descriptorDict, verbose=verbose, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
-                
+
         if len(num_vals_to_create) > create_threshold:
             if verbose:
                 logger.info("Creating {} Numeric values".format(
@@ -460,7 +459,6 @@ def calculate(reaction, verbose=False, whitelist=None):
         logger.info("Creating {} Numeric values".format(
             len(num_vals_to_create)))
     DRP.models.NumRxnDescriptorValue.objects.bulk_create(num_vals_to_create)
-
 
 
 def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):
@@ -664,7 +662,6 @@ def _calculate(reaction, descriptorDict, verbose=False, whitelist=None, num_vals
                     compound__in=[quantity.compound for quantity in roleQuantities], descriptor=descriptor)
 
                 if descriptorValues.count() == roleQuantities.count() and not any(descriptorValue.value is None for descriptorValue in descriptorValues):
-                    
                     for i in (True, False):  # because Still python...
                         heading = '{}_{}_{}_count'.format(
                             compoundRole.label, descriptor.csvHeader, i)

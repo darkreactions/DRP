@@ -115,11 +115,8 @@ def delete_descriptors(compound_set, whitelist=None):
     else:
         descs = [descriptorDict[k]
                  for k in descriptorDict.keys() if k in whitelist]
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-                desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-                desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
-        
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
@@ -140,13 +137,11 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
             if verbose:
                 logger.debug('Creating {} numeric values'.format(
                     len(num_vals_to_create)))
-            DRP.models.NumMolDescriptorValue.objects.bulk_create(
-                    num_vals_to_create)
+            DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
             num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
-                logger.debug('Creating {} boolean values'.format(
-                    len(bool_vals_to_create)))
+                logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
             DRP.models.BoolMolDescriptorValue.objects.bulk_create(
                 bool_vals_to_create)
             bool_vals_to_create = []
@@ -182,9 +177,9 @@ def calculate(compound, verbose=False, whitelist=None):
 
 def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):
 
-    if num_vals_to_create == None:
+    if num_vals_to_create is None:
         num_vals_to_create = []
-    if bool_vals_to_create == None:
+    if bool_vals_to_create is None:
         bool_vals_to_create = []
 
     num = DRP.models.NumMolDescriptorValue

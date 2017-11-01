@@ -250,6 +250,7 @@ def setup_pHdependentDescriptors(_descriptorDict):
 
     return descriptorDict
 
+
 def delete_descriptors(compound_set, descriptorDict, whitelist=None):
     """Bulk deletion of descriptor values."""
     if whitelist is None:
@@ -263,7 +264,6 @@ def delete_descriptors(compound_set, descriptorDict, whitelist=None):
         desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
     DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
         desc, DRP.models.OrdMolDescriptor)], compound__in=compound_set).delete()
-
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
@@ -344,10 +344,10 @@ def calculate(compound, verbose=False, whitelist=None):
 
 
 def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=None, ord_to_create=None):
-    if num_to_create == None:
-        num_to_create=[]
-    if ord_to_create == None:
-        ord_to_create=[]
+    if num_to_create is None:
+        num_to_create = []
+    if ord_to_create is None:
+        ord_to_create = []
     notFound = True
     lec = ''
     if notFound and (compound.smiles is not None and compound.smiles != ''):
