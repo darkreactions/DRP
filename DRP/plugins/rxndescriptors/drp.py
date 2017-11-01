@@ -332,7 +332,7 @@ def _delete_values(reaction_set, descriptors_to_delete):
                                                         desc for desc in descriptors_to_delete if isinstance(desc, CatRxnDescriptor)]).delete()
 
 
-def calculate_many(reaction_set, verbose=False, bulk_delete=False, whitelist=None):
+def calculate_many(reaction_set, verbose=False, bulk_delete=True, whitelist=None):
     """Calculate descriptors for this plugin for an entire set of reactions."""
     if verbose:
         logger.info("Creating descriptor dictionary")
