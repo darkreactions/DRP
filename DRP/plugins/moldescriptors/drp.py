@@ -123,12 +123,11 @@ def calculate_many(compound_set, verbose=False, whitelist=None):
     """Bulk creation of descriptor values."""
     num_vals_to_create = []
     bool_vals_to_create = []
+    delete_descriptors(compound_set, whitelist=whitelist)
     for i, compound in enumerate(compound_set):
         if verbose:
             logger.debug("{}; Compound {} ({}/{})".format(compound,
                                                           compound.pk, i + 1, len(compound_set)))
-
-        delete_descriptors(compound_set, whitelist=whitelist)
 
         num_vals_to_create, bool_vals_to_create = _calculate(
             compound, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
