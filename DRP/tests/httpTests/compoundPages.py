@@ -223,10 +223,10 @@ class GetCustomCompound403(GetHttpSessionTest):
 
 suite = unittest.TestSuite([
     loadTests(LicenseRedirect),
-    loadTests(Lab403Test),
-    loadTests(CreateCompoundGetTest),
     loadTests(CreateCompoundRedirTest),
     loadTests(CreateCompoundRadioTest),
+    loadTests(Lab403Test),
+    loadTests(CreateCompoundGetTest),
     loadTests(NoCompounds),
     loadTests(ManyGroupsRedirect),
     loadTests(ManyLabGroupsDisplays),
