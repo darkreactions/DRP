@@ -93,7 +93,7 @@ You will also need a chemspider token. Follow the directions on the website for 
 Visit http://www.chemspider.com/AboutServices.aspx
 
 
-## Step 3: Setting up the settings.py file
+### Step 3: Setting up the settings.py file
 
 In the DRP repository, copy the settings_example.py to settings.py.
 
