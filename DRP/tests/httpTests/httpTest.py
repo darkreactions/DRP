@@ -184,6 +184,10 @@ def logsInAs(username, password, csrf=True):
             if self.s is None:
                 self.s = requests.Session()
             getResponse = self.s.get(self.loginUrl)
+            """
+            print (self.s.cookies)
+            print (self.s.cookies.get_dict())
+            """
             loginCsrf = self.s.cookies.get_dict()['csrftoken']
             loginResponse = self.s.post(self.loginUrl, data={
                                         'username': username, 'password': password, 'csrfmiddlewaretoken': loginCsrf})
