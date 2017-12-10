@@ -1,5 +1,4 @@
 Dark Reaction Project README
-<<<<<<< HEAD
 ##General Information
 =======
 Last updated by Monique Byars 09/21/17
@@ -10,7 +9,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 Always make sure to check the latest version of the README on the master branch.
 This repository contains the software for the https://www.djangoproject.com/-based source code for the Dark Reactions Project Software. If you are looking to contribute to the chemistry aspects of the project, please visit the main project site at http://darkreactions.haverford.edu. If you are looking to contribute to the source code of the project and are not a member of haverford college, please fork this repository and issue a pull request with any changes or fixes you may have made. A list of known bugs can be found at [http://bugs.darkreactions.haverford.edu] (our instance of Mantis Bug Tracker). Please note that you will to sign up for an account, and that the authentication credentials for the bug reporting page and the main project page are separate.
-<<<<<<< HEAD
 ###Setting up your own instance of the DRP
 The following setup methods are suitable for use with Ubuntu 16.04.
 ####On a Virtual Machine
@@ -34,7 +32,6 @@ Manual Instructions - for a physical machine
 
 The following instructions are written to work with Ubuntu 14 and 16 and have (mostly) been tested. These instructions assume familiarity with Linux and a Command Line, and that you are using nginx as your webserver. 
 STEP 1: Installing the necessary programs
->>>>>>> 389d7280f6cb3c3f534b1566df5bb6785f43ae92
 * (Required)
 The DRP *
 Mysql * 
