@@ -226,7 +226,25 @@ If that runs without error messages, congratulations, you have compiled and inst
 
 ### Step 6: Installing Chemaxon (optional)
 
-Follow the documentation to install and validate your license for * [Chemaxon](https://www.chemaxon.com/download/marvin-suite/#marvin)
+Follow the documentation to install and validate your license for * [Chemaxon](https://www.chemaxon.com/download/marvin-suite/#marvin).
+
+The deb package can be installed as follows:
+
+```
+sudo apt install ./packagename.deb (or /path/to/package/name.deb)
+```
+
+Chemaxon can then be found at: 
+
+```
+/opt/chemaxon
+```
+
+When setting the Chemaxon directory in settings.py, make sure to point to the bin file, ie:
+
+```
+CHEMAXON_DIR = {version:/path/to/marvinsuite/bin/}
+```
 
 ### Step 7: Remaining loose ends
 
