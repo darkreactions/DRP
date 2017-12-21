@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 calculatorSoftware = 'DRP'
 
 # number of values to create at a time. Should probably be <= 5000
-create_threshold = 5000
+create_threshold = 000
 
 elements = chemical_data.elements
 
@@ -115,54 +115,55 @@ def delete_descriptors(compound_set, whitelist=None):
     else:
         descs = [descriptorDict[k]
                  for k in descriptorDict.keys() if k in whitelist]
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-        desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
-        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
     """Bulk creation of descriptor values."""
-    delete_descriptors(compound_set, whitelist=whitelist)
     num_vals_to_create = []
     bool_vals_to_create = []
+    delete_descriptors(compound_set, whitelist=whitelist)
     for i, compound in enumerate(compound_set):
         if verbose:
             logger.debug("{}; Compound {} ({}/{})".format(compound,
                                                           compound.pk, i + 1, len(compound_set)))
+
         num_vals_to_create, bool_vals_to_create = _calculate(
             compound, whitelist=whitelist, num_vals_to_create=num_vals_to_create, bool_vals_to_create=bool_vals_to_create)
+
         if len(num_vals_to_create) > create_threshold:
             if verbose:
                 logger.debug('Creating {} numeric values'.format(
                     len(num_vals_to_create)))
-                DRP.models.NumMolDescriptorValue.objects.bulk_create(
-                    num_vals_to_create)
-                num_vals_to_create = []
+            DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+            num_vals_to_create = []
         if len(bool_vals_to_create) > create_threshold:
             if verbose:
-                logger.debug('Creating {} boolean values'.format(
-                    len(bool_vals_to_create)))
+                logger.debug('Creating {} boolean values'.format(len(bool_vals_to_create)))
             DRP.models.BoolMolDescriptorValue.objects.bulk_create(
                 bool_vals_to_create)
             bool_vals_to_create = []
+    #
+    # if verbose:
+    #     logger.debug('Creating {} numeric values'.format(
+    #         len(num_vals_to_create)))
+    # DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+    # if verbose:
+    #     logger.debug('Creating {} boolean values'.format(
+    #         len(bool_vals_to_create)))
+    # DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
-    if verbose:
-        logger.debug('Creating {} numeric values'.format(
-            len(num_vals_to_create)))
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
-    if verbose:
-        logger.debug('Creating {} boolean values'.format(
-            len(bool_vals_to_create)))
-    DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
-
-def calculate(compound):
+def calculate(compound, verbose=False, whitelist=None):
     """Calculation of descriptor values."""
-    delete_descriptors([compound])
+    # Delete existing descriptors that we'll be re-calculating
+    delete_descriptors([compound], whitelist=whitelist)
+
+    # Generate drp descriptor values
     num_vals_to_create, bool_vals_to_create = _calculate(
-        compound, whitelist=whitelist)
-    DRP.models.NumMolDescriptorValue.objects.bulk_create(num_vals_to_create)
+        compound, verbose=verbose, whitelist=whitelist)
+
     if verbose:
         logger.debug('Creating {} numeric values'.format(
             len(num_vals_to_create)))
@@ -173,7 +174,12 @@ def calculate(compound):
     DRP.models.BoolMolDescriptorValue.objects.bulk_create(bool_vals_to_create)
 
 
-def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], bool_vals_to_create=[]):
+def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=None, bool_vals_to_create=None):
+
+    if num_vals_to_create is None:
+        num_vals_to_create = []
+    if bool_vals_to_create is None:
+        bool_vals_to_create = []
 
     num = DRP.models.NumMolDescriptorValue
     boolVal = DRP.models.BoolMolDescriptorValue
@@ -204,7 +210,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -228,7 +234,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -246,7 +252,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
@@ -264,7 +270,7 @@ def _calculate(compound, verbose=False, whitelist=None, num_vals_to_create=[], b
                     n.full_clean()
                 except ValidationError as e:
                     logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to none. Validation error message: {}'.format(
-                        n.value, n.compound, n.descriptor, e.message))
+                        n.value, n.compound, n.descriptor, e))
                     n.value = None
                 num_vals_to_create.append(n)
 
