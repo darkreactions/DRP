@@ -5,6 +5,9 @@ from django.db import models
 import abc
 from collections import OrderedDict
 from itertools import islice, chain
+# import os
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'DRP.settings'
+# from DRP.models import Descriptor
 
 
 class MultiQuerySet(object):
@@ -92,7 +95,7 @@ class CsvQuerySet(models.query.QuerySet):
         and will fail if any field holds a relationship, and will not include automagically generated fields.
         """
         if whitelist is not None:
-            return [field.name for field in self.model._meta.fields if field in whitelist]
+            return [field.name for field in self.model._meta.fields if field.name in whitelist]
         else:
             return [field.name for field in self.model._meta.fields]
 
@@ -117,7 +120,7 @@ class CsvQuerySet(models.query.QuerySet):
         writer = csv.DictWriter(writeable, fieldnames=headers, restval=missing)
 
         writer.writeheader()
-        for row in self.rows(expanded):
+        for row in self.rows(expanded, whitelist=headers):
             writer.writerow({k: row.get(k, missing)
                              for k in row.keys() if k in headers})
 
