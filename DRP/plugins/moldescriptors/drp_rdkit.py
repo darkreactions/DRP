@@ -111,7 +111,7 @@ def calculate(compound, verbose=False, whitelist=None):
     mol = rdkit.Chem.MolFromSmiles(compound.smiles)
     if mol is None:
         logger.warning(
-            'Compound {} has no smiles. Skipping calculations for rdkit molecular descriptors.')
+            'Compound {} has no smiles. Skipping calculations for rdkit molecular descriptors.'.format(compound.smiles))
     else:
         if whitelist is None or 'rbc' in whitelist:
             rbc = Descriptors.NumRotatableBonds(mol)
@@ -127,7 +127,7 @@ def calculate(compound, verbose=False, whitelist=None):
             nums.append(v)
         for element in inorgElements.keys():
             oxStates = []
-            for atom in mol.GetAtoms():  # weird capitalisation is weird, but correct.
+            for atom in mol.GetAtoms():  # weird capitalisation, but correct.
                 if atom.GetSymbol() == element:
                     oxStates.append(recurseSumCharge(
                         atom) + atom.GetTotalValence())
