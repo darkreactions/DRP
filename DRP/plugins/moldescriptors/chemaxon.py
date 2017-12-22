@@ -354,6 +354,7 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
         lecProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', compound.smiles,
                          'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer
         lecProc.wait()
+        print(lecProc.returncode)
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
@@ -364,6 +365,9 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
+
+    print(notFound)
+    print(lec)
     if not notFound or lec != '':
         # -N ih means leave off the header row and id column
         calcProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', '-N', 'ih', lec] + [x for x in chain(
@@ -430,6 +434,6 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
             logger.warning("cxcalc exited with nonzero return code {}".format(
                 calcProc.returncode))
     else:
-        logger.warning("Compound not found")
+        logger.warning("Compound not found!!")
 
     return num_to_create, ord_to_create

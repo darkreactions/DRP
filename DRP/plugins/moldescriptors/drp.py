@@ -162,7 +162,7 @@ def calculate(compound, verbose=False, whitelist=None):
 
     # Generate drp descriptor values
     num_vals_to_create, bool_vals_to_create = _calculate(
-        compound)
+        compound, verbose=verbose, whitelist=whitelist)
 
     if verbose:
         logger.debug('Creating {} numeric values'.format(
