@@ -18,6 +18,7 @@ from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
+import logging
 
 
 @login_required
@@ -51,7 +52,6 @@ class ListPerformedReactions(ListView):
         else:
             self.queryset = PerformedReaction.objects.filter(public=True)
         self.queryset = self.queryset.order_by('-insertedDateTime')
-
         if filetype is None:
             response = super(ListPerformedReactions, self).dispatch(
                 request, *args, **kwargs)
@@ -67,7 +67,8 @@ class ListPerformedReactions(ListView):
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="reactions.csv"'
             if 'expanded' in request.GET and request.user.is_authenticated() and request.user.is_staff:
-                self.queryset.toCsv(response, True)
+                headers = self.load_from_dsc(settings.RECOMMENDED_WHITE_LIST)
+                self.queryset.toCsv(response, expanded=True, whitelistHeaders=headers)
             else:
                 self.queryset.toCsv(response)
         elif filetype == '.arff':
@@ -87,6 +88,13 @@ class ListPerformedReactions(ListView):
                         self).get_context_data(**kwargs)
         context['lab_form'] = self.labForm
         return context
+
+    def load_from_dsc(self, dsc_file):
+        """Load from dsc file."""
+        with open(dsc_file, 'r') as f:
+            headers = f.read().split('\n')
+            headers = headers[:len(headers) - 1]
+        return headers
 
 
 @login_required
