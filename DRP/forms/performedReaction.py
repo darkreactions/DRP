@@ -22,7 +22,7 @@ class PerformedRxnAdminForm(forms.ModelForm):
 
 
 class PerformedRxnForm(forms.ModelForm):
-    """A form for creating performed reaction instances in teh databases."""
+    """A form for creating performed reaction instances in the databases."""
 
     class Meta:
         fields = ('reference', 'notes', 'performedBy', 'labGroup', 'duplicateOf',

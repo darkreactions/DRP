@@ -32,8 +32,8 @@ def descriptorValueFormFactoryFactory(modelClass, descriptorClass):
 
 factory = descriptorValueFormFactoryFactory
 
-NumRxnDescValFormFactory = factory(NumRxnDescriptorValue, NumRxnDescriptor)
 OrdRxnDescValFormFactory = factory(OrdRxnDescriptorValue, OrdRxnDescriptor)
+NumRxnDescValFormFactory = factory(NumRxnDescriptorValue, NumRxnDescriptor)
 BoolRxnDescValFormFactory = factory(BoolRxnDescriptorValue, BoolRxnDescriptor)
 
 
