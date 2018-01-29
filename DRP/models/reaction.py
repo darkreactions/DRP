@@ -43,12 +43,17 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
         """Generate the header row information for the CSV."""
         headers = super(ReactionQuerySet, self).csvHeaders(whitelist)
         m = Reaction.objects.all().maxReactantCount()
+        compound_data = []
         for i in range(0, m):
             h = self._getCompoundQuantityHeaderOrder(i)
             if whitelist is None or h in whitelist:
-                headers.extend(h)
+                compound_data.extend(h)
+            else:
+                for item in h:
+                    if item in whitelist:
+                        compound_data.append(item)
 
-        return headers
+        return compound_data + headers
 
     def arffHeaders(self, whitelist=None):
         """Generate headers for the arff file."""
@@ -152,10 +157,12 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                     row.update(
                         {dv.descCsvHeader: dv.value for dv in item.filtered_catvals})
                     i = 0
-                    for compound in item.compounds.all():
+                    for compoundQ in item.compoundquantity_set.all():
                         compound_num = 'compound_{}'.format(i)
                         if compound_num in whitelist:
-                            row[compound_num] = compound.name
+                            row[compound_num] = compoundQ.compound.name
+                            row['compound_{}_role'.format(i)] = compoundQ.role.label
+                            row['compound_{}_amount'.format(i)] = compoundQ.amount
                         i += 1
                     yield row
                 else:
