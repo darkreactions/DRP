@@ -22,3 +22,9 @@ metrics/*
 *~
 \#*\#
 .\#*
+
+
+Database_Reactions*csv
+
+
+.idea/

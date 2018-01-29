@@ -1,4 +1,4 @@
-"""A descriptor calculator to wrap and use calls to ChemAxon.
+"""A DESCRIPTOR calculator to wrap and use calls to ChemAxon.
 
 Requires cxcalc (part of JChem) to be installed and licensed.
 
@@ -251,14 +251,19 @@ def setup_pHdependentDescriptors(_descriptorDict):
     return descriptorDict
 
 
-def delete_descriptors(compound_set, descriptorDict):
-    """Bulk deletion of descriptors."""
-    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'num'],
-                                                    compound__in=compound_set).delete()
-    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'ord'],
-                                                    compound__in=compound_set).delete()
-    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[descriptorDict[ck] for ck in descriptorDict if _descriptorDict[ck]['type'] == 'bool'],
-                                                     compound__in=compound_set).delete()
+def delete_descriptors(compound_set, descriptorDict, whitelist=None):
+    """Bulk deletion of descriptor values."""
+    if whitelist is None:
+        descs = descriptorDict.values()
+    else:
+        descs = [descriptorDict[k]
+                 for k in descriptorDict.keys() if k in whitelist]
+    DRP.models.NumMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.NumMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.BoolMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.BoolMolDescriptor)], compound__in=compound_set).delete()
+    DRP.models.OrdMolDescriptorValue.objects.filter(descriptor__in=[desc for desc in descs if isinstance(
+        desc, DRP.models.OrdMolDescriptor)], compound__in=compound_set).delete()
 
 
 def calculate_many(compound_set, verbose=False, whitelist=None):
@@ -318,7 +323,9 @@ def calculate(compound, verbose=False, whitelist=None):
                           v in descriptorDict.items() if k in whitelist}
     if verbose:
         logger.info("Deleting old descriptor values.")
-    delete_descriptors([compound], descriptorDict, cxcalcCommands)
+
+    delete_descriptors([compound], descriptorDict, whitelist=whitelist)
+
     filtered_cxcalcCommands = {
         k: v for k, v in cxcalcCommands.items() if k in descriptorDict.keys()}
     if verbose:
@@ -329,17 +336,25 @@ def calculate(compound, verbose=False, whitelist=None):
     if verbose:
         logger.info("Creating {} numerical and {} ordinal".format(
             len(num_to_create), len(ord_to_create)))
+
+    num_to_create = [desc_val for desc_val in num_to_create if desc_val.value is not None]
+
     DRP.models.NumMolDescriptorValue.objects.bulk_create(num_to_create)
     DRP.models.OrdMolDescriptorValue.objects.bulk_create(ord_to_create)
 
 
-def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=[], ord_to_create=[]):
+def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_create=None, ord_to_create=None):
+    if num_to_create is None:
+        num_to_create = []
+    if ord_to_create is None:
+        ord_to_create = []
     notFound = True
     lec = ''
     if notFound and (compound.smiles is not None and compound.smiles != ''):
         lecProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', compound.smiles,
                          'leconformer'], stdout=PIPE, stderr=PIPE, close_fds=True)  # lec = lowest energy conformer
         lecProc.wait()
+        print(lecProc.returncode)
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
@@ -350,6 +365,9 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
         if lecProc.returncode == 0:
             lec, lecErr = lecProc.communicate()
             notFound = False
+
+    print(notFound)
+    print(lec)
     if not notFound or lec != '':
         # -N ih means leave off the header row and id column
         calcProc = Popen([settings.CHEMAXON_DIR[CHEMAXON_VERSION] + 'cxcalc', '-N', 'ih', lec] + [x for x in chain(
@@ -416,6 +434,6 @@ def _calculate(compound, descriptorDict, cxcalcCommands, verbose=False, num_to_c
             logger.warning("cxcalc exited with nonzero return code {}".format(
                 calcProc.returncode))
     else:
-        logger.warning("Compound not found")
+        logger.warning("Compound not found!!")
 
     return num_to_create, ord_to_create
