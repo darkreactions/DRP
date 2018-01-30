@@ -85,6 +85,10 @@
                 <th>Entered by</th><td>{{ reaction.user.first_name }} {{ reaction.user.last_name }}</td>
             </tr>
             <tr><th>Inserted Date</th><td>{{ reaction.insertedDateTime }}</td></tr>
+            <tr><th>Reaction Tempurature (C)</th><td>{{ reaction.get_reactiontempurature }}</td></tr>
+            <tr><th>pH</th><td>{{ reaction.get_ph }}</td></tr>
+            <tr><th>Reaction time (minutes) </th><td>{{ reaction.get_reactiontime }}</td></tr>
+
         </tbody>
     </table>
   </li>
