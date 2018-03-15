@@ -313,9 +313,15 @@ Else, one can run the entire test suite from the management script:
 
 ### Adding New Fields In Development
 
-In developing the DRP in the Dataquacs lab, it may be the case that you want to add a new field.  To do this successfully and to have the tests pass successfully, you must add the new field to the model, make migrations, and run migrations.  This will update the version of the drp database specified in the settings.py file to the new schema.  To make sure that the tests pass, you must also make sure the schema of the test database matches that of the locally running database.  If you've just added one field, you could add the new column through mysql in the appropriate tables.  A useful way to figure out all the appropriate tables is by looking at the recent migrations file.  The name of the models where the field was added will be the tables you must add the new column to.  Once you've added the field to the tests, you should be able to run the tests.  Of course, it still remains to be seen if the tests pass but this should eliminate errors due to the new field you've added not being recognized.
+In developing the DRP in the Dataquacs lab, it may be the case that you want to add a new field.  To do this successfully and to have the tests pass successfully, follow this development cycle. 
 
-It's worth mentioning that you must also match the database schema in the production site to the local schema in order to get the local changes runnning live.  You may not want to push the recent local migration so that you can migrate on the server to get the new changes registered.  If you've pushed the recent local migration, migrating on the server will not add a new column.  
+1. Add the new field to the model, make migrations, and run migrations.  This will update the version of the drp database specified in the settings.py file for the new field.  
+
+2. Make sure the tests pass locally.  To do this, the schema of the test database must match the local database.  If there's only a few new additions, manually go into mysql and add the new column to the appropriate tables.  
+
+A useful way to figure out all the appropriate tables is by looking at the recent migrations file.  The name of the models where the field was added will be the tables you must add the new column to.  Once you've added the field to the tests, you should be able to run the tests.  Of course, it still remains to be seen if the tests pass but this should eliminate errors due to the new field you've added not being recognized.
+
+3.  Once the changes are ready for production, push the changes to the live server and make sure the database there matches the local database.  You may not want to push the recent local migration so that you can migrate on the server to get the new changes added to the live database.  If you've pushed the recent local migration, migrating on the server will not add a new column.  
 
 ### On Development Servers
 
