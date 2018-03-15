@@ -5,6 +5,7 @@ from .recommendedReaction import RecommendedReaction
 from .rxnDescriptors import NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor
 from .rxnDescriptorValues import NumRxnDescriptorValue, BoolRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from django.contrib.auth.models import User
+from .descriptorValues import NumericDescriptorValue
 from itertools import chain
 import DRP
 from django.core.validators import RegexValidator
@@ -133,6 +134,29 @@ class PerformedReaction(Reaction):
         if PerformedReaction.objects.exclude(id=self.id).filter(labGroup=self.labGroup, reference=self.reference).exists():
             raise ValidationError(
                 {'reference': 'This reference has already been used for this lab group.'}, code="duplicate_reference")
+
+
+    def get_reactiontempurature(self):
+        """Give back the reaction tempurature."""
+
+        # kinda hacky need way to filter rxn descriptors by something like a rxn descriptor name, but couldn't get this to work right now
+        return NumRxnDescriptorValue.objects.filter(reaction_id = self.id)[0].value
+
+
+    def get_reactiontime(self):
+        """Give back the reaction time of the reaction in minutes."""
+
+        return NumRxnDescriptorValue.objects.filter(reaction_id = self.id)[1].value
+
+    def get_ph(self):
+        """Give back the ph of the reaction."""
+
+        return NumRxnDescriptorValue.objects.filter(reaction_id = self.id)[2].value
+
+    def get_preheattime(self):
+        """Give back the ph of the reaction."""
+
+        return NumRxnDescriptorValue.objects.filter(reaction_id = self.id)[3].value
 
     def __str__(self):
         """Return the reference as the unicode representation."""
