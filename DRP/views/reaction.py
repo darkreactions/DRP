@@ -19,6 +19,7 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 import logging
+from itertools import chain 
 
 
 @login_required
