@@ -298,7 +298,10 @@ In order to run tests you must have the following environment variables set up i
 export PYTHONPATH=/path/to/DRP/
 export DJANGO_SETTINGS_MODULE=DRP.settings
 ```
-You must also have TESTING set to True in your settings.py file.
+You must also have TESTING set to True in your settings.py file.  
+
+In addition, its useful to restart nginx and uwsgi before running tests.
+
 To run specific tests, provided the test is conformant to the template test (which they should be if you are writing new tests!), one can simply execute the test:
 ```
 path/to/DRP/test.py
@@ -307,6 +310,19 @@ Else, one can run the entire test suite from the management script:
 ```
 ./manage.py run_tests
 ```
+
+### Adding New Fields In Development
+
+In developing the DRP in the Dataquacs lab, it may be the case that you want to add a new field.  To do this successfully and to have the tests pass successfully, follow this development cycle. 
+
+1. Add the new field to the model, make migrations, and run migrations.  This will update the version of the drp database specified in the settings.py file for the new field.  
+
+2. Make sure the tests pass locally.  To do this, the schema of the test database must match the local database.  If there's only a few new additions, manually go into mysql and add the new column to the appropriate tables.  
+
+A useful way to figure out all the appropriate tables is by looking at the recent migrations file.  The name of the models where the field was added will be the tables you must add the new column to.  Once you've added the field to the tests, you should be able to run the tests.  Of course, it still remains to be seen if the tests pass but this should eliminate errors due to the new field you've added not being recognized.
+
+3.  Once the changes are ready for production, push the changes to the live server and make sure the database there matches the local database.  You may not want to push the recent local migration so that you can migrate on the server to get the new changes added to the live database.  If you've pushed the recent local migration, migrating on the server will not add a new column.  
+
 ### On Development Servers
 
 The ALLOWED_HOSTS option in 'settings.py' should be set to an iterable containing only the localhost ip address as a string.
