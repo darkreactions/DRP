@@ -37,7 +37,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def _getCompoundQuantityHeaderOrder(self, i):
         """Return the headers for compound quantities for csv or similar creation, in order."""
-        return ['compound_{}'.format(i), 'compound_{}_role'.format(i),'compound_{}_amount_grams'.format(i) 'compound_{}_amount'.format(i)]
+        return ['compound_{}'.format(i), 'compound_{}_role'.format(i),'compound_{}_amount_grams'.format(i), 'compound_{}_amount'.format(i)]
 
     def csvHeaders(self, whitelist=None):
         """Generate the header row information for the CSV."""
