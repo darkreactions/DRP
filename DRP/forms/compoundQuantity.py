@@ -10,7 +10,7 @@ def compoundQuantityFormFactory(reactionId):
 
         class Meta:
             model = CompoundQuantity
-            fields = ('reaction', 'compound', 'role', 'amount')
+            fields = ('reaction', 'compound', 'role', 'amount_grams')
 
         def __init__(self, *args, **kwargs):
             """Restrict the form to a single reaction. Useful for formsets."""

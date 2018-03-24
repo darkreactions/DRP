@@ -233,6 +233,12 @@ class Compound(models.Model):
         """Unicode representation of a compound is it's name and abbreviation."""
         return "{}".format(self.name)
 
+    def getMolecularWeight(self):
+        cs = ChemSpider(settings.CHEMSPIDER_TOKEN)
+        if self.CSID:
+            csCompound = cs.get_compound(self.CSID)
+            return Decimal(csCompound.molecular_weight)
+
     def csConsistencyCheck(self):
         """Perform a consistency check of this record against chemspider. Raise a ValidationError on error."""
         if not self.custom:

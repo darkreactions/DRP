@@ -37,7 +37,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
 
     def _getCompoundQuantityHeaderOrder(self, i):
         """Return the headers for compound quantities for csv or similar creation, in order."""
-        return ['compound_{}'.format(i), 'compound_{}_role'.format(i), 'compound_{}_amount'.format(i)]
+        return ['compound_{}'.format(i), 'compound_{}_role'.format(i), 'compound_{}_amount'.format(i), 'compound_{}_amount_grams'.format(i)]
 
     def csvHeaders(self, whitelist=None):
         """Generate the header row information for the CSV."""
@@ -163,6 +163,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                             row[compound_num] = compoundQ.compound.name
                             row['compound_{}_role'.format(i)] = compoundQ.role.label
                             row['compound_{}_amount'.format(i)] = compoundQ.amount
+                            row['compound_{}_amount_grams'.format(i)] = compoundQ.amount_grams
                         i += 1
                     yield row
                 else:
@@ -182,6 +183,7 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                     row['compound_{}'.format(i)] = compoundQ.compound.name
                     row['compound_{}_role'.format(i)] = compoundQ.role.label
                     row['compound_{}_amount'.format(i)] = compoundQ.amount
+                    row['compound_{}_amount_grams'.format(i)] = compoundQ.amount_grams
                     i += 1
                 yield row
 
