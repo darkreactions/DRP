@@ -182,7 +182,6 @@ class OrdinalDescriptorValue(models.Model):
                 raise ValidationError(
                     'The provided value is lower than the descriptor minimum',
                     'value_too_low')
-
         if self.rater is None:
             raise ValidationError('Make sure to specify a rater')
 
