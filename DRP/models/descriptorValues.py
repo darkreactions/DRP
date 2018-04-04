@@ -185,8 +185,6 @@ class OrdinalDescriptorValue(models.Model):
         if self.rater is None:
             raise ValidationError('Make sure to specify a rater')
 
-
-
     def save(self, *args, **kwargs):
         """Ensure cleaning run on save."""
         self.clean()
