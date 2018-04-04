@@ -10,6 +10,10 @@
 <h1 class="bannerText">Reactions Database</h1>  
 {% if user.is_authenticated %}
     {% include "lab_form.html" %}
+<form type="get" action="{% url 'searchPerformedReactions' %}" style="margin: 0">
+    <input  id="search_box" type="text" name="search"  placeholder="Search..." >
+    <button id="search_submit" type="submit" >Submit</button>
+</form>
   <div class="downloads">
     <h1 class="downloads">Downloads</h1>
     <ul class="downloads">

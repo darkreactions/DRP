@@ -98,6 +98,16 @@ class ListPerformedReactions(ListView):
         return headers
 
 
+class SearchPerformedReactions(ListPerformedReactions):
+
+    def get_queryset(self, request):
+        result = self.queryset
+        if request.method == 'GET':
+            query = request.GET.get('search_box', None)
+        if query:
+            result = result.filter(performedBy = query)
+        return result
+
 @login_required
 @hasSignedLicense
 @userHasLabGroup
