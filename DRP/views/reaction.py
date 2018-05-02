@@ -53,6 +53,9 @@ class ListPerformedReactions(ListView):
         else:
             self.queryset = PerformedReaction.objects.filter(public=True)
         self.queryset = self.queryset.order_by('-insertedDateTime')
+        query = request.GET.get("q")
+        if query:
+            self.queryset = self.queryset.filter(compounds__name__icontains = query)
         if filetype is None:
             response = super(ListPerformedReactions, self).dispatch(
                 request, *args, **kwargs)
@@ -96,17 +99,6 @@ class ListPerformedReactions(ListView):
             headers = f.read().split('\n')
             headers = headers[:len(headers) - 1]
         return headers
-
-
-class SearchPerformedReactions(ListPerformedReactions):
-
-    def get_queryset(self, request):
-        result = self.queryset
-        if request.method == 'GET':
-            query = request.GET.get('search_box', None)
-        if query:
-            result = result.filter(performedBy = query)
-        return result
 
 @login_required
 @hasSignedLicense

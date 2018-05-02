@@ -11,7 +11,6 @@ urls = [
     url('^(?P<filetype>.csv|.html|.arff)?$',
         DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist_typed'),
     url('^/$', DRP.views.reaction.ListPerformedReactions.as_view(), name='reactionlist'),
-    url('^/search/$', DRP.views.reaction.SearchPerformedReactions.as_view(), name = 'searchPerformedReactions'),
     url('^/add.html', DRP.views.reaction.createReaction, name='newReaction'),
     url('^/entry_(?P<rxn_id>\d+)/compoundquantities.html',
         DRP.views.reaction.addCompoundDetails, name="addCompoundDetails"),
