@@ -31,6 +31,7 @@
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
+/*
 $(document).ready(function() {
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 40},
@@ -100,11 +101,13 @@ d3.csv("{{ STATIC_URL }}dateEntered.csv", function(error, data) {
       
 });
 });
+*/
 </script>
 
 <!-- Copy pasted for now, but I could make it a separate file and function -->
 
 <script>
+/*
 $(document).ready(function() {
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 40},
@@ -177,6 +180,7 @@ d3.csv("{{ STATIC_URL }}datePerformed.csv", function(error, data) {
       
 });
 });
+*/
 </script>
 
 <script type="text/javascript">
@@ -189,7 +193,7 @@ var margin = {top: 20, right: 160, bottom: 35, left: 30};
 var width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var svg = d3.select("body")
+var svg = d3.select("#split_test")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
