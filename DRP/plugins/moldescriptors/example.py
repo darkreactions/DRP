@@ -72,7 +72,7 @@ def calculate(compound, verbose=False, whitelist=None):
             v.full_clean()
         except ValidationError as e:
             logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
-                v.value, v.compound, v.descriptor, e.message))
+                v.value, v.compound, v.descriptor, e))
             v.value = None
         v.save()
 
@@ -84,7 +84,7 @@ def calculate(compound, verbose=False, whitelist=None):
             v.full_clean()
         except ValidationError as e:
             logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
-                v.value, v.compound, v.descriptor, e.message))
+                v.value, v.compound, v.descriptor, e))
             v.value = None
         v.save()
 
@@ -96,7 +96,7 @@ def calculate(compound, verbose=False, whitelist=None):
             v.full_clean()
         except ValidationError as e:
             logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
-                v.value, v.compound, v.descriptor, e.message))
+                v.value, v.compound, v.descriptor, e))
             v.value = None
         v.save()
 
@@ -108,6 +108,6 @@ def calculate(compound, verbose=False, whitelist=None):
             v.full_clean()
         except ValidationError as e:
             logger.warning('Value {} for compound {} and descriptor {} failed validation. Value set to None. Validation error message: {}'.format(
-                v.value, v.compound, v.descriptor, e.message))
+                v.value, v.compound, v.descriptor, e))
             v.value = None
         v.save()
