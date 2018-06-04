@@ -3,6 +3,7 @@
 	display: grid;
 	grid-template-columns: auto auto;
 	grid-template-rows: 500px 500px;
+	padding: 30px
 
 }
 .grid-container h2, .grid-container h4 {
