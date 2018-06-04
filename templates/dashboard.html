@@ -11,7 +11,7 @@
 {% block content %}
 <div class="grid-container">
   <div class="grid-item">
-    <h2>Num experiments: {{num_experiments}}</h2>
+    <h2>Number of experiments: {{num_experiments}} <span id=num_experiments_line> </span> </h2>
     <h4> <span style="color: green;">{{num_experiments_public}}</span> are public,
          <span style="color: red">{{num_experiments_private}}</span> are private
     </h4>
@@ -56,10 +56,10 @@ $(document).ready(function() {
       if (error) throw error;
 
       // https://stackoverflow.com/questions/8312459/iterate-through-object-properties?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-      var all_labGroups = []
+      var all_labGroups = [];
       for(var property in data[0]) {
         if (data[0].hasOwnProperty(property) && property != "date") {
-          all_labGroups.push(property)
+          all_labGroups.push(property);
         }
       }
 
@@ -212,7 +212,54 @@ $(document).ready(function() {
   };
   make_stacked_bar("dateEntered.csv", "#when_reactions_entered_graph");
   make_stacked_bar("datePerformed.csv", "#when_reactions_performed_graph");  
-  make_stacked_bar("datePerformedCumulative.csv", "#when_reactions_performed_cumulative_graph");
+  make_stacked_bar("datePerformedCumulativeByLab.csv", "#when_reactions_performed_cumulative_graph");
+});
+</script>
+
+<script>
+$(document).ready(function() {
+  // Set the dimensions of the canvas / graph
+  var margin = {top: 3, right: 3, bottom: 3, left: 3},
+      width = 150 - margin.left - margin.right,
+      height = 50 - margin.top - margin.bottom;
+
+  // Parse the date / time
+  var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+  // Set the ranges
+  var x = d3.time.scale().range([0, width]);
+  var y = d3.scale.linear().range([height, 0]);
+
+  // Define the line
+  var valueline = d3.svg.line()
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.count); });
+      
+  // Adds the svg canvas
+  var svg = d3.select("#num_experiments_line")
+      .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+          .attr("transform", 
+                "translate(" + margin.left + "," + margin.top + ")");
+
+  // Get the data
+  d3.csv("{{ STATIC_URL }}" + "datePerformedCumulative.csv", function(error, data) {
+      data.forEach(function(d) {
+          d.date = parseDate(d.date);
+          d.count = +d.count;
+      });
+
+      // Scale the range of the data
+      x.domain(d3.extent(data, function(d) { return d.date; }));
+      y.domain([0, d3.max(data, function(d) { return d.count; })]);
+
+      // Add the valueline path.
+      svg.append("path")
+          .attr("class", "line")
+          .attr("d", valueline(data));
+  });
 });
 </script>
 
