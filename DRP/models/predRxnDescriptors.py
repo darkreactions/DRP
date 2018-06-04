@@ -188,8 +188,8 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
            }
         """
         matrix = {
-            true: {guess: 0 for guess in xrange(self.minimum, self.maximum + 1)}
-            for true in xrange(self.minimum, self.maximum + 1)
+            true: {guess: 0 for guess in range(self.minimum, self.maximum + 1)}
+            for true in range(self.minimum, self.maximum + 1)
         }
         for true, guess in self.getPredictionTuples():
             matrix[true][guess] += 1
