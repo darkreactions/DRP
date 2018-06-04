@@ -4,7 +4,7 @@ from django.template import RequestContext, Context
 from DRP.models import PerformedReaction, LabGroup, ModelContainer
 from operator import add
 
-js_testing = True
+js_testing = False
 
 
 def dashboard(request):
@@ -22,6 +22,9 @@ def dashboard(request):
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively
         make_dates_csv('datePerformedCumulative.csv', 'performed', cumulative=True)
+
+    # Another thing to add would be the confusion matrices.
+    # Unfortunately, there is no data for these in the test dataset I have, so this just prints an empty list
     print(ModelContainer.objects.all())
     for model in ModelContainer.objects.all():
         print(model)
@@ -39,7 +42,6 @@ def make_dates_csv(csv_name, inserted_or_performed, cumulative=False):
     End result is a csv in static/csv_name with headers:
     date, Norquist Group,...,allthelabgroups
     """
-    print(cumulative)
     with open('static/' + csv_name, 'w') as f:
         # get all the potential labgroups
         all_labGroups = list(map(str, [lab_group for lab_group in LabGroup.objects.all()]))
