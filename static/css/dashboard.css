@@ -2,6 +2,16 @@
  
 }
 
+.grid-container {
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-template-rows: 500px 500px;
+
+}
+.grid-container h2, .grid-container h4 {
+	margin: 0px;
+}
+
 .infoContainer h2 {
  text-align:center;
 }
@@ -84,8 +94,24 @@ svg .legends {
 
 
 
+  svg {
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+  }
 
-
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+  }
+ 
+  path.domain {
+    stroke: none;
+  }
+ 
+  .y .tick line {
+    stroke: #ddd;
+  }
 
 
 

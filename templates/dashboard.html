@@ -2,138 +2,218 @@
 
 {% block additional_head %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dashboard.css" />
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block content %}
-<div class="infoContainer">
- <div class="live">
-  <h2>Live Models</h2>
-  <div id="liveGraph">
-   <svg viewBox="0 0 450 500" width="500" height="450">
-    {% comment %}
-    <defs>
-     can define "point" and other objects here
-    </defs>
-    {% endcomment %}
-    <title>Live Models</title>
-    <g class="graph">
-     <g class="plot">
-      <rect class="background" height="314" width="445" x="0" y="0"></rect>
-      <g class="y-axis">
-       <g class="guides">
-        <path class="line" d="M0 307 h445"></path>
-        <text x="-5" y="311">0.0</text>
-        <title>0.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 272 h445"></path>
-        <text x="-5" y="276">10.0</text>
-        <title>10.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 237 h445"></path>
-        <text x="-5" y="241">20.0</text>
-        <title>20.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 202 h445"></path>
-        <text x="-5" y="206">30.0</text>
-        <title>30.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 167 h445"></path>
-        <text x="-5" y="171">40.0</text>
-        <title>40.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 132 h445"></path>
-        <text x="-5" y="136">50.0</text>
-        <title>50.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 97 h445"></path>
-        <text x="-5" y="101">60.0</text>
-        <title>60.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 62 h445"></path>
-        <text x="-5" y="66">70.0</text>
-        <title>70.0</title>
-       </g>
-       <g class="guides">
-        <path class="line" d="M0 27 h445"></path>
-        <text x="-5" y="31">80.0</text>
-        <title>80.0</title>
-       </g>
-      </g>
-      <g class="x-axis">
-       <g class="guides">
-        <path class="line" d="M8 0 v314"></path>
-        <text x="8" y="329">2005</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M51 0 v314"></path>
-        <text x="51" y="329">2006</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M94 0 v314"></path>
-        <text x="94" y="329">2007</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M137 0 v314"></path>
-        <text x="137" y="329">2008</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M180 0 v314"></path>
-        <text x="180" y="329">2009</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M223 0 v314"></path>
-        <text x="223" y="329">2010</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M266 0 v314"></path>
-        <text x="266" y="329">2011</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M309 0 v314"></path>
-        <text x="309" y="329">2012</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M352 0 v314"></path>
-        <text x="352" y="329">2013</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M395 0 v314"></path>
-        <text x="395" y="329">2014</text>
-       </g>
-       <g class="guides">
-        <path class="guide line" d="M438 0 v314"></path>
-        <text x="438" y="329">2006</text>
-       </g>
-      </g>
-     </g>
-     <g class="titles">
-      <text class="title" x="100" y="20">Live Models</text>
-     </g>
-     <g class="legends"></g>
-    </g>
-   </svg>
+<div class="grid-container">
+  <div class="grid-item">
+    <h2>Num experiments: {{num_experiments}}</h2>
+    <h4> <span style="color: green;">{{num_experiments_public}}</span> are public,
+         <span style="color: red">{{num_experiments_private}}</span> are private
+    </h4>
   </div>
- </div>
-
- <div class="stats">
-  <h2>Experimental Statistics</h2>
-  <div class="statsWrapper">
-   <div id="liveStats"></div>
-   <div class="experimentsWrapper">
-    <div id="experimentsStats"></div>
-   </div>
-  </div>
- </div>
+  <div class="grid-item"><h3>Date Reactions were Entered</h3><div id="when_reactions_entered_graph"></div></div>
+  <div class="grid-item"><h3>Date Reactions were Performed</h3><div id="when_reactions_performed_graph"></div></div>
+  <div class="grid-item"><h3>Cumulative Reactions Performed</h3><div id="when_reactions_performed_cumulative_graph"></div></div>
+  <div class="grid-item">5</div>
+  <div class="grid-item">6</div>
+  <div class="grid-item">7</div>
+  <div class="grid-item">8</div>
+  <div class="grid-item">9</div>
 </div>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+// this visualization is mostly this: http://bl.ocks.org/mstanaland/6100713
+// but also a little bit this: https://bl.ocks.org/d3noob/96b74d0bd6d11427dd797892551a103c
 
-{% comment %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/d3.v2.js" ></script>
-{% endcomment %}
+$(document).ready(function() { 
+  function make_stacked_bar(csv_name, div_id) {
+    // csv name in format 'mycsv.csv'. mycsv should be in static folder
+    // div_id in format '#my_div_id'
+
+    // Setup svg using Bostock's margin convention
+    var margin = {top: 20, right: 160, bottom: 100, left: 75};
+
+    var width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+    var svg = d3.select(div_id)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    // get the data
+    d3.csv("{{ STATIC_URL }}"+csv_name, function(error, data) {
+      if (error) throw error;
+
+      // https://stackoverflow.com/questions/8312459/iterate-through-object-properties?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+      var all_labGroups = []
+      for(var property in data[0]) {
+        if (data[0].hasOwnProperty(property) && property != "date") {
+          all_labGroups.push(property)
+        }
+      }
+
+      // Transpose the data into layers
+      var dataset = d3.layout.stack()(all_labGroups.map(function(labGroup) {
+        return data.map(function(d) {
+          return {x: parseDate(d.date), y: +d[labGroup] + 5};
+        });
+      }));
+      // need to sort the dataset by date
+      function compare_data_objects(a,b) {
+        if (a.x < b.x) {
+          return -1;
+        }
+        if (a.x > b.x) {
+          return 1;
+        }
+        return 0;
+      }
+      for(var thing in dataset) {
+        dataset[thing].sort(compare_data_objects);
+      }
+
+    // set the ranges
+    // Set x, y and colors
+    var x = d3.scale.ordinal()
+      .domain(dataset[0].map(function(d) { return d.x; }))
+      .rangeRoundBands([10, width-10], 0.01);
+
+      var y = d3.scale.linear()
+        .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
+        .range([height, 0]);
+
+      var num_colors = all_labGroups.length;
+      if (num_colors > 20){
+        throw "Too many lab groups! I've only supported up to 20 colors"
+      }
+      var colors = d3.scale.category20().range().slice(0, num_colors);
+      // Define and draw axes
+      var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
+        .tickSize(-width, 0, 0)
+        .tickFormat( function(d) { return d } );
+
+      var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .ticks(5)
+        .tickFormat(d3.time.format("%Y-%m-%d"));
+
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+      // draw x axis with labels and move to the bottom of the chart area
+      svg.append("g")
+          .attr("class", "xaxis axis")  // two classes, one for css formatting, one for selection below
+          .attr("transform", "translate(0," + (height+2) + ")")
+          .call(xAxis);
+          
+      // now rotate text on x axis
+      // solution based on idea here: https://groups.google.com/forum/?fromgroups#!topic/d3-js/heOBPQF3sAY
+      // first move the text left so no longer centered on the tick
+      // then rotate up to get 45 degrees.
+      svg.selectAll(".xaxis text")  // select all the text elements for the xaxis
+        .attr("transform", function(d) {
+           return "translate(" + this.getBBox().height*-2 + "," + this.getBBox().height + ")rotate(-45)";
+       });
+
+
+      // now add titles to the axes
+      svg.append("text")
+          .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+          .attr("transform", "translate("+ (-margin.bottom/2) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+          .text("Number of Reactions");
+
+      svg.append("text")
+          .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+          .attr("transform", "translate("+ (width/2) +","+(height-(-margin.bottom/1.5))+")")  // centre below axis
+          .text("Date");
+
+      // Create groups for each series, rects for each segment 
+      var groups = svg.selectAll("g.cost")
+        .data(dataset)
+        .enter().append("g")
+        .attr("class", "cost")
+        .style("fill", function(d, i) { return colors[i]; });
+
+      var rect = groups.selectAll("rect")
+        .data(function(d) { return d; })
+        .enter()
+        .append("rect")
+        .attr("x", function(d) { return x(d.x); })
+        .attr("y", function(d) { return y(d.y0 + d.y); })
+        .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
+        .attr("width", x.rangeBand()-1)
+        .on("mouseover", function() { tooltip.style("display", null); })
+        .on("mouseout", function() { tooltip.style("display", "none"); })
+        .on("mousemove", function(d) {
+          var xPosition = d3.mouse(this)[0] - 15;
+          var yPosition = d3.mouse(this)[1] - 25;
+          tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+          tooltip.select("text").text(d.y);
+        });
+
+
+      // Draw legend
+      var legend = svg.selectAll(".legend")
+        .data(colors)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
+       
+      legend.append("rect")
+        .attr("x", width - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", function(d, i) {return colors.slice()[i];});
+       
+      legend.append("text")
+        .attr("x", width + 5)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text(function(d, i) { 
+            return all_labGroups[i]
+      });
+      
+
+
+      // Prep the tooltip bits, initial display is hidden
+      var tooltip = svg.append("g")
+        .attr("class", "tooltip")
+        .style("display", "none");
+          
+      tooltip.append("rect")
+        .attr("width", 30)
+        .attr("height", 20)
+        .attr("fill", "white")
+        .style("opacity", 0.5);
+
+      tooltip.append("text")
+        .attr("x", 15)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("font-weight", "bold");
+    });
+  };
+  make_stacked_bar("dateEntered.csv", "#when_reactions_entered_graph");
+  make_stacked_bar("datePerformed.csv", "#when_reactions_performed_graph");  
+  make_stacked_bar("datePerformedCumulative.csv", "#when_reactions_performed_cumulative_graph");
+});
+</script>
+
 {% endblock %}
