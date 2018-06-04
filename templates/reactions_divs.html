@@ -10,7 +10,7 @@
                 <td>{{ reaction.reference }}</td>
                 {% if user.is_authenticated %}
                     {% if reaction.labGroup in user.labgroup_set.all %}
-    	                <td><a class="edit" href="{% url 'editReaction' reaction.pk %}"><img src="/static/icons/edit.png" alt="edit this reaction" height="25" width="25" title="edit this reaction"/></a></td>
+                        <td><a class="edit" href="{% url 'editReaction' reaction.pk %}"><img src="/static/icons/edit.png" alt="edit this reaction" height="25" width="25" title="edit this reaction"/></a></td>
                     {% endif %}
                 {% endif %}
                       {% if reaction.public %}
@@ -19,7 +19,7 @@
                       {% endif %}
                 {% if user.is_authenticated %}
                     {% if reaction.labGroup in user.labgroup_set.all %}
-	                    {% if not reaction.datasetrelation_set.exists %}
+                        {% if not reaction.datasetrelation_set.exists %}
                             <td class="right">
                                 <form action="{% url 'deleteReaction' %}" method="post">
                                     {% csrf_token %}
@@ -46,11 +46,12 @@
                 <th>Reactants</th>
                 <td>
                     <table>
-                        <thead><tr><th>Compound</th><th>Quantity</th><th>Role</th></tr></thead>
+                        <thead><tr><th>Compound</th><th>Quantity(g)</th><th>Quantity(mmol)</th><th>Role</th></tr></thead>
                         <tbody>
                             {% for quantity in reaction.compoundquantity_set.all %}
                             <tr>
                                 <td>{{ quantity.compound.name }}</td>
+                                <td>{% if quantity.amount_grams = None %}Unknown{% else %}{{ quantity.amount_grams }} grams{% endif %}</td>
                                 <td>{% if quantity.amount = None %}Unknown{% else %}{{ quantity.amount }} mmoles{% endif %}</td>
                                 <td>{{ quantity.role.label }}</td>
                             </tr>
