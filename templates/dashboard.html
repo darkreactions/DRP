@@ -66,7 +66,7 @@ $(document).ready(function() {
       // Transpose the data into layers
       var dataset = d3.layout.stack()(all_labGroups.map(function(labGroup) {
         return data.map(function(d) {
-          return {x: parseDate(d.date), y: +d[labGroup] + 5};
+          return {x: parseDate(d.date), y: +d[labGroup]};
         });
       }));
       // need to sort the dataset by date
