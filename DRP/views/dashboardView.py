@@ -4,9 +4,13 @@ from django.template import RequestContext, Context
 from DRP.models import PerformedReaction, LabGroup, ModelContainer
 from operator import add
 import datetime
+import logging
 
 # Set to False for faster, non-dynamic page loads (good for testing JS)
 generate_csvs = True
+
+logger = logging.getLogger(__name__)
+logger.setLevel('DEBUG')
 
 
 def dashboard(request):
@@ -15,6 +19,7 @@ def dashboard(request):
     num_experiments = len(PerformedReaction.objects.all())
     num_experiments_public = len(PerformedReaction.objects.filter(public=True))
     num_experiments_private = num_experiments - num_experiments_public
+    logger.debug("More Info! WOW!")
     if generate_csvs:
         # get the dates the experiments were INSERTED into the datebase
         make_dates_csv('dateEntered.csv', 'inserted')
