@@ -1,24 +1,37 @@
 {% extends "base.html" %}
 
 {% block additional_head %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dashboard.css" />
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dashboard.css" />
 {% endblock %}
 
 {% block content %}
-<div class="grid-container">
-  <div class="grid-item">
-    <h2>Number of experiments: {{num_experiments}} <span id=num_experiments_line> </span> </h2>
-    <h4> <span style="color: green;">{{num_experiments_public}}</span> are public,
-         <span style="color: red">{{num_experiments_private}}</span> are private
-    </h4>
+<div class="container">
+  <div class="row">
+    <div class="col-md-auto">
+      <h2>Number of experiments: {{num_experiments}} <span id=num_experiments_line> </span> </h2>
+      <h4> <span style="color: green;">{{num_experiments_public}}</span> are public,
+           <span style="color: red">{{num_experiments_private}}</span> are private
+      </h4>
+    </div>
+    <div class="col-md-auto">
+      <h3>Date Reactions were Entered</h3>
+      <div id="when_reactions_entered_graph"></div>
+    </div>
   </div>
-  <div class="grid-item"><h3>Date Reactions were Entered</h3><div id="when_reactions_entered_graph"></div></div>
-  <div class="grid-item"><h3>Date Reactions were Performed</h3><div id="when_reactions_performed_graph"></div></div>
-  <div class="grid-item"><h3>Cumulative Reactions Performed</h3><div id="when_reactions_performed_cumulative_graph"></div></div>
+  <div class="row">
+    <div class="col-md-auto"><h3>Date Reactions were Performed</h3><div id="when_reactions_performed_graph"></div></div>
+    <div class="col-md-auto"><h3>Cumulative Reactions Performed</h3><div id="when_reactions_performed_cumulative_graph"></div></div>
+  </div>
+  <div class="row">
+    <div class="col-md-auto"><h3>Reactions with no Performed Date</h3><div id="noPerformedDate_graph"></div></div>
+  </div>
   <!-- If you want more grid items, you can add them! like so: -->
   <!--
   <div class="grid-item">A new item!</div>
@@ -65,6 +78,9 @@ $(document).ready(function() {
       // Transpose the data into layers
       var dataset = d3.layout.stack()(all_labGroups.map(function(labGroup) {
         return data.map(function(d) {
+          if (d.date == 'None') {
+              return {x: parseDate("1985-01-01"), y: +d[labGroup]}
+          }
           return {x: parseDate(d.date), y: +d[labGroup]};
         });
       }));
@@ -78,8 +94,8 @@ $(document).ready(function() {
         }
         return 0;
       }
-      for(var thing in dataset) {
-        dataset[thing].sort(compare_data_objects);
+      for(var date in dataset) {
+        dataset[date].sort(compare_data_objects);
       }
 
     // set the ranges
@@ -212,6 +228,7 @@ $(document).ready(function() {
   make_stacked_bar("dateEntered.csv", "#when_reactions_entered_graph");
   make_stacked_bar("datePerformed.csv", "#when_reactions_performed_graph");  
   make_stacked_bar("datePerformedCumulativeByLab.csv", "#when_reactions_performed_cumulative_graph");
+  make_stacked_bar("noPerformedDate.csv", "#noPerformedDate_graph");
 });
 </script>
 

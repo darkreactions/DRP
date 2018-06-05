@@ -4,14 +4,12 @@ from django.template import RequestContext, Context
 from DRP.models import PerformedReaction, LabGroup, ModelContainer
 from operator import add
 import datetime
-import logging
 
-# Set to False for faster, non-dynamic page loads (good for testing JS)
+# Set to False for faster, non-dynamic page loads (good for testing JS/Frontend)
 generate_csvs = True
 
-logger = logging.getLogger(__name__)
-logger.setLevel('DEBUG')
-
+# Labs included in this list will be totally ignored in the end visualization
+DISCLUDED_LABS = ['default_amines']
 
 def dashboard(request):
     """The view for dashboard. Gathers and preprocesses some data for visualization."""
@@ -19,13 +17,12 @@ def dashboard(request):
     num_experiments = len(PerformedReaction.objects.all())
     num_experiments_public = len(PerformedReaction.objects.filter(public=True))
     num_experiments_private = num_experiments - num_experiments_public
-    logger.debug("More Info! WOW!")
     if generate_csvs:
         # get the dates the experiments were INSERTED into the datebase
         make_dates_csv('dateEntered.csv', 'inserted')
 
         # get the date the experiments were PERFORMED
-        make_dates_csv('datePerformed.csv', 'performed')
+        make_dates_csv('datePerformed.csv', 'performed', count_no_data=True)
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively
         make_dates_csv('datePerformedCumulativeByLab.csv', 'performed', cumulative=True)
@@ -37,6 +34,7 @@ def dashboard(request):
 
     # Another thing to add would be the confusion matrices.
     # Unfortunately, there is no data for these in the test dataset I have, so this just prints an empty list
+    print("Next will print all the ModelContainer objects, which might be an empty list.")
     print(ModelContainer.objects.all())
     for model in ModelContainer.objects.all():
         print(model)
@@ -48,23 +46,32 @@ def dashboard(request):
                            'num_experiments_private': num_experiments_private})
 
 
-def make_dates_csv(csv_name, inserted_or_performed, cumulative=False):
+def make_dates_csv(csv_name, inserted_or_performed, cumulative=False, count_no_data=False):
     """Gather data from a csv.
 
     End result is a csv in static/csv_name with headers:
     date, Norquist Group,...,allthelabgroups
     """
+    no_datePerformed = {}
+
+    # get all the potential labgroups ignoring group in DISCLUDED_LABS
+    all_labGroups = []
+    for lab_group in LabGroup.objects.all():
+        lab_group = str(lab_group)
+        if lab_group in DISCLUDED_LABS:
+            continue
+        all_labGroups.append(lab_group)
+
+    # give them an index; this is how we will differentiate them in a list later
+    lab_group_index_dict = {}
+    index = 0
+    for lab_group in all_labGroups:
+        lab_group_index_dict[lab_group] = index
+        index += 1
+
+
+
     with open('static/' + csv_name, 'w') as f:
-        # get all the potential labgroups
-        all_labGroups = list(map(str, [lab_group for lab_group in LabGroup.objects.all()]))
-
-        # give them an index; this is how we will differentiate them in a list later
-        lab_group_index_dict = {}
-        index = 0
-        for lab_group in all_labGroups:
-            lab_group_index_dict[lab_group] = index
-            index += 1
-
         # generate a dictionary of dates (year month day format) that has the counts of each of the labgroups as values
         date_dictionary = {}
         for reaction in PerformedReaction.objects.all():
@@ -76,20 +83,24 @@ def make_dates_csv(csv_name, inserted_or_performed, cumulative=False):
                 raise ValueError("Argument 'inserted_or_performed' must be 'inserted' or 'performed'")
 
             # many dates are 'None', I am just skipping those
-            if date == 'None':
-                continue
+            if date == 'None' and count_no_data:
+                date = str(reaction.insertedDateTime)[:10]
+                if date not in no_datePerformed:
+                    no_datePerformed[date] = len(all_labGroups) * [0]
+                lab_group = str(reaction.labGroup)
+                if lab_group in DISCLUDED_LABS:
+                    continue
+                lab_group_index = lab_group_index_dict[lab_group]
+                no_datePerformed[date][lab_group_index] += 1
 
-            user = reaction.user
-            labGroups = []
-            if user:
-                for labGroup in user.labgroup_set.all():
-                    labGroups.append(labGroup)
-            labGroups = list(map(str, labGroups))
             if date not in date_dictionary:
                 date_dictionary[date] = len(all_labGroups) * [0]
-            for lab_group in labGroups:
-                        lab_group_index = lab_group_index_dict[lab_group]
-                        date_dictionary[date][lab_group_index] += 1
+
+            lab_group = str(reaction.labGroup)
+            if lab_group in DISCLUDED_LABS:
+                continue
+            lab_group_index = lab_group_index_dict[lab_group]
+            date_dictionary[date][lab_group_index] += 1
 
         # write the headers
         f.write("date," + ",".join(all_labGroups) + "\n")
@@ -110,7 +121,14 @@ def make_dates_csv(csv_name, inserted_or_performed, cumulative=False):
             for date in date_dictionary:
                 lab_group_counts = map(str, date_dictionary[date])
                 f.write(date + "," + ",".join(lab_group_counts) + "\n")
-
+    if count_no_data:
+        with open("static/noPerformedDate.csv", 'w') as f:
+            # write the headers
+            f.write("date," + ",".join(all_labGroups) + "\n")
+            # write the dates and corresponding entry counts
+            for date in no_datePerformed:
+                lab_group_counts = map(str, no_datePerformed[date])
+                f.write(date + "," + ",".join(lab_group_counts) + "\n")
 
 def make_dates_csv_no_lab(csv_name, inserted_or_performed, cumulative=False, add_inbetween_times=False, dateRange=None):
     """Generate a dates csv without accounting for the different labs.

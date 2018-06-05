@@ -2,7 +2,7 @@
 .grid-container {
 	display: grid;
 	grid-template-columns: auto auto;
-	grid-template-rows: 500px 500px;
+	grid-template-rows: 50% 50%;
 	padding: 30px
 
 }
@@ -37,4 +37,8 @@ path {
     stroke: steelblue;
     stroke-width: 2;
     fill: none;
+}
+
+body {
+	background-color: #d1d1d1; 
 }
