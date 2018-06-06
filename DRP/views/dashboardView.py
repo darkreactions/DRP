@@ -92,6 +92,9 @@ def make_dates_csv(csv_name, inserted_or_performed, cumulative=False, count_no_d
                     continue
                 lab_group_index = lab_group_index_dict[lab_group]
                 no_datePerformed[date][lab_group_index] += 1
+                continue
+            elif date == 'None':
+                continue
 
             if date not in date_dictionary:
                 date_dictionary[date] = len(all_labGroups) * [0]
