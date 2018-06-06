@@ -20,6 +20,29 @@
            <span style="color: red">{{num_experiments_private}}</span> are private
       </h4>
     </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h3>Date Reactions were Entered</h3>
+      <div id="tiny_when_reactions_entered_graph"></div>
+    </div> 
+    <div>
+      <h3>Date Reactions were Performed</h3>
+      <div id="tiny_when_reactions_performed_graph"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h3>Reactions with no Performed Date</h3> 
+      <div id="tiny_noPerformedDate_graph"></div>
+    </div> 
+    <div>
+      <h3>Reactions Cumulatively Performed</h3>
+      <div id="tiny_when_reactions_performed_cumulative_graph"></div>
+    </div>
+  </div>
+
+  <div class="row"
     <div class="col-md-auto">
       <h3>Date Reactions were Entered</h3>
       <div id="when_reactions_entered_graph"></div>
@@ -43,15 +66,19 @@
 // but also a little bit this: https://bl.ocks.org/d3noob/96b74d0bd6d11427dd797892551a103c
 // And for more advice look at this: http://www.adeveloperdiary.com/d3-js/create-stacked-bar-chart-using-d3-js/
 $(document).ready(function() { 
-  function make_stacked_bar(csv_name, div_id) {
+  function make_stacked_bar(csv_name, div_id, width, height, include_labels) {
     // csv name in format 'mycsv.csv'. mycsv should be in static folder
     // div_id in format '#my_div_id'
 
     // Setup svg using Bostock's margin convention
-    var margin = {top: 20, right: 160, bottom: 100, left: 75};
-
-    var width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+    if (include_labels) {
+      var margin = {top: 20, right: 160, bottom: 100, left: 75};
+    }
+    else {
+      var margin = {top: 20, right: 10, bottom: 20, left: 25};
+    }
+    var width = width - margin.left - margin.right,
+        height = height - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y-%m-%d").parse;
 
@@ -113,37 +140,40 @@ $(document).ready(function() {
         throw "Too many lab groups! I've only supported up to 20 colors"
       }
       var colors = d3.scale.category20().range().slice(0, num_colors);
-      // Define and draw axes
-      var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        .ticks(5)
-        .tickSize(-width, 0, 0)
-        .tickFormat( function(d) { return d } );
+      
+      if (include_labels) { 
+        // Define and draw axes
+        var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          .ticks(5)
+          .tickSize(-width, 0, 0)
+          .tickFormat( function(d) { return d } );
 
-      var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom")
-        .ticks(5)
-        .tickFormat(d3.time.format("%Y-%m-%d"));
+        var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom")
+          .ticks(5)
+          .tickFormat(d3.time.format("%Y-%m-%d"));
 
-      svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-      // draw x axis with labels and move to the bottom of the chart area
-      svg.append("g")
-          .attr("class", "xaxis axis")  // two classes, one for css formatting, one for selection below
-          .attr("transform", "translate(0," + (height+2) + ")")
-          .call(xAxis);
-          
-      // now rotate text on x axis
-      // solution based on idea here: https://groups.google.com/forum/?fromgroups#!topic/d3-js/heOBPQF3sAY
-      // first move the text left so no longer centered on the tick
-      // then rotate up to get 45 degrees.
-      svg.selectAll(".xaxis text")  // select all the text elements for the xaxis
-        .attr("transform", function(d) {
-           return "translate(" + this.getBBox().height*-2 + "," + this.getBBox().height + ")rotate(-45)";
-       });
+        svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+        // draw x axis with labels and move to the bottom of the chart area
+        svg.append("g")
+            .attr("class", "xaxis axis")  // two classes, one for css formatting, one for selection below
+            .attr("transform", "translate(0," + (height+2) + ")")
+            .call(xAxis);
+            
+        // now rotate text on x axis
+        // solution based on idea here: https://groups.google.com/forum/?fromgroups#!topic/d3-js/heOBPQF3sAY
+        // first move the text left so no longer centered on the tick
+        // then rotate up to get 45 degrees.
+        svg.selectAll(".xaxis text")  // select all the text elements for the xaxis
+          .attr("transform", function(d) {
+             return "translate(" + this.getBBox().height*-2 + "," + this.getBBox().height + ")rotate(-45)";
+         });
+      }
 
 
       // now add titles to the axes
@@ -178,33 +208,33 @@ $(document).ready(function() {
           var xPosition = d3.mouse(this)[0] - 15;
           var yPosition = d3.mouse(this)[1] - 25;
           tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-          tooltip.select("text").text(d.y);
+          tooltip.select("text").text((""+d.x).substring(4,15) + ", " + d.y);
         });
 
-
-      // Draw legend
-      var legend = svg.selectAll(".legend")
-        .data(colors)
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
-       
-      legend.append("rect")
-        .attr("x", width - 18)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", function(d, i) {return colors.slice()[i];});
-       
-      legend.append("text")
-        .attr("x", width + 5)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "start")
-        .text(function(d, i) { 
-            return all_labGroups[i]
-      });
+      if (include_labels) {
+        // Draw legend
+        var legend = svg.selectAll(".legend")
+          .data(colors)
+          .enter().append("g")
+          .attr("class", "legend")
+          .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
+         
+        legend.append("rect")
+          .attr("x", width - 18)
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", function(d, i) {return colors.slice()[i];});
+         
+        legend.append("text")
+          .attr("x", width + 5)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "start")
+          .text(function(d, i) { 
+              return all_labGroups[i]
+        });
       
-
+      }
 
       // Prep the tooltip bits, initial display is hidden
       var tooltip = svg.append("g")
@@ -212,23 +242,39 @@ $(document).ready(function() {
         .style("display", "none");
           
       tooltip.append("rect")
-        .attr("width", 30)
+        .attr("width", 100)
         .attr("height", 20)
         .attr("fill", "white")
         .style("opacity", 0.5);
 
       tooltip.append("text")
-        .attr("x", 15)
+        .attr("x", 50)
         .attr("dy", "1.2em")
         .style("text-anchor", "middle")
         .attr("font-size", "12px")
         .attr("font-weight", "bold");
     });
   };
-  make_stacked_bar("dateEntered.csv", "#when_reactions_entered_graph");
-  make_stacked_bar("datePerformed.csv", "#when_reactions_performed_graph");  
-  make_stacked_bar("datePerformedCumulativeByLab.csv", "#when_reactions_performed_cumulative_graph");
-  make_stacked_bar("noPerformedDate.csv", "#noPerformedDate_graph");
+
+  // BIG GRAPHS
+  var big_width  = 960,
+      big_height = 500;
+
+  make_stacked_bar("dateEntered.csv", "#when_reactions_entered_graph", big_width, big_height, true);
+  make_stacked_bar("datePerformed.csv", "#when_reactions_performed_graph", big_width, big_height, true);  
+  make_stacked_bar("datePerformedCumulativeByLab.csv", "#when_reactions_performed_cumulative_graph", big_width, big_height, true);
+  make_stacked_bar("noPerformedDate.csv", "#noPerformedDate_graph", big_width, big_height, true);
+
+
+  // tiny graphs
+  var tiny_width  = 500,
+      tiny_height = 250;
+  make_stacked_bar("dateEntered.csv", "#tiny_when_reactions_entered_graph", tiny_width, tiny_height, false)
+  make_stacked_bar("datePerformed.csv", "#tiny_when_reactions_performed_graph", tiny_width, tiny_height, false);  
+  make_stacked_bar("datePerformedCumulativeByLab.csv", "#tiny_when_reactions_performed_cumulative_graph", tiny_width, tiny_height, false);
+  make_stacked_bar("noPerformedDate.csv", "#tiny_noPerformedDate_graph", tiny_width, tiny_height, false);
+
+
 });
 </script>
 
