@@ -20,6 +20,10 @@
            <span style="color: red">{{num_experiments_private}}</span> are private
       </h4>
     </div>
+    <div class="col-md-auto">
+      <h5>Legend</h5>
+      <div id="lab_legend"></div>
+    </div>
   </div>
   <div class="row">
     <div class="col">
@@ -75,7 +79,7 @@ $(document).ready(function() {
       var margin = {top: 20, right: 160, bottom: 100, left: 75};
     }
     else {
-      var margin = {top: 20, right: 10, bottom: 20, left: 25};
+      var margin = {top: 20, right: 80, bottom: 20, left: 25};
     }
     var width = width - margin.left - margin.right,
         height = height - margin.top - margin.bottom;
@@ -132,7 +136,7 @@ $(document).ready(function() {
       .rangeRoundBands([10, width-10], 0.01);
 
       var y = d3.scale.linear()
-        .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
+        .domain([d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); }), d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
         .range([height, 0]);
 
       var num_colors = all_labGroups.length;
@@ -210,10 +214,10 @@ $(document).ready(function() {
           tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
           tooltip.select("text").text((""+d.x).substring(4,15) + ", " + d.y);
         });
-
-      if (include_labels) {
+      make_legend(colors, all_labGroups);
+      if (true) {
         // Draw legend
-        var legend = svg.selectAll(".legend")
+        var legend = d3.select("#lab_legend")
           .data(colors)
           .enter().append("g")
           .attr("class", "legend")
@@ -274,6 +278,41 @@ $(document).ready(function() {
   make_stacked_bar("datePerformedCumulativeByLab.csv", "#tiny_when_reactions_performed_cumulative_graph", tiny_width, tiny_height, false);
   make_stacked_bar("noPerformedDate.csv", "#tiny_noPerformedDate_graph", tiny_width, tiny_height, false);
 
+
+  // LEGEND
+
+  function make_legend(colors, all_labGroups) {
+    var width = 300,
+        height = 300
+    var svg = d3.select("#lab_legend")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g");
+
+    var legend = svg.selectAll(".legend")
+      .data(colors)
+      .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
+     
+    legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", function(d, i) {return colors.slice()[i];});
+     
+    legend.append("text")
+      .attr("x", width + 5)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "start")
+      .text(function(d, i) { 
+          return all_labGroups[i]
+    });
+
+
+  }
 
 });
 </script>
