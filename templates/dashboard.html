@@ -191,7 +191,7 @@ $(document).ready(function() {
         .attr("y", function(d) { return y(d.y0 + d.y); })
         .attr("height", function(d) {
                                       if (d.y0 <= d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); })) {
-                                        return y(d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); }));
+                                        return y(d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); })) - y(d.y0 + d.y);
                                       }
                                       else {
                                        return y(d.y0) - y(d.y0 + d.y);
