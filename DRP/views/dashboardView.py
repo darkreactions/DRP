@@ -19,21 +19,20 @@ def dashboard(request):
     num_experiments_private = num_experiments - num_experiments_public
     if generate_csvs:
         # get the dates the experiments were INSERTED into the datebase
-        make_dates_csv('dateEntered.csv', 'inserted')
+        today = datetime.datetime.today()
+        timeframe = datetime.timedelta(days=365) 
+        make_dates_csv_weekly('dateEntered.csv', 'inserted', dateRange=(today-timeframe, today))
 
         # get the date the experiments were PERFORMED
-        make_dates_csv('datePerformed.csv', 'performed', count_no_data=True)
+        make_dates_csv_weekly('datePerformed.csv', 'performed', dateRange=(today-timeframe, today))
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively
-        make_dates_csv('datePerformedCumulativeByLab.csv', 'performed', cumulative=True)
+        make_dates_csv_weekly('datePerformedCumulativeByLab.csv', 'performed', cumulative=True, dateRange=(today - timeframe, today))
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively, not by lab though
         today = datetime.datetime.today()
         timeframe = datetime.timedelta(days=30)
         make_dates_csv_no_lab('datePerformedCumulative.csv', 'performed', cumulative=True, add_inbetween_times=True, dateRange=(today - timeframe, today))
-    today = datetime.datetime.today()
-    timeframe = datetime.timedelta(days=365)    
-    make_dates_csv_weekly('datePerformedCumulativeByLab.csv', 'performed', cumulative=True, dateRange=(today - timeframe, today))
 
     # Another thing to add would be the confusion matrices.
     # Unfortunately, there is no data for these in the test dataset I have, so this just prints an empty list
@@ -280,7 +279,7 @@ def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dat
                 lab_group_counts = map(str, date_dictionary[date])
 
                 # if we have a dateRange and it falls outside the date range we don't want it 
-                if (dateRange and (datetime.datetime.strptime(date[0], "%Y-%m-%d") < dateRange[0] or datetime.datetime.strptime(date[0], "%Y-%m-%d") > dateRange[1])):
+                if (dateRange and (datetime.datetime.strptime(date, "%Y-%m-%d") < dateRange[0] or datetime.datetime.strptime(date, "%Y-%m-%d") > dateRange[1])):
                     continue
                 
                 f.write(date + "," + ",".join(lab_group_counts) + "\n")
