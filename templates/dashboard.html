@@ -135,6 +135,7 @@ $(document).ready(function() {
       .domain(dataset[0].map(function(d) { return d.x; }))
       .rangeRoundBands([10, width-10], 0.01);
 
+    console.log(dataset);  
       var y = d3.scale.linear()
         .domain([d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); }), d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
         .range([height, 0]);
@@ -197,6 +198,7 @@ $(document).ready(function() {
         .enter().append("g")
         .attr("class", "cost")
         .style("fill", function(d, i) { return colors[i]; });
+      console.log("y(0)", y(0));
 
       var rect = groups.selectAll("rect")
         .data(function(d) { return d; })
@@ -204,7 +206,15 @@ $(document).ready(function() {
         .append("rect")
         .attr("x", function(d) { return x(d.x); })
         .attr("y", function(d) { return y(d.y0 + d.y); })
-        .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
+        .attr("height", function(d) {
+                                      if (d.y0 <= d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); })) {
+                                        return y(d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); }));
+                                      }
+                                      else {
+                                       return y(d.y0) - y(d.y0 + d.y);
+                                      }
+                                      })
+                                      
         .attr("width", x.rangeBand()-1)
         .on("mouseover", function() { tooltip.style("display", null); })
         .on("mouseout", function() { tooltip.style("display", "none"); })
@@ -215,13 +225,12 @@ $(document).ready(function() {
           tooltip.select("text").text((""+d.x).substring(4,15) + ", " + d.y);
         });
       make_legend(colors, all_labGroups);
-      if (true) {
+      if (false) {
         // Draw legend
         var legend = d3.select("#lab_legend")
           .data(colors)
           .enter().append("g")
           .attr("class", "legend")
-          .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
          
         legend.append("rect")
           .attr("x", width - 18)
@@ -294,16 +303,16 @@ $(document).ready(function() {
       .data(colors)
       .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
+      .attr("transform", function(d, i) { return "translate(0," + i * 19 + ")"; });
      
     legend.append("rect")
-      .attr("x", width - 18)
+      .attr("x", 5)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", function(d, i) {return colors.slice()[i];});
      
     legend.append("text")
-      .attr("x", width + 5)
+      .attr("x", 28)
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "start")
