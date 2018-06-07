@@ -131,7 +131,7 @@ Copy DRP_nginx from the DRP folder to the /etc/nginx/sites-available folder.
 cp DRP/DRP_nginx /etc/nginx/sites-available
 ```
 
-Create a symlink between sites-available/DRP_nginx and sites-enabled/DRP_nginx
+Create a symlink between /etc/nginx/sites-available/DRP_nginx and /etc/nginx/sites-enabled/DRP_nginx
 
 ```
 ln -s sites-available/DRP_nginx sites-enabled/DRP_nginx
