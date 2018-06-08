@@ -4,13 +4,12 @@ from django.template import RequestContext, Context
 from DRP.models import PerformedReaction, LabGroup, ModelContainer
 from operator import add
 import datetime
-import logging
 
-# Set to False for faster, non-dynamic page loads (good for testing JS)
-generate_csvs = True
+# Set to False for faster, non-dynamic page loads (good for testing JS/Frontend)
+generate_csvs = False
 
-logger = logging.getLogger(__name__)
-logger.setLevel('DEBUG')
+# Labs included in this list will be totally ignored in the end visualization
+DISCLUDED_LABS = ['default_amines']
 
 
 def dashboard(request):
@@ -19,24 +18,27 @@ def dashboard(request):
     num_experiments = len(PerformedReaction.objects.all())
     num_experiments_public = len(PerformedReaction.objects.filter(public=True))
     num_experiments_private = num_experiments - num_experiments_public
-    logger.debug("More Info! WOW!")
     if generate_csvs:
         # get the dates the experiments were INSERTED into the datebase
-        make_dates_csv('dateEntered.csv', 'inserted')
+        today = datetime.datetime.today()
+        timeframe = datetime.timedelta(days=365)
+        make_dates_csv_weekly('dateEntered.csv', 'inserted', dateRange=(today - timeframe, today))
 
         # get the date the experiments were PERFORMED
-        make_dates_csv('datePerformed.csv', 'performed')
+        make_dates_csv_weekly('datePerformed.csv', 'performed', dateRange=(today - timeframe, today))
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively
-        make_dates_csv('datePerformedCumulativeByLab.csv', 'performed', cumulative=True)
+        make_dates_csv_weekly('datePerformedCumulativeByLab.csv', 'performed', cumulative=True, dateRange=(today - timeframe, today))
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively, not by lab though
+        # this makes the tiny line graph
         today = datetime.datetime.today()
         timeframe = datetime.timedelta(days=30)
         make_dates_csv_no_lab('datePerformedCumulative.csv', 'performed', cumulative=True, add_inbetween_times=True, dateRange=(today - timeframe, today))
 
     # Another thing to add would be the confusion matrices.
     # Unfortunately, there is no data for these in the test dataset I have, so this just prints an empty list
+    print("Next will print all the ModelContainer objects, which might be an empty list.")
     print(ModelContainer.objects.all())
     for model in ModelContainer.objects.all():
         print(model)
@@ -48,23 +50,31 @@ def dashboard(request):
                            'num_experiments_private': num_experiments_private})
 
 
-def make_dates_csv(csv_name, inserted_or_performed, cumulative=False):
+def make_dates_csv(csv_name, inserted_or_performed, cumulative=False, count_no_data=False):
     """Gather data from a csv.
 
+    No currently in use.
     End result is a csv in static/csv_name with headers:
     date, Norquist Group,...,allthelabgroups
     """
+    no_datePerformed = {}
+
+    # get all the potential labgroups ignoring group in DISCLUDED_LABS
+    all_labGroups = []
+    for lab_group in LabGroup.objects.all():
+        lab_group = str(lab_group)
+        if lab_group in DISCLUDED_LABS:
+            continue
+        all_labGroups.append(lab_group)
+
+    # give them an index; this is how we will differentiate them in a list later
+    lab_group_index_dict = {}
+    index = 0
+    for lab_group in all_labGroups:
+        lab_group_index_dict[lab_group] = index
+        index += 1
+
     with open('static/' + csv_name, 'w') as f:
-        # get all the potential labgroups
-        all_labGroups = list(map(str, [lab_group for lab_group in LabGroup.objects.all()]))
-
-        # give them an index; this is how we will differentiate them in a list later
-        lab_group_index_dict = {}
-        index = 0
-        for lab_group in all_labGroups:
-            lab_group_index_dict[lab_group] = index
-            index += 1
-
         # generate a dictionary of dates (year month day format) that has the counts of each of the labgroups as values
         date_dictionary = {}
         for reaction in PerformedReaction.objects.all():
@@ -75,21 +85,28 @@ def make_dates_csv(csv_name, inserted_or_performed, cumulative=False):
             else:
                 raise ValueError("Argument 'inserted_or_performed' must be 'inserted' or 'performed'")
 
-            # many dates are 'None', I am just skipping those
-            if date == 'None':
+            # many dates are 'None', I keep those separate
+            if date == 'None' and count_no_data:
+                date = str(reaction.insertedDateTime)[:10]
+                if date not in no_datePerformed:
+                    no_datePerformed[date] = len(all_labGroups) * [0]
+                lab_group = str(reaction.labGroup)
+                if lab_group in DISCLUDED_LABS:
+                    continue
+                lab_group_index = lab_group_index_dict[lab_group]
+                no_datePerformed[date][lab_group_index] += 1
+                continue
+            elif date == 'None':
                 continue
 
-            user = reaction.user
-            labGroups = []
-            if user:
-                for labGroup in user.labgroup_set.all():
-                    labGroups.append(labGroup)
-            labGroups = list(map(str, labGroups))
             if date not in date_dictionary:
                 date_dictionary[date] = len(all_labGroups) * [0]
-            for lab_group in labGroups:
-                        lab_group_index = lab_group_index_dict[lab_group]
-                        date_dictionary[date][lab_group_index] += 1
+
+            lab_group = str(reaction.labGroup)
+            if lab_group in DISCLUDED_LABS:
+                continue
+            lab_group_index = lab_group_index_dict[lab_group]
+            date_dictionary[date][lab_group_index] += 1
 
         # write the headers
         f.write("date," + ",".join(all_labGroups) + "\n")
@@ -109,6 +126,14 @@ def make_dates_csv(csv_name, inserted_or_performed, cumulative=False):
             # write the dates and corresponding entry counts
             for date in date_dictionary:
                 lab_group_counts = map(str, date_dictionary[date])
+                f.write(date + "," + ",".join(lab_group_counts) + "\n")
+    if count_no_data:
+        with open("static/noPerformedDate.csv", 'w') as f:
+            # write the headers
+            f.write("date," + ",".join(all_labGroups) + "\n")
+            # write the dates and corresponding entry counts
+            for date in no_datePerformed:
+                lab_group_counts = map(str, no_datePerformed[date])
                 f.write(date + "," + ",".join(lab_group_counts) + "\n")
 
 
@@ -164,3 +189,104 @@ def make_dates_csv_no_lab(csv_name, inserted_or_performed, cumulative=False, add
         else:
             for date in date_dictionary:
                 f.write(date + "," + str(date_dictionary[date]) + "\n")
+
+
+def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dateRange=None):
+    """Group data entries by week and create a csv.
+
+    Now the predominately used function.
+    End result is a csv in static/csv_name with headers:
+    date, Norquist Group,...,allthelabgroups
+    """
+    # weekly is in the function name because that is the timeframe that makes the most sense
+    # but you can actually specify the time window to group by here
+    timewindow = 7
+
+    # get all the potential labgroups ignoring group in DISCLUDED_LABS
+    all_labGroups = []
+    for lab_group in LabGroup.objects.all():
+        lab_group = str(lab_group)
+        if lab_group in DISCLUDED_LABS:
+            continue
+        all_labGroups.append(lab_group)
+
+    # give them an index; this is how we will differentiate them in a list later
+    lab_group_index_dict = {}
+    index = 0
+    for lab_group in all_labGroups:
+        lab_group_index_dict[lab_group] = index
+        index += 1
+
+    with open('static/' + csv_name, 'w') as f:
+        date_dictionary = {}
+        # make a dictionary of week separated dates
+        d1 = datetime.date(2015, 7, 8)
+        d2 = datetime.date.today()
+        delta = d2 - d1
+
+        # I add timewindow on to guarantee that the end of the range is included, but I'm not sure if that works. It close to works for sure.
+        for i in range(0, delta.days + timewindow, timewindow):
+            date_dictionary[str(d1 + datetime.timedelta(i))[:10]] = len(all_labGroups) * [0]
+
+        # now iterate through the reaction, rounding UP to the nearest week defined above
+        for reaction in PerformedReaction.objects.all():
+            if inserted_or_performed == "inserted":
+                date = reaction.insertedDateTime
+            elif inserted_or_performed == "performed":
+                date = reaction.performedDateTime
+            else:
+                raise ValueError("Argument 'inserted_or_performed' must be 'inserted' or 'performed'")
+            # for reactions with no performed date, just use the inserted date
+            if date is None:
+                date = reaction.insertedDateTime
+
+            # to round up, we just add one to the date until it works
+            # I actually do think this is a good way of doing that
+            date_as_string = str(date)[:10]
+            count = 0
+            while(date_as_string not in date_dictionary):
+                date += datetime.timedelta(days=1)
+                date_as_string = str(date)[:10]
+                if count > timewindow:
+                    print("Uh oh, something went wrong")
+                    print("Just trying to continue... But please be alarmed. Investigate this date being on the border of the timeframe")
+                    break
+                count += 1
+
+            # get the lab group and check to make sure we aren't discluding it
+            lab_group = str(reaction.labGroup)
+            if lab_group in DISCLUDED_LABS:
+                continue
+
+            lab_group_index = lab_group_index_dict[lab_group]
+            date_dictionary[date_as_string][lab_group_index] += 1
+
+        # write the headers
+        f.write("date," + ",".join(all_labGroups) + "\n")
+        if cumulative:
+            previous = len(all_labGroups) * [0]
+            ordered_dates = []
+            # write the dates and corresponding entry counts
+            for date in date_dictionary:
+                ordered_dates.append((date, date_dictionary[date]))
+            ordered_dates.sort()
+            for date in ordered_dates:
+                cumulative_counts = list(map(add, date[1], previous))
+                previous = cumulative_counts
+                lab_group_counts = map(str, cumulative_counts)
+
+                # if we have a dateRange and it falls outside the date range we don't want it
+                if (dateRange and (datetime.datetime.strptime(date[0], "%Y-%m-%d") < dateRange[0] or datetime.datetime.strptime(date[0], "%Y-%m-%d") > dateRange[1])):
+                    continue
+
+                f.write(date[0] + "," + ",".join(lab_group_counts) + "\n")
+        else:
+            # write the dates and corresponding entry counts
+            for date in date_dictionary:
+                lab_group_counts = map(str, date_dictionary[date])
+
+                # if we have a dateRange and it falls outside the date range we don't want it
+                if (dateRange and (datetime.datetime.strptime(date, "%Y-%m-%d") < dateRange[0] or datetime.datetime.strptime(date, "%Y-%m-%d") > dateRange[1])):
+                    continue
+
+                f.write(date + "," + ",".join(lab_group_counts) + "\n")

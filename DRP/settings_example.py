@@ -252,21 +252,11 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'dashboard_file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'dashboard_debug.log'
-        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
-            'propagate': True,
-        },
-        'DRP.views.dashboardView': {
-            'handlers': ['dashboard_file'],
-            'level': 'DEBUG',
             'propagate': True,
         },
     }
