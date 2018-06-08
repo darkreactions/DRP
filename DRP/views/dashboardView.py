@@ -30,7 +30,7 @@ def dashboard(request):
         make_dates_csv_weekly('dateEntered.csv', 'inserted')
 
         # get the date the experiments were PERFORMED
-        make_dates_csv_weekly('datePerformed.csv', 'performed')
+        make_dates_csv_weekly('datePerformed.csv', 'performed', count_no_data=True)
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively
         make_dates_csv_weekly('datePerformedCumulativeByLab.csv', 'performed', cumulative=True)
@@ -198,7 +198,7 @@ def make_dates_csv_no_lab(csv_name, inserted_or_performed, cumulative=False, add
                 f.write(date + "," + str(date_dictionary[date]) + "\n")
 
 
-def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dateRange=None):
+def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dateRange=None, count_no_data=False):
     """Group data entries by week and create a csv.
 
     Now the predominately used function.
@@ -249,15 +249,15 @@ def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dat
             # for reactions with no performed date, just use the inserted date
             if date is None:
                 date = reaction.insertedDateTime
-
-                date_as_string = str(reaction.insertedDateTime)[:10]
-                if date_as_string not in no_datePerformed:
-                    no_datePerformed[date_as_string] = len(all_labGroups) * [0]
-                lab_group = str(reaction.labGroup)
-                if lab_group in DISCLUDED_LABS:
-                    continue
-                lab_group_index = lab_group_index_dict[lab_group]
-                no_datePerformed[date_as_string][lab_group_index] += 1
+                if count_no_data:
+                    date_as_string = str(reaction.insertedDateTime)[:10]
+                    if date_as_string not in no_datePerformed:
+                        no_datePerformed[date_as_string] = len(all_labGroups) * [0]
+                    lab_group = str(reaction.labGroup)
+                    if lab_group in DISCLUDED_LABS:
+                        continue
+                    lab_group_index = lab_group_index_dict[lab_group]
+                    no_datePerformed[date_as_string][lab_group_index] += 1
 
             # to round up, we just add one to the date until it works
             # I actually do think this is a good way of doing that
@@ -308,6 +308,14 @@ def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dat
                 if (dateRange and (datetime.datetime.strptime(date, "%Y-%m-%d") < dateRange[0] or datetime.datetime.strptime(date, "%Y-%m-%d") > dateRange[1])):
                     continue
 
+                f.write(date + "," + ",".join(lab_group_counts) + "\n")
+    if count_no_data:
+        with open("static/noPerformedDate.csv", 'w') as f:
+            # write the headers
+            f.write("date," + ",".join(all_labGroups) + "\n")
+            # write the dates and corresponding entry counts
+            for date in no_datePerformed:
+                lab_group_counts = map(str, no_datePerformed[date])
                 f.write(date + "," + ",".join(lab_group_counts) + "\n")
 
 
