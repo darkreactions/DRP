@@ -6,7 +6,7 @@ from operator import add
 import datetime
 
 # Set to False for faster, non-dynamic page loads (good for testing JS/Frontend)
-generate_csvs = False
+generate_csvs = True
 
 # Labs included in this list will be totally ignored in the end visualization
 DISCLUDED_LABS = ['default_amines']
