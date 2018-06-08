@@ -15,7 +15,6 @@ DISCLUDED_LABS = ['default_amines']
 def dashboard(request):
     """The view for dashboard. Gathers and preprocesses some data for visualization."""
     # get the number of experiments
-    print(Reaction._meta.get_all_field_names())
 
     num_experiments = len(PerformedReaction.objects.all())
     num_experiments_public = len(PerformedReaction.objects.filter(public=True))
