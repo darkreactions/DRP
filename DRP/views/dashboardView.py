@@ -336,10 +336,10 @@ def make_valid_reaction_csv(csv_name):
 
     # I add timewindow on to guarantee that the end of the range is included, but I'm not sure if that works. It close to works for sure.
     for i in range(0, delta.days + timewindow, timewindow):
-        date_dictionary[str(d1 + datetime.timedelta(i))[:10]] = 3 * [0]
+        date_dictionary[str(d1 + datetime.timedelta(i))[:10]] = 2 * [0]
 
     # True will be the index 0, False 1, and None 2
-    index_key_dictionary = {True: 0, False: 1, None: 2}
+    index_key_dictionary = {True: 0, False: 1}
     with open('static/' + csv_name, 'w') as f:
 
         # now iterate through the reaction, rounding UP to the nearest week defined above
@@ -362,8 +362,8 @@ def make_valid_reaction_csv(csv_name):
             date_dictionary[date_as_string][index] += 1
 
         # write the headers
-        f.write("date,Valid,Invalid,None\n")
-        previous = 3 * [0]
+        f.write("date,Valid,Invalid\n")
+        previous = 2 * [0]
         ordered_dates = []
         # write the dates and corresponding entry counts
         for date in date_dictionary:
