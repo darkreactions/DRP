@@ -19,16 +19,19 @@ def dashboard(request):
     num_experiments_public = len(PerformedReaction.objects.filter(public=True))
     num_experiments_private = num_experiments - num_experiments_public
     if generate_csvs:
-        # get the dates the experiments were INSERTED into the datebase
         today = datetime.datetime.today()
         timeframe = datetime.timedelta(days=365)
-        make_dates_csv_weekly('dateEntered.csv', 'inserted', dateRange=(today - timeframe, today))
+        # to show past year, the call looks like this
+        # make_dates_csv_weekly('dateEntered.csv', 'inserted', dateRange=(today - timeframe, today))
+
+        # get the dates the experiments were INSERTED into the datebase
+        make_dates_csv_weekly('dateEntered.csv', 'inserted')
 
         # get the date the experiments were PERFORMED
-        make_dates_csv_weekly('datePerformed.csv', 'performed', dateRange=(today - timeframe, today))
+        make_dates_csv_weekly('datePerformed.csv', 'performed')
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively
-        make_dates_csv_weekly('datePerformedCumulativeByLab.csv', 'performed', cumulative=True, dateRange=(today - timeframe, today))
+        make_dates_csv_weekly('datePerformedCumulativeByLab.csv', 'performed', cumulative=True)
 
         # get the date the experiments were PERFORMED, count the num experiments cumulatively, not by lab though
         # this makes the tiny line graph
