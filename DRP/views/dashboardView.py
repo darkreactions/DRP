@@ -1,12 +1,12 @@
 """A module containing the views and associated functions for the dashboard."""
 from django.shortcuts import render, redirect
 from django.template import RequestContext, Context
-from DRP.models import PerformedReaction, LabGroup, ModelContainer
+from DRP.models import PerformedReaction, LabGroup, ModelContainer, BoolRxnDescriptorValue, Reaction
 from operator import add
 import datetime
 
 # Set to False for faster, non-dynamic page loads (good for testing JS/Frontend)
-generate_csvs = True
+generate_csvs = False
 
 # Labs included in this list will be totally ignored in the end visualization
 DISCLUDED_LABS = ['default_amines']
@@ -15,9 +15,12 @@ DISCLUDED_LABS = ['default_amines']
 def dashboard(request):
     """The view for dashboard. Gathers and preprocesses some data for visualization."""
     # get the number of experiments
+    print(Reaction._meta.get_all_field_names())
+
     num_experiments = len(PerformedReaction.objects.all())
     num_experiments_public = len(PerformedReaction.objects.filter(public=True))
     num_experiments_private = num_experiments - num_experiments_public
+
     if generate_csvs:
         today = datetime.datetime.today()
         timeframe = datetime.timedelta(days=365)
@@ -38,6 +41,8 @@ def dashboard(request):
         today = datetime.datetime.today()
         timeframe = datetime.timedelta(days=30)
         make_dates_csv_no_lab('datePerformedCumulative.csv', 'performed', cumulative=True, add_inbetween_times=True, dateRange=(today - timeframe, today))
+
+        make_valid_reaction_csv("validReactions.csv")
 
     # Another thing to add would be the confusion matrices.
     # Unfortunately, there is no data for these in the test dataset I have, so this just prints an empty list
@@ -205,6 +210,9 @@ def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dat
     # but you can actually specify the time window to group by here
     timewindow = 7
 
+    # this dictionary will be used to create the csv that keeps track of the "None" performedDates
+    no_datePerformed = {}
+
     # get all the potential labgroups ignoring group in DISCLUDED_LABS
     all_labGroups = []
     for lab_group in LabGroup.objects.all():
@@ -242,6 +250,15 @@ def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dat
             # for reactions with no performed date, just use the inserted date
             if date is None:
                 date = reaction.insertedDateTime
+
+                date_as_string = str(reaction.insertedDateTime)[:10]
+                if date_as_string not in no_datePerformed:
+                    no_datePerformed[date_as_string] = len(all_labGroups) * [0]
+                lab_group = str(reaction.labGroup)
+                if lab_group in DISCLUDED_LABS:
+                    continue
+                lab_group_index = lab_group_index_dict[lab_group]
+                no_datePerformed[date_as_string][lab_group_index] += 1
 
             # to round up, we just add one to the date until it works
             # I actually do think this is a good way of doing that
@@ -293,3 +310,60 @@ def make_dates_csv_weekly(csv_name, inserted_or_performed, cumulative=False, dat
                     continue
 
                 f.write(date + "," + ",".join(lab_group_counts) + "\n")
+
+
+def make_valid_reaction_csv(csv_name):
+    """Create the valid reaction csv.
+
+    Headers are "date,True,False,None"
+    I made this in haste, but it should still be pretty nice.
+    Add to it as needed.
+    """
+    timewindow = 7
+
+    date_dictionary = {}
+    # make a dictionary of week separated dates
+    d1 = datetime.date(2015, 7, 8)
+    d2 = datetime.date.today()
+    delta = d2 - d1
+
+    # I add timewindow on to guarantee that the end of the range is included, but I'm not sure if that works. It close to works for sure.
+    for i in range(0, delta.days + timewindow, timewindow):
+        date_dictionary[str(d1 + datetime.timedelta(i))[:10]] = 3 * [0]
+
+    # True will be the index 0, False 1, and None 2
+    index_key_dictionary = {True: 0, False: 1, None: 2}
+    with open('static/' + csv_name, 'w') as f:
+
+        # now iterate through the reaction, rounding UP to the nearest week defined above
+        for reaction in PerformedReaction.objects.all():
+            date = reaction.insertedDateTime
+
+            # to round up, we just add one to the date until it works
+            # I actually do think this is a good way of doing that
+            date_as_string = str(date)[:10]
+            count = 0
+            while(date_as_string not in date_dictionary):
+                date += datetime.timedelta(days=1)
+                date_as_string = str(date)[:10]
+                if count > timewindow:
+                    print("Uh oh, something went wrong")
+                    print("Just trying to continue... But please be alarmed. Investigate this date being on the border of the timeframe")
+                    break
+                count += 1
+            index = index_key_dictionary[reaction.valid]
+            date_dictionary[date_as_string][index] += 1
+
+        # write the headers
+        f.write("date,Valid,Invalid,None\n")
+        previous = 3 * [0]
+        ordered_dates = []
+        # write the dates and corresponding entry counts
+        for date in date_dictionary:
+            ordered_dates.append((date, date_dictionary[date]))
+        ordered_dates.sort()
+        for date in ordered_dates:
+            cumulative_counts = list(map(add, date[1], previous))
+            previous = cumulative_counts
+            valid_invalid_counts = map(str, cumulative_counts)
+            f.write(date[0] + "," + ",".join(valid_invalid_counts) + "\n")
