@@ -129,6 +129,8 @@ $(document).ready(function() {
       }
       var colors = d3.scale.category20().range().slice(0, num_colors);
       
+      // it would be nice to have axes, but I haven't figured it out.
+      // I mean, this makes axes, they just are cluttered with dates
       if (include_labels) { 
         // Define and draw axes
         var yAxis = d3.svg.axis()
@@ -141,8 +143,7 @@ $(document).ready(function() {
         var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom")
-          .ticks(5)
-          .tickFormat(d3.time.format("%Y-%m-%d"));
+          .tickFormat(d3.time.format("%Y-%m-%d")).ticks(10);
 
         svg.append("g")
           .attr("class", "y axis")
@@ -191,6 +192,9 @@ $(document).ready(function() {
         .attr("y", function(d) { return y(d.y0 + d.y); })
         .attr("height", function(d) {
                                       if (d.y0 <= d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); })) {
+                                        if (d.y0 != 0) {
+                                          console.log("uh oh", d.y0)
+                                        }
                                         return y(d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); })) - y(d.y0 + d.y);
                                       }
                                       else {
