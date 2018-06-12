@@ -455,4 +455,4 @@ One additional gotcha: If you add another csv, you need to create the file on th
 
 ### Using darkreactions.haverford.edu
 
-If your lab would like to use our website, please send us an email at darkreactionsproject@gmail.com. Please include the lab group name, the email address for the head of the lab, and an access code. The access code will be required when users join your lab group. 
+If your lab would like to use our website, please send us an email at darkreactionproject@haverford.edu. Please include the lab group name, the email address for the head of the lab, and an access code. The access code will be required when users join your lab group. 
