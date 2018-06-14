@@ -228,6 +228,8 @@ If that runs without error messages, congratulations, you have compiled and inst
 
 Follow the documentation to install and validate your license for * [Chemaxon](https://www.chemaxon.com/download/marvin-suite/#marvin).
 
+In order to install the license files (.cxl), you must open one of the ChemAxon programs (e.g. MarvinView, MarvinSketch) and navigate to the help > licenses tab. From there you can install the license files.
+
 The deb package can be installed as follows:
 
 ```
