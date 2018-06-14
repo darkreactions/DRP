@@ -448,3 +448,12 @@ Starts a batch parralell task to re-save each reaction, forcing descriptor calcu
 * run_tests
 
 Runs all of the tests correctly imported in the test suite. To only run some tests, one may enter a list of test modules to run as positional arguments. The --failfast option causes tests to halt on the first failure. Otherwise all tests will be run and error details output at the end.
+
+### Useful Mysql Commands ###
+
+To reference actual descriptors from a descriptor_id's from another table use the following command:
+```
+SELECT * FROM DRP_descriptor WHERE id in (SELECT DISTINCT descriptor_id FROM DRP_numrxndescriptorvalue);
+```
+Note: this command specifically references the table DRP_numrxndescriptorvalue. Change this table to the one you see fits your query.
+
