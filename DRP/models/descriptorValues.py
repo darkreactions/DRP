@@ -158,8 +158,6 @@ class OrdinalDescriptorValue(models.Model):
     """The integer value for the specified descriptor."""
     descriptor = models.ForeignKey(OrdinalDescriptor)
 
-    rater = models.ForeignKey(User)
-   
     def clean(self):
         """Ensure the value is within the prescribed bounds."""
         if not (isinstance(self.value, int) or self.value is None):
@@ -183,8 +181,8 @@ class OrdinalDescriptorValue(models.Model):
                     'The provided value is lower than the descriptor minimum',
                     'value_too_low')
 
-        if self.rater is None:
-            raise ValidationError('Make sure to specify a rater')
+       # if self.rater is None:
+       #     raise ValidationError('Make sure to specify a rater')
 
 
 

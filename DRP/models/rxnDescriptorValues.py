@@ -6,7 +6,7 @@ from .rxnDescriptors import CatRxnDescriptor, NumRxnDescriptor, BoolRxnDescripto
 import DRP.models
 import DRP.models.performedReaction
 import uuid
-
+from django.contrib.auth.models import User
 
 class RxnDescriptorValueQuerySet(models.query.QuerySet):
     """A queryset which represents a collection of concrete values of a Reaction Descriptor."""
@@ -103,9 +103,11 @@ class NumRxnDescriptorValue(NumericDescriptorValue, RxnDescriptorValue):
 class OrdRxnDescriptorValue(OrdinalDescriptorValue, RxnDescriptorValue):
     """Contains the ordinal value of a descriptor for a reaction."""
 
+    
     descriptorClass = OrdRxnDescriptor
-
     class Meta:
         app_label = "DRP"
         verbose_name = 'Ordinal Reaction Descriptor Value'
         unique_together = ('reaction', 'descriptor')
+    
+    rater = models.ForeignKey(User)
