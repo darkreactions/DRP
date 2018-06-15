@@ -61,10 +61,10 @@ class GetHttpTest(DRPTestCase):
     def test_CorrectTemplate(self):
         """Check that the expected template is loaded."""
         for testCode in self.testCodes:
-            self.assertIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(
+            self.assertIn(testCode, self.response.text, msg='There appears to be a problem with the rendering of the template, TestCode: {0}. Template returns the following:\n{1}'.format(
                 testCode, self.response.text))
         for testCode in self.invalidTestCodes:
-            self.assertNotIn(testCode, self.response.text, 'There appears to be a problem with the rendering of the template, unexpected TestCode: {0}. Template returns the following:\n{1}'.format(
+            self.assertNotIn(testCode, self.response.text, msg='There appears to be a problem with the rendering of the template, unexpected TestCode: {0}. Template returns the following:\n{1}'.format(
                 testCode, self.response.text))
 
     def test_ValidHtml(self):
