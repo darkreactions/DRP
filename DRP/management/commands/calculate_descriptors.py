@@ -156,7 +156,9 @@ class Command(BaseCommand):
 					id__in=(reaction.id for reaction in reactions))
 				reactions.update(calculating=True)
 			print("Number of reactions: {}".format(reactions.count()))
+			reactions_counter = 0
 			while reactions.count() > 1:
+				print("Run {} through reactions".format(reactions_counter))
 				try:
 					calculate_rxn_descriptors(reactions, rxnDescriptorPlugins,
 										  verbose=verbose, whitelist=whitelist, plugins=plugins)
