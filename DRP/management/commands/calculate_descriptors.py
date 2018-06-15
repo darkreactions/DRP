@@ -1,6 +1,6 @@
 """Recalculate the descriptors for all compounds and reactions."""
 from django.core.management.base import BaseCommand
-from DRP.models import Reaction, Compound
+from DRP.models import Reaction, Compound, NumMolDescriptorValue
 from django import db
 from django.conf import settings
 import logging
@@ -40,11 +40,9 @@ def calculate_mol_descriptors(queryset, descriptorPlugins, verbose=False, plugin
 	for comp in queryset:
 		counter += 1
 		print(comp.smiles)
-		print(counter)
+		print("Count: {}".format(counter))
 		for plugin in molDescriptorPlugins:
-			print(NumMolDescriptorValue.objects.filter(compound=comp).count())
 			plugin.calculate(comp)
-			print(NumMolDescriptorValue.objects.filter(compound=comp).count())
 
 
 
@@ -157,7 +155,7 @@ class Command(BaseCommand):
 				reactions = Reaction.objects.filter(
 					id__in=(reaction.id for reaction in reactions))
 				reactions.update(calculating=True)
-			print("Number of reactions: {}".format(compounds.count()))
+			print("Number of reactions: {}".format(reactions.count()))
 			while reactions.count() > 1:
 				try:
 					calculate_rxn_descriptors(reactions, rxnDescriptorPlugins,
