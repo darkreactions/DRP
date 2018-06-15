@@ -2,8 +2,8 @@
 
 from django.conf.urls import url
 from django.views.generic.base import TemplateView
+import DRP.views
 
 urls = [
-    url(r'^$', TemplateView.as_view(
-        template_name="dashboard.html"), name='dashboard')
+    url(r'^dashboard$', DRP.views.dashboard, name='dashboard')
 ]

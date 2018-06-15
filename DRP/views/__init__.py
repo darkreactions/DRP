@@ -5,6 +5,7 @@ from .registerViews import register, confirm
 from .licenseView import license
 from .joinGroupView import joinGroup
 from .selectGroupView import selectGroup
+from .dashboardView import dashboard
 from . import compound
 from . import decorators
 from .import reaction

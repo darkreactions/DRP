@@ -1,151 +1,44 @@
-.infoContainer {
- 
-}
+/* grid/general page layout */
+.grid-container {
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-template-rows: 50% 50%;
+	padding: 30px
 
-.infoContainer h2 {
- text-align:center;
 }
-
-.infoContainer .live {
- height:25em;
- margin-top:7em;
-}
-
-.infoContainer #liveGraph {
- height:25em;
- width:38em;
- margin:auto;
- background-color:rgb(207,223,191);
-}
-
-.infoContainer .stats {
- height:25em;
- 
-}
-
-.infoContainer .stats .statsWrapper {
- height:20em;
- width:30em;
- margin:auto;
- background-color:rgb(207,223,231);
-}
-
-.infoContainer #liveStats {
- height:16em;
- width:14em;
- background-color:rgb(255,255,255);
- float:left;
- margin:3em 0 2em 1em;
-}
-
-.infoContainer .experimentsWrapper {
- height:18em;
- width:14em;
- float:left;
- margin: 1em 0 0 0;
-}
-
-.infoContainer #experimentsStats {
- height:16em;
- background-color:rgb(235,235,235);
- margin:2em 0 0 0;
+.grid-container h2, .grid-container h4 {
+	margin: 0px;
 }
 
 
-/******************** SVG - GRAPH 1 **********************/
-
-svg .graph {
-
+/* bar/all graphs */
+svg {
+	font: 10px sans-serif;
+	shape-rendering: crispEdges;
 }
 
-svg .plot {
-
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
 }
 
-svg .plot rect.background {
- fill:white;
+path.domain {
+	stroke: none;
 }
 
-svg .plot .line {
- stroke:rgb(0,0,0);
-}
-
-svg .plot .guide.line {
- opacity:0;
-}
-
-svg .legends {
-
+.y .tick line {
+	stroke: #ddd;
 }
 
 
-/****************** END OF SVG - GRAPH 1 *****************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/************  OLD CODE BELOW  ***************/
-
-.modelStatsName{
- font-style:oblique;
+/* line graph */
+path { 
+    stroke: black;
+    stroke-width: 2;
+    fill: none;
 }
 
-.modelStatsEntry {
- margin-bottom:20px;
+body {
+	background-color: #d1d1d1; 
 }
-
-.modelStatsEntry > span {
- display:block;
-}
-
-.nvtooltip.xy-tooltip { /* NVD3's Tooltips */
- padding:0em 1em;
- position:fixed;
- opacity:0.9 !important;
-}
-
-.modelTitle {
- font-size:1.2em;
- padding:1em;
- width:100%;
- text-align:center;
-}
-
-.modelDescription {
-  font-size:0.8em;
-  padding-bottom:1em;
-}
-
-.modelConfusionTable {
- width:100%;
- text-align:center;
-}
-
-.modelConfusionTable table {
-  width:100%;
-  text-align:center;
-}
-
-.modelConfusionTable tr:nth-child(1), .modelConfusionTable td:nth-child(1),
-.modelConfusionTable tr:nth-child(3) {
- font-weight:bold;
-}
-
-.confusionTableLabel {
- font-size:0.8em;
-}
-
-/***************  END OLD CODE  ******************/
-
