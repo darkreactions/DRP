@@ -34,7 +34,7 @@ path.domain {
 
 /* line graph */
 path { 
-    stroke: steelblue;
+    stroke: black;
     stroke-width: 2;
     fill: none;
 }

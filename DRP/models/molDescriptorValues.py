@@ -97,7 +97,7 @@ class NumMolDescriptorValue(NumericDescriptorValue, MolDescriptorValue):
 
 class OrdMolDescriptorValue(OrdinalDescriptorValue, MolDescriptorValue):
     """The ordinal value of a descriptor for a compound."""
-
+	
     class Meta:
         app_label = "DRP"
         verbose_name = 'Ordinal Molecular Descriptor Value'

@@ -21,7 +21,7 @@
       </h4>
     </div>
     <div class="col-md-auto">
-      <h5>Legend</h5>
+      <h5>Legends</h5>
       <div id="lab_legend"></div>
     </div>
   </div>
@@ -40,9 +40,13 @@
       <h3>Reactions with no Performed Date</h3> 
       <div id="tiny_noPerformedDate_graph"></div>
     </div> 
-    <div>
+    <div class="col">
       <h3>Reactions Cumulatively Performed</h3>
       <div id="tiny_when_reactions_performed_cumulative_graph"></div>
+    </div>
+    <div class="col">
+      <h3>Cumulative Valid and Invalid Reactions Performed</h3>
+      <div id="tiny_when_valid_reactions_graph"></div>
     </div>
   </div>
   <!-- If you want more grid items, just add another column or row! -->
@@ -54,6 +58,8 @@
 // And for more advice look at this: http://www.adeveloperdiary.com/d3-js/create-stacked-bar-chart-using-d3-js/
 $(document).ready(function() { 
   function make_stacked_bar(csv_name, div_id, width, height, include_labels, make_a_legend) {
+    // include labels is a True false value on whether or not it makes axes
+    // make_a_legend is a true false on whether to add a legend to the top of the page
     // csv name in format 'mycsv.csv'. mycsv should be in static folder
     // div_id in format '#my_div_id'
 
@@ -244,7 +250,8 @@ $(document).ready(function() {
   make_stacked_bar("datePerformed.csv", "#tiny_when_reactions_performed_graph", tiny_width, tiny_height, false, false);  
   make_stacked_bar("datePerformedCumulativeByLab.csv", "#tiny_when_reactions_performed_cumulative_graph", tiny_width, tiny_height, false, false);
   make_stacked_bar("noPerformedDate.csv", "#tiny_noPerformedDate_graph", tiny_width, tiny_height, false, false);
-
+  make_stacked_bar("validReactions.csv", "#tiny_when_valid_reactions_graph", tiny_width, tiny_height, false, true);
+  
 
   // LEGEND
   // This is not dynamic in terms of svg size

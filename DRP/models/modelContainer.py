@@ -174,7 +174,7 @@ class ModelContainer(models.Model):
     modelVisitorLibrary = models.CharField(max_length=200)
     # choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS)
     modelVisitorTool = models.CharField(max_length=200)
-    # choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
+    choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
     splitter = models.CharField(max_length=200, blank=True, default='')
     # choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
 
@@ -395,7 +395,8 @@ class ModelContainer(models.Model):
                 statsModel=statsModel, **visitorOptions)
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
-            fileName = os.path.join(settings.MODEL_DIR, '{}_{}_{}_{}.model'.format(
+            # this filname stuff seems not needed
+            fileName = os.path.join(settings.STATS_MODEL_LIBS_DIR, '{}_{}_{}_{}.model'.format(
                 self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
             statsModel.outputFile = fileName
             if verbose:
@@ -472,8 +473,8 @@ class ModelContainer(models.Model):
             self._storePredictions(resDict)
             if verbose:
                 logger.info("Predictions stored")
-
         self.built = True
+        print("here!")
         if verbose:
             overall_end_time = datetime.datetime.now()
             logger.info("Finished at {}".format(overall_end_time))
