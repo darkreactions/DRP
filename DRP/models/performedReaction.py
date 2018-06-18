@@ -5,6 +5,7 @@ from .recommendedReaction import RecommendedReaction
 from .rxnDescriptors import NumRxnDescriptor, BoolRxnDescriptor, OrdRxnDescriptor, CatRxnDescriptor
 from .rxnDescriptorValues import NumRxnDescriptorValue, BoolRxnDescriptorValue, OrdRxnDescriptorValue, CatRxnDescriptorValue
 from django.contrib.auth.models import User
+from .descriptorValues import NumericDescriptorValue
 from itertools import chain
 import DRP
 from django.core.validators import RegexValidator

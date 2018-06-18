@@ -42,15 +42,17 @@ class CompoundQuantity(models.Model):
 
     class Meta:
         app_label = 'DRP'
-        unique_together = ('reaction', 'role', 'amount')
+        unique_together = ('reaction', 'role', 'amount_grams')
 
     compound = models.ForeignKey(Compound, on_delete=models.PROTECT)
     reaction = models.ForeignKey(Reaction)
     role = models.ForeignKey(CompoundRole)
-    amount = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5,
-                                 help_text="(in mmoles, up to 5 decimal places)", validators=[GreaterThanValidator(0)])
+    amount_grams = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5,
+                                 help_text="(in grams, up to 5 decimal places)", validators=[GreaterThanValidator(0)])
+    amount = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5)
 
     def save(self, invalidate_models=True, *args, **kwargs):
+        self.amount = (self.amount_grams / self.compound.getMolecularWeight()) * 1000
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""
         super(CompoundQuantity, self).save(*args, **kwargs)
         try:

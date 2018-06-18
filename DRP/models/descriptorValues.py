@@ -182,16 +182,13 @@ class OrdinalDescriptorValue(models.Model):
                 raise ValidationError(
                     'The provided value is lower than the descriptor minimum',
                     'value_too_low')
-
-        if self.rater is None:
-            raise ValidationError('Make sure to specify a rater')
-
-
+        # if self.rater is None:
+        #     raise ValidationError('Make sure to specify a rater')
 
     def save(self, *args, **kwargs):
         """Ensure cleaning run on save."""
         self.clean()
-        super(OrdinalDescriptorValue, self).save(*args, **kwargs)
+        # super(OrdinalDescriptorValue, self).save(*args, **kwargs)
 
     def __eq__(self, other):
         """Ensure that equivalent instances are matched as such."""

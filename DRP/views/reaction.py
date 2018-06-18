@@ -19,6 +19,7 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 import logging
+from itertools import chain 
 
 
 @login_required
@@ -52,6 +53,9 @@ class ListPerformedReactions(ListView):
         else:
             self.queryset = PerformedReaction.objects.filter(public=True)
         self.queryset = self.queryset.order_by('-insertedDateTime')
+        query = request.GET.get("q")
+        if query:
+            self.queryset = self.queryset.filter(compounds__name__icontains = query)
         if filetype is None:
             response = super(ListPerformedReactions, self).dispatch(
                 request, *args, **kwargs)
@@ -95,7 +99,6 @@ class ListPerformedReactions(ListView):
             headers = f.read().split('\n')
             headers = headers[:len(headers) - 1]
         return headers
-
 
 @login_required
 @hasSignedLicense

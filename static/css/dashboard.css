@@ -2,6 +2,16 @@
  
 }
 
+.grid-container {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	grid-template-rows: 300px 500px;
+
+}
+.grid-container h2, .grid-container h4 {
+	margin: 0px;
+}
+
 .infoContainer h2 {
  text-align:center;
 }
