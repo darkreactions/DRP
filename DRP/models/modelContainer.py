@@ -396,7 +396,7 @@ class ModelContainer(models.Model):
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
             # this filname stuff seems not needed
-            fileName = os.path.join(settings.STATS_MODEL_LIBS_DIR, '{}_{}_{}_{}.model'.format(
+            fileName = os.path.join(settings.STATS_MODEL_DIR, '{}_{}_{}_{}.model'.format(
                 self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
             statsModel.outputFile = fileName
             if verbose:
