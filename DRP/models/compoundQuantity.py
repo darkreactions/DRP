@@ -55,12 +55,12 @@ class CompoundQuantity(models.Model):
         self.amount = (self.amount_grams / self.compound.getMolecularWeight()) * 1000
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""
         super(CompoundQuantity, self).save(*args, **kwargs)
+        
         try:
-            self.reaction.performedreaction.save(
-                invalidate_models=invalidate_models)  # invalidate models
+            self.reaction.performedreaction.save(invalidate_models=True)  # invalidate models
         except PerformedReaction.DoesNotExist:
             # descriptor recalculation
-            self.reaction.save(calcDescriptors=calcDescriptors)
+            self.reaction.save()
 
     def delete(self):
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""

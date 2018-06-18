@@ -131,7 +131,7 @@ Copy DRP_nginx from the DRP folder to the /etc/nginx/sites-available folder.
 cp DRP/DRP_nginx /etc/nginx/sites-available
 ```
 
-Create a symlink between sites-available/DRP_nginx and sites-enabled/DRP_nginx
+Create a symlink between /etc/nginx/sites-available/DRP_nginx and /etc/nginx/sites-enabled/DRP_nginx
 
 ```
 ln -s sites-available/DRP_nginx sites-enabled/DRP_nginx
@@ -227,6 +227,8 @@ If that runs without error messages, congratulations, you have compiled and inst
 ### Step 6: Installing Chemaxon (optional)
 
 Follow the documentation to install and validate your license for * [Chemaxon](https://www.chemaxon.com/download/marvin-suite/#marvin).
+
+In order to install the license files (.cxl), you must open one of the ChemAxon programs (e.g. MarvinView, MarvinSketch) and navigate to the help > licenses tab. From there you can install the license files.
 
 The deb package can be installed as follows:
 
@@ -446,3 +448,24 @@ Starts a batch parralell task to re-save each reaction, forcing descriptor calcu
 * run_tests
 
 Runs all of the tests correctly imported in the test suite. To only run some tests, one may enter a list of test modules to run as positional arguments. The --failfast option causes tests to halt on the first failure. Otherwise all tests will be run and error details output at the end.
+
+
+### Useful Mysql Commands ###
+
+To reference actual descriptors from a descriptor_id's from another table use the following command:
+```
+SELECT * FROM DRP_descriptor WHERE id in (SELECT DISTINCT descriptor_id FROM DRP_numrxndescriptorvalue);
+```
+Note: this command specifically references the table DRP_numrxndescriptorvalue. Change this table to the one you see fits your query.
+
+
+### Adding to the Dashboard
+
+The general procedure is to make a csv with `DRP/views/dashboardView.py`, then pull that csv into the javascript in such a way that we have to do as little data processing in javascript as possible. The javascript in question is located in `templates/dashboard.html`. If you want to make another stacked bar graph, you can use the function `make_stacked_bar` which takes csv's in the form of `date (Y-m-d), values, to, stack`. You also pass that function the div id you want to graph to be in, so add a div in the html above the function for your new graph! There are other parameters to the function, those are described in the code. If you want to make a graph that isn't a stack bar chart, or uses data in a different form, you will have to write your own d3!
+
+One additional gotcha: If you add another csv, you need to create the file on the server and then edit the permissions so that the program can edit it.
+
+### Using darkreactions.haverford.edu
+
+If your lab would like to use our website, please send us an email at darkreactionproject@haverford.edu. Please include the lab group name, the email address for the head of the lab, and an access code. The access code will be required when users join your lab group. 
+

@@ -1,4 +1,5 @@
 """Module containing management command for building machine learning models in DRP."""
+from django.core.management.base import BaseCommand
 from DRP.models import PerformedReaction, ModelContainer, Descriptor, rxnDescriptorValues, DataSet
 import operator
 import argparse

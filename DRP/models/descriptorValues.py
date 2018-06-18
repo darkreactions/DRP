@@ -9,7 +9,7 @@ from .descriptors import CategoricalDescriptor, NumericDescriptor
 from .descriptors import BooleanDescriptor, OrdinalDescriptor
 from django.core.exceptions import ValidationError
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class CategoricalDescriptorValue(models.Model):
     """A concrete value for a categorical descriptor."""
@@ -180,6 +180,11 @@ class OrdinalDescriptorValue(models.Model):
                 raise ValidationError(
                     'The provided value is lower than the descriptor minimum',
                     'value_too_low')
+
+       # if self.rater is None:
+       #     raise ValidationError('Make sure to specify a rater')
+
+
 
     def save(self, *args, **kwargs):
         """Ensure cleaning run on save."""

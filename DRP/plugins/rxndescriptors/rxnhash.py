@@ -39,7 +39,8 @@ def calculate_many(reaction_set, verbose=False, whitelist=None):
                                                         i + 1, len(reaction_set)))
         _calculate(reaction, descriptorDict,
                    verbose=verbose, whitelist=whitelist)
-
+    
+    return descriptorDict
 
 def calculate(reaction, verbose=False, whitelist=None):
     """Calculate the descriptors for this plugin."""
