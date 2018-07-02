@@ -28,14 +28,15 @@ class Splitter(AbstractSplitter):
         super(Splitter, self).split(reactions, verbose=verbose)
         key_counts = self._count_compound_sets(reactions).items()
         splits = [self._single_split(
-            reactions, key_counts, verbose=verbose) for i in xrange(self.num_splits)]
+            reactions, key_counts, verbose=verbose) for i in range(self.num_splits)]
         return splits
 
     def _single_split(self, reactions, key_counts, verbose=False):
-        random.shuffle(key_counts)
-
+        random.shuffle(list(key_counts))
         total_size = sum(count for key, count in key_counts)
+        print('Total size: {}'.format(total_size))
         goal_size = self.test_percent * total_size
+        print('Goal size: {}'.format(goal_size))
         margin = total_size * self.margin_percent
         test_size = 0
 
@@ -53,16 +54,19 @@ class Splitter(AbstractSplitter):
                 break
             # The next set is too big and we're not within the error margin.
             # Try skipping it
-        else:
-            raise RuntimeError(
-                'Failed to make a split under the given parameters.')
-
-        rxnhash_descriptor = CatRxnDescriptor.objects.get(
-            heading='rxnSpaceHash1')
+            else:
+                raise RuntimeError(
+                    'Failed to make a split under the given parameters.')
+        # TODO: CHANGE SELECTION OF DESCRIPTOR BELOW TO BE BASED OFF OF LATEST CALCULATION SOFTWARE VERSION
+        print('CHANGE SELECTION OF DESCRIPTOR BELOW TO BE BASED OFF OF LATEST CALCULATION SOFTWARE VERSION')
+        rxnhash_descriptor = CatRxnDescriptor.objects.filter(
+            heading='rxnSpaceHash1')[2]
         rxn_hashes = reactions.filter(
             catrxndescriptorvalue__descriptor=rxnhash_descriptor)
         test = rxn_hashes.filter(catrxndescriptorvalue__value__in=test_keys)
+        print("test length: ", len(test))
         train = rxn_hashes.exclude(catrxndescriptorvalue__value__in=test_keys)
+        print("train length: ", len(train))
 
         if verbose:
             logger.info("Split into train ({}), test ({})".format(
@@ -71,10 +75,14 @@ class Splitter(AbstractSplitter):
         return (self.package(train), self.package(test))
 
     def _count_compound_sets(self, reactions):
-        rxnhash_descriptor = CatRxnDescriptor.objects.get(
-            heading='rxnSpaceHash1')
+        # TODO: CHANGE SELECTION OF DESCRIPTOR BELOW TO BE BASED OFF OF LATEST CALCULATION SOFTWARE VERSION
+        print('CHANGE SELECTION OF DESCRIPTOR BELOW TO BE BASED OFF OF LATEST CALCULATION SOFTWARE VERSION')
+        rxnhash_descriptor = CatRxnDescriptor.objects.filter(
+            heading='rxnSpaceHash1')[2]
         rxn_hashes = reactions.filter(
             catrxndescriptorvalue__descriptor=rxnhash_descriptor)
+        print("rxn_hashes[10]: {}".format(len(rxn_hashes)))
         counts = {rxnhash_val: rxn_hashes.filter(catrxndescriptorvalue__value=rxnhash_val).count(
         ) for rxnhash_val in rxn_hashes.values_list('catrxndescriptorvalue__value', flat=True).distinct()}
+        print("counts: {}".format(counts))
         return counts
