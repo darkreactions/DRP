@@ -8,6 +8,7 @@ tmp/*
 models/*
 metrics/*
 
+*.csv
 *.model
 *.txt
 *.pyc
