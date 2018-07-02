@@ -6,7 +6,7 @@ from DRP.ml_models.splitters.kFoldSplitter import Splitter
 
 class Command(BaseCommand):
 
-	help = 'Reccomends a set of reactions to be performed'
+	help = 'Recommends a set of reactions to be performed'
 
 	def handle(self, *args, **options):
 		
@@ -29,14 +29,15 @@ class Command(BaseCommand):
 		# values = values[:2]
 		# values = [val.value for val in values]
 
-
+		# unsure why [0] is chosen
 		grid_params = {allNumericDescriptors[0] : [0, 1, 2, 3, 4, 5]}
 
 		desired_desc_dict = { allNumericDescriptors[0] : [0, 1, 2, 3, 4, 5]}
 
-		print("Initialize reccomender")
+		print("Initialize recommender")
 
-		obj = ModelContainer.objects.filter(modelVisitorTool = "SVM_PUK")[0]
+		# TODO: address magic number from this next line
+		obj = ModelContainer.objects.filter(modelVisitorTool = "SVM_PUK")[4]
 		print(obj.built)
 		# obj.build()
 		# obj.save()
