@@ -52,7 +52,7 @@ class CompoundQuantity(models.Model):
     amount = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=5)
 
     def save(self, invalidate_models=True, *args, **kwargs):
-        if (self.amount_grams not None):
+        if (self.amount_grams is not None):
             self.amount = (self.amount_grams / self.compound.getMolecularWeight()) * 1000
         """Re-save associated reactions dependent upon this quantity as this will cause descriptor values to change."""
         super(CompoundQuantity, self).save(*args, **kwargs)
