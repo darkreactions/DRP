@@ -33,6 +33,7 @@ class Command(BaseCommand):
 
 	def add_arguments(self, parser):
 		parser.add_argument('labGroup', type=str)
+		parser.add_argument('--testing', type=int, default=0)
 	
 	def handle(self, *args, **options):
 
@@ -43,6 +44,7 @@ class Command(BaseCommand):
 			print('Error: "{}" is not a valid lab group.'.format(options['labGroup']))
 			exit()
 
+		TESTING = options['testing']
 
 		allNumericDescriptors = NumRxnDescriptor.objects.all()
 		boolean_crystallisation_outcome_id = Descriptor.objects.get(heading='boolean_crystallisation_outcome', calculatorSoftware='manual').id
@@ -84,15 +86,21 @@ class Command(BaseCommand):
 
 		numeric_descriptor_amounts = get_numeric_descriptor_amounts([reaction_temperature_id, reaction_time_id, reaction_pH_id, pre_heat_standing_id], labGroup_id)
 
-		grid_params = {
-						reaction_temperature: numeric_descriptor_amounts[reaction_temperature_id],
-						reaction_time: numeric_descriptor_amounts[reaction_time_id],
-						reaction_pH: numeric_descriptor_amounts[reaction_pH_id],
-						pre_heat_standing: numeric_descriptor_amounts[pre_heat_standing_id],
-						teflon_pouch: [0, 1],
-						leak: [0, 1],
-						slow_cool: [0, 1],
-						oil_bath: [0, 1] }
+
+		if TESTING:
+			print("TESTING mode active: using reduced grid space.")
+			# chose oil_bath as a random descriptor?
+			grid_params = {oil_bath: [0, 1]}
+		else:
+			grid_params = {
+							reaction_temperature: numeric_descriptor_amounts[reaction_temperature_id],
+							reaction_time: numeric_descriptor_amounts[reaction_time_id],
+							reaction_pH: numeric_descriptor_amounts[reaction_pH_id],
+							pre_heat_standing: numeric_descriptor_amounts[pre_heat_standing_id],
+							teflon_pouch: [0, 1],
+							leak: [0, 1],
+							slow_cool: [0, 1],
+							oil_bath: [0, 1] }
 
 
 
@@ -106,4 +114,5 @@ class Command(BaseCommand):
 
 		print("Starting recommendation")
 		reactions = rec.recommend()
+		# TODO: should recommend on the ReactionRecommender class return something?
 		print(reactions)
