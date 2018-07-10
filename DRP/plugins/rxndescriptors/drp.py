@@ -359,6 +359,8 @@ def calculate_many(reaction_set, verbose=False, bulk_delete=True, whitelist=None
         if verbose:
             logger.info("{} ({}/{})".format(reaction,
                                             i + 1, len(reaction_set)))
+        print("{} ({}/{})".format(reaction,
+                                            i + 1, len(reaction_set)))
         if bulk_delete:
             if verbose:
                 logger.info("Deleting old descriptor values")
