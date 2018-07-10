@@ -49,8 +49,10 @@ class ReactionGenerator(object):
             quantities = np.array(quantities)
             mean_quantity = np.mean(quantities)
             quantity_sd = np.std(quantities)
-            sample_quantities = [mean_quantity - 2 * quantity_sd, mean_quantity - quantity_sd, mean_quantity,
-                                 mean_quantity + quantity_sd, mean_quantity + 2 * quantity_sd]
+            print("USING ONLY MEAN FOR COMPOUND AMOUNTS CHANGE IN PRODUCTION!")
+            sample_quantities = [mean_quantity]
+            #sample_quantities = [mean_quantity - 2 * quantity_sd, mean_quantity - quantity_sd, mean_quantity,
+            #                     mean_quantity + quantity_sd, mean_quantity + 2 * quantity_sd]
 
             sample_quantities = [sq for sq in sample_quantities if sq > 0]
             compound_dict[compound] = sample_quantities
@@ -97,6 +99,7 @@ class ReactionGenerator(object):
         desc_combos = product(*desc_vals) 
         # print (desc_combos)
         reaction_set = []
+        counter = 0
         for desc_values_instance in desc_combos:
             # print (desc_values_instance)
             for triple in triples_and_amounts:
@@ -135,10 +138,13 @@ class ReactionGenerator(object):
                         compound_quantity.save()
 
                     new_rxn.save()
+                    counter += 1
+                    print('Reaction #{} created.'.format(counter))
                     reaction_set.append(new_rxn)
 
                     # Save us from calculating the obscene number of reactions in the grid until necessary
                     yield new_rxn
         drp_rxn_plugin.calculate_many(reaction_set)
+        rxnhash_rxn_plugin.calculate_many(reaction_set)
         # calculate reaction hashes here or manually set them from the ones generated in Hash_MI in ReactionRecommender?
         #rxnhash_rxn_plugin.calculate_many(reaction_set)
