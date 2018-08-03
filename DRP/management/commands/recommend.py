@@ -11,7 +11,7 @@ def get_numeric_descriptor_amounts(num_desc_ids, labGroup_id):
 	""" Take a list of reaction descriptor ids and return a dictionary of descriptor ids to reasonable amounts based
 		off of reactions performed by a the lab specified by the labGroup_id"""
 	reasonable_desc_values_dict = {}
-	valid_performed_reaction_ids = PerformedReaction.objects.filter(valid=True).values_list('id', flat=True).order_by('id')
+	valid_performed_reaction_ids = PerformedReaction.objects.all().values_list('id', flat=True).order_by('id')
 	reaction_ids = Reaction.objects.filter(labGroup_id=labGroup_id, id__in=valid_performed_reaction_ids).values_list('id', flat=True).order_by('id')
 	for num_desc_id in num_desc_ids:
 		values = NumRxnDescriptorValue.objects.filter(descriptor_id=num_desc_id, reaction_id__in=reaction_ids).exclude(value=None).values_list('value', flat=True)
