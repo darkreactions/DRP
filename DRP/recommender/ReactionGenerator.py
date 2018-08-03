@@ -36,7 +36,7 @@ class ReactionGenerator(object):
         for comp in CompoundQuantity.objects.filter(role=role, reaction_id__in=reaction_ids):
             print(comp)
             compound_set.add(comp.compound.id)
-            if (len(compound_set) > 2):
+            if (len(compound_set) == 2):
                 break
         print(list(compound_set))
         return list(compound_set)
@@ -94,6 +94,7 @@ class ReactionGenerator(object):
                 compounds = Compound.objects.filter(pk__in=triple)
                 triples.append(compounds)
         print("Triples: ", triples)
+        # TODO: triples may have repeated compound triples, but it gets dealt with later...
         return triples
 
 
