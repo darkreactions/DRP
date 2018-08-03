@@ -12,7 +12,7 @@ DESCRIPTORS_TO_REMOVE = ['compound_0_amount_grams', 'compound_1_amount_grams', '
 
 
 class Recommender(AbstractRecommender):
-    def __init__(self, model_container, grid_params, desired_desc_dict, seed = None):
+    def __init__(self, model_container, grid_params, desired_desc_dict, labGroup, seed = None):
         """
         model_container : trained statistical model from database
         grid_params : dictionary of decscriptor objects and corresponding values to input to the generator
@@ -23,7 +23,7 @@ class Recommender(AbstractRecommender):
         Value List is a list of any values this Descriptor should have.
         """
 
-        self.generator = ReactionGenerator(grid_params)
+        self.generator = ReactionGenerator(grid_params, labGroup)
         self.model_container = model_container
         self.desired_desc_dict = desired_desc_dict
         self.lshash = None
@@ -49,18 +49,6 @@ class Recommender(AbstractRecommender):
                 count += 1
         print('count', count)
         self.lshash = lsh
-
-    # def normalize_dist_dict(self, dist_dict):
-    #     """Normalize all distances on a 0 to 1 scale"""
-    #     min_knn_dist = min(dist_dict.values())
-    #     max_knn_dist = max(dist_dict.values())
-    #     split = max_knn_dist - min_knn_dist
-    #     if split != 0:
-    #         for key in dist_dict:
-    #             dist_dict[key] = (dist_dict[key] - min_knn_dist) / split
-    #     else:
-    #         for key in dist_dict:
-    #             dist_dict[key] = 1
 
     def get_distance_dict(self, number_of_neighbors=20, normalize=True):
         """Get the average distance of each plausible reaction to the number_of_neighbors nearest neighbors."""
@@ -104,10 +92,10 @@ class Recommender(AbstractRecommender):
             rec_rxn = RecommendedReaction()
             rec_rxn.reaction_ptr = Reaction.objects.get(id=rxn)
             rec_rxn.seed = self.seed
-            rec_rxn.nonsense = True # TODO Change in production
+            rec_rxn.nonsense = False
             rec_rxn.hidden = True
             rec_rxn.reference = 'Holdingforlaterreplacethis' # What is this supposed to be?
-            rec_rxn.labGroup = LabGroup.objects.get(pk=1) # Should the labgroup be 1 (Norquist's lab?)
+            rec_rxn.labGroup = LabGroup.objects.get(pk=1) # TODO: CHANGE THIS Should the labgroup be 1 (Norquist's lab?)
             rec_rxn.score = score
             rec_rxn.saved = True
             rec_rxn.clean()
