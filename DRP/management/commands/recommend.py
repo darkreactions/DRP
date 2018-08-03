@@ -11,12 +11,10 @@ def get_numeric_descriptor_amounts(num_desc_ids, labGroup_id):
 	""" Take a list of reaction descriptor ids and return a dictionary of descriptor ids to reasonable amounts based
 		off of reactions performed by a the lab specified by the labGroup_id"""
 	reasonable_desc_values_dict = {}
-	performed_reaction_ids = PerformedReaction.objects.all().values_list('id', flat=True).order_by('id')
-	reaction_ids = Reaction.objects.filter(labGroup_id=labGroup_id, id__in=performed_reaction_ids).values_list('id', flat=True).order_by('id')
-	print(len(reaction_ids))
+	valid_performed_reaction_ids = PerformedReaction.objects.filter(valid=True).values_list('id', flat=True).order_by('id')
+	reaction_ids = Reaction.objects.filter(labGroup_id=labGroup_id, id__in=valid_performed_reaction_ids).values_list('id', flat=True).order_by('id')
 	for num_desc_id in num_desc_ids:
 		values = NumRxnDescriptorValue.objects.filter(descriptor_id=num_desc_id, reaction_id__in=reaction_ids).exclude(value=None).values_list('value', flat=True)
-		print("Values ", values)
 		values = np.array(values)
 		mean_value = np.mean(values)
 		value_sd = np.std(values)
@@ -89,8 +87,9 @@ class Command(BaseCommand):
 
 		if TESTING:
 			print("TESTING mode active: using reduced grid space.")
-			# chose oil_bath as a random descriptor?
-			grid_params = {oil_bath: [0, 1]}
+			# a single pH value is chosen since many descriptor calculations are based on pH
+			# grid_params = {reaction_pH: numeric_descriptor_amounts[reaction_pH_id]}
+			grid_params = {reaction_pH: [numeric_descriptor_amounts[reaction_pH_id][2]]}
 		else:
 			grid_params = {
 							reaction_temperature: numeric_descriptor_amounts[reaction_temperature_id],
@@ -102,17 +101,13 @@ class Command(BaseCommand):
 							slow_cool: [0, 1],
 							oil_bath: [0, 1] }
 
-
-
 		print("Initialize recommender")
 
 		# TODO: address magic number from this next line
 		obj = ModelContainer.objects.filter(modelVisitorTool = "SVM_PUK")[4]
 		print(obj.built)
 
-		rec = Recommender(obj, grid_params, desired_desc_dict)
+		rec = Recommender(obj, grid_params, desired_desc_dict, labGroup_id)
 
 		print("Starting recommendation")
 		reactions = rec.recommend()
-		# TODO: should recommend on the ReactionRecommender class return something?
-		print(reactions)
