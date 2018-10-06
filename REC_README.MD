@@ -15,9 +15,8 @@
 
 ### Note: Relevant DRP database and setup is working only on Musk, so make sure you ssh into Musk. TODO: get DRP recommender running on other machines
 
-### Note: Musk is setup to automatically commit through Chris's github account. TODO: remove Chris's account and make it so everyone has to manually enter username + password to commit
-
-### Note: Testing is turned off on Musk. TODO: change this
+### Note: Before you _commit_ you need to type the commands "git config --local user.name=<YOUR GITHUB USER HERE>" and "git config --local user.email=<THE EMAIL YOU USED TO SIGN UP TO GITHUB WITH>"
+### Note: Testing is turned off on Musk. TODO: change
 
 To run the recommender and see output on Musk: type ```python3 manage.py recommend "Norquist Oxide Lab" --testing=1```
 from the DRP/DRP directory. The recommender is currently only recommending 2 reactions since calculating the descriptors is costly.
