@@ -36,11 +36,19 @@ When the recommender is run it goes through several stages.
 
 5. ReactionSieve takes the id's of these generated reactions and runs them through our model to create a prediction and then promptly removes any reactions that do not comform to the desired_desc_dict passed into ReactionRecommender.
 
-6.* After obtaining a subset of plausible reactions form the sieve, the recommender scores these reactions based on mutual information gain (mutual_information.py) and scales these based on the average distance to k-nn.
+6. After obtaining a subset of plausible reactions form the sieve, the recommender scores these reactions based on mutual information gain (mutual_information.py) and scales these based on the average distance to k-nn.
 
 7. The recommender takes the top k scoring reactions and saves them to the database as the recommended reactions and displays said reaction ids and scores.
 
 8. One can access the details of recommendations from database.
+
+## Recommender Files (/DRP/recommender)
+
+1. ReactionRecommender.py - 
+2. ReactionGenerator.py - 
+3. ReactionSieve.py -
+4. lshash.py - library file that defines the lshashing algorithm (used for scoring)
+5. mutual_information.py - 
 
 ## Database
 
@@ -50,12 +58,16 @@ To access the database directly:
 
 1. open a terminal and type ```mysql -u root -p``` and hit enter.
 2. Next enter the mySQL password (you can find it within the DRP/DRP/settings.py file)
-3. Once within mysql, you need to type ```use DRP_2``` where DRP_2 is the name of the sql database holding the relevant reacition data.
+3. Once within mysql, you need to type ```use DRP_2``` where DRP_2 is the name of the sql database holding the relevant reaction data.
 
 Now you can execute SQL commands to explore the database. A good starting place is to type ```show tables;``` to see all the tables in the database.
 
 TODO: add an in-depth description of relevant tables
 
+
+## Training Models
+
+TODO: write this
 
 
 
