@@ -15,7 +15,7 @@
 
 ### Note: Relevant DRP database and setup is working only on Musk, so make sure you ssh into Musk. TODO: get DRP recommender running on other machines
 
-### Note: Before you _commit_ you need to type the commands "git config --local user.name=<YOUR GITHUB USER HERE>" and "git config --local user.email=<THE EMAIL YOU USED TO SIGN UP TO GITHUB WITH>"
+### Note: Before you _commit_ you need to type the commands ```git config --local user.name "YOUR GITHUB USERNAME HERE"``` and ```git config --local user.email <THE EMAIL YOU USED TO SIGN UP TO GITHUB WITH>```
 ### Note: Testing is turned off on Musk. TODO: change
 
 To run the recommender and see output on Musk: type ```python3 manage.py recommend "Norquist Oxide Lab" --testing=1```
