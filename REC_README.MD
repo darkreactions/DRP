@@ -9,6 +9,12 @@
 5. DRP/tests - holds files for Django test suite
 6. DRP/management - holds Django files for defining Django terminal commands
 
+## Contributing
+
+Make sure you are following PEP8 style guide: https://www.python.org/dev/peps/pep-0008/
+
+Checkout pylint (https://www.pylint.org/) and YAPF (https://github.com/google/yapf) for tools that help adhere to a style guide when coding.
+
 ## Overview
 
 ### Note: Make sure you are working on the rec_engine branch in git and github.
