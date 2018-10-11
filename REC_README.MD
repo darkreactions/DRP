@@ -15,7 +15,8 @@
 
 ### Note: Relevant DRP database and setup is working only on Musk, so make sure you ssh into Musk. TODO: get DRP recommender running on other machines
 
-### Note: Before you _commit_ you need to type the commands ```git config --local user.name "YOUR GITHUB USERNAME HERE"``` and ```git config --local user.email ITHE EMAIL YOU USED TO SIGN UP TO GITHUB WITH"``` TODO: either setup git to make pushing with multiple users easier, setup DRP on multiple computers, or make bash script to streamline this
+### Note: Musk is setup to automatically commit through Chris's github account. TODO: remove Chris's account and make it so everyone has to manually enter username + password to commit
+
 ### Note: Testing is turned off on Musk. TODO: change this
 
 To run the recommender and see output on Musk: type ```python3 manage.py recommend "Norquist Oxide Lab" --testing=1```
@@ -43,11 +44,11 @@ When the recommender is run it goes through several stages.
 
 ## Recommender Files (/DRP/recommender)
 
-1. ReactionRecommender.py - 
+1. ReactionRecommender.py - aggregates all of the seperate parts of the recommender and calls them to make recommendations, has code for scoring reactions
 2. ReactionGenerator.py - 
-3. ReactionSieve.py -
+3. ReactionSieve.py - run the model on our potential reactions 
 4. lshash.py - library file that defines the lshashing algorithm (used for scoring)
-5. mutual_information.py - 
+5. mutual_information.py - old research code adapted for the current recommender to 
 
 ## Database
 
@@ -66,7 +67,15 @@ TODO: add an in-depth description of relevant tables
 
 ## Training Models
 
-TODO: write this
+To train a new model with the default settings (i.e. SVM_PUK with current default predictor descriptors) run: ```python3 manage.py build_model```
+
+This command will train a new model on the dataset and store the .model file in the database and in /DRP/DRP/ml_models/model_visitors
+
+The data split (.arff) and test run (.out) files are stored in DRP/tmp
+
+You can load the .model and .arff files into WEKA to further explore the model.
+
+TODO: Describe how to find the exact .arff files related to a model, describe relevant database tables for statistical model storage
 
 
 
