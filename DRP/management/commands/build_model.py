@@ -10,6 +10,7 @@ from django.conf import settings
 import ast
 from sys import argv
 import logging
+from cProfile import Profile
 logger = logging.getLogger(__name__)
 
 # TODO: find more elegant way to load in whitelist
@@ -51,8 +52,19 @@ class Command(BaseCommand):
                             help='A dictionary of the options to give to the splitter in JSON format')
         parser.add_argument('-vo', '--visitor-options', default=None,
                             help='A dictionary of the options to give to the visitor in JSON format')
+        parser.add_argument('--profile', type=int, default=0)
 
-    def handle(self, *args, **kwargs):
+
+    def handle(self, *args, **options):
+        if options['profile']:
+            profiler = Profile()
+            profiler.runcall(self._handle, *args, **options)
+            profiler.print_stats()
+            profiler.dump_stats('build_model_timings.txt')
+        else:
+            self._handle(*args, **options)
+
+    def _handle(self, *args, **kwargs):
         """Handle the call for this command."""
         splitterOptions = ast.literal_eval(kwargs['splitter_options']) if kwargs[
             'splitter_options'] is not None else None

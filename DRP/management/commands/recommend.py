@@ -4,6 +4,7 @@ from DRP.models import LabGroup, Reaction, PerformedReaction, Descriptor, ModelC
 from DRP.plugins.rxndescriptors.rxnhash import calculate_many
 from DRP.ml_models.splitters.kFoldSplitter import Splitter
 from django.core.exceptions import ObjectDoesNotExist
+from cProfile import Profile
 
 import numpy as np
 
@@ -32,8 +33,18 @@ class Command(BaseCommand):
 	def add_arguments(self, parser):
 		parser.add_argument('labGroup', type=str)
 		parser.add_argument('--testing', type=int, default=0)
-	
+		parser.add_argument('--profile', type=int, default=0)
+
 	def handle(self, *args, **options):
+	    if options['profile']:
+	        profiler = Profile()
+	        profiler.runcall(self._handle, *args, **options)
+	        profiler.print_stats()
+	        profiler.dump_stats('recommend_timings.txt')
+	    else:
+	        self._handle(*args, **options)
+	
+	def _handle(self, *args, **options):
 
 		# TODO: make labGroup_id an argument to pass in based off of labGroup's name
 		try:
@@ -111,3 +122,7 @@ class Command(BaseCommand):
 
 		print("Starting recommendation")
 		reactions = rec.recommend()
+
+if __name__ == '__main__':
+	c = Command()
+	c.handle({labGroup: 'Norquist Oxide Lab', testing: 1})
