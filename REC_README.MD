@@ -83,5 +83,8 @@ You can load the .model and .arff files into WEKA to further explore the model.
 
 TODO: Describe how to find the exact .arff files related to a model, describe relevant database tables for statistical model storage
 
+## Profiling Commands
 
+Currently you can pass a ```--profile=1``` flag to ```python3 build_model``` and ```python3 recommend``` to generate a profiler output file. NOTE: these files have already been generated and will be overwritten if you pass this flag again, TODO: I am working on making it so no overwriting will happen.
 
+The output files from cProfile must be parsed in order to be readable. The ```parse_timings.py``` script allows you to parse these output files. To use simply call ```python3 parse_timings.py <file>```. Type ```python3 parse_timings.py -h``` for more information on the optional arguments (```--count``` and ```--sort```) and usage.
