@@ -11,10 +11,12 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class CategoricalDescriptorValue(models.Model):
     """A concrete value for a categorical descriptor."""
 
-    descriptor = models.ForeignKey(CategoricalDescriptor)
+    descriptor = models.ForeignKey(
+        CategoricalDescriptor, on_delete=models.PROTECT)
     """The categorical descriptor to which this pertains."""
     value = models.ForeignKey(CategoricalDescriptorPermittedValue,
                               null=True, blank=True,
@@ -73,7 +75,7 @@ class BooleanDescriptorValue(models.Model):
 
     value = models.NullBooleanField('Value for descriptor', null=True)
     """Set to true, false or none (missing value) for instances."""
-    descriptor = models.ForeignKey(BooleanDescriptor)
+    descriptor = models.ForeignKey(BooleanDescriptor, on_delete=models.PROTECT)
     """The descriptor to which this value pertains."""
 
     def __nonzero__(self):
@@ -97,7 +99,7 @@ class NumericDescriptorValue(models.Model):
 
     value = models.FloatField(null=True, blank=True)
     """Set to the floating point value for instances."""
-    descriptor = models.ForeignKey(NumericDescriptor)
+    descriptor = models.ForeignKey(NumericDescriptor, on_delete=models.PROTECT)
     """The descriptor to which a value pertains."""
 
     def clean(self):
@@ -156,7 +158,7 @@ class OrdinalDescriptorValue(models.Model):
 
     value = models.IntegerField(null=True, blank=True)
     """The integer value for the specified descriptor."""
-    descriptor = models.ForeignKey(OrdinalDescriptor)
+    descriptor = models.ForeignKey(OrdinalDescriptor, on_delete=models.PROTECT)
 
     def clean(self):
         """Ensure the value is within the prescribed bounds."""
@@ -183,8 +185,6 @@ class OrdinalDescriptorValue(models.Model):
 
        # if self.rater is None:
        #     raise ValidationError('Make sure to specify a rater')
-
-
 
     def save(self, *args, **kwargs):
         """Ensure cleaning run on save."""

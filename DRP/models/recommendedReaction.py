@@ -10,7 +10,8 @@ class RecommendedReaction(Reaction):
         app_label = 'DRP'
 
     score = models.FloatField()
-    seed = models.ForeignKey(Reaction, null=True, related_name='seeded')
+    seed = models.ForeignKey(
+        Reaction, null=True, related_name='seeded', on_delete=models.PROTECT)
     nonsense = models.BooleanField(default=None)
     hidden = models.BooleanField(default=None)
     saved = models.BooleanField(default=None)

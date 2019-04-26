@@ -161,9 +161,12 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                         compound_num = 'compound_{}'.format(i)
                         if compound_num in whitelist:
                             row[compound_num] = compoundQ.compound.name
-                            row['compound_{}_role'.format(i)] = compoundQ.role.label
-                            row['compound_{}_amount'.format(i)] = compoundQ.amount
-                            row['compound_{}_amount_grams'.format(i)] = compoundQ.amount_grams
+                            row['compound_{}_role'.format(
+                                i)] = compoundQ.role.label
+                            row['compound_{}_amount'.format(
+                                i)] = compoundQ.amount
+                            row['compound_{}_amount_grams'.format(
+                                i)] = compoundQ.amount_grams
                         i += 1
                     yield row
                 else:
@@ -183,7 +186,8 @@ class ReactionQuerySet(CsvQuerySet, ArffQuerySet):
                     row['compound_{}'.format(i)] = compoundQ.compound.name
                     row['compound_{}_role'.format(i)] = compoundQ.role.label
                     row['compound_{}_amount'.format(i)] = compoundQ.amount
-                    row['compound_{}_amount_grams'.format(i)] = compoundQ.amount_grams
+                    row['compound_{}_amount_grams'.format(
+                        i)] = compoundQ.amount_grams
                     i += 1
                 yield row
 
@@ -233,7 +237,8 @@ class Reaction(models.Model):
     objects = ReactionManager()
     compounds = models.ManyToManyField(Compound, through="CompoundQuantity")
     notes = models.TextField(blank=True)
-    labGroup = models.ForeignKey(LabGroup, verbose_name="Lab Group")
+    labGroup = models.ForeignKey(
+        LabGroup, verbose_name="Lab Group", on_delete=models.PROTECT)
     # These three fields are used to govern when descriptor calculation procedures, which are now
     # asynchronous with the save operation
     dirty = models.BooleanField(default=True)

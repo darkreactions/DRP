@@ -41,4 +41,4 @@ class DataSetRelation(models.Model):
         unique_together = ("dataSet", "reaction")
 
     reaction = models.ForeignKey(PerformedReaction, on_delete=models.PROTECT)
-    dataSet = models.ForeignKey(DataSet)
+    dataSet = models.ForeignKey(DataSet, on_delete=models.PROTECT)

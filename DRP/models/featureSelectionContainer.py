@@ -183,7 +183,7 @@ class FeatureSelectionContainer(models.Model):
     startTime = models.DateTimeField(default=None, null=True, blank=True)
     endTime = models.DateTimeField(default=None, null=True, blank=True)
     trainingSet = models.ForeignKey(
-        DataSet, related_name='trainingSetForFeatureSelection', null=True)
+        DataSet, related_name='trainingSetForFeatureSelection', null=True, on_delete=models.PROTECT)
     built = models.BooleanField(
         'Has the build procedure been called with this container?', editable=False, default=False)
 

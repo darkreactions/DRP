@@ -174,7 +174,7 @@ class ModelContainer(models.Model):
     modelVisitorLibrary = models.CharField(max_length=200)
     # choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS)
     modelVisitorTool = models.CharField(max_length=200)
-    choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
+    choices = tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
     splitter = models.CharField(max_length=200, blank=True, default='')
     # choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
 
@@ -214,7 +214,8 @@ class ModelContainer(models.Model):
     predictsDescriptors = PredictsDescriptorsAttribute()
     """The descriptors which this model predicts values for."""
 
-    fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
+    fully_trained = models.ForeignKey(
+        "DRP.StatsModel", null=True, blank=True, on_delete=models.PROTECT)
 
     @classmethod
     def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, splitterOptions=None, visitorOptions=None, description="",

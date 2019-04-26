@@ -16,14 +16,16 @@ class StatsModel(models.Model):
     """The filename in which this model is stored."""
     startTime = models.DateTimeField(default=None, null=True)
     endTime = models.DateTimeField(default=None, null=True)
-    trainingSet = models.ForeignKey(DataSet, related_name='trainingSetFor')
+    trainingSet = models.ForeignKey(
+        DataSet, related_name='trainingSetFor', on_delete=models.PROTECT)
     testSets = models.ManyToManyField(DataSet, related_name='testSetsFor')
-    container = models.ForeignKey("DRP.ModelContainer")
+    container = models.ForeignKey(
+        "DRP.ModelContainer", on_delete=models.PROTECT)
 
     # these fields are for use if a model should become invalidated
     invalid = models.BooleanField(default=False)
     regenerationOf = models.ForeignKey(
-        "self", blank=True, null=True, default=None)
+        "self", blank=True, null=True, default=None, on_delete=models.PROTECT)
 
     def invalidate(self):
         """Invalidate the model instance."""

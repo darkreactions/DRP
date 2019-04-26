@@ -7,7 +7,8 @@ from DRP.forms import CompoundForm, LabGroupSelectionForm, CompoundEditForm, Com
 from django.utils.decorators import method_decorator
 from .decorators import userHasLabGroup, hasSignedLicense, labGroupSelected
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse_lazy as reverse
+#from django.core.urlresolvers import reverse_lazy as reverse
+from django.urls import reverse_lazy as reverse
 from django.shortcuts import render, redirect
 from django.utils.http import urlencode
 from django.http import HttpResponse, Http404, HttpResponseForbidden

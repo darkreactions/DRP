@@ -124,7 +124,8 @@ class CategoricalDescriptorPermittedValue(models.Model):
     value = models.CharField('Permitted Value', max_length=255)
     descriptor = models.ForeignKey(
         CategoricalDescriptor,
-        related_name='permittedValues'
+        related_name='permittedValues',
+        on_delete=models.PROTECT,
     )
 
     def __str__(self):

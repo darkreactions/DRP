@@ -14,5 +14,5 @@ class ConfirmationCode(models.Model):
     class Meta:
         app_label = "DRP"
 
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.PROTECT)
     code = models.CharField(max_length=36, unique=True)

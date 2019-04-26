@@ -45,7 +45,7 @@ class MolDescriptorValue(models.Model):
 
     uid = models.CharField(max_length=36, default=molUid, primary_key=True)
     objects = MolDescriptorValueManager()
-    compound = models.ForeignKey('DRP.Compound')
+    compound = models.ForeignKey('DRP.Compound', on_delete=models.PROTECT)
 
     def delete(self, recalculate_reactions=True):
         """Delete this compound and recalculate each reaction which it is involvedin."""
@@ -97,7 +97,7 @@ class NumMolDescriptorValue(NumericDescriptorValue, MolDescriptorValue):
 
 class OrdMolDescriptorValue(OrdinalDescriptorValue, MolDescriptorValue):
     """The ordinal value of a descriptor for a compound."""
-	
+
     class Meta:
         app_label = "DRP"
         verbose_name = 'Ordinal Molecular Descriptor Value'

@@ -7,7 +7,8 @@ from django.template.loader import get_template
 from DRP.models import LicenseAgreement, License
 from DRP.models import LabGroup, PerformedReaction
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
+#from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.http import urlencode
 from django.http import HttpResponseNotFound
 from DRP.forms import LabGroupSelectionForm
@@ -66,6 +67,7 @@ def reactionExists(view, *args, **kwargs):
 
 def labGroupSelected(dispatch_method):
     """Ensure a viewing lab group has been selected. This assumes a listview, hence it expects to decorate a method."""
+
     def _labGroupSelected(self, request, *args, **kwargs):
         """The actual decorator function."""
         if request.user.is_authenticated():

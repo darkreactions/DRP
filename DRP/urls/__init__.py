@@ -9,7 +9,7 @@ from . import dashboard
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
     url(r'^', include(public.urls)),
     url(r'^', include(authentication.urls)),
     url(r'^', include(dashboard.urls)),

@@ -268,7 +268,7 @@ class Compound(models.Model):
                 if self.formula == '':
                     self.formula = csCompound.molecular_formula
                 elif self.formula != csCompound.molecular_formula:
-                    errorsList.append(ValidationError(
+                    errorList.append(ValidationError(
                         'A compound was consistency checked and was found to have an invalid formula', code="invalid_formula"))
                 if len(errorList) > 0:
                     raise ValidationError(errorList)
@@ -327,8 +327,8 @@ class CompoundGuideEntry(models.Model):
         app_label = 'DRP'
         unique_together = (('compound', 'labGroup'), ('abbrev', 'labGroup'))
 
-    compound = models.ForeignKey(Compound)
-    labGroup = models.ForeignKey(LabGroup)
+    compound = models.ForeignKey(Compound, on_delete=models.PROTECT)
+    labGroup = models.ForeignKey(LabGroup, on_delete=models.PROTECT)
     abbrev = models.CharField("Abbreviation", max_length=100)
 
 

@@ -149,7 +149,7 @@ class MetricContainer(models.Model):
     """The filename in which this model is stored."""
     invalid = models.BooleanField(default=False)
     trainingSet = models.ForeignKey(
-        DataSet, related_name='trainingSetForMetric', null=True)
+        DataSet, related_name='trainingSetForMetric', null=True, on_delete=models.PROTECT)
     built = models.BooleanField(
         'Has the build procedure been called with this container?', editable=False, default=False)
 

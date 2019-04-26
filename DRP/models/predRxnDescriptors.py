@@ -12,8 +12,10 @@ from django.db.models import F
 class PredictedDescriptor(models.Model):
     """The general case of a predicted descriptor."""
 
-    modelContainer = models.ForeignKey(ModelContainer)
-    statsModel = models.ForeignKey(StatsModel, null=True)
+    modelContainer = models.ForeignKey(
+        ModelContainer, on_delete=models.PROTECT)
+    statsModel = models.ForeignKey(
+        StatsModel, null=True, on_delete=models.PROTECT)
 
     class Meta:
         app_label = "DRP"
@@ -26,7 +28,7 @@ class PredBoolRxnDescriptor(BoolRxnDescriptor, PredictedDescriptor):
     """Reaction boolean descriptor which has been predicted by a model."""
 
     predictionOf = models.ForeignKey(
-        BoolRxnDescriptor, related_name="prediction_of")
+        BoolRxnDescriptor, related_name="prediction_of", on_delete=models.PROTECT)
 
     class Meta:
         app_label = 'DRP'
@@ -141,7 +143,7 @@ class PredOrdRxnDescriptor(OrdRxnDescriptor, PredictedDescriptor):
     """Ordinal case of the predicted reaction descriptor."""
 
     predictionOf = models.ForeignKey(
-        OrdRxnDescriptor, related_name="predition_of")
+        OrdRxnDescriptor, related_name="predition_of", on_delete=models.PROTECT)
 
     class Meta:
         app_label = 'DRP'
@@ -220,7 +222,7 @@ class PredNumRxnDescriptor(NumRxnDescriptor, PredictedDescriptor):
     """Numeric Predicted Reaction Descriptor."""
 
     predictionOf = models.ForeignKey(
-        NumRxnDescriptor, related_name="prediction_of")
+        NumRxnDescriptor, related_name="prediction_of", on_delete=models.PROTECT)
 
     class Meta:
         app_label = 'DRP'
@@ -253,7 +255,7 @@ class PredCatRxnDescriptor(CatRxnDescriptor, PredictedDescriptor):
     """The categorical case of the predicted reaction descriptor."""
 
     predictionOf = models.ForeignKey(
-        CatRxnDescriptor, related_name="prediction_of")
+        CatRxnDescriptor, related_name="prediction_of", on_delete=models.PROTECT)
 
     class Meta:
         app_label = 'DRP'

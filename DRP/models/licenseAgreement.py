@@ -10,6 +10,6 @@ class LicenseAgreement(models.Model):
     class Meta:
         app_label = "DRP"
 
-    user = models.ForeignKey(auth.models.User)
-    text = models.ForeignKey(License)
+    user = models.ForeignKey(auth.models.User, on_delete=models.PROTECT)
+    text = models.ForeignKey(License, on_delete=models.PROTECT)
     signedDateTime = models.DateTimeField(auto_now=True)

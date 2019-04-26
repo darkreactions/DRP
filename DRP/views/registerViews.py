@@ -4,7 +4,8 @@ from django.template import RequestContext, Context
 from DRP.email import Email
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.core.urlresolvers import reverse
+#from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template.loader import render_to_string
 from DRP.forms import ConfirmationForm
 from DRP.models import ConfirmationCode

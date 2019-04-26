@@ -77,15 +77,15 @@ class PerformedReaction(Reaction):
         app_label = "DRP"
 
     objects = PerformedReactionManager()
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     performedBy = models.ForeignKey(
-        User, related_name='performedReactions', null=True, blank=True, default=None, verbose_name="Performed By")
+        User, related_name='performedReactions', null=True, blank=True, default=None, verbose_name="Performed By", on_delete=models.PROTECT)
     performedDateTime = models.DateTimeField('Date Reaction Performed', null=True, blank=True, default=None,
                                              help_text='Timezone assumed EST, Date in format YYYY-MM-DD', validators=[notInTheFuture])
     insertedDateTime = models.DateTimeField(
         'Date Reaction Saved', auto_now_add=True)
     recommendation = models.ForeignKey(
-        RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment')
+        RecommendedReaction, blank=True, unique=False, null=True, default=None, related_name='resultantExperiment', on_delete=models.PROTECT)
     legacyRecommendedFlag = models.NullBooleanField(default=None)
     """If this reaction was based from a recommendation, reference that recommendation."""
     valid = models.BooleanField(default=True)
@@ -93,7 +93,7 @@ class PerformedReaction(Reaction):
     if the wrong reactant was used or some bad lab record has been found."""
     public = models.BooleanField(default=False)
     duplicateOf = models.ForeignKey(
-        'self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None, verbose_name="Duplicate Of")
+        'self', related_name='duplicatedBy', blank=True, unique=False, null=True, default=None, verbose_name="Duplicate Of", on_delete=models.PROTECT)
     legacyID = models.IntegerField(null=True, blank=True, unique=True)
     """ID in legacy database."""
     legacyRef = models.CharField(max_length=40, null=True, blank=True)
