@@ -29,6 +29,7 @@ metrics/*
 
 Database_Reactions*csv
 
-
 .idea/
 *.ipynb_checkpoints
+.vscode/
+**/*.ipynb

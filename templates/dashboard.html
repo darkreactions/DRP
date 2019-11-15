@@ -9,6 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dashboard.css" />
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -20,38 +21,42 @@
            <span style="color: red">{{num_experiments_private}}</span> are private
       </h4>
     </div>
-    <div class="col-md-auto">
+    <!-- <div class="col-md-auto">
       <h5>Legends</h5>
       <div id="lab_legend"></div>
-    </div>
+    </div> -->
   </div>
   <div class="row">
     <div class="col">
       <h3>Date Reactions were Entered</h3>
-      <div id="tiny_when_reactions_entered_graph"></div>
+      <div id="tiny_when_reactions_entered_graph">{{divTest|safe}}</div>
     </div> 
-    <div>
+    <div class="col">
       <h3>Date Reactions were Performed</h3>
-      <div id="tiny_when_reactions_performed_graph"></div>
+      <div id="tiny_when_reactions_performed_graph">{{divTest2|safe}}</div>
     </div>
   </div>
   <div class="row">
     <div class="col">
       <h3>Reactions with no Performed Date</h3> 
-      <div id="tiny_noPerformedDate_graph"></div>
+      <div id="tiny_noPerformedDate_graph">{{divTest|safe}}</div>
     </div> 
     <div class="col">
       <h3>Reactions Cumulatively Performed</h3>
-      <div id="tiny_when_reactions_performed_cumulative_graph"></div>
+      <div id="tiny_when_reactions_performed_cumulative_graph">{{divTest|safe}}</div>
     </div>
-    <div class="col">
+    <!-- <div class="col">
       <h3>Cumulative Valid and Invalid Reactions Performed</h3>
-      <div id="tiny_when_valid_reactions_graph"></div>
-    </div>
+      <div id="tiny_when_valid_reactions_graph">{{divTest|safe}}</div>
+    </div> -->
   </div>
   <!-- If you want more grid items, just add another column or row! -->
 </div>
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+
+<!-- THIS PART WILL BE DELETED COMMENTED OUT BY JASON. REPLACE WITH PLOTLY-->
+
+<!-- <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script type="text/javascript">
 // this visualization is mostly this: http://bl.ocks.org/mstanaland/6100713
 // but also a little bit this: https://bl.ocks.org/d3noob/96b74d0bd6d11427dd797892551a103c
@@ -339,6 +344,6 @@ $(document).ready(function() {
           .attr("d", valueline(data));
   });
 });
-</script>
+</script> -->
 
 {% endblock %}

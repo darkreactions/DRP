@@ -6,11 +6,10 @@ from operator import add
 import datetime
 
 # Set to False for faster, non-dynamic page loads (good for testing JS/Frontend)
-generate_csvs = True
+generate_csvs = False
 
 # Labs included in this list will be totally ignored in the end visualization
 DISCLUDED_LABS = ['default_amines']
-
 
 def dashboard(request):
     """The view for dashboard. Gathers and preprocesses some data for visualization."""
@@ -19,6 +18,7 @@ def dashboard(request):
     num_experiments = len(PerformedReaction.objects.all())
     num_experiments_public = len(PerformedReaction.objects.filter(public=True))
     num_experiments_private = num_experiments - num_experiments_public
+    divTest = testPrint()
 
     if generate_csvs:
         today = datetime.datetime.today()
@@ -45,16 +45,19 @@ def dashboard(request):
 
     # Another thing to add would be the confusion matrices.
     # Unfortunately, there is no data for these in the test dataset I have, so this just prints an empty list
-    print("Next will print all the ModelContainer objects, which might be an empty list.")
-    print(ModelContainer.objects.all())
-    for model in ModelContainer.objects.all():
-        print(model)
-        print(model.getOverallConfusionMatrices())
+    # Uncomment the following lines to print the empty lists
+    # print("Next will print all the ModelContainer objects, which might be an empty list.")
+    # print(ModelContainer.objects.all())
+    # for model in ModelContainer.objects.all():
+    #     print(model)
+    #     print(model.getOverallConfusionMatrices())
 
     return render(request, template_name='dashboard.html',
                   context={'num_experiments': num_experiments,
                            'num_experiments_public': num_experiments_public,
-                           'num_experiments_private': num_experiments_private})
+                           'num_experiments_private': num_experiments_private,
+                           'divTest': divTest,
+                           'divTest2': testPrint2()})
 
 
 def make_dates_csv(csv_name, inserted_or_performed, cumulative=False, count_no_data=False):
@@ -374,3 +377,92 @@ def make_valid_reaction_csv(csv_name):
             previous = cumulative_counts
             valid_invalid_counts = map(str, cumulative_counts)
             f.write(date[0] + "," + ",".join(valid_invalid_counts) + "\n")
+
+
+from plotly.offline import plot
+import plotly.graph_objs as go
+import pandas as pd
+from datetime import datetime
+import requests
+import numpy as np
+import plotly.offline as opy
+import plotly.express as px
+
+import datetime
+import glob
+import logging
+import os
+from plotly.offline import plot
+
+FILE_NAMES = ["dateEntered.csv", "datePerformed.csv", "noPerformedDate.csv", "datePerformedCumulative.csv", "validReactions.csv"]
+
+def testPrint():
+
+    df = pd.read_csv("static/dateEntered.csv")
+    fig = go.Figure()
+    for label in df.columns.values[1:]:
+        fig.add_trace(go.Bar(x=df['date'], y=df[label], name=label))
+        
+    # Change the bar mode
+    fig.update_layout(
+        barmode='stack',
+        xaxis=go.layout.XAxis(
+            title=go.layout.xaxis.Title(
+                text="Date",
+                font=dict(
+                    size=14,
+                    color="#7f7f7f"
+                )
+            )
+        ),
+        yaxis=go.layout.YAxis(
+            title=go.layout.yaxis.Title(
+                text="Number of Reactions",
+                font=dict(
+                    size=14,
+                    color="#7f7f7f"
+                )
+            ),
+            type="log"
+        )
+    )
+    
+    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+    return plot_div
+
+
+def testPrint2():
+
+    df = pd.read_csv("static/datePerformed.csv")
+    fig = go.Figure()
+    for label in df.columns.values[1:]:
+        fig.add_trace(go.Bar(x=df['date'], y=df[label], name=label))
+        
+    # Change the bar mode
+    fig.update_layout(
+        barmode='stack',
+        xaxis=go.layout.XAxis(
+            title=go.layout.xaxis.Title(
+                text="Date",
+                font=dict(
+                    size=14,
+                    color="#7f7f7f"
+                )
+            )
+        ),
+        yaxis=go.layout.YAxis(
+            title=go.layout.yaxis.Title(
+                text="Number of Reactions",
+                font=dict(
+                    size=14,
+                    color="#7f7f7f"
+                )
+            ),
+            type="log"
+        )
+    )
+    
+    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+    return plot_div
