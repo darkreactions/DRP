@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "sidebar.html" %}
 {% block additional_head %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/contact.css" />
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/infoForm.css" />
@@ -14,7 +14,7 @@ Contact Us
   <form method="post" action="/contact.html" class="inlineForm infoForm">
     {% csrf_token %}
       <ol>
-      {{ form.as_ul }} 
+      {{ form.as_ul }}
       </ol>
     <input class="submit" type="submit" value="Send" />
   </form>

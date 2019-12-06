@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "sidebar.html" %}
 
 {% block additional_head %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/login_form.css" /> 
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/login_form.css" />
 {% endblock %}
 
 {% block content %}
@@ -14,5 +14,7 @@
   </ol>
   <input type="submit" value="Log In" />
 </form>
+
+<a id="registrationPrompt" href="/register.html" style="margin: 0 auto; display:block; text-align: center">Register an account</a>
 
 {% endblock %}

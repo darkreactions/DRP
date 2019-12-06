@@ -19,6 +19,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            print(user)
             user.is_active = False
             user.save()
             code = uuid4()
@@ -28,6 +29,7 @@ def register(request):
                                          'name': user.first_name + ' ' + user.last_name, 'code': code, 'servername': settings.SERVER_NAME, 'testing': settings.TESTING})
             m = Email('Dark Reactions Project Registration',
                       emailText, [user.email])
+            print(emailText)
             m.send()
             return render(request, 'register.html', RequestContext(request, {'form': form, 'submitted': True}))
         else:
@@ -36,7 +38,7 @@ def register(request):
         form = UserCreationForm()
         return render(request, 'register.html', RequestContext(request, {'form': form, 'submitted': False}))
 
-
+# first_name + ' ' + user.last_nam
 def confirm(request):
     """A view to confirm sign-up, and to render the license agreement binding."""
     if 'code' in request.GET.keys():

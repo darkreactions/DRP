@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "sidebar.html" %}
 
 {% block additional_head %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/register.css" />
@@ -24,9 +24,9 @@
   {% csrf_token %}
     <ol>
       {{ form.as_ul }}
-    </ol> 
+    </ol>
     <input type="submit" value="Register" />
-  </form>  
+  </form>
   {% endif %}
   {% if testing %}
   <!-- 4cf1abe0-9118-471c-ac4e-34e863e87402 -->
