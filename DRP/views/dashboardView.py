@@ -59,14 +59,14 @@ def dashboard(request):
 
         make_valid_reaction_csv("validReactions.csv")
 
-    print("Next will print all the confusion matrices objects.")
+    print("Next we will get confusion matrices for all built models")
     all_models = ModelContainer.objects.all()
     built_models = [model for model in all_models if model.built]
 
     stats_arr = np.array([
         display_model_results(model, verbose=False) for model in built_models
     ])
-    avg_acc, avg_bcr, avg_matthews = np.average(stats_arr, axis=0)
+    avg_acc, avg_bcr, avg_matthews = np.around(np.average(stats_arr, axis=0), decimals=2)
 
     context = {
         'num_experiments': num_experiments,

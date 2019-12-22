@@ -66,7 +66,6 @@ def make_valid_reaction_bar_char(csv_name):
 
 
 def make_area_chart(csv_name):
-    print(csv_name)
     df = pd.read_csv(STATIC_URL + csv_name)
     fig = go.Figure()
     for i, label in enumerate(df.columns.values[1:]):
