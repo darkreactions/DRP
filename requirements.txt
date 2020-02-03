@@ -5,7 +5,7 @@ MarkupSafe==0.18
 MySQL-python==1.2.3
 PAM==0.4.2
 Pillow==2.3.0
-PyYAML==3.11
+PyYAML==5.1
 RunSnakeRun==2.0.4
 SquareMap==1.0.4
 Twisted-Core==13.2.0
