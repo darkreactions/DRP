@@ -1,22 +1,23 @@
-{% extends "base.html" %}
+{% extends "sidebar.html" %}
 {% block additional_head %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/contact.css" />
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/infoForm.css" />
 {% endblock %}
+
+{% load crispy_forms_tags %}
 
 {% block content %}
 <h1 class='bannerText'>
 Contact Us
 </h1>
   {% if success %}
-  <p>Thankyou for contributing to the dark reactions project. We'll get back to you soon.</p>
+  <p>Thank you for contributing to the Dark Reactions Project. We'll get back to you soon.</p>
   {% else %}
-  <form method="post" action="/contact.html" class="inlineForm infoForm">
+  <form class="inlineForm infoForm">
     {% csrf_token %}
       <ol>
-      {{ form.as_ul }} 
+    {% crispy form %}
       </ol>
-    <input class="submit" type="submit" value="Send" />
   </form>
   {% endif %}
   {% if testing %}

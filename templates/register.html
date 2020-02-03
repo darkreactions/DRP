@@ -1,10 +1,12 @@
-{% extends "base.html" %}
+{% extends "sidebar.html" %}
 
 {% block additional_head %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/register.css" />
 {% endblock %}
 
 {% block login_next %}{% endblock %}
+
+{% load crispy_forms_tags %}
 
 {% block content %}
   <h1 class="bannerText">
@@ -20,13 +22,16 @@
     {% if testing %}
     <!-- be088572-3adc-4757-8059-d16db2ea77a6 -->
     {% endif %}
-  <form action="{% url 'register' %}" method="post">
+  <form action="{% url 'register' %}">
   {% csrf_token %}
     <ol>
-      {{ form.as_ul }}
-    </ol> 
-    <input type="submit" value="Register" />
-  </form>  
+      {% crispy form %}
+    </ol>
+  <!-- <div class="text-center">
+    <button type="submit" class="btn btn-primary">Register</button>
+    </div> -->
+  <!--  <input type="submit" value="Register" /> -->
+  </form>
   {% endif %}
   {% if testing %}
   <!-- 4cf1abe0-9118-471c-ac4e-34e863e87402 -->

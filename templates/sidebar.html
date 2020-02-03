@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>
+      {% block title %} Dark Reactions Project {% endblock %}
+    </title>
+
+    <link rel="icon" href="{{STATIC_URL}}images/mainLogo.png">
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="{{ STATIC_URL}}/css/sidebar.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+    <!-- Font Awesome JS -->
+    <script src="https://kit.fontawesome.com/a9cc56411d.js" crossorigin="anonymous"></script>
+    {% block additional_css %}{% endblock %}
+  {% block additional_head %}{% endblock %}
+    {% block head_js %}{% endblock %}
+</head>
+
+<body>
+
+    <!--<h1 class="mainTitle">Dark Reactions Project</h1> -->
+      <!-- End of intro, migrated from base.html -->
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div id="dismiss">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+
+            <div class="sidebar-header">
+              <div class="row">
+                <img class="image mainlogo" id="mainLogo" src="{{STATIC_URL}}images/mainLogoBanner.png" alt="DRP logo">
+              </div>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li class="active">
+                  <a href="/" class="navLink{% if template == "home"%} currentTitle{%endif%}" title="The basics of the Project.">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url "reactionlist_typed" ".html" %}?page=1"
+                     id="dbase"
+                     class="navLink{% if template == "database"%} currentTitle{%endif%}"
+                     title="Enter the Dark Reaction Project.">
+                     Project
+                  </a>
+                  </li>
+              <li>
+                <a href="/about.html"
+                   class="navLink{% if template == "about"%} currentTitle{%endif%}"
+                   title="More info about the Project.">
+                   About
+                </a>
+              </li>
+              <li>
+                <a href="/contact.html"
+                   class="navLink{% if template == "contact"%} currentTitle{%endif%}"
+                   title="Send a bug report, comment, or complaint.">
+                   Contact
+                </a>
+            </li>
+            </ul>
+
+            &copy; {% now "Y" %} Dark Reactions Project
+                                    Haverford College
+
+        </nav>
+
+            <div class="overlay"></div>
+
+        <!-- Page Content  -->
+       <div id="content">
+
+           <nav class="navbar navbar-expand-lg navbar-light bg-light">
+               <div class="container-fluid">
+
+
+                   <button type="button" id="sidebarCollapse" class="btn btn-light">
+                       <i class="fas fa-align-justify"></i>
+                       <!-- <span>Toggle Sidebar</span> -->
+                   </button>
+
+                   <header>
+                     <!-- <img id="mainLogo" src="{{STATIC_URL}}images/mainLogo.png" alt="DRP logo"> -->
+                     <!-- <h1 class="mainTitle">Dark Reactions Project</h1> -->
+
+                     <div id="userInfo">
+
+                       <a href="https://github.com/darkreactions/DRP" class="btn btn-secondary">
+                         <i class='fab fa-github'></i>
+                       </a>
+
+                       <!-- <button href="https://github.com/darkreactions/DRP" type="button" class="btn btn-secondary">
+                           <i class='fas fa-align-left'></i>
+                       </button> -->
+                       {% if user.is_authenticated %}
+                         {% if testing %}
+                           <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
+                         {% endif %}
+                         <span class="greeting">
+                           Hello, {{ user.first_name }}
+                           <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+                         </span>
+                         <a href="/logout.html" id="userLogOut">Log Out</a>
+
+                       {% else %}
+                         {% if testing %}
+                           <!-- d68a82db-bd18-4a9f-a1a2-03b3bb259595 -->
+                         {% endif %}
+                       <a id="userLogin" href="/login.html{% block login_next %}?next={{ request.path_info|urlencode }}{% endblock %}" class="btn btn-secondary">
+                           <i class="fas fa-user"></i> Login</a>
+
+
+                       {% endif %}
+
+                       </div>
+                     </header>
+
+
+               </div>
+           </nav>
+
+
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    {% block additional_js %}{% endblock %}
+
+    <script>
+      dbase = document.getElementById('dbase');
+      dbase.setAttribute('href', '{% url "reactionlist" %}');
+    </script>
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sidebar").mCustomScrollbar({
+                theme: "minimal"
+            });
+
+            $('#dismiss, .overlay').on('click', function () {
+                $('#sidebar').removeClass('active');
+                $('.overlay').removeClass('active');
+            });
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').addClass('active');
+                $('.overlay').addClass('active');
+                $('.collapse.in').toggleClass('in');
+                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+            });
+        });
+    </script>
+</body>
+
+</html>
