@@ -19,14 +19,23 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-visitorModules = {library: importlib.import_module(
-    settings.STATS_MODEL_LIBS_DIR + "." + library) for library in settings.STATS_MODEL_LIBS}
+visitorModules = {
+    library: importlib.import_module(
+        settings.STATS_MODEL_LIBS_DIR +
+        "." +
+        library) for library in settings.STATS_MODEL_LIBS}
 
-splitters = {splitter: importlib.import_module(
-    settings.REACTION_DATASET_SPLITTERS_DIR + "." + splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
+splitters = {
+    splitter: importlib.import_module(
+        settings.REACTION_DATASET_SPLITTERS_DIR +
+        "." +
+        splitter) for splitter in settings.REACTION_DATASET_SPLITTERS}
 
-featureVisitorModules = {library: importlib.import_module(
-    settings.FEATURE_SELECTION_LIBS_DIR + "." + library) for library in settings.FEATURE_SELECTION_LIBS}
+featureVisitorModules = {
+    library: importlib.import_module(
+        settings.FEATURE_SELECTION_LIBS_DIR +
+        "." +
+        library) for library in settings.FEATURE_SELECTION_LIBS}
 
 MODEL_VISITOR_TOOL_CHOICES = tuple(
     tool for library in visitorModules.values() for tool in library.tools)
@@ -40,7 +49,11 @@ class PredictsDescriptorsAttribute(object):
 
     def __get__(self, modelContainer, modelContainerType=None):
         """Return a chain of each of the querysets."""
-        return chain(modelContainer.predboolrxndescriptor_set.all(), modelContainer.predordrxndescriptor_set.all(), modelContainer.predcatrxndescriptor_set.all(), modelContainer.prednumrxndescriptor_set.all())
+        return chain(
+            modelContainer.predboolrxndescriptor_set.all(),
+            modelContainer.predordrxndescriptor_set.all(),
+            modelContainer.predcatrxndescriptor_set.all(),
+            modelContainer.prednumrxndescriptor_set.all())
 
     def __set__(self, modelContainer, descriptors):
         """Clear the descriptor sets and then set them equal to the provided queryset."""
@@ -65,7 +78,11 @@ class DescriptorAttribute(object):
 
     def __get__(self, modelContainer, modelContainerType=None):
         """Return a chain of each of the querysets."""
-        return chain(modelContainer.boolRxnDescriptors.all(), modelContainer.ordRxnDescriptors.all(), modelContainer.catRxnDescriptors.all(), modelContainer.numRxnDescriptors.all())
+        return chain(
+            modelContainer.boolRxnDescriptors.all(),
+            modelContainer.ordRxnDescriptors.all(),
+            modelContainer.catRxnDescriptors.all(),
+            modelContainer.numRxnDescriptors.all())
 
     def __set__(self, modelContainer, descriptors):
         """Clear the descriptor sets and then set them equal to the provided queryset."""
@@ -117,7 +134,11 @@ class OutcomeDescriptorAttribute(object):
 
     def __get__(self, modelContainer, modelContainerType=None):
         """Return a chain of each of the querysets."""
-        return chain(modelContainer.outcomeBoolRxnDescriptors.all(), modelContainer.outcomeOrdRxnDescriptors.all(), modelContainer.outcomeCatRxnDescriptors.all(), modelContainer.outcomeNumRxnDescriptors.all())
+        return chain(
+            modelContainer.outcomeBoolRxnDescriptors.all(),
+            modelContainer.outcomeOrdRxnDescriptors.all(),
+            modelContainer.outcomeCatRxnDescriptors.all(),
+            modelContainer.outcomeNumRxnDescriptors.all())
 
     def __set__(self, modelContainer, descriptors):
         """Clear the descriptor sets and then set them equal to the provided queryset."""
@@ -174,7 +195,7 @@ class ModelContainer(models.Model):
     modelVisitorLibrary = models.CharField(max_length=200)
     # choices=tuple((lib, lib) for lib in settings.STATS_MODEL_LIBS)
     modelVisitorTool = models.CharField(max_length=200)
-    choices=tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
+    choices = tuple((tool, tool) for tool in MODEL_VISITOR_TOOL_CHOICES)
     splitter = models.CharField(max_length=200, blank=True, default='')
     # choices=tuple((splitter, splitter) for splitter in settings.REACTION_DATASET_SPLITTERS)
 
@@ -183,7 +204,9 @@ class ModelContainer(models.Model):
     splitterOptions = models.TextField(null=False, blank=True, default="{}")
 
     built = models.BooleanField(
-        'Has the build procedure been called with this container?', editable=False, default=False)
+        'Has the build procedure been called with this container?',
+        editable=False,
+        default=False)
 
     descriptors = DescriptorAttribute()
     boolRxnDescriptors = models.ManyToManyField(BoolRxnDescriptor)
@@ -217,8 +240,20 @@ class ModelContainer(models.Model):
     fully_trained = models.ForeignKey("DRP.StatsModel", null=True, blank=True)
 
     @classmethod
-    def create(cls, modelVisitorLibrary, modelVisitorTool, predictors, responses, splitterOptions=None, visitorOptions=None, description="",
-               splitter=None, reactions=None, trainingSets=None, testSets=[], verbose=False):
+    def create(
+            cls,
+            modelVisitorLibrary,
+            modelVisitorTool,
+            predictors,
+            responses,
+            splitterOptions=None,
+            visitorOptions=None,
+            description="",
+            splitter=None,
+            reactions=None,
+            trainingSets=None,
+            testSets=[],
+            verbose=False):
         """
         Create a model container with a set of options.
 
@@ -229,16 +264,21 @@ class ModelContainer(models.Model):
         reactions or training sets should be specified, and this will define how the training data is defined, as is testSets.
 
         """
-        model_container = cls(modelVisitorLibrary=modelVisitorLibrary,
-                              modelVisitorTool=modelVisitorTool, description=description)
+        model_container = cls(
+            modelVisitorLibrary=modelVisitorLibrary,
+            modelVisitorTool=modelVisitorTool,
+            description=description)
 
-        if (splitter is None) ^ (reactions is None):  # if these are not the same, there's a problem
+        if (splitter is None) ^ (
+                reactions is None):  # if these are not the same, there's a problem
             raise ValidationError(
-                'A full set of reactions must be supplied with a splitter', 'argument_mismatch')
+                'A full set of reactions must be supplied with a splitter',
+                'argument_mismatch')
         # if these are not different, there's a problem
         if not ((splitter is None) ^ (trainingSets is None)):
             raise ValidationError(
-                'Either a splitter or a training set should be provided.', 'argument_mismatch')
+                'Either a splitter or a training set should be provided.',
+                'argument_mismatch')
 
         if splitterOptions is not None:
             if splitter is None:
@@ -254,7 +294,9 @@ class ModelContainer(models.Model):
         if splitter is not None:
             model_container.splitter = splitter
             splitter_name_stub = "{}_{}_{}".format(
-                model_container.modelVisitorLibrary, model_container.modelVisitorTool, model_container.pk)
+                model_container.modelVisitorLibrary,
+                model_container.modelVisitorTool,
+                model_container.pk)
             splitterObj = splitters[model_container.splitter].Splitter(
                 splitter_name_stub, **json.loads(model_container.splitterOptions))
             if verbose:
@@ -275,14 +317,25 @@ class ModelContainer(models.Model):
 
         return model_container
 
-    def create_duplicate(self, modelVisitorTool=None, modelVisitorOptions=None, description=None, predictors=None, responses=None):
+    def create_duplicate(
+            self,
+            modelVisitorTool=None,
+            modelVisitorOptions=None,
+            description=None,
+            predictors=None,
+            responses=None):
         """
         Build a duplicate of this model container optionally with a different model visitor tool.
 
         If a new description is not specified then the old description is used with 'rebuilt with tool X' appended
         """
-        fields = ['description', 'splitter', 'splitterOptions',
-                  'modelVisitorLibrary', 'modelVisitorTool', 'modelVisitorOptions']
+        fields = [
+            'description',
+            'splitter',
+            'splitterOptions',
+            'modelVisitorLibrary',
+            'modelVisitorTool',
+            'modelVisitorOptions']
         field_dict = ModelContainer.objects.filter(
             pk=self.pk).values(*fields)[0]
 
@@ -316,7 +369,11 @@ class ModelContainer(models.Model):
             for sm in self.statsmodel_set.all():
                 statsModel = StatsModel(
                     container=m, trainingSet=sm.trainingSet)
-                if set(m.descriptors) == set(self.descriptors) and set(m.outcomeDescriptors) == set(self.outcomeDescriptors):
+                if set(
+                        m.descriptors) == set(
+                        self.descriptors) and set(
+                        m.outcomeDescriptors) == set(
+                        self.outcomeDescriptors):
                     statsModel.inputFile = sm.inputFile
                 statsModel.save()
                 statsModel.testSets = sm.testSets.all()
@@ -329,33 +386,46 @@ class ModelContainer(models.Model):
     def clean(self):
         """Perform very rudimentary validation of additional properties. Needs refactoring."""
         if self.modelVisitorTool not in visitorModules[self.modelVisitorLibrary].tools:
-            raise ValidationError('Selected tool {} does not exist in selected library {}'.format(
-                self.modelVisitorTool, self.modelVisitorLibrary), 'wrong_library')
-        if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount is not None:
-            if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len([d for d in self.outcomeDescriptors]):
+            raise ValidationError(
+                'Selected tool {} does not exist in selected library {}'.format(
+                    self.modelVisitorTool,
+                    self.modelVisitorLibrary),
+                'wrong_library')
+        if getattr(visitorModules[self.modelVisitorLibrary],
+                   self.modelVisitorTool).maxResponseCount is not None:
+            if getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount < len(
+                    [d for d in self.outcomeDescriptors]):
                 raise ValidationError('Selected tool {} cannot accept this many responses, maximum is {}'.format(self.modelVisitorTool, getattr(
                     visitorModules[self.modelVisitorLibrary], self.modelVisitorTool).maxResponseCount), 'too_many_responses')
         try:
             options_dict = json.loads(self.modelVisitorOptions)
-        except:
-            raise ValidationError('Was unable to parse modelVisitorOptions {} with json. Got exception: ({})'.format(
-                self.modelVisitorOptions, repr(sys.exc_info()[1])))
+        except BaseException:
+            raise ValidationError(
+                'Was unable to parse modelVisitorOptions {} with json. Got exception: ({})'.format(
+                    self.modelVisitorOptions, repr(
+                        sys.exc_info()[1])))
         try:
             getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(
                 statsModel=None, **options_dict)
-        except:
-            raise ValidationError('Was unable expand modelVisitorOptions {} parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(
-                self.modelVisitorOptions, repr(sys.exc_info()[1])))
+        except BaseException:
+            raise ValidationError(
+                'Was unable expand modelVisitorOptions {} parsed by json into keyword arguments accepted by model visitor. Got exception: {}'.format(
+                    self.modelVisitorOptions, repr(
+                        sys.exc_info()[1])))
         try:
             options_dict = json.loads(self.splitterOptions)
-        except:
-            raise ValidationError('Was unable to parse splitterOptions {} with json. Got exception: ({})'.format(
-                self.splitterOptions, repr(sys.exc_info()[1])))
+        except BaseException:
+            raise ValidationError(
+                'Was unable to parse splitterOptions {} with json. Got exception: ({})'.format(
+                    self.splitterOptions, repr(
+                        sys.exc_info()[1])))
         try:
             splitterObj = splitters[self.splitter].Splitter('', **options_dict)
-        except:
-            raise ValidationError('Was unable to expand splitterOptions {} parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(
-                self.splitterOptions, repr(sys.exc_info()[1])))
+        except BaseException:
+            raise ValidationError(
+                'Was unable to expand splitterOptions {} parsed by json into keyword arguments accepted by splitter. Got exception: {}'.format(
+                    self.splitterOptions, repr(
+                        sys.exc_info()[1])))
 
     def createStatsModels(self, data_splits, verbose=False):
         """Create statistical models which 'vote' on the outcomes. May be singular or multiple."""
@@ -395,18 +465,15 @@ class ModelContainer(models.Model):
                 statsModel=statsModel, **visitorOptions)
             # Train the model.
             statsModel.startTime = datetime.datetime.now()
-            # this filname stuff seems not needed
-            fileName = os.path.join(settings.STATS_MODEL_LIBS_DIR, '{}_{}_{}_{}.model'.format(
-                self.pk, statsModel.pk, self.modelVisitorLibrary, self.modelVisitorTool))
-            statsModel.outputFile = fileName
             if verbose:
-                logger.info("{} statsModel {}, saving to {}, training...".format(
-                    statsModel.startTime, statsModel.pk, fileName))
+                logger.info("{} statsModel {}, training...".format(
+                    statsModel.startTime, statsModel.pk))
             modelVisitor.train(verbose=verbose)
             statsModel.endTime = datetime.datetime.now()
             if verbose:
-                logger.info("\t...Trained. Finished at {}. Saving statsModel...".format(
-                    statsModel.endTime)),
+                logger.info(
+                    "\t...Trained. Finished at {}. Saving statsModel...".format(
+                        statsModel.endTime)),
             statsModel.save()
             if verbose:
                 logger.info("saved")
@@ -447,7 +514,8 @@ class ModelContainer(models.Model):
                             conf_mtrx = predDesc.getConfusionMatrix()
 
                             logger.info(
-                                "Confusion matrix for {}:".format(predDesc.heading))
+                                "Confusion matrix for {}:".format(
+                                    predDesc.heading))
                             logger.info(confusionMatrixString(conf_mtrx))
                             logger.info("Accuracy: {:.3}".format(
                                 accuracy(conf_mtrx)))
@@ -464,8 +532,9 @@ class ModelContainer(models.Model):
                 ) * (num_models / float(num_finished)))) + overall_start_time
                 logger.info("{}. {} of {} models built.".format(
                     end_time, num_finished, num_models))
-                logger.info("Elapsed model building time: {}. Expected completion time: {}".format(
-                    elapsed, expected_finish))
+                logger.info(
+                    "Elapsed model building time: {}. Expected completion time: {}".format(
+                        elapsed, expected_finish))
 
         if resDict:
             if verbose:
@@ -479,7 +548,11 @@ class ModelContainer(models.Model):
             overall_end_time = datetime.datetime.now()
             logger.info("Finished at {}".format(overall_end_time))
 
-    def _storePredictionComponents(self, predictions, statsModel, resDict=None):
+    def _storePredictionComponents(
+            self,
+            predictions,
+            statsModel,
+            resDict=None):
         """
         Return resDict, a dictionary of dictionaries of dictionaries.
 
@@ -554,7 +627,8 @@ class ModelContainer(models.Model):
                         cat_vals.append(val)
                     else:
                         raise ValueError(
-                            "Value just created is of unexpected type {}".format(type(val)))
+                            "Value just created is of unexpected type {}".format(
+                                type(val)))
 
                 if response not in finalPredictions:
                     finalPredictions[response] = []
@@ -579,8 +653,9 @@ class ModelContainer(models.Model):
                 modelVisitor = getattr(visitorModules[self.modelVisitorLibrary], self.modelVisitorTool)(
                     statsModel=model, **visitorOptions)
                 if verbose:
-                    logger.info("statsModel {}, saved at {}, predicting...".format(
-                        model.pk, model.outputFile))
+                    logger.info(
+                        "statsModel {}, saved at {}, predicting...".format(
+                            model.pk, model.outputFile))
                 predictions = modelVisitor.predict(reactions, verbose=verbose)
                 if verbose:
                     logger.info(
@@ -610,7 +685,8 @@ class ModelContainer(models.Model):
                             reactions=reactions)
 
                         logger.info(
-                            "Confusion matrix for {}:".format(predDesc.heading))
+                            "Confusion matrix for {}:".format(
+                                predDesc.heading))
                         logger.info(confusionMatrixString(conf_mtrx))
                         logger.info("Accuracy: {:.3}".format(
                             accuracy(conf_mtrx)))
@@ -624,8 +700,9 @@ class ModelContainer(models.Model):
                     ) * (num_models / float(num_finished)))) + overall_start_time
                     logger.info("{}. Predictions from {} of {} models.".format(
                         end_time, num_finished, num_models))
-                    logger.info("Elapsed prediction time: {}. Expected completion time: {}".format(
-                        elapsed, expected_finish))
+                    logger.info(
+                        "Elapsed prediction time: {}. Expected completion time: {}".format(
+                            elapsed, expected_finish))
 
             return self._storePredictions(resDict)
         else:
@@ -638,7 +715,9 @@ class ModelContainer(models.Model):
         for descriptor in self.predictsDescriptors:
             if descriptor.statsModel is None:
                 confusion_matrix_list.append(
-                    (descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)))
+                    (descriptor.csvHeader,
+                     descriptor.getConfusionMatrix(
+                         reactions=reactions)))
         return confusion_matrix_list
 
     def getComponentConfusionMatrices(self, reactions=None):
@@ -656,7 +735,9 @@ class ModelContainer(models.Model):
             for descriptor in self.predictsDescriptors:
                 if descriptor.statsModel == model:
                     confusion_matrix_list.append(
-                        (descriptor.csvHeader, descriptor.getConfusionMatrix(reactions=reactions)))
+                        (descriptor.csvHeader,
+                         descriptor.getConfusionMatrix(
+                             reactions=reactions)))
             confusion_matrix_lol.append(confusion_matrix_list)
 
         return confusion_matrix_lol

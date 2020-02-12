@@ -9,6 +9,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dashboard.css" />
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<style>
+body {
+  zoom: 0.9;
+}
+
+</style>
 {% endblock %}
 
 {% block content %}
@@ -20,325 +27,43 @@
            <span style="color: red">{{num_experiments_private}}</span> are private
       </h4>
     </div>
-    <div class="col-md-auto">
-      <h5>Legends</h5>
-      <div id="lab_legend"></div>
-    </div>
   </div>
-  <div class="row">
-    <div class="col">
+  Accuracy rate is: {{avg_acc}}
+  <br>
+  Balanced Classification Rate is: {{avg_bcr}}
+  <br>
+  Average Matthews Coefficient: {{avg_matthews}}
+  <br>
+  <div class="row" style="margin-bottom:70px">
+    <div class="col" style="width:45%; margin-right: 20px;">
       <h3>Date Reactions were Entered</h3>
-      <div id="tiny_when_reactions_entered_graph"></div>
+      <div id="tiny_when_reactions_entered_graph">{{dateEntered|safe}}</div>
     </div> 
-    <div>
+    <div class="col" style="width:45%">
       <h3>Date Reactions were Performed</h3>
-      <div id="tiny_when_reactions_performed_graph"></div>
+      <div id="tiny_when_reactions_performed_graph">{{datePerformed|safe}}</div>
     </div>
   </div>
-  <div class="row">
+  <div class="row" style="margin-bottom:70px">
     <div class="col">
       <h3>Reactions with no Performed Date</h3> 
-      <div id="tiny_noPerformedDate_graph"></div>
+      <div id="tiny_noPerformedDate_graph">{{noPerformedDate|safe}}</div>
     </div> 
     <div class="col">
       <h3>Reactions Cumulatively Performed</h3>
-      <div id="tiny_when_reactions_performed_cumulative_graph"></div>
+      <div id="tiny_when_reactions_performed_cumulative_graph">{{datePerformedCumulativeByLab|safe}}</div>
     </div>
+  </div>
+  <div class="row" style="margin-bottom:70px">
     <div class="col">
       <h3>Cumulative Valid and Invalid Reactions Performed</h3>
-      <div id="tiny_when_valid_reactions_graph"></div>
+      <div id="tiny_when_valid_reactions_graph">{{validReactions|safe}}</div>
+    </div>
+    <div class="col">
+      <p></p>
     </div>
   </div>
   <!-- If you want more grid items, just add another column or row! -->
 </div>
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script type="text/javascript">
-// this visualization is mostly this: http://bl.ocks.org/mstanaland/6100713
-// but also a little bit this: https://bl.ocks.org/d3noob/96b74d0bd6d11427dd797892551a103c
-// And for more advice look at this: http://www.adeveloperdiary.com/d3-js/create-stacked-bar-chart-using-d3-js/
-$(document).ready(function() { 
-  function make_stacked_bar(csv_name, div_id, width, height, include_labels, make_a_legend) {
-    // include labels is a True false value on whether or not it makes axes
-    // make_a_legend is a true false on whether to add a legend to the top of the page
-    // csv name in format 'mycsv.csv'. mycsv should be in static folder
-    // div_id in format '#my_div_id'
-
-    // Setup svg using Bostock's margin convention
-    if (include_labels) {
-      var margin = {top: 20, right: 160, bottom: 100, left: 75};
-    }
-    else {
-      var margin = {top: 20, right: 80, bottom: 20, left: 25};
-    }
-    var width = width - margin.left - margin.right,
-        height = height - margin.top - margin.bottom;
-
-    var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-    var svg = d3.select(div_id)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-    // get the data
-    d3.csv("{{ STATIC_URL }}"+csv_name, function(error, data) {
-      if (error) throw error;
-
-      // https://stackoverflow.com/questions/8312459/iterate-through-object-properties?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-      var all_labGroups = [];
-      for(var property in data[0]) {
-        if (data[0].hasOwnProperty(property) && property != "date") {
-          all_labGroups.push(property);
-        }
-      }
-
-      // Transpose the data into layers
-      var dataset = d3.layout.stack()(all_labGroups.map(function(labGroup) {
-        return data.map(function(d) {
-          if (d.date == 'None') {
-              return {x: parseDate("1985-01-01"), y: +d[labGroup]}
-          }
-          return {x: parseDate(d.date), y: +d[labGroup]};
-        });
-      }));
-      // need to sort the dataset by date
-      function compare_data_objects(a,b) {
-        if (a.x < b.x) {
-          return -1;
-        }
-        if (a.x > b.x) {
-          return 1;
-        }
-        return 0;
-      }
-      for(var date in dataset) {
-        dataset[date].sort(compare_data_objects);
-      }
-
-    // set the ranges
-    // Set x, y and colors
-    var x = d3.scale.ordinal()
-      .domain(dataset[0].map(function(d) { return d.x; }))
-      .rangeRoundBands([10, width-10], 0.01);
-
-    console.log(dataset);  
-      var y = d3.scale.linear()
-        .domain([d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); }), d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
-        .range([height, 0]);
-
-      var num_colors = all_labGroups.length;
-      if (num_colors > 20){
-        throw "Too many lab groups! I've only supported up to 20 colors"
-      }
-      var colors = d3.scale.category20().range().slice(0, num_colors);
-      
-      // it would be nice to have axes, but I haven't figured it out.
-      // I mean, this makes axes, they just are cluttered with dates
-      if (include_labels) { 
-        // Define and draw axes
-        var yAxis = d3.svg.axis()
-          .scale(y)
-          .orient("left")
-          .ticks(5)
-          .tickSize(-width, 0, 0)
-          .tickFormat( function(d) { return d } );
-
-        var xAxis = d3.svg.axis()
-          .scale(x)
-          .orient("bottom")
-          .tickFormat(d3.time.format("%Y-%m-%d")).ticks(10);
-
-        svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
-        // draw x axis with labels and move to the bottom of the chart area
-        svg.append("g")
-            .attr("class", "xaxis axis")  // two classes, one for css formatting, one for selection below
-            .attr("transform", "translate(0," + (height+2) + ")")
-            .call(xAxis);
-            
-        // now rotate text on x axis
-        // solution based on idea here: https://groups.google.com/forum/?fromgroups#!topic/d3-js/heOBPQF3sAY
-        // first move the text left so no longer centered on the tick
-        // then rotate up to get 45 degrees.
-        svg.selectAll(".xaxis text")  // select all the text elements for the xaxis
-          .attr("transform", function(d) {
-             return "translate(" + this.getBBox().height*-2 + "," + this.getBBox().height + ")rotate(-45)";
-         });
-      }
-
-
-      // now add titles to the axes
-      svg.append("text")
-          .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-          .attr("transform", "translate("+ (-margin.bottom/2) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
-          .text("Number of Reactions");
-
-      svg.append("text")
-          .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-          .attr("transform", "translate("+ (width/2) +","+(height-(-margin.bottom/1.5))+")")  // centre below axis
-          .text("Date");
-
-      // Create groups for each series, rects for each segment 
-      var groups = svg.selectAll("g.cost")
-        .data(dataset)
-        .enter().append("g")
-        .attr("class", "cost")
-        .style("fill", function(d, i) { return colors[i]; });
-      console.log("y(0)", y(0));
-
-      var rect = groups.selectAll("rect")
-        .data(function(d) { return d; })
-        .enter()
-        .append("rect")
-        .attr("x", function(d) { return x(d.x); })
-        .attr("y", function(d) { return y(d.y0 + d.y); })
-        .attr("height", function(d) {
-                                      if (d.y0 <= d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); })) {
-                                        if (d.y0 != 0) {
-                                          console.log("uh oh", d.y0)
-                                        }
-                                        return y(d3.min(dataset, function(d) { return d3.min(d, function(d) { return d.y0 + d.y; }); })) - y(d.y0 + d.y);
-                                      }
-                                      else {
-                                       return y(d.y0) - y(d.y0 + d.y);
-                                      }
-                                      })
-                                      
-        .attr("width", x.rangeBand()-1)
-        .on("mouseover", function() { tooltip.style("display", null); })
-        .on("mouseout", function() { tooltip.style("display", "none"); })
-        .on("mousemove", function(d) {
-          var xPosition = d3.mouse(this)[0] - 15;
-          var yPosition = d3.mouse(this)[1] - 25;
-          tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-          tooltip.select("text").text((""+d.x).substring(4,15) + ", " + d.y);
-        });
-
-      if (make_a_legend) {
-        make_legend(colors, all_labGroups);
-      }
-
-      // Prep the tooltip bits, initial display is hidden
-      var tooltip = svg.append("g")
-        .attr("class", "my_tooltip")
-        .style("display", "none");
-          
-      tooltip.append("rect")
-        .attr("width", 100)
-        .attr("height", 20)
-        .attr("fill", "white")
-        .style("opacity", 0.5);
-
-      tooltip.append("text")
-        .attr("x", 50)
-        .attr("dy", "1.2em")
-        .style("text-anchor", "middle")
-        .attr("font-size", "12px")
-        .attr("font-weight", "bold");
-    });
-  };
-
-
-  // tiny graphs
-  var tiny_width  = 500,
-      tiny_height = 250;
-  make_stacked_bar("dateEntered.csv", "#tiny_when_reactions_entered_graph", tiny_width, tiny_height, false, true)
-  make_stacked_bar("datePerformed.csv", "#tiny_when_reactions_performed_graph", tiny_width, tiny_height, false, false);  
-  make_stacked_bar("datePerformedCumulativeByLab.csv", "#tiny_when_reactions_performed_cumulative_graph", tiny_width, tiny_height, false, false);
-  make_stacked_bar("noPerformedDate.csv", "#tiny_noPerformedDate_graph", tiny_width, tiny_height, false, false);
-  make_stacked_bar("validReactions.csv", "#tiny_when_valid_reactions_graph", tiny_width, tiny_height, false, true);
-  
-
-  // LEGEND
-  // This is not dynamic in terms of svg size
-  function make_legend(colors, all_labGroups) {
-    var width  = 200,
-        height = 20 * all_labGroups.length;
-    var svg = d3.select("#lab_legend")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g");
-
-    var legend = svg.selectAll(".legend")
-      .data(colors)
-      .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 19 + ")"; });
-     
-    legend.append("rect")
-      .attr("x", 5)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", function(d, i) {return colors.slice()[i];});
-     
-    legend.append("text")
-      .attr("x", 28)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "start")
-      .text(function(d, i) { 
-          return all_labGroups[i]
-    });
-
-
-  }
-
-});
-</script>
-
-<script>
-$(document).ready(function() {
-  // This visualization is based off of this one:
-  // http://bl.ocks.org/d3noob/b3ff6ae1c120eea654b5
-
-  // Set the dimensions of the canvas / graph
-  var margin = {top: 3, right: 3, bottom: 3, left: 3},
-      width = 150 - margin.left - margin.right,
-      height = 50 - margin.top - margin.bottom;
-
-  // Parse the date / time
-  var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-  // Set the ranges
-  var x = d3.time.scale().range([0, width]);
-  var y = d3.scale.linear().range([height, 0]);
-
-  // Define the line
-  var valueline = d3.svg.line()
-      .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d.count); });
-      
-  // Adds the svg canvas
-  var svg = d3.select("#num_experiments_line")
-      .append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-          .attr("transform", 
-                "translate(" + margin.left + "," + margin.top + ")");
-
-  // Get the data
-  d3.csv("{{ STATIC_URL }}" + "datePerformedCumulative.csv", function(error, data) {
-      data.forEach(function(d) {
-          d.date = parseDate(d.date);
-          d.count = +d.count;
-      });
-
-      // Scale the range of the data
-      x.domain(d3.extent(data, function(d) { return d.date; }));
-      y.domain([0, d3.max(data, function(d) { return d.count; })]);
-
-      // Add the valueline path.
-      svg.append("path")
-          .attr("class", "line")
-          .attr("d", valueline(data));
-  });
-});
-</script>
 
 {% endblock %}
