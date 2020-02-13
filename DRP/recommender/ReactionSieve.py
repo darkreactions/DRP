@@ -5,29 +5,28 @@ class ReactionSieve(object):
         self.desired_desc_dict = desired_desc_dict
 
     def filter(self, reactions, verbose=True):
-        """Given an iterable of reactions, make model predictions and return reactions that conform to desired descriptor dictionary"""
+        """Given an iterable of reactions, make model predictions and returns a dictionary of reaction id to outcome according
+            to the desired descriptor dictionary"""
         verbose = True
         if verbose:
             print('''ENTERING FILTER''')
 
-        a = self.model_container.predict(reactions)  # , verbose=True)
+        predictions = self.model_container.predict(reactions)  # , verbose=True)
         print("--------")
-        print(a)
+        print(predictions)
         print("--------")
         if verbose:
             print('''PREDICTIONS DONE''')
 
-        plausible_reactions = []
+        plausible_reactions = {}
         if verbose:
             print('''DESIRED DESCRIPTORS:''')
             print((self.desired_desc_dict))
-        for desc, desc_vals in list(self.desired_desc_dict.items()):
-            for i in desc_vals:
-                for a in a[i]:
-                    plausible_reactions.append(a[0])
-        plausible_reactions_ids = [pr.id for pr in plausible_reactions]
-        reactions = reactions.filter(pk__in=plausible_reactions_ids)
 
+        for descriptor in self.desired_desc_dict:
+            for prediction in predictions[descriptor]:
+                if prediction[1].value in self.desired_desc_dict[descriptor]:
+                    plausible_reactions[prediction[0].id] = prediction[1].value
         if verbose:
             print('''EXITING FILTER''')
-        return reactions
+        return plausible_reactions

@@ -449,6 +449,10 @@ Starts a batch parralell task to re-save each reaction, forcing descriptor calcu
 
 Runs all of the tests correctly imported in the test suite. To only run some tests, one may enter a list of test modules to run as positional arguments. The --failfast option causes tests to halt on the first failure. Otherwise all tests will be run and error details output at the end.
 
+### Creating a CSV of descriptors ###
+
+Currently there exists a script DataToCSV.py that will create a CSV of descriptors. Simply run the script and a CSV shall be generated with a subset of descriptor values defined in the script.
+
 
 ### Useful Mysql Commands ###
 

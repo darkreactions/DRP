@@ -8,6 +8,7 @@ tmp/*
 models/*
 metrics/*
 
+*.csv
 *.model
 *.txt
 *.pyc
@@ -28,5 +29,7 @@ metrics/*
 
 Database_Reactions*csv
 
-
 .idea/
+*.ipynb_checkpoints
+.vscode/
+**/*.ipynb
