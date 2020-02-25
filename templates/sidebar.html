@@ -111,10 +111,12 @@
                            <!-- 1f47e7ab-1900-4683-ba1c-63330ec2f71a -->
                          {% endif %}
                          <span class="greeting">
-                           Hello, {{ user.first_name }}
-                           <a class="account" href="{% url 'account' %}" ><img id="userUpdate" title="Update Account" src="{{STATIC_URL}}icons/gear.png" alt="update account"></a>
+                           <!-- Hello, {{ user.first_name }} -->
+                           <a class="account btn btn-secondary" href="{% url 'account' %}" >
+                          <i class ='fas fa-cog'></i></a>
                          </span>
-                         <a href="/logout.html" id="userLogOut">Log Out</a>
+                         <a href="/logout.html" id="userLogOut" class="btn btn-danger">
+                          <i class="fas fa-sign-out-alt"></i></a>
 
                        {% else %}
                          {% if testing %}

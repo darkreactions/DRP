@@ -16,8 +16,10 @@ Contact Us
   <form class="inlineForm infoForm">
     {% csrf_token %}
       <ol>
+        <!-- {{ form.as_ul }} -->
     {% crispy form %}
       </ol>
+      <!-- <input class="submit" type="submit" value="Send" /> -->
   </form>
   {% endif %}
   {% if testing %}

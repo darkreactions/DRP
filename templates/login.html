@@ -4,7 +4,7 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/login_form.css" />
 {% endblock %}
 
-{% load crispy_forms_tags %}
+<!-- {% load crispy_forms_tags %} -->
 
 {% block content %}
 
@@ -12,9 +12,10 @@
   <!-- d776703c-bf1c-4a0a-89d1-1fcd83093967 -->
   {% csrf_token %}
   <ol>
-    {% crispy form %}
+    {{ form.as_ul }}
+    <!-- {% crispy form %} -->
   </ol>
-
+  <input type="submit" value="Log In" />
 <!--  <div class="text-center">
     <button type="submit" class="btn btn-primary">Login</button>
     </div> -->

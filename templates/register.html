@@ -22,16 +22,13 @@
     {% if testing %}
     <!-- be088572-3adc-4757-8059-d16db2ea77a6 -->
     {% endif %}
-  <form action="{% url 'register' %}">
+  <form action="{% url 'register' %}" method="post">
   {% csrf_token %}
     <ol>
       {% crispy form %}
-    </ol>
-  <!-- <div class="text-center">
-    <button type="submit" class="btn btn-primary">Register</button>
-    </div> -->
-  <!--  <input type="submit" value="Register" /> -->
-  </form>
+    </ol> 
+    <!-- <input type="submit" value="Register" /> -->
+  </form>  
   {% endif %}
   {% if testing %}
   <!-- 4cf1abe0-9118-471c-ac4e-34e863e87402 -->
