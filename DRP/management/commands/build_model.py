@@ -10,8 +10,11 @@ from django.conf import settings
 import ast
 from sys import argv
 import logging
+from cProfile import Profile
 logger = logging.getLogger(__name__)
 
+# TODO: find more elegant way to load in whitelist
+descriptor_headers = ["C_mols","Cr_mols","Ga_mols","H_mols","I_mols","Inorg_amount_molarity","Inorg_boolean_group_10_DRP_1_5_False_molarity","Inorg_boolean_group_11_DRP_1_5_False_molarity","Inorg_boolean_group_12_DRP_1_5_any","Inorg_boolean_group_12_DRP_1_5_False_molarity","Inorg_boolean_group_13_DRP_1_5_any","Inorg_boolean_group_13_DRP_1_5_False_count","Inorg_boolean_group_13_DRP_1_5_False_molarity","Inorg_boolean_group_13_DRP_1_5_True_count","Inorg_boolean_group_13_DRP_1_5_True_molarity","Inorg_boolean_group_14_DRP_1_5_any","Inorg_boolean_group_14_DRP_1_5_False_molarity","Inorg_boolean_group_14_DRP_1_5_True_count","Inorg_boolean_group_15_DRP_1_5_any","Inorg_boolean_group_15_DRP_1_5_False_molarity","Inorg_boolean_group_16_DRP_1_5_True_molarity","Inorg_boolean_group_17_DRP_1_5_any","Inorg_boolean_group_17_DRP_1_5_False_molarity","Inorg_boolean_group_18_DRP_1_5_False_molarity","Inorg_boolean_group_1_DRP_1_5_any","Inorg_boolean_group_1_DRP_1_5_False_count","Inorg_boolean_group_1_DRP_1_5_False_molarity","Inorg_boolean_group_1_DRP_1_5_True_count","Inorg_boolean_group_1_DRP_1_5_True_molarity","Inorg_boolean_group_2_DRP_1_5_False_molarity","Inorg_boolean_group_3_DRP_1_5_False_molarity","Inorg_boolean_group_4_DRP_1_5_False_molarity","Inorg_boolean_group_5_DRP_1_5_any","Inorg_boolean_group_5_DRP_1_5_False_count","Inorg_boolean_group_5_DRP_1_5_False_molarity","Inorg_boolean_group_5_DRP_1_5_True_molarity","Inorg_boolean_group_6_DRP_1_5_any","Inorg_boolean_group_6_DRP_1_5_False_count","Inorg_boolean_group_6_DRP_1_5_False_molarity","Inorg_boolean_group_7_DRP_1_5_False_molarity","Inorg_boolean_group_8_DRP_1_5_False_molarity","Inorg_boolean_group_9_DRP_1_5_any","Inorg_boolean_group_9_DRP_1_5_False_molarity","Inorg_boolean_period_1_DRP_1_5_any","Inorg_boolean_period_1_DRP_1_5_False_molarity","Inorg_boolean_period_2_DRP_1_5_True_molarity","Inorg_boolean_period_3_DRP_1_5_any","Inorg_boolean_period_3_DRP_1_5_False_count","Inorg_boolean_period_3_DRP_1_5_False_molarity","Inorg_boolean_period_3_DRP_1_5_True_count","Inorg_boolean_period_3_DRP_1_5_True_molarity","Inorg_boolean_period_4_DRP_1_5_any","Inorg_boolean_period_4_DRP_1_5_False_count","Inorg_boolean_period_4_DRP_1_5_False_molarity","Inorg_boolean_period_4_DRP_1_5_True_count","Inorg_boolean_period_4_DRP_1_5_True_molarity","Inorg_boolean_period_5_DRP_1_5_any","Inorg_boolean_period_5_DRP_1_5_False_count","Inorg_boolean_period_5_DRP_1_5_False_molarity","Inorg_boolean_period_5_DRP_1_5_True_count","Inorg_boolean_period_5_DRP_1_5_True_molarity","Inorg_boolean_period_6_DRP_1_5_False_molarity","Inorg_boolean_period_7_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_10_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_11_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_12_DRP_1_5_any","Inorg_drpInorgAtom_boolean_group_12_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_13_DRP_1_5_any","Inorg_drpInorgAtom_boolean_group_13_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_group_13_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_13_DRP_1_5_True_count","Inorg_drpInorgAtom_boolean_group_13_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_group_14_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_15_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_16_DRP_1_5_any","Inorg_drpInorgAtom_boolean_group_16_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_group_16_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_16_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_group_17_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_18_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_1_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_2_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_3_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_4_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_5_DRP_1_5_any","Inorg_drpInorgAtom_boolean_group_5_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_group_5_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_5_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_group_6_DRP_1_5_any","Inorg_drpInorgAtom_boolean_group_6_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_group_6_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_7_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_8_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_group_9_DRP_1_5_any","Inorg_drpInorgAtom_boolean_group_9_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_period_1_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_period_2_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_period_3_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_period_4_DRP_1_5_any","Inorg_drpInorgAtom_boolean_period_4_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_period_4_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_period_4_DRP_1_5_True_count","Inorg_drpInorgAtom_boolean_period_4_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_period_5_DRP_1_5_any","Inorg_drpInorgAtom_boolean_period_5_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_period_5_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_period_5_DRP_1_5_True_count","Inorg_drpInorgAtom_boolean_period_5_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_period_6_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_period_7_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_0_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_1_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_2_DRP_1_5_any","Inorg_drpInorgAtom_boolean_valence_2_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_3_DRP_1_5_any","Inorg_drpInorgAtom_boolean_valence_3_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_valence_3_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_3_DRP_1_5_True_count","Inorg_drpInorgAtom_boolean_valence_3_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_valence_4_DRP_1_5_any","Inorg_drpInorgAtom_boolean_valence_4_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_5_DRP_1_5_any","Inorg_drpInorgAtom_boolean_valence_5_DRP_1_5_False_count","Inorg_drpInorgAtom_boolean_valence_5_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_5_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_valence_6_DRP_1_5_any","Inorg_drpInorgAtom_boolean_valence_6_DRP_1_5_False_molarity","Inorg_drpInorgAtom_boolean_valence_6_DRP_1_5_True_count","Inorg_drpInorgAtom_boolean_valence_6_DRP_1_5_True_molarity","Inorg_drpInorgAtom_boolean_valence_7_DRP_1_5_False_molarity","Inorg_drpInorgAtomAtomicRadius_geom_stoich_DRP_0_02_gmean_count","Inorg_drpInorgAtomAtomicRadius_geom_stoich_DRP_0_02_gmean_molarity","Inorg_drpInorgAtomAtomicRadius_geom_stoich_DRP_0_02_Max","Inorg_drpInorgAtomAtomicRadius_geom_stoich_DRP_0_02_Range","Inorg_drpInorgAtomAtomicRadius_geom_unw_DRP_0_02_gmean_count","Inorg_drpInorgAtomAtomicRadius_geom_unw_DRP_0_02_gmean_molarity","Inorg_drpInorgAtomAtomicRadius_geom_unw_DRP_0_02_Max","Inorg_drpInorgAtomAtomicRadius_geom_unw_DRP_0_02_Range","Inorg_drpInorgAtomAtomicRadius_max_DRP_0_02_gmean_count","Inorg_drpInorgAtomAtomicRadius_max_DRP_0_02_gmean_molarity","Inorg_drpInorgAtomAtomicRadius_max_DRP_0_02_Max","Inorg_drpInorgAtomAtomicRadius_max_DRP_0_02_Range","Inorg_drpInorgAtomElectronAffinity_geom_stoich_DRP_0_02_gmean_count","Inorg_drpInorgAtomElectronAffinity_geom_stoich_DRP_0_02_Max","Inorg_drpInorgAtomElectronAffinity_geom_stoich_DRP_0_02_Range","Inorg_drpInorgAtomElectronAffinity_geom_unw_DRP_0_02_gmean_count","Inorg_drpInorgAtomElectronAffinity_geom_unw_DRP_0_02_Max","Inorg_drpInorgAtomElectronAffinity_geom_unw_DRP_0_02_Range","Inorg_drpInorgAtomElectronAffinity_max_DRP_0_02_gmean_count","Inorg_drpInorgAtomElectronAffinity_max_DRP_0_02_Max","Inorg_drpInorgAtomElectronAffinity_max_DRP_0_02_Range","Inorg_drpInorgAtomHardness_geom_stoich_DRP_0_02_gmean_count","Inorg_drpInorgAtomHardness_geom_stoich_DRP_0_02_Max","Inorg_drpInorgAtomHardness_geom_stoich_DRP_0_02_Range","Inorg_drpInorgAtomHardness_geom_unw_DRP_0_02_gmean_count","Inorg_drpInorgAtomHardness_geom_unw_DRP_0_02_Max","Inorg_drpInorgAtomHardness_geom_unw_DRP_0_02_Range","Inorg_drpInorgAtomHardness_max_DRP_0_02_gmean_count","Inorg_drpInorgAtomHardness_max_DRP_0_02_Max","Inorg_drpInorgAtomHardness_max_DRP_0_02_Range","Inorg_drpInorgAtomIonizationEnergy_geom_stoich_DRP_0_02_gmean_count","Inorg_drpInorgAtomIonizationEnergy_geom_stoich_DRP_0_02_Max","Inorg_drpInorgAtomIonizationEnergy_geom_stoich_DRP_0_02_Range","Inorg_drpInorgAtomIonizationEnergy_geom_unw_DRP_0_02_gmean_count","Inorg_drpInorgAtomIonizationEnergy_geom_unw_DRP_0_02_Max","Inorg_drpInorgAtomIonizationEnergy_geom_unw_DRP_0_02_Range","Inorg_drpInorgAtomIonizationEnergy_max_DRP_0_02_gmean_count","Inorg_drpInorgAtomIonizationEnergy_max_DRP_0_02_Max","Inorg_drpInorgAtomIonizationEnergy_max_DRP_0_02_Range","Inorg_drpInorgAtomPaulingElectronegativity_geom_stoich_DRP_0_02_gmean_count","Inorg_drpInorgAtomPaulingElectronegativity_geom_stoich_DRP_0_02_Max","Inorg_drpInorgAtomPaulingElectronegativity_geom_stoich_DRP_0_02_Range","Inorg_drpInorgAtomPaulingElectronegativity_geom_unw_DRP_0_02_gmean_count","Inorg_drpInorgAtomPaulingElectronegativity_geom_unw_DRP_0_02_Max","Inorg_drpInorgAtomPaulingElectronegativity_geom_unw_DRP_0_02_Range","Inorg_drpInorgAtomPaulingElectronegativity_max_DRP_0_02_gmean_count","Inorg_drpInorgAtomPaulingElectronegativity_max_DRP_0_02_Max","Inorg_drpInorgAtomPaulingElectronegativity_max_DRP_0_02_Range","Inorg_drpInorgAtomPearsonElectronegativity_geom_stoich_DRP_0_02_gmean_count","Inorg_drpInorgAtomPearsonElectronegativity_geom_stoich_DRP_0_02_Max","Inorg_drpInorgAtomPearsonElectronegativity_geom_stoich_DRP_0_02_Range","Inorg_drpInorgAtomPearsonElectronegativity_geom_unw_DRP_0_02_gmean_count","Inorg_drpInorgAtomPearsonElectronegativity_geom_unw_DRP_0_02_Max","Inorg_drpInorgAtomPearsonElectronegativity_geom_unw_DRP_0_02_Range","Inorg_drpInorgAtomPearsonElectronegativity_max_DRP_0_02_gmean_count","Inorg_drpInorgAtomPearsonElectronegativity_max_DRP_0_02_Max","Inorg_drpInorgAtomPearsonElectronegativity_max_DRP_0_02_Range","Inorg_mw_DRP_rdkit_0_02_gmean_count","Inorg_mw_DRP_rdkit_0_02_gmean_molarity","Inorg_mw_DRP_rdkit_0_02_Max","Inorg_mw_DRP_rdkit_0_02_Range","K_mols","leak","Mo_mols","N_mols","Na_mols","O_mols","Org_amount_molarity","Org_boolean_group_10_DRP_1_5_False_molarity","Org_boolean_group_11_DRP_1_5_False_molarity","Org_boolean_group_12_DRP_1_5_False_molarity","Org_boolean_group_13_DRP_1_5_False_molarity","Org_boolean_group_14_DRP_1_5_True_molarity","Org_boolean_group_15_DRP_1_5_any","Org_boolean_group_15_DRP_1_5_False_count","Org_boolean_group_15_DRP_1_5_True_molarity","Org_boolean_group_16_DRP_1_5_any","Org_boolean_group_16_DRP_1_5_False_molarity","Org_boolean_group_17_DRP_1_5_any","Org_boolean_group_17_DRP_1_5_False_molarity","Org_boolean_group_18_DRP_1_5_False_molarity","Org_boolean_group_1_DRP_1_5_True_molarity","Org_boolean_group_2_DRP_1_5_False_molarity","Org_boolean_group_3_DRP_1_5_False_molarity","Org_boolean_group_4_DRP_1_5_False_molarity","Org_boolean_group_5_DRP_1_5_False_molarity","Org_boolean_group_6_DRP_1_5_False_molarity","Org_boolean_group_7_DRP_1_5_False_molarity","Org_boolean_group_8_DRP_1_5_False_molarity","Org_boolean_group_9_DRP_1_5_False_molarity","Org_boolean_period_1_DRP_1_5_True_molarity","Org_boolean_period_2_DRP_1_5_True_molarity","Org_boolean_period_3_DRP_1_5_any","Org_boolean_period_3_DRP_1_5_False_molarity","Org_boolean_period_4_DRP_1_5_any","Org_boolean_period_4_DRP_1_5_False_molarity","Org_boolean_period_5_DRP_1_5_False_molarity","Org_boolean_period_6_DRP_1_5_False_molarity","Org_boolean_period_7_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_10_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_11_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_12_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_13_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_14_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_15_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_16_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_17_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_18_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_1_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_2_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_3_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_4_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_5_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_6_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_7_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_8_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_group_9_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_period_1_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_period_2_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_period_3_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_period_4_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_period_5_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_period_6_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_period_7_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_0_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_1_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_2_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_3_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_4_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_5_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_6_DRP_1_5_False_molarity","Org_drpInorgAtom_boolean_valence_7_DRP_1_5_False_molarity","Org_mw_DRP_rdkit_0_02_gmean_count","Org_mw_DRP_rdkit_0_02_gmean_molarity","Org_mw_DRP_rdkit_0_02_Max","Ox_amount_count","Ox_amount_molarity","Ox_boolean_group_10_DRP_1_5_False_molarity","Ox_boolean_group_11_DRP_1_5_False_molarity","Ox_boolean_group_12_DRP_1_5_False_molarity","Ox_boolean_group_13_DRP_1_5_False_molarity","Ox_boolean_group_14_DRP_1_5_True_molarity","Ox_boolean_group_15_DRP_1_5_False_molarity","Ox_boolean_group_16_DRP_1_5_True_molarity","Ox_boolean_group_17_DRP_1_5_False_molarity","Ox_boolean_group_18_DRP_1_5_False_molarity","Ox_boolean_group_1_DRP_1_5_True_molarity","Ox_boolean_group_2_DRP_1_5_False_molarity","Ox_boolean_group_3_DRP_1_5_False_molarity","Ox_boolean_group_4_DRP_1_5_False_molarity","Ox_boolean_group_5_DRP_1_5_False_molarity","Ox_boolean_group_6_DRP_1_5_False_molarity","Ox_boolean_group_7_DRP_1_5_False_molarity","Ox_boolean_group_8_DRP_1_5_False_molarity","Ox_boolean_group_9_DRP_1_5_False_molarity","Ox_boolean_period_1_DRP_1_5_False_molarity","Ox_boolean_period_2_DRP_1_5_True_molarity","Ox_boolean_period_3_DRP_1_5_True_molarity","Ox_boolean_period_4_DRP_1_5_False_molarity","Ox_boolean_period_5_DRP_1_5_False_molarity","Ox_boolean_period_6_DRP_1_5_False_molarity","Ox_boolean_period_7_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_10_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_11_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_12_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_13_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_14_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_15_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_16_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_17_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_18_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_1_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_2_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_3_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_4_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_5_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_6_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_7_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_8_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_group_9_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_period_1_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_period_2_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_period_3_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_period_4_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_period_5_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_period_6_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_period_7_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_0_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_1_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_2_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_3_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_4_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_5_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_6_DRP_1_5_False_molarity","Ox_drpInorgAtom_boolean_valence_7_DRP_1_5_False_molarity","reaction_pH","reaction_temperature","reaction_time","Se_mols","slow_cool","Solv_amount_molarity","Solv_boolean_group_10_DRP_1_5_False_molarity","Solv_boolean_group_11_DRP_1_5_False_molarity","Solv_boolean_group_12_DRP_1_5_False_molarity","Solv_boolean_group_13_DRP_1_5_False_molarity","Solv_boolean_group_14_DRP_1_5_False_molarity","Solv_boolean_group_15_DRP_1_5_False_molarity","Solv_boolean_group_16_DRP_1_5_True_molarity","Solv_boolean_group_17_DRP_1_5_False_molarity","Solv_boolean_group_18_DRP_1_5_False_molarity","Solv_boolean_group_1_DRP_1_5_True_molarity","Solv_boolean_group_2_DRP_1_5_False_molarity","Solv_boolean_group_3_DRP_1_5_False_molarity","Solv_boolean_group_4_DRP_1_5_False_molarity","Solv_boolean_group_5_DRP_1_5_False_molarity","Solv_boolean_group_6_DRP_1_5_False_molarity","Solv_boolean_group_7_DRP_1_5_False_molarity","Solv_boolean_group_8_DRP_1_5_False_molarity","Solv_boolean_group_9_DRP_1_5_False_molarity","Solv_boolean_period_1_DRP_1_5_True_molarity","Solv_boolean_period_2_DRP_1_5_True_molarity","Solv_boolean_period_3_DRP_1_5_False_molarity","Solv_boolean_period_4_DRP_1_5_False_molarity","Solv_boolean_period_5_DRP_1_5_False_molarity","Solv_boolean_period_6_DRP_1_5_False_molarity","Solv_boolean_period_7_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_10_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_11_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_12_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_13_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_14_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_15_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_16_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_17_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_18_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_1_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_2_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_3_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_4_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_5_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_6_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_7_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_8_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_group_9_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_period_1_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_period_2_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_period_3_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_period_4_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_period_5_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_period_6_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_period_7_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_0_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_1_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_2_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_3_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_4_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_5_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_6_DRP_1_5_False_molarity","Solv_drpInorgAtom_boolean_valence_7_DRP_1_5_False_molarity","Te_mols","V_mols"]
 
 class Command(BaseCommand):
     """Command for building statistical/machine learning models in DRP."""
@@ -21,36 +24,87 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """Add arguments for the argument parser."""
         parser.fromfile_prefix_chars = '@'
-        parser.epilog = ("Prefix arguments with '@' to specify a file containing newline-separated values for that argument. "
-                         "e.g.'-p @predictor_headers.txt' to pass multiple descriptor headings from a file as predictors.")
+        parser.epilog = (
+            "Prefix arguments with '@' to specify a file containing newline-separated values for that argument. "
+            "e.g.'-p @predictor_headers.txt' to pass multiple descriptor headings from a file as predictors.")
 
-        parser.add_argument('-p', '--predictor-headers', nargs='+',
-                            help='The headings of one or more descriptors to use as predictors.')
-        parser.add_argument('-r', '--response-headers', nargs='+', default=["boolean_crystallisation_outcome"],
-                            help='The headings of one or more descriptors to predict. '
-                            'Note that most models can only handle one response variable (default: %(default)s)')
-        parser.add_argument('-ml', '--model-library', default="weka",
-                            help='Model visitor library to use. (default: %(default)s)')
-        parser.add_argument('-mt', '--model-tool', default="SVM_PUK",
-                            help='Model visitor tool from library to use. (default: %(default)s)')
-        parser.add_argument('-mid', '--model-container-id', default=None, type=int,
-                            help='Use the same splits as the specified model container. (default: %(default)s)')
-        parser.add_argument('-s', '--splitter', default="kFoldSplitter", choices=settings.REACTION_DATASET_SPLITTERS,
-                            help='Splitter to use. (default: %(default)s)')
-        parser.add_argument('-d', '--description', default="",
-                            help='Description of model. (default: %(default)s)')
-        parser.add_argument('-trs', '--training-set-name', default=None,
-                            help='The name of the training set to use. (default: %(default)s)')
-        parser.add_argument('-tes', '--test-set-name', default=None,
-                            help='The name of the test set to use. (default: %(default)s)')
-        parser.add_argument('-rxn', '--reaction-set-name', default=None,
-                            help='The name of the reactions to use as a whole dataset. (default: all valid reactions)')
-        parser.add_argument('-so', '--splitter-options', default=None,
-                            help='A dictionary of the options to give to the splitter in JSON format')
-        parser.add_argument('-vo', '--visitor-options', default=None,
-                            help='A dictionary of the options to give to the visitor in JSON format')
+        parser.add_argument(
+            '-p',
+            '--predictor-headers',
+            nargs='+',
+            default=descriptor_headers,
+            help='The headings of one or more descriptors to use as predictors.')
+        parser.add_argument(
+            '-r',
+            '--response-headers',
+            nargs='+',
+            default=["boolean_crystallisation_outcome"],
+            help='The headings of one or more descriptors to predict. '
+            'Note that most models can only handle one response variable (default: %(default)s)')
+        parser.add_argument(
+            '-ml',
+            '--model-library',
+            default="weka",
+            help='Model visitor library to use. (default: %(default)s)')
+        parser.add_argument(
+            '-mt',
+            '--model-tool',
+            default="SVM_PUK",
+            help='Model visitor tool from library to use. (default: %(default)s)')
+        parser.add_argument(
+            '-mid',
+            '--model-container-id',
+            default=None,
+            type=int,
+            help='Use the same splits as the specified model container. (default: %(default)s)')
+        parser.add_argument(
+            '-s',
+            '--splitter',
+            default="kFoldSplitter",
+            choices=settings.REACTION_DATASET_SPLITTERS,
+            help='Splitter to use. (default: %(default)s)')
+        parser.add_argument(
+            '-d',
+            '--description',
+            default="",
+            help='Description of model. (default: %(default)s)')
+        parser.add_argument(
+            '-trs',
+            '--training-set-name',
+            default=None,
+            help='The name of the training set to use. (default: %(default)s)')
+        parser.add_argument(
+            '-tes',
+            '--test-set-name',
+            default=None,
+            help='The name of the test set to use. (default: %(default)s)')
+        parser.add_argument(
+            '-rxn',
+            '--reaction-set-name',
+            default=None,
+            help='The name of the reactions to use as a whole dataset. (default: all valid reactions)')
+        parser.add_argument(
+            '-so',
+            '--splitter-options',
+            default=None,
+            help='A dictionary of the options to give to the splitter in JSON format')
+        parser.add_argument(
+            '-vo',
+            '--visitor-options',
+            default=None,
+            help='A dictionary of the options to give to the visitor in JSON format')
+        parser.add_argument('--profile', type=int, default=0)
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **options):
+        if options['profile']:
+            profiler = Profile()
+            profiler.runcall(self._handle, *args, **options)
+            profiler.print_stats()
+            profiler.dump_stats('build_model_timings.txt')
+        else:
+            self._handle(*args, **options)
+
+    def _handle(self, *args, **kwargs):
         """Handle the call for this command."""
         splitterOptions = ast.literal_eval(kwargs['splitter_options']) if kwargs[
             'splitter_options'] is not None else None
@@ -58,30 +112,68 @@ class Command(BaseCommand):
             'visitor_options'] is not None else None
 
         # Remove errant empty strings
-        predictor_headers = [h for h in kwargs['predictor_headers'] if h] if kwargs[
-            'predictor_headers'] is not None else None
-        response_headers = [h for h in kwargs['response_headers'] if h] if kwargs[
-            'response_headers'] is not None else None
+        predictor_headers = [h for h in kwargs['predictor_headers']
+                             if h] if kwargs['predictor_headers'] is not None else None
+        response_headers = [h for h in kwargs['response_headers']
+                            if h] if kwargs['response_headers'] is not None else None
 
         verbose = (kwargs['verbosity'] > 0)
 
-        prepare_build_display_model(predictor_headers=predictor_headers, response_headers=response_headers,
-                                    modelVisitorLibrary=kwargs[
-                                        'model_library'], modelVisitorTool=kwargs['model_tool'],
-                                    splitter=kwargs['splitter'], training_set_name=kwargs['training_set_name'], test_set_name=kwargs['test_set_name'], reaction_set_name=kwargs['reaction_set_name'], description=kwargs['description'], verbose=verbose, container_id=kwargs['model_container_id'], splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+        prepare_build_display_model(
+            predictor_headers=predictor_headers,
+            response_headers=response_headers,
+            modelVisitorLibrary=kwargs['model_library'],
+            modelVisitorTool=kwargs['model_tool'],
+            splitter=kwargs['splitter'],
+            training_set_name=kwargs['training_set_name'],
+            test_set_name=kwargs['test_set_name'],
+            reaction_set_name=kwargs['reaction_set_name'],
+            description=kwargs['description'],
+            verbose=verbose,
+            container_id=kwargs['model_container_id'],
+            splitterOptions=splitterOptions,
+            visitorOptions=visitorOptions)
 
 
-def create_build_model(reactions=None, predictors=None, responses=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, trainingSet=None, testSet=None,
-                       description=None, verbose=False, splitterOptions=None, visitorOptions=None):
+def create_build_model(
+        reactions=None,
+        predictors=None,
+        responses=None,
+        modelVisitorLibrary=None,
+        modelVisitorTool=None,
+        splitter=None,
+        trainingSet=None,
+        testSet=None,
+        description=None,
+        verbose=False,
+        splitterOptions=None,
+        visitorOptions=None):
     """Build the model and puts it into the DB."""
     if trainingSet is not None:
-        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
-                                          trainingSets=[trainingSet], testSets=[
-                                              testSet], verbose=verbose, splitterOptions=splitterOptions,
-                                          visitorOptions=visitorOptions)
+        container = ModelContainer.create(
+            modelVisitorLibrary,
+            modelVisitorTool,
+            predictors,
+            responses,
+            description=description,
+            reactions=reactions,
+            trainingSets=[trainingSet],
+            testSets=[testSet],
+            verbose=verbose,
+            splitterOptions=splitterOptions,
+            visitorOptions=visitorOptions)
     else:
-        container = ModelContainer.create(modelVisitorLibrary, modelVisitorTool, predictors, responses, description=description, reactions=reactions,
-                                          splitter=splitter, verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions)
+        container = ModelContainer.create(
+            modelVisitorLibrary,
+            modelVisitorTool,
+            predictors,
+            responses,
+            description=description,
+            reactions=reactions,
+            splitter=splitter,
+            verbose=verbose,
+            splitterOptions=splitterOptions,
+            visitorOptions=visitorOptions)
 
     container.full_clean()
     container.save()
@@ -116,7 +208,7 @@ def missing_descriptors(descriptor_headings):
     return missing_descs
 
 
-def display_model_results(container, reactions=None, heading=""):
+def display_model_results(container, reactions=None, heading="", verbose=True):
     """
     Display confusion matrices for a model container.
 
@@ -134,11 +226,12 @@ def display_model_results(container, reactions=None, heading=""):
         acc = accuracy(conf_mtrx)
         bcr = BCR(conf_mtrx)
         matthews = Matthews(conf_mtrx)
-        print("Confusion matrix for {}:".format(descriptor_header))
-        print(confusionMatrixString(conf_mtrx))
-        print("Accuracy: {:.3}".format(acc))
-        print("BCR: {:.3}".format(bcr))
-        print("Matthews: {:.3}".format(matthews))
+        if verbose:
+            print("Confusion matrix for {}:".format(descriptor_header))
+            print(confusionMatrixString(conf_mtrx))
+            print("Accuracy: {:.3}".format(acc))
+            print("BCR: {:.3}".format(bcr))
+            print("Matthews: {:.3}".format(matthews))
     conf_mtrcs = container.getComponentConfusionMatrices(reactions=reactions)
 
     sum_acc = 0.0
@@ -153,11 +246,12 @@ def display_model_results(container, reactions=None, heading=""):
             acc = accuracy(conf_mtrx)
             bcr = BCR(conf_mtrx)
             matthews = Matthews(conf_mtrx)
-            print("Confusion matrix for {}:".format(descriptor_header))
-            print(confusionMatrixString(conf_mtrx))
-            print("Accuracy: {:.3}".format(acc))
-            print("BCR: {:.3}".format(bcr))
-            print("Matthews: {:.3}".format(matthews))
+            if verbose:
+                print("Confusion matrix for {}:".format(descriptor_header))
+                print(confusionMatrixString(conf_mtrx))
+                print("Accuracy: {:.3}".format(acc))
+                print("BCR: {:.3}".format(bcr))
+                print("Matthews: {:.3}".format(matthews))
 
             # This only works for one response. Sorry...
             # TODO XXX make this work for multiple responses
@@ -166,13 +260,30 @@ def display_model_results(container, reactions=None, heading=""):
             sum_matthews += matthews
             count += 1
 
-    print("{} Average accuracy: {:.3}".format(heading, sum_acc / count))
-    print("{} Average BCR: {:.3}".format(heading, sum_bcr / count))
-    print("{} Average Matthews: {:.3}".format(heading, sum_matthews / count))
+    avg_acc = sum_acc / count
+    avg_bcr = sum_bcr / count
+    avg_matthews = sum_matthews / count
+    if verbose:
+        print("{} Average accuracy: {:.3}".format(heading, avg_acc))
+        print("{} Average BCR: {:.3}".format(heading, avg_bcr))
+        print("{} Average Matthews: {:.3}".format(heading, avg_matthews))
+    return avg_acc, avg_bcr, avg_matthews
 
 
-def prepare_build_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None,
-                        test_set_name=None, reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
+def prepare_build_model(
+        predictor_headers=None,
+        response_headers=None,
+        modelVisitorLibrary=None,
+        modelVisitorTool=None,
+        splitter=None,
+        training_set_name=None,
+        test_set_name=None,
+        reaction_set_name=None,
+        description=None,
+        verbose=False,
+        splitterOptions=None,
+        visitorOptions=None,
+        container_id=None):
     """Build a model with the specified tools."""
     if predictor_headers is not None:
         predictors = Descriptor.objects.filter(heading__in=predictor_headers)
@@ -181,10 +292,12 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
             raise KeyError("Could not find all predictors. Missing: {}".format(
                 missing_descriptors(predictor_headers)))
         elif predictors.count() > len(predictor_headers):
-            raise KeyError("Found more predictor variables than headers ({} and {})!".format(
-                predictors.count(), len(predictor_headers)))
-            raise KeyError("Could not find all predictors. Missing: {}".format(
-                missing_descriptors(predictor_headers)))
+            # raise KeyError("Found more predictor variables than headers ({} and {})!".format(
+            #     predictors.count(), len(predictor_headers)))
+            # raise KeyError("Could not find all predictors. Missing: {}".format(
+            #     missing_descriptors(predictor_headers)))
+            print("Warning: More predictor variables than headers!")
+
     else:
         predictors = None
     if response_headers is not None:
@@ -193,8 +306,13 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
             raise KeyError("Could not find all responses. Missing: {}".format(
                 missing_descriptors(response_headers)))
         elif responses.count() > len(response_headers):
-            raise KeyError("Found more response variables than headers ({} and {})!".format(
-                responses.count(), len(response_headers)))
+            # raise KeyError("Found more response variables than headers ({} and {})!".format(
+            #     responses.count(), len(response_headers)))
+            print(
+                "Warning: Found more response variables than headers... using manual headers")
+            # TODO: there are two boolean_crystallisation_outcome descriptors
+            # in the DB, selecting manual ones since they are more complete
+            responses = [responses[1], ]
     else:
         responses = None
 
@@ -202,7 +320,11 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
         parent_container = ModelContainer.objects.get(id=container_id)
         parent_container.full_clean()
         new_container = parent_container.create_duplicate(
-            modelVisitorTool=modelVisitorTool, modelVisitorOptions=visitorOptions, description=description, predictors=predictors, responses=responses)
+            modelVisitorTool=modelVisitorTool,
+            modelVisitorOptions=visitorOptions,
+            description=description,
+            predictors=predictors,
+            responses=responses)
         new_container.full_clean()
         container = build_model(new_container, verbose=verbose)
     else:
@@ -221,20 +343,51 @@ def prepare_build_model(predictor_headers=None, response_headers=None, modelVisi
             testSet = DataSet.objects.get(name=test_set_name)
             reactions = None
 
-        container = create_build_model(reactions=reactions, predictors=predictors, responses=responses,
-                                       modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                                       splitter=splitter, trainingSet=trainingSet, testSet=testSet,
-                                       description=description, verbose=verbose, splitterOptions=splitterOptions,
-                                       visitorOptions=visitorOptions)
+        container = create_build_model(
+            reactions=reactions,
+            predictors=predictors,
+            responses=responses,
+            modelVisitorLibrary=modelVisitorLibrary,
+            modelVisitorTool=modelVisitorTool,
+            splitter=splitter,
+            trainingSet=trainingSet,
+            testSet=testSet,
+            description=description,
+            verbose=verbose,
+            splitterOptions=splitterOptions,
+            visitorOptions=visitorOptions)
 
     return container
 
 
-def prepare_build_display_model(predictor_headers=None, response_headers=None, modelVisitorLibrary=None, modelVisitorTool=None, splitter=None, training_set_name=None, test_set_name=None,
-                                reaction_set_name=None, description=None, verbose=False, splitterOptions=None, visitorOptions=None, container_id=None):
+def prepare_build_display_model(
+        predictor_headers=None,
+        response_headers=None,
+        modelVisitorLibrary=None,
+        modelVisitorTool=None,
+        splitter=None,
+        training_set_name=None,
+        test_set_name=None,
+        reaction_set_name=None,
+        description=None,
+        verbose=False,
+        splitterOptions=None,
+        visitorOptions=None,
+        container_id=None):
     """I'm not exactly clear on what this function by GMN is for- PA."""
-    container = prepare_build_model(predictor_headers=predictor_headers, response_headers=response_headers, modelVisitorLibrary=modelVisitorLibrary, modelVisitorTool=modelVisitorTool,
-                                    splitter=splitter, training_set_name=training_set_name, test_set_name=test_set_name, reaction_set_name=reaction_set_name, description=description,
-                                    verbose=verbose, splitterOptions=splitterOptions, visitorOptions=visitorOptions, container_id=container_id)
+    container = prepare_build_model(
+        predictor_headers=predictor_headers,
+        response_headers=response_headers,
+        modelVisitorLibrary=modelVisitorLibrary,
+        modelVisitorTool=modelVisitorTool,
+        splitter=splitter,
+        training_set_name=training_set_name,
+        test_set_name=test_set_name,
+        reaction_set_name=reaction_set_name,
+        description=description,
+        verbose=verbose,
+        splitterOptions=splitterOptions,
+        visitorOptions=visitorOptions,
+        container_id=container_id)
 
     display_model_results(container)
