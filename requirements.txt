@@ -31,7 +31,7 @@ gurobipy==6.0.4
 html5lib==0.999
 httplib2==0.8
 hyper==0.5.0
-ipython==1.2.1
+ipython==7.16.3
 keyring==3.5
 launchpadlib==1.10.2
 lazr.restfulclient==0.13.3
